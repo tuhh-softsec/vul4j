@@ -17,68 +17,90 @@ package org.codehaus.plexus.archiver.util;
  *
  */
 
-import org.codehaus.plexus.archiver.ArchiverException;
-
 import junit.framework.TestCase;
+import org.codehaus.plexus.archiver.ArchiverException;
 
 /**
  * JUnit 3 testcases for org.apache.tools.ant.EnumeratedAttribute.
- *
  */
 
-public class EnumeratedAttributeTest extends TestCase {
+public class EnumeratedAttributeTest
+    extends TestCase
+{
 
     private static String[] expected = {"a", "b", "c"};
 
-    public EnumeratedAttributeTest(String name) {
-        super(name);
+    public EnumeratedAttributeTest( String name )
+    {
+        super( name );
     }
 
-    public void testContains() {
+    public void testContains()
+    {
         EnumeratedAttribute t1 = new TestNormal();
-        for (int i=0; i<expected.length; i++) {
-            assertTrue(expected[i]+" is in TestNormal",
-                   t1.containsValue(expected[i]));
-            assertTrue(expected[i].toUpperCase()+" is in TestNormal",
-                   !t1.containsValue(expected[i].toUpperCase()));
+        for ( int i = 0; i < expected.length; i++ )
+        {
+            assertTrue( expected[ i ] + " is in TestNormal",
+                        t1.containsValue( expected[ i ] ) );
+            assertTrue( expected[ i ].toUpperCase() + " is in TestNormal",
+                        !t1.containsValue( expected[ i ].toUpperCase() ) );
         }
-        assertTrue("TestNormal doesn\'t have \"d\" attribute",
-               !t1.containsValue("d"));
-        assertTrue("TestNull doesn\'t have \"d\" attribute and doesn\'t die",
-               !(new TestNull()).containsValue("d"));
+        assertTrue( "TestNormal doesn\'t have \"d\" attribute",
+                    !t1.containsValue( "d" ) );
+        assertTrue( "TestNull doesn\'t have \"d\" attribute and doesn\'t die",
+                    !( new TestNull() ).containsValue( "d" ) );
     }
 
-    public void testExceptions() {
+    public void testExceptions()
+    {
         EnumeratedAttribute t1 = new TestNormal();
-        for (int i=0; i<expected.length; i++) {
-            try {
-                t1.setValue(expected[i]);
-            } catch (ArchiverException ae) {
-                fail("unexpected exception for value "+expected[i]);
+        for ( int i = 0; i < expected.length; i++ )
+        {
+            try
+            {
+                t1.setValue( expected[ i ] );
+            }
+            catch ( ArchiverException ae )
+            {
+                fail( "unexpected exception for value " + expected[ i ] );
             }
         }
-        try {
-            t1.setValue("d");
-            fail("expected exception for value \"d\"");
-        } catch (ArchiverException ae) {
+        try
+        {
+            t1.setValue( "d" );
+            fail( "expected exception for value \"d\"" );
         }
-        try {
-            (new TestNull()).setValue("d");
-            fail("expected exception for value \"d\" in TestNull");
-        } catch (ArchiverException ae) {
-        } catch (Throwable other) {
-            fail("unexpected death of TestNull: "+other.getMessage());
+        catch ( ArchiverException ae )
+        {
+        }
+        try
+        {
+            ( new TestNull() ).setValue( "d" );
+            fail( "expected exception for value \"d\" in TestNull" );
+        }
+        catch ( ArchiverException ae )
+        {
+        }
+        catch ( Throwable other )
+        {
+            fail( "unexpected death of TestNull: " + other.getMessage() );
         }
     }
 
-    public static class TestNormal extends EnumeratedAttribute {
-        public String[] getValues() {
+    public static class TestNormal
+        extends EnumeratedAttribute
+    {
+        public String[] getValues()
+        {
             return expected;
         }
     }
 
-    public static class TestNull extends EnumeratedAttribute {
-        public String[] getValues() {
+    public static class TestNull
+        extends EnumeratedAttribute
+    {
+        public String[] getValues()
+        {
             return null;
         }
     }

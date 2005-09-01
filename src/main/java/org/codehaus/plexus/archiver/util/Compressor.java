@@ -22,14 +22,15 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
  * @version $Revision$ $Date$
  */
-public abstract class Compressor extends AbstractLogEnabled
+public abstract class Compressor
+    extends AbstractLogEnabled
 {
     private File destFile;
 
@@ -37,6 +38,7 @@ public abstract class Compressor extends AbstractLogEnabled
 
     /**
      * the required destination file.
+     *
      * @param compressFile
      */
     public void setDestFile( File compressFile )
@@ -51,6 +53,7 @@ public abstract class Compressor extends AbstractLogEnabled
 
     /**
      * the file to compress; required.
+     *
      * @param srcFile
      */
     public void setSourceFile( File srcFile )
@@ -65,9 +68,11 @@ public abstract class Compressor extends AbstractLogEnabled
 
     /**
      * validation routine
+     *
      * @throws ArchiverException if anything is invalid
      */
-    private void validate() throws ArchiverException
+    private void validate()
+        throws ArchiverException
     {
         if ( destFile == null )
         {
@@ -77,7 +82,7 @@ public abstract class Compressor extends AbstractLogEnabled
         if ( destFile.isDirectory() )
         {
             throw new ArchiverException( "Destination file attribute must not "
-                + "represent a directory!" );
+                                         + "represent a directory!" );
         }
 
         if ( sourceFile == null )
@@ -88,15 +93,17 @@ public abstract class Compressor extends AbstractLogEnabled
         if ( sourceFile.isDirectory() )
         {
             throw new ArchiverException( "Source file attribute must not "
-                + "represent a directory!" );
+                                         + "represent a directory!" );
         }
     }
 
     /**
      * validate, then hand off to the subclass
+     *
      * @throws BuildException
      */
-    public void execute() throws ArchiverException
+    public void execute()
+        throws ArchiverException
     {
         validate();
 
@@ -119,6 +126,7 @@ public abstract class Compressor extends AbstractLogEnabled
 
     /**
      * compress a stream to an output stream
+     *
      * @param in
      * @param zOut
      * @throws IOException
@@ -138,6 +146,7 @@ public abstract class Compressor extends AbstractLogEnabled
 
     /**
      * compress a file to an output stream
+     *
      * @param file
      * @param zOut
      * @throws IOException
@@ -159,5 +168,6 @@ public abstract class Compressor extends AbstractLogEnabled
     /**
      * subclasses must implement this method to do their compression
      */
-    protected abstract void compress() throws ArchiverException;
+    protected abstract void compress()
+        throws ArchiverException;
 }

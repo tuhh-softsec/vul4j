@@ -17,25 +17,27 @@ package org.codehaus.plexus.archiver.gzip;
  *  limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 
+import java.io.IOException;
+
 /**
  * @version $Revision$ $Date$
  */
-public class GZipArchiver extends AbstractArchiver
+public class GZipArchiver
+    extends AbstractArchiver
 {
-    public void createArchive() throws ArchiverException, IOException
+    public void createArchive()
+        throws ArchiverException, IOException
     {
         GZipCompressor compressor = new GZipCompressor();
         if ( getFiles().size() > 1 )
         {
             throw new ArchiverException( "There is more than one file in input." );
         }
-        ArchiveEntry entry = (ArchiveEntry) getFiles().values().toArray()[0];
+        ArchiveEntry entry = (ArchiveEntry) getFiles().values().toArray()[ 0 ];
         compressor.setSourceFile( entry.getFile() );
         compressor.setDestFile( getDestFile() );
         compressor.execute();

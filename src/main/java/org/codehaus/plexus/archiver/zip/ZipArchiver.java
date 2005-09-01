@@ -18,8 +18,9 @@ package org.codehaus.plexus.archiver.zip;
  */
 
 /**
- * @version $Revision$ $Date$
+ * @version $Id$
  */
-public class ZipArchiver extends AbstractZipArchiver
+public class ZipArchiver
+    extends AbstractZipArchiver
 {
 }

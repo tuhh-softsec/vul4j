@@ -23,12 +23,15 @@ import junit.framework.TestCase;
  * JUnit 3 testcases for org.apache.tools.zip.ZipEntry.
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.zip.ZipEntryTest v1.9
+ *          from org.apache.ant.tools.zip.ZipEntryTest v1.9
  */
-public class ZipEntryTest extends TestCase {
+public class ZipEntryTest
+    extends TestCase
+{
 
-    public ZipEntryTest(String name) {
-        super(name);
+    public ZipEntryTest( String name )
+    {
+        super( name );
     }
 
     /**
@@ -36,84 +39,89 @@ public class ZipEntryTest extends TestCase {
      *
      * @since 1.1
      */
-    public void testExtraFields() {
+    public void testExtraFields()
+    {
         AsiExtraField a = new AsiExtraField();
-        a.setDirectory(true);
-        a.setMode(0755);
+        a.setDirectory( true );
+        a.setMode( 0755 );
         UnrecognizedExtraField u = new UnrecognizedExtraField();
-        u.setHeaderId(new ZipShort(1));
-        u.setLocalFileDataData(new byte[0]);
+        u.setHeaderId( new ZipShort( 1 ) );
+        u.setLocalFileDataData( new byte[0] );
 
-        ZipEntry ze = new ZipEntry("test/");
-        ze.setExtraFields(new ZipExtraField[] {a, u});
+        ZipEntry ze = new ZipEntry( "test/" );
+        ze.setExtraFields( new ZipExtraField[]{a, u} );
         byte[] data1 = ze.getExtra();
         ZipExtraField[] result = ze.getExtraFields();
-        assertEquals("first pass", 2, result.length);
-        assertSame(a, result[0]);
-        assertSame(u, result[1]);
+        assertEquals( "first pass", 2, result.length );
+        assertSame( a, result[ 0 ] );
+        assertSame( u, result[ 1 ] );
 
         UnrecognizedExtraField u2 = new UnrecognizedExtraField();
-        u2.setHeaderId(new ZipShort(1));
-        u2.setLocalFileDataData(new byte[] {1});
+        u2.setHeaderId( new ZipShort( 1 ) );
+        u2.setLocalFileDataData( new byte[]{1} );
 
-        ze.addExtraField(u2);
+        ze.addExtraField( u2 );
         byte[] data2 = ze.getExtra();
         result = ze.getExtraFields();
-        assertEquals("second pass", 2, result.length);
-        assertSame(a, result[0]);
-        assertSame(u2, result[1]);
-        assertEquals("length second pass", data1.length+1, data2.length);
+        assertEquals( "second pass", 2, result.length );
+        assertSame( a, result[ 0 ] );
+        assertSame( u2, result[ 1 ] );
+        assertEquals( "length second pass", data1.length + 1, data2.length );
 
         UnrecognizedExtraField u3 = new UnrecognizedExtraField();
-        u3.setHeaderId(new ZipShort(2));
-        u3.setLocalFileDataData(new byte[] {1});
-        ze.addExtraField(u3);
+        u3.setHeaderId( new ZipShort( 2 ) );
+        u3.setLocalFileDataData( new byte[]{1} );
+        ze.addExtraField( u3 );
         result = ze.getExtraFields();
-        assertEquals("third pass", 3, result.length);
+        assertEquals( "third pass", 3, result.length );
 
-        ze.removeExtraField(new ZipShort(1));
+        ze.removeExtraField( new ZipShort( 1 ) );
         byte[] data3 = ze.getExtra();
         result = ze.getExtraFields();
-        assertEquals("fourth pass", 2, result.length);
-        assertSame(a, result[0]);
-        assertSame(u3, result[1]);
-        assertEquals("length fourth pass", data2.length, data3.length);
+        assertEquals( "fourth pass", 2, result.length );
+        assertSame( a, result[ 0 ] );
+        assertSame( u3, result[ 1 ] );
+        assertEquals( "length fourth pass", data2.length, data3.length );
 
-        try {
-            ze.removeExtraField(new ZipShort(1));
-            fail("should be no such element");
-        } catch (java.util.NoSuchElementException nse) {
+        try
+        {
+            ze.removeExtraField( new ZipShort( 1 ) );
+            fail( "should be no such element" );
+        }
+        catch ( java.util.NoSuchElementException nse )
+        {
         }
     }
 
-    public void testUnixMode() {
-        ZipEntry ze = new ZipEntry("foo");
-        assertEquals(0, ze.getPlatform());
-        ze.setUnixMode(0755);
-        assertEquals(3, ze.getPlatform());
-        assertEquals(0755,
-                     (ze.getExternalAttributes() >> 16) & 0xFFFF);
-        assertEquals(0, ze.getExternalAttributes()  & 0xFFFF);
+    public void testUnixMode()
+    {
+        ZipEntry ze = new ZipEntry( "foo" );
+        assertEquals( 0, ze.getPlatform() );
+        ze.setUnixMode( 0755 );
+        assertEquals( 3, ze.getPlatform() );
+        assertEquals( 0755,
+                      ( ze.getExternalAttributes() >> 16 ) & 0xFFFF );
+        assertEquals( 0, ze.getExternalAttributes() & 0xFFFF );
 
-        ze.setUnixMode(0444);
-        assertEquals(3, ze.getPlatform());
-        assertEquals(0444,
-                     (ze.getExternalAttributes() >> 16) & 0xFFFF);
-        assertEquals(1, ze.getExternalAttributes()  & 0xFFFF);
+        ze.setUnixMode( 0444 );
+        assertEquals( 3, ze.getPlatform() );
+        assertEquals( 0444,
+                      ( ze.getExternalAttributes() >> 16 ) & 0xFFFF );
+        assertEquals( 1, ze.getExternalAttributes() & 0xFFFF );
 
-        ze = new ZipEntry("foo/");
-        assertEquals(0, ze.getPlatform());
-        ze.setUnixMode(0777);
-        assertEquals(3, ze.getPlatform());
-        assertEquals(0777,
-                     (ze.getExternalAttributes() >> 16) & 0xFFFF);
-        assertEquals(0x10, ze.getExternalAttributes()  & 0xFFFF);
+        ze = new ZipEntry( "foo/" );
+        assertEquals( 0, ze.getPlatform() );
+        ze.setUnixMode( 0777 );
+        assertEquals( 3, ze.getPlatform() );
+        assertEquals( 0777,
+                      ( ze.getExternalAttributes() >> 16 ) & 0xFFFF );
+        assertEquals( 0x10, ze.getExternalAttributes() & 0xFFFF );
 
-        ze.setUnixMode(0577);
-        assertEquals(3, ze.getPlatform());
-        assertEquals(0577,
-                     (ze.getExternalAttributes() >> 16) & 0xFFFF);
-        assertEquals(0x11, ze.getExternalAttributes()  & 0xFFFF);
+        ze.setUnixMode( 0577 );
+        assertEquals( 3, ze.getPlatform() );
+        assertEquals( 0577,
+                      ( ze.getExternalAttributes() >> 16 ) & 0xFFFF );
+        assertEquals( 0x11, ze.getExternalAttributes() & 0xFFFF );
     }
 
 }

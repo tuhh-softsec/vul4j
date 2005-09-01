@@ -27,12 +27,14 @@ import java.util.zip.GZIPOutputStream;
 /**
  * @version $Revision$ $Date$
  */
-public class GZipCompressor extends Compressor
+public class GZipCompressor
+    extends Compressor
 {
     /**
      * perform the GZip compression operation.
      */
-    protected void compress() throws ArchiverException
+    protected void compress()
+        throws ArchiverException
     {
         GZIPOutputStream zOut = null;
         try

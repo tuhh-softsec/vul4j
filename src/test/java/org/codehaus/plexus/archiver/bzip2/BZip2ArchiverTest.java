@@ -32,7 +32,7 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
  * @author Emmanuel Venisse
  * @version $Id$
  */
- public class BZip2ArchiverTest
+public class BZip2ArchiverTest
     extends PlexusTestCase
 {
     public void testCreateArchive()

@@ -25,9 +25,10 @@ import java.util.zip.ZipException;
  * ZipExtraField related methods
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.zip.ExtraFieldUtils v1.9
+ *          from org.apache.ant.tools.zip.ExtraFieldUtils v1.9
  */
-public class ExtraFieldUtils {
+public class ExtraFieldUtils
+{
 
     /**
      * Static registry of known extra fields.
@@ -36,29 +37,38 @@ public class ExtraFieldUtils {
      */
     private static Hashtable implementations;
 
-    static {
+    static
+    {
         implementations = new Hashtable();
-        register(AsiExtraField.class);
+        register( AsiExtraField.class );
     }
 
     /**
      * Register a ZipExtraField implementation.
-     *
+     * <p/>
      * <p>The given class must have a no-arg constructor and implement
      * the {@link ZipExtraField ZipExtraField interface}.</p>
      *
      * @since 1.1
      */
-    public static void register(Class c) {
-        try {
+    public static void register( Class c )
+    {
+        try
+        {
             ZipExtraField ze = (ZipExtraField) c.newInstance();
-            implementations.put(ze.getHeaderId(), c);
-        } catch (ClassCastException cc) {
-            throw new RuntimeException(c + " doesn\'t implement ZipExtraField");
-        } catch (InstantiationException ie) {
-            throw new RuntimeException(c + " is not a concrete class");
-        } catch (IllegalAccessException ie) {
-            throw new RuntimeException(c + "\'s no-arg constructor is not public");
+            implementations.put( ze.getHeaderId(), c );
+        }
+        catch ( ClassCastException cc )
+        {
+            throw new RuntimeException( c + " doesn\'t implement ZipExtraField" );
+        }
+        catch ( InstantiationException ie )
+        {
+            throw new RuntimeException( c + " is not a concrete class" );
+        }
+        catch ( IllegalAccessException ie )
+        {
+            throw new RuntimeException( c + "\'s no-arg constructor is not public" );
         }
     }
 
@@ -68,14 +78,16 @@ public class ExtraFieldUtils {
      *
      * @since 1.1
      */
-    public static ZipExtraField createExtraField(ZipShort headerId)
-        throws InstantiationException, IllegalAccessException {
-        Class c = (Class) implementations.get(headerId);
-        if (c != null) {
+    public static ZipExtraField createExtraField( ZipShort headerId )
+        throws InstantiationException, IllegalAccessException
+    {
+        Class c = (Class) implementations.get( headerId );
+        if ( c != null )
+        {
             return (ZipExtraField) c.newInstance();
         }
         UnrecognizedExtraField u = new UnrecognizedExtraField();
-        u.setHeaderId(headerId);
+        u.setHeaderId( headerId );
         return u;
     }
 
@@ -85,34 +97,44 @@ public class ExtraFieldUtils {
      *
      * @since 1.1
      */
-    public static ZipExtraField[] parse(byte[] data) throws ZipException {
+    public static ZipExtraField[] parse( byte[] data )
+        throws ZipException
+    {
         Vector v = new Vector();
         int start = 0;
-        while (start <= data.length - 4) {
-            ZipShort headerId = new ZipShort(data, start);
-            int length = (new ZipShort(data, start + 2)).getValue();
-            if (start + 4 + length > data.length) {
-                throw new ZipException("data starting at " + start
-                    + " is in unknown format");
+        while ( start <= data.length - 4 )
+        {
+            ZipShort headerId = new ZipShort( data, start );
+            int length = ( new ZipShort( data, start + 2 ) ).getValue();
+            if ( start + 4 + length > data.length )
+            {
+                throw new ZipException( "data starting at " + start
+                                        + " is in unknown format" );
             }
-            try {
-                ZipExtraField ze = createExtraField(headerId);
-                ze.parseFromLocalFileData(data, start + 4, length);
-                v.addElement(ze);
-            } catch (InstantiationException ie) {
-                throw new ZipException(ie.getMessage());
-            } catch (IllegalAccessException iae) {
-                throw new ZipException(iae.getMessage());
+            try
+            {
+                ZipExtraField ze = createExtraField( headerId );
+                ze.parseFromLocalFileData( data, start + 4, length );
+                v.addElement( ze );
             }
-            start += (length + 4);
+            catch ( InstantiationException ie )
+            {
+                throw new ZipException( ie.getMessage() );
+            }
+            catch ( IllegalAccessException iae )
+            {
+                throw new ZipException( iae.getMessage() );
+            }
+            start += ( length + 4 );
         }
-        if (start != data.length) { // array not exhausted
-            throw new ZipException("data starting at " + start
-                + " is in unknown format");
+        if ( start != data.length )
+        { // array not exhausted
+            throw new ZipException( "data starting at " + start
+                                    + " is in unknown format" );
         }
 
         ZipExtraField[] result = new ZipExtraField[v.size()];
-        v.copyInto(result);
+        v.copyInto( result );
         return result;
     }
 
@@ -121,21 +143,24 @@ public class ExtraFieldUtils {
      *
      * @since 1.1
      */
-    public static byte[] mergeLocalFileDataData(ZipExtraField[] data) {
+    public static byte[] mergeLocalFileDataData( ZipExtraField[] data )
+    {
         int sum = 4 * data.length;
-        for (int i = 0; i < data.length; i++) {
-            sum += data[i].getLocalFileDataLength().getValue();
+        for ( int i = 0; i < data.length; i++ )
+        {
+            sum += data[ i ].getLocalFileDataLength().getValue();
         }
         byte[] result = new byte[sum];
         int start = 0;
-        for (int i = 0; i < data.length; i++) {
-            System.arraycopy(data[i].getHeaderId().getBytes(),
-                             0, result, start, 2);
-            System.arraycopy(data[i].getLocalFileDataLength().getBytes(),
-                             0, result, start + 2, 2);
-            byte[] local = data[i].getLocalFileDataData();
-            System.arraycopy(local, 0, result, start + 4, local.length);
-            start += (local.length + 4);
+        for ( int i = 0; i < data.length; i++ )
+        {
+            System.arraycopy( data[ i ].getHeaderId().getBytes(),
+                              0, result, start, 2 );
+            System.arraycopy( data[ i ].getLocalFileDataLength().getBytes(),
+                              0, result, start + 2, 2 );
+            byte[] local = data[ i ].getLocalFileDataData();
+            System.arraycopy( local, 0, result, start + 4, local.length );
+            start += ( local.length + 4 );
         }
         return result;
     }
@@ -145,21 +170,24 @@ public class ExtraFieldUtils {
      *
      * @since 1.1
      */
-    public static byte[] mergeCentralDirectoryData(ZipExtraField[] data) {
+    public static byte[] mergeCentralDirectoryData( ZipExtraField[] data )
+    {
         int sum = 4 * data.length;
-        for (int i = 0; i < data.length; i++) {
-            sum += data[i].getCentralDirectoryLength().getValue();
+        for ( int i = 0; i < data.length; i++ )
+        {
+            sum += data[ i ].getCentralDirectoryLength().getValue();
         }
         byte[] result = new byte[sum];
         int start = 0;
-        for (int i = 0; i < data.length; i++) {
-            System.arraycopy(data[i].getHeaderId().getBytes(),
-                             0, result, start, 2);
-            System.arraycopy(data[i].getCentralDirectoryLength().getBytes(),
-                             0, result, start + 2, 2);
-            byte[] local = data[i].getCentralDirectoryData();
-            System.arraycopy(local, 0, result, start + 4, local.length);
-            start += (local.length + 4);
+        for ( int i = 0; i < data.length; i++ )
+        {
+            System.arraycopy( data[ i ].getHeaderId().getBytes(),
+                              0, result, start, 2 );
+            System.arraycopy( data[ i ].getCentralDirectoryLength().getBytes(),
+                              0, result, start + 2, 2 );
+            byte[] local = data[ i ].getCentralDirectoryData();
+            System.arraycopy( local, 0, result, start + 4, local.length );
+            start += ( local.length + 4 );
         }
         return result;
     }

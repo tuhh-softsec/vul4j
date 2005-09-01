@@ -17,16 +17,17 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.File;
-
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
  * @version $Revision$ $Date$
  */
-public abstract class AbstractUnArchiver extends AbstractLogEnabled
+public abstract class AbstractUnArchiver
+    extends AbstractLogEnabled
     implements UnArchiver
 {
     private File destDirectory;
@@ -77,13 +78,15 @@ public abstract class AbstractUnArchiver extends AbstractLogEnabled
         overwrite = b;
     }
 
-    public void extract() throws ArchiverException, IOException
+    public void extract()
+        throws ArchiverException, IOException
     {
         validate();
         execute();
     }
-    
-    protected void validate() throws ArchiverException
+
+    protected void validate()
+        throws ArchiverException
     {
         if ( sourceFile == null )
         {
@@ -122,6 +125,7 @@ public abstract class AbstractUnArchiver extends AbstractLogEnabled
             destFile = null;
         }
     }
-    
-    protected abstract void execute() throws ArchiverException, IOException;
+
+    protected abstract void execute()
+        throws ArchiverException, IOException;
 }

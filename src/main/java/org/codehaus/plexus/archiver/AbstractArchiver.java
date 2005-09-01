@@ -27,38 +27,36 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @version $Revision$ $Date$
+ * @version $Id$
  */
-public abstract class AbstractArchiver extends AbstractLogEnabled
+public abstract class AbstractArchiver
+    extends AbstractLogEnabled
     implements Archiver
 {
     /**
      * Default value for the dirmode attribute.
      */
-    public static final int DEFAULT_DIR_MODE =
-        UnixStat.DIR_FLAG  | UnixStat.DEFAULT_DIR_PERM;
+    public static final int DEFAULT_DIR_MODE = UnixStat.DIR_FLAG | UnixStat.DEFAULT_DIR_PERM;
 
     /**
      * Default value for the filemode attribute.
      */
-    public static final int DEFAULT_FILE_MODE =
-        UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
+    public static final int DEFAULT_FILE_MODE = UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
 
     private Logger logger;
 
     private File destFile;
 
     private Map filesMap = new LinkedHashMap();
-    
+
     private Map dirsMap = new LinkedHashMap();
 
     private int defaultFileMode = DEFAULT_FILE_MODE;
-    
+
     private boolean includeEmptyDirs = true;
 
     private int defaultDirectoryMode = DEFAULT_DIR_MODE;
-    
-    
+
     public void setDefaultFileMode( int mode )
     {
         defaultFileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
@@ -68,7 +66,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         return defaultFileMode;
     }
-    
+
     public void setDefaultDirectoryMode( int mode )
     {
         defaultDirectoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
@@ -78,7 +76,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         return defaultDirectoryMode;
     }
-    
+
     public void addDirectory( File directory )
         throws ArchiverException
     {
@@ -96,7 +94,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         addDirectory( directory, "", includes, excludes );
     }
-    
+
     public void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException
     {
@@ -109,13 +107,13 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
             for ( int i = 0; i < includes.length; i++ )
             {
                 String pattern;
-                pattern = includes[i].replace( '/', File.separatorChar ).replace(
+                pattern = includes[ i ].replace( '/', File.separatorChar ).replace(
                     '\\', File.separatorChar );
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
                 }
-                includesPattern[i] = pattern;
+                includesPattern[ i ] = pattern;
             }
         }
 
@@ -125,16 +123,16 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
             for ( int i = 0; i < excludes.length; i++ )
             {
                 String pattern;
-                pattern = excludes[i].replace( '/', File.separatorChar ).replace(
+                pattern = excludes[ i ].replace( '/', File.separatorChar ).replace(
                     '\\', File.separatorChar );
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
                 }
-                excludesPattern[i] = pattern;
+                excludesPattern[ i ] = pattern;
             }
         }
-        
+
         DirectoryScanner scanner = new DirectoryScanner();
 
         if ( includes != null )
@@ -146,7 +144,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         {
             scanner.setExcludes( excludesPattern );
         }
-        
+
         if ( !directory.isDirectory() )
         {
             throw new ArchiverException( directory.getAbsolutePath() + " isn't a directory." );
@@ -162,27 +160,29 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
 
             for ( int i = 0; i < dirs.length; i++ )
             {
-                String sourceDir = dirs[i].replace( '\\', '/' );
-                
+                String sourceDir = dirs[ i ].replace( '\\', '/' );
+
                 String targetDir = ( prefix == null ? "" : prefix ) + sourceDir;
 
                 getDirs().put( targetDir, ArchiveEntry.createEntry( targetDir,
-                        new File( basedir, sourceDir ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
+                                                                    new File( basedir, sourceDir ),
+                                                                    getDefaultFileMode(), getDefaultDirectoryMode() ) );
             }
         }
 
         String[] files = scanner.getIncludedFiles();
-        
+
         for ( int i = 0; i < files.length; i++ )
         {
-            String sourceFile = files[i].replace( '\\', '/' );
-            
+            String sourceFile = files[ i ].replace( '\\', '/' );
+
             String targetFile = ( prefix == null ? "" : prefix ) + sourceFile;
 
             filesMap.put( targetFile, ArchiveEntry.createEntry( targetFile,
-                new File( basedir, sourceFile ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
+                                                                new File( basedir, sourceFile ), getDefaultFileMode(),
+                                                                getDefaultDirectoryMode() ) );
         }
-        
+
     }
 
     public void addFile( File inputFile, String destFileName )
@@ -212,15 +212,15 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         if ( !includeEmptyDirs )
         {
-        	return filesMap;
+            return filesMap;
         }
-        
+
         Map resources = new LinkedHashMap();
 
         resources.putAll( getDirs() );
-        
+
         resources.putAll( filesMap );
-        
+
         return resources;
     }
 
@@ -257,7 +257,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         return includeEmptyDirs;
     }
 
-    public void setIncludeEmptyDirs(boolean includeEmptyDirs)
+    public void setIncludeEmptyDirs( boolean includeEmptyDirs )
     {
         this.includeEmptyDirs = includeEmptyDirs;
     }

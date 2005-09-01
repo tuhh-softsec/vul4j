@@ -21,7 +21,7 @@ import java.util.zip.ZipException;
 
 /**
  * General format of extra field data.
- *
+ * <p/>
  * <p>Extra fields usually appear twice per file, once in the local
  * file data and once in the central directory.  Usually they are the
  * same, but they don't have to be.  {@link
@@ -29,9 +29,10 @@ import java.util.zip.ZipException;
  * only use the local file data in both places.</p>
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.zip.ZipExtraField v1.9
+ *          from org.apache.ant.tools.zip.ZipExtraField v1.9
  */
-public interface ZipExtraField {
+public interface ZipExtraField
+{
 
     /**
      * The Header-ID.
@@ -77,6 +78,6 @@ public interface ZipExtraField {
      *
      * @since 1.1
      */
-    void parseFromLocalFileData(byte[] data, int offset, int length)
+    void parseFromLocalFileData( byte[] data, int offset, int length )
         throws ZipException;
 }

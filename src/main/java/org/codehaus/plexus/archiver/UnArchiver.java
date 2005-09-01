@@ -17,8 +17,8 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @version $Revision$ $Date$
@@ -27,7 +27,8 @@ public interface UnArchiver
 {
     String ROLE = UnArchiver.class.getName();
 
-    void extract() throws ArchiverException, IOException;
+    void extract()
+        throws ArchiverException, IOException;
 
     File getDestDirectory();
 
@@ -45,5 +46,5 @@ public interface UnArchiver
      * Should we overwrite files in dest, even if they are newer than
      * the corresponding entries in the archive?
      */
-    void setOverwrite(boolean b);
+    void setOverwrite( boolean b );
 }

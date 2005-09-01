@@ -27,12 +27,14 @@ import java.io.IOException;
 /**
  * @version $Revision$ $Date$
  */
-public class BZip2Compressor extends Compressor
+public class BZip2Compressor
+    extends Compressor
 {
     /**
      * perform the GZip compression operation.
      */
-    protected void compress() throws ArchiverException
+    protected void compress()
+        throws ArchiverException
     {
         CBZip2OutputStream zOut = null;
         try
@@ -58,7 +60,7 @@ public class BZip2Compressor extends Compressor
                     // close up
                     zOut.close();
                 }
-                catch (IOException e)
+                catch ( IOException e )
                 {
                     //ignore
                 }

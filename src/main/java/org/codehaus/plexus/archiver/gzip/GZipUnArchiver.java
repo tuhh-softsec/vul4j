@@ -29,14 +29,16 @@ import java.util.zip.GZIPInputStream;
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
  * @version $Revision$ $Date$
  */
-public class GZipUnArchiver extends AbstractUnArchiver
+public class GZipUnArchiver
+    extends AbstractUnArchiver
 {
-    protected void execute() throws ArchiverException, IOException
+    protected void execute()
+        throws ArchiverException, IOException
     {
         if ( getSourceFile().lastModified() > getDestFile().lastModified() )
         {
             getLogger().info( "Expanding " + getSourceFile().getAbsolutePath() + " to "
-                        + getDestFile().getAbsolutePath() );
+                              + getDestFile().getAbsolutePath() );
 
             FileOutputStream out = null;
             GZIPInputStream zIn = null;

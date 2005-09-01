@@ -17,13 +17,13 @@ package org.codehaus.plexus.archiver.war;
  *
  */
 
-import java.io.File;
-import java.io.IOException;
-
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
+
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -40,7 +40,8 @@ import org.codehaus.plexus.archiver.zip.ZipOutputStream;
  *
  * @see JarArchiver
  */
-public class WarArchiver extends JarArchiver
+public class WarArchiver
+    extends JarArchiver
 {
 
     /**
@@ -63,15 +64,15 @@ public class WarArchiver extends JarArchiver
      * set the deployment descriptor to use (WEB-INF/web.xml);
      * required unless <tt>update=true</tt>
      */
-    public void setWebxml(File descr)
+    public void setWebxml( File descr )
         throws ArchiverException
     {
         deploymentDescriptor = descr;
-        if (!deploymentDescriptor.exists())
+        if ( !deploymentDescriptor.exists() )
         {
-            throw new ArchiverException("Deployment descriptor: "
-                + deploymentDescriptor
-                + " does not exist.");
+            throw new ArchiverException( "Deployment descriptor: "
+                                         + deploymentDescriptor
+                                         + " does not exist." );
         }
 
         addFile( descr, "WEB-INF/web.xml" );
@@ -84,7 +85,7 @@ public class WarArchiver extends JarArchiver
     public void addLib( File fileName )
         throws ArchiverException
     {
-        addDirectory( fileName.getParentFile(), "WEB-INF/lib/", new String[]{ fileName.getName() }, null );
+        addDirectory( fileName.getParentFile(), "WEB-INF/lib/", new String[]{fileName.getName()}, null );
     }
 
     /**
@@ -104,7 +105,7 @@ public class WarArchiver extends JarArchiver
     public void addClass( File fileName )
         throws ArchiverException
     {
-        addDirectory( fileName.getParentFile(), "WEB-INF/classes/", new String[]{ fileName.getName() }, null );
+        addDirectory( fileName.getParentFile(), "WEB-INF/classes/", new String[]{fileName.getName()}, null );
     }
 
     /**
@@ -129,38 +130,38 @@ public class WarArchiver extends JarArchiver
      * override of  parent; validates configuration
      * before initializing the output stream.
      */
-    protected void initZipOutputStream(ZipOutputStream zOut)
+    protected void initZipOutputStream( ZipOutputStream zOut )
         throws IOException, ArchiverException
     {
         // If no webxml file is specified, it's an error.
-        if (deploymentDescriptor == null && !isInUpdateMode())
+        if ( deploymentDescriptor == null && !isInUpdateMode() )
         {
-            throw new ArchiverException("webxml attribute is required");
+            throw new ArchiverException( "webxml attribute is required" );
         }
 
-        super.initZipOutputStream(zOut);
+        super.initZipOutputStream( zOut );
     }
 
     /**
      * Overridden from ZipArchiver class to deal with web.xml
      */
-    protected void zipFile(ArchiveEntry entry, ZipOutputStream zOut, String vPath, int mode)
+    protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath, int mode )
         throws IOException, ArchiverException
     {
         // If the file being added is WEB-INF/web.xml, we warn if it's
         // not the one specified in the "webxml" attribute - or if
         // it's being added twice, meaning the same file is specified
         // by the "webxml" attribute and in a <fileset> element.
-        if (vPath.equalsIgnoreCase("WEB-INF/web.xml"))
+        if ( vPath.equalsIgnoreCase( "WEB-INF/web.xml" ) )
         {
             if ( deploymentDescriptor == null
-                || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
-                || descriptorAdded )
+                 || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
+                 || descriptorAdded )
             {
-                getLogger().warn("Warning: selected " + archiveType
-                    + " files include a WEB-INF/web.xml which will be ignored "
-                    + "(please use webxml attribute to "
-                    + archiveType + " task)");
+                getLogger().warn( "Warning: selected " + archiveType
+                                  + " files include a WEB-INF/web.xml which will be ignored "
+                                  + "(please use webxml attribute to "
+                                  + archiveType + " task)" );
             }
             else
             {

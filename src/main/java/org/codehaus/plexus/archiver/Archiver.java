@@ -17,8 +17,8 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @version $Revision$ $Date$
@@ -27,29 +27,36 @@ public interface Archiver
 {
     String ROLE = Archiver.class.getName();
 
-    void createArchive() throws ArchiverException, IOException;
+    void createArchive()
+        throws ArchiverException, IOException;
 
-    void addDirectory( File directory ) throws ArchiverException;
+    void addDirectory( File directory )
+        throws ArchiverException;
 
-    void addDirectory( File directory, String prefix ) throws ArchiverException;
+    void addDirectory( File directory, String prefix )
+        throws ArchiverException;
 
-    void addDirectory( File directory, String[] includes, String[] excludes ) throws ArchiverException;
+    void addDirectory( File directory, String[] includes, String[] excludes )
+        throws ArchiverException;
 
-    void addDirectory( File directory, String prefix, String[] includes, String[] excludes ) throws ArchiverException;
+    void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
+        throws ArchiverException;
 
-    void addFile( File inputFile, String destFileName ) throws ArchiverException;
+    void addFile( File inputFile, String destFileName )
+        throws ArchiverException;
 
-    void addFile( File inputFile, String destFileName, int permissions ) throws ArchiverException;
+    void addFile( File inputFile, String destFileName, int permissions )
+        throws ArchiverException;
 
     File getDestFile();
 
     void setDestFile( File destFile );
-    
+
     void setDefaultFileMode( int mode );
 
     int getDefaultFileMode();
-    
+
     void setDefaultDirectoryMode( int mode );
-        
+
     int getDefaultDirectoryMode();
 }

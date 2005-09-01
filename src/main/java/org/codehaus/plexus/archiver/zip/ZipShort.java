@@ -22,9 +22,11 @@ package org.codehaus.plexus.archiver.zip;
  * rules for the big endian byte order of ZIP files.
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.zip.ZipShort v1.10
+ *          from org.apache.ant.tools.zip.ZipShort v1.10
  */
-public final class ZipShort implements Cloneable {
+public final class ZipShort
+    implements Cloneable
+{
 
     private int value;
 
@@ -33,7 +35,8 @@ public final class ZipShort implements Cloneable {
      *
      * @since 1.1
      */
-    public ZipShort (int value) {
+    public ZipShort( int value )
+    {
         this.value = value;
     }
 
@@ -42,8 +45,9 @@ public final class ZipShort implements Cloneable {
      *
      * @since 1.1
      */
-    public ZipShort (byte[] bytes) {
-        this(bytes, 0);
+    public ZipShort( byte[] bytes )
+    {
+        this( bytes, 0 );
     }
 
     /**
@@ -51,9 +55,10 @@ public final class ZipShort implements Cloneable {
      *
      * @since 1.1
      */
-    public ZipShort (byte[] bytes, int offset) {
-        value = (bytes[offset + 1] << 8) & 0xFF00;
-        value += (bytes[offset] & 0xFF);
+    public ZipShort( byte[] bytes, int offset )
+    {
+        value = ( bytes[ offset + 1 ] << 8 ) & 0xFF00;
+        value += ( bytes[ offset ] & 0xFF );
     }
 
     /**
@@ -61,10 +66,11 @@ public final class ZipShort implements Cloneable {
      *
      * @since 1.1
      */
-    public byte[] getBytes() {
+    public byte[] getBytes()
+    {
         byte[] result = new byte[2];
-        result[0] = (byte) (value & 0xFF);
-        result[1] = (byte) ((value & 0xFF00) >> 8);
+        result[ 0 ] = (byte) ( value & 0xFF );
+        result[ 1 ] = (byte) ( ( value & 0xFF00 ) >> 8 );
         return result;
     }
 
@@ -73,7 +79,8 @@ public final class ZipShort implements Cloneable {
      *
      * @since 1.1
      */
-    public int getValue() {
+    public int getValue()
+    {
         return value;
     }
 
@@ -82,11 +89,13 @@ public final class ZipShort implements Cloneable {
      *
      * @since 1.1
      */
-    public boolean equals(Object o) {
-        if (o == null || !(o instanceof ZipShort)) {
+    public boolean equals( Object o )
+    {
+        if ( o == null || !( o instanceof ZipShort ) )
+        {
             return false;
         }
-        return value == ((ZipShort) o).getValue();
+        return value == ( (ZipShort) o ).getValue();
     }
 
     /**
@@ -94,7 +103,8 @@ public final class ZipShort implements Cloneable {
      *
      * @since 1.1
      */
-    public int hashCode() {
+    public int hashCode()
+    {
         return value;
     }
 }

@@ -27,17 +27,25 @@ import java.util.zip.ZipException;
  * access to the internal and external file attributes.
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.zip.ZipEntry v1.16
+ *          from org.apache.ant.tools.zip.ZipEntry v1.16
  */
-public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
+public class ZipEntry
+    extends java.util.zip.ZipEntry
+    implements Cloneable
+{
 
     private static final int PLATFORM_UNIX = 3;
-    private static final int PLATFORM_FAT  = 0;
+
+    private static final int PLATFORM_FAT = 0;
 
     private int internalAttributes = 0;
+
     private int platform = PLATFORM_FAT;
+
     private long externalAttributes = 0;
+
     private Vector extraFields = new Vector();
+
     private String name = null;
 
     /**
@@ -45,8 +53,9 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public ZipEntry(String name) {
-        super(name);
+    public ZipEntry( String name )
+    {
+        super( name );
     }
 
     /**
@@ -54,34 +63,42 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public ZipEntry(java.util.zip.ZipEntry entry) throws ZipException {
+    public ZipEntry( java.util.zip.ZipEntry entry )
+        throws ZipException
+    {
         /*
          * REVISIT: call super(entry) instead of this stuff in Ant2,
          *          "copy constructor" has not been available in JDK 1.1
          */
-        super(entry.getName());
+        super( entry.getName() );
 
-        setComment(entry.getComment());
-        setMethod(entry.getMethod());
-        setTime(entry.getTime());
+        setComment( entry.getComment() );
+        setMethod( entry.getMethod() );
+        setTime( entry.getTime() );
 
         long size = entry.getSize();
-        if (size > 0) {
-            setSize(size);
+        if ( size > 0 )
+        {
+            setSize( size );
         }
         long cSize = entry.getCompressedSize();
-        if (cSize > 0) {
-            setComprSize(cSize);
+        if ( cSize > 0 )
+        {
+            setComprSize( cSize );
         }
         long crc = entry.getCrc();
-        if (crc > 0) {
-            setCrc(crc);
+        if ( crc > 0 )
+        {
+            setCrc( crc );
         }
 
         byte[] extra = entry.getExtra();
-        if (extra != null) {
-            setExtraFields(ExtraFieldUtils.parse(extra));
-        } else {
+        if ( extra != null )
+        {
+            setExtraFields( ExtraFieldUtils.parse( extra ) );
+        }
+        else
+        {
             // initializes extra data to an empty byte array
             setExtra();
         }
@@ -92,18 +109,21 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public ZipEntry(ZipEntry entry) throws ZipException {
-        this((java.util.zip.ZipEntry) entry);
-        setInternalAttributes(entry.getInternalAttributes());
-        setExternalAttributes(entry.getExternalAttributes());
-        setExtraFields(entry.getExtraFields());
+    public ZipEntry( ZipEntry entry )
+        throws ZipException
+    {
+        this( (java.util.zip.ZipEntry) entry );
+        setInternalAttributes( entry.getInternalAttributes() );
+        setExternalAttributes( entry.getExternalAttributes() );
+        setExtraFields( entry.getExtraFields() );
     }
 
     /**
      * @since 1.9
      */
-    protected ZipEntry() {
-        super("");
+    protected ZipEntry()
+    {
+        super( "" );
     }
 
     /**
@@ -111,33 +131,40 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public Object clone() {
-        try {
+    public Object clone()
+    {
+        try
+        {
             ZipEntry e = (ZipEntry) super.clone();
 
-            e.setName(getName());
-            e.setComment(getComment());
-            e.setMethod(getMethod());
-            e.setTime(getTime());
+            e.setName( getName() );
+            e.setComment( getComment() );
+            e.setMethod( getMethod() );
+            e.setTime( getTime() );
             long size = getSize();
-            if (size > 0) {
-                e.setSize(size);
+            if ( size > 0 )
+            {
+                e.setSize( size );
             }
             long cSize = getCompressedSize();
-            if (cSize > 0) {
-                e.setComprSize(cSize);
+            if ( cSize > 0 )
+            {
+                e.setComprSize( cSize );
             }
             long crc = getCrc();
-            if (crc > 0) {
-                e.setCrc(crc);
+            if ( crc > 0 )
+            {
+                e.setCrc( crc );
             }
 
             e.extraFields = (Vector) extraFields.clone();
-            e.setInternalAttributes(getInternalAttributes());
-            e.setExternalAttributes(getExternalAttributes());
-            e.setExtraFields(getExtraFields());
+            e.setInternalAttributes( getInternalAttributes() );
+            e.setExternalAttributes( getExternalAttributes() );
+            e.setExtraFields( getExtraFields() );
             return e;
-        } catch (Throwable t) {
+        }
+        catch ( Throwable t )
+        {
             // in JDK 1.1 ZipEntry is not Cloneable, so super.clone declares
             // to throw CloneNotSupported - since JDK 1.2 it is overridden to
             // not throw that exception
@@ -150,7 +177,8 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public int getInternalAttributes() {
+    public int getInternalAttributes()
+    {
         return internalAttributes;
     }
 
@@ -159,7 +187,8 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public void setInternalAttributes(int value) {
+    public void setInternalAttributes( int value )
+    {
         internalAttributes = value;
     }
 
@@ -168,7 +197,8 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public long getExternalAttributes() {
+    public long getExternalAttributes()
+    {
         return externalAttributes;
     }
 
@@ -177,7 +207,8 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public void setExternalAttributes(long value) {
+    public void setExternalAttributes( long value )
+    {
         externalAttributes = value;
     }
 
@@ -187,12 +218,13 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since Ant 1.5.2
      */
-    public void setUnixMode(int mode) {
-        setExternalAttributes((mode << 16)
-                              // MS-DOS read-only attribute
-                              | ((mode & 0200) == 0 ? 1 : 0)
-                              // MS-DOS directory flag
-                              | (isDirectory() ? 0x10 : 0));
+    public void setUnixMode( int mode )
+    {
+        setExternalAttributes( ( mode << 16 )
+                               // MS-DOS read-only attribute
+                               | ( ( mode & 0200 ) == 0 ? 1 : 0 )
+                               // MS-DOS directory flag
+                               | ( isDirectory() ? 0x10 : 0 ) );
         platform = PLATFORM_UNIX;
     }
 
@@ -201,8 +233,9 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since Ant 1.6
      */
-    public int getUnixMode() {
-        return (int) ((getExternalAttributes() >> 16) & 0xFFFF);
+    public int getUnixMode()
+    {
+        return (int) ( ( getExternalAttributes() >> 16 ) & 0xFFFF );
     }
 
     /**
@@ -210,18 +243,19 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      * by&quot; part of the central file header.
      *
      * @return 0 (MS-DOS FAT) unless {@link #setUnixMode setUnixMode}
-     * has been called, in which case 3 (Unix) will be returned.
-     *
+     *         has been called, in which case 3 (Unix) will be returned.
      * @since Ant 1.5.2
      */
-    public int getPlatform() {
+    public int getPlatform()
+    {
         return platform;
     }
 
     /**
      * @since 1.9
      */
-    protected void setPlatform(int platform) {
+    protected void setPlatform( int platform )
+    {
         this.platform = platform;
     }
 
@@ -230,10 +264,12 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public void setExtraFields(ZipExtraField[] fields) {
+    public void setExtraFields( ZipExtraField[] fields )
+    {
         extraFields.removeAllElements();
-        for (int i = 0; i < fields.length; i++) {
-            extraFields.addElement(fields[i]);
+        for ( int i = 0; i < fields.length; i++ )
+        {
+            extraFields.addElement( fields[ i ] );
         }
         setExtra();
     }
@@ -243,9 +279,10 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public ZipExtraField[] getExtraFields() {
+    public ZipExtraField[] getExtraFields()
+    {
         ZipExtraField[] result = new ZipExtraField[extraFields.size()];
-        extraFields.copyInto(result);
+        extraFields.copyInto( result );
         return result;
     }
 
@@ -255,17 +292,21 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public void addExtraField(ZipExtraField ze) {
+    public void addExtraField( ZipExtraField ze )
+    {
         ZipShort type = ze.getHeaderId();
         boolean done = false;
-        for (int i = 0; !done && i < extraFields.size(); i++) {
-            if (((ZipExtraField) extraFields.elementAt(i)).getHeaderId().equals(type)) {
-                extraFields.setElementAt(ze, i);
+        for ( int i = 0; !done && i < extraFields.size(); i++ )
+        {
+            if ( ( (ZipExtraField) extraFields.elementAt( i ) ).getHeaderId().equals( type ) )
+            {
+                extraFields.setElementAt( ze, i );
                 done = true;
             }
         }
-        if (!done) {
-            extraFields.addElement(ze);
+        if ( !done )
+        {
+            extraFields.addElement( ze );
         }
         setExtra();
     }
@@ -275,15 +316,19 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public void removeExtraField(ZipShort type) {
+    public void removeExtraField( ZipShort type )
+    {
         boolean done = false;
-        for (int i = 0; !done && i < extraFields.size(); i++) {
-            if (((ZipExtraField) extraFields.elementAt(i)).getHeaderId().equals(type)) {
-                extraFields.removeElementAt(i);
+        for ( int i = 0; !done && i < extraFields.size(); i++ )
+        {
+            if ( ( (ZipExtraField) extraFields.elementAt( i ) ).getHeaderId().equals( type ) )
+            {
+                extraFields.removeElementAt( i );
                 done = true;
             }
         }
-        if (!done) {
+        if ( !done )
+        {
             throw new java.util.NoSuchElementException();
         }
         setExtra();
@@ -294,11 +339,16 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public void setExtra(byte[] extra) throws RuntimeException {
-        try {
-            setExtraFields(ExtraFieldUtils.parse(extra));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+    public void setExtra( byte[] extra )
+        throws RuntimeException
+    {
+        try
+        {
+            setExtraFields( ExtraFieldUtils.parse( extra ) );
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( e.getMessage() );
         }
     }
 
@@ -310,8 +360,9 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    protected void setExtra() {
-        super.setExtra(ExtraFieldUtils.mergeLocalFileDataData(getExtraFields()));
+    protected void setExtra()
+    {
+        super.setExtra( ExtraFieldUtils.mergeLocalFileDataData( getExtraFields() ) );
     }
 
     /**
@@ -319,7 +370,8 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public byte[] getLocalFileDataExtra() {
+    public byte[] getLocalFileDataExtra()
+    {
         byte[] extra = getExtra();
         return extra != null ? extra : new byte[0];
     }
@@ -329,8 +381,9 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.1
      */
-    public byte[] getCentralDirectoryExtra() {
-        return ExtraFieldUtils.mergeCentralDirectoryData(getExtraFields());
+    public byte[] getCentralDirectoryExtra()
+    {
+        return ExtraFieldUtils.mergeCentralDirectoryData( getExtraFields() );
     }
 
     /**
@@ -342,17 +395,21 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
 
     /**
      * Make this class work in JDK 1.1 like a 1.2 class.
-     *
+     * <p/>
      * <p>This either stores the size for later usage or invokes
      * setCompressedSize via reflection.</p>
      *
      * @since 1.2
      */
-    public void setComprSize(long size) {
-        if (haveSetCompressedSize()) {
-            performSetCompressedSize(this, size);
-        } else {
-            compressedSize = new Long(size);
+    public void setComprSize( long size )
+    {
+        if ( haveSetCompressedSize() )
+        {
+            performSetCompressedSize( this, size );
+        }
+        else
+        {
+            compressedSize = new Long( size );
         }
     }
 
@@ -361,8 +418,10 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.2
      */
-    public long getCompressedSize() {
-        if (compressedSize != null) {
+    public long getCompressedSize()
+    {
+        if ( compressedSize != null )
+        {
             // has been set explicitly and we are running in a 1.1 VM
             return compressedSize.longValue();
         }
@@ -372,18 +431,21 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
     /**
      * @since 1.9
      */
-    public String getName() {
+    public String getName()
+    {
         return name == null ? super.getName() : name;
     }
 
     /**
      * @since 1.10
      */
-    public boolean isDirectory() {
-        return getName().endsWith("/");
+    public boolean isDirectory()
+    {
+        return getName().endsWith( "/" );
     }
 
-    protected void setName(String name) {
+    protected void setName( String name )
+    {
         this.name = name;
     }
 
@@ -393,12 +455,14 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      * @since 1.2
      */
     private static Method setCompressedSizeMethod = null;
+
     /**
      * Helper for JDK 1.1
      *
      * @since 1.2
      */
-    private static Object lockReflection = new Object();
+    private final static Object lockReflection = new Object();
+
     /**
      * Helper for JDK 1.1
      *
@@ -411,7 +475,8 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.2
      */
-    private static boolean haveSetCompressedSize() {
+    private static boolean haveSetCompressedSize()
+    {
         checkSCS();
         return setCompressedSizeMethod != null;
     }
@@ -421,19 +486,25 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.2
      */
-    private static void performSetCompressedSize(ZipEntry ze, long size) {
-        Long[] s = {new Long(size)};
-        try {
-            setCompressedSizeMethod.invoke(ze, s);
-        } catch (InvocationTargetException ite) {
+    private static void performSetCompressedSize( ZipEntry ze, long size )
+    {
+        Long[] s = {new Long( size )};
+        try
+        {
+            setCompressedSizeMethod.invoke( ze, s );
+        }
+        catch ( InvocationTargetException ite )
+        {
             Throwable nested = ite.getTargetException();
-            throw new RuntimeException("Exception setting the compressed size "
-                                       + "of " + ze + ": "
-                                       + nested.getMessage());
-        } catch (Throwable other) {
-            throw new RuntimeException("Exception setting the compressed size "
-                                       + "of " + ze + ": "
-                                       + other.getMessage());
+            throw new RuntimeException( "Exception setting the compressed size "
+                                        + "of " + ze + ": "
+                                        + nested.getMessage() );
+        }
+        catch ( Throwable other )
+        {
+            throw new RuntimeException( "Exception setting the compressed size "
+                                        + "of " + ze + ": "
+                                        + other.getMessage() );
         }
     }
 
@@ -442,15 +513,22 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
      *
      * @since 1.2
      */
-    private static void checkSCS() {
-        if (!triedToGetMethod) {
-            synchronized (lockReflection) {
+    private static void checkSCS()
+    {
+        if ( !triedToGetMethod )
+        {
+            synchronized ( lockReflection )
+            {
                 triedToGetMethod = true;
-                try {
+                try
+                {
                     setCompressedSizeMethod =
-                        java.util.zip.ZipEntry.class.getMethod("setCompressedSize",
-                                                               new Class[] {Long.TYPE});
-                } catch (NoSuchMethodException nse) {
+                        java.util.zip.ZipEntry.class.getMethod( "setCompressedSize",
+                                                                new Class[]{Long.TYPE} );
+                }
+                catch ( NoSuchMethodException nse )
+                {
+                    // ignored
                 }
             }
         }

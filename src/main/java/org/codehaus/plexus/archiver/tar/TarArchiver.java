@@ -40,7 +40,8 @@ import java.util.zip.GZIPOutputStream;
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
  * @version $Revision$ $Date$
  */
-public class TarArchiver extends AbstractArchiver
+public class TarArchiver
+    extends AbstractArchiver
 {
     /**
      * Indicates whether the user has been warned about long files already.
@@ -63,20 +64,21 @@ public class TarArchiver extends AbstractArchiver
 
     /**
      * Set all tar options
+     *
      * @param options options
      */
     public void setOptions( TarOptions options )
     {
         this.options = options;
-        
+
         // FIXME: do these options have precedence over
         // setDefaultFileMode / setDefaultDirMode
         // or the other way around? Assuming these
         // take precedende since they're more specific.
         // Better refactor this when usage is known.
-        
+
         setDefaultFileMode( options.getMode() );
-        
+
         setDefaultDirectoryMode( options.getMode() );
     }
 
@@ -86,9 +88,9 @@ public class TarArchiver extends AbstractArchiver
      */
     public void setDefaultFileMode( int mode )
     {
-    	super.setDefaultFileMode( mode );
-    	
-    	options.setMode( mode );
+        super.setDefaultFileMode( mode );
+
+        options.setMode( mode );
     }
 
     /**
@@ -97,16 +99,16 @@ public class TarArchiver extends AbstractArchiver
      */
     public void setDefaultDirectoryMode( int mode )
     {
-    	super.setDefaultDirectoryMode( mode );
-    	
-    	options.setDirMode( mode );
+        super.setDefaultDirectoryMode( mode );
+
+        options.setDirMode( mode );
     }
 
-    
+
     /**
      * Set how to handle long files, those with a path&gt;100 chars.
      * Optional, default=warn.
-     * <p>
+     * <p/>
      * Allowable values are
      * <ul>
      * <li>  truncate - paths are truncated to the maximum length
@@ -115,6 +117,7 @@ public class TarArchiver extends AbstractArchiver
      * <li>  gnu - GNU extensions are used for any paths greater than the maximum.
      * <li>  omit - paths greater than the maximum are omitted from the archive
      * </ul>
+     *
      * @param mode the mode to handle long file names.
      */
     public void setLongfile( TarLongFileMode mode )
@@ -130,25 +133,26 @@ public class TarArchiver extends AbstractArchiver
      * <li>  gzip - Gzip compression
      * <li>  bzip2 - Bzip2 compression
      * </ul>
+     *
      * @param mode the compression method.
      */
-    public void setCompression(TarCompressionMethod mode)
+    public void setCompression( TarCompressionMethod mode )
     {
         this.compression = mode;
     }
 
     public void createArchive()
-    	throws ArchiverException, IOException
+        throws ArchiverException, IOException
     {
         Map archiveEntries = getFiles();
-        
+
         if ( archiveEntries == null || archiveEntries.size() == 0 )
         {
             throw new ArchiverException( "You must set at least one file." );
         }
-        
+
         File tarFile = getDestFile();
-        
+
         if ( tarFile == null )
         {
             throw new ArchiverException( "You must set the destination tar file." );
@@ -165,7 +169,7 @@ public class TarArchiver extends AbstractArchiver
         // Check if we don't add tar file in inself
         if ( containsFile( tarFile, archiveEntries.values() ) )
         {
-            throw new ArchiverException( "A tar file cannot include itself.");
+            throw new ArchiverException( "A tar file cannot include itself." );
         }
 
         getLogger().info( "Building tar : " + tarFile.getAbsolutePath() );
@@ -173,7 +177,8 @@ public class TarArchiver extends AbstractArchiver
         TarOutputStream tOut = null;
         try
         {
-            tOut = new TarOutputStream( compression.compress( new BufferedOutputStream( new FileOutputStream(tarFile))));
+            tOut = new TarOutputStream(
+                compression.compress( new BufferedOutputStream( new FileOutputStream( tarFile ) ) ) );
             tOut.setDebug( true );
             if ( longFileMode.isTruncateMode() )
             {
@@ -194,10 +199,10 @@ public class TarArchiver extends AbstractArchiver
             {
                 String fileName = (String) iter.next();
                 String name = StringUtils.replace( fileName, File.separatorChar, '/' );
-                
+
                 ArchiveEntry entry = (ArchiveEntry) archiveEntries.get( fileName );
 
-                tarFile(entry, tOut, name);
+                tarFile( entry, tOut, name );
             }
         }
         catch ( IOException ioe )
@@ -207,14 +212,14 @@ public class TarArchiver extends AbstractArchiver
         }
         finally
         {
-            if (tOut != null)
+            if ( tOut != null )
             {
                 try
                 {
                     // close up
                     tOut.close();
                 }
-                catch( IOException e )
+                catch ( IOException e )
                 {
                     // ignore
                 }
@@ -226,26 +231,28 @@ public class TarArchiver extends AbstractArchiver
     // method in ArchiveEntry.
     private static boolean containsFile( File file, Collection list )
     {
-	    for ( Iterator i = list.iterator(); i.hasNext(); )
-	    {
-	        File fileToAdd = ( (ArchiveEntry) i.next() ).getFile();
-	        
-	        if ( file.equals( fileToAdd ) )
-	        {
-	        	return true;
-	        }
-	    }
-	    return false;
+        for ( Iterator i = list.iterator(); i.hasNext(); )
+        {
+            File fileToAdd = ( (ArchiveEntry) i.next() ).getFile();
+
+            if ( file.equals( fileToAdd ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
-    
+
     /**
      * tar a file
+     *
      * @param entry the file to tar
-     * @param tOut the output stream
+     * @param tOut  the output stream
      * @param vPath the path name of the file to tar
      * @throws IOException on error
      */
-    protected void tarFile( ArchiveEntry entry, TarOutputStream tOut, String vPath ) throws ArchiverException, IOException
+    protected void tarFile( ArchiveEntry entry, TarOutputStream tOut, String vPath )
+        throws ArchiverException, IOException
     {
         FileInputStream fIn = null;
 
@@ -268,7 +275,7 @@ public class TarArchiver extends AbstractArchiver
                 // we would end up adding "" to the archive
                 return;
             }
-            vPath = vPath.substring(1, l);
+            vPath = vPath.substring( 1, l );
         }
 
         try
@@ -283,24 +290,24 @@ public class TarArchiver extends AbstractArchiver
                 else if ( longFileMode.isWarnMode() )
                 {
                     getLogger().warn( "Entry: " + vPath + " longer than "
-                        + TarConstants.NAMELEN + " characters." );
+                                      + TarConstants.NAMELEN + " characters." );
                     if ( !longWarningGiven )
                     {
-                        getLogger().warn("Resulting tar file can only be processed "
-                            + "successfully by GNU compatible tar commands" );
+                        getLogger().warn( "Resulting tar file can only be processed "
+                                          + "successfully by GNU compatible tar commands" );
                         longWarningGiven = true;
                     }
                 }
                 else if ( longFileMode.isFailMode() )
                 {
                     throw new ArchiverException( "Entry: " + vPath + " longer than " + TarConstants.NAMELEN
-                        + "characters." );
+                                                 + "characters." );
                 }
             }
 
             TarEntry te = new TarEntry( vPath );
             te.setModTime( entry.getFile().lastModified() );
-            
+
             if ( !entry.getFile().isDirectory() )
             {
                 te.setSize( entry.getFile().length() );
@@ -328,7 +335,7 @@ public class TarArchiver extends AbstractArchiver
                     tOut.write( buffer, 0, count );
                     count = fIn.read( buffer, 0, buffer.length );
                 }
-                while (count != -1);
+                while ( count != -1 );
             }
 
             tOut.closeEntry();
@@ -344,38 +351,42 @@ public class TarArchiver extends AbstractArchiver
 
     /**
      * Valid Modes for Compression attribute to Tar Task
-     *
      */
     public class TarOptions
     {
-    	/**
-    	 * @deprecated
-    	 */
+        /**
+         * @deprecated
+         */
         private int fileMode = UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
-        
-    	/**
-    	 * @deprecated
-    	 */
+
+        /**
+         * @deprecated
+         */
         private int dirMode = UnixStat.DIR_FLAG | UnixStat.DEFAULT_DIR_PERM;
 
         private String userName = "";
+
         private String groupName = "";
+
         private int uid;
+
         private int gid;
+
         private boolean preserveLeadingSlashes = false;
 
         /**
          * A 3 digit octal string, specify the user, group and
          * other modes in the standard Unix fashion;
          * optional, default=0644
+         *
          * @param octalString a 3 digit octal string.
          * @deprecated use AbstractArchiver.setDefaultFileMode(int)
          */
         public void setMode( String octalString )
         {
-        	setMode( Integer.parseInt( octalString, 8 ) );
+            setMode( Integer.parseInt( octalString, 8 ) );
         }
-        
+
         /**
          * @param mode unix file mode
          * @deprecated use AbstractArchiver.setDefaultFileMode(int)
@@ -400,12 +411,12 @@ public class TarArchiver extends AbstractArchiver
          * optional, default=0755
          *
          * @param octalString a 3 digit octal string.
-         * @since Ant 1.6 
+         * @since Ant 1.6
          * @deprecated use AbstractArchiver.setDefaultDirectoryMode(int)
          */
         public void setDirMode( String octalString )
         {
-            setDirMode( Integer.parseInt(octalString, 8) );
+            setDirMode( Integer.parseInt( octalString, 8 ) );
         }
 
         /**
@@ -430,6 +441,7 @@ public class TarArchiver extends AbstractArchiver
         /**
          * The username for the tar entry
          * This is not the same as the UID.
+         *
          * @param userName the user name for the tar entry.
          */
         public void setUserName( String userName )
@@ -448,6 +460,7 @@ public class TarArchiver extends AbstractArchiver
         /**
          * The uid for the tar entry
          * This is not the same as the User name.
+         *
          * @param uid the id of the user for the tar entry.
          */
         public void setUid( int uid )
@@ -466,6 +479,7 @@ public class TarArchiver extends AbstractArchiver
         /**
          * The groupname for the tar entry; optional, default=""
          * This is not the same as the GID.
+         *
          * @param groupName the group name string.
          */
         public void setGroup( String groupName )
@@ -484,6 +498,7 @@ public class TarArchiver extends AbstractArchiver
         /**
          * The GID for the tar entry; optional, default="0"
          * This is not the same as the group name.
+         *
          * @param gid the group id.
          */
         public void setGid( int gid )
@@ -511,6 +526,7 @@ public class TarArchiver extends AbstractArchiver
          * Flag to indicates whether leading `/'s should
          * be preserved in the file names.
          * Optional, default is <code>false</code>.
+         *
          * @param preserveLeadingSlashes the leading slashes flag.
          */
         public void setPreserveLeadingSlashes( boolean preserveLeadingSlashes )
@@ -521,22 +537,25 @@ public class TarArchiver extends AbstractArchiver
 
     /**
      * Valid Modes for Compression attribute to Tar Task
-     *
      */
-    public static final class TarCompressionMethod extends EnumeratedAttribute
+    public static final class TarCompressionMethod
+        extends EnumeratedAttribute
     {
 
         // permissible values for compression attribute
+
         /**
-         *    No compression
+         * No compression
          */
         private static final String NONE = "none";
+
         /**
-         *    GZIP compression
+         * GZIP compression
          */
         private static final String GZIP = "gzip";
+
         /**
-         *    BZIP2 compression
+         * BZIP2 compression
          */
         private static final String BZIP2 = "bzip2";
 
@@ -558,21 +577,22 @@ public class TarArchiver extends AbstractArchiver
         }
 
         /**
-         *  Get valid enumeration values.
-         *  @return valid enumeration values
+         * Get valid enumeration values.
+         *
+         * @return valid enumeration values
          */
         public String[] getValues()
         {
-            return new String[] { NONE, GZIP, BZIP2 };
+            return new String[]{NONE, GZIP, BZIP2};
         }
 
         /**
-         *  This method wraps the output stream with the
-         *     corresponding compression method
+         * This method wraps the output stream with the
+         * corresponding compression method
          *
-         *  @param ostream output stream
-         *  @return output stream with on-the-fly compression
-         *  @exception IOException thrown if file is not writable
+         * @param ostream output stream
+         * @return output stream with on-the-fly compression
+         * @throws IOException thrown if file is not writable
          */
         private OutputStream compress( final OutputStream ostream )
             throws IOException

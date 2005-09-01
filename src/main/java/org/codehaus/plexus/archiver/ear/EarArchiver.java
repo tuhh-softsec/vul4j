@@ -17,21 +17,23 @@ package org.codehaus.plexus.archiver.ear;
  *
  */
 
-import java.io.File;
-import java.io.IOException;
-
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Creates a EAR archive. Based on WAR task
  */
-public class EarArchiver extends JarArchiver
+public class EarArchiver
+    extends JarArchiver
 {
 
     private File deploymentDescriptor;
+
     private boolean descriptorAdded;
 
     /**
@@ -46,15 +48,15 @@ public class EarArchiver extends JarArchiver
     /**
      * File to incorporate as application.xml.
      */
-    public void setAppxml(File descr)
+    public void setAppxml( File descr )
         throws ArchiverException
     {
         deploymentDescriptor = descr;
-        if (!deploymentDescriptor.exists())
+        if ( !deploymentDescriptor.exists() )
         {
-            throw new ArchiverException("Deployment descriptor: "
-                + deploymentDescriptor
-                + " does not exist.");
+            throw new ArchiverException( "Deployment descriptor: "
+                                         + deploymentDescriptor
+                                         + " does not exist." );
         }
 
         addFile( descr, "META-INF/application.xml" );
@@ -66,7 +68,7 @@ public class EarArchiver extends JarArchiver
     public void addArchive( File fileName )
         throws ArchiverException
     {
-        addDirectory( fileName.getParentFile(), "/", new String[]{ fileName.getName() }, null );
+        addDirectory( fileName.getParentFile(), "/", new String[]{fileName.getName()}, null );
     }
 
     /**
@@ -78,23 +80,22 @@ public class EarArchiver extends JarArchiver
         addDirectory( directoryName, "/", includes, excludes );
     }
 
-    protected void initZipOutputStream(ZipOutputStream zOut)
+    protected void initZipOutputStream( ZipOutputStream zOut )
         throws IOException, ArchiverException
     {
         // If no webxml file is specified, it's an error.
-        if (deploymentDescriptor == null && !isInUpdateMode())
+        if ( deploymentDescriptor == null && !isInUpdateMode() )
         {
-            throw new ArchiverException("appxml attribute is required");
+            throw new ArchiverException( "appxml attribute is required" );
         }
 
-        super.initZipOutputStream(zOut);
+        super.initZipOutputStream( zOut );
     }
 
     /**
      * Overridden from ZipArchiver class to deal with application.xml
      */
-    protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath,
-        int mode )
+    protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath, int mode )
         throws IOException, ArchiverException
     {
         // If the file being added is META-INF/application.xml, we
@@ -102,15 +103,16 @@ public class EarArchiver extends JarArchiver
         // attribute - or if it's being added twice, meaning the same
         // file is specified by the "appxml" attribute and in a
         // <fileset> element.
-        if (vPath.equalsIgnoreCase("META-INF/application.xml"))
+        if ( vPath.equalsIgnoreCase( "META-INF/application.xml" ) )
         {
-            if (deploymentDescriptor == null
-                || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
-                || descriptorAdded) {
-                getLogger().warn("Warning: selected " + archiveType
-                    + " files include a META-INF/application.xml which will"
-                    + " be ignored (please use appxml attribute to "
-                    + archiveType + " task)");
+            if ( deploymentDescriptor == null
+                 || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
+                 || descriptorAdded )
+            {
+                getLogger().warn( "Warning: selected " + archiveType
+                                  + " files include a META-INF/application.xml which will"
+                                  + " be ignored (please use appxml attribute to "
+                                  + archiveType + " task)" );
             }
             else
             {

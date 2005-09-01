@@ -23,59 +23,66 @@ import junit.framework.TestCase;
  * JUnit 3 testcases for org.apache.tools.zip.ZipShort.
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.zip.ZipShortTest v1.8
+ *          from org.apache.ant.tools.zip.ZipShortTest v1.8
  */
-public class ZipShortTest extends TestCase {
+public class ZipShortTest
+    extends TestCase
+{
 
-    public ZipShortTest(String name) {
-        super(name);
+    public ZipShortTest( String name )
+    {
+        super( name );
     }
 
     /**
      * Test conversion to bytes.
      */
-    public void testToBytes() {
-        ZipShort zs = new ZipShort(0x1234);
+    public void testToBytes()
+    {
+        ZipShort zs = new ZipShort( 0x1234 );
         byte[] result = zs.getBytes();
-        assertEquals("length getBytes", 2, result.length);
-        assertEquals("first byte getBytes", 0x34, result[0]);
-        assertEquals("second byte getBytes", 0x12, result[1]);
+        assertEquals( "length getBytes", 2, result.length );
+        assertEquals( "first byte getBytes", 0x34, result[ 0 ] );
+        assertEquals( "second byte getBytes", 0x12, result[ 1 ] );
     }
 
     /**
      * Test conversion from bytes.
      */
-    public void testFromBytes() {
-        byte[] val = new byte[] {0x34, 0x12};
-        ZipShort zs = new ZipShort(val);
-        assertEquals("value from bytes", 0x1234, zs.getValue());
+    public void testFromBytes()
+    {
+        byte[] val = new byte[]{0x34, 0x12};
+        ZipShort zs = new ZipShort( val );
+        assertEquals( "value from bytes", 0x1234, zs.getValue() );
     }
 
     /**
      * Test the contract of the equals method.
      */
-    public void testEquals() {
-        ZipShort zs = new ZipShort(0x1234);
-        ZipShort zs2 = new ZipShort(0x1234);
-        ZipShort zs3 = new ZipShort(0x5678);
+    public void testEquals()
+    {
+        ZipShort zs = new ZipShort( 0x1234 );
+        ZipShort zs2 = new ZipShort( 0x1234 );
+        ZipShort zs3 = new ZipShort( 0x5678 );
 
-        assertTrue("reflexive", zs.equals(zs));
+        assertTrue( "reflexive", zs.equals( zs ) );
 
-        assertTrue("works", zs.equals(zs2));
-        assertTrue("works, part two", !zs.equals(zs3));
+        assertTrue( "works", zs.equals( zs2 ) );
+        assertTrue( "works, part two", !zs.equals( zs3 ) );
 
-        assertTrue("symmetric", zs2.equals(zs));
+        assertTrue( "symmetric", zs2.equals( zs ) );
 
-        assertTrue("null handling", !zs.equals(null));
-        assertTrue("non ZipShort handling", !zs.equals(new Integer(0x1234)));
+        assertNotNull( "null handling", zs );
+        assertTrue( "non ZipShort handling", !zs.equals( new Integer( 0x1234 ) ) );
     }
 
     /**
      * Test sign handling.
      */
-    public void testSign() {
-        ZipShort zs = new ZipShort(new byte[] {(byte)0xFF, (byte)0xFF});
-        assertEquals(0x0000FFFF, zs.getValue());
+    public void testSign()
+    {
+        ZipShort zs = new ZipShort( new byte[]{(byte) 0xFF, (byte) 0xFF} );
+        assertEquals( 0x0000FFFF, zs.getValue() );
     }
 
 }

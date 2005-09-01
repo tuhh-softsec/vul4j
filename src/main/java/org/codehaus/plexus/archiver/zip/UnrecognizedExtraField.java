@@ -20,14 +20,16 @@ package org.codehaus.plexus.archiver.zip;
 /**
  * Simple placeholder for all those extra fields we don't want to deal
  * with.
- *
+ * <p/>
  * <p>Assumes local file data and central directory entries are
  * identical - unless told the opposite.</p>
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.zip.UnrecognizedExtraField v1.8
+ *          from org.apache.ant.tools.zip.UnrecognizedExtraField v1.8
  */
-public class UnrecognizedExtraField implements ZipExtraField {
+public class UnrecognizedExtraField
+    implements ZipExtraField
+{
 
     /**
      * The Header-ID.
@@ -36,11 +38,13 @@ public class UnrecognizedExtraField implements ZipExtraField {
      */
     private ZipShort headerId;
 
-    public void setHeaderId(ZipShort headerId) {
+    public void setHeaderId( ZipShort headerId )
+    {
         this.headerId = headerId;
     }
 
-    public ZipShort getHeaderId() {
+    public ZipShort getHeaderId()
+    {
         return headerId;
     }
 
@@ -52,15 +56,18 @@ public class UnrecognizedExtraField implements ZipExtraField {
      */
     private byte[] localData;
 
-    public void setLocalFileDataData(byte[] data) {
+    public void setLocalFileDataData( byte[] data )
+    {
         localData = data;
     }
 
-    public ZipShort getLocalFileDataLength() {
-        return new ZipShort(localData.length);
+    public ZipShort getLocalFileDataLength()
+    {
+        return new ZipShort( localData.length );
     }
 
-    public byte[] getLocalFileDataData() {
+    public byte[] getLocalFileDataData()
+    {
         return localData;
     }
 
@@ -72,27 +79,33 @@ public class UnrecognizedExtraField implements ZipExtraField {
      */
     private byte[] centralData;
 
-    public void setCentralDirectoryData(byte[] data) {
+    public void setCentralDirectoryData( byte[] data )
+    {
         centralData = data;
     }
 
-    public ZipShort getCentralDirectoryLength() {
-        if (centralData != null) {
-            return new ZipShort(centralData.length);
+    public ZipShort getCentralDirectoryLength()
+    {
+        if ( centralData != null )
+        {
+            return new ZipShort( centralData.length );
         }
         return getLocalFileDataLength();
     }
 
-    public byte[] getCentralDirectoryData() {
-        if (centralData != null) {
+    public byte[] getCentralDirectoryData()
+    {
+        if ( centralData != null )
+        {
             return centralData;
         }
         return getLocalFileDataData();
     }
 
-    public void parseFromLocalFileData(byte[] data, int offset, int length) {
+    public void parseFromLocalFileData( byte[] data, int offset, int length )
+    {
         byte[] tmp = new byte[length];
-        System.arraycopy(data, offset, tmp, 0, length);
-        setLocalFileDataData(tmp);
+        System.arraycopy( data, offset, tmp, 0, length );
+        setLocalFileDataData( tmp );
     }
 }

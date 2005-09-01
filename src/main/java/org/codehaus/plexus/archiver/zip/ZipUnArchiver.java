@@ -21,6 +21,7 @@ package org.codehaus.plexus.archiver.zip;
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
  * @version $Revision$ $Date$
  */
-public class ZipUnArchiver extends AbstractZipUnArchiver
+public class ZipUnArchiver
+    extends AbstractZipUnArchiver
 {
 }

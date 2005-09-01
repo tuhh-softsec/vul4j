@@ -29,14 +29,16 @@ import java.io.IOException;
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
  * @version $Revision$ $Date$
  */
-public class BZip2UnArchiver extends AbstractUnArchiver
+public class BZip2UnArchiver
+    extends AbstractUnArchiver
 {
-    protected void execute() throws ArchiverException, IOException
+    protected void execute()
+        throws ArchiverException, IOException
     {
         if ( getSourceFile().lastModified() > getDestFile().lastModified() )
         {
             getLogger().info( "Expanding " + getSourceFile().getAbsolutePath() + " to "
-                + getDestFile().getAbsolutePath() );
+                              + getDestFile().getAbsolutePath() );
 
             FileOutputStream out = null;
             CBZip2InputStream zIn = null;

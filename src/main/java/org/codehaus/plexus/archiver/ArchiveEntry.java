@@ -31,7 +31,7 @@ public class ArchiveEntry
     public static final int DIRECTORY = 2;
 
     private String name;
-    
+
     private File file;
 
     private int type;
@@ -39,31 +39,29 @@ public class ArchiveEntry
     private int mode;
 
     /**
-     * @param name the filename as it will appear in the archive
+     * @param name     the filename as it will appear in the archive
      * @param original original filename
-     * @param type FILE or DIRECTORY
-     * @param mode octal unix style permissions
+     * @param type     FILE or DIRECTORY
+     * @param mode     octal unix style permissions
      */
     private ArchiveEntry( String name, File original, int type, int mode )
     {
         this.name = name;
         this.file = original;
         this.type = type;
-        this.mode = ( mode & UnixStat.PERM_MASK ) | 
-        	( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
+        this.mode = ( mode & UnixStat.PERM_MASK ) |
+                    ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
     }
 
     /**
-     * 
      * @return the filename of this entry in the archive.
      */
     public String getName()
     {
-    	return name;
+        return name;
     }
-    
+
     /**
-     * 
      * @return The original file that will be stored in the archive.
      */
     public File getFile()
@@ -73,6 +71,7 @@ public class ArchiveEntry
 
     /**
      * TODO: support for SYMLINK?
+     *
      * @return FILE or DIRECTORY
      */
     public int getType()
@@ -89,35 +88,35 @@ public class ArchiveEntry
     }
 
     public static ArchiveEntry createFileEntry( String target, File file, int permissions )
-    	throws ArchiverException
+        throws ArchiverException
     {
-    	if ( ! file.isFile() )
-    	{
-    		throw new ArchiverException( "Not a file: " + file );
-    	}
-    	else
-    	{
-    		return new ArchiveEntry( target, file, FILE, permissions );
-    	}
+        if ( ! file.isFile() )
+        {
+            throw new ArchiverException( "Not a file: " + file );
+        }
+        else
+        {
+            return new ArchiveEntry( target, file, FILE, permissions );
+        }
     }
 
     public static ArchiveEntry createDirectoryEntry( String target, File file, int permissions )
-    	throws ArchiverException
+        throws ArchiverException
     {
-    	if ( ! file.isDirectory() )
-    	{
-    		throw new ArchiverException( "Not a directory: " + file );
-    	}
-    	else
-    	{
-    		return new ArchiveEntry( target, file, DIRECTORY, permissions );
-    	}
+        if ( ! file.isDirectory() )
+        {
+            throw new ArchiverException( "Not a directory: " + file );
+        }
+        else
+        {
+            return new ArchiveEntry( target, file, DIRECTORY, permissions );
+        }
     }
 
     /**
      * Creates the correct ArchiveEntry instance for either a FILE or a
      * DIRECTORY.
-     * 
+     *
      * @param target
      * @param file
      * @param filePerm
@@ -126,19 +125,19 @@ public class ArchiveEntry
      * @throws ArchiverException when file is neither a directory nor a file.
      */
     public static ArchiveEntry createEntry( String target, File file, int filePerm, int dirPerm )
-    	throws ArchiverException
+        throws ArchiverException
     {
         if ( file.isDirectory() )
         {
-        	return createDirectoryEntry( target, file, dirPerm );
+            return createDirectoryEntry( target, file, dirPerm );
         }
         else if ( file.isFile() )
         {
-        	return createFileEntry( target, file, filePerm );
+            return createFileEntry( target, file, filePerm );
         }
         else // FIXME: handle symlinks?
         {
-        	throw new ArchiverException( "Neither a file nor a directory: " + file );
+            throw new ArchiverException( "Neither a file nor a directory: " + file );
         }
     }
 }

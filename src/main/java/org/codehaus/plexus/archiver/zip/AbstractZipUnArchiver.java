@@ -17,23 +17,24 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Enumeration;
-
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.FileUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.Enumeration;
+
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
- * @version $Revision$ $Date$
+ * @version $Id$
  */
-public abstract class AbstractZipUnArchiver extends AbstractUnArchiver
+public abstract class AbstractZipUnArchiver
+    extends AbstractUnArchiver
 {
     private static final String NATIVE_ENCODING = "native-encoding";
 
@@ -41,7 +42,7 @@ public abstract class AbstractZipUnArchiver extends AbstractUnArchiver
 
     /**
      * Sets the encoding to assume for file names and comments.
-     *
+     * <p/>
      * <p>Set to <code>native-encoding</code> if you want your
      * platform's native encoding, defaults to UTF8.</p>
      */
@@ -54,7 +55,8 @@ public abstract class AbstractZipUnArchiver extends AbstractUnArchiver
         this.encoding = encoding;
     }
 
-    protected void execute() throws ArchiverException, IOException
+    protected void execute()
+        throws ArchiverException, IOException
     {
         getLogger().info( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
         ZipFile zf = null;
@@ -65,8 +67,8 @@ public abstract class AbstractZipUnArchiver extends AbstractUnArchiver
             while ( e.hasMoreElements() )
             {
                 ZipEntry ze = (ZipEntry) e.nextElement();
-                extractFile( getSourceFile(), getDestDirectory(), zf.getInputStream(ze),
-                            ze.getName(), new Date( ze.getTime() ), ze.isDirectory() );
+                extractFile( getSourceFile(), getDestDirectory(), zf.getInputStream( ze ),
+                             ze.getName(), new Date( ze.getTime() ), ze.isDirectory() );
             }
 
             getLogger().debug( "expand complete" );
@@ -92,9 +94,9 @@ public abstract class AbstractZipUnArchiver extends AbstractUnArchiver
     }
 
     protected void extractFile( File srcF, File dir,
-                               InputStream compressedInputStream,
-                               String entryName,
-                               Date entryDate, boolean isDirectory )
+                                InputStream compressedInputStream,
+                                String entryName,
+                                Date entryDate, boolean isDirectory )
         throws IOException
     {
 /*        if ( patternsets != null && patternsets.size() > 0 )
@@ -166,7 +168,7 @@ public abstract class AbstractZipUnArchiver extends AbstractUnArchiver
         try
         {
             if ( !isOverwrite() && f.exists()
-                && f.lastModified() >= entryDate.getTime() )
+                 && f.lastModified() >= entryDate.getTime() )
             {
                 getLogger().debug( "Skipping " + f + " as it is up-to-date" );
                 return;
@@ -187,7 +189,7 @@ public abstract class AbstractZipUnArchiver extends AbstractUnArchiver
             else
             {
                 byte[] buffer = new byte[1024];
-                int length = 0;
+                int length;
                 FileOutputStream fos = null;
                 try
                 {

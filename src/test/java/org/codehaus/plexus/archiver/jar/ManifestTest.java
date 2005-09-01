@@ -17,11 +17,11 @@ package org.codehaus.plexus.archiver.jar;
  *
  */
 
+import org.codehaus.plexus.PlexusTestCase;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Enumeration;
-
-import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author Emmanuel Venisse
@@ -48,11 +48,11 @@ public class ManifestTest
         }
         catch ( ManifestException me )
         {
-            if ( me.getMessage().indexOf( "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
+            if ( me.getMessage().indexOf(
+                "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
             {
                 fail( "Manifest isn't well formed. It must generate an exception." );
             }
-            return;
         }
     }
 
@@ -66,11 +66,11 @@ public class ManifestTest
         }
         catch ( ManifestException me )
         {
-            if ( me.getMessage().indexOf( "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
+            if ( me.getMessage().indexOf(
+                "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
             {
                 fail( "Manifest isn't well formed. It must generate an exception." );
             }
-            return;
         }
     }
 
@@ -96,9 +96,9 @@ public class ManifestTest
         }
         catch ( ManifestException me )
         {
-            boolean hasWarning = me.getMessage().indexOf( "Manifest sections should start with a \"Name\" attribute" ) != -1;
+            boolean hasWarning = me.getMessage().indexOf(
+                "Manifest sections should start with a \"Name\" attribute" ) != -1;
             assertEquals( "Expected warning about section not starting with Name: attribute", true, hasWarning );
-            return;
         }
     }
 

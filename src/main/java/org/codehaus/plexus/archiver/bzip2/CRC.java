@@ -28,9 +28,10 @@ package org.codehaus.plexus.archiver.bzip2;
  * of the data.
  *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.bzip2.CRC v1.9
+ *          from org.apache.ant.tools.bzip2.CRC v1.9
  */
-class CRC {
+class CRC
+{
     public static int crc32Table[] = {
         0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9,
         0x130476dc, 0x17c56b6b, 0x1a864db2, 0x1e475005,
@@ -98,32 +99,39 @@ class CRC {
         0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
     };
 
-    public CRC() {
+    public CRC()
+    {
         initialiseCRC();
     }
 
-    void initialiseCRC() {
+    void initialiseCRC()
+    {
         globalCrc = 0xffffffff;
     }
 
-    int getFinalCRC() {
+    int getFinalCRC()
+    {
         return ~globalCrc;
     }
 
-    int getGlobalCRC() {
+    int getGlobalCRC()
+    {
         return globalCrc;
     }
 
-    void setGlobalCRC(int newCrc) {
+    void setGlobalCRC( int newCrc )
+    {
         globalCrc = newCrc;
     }
 
-    void updateCRC(int inCh) {
-        int temp = (globalCrc >> 24) ^ inCh;
-        if (temp < 0) {
+    void updateCRC( int inCh )
+    {
+        int temp = ( globalCrc >> 24 ) ^ inCh;
+        if ( temp < 0 )
+        {
             temp = 256 + temp;
         }
-        globalCrc = (globalCrc << 8) ^ CRC.crc32Table[temp];
+        globalCrc = ( globalCrc << 8 ) ^ CRC.crc32Table[ temp ];
     }
 
     int globalCrc;

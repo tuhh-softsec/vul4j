@@ -22,27 +22,44 @@ import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 
 /**
  * Set of options for long file handling in the task.
- *
  */
-public class TarLongFileMode extends EnumeratedAttribute {
+public class TarLongFileMode
+    extends EnumeratedAttribute
+{
 
-    /** permissible values for longfile attribute */
+    /**
+     * permissible values for longfile attribute
+     */
     public static final String
-        WARN = "warn",
-        FAIL = "fail",
-        TRUNCATE = "truncate",
-        GNU = "gnu",
-        OMIT = "omit";
+        WARN = "warn"
+
+    ,
+
+    FAIL = "fail"
+
+    ,
+
+    TRUNCATE = "truncate"
+
+    ,
+
+    GNU = "gnu"
+
+    ,
+
+    OMIT = "omit";
 
     private final String[] validModes = {WARN, FAIL, TRUNCATE, GNU, OMIT};
 
-    /** Constructor, defaults to "warn" */
+    /**
+     * Constructor, defaults to "warn"
+     */
     public TarLongFileMode()
     {
         super();
         try
         {
-            setValue(WARN);
+            setValue( WARN );
         }
         catch ( ArchiverException ae )
         {
@@ -53,42 +70,48 @@ public class TarLongFileMode extends EnumeratedAttribute {
     /**
      * @return the possible values for this enumerated type.
      */
-    public String[] getValues() {
+    public String[] getValues()
+    {
         return validModes;
     }
 
     /**
      * @return true if value is "truncate".
      */
-    public boolean isTruncateMode() {
-        return TRUNCATE.equalsIgnoreCase(getValue());
+    public boolean isTruncateMode()
+    {
+        return TRUNCATE.equalsIgnoreCase( getValue() );
     }
 
     /**
      * @return true if value is "warn".
      */
-    public boolean isWarnMode() {
-        return WARN.equalsIgnoreCase(getValue());
+    public boolean isWarnMode()
+    {
+        return WARN.equalsIgnoreCase( getValue() );
     }
 
     /**
      * @return true if value is "gnu".
      */
-    public boolean isGnuMode() {
-        return GNU.equalsIgnoreCase(getValue());
+    public boolean isGnuMode()
+    {
+        return GNU.equalsIgnoreCase( getValue() );
     }
 
     /**
      * @return true if value is "fail".
      */
-    public boolean isFailMode() {
-        return FAIL.equalsIgnoreCase(getValue());
+    public boolean isFailMode()
+    {
+        return FAIL.equalsIgnoreCase( getValue() );
     }
 
     /**
      * @return true if value is "omit".
      */
-    public boolean isOmitMode() {
-        return OMIT.equalsIgnoreCase(getValue());
+    public boolean isOmitMode()
+    {
+        return OMIT.equalsIgnoreCase( getValue() );
     }
 }

@@ -17,11 +17,11 @@ package org.codehaus.plexus.archiver.tar;
  *
  */
 
+import junit.framework.TestCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Id$

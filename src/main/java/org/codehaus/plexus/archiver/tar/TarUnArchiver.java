@@ -17,6 +17,11 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.bzip2.CBZip2InputStream;
+import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
+import org.codehaus.plexus.archiver.zip.AbstractZipUnArchiver;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,35 +29,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.bzip2.CBZip2InputStream;
-import org.codehaus.plexus.archiver.zip.AbstractZipUnArchiver;
-import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
-
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
  * @version $Revision$ $Date$
  */
-public class TarUnArchiver extends AbstractZipUnArchiver
+public class TarUnArchiver
+    extends AbstractZipUnArchiver
 {
     /**
-     *   compression method
+     * compression method
      */
     private UntarCompressionMethod compression = new UntarCompressionMethod();
 
     /**
      * Set decompression algorithm to use; default=none.
-     *
+     * <p/>
      * Allowable values are
      * <ul>
-     *   <li>none - no compression
-     *   <li>gzip - Gzip compression
-     *   <li>bzip2 - Bzip2 compression
+     * <li>none - no compression
+     * <li>gzip - Gzip compression
+     * <li>bzip2 - Bzip2 compression
      * </ul>
      *
      * @param method compression method
      */
-    public void setCompression(UntarCompressionMethod method)
+    public void setCompression( UntarCompressionMethod method )
     {
         compression = method;
     }
@@ -60,24 +61,27 @@ public class TarUnArchiver extends AbstractZipUnArchiver
     /**
      * No encoding support in Untar.
      */
-    public void setEncoding(String encoding)
+    public void setEncoding( String encoding )
     {
-        getLogger().warn("The TarUnArchiver doesn't support the encoding attribute");
+        getLogger().warn( "The TarUnArchiver doesn't support the encoding attribute" );
     }
 
-    protected void execute() throws ArchiverException, IOException
+    protected void execute()
+        throws ArchiverException, IOException
     {
         TarInputStream tis = null;
         try
         {
             getLogger().info( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
             tis = new TarInputStream( compression.decompress( getSourceFile(),
-                    new BufferedInputStream( new FileInputStream( getSourceFile() ) ) ) );
-            TarEntry te = null;
+                                                              new BufferedInputStream(
+                                                                  new FileInputStream( getSourceFile() ) ) ) );
+            TarEntry te;
 
             while ( ( te = tis.getNextEntry() ) != null )
             {
-                extractFile( getSourceFile(), getDestDirectory(), tis, te.getName(), te.getModTime(), te.isDirectory());
+                extractFile( getSourceFile(), getDestDirectory(), tis, te.getName(), te.getModTime(),
+                             te.isDirectory() );
             }
             getLogger().debug( "expand complete" );
 
@@ -94,7 +98,7 @@ public class TarUnArchiver extends AbstractZipUnArchiver
                 {
                     tis.close();
                 }
-                catch (IOException e)
+                catch ( IOException e )
                 {
                     // ignore
                 }
@@ -104,29 +108,31 @@ public class TarUnArchiver extends AbstractZipUnArchiver
 
     /**
      * Valid Modes for Compression attribute to Untar Task
-     *
      */
     public static final class UntarCompressionMethod
         extends EnumeratedAttribute
     {
 
         // permissible values for compression attribute
+
         /**
-         *  No compression
+         * No compression
          */
         private static final String NONE = "none";
+
         /**
-         *  GZIP compression
+         * GZIP compression
          */
         private static final String GZIP = "gzip";
+
         /**
-         *  BZIP2 compression
+         * BZIP2 compression
          */
         private static final String BZIP2 = "bzip2";
 
 
         /**
-         *  Constructor
+         * Constructor
          */
         public UntarCompressionMethod()
         {
@@ -142,7 +148,7 @@ public class TarUnArchiver extends AbstractZipUnArchiver
         }
 
         /**
-         *  Constructor
+         * Constructor
          */
         public UntarCompressionMethod( String method )
         {
@@ -164,19 +170,19 @@ public class TarUnArchiver extends AbstractZipUnArchiver
          */
         public String[] getValues()
         {
-            return new String[] { NONE, GZIP, BZIP2 };
+            return new String[]{NONE, GZIP, BZIP2};
         }
 
         /**
-         *  This method wraps the input stream with the
-         *     corresponding decompression method
+         * This method wraps the input stream with the
+         * corresponding decompression method
          *
-         *  @param file provides location information for BuildException
-         *  @param istream input stream
-         *  @return input stream with on-the-fly decompression
-         *  @exception IOException thrown by GZIPInputStream constructor
-         *  @exception BuildException thrown if bzip stream does not
-         *     start with expected magic values
+         * @param file    provides location information for BuildException
+         * @param istream input stream
+         * @return input stream with on-the-fly decompression
+         * @throws IOException    thrown by GZIPInputStream constructor
+         * @throws BuildException thrown if bzip stream does not
+         *                        start with expected magic values
          */
         private InputStream decompress( final File file, final InputStream istream )
             throws IOException, ArchiverException
@@ -190,12 +196,12 @@ public class TarUnArchiver extends AbstractZipUnArchiver
             {
                 if ( BZIP2.equals( value ) )
                 {
-                    final char[] magic = new char[] { 'B', 'Z' };
+                    final char[] magic = new char[]{'B', 'Z'};
                     for ( int i = 0; i < magic.length; i++ )
                     {
-                        if ( istream.read() != magic[i] )
+                        if ( istream.read() != magic[ i ] )
                         {
-                            throw new ArchiverException( "Invalid bz2 file." + file.toString());
+                            throw new ArchiverException( "Invalid bz2 file." + file.toString() );
                         }
                     }
                     return new CBZip2InputStream( istream );

@@ -20,13 +20,16 @@ package org.codehaus.plexus.archiver.jar;
 /**
  * Exception thrown indicating problems in a JAR Manifest
  */
-public class ManifestException extends Exception {
-
+public class ManifestException
+    extends Exception
+{
     /**
      * Constructs an exception with the given descriptive message.
+     *
      * @param msg Description of or information about the exception.
      */
-    public ManifestException(String msg) {
-        super(msg);
+    public ManifestException( String msg )
+    {
+        super( msg );
     }
 }
