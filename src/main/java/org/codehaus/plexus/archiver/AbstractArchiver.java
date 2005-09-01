@@ -77,6 +77,16 @@ public abstract class AbstractArchiver
         return defaultDirectoryMode;
     }
 
+    public boolean getIncludeEmptyDirs()
+    {
+        return includeEmptyDirs;
+    }
+
+    public void setIncludeEmptyDirs( boolean includeEmptyDirs )
+    {
+        this.includeEmptyDirs = includeEmptyDirs;
+    }
+
     public void addDirectory( File directory )
         throws ArchiverException
     {
@@ -250,16 +260,6 @@ public abstract class AbstractArchiver
         }
 
         return logger;
-    }
-
-    public boolean getIncludeEmptyDirs()
-    {
-        return includeEmptyDirs;
-    }
-
-    public void setIncludeEmptyDirs( boolean includeEmptyDirs )
-    {
-        this.includeEmptyDirs = includeEmptyDirs;
     }
 
     public Map getDirs()

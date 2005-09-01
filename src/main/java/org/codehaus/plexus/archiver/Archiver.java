@@ -59,4 +59,8 @@ public interface Archiver
     void setDefaultDirectoryMode( int mode );
 
     int getDefaultDirectoryMode();
+
+    boolean getIncludeEmptyDirs();
+
+    void setIncludeEmptyDirs( boolean includeEmptyDirs );
 }

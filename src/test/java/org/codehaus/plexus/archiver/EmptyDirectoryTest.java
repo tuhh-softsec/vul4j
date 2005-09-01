@@ -25,8 +25,6 @@ package org.codehaus.plexus.archiver;
  */
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 
 import java.io.File;
 
@@ -37,17 +35,41 @@ import java.io.File;
 public class EmptyDirectoryTest
     extends PlexusTestCase
 {
-    public void testEmptyDirectory()
+    public void testZipArchiver()
         throws Exception
     {
-        ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        testEmptyDirectory( "zip" );
+    }
 
-        //Should default to true...
+    public void testJarArchiver()
+        throws Exception
+    {
+        // No JAR UnArchiver implementation :(
+//        testEmptyDirectory( "jar" );
+    }
+
+    public void testTarArchiver()
+        throws Exception
+    {
+        testEmptyDirectory( "tar" );
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private void testEmptyDirectory( String role )
+        throws Exception
+    {
+        Archiver archiver = (Archiver) lookup( Archiver.ROLE, role );
+
+        // Should default to true...
         assertTrue( archiver.getIncludeEmptyDirs() );
 
-        //create an empty directory to store in the zip archive
+        // create an empty directory to store in the zip archive
         File emptyDir = getTestFile( "target/output/emptyTest/TmpEmptyDir" );
-        //delete it if it exists to ensure it is actually empty
+
+        // delete it if it exists to ensure it is actually empty
         if ( emptyDir.exists() )
         {
             emptyDir.delete();
@@ -64,12 +86,12 @@ public class EmptyDirectoryTest
         archiver.setDestFile( archive );
         archiver.createArchive();
 
-        //delete the empty dir, we will extract it from the archive
+        // delete the empty dir, we will extract it from the archive
         emptyDir.delete();
 
-        //Check the content of the archive by extracting it
+        // Check the content of the archive by extracting it
 
-        ZipUnArchiver unArchiver = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
+        UnArchiver unArchiver = (UnArchiver) lookup( UnArchiver.ROLE, role );
         unArchiver.setSourceFile( archive );
 
         unArchiver.setDestDirectory( getTestFile( "target/output/emptyTest" ) );
