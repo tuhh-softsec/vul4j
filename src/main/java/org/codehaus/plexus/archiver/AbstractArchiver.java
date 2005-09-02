@@ -108,51 +108,16 @@ public abstract class AbstractArchiver
     public void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException
     {
-        String[] includesPattern = null;
-        String[] excludesPattern = null;
-
-        if ( includes != null )
-        {
-            includesPattern = new String[includes.length];
-            for ( int i = 0; i < includes.length; i++ )
-            {
-                String pattern;
-                pattern = includes[ i ].replace( '/', File.separatorChar ).replace(
-                    '\\', File.separatorChar );
-                if ( pattern.endsWith( File.separator ) )
-                {
-                    pattern += "**";
-                }
-                includesPattern[ i ] = pattern;
-            }
-        }
-
-        if ( excludes != null )
-        {
-            excludesPattern = new String[excludes.length];
-            for ( int i = 0; i < excludes.length; i++ )
-            {
-                String pattern;
-                pattern = excludes[ i ].replace( '/', File.separatorChar ).replace(
-                    '\\', File.separatorChar );
-                if ( pattern.endsWith( File.separator ) )
-                {
-                    pattern += "**";
-                }
-                excludesPattern[ i ] = pattern;
-            }
-        }
-
         DirectoryScanner scanner = new DirectoryScanner();
 
         if ( includes != null )
         {
-            scanner.setIncludes( includesPattern );
+            scanner.setIncludes( includes );
         }
 
         if ( excludes != null )
         {
-            scanner.setExcludes( excludesPattern );
+            scanner.setExcludes( excludes );
         }
 
         if ( !directory.isDirectory() )
