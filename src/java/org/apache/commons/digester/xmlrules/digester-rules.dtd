@@ -36,7 +36,7 @@
      Java objects. See http://jakarta.apache.org/commons/digester.html.  -->
 
 <!ENTITY % rule-elements "bean-property-setter-rule | call-method-rule |
-                   call-param-rule | object-param-rule |
+                   call-param-rule | object-param-rule | node-create-rule |
                    factory-create-rule | object-create-rule |
                    set-properties-rule | set-nested-properties-rule |
                    set-property-rule | set-top-rule |
@@ -138,6 +138,20 @@
     attrname CDATA #IMPLIED
     type CDATA #REQUIRED
     value CDATA #IMPLIED>
+
+<!--
+    NodeCreateRule
+    attrname  
+           - an arbitrary Object defined programatically, assigned if the 
+             element pattern AND specified attribute name are matched
+    type 
+           - node type: either 'element' or 'fragment' or 'none'.  this is optional, default is 'element'
+    -->
+<!ELEMENT node-create-rule EMPTY>
+<!ATTLIST object-param-rule
+	pattern CDATA #IMPLIED
+	type CDATA #IMPLIED
+>
 
 <!-- 
     FactoryCreateRule 

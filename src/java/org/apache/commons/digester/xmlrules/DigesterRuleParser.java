@@ -38,6 +38,7 @@ import org.apache.commons.digester.CallMethodRule;
 import org.apache.commons.digester.CallParamRule;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.FactoryCreateRule;
+import org.apache.commons.digester.NodeCreateRule;
 import org.apache.commons.digester.ObjectCreateRule;
 import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.RuleSetBase;
@@ -50,6 +51,7 @@ import org.apache.commons.digester.SetRootRule;
 import org.apache.commons.digester.SetTopRule;
 import org.apache.commons.digester.ObjectParamRule;
 
+import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -245,6 +247,10 @@ public class DigesterRuleParser extends RuleSetBase {
         digester.addFactoryCreate("*/object-create-rule", new ObjectCreateRuleFactory());
         digester.addRule("*/object-create-rule", new PatternRule("pattern"));
         digester.addSetNext("*/object-create-rule", "add", ruleClassName);
+        
+        digester.addFactoryCreate("*/node-create-rule", new NodeCreateRuleFactory());
+        digester.addRule("*/node-create-rule", new PatternRule("pattern"));
+        digester.addSetNext("*/node-create-rule", "add", ruleClassName);
         
         digester.addFactoryCreate("*/set-properties-rule", new SetPropertiesRuleFactory());
         digester.addRule("*/set-properties-rule", new PatternRule("pattern"));
@@ -660,7 +666,34 @@ public class DigesterRuleParser extends RuleSetBase {
             return objectParamRule;
         }
      }
+    
+        /**
+         * Factory for creating a NodeCreateRule
+         */
+    protected class NodeCreateRuleFactory extends AbstractObjectCreationFactory {
 
+        public Object createObject(Attributes attributes) throws Exception {
+
+            String nodeType = attributes.getValue("type");
+            if (nodeType == null || "".equals(nodeType)) {
+
+                // uses Node.ELEMENT_NODE
+                return new NodeCreateRule();
+            } else if ("element".equals(nodeType)) {
+
+                return new NodeCreateRule(Node.ELEMENT_NODE);
+            } else if ("fragment".equals(nodeType)) {
+
+                return new NodeCreateRule(Node.DOCUMENT_FRAGMENT_NODE);
+            } else {
+
+                throw new RuntimeException(
+                        "Unrecognized node type: "
+                                + nodeType
+                                + ".  This attribute is optional or can have a value of element|fragment.");
+            }
+        }
+    }    
     
     /**
      * Factory for creating a FactoryCreateRule

@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -31,6 +32,7 @@ import org.apache.commons.digester.Address;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.TestObjectCreationFactory;
 
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
@@ -310,4 +312,30 @@ public class DigesterLoaderTest extends TestCase {
         assertEquals("Incorrect middle value", "short", testObject.getMiddle());
         assertEquals("Incorrect right value", "", testObject.getRight());
     }
+
+    public void testNodeCreateRule() throws Exception {
+        
+        URL rules = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/test-node-create-rules.xml");
+        URL input = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/test-node-create-rules-input.xml");
+        assertNotNull("The test could not locate test-node-create-rules.xml", rules);
+        assertNotNull("The test could not locate test-node-create-rules-input.xml", input);
+        Digester digester = DigesterLoader.createDigester(rules);
+        digester.push(new ArrayList());
+        Object root = digester.parse(input.openStream());
+
+        assertNotNull("root was null", root);        
+        assertTrue("no nodes were captured.", (((List)root).size() > 0));
+        Object[] nodeArray = (Object[])((List)root).toArray();
+        assertNotNull("resulting node array from array list was null", nodeArray);
+        
+        // test foo1 structure        
+        Node foo1 = (Node)nodeArray[0];
+        assertTrue("foo1 didn't have any children", foo1.hasChildNodes());
+        
+        Node foo1Bar1 = foo1.getFirstChild();
+        assertTrue("foo1's child was not named bar1", "bar1".equals(foo1Bar1.getNodeName()));
+        assertTrue("foo1/bar1 value was not bar-1-value", "bar1-value".equals(foo1Bar1.getFirstChild().getNodeValue()));       
+    }    
+    
+        
 }
