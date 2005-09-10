@@ -110,8 +110,18 @@
 
 <!-- 
     CallParamRule 
-    attrname - set param from attribute value (cannot be combined with from-stack)
-    from-stack - set param from stack (cannot be combined with attrname)
+    attrname 
+        - set param from attribute value (cannot be combined with from-stack or
+          stack-index)
+    from-stack 
+        - select an object from the current digester stack to pass as the 
+          parameter value.
+    stack-index 
+        - select an object from the current digester stack to pass as a
+          parameter value. If this is defined then from-stack is implicitly
+          true. If from-stack is defined but this is not defined then this
+          has an implicit value of zero, ie the top object on the stack is
+          passed as the parameter.
     -->
 <!ELEMENT call-param-rule EMPTY>
 <!ATTLIST call-param-rule
@@ -124,12 +134,18 @@
 <!--
     ObjectParamRule
     attrname  
-           - an arbitrary Object defined programatically, assigned if the 
-             element pattern AND specified attribute name are matched
+        - Optional. This attribute is not normally specified. If it is provided,
+          then this rule is executed *only* if the matched element has an attribute
+          with this name.
     type 
-           - class name for object
+        - The type of the object to be passed to the target method.
+          Mandatory.
     value 
-           - initial value for the object
+        - Initial value for the object. The BeanUtils converter module will
+          be used to convert this to the type specified by the type attribute.
+          Optional; if no value is provided then the converter will be invoked
+          to convert NULL to the target type. For most (but not all) converters, 
+          NULL input results in NULL output.
     -->
 <!ELEMENT object-param-rule EMPTY>
 <!ATTLIST object-param-rule
