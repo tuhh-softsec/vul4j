@@ -4,5 +4,4 @@ Specification-Vendor: The Apache Software Foundation
 Specification-Version: 1.7
 Implementation-Title: org.apache.commons.digester
 Implementation-Vendor: The Apache Software Foundation
-Implementation-Version: 1.7
-
+Implementation-Version: 20050911
