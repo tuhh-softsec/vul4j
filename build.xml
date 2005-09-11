@@ -186,6 +186,8 @@
     </copy>
     <copy      file="LICENSE.txt"
               todir="${build.home}/classes/META-INF"/>
+    <copy      file="NOTICE.txt"
+              todir="${build.home}/classes/META-INF"/>
   </target>
 
 
