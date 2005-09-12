@@ -18,23 +18,26 @@ package org.apache.xml.security.utils;
 
 
 
-import javax.xml.transform.TransformerException;
-
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.security.transforms.implementations.FuncHere;
 import org.apache.xml.security.transforms.implementations.FuncHereContext;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xpath.CachedXPathAPI;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.objects.XObject;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ProcessingInstruction;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
+
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  *
@@ -42,6 +45,8 @@ import org.w3c.dom.traversal.NodeIterator;
  */
 public class CachedXPathFuncHereAPI {
 
+    static org.apache.commons.logging.Log log =
+           org.apache.commons.logging.LogFactory.getLog(CachedXPathFuncHereAPI.class.getName());
    /**
     * XPathContext, and thus DTMManager and DTMs, persists through multiple
     *   calls to this object.
@@ -50,12 +55,18 @@ public class CachedXPathFuncHereAPI {
 
    /** Field _dtmManager */
    DTMManager _dtmManager = null;
-   
+
    XPathContext _context = null;
-   
+
    String xpathStr=null;
-   
+
    XPath xpath=null;
+
+   static FunctionTable _funcTable = null;
+
+    static {
+        fixupFunctionTable();
+    }
 
    /**
     * Method getFuncHereContext
@@ -87,7 +98,7 @@ public class CachedXPathFuncHereAPI {
     *
     * @param previouslyUsed
     */
-   public CachedXPathFuncHereAPI(CachedXPathAPI previouslyUsed) {    
+   public CachedXPathFuncHereAPI(CachedXPathAPI previouslyUsed) {
       this._dtmManager = previouslyUsed.getXPathContext().getDTMManager();
       this._context=previouslyUsed.getXPathContext();
    }
@@ -254,7 +265,7 @@ public class CachedXPathFuncHereAPI {
            throws TransformerException {
       //  Create the XPath object.
       //String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
-      
+
       // Since we don't have a XML Parser involved here, install some default support
       // for things like namespaces, etc.
       // (Changed from: XPathContext xpathSupport = new XPathContext();
@@ -281,7 +292,7 @@ public class CachedXPathFuncHereAPI {
             _context.reset();
             _dtmManager=_context.getDTMManager();
         }
-      	xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+        xpath = createXPath(str, prefixResolver);
         xpathStr=str;
       }
 
@@ -326,18 +337,18 @@ public class CachedXPathFuncHereAPI {
       // Create the XPath object.
       //String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
     if (str!=xpathStr) {
-    	if (str.indexOf("here()")>0) {
-    		_context.reset();
-    		_dtmManager=_context.getDTMManager();
-    	}
+        if (str.indexOf("here()")>0) {
+            _context.reset();
+            _dtmManager=_context.getDTMManager();
+        }
         try {
-        	xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+            xpath = createXPath(str, prefixResolver);
         } catch (TransformerException ex) {
             //Try to see if it is a problem with the classloader.
-            Throwable th= ex.getCause();            
+            Throwable th= ex.getCause();
             if (th instanceof ClassNotFoundException) {
                  if (th.getMessage().indexOf("FuncHere")>0) {
-                 	throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0")/*,*/+ex);
+                     throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0")/*,*/+ex);
                  }
               }
               throw ex;
@@ -356,35 +367,91 @@ public class CachedXPathFuncHereAPI {
       return xpath.execute(this._funcHereContext, ctxtNode, prefixResolver);
    }
 
-   /**
-    * Method getStrFromNode
-    *
-    * @param xpathnode
-    * @return the string for the node.
-    */
-   public static String getStrFromNode(Node xpathnode) {
+    private XPath createXPath(String str, PrefixResolver prefixResolver) throws TransformerException {
+        XPath xpath = null;
+        Class[] classes = new Class[]{String.class, SourceLocator.class, PrefixResolver.class, int.class,
+                ErrorListener.class, FunctionTable.class};
+        Object[] objects = new Object[]{str, null, prefixResolver, new Integer(XPath.SELECT), null, _funcTable};
+        try {
+            Constructor constructor = XPath.class.getConstructor(classes);
+            xpath = (XPath) constructor.newInstance(objects);
+        } catch (Throwable t) {
+        }
+        if (xpath == null) {
+            xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+        }
+        return xpath;
+    }
 
-      if (xpathnode.getNodeType() == Node.TEXT_NODE) {
+    /**
+     * Method getStrFromNode
+     *
+     * @param xpathnode
+     * @return the string for the node.
+     */
+    public static String getStrFromNode(Node xpathnode) {
 
-         // we iterate over all siblings of the context node because eventually,
-         // the text is "polluted" with pi's or comments
-         StringBuffer sb = new StringBuffer();
+       if (xpathnode.getNodeType() == Node.TEXT_NODE) {
 
-         for (Node currentSibling = xpathnode.getParentNode().getFirstChild();
-                 currentSibling != null;
-                 currentSibling = currentSibling.getNextSibling()) {
-            if (currentSibling.getNodeType() == Node.TEXT_NODE) {
-               sb.append(((Text) currentSibling).getData());
+          // we iterate over all siblings of the context node because eventually,
+          // the text is "polluted" with pi's or comments
+          StringBuffer sb = new StringBuffer();
+
+          for (Node currentSibling = xpathnode.getParentNode().getFirstChild();
+               currentSibling != null;
+               currentSibling = currentSibling.getNextSibling()) {
+             if (currentSibling.getNodeType() == Node.TEXT_NODE) {
+                sb.append(((Text) currentSibling).getData());
+             }
+          }
+
+          return sb.toString();
+       } else if (xpathnode.getNodeType() == Node.ATTRIBUTE_NODE) {
+          return ((Attr) xpathnode).getNodeValue();
+       } else if (xpathnode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
+          return ((ProcessingInstruction) xpathnode).getNodeValue();
+       }
+
+       return null;
+    }
+
+    private static void fixupFunctionTable() {
+        boolean installed = false;
+        log.info("Registering Here function");
+        /**
+         * Try to register our here() implementation as internal function.
+         */
+        try {
+            Class []args = {String.class, Expression.class};
+            Method installFunction = FunctionTable.class.getMethod("installFunction", args);
+            if ((installFunction.getModifiers() & Modifier.STATIC) != 0) {
+                Object []params = {"here", new FuncHere()};
+                installFunction.invoke(null, params);
+                installed = true;
             }
-         }
-
-         return sb.toString();
-      } else if (xpathnode.getNodeType() == Node.ATTRIBUTE_NODE) {
-         return ((Attr) xpathnode).getNodeValue();
-      } else if (xpathnode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-         return ((ProcessingInstruction) xpathnode).getNodeValue();
-      }
-
-      return null;
-   }
+        } catch (Throwable t) {
+            log.debug("Error installing function using the static installFunction method", t);
+        }
+        if(!installed) {
+            try {
+                _funcTable = new FunctionTable();
+                Class []args = {String.class, Class.class};
+                Method installFunction = FunctionTable.class.getMethod("installFunction", args);
+                Object []params = {"here", FuncHere.class};
+                installFunction.invoke(_funcTable, params);
+                installed = true;
+            } catch (Throwable t) {
+                log.debug("Error installing function using the static installFunction method", t);
+            }
+        }
+        if (log.isDebugEnabled()) {
+            if (installed) {
+                log.debug("Registered class " + FuncHere.class.getName()
+                        + " for XPath function 'here()' function in internal table");
+            } else {
+                log.debug("Unable to register class " + FuncHere.class.getName()
+                        + " for XPath function 'here()' function in internal table");
+            }
+        }
+    }
 }

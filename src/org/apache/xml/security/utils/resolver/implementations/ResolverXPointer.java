@@ -58,11 +58,6 @@ public class ResolverXPointer extends ResourceResolverSpi {
       Node resultNode = null;
       Document doc = uri.getOwnerElement().getOwnerDocument();
 
-      // this must be done so that Xalan can catch ALL namespaces
-      //XMLUtils.circumventBug2650(doc);
-
-      //CachedXPathAPI cXPathAPI = new CachedXPathAPI();
-
       	String uriStr=uri.getNodeValue();
          if (isXPointerSlash(uriStr)) {
             resultNode = doc;
@@ -87,8 +82,6 @@ public class ResolverXPointer extends ResourceResolverSpi {
          }
       
 
-      //Set resultSet = XMLUtils.convertNodelistToSet(resultNode); 
-      //CachedXPathAPIHolder.setDoc(doc);
       XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
       result.setMIMEType("text/xml");

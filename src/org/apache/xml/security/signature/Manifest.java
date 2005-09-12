@@ -73,7 +73,6 @@ public class Manifest extends SignatureElementProxy {
    /** Field _perManifestResolvers */
    List _perManifestResolvers = new ArrayList();
 
-   //CachedXPathAPIHolder cx=new CachedXPathAPIHolder();
    /**
     * Consturts {@link Manifest}
     *

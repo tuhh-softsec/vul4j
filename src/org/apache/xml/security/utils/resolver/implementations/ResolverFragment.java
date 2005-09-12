@@ -93,8 +93,6 @@ public class ResolverFragment extends ResourceResolverSpi {
          	log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
       }
 
-      //Set resultSet = dereferenceSameDocumentURI(selectedElem);
-      //CachedXPathAPIHolder.setDoc(doc);
       XMLSignatureInput result = new XMLSignatureInput(selectedElem);
       result.setExcludeComments(true);
 
