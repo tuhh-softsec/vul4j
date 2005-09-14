@@ -8,12 +8,11 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
-  <version>3-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>RELEASE</version>
         <configuration>
           <excludes>
             <exclude implementation="java.lang.String">org/codehaus/plexus/util/FileBasedTestCase.java</exclude>
