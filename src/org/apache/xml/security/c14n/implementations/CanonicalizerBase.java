@@ -232,11 +232,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     		
     		case Node.ENTITY_NODE :
     		case Node.NOTATION_NODE :
-    		case Node.DOCUMENT_FRAGMENT_NODE :
     		case Node.ATTRIBUTE_NODE :
     			// illegal node type during traversal
     			throw new CanonicalizationException("empty");
-    			
+
+            case Node.DOCUMENT_FRAGMENT_NODE :
     		case Node.DOCUMENT_NODE :
     			ns.outputNodePush();
     			//currentNode = currentNode.getFirstChild();  
@@ -401,11 +401,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		
 		case Node.ENTITY_NODE :
 		case Node.NOTATION_NODE :
-		case Node.DOCUMENT_FRAGMENT_NODE :
 		case Node.ATTRIBUTE_NODE :
 			// illegal node type during traversal
 			throw new CanonicalizationException("empty");
-			
+
+        case Node.DOCUMENT_FRAGMENT_NODE :
 		case Node.DOCUMENT_NODE :
 			ns.outputNodePush();
 			//currentNode = currentNode.getFirstChild();  
