@@ -137,7 +137,7 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
    public PublicKey getPublicKey() throws XMLSecurityException {
 
       
-         Element rsa = XMLUtils.selectDsNode(this._constructionElement,
+         Element rsa = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
          				Constants._TAG_RSAKEYVALUE,0);
          
          if (rsa != null) {
