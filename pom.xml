@@ -1,27 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project>
   <parent>
     <artifactId>plexus-root</artifactId>
     <groupId>plexus</groupId>
     <version>1.0.3</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>plexus-utils</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
   <name>Plexus Common Utilities</name>
-  
+  <version>1.0.2</version>
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        
         <configuration>
           <excludes>
-            <!-- This testcase is abstract... -->
             <exclude implementation="java.lang.String">org/codehaus/plexus/util/FileBasedTestCase.java</exclude>
           </excludes>
         </configuration>
