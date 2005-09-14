@@ -55,10 +55,10 @@ The source distibution does _not_ include
  - the required (binary JAR) libraries.
    The libraries are available under http://xml.apache.org/ .
    It requires
-   - Jakarta ANT (1.5 or above) as build/make tool
-   - Apache Xerces v2.0.0
-     http://xml.apache.org/dist/xerces-j/Xerces-J-bin.2.0.0.zip
-   - Apache Xalan v2.2.0 or above
+   - Jakarta ANT (1.6 or above) as build/make tool
+   - Apache Xerces v2.6.2 or above
+     http://xml.apache.org/dist/xerces-j/
+   - Apache Xalan v2.6 or above
    - Apache Log4J
    - JUnit 3.7 or above
    - A JCE Cryptographic Service Provider.
@@ -92,7 +92,7 @@ make automated downloads or your firewall doesn't permit it, look in the
 
 <property 
      name="jce.download.file" 
-     value="jce-jdk13-124.jar" />
+     value="jce-jdk13-129.jar" />
 <property 
      name="jce.download" 
      value="http://www.bouncycastle.org/download/${jce.download.file}" />
@@ -102,11 +102,11 @@ make automated downloads or your firewall doesn't permit it, look in the
 
 Here you can see that the file 
 
-http://www.bouncycastle.org/download/jce-jdk13-112.jar
+http://www.bouncycastle.org/download/jce-jdk13-129.jar
 
 is downloaded and stored in the location 
 
-libs/bc-jce-jdk13-112.jar
+libs/bc-jce-jdk13-129.jar
 
 If you do this by hand (pointing you favourite web browser and download it 
 yourself), simply put a "bc-" in front of the filename and put it to ./libs/, 
