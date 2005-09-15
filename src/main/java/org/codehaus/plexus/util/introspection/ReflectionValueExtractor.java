@@ -75,9 +75,19 @@ public class ReflectionValueExtractor
 
             classMap = getClassMap( value.getClass() );
 
-            String methodName = "get" + StringUtils.capitalizeFirstLetter( token );
+            String methodBase = StringUtils.capitalizeFirstLetter( token );
+            
+            String methodName = "get" + methodBase;
 
             Method method = classMap.findMethod( methodName, args );
+            
+            if ( method == null )
+            {
+                // perhaps this is a boolean property??
+                methodName = "is" + methodBase;
+                
+                method = classMap.findMethod( methodName, args );
+            }
 
             if ( method == null )
             {
