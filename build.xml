@@ -16,7 +16,7 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="2"/>
-    <property name="product.version.level" value="96"/>
+    <property name="product.version.level" value="97"/>
     <property name="product.Version" 
 			  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product.version" 
@@ -295,7 +295,7 @@
             depends="do.check.libs,do.build.src,env.mk.dirs,do.check.bindist"
 			unless="is.bin.dist"
             if="has.jce.provider" >
-        <javac srcdir="${dir.src}"
+        <javac target="1.1" source="1.2" srcdir="${dir.src}"
                destdir="${dir.build.bin}"
                debug="${build.compile.debug}">
             <classpath refid="id.classpath" />
