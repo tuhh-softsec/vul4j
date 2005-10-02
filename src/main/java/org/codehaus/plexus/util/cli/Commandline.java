@@ -387,7 +387,6 @@ public class Commandline
      * Returns the shell, executable and all defined arguments.
      */
     public String[] getShellCommandline()
-        throws CommandLineException
     {
         int shellCount = 0;
         int arrayPos = 0;
@@ -414,12 +413,6 @@ public class Commandline
             arrayPos++;
         }
         System.arraycopy( args, 0, result, arrayPos, args.length );
-
-        for ( int i = 0; i < result.length; i ++ )
-        {
-            result[i] = quoteArgument( result[i] );
-        }
-
         return result;
     }
 
