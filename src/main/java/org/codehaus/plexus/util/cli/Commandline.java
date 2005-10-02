@@ -387,6 +387,7 @@ public class Commandline
      * Returns the shell, executable and all defined arguments.
      */
     public String[] getShellCommandline()
+        throws CommandLineException
     {
         int shellCount = 0;
         int arrayPos = 0;
