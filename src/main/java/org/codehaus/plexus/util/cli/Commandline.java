@@ -413,6 +413,12 @@ public class Commandline
             arrayPos++;
         }
         System.arraycopy( args, 0, result, arrayPos, args.length );
+
+        for ( int i = 0; i < result.length; i ++ )
+        {
+            result[i] = quoteArgument( result[i] );
+        }
+
         return result;
     }
 
