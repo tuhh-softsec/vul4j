@@ -63,6 +63,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -134,14 +135,7 @@ public class FileUtils
 
     public List getDefaultExcludesAsList()
     {
-        List defaultExcludes = new ArrayList();
-
-        for ( int i = 0; i < DirectoryScanner.DEFAULTEXCLUDES.length; i++ )
-        {
-            defaultExcludes.add( DirectoryScanner.DEFAULTEXCLUDES[i] );
-        }
-
-        return defaultExcludes;
+        return Arrays.asList( getDefaultExcludes() );
     }
 
     /**
