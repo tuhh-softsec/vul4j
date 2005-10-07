@@ -1,11 +1,10 @@
 <project>
   <parent>
-    <artifactId>plexus-root</artifactId>
-    <groupId>plexus</groupId>
-    <version>1.0.3</version>
+    <artifactId>plexus</artifactId>
+    <groupId>org.codehaus.plexus</groupId>
+    <version>1.0.4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>plexus</groupId>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
   <version>1.0.4-SNAPSHOT</version>
