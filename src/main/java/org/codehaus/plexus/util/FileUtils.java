@@ -127,6 +127,23 @@ public class FileUtils
      */
     public static final int ONE_GB = ONE_KB * ONE_MB;
 
+    public String[] getDefaultExcludes()
+    {
+        return DirectoryScanner.DEFAULTEXCLUDES;
+    }
+
+    public List getDefaultExcludesAsList()
+    {
+        List defaultExcludes = new ArrayList();
+
+        for ( int i = 0; i < DirectoryScanner.DEFAULTEXCLUDES.length; i++ )
+        {
+            defaultExcludes.add( DirectoryScanner.DEFAULTEXCLUDES[i] );
+        }
+
+        return defaultExcludes;
+    }
+
     /**
      * Returns a human-readable version of the file size (original is in
      * bytes).

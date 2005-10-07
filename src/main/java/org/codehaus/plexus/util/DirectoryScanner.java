@@ -153,7 +153,7 @@ public class DirectoryScanner
      *
      * @see #addDefaultExcludes()
      */
-    protected static final String[] DEFAULTEXCLUDES = {
+    public static final String[] DEFAULTEXCLUDES = {
         // Miscellaneous typical temporary files
         "**/*~",
         "**/#*#",
