@@ -75,6 +75,20 @@
       <implementation>org.codehaus.plexus.archiver.zip.ZipUnArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>war</role-hint>
+      <!-- there is no implementaion of WarUnArchiver, but ZipUnArchive will do the job -->
+      <implementation>org.codehaus.plexus.archiver.zip.ZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>ear</role-hint>
+      <!-- there is no implementaion of EarUnArchiver, but ZipUnArchive will do the job -->
+      <implementation>org.codehaus.plexus.archiver.zip.ZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
     <!--
      |
      | ArchiverManager
