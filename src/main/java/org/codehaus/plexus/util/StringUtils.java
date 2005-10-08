@@ -2110,7 +2110,7 @@ public class StringUtils
 
     public static String lowercaseFirstLetter( String data )
     {
-        String firstLetter = data.substring( 0, 1 ).toLowerCase();
+        char firstLetter = Character.toLowerCase( data.substring( 0, 1 ).charAt( 0 ) );
 
         String restLetters = data.substring( 1 );
 
