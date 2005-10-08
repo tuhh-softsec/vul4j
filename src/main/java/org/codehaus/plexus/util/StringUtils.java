@@ -2101,7 +2101,7 @@ public class StringUtils
 
     public static String capitalizeFirstLetter( String data )
     {
-        String firstLetter = data.substring( 0, 1 ).toUpperCase();
+        char firstLetter = Character.toTitleCase( data.substring( 0, 1 ).charAt( 0 ) );
 
         String restLetters = data.substring( 1 );
 
