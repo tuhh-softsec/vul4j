@@ -281,6 +281,20 @@ public class FileUtils
     }
 
     /**
+     * Appends data to a file. The file will be created if it does not exist.
+     *
+     * @param fileName The name of the file to write.
+     * @param data The content to write to the file.
+     */
+    public static void fileAppend( String fileName, String data )
+        throws IOException
+    {
+        FileOutputStream out = new FileOutputStream( fileName, true );
+        out.write( data.getBytes() );
+        out.close();
+    }
+
+    /**
      * Writes data to a file. The file will be created if it does not exist.
      *
      * @param fileName The name of the file to write.
@@ -293,7 +307,7 @@ public class FileUtils
         out.write( data.getBytes() );
         out.close();
     }
-
+    
     /**
      * Deletes a file.
      *

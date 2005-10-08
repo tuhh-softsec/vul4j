@@ -518,6 +518,11 @@ public final class FileUtilsTest
             "Second file's contents correct",
             FileUtils.fileRead( filename2 ).equals( file2contents ) );
 
+        FileUtils.fileAppend( filename2, filename );
+        assertTrue(
+            "Second file's contents correct",
+            FileUtils.fileRead( filename2 ).equals( file2contents + file2contents ) );
+
         FileUtils.fileDelete( filename2 );
         assertTrue(
             "Second test file does not exist",
