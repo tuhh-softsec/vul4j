@@ -128,12 +128,12 @@ public class FileUtils
      */
     public static final int ONE_GB = ONE_KB * ONE_MB;
 
-    public String[] getDefaultExcludes()
+    public static String[] getDefaultExcludes()
     {
         return DirectoryScanner.DEFAULTEXCLUDES;
     }
 
-    public List getDefaultExcludesAsList()
+    public static List getDefaultExcludesAsList()
     {
         return Arrays.asList( getDefaultExcludes() );
     }
