@@ -141,65 +141,57 @@ public class DAGTest
 
 
     public void testGetPredessors()
+        throws CycleDetectedException
     {
-        try
-        {
-            final DAG dag = new DAG();
+        final DAG dag = new DAG();
 
-            dag.addEdge( "a", "b" );
+        dag.addEdge( "a", "b" );
 
-            //
-            //  a --> b --> c --> e
-            //        |     |     |
-            //        |     V     V
-            //          --> d <-- f  --> g
-            // result d, g, f, c, b, a
+        //
+        //  a --> b --> c --> e
+        //        |     |     |
+        //        |     V     V
+        //          --> d <-- f  --> g
+        // result d, g, f, c, b, a
 
-            //force order of nodes
+        //force order of nodes
 
-            dag.addVertex( "c" );
+        dag.addVertex( "c" );
 
-            dag.addVertex( "d" );
+        dag.addVertex( "d" );
 
-            dag.addEdge( "a", "b" );
+        dag.addEdge( "a", "b" );
 
-            dag.addEdge( "b", "c" );
+        dag.addEdge( "b", "c" );
 
-            dag.addEdge( "b", "d" );
+        dag.addEdge( "b", "d" );
 
-            dag.addEdge( "c", "d" );
+        dag.addEdge( "c", "d" );
 
-            dag.addEdge( "c", "e" );
+        dag.addEdge( "c", "e" );
 
-            dag.addEdge( "f", "d" );
+        dag.addEdge( "f", "d" );
 
-            dag.addEdge( "e", "f" );
+        dag.addEdge( "e", "f" );
 
-            dag.addEdge( "f", "g" );
+        dag.addEdge( "f", "g" );
 
-            final List actual = dag.getSuccessorLabels( "b" );
+        final List actual = dag.getSuccessorLabels( "b" );
 
-            final List expected = new ArrayList();
+        final List expected = new ArrayList();
 
-            expected.add( "d" );
+        expected.add( "d" );
 
-            expected.add( "g" );
+        expected.add( "g" );
 
-            expected.add( "f" );
+        expected.add( "f" );
 
-            expected.add( "e" );
+        expected.add( "e" );
 
-            expected.add( "c" );
+        expected.add( "c" );
 
-            expected.add( "b" );
+        expected.add( "b" );
 
-            assertEquals( expected, actual );
-        }
-        catch ( CycleDetectedException e )
-        {
-            e.printStackTrace();
-
-            fail( e.getMessage() );
-        }
+        assertEquals( expected, actual );
     }
 }

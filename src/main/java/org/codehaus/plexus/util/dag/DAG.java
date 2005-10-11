@@ -184,7 +184,7 @@ public class DAG implements Cloneable, Serializable
     {
         final Vertex vertex = getVertex( label );
 
-        return vertex.getChildLabels();
+        return vertex.getParentLabels();
     }
 
 
