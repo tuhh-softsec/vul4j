@@ -22,8 +22,8 @@
 <project>
   <pomVersion>3</pomVersion>
 
-  <!-- id is also known as artifactId -->
-  <id>commons-digester</id>
+  <groupId>commons-digester</groupId>
+  <artifactId>commons-digester</artifactId>
   <name>Digester</name>
 
   <currentVersion>1.8-dev</currentVersion>
@@ -236,24 +236,32 @@
 
   <dependencies>
     <dependency> 
-      <id>commons-beanutils</id>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
       <version>1.6</version>
     </dependency>
     <dependency> 
-      <id>commons-logging</id>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
       <version>1.0</version>
     </dependency>
     <dependency> 
-      <id>commons-collections</id> 
+      <groupId>commons-collections</groupId> 
+      <artifactId>commons-collections</artifactId> 
       <version>2.1</version> 
     </dependency> 
     <dependency>
-      <id>xml-apis</id>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
       <version>1.0.b2</version>
     </dependency>
     <dependency>
-      <id>junit</id>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <version>3.8.1</version>
+      <properties>
+        <scope>test</scope>
+      </properties>
     </dependency>
   </dependencies>
 
