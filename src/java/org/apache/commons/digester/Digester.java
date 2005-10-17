@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.MalformedURLException;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1517,21 +1518,7 @@ public class Digester extends DefaultHandler {
         }  
         
         try {
-            // Ideally we would just call
-            //   return (new InputSource(entityURL));
-            // Unforunately it appears that when the entityURL
-            // points to a file within a jar archive a caching mechanism
-            // inside the InputSource implementation causes a file-handle
-            // to the jar file to remain open. On Windows systems this then
-            // causes the jar archive file to be locked on disk ("in use")
-            // which makes it impossible to delete the jar file - and that
-            // really stuffs up "undeploy" in webapps in particular.
-            URLConnection urlConnection = new URL(entityURL).openConnection();
-            urlConnection.setUseCaches(false);
-            InputSource source = new InputSource(urlConnection.getInputStream());
-            source.setSystemId(entityURL);
-            return source;
-
+            return createInputSourceFromURL(entityURL);
         } catch (Exception e) {
             throw createSAXException(e);
         }
@@ -1716,7 +1703,7 @@ public class Digester extends DefaultHandler {
     public Object parse(String uri) throws IOException, SAXException {
 
         configure();
-        InputSource is = new InputSource(uri);
+        InputSource is = createInputSourceFromURL(uri);
         getXMLReader().parse(is);
         return (root);
 
@@ -1753,6 +1740,27 @@ public class Digester extends DefaultHandler {
 
     }
 
+    /**
+     * Given a URL, return an InputSource that reads from that URL.
+     * <p>
+     * Ideally this function would not be needed and code could just use
+     * <code>new InputSource(entityURL)</code>.
+     * Unforunately it appears that when the entityURL points to a file
+     * within a jar archive a caching mechanism inside the InputSource
+     * implementation causes a file-handle to the jar file to remain open.
+     * On Windows systems this then causes the jar archive file to be
+     * locked on disk ("in use") which makes it impossible to delete the
+     * jar file - and that really stuffs up "undeploy" in webapps in 
+     * particular.
+     */
+    private InputSource createInputSourceFromURL(String url)
+    throws MalformedURLException, IOException {
+        URLConnection urlConnection = new URL(url).openConnection();
+        urlConnection.setUseCaches(false);
+        InputSource source = new InputSource(urlConnection.getInputStream());
+        source.setSystemId(url);
+        return source;
+    }
 
     // --------------------------------------------------------- Rule Methods
 
