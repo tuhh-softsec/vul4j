@@ -32,7 +32,74 @@ limitations under the License.
   <changes>
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
-
+    <release version="Java 1.3" date="October 2005">
+    	<action dev="SM" type="fix" fixes-bug="36044" context="java_general">
+	Canonicalizing an empty node-set throws an ArrayIndexOutOfBoundsException. Also added new unit test for generating signatures.
+    	</action>
+    	<action dev="SM" type="fix" context="java_general">
+	Fixed NullPointerException bugs in engineCanonicalize.
+    	</action>
+    	<action dev="SM" type="fix" context="java_general" due-to="Clive Brettingham-Moore">
+	Fix bug when parsing reference lists during decryption; properly handle relative URIs and lists of more than one element.
+    	</action>
+    	<action dev="SM" type="fix" context="java_general">
+	Make XMLCipher.encryptData(Document, Element, boolean) public so it can be used by applications.
+    	</action>
+    	<action dev="SM" type="fix" fixes-bug="35917" context="java_general" due-to="Julien Taupin">
+	Error in CarriedKeyNameDefinition EncryptedKeyImpl.
+    	</action>
+    	<action dev="SM" type="fix" context="java_general">
+	Change logging message in XMLCipher.decryptKey from info to debug level (too noisy for info level).
+    	</action>
+    	<action dev="SM" type="add" context="java_general">
+	Add new msg id named decoding.divisible.four and fix bug in Base64 Transform to throw Base64DecodingExc with this msg id instead of "It should be dived by four".
+    	</action>
+    	<action dev="SM" type="fix" fixes-bug="35580" context="java_general" due-to="Rune Friis-Jensen">
+	Fix file descriptor leak in XMLSignatureInput.
+    	</action>
+    	<action dev="SM" type="fix" context="java_general">
+	Fix NullPointerException in TransformXPathFilter2.engineTransform if XMLSignatureInput is a node-set (instead of an element subtree).
+    	</action>
+    	<action dev="SM" type="fix" context="java_general" due-to="bodiguillaume-dev@yahoo.fr">
+	Fix condition in ElementProxy.guaranteeThatElementInCorrectSpace().
+    	</action>
+    	<action dev="SM" type="fix" context="java_general">
+	Fix NullPointerException in log message emitted by ResolverDirectHTTP.engineCanResolve.
+    	</action>
+    	<action dev="SM" type="fix" context="java_general">
+	Fix NullPointerException bug in ResolverXPointer.engineResolve; check if BaseURI is null before setting source URI.
+    	</action>
+    	    <action dev="RB" type="update" context="java_general"> 
+        Out of the box j2se 1.5 ready(no adding xalan in the classpath or endorsed if no
+	   xpath transformation is needed)
+      </action>
+      <action dev="RB" type="remove" context="java_transformations"> 
+		Removed http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter transformation.
+      </action>
+      <action dev="RB" type="update" context="java_c14n"> 
+      	Performance improvement in C14n, due to changes in internal structure,
+      	and a non recursive algorithm.
+      </action>
+      <action dev="RB" type="update" context="java_c14n"> 
+      	Reduce memory consumption in c14n.
+      </action>
+      <action dev="RB" type="update" context="java_general"> 
+      	General small optimizations(b64 speed-ups, list instead of vector, etc...).
+      </action>
+      <action dev="RB" type="remove" context="java_general"> 
+		Remove of PRNG, HexDump, X509CertificateValidator classes.
+      </action>
+      <action dev="RB" type="fix" fixes-bug="34743" context="java_general" due-to="Lee Coomber">
+      	Fix NPE when an unknown transform algorithm is used.
+      </action>
+      <action dev="RB" type="fix" fixes-bug="33936" context="java_general" due-to="Raymond Wong">
+      	Removed system.err.println to a real log.
+      </action>
+      <action dev="RB" type="fix" fixes-bug="35919" context="java_general" due-to="Luda">
+      	Fix a bug in Xpath and Base64 transform is used together.
+      </action>
+    </release>
+    
     <release version="C++ 1.2.1" date="July 2005">
       <action dev="BL" type="fix" context="c_rel"> 
         Add xklient "No Xalan" builds in VC 6.0 project files
@@ -143,44 +210,7 @@ limitations under the License.
       </action>
     </release>    
 
-    <release version="Java 1.3" date="October 2005">
-    	<action dev="SM" type="fix" fixes-bug="36044" context="java_general">
-	Canonicalizing an empty node-set throws an ArrayIndexOutOfBoundsException. Also added new unit test for generating signatures.
-    	</action>
-    	<action dev="SM" type="fix" context="java_general">
-	Fixed NullPointerException bugs in engineCanonicalize.
-    	</action>
-    	<action dev="SM" type="fix" context="java_general" due-to="Clive Brettingham-Moore">
-	Fix bug when parsing reference lists during decryption; properly handle relative URIs and lists of more than one element.
-    	</action>
-    	<action dev="SM" type="fix" context="java_general">
-	Make XMLCipher.encryptData(Document, Element, boolean) public so it can be used by applications.
-    	</action>
-    	<action dev="SM" type="fix" fixes-bug="35917" context="java_general" due-to="Julien Taupin">
-	Error in CarriedKeyNameDefinition EncryptedKeyImpl.
-    	</action>
-    	<action dev="SM" type="fix" context="java_general">
-	Change logging message in XMLCipher.decryptKey from info to debug level (too noisy for info level).
-    	</action>
-    	<action dev="SM" type="add" context="java_general">
-	Add new msg id named decoding.divisible.four and fix bug in Base64 Transform to throw Base64DecodingExc with this msg id instead of "It should be dived by four".
-    	</action>
-    	<action dev="SM" type="fix" fixes-bug="35580" context="java_general" due-to="Rune Friis-Jensen">
-	Fix file descriptor leak in XMLSignatureInput.
-    	</action>
-    	<action dev="SM" type="fix" context="java_general">
-	Fix NullPointerException in TransformXPathFilter2.engineTransform if XMLSignatureInput is a node-set (instead of an element subtree).
-    	</action>
-    	<action dev="SM" type="fix" context="java_general" due-to="bodiguillaume-dev@yahoo.fr">
-	Fix condition in ElementProxy.guaranteeThatElementInCorrectSpace().
-    	</action>
-    	<action dev="SM" type="fix" context="java_general">
-	Fix NullPointerException in log message emitted by ResolverDirectHTTP.engineCanResolve.
-    	</action>
-    	<action dev="SM" type="fix" context="java_general">
-	Fix NullPointerException bug in ResolverXPointer.engineResolve; check if BaseURI is null before setting source URI.
-    	</action>
-    </release>
+
 
     <release version="Java 1.2.1" date="February 2005">
     	<action dev="RB" type="fix" fixes-bug="32836" context="java_general" due-to="Sylvain Dusart">
