@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1515,7 +1517,21 @@ public class Digester extends DefaultHandler {
         }  
         
         try {
-            return (new InputSource(entityURL));
+            // Ideally we would just call
+            //   return (new InputSource(entityURL));
+            // Unforunately it appears that when the entityURL
+            // points to a file within a jar archive a caching mechanism
+            // inside the InputSource implementation causes a file-handle
+            // to the jar file to remain open. On Windows systems this then
+            // causes the jar archive file to be locked on disk ("in use")
+            // which makes it impossible to delete the jar file - and that
+            // really stuffs up "undeploy" in webapps in particular.
+            URLConnection urlConnection = new URL(entityURL).openConnection();
+            urlConnection.setUseCaches(false);
+            InputSource source = new InputSource(urlConnection.getInputStream());
+            source.setSystemId(entityURL);
+            return source;
+
         } catch (Exception e) {
             throw createSAXException(e);
         }
