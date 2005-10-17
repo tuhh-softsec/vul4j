@@ -26,6 +26,8 @@ New in v1.2.1-99
 	Canonicalization tree travesing is not recursive. it gives better memory handling and performance.
 	Fixed bug 33936, Submited by: Raymond Wong <rwong@ariba.com>
 	Fixed bug 35919, Submited by: Luda <ludab@lanl.gov>
+	out of the box j2se 1.5 ready(no adding xalan in the classpath or endorsed if no
+	   xpath transformation is needed)
 	    
 	
 
