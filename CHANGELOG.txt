@@ -10,7 +10,7 @@ New in v1.2.1-99
 	Removed PRNG,HexDump,Version, X509CertificateValidator
 	Added an unsync buffer outputstream.
 	Changed Symbol table to a more efficient and simple structure
-	Fixed bug 34743 , Submitted by: Lee Coomber <lee@lshift.net>
+	Fixed bug 34743 , Submitted by: Lee Coomber <lee.at.lshift.net>
 	Minor speedups in b64, Halved the table lookups.
 	Reduce Object creation during c14n, from one to level to one per c14n.
 	Change all Vector to List(ArrayList), we don't need synchronization safety.
@@ -24,8 +24,8 @@ New in v1.2.1-99
 	Unified http://www.w3.org/2002/06/xmldsig-filter2 and http://www.w3.org/2002/04/xmldsig-filter2 transformation implementations.
 	Removed http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter transformation
 	Canonicalization tree travesing is not recursive. it gives better memory handling and performance.
-	Fixed bug 33936, Submited by: Raymond Wong <rwong@ariba.com>
-	Fixed bug 35919, Submited by: Luda <ludab@lanl.gov>
+	Fixed bug 33936, Submited by: Raymond Wong <rwong.at.ariba.com>
+	Fixed bug 35919, Submited by: Luda <ludab.at.lanl.gov>
 	out of the box j2se 1.5 ready(no adding xalan in the classpath or endorsed if no
 	   xpath transformation is needed)
 	    
