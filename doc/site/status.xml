@@ -98,6 +98,15 @@ limitations under the License.
       <action dev="RB" type="fix" fixes-bug="35919" context="java_general" due-to="Luda">
       	Fix a bug in Xpath and Base64 transform is used together.
       </action>
+	<action dev="VM" type="fix" fixes-bug="36638" context="java_general">
+	Canonicalization of a DocumentFragment node always throws a c14n exception
+    	</action>
+	<action dev="VM" type="fix" fixes-bug="36639" context="java_general">
+	KeyValue.getPublicKey does not work
+    	</action>
+	<action dev="VM" type="fix" fixes-bug="36640" context="java_general">
+	Signature verification ignores the inclusive namespaces parameter of a excl c14n ds:CanonicalizationMethod
+    	</action>
     </release>
     
     <release version="C++ 1.2.1" date="July 2005">
