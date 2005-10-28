@@ -27,6 +27,10 @@ limitations under the License.
   <body> 
     <section>
       <title>News</title>
+       <p>
+        Version 1.3 released on 28 Octuber 2005. Improves performance and memory usage over 1.2, and 
+        include several bugfixes.
+      </p>
       <p>
         Version 1.2.1 released on 28 February 2005. Is a bugfix version over 1.2 is recomended to 
         upgrade to this version. 

@@ -76,8 +76,7 @@ limitations under the License.
       </p>
       <source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
 	password: anoncvs
-	cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout
-	xml-security
+	cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security
       </source>
 	</section>
   </body>
