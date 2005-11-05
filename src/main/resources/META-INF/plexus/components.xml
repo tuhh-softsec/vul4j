@@ -9,6 +9,12 @@
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
+      <role-hint>dir</role-hint>
+      <implementation>org.codehaus.plexus.archiver.dir.DirectoryArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>ear</role-hint>
       <implementation>org.codehaus.plexus.archiver.ear.EarArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
