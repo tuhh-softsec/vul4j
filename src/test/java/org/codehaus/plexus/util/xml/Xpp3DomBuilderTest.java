@@ -7,6 +7,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 
 /**
  * Test the Xpp3DomBuilder.
@@ -119,6 +120,30 @@ public class Xpp3DomBuilderTest
         }
     }
 
+    public void testEscapingInAttributes()
+        throws IOException, XmlPullParserException
+    {
+        String s = getAttributeEncodedString();
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( s ) );
+
+        assertEquals( "Check attribute value", "<foo>", dom.getChild( "el" ).getAttribute( "att" ) );
+
+        StringWriter w = new StringWriter();
+        Xpp3DomWriter.write( w, dom );
+        String newString = w.toString();
+        assertEquals( "Compare stringified DOMs", newString, s );
+    }
+
+    private static String getAttributeEncodedString()
+    {
+        StringBuffer domString = new StringBuffer();
+        domString.append( "<root>\n" );
+        domString.append( "  <el att=\"&lt;foo&gt;\">bar</el>\n" );
+        domString.append( "</root>" );
+
+        return domString.toString();
+    }
+
     //
     // HELPER METHODS
     //
@@ -134,8 +159,7 @@ public class Xpp3DomBuilderTest
         buf.append( " <el4></el4>\n" );
         buf.append( "</root>\n" );
 
-        String domString = buf.toString();
-        return domString;
+        return buf.toString();
     }
 
     private static Xpp3Dom createExpectedDom()

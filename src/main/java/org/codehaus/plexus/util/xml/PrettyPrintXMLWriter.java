@@ -107,7 +107,7 @@ public class PrettyPrintXMLWriter
         writeText( text, false );
     }
 
-    private void writeText( String text, boolean escapeHtml )
+    private void writeText( String text, boolean escapeXml )
     {
         readyForNewLine = false;
 
@@ -115,16 +115,27 @@ public class PrettyPrintXMLWriter
 
         finishTag();
 
-        if ( escapeHtml )
+        if ( escapeXml )
         {
-            text = text.replaceAll( "&", "&amp;" );
-
-            text = text.replaceAll( "<", "&lt;" );
-
-            text = text.replaceAll( ">", "&gt;" );
+            text = escapeXml( text );
         }
 
         write( text );
+    }
+
+    private static String escapeXml( String text )
+    {
+        text = text.replaceAll( "&", "&amp;" );
+
+        text = text.replaceAll( "<", "&lt;" );
+
+        text = text.replaceAll( ">", "&gt;" );
+
+        text = text.replaceAll( "\"", "&quot;" );
+
+        text = text.replaceAll( "\'", "&apos;" );
+
+        return text;
     }
 
     public void addAttribute( String key, String value )
@@ -135,7 +146,7 @@ public class PrettyPrintXMLWriter
 
         write( "=\"" );
 
-        write( value );
+        write( escapeXml( value ) );
 
         write( "\"" );
     }
