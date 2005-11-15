@@ -50,9 +50,18 @@ public class WarArchiver
     private File deploymentDescriptor;
 
     /**
+     * flag set if finding the webxml is to be expected.
+     */
+    private boolean ignoreWebxml = true;
+
+    /**
      * flag set if the descriptor is added
      */
     private boolean descriptorAdded;
+
+    public void setIgnoreWebxml( boolean ignore ) {
+        ignoreWebxml = ignore;
+    }
 
     public WarArchiver()
     {
@@ -134,11 +143,10 @@ public class WarArchiver
         throws IOException, ArchiverException
     {
         // If no webxml file is specified, it's an error.
-        if ( deploymentDescriptor == null && !isInUpdateMode() )
+        if ( ignoreWebxml && deploymentDescriptor == null && !isInUpdateMode() )
         {
-            throw new ArchiverException( "webxml attribute is required" );
+            throw new ArchiverException( "webxml attribute is required (or pre-existing WEB-INF/web.xml if executing in update mode)" );
         }
-
         super.initZipOutputStream( zOut );
     }
 
@@ -154,14 +162,14 @@ public class WarArchiver
         // by the "webxml" attribute and in a <fileset> element.
         if ( vPath.equalsIgnoreCase( "WEB-INF/web.xml" ) )
         {
-            if ( deploymentDescriptor == null
-                 || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
-                 || descriptorAdded )
+            if ( descriptorAdded || ( ignoreWebxml
+                 && ( deploymentDescriptor == null
+                     || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() ) ) ) ) 
             {
                 getLogger().warn( "Warning: selected " + archiveType
                                   + " files include a WEB-INF/web.xml which will be ignored "
-                                  + "(please use webxml attribute to "
-                                  + archiveType + " task)" );
+                                  + "\n(webxml attribute is missing from "
+                                  + archiveType + " task, or ignoreWebxml attribute is specified as 'true')" );
             }
             else
             {
@@ -182,6 +190,7 @@ public class WarArchiver
     protected void cleanUp()
     {
         descriptorAdded = false;
+        ignoreWebxml = true;
         super.cleanUp();
     }
 }
