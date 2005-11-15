@@ -99,6 +99,7 @@ public class Expand
      * Description of the Method
      */
     protected void expandFile( File srcF, File dir )
+        throws Exception
     {
         ZipInputStream zis = null;
         try
@@ -120,8 +121,7 @@ public class Expand
         }
         catch ( IOException ioe )
         {
-            //throw new BuildException("Error while expanding " + srcF.getPath(),
-            //  ioe);
+            throw new Exception("Error while expanding " + srcF.getPath(), ioe);
         }
         finally
         {
@@ -147,7 +147,7 @@ public class Expand
                                 String entryName,
                                 Date entryDate,
                                 boolean isDirectory )
-        throws IOException
+        throws Exception
     {
         File f = resolveFile( dir, entryName );
         try
@@ -204,6 +204,7 @@ public class Expand
         }
         catch ( FileNotFoundException ex )
         {
+            throw new Exception( "Can't extract file " + srcF.getPath(), ex );
         }
 
     }
