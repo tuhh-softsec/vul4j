@@ -714,7 +714,7 @@ public class Commandline
         String os = System.getProperty( "os.name" ).toLowerCase();
 
         //If this is windows set the shell to command.com or cmd.exe with correct arguments.
-        if ( os.indexOf( "Windows" ) != -1 )
+        if ( os.indexOf( "windows" ) != -1 )
         {
             if (os.indexOf("95") != -1 || os.indexOf("98") != -1 || os.indexOf("Me") != -1)
             {
