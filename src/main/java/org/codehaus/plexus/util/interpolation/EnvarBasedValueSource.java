@@ -1,7 +1,8 @@
 package org.codehaus.plexus.util.interpolation;
 
+import org.codehaus.plexus.util.cli.CommandLineUtils;
+
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Properties;
 
 public class EnvarBasedValueSource
@@ -12,39 +13,18 @@ public class EnvarBasedValueSource
 
     public EnvarBasedValueSource() throws IOException
     {
-        this.envars = getEnvironmentVariables();
+        this.envars = CommandLineUtils.getSystemEnvVars();
     }
 
     public Object getValue( String expression )
     {
-        return envars.getProperty( expression );
-    }
-
-    private Properties getEnvironmentVariables()
-        throws IOException
-    {
-        String osName = System.getProperty( "os.name" );
-
-        String listEnvCommand;
-        if ( osName.startsWith( "Windows" ) )
+        String expr = expression;
+        
+        if ( expr.startsWith( "env." ) )
         {
-            listEnvCommand = "cmd /C SET";
-        }
-        else
-        {
-            listEnvCommand = "/usr/bin/printenv";
-        }
-
-        Properties envProperties = new Properties();
-        envProperties.load( Runtime.getRuntime().exec( listEnvCommand ).getInputStream() );
-
-        Properties mavenEnvProperties = new Properties();
-        for ( Iterator keys = envProperties.keySet().iterator(); keys.hasNext(); )
-        {
-            String key = (String) keys.next();
-            mavenEnvProperties.setProperty( "env." + key, envProperties.getProperty( key ) );
+            expr = expr.substring( "env.".length() );
         }
         
-        return mavenEnvProperties;
+        return envars.getProperty( expr );
     }
 }

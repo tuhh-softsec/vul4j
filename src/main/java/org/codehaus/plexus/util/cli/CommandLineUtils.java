@@ -24,7 +24,11 @@ package org.codehaus.plexus.util.cli;
  * SOFTWARE.
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
@@ -56,7 +60,8 @@ public abstract class CommandLineUtils
         return executeCommandLine( cl, null, systemOut, systemErr );
     }
 
-    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut, StreamConsumer systemErr )
+    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
+                                         StreamConsumer systemErr )
         throws CommandLineException
     {
         if ( cl == null )
@@ -103,7 +108,7 @@ public abstract class CommandLineUtils
                 }
             }
 
-            if ( outputPumper != null)
+            if ( outputPumper != null )
             {
                 synchronized ( outputPumper )
                 {
@@ -142,5 +147,52 @@ public abstract class CommandLineUtils
 
             errorPumper.close();
         }
+    }
+
+    public static Properties getSystemEnvVars() 
+        throws IOException
+    {
+        Process p = null;
+
+        Properties envVars = new Properties();
+
+        Runtime r = Runtime.getRuntime();
+
+        String os = System.getProperty( "os.name" ).toLowerCase();
+
+        //If this is windows set the shell to command.com or cmd.exe with correct arguments.
+        if ( os.indexOf( "windows" ) != -1 )
+        {
+            if ( os.indexOf( "95" ) != -1 || os.indexOf( "98" ) != -1 || os.indexOf( "Me" ) != -1 )
+            {
+                p = r.exec( "command.com /c set" );
+            }
+            else
+            {
+                p = r.exec( "cmd.exe /c set" );
+            }
+        }
+        else
+        {
+            p = r.exec( "env" );
+        }
+
+        BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+
+        String line;
+
+        while ( ( line = br.readLine() ) != null )
+        {
+            int idx = line.indexOf( '=' );
+
+            String key = line.substring( 0, idx );
+
+            String value = line.substring( idx + 1 );
+
+            envVars.setProperty( key, value );
+            // System.out.println( key + " = " + value );
+        }
+
+        return envVars;
     }
 }

@@ -78,9 +78,7 @@ package org.codehaus.plexus.util.cli;
  * ====================================================================
  */
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
@@ -354,7 +352,7 @@ public class Commandline
     public void addSystemEnvironment()
         throws Exception
     {
-        Properties envVars = getSystemEnvVars();
+        Properties envVars = CommandLineUtils.getSystemEnvVars();
 
         for ( Iterator i = envVars.keySet().iterator(); i.hasNext(); )
         {
@@ -705,48 +703,7 @@ public class Commandline
     public Properties getSystemEnvVars()
         throws Exception
     {
-        Process p = null;
-
-        Properties envVars = new Properties();
-
-        Runtime r = Runtime.getRuntime();
-
-        String os = System.getProperty( "os.name" ).toLowerCase();
-
-        //If this is windows set the shell to command.com or cmd.exe with correct arguments.
-        if ( os.indexOf( "windows" ) != -1 )
-        {
-            if (os.indexOf("95") != -1 || os.indexOf("98") != -1 || os.indexOf("Me") != -1)
-            {
-                p = r.exec( "command.com /c set" );
-            }
-            else
-            {
-                p = r.exec( "cmd.exe /c set" );
-            }
-        }
-        else
-        {
-            p = r.exec( "env" );
-        }
-
-        BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
-
-        String line;
-
-        while( ( line = br.readLine() ) != null )
-        {
-            int idx = line.indexOf( '=' );
-
-            String key = line.substring( 0, idx );
-
-            String value = line.substring( idx + 1 );
-
-            envVars.setProperty( key, value );
-            // System.out.println( key + " = " + value );
-        }
-
-        return envVars;
+        return CommandLineUtils.getSystemEnvVars();
     }
 
 }
