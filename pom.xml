@@ -7,14 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
-  <version>1.0.5-SNAPSHOT</version>
-  <dependencies>
-    <dependency>
-      <groupId>classworlds</groupId>
-      <artifactId>classworlds</artifactId>
-      <version>1.1-alpha-2</version>
-    </dependency>
-  </dependencies>
+  <version>1.0.5</version>
   <build>
     <plugins>
       <plugin>
@@ -28,4 +21,11 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>classworlds</groupId>
+      <artifactId>classworlds</artifactId>
+      <version>1.1-alpha-2</version>
+    </dependency>
+  </dependencies>
 </project>
