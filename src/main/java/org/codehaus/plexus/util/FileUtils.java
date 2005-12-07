@@ -266,16 +266,22 @@ public class FileUtils
     {
         StringBuffer buf = new StringBuffer();
 
-        FileInputStream in = new FileInputStream( file );
-
-        int count;
-        byte[] b = new byte[512];
-        while ( ( count = in.read( b ) ) > 0 )  // blocking read
+        FileInputStream in = null;
+        
+        try
         {
-            buf.append( new String( b, 0, count ) );
+            in = new FileInputStream( file );
+            int count;
+            byte[] b = new byte[512];
+            while ( ( count = in.read( b ) ) > 0 )  // blocking read
+            {
+                buf.append( new String( b, 0, count ) );
+            }
         }
-
-        in.close();
+        finally
+        {
+            IOUtil.close( in );
+        }
 
         return buf.toString();
     }
@@ -289,9 +295,16 @@ public class FileUtils
     public static void fileAppend( String fileName, String data )
         throws IOException
     {
-        FileOutputStream out = new FileOutputStream( fileName, true );
-        out.write( data.getBytes() );
-        out.close();
+        FileOutputStream out = null;
+        try
+        {
+            out = new FileOutputStream( fileName, true );
+            out.write( data.getBytes() );
+        }
+        finally
+        {
+            IOUtil.close( out );
+        }
     }
 
     /**
@@ -303,9 +316,16 @@ public class FileUtils
     public static void fileWrite( String fileName, String data )
         throws IOException
     {
-        FileOutputStream out = new FileOutputStream( fileName );
-        out.write( data.getBytes() );
-        out.close();
+        FileOutputStream out = null;
+        try
+        {
+            out = new FileOutputStream( fileName );
+            out.write( data.getBytes() );
+        }
+        finally
+        {
+            IOUtil.close( out );
+        }
     }
     
     /**
@@ -530,8 +550,8 @@ public class FileUtils
         }
         finally
         {
-            input1.close();
-            input2.close();
+            IOUtil.close( input1 );
+            IOUtil.close( input2 );
         }
     }
 
@@ -793,12 +813,19 @@ public class FileUtils
             throw new IOException( message );
         }
 
-        final FileInputStream input = new FileInputStream( source );
-        final FileOutputStream output = new FileOutputStream( destination );
-        IOUtil.copy( input, output );
-
-        input.close();
-        output.close();
+        FileInputStream input = null;
+        FileOutputStream output = null;
+        try
+        {
+            input = new FileInputStream( source );
+            output = new FileOutputStream( destination );
+            IOUtil.copy( input, output );
+        }
+        finally
+        {
+            IOUtil.close( input );
+            IOUtil.close( output );
+        }
 
         if ( source.length() != destination.length() )
         {
@@ -842,12 +869,19 @@ public class FileUtils
             throw new IOException( message );
         }
 
-        final InputStream input = source.openStream();
-        final FileOutputStream output = new FileOutputStream( destination );
-        IOUtil.copy( input, output );
-
-        input.close();
-        output.close();
+        InputStream input = null;
+        FileOutputStream output = null;
+        try
+        {
+            input = source.openStream();
+            output = new FileOutputStream( destination );
+            IOUtil.copy( input, output );
+        }
+        finally
+        {
+            IOUtil.close( input );
+            IOUtil.close( output );
+        }
     }
 
     /**
