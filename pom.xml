@@ -1,10 +1,10 @@
 <project>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
     <version>1.0.4</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
   <version>1.0.6-SNAPSHOT</version>
