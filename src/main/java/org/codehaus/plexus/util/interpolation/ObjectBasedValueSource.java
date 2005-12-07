@@ -18,7 +18,7 @@ public class ObjectBasedValueSource
     {
         try
         {
-            return ReflectionValueExtractor.evaluate( expression, root );
+            return ReflectionValueExtractor.evaluate( expression, root, false );
         }
         catch ( Exception e )
         {

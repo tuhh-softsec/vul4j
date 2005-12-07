@@ -44,16 +44,22 @@ public class ReflectionValueExtractor
     private ReflectionValueExtractor()
     {
     }
-
-    // TODO: don't throw Exception
+    
     public static Object evaluate( String expression, Object root )
         throws Exception
     {
-        // ----------------------------------------------------------------------
-        // Remove the leading "project" token
-        // ----------------------------------------------------------------------
+        return evaluate( expression, root, true );
+    }
 
-        expression = expression.substring( expression.indexOf( '.' ) + 1 );
+    // TODO: don't throw Exception
+    public static Object evaluate( String expression, Object root, boolean trimRootToken )
+        throws Exception
+    {
+        // if the root token refers to the supplied root object parameter, remove it.
+        if ( trimRootToken )
+        {
+            expression = expression.substring( expression.indexOf( '.' ) + 1 );
+        }
 
         Object value = root;
 
