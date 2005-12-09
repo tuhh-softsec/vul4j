@@ -336,14 +336,21 @@ public class Manifest
         public void write( PrintWriter writer )
             throws IOException
         {
+            StringWriter sWriter = new StringWriter();
+            PrintWriter bufferWriter = new PrintWriter( sWriter );
+            
             for ( Enumeration e = getValues(); e.hasMoreElements(); )
             {
-                writeValue( writer, (String) e.nextElement() );
+                writeValue( bufferWriter, (String) e.nextElement() );
             }
+            
+            byte[] convertedToUtf8 = sWriter.toString().getBytes( "UTF-8" );
+            
+            writer.print( new String( convertedToUtf8, "UTF-8" ) );
         }
 
         /**
-         * Write a single attribute value out
+         * Write a single attribute value out.  Should handle multiple lines of attribute value.
          *
          * @param writer the Writer to which the attribute is written
          * @param value  the attribute value
@@ -352,7 +359,33 @@ public class Manifest
         private void writeValue( PrintWriter writer, String value )
             throws IOException
         {
-            String line = name + ": " + value;
+            String nameValue = name + ": " + value;
+            for( int idx = nameValue.indexOf( '\n' ); idx >=0; idx = nameValue.indexOf( '\n' ) )
+            {
+                String line;
+                if ( nameValue.charAt( idx - 1) == '\r' ) 
+                {
+                    line = nameValue.substring( 0, idx -1 );
+                }
+                else
+                {
+                    line = nameValue.substring( 0, idx );
+                }
+                writeLine( writer, line );
+                nameValue = " " + nameValue.substring( idx + 1 );
+            }
+            writeLine( writer, nameValue );
+        }
+
+        /**
+         * Write a single Manifest line. Should handle more than 72 characters of line
+         *
+         * @param writer the Writer to which the attribute is written
+         * @param line   the manifest line to be written
+         */
+        private void writeLine( PrintWriter writer, String line )
+            throws IOException
+        {
             while ( line.getBytes().length > MAX_LINE_LENGTH )
             {
                 // try to find a MAX_LINE_LENGTH byte section
@@ -366,8 +399,7 @@ public class Manifest
                 }
                 if ( breakIndex == 0 )
                 {
-                    throw new IOException( "Unable to write manifest line "
-                                           + name + ": " + value );
+                    throw new IOException( "Unable to write manifest line " + line );
                 }
                 writer.print( section + EOL );
                 line = " " + line.substring( breakIndex );

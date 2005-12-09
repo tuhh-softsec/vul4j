@@ -22,6 +22,8 @@ import org.codehaus.plexus.PlexusTestCase;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 
 /**
  * @author Emmanuel Venisse
@@ -119,6 +121,38 @@ public class ManifestTest
     {
         Manifest mf = Manifest.getDefaultManifest();
         assertNotNull( mf );
+    }
+    
+    public void testAttributeLongLineWrite()
+        throws Exception
+    {
+        StringWriter writer = new StringWriter();
+        Manifest.Attribute attr = new Manifest.Attribute();
+        String longLineOfChars = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 " +
+                                 "123456789 123456789 123456789 ";
+        attr.setName( "test" );
+        attr.setValue( longLineOfChars );
+        attr.write( new PrintWriter( writer ) );
+        writer.flush();
+        assertEquals( "should be multiline", 
+                      "test: 123456789 123456789 123456789 123456789 123456789 123456789 1234" + Manifest.EOL +
+                       " 56789 123456789 123456789 123456789 " + Manifest.EOL,
+                      writer.toString() );
+    }
+    
+    public void testAttributeMultiLineValue()
+        throws Exception
+    {
+        StringWriter writer = new StringWriter();
+        Manifest.Attribute attr = new Manifest.Attribute();
+        String multiLineValue = "123456789" + Manifest.EOL + "123456789";
+        attr.setName( "test" );
+        attr.setValue( multiLineValue );
+        attr.write( new PrintWriter( writer ) );
+        writer.flush();
+        assertEquals( "should be indented multiline", 
+                      "test: 123456789" + Manifest.EOL + " 123456789" + Manifest.EOL,
+                      writer.toString() );
     }
 
     /**
