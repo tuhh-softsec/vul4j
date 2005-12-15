@@ -180,17 +180,28 @@ public abstract class CommandLineUtils
         BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
 
         String line;
+        
+        String lastKey = null;
+        String lastVal = null;
 
         while ( ( line = br.readLine() ) != null )
         {
             int idx = line.indexOf( '=' );
 
-            String key = line.substring( 0, idx );
+            if ( idx > 1 )
+            {
+                lastKey = line.substring( 0, idx );
 
-            String value = line.substring( idx + 1 );
+                lastVal = line.substring( idx + 1 );
 
-            envVars.setProperty( key, value );
-            // System.out.println( key + " = " + value );
+                envVars.setProperty( lastKey, lastVal );
+            }
+            else if ( lastKey != null )
+            {
+                lastVal += "\n" + line;
+                
+                envVars.setProperty( lastKey, lastVal );
+            }
         }
 
         return envVars;
