@@ -52,7 +52,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
       * This Set contains the names (Strings like "xmlns" or "xmlns:foo") of
       * the inclusive namespaces.
       */
-    TreeSet _inclusiveNSSet = null;
+    TreeSet _inclusiveNSSet = new TreeSet();
     static final String XMLNS_URI=Constants.NamespaceSpecNS;
     final SortedSet result = new TreeSet(COMPARE);
 	/**
@@ -208,12 +208,6 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 		
 	}
 	
-    /** @inheritDoc */
-    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet
-            ) throws CanonicalizationException {
-        return engineCanonicalizeXPathNodeSet(xpathNodeSet,"");
-    }
-          	
 	/**
      * @inheritDoc
 	 * @param E
