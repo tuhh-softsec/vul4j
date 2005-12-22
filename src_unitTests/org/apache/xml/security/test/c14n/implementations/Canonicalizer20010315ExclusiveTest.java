@@ -21,6 +21,9 @@ package org.apache.xml.security.test.c14n.implementations;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,11 +38,13 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315Excl;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
@@ -48,6 +53,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
@@ -346,7 +352,56 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       }
       assertTrue(equals);
    }
-   
+
+    /**
+     * Tests node-set as input. See bug 37708. 
+     * Provided by Pete Hendry.
+     */
+    public void testNodeSet() throws Exception {
+
+        final String XML =
+            "<env:Envelope"
+            + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+            + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+            + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+            + "<env:Body wsu:Id=\"body\">"
+            + "<ns0:Ping xsi:type=\"ns0:ping\">"
+            + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+            + "</ns0:Ping>"
+            + "</env:Body>"
+            + "</env:Envelope>";
+
+	final String c14nXML =
+	    "<env:Body"
+	    + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+	    + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+	    + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+	    + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+	    + " wsu:Id=\"body\">"
+	    + "<ns0:Ping xsi:type=\"ns0:ping\">"
+	    + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+	    + "</ns0:Ping>"
+	    + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        XMLUtils.circumventBug2650(doc);
+        Canonicalizer20010315ExclOmitComments c14n = 
+	    new Canonicalizer20010315ExclOmitComments();
+        Set nodeSet = new HashSet();
+        XMLUtils.getSet
+	    (doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
+        XMLSignatureInput input = new XMLSignatureInput(nodeSet);
+        input.setNeedsToBeExpanded(true);
+        byte[] bytes = c14n.engineCanonicalize(input, "env ns0 xsi wsu");
+	boolean equals = java.security.MessageDigest.isEqual(c14nXML.getBytes(), bytes);
+        if (!equals) {
+            log.warn("Error output = " + new String(bytes));
+        }
+        assertTrue(equals);
+    }
+
    private String getAbsolutePath(String path)
    {
    	  String basedir = System.getProperty("basedir");
