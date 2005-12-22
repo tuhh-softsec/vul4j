@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,15 +16,12 @@
  */
 package org.apache.xml.security.utils.resolver;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.w3c.dom.Attr;
-
 
 /**
  * During reference validation, we have to retrieve resources from somewhere.
@@ -106,7 +102,7 @@ public class ResourceResolver {
          
 
          if (log.isDebugEnabled())
-         	log.debug("check resolvability by class " + resolver.getClass().getName());
+         	log.debug("check resolvability by class " + resolver._resolverSpi.getClass().getName());
 
          if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
             return resolver;
@@ -171,39 +167,43 @@ public class ResourceResolver {
       }
    }
 
-   /**
-    * Method register
-    *
-    * @param className
-    */
-   public static void register(String className) {
-	    ResourceResolver resolver = null;
+    /**
+     * Registers a ResourceResolverSpi class. This method logs a warning if
+     * the class cannot be registered.
+     *
+     * @param className the name of the ResourceResolverSpi class to be 
+     *    registered
+     */
+    public static void register(String className) {
+ 	register(className, false);
+    }
 
+    /**
+     * Registers a ResourceResolverSpi class at the beginning of the provider
+     * list. This method logs a warning if the class cannot be registered.
+     *
+     * @param className the name of the ResourceResolverSpi class to be 
+     *    registered
+     */
+    public static void registerAtStart(String className) {
+	register(className, true);
+    }
+
+    private static void register(String className, boolean start) {
         try {
-           resolver = new ResourceResolver(className);
-		   ResourceResolver._resolverVector.add(resolver);
+            ResourceResolver resolver = new ResourceResolver(className);
+	    if (start) {
+	        ResourceResolver._resolverVector.add(0, resolver);
+	        log.debug("registered resolver");
+	    } else {
+	        ResourceResolver._resolverVector.add(resolver);
+	    }
         } catch (Exception e) {
-//			Object exArgs[] = { ((uri != null)
-//                    ? uri.getNodeValue()
-//                    : "null"), BaseURI };
-//
-//			throw new ResourceResolverException("utils.resolver.noClass",
-//                                   exArgs, e, uri, BaseURI);
-			log.warn("Error loading resolver " + className +" disabling it");
+	    log.warn("Error loading resolver " + className +" disabling it");
         } catch (NoClassDefFoundError e) {
-			log.warn("Error loading resolver " + className +" disabling it");
+	    log.warn("Error loading resolver " + className +" disabling it");
         }
-      
-   }
-
-   /**
-    * Method registerAtStart
-    *
-    * @param className
-    */
-   public static void registerAtStart(String className) {
-      ResourceResolver._resolverVector.add(0, className);
-   }
+    }
 
    /**
     * Method resolve
