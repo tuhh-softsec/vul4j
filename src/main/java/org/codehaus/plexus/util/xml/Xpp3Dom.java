@@ -445,7 +445,7 @@ public class Xpp3Dom
     {
         // TODO: WARNING! Later versions of plexus-utils psit out an <?xml ?> header due to thinking this is a new document - not the desired behaviour!
         StringWriter writer = new StringWriter();
-        XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer );
+        XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer, "UTF-8", null );
         Xpp3DomWriter.write( xmlWriter, this );
         return writer.toString();
     }
@@ -454,7 +454,7 @@ public class Xpp3Dom
     {
         // TODO: WARNING! Later versions of plexus-utils psit out an <?xml ?> header due to thinking this is a new document - not the desired behaviour!
         StringWriter writer = new StringWriter();
-        XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer );
+        XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer, "UTF-8", null );
         Xpp3DomWriter.write( xmlWriter, this, false );
         return writer.toString();
     }

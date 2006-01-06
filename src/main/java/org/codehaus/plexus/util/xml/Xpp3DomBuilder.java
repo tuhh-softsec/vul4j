@@ -30,6 +30,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,29 @@ public class Xpp3DomBuilder
         throws XmlPullParserException, IOException
     {
         return build( reader, DEFAULT_TRIM );
+    }
+
+    public static Xpp3Dom build( InputStream is, String encoding )
+        throws XmlPullParserException, IOException
+    {
+        return build( is, encoding, DEFAULT_TRIM );
+    }
+
+    public static Xpp3Dom build( InputStream is, String encoding, boolean trim )
+        throws XmlPullParserException, IOException
+    {
+        XmlPullParser parser = new MXParser();
+
+        parser.setInput( is, encoding );
+
+        try
+        {
+            return build( parser, trim );
+        }
+        finally
+        {
+            IOUtil.close( is );
+        }
     }
 
     public static Xpp3Dom build( Reader reader, boolean trim )
