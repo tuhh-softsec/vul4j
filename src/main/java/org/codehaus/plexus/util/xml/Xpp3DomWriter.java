@@ -11,6 +11,11 @@ public class Xpp3DomWriter
 
     public static void write( XMLWriter xmlWriter, Xpp3Dom dom )
     {
+        write( xmlWriter, dom, true );
+    }
+
+    public static void write( XMLWriter xmlWriter, Xpp3Dom dom, boolean escape )
+    {
         // TODO: move to XMLWriter?
         xmlWriter.startElement( dom.getName() );
         String[] attributeNames = dom.getAttributeNames();
@@ -28,7 +33,14 @@ public class Xpp3DomWriter
         String value = dom.getValue();
         if ( value != null )
         {
-            xmlWriter.writeText( value );
+            if ( escape )
+            {
+                xmlWriter.writeText( value );
+            }
+            else
+            {
+                xmlWriter.writeMarkup( value );
+            }
         }
 
         xmlWriter.endElement();
