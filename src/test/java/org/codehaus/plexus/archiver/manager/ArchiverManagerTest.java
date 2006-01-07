@@ -25,6 +25,10 @@ package org.codehaus.plexus.archiver.manager;
  */
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.UnArchiver;
+
+import java.io.File;
 
 /**
  * @author Dan T. Tran
@@ -36,43 +40,62 @@ public class ArchiverManagerTest
     public void testLookupArchiver()
         throws Exception
     {
-        ArchiverManager manager = (ArchiverManager) lookup( org.codehaus.plexus.archiver.manager.ArchiverManager.ROLE );
-        
-        manager.getArchiver("jar");
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
+
+        Archiver archiver = manager.getArchiver( "jar" );
+        assertNotNull( archiver );
+    }
+
+    public void testReuseArchiver()
+        throws Exception
+    {
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
+
+        Archiver archiver = manager.getArchiver( "jar" );
+        assertNotNull( archiver );
+
+        archiver.addDirectory( new File( getBasedir() ) );
+
+        Archiver newArchiver = manager.getArchiver( "jar" );
+        assertNotNull( newArchiver );
+        assertFalse( newArchiver.equals( archiver ) );
+
+        assertTrue( newArchiver.getFiles().isEmpty() );
     }
 
     public void testLookupUnArchiver()
-      throws Exception
+        throws Exception
     {
-        ArchiverManager manager = (ArchiverManager) lookup( org.codehaus.plexus.archiver.manager.ArchiverManager.ROLE );
-    
-        manager.getUnArchiver("zip");
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
+
+        UnArchiver unarchiver = manager.getUnArchiver( "zip" );
+        assertNotNull( unarchiver );
     }
 
     public void testLookupUnknownArchiver()
-       throws Exception
+        throws Exception
     {
-      ArchiverManager manager = (ArchiverManager) lookup( org.codehaus.plexus.archiver.manager.ArchiverManager.ROLE );
-      try 
-      {
-    	  manager.getArchiver("Unknown");
-    	  fail();
-      }
-      catch ( NoSuchArchiverException e)
-      {
-      }
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
+        try
+        {
+            manager.getArchiver( "Unknown" );
+            fail();
+        }
+        catch ( NoSuchArchiverException e )
+        {
+        }
     }
 
     public void testLookupUnknownUnArchiver()
         throws Exception
     {
-        ArchiverManager manager = (ArchiverManager) lookup( org.codehaus.plexus.archiver.manager.ArchiverManager.ROLE );
-        try 
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
+        try
         {
- 	        manager.getUnArchiver("Unknown");
- 	        fail();
+            manager.getUnArchiver( "Unknown" );
+            fail();
         }
-        catch ( NoSuchArchiverException e)
+        catch ( NoSuchArchiverException e )
         {
         }
     }

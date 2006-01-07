@@ -27,10 +27,12 @@ import org.codehaus.plexus.archiver.UnArchiver;
  */
 public interface ArchiverManager
 {
-	String ROLE = ArchiverManager.class.getName();
+    String ROLE = ArchiverManager.class.getName();
 
-	Archiver getArchiver( String roleHint ) throws NoSuchArchiverException;
+    Archiver getArchiver( String archiverName )
+        throws NoSuchArchiverException;
 
-	UnArchiver getUnArchiver( String roleHint ) throws NoSuchArchiverException;
+    UnArchiver getUnArchiver( String unArchiverName )
+        throws NoSuchArchiverException;
 
 }

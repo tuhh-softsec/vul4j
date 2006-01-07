@@ -103,16 +103,6 @@
     <component>
       <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
       <implementation>org.codehaus.plexus.archiver.manager.DefaultArchiverManager</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.archiver.Archiver</role>
-          <field-name>archivers</field-name>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.plexus.archiver.UnArchiver</role>
-          <field-name>unArchivers</field-name>
-        </requirement>
-      </requirements>
     </component>
   </components>
 </component-set>

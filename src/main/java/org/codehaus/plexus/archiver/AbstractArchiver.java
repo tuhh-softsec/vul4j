@@ -135,12 +135,11 @@ public abstract class AbstractArchiver
 
             for ( int i = 0; i < dirs.length; i++ )
             {
-                String sourceDir = dirs[ i ].replace( '\\', '/' );
+                String sourceDir = dirs[i].replace( '\\', '/' );
 
                 String targetDir = ( prefix == null ? "" : prefix ) + sourceDir;
 
-                getDirs().put( targetDir, ArchiveEntry.createEntry( targetDir,
-                                                                    new File( basedir, sourceDir ),
+                getDirs().put( targetDir, ArchiveEntry.createEntry( targetDir, new File( basedir, sourceDir ),
                                                                     getDefaultFileMode(), getDefaultDirectoryMode() ) );
             }
         }
@@ -149,13 +148,12 @@ public abstract class AbstractArchiver
 
         for ( int i = 0; i < files.length; i++ )
         {
-            String sourceFile = files[ i ].replace( '\\', '/' );
+            String sourceFile = files[i].replace( '\\', '/' );
 
             String targetFile = ( prefix == null ? "" : prefix ) + sourceFile;
 
-            filesMap.put( targetFile, ArchiveEntry.createEntry( targetFile,
-                                                                new File( basedir, sourceFile ), getDefaultFileMode(),
-                                                                getDefaultDirectoryMode() ) );
+            filesMap.put( targetFile, ArchiveEntry.createEntry( targetFile, new File( basedir, sourceFile ),
+                                                                getDefaultFileMode(), getDefaultDirectoryMode() ) );
         }
 
     }
@@ -175,15 +173,14 @@ public abstract class AbstractArchiver
         }
 
         destFileName = destFileName.replace( '\\', '/' );
-        filesMap.put( destFileName, ArchiveEntry.createFileEntry(
-            destFileName, inputFile, permissions ) );
+        filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
     }
 
     // TODO: convert this to Collection?
     // Only con is that some archivers change the filename
     // to contain just forward slashes; they could update
     // the Name of the ArchiveEntry..?
-    protected Map getFiles()
+    public Map getFiles()
     {
         if ( !includeEmptyDirs )
         {

@@ -18,12 +18,14 @@ package org.codehaus.plexus.archiver.manager;
  */
 
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
  * @author dantran
@@ -31,35 +33,29 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
  */
 
 public class DefaultArchiverManager
-   implements ArchiverManager, Initializable
+    implements ArchiverManager, Contextualizable
 {
-	private Map archivers;
+    private PlexusContainer container;
 
-	private Map unArchivers;
-
-	// ----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // Component Lifecycle
     // ----------------------------------------------------------------------
 
-    public void initialize()
+    public void contextualize( Context context )
+        throws ContextException
     {
-        if ( archivers == null )
-        {
-        	archivers = new HashMap();
-        }
-
-        if ( unArchivers == null )
-        {
-        	unArchivers = new HashMap();
-        }
+        container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
     public Archiver getArchiver( String archiverName )
         throws NoSuchArchiverException
     {
-    	Archiver archiver = (Archiver) archivers.get( archiverName );
-
-        if ( archiver == null )
+        Archiver archiver;
+        try
+        {
+            archiver = (Archiver) container.lookup( Archiver.ROLE, archiverName );
+        }
+        catch ( ComponentLookupException e )
         {
             throw new NoSuchArchiverException( archiverName );
         }
@@ -67,16 +63,19 @@ public class DefaultArchiverManager
         return archiver;
     }
 
-    public UnArchiver getUnArchiver( String archiverName )
+    public UnArchiver getUnArchiver( String unArchiverName )
         throws NoSuchArchiverException
     {
-	    UnArchiver unarchiver = (UnArchiver) unArchivers.get( archiverName );
-
-        if ( unarchiver == null )
+        UnArchiver archiver;
+        try
         {
-           throw new NoSuchArchiverException( archiverName );
+            archiver = (UnArchiver) container.lookup( UnArchiver.ROLE, unArchiverName );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new NoSuchArchiverException( unArchiverName );
         }
 
-        return unarchiver;
+        return archiver;
     }
 }

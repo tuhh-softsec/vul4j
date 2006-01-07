@@ -19,6 +19,7 @@ package org.codehaus.plexus.archiver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
@@ -63,4 +64,6 @@ public interface Archiver
     boolean getIncludeEmptyDirs();
 
     void setIncludeEmptyDirs( boolean includeEmptyDirs );
+
+    Map getFiles();
 }
