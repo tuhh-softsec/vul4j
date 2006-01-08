@@ -83,16 +83,16 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
             
       for (int i = 0; i < attrsLength; i++) {
          Attr N = (Attr) attrs.item(i);
-         String NName=N.getLocalName();
-         String NValue=N.getValue();
          String NUri =N.getNamespaceURI();
 
-         if (!XMLNS_URI.equals(NUri)) {
+         if (XMLNS_URI!=NUri) {
          	//It's not a namespace attr node. Add to the result and continue.
             result.add(N);
             continue;
          }
-         
+
+         String NName=N.getLocalName();
+         String NValue=N.getValue();        
          if (XML.equals(NName)
                  && XML_LANG_URI.equals(NValue)) {
          	//The default mapping for xml must not be output.
@@ -135,7 +135,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
          Map loa = new HashMap();
 
          if ((parent != null) && (parent.getNodeType() == Node.ELEMENT_NODE)) {
-
             // parent element is not in node set
             for (Node ancestor = parent;
                     (ancestor != null)
@@ -147,25 +146,15 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                }
                // for all ancestor elements
                NamedNodeMap ancestorAttrs = el.getAttributes();
-
-               for (int i = 0; i < ancestorAttrs.getLength(); i++) {
+               int length=ancestorAttrs.getLength();
+               for (int i = 0; i <  length; i++) {
                   // for all attributes in the ancestor element
-                  Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);
-
-                  if (XML_LANG_URI.equals(
-                          currentAncestorAttr.getNamespaceURI())) {
-
-                     // do we have an xml:* ?
-                     if (!E.hasAttributeNS(
-                             XML_LANG_URI,
-                             currentAncestorAttr.getLocalName())) {
-
-                        // the xml:* attr is not in E
-                        if (!loa.containsKey(currentAncestorAttr.getName())) {
-                           loa.put(currentAncestorAttr.getName(),
-                                   currentAncestorAttr);
-                        }
-                     }
+                  Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);				  
+                  if (XML_LANG_URI==currentAncestorAttr.getNamespaceURI()) {
+                	  String name=currentAncestorAttr.getName();                  
+                      if (!loa.containsKey(name) ) {
+                           loa.put(name, currentAncestorAttr);                                             
+                      }
                   }
                }
             }
@@ -204,11 +193,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
             
     for (int i = 0; i < attrsLength; i++) {
        Attr N = (Attr) attrs.item(i);
-       String NName=N.getLocalName();
-       String NValue=N.getValue();
        String NUri =N.getNamespaceURI();
        
-       if (!XMLNS_URI.equals(NUri)) {
+       if (XMLNS_URI!=NUri) {
        	  //A non namespace definition node.
        	  if (isRealVisible){
        		//The node is visible add the attribute to the list of output attributes.
@@ -218,7 +205,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
           continue;
        }
 
-              
+       String NName=N.getLocalName();
+       String NValue=N.getValue();              
        if ("xml".equals(NName)
                && XML_LANG_URI.equals(NValue)) {
           /* except omit namespace node with local name xml, which defines
@@ -301,27 +289,16 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                 }
                // for all ancestor elements
                NamedNodeMap ancestorAttrs =el.getAttributes();
-
-               for (int i = 0; i < ancestorAttrs.getLength(); i++) {
-
+               int length=ancestorAttrs.getLength();
+               for (int i = 0; i < length; i++) {
                   // for all attributes in the ancestor element
                   Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);
-
-                  if (XML_LANG_URI.equals(
-                          currentAncestorAttr.getNamespaceURI())) {
-
-                     // do we have an xml:* ?
-                     if (!E.hasAttributeNS(
-                             XML_LANG_URI,
-                             currentAncestorAttr.getLocalName())) {
-
-                        // the xml:* attr is not in E
-                        if (!loa.containsKey(currentAncestorAttr.getName())) {
-                           loa.put(currentAncestorAttr.getName(),
-                                   currentAncestorAttr);
-                        }
-                     }
-                  }
+                  if (XML_LANG_URI==currentAncestorAttr.getNamespaceURI()) {
+                	  String name=currentAncestorAttr.getName();                  
+                      if (!loa.containsKey(name) ) {
+                           loa.put(name, currentAncestorAttr);                                             
+                      }
+                  }                  
                }
             }
          }
