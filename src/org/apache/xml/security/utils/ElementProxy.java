@@ -113,9 +113,36 @@ public abstract class ElementProxy {
 
       this._doc = doc;
       this._state = ElementProxy.MODE_CREATE;
-      this._constructionElement = ElementProxy.createElementForFamily(this._doc,
+      this._constructionElement = createElementForFamilyLocal(this._doc,
               this.getBaseNamespace(), this.getBaseLocalName());      
    }
+   String tagName=null;
+   String prefix=ElementProxy.getDefaultPrefix(this.getBaseNamespace());
+   String defaultPrefixNaming=ElementProxy.getDefaultPrefixBindings(this.getBaseNamespace());
+   private Element createElementForFamilyLocal(Document doc, String namespace,
+           String localName) {
+	   	Element result = null;
+	      if (namespace == null) {
+	         result = doc.createElementNS(null, localName);
+	      } else {
+	         if ((prefix == null) || (prefix.length() == 0)) {
+	            result = doc.createElementNS(namespace, localName);
+
+	            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
+	                                  namespace);
+	         } else {
+	        	 if (tagName==null) {
+	        		 tagName=prefix + ":" + localName;
+	        	 }
+	            result = doc.createElementNS(namespace, tagName );
+
+	            result.setAttributeNS(Constants.NamespaceSpecNS,  defaultPrefixNaming,
+	                                  namespace);
+	         }
+	      }	      
+	      return result;
+}
+
 
    /**
     * This method creates an Element in a given namespace with a given localname.
@@ -146,7 +173,7 @@ public abstract class ElementProxy {
          } else {
             result = doc.createElementNS(namespace, prefix + ":" + localName);
 
-            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix,
+            result.setAttributeNS(Constants.NamespaceSpecNS,  ElementProxy.getDefaultPrefixBindings(namespace),
                                   namespace);
          }
       }
@@ -166,8 +193,6 @@ public abstract class ElementProxy {
 
       if (element == null) {
          throw new XMLSecurityException("ElementProxy.nullElement");
-      }
-      if (log.isDebugEnabled()) {
       }
       
       if (log.isDebugEnabled()) {
@@ -265,8 +290,8 @@ public abstract class ElementProxy {
       
       String localnameIS = this._constructionElement.getLocalName();
       String namespaceIS = this._constructionElement.getNamespaceURI();
-      if ( !localnameSHOULDBE.equals(localnameIS) ||
-        !namespaceSHOULDBE.equals(namespaceIS)) {      
+      if ((namespaceSHOULDBE!=namespaceIS) ||
+       !localnameSHOULDBE.equals(localnameIS) ) {      
          Object exArgs[] = { namespaceIS +":"+ localnameIS, 
            namespaceSHOULDBE +":"+ localnameSHOULDBE};
          throw new XMLSecurityException("xml.WrongElement", exArgs);
@@ -371,7 +396,7 @@ public abstract class ElementProxy {
 
    /**
     * Method getBytesFromChildElement
-    *
+    * @deprecated
     * @param localname
     * @param namespace
     * @return the bytes
@@ -447,7 +472,7 @@ public abstract class ElementProxy {
    	    while (sibling!=null) {        
    	    	if (localname.equals(sibling.getLocalName())
    	    			&&  
-					namespace.equals(sibling.getNamespaceURI())) {            
+					namespace!=sibling.getNamespaceURI() ) {            
    	    		number++;
    	    	}
    	    	sibling=sibling.getNextSibling();
@@ -505,6 +530,7 @@ public abstract class ElementProxy {
 
    /** Field _prefixMappings */
    static HashMap _prefixMappings = new HashMap();
+   static HashMap _prefixMappingsBindings = new HashMap();
 
    /**
     * Method setDefaultPrefix
@@ -525,7 +551,8 @@ public abstract class ElementProxy {
          	throw new XMLSecurityException("prefix.AlreadyAssigned", exArgs);
          }
     }
-      ElementProxy._prefixMappings.put(namespace, prefix);
+      ElementProxy._prefixMappings.put(namespace, prefix.intern());
+      ElementProxy._prefixMappingsBindings.put(namespace, ("xmlns:"+prefix).intern());
    }
 
    /**
@@ -540,4 +567,10 @@ public abstract class ElementProxy {
 
       return prefix;
    }
+   public static  String getDefaultPrefixBindings(String namespace) {
+
+	      String prefix = (String) ElementProxy._prefixMappingsBindings.get(namespace);
+
+	      return prefix;
+	   }
 }
