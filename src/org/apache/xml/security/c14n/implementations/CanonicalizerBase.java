@@ -23,9 +23,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -196,7 +198,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 ((ByteArrayOutputStream)this._writer).reset();        
             }
          	return result;
-         } 
+         }  else if (this._writer instanceof UnsyncByteArrayOutputStream) {
+        	 byte []result=((UnsyncByteArrayOutputStream)this._writer).toByteArray();
+             if (reset) {
+                 ((UnsyncByteArrayOutputStream)this._writer).reset();        
+             }
+          	 return result;
+         }
          return null;
          
       } catch (UnsupportedEncodingException ex) {
@@ -223,6 +231,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     	final OutputStream writer=this._writer;
     	final Node excludeNode=this._excludeNode;
     	final boolean includeComments=this._includeComments;
+    	Map cache=new HashMap();
     	do {
     		switch (currentNode.getNodeType()) {
     		
@@ -267,14 +276,14 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			ns.outputNodePush();
     			writer.write('<');
     			String name=currentElement.getTagName();
-    			writeStringToUtf8(name,writer);
+    			writeByte(name,writer,cache);
     			
     			Iterator attrs = this.handleAttributesSubtree(currentElement,ns);
     			if (attrs!=null) {
     				//we output all Attrs which are available
     				while (attrs.hasNext()) {
     					Attr attr = (Attr) attrs.next();
-    					outputAttrToWriter(attr.getNodeName(),attr.getNodeValue(), writer);
+    					outputAttrToWriter(attr.getNodeName(),attr.getNodeValue(), writer,cache);
     				}
     			}
     			writer.write('>');        
@@ -295,7 +304,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     		}
     		while (sibling==null  && parentNode!=null) {    		      		      			
     			writer.write(_END_TAG);
-    			writeStringToUtf8(((Element)parentNode).getTagName(),writer);        
+    			writeByte(((Element)parentNode).getTagName(),writer,cache);        
     			writer.write('>');
     			//We fineshed with this level, pop to the previous definitions.
     			ns.outputNodePop();
@@ -367,6 +376,12 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             	((ByteArrayOutputStream)this._writer).reset();
             }
          	return sol;
+         }  else if (this._writer instanceof UnsyncByteArrayOutputStream) {
+        	 byte []result=((UnsyncByteArrayOutputStream)this._writer).toByteArray();
+             if (reset) {
+                 ((UnsyncByteArrayOutputStream)this._writer).reset();        
+             }
+          	 return result;
          }
          return null;
       } catch (UnsupportedEncodingException ex) {
@@ -392,6 +407,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
   	Node sibling=null;
 	Node parentNode=null;	
 	OutputStream writer=this._writer;
+	Map cache=new HashMap();
 	do {
 		switch (currentNode.getNodeType()) {
 		
@@ -433,12 +449,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                         || (nextSibling.getNodeType()
                             == Node.CDATA_SECTION_NODE));
                     nextSibling = nextSibling.getNextSibling()) {
-               /* The XPath data model allows to select only the first of a
-                * sequence of mixed text and CDATA nodes. But we must output
-                * them all, so we must search:
-                *
-                * @see http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6329
-                */
                outputTextToWriter(nextSibling.getNodeValue(), writer);
                currentNode=nextSibling;
                sibling=currentNode.getNextSibling();
@@ -456,7 +466,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				ns.outputNodePush();
 				writer.write('<');
 				name=currentElement.getTagName();
-				writeStringToUtf8(name,writer);
+				writeByte(name,writer,cache);
 			} else {
 				ns.push();
 			}
@@ -466,7 +476,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				//we output all Attrs which are available
 				while (attrs.hasNext()) {
 					Attr attr = (Attr) attrs.next();
-					outputAttrToWriter(attr.getNodeName(),attr.getNodeValue(), writer);
+					outputAttrToWriter(attr.getNodeName(),attr.getNodeValue(), writer,cache);
 				}
 			}
 			if (currentNodeIsVisible) {
@@ -477,7 +487,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			if (sibling==null) {
 				if (currentNodeIsVisible) {
 					writer.write(_END_TAG);
-					writeStringToUtf8(name,writer);        
+					writeByte(name,writer,cache);        
 					writer.write('>');
 					//We fineshed with this level, pop to the previous definitions.
 					ns.outputNodePop();
@@ -495,7 +505,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		while (sibling==null  && parentNode!=null) {    
 			if (isVisible(parentNode)) {
 				writer.write(_END_TAG);
-				writeStringToUtf8(((Element)parentNode).getTagName(),writer);        
+				writeByte(((Element)parentNode).getTagName(),writer,cache);        
 				writer.write('>');
 				//We fineshed with this level, pop to the previous definitions.
 				ns.outputNodePop();
@@ -562,7 +572,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    		int attrsLength = attrs.getLength();
    		 for (int i = 0; i < attrsLength; i++) {
             Attr N = (Attr) attrs.item(i);
-            if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
+            if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {
                //Not a namespace definition, ignore.
                continue;
             }
@@ -601,50 +611,49 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @param writer 
     * @throws IOException
     */
-   static final void outputAttrToWriter(final String name, final String value, final OutputStream writer) throws IOException {
+   static final void outputAttrToWriter(final String name, final String value, final OutputStream writer,
+		   	final Map cache) throws IOException {
       writer.write(' ');
-      writeStringToUtf8(name,writer);
+      writeByte(name,writer,cache);
       writer.write(equalsStr);
       byte  []toWrite;
       final int length = value.length();
-      for (int i=0;i < length; i++) {        
-         char c = value.charAt(i);
+      int i=0;
+      while (i < length) {        
+         char c = value.charAt(i++);
 
          switch (c) {
 
          case '&' :
          	toWrite=_AMP_;
-            //writer.write(_AMP_);
             break;
 
          case '<' :
          	toWrite=_LT_;
-            //writer.write(_LT_);
             break;
 
          case '"' :
          	toWrite=_QUOT_;
-            //writer.write(_QUOT_);
             break;
 
          case 0x09 :    // '\t'
          	toWrite=__X9_;
-            //writer.write(__X9_);
             break;
 
          case 0x0A :    // '\n'
          	toWrite=__XA_;
-            //writer.write(__XA_);
             break;
 
          case 0x0D :    // '\r'
          	toWrite=__XD_;
-            //writer.write(__XD_);
             break;
 
          default :
-            writeCharToUtf8(c,writer);
-            //this._writer.write(c);
+        	if( (c & 0x80) ==0) {
+        		writer.write(c);
+        	} else {
+        		writeCharToUtf8(c,writer);
+        	};
             continue;
          }
          writer.write(toWrite);
@@ -653,14 +662,14 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
       writer.write('\"');
    }
 
-   final static void writeCharToUtf8(final char c,final OutputStream out) throws IOException{
-   	char ch;
-   	if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
+   final static void writeCharToUtf8(final char c,final OutputStream out) throws IOException{   	
+   	if ( (c & 0x80) ==0) {
         out.write(c);
         return;
     }
     int bias;
     int write;
+    char ch;
     if (c > 0x07FF) {
         ch=(char)(c>>>12);      
         write=0xE0;
@@ -681,15 +690,62 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     out.write(write);
     out.write(0x80 | ((c) & 0x3F));    
    	
+   }   
+   final static void writeByte(final String str,final OutputStream out,Map cache) throws IOException {
+	   byte []result=(byte[]) cache.get(str);	 
+	   if (result==null) {
+		   result=getStringInUtf8(str);
+		   cache.put(str,result);
+	   }
+	   
+	   out.write(result);
+	   
    }
-   
-   final static void writeStringToUtf8(final String str,final OutputStream out) throws IOException{
+   final static byte[] getStringInUtf8(final String str) {
+	   final int length=str.length();
+	   byte []result=new byte[length];
+	   	int i=0;
+	   	int out=0;
+	    char c;    
+	   	while (i<length) {
+	   		c=str.charAt(i++);        
+	        if ((c & 0x80) == 0) {
+	            result[out++]=(byte)c;
+	            continue;
+	        }
+	        char ch;
+	        int bias;
+	        byte write;
+	        if (c > 0x07FF) {
+	            ch=(char)(c>>>12);      
+	            write=(byte)0xE0;
+	            if (ch>0) {
+	                write |= ( ch & 0x0F);
+	            } 
+	            result[out++]=write;
+	            write=(byte)0x80;
+	            bias=0x3F;        
+	        } else {
+	        	write=(byte)0xC0;
+	        	bias=0x1F;
+	        }
+	        ch=(char)(c>>>6);
+	        if (ch>0) {
+	             write|= (ch & bias);
+	        } 
+	        result[out++]=write;
+	        result[out++]=(byte)(0x80 | ((c) & 0x3F));       
+	           		
+	   	} 
+	   	return result;
+   }
+   final static void writeStringToUtf8(final String str,final OutputStream out) throws IOException{	   
    	final int length=str.length();
    	int i=0;
     char c;    
    	while (i<length) {
    		c=str.charAt(i++);        
-        if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
+        if ((c & 0x80) == 0) {
             out.write(c);
             continue;
         }
@@ -714,8 +770,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
              write|= (ch & bias);
         } 
         out.write(write);
-        out.write(0x80 | ((c) & 0x3F));
-        continue;         
+        out.write(0x80 | ((c) & 0x3F));       
            		
    	}
     
@@ -743,7 +798,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          if (c==0x0D) {
             writer.write(__XD_);
          } else {
-            writeCharToUtf8(c,writer);            
+        	 if( (c & 0x80) ==0) {
+         		writer.write(c);
+         	} else {
+         		writeCharToUtf8(c,writer);
+         	};           
          }
       }
 
@@ -792,7 +851,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          if (c==0x0D) {
             writer.write(__XD_);
          } else {
-            writeCharToUtf8(c,writer);               
+        	 if( (c & 0x80) ==0) {
+         		writer.write(c);
+         	} else {
+         		writeCharToUtf8(c,writer);
+         	};               
          }      
       }
 
@@ -819,26 +882,26 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 
          case '&' :
          	toWrite=_AMP_;
-            //writer.write(_AMP_);
             break;
 
          case '<' :
          	toWrite=_LT_;
-            //writer.write(_LT_);
             break;
 
          case '>' :
          	toWrite=_GT_;
-            //writer.write(_GT_);
             break;
 
          case 0xD :
          	toWrite=__XD_;
-            //writer.write(__XD_);
             break;
 
          default :
-            writeCharToUtf8(c,writer);
+        	 if ((c & 0x80) ==0) {
+        		 writer.write(c);
+        	 } else {
+        		 writeCharToUtf8(c,writer);
+        	 };
             continue;
          }
          writer.write(toWrite);
