@@ -140,10 +140,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 					
 		for (int i = 0; i < attrsLength; i++) {
 			Attr N = (Attr) attrs.item(i);
-			String NName=N.getLocalName();
-			String NNodeValue=N.getNodeValue();
-						
-			if (!XMLNS_URI.equals(N.getNamespaceURI())) {
+					
+			if (XMLNS_URI!=N.getNamespaceURI()) {
 				//Not a namespace definition.
 				//The Element is output element, add his prefix(if used) to visibyUtilized
 				String prefix = N.getPrefix();
@@ -154,7 +152,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 				 result.add(N);				
 				continue;
 			}
-	
+			String NName=N.getLocalName();
+			String NNodeValue=N.getNodeValue();
+		
 			if (ns.addMapping(NName, NNodeValue,N)) {
 				//New definition check if it is relative.
                 if (C14nHelper.namespaceIsRelative(NNodeValue)) {
@@ -234,14 +234,12 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 		
 		for (int i = 0; i < attrsLength; i++) {
 			Attr N = (Attr) attrs.item(i);
-			String NName=N.getLocalName();
-			String NNodeValue=N.getNodeValue();
 			if ( !isVisible(N) )  {
 				//The node is not in the nodeset(if there is a nodeset)
 				continue;
 			}			
 						
-			if (!XMLNS_URI.equals(N.getNamespaceURI())) {
+			if (XMLNS_URI!=N.getNamespaceURI()) {
 				//Not a namespace definition.
 				if (isOutputElement) {
 					//The Element is output element, add his prefix(if used) to visibyUtilized
@@ -254,7 +252,10 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 				}
 				continue;
 			}
-						
+
+			String NName=N.getLocalName();
+			String NNodeValue=N.getNodeValue();
+
 			
 			if (ns.addMapping(NName, NNodeValue,N)) {
                 //New definiton check if it is relative
