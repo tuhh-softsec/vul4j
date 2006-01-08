@@ -117,6 +117,12 @@ public class Reference extends SignatureElementProxy {
    XMLSignatureInput _transformsOutput;
    //J+
 
+private Transforms transforms;
+
+private Element digestMethodElem;
+
+private Element digestValueElement;
+
    /**
     * Constructor Reference
     *
@@ -147,6 +153,7 @@ public class Reference extends SignatureElementProxy {
       // this._manifest.appendChild(this._doc.createTextNode("\n"));
 
       if (transforms != null) {
+    	  this.transforms=transforms;
          this._constructionElement.appendChild(transforms.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       }
@@ -155,11 +162,12 @@ public class Reference extends SignatureElementProxy {
             MessageDigestAlgorithm.getInstance(this._doc,
                                                messageDigestAlgorithm);
 
-         this._constructionElement.appendChild(mda.getElement());
+         digestMethodElem=mda.getElement();
+         this._constructionElement.appendChild(digestMethodElem);
          XMLUtils.addReturnToElement(this._constructionElement);
       }
       {
-         Element digestValueElement =
+         digestValueElement =
             XMLUtils.createElementInSignatureSpace(this._doc,
                                                    Constants._TAG_DIGESTVALUE);
 
@@ -180,8 +188,16 @@ public class Reference extends SignatureElementProxy {
    protected Reference(Element element, String BaseURI, Manifest manifest)
            throws XMLSecurityException {
 
-      super(element, BaseURI);      
-
+      super(element, BaseURI);
+      this._baseURI=BaseURI;
+      Element el=XMLUtils.getNextElement(element.getFirstChild());
+      if (Constants._TAG_TRANSFORMS.equals(el.getLocalName()) && 
+    		  Constants.SignatureSpecNS.equals(el.getNamespaceURI())) {
+    	  transforms = new Transforms(el,this._baseURI);
+    	  el=XMLUtils.getNextElement(el.getNextSibling());
+      }
+      digestMethodElem = el;
+      digestValueElement =XMLUtils.getNextElement(digestMethodElem.getNextSibling());;
       this._manifest = manifest;
    }
 
@@ -195,10 +211,7 @@ public class Reference extends SignatureElementProxy {
     */
    public MessageDigestAlgorithm getMessageDigestAlgorithm()
            throws XMLSignatureException {
-
-      Element digestMethodElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-            Constants._TAG_DIGESTMETHOD,0);
-
+      
       if (digestMethodElem == null) {
          return null;
       }
@@ -290,8 +303,7 @@ public class Reference extends SignatureElementProxy {
     */
    public boolean typeIsReferenceToObject() {
 
-      if ((this.getType() != null)
-              && this.getType().equals(Reference.OBJECT_URI)) {
+      if (Reference.OBJECT_URI.equals(this.getType())) {
          return true;
       }
 
@@ -308,8 +320,7 @@ public class Reference extends SignatureElementProxy {
     */
    public boolean typeIsReferenceToManifest() {
 
-      if ((this.getType() != null)
-              && this.getType().equals(Reference.MANIFEST_URI)) {
+      if (Reference.MANIFEST_URI.equals(this.getType())) {
          return true;
       }
 
@@ -325,8 +336,7 @@ public class Reference extends SignatureElementProxy {
    {
 
       if (this._state == MODE_SIGN) {
-         Element digestValueElement =XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-                 Constants._TAG_DIGESTVALUE,0);
+
          Node n=digestValueElement.getFirstChild();
          while (n!=null) {
                digestValueElement.removeChild(n);
@@ -632,16 +642,7 @@ public class Reference extends SignatureElementProxy {
            throws XMLSignatureException, InvalidTransformException,
                   TransformationException, XMLSecurityException {
 
-      Element transformsElement = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-            Constants._TAG_TRANSFORMS,0);
-
-      if (transformsElement != null) {
-         Transforms transforms = new Transforms(transformsElement,
-                                                this._baseURI);
-
-         return transforms;
-      } 
-       return null;      
+      return transforms;           
    }
 
    /**
@@ -707,9 +708,7 @@ public class Reference extends SignatureElementProxy {
 	* @throws XMLSecurityException if the Reference does not contain a DigestValue element
     */
    public byte[] getDigestValue() throws Base64DecodingException, XMLSecurityException {
-      Element digestValueElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild()
-            ,Constants._TAG_DIGESTVALUE,0);
-	  if (digestValueElem == null) {
+      if (digestValueElement == null) {
 		  // The required element is not in the XML!
 		  Object[] exArgs ={ Constants._TAG_DIGESTVALUE, 
 							 Constants.SignatureSpecNS };
@@ -717,7 +716,7 @@ public class Reference extends SignatureElementProxy {
 					"signature.Verification.NoSignatureElement", 
 					exArgs);
 	  }
-      byte[] elemDig = Base64.decode(digestValueElem);
+      byte[] elemDig = Base64.decode(digestValueElement);
       return elemDig;
    }
 

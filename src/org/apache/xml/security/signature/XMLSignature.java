@@ -126,6 +126,8 @@ public final class XMLSignature extends SignatureElementProxy {
     */
    private boolean _followManifestsDuringValidation = false;
 
+private Element signatureValueElement;
+
   /**
     * This creates a new <CODE>ds:Signature</CODE> Element and adds an empty
     * <CODE>ds:SignedInfo</CODE>.
@@ -202,7 +204,7 @@ public final class XMLSignature extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
 
       // create an empty SignatureValue; this is filled by setSignatureValueElement
-      Element signatureValueElement =
+      signatureValueElement =
          XMLUtils.createElementInSignatureSpace(this._doc,
                                                 Constants._TAG_SIGNATUREVALUE);
 
@@ -232,7 +234,7 @@ public final class XMLSignature extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
 
       // create an empty SignatureValue; this is filled by setSignatureValueElement
-      Element signatureValueElement =
+      signatureValueElement =
          XMLUtils.createElementInSignatureSpace(this._doc,
                                                 Constants._TAG_SIGNATUREVALUE);
 
@@ -255,8 +257,8 @@ public final class XMLSignature extends SignatureElementProxy {
       super(element, BaseURI);
 
       // check out SignedInfo child
-      Element signedInfoElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-                                  Constants._TAG_SIGNEDINFO,0);
+      Element signedInfoElem = XMLUtils.getNextElement(element.getFirstChild());// XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                  //Constants._TAG_SIGNEDINFO,0);
 
       // check to see if it is there
       if (signedInfoElem == null) {
@@ -270,8 +272,8 @@ public final class XMLSignature extends SignatureElementProxy {
       this._signedInfo = new SignedInfo(signedInfoElem, BaseURI);
 
       // check out SignatureValue child
-      Element signatureValueElement = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-                                         Constants._TAG_SIGNATUREVALUE,0);
+      this.signatureValueElement =XMLUtils.getNextElement(signedInfoElem.getNextSibling()); //XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                       //  Constants._TAG_SIGNATUREVALUE,0);
 
       // check to see if it exists
       if (signatureValueElement == null) {
@@ -282,11 +284,12 @@ public final class XMLSignature extends SignatureElementProxy {
       }
 
       // <element ref="ds:KeyInfo" minOccurs="0"/>
-      Element keyInfoElem =XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-                               Constants._TAG_KEYINFO,0);
+      Element keyInfoElem = XMLUtils.getNextElement(signatureValueElement.getNextSibling());//XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                              // Constants._TAG_KEYINFO,0);
 
       // If it exists use it, but it's not mandatory
-      if (keyInfoElem != null) {
+      if ((keyInfoElem != null) && (keyInfoElem.getNamespaceURI().equals(Constants.SignatureSpecNS) && 
+    		  keyInfoElem.getLocalName().equals(Constants._TAG_KEYINFO)) ) {
          this._keyInfo = new KeyInfo(keyInfoElem, BaseURI);
       }
    }
@@ -332,9 +335,7 @@ public final class XMLSignature extends SignatureElementProxy {
    public byte[] getSignatureValue() throws XMLSignatureException {
 
       try {
-         Element signatureValueElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-                                         Constants._TAG_SIGNATUREVALUE,0);
-         byte[] signatureValue = Base64.decode(signatureValueElem);
+    	  byte[] signatureValue = Base64.decode(signatureValueElement);
 
          return signatureValue;
       } catch (Base64DecodingException ex) {
@@ -352,10 +353,8 @@ public final class XMLSignature extends SignatureElementProxy {
    {
 
       if (this._state == MODE_SIGN) {
-         Element signatureValueElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
-                                         Constants._TAG_SIGNATUREVALUE,0);
-         while (signatureValueElem.hasChildNodes()) {
-            signatureValueElem.removeChild(signatureValueElem.getFirstChild());
+    	 while (signatureValueElement.hasChildNodes()) {
+        	 signatureValueElement.removeChild(signatureValueElement.getFirstChild());
          }
 
          String base64codedValue = Base64.encode(bytes);
@@ -366,7 +365,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
          Text t = this._doc.createTextNode(base64codedValue);
 
-         signatureValueElem.appendChild(t);
+         signatureValueElement.appendChild(t);
       }
    }
 
