@@ -21,6 +21,7 @@ package org.apache.xml.security.transforms;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -62,7 +63,9 @@ public final class Transform extends SignatureElementProxy {
    static boolean _alreadyInitialized = false;
 
    /** All available Transform classes are registered here */
-   static HashMap _transformHash = null;
+   static Map _transformHash = null;
+   
+   static Map classesHash = new HashMap();
 
    /** Field transformSpi */
    protected TransformSpi transformSpi = null;
@@ -82,14 +85,13 @@ public final class Transform extends SignatureElementProxy {
 
       super(doc);
 
-      try {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                                 algorithmURI);
 
-         Class implementingClass =
+         this.transformSpi  =
             Transform.getImplementingClass(algorithmURI);
 		 
-         if(implementingClass == null) {
+         if(transformSpi == null) {
              Object exArgs[] = { algorithmURI };
 
              throw new InvalidTransformException(
@@ -97,14 +99,11 @@ public final class Transform extends SignatureElementProxy {
          }
          if (log.isDebugEnabled()) {
          	log.debug("Create URI \"" + algorithmURI + "\" class \""
-                   + implementingClass + "\"");
+                   + transformSpi.getClass() + "\"");
          	log.debug("The NodeList is " + contextNodes);
          }
 
-         // create the custom Transform object
-         this.transformSpi =
-            (TransformSpi) implementingClass.newInstance();
-
+         // create the custom Transform object        
          this.transformSpi.setTransform(this);
 
          // give it to the current document
@@ -120,17 +119,7 @@ public final class Transform extends SignatureElementProxy {
             }
 
          }
-      } catch (IllegalAccessException ex) {
-         Object exArgs[] = { algorithmURI };
-
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs, ex);
-      } catch (InstantiationException ex) {
-         Object exArgs[] = { algorithmURI };
-
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs, ex);
-      }
+      
    }
 
    /**
@@ -160,21 +149,12 @@ public final class Transform extends SignatureElementProxy {
       }
 
       try {
-         Class implementingClass = (Class) _transformHash.get(AlgorithmURI);		 
-         this.transformSpi =
-            (TransformSpi) implementingClass.newInstance();
+        // Class implementingClass = (Class) _transformHash.get(AlgorithmURI);		 
+         this.transformSpi = Transform.getImplementingClass(AlgorithmURI);
+           // (TransformSpi) implementingClass.newInstance();
 
          this.transformSpi.setTransform(this);
-      } catch (IllegalAccessException e) {
-         Object exArgs[] = { AlgorithmURI };
-
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs);
-      } catch (InstantiationException e) {
-         Object exArgs[] = { AlgorithmURI };
-
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs);
+     
       } catch (NullPointerException e) {
 		  Object exArgs[] = { AlgorithmURI };
 
@@ -259,11 +239,17 @@ public final class Transform extends SignatureElementProxy {
       {
 
          // are we already registered?
-         Class registeredClass = Transform.getImplementingClass(algorithmURI);
+        Object registeredClass=null;
+		try {
+			registeredClass = Transform.getImplementingClass(algorithmURI);
+		} catch (InvalidTransformException e1) {
+			Object exArgs[] = { algorithmURI, registeredClass };
+			throw new AlgorithmAlreadyRegisteredException(
+		               "algorithm.alreadyRegistered", exArgs);
+		}
 
          if ((registeredClass != null) ) {
             Object exArgs[] = { algorithmURI, registeredClass };
-
             throw new AlgorithmAlreadyRegisteredException(
                "algorithm.alreadyRegistered", exArgs);
          }
@@ -358,9 +344,30 @@ public final class Transform extends SignatureElementProxy {
     *
     * @param URI
     * @return The name of the class implementing the URI.
+ * @throws InvalidTransformException 
     */
-   private static Class getImplementingClass(String URI) {
-       return (Class)Transform._transformHash.get(URI);
+   private static TransformSpi getImplementingClass(String URI) throws InvalidTransformException {
+       try {
+    	   Object value=classesHash.get(URI);
+    	   if (value!=null){
+    		   return (TransformSpi) value;
+    	   }
+    	   Class cl=(Class)Transform._transformHash.get(URI);
+    	   if (cl!=null) {
+    		   TransformSpi tr= (TransformSpi)cl.newInstance();
+    		   classesHash.put(URI,tr);
+    		   return tr;
+    	   }
+	} catch (InstantiationException ex) {
+		Object exArgs[] = { URI };
+         throw new InvalidTransformException(
+            "signature.Transform.UnknownTransform", exArgs, ex);      
+	} catch (IllegalAccessException ex) {
+		Object exArgs[] = { URI };
+         throw new InvalidTransformException(
+            "signature.Transform.UnknownTransform", exArgs, ex);      
+	}
+	return null;
    }
 
    
