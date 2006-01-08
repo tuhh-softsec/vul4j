@@ -71,9 +71,9 @@ public class AttrCompare implements java.util.Comparator {
       String namespaceURI1 = attr1.getNamespaceURI();
       
       boolean isNamespaceAttr0 =
-      	XMLNS.equals(namespaceURI0);
+      	XMLNS==namespaceURI0;
       boolean isNamespaceAttr1 =
-      	XMLNS.equals(namespaceURI1);
+      	XMLNS==namespaceURI1;
 
       if (isNamespaceAttr0) {
          if (isNamespaceAttr1) {
