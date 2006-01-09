@@ -53,7 +53,13 @@ public class XMLUtils {
 
       // we don't allow instantiation
    }
-
+   public static Element getNextElement(Node el) {
+	   while ((el!=null) && (el.getNodeType()!=Node.ELEMENT_NODE)) {
+		   el=el.getNextSibling();
+	   }
+	   return (Element)el;
+	   
+   }
    
    /**
     * @param rootNode
@@ -234,9 +240,8 @@ public class XMLUtils {
          return element;
       } 
          Element element = doc.createElementNS(Constants.SignatureSpecNS,
-                                               ds + ":" + elementName);
-
-         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + ds,
+                                               ds + ":" + elementName);         
+         element.setAttributeNS(Constants.NamespaceSpecNS, ElementProxy.getDefaultPrefixBindings(Constants.SignatureSpecNS),
                                 Constants.SignatureSpecNS);
 
          return element;
@@ -256,7 +261,7 @@ public class XMLUtils {
            String localName) {
 
       if ((element == null) ||
-          !Constants.SignatureSpecNS.equals(element.getNamespaceURI()) ){
+          Constants.SignatureSpecNS!=element.getNamespaceURI() ){
          return false;
       }
 
@@ -279,7 +284,7 @@ public class XMLUtils {
            String localName) {
 
       if ((element == null) || 
-            !EncryptionConstants.EncryptionSpecNS.equals(element.getNamespaceURI()) 
+            EncryptionConstants.EncryptionSpecNS!=element.getNamespaceURI() 
           ){
          return false;
       }
@@ -466,7 +471,7 @@ public class XMLUtils {
 
              	for (int i = 0; i < attributesLength; i++) {
              		Attr currentAttr = (Attr) attributes.item(i); 
-             		if (!namespaceNs.equals(currentAttr.getNamespaceURI()))
+             		if (namespaceNs!=currentAttr.getNamespaceURI())
              			continue;
              		if (childElement.hasAttributeNS(namespaceNs,
     							currentAttr.getLocalName())) {
@@ -508,7 +513,7 @@ public class XMLUtils {
    public static Element selectDsNode(Node sibling, String nodeName, int number) {
 	while (sibling!=null) {
 		if (nodeName.equals(sibling.getLocalName())
-				&& Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
+				&& Constants.SignatureSpecNS==sibling.getNamespaceURI()) {
 			if (number==0){
 				return (Element)sibling;
 			}
@@ -529,7 +534,7 @@ public class XMLUtils {
    public static Element selectXencNode(Node sibling, String nodeName, int number) {
 	while (sibling!=null) {
 		if (nodeName.equals(sibling.getLocalName())
-				&& EncryptionConstants.EncryptionSpecNS.equals(sibling.getNamespaceURI())) {
+				&& EncryptionConstants.EncryptionSpecNS==sibling.getNamespaceURI()) {
 			if (number==0){
 				return (Element)sibling;
 			}
@@ -588,7 +593,7 @@ public class XMLUtils {
    public static Element selectNode(Node sibling, String uri,String nodeName, int number) {
 	while (sibling!=null) {
 		if (nodeName.equals(sibling.getLocalName())
-				&& uri.equals(sibling.getNamespaceURI())) {
+				&& uri==sibling.getNamespaceURI()) {
 			if (number==0){
 				return (Element)sibling;
 			}
@@ -605,9 +610,42 @@ public class XMLUtils {
     * @return nodes with the constrain
     */
    public static Element[] selectDsNodes(Node sibling,String nodeName) {
-     return selectNodes(sibling,Constants.SignatureSpecNS,nodeName);
+     return selectConsecutiveNodes(sibling,Constants.SignatureSpecNS,nodeName);
    }
-   
+   /**
+    * @param sibling
+    * @param uri
+    * @param nodeName
+    * @return nodes with the constrain
+    */
+    public static Element[] selectConsecutiveNodes(Node sibling,String uri,String nodeName) {
+    	int size=20;
+    	Element[] a= new Element[size];
+    	int curr=0;
+    	//List list=new ArrayList();
+    	while (sibling!=null) {
+    		if (nodeName.equals(sibling.getLocalName())
+    				&& uri==sibling.getNamespaceURI()) {
+    			do {
+    				a[curr++]=(Element)sibling;
+    				if (size<=curr) {
+    					int cursize= size<<2;
+    					Element []cp=new Element[cursize];
+    					System.arraycopy(a,0,cp,0,size);
+    					a=cp;
+    					size=cursize;
+    				}
+    				sibling=sibling.getNextSibling();
+    			} while ((sibling!=null) && nodeName.equals(sibling.getLocalName())
+				&& uri==sibling.getNamespaceURI());    			
+    			break;
+    		}
+    		sibling=sibling.getNextSibling();
+    	}
+    	Element []af=new Element[curr];
+    	System.arraycopy(a,0,af,0,curr);
+    	return af;
+   }
    /**
     * @param sibling
     * @param uri
@@ -621,7 +659,7 @@ public class XMLUtils {
     	//List list=new ArrayList();
     	while (sibling!=null) {
     		if (nodeName.equals(sibling.getLocalName())
-    				&& uri.equals(sibling.getNamespaceURI())) {
+    				&& uri==sibling.getNamespaceURI()) {
     			a[curr++]=(Element)sibling;
     			if (size<=curr) {
     				int cursize= size<<2;
