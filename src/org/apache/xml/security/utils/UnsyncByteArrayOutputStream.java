@@ -16,18 +16,25 @@
  */
 package org.apache.xml.security.utils;
 
-import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
 /**
  * A simple Unsynced ByteArryOutputStream
  * @author raul
  *
  */
-public class UnsyncByteArrayOutputStream extends ByteArrayOutputStream {
-	int size=4*1024;
-	byte []buf=new byte[size];
-	int pos;
+public class UnsyncByteArrayOutputStream extends OutputStream  {	
+	private static ThreadLocal bufCahce = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new byte[8*1024];
+        }        
+    };
+    byte[] buf=(byte[])bufCahce.get();
+	int size=8*1024;//buf.length;	
+	int pos=0;
 	/** @inheritDoc */
+	public UnsyncByteArrayOutputStream() {	
+	}
 	public void write(byte[] arg0) {
 		int newPos=pos+arg0.length;
 		if (newPos>size) {
@@ -68,7 +75,7 @@ public class UnsyncByteArrayOutputStream extends ByteArrayOutputStream {
 	void expandSize() {
 		int newSize=size<<2;
 		byte newBuf[]=new byte[newSize];
-		System.arraycopy(buf,0,newBuf,0,pos);
+		System.arraycopy(buf,0,newBuf,0,pos);		
 		buf=newBuf;
 		size=newSize;
 		
