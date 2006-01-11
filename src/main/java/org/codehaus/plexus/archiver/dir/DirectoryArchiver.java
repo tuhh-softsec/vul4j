@@ -34,6 +34,13 @@ import org.codehaus.plexus.archiver.ArchiverException;
 public class DirectoryArchiver 
 	extends AbstractArchiver 
 {
+    public void resetArchiver() 
+    {
+        setIncludeEmptyDirs( false );
+        getDirs().clear();
+        getFiles().clear();
+        setIncludeEmptyDirs( true );
+    }
 
 	public void createArchive() 
 		throws ArchiverException, IOException 
@@ -43,21 +50,21 @@ public class DirectoryArchiver
 		Map listFiles = getFiles();
 		if ( listFiles == null || listFiles.size() == 0 ) 
 		{
-			new ArchiverException( "You must set at least one file." );
+			throw new ArchiverException( "You must set at least one file." );
 		}
 
 		File destDirectory = getDestFile();
 		if ( destDirectory == null ) 
 		{
-			new ArchiverException( "You must set the destination directory." );
+			throw new ArchiverException( "You must set the destination directory." );
 		}
 		if ( destDirectory.exists() && !destDirectory.isDirectory() ) 
 		{
-			new ArchiverException( destDirectory + " isn't a directory." );
+			throw new ArchiverException( destDirectory + " is not a directory." );
 		}
 		if ( destDirectory.exists() && !destDirectory.canWrite() ) 
 		{
-			new ArchiverException( destDirectory + " is read-only." );
+			throw new ArchiverException( destDirectory + " is not writable." );
 		}
 
 		// Check if we don't add directory file in itself
@@ -72,7 +79,7 @@ public class DirectoryArchiver
 			}
 		}
 
-		getLogger().info( "Building assembly directory : " + destDirectory.getAbsolutePath() );
+		getLogger().info( "Copying " + listFiles.size() + " files to " + destDirectory.getAbsolutePath() );
 
 		try 
 		{
