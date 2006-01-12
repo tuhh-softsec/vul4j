@@ -120,6 +120,20 @@ public class Xpp3DomBuilderTest
         }
     }
 
+    public void testEscapingInContent()
+        throws IOException, XmlPullParserException
+    {
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( getEncodedString() ) );
+
+        assertEquals( "Check content value", "\"text\"", dom.getChild( "el" ).getValue() );
+        assertEquals( "Check content value", "<b>\"text\"</b>", dom.getChild( "ela" ).getValue() );
+        assertEquals( "Check content value", "<b>\"text\"</b>", dom.getChild( "elb" ).getValue() );
+
+        StringWriter w = new StringWriter();
+        Xpp3DomWriter.write( w, dom );
+        assertEquals( "Compare stringified DOMs", getExpectedString(), w.toString() );
+    }
+
     public void testEscapingInAttributes()
         throws IOException, XmlPullParserException
     {
@@ -139,6 +153,30 @@ public class Xpp3DomBuilderTest
         StringBuffer domString = new StringBuffer();
         domString.append( "<root>\n" );
         domString.append( "  <el att=\"&lt;foo&gt;\">bar</el>\n" );
+        domString.append( "</root>" );
+
+        return domString.toString();
+    }
+
+    private static String getEncodedString()
+    {
+        StringBuffer domString = new StringBuffer();
+        domString.append( "<root>\n" );
+        domString.append( "  <el>\"text\"</el>\n" );
+        domString.append( "  <ela><![CDATA[<b>\"text\"</b>]]></ela>\n" );
+        domString.append( "  <elb>&lt;b&gt;&quot;text&quot;&lt;/b&gt;</elb>\n" );
+        domString.append( "</root>" );
+
+        return domString.toString();
+    }
+
+    private static String getExpectedString()
+    {
+        StringBuffer domString = new StringBuffer();
+        domString.append( "<root>\n" );
+        domString.append( "  <el>&quot;text&quot;</el>\n" );
+        domString.append( "  <ela>&lt;b&gt;&quot;text&quot;&lt;/b&gt;</ela>\n" );
+        domString.append( "  <elb>&lt;b&gt;&quot;text&quot;&lt;/b&gt;</elb>\n" );
         domString.append( "</root>" );
 
         return domString.toString();
