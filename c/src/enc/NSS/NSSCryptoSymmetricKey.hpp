@@ -275,7 +275,7 @@ private:
 	SymmetricKeyType				m_keyType;
 	SymmetricKeyMode				m_keyMode;		// ECB or CBC
 	bool							  m_initialised;
-	//bool							m_doPad; //Does we need it?
+	bool							m_doPad; //Does we need it?  Yes we do - key wraps are unpadded for 3DES
 
 	unsigned char					m_lastBlock[NSS_MAX_BLOCK_SIZE];
 	unsigned int					m_blockSize;

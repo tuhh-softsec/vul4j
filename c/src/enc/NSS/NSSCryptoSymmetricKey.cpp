@@ -35,7 +35,7 @@
 
 #if defined (HAVE_NSS)
 
-#include "nss/prerror.h"
+#include "prerror.h"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -198,9 +198,10 @@ int NSSCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
       SECItem ivItem;
       ivItem.data = (unsigned char*)iv;
       ivItem.len = 8;
+	  int encryptAlg = (m_doPad == true ? CKM_DES3_CBC_PAD : CKM_DES3_CBC);
 
-      SECItem * secParam = PK11_ParamFromIV(CKM_DES3_CBC_PAD, &ivItem);
-      mp_ctx = PK11_CreateContextBySymKey(CKM_DES3_CBC_PAD, CKA_DECRYPT, mp_k, secParam);
+      SECItem * secParam = PK11_ParamFromIV(encryptAlg, &ivItem);
+      mp_ctx = PK11_CreateContextBySymKey(encryptAlg, CKA_DECRYPT, mp_k, secParam);
 
       if (secParam)
         SECITEM_FreeItem(secParam, PR_TRUE);
@@ -208,8 +209,10 @@ int NSSCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
       m_ivSize = 8;
 		}
 		else {
-      mp_ctx = PK11_CreateContextBySymKey(CKM_DES3_ECB, CKA_DECRYPT, mp_k, NULL);
-			
+			SECItem * secParam = PK11_ParamFromIV(CKM_DES3_ECB, NULL);
+      mp_ctx = PK11_CreateContextBySymKey(CKM_DES3_ECB, CKA_DECRYPT, mp_k, secParam);
+      if (secParam)
+        SECITEM_FreeItem(secParam, PR_TRUE);	
       m_ivSize = 0;
 		}
 
@@ -243,8 +246,10 @@ int NSSCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 		}
 		else {
-
-			mp_ctx = PK11_CreateContextBySymKey(CKM_AES_ECB, CKA_DECRYPT, mp_k, NULL);
+			SECItem * secParam = PK11_ParamFromIV(CKM_AES_ECB, NULL);
+			mp_ctx = PK11_CreateContextBySymKey(CKM_AES_ECB, CKA_DECRYPT, mp_k, secParam);
+      if (secParam)
+        SECITEM_FreeItem(secParam, PR_TRUE);
 
       m_ivSize = 0;
 
@@ -276,8 +281,8 @@ bool NSSCryptoSymmetricKey::decryptInit(bool doPad,
 											const unsigned char * iv) {
 
 	m_initialised = false;
-  m_ivSent = true;
-	//m_doPad = doPad;
+    m_ivSent = iv == NULL;
+	m_doPad = doPad;
 	m_keyMode = mode;
 	decryptCtxInit(iv);
 	return true;
@@ -346,6 +351,8 @@ unsigned int NSSCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
   }
 
   PK11_DestroyContext(mp_ctx, PR_TRUE);
+  mp_ctx = NULL;
+  m_initialised = false;
 
   return outl;
 }
@@ -361,7 +368,7 @@ bool NSSCryptoSymmetricKey::encryptInit(bool doPad,
 	if (m_initialised == true)
 		return true;
 
-	//m_doPad = doPad;
+	m_doPad = doPad;
 	m_keyMode = mode;
 	
 	if (mp_k == 0) {
@@ -411,9 +418,10 @@ bool NSSCryptoSymmetricKey::encryptInit(bool doPad,
       SECItem ivItem;
       ivItem.data = (unsigned char*)usedIV;
       ivItem.len = 8;
+	  int encryptAlg = (m_doPad == true ? CKM_DES3_CBC_PAD : CKM_DES3_CBC);
 
-      SECItem * secParam = PK11_ParamFromIV(CKM_DES3_CBC_PAD, &ivItem);
-      mp_ctx = PK11_CreateContextBySymKey(CKM_DES3_CBC_PAD, CKA_ENCRYPT, mp_k, secParam);
+      SECItem * secParam = PK11_ParamFromIV(encryptAlg, &ivItem);
+      mp_ctx = PK11_CreateContextBySymKey(encryptAlg, CKA_ENCRYPT, mp_k, secParam);
 
       if (secParam)
         SECITEM_FreeItem(secParam, PR_TRUE);
@@ -466,8 +474,10 @@ bool NSSCryptoSymmetricKey::encryptInit(bool doPad,
       m_ivSize = 16;
 		}
 		else {
-
-			mp_ctx = PK11_CreateContextBySymKey(CKM_AES_ECB, CKA_ENCRYPT, mp_k, NULL);
+			SECItem * secParam = PK11_ParamFromIV(CKM_AES_ECB, NULL);
+			mp_ctx = PK11_CreateContextBySymKey(CKM_AES_ECB, CKA_ENCRYPT, mp_k, secParam);
+			if (secParam)
+				SECITEM_FreeItem(secParam, PR_TRUE);
 
       m_ivSize = 0;
 		}
@@ -556,16 +566,20 @@ unsigned int NSSCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 
 	unsigned int outl = 0;
 
-  SECStatus s = PK11_DigestFinal(mp_ctx, cipherBuf, &outl, maxOutLength);
+	SECStatus s = PK11_DigestFinal(mp_ctx, cipherBuf, &outl, maxOutLength);
 
-	if (s != SECSuccess) {
+		if (s != SECSuccess) {
 
-		throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"NSS:SymmetricKey - Error during NSS encrypt"); 
+			throw XSECCryptoException(XSECCryptoException::SymmetricError,
+				"NSS:SymmetricKey - Error during NSS encrypt"); 
 
-  }
+	}
 
-  PK11_DestroyContext(mp_ctx, PR_TRUE);
+	PK11_DestroyContext(mp_ctx, PR_TRUE);
+	mp_ctx = NULL;
+
+	// Setup so can be re-used
+	m_initialised = false;
 
 	return outl;
 
