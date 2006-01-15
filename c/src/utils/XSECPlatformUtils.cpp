@@ -48,6 +48,10 @@
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #endif
 
+#if defined (HAVE_NSS)
+#	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
+#endif
+
 // Static data used by all of XSEC
 int XSECPlatformUtils::initCount = 0;
 XSECCryptoProvider * XSECPlatformUtils::g_cryptoProvider = NULL;
@@ -64,6 +68,10 @@ XSECAlgorithmMapper * internalMapper = NULL;
 #else
 #	if defined (HAVE_WINCAPI)
 #		define XSEC_DEFAULT_PROVIDER	WinCAPICryptoProvider()
+#	else 
+#		if defined (HAVE_NSS)
+#			define XSEC_DEFAULT_PROVIDER	NSSCryptoProvider()
+#		endif
 #	endif
 #endif
 
