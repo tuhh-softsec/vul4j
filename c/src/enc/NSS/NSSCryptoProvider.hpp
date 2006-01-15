@@ -313,7 +313,8 @@ public :
 
 private:
 
-  bool m_initialised;
+	void Init(const char * dbDir);
+	static int m_initialised;
 
 };
 

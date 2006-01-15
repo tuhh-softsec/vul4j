@@ -44,30 +44,41 @@
 
 XSEC_USING_XERCES(ArrayJanitor);
 
+int NSSCryptoProvider::m_initialised = 0;
+
 // --------------------------------------------------------------------------------
 //           Constructor
 // --------------------------------------------------------------------------------
 
-NSSCryptoProvider::NSSCryptoProvider(const char * dbDir)
-{
+void NSSCryptoProvider::Init(const char * dbDir) {
 
-  SECStatus s;
+	++m_initialised;
 
-  if (dbDir != NULL)
-    s = NSS_Init(dbDir);
-  else
-    s = NSS_NoDB_Init(NULL);
+	if (m_initialised > 1)
+		return;
 
-  if (s != SECSuccess) {
+	SECStatus s;
 
-    throw XSECCryptoException(XSECCryptoException::MemoryError,
+	if (dbDir != NULL)
+		s = NSS_Init(dbDir);
+	else
+		s = NSS_NoDB_Init(NULL);
+
+	if (s != SECSuccess) {
+
+		throw XSECCryptoException(XSECCryptoException::MemoryError,
 			"NSSCryptoProvider:NSSCryptoProvider - Error initializing NSS");
 
-  }
-
-  m_initialised = true;
+	}
 
 }
+
+NSSCryptoProvider::NSSCryptoProvider(const char * dbDir) {
+
+	Init(dbDir);
+
+}
+
 
 // --------------------------------------------------------------------------------
 //           Empty constructor
@@ -76,7 +87,7 @@ NSSCryptoProvider::NSSCryptoProvider(const char * dbDir)
 NSSCryptoProvider::NSSCryptoProvider()
 {
 
-  m_initialised = false;
+	Init(NULL);
 
 }
 
@@ -87,7 +98,7 @@ NSSCryptoProvider::NSSCryptoProvider()
 NSSCryptoProvider::~NSSCryptoProvider()
 {
 
-  if (m_initialised) {
+  if (m_initialised == 1) {
 
     PK11_LogoutAll();
 
@@ -104,6 +115,7 @@ NSSCryptoProvider::~NSSCryptoProvider()
     }
 
   }
+  m_initialised--;
 
 }
 
