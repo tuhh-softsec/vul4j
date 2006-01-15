@@ -31,6 +31,8 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#if defined (HAVE_WINCAPI)
+
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
@@ -797,3 +799,5 @@ unsigned int WinCAPICryptoKeyRSA::getModulusBase64BigNums(char * b64, unsigned i
 	return bLen;
 
 }
+
+#endif /* WINCAPI */

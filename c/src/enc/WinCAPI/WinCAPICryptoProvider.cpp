@@ -39,6 +39,8 @@
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
+#if defined (HAVE_WINCAPI)
+
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
@@ -420,4 +422,6 @@ unsigned char * WinCAPICryptoProvider::WinBN2b64(BYTE * n, DWORD nLen, unsigned 
 	return b64;
 
 }
+
+#endif /* HAVE_WINCAPI */
 

@@ -32,6 +32,8 @@
 #include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#if defined (HAVE_WINCAPI)
+
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
@@ -748,4 +750,6 @@ unsigned int WinCAPICryptoKeyDSA::getYBase64BigNums(char * b64, unsigned int len
 	return bLen;
 
 }
+
+#endif /* HAVE_WINCAPI */
 

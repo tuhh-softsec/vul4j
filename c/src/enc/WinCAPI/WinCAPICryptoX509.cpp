@@ -34,6 +34,8 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 
+#if defined (HAVE_WINCAPI)
+
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
@@ -206,5 +208,7 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 	return NULL;		// Unknown key type, but not necessarily an error
 
 }
+
+#endif /* HAVE_WINCAPI */
 
 

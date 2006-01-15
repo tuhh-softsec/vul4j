@@ -29,6 +29,8 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
+#if defined (HAVE_WINCAPI)
+
 WinCAPICryptoKeyHMAC::WinCAPICryptoKeyHMAC(HCRYPTPROV prov) :m_keyBuf("") {
 
 	m_keyBuf.isSensitive();
@@ -111,3 +113,5 @@ HCRYPTPROV WinCAPICryptoKeyHMAC::getWinKeyProv(void) {
 	return m_p;
 
 }
+
+#endif /* HAVE_WINCAPI */

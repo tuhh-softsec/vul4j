@@ -29,6 +29,8 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 
+#if defined (HAVE_WINCAPI)
+
 #include <memory.h>
 
 // Constructors/Destructors
@@ -153,3 +155,4 @@ XSECCryptoHash::HashType WinCAPICryptoHash::getHashType(void) {
 
 }
 
+#endif /* HAVE_WINCAPI */
