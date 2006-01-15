@@ -36,6 +36,13 @@
 
 #include <nss/cert.h>
 
+extern "C" {
+
+extern CERTCertificate *
+__CERT_DecodeDERCertificate (SECItem *derSignedCert, PRBool copyDER, char *nickname);
+
+}
+
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
@@ -114,18 +121,34 @@ void NSSCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 
 	// Now load certificate
 
-  SECItem i;
-  i.type = siBuffer;
-  i.data = rawCert;
-  i.len = rawCertLen;
+	SECItem i;
+	i.type = siBuffer;
+	i.data = rawCert;
+	i.len = rawCertLen;
 
-	mp_cert = __CERT_DecodeDERCertificate(&i, PR_TRUE, NULL);
-  // 1. If you got an compiler error here add into "nss/cert.h" delacarion for
-  // CERT_DecodeDERCertificate() (the same parameters as for __CERT_DecodeDERCertificate())
-  // 2. Since __CERT_DecodeDERCertificate is a private function we might consider using
-  // __CERT_NewTempCertificate() or CERT_ImportCerts() instead.
+	SECItem *certs[1];
+	certs[0] = &i;
 
-  if (mp_cert == 0) {
+	// For returning
+	CERTCertificate **certArray = NULL;
+
+	/* mp_cert = __CERT_DecodeDERCertificate(&i, PR_TRUE, NULL); */
+	CERT_ImportCerts(CERT_GetDefaultCertDB(), certUsageUserCertImport, 1, certs, 
+		&certArray, PR_FALSE, PR_FALSE, NULL);
+	// 1. If you got an compiler error here add into "nss/cert.h" delacarion for
+	// CERT_DecodeDERCertificate() (the same parameters as for __CERT_DecodeDERCertificate())
+	// 2. Since __CERT_DecodeDERCertificate is a private function we might consider using
+	// __CERT_NewTempCertificate() or CERT_ImportCerts() instead.
+
+	// Now map to our cert
+	if (certArray == NULL) {
+		throw XSECCryptoException(XSECCryptoException::X509Error,
+			"NSSX509:loadX509Base64Bin - Error decoding certificate");
+	}
+
+	mp_cert = certArray[0];
+
+	if (mp_cert == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::X509Error,
 			"NSSX509:loadX509Base64Bin - Error decoding certificate");
