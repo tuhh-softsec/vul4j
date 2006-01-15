@@ -101,6 +101,11 @@ XALAN_USING_XALAN(XalanTransformer)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #endif
+#if defined (HAVE_NSS)
+#	include <xsec/enc/NSS/NSSCryptoKeyHMAC.hpp>
+#	include <xsec/enc/NSS/NSSCryptoKeyRSA.hpp>
+#	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
+#endif
 
 using std::ostream;
 using std::cout;
@@ -122,6 +127,7 @@ XERCES_CPP_NAMESPACE_USE
 
 bool	g_printDocs = false;
 bool	g_useWinCAPI = false;
+bool	g_useNSS = false;
 bool    g_haveAES = true;
 
 // --------------------------------------------------------------------------------
@@ -336,24 +342,24 @@ DOMNode * findNode(DOMNode * n, XMLCh * name) {
 XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 
 	// Create the HMAC key
-	XSECCryptoKeyHMAC * hmacKey;
+	XSECCryptoKeyHMAC * hmacKey = NULL;
 
-#if defined (HAVE_OPENSSL) && defined(HAVE_WINCAPI)
+#if defined(HAVE_WINCAPI)
 
 	if (g_useWinCAPI == true) {
 		hmacKey = new WinCAPICryptoKeyHMAC(0);
 	}
-	else {
-		hmacKey = new OpenSSLCryptoKeyHMAC();
+#endif
+
+# if defined (HAVE_NSS)
+	if (g_useNSS == true) {
+		hmacKey = new NSSCryptoKeyHMAC();
 	}
-#else
-#	if defined (HAVE_OPENSSL)
+#endif
+
+#if defined (HAVE_OPENSSL)
+	if (hmacKey == NULL)
 		hmacKey = new OpenSSLCryptoKeyHMAC();
-#	else
-#		if defined (HAVE_WINCAPI)
-		hmacKey = new WinCAPICryptoKeyHMAC(0);
-#		endif
-#	endif
 #endif
 
 	hmacKey->setKey((unsigned char *) str, (unsigned int) strlen((char *)str));
@@ -1632,56 +1638,92 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		// Key wraps
 		cerr << "RSA key wrap... ";
 
-#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
-		if (!g_useWinCAPI) {
-#endif
-
 #if defined (HAVE_OPENSSL)
-		// Load the key
-		BIO * bioMem = BIO_new(BIO_s_mem());
-		BIO_puts(bioMem, s_tstRSAPrivateKey);
-		EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
+		if (!g_useWinCAPI && !g_useNSS) {
+			// Load the key
+			BIO * bioMem = BIO_new(BIO_s_mem());
+			BIO_puts(bioMem, s_tstRSAPrivateKey);
+			EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
 
-		OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
+			OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
 
-		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_15);
+			unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_15);
 
-		cerr << "RSA OAEP key wrap... ";
-		k = new OpenSSLCryptoKeyRSA(pk);
-		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_OAEP_MGFP1);
+			cerr << "RSA OAEP key wrap... ";
+			k = new OpenSSLCryptoKeyRSA(pk);
+			unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_OAEP_MGFP1);
 
-		cerr << "RSA OAEP key wrap + params... ";
-		k = new OpenSSLCryptoKeyRSA(pk);
-		k->setOAEPparams(s_tstOAEPparams, (unsigned int) strlen((char *) s_tstOAEPparams));
+			cerr << "RSA OAEP key wrap + params... ";
+			k = new OpenSSLCryptoKeyRSA(pk);
+			k->setOAEPparams(s_tstOAEPparams, (unsigned int) strlen((char *) s_tstOAEPparams));
 
-		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_OAEP_MGFP1);
+			unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_OAEP_MGFP1);
 
-		BIO_free(bioMem);
-		EVP_PKEY_free(pk);
-
-#endif
-
-#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
-		} else {
+			BIO_free(bioMem);
+			EVP_PKEY_free(pk);
+		}
 #endif
 
 #if defined (HAVE_WINCAPI)
+		if (g_useWinCAPI) {
 
-		// Use the internal key
-		WinCAPICryptoProvider *cp = (WinCAPICryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
-		HCRYPTPROV p = cp->getApacheKeyStore();
-		
-		WinCAPICryptoKeyRSA * rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
-		unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_15);
+			// Use the internal key
+			WinCAPICryptoProvider *cp = (WinCAPICryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
+			HCRYPTPROV p = cp->getApacheKeyStore();
+			
+			WinCAPICryptoKeyRSA * rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
+			unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_15);
 
-		cerr << "RSA OAEP key wrap... ";
-		rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
-		unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_OAEP_MGFP1);
-
+			cerr << "RSA OAEP key wrap... ";
+			rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
+			unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_OAEP_MGFP1);
+		}
 
 #endif
 
-#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+#if defined (HAVE_NSS)
+		if (g_useNSS) {
+			// Use the internal key
+			NSSCryptoProvider *cp = (NSSCryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
+
+			// Heavily based on Mozilla example code
+			SECKEYPrivateKey *prvKey = 0;
+			SECKEYPublicKey *pubKey = 0;
+			PK11SlotInfo *slot = 0;
+			PK11RSAGenParams rsaParams;
+
+			// Use a bog standard key size
+			rsaParams.keySizeInBits = 1024;
+			rsaParams.pe = 65537;
+  
+			// We need somewhere to temporarily store a generated key
+		    slot = PK11_GetInternalKeySlot();
+			if (!slot) { 
+				cerr << "Error generating key - can't get NSS slot\n";
+				exit (1);
+			}
+
+			// Do the generate
+			prvKey = PK11_GenerateKeyPair(slot, CKM_RSA_PKCS_KEY_PAIR_GEN, &rsaParams,
+               &pubKey, PR_FALSE, PR_TRUE, 0);
+
+			if (!prvKey) {
+				if (slot)
+					PK11_FreeSlot(slot);
+				cerr << "Error generating key within NSS\n";
+				exit (1);
+			}
+
+			// Now use the key!
+			NSSCryptoKeyRSA * rsaKey = new NSSCryptoKeyRSA(pubKey, prvKey);
+			unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_15);
+
+			if (slot) 
+				// Actual keys will be deleted by the provider
+				PK11_FreeSlot(slot);
+			
+			cerr << "RSA OAEP key wrap skipped - not yet supported in NSS crypto provider\n";
+			
 		}
 #endif
 
@@ -2082,6 +2124,10 @@ void printUsage(void) {
 	cerr << "     --wincapi/-w\n";
 	cerr << "         Use Windows Crypto API for crypto functionality\n\n";
 #endif
+#if defined (HAVE_NSS)
+	cerr << "     --nss/-n\n";
+	cerr << "         Use NSS Crypto API for crypto functionality\n\n";
+#endif
 	cerr << "     --print-docs/-p\n";
 	cerr << "         Print the test documents\n\n";
 	cerr << "     --signature-only/-s\n";
@@ -2133,6 +2179,13 @@ int main(int argc, char **argv) {
 			paramCount++;
 		}
 #endif
+#if defined(HAVE_NSS)
+		else if (stricmp(argv[paramCount], "--nss") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+			g_useNSS = true;
+			paramCount++;
+		}
+#endif
+
 		else if (stricmp(argv[paramCount], "--signature-only") == 0 || stricmp(argv[paramCount], "-s") == 0) {
 			doEncryptionTest = false;
 			doEncryptionUnitTests = false;
@@ -2205,6 +2258,15 @@ int main(int argc, char **argv) {
 			WinCAPICryptoProvider * cp;
 			// First set windows as the crypto provider
 			cp = new WinCAPICryptoProvider();
+			XSECPlatformUtils::SetCryptoProvider(cp);
+		}
+#endif
+#if defined (HAVE_NSS)
+		if (g_useNSS) {
+			// Setup for NSS Crypt API
+			NSSCryptoProvider * cp;
+			// First set windows as the crypto provider
+			cp = new NSSCryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 		}
 #endif
