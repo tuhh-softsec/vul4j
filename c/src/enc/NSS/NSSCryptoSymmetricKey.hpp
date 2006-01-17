@@ -32,6 +32,9 @@
 
 #if defined (HAVE_NSS)
 
+#include "nss/pk11func.h"
+#include "nss/nss.h"
+
 #define NSS_MAX_BLOCK_SIZE		32
 
 /**
