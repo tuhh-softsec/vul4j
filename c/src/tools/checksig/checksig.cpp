@@ -108,6 +108,13 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
+#if defined (HAVE_NSS)
+
+#	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
+#	include <xsec/enc/NSS/NSSCryptoKeyHMAC.hpp>
+
+#endif
+
 #include <time.h>
 
 #ifdef XSEC_NO_XALAN
@@ -478,15 +485,7 @@ int evaluate(int argc, char ** argv) {
 		// Load a key if necessary
 		if (hmacKeyStr != NULL) {
 
-#if defined (HAVE_OPENSSL)
-			OpenSSLCryptoKeyHMAC	* hmacKey;
-			hmacKey = new OpenSSLCryptoKeyHMAC();
-#else
-#	if defined (HAVE_WINCAPI)
-			WinCAPICryptoKeyHMAC	* hmacKey;
-			hmacKey = new WinCAPICryptoKeyHMAC(0);
-#	endif
-#endif
+			XSECCryptoKeyHMAC * hmacKey = XSECPlatformUtils::g_cryptoProvider->keyHMAC();
 			hmacKey->setKey((unsigned char *) hmacKeyStr, (unsigned int) strlen(hmacKeyStr));
 			sig->setSigningKey(hmacKey);
 
