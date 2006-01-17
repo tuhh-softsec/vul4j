@@ -43,7 +43,7 @@ XERCES_CPP_NAMESPACE_USE
 
 #include <iostream>
 
-#if !defined (HAVE_OPENSSL) && !defined (HAVE_WINCAPI)
+#if !defined (HAVE_OPENSSL) && !defined (HAVE_WINCAPI) && !defined (HAVE_NSS)
 #	error Require OpenSSL or Windows Crypto API for the Merlin Resolver
 #endif
 
@@ -56,9 +56,14 @@ XERCES_CPP_NAMESPACE_USE
 #endif
 
 #if defined (HAVE_WINCAPI)
+#   include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #   include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #endif
 
+#if defined (HAVE_NSS)
+#   include <xsec/enc/NSS/NSSCryptoProvider.hpp>
+#   include <xsec/enc/NSS/NSSCryptoSymmetricKey.hpp>
+#endif
 
 // --------------------------------------------------------------------------------
 //           Merlin Xenc-Five keys and Strings
@@ -280,22 +285,8 @@ void reverseSlash(safeBuffer &path) {
 	
 XSECCryptoSymmetricKey * XencInteropResolver::makeSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType type) {
 
-#if defined (HAVE_OPENSSL)
-
-	OpenSSLCryptoSymmetricKey * k;
-	k = new OpenSSLCryptoSymmetricKey(type);
-
-	return k;
-
-#else
-
-	WinCAPICryptoSymmetricKey * k;
-	k = new WinCAPICryptoSymmetricKey(0, type);
-
-	return k;
-
-#endif
-
+		XSECCryptoSymmetricKey * k = XSECPlatformUtils::g_cryptoProvider->keySymmetric(type);
+		return k;
 }
 
 #if defined (HAVE_OPENSSL)

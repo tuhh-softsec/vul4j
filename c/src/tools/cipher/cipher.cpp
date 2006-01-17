@@ -101,7 +101,7 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if !defined (HAVE_OPENSSL) && !defined(HAVE_WINCAPI)
+#if !defined (HAVE_OPENSSL) && !defined(HAVE_WINCAPI) && !defined(HAVE_NSS)
 #	error No available cryptoAPI
 #endif
 
@@ -122,6 +122,14 @@ XALAN_USING_XALAN(XalanTransformer)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
+
+#endif
+
+#if defined (HAVE_NSS)
+
+#	include <xsec/enc/NSS/NSSCryptoProvider.hpp>
+#	include <xsec/enc/NSS/NSSCryptoSymmetricKey.hpp>
+#	include <xsec/enc/NSS/NSSCryptoKeyHMAC.hpp>
 
 #endif
 
@@ -176,9 +184,13 @@ void printUsage(void) {
 	cerr << "         Use the interop resolver for Baltimore interop examples\n";
 	cerr << "     --out-file/-o\n";
 	cerr << "         Output the result to the indicated file (rather than stdout)\n";
-#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+#if defined (HAVE_WINCAPI)
 	cerr << "     --wincapi/-w\n";
-	cerr << "         Use Windows Crypto API rather than OpenSSL\n";
+	cerr << "         Force use of Windows Crypto API\n";
+#endif
+#if defined (HAVE_NSS)
+	cerr << "     --nss/-n\n";
+	cerr << "         Force use of NSS Crypto API\n";
 #endif
 
 	cerr << "\n     Exits with codes :\n";
@@ -267,10 +279,18 @@ int evaluate(int argc, char ** argv) {
 			paramCount++;
 		}
 
-#if defined (HAVE_WINCAPI) && defined (HAVE_OPENSSL)
+#if defined (HAVE_WINCAPI)
 		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0) {
 			// Use the interop key resolver
 			WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
+			XSECPlatformUtils::SetCryptoProvider(cp);
+			paramCount++;
+		}
+#endif
+#if defined (HAVE_NSS)
+		else if (stricmp(argv[paramCount], "--nss") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+			// NSS Crypto Provider
+			NSSCryptoProvider * cp = new NSSCryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 			paramCount++;
 		}
