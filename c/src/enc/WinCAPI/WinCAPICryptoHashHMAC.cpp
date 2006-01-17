@@ -231,6 +231,8 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 			0);
 
 		if (fResult == 0 || h == 0) {
+			if (h)
+				CryptDestroyHash(h);
 			throw XSECCryptoException(XSECCryptoException::MDError,
 				"WinCAPI:Hash::setKey - Error hashing key data"); 
 		}
@@ -246,12 +248,18 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 			0);
 
 		if (fResult == 0 || h == 0) {
+			if (h)
+				CryptDestroyHash(h);
 			throw XSECCryptoException(XSECCryptoException::MDError,
 				"WinCAPI:Hash::setKey - Error getting hash result"); 
 		}
 
 		keyBuf.sbMemcpyIn(outData, outDataLen);
 		keyLen = outDataLen;
+
+		if (h)
+			CryptDestroyHash(h);
+
 
 	}
 
@@ -358,6 +366,8 @@ unsigned int WinCAPICryptoHashHMAC::finish(unsigned char * hash,
 		0);
 
 	if (fResult == 0 || h == 0) {
+		if (h)
+			CryptDestroyHash(h);
 		throw XSECCryptoException(XSECCryptoException::MDError,
 			"WinCAPI:Hash::finish - Error hashing opad data"); 
 	}
@@ -369,6 +379,8 @@ unsigned int WinCAPICryptoHashHMAC::finish(unsigned char * hash,
 		0);
 
 	if (fResult == 0 || h == 0) {
+		if (h)
+			CryptDestroyHash(h);
 		throw XSECCryptoException(XSECCryptoException::MDError,
 			"WinCAPI:Hash::finish - Error hashing ipad hash to opad"); 
 	}

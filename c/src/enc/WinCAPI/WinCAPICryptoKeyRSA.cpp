@@ -62,7 +62,7 @@ WinCAPICryptoKeyRSA::~WinCAPICryptoKeyRSA() {
 
 	// If we have a RSA, delete it
 
-	if (m_key == 0)
+	if (m_key != 0)
 		CryptDestroyKey(m_key);
 
 	if (mp_exponent)
@@ -337,13 +337,19 @@ bool WinCAPICryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 		DWORD error = GetLastError();
 
 		if (error != NTE_BAD_SIGNATURE) {
+			if (h)
+				CryptDestroyHash(h);
 			throw XSECCryptoException(XSECCryptoException::RSAError,
 			"WinCAPI:RSA - Error occurred in RSA validation");
 		}
 
+		if (h)
+			CryptDestroyHash(h);
 		return false;
 	}
 
+	if (h)
+		CryptDestroyHash(h);
 	return true;
 
 }
@@ -388,6 +394,8 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 					0);
 
 	if (!fResult) {
+		if (h)
+			CryptDestroyHash(h);
 		throw XSECCryptoException(XSECCryptoException::RSAError,
 			"WinCAPI:RSA - Error Setting Hash Value in Windows Hash object");
 	}
@@ -404,6 +412,8 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 
 	if (!fResult || rawSigLen < 1) {
 
+		if (h)
+			CryptDestroyHash(h);
 		throw XSECCryptoException(XSECCryptoException::RSAError,
 		"WinCAPI:RSA - Error occurred obtaining RSA sig length");
 	}
@@ -422,9 +432,17 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 
 	if (!fResult || rawSigLen < 1) {
 
+		// Free the hash
+		if (h)
+			CryptDestroyHash(h);
+
 		throw XSECCryptoException(XSECCryptoException::RSAError,
 		"WinCAPI:RSA - Error occurred signing hash");
 	}
+
+	// Free the hash
+	if (h)
+		CryptDestroyHash(h);
 
 	// Now encode into a signature block
 	BYTE *rawSigFinal;

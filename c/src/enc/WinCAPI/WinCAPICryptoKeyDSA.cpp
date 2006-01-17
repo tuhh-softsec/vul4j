@@ -367,6 +367,8 @@ bool WinCAPICryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 					0);
 
 	if (!fResult) {
+		if (h)
+			CryptDestroyHash(h);
 		throw XSECCryptoException(XSECCryptoException::DSAError,
 			"WinCAPI:DSA - Error Setting Hash Value in Windows Hash object");
 	}
@@ -390,12 +392,19 @@ bool WinCAPICryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 		 */
 
 		if (error != NTE_BAD_SIGNATURE && error != NTE_FAIL) {
+			if (h)
+				CryptDestroyHash(h);
 			throw XSECCryptoException(XSECCryptoException::DSAError,
 			"WinCAPI:DSA - Error occurred in DSA validation");
 		}
 
+		if (h)
+			CryptDestroyHash(h);
 		return false;
 	}
+
+	if (h)
+		CryptDestroyHash(h);
 
 	return true;
 
@@ -441,6 +450,8 @@ unsigned int WinCAPICryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 					0);
 
 	if (!fResult) {
+		if (h)
+			CryptDestroyHash(h);
 		throw XSECCryptoException(XSECCryptoException::DSAError,
 			"WinCAPI:DSA - Error Setting Hash Value in Windows Hash object");
 	}
@@ -458,10 +469,14 @@ unsigned int WinCAPICryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 
 	if (!fResult || rawSigLen != 40) {
 
+		if (h)
+			CryptDestroyHash(h);
 		throw XSECCryptoException(XSECCryptoException::DSAError,
 		"WinCAPI:DSA - Error occurred in DSA signing");
 	}
 
+	if (h)
+		CryptDestroyHash(h);
 	// Now encode into a signature block
 	BYTE rawSigFinal[40];
 
