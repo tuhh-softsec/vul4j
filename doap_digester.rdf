@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://usefulinc.com/ns/doap#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:asfext="http://projects.apache.org/ns/asfext#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:doap="http://usefulinc.com/ns/doap#" xml:lang="en">
+  <Project rdf:about="http://jakarta.apache.org/commons/digester/">
+    <name>Apache Jakarta Commons Digester</name>
+    <homepage rdf:resource="http://jakarta.apache.org/commons/digester/"/>
+    <programming-language>Java</programming-language>
+    <category rdf:resource="http://projects.apache.org/category/library"/>
+    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20"/>
+    <bug-database rdf:resource="http://issues.apache.org/bugzilla/buglist.cgi?product=Commons&amp;component=digester"/>
+    <download-page rdf:resource="http://jakarta.apache.org/site/downloads/downloads_commons-digester.cgi"/>
+    <asfext:pmc rdf:resource="Jakarta"/>
+    <shortdesc xml:lang="en">Rule based XML-&gt;Java object mapping module</shortdesc>
+    <description xml:lang="en">
+    The Digester package lets you configure an XML-&gt;Java object mapping module
+    which triggers certain actions called rules whenever a particular 
+    pattern of nested XML elements is recognized.
+  </description>
+    <repository>
+      <SVNRepository>
+        <browse rdf:resource="http://svn.apache.org/repos/asf/jakarta/commons/proper/digester/trunk"/>
+        <location rdf:resource="http://svn.apache.org/repos/asf/jakarta/commons/proper/digester"/>
+      </SVNRepository>
+    </repository>
+    <release>
+      <revision>
+        <name>common-digester</name>
+        <created>2005-06-11</created>
+        <version>1.7</version>
+      </revision>
+    </release>
+    <mailing-list rdf:resource="http://jakarta.apache.org/site/mail2.html#Commons"/>
+  </Project>
+</rdf:RDF>
