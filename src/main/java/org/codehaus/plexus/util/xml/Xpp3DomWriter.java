@@ -1,10 +1,16 @@
 package org.codehaus.plexus.util.xml;
 
+import java.io.PrintWriter;
 import java.io.Writer;
 
 public class Xpp3DomWriter
 {
     public static void write( Writer writer, Xpp3Dom dom )
+    {
+        write( new PrettyPrintXMLWriter( writer ), dom );
+    }
+
+    public static void write( PrintWriter writer, Xpp3Dom dom )
     {
         write( new PrettyPrintXMLWriter( writer ), dom );
     }
