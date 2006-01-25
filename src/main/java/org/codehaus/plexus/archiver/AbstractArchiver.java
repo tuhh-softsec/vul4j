@@ -204,7 +204,11 @@ public abstract class AbstractArchiver
     public void setDestFile( File destFile )
     {
         this.destFile = destFile;
-        destFile.getParentFile().mkdirs();
+
+        if ( destFile != null )
+        {
+            destFile.getParentFile().mkdirs();
+        }
     }
 
     protected Logger getLogger()
