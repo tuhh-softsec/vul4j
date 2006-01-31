@@ -50,8 +50,8 @@ import org.apache.tools.ant.util.JavaEnvUtils;
  */
 public class ServiceInstallersMojo extends AbstractMojo
 {
-    static final String BOOTSTRAPPER_ARTIFACT_ID = "org.apache.directory.server.standalone.daemon";
-    static final String BOOTSTRAPPER_GROUP_ID = "org.apache.directory.server.standalone.daemon";
+    static final String BOOTSTRAPPER_ARTIFACT_ID = "daemon-bootstrappers";
+    static final String BOOTSTRAPPER_GROUP_ID = "org.apache.directory.daemon";
     static final String LOGGER_ARTIFACT_ID = "nlog4j";
     static final String LOGGER_GROUP_ID = "org.slf4j";
     static final String DAEMON_ARTIFACT_ID = "commons-daemon";
