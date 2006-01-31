@@ -8,7 +8,7 @@
   </parent>
   <groupId>org.apache.directory.daemon</groupId>
   <artifactId>build</artifactId>
-  <name>Apache Directory Daemon Parent Build</name>
+  <name>Apache Directory Daemon</name>
   <packaging>pom</packaging>  
   <version>0.9.4-SNAPSHOT</version>
   <description>
