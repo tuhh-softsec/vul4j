@@ -60,6 +60,7 @@ public class Target
     private String osFamily;
     private String osVersion;
     private String daemonFramework;
+    private String finalName;
     private File loggerConfigurationFile;
     private File serverConfigurationFile;
     private File bootstrapperConfiguraitonFile;
@@ -216,5 +217,17 @@ public class Target
     public List getLibArtifacts()
     {
         return libArtifacts;
+    }
+
+
+    public void setFinalName( String finalName )
+    {
+        this.finalName = finalName;
+    }
+
+
+    public String getFinalName()
+    {
+        return finalName;
     }
 }

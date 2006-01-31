@@ -214,6 +214,17 @@ public class InnoInstallerCommand implements MojoCommand
             filterProperties.put( "app.author", target.getApplication().getAuthors().get( 0 ) );
         }
         
+        if ( target.getFinalName() != null )
+        {
+            filterProperties.put( "app.final.name" , target.getFinalName() );
+        }
+        else
+        {
+            String finalName = target.getApplication().getName() 
+                + "-" + target.getApplication().getVersion() + "-win32-setup.exe"; 
+            filterProperties.put( "app.final.name" , finalName );
+        }
+        
         filterProperties.put( "app.email" , target.getApplication().getEmail() );
         filterProperties.put( "app.url" , target.getApplication().getUrl() );
         filterProperties.put( "app.java.version" , target.getApplication().getMinimumJavaVersion() );

@@ -141,7 +141,7 @@ case "$1" in
     -outfile $SERVER_HOME/var/log/${app}-stdout.log \
     -errfile $SERVER_HOME/var/log/${app}-stderr.log \
     -cp $CLASSPATH \
-    org.apache.directory.server.standalone.daemon.JsvcBootstrapper \
+    org.apache.directory.daemon.JsvcBootstrapper \
     $_${app.caps}_HOME start
 
     if [ `uname` = "Darwin" ] ; then
@@ -173,7 +173,7 @@ case "$1" in
     -stop \
     -pidfile $PID_FILE \
     -Dlog4j.configuration=file://$SERVER_HOME/conf/log4j.properties\
-    org.apache.directory.server.standalone.daemon.JsvcBootstrapper stop
+    org.apache.directory.daemon.JsvcBootstrapper stop
 
     if [ `uname` = "Darwin" ] ; then
         [ "$RETVAL" -eq 0 ] && echo successful ${app} server shutdown || \

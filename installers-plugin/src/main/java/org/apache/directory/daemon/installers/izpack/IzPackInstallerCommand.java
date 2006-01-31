@@ -69,7 +69,16 @@ public class IzPackInstallerCommand implements MojoCommand
         this.mymojo = mymojo;
         File imageDir = layout.getBaseDirectory().getParentFile();
         izPackBase = new File( imageDir, target.getId() );
-        izPackOutput = new File( imageDir, target.getId() + "_izpack_installer.jar" );
+        
+        if ( target.getFinalName() != null )
+        {
+            izPackOutput = new File( imageDir, target.getFinalName() );
+        }
+        else
+        {
+            izPackOutput = new File( imageDir, target.getId() + "_izpack_installer.jar" );
+        }
+
         izPackInput = new File( imageDir, target.getId() + "_izpack_install.xml" );
         izPackUserInput = new File( imageDir, target.getId() + "_izpack_install_user_input.xml" );
         izPackWindowsShortcuts = new File( imageDir, target.getId() + "_izpack_windows_shortcuts.xml" );
