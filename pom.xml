@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.directory</groupId>
+    <artifactId>build</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.apache.directory.daemon</groupId>
+  <artifactId>build</artifactId>
+  <name>Apache Directory Daemon Parent Build</name>
+  <packaging>pom</packaging>  
+  <version>0.9.4-SNAPSHOT</version>
+  <description>
+    Reusable framework for daemon applications based on Commons Daemon
+    Jsvc and Procrun. A small installation layout pattern combined with
+    some utility classes allows applications to be come UNIX daemons or
+    Windows NT services.  Reusable bootstrappers along with an installer
+    plugin allow for the rapid creation of standalone daemon applications.
+  </description>
+  <modules>
+    <module>bootstrappers</module>
+    <module>installers-plugin</module>
+  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>nlog4j</artifactId>
+      <version>1.2.19</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-daemon</groupId>
+      <artifactId>commons-daemon</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+  </dependencies>
+</project>
+

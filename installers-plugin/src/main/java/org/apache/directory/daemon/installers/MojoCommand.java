@@ -14,7 +14,7 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers;
+package org.apache.directory.daemon.installers;
 
 
 import org.apache.maven.plugin.MojoExecutionException;

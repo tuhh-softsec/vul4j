@@ -14,28 +14,16 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.daemon;
+package org.apache.directory.daemon.installers;
 
 
 /**
- * Exit codes for the bootstrappers.
+ * An Rpm package target.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface ExitCodes
+public class RpmTarget extends Target
 {
-    int CLASS_LOOKUP = 1;
-    int INSTANTIATION = 2;
-    int METHOD_LOOKUP = 3;
-    int INITIALIZATION = 4;
-    int START = 5;
-    int STOP = 6;
-    int PROPLOAD = 7;
-    int VERIFICATION = 8;
-    int DESTROY = 9;
-    int BAD_ARGUMENTS = 10;
-    int BAD_COMMAND = 11;
-    int UNKNOWN = 12;
-    int INVOCATION = 13;
+
 }

@@ -14,7 +14,7 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.daemon;
+package org.apache.directory.daemon;
 
 
 import org.slf4j.LoggerFactory;

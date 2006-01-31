@@ -14,7 +14,7 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers;
+package org.apache.directory.daemon.installers;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.

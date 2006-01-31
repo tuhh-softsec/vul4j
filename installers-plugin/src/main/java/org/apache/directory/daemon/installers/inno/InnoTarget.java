@@ -14,12 +14,12 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers.inno;
+package org.apache.directory.daemon.installers.inno;
 
 import java.io.File;
 import java.util.Calendar;
 
-import org.apache.directory.server.standalone.installers.Target;
+import org.apache.directory.daemon.installers.Target;
 
 
 /**

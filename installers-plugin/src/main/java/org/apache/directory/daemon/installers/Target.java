@@ -14,14 +14,14 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers;
+package org.apache.directory.daemon.installers;
 
 
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.directory.server.standalone.daemon.InstallationLayout;
+import org.apache.directory.daemon.InstallationLayout;
 
 
 /**

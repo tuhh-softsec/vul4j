@@ -1,5 +1,5 @@
 <assembly>
-  <id>apacheds-main</id>
+  <id>daemon-bootstrappers</id>
   <formats>
     <format>jar</format>
   </formats>

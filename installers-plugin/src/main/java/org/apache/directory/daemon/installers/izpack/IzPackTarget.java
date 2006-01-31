@@ -14,11 +14,11 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers.izpack;
+package org.apache.directory.daemon.installers.izpack;
 
 import java.io.File;
 
-import org.apache.directory.server.standalone.installers.Target;
+import org.apache.directory.daemon.installers.Target;
 
 
 /**

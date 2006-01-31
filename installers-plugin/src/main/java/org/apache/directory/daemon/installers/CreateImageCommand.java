@@ -14,7 +14,7 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers;
+package org.apache.directory.daemon.installers;
 
 
 import java.io.File;
@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 
-import org.apache.directory.server.standalone.daemon.Bootstrapper;
-import org.apache.directory.server.standalone.daemon.InstallationLayout;
+import org.apache.directory.daemon.Bootstrapper;
+import org.apache.directory.daemon.InstallationLayout;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;

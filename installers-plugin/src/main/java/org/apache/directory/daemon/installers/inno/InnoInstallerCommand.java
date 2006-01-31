@@ -14,7 +14,7 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers.inno;
+package org.apache.directory.daemon.installers.inno;
 
 
 import java.io.File;
@@ -24,9 +24,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.directory.server.standalone.installers.MojoCommand;
-import org.apache.directory.server.standalone.installers.MojoHelperUtils;
-import org.apache.directory.server.standalone.installers.ServiceInstallersMojo;
+import org.apache.directory.daemon.installers.MojoCommand;
+import org.apache.directory.daemon.installers.MojoHelperUtils;
+import org.apache.directory.daemon.installers.ServiceInstallersMojo;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;

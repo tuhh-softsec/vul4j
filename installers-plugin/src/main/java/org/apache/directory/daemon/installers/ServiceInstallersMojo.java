@@ -14,7 +14,7 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers;
+package org.apache.directory.daemon.installers;
 
 
 import java.io.File;
@@ -23,10 +23,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.directory.server.standalone.installers.inno.InnoInstallerCommand;
-import org.apache.directory.server.standalone.installers.inno.InnoTarget;
-import org.apache.directory.server.standalone.installers.izpack.IzPackInstallerCommand;
-import org.apache.directory.server.standalone.installers.izpack.IzPackTarget;
+import org.apache.directory.daemon.installers.inno.InnoInstallerCommand;
+import org.apache.directory.daemon.installers.inno.InnoTarget;
+import org.apache.directory.daemon.installers.izpack.IzPackInstallerCommand;
+import org.apache.directory.daemon.installers.izpack.IzPackTarget;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Developer;

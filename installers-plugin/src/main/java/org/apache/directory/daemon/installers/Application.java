@@ -1,4 +1,4 @@
-package org.apache.directory.server.standalone.installers;
+package org.apache.directory.daemon.installers;
 
 
 import java.io.File;

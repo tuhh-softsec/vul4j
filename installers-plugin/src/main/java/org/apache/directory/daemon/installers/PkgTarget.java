@@ -14,16 +14,16 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.server.standalone.installers;
+package org.apache.directory.daemon.installers;
 
 
 /**
- * An Rpm package target.
+ * A Solaris pkg target.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class RpmTarget extends Target
+public class PkgTarget extends Target
 {
-
+    
 }

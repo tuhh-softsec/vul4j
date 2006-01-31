@@ -2,38 +2,26 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.directory</groupId>
+    <groupId>org.apache.directory.daemon</groupId>
     <artifactId>build</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.9.4-SNAPSHOT</version>
   </parent>
-  <version>0.9.4-SNAPSHOT</version>
-  <artifactId>plugin</artifactId>
-  <groupId>org.apache.directory.server.standalone.installers.plugin</groupId>
-  <name>installers-plugin</name>
+  <artifactId>daemon-plugin</artifactId>
+  <name>Apache Directory Daemon Installers Plugin for Maven 2</name>
   <packaging>maven-plugin</packaging>
   <description>
   </description>
   <distributionManagement>
     <site>
       <id>apache.websites</id>
-      <url>scp://minotaur.apache.org/www/directory.apache.org/newsite/subprojects/apacheds/projects/apacheds-standalone/</url>
+      <url>scp://minotaur.apache.org/www/directory.apache.org/newsite/subprojects/daemon/</url>
     </site>
   </distributionManagement>
   <dependencies>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>nlog4j</artifactId>
-      <version>1.2.19</version>
-    </dependency>  
-    <dependency>
-      <groupId>org.apache.directory.server.standalone.daemon</groupId>
-      <artifactId>org.apache.directory.server.standalone.daemon</artifactId>
+      <groupId>org.apache.directory.daemon</groupId>
+      <artifactId>daemon-bootstrappers</artifactId>
       <version>0.9.4-SNAPSHOT</version>
-    </dependency>  
-    <dependency>
-      <groupId>commons-daemon</groupId>
-      <artifactId>commons-daemon</artifactId>
-      <version>1.0.1</version>
     </dependency>  
     <dependency>
       <groupId>org.apache.maven</groupId>
