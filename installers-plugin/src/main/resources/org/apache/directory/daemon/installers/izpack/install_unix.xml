@@ -82,6 +82,12 @@
       <parsable os="unix" targetfile="/etc/init.d/${app}" type="shell" />
       <executable os="unix" targetfile="/etc/init.d/${app}" stage="never" keep="true" />
       <executable os="unix" targetfile="$INSTALL_PATH/bin/${server.init}" stage="never" keep="true" />
+      <!-- 
+      HACK BELOW!
+            todo clean me up
+            see DIREVE-333
+       -->
+      <executable os="unix" targetfile="$INSTALL_PATH/bin/apacheds-tools.sh" stage="never" keep="true" />
     </pack>
   </packs>
 </installation>

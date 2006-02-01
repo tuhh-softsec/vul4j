@@ -210,6 +210,24 @@ public class IzPackInstallerCommand implements MojoCommand
         }
         else if ( target.getOsFamily().equals( "unix" ) || target.getOsFamily().equals( "mac" ) )
         {
+            /** HACK!
+             * @todo clean me up
+             * @see http://issues.apache.org/jira/browse/DIREVE-333 
+             */
+            File toolsSource = new File( "src/main/installers/apacheds-tools.sh" );
+            File toolsTarget = new File( layout.getBinDirectory(), "apacheds-tools.sh" );
+            try
+            {
+                MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, 
+                    toolsSource, toolsTarget, true );
+            }
+            catch ( IOException e )
+            {
+                mymojo.getLog().error( "Failed to apacheds-tools.sh file "  
+                    + toolsSource
+                    + " into position " + toolsTarget, e );
+            }
+            
             if ( target.getIzPackInstallFile() != null && target.getIzPackInstallFile().exists() )
             {
                 try

@@ -151,6 +151,22 @@ public class CreateImageCommand implements MojoCommand
             }
         }
         
+        // copy over the REQUIRED tools.jar file 
+        /** HACK!
+         * @todo clean me up
+         * @see http://issues.apache.org/jira/browse/DIREVE-333 
+         */
+        File tools = new File( layout.getBinDirectory(), "tools.jar" );
+        try
+        {
+            FileUtils.copyFile( mymojo.getTools().getFile(), tools );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoFailureException( "Failed to copy tools.jar " + mymojo.getTools().getFile()
+                + " into position " + tools );
+        }
+        
         // copy over the REQUIRED bootstrapper.jar file 
         try
         {

@@ -47,6 +47,8 @@ Source: {#SourceBase}\bin\${app}w.exe; DestDir: {app}\bin; Tasks: ; Languages:
 Source: {#SourceBase}\bin\${app}.exe; DestDir: {app}\bin
 Source: {#SourceBase}\bin\bootstrapper.jar; DestDir: {app}\bin; DestName: bootstrapper.jar
 Source: {#SourceBase}\bin\logger.jar; DestDir: {app}\bin; DestName: logger.jar
+; tools.jar is a HACK SEE DIREVE-333
+Source: {#SourceBase}\bin\tools.jar; DestDir: {app}\bin; DestName: tools.jar
 Source: {#SourceBase}\bin\daemon.jar; DestDir: {app}\bin; DestName: daemon.jar
 ; conf directory targets
 Source: {#SourceBase}\conf\log4j.properties; DestDir: {app}\conf; DestName: log4j.properties

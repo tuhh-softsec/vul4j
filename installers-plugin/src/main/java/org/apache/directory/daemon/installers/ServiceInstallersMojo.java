@@ -52,6 +52,14 @@ public class ServiceInstallersMojo extends AbstractMojo
 {
     static final String BOOTSTRAPPER_ARTIFACT_ID = "daemon-bootstrappers";
     static final String BOOTSTRAPPER_GROUP_ID = "org.apache.directory.daemon";
+    
+    /** HACK!
+     * @todo clean me up
+     * @see http://issues.apache.org/jira/browse/DIREVE-333 
+     */
+    static final String TOOLS_ARTIFACT_ID = "apacheds-tools";
+    static final String TOOLS_GROUP_ID = "org.apache.directory.server";
+    
     static final String LOGGER_ARTIFACT_ID = "nlog4j";
     static final String LOGGER_GROUP_ID = "org.slf4j";
     static final String DAEMON_ARTIFACT_ID = "commons-daemon";
@@ -131,6 +139,13 @@ public class ServiceInstallersMojo extends AbstractMojo
     private Artifact logger;
     /** commons-daemon dependency needed by native daemon */
     private Artifact daemon;
+
+    /** HACK!
+     * @todo clean me up
+     * @see http://issues.apache.org/jira/browse/DIREVE-333 
+     */
+    private Artifact tools;
+    
     private List allTargets;
     
     
@@ -362,15 +377,25 @@ public class ServiceInstallersMojo extends AbstractMojo
                 getLog().info( "Found bootstrapper dependency with version: " + artifact.getVersion() );
                 bootstrapper = artifact;
             }
-            if ( artifact.getArtifactId().equals( LOGGER_ARTIFACT_ID ) || artifact.getGroupId().equals( LOGGER_GROUP_ID ) )
+            else if ( artifact.getArtifactId().equals( LOGGER_ARTIFACT_ID ) || artifact.getGroupId().equals( LOGGER_GROUP_ID ) )
             {
                 getLog().info( "Found logger dependency with version: " + artifact.getVersion() );
                 logger = artifact;
             }
-            if ( artifact.getArtifactId().equals( DAEMON_ARTIFACT_ID ) || artifact.getGroupId().equals( DAEMON_GROUP_ID ) )
+            else if ( artifact.getArtifactId().equals( DAEMON_ARTIFACT_ID ) || artifact.getGroupId().equals( DAEMON_GROUP_ID ) )
             {
                 getLog().info( "Found daemon dependency with version: " + artifact.getVersion() );
                 daemon = artifact;
+            }
+            
+            /** HACK!
+             * @todo clean me up
+             * @see http://issues.apache.org/jira/browse/DIREVE-333 
+             */
+            else if ( artifact.getArtifactId().equals( TOOLS_ARTIFACT_ID ) || artifact.getGroupId().equals( TOOLS_GROUP_ID ) )
+            {
+                getLog().info( "Found tools dependency with version: " + artifact.getVersion() );
+                tools = artifact;
             }
         }
 
@@ -449,6 +474,11 @@ public class ServiceInstallersMojo extends AbstractMojo
     public Artifact getLogger()
     {
         return logger;
+    }
+
+    public Artifact getTools()
+    {
+        return tools;
     }
 
     public String getEncoding()
