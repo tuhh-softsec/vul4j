@@ -214,7 +214,7 @@ public class IzPackInstallerCommand implements MojoCommand
              * @todo clean me up
              * @see http://issues.apache.org/jira/browse/DIREVE-333 
              */
-            File toolsSource = new File( "src/main/installers/apacheds-tools.sh" );
+            File toolsSource = new File( this.mymojo.getSourceDirectory(), "apacheds-tools.sh" );
             File toolsTarget = new File( layout.getBinDirectory(), "apacheds-tools.sh" );
             try
             {
@@ -223,7 +223,7 @@ public class IzPackInstallerCommand implements MojoCommand
             }
             catch ( IOException e )
             {
-                mymojo.getLog().error( "Failed to apacheds-tools.sh file "  
+                mymojo.getLog().error( "Failed to copy apacheds-tools.sh file "  
                     + toolsSource
                     + " into position " + toolsTarget, e );
             }
