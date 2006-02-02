@@ -210,6 +210,8 @@ public class RpmInstallerCommand implements MojoCommand
     {
         filterProperties.putAll( mymojo.getProject().getProperties() );
         filterProperties.put( "app" , target.getApplication().getName() );
+        filterProperties.put( "app.caps" , target.getApplication().getName().toUpperCase() );
+        filterProperties.put( "app.server.class", mymojo.getApplicationClass() );
         
         char firstChar = target.getApplication().getName().charAt( 0 );
         firstChar = Character.toUpperCase( firstChar );
