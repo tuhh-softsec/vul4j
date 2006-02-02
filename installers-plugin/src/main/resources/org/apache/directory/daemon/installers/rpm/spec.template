@@ -63,9 +63,11 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/${app}-%{version}/bin/${app}
 /usr/local/${app}-%{version}/bin/bootstrapper.jar
 /usr/local/${app}-%{version}/bin/apacheds-tools.jar
+/usr/local/${app}-%{version}/bin/apacheds-tools.sh
 /usr/local/${app}-%{version}/bin/logger.jar
 /usr/local/${app}-%{version}/bin/daemon.jar
 /usr/local/${app}-%{version}/conf/log4j.properties
+/usr/local/${app}-%{version}/conf/bootstrapper.properties
 /usr/local/${app}-%{version}/conf/server.xml
 /usr/local/${app}-%{version}/var/run
 /usr/local/${app}-%{version}/var/log
