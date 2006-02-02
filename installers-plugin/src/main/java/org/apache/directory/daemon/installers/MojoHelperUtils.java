@@ -36,6 +36,7 @@ import java.util.Properties;
 import org.apache.directory.daemon.InstallationLayout;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.tools.ant.taskdefs.Execute;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
@@ -168,5 +169,52 @@ public class MojoHelperUtils
         }
         
         return libArtifacts;
+    }
+    
+    
+    public static void exec( String[] cmd, File workDir, boolean doSudo ) throws MojoFailureException
+    {
+        Execute task = new Execute();
+        task.setCommandline( cmd );
+        task.setSpawn( true );
+        task.setWorkingDirectory( workDir );
+        
+        if ( doSudo )
+        {
+            String cmdString = " ";
+            for ( int ii = 0; ii < cmd.length; ii++ )
+            {
+                System.out.println( "cmd[" + ii + "] = " + cmd[ii] );
+                cmdString += cmd[ii] + " ";
+            }
+
+            String[] temp = new String[2];
+            temp[0] = "sudo";
+            temp[1] = cmdString;
+            cmd = temp;
+        }
+        
+        String cmdString = " ";
+        for ( int ii = 0; ii < cmd.length; ii++ )
+        {
+            System.out.println( "cmd[" + ii + "] = " + cmd[ii] );
+            cmdString += cmd[ii] + " ";
+        }
+        
+        try
+        {
+            task.execute();
+        }
+        catch ( IOException e )
+        {
+            throw new MojoFailureException( "Failed while trying to execute '" + cmdString 
+                + "': " + e.getMessage() );
+        }
+        
+        if ( task.getExitValue() != 0 )
+        {
+            throw new MojoFailureException( "Execution of '" + cmdString 
+                + "' resulted in a non-zero exit value: " + task.getExitValue() );
+        }
     }
 }

@@ -14,54 +14,59 @@
  *   limitations under the License.
  *
  */
-package org.apache.directory.daemon.installers.inno;
+package org.apache.directory.daemon.installers.rpm;
+
 
 import java.io.File;
-import java.util.Calendar;
 
 import org.apache.directory.daemon.installers.Target;
 
 
 /**
- * An Inno installer target for Windows platforms.
- *  
+ * An Rpm package target.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class InnoTarget extends Target
+public class RpmTarget extends Target
 {
-    private File innoCompiler = new File( "C:\\Program Files\\Inno Setup 5\\ISCC.exe" );
-    private File innoConfigurationFile;
-
+    private File rpmBuilder = new File( "/usr/bin/rpmbuild" );
+    private File rpmSpecificationFile;
+    private boolean doSudo;
     
-    public InnoTarget()
-    {
-       Calendar cal = Calendar.getInstance();
-       cal.setTimeInMillis( System.currentTimeMillis() );
-       setCopyrightYear( String.valueOf( cal.get( Calendar.YEAR ) ) );
-    }
     
-
-    public void setInnoCompiler(File innoCompiler)
+    public void setRpmBuilder( File rpmBuilder )
     {
-        this.innoCompiler = innoCompiler;
+        this.rpmBuilder = rpmBuilder;
     }
 
     
-    public File getInnoCompiler()
+    public File getRpmBuilder()
     {
-        return innoCompiler;
+        return rpmBuilder;
     }
 
 
-    public void setInnoConfigurationFile(File innoConfigurationFile)
+    public void setRpmSpecificationFile( File rpmConfigurationFile )
     {
-        this.innoConfigurationFile = innoConfigurationFile;
+        this.rpmSpecificationFile = rpmConfigurationFile;
     }
 
 
-    public File getInnoConfigurationFile()
+    public File getRpmSpecificationFile()
     {
-        return innoConfigurationFile;
+        return rpmSpecificationFile;
+    }
+
+
+    public void setDoSudo( boolean doSudo )
+    {
+        this.doSudo = doSudo;
+    }
+
+
+    public boolean isDoSudo()
+    {
+        return doSudo;
     }
 }

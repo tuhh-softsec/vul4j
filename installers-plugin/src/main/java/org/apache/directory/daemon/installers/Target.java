@@ -61,6 +61,8 @@ public class Target
     private String osVersion;
     private String daemonFramework;
     private String finalName;
+    private String companyName = "Apache Software Foundation";
+    private String copyrightYear = "2006";
     private File loggerConfigurationFile;
     private File serverConfigurationFile;
     private File bootstrapperConfiguraitonFile;
@@ -229,5 +231,29 @@ public class Target
     public String getFinalName()
     {
         return finalName;
+    }
+
+
+    public void setCompanyName(String innoCompanyName)
+    {
+        this.companyName = innoCompanyName;
+    }
+
+
+    public String getCompanyName()
+    {
+        return companyName;
+    }
+
+
+    public void setCopyrightYear(String innoCopyrightYear)
+    {
+        this.copyrightYear = innoCopyrightYear;
+    }
+
+
+    public String getCopyrightYear()
+    {
+        return copyrightYear;
     }
 }

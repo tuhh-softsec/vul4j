@@ -20,6 +20,7 @@ public class Application
     private File icon;
     private File readme;
     private File license;
+    private String licenseType = "ASL 2.0" ;
     
 
     public Application()
@@ -171,5 +172,11 @@ public class Application
     public String getName()
     {
         return name;
+    }
+
+
+    public String getLicenseType()
+    {
+        return licenseType;
     }
 }

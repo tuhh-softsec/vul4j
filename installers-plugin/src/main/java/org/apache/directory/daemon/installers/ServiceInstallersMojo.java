@@ -27,6 +27,8 @@ import org.apache.directory.daemon.installers.inno.InnoInstallerCommand;
 import org.apache.directory.daemon.installers.inno.InnoTarget;
 import org.apache.directory.daemon.installers.izpack.IzPackInstallerCommand;
 import org.apache.directory.daemon.installers.izpack.IzPackTarget;
+import org.apache.directory.daemon.installers.rpm.RpmInstallerCommand;
+import org.apache.directory.daemon.installers.rpm.RpmTarget;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Developer;
@@ -198,6 +200,13 @@ public class ServiceInstallersMojo extends AbstractMojo
                 InnoInstallerCommand innoCmd = null;
                 innoCmd = new InnoInstallerCommand( this, ( InnoTarget ) target );
                 innoCmd.execute();
+            }
+
+            if ( target instanceof RpmTarget )
+            {
+                RpmInstallerCommand rpmCmd = null;
+                rpmCmd = new RpmInstallerCommand( this, ( RpmTarget ) target );
+                rpmCmd.execute();
             }
         }
     }
