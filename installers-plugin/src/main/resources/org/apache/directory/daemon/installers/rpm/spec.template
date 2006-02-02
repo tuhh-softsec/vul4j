@@ -61,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 
 /etc/init.d/${app}
 /usr/local/${app}-%{version}/bin/${app}
-/usr/local/${app}-%{version}/bin/bootstrap.jar
+/usr/local/${app}-%{version}/bin/bootstrapper.jar
 /usr/local/${app}-%{version}/bin/apacheds-tools.jar
 /usr/local/${app}-%{version}/bin/logger.jar
 /usr/local/${app}-%{version}/bin/daemon.jar
@@ -70,8 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/${app}-%{version}/var/run
 /usr/local/${app}-%{version}/var/log
 /usr/local/${app}-%{version}/var/partitions
-/usr/local/${app}-%{version}/logs/${app}-stderr.log
-/usr/local/${app}-%{version}/logs/${app}-stdout.log
+/usr/local/${app}-%{version}/var/log/${app}-stderr.log
+/usr/local/${app}-%{version}/var/log/${app}-stdout.log
 /usr/local/${app}-%{version}/${app.readme.name}
 /usr/local/${app}-%{version}/${app.license.name}
 /usr/local/${app}-%{version}/${app.icon}
