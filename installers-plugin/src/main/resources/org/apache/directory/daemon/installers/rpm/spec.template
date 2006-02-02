@@ -69,6 +69,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/${app}-%{version}/conf/log4j.properties
 /usr/local/${app}-%{version}/conf/bootstrapper.properties
 /usr/local/${app}-%{version}/conf/server.xml
+/usr/local/${app}-%{version}/lib/ext
 /usr/local/${app}-%{version}/var/run
 /usr/local/${app}-%{version}/var/log
 /usr/local/${app}-%{version}/var/partitions
