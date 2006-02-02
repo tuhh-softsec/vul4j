@@ -183,7 +183,9 @@ public class RpmInstallerCommand implements MojoCommand
         
         char firstChar = target.getApplication().getName().charAt( 0 );
         firstChar = Character.toUpperCase( firstChar );
-        filterProperties.put( "app.displayname", firstChar + target.getApplication().getName().substring( 1 ) );
+        filterProperties.put( "app.display.name", firstChar + target.getApplication().getName().substring( 1 ) );
+        filterProperties.put( "app.release", "0" );
+        filterProperties.put( "app.license.type", target.getApplication().getLicenseType() );
 
         if ( target.getApplication().getVersion() != null )
         {
