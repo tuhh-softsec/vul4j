@@ -125,7 +125,25 @@ public class RpmInstallerCommand implements MojoCommand
         // Step 2 & 3: copy rpm spec file and filter 
         // -------------------------------------------------------------------
         
-        // check first to see if the default install.iss file is present in src/main/installers
+        /** HACK!
+         * @todo clean me up
+         * @see http://issues.apache.org/jira/browse/DIREVE-333 
+         */
+        File toolsSource = new File( this.mymojo.getSourceDirectory(), "apacheds-tools.sh" );
+        File toolsTarget = new File( target.getLayout().getBinDirectory(), "apacheds-tools.sh" );
+        try
+        {
+            MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, 
+                toolsSource, toolsTarget, true );
+        }
+        catch ( IOException e )
+        {
+            mymojo.getLog().error( "Failed to copy apacheds-tools.sh file "  
+                + toolsSource
+                + " into position " + toolsTarget, e );
+        }
+        
+        // check first to see if the default spec file is present in src/main/installers
         File projectRpmFile = new File( mymojo.getSourceDirectory(), "spec.template" );
         if ( target.getRpmSpecificationFile() != null && target.getRpmSpecificationFile().exists() )
         {
