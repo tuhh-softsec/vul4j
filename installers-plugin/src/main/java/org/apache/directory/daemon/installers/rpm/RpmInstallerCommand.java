@@ -143,6 +143,18 @@ public class RpmInstallerCommand implements MojoCommand
                 + " into position " + toolsTarget, e );
         }
         
+        try
+        {
+            MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, 
+                getClass().getResourceAsStream( "../template.init" ), target.getLayout().getInitScript(), true );
+        }
+        catch ( IOException e )
+        {
+            mymojo.getLog().error( "Failed to copy init script "  
+                + getClass().getResource( "../template.init" )
+                + " into position " + target.getLayout().getInitScript(), e );
+        }
+
         // check first to see if the default spec file is present in src/main/installers
         File projectRpmFile = new File( mymojo.getSourceDirectory(), "spec.template" );
         if ( target.getRpmSpecificationFile() != null && target.getRpmSpecificationFile().exists() )
