@@ -32,7 +32,7 @@ public class RpmTarget extends Target
 {
     private File rpmBuilder = new File( "/usr/bin/rpmbuild" );
     private File rpmSpecificationFile;
-    private boolean doSudo;
+    private boolean doSudo = false;
     
     
     public void setRpmBuilder( File rpmBuilder )
