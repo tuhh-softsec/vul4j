@@ -187,7 +187,8 @@ public class RpmInstallerCommand implements MojoCommand
 
         if ( target.getApplication().getVersion() != null )
         {
-            filterProperties.put( "app.version", target.getApplication().getVersion() );
+            String version = target.getApplication().getVersion().replace( '-', '_' );
+            filterProperties.put( "app.version", version );
         }
         else
         {
@@ -215,7 +216,7 @@ public class RpmInstallerCommand implements MojoCommand
         else
         {
             String finalName = target.getApplication().getName() 
-                + "-" + target.getApplication().getVersion() + "-win32-setup.exe"; 
+                + "-" + target.getApplication().getVersion() + "-linux-i386.rpm"; 
             filterProperties.put( "app.final.name" , finalName );
         }
         
@@ -293,7 +294,8 @@ public class RpmInstallerCommand implements MojoCommand
 
     private void buildSourceTarball() throws MojoFailureException
     {
-        String dirname = target.getApplication().getName() + "-" + target.getApplication().getVersion();
+        String version = target.getApplication().getVersion().replace( '-', '_' );
+        String dirname = target.getApplication().getName() + "-" + version;
         File sourcesDir = new File( target.getLayout().getBaseDirectory().getParentFile(), dirname );
         try
         {
@@ -308,7 +310,7 @@ public class RpmInstallerCommand implements MojoCommand
         String[] cmd = new String[] {
             "tar", "-zcvf", 
             "/usr/src/redhat/SOURCES/" + target.getApplication().getName() 
-            + "-" + target.getApplication().getVersion() + ".tar.gz",
+            + "-" + version + ".tar.gz",
             sourcesDir.getAbsolutePath()
         };
         
