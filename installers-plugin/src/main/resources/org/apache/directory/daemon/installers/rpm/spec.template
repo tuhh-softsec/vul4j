@@ -28,6 +28,7 @@ cd $RPM_BUILD_ROOT/%{name}-%{version}
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/bin
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/conf
+mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/lib/ext
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/log
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/run
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/partitions
