@@ -219,9 +219,9 @@ public class RpmInstallerCommand implements MojoCommand
         filterProperties.put( "app.release", "0" );
         filterProperties.put( "app.license.type", target.getApplication().getLicenseType() );
 
+        String version = target.getApplication().getVersion().replace( '-', '_' );
         if ( target.getApplication().getVersion() != null )
         {
-            String version = target.getApplication().getVersion().replace( '-', '_' );
             filterProperties.put( "app.version", version );
         }
         else
@@ -276,6 +276,8 @@ public class RpmInstallerCommand implements MojoCommand
         filterProperties.put( "verify.append.libs", getVerifyLibraryJars() );
         filterProperties.put( "installer.output.directory", target.getLayout().getBaseDirectory().getParent() );
         filterProperties.put( "server.init", target.getLayout().getInitScript().getName() );
+
+        filterProperties.put( "app.install.base", "/usr/local/" + target.getApplication().getName() + "-" + version );
     }
     
     
