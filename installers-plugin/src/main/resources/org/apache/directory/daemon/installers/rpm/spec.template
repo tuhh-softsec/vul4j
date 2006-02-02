@@ -31,8 +31,8 @@ mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/conf
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/log
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/run
 mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/partitions
-touch $RPM_BUILD_ROOT/usr/local/${app}-%{version}/logs/${app}-stderr.log
-touch $RPM_BUILD_ROOT/usr/local/${app}-%{version}/logs/${app}-stdout.log
+touch $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/log/${app}-stderr.log
+touch $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/log/${app}-stdout.log
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
 
 pwd
