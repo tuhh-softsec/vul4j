@@ -1,0 +1,179 @@
+/*
+ * Copyright 2005 The Apache Software Foundation.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+/*
+ * Copyright 2005 Sun Microsystems, Inc. All rights reserved.
+ */
+/*
+ * $Id$
+ */
+package org.jcp.xml.dsig.internal.dom;
+
+import javax.xml.crypto.*;
+import javax.xml.crypto.dsig.*;
+import javax.xml.crypto.dsig.dom.DOMSignContext;
+import javax.xml.crypto.dsig.keyinfo.KeyInfo;
+import javax.xml.crypto.dom.*;
+
+import java.util.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+/**
+ * DOM-based implementation of KeyInfo.
+ *
+ * @author Sean Mullan
+ */
+public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
+
+    private final String id;
+    private final List keyInfoTypes;
+
+    /**
+     * Creates a <code>DOMKeyInfo</code>.
+     *
+     * @param content a list of one or more {@link XMLStructure}s representing
+     *    key information types. The list is defensively copied to protect
+     *    against subsequent modification.
+     * @param id an ID attribute
+     * @throws NullPointerException if <code>content</code> is <code>null</code>
+     * @throws IllegalArgumentException if <code>content</code> is empty
+     * @throws ClassCastException if <code>content</code> contains any entries
+     *    that are not of type {@link XMLStructure}
+     */
+    public DOMKeyInfo(List content, String id) {
+        if (content == null) {
+            throw new NullPointerException("content cannot be null");
+	}
+	List typesCopy = new ArrayList(content);
+	if (typesCopy.isEmpty()) {
+	    throw new IllegalArgumentException("content cannot be empty");
+	}
+	for (int i = 0; i < typesCopy.size(); i++) {
+	    if (!(typesCopy.get(i) instanceof XMLStructure)) {
+		throw new ClassCastException
+		    ("content["+i+"] is not a valid KeyInfo type");
+	    }
+	}
+	this.keyInfoTypes = Collections.unmodifiableList(typesCopy);
+        this.id = id;
+    }
+
+    /**
+     * Creates a <code>DOMKeyInfo</code> from XML.
+     *
+     * @param input XML input
+     */
+    public DOMKeyInfo(Element kiElem, XMLCryptoContext context) 
+	throws MarshalException {
+	// get Id attribute, if specified
+	id = DOMUtils.getAttributeValue(kiElem, "Id");
+
+        // get all children nodes
+        NodeList nl = kiElem.getChildNodes();
+	if (nl.getLength() < 1) {
+	    throw new MarshalException
+		("KeyInfo must contain at least one type");
+	}
+	List content = new ArrayList(nl.getLength());
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node child = nl.item(i);
+            // ignore all non-Element nodes
+            if (child.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+	    }
+            Element childElem = (Element) child;
+            if (childElem.getLocalName().equals("KeyName")) {
+	        content.add(new DOMKeyName(childElem));
+            } else if (childElem.getLocalName().equals("KeyValue")) {
+	        content.add(new DOMKeyValue(childElem));
+            } else if (childElem.getLocalName().equals("RetrievalMethod")) {
+	        content.add(new DOMRetrievalMethod(childElem, context));
+            } else if (childElem.getLocalName().equals("X509Data")) {
+	        content.add(new DOMX509Data(childElem));
+	    } else { //may be MgmtData, SPKIData or element from other namespace
+	        content.add(new javax.xml.crypto.dom.DOMStructure((childElem)));
+	    }
+        }
+	keyInfoTypes = Collections.unmodifiableList(content);
+    }
+
+    public String getId() {
+	return id;
+    }
+
+    public List getContent() {
+	return keyInfoTypes;
+    }
+
+    public void marshal(XMLStructure parent, XMLCryptoContext context)
+        throws MarshalException {
+        if (parent == null) {
+            throw new NullPointerException("parent is null");
+        }
+
+        marshal(((javax.xml.crypto.dom.DOMStructure) parent).getNode(),
+            DOMUtils.getSignaturePrefix(context), (DOMCryptoContext) context);
+    }
+
+    public void marshal(Node parent, String dsPrefix, 
+	DOMCryptoContext context) throws MarshalException {
+	marshal(parent, null, dsPrefix, context);
+    }
+
+    public void marshal(Node parent, Node nextSibling, String dsPrefix,
+	DOMCryptoContext context) throws MarshalException {
+        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
+
+        Element kiElem = DOMUtils.createElement
+	    (ownerDoc, "KeyInfo", XMLSignature.XMLNS, dsPrefix);
+
+        // create and append KeyInfoType elements
+	Iterator i = this.keyInfoTypes.iterator();
+	while (i.hasNext()) {
+	    XMLStructure kiType = (XMLStructure) i.next();
+	    if (kiType instanceof DOMStructure) {
+		((DOMStructure) kiType).marshal(kiElem, dsPrefix, context);
+	    } else {
+		DOMUtils.appendChild(kiElem,
+		    ((javax.xml.crypto.dom.DOMStructure) kiType).getNode());
+	    }
+        }
+
+        // append id attribute
+        DOMUtils.setAttributeID(kiElem, "Id", id);
+
+	parent.insertBefore(kiElem, nextSibling);
+    }
+
+    public boolean equals(Object o) {
+	if (this == o) {
+            return true;
+	}
+
+        if (!(o instanceof KeyInfo)) {
+            return false;
+	}
+        KeyInfo oki = (KeyInfo) o;
+
+	boolean idsEqual = (id == null ? oki.getId() == null :
+	    id.equals(oki.getId()));
+
+	return (keyInfoTypes.equals(oki.getContent()) && idsEqual);
+    }
+}

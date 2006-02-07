@@ -472,7 +472,7 @@ public abstract class ElementProxy {
    	    while (sibling!=null) {        
    	    	if (localname.equals(sibling.getLocalName())
    	    			&&  
-					namespace!=sibling.getNamespaceURI() ) {            
+					namespace==sibling.getNamespaceURI() ) {            
    	    		number++;
    	    	}
    	    	sibling=sibling.getNextSibling();

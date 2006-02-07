@@ -34,7 +34,7 @@
     <property name="dir.src.samples"    value="${basedir}/src_samples" />
     <property name="dir.libs"           value="${basedir}/libs" />
     <property name="dir.data"           value="${basedir}/data" />
-	<property name="dir.docs"           value="${basedir}/doc/site" />
+    <property name="dir.docs"           value="${basedir}/doc/site" />
     <property name="dir.build"          value="${basedir}/build" />
     <property name="dir.build.bin"      value="${dir.build}/classes" />
     <property name="dir.build.libs"     value="${dir.build}/libs" />
@@ -77,10 +77,6 @@
 	<property name="jar.tests"          value="${dir.build}/xmlsecTests-${product.version}.jar" />
 	<property name="jar.manifest"       value="${dir.manifest}/MANIFEST.MF"/>
     
-    <!-- javadoc properties -->
-    <property name="javadoc.packages" value=" org.apache.xml.security.Init, org.apache.xml.security.algorithms, org.apache.xml.security.c14n, org.apache.xml.security.encryption, org.apache.xml.security.exceptions, org.apache.xml.security.keys, org.apache.xml.security.keys.content, org.apache.xml.security.keys.content.keyvalues, org.apache.xml.security.keys.content.x509, org.apache.xml.security.keys.keyresolver, org.apache.xml.security.keys.storage, org.apache.xml.security.signature, org.apache.xml.security.transforms, org.apache.xml.security.transforms.params, org.apache.xml.security.utils, org.apache.xml.security.utils.resolver "/>
-
-
 
     <!-- build variable properties -->
 
@@ -132,7 +128,7 @@
     </path >
     <path id="id.classpath.test" >
         <path refid="id.classpath" />
-		<pathelement path="${lib.junit}"/>
+	<pathelement path="${lib.junit}"/>
         <pathelement location="${dir.build.bin}" />
         <pathelement location="${dir.build.test}" />
         <path refid="id.classpath.coverage" />
@@ -300,6 +296,8 @@
                debug="${build.compile.debug}">
             <classpath refid="id.classpath" />
             <include name="**/org/apache/xml/security/**/*.java" />
+            <include name="**/javax/xml/crypto/**/*.java" />
+            <include name="**/org/jcp/xml/dsig/internal/**/*.java" />
         </javac >
 
         <copy todir="${dir.build.bin}" >
@@ -320,6 +318,7 @@
                debug="${build.compile.debug}">
         	<classpath refid="id.classpath.test" />
         	<include name="**/org/apache/xml/security/**/*.java" />
+        	<include name="**/javax/xml/crypto/**/*.java" />
         </javac>
         <copy todir="${dir.build.test}">
 	      	<fileset dir="${dir.src.test}" includes="**/*.properties"/>
@@ -387,6 +386,7 @@
 	           <exclude name="org/apache/xml/security/test/interop/InteropTest.java"/>
 	           <exclude name="**/TestVectorResolver.java"/>
 	           <exclude name="**/IBMTest.java"/>
+	           <exclude name="javax/xml/crypto/**"/>
 	         </fileset>
 	       </batchtest>
 	       <test if="ibm.available" name="org.apache.xml.security.test.interop.IBMTest" todir="${dir.build.junit.xml}"/>
@@ -425,7 +425,37 @@
 		</java>
     </target>
 
-
+    <!-- Test JSR 105/XML DSig API -->
+    <target name="test_jsr105" depends="build.test"
+	    description="Runs JSR 105 interop and unit tests">
+        <delete dir="${dir.build.junit.xml}"/>
+        <delete dir="${dir.build.junit.html}"/>
+        <mkdir dir="${dir.build.junit.xml}"/>
+        <mkdir dir="${dir.build.junit.html}"/>
+        <junit filtertrace="true" fork="true" printsummary="on" 
+	       failureproperty="build.test.failed">
+            <sysproperty key="basedir" value="${basedir}"/>
+            <sysproperty key="proxyHost" value="${proxy.host}"/>
+	    <sysproperty key="proxyPort" value="${proxy.port}"/>
+	    <sysproperty key="java.util.logging.config.file" value="${basedir}/logging.properties"/>
+            <classpath refid="id.classpath.test"/>
+	    <formatter type="xml"/>
+	    <!-- Also put output to screen -->
+	    <formatter type="plain" usefile="false"/>
+	    <batchtest fork="yes" todir="${dir.build.junit.xml}">
+	        <fileset dir="${dir.src.test}">
+	            <include name="javax/xml/crypto/**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <junitreport todir="${dir.build.junit.xml}">
+            <fileset dir="${dir.build.junit.xml}">
+	        <include name="TEST-*.xml"/>
+            </fileset>
+	    <report format="frames" todir="${dir.build.junit.html}"/>
+        </junitreport>
+        <fail if="build.test.failed" message="Unit Tests Failed"/>
+    </target>
 
 	<!-- S A M P L E S  T A R G E T S -->
     <!-- XML Encryption Samples -->
@@ -590,6 +620,34 @@
 		</java>
 	</target>
 
+	<!-- JSR 105 Samples -->
+	<target name="jsr105-samples" 
+		depends="build.samples">
+	    <echo message="Generating a detached signature"/>
+	    <java classname="javax.xml.crypto.dsig.samples.GenDetached"
+	          fork="yes">
+	        <classpath refid="id.classpath.samples"/>
+	        <sysproperty key="proxyHost" value="${proxy.host}"/>
+	        <sysproperty key="proxyPort" value="${proxy.port}"/>
+	    </java>
+	    <echo message="Generating an enveloped signature"/>
+	    <java classname="javax.xml.crypto.dsig.samples.GenEnveloped"
+	          fork="yes">
+		<arg value="${dir.src.samples}/javax/xml/crypto/dsig/samples/envelope.xml"/>
+	        <classpath refid="id.classpath.samples"/>
+	    </java>
+	    <echo message="Generating an enveloping signature"/>
+	    <java classname="javax.xml.crypto.dsig.samples.GenEnveloping"
+	          fork="yes">
+	        <classpath refid="id.classpath.samples"/>
+	    </java>
+	    <echo message="Validating a signature"/>
+	    <java classname="javax.xml.crypto.dsig.samples.Validate"
+	          fork="yes">
+		<arg value="${dir.src.samples}/javax/xml/crypto/dsig/samples/envelopedSignature.xml"/>
+	        <classpath refid="id.classpath.samples"/>
+	    </java>
+	</target>
 	
 	<!-- D I S T R I B U T I O N  T A R G E T S -->
     <!-- distribution targets -->
@@ -682,15 +740,17 @@
 
     <!-- documentation -->
     <target name="build.docs">
-		<mkdir dir="${dir.build.javadoc}"/>
-		<javadoc classpathref="id.classpath"
-				 destdir="${dir.build.javadoc}"
-				 packagenames="${javadoc.packages}">
-        	<sourcepath>
-          		<pathelement location="${dir.src}"/>
-	        </sourcepath>
+	<mkdir dir="${dir.build.javadoc}"/>
+	<javadoc classpathref="id.classpath"
+		 destdir="${dir.build.javadoc}">
+	    <packageset dir="${dir.src}">
+      		<include name="org/apache/xml/security/**"/>
+      		<include name="javax/xml/crypto/**"/>
+            </packageset>
+            <group title="JSR 105 Packages" packages="javax.xml.crypto*"/>
+            <group title="XMLSec Packages" packages="org.apache.xml.security*"/>
     	</javadoc>
-	</target>
+    </target>
 
 	<target name="build.xdocs"
 			depends="do.check.forrest"

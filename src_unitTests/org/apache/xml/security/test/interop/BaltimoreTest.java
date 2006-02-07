@@ -307,6 +307,35 @@ public class BaltimoreTest extends InteropTest {
       assertTrue(filename, verify);
    }
 
+   /**
+    * Method test_sixteen_bad_signature. This tests make sure that an
+    * invalid signature is not valid. This is validating merlin's 16
+    * signature but some of the referenced content has been modified so
+    * some of the references should be invalid.
+    *
+    * @throws Exception
+    */
+   public void test_sixteen_bad_signature() throws Exception {
+
+      String filename =
+         merlinsDir16 + "/bad-signature.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (verify) {
+         log.error("Verification passed (should have failed) for " + filename);
+      }
+
+      assertFalse(filename, verify);
+   }
 
    /**
     * Method test_twenty_three_enveloping_hmac_sha1
