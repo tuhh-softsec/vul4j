@@ -7,7 +7,7 @@
     <version>0.9.4-SNAPSHOT</version>
   </parent>
   <artifactId>daemon-plugin</artifactId>
-  <name>Apache Directory Daemon Installers Plugin for Maven 2</name>
+  <name>Apache Directory Daemon Installers Plugin (Maven 2)</name>
   <packaging>maven-plugin</packaging>
   <description>
   </description>
