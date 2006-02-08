@@ -59,7 +59,7 @@ public class ServiceInstallersMojo extends AbstractMojo
      * @todo clean me up
      * @see http://issues.apache.org/jira/browse/DIREVE-333 
      */
-    static final String TOOLS_ARTIFACT_ID = "apacheds-tools";
+    static final String TOOLS_ARTIFACT_ID = "apacheds-server-tools";
     static final String TOOLS_GROUP_ID = "org.apache.directory.server";
     
     static final String LOGGER_ARTIFACT_ID = "nlog4j";
@@ -381,17 +381,17 @@ public class ServiceInstallersMojo extends AbstractMojo
         while ( artifacts.hasNext() )
         {
             artifact = ( Artifact ) artifacts.next();
-            if ( artifact.getArtifactId().equals( BOOTSTRAPPER_ARTIFACT_ID ) || artifact.getGroupId().equals( BOOTSTRAPPER_GROUP_ID ) )
+            if ( artifact.getArtifactId().equals( BOOTSTRAPPER_ARTIFACT_ID ) && artifact.getGroupId().equals( BOOTSTRAPPER_GROUP_ID ) )
             {
                 getLog().info( "Found bootstrapper dependency with version: " + artifact.getVersion() );
                 bootstrapper = artifact;
             }
-            else if ( artifact.getArtifactId().equals( LOGGER_ARTIFACT_ID ) || artifact.getGroupId().equals( LOGGER_GROUP_ID ) )
+            else if ( artifact.getArtifactId().equals( LOGGER_ARTIFACT_ID ) && artifact.getGroupId().equals( LOGGER_GROUP_ID ) )
             {
                 getLog().info( "Found logger dependency with version: " + artifact.getVersion() );
                 logger = artifact;
             }
-            else if ( artifact.getArtifactId().equals( DAEMON_ARTIFACT_ID ) || artifact.getGroupId().equals( DAEMON_GROUP_ID ) )
+            else if ( artifact.getArtifactId().equals( DAEMON_ARTIFACT_ID ) && artifact.getGroupId().equals( DAEMON_GROUP_ID ) )
             {
                 getLog().info( "Found daemon dependency with version: " + artifact.getVersion() );
                 daemon = artifact;
@@ -401,7 +401,7 @@ public class ServiceInstallersMojo extends AbstractMojo
              * @todo clean me up
              * @see http://issues.apache.org/jira/browse/DIREVE-333 
              */
-            else if ( artifact.getArtifactId().equals( TOOLS_ARTIFACT_ID ) || artifact.getGroupId().equals( TOOLS_GROUP_ID ) )
+            else if ( artifact.getArtifactId().equals( TOOLS_ARTIFACT_ID ) && artifact.getGroupId().equals( TOOLS_GROUP_ID ) )
             {
                 getLog().info( "Found tools dependency with version: " + artifact.getVersion() );
                 tools = artifact;

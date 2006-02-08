@@ -129,28 +129,34 @@ public class MojoHelperUtils
     {
         List libArtifacts = new ArrayList();
         Artifact artifact = null;
+        List rejects = new ArrayList();
+        
+        mymojo.getLog().info( "");
+        mymojo.getLog().info( "    Including artifacts: ");
+        mymojo.getLog().info( "    -------------------");
         Iterator artifacts = mymojo.getProject().getRuntimeArtifacts().iterator();
         while ( artifacts.hasNext() )
         {
             artifact = ( Artifact ) artifacts.next();
+            String key = artifact.getGroupId() + ":" + artifact.getArtifactId();
+            
             if ( artifact.equals( mymojo.getBootstrapper() ) )
             {
-                mymojo.getLog().info( "Not copying bootstrapper " + artifact );
+                rejects.add( key );
             }
             else if ( artifact.equals( mymojo.getDaemon() ) )
             {
-                mymojo.getLog().info( "Not copying daemon " + artifact );
+                rejects.add( key );
             }
             else if ( artifact.equals( mymojo.getLogger() ) )
             {
-                mymojo.getLog().info( "Not copying logger " + artifact );
+                rejects.add( key );
             }
             else
             {
-                String key = artifact.getGroupId() + ":" + artifact.getArtifactId();
                 if ( mymojo.getExcludes().contains( key ) )
                 {
-                    mymojo.getLog().info( "<<<=== excluded <<<=== " + key );
+                    rejects.add( key );
                     continue;
                 }
                 
@@ -158,7 +164,7 @@ public class MojoHelperUtils
                 {
                     FileUtils.copyFileToDirectory( artifact.getFile(), layout.getLibDirectory() );
                     libArtifacts.add( artifact );
-                    mymojo.getLog().info( "===>>> included ===>>> " + key );
+                    mymojo.getLog().info( "        o " + key );
                 }
                 catch ( IOException e )
                 {
@@ -168,6 +174,22 @@ public class MojoHelperUtils
             }
         }
         
+        if ( ! mymojo.getExcludes().isEmpty() )
+        {
+            mymojo.getLog().info( "" );
+            mymojo.getLog().info( "    Excluded artifacts: ");
+            mymojo.getLog().info( "    ------------------");
+            for ( int ii = 0; ii < rejects.size(); ii++ )
+            {
+                mymojo.getLog().info( "        o " + rejects.get( ii ) );
+            }
+        }
+        else
+        {
+            mymojo.getLog().info( "No artifacts have been excluded.");
+        }
+        mymojo.getLog().info( "" );
+
         return libArtifacts;
     }
     
