@@ -63,6 +63,8 @@ Source: {#SourceBase}\var\*; DestDir: "{app}\var\"; Flags: ignoreversion recurse
 Source: {#SourceBase}\lib\ext; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; lib directory targets
 ${app.lib.jars}
+${docs.directive}
+${sources.directive}
 
 [Icons]
 Name: {group}\Service Settings; Filename: {app}\bin\${app}w.exe; Parameters: //ES//${app}; IconIndex: 0

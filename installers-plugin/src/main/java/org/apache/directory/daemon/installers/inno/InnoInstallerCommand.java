@@ -245,6 +245,44 @@ public class InnoInstallerCommand implements MojoCommand
         filterProperties.put( "image.basedir", target.getLayout().getBaseDirectory().getPath() );
         filterProperties.put( "app.lib.jars", getApplicationLibraryJars() );
         filterProperties.put( "installer.output.directory", target.getLayout().getBaseDirectory().getParent() );
+        
+        if ( target.getDocsDirectory() != null )
+        {
+        	filterProperties.put( "docs.directive", getDocsDirective() );
+        }
+        else
+        {
+        	filterProperties.put( "docs.directive", "" );
+        }
+        
+        if ( target.getSourcesDirectory() != null )
+        {
+        	filterProperties.put( "sources.directive", getSourcesDirective() );
+        }
+        else
+        {
+        	filterProperties.put( "sources.directive", "" );
+        }
+    }
+    
+    
+    private String getSourcesDirective()
+    {
+        StringBuffer buf = new StringBuffer();
+        buf.append( "Source: {#SourceBase}\\" ).append( target.getSourcesTargetPath() );
+        buf.append( "\\*; DestDir: {app}\\" ).append( target.getSourcesTargetPath() );
+        buf.append( "\\; Flags: ignoreversion recursesubdirs createallsubdirs" );
+        return buf.toString();
+    }
+    
+    
+    private String getDocsDirective()
+    {
+        StringBuffer buf = new StringBuffer();
+        buf.append( "Source: {#SourceBase}\\" ).append( target.getDocsTargetPath() );
+        buf.append( "\\*; DestDir: {app}\\" ).append( target.getDocsTargetPath() );
+        buf.append( "\\; Flags: ignoreversion recursesubdirs createallsubdirs" );
+        return buf.toString();
     }
     
     

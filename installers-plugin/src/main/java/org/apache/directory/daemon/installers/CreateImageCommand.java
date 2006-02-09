@@ -369,7 +369,7 @@ public class CreateImageCommand implements MojoCommand
         
         if ( target.getSourcesDirectory() != null )
         {
-            File sourcesDirectory = new File( layout.getBaseDirectory(), "src" );
+            File sourcesDirectory = new File( layout.getBaseDirectory(), target.getSourcesTargetPath() );
             try
             {
                 FileUtils.copyDirectoryStructure( target.getSourcesDirectory(), sourcesDirectory );
@@ -385,7 +385,7 @@ public class CreateImageCommand implements MojoCommand
         
         if ( target.getDocsDirectory() != null )
         {
-            File docsDirectory = new File( layout.getBaseDirectory(), "docs" );
+            File docsDirectory = new File( layout.getBaseDirectory(), target.getDocsTargetPath() );
             try
             {
                 FileUtils.copyDirectoryStructure( target.getDocsDirectory(), docsDirectory );

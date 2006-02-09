@@ -68,6 +68,8 @@ public class Target
     private File bootstrapperConfiguraitonFile;
     private File sourcesDirectory;
     private File docsDirectory;
+    private String sourcesTargetPath;
+    private String docsTargetPath;
 
     
     private InstallationLayout layout;
@@ -283,4 +285,28 @@ public class Target
     {
         return docsDirectory;
     }
+
+
+	public void setSourcesTargetPath( String sourcesTargetDirectory ) 
+	{
+		this.sourcesTargetPath = sourcesTargetDirectory;
+	}
+
+
+	public String getSourcesTargetPath() 
+	{
+		return sourcesTargetPath;
+	}
+
+
+	public void setDocsTargetPath( String docsTargetDirectory ) 
+	{
+		this.docsTargetPath = docsTargetDirectory;
+	}
+
+
+	public String getDocsTargetPath() 
+	{
+		return docsTargetPath;
+	}
 }

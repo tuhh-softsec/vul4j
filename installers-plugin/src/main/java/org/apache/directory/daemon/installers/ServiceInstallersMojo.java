@@ -40,6 +40,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.util.JavaEnvUtils;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.Os;
 
 
 /**
@@ -147,6 +148,16 @@ public class ServiceInstallersMojo extends AbstractMojo
      */
     private boolean packageDocs = false;
     
+    /**
+     * @parameter expression="src"
+     */
+    private String sourcesTargetPath;
+
+    /**
+     * @parameter expression="docs"
+     */
+    private String docsTargetPath;
+
     /**
      * @parameter
      */
@@ -406,6 +417,16 @@ public class ServiceInstallersMojo extends AbstractMojo
             {
                 target.setDocsDirectory( docsBase );
             }
+            
+            if ( target.getSourcesTargetPath() == null )
+            {
+            	target.setSourcesTargetPath( sourcesTargetPath );
+            }
+            
+            if ( target.getDocsTargetPath() == null )
+            {
+            	target.setDocsTargetPath( docsTargetPath );
+            }
         }
     }
     
@@ -536,7 +557,15 @@ public class ServiceInstallersMojo extends AbstractMojo
                 + exportTarget.getAbsolutePath() + " to " + docsTarget.getAbsolutePath() );
         }
         
-        String[] cmd = new String[] { "mvn", "site", "--non-recursive" };
+        String[] cmd = null;
+        if ( Os.isFamily( "windows" ) )
+        {
+        	cmd = new String[] { "mvn.bat", "site", "--non-recursive" };
+        }
+        else
+        {
+        	cmd = new String[] { "mvn", "site", "--non-recursive" };
+        }
         MojoHelperUtils.exec( cmd, docsTarget, false );
     }
     
