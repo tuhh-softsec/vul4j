@@ -221,6 +221,6 @@ case "$1" in
     ;;
 
   *)
-    echo "Usage ${app} start/stop"
+    echo "Usage ${app} [start|stop|debug]"
     exit 1;;
 esac
