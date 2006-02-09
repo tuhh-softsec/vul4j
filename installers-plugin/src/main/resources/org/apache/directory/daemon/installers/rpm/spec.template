@@ -35,6 +35,8 @@ mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/partitions
 touch $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/log/${app}-stderr.log
 touch $RPM_BUILD_ROOT/usr/local/${app}-%{version}/var/log/${app}-stdout.log
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
+${mk.docs.dirs}
+${mk.sources.dirs}
 
 pwd
 install -m 755 ${image.basedir}/bin/${app} $RPM_BUILD_ROOT/usr/local/${app}-%{version}/bin/${app}
@@ -51,6 +53,8 @@ install -m 644 ${image.basedir}/${app.license.name} $RPM_BUILD_ROOT/usr/local/${
 install -m 644 ${image.basedir}/${app.readme.name} $RPM_BUILD_ROOT/usr/local/${app}-%{version}
 install -m 644 ${image.basedir}/${app.icon} $RPM_BUILD_ROOT/usr/local/${app}-%{version}
 ${install.append.libs}
+${install.docs}
+${install.sources}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -79,4 +83,6 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/${app}-%{version}/${app.license.name}
 /usr/local/${app}-%{version}/${app.icon}
 ${verify.append.libs}
+${verify.docs}
+${verify.sources}
 

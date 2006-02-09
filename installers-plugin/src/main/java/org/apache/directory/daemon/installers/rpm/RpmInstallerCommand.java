@@ -21,12 +21,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.directory.daemon.installers.MojoCommand;
 import org.apache.directory.daemon.installers.MojoHelperUtils;
 import org.apache.directory.daemon.installers.ServiceInstallersMojo;
+import org.apache.directory.daemon.installers.Target;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -203,6 +205,36 @@ public class RpmInstallerCommand implements MojoCommand
             rpmBuilder.getAbsolutePath(), "-ba", rpmConfigurationFile.getAbsolutePath()
         };
         MojoHelperUtils.exec( cmd, target.getLayout().getBaseDirectory().getParentFile(), target.isDoSudo() );
+        
+        String version = target.getApplication().getVersion().replace( '-', '_' );
+        String rpmName = target.getApplication().getName() + "-" + version + "-0.i386.rpm";
+        File srcFile = new File( "/usr/src/redhat/RPMS/i386", rpmName );
+        File dstFile = null;
+        
+        if ( target.getFinalName() == null )
+        {
+            dstFile = new File( mymojo.getOutputDirectory(), rpmName );
+        }
+        else
+        {
+            String finalName = target.getFinalName();
+            if ( ! finalName.endsWith( ".rpm" ) )
+            {
+                finalName = finalName + ".rpm" ;
+            }
+            
+            dstFile = new File( mymojo.getOutputDirectory(), finalName );
+        }
+        
+        try
+        {
+            FileUtils.copyFile( srcFile, dstFile );
+        }
+        catch ( IOException e )
+        {
+            // if this happens we don't stop since RPM could be somewhere else
+            e.printStackTrace();
+        }
     }
 
 
@@ -278,9 +310,206 @@ public class RpmInstallerCommand implements MojoCommand
         filterProperties.put( "server.init", target.getLayout().getInitScript().getName() );
 
         filterProperties.put( "app.install.base", "/usr/local/" + target.getApplication().getName() + "-" + version );
+        
+        if ( target.getDocsDirectory() != null )
+        {
+            File docRoot = new File( target.getLayout().getBaseDirectory(), target.getDocsTargetPath() );
+            ArrayList docList = new ArrayList( 200 );
+            listFiles( docList, docRoot );
+            filterProperties.put( "mk.docs.dirs", getMkDocsDirs( docList, target ) );
+            filterProperties.put( "install.docs", getInstallDocs( docList, target ) );
+            filterProperties.put( "verify.docs", getVerifyDocs( docList, target ) );
+        }
+        else
+        {
+            filterProperties.put( "mk.docs.dirs", "" );
+            filterProperties.put( "install.docs", "" );
+            filterProperties.put( "verify.docs", "" );
+        }
+
+        if ( target.getSourcesDirectory() != null )
+        {
+            File srcRoot = new File( target.getLayout().getBaseDirectory(), target.getSourcesTargetPath() );
+            ArrayList srcList = new ArrayList( 200 );
+            listFiles( srcList, srcRoot );
+            filterProperties.put( "mk.sources.dirs", getMkSourcesDirs( srcList, target ) );
+            filterProperties.put( "install.sources", getInstallSources( srcList, target ) );
+            filterProperties.put( "verify.sources", getVerifySources( srcList, target ) );
+        }
+        else
+        {
+            filterProperties.put( "mk.sources.dirs", "" );
+            filterProperties.put( "install.sources", "" );
+            filterProperties.put( "verify.sources", "" );
+        }
     }
     
     
+    static String getMkSourcesDirs( List srcList, Target target )
+    {
+        StringBuffer buf = new StringBuffer();
+        File srcBase = target.getLayout().getBaseDirectory();
+        srcBase = new File( srcBase, target.getSourcesTargetPath() );
+        // +1 for '/' char 
+        int basePathSize = target.getLayout().getBaseDirectory().getAbsolutePath().length() + 1; 
+        
+        for ( int ii = 0; ii < srcList.size(); ii++ )
+        {
+            File file = ( File ) srcList.get( ii );
+            if ( file.isFile() )
+            {
+                continue;
+            }
+            
+            String path = file.getAbsolutePath().substring( basePathSize );
+            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( path );
+            buf.append( "\n" );
+        }
+        return buf.toString();
+    }
+    
+    
+    static String getMkDocsDirs( List docList, Target target )
+    {
+        StringBuffer buf = new StringBuffer();
+        File docsBase = target.getLayout().getBaseDirectory();
+        docsBase = new File( docsBase, target.getDocsTargetPath() );
+        // +1 for '/' char 
+        int basePathSize = target.getLayout().getBaseDirectory().getAbsolutePath().length() + 1; 
+        
+        for ( int ii = 0; ii < docList.size(); ii++ )
+        {
+            File file = ( File ) docList.get( ii );
+            if ( file.isFile() )
+            {
+                continue;
+            }
+            
+            String path = file.getAbsolutePath().substring( basePathSize );
+            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( path );
+            buf.append( "\n" );
+        }
+        return buf.toString();
+    }
+
+    
+    static void listFiles( List fileList, File dir )
+    {
+        if ( dir.isFile() ) 
+        {
+            return;
+        }
+        
+        fileList.add( dir );
+        File[] files = dir.listFiles();
+        for ( int ii = 0; ii < files.length; ii++ )
+        {
+            if ( files[ii].isFile() )
+            {
+                fileList.add( files[ii] );
+            }
+
+            listFiles( fileList, files[ii] );
+        }
+    }
+    
+    
+    static String getInstallDocs( List docList, Target target )
+    {
+        StringBuffer buf = new StringBuffer();
+        File docsBase = target.getLayout().getBaseDirectory();
+        docsBase = new File( docsBase, target.getDocsTargetPath() );
+        // +1 for '/' char 
+        int basePathSize = target.getLayout().getBaseDirectory().getAbsolutePath().length() + 1; 
+        
+        for ( int ii = 0; ii < docList.size(); ii++ )
+        {
+            File file = ( File ) docList.get( ii );
+            if ( file.isDirectory() )
+            {
+                continue;
+            }
+            
+            String path = file.getAbsolutePath().substring( basePathSize );
+            buf.append( "install -m 644 ${image.basedir}/" );
+            buf.append( path );
+            buf.append( " $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( path );
+            buf.append( "\n" );
+        }
+        return buf.toString();
+    }
+    
+
+    static String getVerifyDocs( List docList, Target target )
+    {
+        StringBuffer buf = new StringBuffer();
+        File docBase = target.getLayout().getBaseDirectory();
+        docBase = new File( docBase, target.getDocsTargetPath() );
+        // +1 for '/' char 
+        int basePathSize = target.getLayout().getBaseDirectory().getAbsolutePath().length() + 1; 
+        
+        for ( int ii = 0; ii < docList.size(); ii++ )
+        {
+            File file = ( File ) docList.get( ii );
+            String path = file.getAbsolutePath().substring( basePathSize );
+            buf.append( "/usr/local/${app}-%{version}/" );
+            buf.append( path );
+            buf.append( "\n" );
+        }
+        return buf.toString();
+    }
+    
+
+    static String getInstallSources( List sourceList, Target target )
+    {
+        StringBuffer buf = new StringBuffer();
+        File srcBase = target.getLayout().getBaseDirectory();
+        srcBase = new File( srcBase, target.getSourcesTargetPath() );
+        // +1 for '/' char 
+        int basePathSize = target.getLayout().getBaseDirectory().getAbsolutePath().length() + 1; 
+        
+        for ( int ii = 0; ii < sourceList.size(); ii++ )
+        {
+            File file = ( File ) sourceList.get( ii );
+            if ( file.isDirectory() )
+            {
+                continue;
+            }
+            
+            String path = file.getAbsolutePath().substring( basePathSize );
+            buf.append( "install -m 644 ${image.basedir}/" );
+            buf.append( path );
+            buf.append( " $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( path );
+            buf.append( "\n" );
+        }
+        return buf.toString();
+    }
+    
+
+    static String getVerifySources( List sourceList, Target target )
+    {
+        StringBuffer buf = new StringBuffer();
+        File srcBase = target.getLayout().getBaseDirectory();
+        srcBase = new File( srcBase, target.getSourcesTargetPath() );
+        // +1 for '/' char 
+        int basePathSize = target.getLayout().getBaseDirectory().getAbsolutePath().length() + 1; 
+        
+        for ( int ii = 0; ii < sourceList.size(); ii++ )
+        {
+            File file = ( File ) sourceList.get( ii );
+            String path = file.getAbsolutePath().substring( basePathSize );
+            buf.append( "/usr/local/${app}-%{version}/" );
+            buf.append( path );
+            buf.append( "\n" );
+        }
+        return buf.toString();
+    }
+    
+
     private Object getVerifyLibraryJars()
     {
         StringBuffer buf = new StringBuffer();
