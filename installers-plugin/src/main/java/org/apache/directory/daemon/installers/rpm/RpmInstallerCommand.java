@@ -362,7 +362,9 @@ public class RpmInstallerCommand implements MojoCommand
             }
             
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( target.getApplication().getName() );
+            buf.append( "-%{version}/" );
             buf.append( path );
             buf.append( "\n" );
         }
@@ -387,7 +389,9 @@ public class RpmInstallerCommand implements MojoCommand
             }
             
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( target.getApplication().getName() );
+            buf.append( "-%{version}/" );
             buf.append( path );
             buf.append( "\n" );
         }
@@ -433,9 +437,12 @@ public class RpmInstallerCommand implements MojoCommand
             }
             
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "install -m 644 ${image.basedir}/" );
+            buf.append( "install -m 644 " );
+            buf.append( target.getLayout().getBaseDirectory() ).append( "/" );
             buf.append( path );
-            buf.append( " $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( " $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( target.getApplication().getName() );
+            buf.append( "-%{version}/" );
             buf.append( path );
             buf.append( "\n" );
         }
@@ -455,7 +462,9 @@ public class RpmInstallerCommand implements MojoCommand
         {
             File file = ( File ) docList.get( ii );
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "/usr/local/${app}-%{version}/" );
+            buf.append( "/usr/local/" );
+            buf.append( target.getApplication().getName() );
+            buf.append( "-%{version}/" );
             buf.append( path );
             buf.append( "\n" );
         }
@@ -480,9 +489,12 @@ public class RpmInstallerCommand implements MojoCommand
             }
             
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "install -m 644 ${image.basedir}/" );
+            buf.append( "install -m 644 " );
+            buf.append( target.getLayout().getBaseDirectory() ).append( "/" );
             buf.append( path );
-            buf.append( " $RPM_BUILD_ROOT/usr/local/${app}-%{version}/" );
+            buf.append( " $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( target.getApplication().getName() );
+            buf.append( "-%{version}/" );
             buf.append( path );
             buf.append( "\n" );
         }
@@ -502,7 +514,9 @@ public class RpmInstallerCommand implements MojoCommand
         {
             File file = ( File ) sourceList.get( ii );
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "/usr/local/${app}-%{version}/" );
+            buf.append( "/usr/local/" );
+            buf.append( target.getApplication().getName() );
+            buf.append( "-%{version}/" );
             buf.append( path );
             buf.append( "\n" );
         }
