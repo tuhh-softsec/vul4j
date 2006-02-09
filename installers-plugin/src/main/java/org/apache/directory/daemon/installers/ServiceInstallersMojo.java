@@ -18,6 +18,7 @@ package org.apache.directory.daemon.installers;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.util.JavaEnvUtils;
+import org.codehaus.plexus.util.FileUtils;
 
 
 /**
@@ -129,6 +131,21 @@ public class ServiceInstallersMojo extends AbstractMojo
      * @parameter
      */
     private String encoding;
+
+    /**
+     * @parameter
+     */
+    private String svnBaseUrl;
+    
+    /**
+     * @parameter
+     */
+    private boolean packageSources = false;
+    
+    /**
+     * @parameter
+     */
+    private boolean packageDocs = false;
     
     /**
      * @parameter
@@ -147,14 +164,20 @@ public class ServiceInstallersMojo extends AbstractMojo
      * @see http://issues.apache.org/jira/browse/DIREVE-333 
      */
     private Artifact tools;
-    
+    private File exportedSources;
+    private File docsBase;
     private List allTargets;
     
     
     public void execute() throws MojoExecutionException, MojoFailureException
     {
+        FileUtils.mkdir( outputDirectory.getAbsolutePath() );
+        
         // collect all targets 
         initializeAllTargets();
+        
+        // setup exports and docs if specified for installers
+        setupSourcesAndDocs();
         
         // makes sure defaulted values are set to globals
         setDefaults();
@@ -358,21 +381,53 @@ public class ServiceInstallersMojo extends AbstractMojo
             {
                 target.setLoggerConfigurationFile( new File( sourceDirectory, "log4j.properties" ) );
             }
+            
             if ( target.getBootstrapperConfiguraitonFile() == null )
             {
                 target.setBootstrapperConfiguraitonFile( new File( sourceDirectory, "bootstrapper.properties" ) );
             }
+            
             if ( target.getServerConfigurationFile() == null )
             {
                 target.setServerConfigurationFile( new File( sourceDirectory, "server.xml" ) );
             }
+            
             if ( target.getOsVersion() == null )
             {
                 target.setOsVersion( "*" );
             }
+            
+            if ( packageSources && exportedSources != null && target.getSourcesDirectory() == null )
+            {
+                target.setSourcesDirectory( exportedSources );
+            }
+            
+            if ( packageDocs && docsBase != null && target.getDocsDirectory() == null )
+            {
+                target.setDocsDirectory( docsBase );
+            }
         }
     }
     
+
+    private void setupSourcesAndDocs() throws MojoFailureException
+    {
+        File generatedDocs = null;
+        if ( svnBaseUrl != null )
+        {
+            exportedSources = new File( outputDirectory, "src" );
+            exportSvnSources( exportedSources );
+            
+            if ( packageDocs )
+            {
+                generatedDocs = new File( outputDirectory, "docs" );
+                generateDocs( exportedSources, generatedDocs );
+                docsBase = new File( generatedDocs, "target" );
+                docsBase = new File( docsBase, "site" );
+            }
+        }
+    }
+
     
     private void setBootstrapArtifacts() throws MojoFailureException
     {
@@ -461,6 +516,30 @@ public class ServiceInstallersMojo extends AbstractMojo
         getLog().info( "===================================================================" );
     }
 
+    
+    private void exportSvnSources( File exportTarget ) throws MojoFailureException
+    {
+        String[] cmd = new String[] { "svn", "export", svnBaseUrl, exportTarget.getAbsolutePath() };
+        MojoHelperUtils.exec( cmd, outputDirectory, false );
+    }
+    
+    
+    private void generateDocs( File exportTarget, File docsTarget ) throws MojoFailureException
+    {
+        try
+        {
+            FileUtils.copyDirectoryStructure( exportTarget, docsTarget );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoFailureException( "Failed to copy exported sources from svn here " 
+                + exportTarget.getAbsolutePath() + " to " + docsTarget.getAbsolutePath() );
+        }
+        
+        String[] cmd = new String[] { "mvn", "site", "--non-recursive" };
+        MojoHelperUtils.exec( cmd, docsTarget, false );
+    }
+    
     
     public File getOutputDirectory()
     {

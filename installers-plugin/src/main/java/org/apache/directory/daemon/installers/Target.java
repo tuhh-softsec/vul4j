@@ -66,6 +66,9 @@ public class Target
     private File loggerConfigurationFile;
     private File serverConfigurationFile;
     private File bootstrapperConfiguraitonFile;
+    private File sourcesDirectory;
+    private File docsDirectory;
+
     
     private InstallationLayout layout;
     private List libArtifacts;
@@ -255,5 +258,29 @@ public class Target
     public String getCopyrightYear()
     {
         return copyrightYear;
+    }
+
+
+    public void setSourcesDirectory( File sourcesDirectory )
+    {
+        this.sourcesDirectory = sourcesDirectory;
+    }
+
+
+    public File getSourcesDirectory()
+    {
+        return sourcesDirectory;
+    }
+
+
+    public void setDocsDirectory( File docsDirectory )
+    {
+        this.docsDirectory = docsDirectory;
+    }
+
+
+    public File getDocsDirectory()
+    {
+        return docsDirectory;
     }
 }

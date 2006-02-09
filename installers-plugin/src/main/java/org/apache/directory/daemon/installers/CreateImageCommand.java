@@ -364,5 +364,37 @@ public class CreateImageCommand implements MojoCommand
         }
         
         target.setLibArtifacts( MojoHelperUtils.copyDependencies( mymojo, layout ) );
+        
+        // -- copy sources if set --
+        
+        if ( target.getSourcesDirectory() != null )
+        {
+            File sourcesDirectory = new File( layout.getBaseDirectory(), "src" );
+            try
+            {
+                FileUtils.copyDirectoryStructure( target.getSourcesDirectory(), sourcesDirectory );
+            }
+            catch ( IOException e )
+            {
+                throw new MojoFailureException( "Failed to copy sources exported from " + target.getSourcesDirectory() 
+                    + " to " + sourcesDirectory );
+            }
+        }
+        
+        // -- copy doco if set --
+        
+        if ( target.getDocsDirectory() != null )
+        {
+            File docsDirectory = new File( layout.getBaseDirectory(), "docs" );
+            try
+            {
+                FileUtils.copyDirectoryStructure( target.getDocsDirectory(), docsDirectory );
+            }
+            catch ( IOException e )
+            {
+                throw new MojoFailureException( "Failed to copy generated docs from " + target.getDocsDirectory() 
+                    + " to " + docsDirectory );
+            }
+        }
     }
 }
