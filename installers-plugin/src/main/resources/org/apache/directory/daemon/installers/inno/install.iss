@@ -65,6 +65,7 @@ Source: {#SourceBase}\lib\ext; DestDir: "{app}\lib"; Flags: ignoreversion recurs
 ${app.lib.jars}
 ${docs.directive}
 ${sources.directive}
+${notice.file}
 
 [Icons]
 Name: {group}\Service Settings; Filename: {app}\bin\${app}w.exe; Parameters: //ES//${app}; IconIndex: 0

@@ -55,6 +55,7 @@ install -m 644 ${image.basedir}/${app.icon} $RPM_BUILD_ROOT/usr/local/${app}-%{v
 ${install.append.libs}
 ${install.docs}
 ${install.sources}
+${install.notice.file}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -85,4 +86,4 @@ rm -rf $RPM_BUILD_ROOT
 ${verify.append.libs}
 ${verify.docs}
 ${verify.sources}
-
+${verify.notice.file}

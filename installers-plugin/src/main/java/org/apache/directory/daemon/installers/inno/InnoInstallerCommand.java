@@ -263,6 +263,17 @@ public class InnoInstallerCommand implements MojoCommand
         {
         	filterProperties.put( "sources.directive", "" );
         }
+        
+        File noticeFile = new File( target.getLayout().getBaseDirectory(), "NOTICE.txt" );
+        if ( noticeFile.exists() )
+        {
+            filterProperties.put( "notice.file", "Source: {#SourceBase}\\NOTICE.txt; DestDir: " +
+                    "{app}\\; Flags: ignoreversion recursesubdirs createallsubdirs" );
+        }
+        else
+        {
+            filterProperties.put( "notice.file", "" );
+        }
     }
     
     

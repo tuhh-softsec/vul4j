@@ -396,5 +396,22 @@ public class CreateImageCommand implements MojoCommand
                     + " to " + docsDirectory );
             }
         }
+        
+        // -- if present copy the NOTICE.txt file --
+        
+        File noticeFileTarget = new File ( layout.getBaseDirectory(), "NOTICE.txt" );
+        File noticeFile = new File ( "NOTICE.txt" );
+        if ( noticeFile.exists() )
+        {
+            try
+            {
+                FileUtils.copyFile( noticeFile, noticeFileTarget );
+            }
+            catch ( IOException e )
+            {
+                mymojo.getLog().error( "Failed to notice file "  + noticeFile.getAbsolutePath()
+                    + " into position " + noticeFileTarget.getAbsolutePath(), e );
+            }
+        }
     }
 }

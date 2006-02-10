@@ -342,6 +342,19 @@ public class RpmInstallerCommand implements MojoCommand
             filterProperties.put( "install.sources", "" );
             filterProperties.put( "verify.sources", "" );
         }
+
+        File noticeFile = new File( target.getLayout().getBaseDirectory(), "NOTICE.txt" );
+        if ( noticeFile.exists() )
+        {
+            filterProperties.put( "install.notice.file", "install -m 644 "
+                + target.getLayout().getBaseDirectory() + "/NOTICE.txt $RPM_BUILD_ROOT/usr/local/${app}-%{version}" );
+            filterProperties.put( "verify.notice.file", "/usr/local/${app}-%{version}/NOTICE.txt" );
+        }
+        else
+        {
+            filterProperties.put( "install.notice.file", "" );
+            filterProperties.put( "verify.notice.file", "" );
+        }
     }
     
     
