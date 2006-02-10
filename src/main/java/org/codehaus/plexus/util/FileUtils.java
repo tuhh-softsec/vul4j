@@ -1088,13 +1088,46 @@ public class FileUtils
         }
         else
         {
-            if ( !file.delete() )
+            if ( !deleteFile( file ) )
             {
-                final String message =
-                    "File " + file + " unable to be deleted.";
+                final String message = "File " + file + " unable to be deleted.";
                 throw new IOException( message );
             }
         }
+    }
+
+    /**
+     * Accommodate Windows bug encountered in both Sun and IBM JDKs.
+     * Others possible. If the delete does not work, call System.gc(),
+     * wait a little and try again.
+     */
+    private static boolean deleteFile( File file )
+        throws IOException
+    {
+        if ( file.isDirectory() )
+        {
+            throw new IOException( "File " + file + " isn't a file." );
+        }
+
+        if ( !file.delete() )
+        {
+            if ( System.getProperty( "os.name" ).toLowerCase().indexOf( "windows" ) > -1 )
+            {
+                System.gc();
+            }
+
+            try
+            {
+                Thread.sleep( 10 );
+                return file.delete();
+            }
+            catch ( InterruptedException ex )
+            {
+                return file.delete();
+            }
+        }
+
+        return true;
     }
 
     /**
