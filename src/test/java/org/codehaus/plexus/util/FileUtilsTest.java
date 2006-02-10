@@ -27,7 +27,11 @@ package org.codehaus.plexus.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * This is used to test FileUtils for correctness.
@@ -105,7 +109,7 @@ public final class FileUtilsTest
 
         URL[] urls = FileUtils.toURLs( files );
 
-        assertEquals( "The length of the generated URL's is not equals to the length of files. " + 
+        assertEquals( "The length of the generated URL's is not equals to the length of files. " +
             "Was " + files.length + ", expected " + urls.length,
             files.length, urls.length );
 
@@ -680,4 +684,39 @@ public final class FileUtilsTest
 
         checkFile( f2_1, new File( to, "2/2_1/2_1.txt" ) );
     }
+
+    public void testFilteredFileCopy() throws Exception {
+        File compareFile = new File( getTestDirectory(), "compare.txt" );
+        OutputStream compareStream = new FileOutputStream(compareFile);
+        compareStream.write("This is a test.  Test sample text\n".getBytes());
+        compareStream.flush();
+
+        File destFile = new File( getTestDirectory(), "target.txt" );
+
+        final Properties filterProperties = new Properties();
+        filterProperties.setProperty("s", "sample text");
+
+
+        // test ${token}
+        FileUtils.FilterWrapper[] wrappers1 = new FileUtils.FilterWrapper[]{
+                new FileUtils.FilterWrapper() {
+                    public Reader getReader(Reader reader) {
+                        return new InterpolationFilterReader(reader, filterProperties, "${", "}");
+                    }
+                }
+        };
+
+        File srcFile = new File( getTestDirectory(), "root.txt" );
+        OutputStream os = new FileOutputStream(srcFile);
+        os.write(("This is a test.  Test ${s}\n").getBytes());
+        os.flush();
+
+        FileUtils.copyFile(srcFile, destFile, System.getProperty("file.encoding"), wrappers1);
+        assertTrue("Files should be equal.", FileUtils.contentEquals( compareFile, destFile ) );
+
+        srcFile.delete();
+        destFile.delete();
+        compareFile.delete();
+    }
+
 }

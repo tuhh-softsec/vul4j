@@ -60,6 +60,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -1615,5 +1622,55 @@ public class FileUtils
             } while (result.exists());
         }
         return result;
+    }
+
+    public static void copyFile(File from, File to, String encoding, FilterWrapper[] wrappers)
+        throws IOException
+    {
+        if (wrappers != null && wrappers.length > 0) {
+            // buffer so it isn't reading a byte at a time!
+            Reader fileReader = null;
+            Writer fileWriter = null;
+            try
+            {
+                if ( encoding == null || encoding.length() < 1 )
+                {
+                    fileReader = new BufferedReader( new FileReader( from ) );
+                    fileWriter = new FileWriter( to );
+                }
+                else
+                {
+                    FileInputStream instream = new FileInputStream( from );
+
+                    FileOutputStream outstream = new FileOutputStream( to );
+
+                    fileReader = new BufferedReader( new InputStreamReader( instream, encoding ) );
+
+                    fileWriter = new OutputStreamWriter( outstream, encoding );
+                }
+
+                Reader reader = fileReader;
+                for (int i = 0; i < wrappers.length; i++) {
+                    FilterWrapper wrapper = wrappers[i];
+                    reader = wrapper.getReader(reader);
+                }
+
+                IOUtil.copy( reader, fileWriter );
+            }
+            finally
+            {
+                IOUtil.close( fileReader );
+                IOUtil.close( fileWriter );
+            }
+        } else {
+            if ( to.lastModified() < from.lastModified() )
+            {
+                copyFile( from, to );
+            }
+        }
+    }
+
+    public static abstract class FilterWrapper {
+        public abstract Reader getReader(Reader fileReader);
     }
 }
