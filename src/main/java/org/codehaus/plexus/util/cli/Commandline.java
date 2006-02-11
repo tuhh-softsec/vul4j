@@ -82,16 +82,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
  * Commandline objects help handling command lines specifying processes to
  * execute.
- *
+ * <p/>
  * The class can be used to define a command line as nested elements or as a
  * helper to define a command line by an application.
- * <p>
+ * <p/>
  * <code>
  * &lt;someelement&gt;<br>
  * &nbsp;&nbsp;&lt;acommandline executable="/executable/to/run"&gt;<br>
@@ -108,19 +109,28 @@ import java.util.Vector;
  * @author <a href="mailto:stefan.bodewig@epost.de">Stefan Bodewig</a>
  */
 public class Commandline
-	implements Cloneable
+    implements Cloneable
 {
 
     protected static final String OS_NAME = "os.name";
+
     protected static final String WINDOWS = "Windows";
 
     private String shell = null;
+
     private Vector shellArgs = new Vector();
+
     protected String executable = null;
+
     protected Vector arguments = new Vector();
+
     protected Vector envVars = new Vector();
+
     private boolean newEnvironment = false;
+
     private File workingDir = null;
+
+    private long pid = -1;
 
     public Commandline( String toProcess )
     {
@@ -149,6 +159,22 @@ public class Commandline
     {
         super();
         setDefaultShell();
+    }
+
+    public long getPid()
+    {
+        if ( pid == -1 )
+        {
+            pid = Long.parseLong(
+                String.valueOf( System.currentTimeMillis() ) );
+        }
+
+        return pid;
+    }
+
+    public void setPid( long pid )
+    {
+        this.pid = pid;
     }
 
     /**
@@ -220,6 +246,7 @@ public class Commandline
     {
 
         private int position;
+
         private int realPos = -1;
 
         Marker( int position )
@@ -229,7 +256,7 @@ public class Commandline
 
         /**
          * Return the number of arguments that preceeded this marker.
-         *
+         * <p/>
          * <p>The name of the executable - if set - is counted as the
          * very first argument.</p>
          */
@@ -253,35 +280,36 @@ public class Commandline
      * <p>Sets the shell or command-line interpretor for the detected operating system,
      * and the shell arguments.</p>
      */
-    private void setDefaultShell() {
-        String os = System.getProperty(OS_NAME);
+    private void setDefaultShell()
+    {
+        String os = System.getProperty( OS_NAME );
 
         //If this is windows set the shell to command.com or cmd.exe with correct arguments.
-        if ( os.indexOf(WINDOWS) != -1 )
+        if ( os.indexOf( WINDOWS ) != -1 )
         {
-            if (os.indexOf("95") != -1 || os.indexOf("98") != -1 || os.indexOf("Me") != -1)
+            if ( os.indexOf( "95" ) != -1 || os.indexOf( "98" ) != -1 || os.indexOf( "Me" ) != -1 )
             {
                 shell = "COMMAND.COM";
-                shellArgs.add("/C");
+                shellArgs.add( "/C" );
             }
             else
             {
                 shell = "CMD.EXE";
-                shellArgs.add("/X");
-                shellArgs.add("/C");
+                shellArgs.add( "/X" );
+                shellArgs.add( "/C" );
             }
         }
     }
 
     /**
      * Creates an argument object.
-     *
+     * <p/>
      * <p>Each commandline object has at most one instance of the
      * argument class.  This method calls
      * <code>this.createArgument(false)</code>.</p>
      *
-     * @see #createArgument(boolean)
      * @return the argument object.
+     * @see #createArgument(boolean)
      */
     public Argument createArgument()
     {
@@ -290,12 +318,12 @@ public class Commandline
 
     /**
      * Creates an argument object and adds it to our list of args.
-     *
+     * <p/>
      * <p>Each commandline object has at most one instance of the
      * argument class.</p>
      *
      * @param insertAtStart if true, the argument is inserted at the
-     * beginning of the list of args, otherwise it is appended.
+     *                      beginning of the list of args, otherwise it is appended.
      */
     public Argument createArgument( boolean insertAtStart )
     {
@@ -320,8 +348,7 @@ public class Commandline
         {
             return;
         }
-        this.executable =
-            executable.replace( '/', File.separatorChar ).replace( '\\', File.separatorChar );
+        this.executable = executable.replace( '/', File.separatorChar ).replace( '\\', File.separatorChar );
     }
 
     public String getExecutable()
@@ -340,7 +367,7 @@ public class Commandline
     /**
      * Add an environment variable
      */
-    public void addEnvironment(String name, String value)
+    public void addEnvironment( String name, String value )
     {
         envVars.add( name + "=" + value );
         newEnvironment = true;
@@ -367,12 +394,13 @@ public class Commandline
      */
     public String[] getEnvironments()
     {
-        return (String[])envVars.toArray(new String[envVars.size()]);
+        return (String[]) envVars.toArray( new String[envVars.size()] );
     }
 
     /**
      * Return the current list of environment variables or null if user
      * doesn't have add any variable.
+     *
      * @todo return the list of proc env variables with user env variables if user add some var.
      */
     public String[] getCurrentEnvironment()
@@ -415,7 +443,7 @@ public class Commandline
         shellCount += shellArgs.size();
         final String[] args = getArguments();
 
-        String[] result = new String[shellCount + args.length + (( executable == null )? 0:1)];
+        String[] result = new String[shellCount + args.length + ( ( executable == null ) ? 0 : 1 )];
         //Build shell and arguments into result
         if ( shell != null )
         {
@@ -466,15 +494,16 @@ public class Commandline
 
     /**
      * Put quotes around the given String if necessary.
-     *
+     * <p/>
      * <p>If the argument doesn't include spaces or quotes, return it
      * as is. If it contains double quotes, use single quotes - else
      * surround the argument by double quotes.</p>
      *
-     * @exception CommandLineException if the argument contains both, single
-     *                           and double quotes.
+     * @throws CommandLineException if the argument contains both, single
+     *                              and double quotes.
      */
-    public static String quoteArgument( String argument ) throws CommandLineException
+    public static String quoteArgument( String argument )
+        throws CommandLineException
     {
         if ( argument.indexOf( "\"" ) > -1 )
         {
@@ -525,7 +554,8 @@ public class Commandline
         return result.toString();
     }
 
-    public static String[] translateCommandline( String toProcess ) throws Exception
+    public static String[] translateCommandline( String toProcess )
+        throws Exception
     {
         if ( toProcess == null || toProcess.length() == 0 )
         {
@@ -621,7 +651,8 @@ public class Commandline
     }
 
     /**
-     * Clear out the whole command line.  */
+     * Clear out the whole command line.
+     */
     public void clear()
     {
         executable = null;
@@ -638,7 +669,7 @@ public class Commandline
 
     /**
      * Return a marker.
-     *
+     * <p/>
      * <p>This marker can be used to locate a position on the
      * commandline - to insert something for example - when all
      * parameters have been set.</p>
@@ -682,17 +713,19 @@ public class Commandline
             {
                 if ( !workingDir.exists() )
                 {
-                    throw new CommandLineException( "Working directory \"" + workingDir.getPath() + "\" does not exist!" );
+                    throw new CommandLineException(
+                        "Working directory \"" + workingDir.getPath() + "\" does not exist!" );
                 }
                 else if ( !workingDir.isDirectory() )
                 {
-                    throw new CommandLineException( "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
+                    throw new CommandLineException(
+                        "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
                 }
 
                 process = Runtime.getRuntime().exec( getShellCommandline(), getCurrentEnvironment(), workingDir );
             }
         }
-        catch( IOException ex )
+        catch ( IOException ex )
         {
             throw new CommandLineException( "Error while executing process.", ex );
         }

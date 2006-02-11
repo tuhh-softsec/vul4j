@@ -28,6 +28,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -36,6 +39,8 @@ import java.util.Properties;
  */
 public abstract class CommandLineUtils
 {
+    private static Map processes = Collections.synchronizedMap( new HashMap() );
+
     public static class StringStreamConsumer
         implements StreamConsumer
     {
@@ -61,7 +66,7 @@ public abstract class CommandLineUtils
     }
 
     public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
-                                         StreamConsumer systemErr )
+                                          StreamConsumer systemErr )
         throws CommandLineException
     {
         if ( cl == null )
@@ -72,6 +77,8 @@ public abstract class CommandLineUtils
         Process p;
 
         p = cl.execute();
+
+        processes.put( new Long( cl.getPid() ), p );
 
         StreamFeeder inputFeeder = null;
 
@@ -130,6 +137,8 @@ public abstract class CommandLineUtils
                 }
             }
 
+            processes.remove( new Long( cl.getPid() ) );
+
             return returnValue;
         }
         catch ( InterruptedException ex )
@@ -149,7 +158,7 @@ public abstract class CommandLineUtils
         }
     }
 
-    public static Properties getSystemEnvVars() 
+    public static Properties getSystemEnvVars()
         throws IOException
     {
         Process p = null;
@@ -180,7 +189,7 @@ public abstract class CommandLineUtils
         BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
 
         String line;
-        
+
         String lastKey = null;
         String lastVal = null;
 
@@ -199,11 +208,38 @@ public abstract class CommandLineUtils
             else if ( lastKey != null )
             {
                 lastVal += "\n" + line;
-                
+
                 envVars.setProperty( lastKey, lastVal );
             }
         }
 
         return envVars;
+    }
+
+    /**
+     * Kill a process launched by executeCommandLine methods
+     * Doesn't work correctly on windows, only the cmd process will be destroy but not the sub process (<a href="http://bugs.sun.com/bugdatabase/view_bug.do;:YfiG?bug_id=4770092">Bug ID 4770092</a>)
+     *
+     * @param pid The pid of command return by Commandline.getPid()
+     */
+    public static void killProcess( long pid )
+    {
+        Process p = (Process) processes.get( new Long( pid ) );
+
+        if ( p != null )
+        {
+            p.destroy();
+            System.out.println( "killed." );
+            processes.remove( new Long( pid ) );
+        }
+        else
+        {
+            System.out.println( "don't exist." );
+        }
+    }
+
+    public static boolean isAlive( long pid )
+    {
+        return ( processes.get( new Long( pid ) ) != null );
     }
 }

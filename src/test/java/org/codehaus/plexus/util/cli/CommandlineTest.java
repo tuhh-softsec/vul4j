@@ -24,11 +24,12 @@ package org.codehaus.plexus.util.cli;
  * SOFTWARE.
  */
 
-import java.io.File;
-
 import junit.framework.TestCase;
 
-public class CommandlineTest extends TestCase
+import java.io.File;
+
+public class CommandlineTest
+    extends TestCase
 {
     private String baseDir;
 
@@ -43,7 +44,8 @@ public class CommandlineTest extends TestCase
     /*
      * @see TestCase#setUp()
      */
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         super.setUp();
         baseDir = System.getProperty( "basedir" );
