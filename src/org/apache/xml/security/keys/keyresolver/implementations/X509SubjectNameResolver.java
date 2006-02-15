@@ -72,7 +72,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
 
          
-         this._x509childNodes = XMLUtils.selectDsNodes(element,
+         this._x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
                  Constants._TAG_X509SUBJECTNAME);
 
          if ((this._x509childNodes != null)

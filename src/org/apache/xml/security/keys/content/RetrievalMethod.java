@@ -129,7 +129,7 @@ public class RetrievalMethod extends SignatureElementProxy
 
       try {
        Element transformsElem =
-             XMLUtils.selectDsNode(this._constructionElement,                                                
+             XMLUtils.selectDsNode(this._constructionElement.getFirstChild(), 
                                                 Constants
                                                    ._TAG_TRANSFORMS, 0);
 

@@ -74,7 +74,7 @@ public class X509SKIResolver extends KeyResolverSpi {
       
  
 
-         this._x509childNodes = XMLUtils.selectDsNodes(element,
+         this._x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
                   Constants._TAG_X509SKI);
 
          if ((this._x509childNodes != null)
