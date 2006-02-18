@@ -141,13 +141,13 @@ public class ObjectParamRuleTestCase extends TestCase {
 
         //Parse it and obtain the ArrayList
         ArrayList al = (ArrayList)digester.parse(new StringReader(sb.toString()));
-        this.assertNotNull(al);
-        this.assertEquals(al.size(), 4);
-        this.assertTrue(al.contains(new Integer(-9)));
-        this.assertTrue(al.contains(new Float(3.14159)));
-        this.assertTrue(al.contains(new Long(999999999)));
-        this.assertTrue(al.contains(new String("foobarbazbing")));
-        this.assertTrue(!(al.contains(new String("ignore"))));
+        assertNotNull(al);
+        assertEquals(al.size(), 4);
+        assertTrue(al.contains(new Integer(-9)));
+        assertTrue(al.contains(new Float(3.14159)));
+        assertTrue(al.contains(new Long(999999999)));
+        assertTrue(al.contains(new String("foobarbazbing")));
+        assertTrue(!(al.contains(new String("ignore"))));
     }
 
 }
