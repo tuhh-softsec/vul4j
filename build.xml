@@ -179,6 +179,7 @@
              debug="${compile.debug}"
        deprecation="${compile.deprecation}"
           optimize="${compile.optimize}">
+      <compilerarg compiler="jikes" value="+Pno-shadow"/>
       <classpath refid="compile.classpath"/>
     </javac>
     <copy    todir="${build.home}/classes" filtering="on">
@@ -198,6 +199,7 @@
              debug="${compile.debug}"
        deprecation="${compile.deprecation}"
           optimize="${compile.optimize}">
+      <compilerarg compiler="jikes" value="+Pno-shadow"/>
       <classpath refid="test.classpath"/>
     </javac>
     <copy    todir="${build.home}/tests" filtering="on">
