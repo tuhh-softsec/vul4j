@@ -381,6 +381,55 @@ public class NodeCreateRuleTestCase extends TestCase {
 
     }
 
+    /**
+     * Tests whether namespaced attributes are handled correctly, using the example from 
+     * the file Test10 XML file.
+     */
+    public void testNamespacedAttribute()
+        throws SAXException, ParserConfigurationException, IOException {
+        
+        digester.setNamespaceAware(true);
+        digester.setRuleNamespaceURI(null);
+        digester.addRule("employee",
+                         new NodeCreateRule(Node.ELEMENT_NODE));
+        Object result = digester.parse(getInputStream("Test10.xml"));
+
+        assertNotNull(result);
+        assertTrue(result instanceof Element);
+        Element element = (Element)result;
+        
+        assertNotNull(element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test"));
+        assertEquals("MyTestAttribute", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getNodeValue());
+        assertEquals("test", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getLocalName());
+        assertEquals("bar", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getPrefix());
+        assertEquals("bar:test", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getName());
+
+    }      
+    
+    /**
+     * Tests whether non-namespaced attributes are handled correctly, using the example from 
+     * the file Test11 XML file.
+     */
+    public void testNonNamespacedAttribute()
+        throws SAXException, ParserConfigurationException, IOException {
+        
+        digester.setNamespaceAware(true);
+        digester.setRuleNamespaceURI(null);
+        digester.addRule("employee",
+                         new NodeCreateRule(Node.ELEMENT_NODE));
+        Object result = digester.parse(getInputStream("Test10.xml"));
+
+        assertNotNull(result);
+        assertTrue(result instanceof Element);
+        Element element = (Element)result;
+        
+        assertNotNull(element.getAttributeNodeNS(null, "firstName"));
+        assertEquals("First Name", element.getAttributeNodeNS(null, "firstName").getNodeValue());
+        assertEquals("firstName", element.getAttributeNodeNS(null, "firstName").getLocalName());
+        assertEquals(null, element.getAttributeNodeNS(null, "firstName").getPrefix());
+        assertEquals("firstName", element.getAttributeNodeNS(null, "firstName").getName());
+
+    }     
 
     /**
      * Tests whether the created fragment can be imported into an existing 
@@ -402,7 +451,6 @@ public class NodeCreateRuleTestCase extends TestCase {
         doc.getFirstChild().appendChild(importedFragment);
 
     }
-
 
     // ------------------------------------------------ Utility Support Methods
 

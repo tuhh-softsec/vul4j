@@ -397,7 +397,7 @@ public class NodeCreateRule extends Rule {
                     doc.createElementNS(namespaceURI, name);
                 for (int i = 0; i < attributes.getLength(); i++) {
                     element.setAttributeNS(attributes.getURI(i),
-                                           attributes.getLocalName(i),
+                                           attributes.getQName(i),
                                            attributes.getValue(i));
                 }
             } else {
