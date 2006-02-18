@@ -49,13 +49,13 @@ public class PluginContext {
 
     // the xml attribute the user uses on an xml element to specify
     // the plugin's class
-    public final String DFLT_PLUGIN_CLASS_ATTR_NS = null;
-    public final String DFLT_PLUGIN_CLASS_ATTR = "plugin-class";
+    public static final String DFLT_PLUGIN_CLASS_ATTR_NS = null;
+    public static final String DFLT_PLUGIN_CLASS_ATTR = "plugin-class";
 
     // the xml attribute the user uses on an xml element to specify
     // the plugin's class
-    public final String DFLT_PLUGIN_ID_ATTR_NS = null;
-    public final String DFLT_PLUGIN_ID_ATTR = "plugin-id";
+    public static final String DFLT_PLUGIN_ID_ATTR_NS = null;
+    public static final String DFLT_PLUGIN_ID_ATTR = "plugin-id";
     
     /** See {@link #setPluginClassAttribute}. */
     private String pluginClassAttrNs = DFLT_PLUGIN_CLASS_ATTR_NS;
