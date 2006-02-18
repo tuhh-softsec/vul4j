@@ -57,8 +57,11 @@ the web-based repository browser</a> web site, or can use subversion to
 download the files.
 </p>
 
-</section>
+<p>For the FAQ and other digester-related information, see
+ <a href="http://wiki.apache.org/jakarta-commons/Digester">the Digester wiki page</a>.
+</p>
 
+</section>
 
 <section name="Releases">
     <subsection name='Digester 1.7 Release (12 June 2005)'>
