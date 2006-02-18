@@ -352,14 +352,14 @@ public class Digester extends DefaultHandler {
      */
     public String findNamespaceURI(String prefix) {
         
-        ArrayStack stack = (ArrayStack) namespaces.get(prefix);
-        if (stack == null) {
-            return (null);
+        ArrayStack nsStack = (ArrayStack) namespaces.get(prefix);
+        if (nsStack == null) {
+            return null;
         }
         try {
-            return ((String) stack.peek());
+            return ((String) nsStack.peek());
         } catch (EmptyStackException e) {
-            return (null);
+            return null;
         }
 
     }
