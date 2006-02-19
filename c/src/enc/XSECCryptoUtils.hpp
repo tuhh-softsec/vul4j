@@ -58,6 +58,8 @@ int DSIG_EXPORT CalculateXKMSKEK(unsigned char * input, int inputLen, unsigned c
 // --------------------------------------------------------------------------------
 
 XMLCh DSIG_EXPORT * EncodeToBase64XMLCh(unsigned char * input, int inputLen);
+unsigned int DSIG_EXPORT DecodeFromBase64XMLCh(const XMLCh * input, unsigned char * output, int maxOutputLen);
+unsigned int DSIG_EXPORT DecodeFromBase64(const char * input, unsigned char * output, int maxOutputLen);
 
 // --------------------------------------------------------------------------------
 //           Some stuff to help with wierd signatures

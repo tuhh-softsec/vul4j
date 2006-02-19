@@ -180,6 +180,33 @@ XMLCh DSIG_EXPORT * EncodeToBase64XMLCh(unsigned char * input, int inputLen) {
 
 }
 
+unsigned int DSIG_EXPORT DecodeFromBase64XMLCh(const XMLCh * input, unsigned char * output, int maxOutputLen) {
+
+	XSECCryptoBase64 * b64 = XSECPlatformUtils::g_cryptoProvider->base64();
+	Janitor<XSECCryptoBase64> j_b64(b64);
+
+	char * tinput = XMLString::transcode(input);
+	ArrayJanitor<char> j_tinput(tinput);
+
+	b64->decodeInit();
+	unsigned int j = b64->decode((unsigned char *) tinput, strlen(tinput), output, maxOutputLen - 1);
+	j += b64->encodeFinish(&output[j], maxOutputLen - j - 1);
+
+	return j;
+}
+
+unsigned int DSIG_EXPORT DecodeFromBase64(const char * input, unsigned char * output, int maxOutputLen) {
+
+	XSECCryptoBase64 * b64 = XSECPlatformUtils::g_cryptoProvider->base64();
+	Janitor<XSECCryptoBase64> j_b64(b64);
+
+	b64->decodeInit();
+	unsigned int j = b64->decode((unsigned char *) input, strlen(input), output, maxOutputLen - 1);
+	j += b64->encodeFinish(&output[j], maxOutputLen - j - 1);
+
+	return j;
+}
+
 
 // --------------------------------------------------------------------------------
 //           Some stuff to help with wierd signatures
