@@ -104,7 +104,8 @@ public class InteropTest extends TestCase {
             javax.swing.UIManager.setLookAndFeel(lnf);
          } catch (Exception ex) {}
 
-         junit.swingui.TestRunner.main(testCaseName);
+         //junit.swingui.TestRunner.main(testCaseName);
+         junit.textui.TestRunner.run(suite());
       }
    }
 
