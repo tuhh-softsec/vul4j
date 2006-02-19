@@ -33,6 +33,7 @@
 #include "XKMSLocateRequestImpl.hpp"
 #include "XKMSValidateRequestImpl.hpp"
 #include "XKMSRegisterRequestImpl.hpp"
+#include "XKMSRevokeRequestImpl.hpp"
 
 #include <xercesc/dom/DOM.hpp>
 
@@ -203,3 +204,17 @@ XKMSRegisterRequest * XKMSCompoundRequestImpl::createRegisterRequest(
 
 	return r;
 }
+
+XKMSRevokeRequest * XKMSCompoundRequestImpl::createRevokeRequest(
+		const XMLCh * service,
+		const XMLCh * id) {
+
+	XKMSRevokeRequest * r = m_factory.createRevokeRequest(service, m_msg.mp_env->getParentDocument(), id);
+	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
+
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+
+	return r;
+}
+

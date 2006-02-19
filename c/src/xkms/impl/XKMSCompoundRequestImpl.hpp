@@ -85,6 +85,9 @@ public:
 	virtual XKMSRegisterRequest * createRegisterRequest(
 		const XMLCh * service,
 		const XMLCh * id = NULL);
+	virtual XKMSRevokeRequest * createRevokeRequest(
+		const XMLCh * service,
+		const XMLCh * id = NULL);
 
 	/* Forced inheritance from XKMSMessageAbstractTypeImpl */
 	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS 

@@ -34,6 +34,7 @@
 #include "XKMSStatusResultImpl.hpp"
 #include "XKMSValidateResultImpl.hpp"
 #include "XKMSRegisterResultImpl.hpp"
+#include "XKMSRevokeResultImpl.hpp"
 #include "XKMSResultImpl.hpp"
 
 #include <xercesc/dom/DOM.hpp>
@@ -223,6 +224,22 @@ XKMSRegisterResult * XKMSCompoundResultImpl::createRegisterResult(
 		const XMLCh * id) {
 
 	XKMSRegisterResult * r = m_factory.createRegisterResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
+
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+
+	return r;
+
+}
+
+XKMSRevokeResult * XKMSCompoundResultImpl::createRevokeResult(
+		XKMSRevokeRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSRevokeResult * r = m_factory.createRevokeResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
 	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
 	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());

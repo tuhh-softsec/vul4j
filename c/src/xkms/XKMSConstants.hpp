@@ -97,6 +97,10 @@ public:
 	static const XMLCh s_tagResultMajor[];
 	static const XMLCh s_tagResultMinor[];
 	static const XMLCh s_tagRevocationCodeIdentifier[];
+	static const XMLCh s_tagRevocationCode[];
+	static const XMLCh s_tagRevokeKeyBinding[];
+	static const XMLCh s_tagRevokeRequest[];
+	static const XMLCh s_tagRevokeResult[];
 	static const XMLCh s_tagService[];
 	static const XMLCh s_tagSignature[];
 	static const XMLCh s_tagStatus[];

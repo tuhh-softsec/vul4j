@@ -820,6 +820,25 @@ const XMLCh XKMSConstants::s_tagResultMinor[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagRevocationCode[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_v,
+	chLatin_o,
+	chLatin_c,
+	chLatin_a,
+	chLatin_t,
+	chLatin_i,
+	chLatin_o,
+	chLatin_n,
+	chLatin_C,
+	chLatin_o,
+	chLatin_d,
+	chLatin_e,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagRevocationCodeIdentifier[] = {
 
 	chLatin_R,
@@ -846,6 +865,62 @@ const XMLCh XKMSConstants::s_tagRevocationCodeIdentifier[] = {
 	chLatin_i,
 	chLatin_e,
 	chLatin_r,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagRevokeKeyBinding[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_v,
+	chLatin_o,
+	chLatin_k,
+	chLatin_e,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_B,
+	chLatin_i,
+	chLatin_n,
+	chLatin_d,
+	chLatin_i,
+	chLatin_n,
+	chLatin_g,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagRevokeRequest[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_v,
+	chLatin_o,
+	chLatin_k,
+	chLatin_e,
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagRevokeResult[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_v,
+	chLatin_o,
+	chLatin_k,
+	chLatin_e,
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
 	chNull
 };
 

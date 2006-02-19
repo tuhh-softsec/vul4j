@@ -112,7 +112,9 @@ public:
 		/* X-KRSS messages */
 
 		RegisterRequest,		/** A RegisterReqeust message */
-		RegisterResult			/** A RegisterResult message */
+		RegisterResult,			/** A RegisterResult message */
+		RevokeRequest,			/** A RevokeRequest message */
+		RevokeResult			/** A RevokeResult message */
 
 	};
 

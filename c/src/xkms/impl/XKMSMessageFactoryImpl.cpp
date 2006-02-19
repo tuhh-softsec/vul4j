@@ -45,6 +45,8 @@
 #include "XKMSPendingRequestImpl.hpp"
 #include "XKMSRegisterRequestImpl.hpp"
 #include "XKMSRegisterResultImpl.hpp"
+#include "XKMSRevokeResultImpl.hpp"
+#include "XKMSRevokeRequestImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -562,6 +564,46 @@ XKMSRegisterRequest * XKMSMessageFactoryImpl::createRegisterRequest(
 	return rri;
 }
 
+XKMSRevokeRequest * XKMSMessageFactoryImpl::createRevokeRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id) {
+	
+	XKMSRevokeRequestImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSRevokeRequestImpl(tenv));
+	rri->createBlankRevokeRequest(service, id);
+
+	return rri;
+
+}
+
+
+XKMSRevokeRequest * XKMSMessageFactoryImpl::createRevokeRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id) {
+
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSRevokeRequest * rri = createRevokeRequest(service, *doc, id);
+	(*doc)->appendChild(rri->getElement());
+
+	return rri;
+}
+
 // --------------------------------------------------------------------------------
 //           Create a result based on a request
 // --------------------------------------------------------------------------------
@@ -830,6 +872,50 @@ XKMSRegisterResult * XKMSMessageFactoryImpl::createRegisterResult(
 	return rr;
 }
 
+
+XKMSRevokeResult * XKMSMessageFactoryImpl::createRevokeResult(
+		XKMSRevokeRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSRevokeResultImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSRevokeResultImpl(tenv));
+	rri->createBlankRevokeResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) rri);
+
+	return rri;
+
+}
+
+XKMSRevokeResult * XKMSMessageFactoryImpl::createRevokeResult(
+		XKMSRevokeRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSRevokeResult * rr = createRevokeResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(rr->getElement());
+
+	return rr;
+}
 
 // --------------------------------------------------------------------------------
 //           Message Conversions

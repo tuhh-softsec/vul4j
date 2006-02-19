@@ -46,6 +46,8 @@ class XKMSStatusRequest;
 class XKMSStatusResult;
 class XKMSRegisterRequest;
 class XKMSRegisterResult;
+class XKMSRevokeResult;
+class XKMSRevokeRequest;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -651,6 +653,96 @@ public:
 
 	virtual XKMSRegisterResult * createRegisterResult(
 		XKMSRegisterRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RevokeRequest\> message.
+	 * 
+	 * Generates a new RevokeRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRevokeRequest structure
+	 */
+
+	virtual XKMSRevokeRequest * createRevokeRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<RevokeRequest\> message and surrounding document
+	 * 
+	 * Generates a new RevokeRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRevokeRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the RevokeRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSRevokeRequest * createRevokeRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RevokeResult\> message.
+	 * 
+	 * Generates a new RevokeResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input RevokeRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * @returns the new XKMSRevokeResponse structure
+	 */
+
+	virtual XKMSRevokeResult * createRevokeResult(
+		XKMSRevokeRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RevokeResult\> message and surrounding document
+	 * 
+	 * Generates a new RevokeResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input RevokeRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * @returns the new XKMSRevokeResponse structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the RevokeRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSRevokeResult * createRevokeResult(
+		XKMSRevokeRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,

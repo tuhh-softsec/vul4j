@@ -97,6 +97,11 @@ public:
 		ResultMajor rmaj,
 		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
 		const XMLCh * id = NULL);
+	virtual XKMSRevokeResult * createRevokeResult(
+		XKMSRevokeRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
+		const XMLCh * id = NULL);
 
 	/* Implemented from MessageAbstractType */
 	virtual messageType getMessageType(void);

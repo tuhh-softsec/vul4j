@@ -180,6 +180,28 @@ public:
 		const XMLCh * id = NULL);
 
 
+	virtual XKMSRevokeRequest * createRevokeRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);
+	virtual XKMSRevokeRequest * createRevokeRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
+
+	virtual XKMSRevokeResult * createRevokeResult(
+		XKMSRevokeRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSRevokeResult * createRevokeResult(
+		XKMSRevokeRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+
 	/* Conversions */
 	virtual XKMSRequestAbstractType * toRequestAbstractType(XKMSMessageAbstractType *msg);
 	virtual XKMSResultType * toResultType(XKMSMessageAbstractType *msg);
