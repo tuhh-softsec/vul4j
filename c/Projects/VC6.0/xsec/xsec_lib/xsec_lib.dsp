@@ -1332,6 +1332,30 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusImpl.cpp
 # End Source File
 # Begin Source File
@@ -1482,6 +1506,18 @@ SOURCE=..\..\..\..\src\xkms\XKMSResult.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSResultType.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRevokeKeyBinding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRevokeRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRevokeResult.hpp
 # End Source File
 # Begin Source File
 
