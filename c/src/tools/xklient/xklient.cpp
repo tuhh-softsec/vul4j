@@ -59,6 +59,8 @@
 #include <xsec/xkms/XKMSRegisterResult.hpp>
 #include <xsec/xkms/XKMSAuthentication.hpp>
 #include <xsec/xkms/XKMSPrototypeKeyBinding.hpp>
+#include <xsec/xkms/XKMSRevokeRequest.hpp>
+#include <xsec/xkms/XKMSRevokeKeyBinding.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
@@ -1333,6 +1335,382 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 }
 
 // --------------------------------------------------------------------------------
+//           Create a RegisterRequest
+// --------------------------------------------------------------------------------
+
+void printRevokeRequestUsage(void) {
+
+	cerr << "\nUsage RegisterRequest [--help|-h] <service URI> [options]\n";
+	cerr << "   --help/-h                : print this screen and exit\n\n";
+	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n";
+	cerr << "   --add-opaque/-o <data>   : Add an opaque data string\n";
+	cerr << "   --add-usage-sig/-us      : Add Signature Key Usage\n";
+	cerr << "   --add-usage-exc/-ux      : Add Exchange Key Usage\n";
+	cerr << "   --add-usage-enc/-ue      : Add Encryption Key Usage\n";
+	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
+	cerr << "                            : Add a UseKeyWith element\n";
+	cerr << "   --add-respondwith/-r <Identifier>\n";
+	cerr << "                            : Add a RespondWith element\n";
+	cerr << "   --add-responsemechanism/-m <Identifier>\n";
+	cerr << "                            : Add a ResponseMechanism element\n";
+	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
+	cerr << "           : Sign using the DSA key in file protected by passphrase\n";
+	cerr << "   --add-value-dsa/-vd <filename> <passphrase>\n";
+	cerr << "           : Add the DSA key as a keyvalue\n";
+	cerr << "   --add-value-rsa/-vr <filename> <passphrase>\n";
+	cerr << "           : Add the RSA key as a keyvalue\n";
+	cerr << "   --revocation/-v <phrase> : Set <phrase> as revocation code\n";
+	cerr << "   --authenticate/-a <phrase>\n";
+	cerr << "           : Use <phrase> as the authentication key for the request\n";
+	cerr << "             NOTE - This must come *after* adding of KeyInfo elements\n\n";
+
+}
+
+XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
+
+	if (paramCount >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+
+		printRegisterRequestUsage();
+		return NULL;
+	}
+
+	/* First create the basic request */
+	XKMSMessageFactory * factory = 
+		prov.getXKMSMessageFactory();
+	XKMSRevokeRequest * rr;
+
+	if (cr == NULL)
+		rr = factory->createRevokeRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+	else
+		rr = cr->createRevokeRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
+
+	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+
+		if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+			if (++paramCount >= argc) {
+				printRevokeRequestUsage();
+				delete rr;
+				return NULL;
+			}
+
+			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
+			if (rkb == NULL)
+				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
+			rkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+			if (++paramCount >= argc) {
+				printRevokeRequestUsage();
+				delete rr;
+				return NULL;
+			}
+			rr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+			if (++paramCount >= argc) {
+				printRevokeRequestUsage();
+				delete rr;
+				return NULL;
+			}
+			rr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+			if (++paramCount >= argc) {
+				printRevokeRequestUsage();
+				delete rr;
+				return NULL;
+			}
+			rr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
+			if (rkb == NULL)
+				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
+			rkb->setSignatureKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
+			if (rkb == NULL)
+				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
+			rkb->setExchangeKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
+			if (rkb == NULL)
+				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
+			rkb->setEncryptionKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+			if (++paramCount >= argc + 1) {
+				printRevokeRequestUsage();
+				delete rr;
+				return NULL;
+			}
+			XKMSRevokeKeyBinding *rkb = rr->getRevokeKeyBinding();
+			if (rkb == NULL)
+				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
+
+			rkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
+			paramCount += 2;
+		}
+		else if (stricmp(argv[paramCount], "--revocation") == 0 || stricmp(argv[paramCount], "-v") == 0) {
+			if (++paramCount >= argc) {
+				printRevokeRequestUsage();
+				delete rr;
+				return NULL;
+			}
+
+			// Create the RevocationCode value
+			unsigned char rciBuf[XSEC_MAX_HASH_SIZE];
+			int len = CalculateXKMSRevocationCodeIdentifierEncoding1((unsigned char *) argv[paramCount], (int) strlen(argv[paramCount]), rciBuf, XSEC_MAX_HASH_SIZE);
+
+			if (len <= 0) {
+				cerr << "Error creating revocation code!\n";
+				delete rr;
+				return NULL;
+			}
+
+			// Convert to base64
+			XMLCh * str = EncodeToBase64XMLCh(rciBuf, len);
+			rr->addRevocationCode(str);
+			XSEC_RELEASE_XMLCH(str);
+
+			paramCount++;;
+		}		else if (stricmp(argv[paramCount], "--authenticate") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+			if (++paramCount >= argc + 1) {
+				printRevokeRequestUsage();
+				delete rr;
+				return NULL;
+			}
+
+			// Create the signature
+
+			unsigned char keyBuf[XSEC_MAX_HASH_SIZE];
+			int len = CalculateXKMSAuthenticationKey((unsigned char *) argv[paramCount], (int) strlen(argv[paramCount]), keyBuf, XSEC_MAX_HASH_SIZE);
+			if (len <= 0) {
+				cout << "Error creating key from pass phrase" << endl;
+				delete rr;
+				return NULL;
+			}
+
+			XSECCryptoKeyHMAC * k = XSECPlatformUtils::g_cryptoProvider->keyHMAC();
+			k->setKey(keyBuf, len);
+
+			// Set key and validate
+			XKMSAuthentication * a = rr->addAuthentication();
+			DSIGSignature * sig = a->addKeyBindingAuthenticationSignature();
+
+			sig->setSigningKey(k);
+			sig->sign();
+
+			paramCount++;
+
+		}
+#if defined (HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
+				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+			if (paramCount >= argc + 2) {
+				printRegisterRequestUsage();
+				delete rr;
+				return NULL;
+			}
+
+			// DSA or RSA OpenSSL Key
+			// For now just read a particular file
+
+			BIO * bioKey;
+			if ((bioKey = BIO_new(BIO_s_file())) == NULL) {
+
+				cerr << "Error opening private key file\n\n";
+				return NULL;
+
+			}
+
+			if (BIO_read_filename(bioKey, argv[paramCount+1]) <= 0) {
+
+				cerr << "Error opening private key file : " << argv[paramCount+1] << endl;
+				return NULL;
+
+			}
+
+			EVP_PKEY * pkey;
+			pkey = PEM_read_bio_PrivateKey(bioKey,NULL,NULL,argv[paramCount + 2]);
+
+			if (pkey == NULL) {
+
+				BIO * bio_err;
+	
+				if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+					BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+				cerr << "Error loading private key\n\n";
+				ERR_print_errors(bio_err);
+				return NULL;
+
+			}
+			XSECCryptoKey *key;
+			DSIGSignature * sig;
+			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+
+				// Check type is correct
+
+				if (pkey->type != EVP_PKEY_DSA) {
+					cerr << "DSA Key requested, but OpenSSL loaded something else\n";
+					return NULL;
+				}
+
+				sig = rr->addSignature(CANON_C14N_NOC, SIGNATURE_DSA, HASH_SHA1);
+				// Create the XSEC OpenSSL interface
+				key = new OpenSSLCryptoKeyDSA(pkey);
+
+				XMLCh * P = BN2b64(pkey->pkey.dsa->p);
+				XMLCh * Q = BN2b64(pkey->pkey.dsa->q);
+				XMLCh * G = BN2b64(pkey->pkey.dsa->g);
+				XMLCh * Y = BN2b64(pkey->pkey.dsa->pub_key);
+
+				sig->appendDSAKeyValue(P,Q,G,Y);
+
+				XSEC_RELEASE_XMLCH(P);
+				XSEC_RELEASE_XMLCH(Q);
+				XSEC_RELEASE_XMLCH(G);
+				XSEC_RELEASE_XMLCH(Y);
+			}
+			else {
+				if (pkey->type != EVP_PKEY_RSA) {
+					cerr << "RSA Key requested, but OpenSSL loaded something else\n";
+					exit (1);
+				}
+				sig = rr->addSignature(CANON_C14N_NOC, SIGNATURE_RSA, HASH_SHA1);
+				key = new OpenSSLCryptoKeyRSA(pkey);
+
+				XMLCh * mod = BN2b64(pkey->pkey.rsa->n);
+				XMLCh * exp = BN2b64(pkey->pkey.rsa->e);
+				sig->appendRSAKeyValue(mod, exp);
+				XSEC_RELEASE_XMLCH(mod);
+				XSEC_RELEASE_XMLCH(exp);
+
+			}
+
+			sig->setSigningKey(key);
+			sig->sign();
+
+			EVP_PKEY_free(pkey);
+			BIO_free(bioKey);
+
+			paramCount += 3;
+
+			
+		} /* argv[1] = "sign dsa/rsa" */
+		else if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0 ||
+				stricmp(argv[paramCount], "--add-value-rsa") == 0 || stricmp(argv[paramCount], "-vr") == 0) {
+			if (paramCount >= argc + 2) {
+				printRegisterRequestUsage();
+				delete rr;
+				return NULL;
+			}
+
+			// DSA or RSA OpenSSL Key
+			// For now just read a particular file
+
+			BIO * bioKey;
+			if ((bioKey = BIO_new(BIO_s_file())) == NULL) {
+
+				cerr << "Error opening private key file\n\n";
+				return NULL;
+
+			}
+
+			if (BIO_read_filename(bioKey, argv[paramCount+1]) <= 0) {
+
+				cerr << "Error opening private key file : " << argv[paramCount+1] << endl;
+				return NULL;
+
+			}
+
+			EVP_PKEY * pkey;
+			pkey = PEM_read_bio_PrivateKey(bioKey,NULL,NULL,argv[paramCount + 2]);
+
+			if (pkey == NULL) {
+
+				BIO * bio_err;
+	
+				if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+					BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+				cerr << "Error loading private key\n\n";
+				ERR_print_errors(bio_err);
+				return NULL;
+
+			}
+
+			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
+			if (rkb == NULL)
+				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
+
+
+			if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0) {
+
+				// Check type is correct
+
+				if (pkey->type != EVP_PKEY_DSA) {
+					cerr << "DSA Key requested, but OpenSSL loaded something else\n";
+					return NULL;
+				}
+
+				XMLCh * P = BN2b64(pkey->pkey.dsa->p);
+				XMLCh * Q = BN2b64(pkey->pkey.dsa->q);
+				XMLCh * G = BN2b64(pkey->pkey.dsa->g);
+				XMLCh * Y = BN2b64(pkey->pkey.dsa->pub_key);
+
+				rkb->appendDSAKeyValue(P,Q,G,Y);
+
+				XSEC_RELEASE_XMLCH(P);
+				XSEC_RELEASE_XMLCH(Q);
+				XSEC_RELEASE_XMLCH(G);
+				XSEC_RELEASE_XMLCH(Y);
+			}
+			else {
+				if (pkey->type != EVP_PKEY_RSA) {
+					cerr << "RSA Key requested, but OpenSSL loaded something else\n";
+					exit (1);
+				}
+
+				XMLCh * mod = BN2b64(pkey->pkey.rsa->n);
+				XMLCh * exp = BN2b64(pkey->pkey.rsa->e);
+				rkb->appendRSAKeyValue(mod, exp);
+				XSEC_RELEASE_XMLCH(mod);
+				XSEC_RELEASE_XMLCH(exp);
+
+			}
+
+			EVP_PKEY_free(pkey);
+			BIO_free(bioKey);
+
+			paramCount += 3;
+
+			
+		} /* argv[1] = "value dsa/rsa" */
+
+#endif
+		else {
+			printRevokeRequestUsage();
+			delete rr;
+			(*doc)->release();
+			return NULL;
+		}
+	}
+
+	return rr;
+}
+
+// --------------------------------------------------------------------------------
 //           Create a PendingRequest
 // --------------------------------------------------------------------------------
 
@@ -2296,7 +2674,8 @@ void printDoRequestUsage(void) {
 	cerr << "                         LocateRequest   (lr)\n";
 	cerr << "                         ValidateRequest (vr)\n";
 	cerr << "                         PendingRequest  (pr)\n";
-	cerr << "                         RegisterRequest (rr)\n\n";
+	cerr << "                         RegisterRequest (rr)\n";
+	cerr << "                         RevokeRequest   (er)\n\n";
 
 }
 
@@ -2417,6 +2796,23 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			paramCount++;
 			XKMSRegisterRequest * r = 
 				(XKMSRegisterRequest *) (createRegisterRequest(prov, &doc, argc, argv, paramCount));
+
+			if (r == NULL) {
+				return -1;
+			}
+			if (twoPhase)
+				r->appendResponseMechanismItem(XKMSConstants::s_tagRepresent);
+
+			msg = r;
+			parmsDone = true;
+
+		}
+		else if ((stricmp(argv[paramCount], "RevokeRequest") == 0) ||
+			(stricmp(argv[paramCount], "er") == 0)) {
+
+			paramCount++;
+			XKMSRevokeRequest * r = 
+				(XKMSRevokeRequest *) (createRevokeRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
