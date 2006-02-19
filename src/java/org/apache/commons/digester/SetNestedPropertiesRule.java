@@ -351,9 +351,22 @@ public class SetNestedPropertiesRule extends Rule {
         }
         
         public List rules() {
-            // This is not actually expected to be called.
-            throw new RuntimeException(
-                "AnyChildRules.rules not implemented.");
+            // This is not actually expected to be called during normal
+            // processing.
+            //
+            // There is only one known case where this is called; when a rule
+            // returned from AnyChildRules.match is invoked and throws a
+            // SAXException then method Digester.endDocument will be called
+            // without having "uninstalled" the AnyChildRules ionstance. That
+            // method attempts to invoke the "finish" method for every Rule
+            // instance - and thus needs to call rules() on its Rules object,
+            // which is this one. Actually, java 1.5 and 1.6beta2 have a
+            // bug in their xml implementation such that endDocument is not 
+            // called after a SAXException, but other parsers (eg Aelfred)
+            // do call endDocument. Here, we therefore need to return the
+            // rules registered with the underlying Rules object.
+            log.debug("AnyChildRules.rules invoked.");
+            return decoratedRules.rules();
         }
         
         public void init(String prefix, Rules rules) {
