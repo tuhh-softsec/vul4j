@@ -60,6 +60,7 @@
 #include <xsec/xkms/XKMSAuthentication.hpp>
 #include <xsec/xkms/XKMSPrototypeKeyBinding.hpp>
 #include <xsec/xkms/XKMSRevokeRequest.hpp>
+#include <xsec/xkms/XKMSRevokeResult.hpp>
 #include <xsec/xkms/XKMSRevokeKeyBinding.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
@@ -2184,6 +2185,29 @@ void doKeyBindingDump(XKMSKeyBinding * kb, int level) {
 
 }
 
+void doRevokeKeyBindingDump(XKMSRevokeKeyBinding * kb, int level) {
+
+	/* Dump the status */
+
+	XKMSStatus * s = kb->getStatus();
+	if (s == NULL)
+		return;
+
+	char * sr = XMLString::transcode(XKMSConstants::s_tagStatusValueCodes[s->getStatusValue()]);
+	levelSet(level);
+	cout << "Status = " << sr << endl;
+	XSEC_RELEASE_XMLCH(sr);
+
+	/* Dump the status reasons */
+	doStatusReasonDump(XKMSStatus::Valid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Invalid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Indeterminate, s, level+1);
+
+	/* Now the actual key */
+	doKeyBindingAbstractDump((XKMSKeyBindingAbstractType *) kb, level);
+
+}
+
 void doAuthenticationDump(XKMSAuthentication *a, int level) {
 
 
@@ -2349,6 +2373,33 @@ int doRegisterResultDump(XKMSRegisterResult *msg) {
 	return 0;
 }
 
+int doRevokeResultDump(XKMSRevokeResult *msg) {
+
+	cout << endl << "This is a RevokeResult Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doResultTypeDump(msg, level);
+
+	int j;
+
+	if ((j = msg->getKeyBindingSize()) > 0) {
+
+		cout << endl;
+		levelSet(level);
+		cout << "Key Bindings" << endl << endl;
+
+		for (int i = 0; i < j ; ++i) {
+
+			doKeyBindingDump(msg->getKeyBindingItem(i), level + 1);
+
+		}
+
+	}
+
+	return 0;
+}
+
 int doStatusResultDump(XKMSStatusResult *msg) {
 
 	cout << endl << "This is a StatusResult Message" << endl;
@@ -2422,6 +2473,36 @@ int doRegisterRequestDump(XKMSRegisterRequest *msg) {
 
 		cout << "No ProofOfPossession Signature found" << endl;
 
+	}
+
+	return 0;
+
+}
+
+int doRevokeRequestDump(XKMSRevokeRequest *msg) {
+
+	cout << endl << "This is a RevokeRequest Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doRequestAbstractTypeDump(msg, level);
+
+	XKMSRevokeKeyBinding *rkb = msg->getRevokeKeyBinding();
+	if (rkb != NULL) {
+		doRevokeKeyBindingDump(rkb, level);
+	}
+
+	// Check authentication
+	if (msg->getAuthentication())
+		doAuthenticationDump(msg->getAuthentication(), level);
+
+	if (msg->getRevocationCode()) {
+
+		levelSet(1);
+		cout << "RevocationCode found = ";
+		char * sr = XMLString::transcode(msg->getRevocationCode());
+		cout << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
 	}
 
 	return 0;
@@ -2529,6 +2610,16 @@ int doMsgDump(XKMSMessageAbstractType * msg) {
 	case XKMSMessageAbstractType::RegisterResult :
 
 		doRegisterResultDump((XKMSRegisterResult *) msg);
+		break;
+
+	case XKMSMessageAbstractType::RevokeRequest :
+
+		doRevokeRequestDump((XKMSRevokeRequest *) msg);
+		break;
+
+	case XKMSMessageAbstractType::RevokeResult :
+
+		doRevokeResultDump((XKMSRevokeResult *) msg);
 		break;
 
 	default :
