@@ -190,7 +190,7 @@ unsigned int DSIG_EXPORT DecodeFromBase64XMLCh(const XMLCh * input, unsigned cha
 
 	b64->decodeInit();
 	unsigned int j = b64->decode((unsigned char *) tinput, strlen(tinput), output, maxOutputLen - 1);
-	j += b64->encodeFinish(&output[j], maxOutputLen - j - 1);
+	j += b64->decodeFinish(&output[j], maxOutputLen - j - 1);
 
 	return j;
 }
@@ -202,7 +202,7 @@ unsigned int DSIG_EXPORT DecodeFromBase64(const char * input, unsigned char * ou
 
 	b64->decodeInit();
 	unsigned int j = b64->decode((unsigned char *) input, strlen(input), output, maxOutputLen - 1);
-	j += b64->encodeFinish(&output[j], maxOutputLen - j - 1);
+	j += b64->decodeFinish(&output[j], maxOutputLen - j - 1);
 
 	return j;
 }
