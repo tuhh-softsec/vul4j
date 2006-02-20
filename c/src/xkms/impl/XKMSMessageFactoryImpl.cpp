@@ -317,6 +317,33 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		return (XKMSRegisterResult *) ret;
 
 	}
+	else if (strEquals(name, XKMSConstants::s_tagRevokeRequest)) {
+
+		// This is a <RevokeRequest> message
+		XKMSRevokeRequestImpl * ret;
+		XSECnew(ret, XKMSRevokeRequestImpl(env, elt));
+		Janitor<XKMSRevokeRequestImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return (XKMSRevokeRequest *) ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagRevokeResult)) {
+
+		// This is a <RevokeResult> message
+		XKMSRevokeResultImpl * ret;
+		XSECnew(ret, XKMSRevokeResultImpl(env, elt));
+		Janitor<XKMSRevokeResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return (XKMSRevokeResult *) ret;
+
+	}
 
 	delete env;
 	return NULL;
@@ -932,6 +959,7 @@ XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMess
 	case XKMSMessageAbstractType::CompoundRequest :
 	case XKMSMessageAbstractType::PendingRequest :
 	case XKMSMessageAbstractType::RegisterRequest :
+	case XKMSMessageAbstractType::RevokeRequest :
 	case XKMSMessageAbstractType::StatusRequest :
 
 		return (XKMSRequestAbstractType *) msg;
@@ -953,6 +981,7 @@ XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *m
 	case XKMSMessageAbstractType::ValidateResult :
 	case XKMSMessageAbstractType::CompoundResult :
 	case XKMSMessageAbstractType::RegisterResult :
+	case XKMSMessageAbstractType::RevokeResult :
 	case XKMSMessageAbstractType::StatusResult :
 	case XKMSMessageAbstractType::Result :
 
