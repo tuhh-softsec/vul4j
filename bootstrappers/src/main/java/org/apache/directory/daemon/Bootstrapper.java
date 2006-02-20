@@ -50,7 +50,7 @@ public class Bootstrapper
     static final String[] EMPTY_STRARRAY = new String[0];
     public static final String START_CLASS_PROP = "bootstrap.start.class";
     public static final String STOP_CLASS_PROP = "bootstrap.stop.class";
-    
+
     private static final Logger log = LoggerFactory.getLogger( Bootstrapper.class );
 
     /** Shutdown command to use for await() */
@@ -61,8 +61,7 @@ public class Bootstrapper
     private int shutdownPort = -1;
     /** Random number generator */
     private Random random;
-    
-    
+
     private InstallationLayout layout;
     private ClassLoader application;
     private ClassLoader parent;
@@ -72,21 +71,21 @@ public class Bootstrapper
     private DaemonApplication start;
     private DaemonApplication stop;
 
-    
+
     public void setInstallationLayout( String installationBase )
     {
         log.debug( "Setting layout in Bootstrapper using base: " + installationBase );
         layout = new InstallationLayout( installationBase );
-        
+
         try
         {
             layout.verifyInstallation();
         }
-        catch( Throwable t )
+        catch ( Throwable t )
         {
             log.error( "Installation verification failure!", t );
         }
-        
+
         try
         {
             Properties props = new Properties();
@@ -100,14 +99,14 @@ public class Bootstrapper
             System.exit( ExitCodes.PROPLOAD );
         }
     }
-    
-    
+
+
     public void setParentLoader( ClassLoader parentLoader )
     {
         this.parent = parentLoader;
         URL[] jars = layout.getAllJars();
         this.application = new URLClassLoader( jars, parentLoader );
-        
+
         if ( log.isDebugEnabled() )
         {
             StringBuffer buf = new StringBuffer();
@@ -133,7 +132,7 @@ public class Bootstrapper
             log.error( "Could not find " + startClassName, e );
             System.exit( ExitCodes.CLASS_LOOKUP );
         }
-        
+
         try
         {
             start = ( DaemonApplication ) startClass.newInstance();
@@ -143,7 +142,7 @@ public class Bootstrapper
             log.error( "Could not instantiate " + startClassName, e );
             System.exit( ExitCodes.INSTANTIATION );
         }
-        
+
         try
         {
             start.init( this.layout, args );
@@ -156,7 +155,7 @@ public class Bootstrapper
         Thread.currentThread().setContextClassLoader( parent );
     }
 
-    
+
     public void callStart()
     {
         Thread.currentThread().setContextClassLoader( application );
@@ -171,13 +170,13 @@ public class Bootstrapper
         }
         Thread.currentThread().setContextClassLoader( parent );
     }
-    
+
 
     public void callStop( String[] args )
     {
         Thread.currentThread().setContextClassLoader( application );
         Class clazz = null;
-        
+
         if ( startClassName.equals( stopClassName ) && start != null )
         {
             clazz = startClass;
@@ -194,7 +193,7 @@ public class Bootstrapper
                 log.error( "Could not find " + stopClassName, e );
                 System.exit( ExitCodes.CLASS_LOOKUP );
             }
-            
+
             try
             {
                 stop = ( DaemonApplication ) clazz.newInstance();
@@ -205,7 +204,7 @@ public class Bootstrapper
                 System.exit( ExitCodes.INSTANTIATION );
             }
         }
-        
+
         try
         {
             stop.stop( args );
@@ -218,7 +217,7 @@ public class Bootstrapper
         Thread.currentThread().setContextClassLoader( parent );
     }
 
-    
+
     public void callDestroy()
     {
         Thread.currentThread().setContextClassLoader( application );
@@ -233,26 +232,26 @@ public class Bootstrapper
         }
         Thread.currentThread().setContextClassLoader( parent );
     }
-    
-    
-    public static String[] shift( String[]args, int amount )
+
+
+    public static String[] shift( String[] args, int amount )
     {
         if ( args.length > amount )
         {
-            String[] shifted = new String[args.length-1];
+            String[] shifted = new String[args.length - 1];
             System.arraycopy( args, 1, shifted, 0, shifted.length );
             return shifted;
         }
-        
+
         return EMPTY_STRARRAY;
     }
 
-    
+
     public void sendShutdownCommand() throws IOException
     {
         Socket socket = null;
         OutputStream stream = null;
-        
+
         if ( shutdownPort == -1 )
         {
             File shutdownPortFile = new File( layout.getRunDirectory(), SHUTDOWN_FILE );
@@ -270,26 +269,29 @@ public class Bootstrapper
                 throw new IllegalStateException( msg );
             }
         }
-        
+
         // this stops the main thread listening for shutdown requests
-        try {
+        try
+        {
             socket = new Socket( "127.0.0.1", shutdownPort );
             stream = socket.getOutputStream();
 
-            for (int i = 0; i < SHUTDOWN.length(); i++ )
+            for ( int i = 0; i < SHUTDOWN.length(); i++ )
             {
-                stream.write( SHUTDOWN.charAt(i) );
+                stream.write( SHUTDOWN.charAt( i ) );
             }
 
             stream.flush();
         }
         finally
         {
-            if ( stream != null ) stream.close();
-            if ( socket != null ) socket.close();
+            if ( stream != null )
+                stream.close();
+            if ( socket != null )
+                socket.close();
         }
     }
-    
+
 
     /**
      * Wait until a proper shutdown command is received, then return.
@@ -314,7 +316,8 @@ public class Bootstrapper
 
             // register shutdown hook in case we get shutdown abruptly without 
             // cleaning up the shutdown file containing the shutdown port
-            Runtime.getRuntime().addShutdownHook( new Thread( "Bootstrapper cleanup" ) {
+            Runtime.getRuntime().addShutdownHook( new Thread( "Bootstrapper cleanup" )
+            {
                 public void run()
                 {
                     File shutdownPortFile = new File( layout.getRunDirectory(), SHUTDOWN_FILE );
@@ -355,7 +358,7 @@ public class Bootstrapper
             try
             {
                 socket = serverSocket.accept();
-                socket.setSoTimeout(10 * 1000);  // Ten seconds
+                socket.setSoTimeout( 10 * 1000 ); // Ten seconds
                 stream = socket.getInputStream();
             }
             catch ( AccessControlException ace )
@@ -377,7 +380,7 @@ public class Bootstrapper
             {
                 if ( random == null )
                 {
-                    random = new Random(System.currentTimeMillis());
+                    random = new Random( System.currentTimeMillis() );
                 }
                 expected += ( random.nextInt() % 1024 );
             }
@@ -394,7 +397,7 @@ public class Bootstrapper
                     ch = -1;
                 }
 
-                if ( ch < 32 )  // Control character or EOF terminates loop
+                if ( ch < 32 ) // Control character or EOF terminates loop
                 {
                     break;
                 }
@@ -434,7 +437,7 @@ public class Bootstrapper
         {
             log.debug( "Failed on socket close", e );
         }
-        
+
         File shutdownPortFile = new File( layout.getRunDirectory(), SHUTDOWN_FILE );
         if ( shutdownPortFile.exists() )
         {

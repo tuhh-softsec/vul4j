@@ -37,11 +37,10 @@ public class MainBootstrapper extends Bootstrapper
     // Java application main() entry point
     // ------------------------------------------------------------------------
 
-    
     public static void main( String[] args )
     {
         log.debug( "main(String[]) called" );
-        
+
         if ( log.isDebugEnabled() )
         {
             log.debug( "main() recieved args:" );
@@ -79,7 +78,7 @@ public class MainBootstrapper extends Bootstrapper
                 instance.callStart();
 
                 instance.waitForShutdown();
-                
+
                 log.debug( "calling callStop() from main(String[])" );
                 instance.callStop( shift( args, 2 ) );
                 log.debug( "calling callDestroy() from main(String[])" );
@@ -107,6 +106,6 @@ public class MainBootstrapper extends Bootstrapper
 
     private static void printHelp()
     {
-        System.err.println("java -jar bootstrap.jar <app.home> <command.name>");
+        System.err.println( "java -jar bootstrap.jar <app.home> <command.name>" );
     }
 }

@@ -33,12 +33,14 @@ public interface DaemonApplication
      * the command arguments are removed
      */
     void init( InstallationLayout layout, String[] args ) throws Exception;
-    
+
+
     /**
      * Start threads and bind sockets here.
      */
     void start();
-    
+
+
     /**
      * Stop threads and close sockets opened in start() here.
      * 
@@ -46,7 +48,8 @@ public interface DaemonApplication
      * @throws Exception 
      */
     void stop( String[] args ) throws Exception;
-    
+
+
     /**
      * The application should destroy resources created in init() here.
      */

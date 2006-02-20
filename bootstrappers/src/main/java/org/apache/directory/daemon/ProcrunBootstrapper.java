@@ -32,17 +32,16 @@ import org.slf4j.LoggerFactory;
 public class ProcrunBootstrapper extends Bootstrapper
 {
     private final static Logger log = LoggerFactory.getLogger( ProcrunBootstrapper.class );
-    
-    
+
+
     // -----------------------------------------------------------------------
     // Procrun Entry Points
     // -----------------------------------------------------------------------
-    
-    
+
     public static void prunsrvStart( String[] args )
     {
         log.debug( "prunsrvStart(String[]) called" );
-        
+
         if ( log.isDebugEnabled() )
         {
             log.debug( "prunsrvStart(String[]) recieved args:" );

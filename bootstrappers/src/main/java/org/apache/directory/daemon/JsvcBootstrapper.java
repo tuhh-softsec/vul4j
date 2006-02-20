@@ -34,7 +34,7 @@ public class JsvcBootstrapper extends Bootstrapper
     private boolean isDaemonShuttingDown = false;
     private Thread thread;
 
-    
+
     public void init( String[] args )
     {
         if ( log.isDebugEnabled() )
@@ -53,8 +53,8 @@ public class JsvcBootstrapper extends Bootstrapper
         callInit( shift( args, 1 ) );
         thread = new Thread( new ShutdownListener(), "ShutdownListenerThread" );
     }
-    
-    
+
+
     public void start()
     {
         log.debug( "start() called" );
@@ -66,7 +66,7 @@ public class JsvcBootstrapper extends Bootstrapper
     public void stop() throws Exception
     {
         log.debug( "stop() called using regular shutdown with signals" );
-        
+
         // Bad construct here since there is no synchronization but there is
         // no really good way to do this with the way threads are setup.  So
         // both the listener thread and the daemon thread may try to shutdown
@@ -75,8 +75,8 @@ public class JsvcBootstrapper extends Bootstrapper
         // very small.  For all practical purposes this will work just fine.
         // And so what if they try to shutdown at the same time.  One thread
         // will just get an exception due to a DeadContext.
-        
-        if ( ! isListenerShuttingDown )
+
+        if ( !isListenerShuttingDown )
         {
             isDaemonShuttingDown = true;
             callStop( EMPTY_STRARRAY );
@@ -89,15 +89,14 @@ public class JsvcBootstrapper extends Bootstrapper
         log.debug( "destroy() called" );
         callDestroy();
     }
-    
-    
+
     class ShutdownListener implements Runnable
     {
         public void run()
         {
             waitForShutdown();
             log.debug( "ShutdownListener came out of waitForShutdown" );
-            if ( ! isDaemonShuttingDown )
+            if ( !isDaemonShuttingDown )
             {
                 isListenerShuttingDown = true;
                 log.debug( "ShutdownListener will invoke callStop(String[])." );

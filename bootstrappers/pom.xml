@@ -4,14 +4,17 @@
   <parent>
     <groupId>org.apache.directory.daemon</groupId>
     <artifactId>build</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>1.0-RC1</version>
   </parent>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>1.0-RC1</version>
   <artifactId>daemon-bootstrappers</artifactId>
   <groupId>org.apache.directory.daemon</groupId>
   <name>Apache Directory Daemon Bootstrappers</name>
   <packaging>jar</packaging>
-  <description></description>
+  <description>
+    Daemon bootstrappers which initialize a classloader with jars laid out in an installation
+    footprint.
+  </description>
   <distributionManagement>
     <site>
       <id>apache.websites</id>
