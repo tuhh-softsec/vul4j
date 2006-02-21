@@ -163,7 +163,21 @@ public abstract class MojoCommand
                 }
                 
                 File dest = new File( target.getLayout().getBaseDirectory(), packagedFiles[ii].getDestinationPath() );
-                if ( packagedFiles[ii].isFiltered() )
+                
+                if ( packagedFiles[ii].isDirectory() )
+                {
+                    try
+                    {
+                        FileUtils.copyDirectoryStructure( source, dest );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new MojoFailureException( "Failed to copy packagedFile [directory=true] from source " 
+                            + source + " to destination " + dest );
+                    }
+                    continue;
+                }
+                else if ( packagedFiles[ii].isFiltered() )
                 {
                     try
                     {
@@ -174,8 +188,7 @@ public abstract class MojoCommand
                         throw new MojoFailureException( "Failed to copy packagedFile from source " + source +
                             " to destination " + dest );
                     }
-                    
-                    return;
+                    continue;
                 }
                 
                 try

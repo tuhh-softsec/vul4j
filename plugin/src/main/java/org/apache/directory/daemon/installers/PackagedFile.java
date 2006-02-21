@@ -28,6 +28,8 @@ public class PackagedFile
 {
     /** true if this file is obtained from the local maven repository as a project dependency */
     private boolean dependency = false;
+    /** true if this file is a directory to be copied */
+    private boolean directory = false;
     /** true if this file is to be filtered to substitute variables */
     private boolean filtered = false;
     /** true if this file is to be made executable */
@@ -127,5 +129,17 @@ public class PackagedFile
     public String getInstallationBundleId()
     {
         return installationBundleId;
+    }
+
+
+    public void setDirectory( boolean directory )
+    {
+        this.directory = directory;
+    }
+
+
+    public boolean isDirectory()
+    {
+        return directory;
     }
 }
