@@ -125,8 +125,19 @@ public class Xpp3Dom
         return ( null != attributes ) ? (String) attributes.get( name ) : null;
     }
 
+    /**
+     * Set the attribute value
+     * @param name String not null
+     * @param value String not null
+     */
     public void setAttribute( String name, String value )
     {
+        if ( null == value ) {
+            throw new NullPointerException( "Attribute value can not be null" );
+        }
+        if ( null == name ) {
+            throw new NullPointerException( "Attribute name can not be null" );
+        }
         if ( null == attributes )
         {
             attributes = new HashMap();

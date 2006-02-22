@@ -116,4 +116,27 @@ public class Xpp3DomTest
         assertEquals( result.getValue(), t2.getValue() );
     }
 
+    public void testNullAttributeNameOrValue()
+    {
+        Xpp3Dom t1 = new Xpp3Dom( "top" );
+        try
+        {
+            t1.setAttribute( "attr", null );
+            fail( "null attribute values shouldn't be allowed" );
+        }
+        catch ( NullPointerException e )
+        {
+        }
+        t1.toString();
+        try
+        {
+            t1.setAttribute( null, "value" );
+            fail( "null attribute names shouldn't be allowed" );
+        }
+        catch ( NullPointerException e )
+        {
+        }
+        t1.toString();
+    }
+
 }
