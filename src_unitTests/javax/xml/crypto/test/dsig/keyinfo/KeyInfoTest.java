@@ -24,7 +24,11 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.keyinfo.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import org.jcp.xml.dsig.internal.dom.DOMUtils;
 import junit.framework.*;
 
 /**
@@ -109,5 +113,35 @@ public class KeyInfoTest extends TestCase {
 	} catch (NullPointerException npe) {}
 
 	assertTrue(!ki.isFeatureSupported("not supported"));
+    }
+
+    public void testMarshal() throws Exception {
+        KeyInfo ki = fac.newKeyInfo
+            (Collections.singletonList(fac.newKeyName("foo")), "keyid");
+        try {
+            ki.marshal(null, null);
+            fail("Should raise a NullPointerException");
+        } catch (NullPointerException npe) {}
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        Document doc = dbf.newDocumentBuilder().newDocument();
+        Element elem = doc.createElementNS("http://acme.org", "parent");
+        doc.appendChild(elem);
+        DOMStructure parent = new DOMStructure(elem);
+        try {
+            ki.marshal(parent, null);
+        } catch (Exception e) {
+            fail("Should not throw an exception: " + e);
+        }
+
+        Element kiElem = DOMUtils.getFirstChildElement(elem);
+        if (!kiElem.getLocalName().equals("KeyInfo")) {
+            fail("Should be KeyInfo element: " + kiElem.getLocalName());
+        }
+        Element knElem = DOMUtils.getFirstChildElement(kiElem);
+        if (!knElem.getLocalName().equals("KeyName")) {
+            fail("Should be KeyName element: " + knElem.getLocalName());
+        }
     }
 }
