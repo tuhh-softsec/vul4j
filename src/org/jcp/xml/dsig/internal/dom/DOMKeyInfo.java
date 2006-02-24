@@ -127,8 +127,20 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
             throw new NullPointerException("parent is null");
         }
 
-        marshal(((javax.xml.crypto.dom.DOMStructure) parent).getNode(),
-            DOMUtils.getSignaturePrefix(context), (DOMCryptoContext) context);
+        Node pNode = ((javax.xml.crypto.dom.DOMStructure) parent).getNode();
+        String dsPrefix = DOMUtils.getSignaturePrefix(context);
+        Element kiElem = DOMUtils.createElement
+            (DOMUtils.getOwnerDocument(pNode), "KeyInfo",
+             XMLSignature.XMLNS, dsPrefix);
+        if (dsPrefix == null) {
+            kiElem.setAttributeNS
+                ("http://www.w3.org/2000/xmlns/", "xmlns", XMLSignature.XMLNS);
+        } else {
+            kiElem.setAttributeNS
+                ("http://www.w3.org/2000/xmlns/", "xmlns:" + dsPrefix,
+                 XMLSignature.XMLNS);
+        }
+        marshal(pNode, kiElem, null, dsPrefix, (DOMCryptoContext) context);
     }
 
     public void marshal(Node parent, String dsPrefix, 
@@ -142,7 +154,11 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
 
         Element kiElem = DOMUtils.createElement
 	    (ownerDoc, "KeyInfo", XMLSignature.XMLNS, dsPrefix);
+        marshal(parent, kiElem, nextSibling, dsPrefix, context);
+    }
 
+    private void marshal(Node parent, Element kiElem, Node nextSibling,
+        String dsPrefix, DOMCryptoContext context) throws MarshalException {
         // create and append KeyInfoType elements
 	Iterator i = this.keyInfoTypes.iterator();
 	while (i.hasNext()) {
