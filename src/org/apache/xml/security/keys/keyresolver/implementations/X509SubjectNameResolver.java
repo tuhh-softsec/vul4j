@@ -43,51 +43,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(
                     X509SubjectNameResolver.class.getName());
 
-   /** Field _x509childNodes */
-   private Element[] _x509childNodes = null;
-
-   /** Field _x509childObject[] */
-   private XMLX509SubjectName _x509childObject[] = null;
-
-   /**
-    * Method engineCanResolve
-    * @inheritDoc
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    */
-   public boolean engineCanResolve(Element element, String BaseURI,
-                                   StorageResolver storage) {
-      if (log.isDebugEnabled())
-      	log.debug("Can I resolve " + element.getTagName() + "?");
-
-      
-       if (!XMLUtils.elementIsInSignatureSpace(element,
-                 Constants._TAG_X509DATA) ) {      
-         log.debug("I can't");
-
-         return false;
-      }
-
-
-         
-         this._x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
-                 Constants._TAG_X509SUBJECTNAME);
-
-         if ((this._x509childNodes != null)
-                 && (this._x509childNodes.length > 0)) {
-            log.debug("Yes Sir, I can");
-
-            return true;
-         }
-     
-
-      log.debug("I can't");
-
-      return false;
-   }
-
+   
    /**
     * Method engineResolvePublicKey
     *
@@ -123,17 +79,26 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
    public X509Certificate engineResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
+	   if (log.isDebugEnabled())
+	      	log.debug("Can I resolve " + element.getTagName() + "?");	   
+	   Element[] x509childNodes = null;	   
+	   XMLX509SubjectName x509childObject[] = null;
+      
+	   if (!XMLUtils.elementIsInSignatureSpace(element,
+	                 Constants._TAG_X509DATA) ) {      
+		   	log.debug("I can't");
+	         return null;
+	   }
+       x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
+                 Constants._TAG_X509SUBJECTNAME);
 
+        if (!((x509childNodes != null)
+                && (x509childNodes.length > 0))) {
+	            log.debug("I can't");
+	            return null;
+	    }
+	     
       try {
-         if (this._x509childNodes == null) {
-            boolean weCanResolve = this.engineCanResolve(element, BaseURI,
-                                      storage);
-
-            if (!weCanResolve || (this._x509childNodes == null)) {
-               return null;
-            }
-         }
-
          if (storage == null) {
             Object exArgs[] = { Constants._TAG_X509SUBJECTNAME };
             KeyResolverException ex =
@@ -145,12 +110,12 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
             throw ex;
          }
 
-         this._x509childObject =
-            new XMLX509SubjectName[this._x509childNodes.length];
+         x509childObject =
+            new XMLX509SubjectName[x509childNodes.length];
 
-         for (int i = 0; i < this._x509childNodes.length; i++) {
-            this._x509childObject[i] =
-               new XMLX509SubjectName(this._x509childNodes[i],
+         for (int i = 0; i < x509childNodes.length; i++) {
+            x509childObject[i] =
+               new XMLX509SubjectName(x509childNodes[i],
                                       BaseURI);
          }
 
@@ -161,11 +126,11 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
             log.debug("Found Certificate SN: " + certSN.getSubjectName());
 
-            for (int i = 0; i < this._x509childObject.length; i++) {
+            for (int i = 0; i < x509childObject.length; i++) {
                log.debug("Found Element SN:     "
-                         + this._x509childObject[i].getSubjectName());
+                         + x509childObject[i].getSubjectName());
 
-               if (certSN.equals(this._x509childObject[i])) {
+               if (certSN.equals(x509childObject[i])) {
                   log.debug("match !!! ");
 
                   return cert;

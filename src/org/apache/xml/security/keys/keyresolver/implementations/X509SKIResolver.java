@@ -44,51 +44,7 @@ public class X509SKIResolver extends KeyResolverSpi {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(X509SKIResolver.class.getName());
 
-   /** Field _x509childNodes */
-   private Element _x509childNodes[] = null;
-
-   /** Field _x509childObject[] */
-   private XMLX509SKI _x509childObject[] = null;
-
-   /**
-    * Method engineCanResolve
-    * @inheritDoc
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    */
-   public boolean engineCanResolve(Element element, String BaseURI,
-                                   StorageResolver storage) {
-      if (log.isDebugEnabled()) {
-      	log.debug("Can I resolve " + element.getTagName() + "?");
-      }
-      
-         if (!XMLUtils.elementIsInSignatureSpace(element,
-                 Constants._TAG_X509DATA)) {
-         log.debug("I can't");
-
-         return false;
-      }
-
-      
- 
-
-         this._x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
-                  Constants._TAG_X509SKI);
-
-         if ((this._x509childNodes != null)
-                 && (this._x509childNodes.length > 0)) {
-            log.debug("Yes Sir, I can");
-
-            return true;
-         }
-      
-      log.debug("I can't");
-
-      return false;
-   }
-
+   
    /**
     * Method engineResolvePublicKey
     *
@@ -124,17 +80,27 @@ public class X509SKIResolver extends KeyResolverSpi {
    public X509Certificate engineResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
+	   if (log.isDebugEnabled()) {
+	     log.debug("Can I resolve " + element.getTagName() + "?");
+	   }	      
+	   if (!XMLUtils.elementIsInSignatureSpace(element,
+              Constants._TAG_X509DATA)) {
+	         log.debug("I can't");
+	         return null;
+	   }
+	   /** Field _x509childObject[] */
+	   XMLX509SKI x509childObject[] = null;
+	   
+	   Element x509childNodes[] = null;
+	   x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
+	                  Constants._TAG_X509SKI);
 
-      try {
-         if (this._x509childNodes == null) {
-            boolean weCanResolve = this.engineCanResolve(element, BaseURI,
-                                      storage);
-
-            if (!weCanResolve || (this._x509childNodes == null)) {
-               return null;
-            }
-         }
-
+	   if (!((x509childNodes != null)
+	                 && (x509childNodes.length > 0))) {
+		   log.debug("I can't");
+	        return null;
+	   }
+	   try {         
          if (storage == null) {
             Object exArgs[] = { Constants._TAG_X509SKI };
             KeyResolverException ex =
@@ -146,20 +112,19 @@ public class X509SKIResolver extends KeyResolverSpi {
             throw ex;
          }
 
-         this._x509childObject =
-            new XMLX509SKI[this._x509childNodes.length];
+         x509childObject = new XMLX509SKI[x509childNodes.length];
 
-         for (int i = 0; i < this._x509childNodes.length; i++) {
-            this._x509childObject[i] =
-               new XMLX509SKI(this._x509childNodes[i], BaseURI);
+         for (int i = 0; i < x509childNodes.length; i++) {
+            x509childObject[i] =
+               new XMLX509SKI(x509childNodes[i], BaseURI);
          }
 
          while (storage.hasNext()) {
             X509Certificate cert = storage.next();
             XMLX509SKI certSKI = new XMLX509SKI(element.getOwnerDocument(), cert);
 
-            for (int i = 0; i < this._x509childObject.length; i++) {
-               if (certSKI.equals(this._x509childObject[i])) {
+            for (int i = 0; i < x509childObject.length; i++) {
+               if (certSKI.equals(x509childObject[i])) {
                   log.debug("Return PublicKey from "
                             + cert.getSubjectDN().getName());
 
