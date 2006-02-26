@@ -1,5 +1,10 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
-New in v1.2.1-99
+New in v...
+	Fixed bug 38605.
+		Refactored the way keyresolver works instead of calling canResolve/resolveX only resolveX is used  
+		and if it returns null it means it cannot resolve.
+		
+New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
 		Remove XPath initialization from Init and do only when xpath is needed.
     Resolv-Removed the use of xpath expressions to search the elements to sign/verify, now use only plain DOM searching.
