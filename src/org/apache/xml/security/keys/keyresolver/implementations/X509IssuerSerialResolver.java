@@ -44,38 +44,7 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(
                     X509IssuerSerialResolver.class.getName());
 
-    /** @inheritDoc */
-   public boolean engineCanResolve(Element element, String BaseURI,
-                                   StorageResolver storage) {
-      if (log.isDebugEnabled())
-      	log.debug("Can I resolve " + element.getTagName() + "?");
-
-      X509Data x509data = null;
-      try {
-         x509data = new X509Data(element, BaseURI);
-      } catch (XMLSignatureException ex) {
-         log.debug("I can't");
-
-         return false;
-      } catch (XMLSecurityException ex) {
-         log.debug("I can't");
-
-         return false;
-      }
-
-      if (x509data == null) {
-         log.debug("I can't");
-         return false;
-      }
-
-      if (x509data.containsIssuerSerial()) {
-            return true;
-      }
-
-      log.debug("I can't");
-      return false;
-   }
-
+  
    /** @inheritDoc */
    public PublicKey engineResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage)
@@ -95,7 +64,28 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
    public X509Certificate engineResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
+	 if (log.isDebugEnabled())
+	   	log.debug("Can I resolve " + element.getTagName() + "?");
 
+	  X509Data x509data = null;
+	  try {
+	     x509data = new X509Data(element, BaseURI);
+	   } catch (XMLSignatureException ex) {
+	      log.debug("I can't");
+         return null;
+	   } catch (XMLSecurityException ex) {
+	      log.debug("I can't");
+          return null;
+	   }
+
+	   if (x509data == null) {
+	      log.debug("I can't");
+	      return null;
+	   }
+
+	   if (!x509data.containsIssuerSerial()) {
+	            return null;
+	   }
       try {
          if (storage == null) {
             Object exArgs[] = { Constants._TAG_X509ISSUERSERIAL };
@@ -106,8 +96,7 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
             log.info("", ex);
             throw ex;
          }
-
-         X509Data x509data = new X509Data(element, BaseURI);
+         
          int noOfISS = x509data.lengthIssuerSerial();
 
          while (storage.hasNext()) {

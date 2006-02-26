@@ -45,19 +45,7 @@ public abstract class KeyResolverSpi {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(KeyResolverSpi.class.getName());
-
-   /**
-    * This method helps the {@link org.apache.xml.security.utils.resolver.ResourceResolver} to decide whether a
-    * {@link org.apache.xml.security.utils.resolver.ResourceResolverSpi} is able to perform the requested action.
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    * @return true if can resolve the key in the element
-    */
-   abstract public boolean engineCanResolve(Element element, String BaseURI,
-                                            StorageResolver storage);
-
+  
    /**
     * Method engineResolvePublicKey
     *

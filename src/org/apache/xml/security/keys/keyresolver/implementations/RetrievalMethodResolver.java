@@ -61,26 +61,6 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                         RetrievalMethodResolver.class.getName());
 
    /**
-    * Method engineCanResolve
-    * @inheritDoc
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    */
-   public boolean engineCanResolve(Element element, String BaseURI,
-                                   StorageResolver storage) {
-
-      if 
-         (!XMLUtils.elementIsInSignatureSpace(element,
-                 Constants._TAG_RETRIEVALMETHOD)) {      
-         return false;
-      }
-
-      return true;
-   }
-
-   /**
     * Method engineResolvePublicKey
     * @inheritDoc
     * @param element
@@ -91,7 +71,10 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
    public PublicKey engineResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage)
               {
-
+	   if  (!XMLUtils.elementIsInSignatureSpace(element,
+               Constants._TAG_RETRIEVALMETHOD)) {      
+		   return null;
+	   }
       try {
          RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
          Attr uri = rm.getURIAttr();
@@ -145,13 +128,8 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                          + e.getLocalName() + " Element");
 
                if (e != null) {
-                  KeyResolver newKeyResolver = KeyResolver.getInstance(getFirstElementChild(e),
+                  return KeyResolver.getPublicKey(getFirstElementChild(e),
                                                   BaseURI, storage);
-
-                  if (newKeyResolver != null) {
-                     return newKeyResolver.resolvePublicKey(getFirstElementChild(e), BaseURI,
-                                                            storage);
-                  }
                }
             }
          }
@@ -234,13 +212,8 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                          + e.getLocalName() + " Element");
 
                if (e != null) {
-                  KeyResolver newKeyResolver = KeyResolver.getInstance(getFirstElementChild(e),
+                  return KeyResolver.getX509Certificate(/*getFirstElementChild(*/e,
                                                   BaseURI, storage);
-
-                  if (newKeyResolver != null) {
-                     return newKeyResolver.resolveX509Certificate(getFirstElementChild(e), BaseURI,
-                             storage);
-                  }
                }
             }
          }

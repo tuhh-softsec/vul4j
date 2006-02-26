@@ -36,43 +36,7 @@ import org.w3c.dom.Element;
  * @author $Author$
  */
 public class DSAKeyValueResolver extends KeyResolverSpi {
-
-   /** Field _dsaKeyElement */
-   private Element _dsaKeyElement = null;
-
-   /** @inheritDoc */
-   public boolean engineCanResolve(Element element, String BaseURI,
-                                   StorageResolver storage) {
-
-      if (element == null) {
-         return false;
-      }
-
-      boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
-                              Constants._TAG_KEYVALUE);
-      boolean isDSAKeyValue = XMLUtils.elementIsInSignatureSpace(element,
-                                 Constants._TAG_DSAKEYVALUE);
-
-      if (isKeyValue) {         
-     
-            this._dsaKeyElement =
-            	XMLUtils.selectDsNode(element.getFirstChild(),Constants._TAG_DSAKEYVALUE,0);                    
-
-            if (this._dsaKeyElement != null) {
-               return true;
-            }         
-      } else if (isDSAKeyValue) {
-
-         // this trick is needed to allow the RetrievalMethodResolver to eat a
-         // ds:DSAKeyValue directly (without KeyValue)
-         this._dsaKeyElement = element;
-
-         return true;
-      }
-
-      return false;
-   }
-
+    
    /**
     * Method engineResolvePublicKey
     *
@@ -83,18 +47,30 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
     */
    public PublicKey engineResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
+	    if (element == null) {
+	         return null;
+	    }
+	    Element dsaKeyElement=null;
+	    boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
+	                              Constants._TAG_KEYVALUE);
+	    boolean isDSAKeyValue = XMLUtils.elementIsInSignatureSpace(element,
+	                                 Constants._TAG_DSAKEYVALUE);
 
-      if (this._dsaKeyElement == null) {
-         boolean weCanResolve = this.engineCanResolve(element, BaseURI,
-                                   storage);
+	    if (isKeyValue) {         	     
+	        dsaKeyElement =
+	          	XMLUtils.selectDsNode(element.getFirstChild(),Constants._TAG_DSAKEYVALUE,0);                    
+       } else if (isDSAKeyValue) {
+	         // this trick is needed to allow the RetrievalMethodResolver to eat a
+	         // ds:DSAKeyValue directly (without KeyValue)
+	         dsaKeyElement = element;
+	    }	      
 
-         if (!weCanResolve || (this._dsaKeyElement == null)) {
-            return null;
-         }
+      if (dsaKeyElement == null) {
+                    return null;
       }
 
       try {
-         DSAKeyValue dsaKeyValue = new DSAKeyValue(this._dsaKeyElement,
+         DSAKeyValue dsaKeyValue = new DSAKeyValue(dsaKeyElement,
                                                    BaseURI);
          PublicKey pk = dsaKeyValue.getPublicKey();
 
