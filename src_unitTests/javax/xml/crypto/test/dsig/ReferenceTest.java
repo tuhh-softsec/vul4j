@@ -20,14 +20,16 @@
 package javax.xml.crypto.test.dsig;
 
 import java.io.*;
+import java.security.MessageDigest;
 import java.security.Security;
 import java.util.*;
+import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.*;
-import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
-import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import org.w3c.dom.Document;
 
 import junit.framework.*;
@@ -185,7 +187,15 @@ public class ReferenceTest extends TestCase {
 	assertTrue(!ref.isFeatureSupported("not supported"));
     }
 
-    private void donottestvalidate() throws Exception {
+    public void testvalidate() throws Exception {
+        testvalidate(false);
+    }
+
+    public void testvalidateWithCaching() throws Exception {
+        testvalidate(true);
+    }
+
+    private void testvalidate(boolean cache) throws Exception {
 	Reference ref = null;
 	String type = "http://www.w3.org/2000/09/xmldsig#Object";
 	byte[] in = new byte[200];
@@ -196,14 +206,16 @@ public class ReferenceTest extends TestCase {
 	XMLValidateContext validateContext;
 	for (int i = 0; i < CRYPTO_ALGS.length; i++) {
 	    rand.nextBytes(in);
-	    TestUtils.SimpleURIDereferencer dereferrer = 
-	        new TestUtils.SimpleURIDereferencer(in);
+            URIDereferencer dereferrer =
+                new TestUtils.OctetStreamURIDereferencer(in);
 	    Document doc = TestUtils.newDocument();
 	    signContext = new 
 		DOMSignContext(TestUtils.getPrivateKey(CRYPTO_ALGS[i]), doc);
 	    signContext.setURIDereferencer(dereferrer);
-	    signContext.setProperty("javax.xml.dsig.cacheReference", 
-				    Boolean.TRUE);
+            if (cache) {
+                signContext.setProperty
+                    ("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
+            }
 	    ref = fac.newReference(null, dmSHA1, null, type, null);
 	    XMLSignature sig = fac.newXMLSignature(fac.newSignedInfo
 		(fac.newCanonicalizationMethod
@@ -215,24 +227,40 @@ public class ReferenceTest extends TestCase {
 		(kifac.newKeyValue(TestUtils.getPublicKey(CRYPTO_ALGS[i])))));
 	    try {
 		sig.sign(signContext);
+         	if (!cache) {
+                    assertNull(ref.getDereferencedData());
+                    assertNull(ref.getDigestInputStream());
+                } else {
+                    assertNotNull(ref.getDereferencedData());
+                    assertNotNull(ref.getDigestInputStream());
+                    assertTrue(digestInputEqual(ref));
+                }
 	        validateContext = new DOMValidateContext
 		    (TestUtils.getPublicKey(CRYPTO_ALGS[i]), 
 		    doc.getDocumentElement());
 	        validateContext.setURIDereferencer(dereferrer);
 
-	        validateContext.setProperty("javax.xml.dsig.cacheReference", 
-					    Boolean.TRUE);
+                if (cache) {
+                    validateContext.setProperty
+                        ("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
+                }
 		boolean result = sig.validate(validateContext);
 		assertTrue(result);
      
 		Iterator iter = sig.getSignedInfo().getReferences().iterator();
 		for (int j=0; iter.hasNext(); j++) {
 		    Reference validated_ref = (Reference) iter.next();
+                    if (!cache) {
+                        assertNull(validated_ref.getDereferencedData());
+                        assertNull(validated_ref.getDigestInputStream());
+                    } else {
+                        assertNotNull(validated_ref.getDereferencedData());
+                        assertNotNull(validated_ref.getDigestInputStream());
+                        assertTrue(digestInputEqual(validated_ref));
+                    }
 		    byte[] dv =  validated_ref.getDigestValue();
-		    byte[] digestInput = readBytesFromStream
-			(validated_ref.getDigestInputStream());
-		    boolean match = Arrays.equals(digestInput, in);
-		    assertTrue(match);
+                    byte[] cdv = validated_ref.getCalculatedDigestValue();
+                    assertTrue(Arrays.equals(dv, cdv));
 		    boolean valid = validated_ref.validate(validateContext);
 		    assertTrue(valid);
 		}
@@ -242,20 +270,14 @@ public class ReferenceTest extends TestCase {
 	}
     }
 
-    private static byte[] readBytesFromStream(InputStream is)
-	throws IOException {
-	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	byte[] buf = new byte[1024];
-	while(true) {
-            int read = is.read(buf);
-            if (read == -1) { // EOF
-		break;
-            }
-            baos.write(buf, 0, read);
-            if(read < 1024) {
-		break;
-            }
-	}
-        return baos.toByteArray();
+    private boolean digestInputEqual(Reference ref) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA1");
+        InputStream is = ref.getDigestInputStream();
+        int nbytes;
+        byte[] buf = new byte[256];
+        while ((nbytes = is.read(buf, 0, buf.length)) != -1) {
+            md.update(buf, 0, nbytes);
+        }
+        return Arrays.equals(md.digest(), ref.getDigestValue());
     }
 }

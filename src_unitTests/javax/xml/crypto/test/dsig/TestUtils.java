@@ -218,30 +218,44 @@ public class TestUtils {
 	}
     }
 
-    public static class SimpleURIDereferencer implements URIDereferencer {
-	private byte[] data = null;
-	public SimpleURIDereferencer(byte[] in) {
-	    data = (byte[]) in.clone();
-	}
-	public Data dereference(URIReference ref, XMLCryptoContext ctxt) {
-	    return new OctetStreamData(new ByteArrayInputStream(data));
-	}
-	public byte[] getData() {
-	    return data;
-	}
-	public boolean equals(Object obj) {
-	    if (obj instanceof SimpleURIDereferencer) {
-		return Arrays.equals(((SimpleURIDereferencer) obj).getData(),
-				     data);
-	    } else {
-		return false;
-	    }
-	}
-	public int hashCode() {
-	    return 5678;
-	}
+    public static class OctetStreamURIDereferencer implements URIDereferencer {
+        private byte[] data = null;
+        public OctetStreamURIDereferencer(byte[] in) {
+            data = (byte[]) in.clone();
+        }
+        public Data dereference(URIReference ref, XMLCryptoContext ctxt) {
+            return new OctetStreamData(new ByteArrayInputStream(data));
+        }
+        public byte[] getData() {
+            return data;
+        }
+        public boolean equals(Object obj) {
+            if (obj instanceof OctetStreamURIDereferencer) {
+                return Arrays.equals
+                    (((OctetStreamURIDereferencer) obj).getData(), data);
+            } else {
+                return false;
+            }
+        }
+        public int hashCode() {
+            return 5678;
+        }
     }
-   
+
+    public static class NodeSetURIDereferencer implements URIDereferencer {
+        private Node data = null;
+        public NodeSetURIDereferencer(Node node) {
+            data = node;
+        }
+        public Data dereference(URIReference ref, XMLCryptoContext ctxt) {
+            return new NodeSetData() {
+                public Iterator iterator() {
+                    return Collections.singletonList(data).iterator();
+                }
+            };
+        }
+    }
+
     public static void dumpDocument(Document doc, String outName)
 	throws Exception {
         DOMSource source = new DOMSource(doc);
