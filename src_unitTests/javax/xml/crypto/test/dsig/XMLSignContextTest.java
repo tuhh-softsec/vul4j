@@ -102,7 +102,7 @@ public class XMLSignContextTest extends TestCase {
     public void testsetngetURIDereferencer() throws Exception {
 	assertNull(defContext.getURIDereferencer());
 	byte[] data = "simpleDereferencer".getBytes();
-	URIDereferencer deref = new TestUtils.SimpleURIDereferencer(data);
+	URIDereferencer deref = new TestUtils.OctetStreamURIDereferencer(data);
 
 	defContext.setURIDereferencer(deref);
 	assertEquals(defContext.getURIDereferencer(), deref);
