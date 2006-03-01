@@ -288,7 +288,19 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 	ArrayJanitor<char> j_prefix(prefix);
 
 	sbt = prefix;
-	sbt.sbStrcatIn(content.rawCharBuffer());
+	const char * crcb = content.rawCharBuffer();
+	int offset = 0;
+	if (crcb[0] == '<' && crcb[1] == '?') {
+		// Have a PI prefix - get rid of it
+		int i = 2;
+		while (crcb[i] != '\0' && crcb[i] != '>')
+			++i;
+
+		if (crcb[i] == '>')
+			offset = i+1;
+	}
+
+	sbt.sbStrcatIn(&crcb[offset]);
 
 	// Now transform the content to UTF-8
 	//sb.sbXMLChCat8(content.rawCharBuffer());
@@ -417,10 +429,7 @@ XSECCryptoKey * XENCCipherImpl::decryptKeyFromKeyInfoList(DSIGKeyInfoList * kil)
 	return ret;
 }
 
-
-DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
-
-	XSECAlgorithmHandler *handler;
+XENCEncryptedData * XENCCipherImpl::loadEncryptedData(DOMElement * element) {
 
 	// First of all load the element
 	if (mp_encryptedData != NULL)
@@ -431,6 +440,38 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 
 	// Load
 	mp_encryptedData->load();
+
+	return mp_encryptedData;
+
+}
+
+
+DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
+
+	// First of all load the element
+	if (mp_encryptedData != NULL)
+		delete mp_encryptedData;
+
+	XSECnew(mp_encryptedData, 
+		XENCEncryptedDataImpl(mp_env, element));
+
+	// Load
+	mp_encryptedData->load();
+
+	return decryptElement();
+
+}
+
+DOMDocument * XENCCipherImpl::decryptElement(void) {
+
+	XSECAlgorithmHandler *handler;
+
+	if (mp_encryptedData == NULL) {
+
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::decryptElement - no element loaded for decryption");
+
+	}
 
 	// Check that this is a valid type
 	const XMLCh * typeURI = mp_encryptedData->getType();
@@ -514,6 +555,7 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 	}
 
 	// Now de-serialise
+	DOMElement * element = mp_encryptedData->getElement();
 	DOMDocumentFragment * frag = deSerialise(sb, element);
 
 	if (frag != NULL) {

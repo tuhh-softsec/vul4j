@@ -53,6 +53,8 @@ public:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * 
 		decryptElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * 
+		decryptElement(void);
 	XSECBinTXFMInputStream * decryptToBinInputStream(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
 	);
@@ -119,6 +121,9 @@ public:
 											const XMLCh * value);
 	virtual XENCEncryptedKey * loadEncryptedKey(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * keyNode
+		);
+	virtual XENCEncryptedData * loadEncryptedData(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * dataNode
 		);
 
 protected:

@@ -110,6 +110,27 @@ public:
 	) = 0;
 
 	/**
+	 * \brief Decrypt currently loaded element.
+	 *
+	 * Decrypts the an element that was previously passed in via 
+	 * loadEncryptedData with a type of "#Element".
+	 * If not, the library will throw an XSECException exception.
+	 *
+	 * This is an "all in one method".  The library will replace
+	 * the passed in Element (i.e. the encrypted XML data) with
+	 * the resultant plain text, after it has been parsed back into
+	 * DOM nodes
+	 *
+	 * @param element Root of EncryptedData DOM structyre to decrypt
+	 * @returns The owning document with the element replaced, or NULL
+	 * if the decryption fails for some reason (normally an exception).
+	 * @throws XSECException if the decryption fails, or if this is
+	 * not a valid EncryptedData DOM structure.
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * decryptElement(void) = 0;
+
+	/**
 	 * \brief Decrypt the nominated element and put the output to an InputStream.
 	 *
 	 * Decrypts the passed in element, which must be the root
@@ -446,6 +467,25 @@ public:
 	virtual XENCEncryptedKey * loadEncryptedKey(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * keyNode
 		) = 0;
+
+	/**
+	 * \brief Load an EncryptedData element
+	 *
+	 * Take a passed in EncryptedData DOMNode and return a loaded XENCEncryptedData
+	 * object based on the DOMNode from the passed in element.
+	 *
+	 * @note The Cipher object will take on this new object as the current
+	 * EncryptedData and delete any currently being held.
+	 *
+	 * @param dataNode Element node to load EncryptedData from
+	 * @returns An XENCEncryptedData structure (owned by the caller) based on the 
+	 * node.
+	 */
+
+	virtual XENCEncryptedData * loadEncryptedData(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * dataNode
+		) = 0;
+
 
 	//@}
 
