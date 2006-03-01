@@ -31,6 +31,7 @@
 #include <xsec/framework/XSECProvider.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+#include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
 #include <xsec/xenc/XENCEncryptedData.hpp>
@@ -180,6 +181,9 @@ void printUsage(void) {
 	cerr << "                  <filename> - for X509 PEM files (must be an RSA KEK certificate\n";
 	cerr << "                  <filename> <password> - for RSA private key files (MUST be a KEK)\n";
 	cerr << "                  <key-string> - For a string to use as the key for AES or DES keys\n";
+	cerr << "     --xkms/-x\n";
+	cerr << "         The key that follows on the command line is to be interpreted as\n";
+	cerr << "         an XKMS RSAKeyPair encryption key\n";
 	cerr << "     --interop/-i\n";
 	cerr << "         Use the interop resolver for Baltimore interop examples\n";
 	cerr << "     --out-file/-o\n";
@@ -212,6 +216,7 @@ int evaluate(int argc, char ** argv) {
 	bool					encryptFileAsData = false;
 	bool					parseXMLInput = true;
 	bool					doXMLOutput = false;
+	bool					isXKMSKey = false;
 	XSECCryptoKey			* kek = NULL;
 	XSECCryptoKey			* key = NULL;
 	int						keyLen = 0;
@@ -277,6 +282,10 @@ int evaluate(int argc, char ** argv) {
 			paramCount++;
 			outfile = argv[paramCount];
 			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--xkms") == 0 || stricmp(argv[paramCount], "-x") == 0) {
+			paramCount++;
+			isXKMSKey = true;
 		}
 
 #if defined (HAVE_WINCAPI)
@@ -366,18 +375,25 @@ int evaluate(int argc, char ** argv) {
 					cerr << "Key string too long\n";
 					return 2;
 				}
-				memset(keyStr, 0, 64);
-				strcpy((char *) keyStr, argv[paramCount]);
-				paramCount++;
 				XSECCryptoSymmetricKey * sk = 
 					XSECPlatformUtils::g_cryptoProvider->keySymmetric(loadKeyAs);
-				sk->setKey(keyStr, keyLen);
+
+				if (isXKMSKey) {
+					unsigned char kbuf[XSEC_MAX_HASH_SIZE];
+					CalculateXKMSKEK((unsigned char *) argv[paramCount], strlen(argv[paramCount]), kbuf, XSEC_MAX_HASH_SIZE);
+					sk->setKey(kbuf, keyLen);
+				}
+				else {
+					memset(keyStr, 0, 64);
+					strcpy((char *) keyStr, argv[paramCount]);
+					sk->setKey(keyStr, keyLen);
+				}
+				paramCount++;
 				if (isKEK)
 					kek = sk;
 				else
 					key = sk;
 			}
-
 
 
 #if defined (HAVE_OPENSSL)
