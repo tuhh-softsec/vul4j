@@ -1356,6 +1356,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusImpl.cpp
 # End Source File
 # Begin Source File
@@ -1518,6 +1526,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSRevokeRequest.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSRevokeResult.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRSAKeyPair.hpp
 # End Source File
 # Begin Source File
 
