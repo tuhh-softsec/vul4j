@@ -62,6 +62,7 @@
 #include <xsec/xkms/XKMSRevokeRequest.hpp>
 #include <xsec/xkms/XKMSRevokeResult.hpp>
 #include <xsec/xkms/XKMSRevokeKeyBinding.hpp>
+#include <xsec/xkms/XKMSRSAKeyPair.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
@@ -2370,6 +2371,55 @@ int doRegisterResultDump(XKMSRegisterResult *msg) {
 
 	}
 
+	// Check if there is a private key
+	XKMSRSAKeyPair * kp = msg->getRSAKeyPair(g_authPassPhrase);
+	if (kp != NULL) {
+		cout << endl;
+		levelSet(level);
+		cout << "RSAKeyPair found" << endl << endl;
+		level += 1;
+
+		char * sr = XMLString::transcode(kp->getModulus());
+		levelSet(level);
+		cout << "Modulus = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+		
+		sr = XMLString::transcode(kp->getExponent());
+		levelSet(level);
+		cout << "Exponent = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+
+		sr = XMLString::transcode(kp->getP());
+		levelSet(level);
+		cout << "P = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+
+		sr = XMLString::transcode(kp->getQ());
+		levelSet(level);
+		cout << "Q = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+
+		sr = XMLString::transcode(kp->getDP());
+		levelSet(level);
+		cout << "DP = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+
+		sr = XMLString::transcode(kp->getDQ());
+		levelSet(level);
+		cout << "DQ = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+
+		sr = XMLString::transcode(kp->getInverseQ());
+		levelSet(level);
+		cout << "Inverse Q = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+
+		sr = XMLString::transcode(kp->getD());
+		levelSet(level);
+		cout << "D = " << sr << endl;
+		XSEC_RELEASE_XMLCH(sr);
+	}
+
 	return 0;
 }
 
@@ -3140,7 +3190,7 @@ void printMsgDumpUsage(void) {
 	cerr << "   --help/-h      : print this screen and exit\n";
 	cerr << "   --validate/-v  : validate the input messages\n";
 	cerr << "   --auth-phrase/-a <phrase>\n";
-	cerr << "                  : use <phrase> for authentication in X-KRSS messages\n\n";
+	cerr << "                  : use <phrase> for authentication/private key in X-KRSS messages\n\n";
     cerr << "   filename = name of file containing XKMS msg to dump\n\n";
 
 }
