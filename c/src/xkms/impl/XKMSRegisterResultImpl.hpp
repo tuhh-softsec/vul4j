@@ -36,6 +36,7 @@
 #include <vector>
 
 class XKMSKeyBindingImpl;
+class XKMSRSAKeyPairImpl;
 
 class XKMSRegisterResultImpl : public XKMSRegisterResult {
 
@@ -70,6 +71,7 @@ public:
 	virtual int getKeyBindingSize(void) const;
 	virtual XKMSKeyBinding * getKeyBindingItem(int item) const;
 	virtual XKMSKeyBinding * appendKeyBindingItem(XKMSStatus::StatusValue status);
+	virtual XKMSRSAKeyPair * getRSAKeyPair(const char * passPhrase);
 
 
 	/* Implemented from MessageAbstractType */
@@ -90,7 +92,10 @@ private:
 #endif
 
 	KeyBindingVectorType	m_keyBindingList;
+	XKMSRSAKeyPairImpl		* mp_RSAKeyPair;
 
+	XERCES_CPP_NAMESPACE_QUALIFIER  DOMElement
+						* mp_privateKeyElement;
 	// Unimplemented
 	XKMSRegisterResultImpl(void);
 	XKMSRegisterResultImpl(const XKMSRegisterResultImpl &);

@@ -123,6 +123,26 @@ const XMLCh XKMSConstants::s_tagCompoundResult[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagD[] = {
+
+	chLatin_D,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagDP[] = {
+
+	chLatin_D,
+	chLatin_P,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagDQ[] = {
+
+	chLatin_D,
+	chLatin_Q,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagEncryption[] = {
 
 	chLatin_E,
@@ -148,6 +168,19 @@ const XMLCh XKMSConstants::s_tagExchange[] = {
 	chLatin_n,
 	chLatin_g,
 	chLatin_e,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagExponent[] = {
+
+	chLatin_E,
+	chLatin_x,
+	chLatin_p,
+	chLatin_o,
+	chLatin_n,
+	chLatin_e,
+	chLatin_n,
+	chLatin_t,
 	chNull
 };
 
@@ -200,6 +233,19 @@ const XMLCh XKMSConstants::s_tagInvalidReason[] = {
 	chLatin_s,
 	chLatin_o,
 	chLatin_n,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagInverseQ[] = {
+
+	chLatin_I,
+	chLatin_n,
+	chLatin_v,
+	chLatin_e,
+	chLatin_r,
+	chLatin_s,
+	chLatin_e,
+	chLatin_Q,
 	chNull
 };
 
@@ -377,6 +423,18 @@ const XMLCh XKMSConstants::s_tagMessageExtension[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagModulus[] = {
+
+	chLatin_M,
+	chLatin_o,
+	chLatin_d,
+	chLatin_u,
+	chLatin_l,
+	chLatin_u,
+	chLatin_s,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagNonce[] = {
 
 	chLatin_N,
@@ -503,6 +561,12 @@ const XMLCh XKMSConstants::s_tagOriginalRequestId[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagP[] = {
+
+	chLatin_P,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagPending[] = {
 
 	chLatin_P,
@@ -531,6 +595,21 @@ const XMLCh XKMSConstants::s_tagPendingRequest[] = {
 	chLatin_e,
 	chLatin_s,
 	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagPrivateKey[] = {
+
+	chLatin_P,
+	chLatin_r,
+	chLatin_i,
+	chLatin_v,
+	chLatin_a,
+	chLatin_t,
+	chLatin_e,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
 	chNull
 };
 
@@ -590,6 +669,12 @@ const XMLCh XKMSConstants::s_tagPrototypeKeyBinding[] = {
 	chLatin_i,
 	chLatin_n,
 	chLatin_g,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagQ[] = {
+
+	chLatin_Q,
 	chNull
 };
 
@@ -921,6 +1006,21 @@ const XMLCh XKMSConstants::s_tagRevokeResult[] = {
 	chLatin_u,
 	chLatin_l,
 	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagRSAKeyPair[] = {
+
+	chLatin_R,
+	chLatin_S,
+	chLatin_A,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_P,
+	chLatin_a,
+	chLatin_i,
+	chLatin_r,
 	chNull
 };
 

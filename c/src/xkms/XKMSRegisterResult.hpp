@@ -34,6 +34,7 @@
 
 class XKMSKeyBinding;
 class XKMSUnverifiedKeyBinding;
+class XKMSRSAKeyPair;
 
 /**
  * @ingroup xkms
@@ -125,6 +126,29 @@ public:
 	virtual XKMSKeyBinding * appendKeyBindingItem(XKMSStatus::StatusValue status) = 0;
 
 	//@}
+
+	/** @name PrivateKey handling  */
+	//@{
+
+	/**
+	 * \brief Return the RSAKeyPair
+	 *
+	 * This call requires the passphrase used to encrypt the private key.
+	 * The implementation decrypts the PrivateKey element in the
+	 * RegisterResult and returns the resulting RSAKeyPair.
+	 *
+	 * @note The decryption is performed *inside* the RegisterResult, so
+	 * this actually modified the contents of the XML.  It should never
+	 * be called twice!
+	 *
+	 * @param passPhrase The local code page version of the pass phrase
+	 * @returns the number of KeyBinding items within the RegisterResult
+	 */
+
+	virtual XKMSRSAKeyPair * getRSAKeyPair(const char * passPhrase) = 0;
+
+	//@}
+
 
 private:
 

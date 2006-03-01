@@ -26,11 +26,19 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/framework/XSECEnv.hpp>
+#include <xsec/framework/XSECAlgorithmMapper.hpp>
+#include <xsec/framework/XSECAlgorithmHandler.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
+#include <xsec/enc/XSECCryptoUtils.hpp>
+#include <xsec/enc/XSECCryptoKey.hpp>
+#include <xsec/xenc/XENCEncryptedData.hpp>
+#include <xsec/xenc/XENCEncryptionMethod.hpp>
+#include <xsec/xenc/XENCCipher.hpp>
 
 #include "XKMSRegisterResultImpl.hpp"
 #include "XKMSKeyBindingImpl.hpp"
+#include "XKMSRSAKeyPairImpl.hpp"
 
 #include <xercesc/dom/DOM.hpp>
 
@@ -43,7 +51,9 @@ XERCES_CPP_NAMESPACE_USE
 XKMSRegisterResultImpl::XKMSRegisterResultImpl(
 		const XSECEnv * env) :
 m_result(env),
-m_msg(m_result.m_msg) {
+m_msg(m_result.m_msg),
+mp_privateKeyElement(NULL),
+mp_RSAKeyPair(NULL) {
 
 }
 
@@ -51,7 +61,9 @@ XKMSRegisterResultImpl::XKMSRegisterResultImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
 m_result(env, node),
-m_msg(m_result.m_msg) {
+m_msg(m_result.m_msg),
+mp_privateKeyElement(NULL),
+mp_RSAKeyPair(NULL) {
 
 }
 
@@ -64,6 +76,9 @@ XKMSRegisterResultImpl::~XKMSRegisterResultImpl() {
 		delete (*i);
 
 	}
+
+	if (mp_RSAKeyPair != NULL)
+		delete mp_RSAKeyPair;
 
 }
 
@@ -109,6 +124,12 @@ void XKMSRegisterResultImpl::load() {
 
 	}
 
+	nl = m_msg.mp_messageAbstractTypeElement->getElementsByTagNameNS(
+		XKMSConstants::s_unicodeStrURIXKMS,
+		XKMSConstants::s_tagPrivateKey);
+
+	if (nl != NULL)
+		mp_privateKeyElement = (DOMElement *) nl->item(0);
 
 	// Load the base message
 	m_result.load();
@@ -179,3 +200,76 @@ XKMSKeyBinding * XKMSRegisterResultImpl::appendKeyBindingItem(XKMSStatus::Status
 	return u;
 
 }
+
+// --------------------------------------------------------------------------------
+//           RSAKeyPair handling
+// --------------------------------------------------------------------------------
+
+XKMSRSAKeyPair * XKMSRegisterResultImpl::getRSAKeyPair(const char * passPhrase) {
+
+	// Already done?
+	if (mp_RSAKeyPair != NULL)
+		return mp_RSAKeyPair;
+
+	// Nope - can we do it?
+	if (mp_privateKeyElement == NULL)
+		return NULL;
+
+	// Yep!  Load the key
+	unsigned char kbuf[XSEC_MAX_HASH_SIZE];
+	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
+
+	XSECProvider prov;
+	XENCCipher * cipher = prov.newCipher(m_msg.mp_env->getParentDocument());
+
+	// Find the encrypted info
+	DOMNode * n = findXENCNode(mp_privateKeyElement, "EncryptedData");
+
+	// Load into the Cipher class
+	XENCEncryptedData * xed = cipher->loadEncryptedData((DOMElement *) n);
+	if (xed == NULL) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRegisterResult::getRSAKeyPair - error loading encrypted data");
+	}
+
+	// Setup the appropriate key
+	if (xed->getEncryptionMethod() == NULL) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRegisterResult::getRSAKeyPair - no <EncryptionMethod> in EncryptedData");
+	}
+
+	// Now find if we can get an algorithm for this URI
+	XSECAlgorithmHandler *handler;
+
+	handler = 
+		XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+			xed->getEncryptionMethod()->getAlgorithm());
+
+	if (handler == NULL) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRegisterResult::getRSAKeyPair - unable to handle algorithm in EncryptedData");
+	}
+
+	XSECCryptoKey * sk = handler->createKeyForURI(
+					xed->getEncryptionMethod()->getAlgorithm(),
+					(XMLByte *) kbuf,
+					XSEC_MAX_HASH_SIZE);
+
+	cipher->setKey(sk);
+	cipher->decryptElement();
+
+	// WooHoo - if we get this far things are looking good!
+	DOMElement * kp = findFirstElementChild(mp_privateKeyElement);
+	if (kp == NULL || !strEquals(getXKMSLocalName(kp), XKMSConstants::s_tagRSAKeyPair)) {
+	
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRegisterResult::getRSAKeyPair - private key did not decrypt to RSAKeyPair");
+	
+	}
+
+	XSECnew(mp_RSAKeyPair, XKMSRSAKeyPairImpl(m_msg.mp_env, kp));
+	mp_RSAKeyPair->load();
+
+	return mp_RSAKeyPair;
+}
+
