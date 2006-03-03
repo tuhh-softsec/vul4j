@@ -177,8 +177,13 @@ public class DirectoryScanner
         "**/.svn",
         "**/.svn/**",
 
-        // Arch/Bazaar
-        "**/.arch-ids", "**/.arch-ids/**",
+        // Arch
+        "**/.arch-ids",
+        "**/.arch-ids/**",
+
+        //Bazaar
+        "**/.bzr",
+        "**/.bzr/**",
 
         // Mac
         "**/.DS_Store"
