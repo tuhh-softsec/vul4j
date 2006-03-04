@@ -138,6 +138,17 @@ public class PrettyPrintXMLWriter
         return text;
     }
 
+    private static String escapeXmlAttribute( String text )
+    {
+        text = escapeXml( text );
+
+        text = text.replaceAll( "\n", "&#10;" );
+
+        text = text.replaceAll( "\n\r", "&#10;" );
+
+        return text;
+    }
+
     public void addAttribute( String key, String value )
     {
         write( " " );
@@ -146,7 +157,7 @@ public class PrettyPrintXMLWriter
 
         write( "=\"" );
 
-        write( escapeXml( value ) );
+        write( escapeXmlAttribute( value ) );
 
         write( "\"" );
     }

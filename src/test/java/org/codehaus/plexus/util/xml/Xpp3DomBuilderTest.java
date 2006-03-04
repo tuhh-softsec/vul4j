@@ -191,7 +191,7 @@ public class Xpp3DomBuilderTest
         StringBuffer buf = new StringBuffer();
         buf.append( "<root>\n" );
         buf.append( " <el1> element1\n </el1>\n" );
-        buf.append( " <el2 att2='attribute2'>\n" );
+        buf.append( " <el2 att2='attribute2&#10;nextline'>\n" );
         buf.append( "  <el3 att3='attribute3'>element3</el3>\n" );
         buf.append( " </el2>\n" );
         buf.append( " <el4></el4>\n" );
@@ -207,7 +207,7 @@ public class Xpp3DomBuilderTest
         el1.setValue( "element1" );
         expectedDom.addChild( el1 );
         Xpp3Dom el2 = new Xpp3Dom( "el2" );
-        el2.setAttribute( "att2", "attribute2" );
+        el2.setAttribute( "att2", "attribute2\nnextline" );
         expectedDom.addChild( el2 );
         Xpp3Dom el3 = new Xpp3Dom( "el3" );
         el3.setAttribute( "att3", "attribute3" );
