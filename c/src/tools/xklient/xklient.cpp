@@ -122,6 +122,7 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #	include <openssl/err.h>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
@@ -140,6 +141,8 @@ XALAN_USING_XALAN(XalanTransformer)
 
 bool g_txtOut = false;
 char * g_authPassPhrase = NULL;
+char * g_privateKeyFile = NULL;
+char * g_privateKeyPassPhrase = NULL;
 
 int doParsedMsgDump(DOMDocument * doc);
 
@@ -963,6 +966,11 @@ void printRegisterRequestUsage(void) {
 	cerr << "   --add-value-rsa/-vr <filename> <passphrase>\n";
 	cerr << "           : Add the RSA key as a keyvalue\n";
 	cerr << "   --revocation/-v <phrase> : Set <phrase> as revocation code\n";
+	cerr << "   --kek/-k <phrase>        : Key phrase to use for PrivateKey decryption\n";
+#if defined (HAVE_OPENSSL)
+	cerr << "   --output-private-key/-p <file> <pass phrase>\n";
+	cerr << "                            : Write PEM encoded private key to file\n";
+#endif
 	cerr << "   --authenticate/-a <phrase>\n";
 	cerr << "           : Use <phrase> as the authentication key for the request\n";
 	cerr << "             NOTE - This must come *after* adding of KeyInfo elements\n\n";
@@ -1016,6 +1024,14 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			rr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
+		else if (stricmp(argv[paramCount], "--kek") == 0 || stricmp(argv[paramCount], "-k") == 0) {
+			if (++paramCount >= argc) {
+				printRegisterRequestUsage();
+				delete rr;
+				return NULL;
+			}
+			g_authPassPhrase = argv[paramCount++];
+		}
 		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
@@ -1068,6 +1084,18 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			pkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
+#if defined (HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--output-private-key") == 0 || stricmp(argv[paramCount], "-p") == 0) {
+			if (paramCount >= argc + 2) {
+				printRegisterRequestUsage();
+				delete rr;
+				return NULL;
+			}
+			++paramCount;
+			g_privateKeyFile = argv[paramCount++];
+			g_privateKeyPassPhrase = argv[paramCount++];
+		}
+#endif
 		else if (stricmp(argv[paramCount], "--revocation") == 0 || stricmp(argv[paramCount], "-v") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
@@ -1337,12 +1365,12 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 }
 
 // --------------------------------------------------------------------------------
-//           Create a RegisterRequest
+//           Create a RevokeRequest
 // --------------------------------------------------------------------------------
 
 void printRevokeRequestUsage(void) {
 
-	cerr << "\nUsage RegisterRequest [--help|-h] <service URI> [options]\n";
+	cerr << "\nUsage RevokeRequest [--help|-h] <service URI> [options]\n";
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n";
 	cerr << "   --add-opaque/-o <data>   : Add an opaque data string\n";
@@ -2372,52 +2400,92 @@ int doRegisterResultDump(XKMSRegisterResult *msg) {
 	}
 
 	// Check if there is a private key
-	XKMSRSAKeyPair * kp = msg->getRSAKeyPair(g_authPassPhrase);
-	if (kp != NULL) {
-		cout << endl;
-		levelSet(level);
-		cout << "RSAKeyPair found" << endl << endl;
-		level += 1;
+	if (g_authPassPhrase) {
+		XKMSRSAKeyPair * kp = msg->getRSAKeyPair(g_authPassPhrase);
+		if (kp != NULL) {
+			cout << endl;
+			levelSet(level);
+			cout << "RSAKeyPair found" << endl << endl;
+			level += 1;
 
-		char * sr = XMLString::transcode(kp->getModulus());
-		levelSet(level);
-		cout << "Modulus = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
-		
-		sr = XMLString::transcode(kp->getExponent());
-		levelSet(level);
-		cout << "Exponent = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
+			// Translate the parameters to char strings
+			char * sModulus = XMLString::transcode(kp->getModulus());
+			char * sExponent = XMLString::transcode(kp->getExponent());
+			char * sP = XMLString::transcode(kp->getP());
+			char * sQ = XMLString::transcode(kp->getQ());
+			char * sDP = XMLString::transcode(kp->getDP());
+			char * sDQ = XMLString::transcode(kp->getDQ());
+			char * sInverseQ = XMLString::transcode(kp->getInverseQ());
+			char * sD = XMLString::transcode(kp->getD());
 
-		sr = XMLString::transcode(kp->getP());
-		levelSet(level);
-		cout << "P = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
+#if defined (HAVE_OPENSSL)
 
-		sr = XMLString::transcode(kp->getQ());
-		levelSet(level);
-		cout << "Q = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
+			if (g_privateKeyFile != NULL) {
+				levelSet(level);
+				cout << "Writing private key to file " << g_privateKeyFile;
 
-		sr = XMLString::transcode(kp->getDP());
-		levelSet(level);
-		cout << "DP = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
+				// Create the RSA key file
+				RSA * rsa = RSA_new();
+				rsa->n = OpenSSLCryptoBase64::b642BN(sModulus, strlen(sModulus));
+				rsa->e = OpenSSLCryptoBase64::b642BN(sExponent, strlen(sExponent));
+				rsa->d = OpenSSLCryptoBase64::b642BN(sD, strlen(sD));
+				rsa->p = OpenSSLCryptoBase64::b642BN(sP, strlen(sP));
+				rsa->q = OpenSSLCryptoBase64::b642BN(sQ, strlen(sQ));
+				rsa->dmp1 = OpenSSLCryptoBase64::b642BN(sDP, strlen(sDP));
+				rsa->dmq1 = OpenSSLCryptoBase64::b642BN(sDQ, strlen(sDQ));
+				rsa->iqmp = OpenSSLCryptoBase64::b642BN(sInverseQ, strlen(sInverseQ));
 
-		sr = XMLString::transcode(kp->getDQ());
-		levelSet(level);
-		cout << "DQ = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
+				// Write it to disk
+				BIO *out;
+				out = BIO_new_file(g_privateKeyFile, "w");
+				if(!out) cout << "Error occurred in opening file!" << endl << endl;
+				if (!PEM_write_bio_RSAPrivateKey(out, rsa, EVP_des_ede3_cbc(), NULL, 0, 0, g_privateKeyPassPhrase)) {
+					cout << "Error creating PEM output" << endl << endl;
+				}
+				BIO_free(out);
+				RSA_free(rsa);
 
-		sr = XMLString::transcode(kp->getInverseQ());
-		levelSet(level);
-		cout << "Inverse Q = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
+				cout << " done" << endl << endl;
 
-		sr = XMLString::transcode(kp->getD());
+			}
+#endif
+			// Now output
+			levelSet(level);
+			cout << "Modulus = " << sModulus << endl;
+			XSEC_RELEASE_XMLCH(sModulus);
+			
+			levelSet(level);
+			cout << "Exponent = " << sExponent << endl;
+			XSEC_RELEASE_XMLCH(sExponent);
+
+			levelSet(level);
+			cout << "P = " << sP << endl;
+			XSEC_RELEASE_XMLCH(sP);
+
+			levelSet(level);
+			cout << "Q = " << sQ << endl;
+			XSEC_RELEASE_XMLCH(sQ);
+
+			levelSet(level);
+			cout << "DP = " << sDP << endl;
+			XSEC_RELEASE_XMLCH(sDP);
+
+			levelSet(level);
+			cout << "DQ = " << sDQ << endl;
+			XSEC_RELEASE_XMLCH(sDQ);
+
+			levelSet(level);
+			cout << "Inverse Q = " << sInverseQ << endl;
+			XSEC_RELEASE_XMLCH(sInverseQ);
+
+			levelSet(level);
+			cout << "D = " << sD << endl;
+			XSEC_RELEASE_XMLCH(sD);
+		}
+	}
+	else {
 		levelSet(level);
-		cout << "D = " << sr << endl;
-		XSEC_RELEASE_XMLCH(sr);
+		cout << "Not checking for private key as no decryption phrase set";
 	}
 
 	return 0;
@@ -3190,7 +3258,11 @@ void printMsgDumpUsage(void) {
 	cerr << "   --help/-h      : print this screen and exit\n";
 	cerr << "   --validate/-v  : validate the input messages\n";
 	cerr << "   --auth-phrase/-a <phrase>\n";
-	cerr << "                  : use <phrase> for authentication/private key in X-KRSS messages\n\n";
+	cerr << "                  : use <phrase> for authentication/private key in X-KRSS messages\n";
+#if defined (HAVE_OPENSSL)
+	cerr << "   --output-private-key/-p <filename> <passphrase>\n";
+	cerr << "                  : Write private keys from Register or Recover requests to the file\n\n";
+#endif
     cerr << "   filename = name of file containing XKMS msg to dump\n\n";
 
 }
@@ -3222,6 +3294,17 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 			g_authPassPhrase = argv[paramCount];
 			paramCount++;
 		}
+#if defined (HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--output-private-key") == 0 || stricmp(argv[paramCount], "-p") == 0) {
+			if (paramCount >= argc + 2) {
+				printMsgDumpUsage();
+				return -1;
+			}
+			++paramCount;
+			g_privateKeyFile = argv[paramCount++];
+			g_privateKeyPassPhrase = argv[paramCount++];
+		}
+#endif
 		else {
 
 			printMsgDumpUsage();

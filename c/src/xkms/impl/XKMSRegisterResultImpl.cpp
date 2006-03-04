@@ -193,9 +193,25 @@ XKMSKeyBinding * XKMSRegisterResultImpl::appendKeyBindingItem(XKMSStatus::Status
 	DOMElement * e = u->createBlankKeyBinding(status);
 
 	// Append the element
+	DOMElement * c = findFirstElementChild(m_msg.mp_messageAbstractTypeElement);
+	while (c != NULL) {
 
-	m_msg.mp_messageAbstractTypeElement->appendChild(e);
-	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+		if (strEquals(getXKMSLocalName(c), XKMSConstants::s_tagPrivateKey))
+			break;
+
+	}
+
+	if (c != NULL) {
+		m_msg.mp_messageAbstractTypeElement->insertBefore(e, c);
+		if (m_msg.mp_env->getPrettyPrintFlag()) {
+			m_msg.mp_messageAbstractTypeElement->insertBefore(
+				m_msg.mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
+		}
+	}
+	else {
+		m_msg.mp_messageAbstractTypeElement->appendChild(e);
+		m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+	}
 
 	return u;
 
@@ -255,6 +271,8 @@ XKMSRSAKeyPair * XKMSRegisterResultImpl::getRSAKeyPair(const char * passPhrase) 
 					(XMLByte *) kbuf,
 					XSEC_MAX_HASH_SIZE);
 
+	memset(kbuf, 0, XSEC_MAX_HASH_SIZE);
+
 	cipher->setKey(sk);
 	cipher->decryptElement();
 
@@ -272,4 +290,89 @@ XKMSRSAKeyPair * XKMSRegisterResultImpl::getRSAKeyPair(const char * passPhrase) 
 
 	return mp_RSAKeyPair;
 }
+
+XENCEncryptedData * XKMSRegisterResultImpl::setRSAKeyPair(const char * passPhrase,
+		XMLCh * Modulus,
+		XMLCh * Exponent,
+		XMLCh * P,
+		XMLCh * Q,
+		XMLCh * DP,
+		XMLCh * DQ,
+		XMLCh * InverseQ,
+		XMLCh * D,
+		encryptionMethod em,
+		const XMLCh * algorithmURI) {
+
+	// Try to set up the key first - if this fails, don't want to have added the
+	// XML
+
+	const XMLCh * uri;
+	safeBuffer algorithmSB;
+
+	if (em != ENCRYPT_NONE) {
+		if (encryptionMethod2URI(algorithmSB, em) != true) {
+			throw XSECException(XSECException::XKMSError, 
+				"XKMSRegisterResult::setRSAKeyPair - Unknown encryption method");
+		}
+		uri = algorithmSB.sbStrToXMLCh();
+	}		
+	// Find if we can get an algorithm for this URI
+	XSECAlgorithmHandler *handler;
+
+	handler = 
+		XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+			uri);
+
+	if (handler == NULL) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRegisterResult::setRSAKeyPair - unable to handle algorithm");
+	}
+
+	unsigned char kbuf[XSEC_MAX_HASH_SIZE];
+	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
+
+	XSECCryptoKey * sk = handler->createKeyForURI(
+					uri,
+					(XMLByte *) kbuf,
+					XSEC_MAX_HASH_SIZE);
+
+	memset(kbuf, 0, XSEC_MAX_HASH_SIZE);
+
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = m_msg.mp_env->getParentDocument();
+	const XMLCh * prefix = m_msg.mp_env->getXKMSNSPrefix();
+
+	makeQName(str, prefix, XKMSConstants::s_tagPrivateKey);
+
+	// Create a PrivateKey to add this to
+	DOMElement * pk = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
+												str.rawXMLChBuffer());
+
+	m_msg.mp_env->doPrettyPrint(pk);
+
+	// Add it to the request doc
+	m_msg.mp_messageAbstractTypeElement->appendChild(pk);
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+
+	// Now create the RSA structure
+	XKMSRSAKeyPairImpl * rsa;
+	XSECnew(rsa, XKMSRSAKeyPairImpl(m_msg.mp_env));
+
+	DOMElement * e = 
+		rsa->createBlankXKMSRSAKeyPairImpl(Modulus, Exponent, P, Q, DP, DQ, InverseQ, D);
+
+	// Add it to the PrivateKey
+	pk->appendChild(e);
+	m_msg.mp_env->doPrettyPrint(pk);
+
+	// Encrypt all of this for future use
+	XENCCipher * cipher = m_prov.newCipher(m_msg.mp_env->getParentDocument());
+	cipher->setKey(sk);
+	cipher->encryptElementContent(pk, ENCRYPT_NONE, uri);
+
+	// Now load the encrypted data back in
+	return cipher->loadEncryptedData(findFirstElementChild(pk));
+
+}	
 

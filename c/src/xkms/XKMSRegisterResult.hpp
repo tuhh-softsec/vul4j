@@ -35,6 +35,7 @@
 class XKMSKeyBinding;
 class XKMSUnverifiedKeyBinding;
 class XKMSRSAKeyPair;
+class XENCCipherData;
 
 /**
  * @ingroup xkms
@@ -146,6 +147,48 @@ public:
 	 */
 
 	virtual XKMSRSAKeyPair * getRSAKeyPair(const char * passPhrase) = 0;
+
+	/**
+	 * \brief Add the RSAKeyPair in an encrypted PrivateKey
+	 *
+	 * This call requires the passphrase to encrypt the private key.
+	 * The implementation encrypts the RSAKeyPair and adds the result
+	 * to the resulting RSAKey Pair.  It returns the CipherData element
+	 * to the caller (not a structure for the PrivateKey)
+	 *
+	 * @note The encryption is performed *inside* the RegisterResult, so
+	 * this actually modified the contents of the XML.  It should never
+	 * be called twice!
+	 *
+	 * @param passPhrase The local code page version of the pass phrase
+	 * @param Modulus Base64 encoded string with the modulus
+	 * @param Exponent Base64 encoded string with the exponent
+	 * @param P Base64 encoded string with p
+	 * @param Q Base64 encoded string with q
+	 * @param DP Base64 encoded string with dp
+	 * @param DQ Base64 encoded string with dq
+	 * @param InverseQ Base64 encoded string with inverseq
+	 * @param D Base64 encoded string with d
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI If ENCRYPT_NONE is passed in, this will be
+	 * used to set the algorithm URI.  If this is also NULL - no
+	 * EncryptionMethod will be set.  <b>NULL Value Unsupported if em not
+	 * set!  It's use could cause problems!</b>
+	 * @returns The encrypted result of adding the info
+	 */
+
+	virtual XENCEncryptedData * setRSAKeyPair(const char * passPhrase,
+		XMLCh * Modulus,
+		XMLCh * Exponent,
+		XMLCh * P,
+		XMLCh * Q,
+		XMLCh * DP,
+		XMLCh * DQ,
+		XMLCh * InverseQ,
+		XMLCh * D,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL) = 0;
 
 	//@}
 

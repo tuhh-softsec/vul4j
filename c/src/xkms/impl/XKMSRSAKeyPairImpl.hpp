@@ -56,14 +56,14 @@ public:
 	// Create from scratch - tag is the element name to create
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
 		createBlankXKMSRSAKeyPairImpl(
-			const XMLCh * modulus, 
-			const XMLCh * exponent, 
-			const XMLCh * p, 
-			const XMLCh * q, 
-			const XMLCh * dp, 
-			const XMLCh * dq, 
-			const XMLCh * invq, 
-			const XMLCh * d);
+			const XMLCh * Modulus, 
+			const XMLCh * Exponent, 
+			const XMLCh * P, 
+			const XMLCh * Q, 
+			const XMLCh * DO, 
+			const XMLCh * DQ, 
+			const XMLCh * InverseQ, 
+			const XMLCh * D);
 
 	// Interface methods
 

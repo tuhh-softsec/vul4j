@@ -30,6 +30,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/xkms/XKMSRegisterResult.hpp>
+#include <xsec/framework/XSECProvider.hpp>
 
 #include "XKMSResultTypeImpl.hpp"
 
@@ -37,6 +38,7 @@
 
 class XKMSKeyBindingImpl;
 class XKMSRSAKeyPairImpl;
+class XENCCipherImpl;
 
 class XKMSRegisterResultImpl : public XKMSRegisterResult {
 
@@ -72,6 +74,18 @@ public:
 	virtual XKMSKeyBinding * getKeyBindingItem(int item) const;
 	virtual XKMSKeyBinding * appendKeyBindingItem(XKMSStatus::StatusValue status);
 	virtual XKMSRSAKeyPair * getRSAKeyPair(const char * passPhrase);
+	virtual XENCEncryptedData * setRSAKeyPair(const char * passPhrase,
+		XMLCh * Modulus,
+		XMLCh * Exponent,
+		XMLCh * P,
+		XMLCh * Q,
+		XMLCh * DP,
+		XMLCh * DQ,
+		XMLCh * InverseQ,
+		XMLCh * D,		
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL);
+
 
 
 	/* Implemented from MessageAbstractType */
@@ -96,6 +110,10 @@ private:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER  DOMElement
 						* mp_privateKeyElement;
+
+	// To handle the cipher
+	XSECProvider	m_prov;
+
 	// Unimplemented
 	XKMSRegisterResultImpl(void);
 	XKMSRegisterResultImpl(const XKMSRegisterResultImpl &);
