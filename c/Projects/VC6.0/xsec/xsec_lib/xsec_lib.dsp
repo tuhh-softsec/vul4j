@@ -1276,6 +1276,30 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.cpp
 # End Source File
 # Begin Source File
@@ -1289,6 +1313,30 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.cpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.hpp
 # End Source File
 # Begin Source File
 
@@ -1489,11 +1537,35 @@ SOURCE=..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\XKMSRecoverKeyBinding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRecoverRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRecoverResult.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\XKMSRegisterRequest.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSRegisterResult.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSReissueKeyBinding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSReissueRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSReissueResult.hpp
 # End Source File
 # Begin Source File
 

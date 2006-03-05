@@ -61,7 +61,13 @@
 #include <xsec/xkms/XKMSPrototypeKeyBinding.hpp>
 #include <xsec/xkms/XKMSRevokeRequest.hpp>
 #include <xsec/xkms/XKMSRevokeResult.hpp>
+#include <xsec/xkms/XKMSRecoverRequest.hpp>
+#include <xsec/xkms/XKMSRecoverResult.hpp>
+#include <xsec/xkms/XKMSReissueRequest.hpp>
+#include <xsec/xkms/XKMSReissueResult.hpp>
 #include <xsec/xkms/XKMSRevokeKeyBinding.hpp>
+#include <xsec/xkms/XKMSRecoverKeyBinding.hpp>
+#include <xsec/xkms/XKMSReissueKeyBinding.hpp>
 #include <xsec/xkms/XKMSRSAKeyPair.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
@@ -2237,6 +2243,52 @@ void doRevokeKeyBindingDump(XKMSRevokeKeyBinding * kb, int level) {
 
 }
 
+void doRecoverKeyBindingDump(XKMSRecoverKeyBinding * kb, int level) {
+
+	/* Dump the status */
+
+	XKMSStatus * s = kb->getStatus();
+	if (s == NULL)
+		return;
+
+	char * sr = XMLString::transcode(XKMSConstants::s_tagStatusValueCodes[s->getStatusValue()]);
+	levelSet(level);
+	cout << "Status = " << sr << endl;
+	XSEC_RELEASE_XMLCH(sr);
+
+	/* Dump the status reasons */
+	doStatusReasonDump(XKMSStatus::Valid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Invalid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Indeterminate, s, level+1);
+
+	/* Now the actual key */
+	doKeyBindingAbstractDump((XKMSKeyBindingAbstractType *) kb, level);
+
+}
+
+void doReissueKeyBindingDump(XKMSReissueKeyBinding * kb, int level) {
+
+	/* Dump the status */
+
+	XKMSStatus * s = kb->getStatus();
+	if (s == NULL)
+		return;
+
+	char * sr = XMLString::transcode(XKMSConstants::s_tagStatusValueCodes[s->getStatusValue()]);
+	levelSet(level);
+	cout << "Status = " << sr << endl;
+	XSEC_RELEASE_XMLCH(sr);
+
+	/* Dump the status reasons */
+	doStatusReasonDump(XKMSStatus::Valid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Invalid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Indeterminate, s, level+1);
+
+	/* Now the actual key */
+	doKeyBindingAbstractDump((XKMSKeyBindingAbstractType *) kb, level);
+
+}
+
 void doAuthenticationDump(XKMSAuthentication *a, int level) {
 
 
@@ -2491,9 +2543,152 @@ int doRegisterResultDump(XKMSRegisterResult *msg) {
 	return 0;
 }
 
+int doRecoverResultDump(XKMSRecoverResult *msg) {
+
+	cout << endl << "This is a RecoverResult Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doResultTypeDump(msg, level);
+
+	int j;
+
+	if ((j = msg->getKeyBindingSize()) > 0) {
+
+		cout << endl;
+		levelSet(level);
+		cout << "Key Bindings" << endl << endl;
+
+		for (int i = 0; i < j ; ++i) {
+
+			doKeyBindingDump(msg->getKeyBindingItem(i), level + 1);
+
+		}
+
+	}
+
+	// Check if there is a private key
+	if (g_authPassPhrase) {
+		XKMSRSAKeyPair * kp = msg->getRSAKeyPair(g_authPassPhrase);
+		if (kp != NULL) {
+			cout << endl;
+			levelSet(level);
+			cout << "RSAKeyPair found" << endl << endl;
+			level += 1;
+
+			// Translate the parameters to char strings
+			char * sModulus = XMLString::transcode(kp->getModulus());
+			char * sExponent = XMLString::transcode(kp->getExponent());
+			char * sP = XMLString::transcode(kp->getP());
+			char * sQ = XMLString::transcode(kp->getQ());
+			char * sDP = XMLString::transcode(kp->getDP());
+			char * sDQ = XMLString::transcode(kp->getDQ());
+			char * sInverseQ = XMLString::transcode(kp->getInverseQ());
+			char * sD = XMLString::transcode(kp->getD());
+
+#if defined (HAVE_OPENSSL)
+
+			if (g_privateKeyFile != NULL) {
+				levelSet(level);
+				cout << "Writing private key to file " << g_privateKeyFile;
+
+				// Create the RSA key file
+				RSA * rsa = RSA_new();
+				rsa->n = OpenSSLCryptoBase64::b642BN(sModulus, strlen(sModulus));
+				rsa->e = OpenSSLCryptoBase64::b642BN(sExponent, strlen(sExponent));
+				rsa->d = OpenSSLCryptoBase64::b642BN(sD, strlen(sD));
+				rsa->p = OpenSSLCryptoBase64::b642BN(sP, strlen(sP));
+				rsa->q = OpenSSLCryptoBase64::b642BN(sQ, strlen(sQ));
+				rsa->dmp1 = OpenSSLCryptoBase64::b642BN(sDP, strlen(sDP));
+				rsa->dmq1 = OpenSSLCryptoBase64::b642BN(sDQ, strlen(sDQ));
+				rsa->iqmp = OpenSSLCryptoBase64::b642BN(sInverseQ, strlen(sInverseQ));
+
+				// Write it to disk
+				BIO *out;
+				out = BIO_new_file(g_privateKeyFile, "w");
+				if(!out) cout << "Error occurred in opening file!" << endl << endl;
+				if (!PEM_write_bio_RSAPrivateKey(out, rsa, EVP_des_ede3_cbc(), NULL, 0, 0, g_privateKeyPassPhrase)) {
+					cout << "Error creating PEM output" << endl << endl;
+				}
+				BIO_free(out);
+				RSA_free(rsa);
+
+				cout << " done" << endl << endl;
+
+			}
+#endif
+			// Now output
+			levelSet(level);
+			cout << "Modulus = " << sModulus << endl;
+			XSEC_RELEASE_XMLCH(sModulus);
+			
+			levelSet(level);
+			cout << "Exponent = " << sExponent << endl;
+			XSEC_RELEASE_XMLCH(sExponent);
+
+			levelSet(level);
+			cout << "P = " << sP << endl;
+			XSEC_RELEASE_XMLCH(sP);
+
+			levelSet(level);
+			cout << "Q = " << sQ << endl;
+			XSEC_RELEASE_XMLCH(sQ);
+
+			levelSet(level);
+			cout << "DP = " << sDP << endl;
+			XSEC_RELEASE_XMLCH(sDP);
+
+			levelSet(level);
+			cout << "DQ = " << sDQ << endl;
+			XSEC_RELEASE_XMLCH(sDQ);
+
+			levelSet(level);
+			cout << "Inverse Q = " << sInverseQ << endl;
+			XSEC_RELEASE_XMLCH(sInverseQ);
+
+			levelSet(level);
+			cout << "D = " << sD << endl;
+			XSEC_RELEASE_XMLCH(sD);
+		}
+	}
+	else {
+		levelSet(level);
+		cout << "Not checking for private key as no decryption phrase set";
+	}
+
+	return 0;
+}
+
 int doRevokeResultDump(XKMSRevokeResult *msg) {
 
 	cout << endl << "This is a RevokeResult Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doResultTypeDump(msg, level);
+
+	int j;
+
+	if ((j = msg->getKeyBindingSize()) > 0) {
+
+		cout << endl;
+		levelSet(level);
+		cout << "Key Bindings" << endl << endl;
+
+		for (int i = 0; i < j ; ++i) {
+
+			doKeyBindingDump(msg->getKeyBindingItem(i), level + 1);
+
+		}
+
+	}
+
+	return 0;
+}
+
+int doReissueResultDump(XKMSReissueResult *msg) {
+
+	cout << endl << "This is a ReissueResult Message" << endl;
 	int level = 1;
 	
 	doMessageAbstractTypeDump(msg, level);
@@ -2627,6 +2822,76 @@ int doRevokeRequestDump(XKMSRevokeRequest *msg) {
 
 }
 
+int doRecoverRequestDump(XKMSRecoverRequest *msg) {
+
+	cout << endl << "This is a RecoverRequest Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doRequestAbstractTypeDump(msg, level);
+
+	XKMSRecoverKeyBinding *rkb = msg->getRecoverKeyBinding();
+	if (rkb != NULL) {
+		doRecoverKeyBindingDump(rkb, level);
+	}
+
+	// Check authentication
+	if (msg->getAuthentication())
+		doAuthenticationDump(msg->getAuthentication(), level);
+
+	return 0;
+
+}
+
+int doReissueRequestDump(XKMSReissueRequest *msg) {
+
+	cout << endl << "This is a ReiussueRequest Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doRequestAbstractTypeDump(msg, level);
+
+	XKMSReissueKeyBinding *rkb = msg->getReissueKeyBinding();
+	if (rkb != NULL) {
+		doReissueKeyBindingDump(rkb, level);
+	}
+
+	// Check authentication
+	doAuthenticationDump(msg->getAuthentication(), level);
+
+	// Check ProofOfPossession
+	levelSet(1);
+	DSIGSignature * sig = msg->getProofOfPossessionSignature();
+	if (sig != NULL) {
+
+		cout << "Proof of PossessionSignature signature found. Checking.... ";
+
+		// Try to find the key
+		XSECKeyInfoResolverDefault kir;
+		XSECCryptoKey * k = kir.resolveKey(rkb->getKeyInfoList());
+
+		if (k != NULL) {
+
+			sig->setSigningKey(k);
+			if (sig->verify())
+				cout << "OK!" << endl;
+			else 
+				cout << "Signature Bad!" << endl;
+		}
+		else
+			cout << "Cannot obtain key from PrototypeKeyBinding" << endl;
+
+	}
+	else {
+
+		cout << "No ProofOfPossession Signature found" << endl;
+
+	}
+
+	return 0;
+
+}
+
 int doMsgDump(XKMSMessageAbstractType * msg) {
 
 	if (msg->isSigned()) {
@@ -2738,6 +3003,26 @@ int doMsgDump(XKMSMessageAbstractType * msg) {
 	case XKMSMessageAbstractType::RevokeResult :
 
 		doRevokeResultDump((XKMSRevokeResult *) msg);
+		break;
+
+	case XKMSMessageAbstractType::RecoverRequest :
+
+		doRecoverRequestDump((XKMSRecoverRequest *) msg);
+		break;
+
+	case XKMSMessageAbstractType::RecoverResult :
+
+		doRecoverResultDump((XKMSRecoverResult *) msg);
+		break;
+
+	case XKMSMessageAbstractType::ReissueRequest :
+
+		doReissueRequestDump((XKMSReissueRequest *) msg);
+		break;
+
+	case XKMSMessageAbstractType::ReissueResult :
+
+		doReissueResultDump((XKMSReissueResult *) msg);
 		break;
 
 	default :

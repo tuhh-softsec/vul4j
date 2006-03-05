@@ -698,6 +698,65 @@ const XMLCh XKMSConstants::s_tagQueryKeyBinding[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagRecoverKeyBinding[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_c,
+	chLatin_o,
+	chLatin_v,
+	chLatin_e,
+	chLatin_r,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_B,
+	chLatin_i,
+	chLatin_n,
+	chLatin_d,
+	chLatin_i,
+	chLatin_n,
+	chLatin_g,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagRecoverRequest[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_c,
+	chLatin_o,
+	chLatin_v,
+	chLatin_e,
+	chLatin_r,
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagRecoverResult[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_c,
+	chLatin_o,
+	chLatin_v,
+	chLatin_e,
+	chLatin_r,
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagRegisterRequest[] = {
 
 	chLatin_R,
@@ -728,6 +787,65 @@ const XMLCh XKMSConstants::s_tagRegisterResult[] = {
 	chLatin_t,
 	chLatin_e,
 	chLatin_r,
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagReissueKeyBinding[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_i,
+	chLatin_s,
+	chLatin_s,
+	chLatin_u,
+	chLatin_e,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_B,
+	chLatin_i,
+	chLatin_n,
+	chLatin_d,
+	chLatin_i,
+	chLatin_n,
+	chLatin_g,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagReissueRequest[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_i,
+	chLatin_s,
+	chLatin_s,
+	chLatin_u,
+	chLatin_e,
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagReissueResult[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_i,
+	chLatin_s,
+	chLatin_s,
+	chLatin_u,
+	chLatin_e,
 	chLatin_R,
 	chLatin_e,
 	chLatin_s,

@@ -114,7 +114,11 @@ public:
 		RegisterRequest,		/** A RegisterReqeust message */
 		RegisterResult,			/** A RegisterResult message */
 		RevokeRequest,			/** A RevokeRequest message */
-		RevokeResult			/** A RevokeResult message */
+		RevokeResult,			/** A RevokeResult message */
+		RecoverRequest,			/** A RecoverRequest message */
+		RecoverResult,			/** A RecoverResult message */
+		ReissueRequest,			/** A ReissueRequest message */
+		ReissueResult,			/** A ReissueResult message */
 
 	};
 

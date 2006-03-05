@@ -47,6 +47,10 @@
 #include "XKMSRegisterResultImpl.hpp"
 #include "XKMSRevokeResultImpl.hpp"
 #include "XKMSRevokeRequestImpl.hpp"
+#include "XKMSRecoverResultImpl.hpp"
+#include "XKMSRecoverRequestImpl.hpp"
+#include "XKMSReissueResultImpl.hpp"
+#include "XKMSReissueRequestImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -345,6 +349,62 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	}
 
+	else if (strEquals(name, XKMSConstants::s_tagRecoverRequest)) {
+
+		// This is a <RevokeRequest> message
+		XKMSRecoverRequestImpl * ret;
+		XSECnew(ret, XKMSRecoverRequestImpl(env, elt));
+		Janitor<XKMSRecoverRequestImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return (XKMSRecoverRequest *) ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagRecoverResult)) {
+
+		// This is a <RecoverResult> message
+		XKMSRecoverResultImpl * ret;
+		XSECnew(ret, XKMSRecoverResultImpl(env, elt));
+		Janitor<XKMSRecoverResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return (XKMSRecoverResult *) ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagReissueRequest)) {
+
+		// This is a <ReissueRequest> message
+		XKMSReissueRequestImpl * ret;
+		XSECnew(ret, XKMSReissueRequestImpl(env, elt));
+		Janitor<XKMSReissueRequestImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return (XKMSReissueRequest *) ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagReissueResult)) {
+
+		// This is a <RevokeResult> message
+		XKMSReissueResultImpl * ret;
+		XSECnew(ret, XKMSReissueResultImpl(env, elt));
+		Janitor<XKMSReissueResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return (XKMSReissueResult *) ret;
+
+	}
+
 	delete env;
 	return NULL;
 
@@ -626,6 +686,86 @@ XKMSRevokeRequest * XKMSMessageFactoryImpl::createRevokeRequest(
 
 	// Embed the new structure in the document
 	XKMSRevokeRequest * rri = createRevokeRequest(service, *doc, id);
+	(*doc)->appendChild(rri->getElement());
+
+	return rri;
+}
+
+XKMSRecoverRequest * XKMSMessageFactoryImpl::createRecoverRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id) {
+	
+	XKMSRecoverRequestImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSRecoverRequestImpl(tenv));
+	rri->createBlankRecoverRequest(service, id);
+
+	return rri;
+
+}
+
+
+XKMSRecoverRequest * XKMSMessageFactoryImpl::createRecoverRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id) {
+
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSRecoverRequest * rri = createRecoverRequest(service, *doc, id);
+	(*doc)->appendChild(rri->getElement());
+
+	return rri;
+}
+
+XKMSReissueRequest * XKMSMessageFactoryImpl::createReissueRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id) {
+	
+	XKMSReissueRequestImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSReissueRequestImpl(tenv));
+	rri->createBlankReissueRequest(service, id);
+
+	return rri;
+
+}
+
+
+XKMSReissueRequest * XKMSMessageFactoryImpl::createReissueRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id) {
+
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSReissueRequest * rri = createReissueRequest(service, *doc, id);
 	(*doc)->appendChild(rri->getElement());
 
 	return rri;
@@ -918,9 +1058,10 @@ XKMSRevokeResult * XKMSMessageFactoryImpl::createRevokeResult(
 
 	copyRequestToResult(request, (XKMSResultTypeImpl*) rri);
 
-	return rri;
+	return rri; 
 
 }
+
 
 XKMSRevokeResult * XKMSMessageFactoryImpl::createRevokeResult(
 		XKMSRevokeRequest * request,
@@ -944,6 +1085,94 @@ XKMSRevokeResult * XKMSMessageFactoryImpl::createRevokeResult(
 	return rr;
 }
 
+XKMSReissueResult * XKMSMessageFactoryImpl::createReissueResult(
+		XKMSReissueRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSReissueResultImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSReissueResultImpl(tenv));
+	rri->createBlankReissueResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) rri);
+
+	return rri; 
+
+}
+
+XKMSReissueResult * XKMSMessageFactoryImpl::createReissueResult(
+		XKMSReissueRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSReissueResult * rr = createReissueResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(rr->getElement());
+
+	return rr;
+}
+
+XKMSRecoverResult * XKMSMessageFactoryImpl::createRecoverResult(
+		XKMSRecoverRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSRecoverResultImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSRecoverResultImpl(tenv));
+	rri->createBlankRecoverResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) rri);
+
+	return rri; 
+
+}
+
+XKMSRecoverResult * XKMSMessageFactoryImpl::createRecoverResult(
+		XKMSRecoverRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSRecoverResult * rr = createRecoverResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(rr->getElement());
+
+	return rr;
+}
+
 // --------------------------------------------------------------------------------
 //           Message Conversions
 // --------------------------------------------------------------------------------
@@ -960,6 +1189,8 @@ XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMess
 	case XKMSMessageAbstractType::PendingRequest :
 	case XKMSMessageAbstractType::RegisterRequest :
 	case XKMSMessageAbstractType::RevokeRequest :
+	case XKMSMessageAbstractType::RecoverRequest :
+	case XKMSMessageAbstractType::ReissueRequest :
 	case XKMSMessageAbstractType::StatusRequest :
 
 		return (XKMSRequestAbstractType *) msg;
@@ -982,6 +1213,8 @@ XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *m
 	case XKMSMessageAbstractType::CompoundResult :
 	case XKMSMessageAbstractType::RegisterResult :
 	case XKMSMessageAbstractType::RevokeResult :
+	case XKMSMessageAbstractType::RecoverResult :
+	case XKMSMessageAbstractType::ReissueResult :
 	case XKMSMessageAbstractType::StatusResult :
 	case XKMSMessageAbstractType::Result :
 

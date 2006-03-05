@@ -48,6 +48,10 @@ class XKMSRegisterRequest;
 class XKMSRegisterResult;
 class XKMSRevokeResult;
 class XKMSRevokeRequest;
+class XKMSRecoverResult;
+class XKMSRecoverRequest;
+class XKMSReissueResult;
+class XKMSReissueRequest;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -743,6 +747,186 @@ public:
 
 	virtual XKMSRevokeResult * createRevokeResult(
 		XKMSRevokeRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RecoverRequest\> message.
+	 * 
+	 * Generates a new RecoverRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRecoverRequest structure
+	 */
+
+	virtual XKMSRecoverRequest * createRecoverRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<RecoverRequest\> message and surrounding document
+	 * 
+	 * Generates a new RecoverRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRecoverRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the RecoverRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSRecoverRequest * createRecoverRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RecoverResult\> message.
+	 * 
+	 * Generates a new RecoverResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input RecoverRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * @returns the new XKMSRecoverResponse structure
+	 */
+
+	virtual XKMSRecoverResult * createRecoverResult(
+		XKMSRecoverRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RecoverResult\> message and surrounding document
+	 * 
+	 * Generates a new RecoverResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input RecoverRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * @returns the new XKMSRecoverResponse structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the RecoverRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSRecoverResult * createRecoverResult(
+		XKMSRecoverRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<ReissueRequest\> message.
+	 * 
+	 * Generates a new ReissueRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSReissueRequest structure
+	 */
+
+	virtual XKMSReissueRequest * createReissueRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<ReissueRequest\> message and surrounding document
+	 * 
+	 * Generates a new ReissueRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSReissueRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the ReissueRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSReissueRequest * createReissueRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<ReissueResult\> message.
+	 * 
+	 * Generates a new ReissueResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input ReissueRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * @returns the new XKMSReissueResponse structure
+	 */
+
+	virtual XKMSReissueResult * createReissueResult(
+		XKMSReissueRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<ReissueResult\> message and surrounding document
+	 * 
+	 * Generates a new ReissueResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input ReissueRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * @returns the new XKMSReissueResponse structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the ReissueRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSReissueResult * createReissueResult(
+		XKMSReissueRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,

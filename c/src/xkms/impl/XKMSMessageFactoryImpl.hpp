@@ -202,6 +202,50 @@ public:
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
 		const XMLCh * id = NULL);
 
+	virtual XKMSRecoverRequest * createRecoverRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);
+	virtual XKMSRecoverRequest * createRecoverRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
+
+	virtual XKMSRecoverResult * createRecoverResult(
+		XKMSRecoverRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSRecoverResult * createRecoverResult(
+		XKMSRecoverRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+
+	virtual XKMSReissueRequest * createReissueRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);
+	virtual XKMSReissueRequest * createReissueRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
+
+	virtual XKMSReissueResult * createReissueResult(
+		XKMSReissueRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSReissueResult * createReissueResult(
+		XKMSReissueRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+
 	/* Conversions */
 	virtual XKMSRequestAbstractType * toRequestAbstractType(XKMSMessageAbstractType *msg);
 	virtual XKMSResultType * toResultType(XKMSMessageAbstractType *msg);
