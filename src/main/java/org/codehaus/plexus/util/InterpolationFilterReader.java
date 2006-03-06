@@ -267,9 +267,10 @@ public class InterpolationFilterReader
 
             String variableKey = key.substring( beginTokenLength - 1, key.length() - endTokenLength );
 
-            if ( variables.get( variableKey ) != null )
+            Object o = variables.get(variableKey);
+            if ( o != null )
             {
-                String value = variables.get( variableKey ).toString();
+                String value = o.toString();
                 if ( value.length() != 0 )
                 {
                     replaceData = value;
