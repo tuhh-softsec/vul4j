@@ -257,7 +257,7 @@ int DSIG_EXPORT CalculateXKMSAuthenticationKey(unsigned char * input, int inputL
 
 	// Clean the input
 	safeBuffer sb;
-	int l = CleanXKMSPassPhrase(input, inputLen, sb);
+	int l = SASLCleanXKMSPassPhrase(input, inputLen, sb);
 
 	h->hash((unsigned char *) sb.rawBuffer(), l);
 	return h->finish(output, maxOutputLen);
