@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.security.Provider;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -121,8 +122,8 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
      *
      * @param siElem a SignedInfo element
      */
-    public DOMSignedInfo(Element siElem, XMLCryptoContext context)
-	throws MarshalException {
+    public DOMSignedInfo(Element siElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
 	localSiElem = siElem;
 	ownerDoc = siElem.getOwnerDocument();
 
@@ -131,7 +132,8 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 
         // unmarshal CanonicalizationMethod
 	Element cmElem = DOMUtils.getFirstChildElement(siElem);
-	canonicalizationMethod = new DOMCanonicalizationMethod(cmElem, context);
+	canonicalizationMethod = new DOMCanonicalizationMethod
+	    (cmElem, context, provider);
 
         // unmarshal SignatureMethod
 	Element smElem = DOMUtils.getNextSiblingElement(cmElem);
@@ -141,7 +143,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 	ArrayList refList = new ArrayList(5);
 	Element refElem = DOMUtils.getNextSiblingElement(smElem);
 	while (refElem != null) {
-	    refList.add(new DOMReference(refElem, context));
+	    refList.add(new DOMReference(refElem, context, provider));
 	    refElem = DOMUtils.getNextSiblingElement(refElem);
 	}
 	references = Collections.unmodifiableList(refList);

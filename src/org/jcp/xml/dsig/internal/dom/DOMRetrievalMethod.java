@@ -32,6 +32,7 @@ package org.jcp.xml.dsig.internal.dom;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Provider;
 import java.util.*;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
@@ -110,8 +111,8 @@ public final class DOMRetrievalMethod extends DOMStructure
      *
      * @param rmElem a RetrievalMethod element
      */
-    public DOMRetrievalMethod(Element rmElem, XMLCryptoContext context) 
-	throws MarshalException {
+    public DOMRetrievalMethod(Element rmElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
         // get URI and Type attributes
         uri = DOMUtils.getAttributeValue(rmElem, "URI");
         type = DOMUtils.getAttributeValue(rmElem, "Type");
@@ -126,7 +127,8 @@ public final class DOMRetrievalMethod extends DOMStructure
             Element transformElem = 
 		DOMUtils.getFirstChildElement(transformsElem);
             while (transformElem != null) {
-                transforms.add(new DOMTransform(transformElem, context));
+                transforms.add
+		    (new DOMTransform(transformElem, context, provider));
                 transformElem = DOMUtils.getNextSiblingElement(transformElem);
 	    }
         }

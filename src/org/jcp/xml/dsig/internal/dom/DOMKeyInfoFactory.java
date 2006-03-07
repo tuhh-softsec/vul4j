@@ -23,7 +23,8 @@
 package org.jcp.xml.dsig.internal.dom;
 
 import java.math.BigInteger;
-import java.security.*;
+import java.security.KeyException;
+import java.security.PublicKey;
 import java.util.List;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
@@ -39,15 +40,6 @@ import org.w3c.dom.Node;
  * @author Sean Mullan
  */
 public final class DOMKeyInfoFactory extends KeyInfoFactory {
-
-    static {
-        AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                Security.addProvider(new XMLDSigRI());
-                return null;
-            }
-        });
-    }
 
     public DOMKeyInfoFactory() { }
 
@@ -138,7 +130,7 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
                 "support DOM Level 2 and be namespace aware");
         }
         if (tag.equals("KeyInfo")) {
-            return new DOMKeyInfo(element, null);
+            return new DOMKeyInfo(element, null, getProvider());
         } else {
             throw new MarshalException("invalid KeyInfo tag: " + tag);
         }

@@ -26,6 +26,7 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 
+import java.security.Provider;
 import java.util.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -78,13 +79,13 @@ public final class DOMManifest extends DOMStructure implements Manifest {
      *
      * @param manElem a Manifest element
      */
-    public DOMManifest(Element manElem, XMLCryptoContext context) 
-	throws MarshalException {
+    public DOMManifest(Element manElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
         this.id = DOMUtils.getAttributeValue(manElem, "Id");
         Element refElem = DOMUtils.getFirstChildElement(manElem);
 	List refs = new ArrayList();
 	while (refElem != null) {
-	    refs.add(new DOMReference(refElem, context));
+	    refs.add(new DOMReference(refElem, context, provider));
 	    refElem = DOMUtils.getNextSiblingElement(refElem);
 	}
 	this.references = Collections.unmodifiableList(refs);

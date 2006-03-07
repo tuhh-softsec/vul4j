@@ -26,6 +26,7 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 
+import java.security.Provider;
 import java.util.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -82,8 +83,8 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
      * @param objElem an Object element
      * @throws MarshalException if there is an error when unmarshalling
      */
-    public DOMXMLObject(Element objElem, XMLCryptoContext context) 
-	throws MarshalException {
+    public DOMXMLObject(Element objElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
 	// unmarshal attributes
         this.encoding = DOMUtils.getAttributeValue(objElem, "Encoding");
         this.id = DOMUtils.getAttributeValue(objElem, "Id");
@@ -98,7 +99,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
 		Element childElem = (Element) child;
                 String tag = childElem.getLocalName();
                 if (tag.equals("Manifest")) {
-                    content.add(new DOMManifest(childElem, context));
+                    content.add(new DOMManifest(childElem, context, provider));
 		    continue;
                 } else if (tag.equals("SignatureProperties")) {
                     content.add(new DOMSignatureProperties(childElem));

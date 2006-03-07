@@ -24,6 +24,7 @@ package org.jcp.xml.dsig.internal.dom;
 
 import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.Provider;
 
 import org.w3c.dom.Element;
 
@@ -55,9 +56,9 @@ public class DOMCanonicalizationMethod extends DOMTransform
      *
      * @param cmElem a CanonicalizationMethod element
      */
-    public DOMCanonicalizationMethod(Element cmElem, XMLCryptoContext context) 
-	throws MarshalException{
-	super(cmElem, context);
+    public DOMCanonicalizationMethod(Element cmElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
+	super(cmElem, context, provider);
     }
 
     /**
@@ -70,7 +71,7 @@ public class DOMCanonicalizationMethod extends DOMTransform
      *     additional context (may be <code>null</code> if not applicable)
      * @return the canonicalized data
      * @throws NullPointerException if <code>data</code> is <code>null</code>
-     * @throws XMLSignatureException if an unexpected error occurs while
+     * @throws TransformException if an unexpected error occurs while
      *    canonicalizing the data
      */
     public Data canonicalize(Data data, XMLCryptoContext xc) 

@@ -28,7 +28,8 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.*;
 
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.List;
 import org.w3c.dom.Document;
@@ -41,15 +42,6 @@ import org.w3c.dom.Node;
  * @author Sean Mullan
  */
 public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
-
-    static {
-        AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                Security.addProvider(new XMLDSigRI());
-                return null;
-            }
-        });
-    }
 
     /**
      * Initializes a new instance of this class.
@@ -71,7 +63,7 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 
     public Reference newReference(String uri, DigestMethod dm, List transforms,
         String type, String id) {
-	return new DOMReference(uri, type, dm, transforms, id);
+	return new DOMReference(uri, type, dm, transforms, id, getProvider());
     }
 
     public Reference newReference(String uri, DigestMethod dm, 
@@ -87,7 +79,7 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 	    throw new NullPointerException("result cannot be null");
 	}
 	return new DOMReference
-	    (uri, type, dm, appliedTransforms, result, transforms, id);
+	    (uri, type, dm, appliedTransforms, result, transforms, id, getProvider());
     }
 
     public Reference newReference(String uri, DigestMethod dm, List transforms,
@@ -96,7 +88,7 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 	    throw new NullPointerException("digestValue cannot be null");
 	}
 	return new DOMReference
-	    (uri, type, dm, null, null, transforms, id, digestValue);
+	    (uri, type, dm, null, null, transforms, id, digestValue, getProvider());
     }
 
     public SignedInfo newSignedInfo(CanonicalizationMethod cm,
@@ -174,7 +166,7 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 		"support DOM Level 2 and be namespace aware");
 	}
         if (tag.equals("Signature")) {
-            return new DOMXMLSignature(element, context);
+            return new DOMXMLSignature(element, context, getProvider());
         } else {
             throw new MarshalException("invalid Signature tag: " + tag);
         }
@@ -221,7 +213,12 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
     public Transform newTransform(String algorithm,
         TransformParameterSpec params) throws NoSuchAlgorithmException,
         InvalidAlgorithmParameterException {
-	TransformService spi = TransformService.getInstance(algorithm, "DOM");
+	TransformService spi;
+	try {
+	    spi = TransformService.getInstance(algorithm, "DOM");
+	} catch (NoSuchAlgorithmException nsae) {
+	    spi = TransformService.getInstance(algorithm, "DOM", getProvider());
+	}
 	spi.init(params);
 	return new DOMTransform(spi);
     }
@@ -229,7 +226,12 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
     public Transform newTransform(String algorithm,
         XMLStructure params) throws NoSuchAlgorithmException,
         InvalidAlgorithmParameterException {
-	TransformService spi = TransformService.getInstance(algorithm, "DOM");
+	TransformService spi;
+	try {
+	    spi = TransformService.getInstance(algorithm, "DOM");
+	} catch (NoSuchAlgorithmException nsae) {
+	    spi = TransformService.getInstance(algorithm, "DOM", getProvider());
+	}
 	if (params == null) {
 	    spi.init(null);
 	} else {
@@ -241,7 +243,12 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
     public CanonicalizationMethod newCanonicalizationMethod(String algorithm,
         C14NMethodParameterSpec params) throws NoSuchAlgorithmException,
         InvalidAlgorithmParameterException {
-	TransformService spi = TransformService.getInstance(algorithm, "DOM");
+	TransformService spi;
+	try {
+	    spi = TransformService.getInstance(algorithm, "DOM");
+	} catch (NoSuchAlgorithmException nsae) {
+	    spi = TransformService.getInstance(algorithm, "DOM", getProvider());
+	}
 	spi.init(params);
 	return new DOMCanonicalizationMethod(spi);
     }
@@ -249,7 +256,12 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
     public CanonicalizationMethod newCanonicalizationMethod(String algorithm,
         XMLStructure params) throws NoSuchAlgorithmException,
         InvalidAlgorithmParameterException {
-	TransformService spi = TransformService.getInstance(algorithm, "DOM");
+	TransformService spi; 
+	try {
+	    spi = TransformService.getInstance(algorithm, "DOM");
+	} catch (NoSuchAlgorithmException nsae) {
+	    spi = TransformService.getInstance(algorithm, "DOM", getProvider());
+	}
 	if (params == null) {
 	    spi.init(null);
 	} else {

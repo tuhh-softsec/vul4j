@@ -28,6 +28,7 @@ import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import javax.xml.crypto.dom.*;
 
+import java.security.Provider;
 import java.util.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -64,7 +65,7 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
 	if (typesCopy.isEmpty()) {
 	    throw new IllegalArgumentException("content cannot be empty");
 	}
-	for (int i = 0; i < typesCopy.size(); i++) {
+	for (int i = 0, size = typesCopy.size(); i < size; i++) {
 	    if (!(typesCopy.get(i) instanceof XMLStructure)) {
 		throw new ClassCastException
 		    ("content["+i+"] is not a valid KeyInfo type");
@@ -77,35 +78,38 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
     /**
      * Creates a <code>DOMKeyInfo</code> from XML.
      *
-     * @param input XML input
+     * @param kiElem KeyInfo element
      */
-    public DOMKeyInfo(Element kiElem, XMLCryptoContext context) 
-	throws MarshalException {
+    public DOMKeyInfo(Element kiElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
 	// get Id attribute, if specified
 	id = DOMUtils.getAttributeValue(kiElem, "Id");
 
         // get all children nodes
         NodeList nl = kiElem.getChildNodes();
-	if (nl.getLength() < 1) {
+	int length = nl.getLength();
+	if (length < 1) {
 	    throw new MarshalException
 		("KeyInfo must contain at least one type");
 	}
-	List content = new ArrayList(nl.getLength());
-        for (int i = 0; i < nl.getLength(); i++) {
+	List content = new ArrayList(length);
+        for (int i = 0; i < length; i++) {
             Node child = nl.item(i);
             // ignore all non-Element nodes
             if (child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
 	    }
             Element childElem = (Element) child;
-            if (childElem.getLocalName().equals("KeyName")) {
-	        content.add(new DOMKeyName(childElem));
-            } else if (childElem.getLocalName().equals("KeyValue")) {
-	        content.add(new DOMKeyValue(childElem));
-            } else if (childElem.getLocalName().equals("RetrievalMethod")) {
-	        content.add(new DOMRetrievalMethod(childElem, context));
-            } else if (childElem.getLocalName().equals("X509Data")) {
+	    String localName = childElem.getLocalName();
+            if (localName.equals("X509Data")) {
 	        content.add(new DOMX509Data(childElem));
+            } else if (localName.equals("KeyName")) {
+	        content.add(new DOMKeyName(childElem));
+            } else if (localName.equals("KeyValue")) {
+	        content.add(new DOMKeyValue(childElem));
+            } else if (localName.equals("RetrievalMethod")) {
+	        content.add
+		    (new DOMRetrievalMethod(childElem, context, provider));
 	    } else { //may be MgmtData, SPKIData or element from other namespace
 	        content.add(new javax.xml.crypto.dom.DOMStructure((childElem)));
 	    }
@@ -160,9 +164,8 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
     private void marshal(Node parent, Element kiElem, Node nextSibling,
         String dsPrefix, DOMCryptoContext context) throws MarshalException {
         // create and append KeyInfoType elements
-	Iterator i = this.keyInfoTypes.iterator();
-	while (i.hasNext()) {
-	    XMLStructure kiType = (XMLStructure) i.next();
+	for (int i = 0, size = keyInfoTypes.size(); i < size; i++) {
+	    XMLStructure kiType = (XMLStructure) keyInfoTypes.get(i);
 	    if (kiType instanceof DOMStructure) {
 		((DOMStructure) kiType).marshal(kiElem, dsPrefix, context);
 	    } else {

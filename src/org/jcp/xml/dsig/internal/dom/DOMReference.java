@@ -81,6 +81,7 @@ public final class DOMReference extends DOMStructure
     private Data derefData;
     private InputStream dis;
     private MessageDigest md;
+    private Provider provider;
 
     /**
      * Creates a <code>Reference</code> from the specified parameters.
@@ -98,18 +99,20 @@ public final class DOMReference extends DOMStructure
      *    not of type <code>Transform</code>
      */
     public DOMReference(String uri, String type, DigestMethod dm, 
-	List transforms, String id) {
-	this(uri, type, dm, null, null, transforms, id, null);
+	List transforms, String id, Provider provider) {
+	this(uri, type, dm, null, null, transforms, id, null, provider);
     }
 
     public DOMReference(String uri, String type, DigestMethod dm, 
-	List appliedTransforms, Data result, List transforms, String id) {
-	this(uri, type, dm, appliedTransforms, result, transforms, id, null);
+	List appliedTransforms, Data result, List transforms, String id,
+	Provider provider) {
+	this(uri, type, dm, appliedTransforms, 
+	     result, transforms, id, null, provider);
     }
 
     public DOMReference(String uri, String type, DigestMethod dm, 
 	List appliedTransforms, Data result, List transforms, String id, 
-	byte[] digestValue){
+	byte[] digestValue, Provider provider) {
 	if (dm == null) {
 	    throw new NullPointerException("DigestMethod must be non-null");
 	}
@@ -157,6 +160,7 @@ public final class DOMReference extends DOMStructure
 	    this.digested = true;
 	}
 	this.appliedTransformData = result;
+	this.provider = provider;
     }
  
     /**
@@ -164,15 +168,16 @@ public final class DOMReference extends DOMStructure
      *
      * @param refElem a Reference element
      */
-    public DOMReference(Element refElem, XMLCryptoContext context) 
-	throws MarshalException {
+    public DOMReference(Element refElem, XMLCryptoContext context, 
+	Provider provider) throws MarshalException {
         // unmarshal Transforms, if specified
         Element nextSibling = DOMUtils.getFirstChildElement(refElem);
         List transforms = new ArrayList(5);
         if (nextSibling.getLocalName().equals("Transforms")) {
 	    Element transformElem = DOMUtils.getFirstChildElement(nextSibling);
 	    while (transformElem != null) {
-                transforms.add(new DOMTransform(transformElem, context));
+                transforms.add
+		    (new DOMTransform(transformElem, context, provider));
 	        transformElem = DOMUtils.getNextSiblingElement(transformElem);
 	    }
             nextSibling = DOMUtils.getNextSiblingElement(nextSibling);
@@ -206,6 +211,7 @@ public final class DOMReference extends DOMStructure
 	this.appliedTransforms = Collections.EMPTY_LIST;
 	this.allTransforms = transforms;
 	this.appliedTransformData = null;
+	this.provider = provider;
     }
 
     public DigestMethod getDigestMethod() {
@@ -415,8 +421,14 @@ public final class DOMReference extends DOMStructure
 	            xi = new XMLSignatureInput
 			(((OctetStreamData)data).getOctetStream());
 	        } else if (data instanceof NodeSetData) {
-		    TransformService spi = TransformService.getInstance
-		        (CanonicalizationMethod.INCLUSIVE, "DOM");
+		    TransformService spi = null;
+		    try {
+		        spi = TransformService.getInstance
+		            (CanonicalizationMethod.INCLUSIVE, "DOM");
+		    } catch (NoSuchAlgorithmException nsae) {
+		        spi = TransformService.getInstance
+		            (CanonicalizationMethod.INCLUSIVE, "DOM", provider);
+		    }
                     data = spi.transform(data, context);
 	            xi = new XMLSignatureInput
 		        (((OctetStreamData)data).getOctetStream());

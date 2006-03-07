@@ -38,6 +38,7 @@ import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.Provider;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,8 +122,8 @@ public final class DOMXMLSignature extends DOMStructure
      * @param sigElem Signature element
      * @throws MarshalException if XMLSignature cannot be unmarshalled
      */
-    public DOMXMLSignature(Element sigElem, XMLCryptoContext context) 
-	throws MarshalException {
+    public DOMXMLSignature(Element sigElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
         localSigElem = sigElem;
         ownerDoc = localSigElem.getOwnerDocument();
 
@@ -131,7 +132,7 @@ public final class DOMXMLSignature extends DOMStructure
 
 	// unmarshal SignedInfo
 	Element siElem = DOMUtils.getFirstChildElement(localSigElem);
-	si = new DOMSignedInfo(siElem, context);
+	si = new DOMSignedInfo(siElem, context, provider);
 
 	// unmarshal SignatureValue 
 	Element sigValElem = DOMUtils.getNextSiblingElement(siElem);
@@ -140,7 +141,7 @@ public final class DOMXMLSignature extends DOMStructure
 	// unmarshal KeyInfo, if specified
 	Element nextSibling = DOMUtils.getNextSiblingElement(sigValElem);
 	if (nextSibling != null && nextSibling.getLocalName().equals("KeyInfo")) {
-	    ki = new DOMKeyInfo(nextSibling, context);
+	    ki = new DOMKeyInfo(nextSibling, context, provider);
 	    nextSibling = DOMUtils.getNextSiblingElement(nextSibling);
 	}
 
@@ -150,7 +151,8 @@ public final class DOMXMLSignature extends DOMStructure
 	} else {
 	    List tempObjects = new ArrayList();
 	    while (nextSibling != null) {
-	        tempObjects.add(new DOMXMLObject(nextSibling, context));
+	        tempObjects.add
+		    (new DOMXMLObject(nextSibling, context, provider));
 	        nextSibling = DOMUtils.getNextSiblingElement(nextSibling);
 	    }
 	    objects = Collections.unmodifiableList(tempObjects);	

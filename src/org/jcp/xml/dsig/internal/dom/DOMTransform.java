@@ -25,6 +25,7 @@ package org.jcp.xml.dsig.internal.dom;
 import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.w3c.dom.Document;
@@ -63,14 +64,18 @@ public class DOMTransform extends DOMStructure implements Transform {
      *
      * @param transElem a Transform element
      */
-    public DOMTransform(Element transElem, XMLCryptoContext context) 
-	throws MarshalException {
+    public DOMTransform(Element transElem, XMLCryptoContext context,
+	Provider provider) throws MarshalException {
         Document ownerDoc = transElem.getOwnerDocument();
         String algorithm = DOMUtils.getAttributeValue(transElem, "Algorithm");
 	try {
 	    spi = TransformService.getInstance(algorithm, "DOM");
-	} catch (NoSuchAlgorithmException e) {
-	    throw new MarshalException(e);
+	} catch (NoSuchAlgorithmException e1) {
+	    try {
+	        spi = TransformService.getInstance(algorithm, "DOM", provider);
+	    } catch (NoSuchAlgorithmException e2) {
+	        throw new MarshalException(e2);
+	    }
 	}
 	try {
             spi.init(new javax.xml.crypto.dom.DOMStructure(transElem), context);
