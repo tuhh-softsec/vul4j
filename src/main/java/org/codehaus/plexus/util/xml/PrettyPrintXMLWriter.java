@@ -142,9 +142,12 @@ public class PrettyPrintXMLWriter
     {
         text = escapeXml( text );
 
-        text = text.replaceAll( "\n", "&#10;" );
-
         text = text.replaceAll( "\n\r", "&#10;" );
+
+        for( int c = 0; c < 32; c++ )
+        {
+            text = text.replaceAll( Character.toString( (char) c ), "&#"+ c + ";" );
+        }
 
         return text;
     }
