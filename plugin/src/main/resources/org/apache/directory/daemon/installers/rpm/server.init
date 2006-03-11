@@ -62,7 +62,7 @@ case "`uname`" in
 	 fi
 
     if [ ! -d "$JAVA_HOME" ] ; then
-      elif [ `uname` = Linux ] ; then
+      if [ `uname` = Linux ] ; then
         for jdkhome in `find /usr/java/ -type d -regex '.*\/jdk1\.5\.....$' | sort`; do
           JAVA_HOME=$jdkhome;
         done
@@ -120,7 +120,7 @@ SERVER_HOME=$_${app.caps}_HOME
 DAEMON_HOME=$SERVER_HOME/bin
 CLASSPATH=$CLASSPATH:$DAEMON_HOME/bootstrapper.jar:$DAEMON_HOME/logger.jar:$DAEMON_HOME/daemon.jar
 echo CLASSPATH=$CLASSPATH
-${app.caps}_USER=root
+${app.caps}_USER=$USER
 
 TMP_DIR=$SERVER_HOME/var/tmp
 PID_FILE=$SERVER_HOME/var/run/server.pid
@@ -159,7 +159,7 @@ case "$1" in
              failure $"${app} server start"
         echo
         if [ -d /var/lock/subsys ] ; then
-               [ "$RETVAL" -eq 0 ] && touch /var/lock/subsys/${app}
+               [ "$RETVAL" -eq 0 ] && touch $SERVER_HOME/var/${app}.lock
         fi
     fi
 
@@ -190,7 +190,7 @@ case "$1" in
              failure $"${app} server shutdown"
         echo
         if [ -d /var/lock/subsys/${app} ] ; then
-               [ "$RETVAL" -eq 0 ] && rm /var/lock/subsys/${app}
+               [ "$RETVAL" -eq 0 ] && rm $SERVER_HOME/var/${app}.lock
         fi
     fi
 
