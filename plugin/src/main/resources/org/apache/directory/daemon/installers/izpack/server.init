@@ -34,10 +34,8 @@ SERVERS=""
 prog=$"${app} server"
 
 if [ -z "$JAVA_HOME" ] ; then
-  # Set the java path if no JAVA_HOME has been specified by the user
-  # for RPM this will be set to some path.  But izpack installers the
-  # plugin will set this to %JAVA_HOME izpack to change at install time
-  JAVA_HOME=${java.home.variable}
+  # Izpack installers set this to the home used for installer at install time
+  JAVA_HOME=%JAVA_HOME
 fi
 
 # OS specific support.  $var _must_ be set to either true or false.
