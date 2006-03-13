@@ -185,6 +185,9 @@ public class DirectoryScanner
         "**/.bzr",
         "**/.bzr/**",
 
+        //SurroundSCM
+        "**/.MySCMServerInfo",
+
         // Mac
         "**/.DS_Store"
     };
