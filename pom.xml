@@ -8,4 +8,11 @@
   <artifactId>plexus-archiver</artifactId>
   <name>Plexus Archiver Component</name>
   <version>1.0-alpha-6-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.2-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 </project>
