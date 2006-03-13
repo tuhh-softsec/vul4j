@@ -108,6 +108,9 @@ DOMElement * XKMSRecoverKeyBindingImpl::createBlankRecoverKeyBinding(XKMSStatus:
 	ret->appendChild(mp_status->createBlankStatus(status));
 	mp_env->doPrettyPrint(ret);
 
+	// Must have an Id
+	XKMSKeyBindingAbstractTypeImpl::setId();
+
 	return ret;
 
 }

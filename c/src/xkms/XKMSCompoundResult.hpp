@@ -41,6 +41,10 @@ class XKMSRegisterRequest;
 class XKMSRegisterResult;
 class XKMSRevokeRequest;
 class XKMSRevokeResult;
+class XKMSReissueRequest;
+class XKMSReissueResult;
+class XKMSRecoverRequest;
+class XKMSRecoverResult;
 class XKMSResult;
 class XKMSRequestAbstractType;
 
@@ -230,6 +234,48 @@ public:
 
 	virtual XKMSRevokeResult * createRevokeResult(
 		XKMSRevokeRequest * request,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RecoverResult\> message.
+	 * 
+	 * Generates a new RecoverResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input RevokeRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param id Value to set in the Id field.  If NULL, the library will
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRecoverResult structure
+	 */
+
+	virtual XKMSRecoverResult * createRecoverResult(
+		XKMSRecoverRequest * request,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<ReissueResult\> message.
+	 * 
+	 * Generates a new ReissueResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input RevokeRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param id Value to set in the Id field.  If NULL, the library will
+     * @param rmaj Major result code
+     * @param rmin Minor result code
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSReissueResult structure
+	 */
+
+	virtual XKMSReissueResult * createReissueResult(
+		XKMSReissueRequest * request,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
 		const XMLCh * id = NULL) = 0;

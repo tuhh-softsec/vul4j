@@ -88,6 +88,12 @@ public:
 	virtual XKMSRevokeRequest * createRevokeRequest(
 		const XMLCh * service,
 		const XMLCh * id = NULL);
+	virtual XKMSRecoverRequest * createRecoverRequest(
+		const XMLCh * service,
+		const XMLCh * id = NULL);
+	virtual XKMSReissueRequest * createReissueRequest(
+		const XMLCh * service,
+		const XMLCh * id = NULL);
 
 	/* Forced inheritance from XKMSMessageAbstractTypeImpl */
 	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS 

@@ -34,6 +34,8 @@
 #include "XKMSValidateRequestImpl.hpp"
 #include "XKMSRegisterRequestImpl.hpp"
 #include "XKMSRevokeRequestImpl.hpp"
+#include "XKMSReissueRequestImpl.hpp"
+#include "XKMSRecoverRequestImpl.hpp"
 
 #include <xercesc/dom/DOM.hpp>
 
@@ -210,6 +212,32 @@ XKMSRevokeRequest * XKMSCompoundRequestImpl::createRevokeRequest(
 		const XMLCh * id) {
 
 	XKMSRevokeRequest * r = m_factory.createRevokeRequest(service, m_msg.mp_env->getParentDocument(), id);
+	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
+
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+
+	return r;
+}
+
+XKMSReissueRequest * XKMSCompoundRequestImpl::createReissueRequest(
+		const XMLCh * service,
+		const XMLCh * id) {
+
+	XKMSReissueRequest * r = m_factory.createReissueRequest(service, m_msg.mp_env->getParentDocument(), id);
+	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
+
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+
+	return r;
+}
+
+XKMSRecoverRequest * XKMSCompoundRequestImpl::createRecoverRequest(
+		const XMLCh * service,
+		const XMLCh * id) {
+
+	XKMSRecoverRequest * r = m_factory.createRecoverRequest(service, m_msg.mp_env->getParentDocument(), id);
 	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
 
 	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());

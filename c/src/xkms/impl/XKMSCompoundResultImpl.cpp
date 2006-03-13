@@ -35,6 +35,8 @@
 #include "XKMSValidateResultImpl.hpp"
 #include "XKMSRegisterResultImpl.hpp"
 #include "XKMSRevokeResultImpl.hpp"
+#include "XKMSReissueResultImpl.hpp"
+#include "XKMSRecoverResultImpl.hpp"
 #include "XKMSResultImpl.hpp"
 
 #include <xercesc/dom/DOM.hpp>
@@ -248,6 +250,39 @@ XKMSRevokeResult * XKMSCompoundResultImpl::createRevokeResult(
 	return r;
 
 }
+
+XKMSRecoverResult * XKMSCompoundResultImpl::createRecoverResult(
+		XKMSRecoverRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSRecoverResult * r = m_factory.createRecoverResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
+
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+
+	return r;
+
+}
+
+XKMSReissueResult * XKMSCompoundResultImpl::createReissueResult(
+		XKMSReissueRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSReissueResult * r = m_factory.createReissueResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
+
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
+
+	return r;
+
+}
+
 
 XKMSResult * XKMSCompoundResultImpl::createResult(
 		XKMSRequestAbstractType * request,

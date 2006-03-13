@@ -35,6 +35,8 @@ class XKMSLocateRequest;
 class XKMSValidateRequest;
 class XKMSRegisterRequest;
 class XKMSRevokeRequest;
+class XKMSReissueRequest;
+class XKMSRecoverRequest;
 
 /**
  * @ingroup xkms
@@ -177,6 +179,36 @@ public:
 	 */
 
 	virtual XKMSRevokeRequest * createRevokeRequest(
+		const XMLCh * service,
+		const XMLCh * id = NULL) = 0;
+
+	/** \brief Add a RecoverRequest item
+	 *
+	 * Appends a RecoverRequest to the CompoundRequest object and returns the newly
+	 * created object
+	 *
+	 * @param service URI
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRecoverRequest structure
+	 */
+
+	virtual XKMSRecoverRequest * createRecoverRequest(
+		const XMLCh * service,
+		const XMLCh * id = NULL) = 0;
+
+	/** \brief Add a ReissueRequest item
+	 *
+	 * Appends a ReissueRequest to the CompoundRequest object and returns the newly
+	 * created object
+	 *
+	 * @param service URI
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSReissueRequest structure
+	 */
+
+	virtual XKMSReissueRequest * createReissueRequest(
 		const XMLCh * service,
 		const XMLCh * id = NULL) = 0;
 

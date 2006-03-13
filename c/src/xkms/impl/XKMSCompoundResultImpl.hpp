@@ -102,6 +102,16 @@ public:
 		ResultMajor rmaj,
 		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
 		const XMLCh * id = NULL);
+	virtual XKMSRecoverResult * createRecoverResult(
+		XKMSRecoverRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSReissueResult * createReissueResult(
+		XKMSReissueRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
+		const XMLCh * id = NULL);
 
 	/* Implemented from MessageAbstractType */
 	virtual messageType getMessageType(void);
