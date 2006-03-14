@@ -837,6 +837,13 @@ public class Digester extends DefaultHandler {
      * See also method setSchemaLanguage which allows the type of the schema
      * specified here to be defined. By default, the schema is expected to
      * be a W3C xml schema definition.
+     * <p>
+     * IMPORTANT NOTE: This functionality was never very reliable, and has
+     * been horribly broken since the 1.6 release of Digester. There are
+     * currently no plans to fix it, so you are strongly recommended to
+     * avoid using this method. Instead, create an XMLParser instance
+     * yourself, configure validation appropriately, and pass it as a
+     * parameter to the Digester constructor.
      *
      * @param schemaLocation a URI to the schema.
      */
