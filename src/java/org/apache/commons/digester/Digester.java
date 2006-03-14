@@ -685,14 +685,25 @@ public class Digester extends DefaultHandler {
 
         // Create a new parser
         try {
-            if (validating) {
+            if (validating && (schemaLocation != null)) {
+                // There is no portable way to specify the location of
+                // an xml schema to be applied to the input document, so
+                // we have to use parser-specific code for this. That code
+                // is hidden behind the ParserFeatureSetterFactory class.
+
                 Properties properties = new Properties();
                 properties.put("SAXParserFactory", getFactory());
                 if (schemaLocation != null) {
                     properties.put("schemaLocation", schemaLocation);
                     properties.put("schemaLanguage", schemaLanguage);
                 }
-                parser = ParserFeatureSetterFactory.newSAXParser(properties);               } else {
+                parser = ParserFeatureSetterFactory.newSAXParser(properties);
+	    } else {
+               // The user doesn't want to use any non-portable parsing features,
+               // so we can just use the portable API here. Note that method
+               // getFactory returns a factory already configured with the
+               // appropriate namespaceAware and validating properties.
+
                 parser = getFactory().newSAXParser();
             }
         } catch (Exception e) {
@@ -808,7 +819,24 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Set the XML Schema URI used for validating a XML Instance.
+     * Set the XML Schema URI used for validating the input XML.
+     * <p>
+     * It is often desirable to <i>force</i> the input document to be
+     * validated against a particular schema regardless of what type
+     * the input document declares itself to be. This method allows that
+     * to be done. 
+     * <p>
+     * Note, however, that there is no standard API for enabling this
+     * feature on the underlying SAX parser; this method therefore only works 
+     * for those parsers explicitly supported by Digester's
+     * ParserFeatureSetterFactory class. If the underlying parser does not
+     * support the feature, or is not one of the supported parsers, then
+     * an exception will be thrown when getParser is called (explicitly, 
+     * or implicitly via the parse method).
+     * <p>
+     * See also method setSchemaLanguage which allows the type of the schema
+     * specified here to be defined. By default, the schema is expected to
+     * be a W3C xml schema definition.
      *
      * @param schemaLocation a URI to the schema.
      */
