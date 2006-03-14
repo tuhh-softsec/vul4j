@@ -37,7 +37,7 @@ import org.xml.sax.SAXNotSupportedException;
  *
  * @since 1.6
  */
-public class ParserFeatureSetterFactory{
+public class ParserFeatureSetterFactory {
 
     /**
      * <code>true</code> is Xerces is used.
@@ -47,10 +47,14 @@ public class ParserFeatureSetterFactory{
     static {
         try{
             // Use reflection to avoid a build dependency with Xerces.
-            Class versionClass = 
-                            Class.forName("org.apache.xerces.impl.Version");
-            isXercesUsed = true;
-        } catch (Exception ex){
+	    //
+	    // Note that this does not detect Sun's repackaging of 
+	    // Xerces as com.sun.org.apache.xerces; perhaps it should?
+	    SAXParserFactory factory = SAXParserFactory.newInstance();
+	    if (factory.getClass().getName().startsWith("org.apache.xerces")) {
+                isXercesUsed = true;
+	    }
+        } catch (Exception ex) {
             isXercesUsed = false;
         }
     }
