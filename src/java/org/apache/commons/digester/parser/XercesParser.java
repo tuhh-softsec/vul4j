@@ -175,6 +175,11 @@ public class XercesParser{
     /**
      * Configure schema validation as recommended by the Xerces spec. 
      * Both DTD and Schema validation will be enabled simultaneously.
+     * <p>
+     * NOTE: This method is broken. It is supposed to set up validation
+     * against the schema specified in property "schemaLocation", but
+     * it doesn't.
+     *
      * @param factory SAXParserFactory to be configured
      */
     private static void configureXerces(SAXParserFactory factory)
