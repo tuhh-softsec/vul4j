@@ -1779,20 +1779,41 @@ public class Digester extends DefaultHandler {
      * Given a URL, return an InputSource that reads from that URL.
      * <p>
      * Ideally this function would not be needed and code could just use
-     * <code>new InputSource(entityURL)</code>.
-     * Unforunately it appears that when the entityURL points to a file
-     * within a jar archive a caching mechanism inside the InputSource
-     * implementation causes a file-handle to the jar file to remain open.
-     * On Windows systems this then causes the jar archive file to be
-     * locked on disk ("in use") which makes it impossible to delete the
-     * jar file - and that really stuffs up "undeploy" in webapps in 
-     * particular.
+     * <code>new InputSource(entityURL)</code>. Unfortunately it appears
+     * that when the entityURL points to a file within a jar archive a
+     * caching mechanism inside the InputSource implementation causes a
+     * file-handle to the jar file to remain open. On Windows systems
+     * this then causes the jar archive file to be locked on disk
+     * ("in use") which makes it impossible to delete the jar file -
+     * and that really stuffs up "undeploy" in webapps in particular.
+     * <p>
+     * In JDK1.4 and later, Apache XercesJ is used as the xml parser.
+     * The InputSource object provided is converted into an XMLInputSource,
+     * and eventually passed to an instance of XMLDocumentScannerImpl to
+     * specify the source data to be converted into tokens for the rest
+     * of the XMLReader code to handle. XMLDocumentScannerImpl calls
+     * fEntityManager.startDocumentEntity(source), where fEntityManager
+     * is declared in ancestor class XMLScanner to be an XMLEntityManager. In
+     * that class, if the input source stream is null, then:
+     * <code>
+     *  URL location = new URL(expandedSystemId);
+     *  URLConnection connect = location.openConnection();
+     *  if (connect instanceof HttpURLConnection) {
+     *    setHttpProperties(connect,xmlInputSource);
+     *  }
+     *  stream = connect.getInputStream();
+     * </code>
+     * This method pretty much duplicates the standard behaviour, except
+     * that it calls URLConnection.setUseCaches(false) before opening
+     * the connection.
      */
-    private InputSource createInputSourceFromURL(String url)
+    public static InputSource createInputSourceFromURL(String url)
     throws MalformedURLException, IOException {
-        URLConnection urlConnection = new URL(url).openConnection();
-        urlConnection.setUseCaches(false);
-        InputSource source = new InputSource(urlConnection.getInputStream());
+        URL location = new URL(url);
+        URLConnection connection = location.openConnection();
+        connection.setUseCaches(false);
+	InputStream stream = connection.getInputStream();
+        InputSource source = new InputSource(stream);
         source.setSystemId(url);
         return source;
     }
