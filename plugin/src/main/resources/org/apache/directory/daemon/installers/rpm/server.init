@@ -75,13 +75,9 @@ if [ -z "$_${app.caps}_HOME" ] ; then
   # try to find install home 
   if [ -d ${app.install.base} ] ; then
     ${app.caps}_HOME=${app.install.base}
-  fi
-
-  if [ -d "$HOME/${app}-${version}" ] ; then
+  elif [ -d "$HOME/${app}-${version}" ] ; then
     ${app.caps}_HOME="$HOME/${app}-${version}"
-  fi
-
-  if [ -d "/Applications/${app}-${version}" ] ; then
+  elif [ -d "/Applications/${app}-${version}" ] ; then
     ${app.caps}_HOME=/Applications/${app}-${version}
   fi
 fi
