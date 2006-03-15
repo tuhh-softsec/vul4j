@@ -181,13 +181,13 @@ class XPath2NodeFilter implements NodeFilter {
     */
    public boolean isNodeInclude(Node currentNode) {	 
 	   boolean notIncluded=false;
-	   if (rooted(currentNode,substractNodes)) {
-		   notIncluded=true;
-	   } else if (!rooted(currentNode,intersectNodes)) {
-		   notIncluded=true;
+	   if (!substractNodes.isEmpty() && rooted(currentNode, substractNodes)) {
+		      notIncluded = true;
+	   } else if (!intersectNodes.isEmpty() && !rooted(currentNode, intersectNodes)) {
+		   notIncluded = true;
 	   }
-	   if (notIncluded && rooted(currentNode,unionNodes)) {
-		   notIncluded=false;
+	   if (!unionNodes.isEmpty() && notIncluded && rooted(currentNode, unionNodes)) {
+		   notIncluded = false;
 	   }
 
       return !notIncluded;
