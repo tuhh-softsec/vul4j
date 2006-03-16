@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Properties;
+import java.util.Date;
 
 /**
  * This is used to test FileUtils for correctness.
@@ -342,6 +343,71 @@ public final class FileUtilsTest
         assertTrue( "Check Full copy", destination.length() == testFile2Size );
     }
 
+    // copyFileIfModified
+
+    public void testCopyOutdatedFile() throws Exception
+    {
+        FileUtils.forceMkdir( new File(getTestDirectory() + "/temp") );
+
+        final File source = new File( getTestDirectory(), "copy1.txt" );
+        FileUtils.copyFile( testFile1, source );
+
+        source.setLastModified( 1 );
+
+        final File target = new File( getTestDirectory() + "/temp" , "copy1.txt" );
+        FileUtils.copyFile( testFile1, target );
+
+        target.setLastModified( 0 );
+
+        assertTrue( "Source file is not older than target file.", target.lastModified() < source.lastModified() );
+
+        FileUtils.copyFileIfModified( source, target );
+
+        assertTrue( "Failed copy. Source file should have the same timestamp as target file.", target.lastModified() > source.lastModified() );
+    }
+
+    public void testCopyNewFile() throws Exception
+    {
+        FileUtils.forceMkdir( new File(getTestDirectory() + "/temp") );
+
+        final File source = new File( getTestDirectory(), "copy1.txt" );
+        FileUtils.copyFile( testFile1, source );
+
+        source.setLastModified( 0 );
+
+        final File target = new File( getTestDirectory() + "/temp" , "copy1.txt" );
+        FileUtils.copyFile( testFile1, target );
+
+        target.setLastModified( 1 );
+
+        assertTrue( "Source file is not newer than target file.", target.lastModified() > source.lastModified() );
+
+        FileUtils.copyFileIfModified( source, target );
+
+        assertTrue( "Target file timestamp should not have been updated.", 1 == target.lastModified() );
+    }
+
+    public void testCopyUnmodifiedFile() throws Exception
+    {
+        FileUtils.forceMkdir( new File(getTestDirectory() + "/temp") );
+
+        final File source = new File( getTestDirectory(), "copy1.txt" );
+        FileUtils.copyFile( testFile1, source );
+
+        source.setLastModified( 1 );
+
+        final File target = new File( getTestDirectory() + "/temp" , "copy1.txt" );
+        FileUtils.copyFile( testFile1, target );
+
+        target.setLastModified( 1 );
+
+        assertTrue( "Source file is not newer than target file.", target.lastModified() == source.lastModified() );
+
+        FileUtils.copyFileIfModified( source, target );
+
+        assertTrue( "Failed copy. Target file should not have been updated.", 1 == target.lastModified() );
+    }
+
     // forceDelete
 
     public void testForceDeleteAFile1() throws Exception
@@ -384,6 +450,52 @@ public final class FileUtilsTest
         FileUtils.copyFileToDirectory( testFile1, directory );
         assertTrue( "Check Exist", destination.exists() );
         assertTrue( "Check Full copy", destination.length() == testFile2Size );
+    }
+
+    // copyFileToDirectoryIfModified
+
+    public void testCopyFile1ToDirIfModified() throws Exception
+    {
+        final File directory = new File( getTestDirectory(), "subdir" );
+        if ( directory.exists() )
+            FileUtils.forceDelete( directory );
+        directory.mkdirs();
+
+        final File destination = new File( directory, testFile1.getName() );
+
+        FileUtils.copyFileToDirectoryIfModified( testFile1, directory );
+
+        final File target = new File( getTestDirectory() + "/subdir" , testFile1.getName() );
+        long timestamp = target.lastModified();
+
+        assertTrue( "Check Exist", destination.exists() );
+        assertTrue( "Check Full copy", destination.length() == testFile1Size );
+
+        FileUtils.copyFileToDirectoryIfModified( testFile1, directory );
+
+        assertTrue( "Timestamp was changed", timestamp ==  target.lastModified() );
+    }
+
+    public void testCopyFile2ToDirIfModified() throws Exception
+    {
+        final File directory = new File( getTestDirectory(), "subdir" );
+        if ( directory.exists() )
+            FileUtils.forceDelete( directory );
+        directory.mkdirs();
+
+        final File destination = new File( directory, testFile2.getName() );
+
+        FileUtils.copyFileToDirectoryIfModified( testFile2, directory );
+
+        final File target = new File( getTestDirectory() + "/subdir" , testFile2.getName() );
+        long timestamp = target.lastModified();
+
+        assertTrue( "Check Exist", destination.exists() );
+        assertTrue( "Check Full copy", destination.length() == testFile2Size );
+
+        FileUtils.copyFileToDirectoryIfModified( testFile2, directory );
+
+        assertTrue( "Timestamp was changed", timestamp ==  target.lastModified() );
     }
 
     // forceDelete

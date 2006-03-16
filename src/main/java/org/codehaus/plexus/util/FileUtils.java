@@ -756,6 +756,28 @@ public class FileUtils
     }
 
     /**
+     * Copy file from source to destination only if source is newer than the target file.
+     * If <code>destinationDirectory</code> does not exist, it
+     * (and any parent directories) will be created. If a file <code>source</code> in
+     * <code>destinationDirectory</code> exists, it will be overwritten.
+     *
+     * @param source An existing <code>File</code> to copy.
+     * @param destinationDirectory A directory to copy <code>source</code> into.
+     *
+     * @throws java.io.FileNotFoundException if <code>source</code> isn't a normal file.
+     * @throws IllegalArgumentException if <code>destinationDirectory</code> isn't a directory.
+     * @throws IOException if <code>source</code> does not exist, the file in
+     * <code>destinationDirectory</code> cannot be written to, or an IO error occurs during copying.
+     */
+    public static void copyFileToDirectoryIfModified( final String source,
+                                            final String destinationDirectory )
+        throws IOException
+    {
+        copyFileToDirectoryIfModified( new File( source ),
+                             new File( destinationDirectory ) );
+    }
+
+    /**
      * Copy file from source to destination. If <code>destinationDirectory</code> does not exist, it
      * (and any parent directories) will be created. If a file <code>source</code> in
      * <code>destinationDirectory</code> exists, it will be overwritten.
@@ -779,6 +801,33 @@ public class FileUtils
 
         copyFile( source, new File( destinationDirectory, source.getName() ) );
     }
+
+    /**
+     * Copy file from source to destination only if source is newer than the target file.
+     * If <code>destinationDirectory</code> does not exist, it
+     * (and any parent directories) will be created. If a file <code>source</code> in
+     * <code>destinationDirectory</code> exists, it will be overwritten.
+     *
+     * @param source An existing <code>File</code> to copy.
+     * @param destinationDirectory A directory to copy <code>source</code> into.
+     *
+     * @throws java.io.FileNotFoundException if <code>source</code> isn't a normal file.
+     * @throws IllegalArgumentException if <code>destinationDirectory</code> isn't a directory.
+     * @throws IOException if <code>source</code> does not exist, the file in
+     * <code>destinationDirectory</code> cannot be written to, or an IO error occurs during copying.
+     */
+    public static void copyFileToDirectoryIfModified( final File source,
+                                            final File destinationDirectory )
+        throws IOException
+    {
+        if ( destinationDirectory.exists() && !destinationDirectory.isDirectory() )
+        {
+            throw new IllegalArgumentException( "Destination is not a directory" );
+        }
+
+        copyFileIfModified( source, new File( destinationDirectory, source.getName() ) );
+    }
+
 
     /**
      * Copy file from source to destination. The directories up to <code>destination</code> will be
@@ -842,6 +891,29 @@ public class FileUtils
         }
     }
 
+    /**
+     * Copy file from source to destination only if source timestamp is later than the destination timestamp.
+     * The directories up to <code>destination</code> will be created if they don't already exist.
+     * <code>destination</code> will be overwritten if it already exists.
+     *
+     * @param source An existing non-directory <code>File</code> to copy bytes from.
+     * @param destination A non-directory <code>File</code> to write bytes to (possibly
+     * overwriting).
+     *
+     * @throws IOException if <code>source</code> does not exist, <code>destination</code> cannot be
+     * written to, or an IO error occurs during copying.
+     *
+     * @throws java.io.FileNotFoundException if <code>destination</code> is a directory
+     * (use {@link #copyFileToDirectory}).
+     */
+    public static void copyFileIfModified( final File source, final File destination )
+        throws IOException
+    {
+        if ( destination.lastModified() < source.lastModified() )
+        {
+            copyFile( source, destination );
+        }
+    }
     /**
      * Copies bytes from the URL <code>source</code> to a file <code>destination</code>.
      * The directories up to <code>destination</code> will be created if they don't already exist.
