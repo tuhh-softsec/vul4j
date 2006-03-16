@@ -142,7 +142,12 @@ public class CommandlineTest
             cmd.createArgument().setValue( "more" );
             File f = new File( "test.txt" );
             cmd.createArgument().setFile( f );
-            assertEquals( "more " + f.getAbsoluteFile(), cmd.toString() );
+            String fileName = f.getAbsolutePath();
+            if ( fileName.indexOf( " " ) >= 0 )
+            {
+                fileName = "\"" + fileName + "\"";
+            }
+            assertEquals( "more " + fileName, cmd.toString() );
         }
         catch ( Exception e )
         {
