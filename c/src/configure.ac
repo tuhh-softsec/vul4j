@@ -19,7 +19,7 @@
 
 # Process this file with autoconf to produce a configure script
 
-AC_INIT([[XML-Security-C]], [1.2.0], [security-dev@xml.apache.org], [xml-security-c])
+AC_INIT([[XML-Security-C]], [1.3.0], [security-dev@xml.apache.org], [xml-security-c])
 
 # framework is a unique directory in src/ - allows configure to check
 # it is running in the correct directory
@@ -246,7 +246,7 @@ case "${host}" in
 						LINK=["${CXX} ${CXXFLAGS} -DLINUX -ldl ${PIC}"]
 						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
 						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
+						INSTALL_COMMAND_1=["\$(INSTALL) -d \$(DESTDIR)\${libdir} && \$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
 						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
 						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
 
@@ -726,10 +726,10 @@ do
 done
 
 # Check to ensure the config.hpp file has been added :
-
 check_cnf=`echo ${framework_include_files} | grep XSECConfig`
+check_cnf2=`echo ${framework_include_files} | grep XSEC`
 
-if test "${framework_include_files}" != "${check_cnf}" ; then
+if test "${check_cnf2}" != "${check_cnf}" ; then
 	framework_include_files="${framework_include_files} XSECConfig.hpp"
 fi
 
