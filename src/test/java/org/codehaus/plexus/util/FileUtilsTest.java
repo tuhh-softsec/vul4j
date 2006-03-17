@@ -345,46 +345,42 @@ public final class FileUtilsTest
 
     // copyFileIfModified
 
-    public void testCopyOutdatedFile() throws Exception
+    public void testCopyFromNewerSource() throws Exception
     {
         FileUtils.forceMkdir( new File(getTestDirectory() + "/temp") );
 
         final File source = new File( getTestDirectory(), "copy1.txt" );
         FileUtils.copyFile( testFile1, source );
 
-        source.setLastModified( 1 );
-
         final File target = new File( getTestDirectory() + "/temp" , "copy1.txt" );
+        assertTrue( "testFile1 does not exist", testFile1.exists() );
+
         FileUtils.copyFile( testFile1, target );
+        target.setLastModified( source.lastModified() - 1 );
 
-        target.setLastModified( 0 );
-
-        assertTrue( "Source file is not older than target file.", target.lastModified() < source.lastModified() );
+        long timestamp = target.lastModified();
 
         FileUtils.copyFileIfModified( source, target );
 
-        assertTrue( "Failed copy. Source file should have the same timestamp as target file.", target.lastModified() > source.lastModified() );
+        assertTrue( "Failed copy. Target file should have been updated.", timestamp < target.lastModified() );
     }
 
-    public void testCopyNewFile() throws Exception
+    public void testCopyFromOlderSource() throws Exception
     {
         FileUtils.forceMkdir( new File(getTestDirectory() + "/temp") );
 
         final File source = new File( getTestDirectory(), "copy1.txt" );
         FileUtils.copyFile( testFile1, source );
 
-        source.setLastModified( 0 );
-
         final File target = new File( getTestDirectory() + "/temp" , "copy1.txt" );
         FileUtils.copyFile( testFile1, target );
+        target.setLastModified( source.lastModified() + 1 );
 
-        target.setLastModified( 1 );
-
-        assertTrue( "Source file is not newer than target file.", target.lastModified() > source.lastModified() );
+        long timestamp = target.lastModified();
 
         FileUtils.copyFileIfModified( source, target );
 
-        assertTrue( "Target file timestamp should not have been updated.", 1 == target.lastModified() );
+        assertTrue( "Target file timestamp should not have been updated.", timestamp == target.lastModified() );
     }
 
     public void testCopyUnmodifiedFile() throws Exception
@@ -394,18 +390,15 @@ public final class FileUtilsTest
         final File source = new File( getTestDirectory(), "copy1.txt" );
         FileUtils.copyFile( testFile1, source );
 
-        source.setLastModified( 1 );
-
         final File target = new File( getTestDirectory() + "/temp" , "copy1.txt" );
         FileUtils.copyFile( testFile1, target );
+        target.setLastModified( source.lastModified() );
 
-        target.setLastModified( 1 );
-
-        assertTrue( "Source file is not newer than target file.", target.lastModified() == source.lastModified() );
+        long timestamp = target.lastModified();
 
         FileUtils.copyFileIfModified( source, target );
 
-        assertTrue( "Failed copy. Target file should not have been updated.", 1 == target.lastModified() );
+        assertTrue( "Failed copy. Target file should not have been updated.", timestamp == target.lastModified() );
     }
 
     // forceDelete
