@@ -28,4 +28,6 @@ RAUL:
 [ ] constrac name bindings on the fly like XMLSerialicer does.
 [ ] Optimize ouputstream with native jce, nio & threads.
 [ ] Migrate to JSR105 API
+[ ] Optimize certifacate & public key getting. for loops look wrong, 
+	better registring..
 [ ] ...
