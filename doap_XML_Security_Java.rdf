@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl"?>
+<rdf:RDF xml:lang="en"
+         xmlns="http://usefulinc.com/ns/doap#" 
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:asfext="http://projects.apache.org/ns/asfext#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/">
+<!--
+  =======================================================================
+
+   Copyright (c) 2006 The Apache Software Foundation.  
+   All rights reserved.
+
+  =======================================================================
+-->
+  <Project rdf:about="http://XML_Security.rdf.apache.org/">
+    <created>2006-03-20</created>
+    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
+    <name>Apache XML Security Java</name>
+    <homepage rdf:resource="http://xml.apache.org/security" />
+    <asfext:pmc rdf:resource="http://xml.apache.org" />
+    <shortdesc>Library implementing XML Digital Signature Specification & XML Encryption Specification</shortdesc>
+    <bug-database rdf:resource="http://issues.apache.org" />
+    <mailing-list rdf:resource="http://xml.apache.org/mail.html#security-dev" />
+    <download-page rdf:resource="http://xml.apache.org/security/dist" />
+    <programming-language>Java</programming-language>
+    <category rdf:resource="http://projects.apache.org/category/xml" />
+    <release>
+      <Version>
+        <name>1.3</name>
+        <created>2005-10-23</created>
+        <revision>1.3</revision>
+      </Version>
+    </release>
+    <repository>
+      <SVNRepository>
+        <location rdf:resource="https://svn.apache.org/repos/asf/xml/security/"/>
+        <browse rdf:resource="http://"/>
+      </SVNRepository>
+    </repository>
+    <asfext:standard>
+      <asfext:title>XML-Signature Syntax and Processing</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>XML Signature</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/xmldsig-core/"/>
+    </asfext:standard>
+    <asfext:standard>
+      <asfext:title>XML-Signature Syntax and Processing</asfext:title>
+      <asfext:body>IETF</asfext:body>
+      <asfext:id>3275</asfext:id>
+      <asfext:url rdf:resource="http://www.ietf.org/rfc/rfc3275.txt"/>
+    </asfext:standard>
+    <asfext:standard>
+      <asfext:title>Canonical XML</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>Canonical XML</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+    </asfext:standard>
+
+    <asfext:standard>
+      <asfext:title>Exclusive XML Canonicalization</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>Exclusive XML Canonicalization</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/xml-exc-c14n/"/>
+    </asfext:standard>
+    <asfext:standard>
+      <asfext:title>XML Encryption Syntax and Processing</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>Exclusive XML Encryption</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/2002/CR-xmlenc-core-20020304/"/>
+    </asfext:standard>
+
+
+  </Project>
+</rdf:RDF>
