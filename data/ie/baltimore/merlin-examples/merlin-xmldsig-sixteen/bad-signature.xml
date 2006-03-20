@@ -151,7 +151,7 @@
         </RetrievalMethod>
       </KeyInfo>
       <Object Id="object-1" MimeType="text/plain">I am the bad text.</Object>
-      <Object Encoding="http://www.w3.org/2000/09/xmldsig#base64" Id="object-2" MimeType="text/plain">BADSSBhbSB0aGUgdGV4dC4=</Object>
+      <Object Encoding="http://www.w3.org/2000/09/xmldsig#base64" Id="object-2" MimeType="text/plain">aBADSIGN</Object>
       <Object Id="object-3">
         <NonCommentandus xmlns=""><!-- BAD Commentandum --></NonCommentandus>
       </Object>
