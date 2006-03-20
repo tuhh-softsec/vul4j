@@ -610,41 +610,7 @@ public class XMLUtils {
     * @return nodes with the constrain
     */
    public static Element[] selectDsNodes(Node sibling,String nodeName) {
-     return selectConsecutiveNodes(sibling,Constants.SignatureSpecNS,nodeName);
-   }
-   /**
-    * @param sibling
-    * @param uri
-    * @param nodeName
-    * @return nodes with the constrain
-    */
-    public static Element[] selectConsecutiveNodes(Node sibling,String uri,String nodeName) {
-    	int size=20;
-    	Element[] a= new Element[size];
-    	int curr=0;
-    	//List list=new ArrayList();
-    	while (sibling!=null) {
-    		if (nodeName.equals(sibling.getLocalName())
-    				&& uri==sibling.getNamespaceURI()) {
-    			do {
-    				a[curr++]=(Element)sibling;
-    				if (size<=curr) {
-    					int cursize= size<<2;
-    					Element []cp=new Element[cursize];
-    					System.arraycopy(a,0,cp,0,size);
-    					a=cp;
-    					size=cursize;
-    				}
-    				sibling=sibling.getNextSibling();
-    			} while ((sibling!=null) && nodeName.equals(sibling.getLocalName())
-				&& uri==sibling.getNamespaceURI());    			
-    			break;
-    		}
-    		sibling=sibling.getNextSibling();
-    	}
-    	Element []af=new Element[curr];
-    	System.arraycopy(a,0,af,0,curr);
-    	return af;
+     return selectNodes(sibling,Constants.SignatureSpecNS,nodeName);
    }
    /**
     * @param sibling
