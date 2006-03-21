@@ -359,9 +359,9 @@ reverse order. In other words - the order is first in, last out.</p>
 <p>Note that wildcard patterns are ignored if an explicit match can be found 
 (and when multiple wildcard patterns match, only the longest, ie most 
 explicit, pattern is considered a match). The result is that rules can be 
-added for "an <a> tag anywhere", but then for that behaviour to be 
-explicitly overridden for specific cases, eg "but not an <a> that is a 
-direct child of an <x>". Therefore if you have rules A and B registered for
+added for "an &lt;a&gt; tag anywhere", but then for that behaviour to be 
+explicitly overridden for specific cases, eg "but not an &lt;a&gt; that is a 
+direct child of an &lt;x&gt;". Therefore if you have rules A and B registered for
 pattern "*/a" then want to add an additional rule C for pattern "x/a" only, 
 then what you need to do is add *three* rules for "x/a": A, B and C. Note 
 that by using:
@@ -1293,7 +1293,7 @@ Digester logs but the processing will continue. To change this behaviour, call
 </p>
 
 <li><strong>Where Can I Find Example Code?</strong>
-<a name="doc.FAQ.Examples">
+<a name="doc.FAQ.Examples"></a>
 <p>Digester ships with a sample application: a mapping for the <em>Rich Site 
 Summary</em> format used by many newsfeeds. Download the source distribution 
 to see how it works.</p>
