@@ -858,7 +858,8 @@ public final class FileUtilsTest
         assertTrue( "Unmodified file was overwritten", timestamps[1] == files[1].lastModified() );
         assertTrue( "Unmodified file was overwritten", timestamps[2] == files[2].lastModified() );
 
-        files[1].setLastModified( timestamps[1] - 1 );
+        files[1].setLastModified( f2.lastModified() - 5000L );
+        timestamps[1] = files[1].lastModified();
 
         FileUtils.copyDirectoryStructureIfModified( from, to );
 
