@@ -790,6 +790,84 @@ public final class FileUtilsTest
         checkFile( f2_1, new File( to, "2/2_1/2_1.txt" ) );
     }
 
+    public void testCopyDirectoryStructureIfModified()
+        throws Exception
+    {
+        // Make a structure to copy
+        File from = new File( getTestDirectory(), "from" );
+
+        FileUtils.deleteDirectory( from );
+
+        File fRoot = new File( from, "root.txt" );
+
+        File d1 = new File( from, "1" );
+
+        File d1_1 = new File( d1, "1_1" );
+
+        File d2 = new File( from, "2" );
+
+        File f2 = new File( d2, "2.txt" );
+
+        File d2_1 = new File( d2, "2_1" );
+
+        File f2_1 = new File( d2_1, "2_1.txt" );
+
+        assertTrue( from.mkdir() );
+
+        assertTrue( d1.mkdir() );
+
+        assertTrue( d1_1.mkdir() );
+
+        assertTrue( d2.mkdir() );
+
+        assertTrue( d2_1.mkdir() );
+
+        createFile( fRoot, 100 );
+
+        createFile( f2, 100 );
+
+        createFile( f2_1, 100 );
+
+        File to = new File( getTestDirectory(), "to" );
+
+        assertTrue( to.mkdirs() );
+
+        FileUtils.copyDirectoryStructureIfModified( from, to );
+
+        File files[] = { new File( to, "root.txt" ), new File( to, "2/2.txt" ), new File( to, "2/2_1/2_1.txt" ) };
+
+        long timestamps[] = { files[0].lastModified(), files[1].lastModified(), files[2].lastModified() };
+
+        checkFile( fRoot,  files[0] );
+
+        assertIsDirectory( new File( to, "1" ) );
+
+        assertIsDirectory( new File( to, "1/1_1" ) );
+
+        assertIsDirectory( new File( to, "2" ) );
+
+        assertIsDirectory( new File( to, "2/2_1" ) );
+
+        checkFile( f2, files[1] );
+
+        checkFile( f2_1, files[2] );
+
+        FileUtils.copyDirectoryStructureIfModified( from, to );
+
+        assertTrue( "Unmodified file was overwritten", timestamps[0] == files[0].lastModified() );
+        assertTrue( "Unmodified file was overwritten", timestamps[1] == files[1].lastModified() );
+        assertTrue( "Unmodified file was overwritten", timestamps[2] == files[2].lastModified() );
+
+        files[1].setLastModified( timestamps[1] - 1 );
+
+        FileUtils.copyDirectoryStructureIfModified( from, to );
+
+        assertTrue( "Unmodified file was overwritten", timestamps[0] == files[0].lastModified() );
+        assertTrue( "Outdated file was not overwritten", timestamps[1] < files[1].lastModified() );
+        assertTrue( "Unmodified file was overwritten", timestamps[2] == files[2].lastModified() );
+
+    }
+
     public void testFilteredFileCopy() throws Exception {
         File compareFile = new File( getTestDirectory(), "compare.txt" );
         OutputStream compareStream = new FileOutputStream(compareFile);
