@@ -79,26 +79,15 @@ public final class ReflectionUtils
      * @param object the object to generate the list of fields from
      * @return map containing the fields and their values
      */
-    public static Object getValueIncludingSuperclasses( String variable, Object object ) throws IllegalArgumentException
+    public static Object getValueIncludingSuperclasses( String variable, Object object )
+        throws IllegalAccessException
     {
-        try
-        {
-            Class clazz = object.getClass();
 
-            Field field = clazz.getDeclaredField(variable);
+        Field field = getFieldByNameIncludingSuperclasses( variable, object.getClass() );
 
-            field.setAccessible( true );
+        field.setAccessible( true );
 
-            return field.get( object );
-        }
-        catch ( NoSuchFieldException nsfe )
-        {
-            throw new IllegalArgumentException( variable + " does not exist on " + object.getClass().getName() );
-        }
-        catch ( IllegalAccessException iae )
-        {
-            throw new IllegalArgumentException( variable + " could not be accessed on " + object.getClass().getName() );
-        }
+        return field.get( object );
     }
 
     /**
@@ -109,6 +98,7 @@ public final class ReflectionUtils
      * @return map containing the fields and their values
      */
     public static Map getVariablesAndValuesIncludingSuperclasses( Object object )
+        throws IllegalAccessException
     {
         HashMap map = new HashMap ();
 
@@ -126,6 +116,7 @@ public final class ReflectionUtils
      * @param map to populate
      */
     private static void gatherVariablesAndValuesIncludingSuperclasses( Object object, Map map )
+        throws IllegalAccessException
     {
 
         Class clazz = object.getClass();
@@ -137,13 +128,8 @@ public final class ReflectionUtils
         for (int i = 0; i < fields.length; ++i)
         {
             Field field = fields[i];
-            try
-            {
-                map.put( field.getName(), field.get( object ) );
-            }
-            catch (IllegalAccessException iae) {
-                map.put( field.getName(), null );
-            }
+
+            map.put( field.getName(), field.get( object ) );
 
         }
 
