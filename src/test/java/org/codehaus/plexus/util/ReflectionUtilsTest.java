@@ -38,12 +38,14 @@ public final class ReflectionUtilsTest
 
     }
 
-    public void testSimpleVariableAccess() throws IllegalAccessException
+    public void testSimpleVariableAccess()
+        throws IllegalAccessException
     {
         assertEquals("woohoo", (String)ReflectionUtils.getValueIncludingSuperclasses( "myString", testClass ) );
     }
 
-    public void testComplexVariableAccess() throws IllegalAccessException
+    public void testComplexVariableAccess()
+        throws IllegalAccessException
     {
         Map map = (Map)ReflectionUtils.getVariablesAndValuesIncludingSuperclasses( testClass );
 
@@ -54,16 +56,32 @@ public final class ReflectionUtilsTest
 
     }
 
-    public void testSuperClassVariableAccess() throws IllegalAccessException
+    public void testSuperClassVariableAccess()
+        throws IllegalAccessException
     {
         assertEquals("super-duper", (String)ReflectionUtils.getValueIncludingSuperclasses( "mySuperString", testClass ) );
     }
+
+    public void testSettingVariableValue()
+        throws IllegalAccessException
+    {
+        ReflectionUtils.setVariableValueInObject( testClass, "mySettableString", "mySetString" );
+
+        assertEquals("mySetString", (String)ReflectionUtils.getValueIncludingSuperclasses( "mySettableString", testClass ) );
+
+
+        ReflectionUtils.setVariableValueInObject( testClass, "myParentsSettableString", "myParentsSetString" );
+
+        assertEquals("myParentsSetString", (String)ReflectionUtils.getValueIncludingSuperclasses( "myParentsSettableString", testClass ) );
+    }
+
 
     private class ReflectionUtilsTestClass
         extends AbstractReflectionUtilsTestClass
 
     {
         private String myString = "woohoo";
+        private String mySettableString;
         private Map myMap = new HashMap();
 
         public ReflectionUtilsTestClass()
@@ -77,5 +95,6 @@ public final class ReflectionUtilsTest
     private class AbstractReflectionUtilsTestClass
     {
         private String mySuperString = "super-duper";
+        private String myParentsSettableString;
     }
 }

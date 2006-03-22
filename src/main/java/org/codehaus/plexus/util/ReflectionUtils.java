@@ -10,6 +10,7 @@ import java.util.HashMap;
 /**
  *
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
+ * @author <a href="mailto:jesse@codehaus.org">Jesse McConnell</a>
  *
  * @version $Id$
  */
@@ -47,7 +48,7 @@ public final class ReflectionUtils
      *
      * @param fieldName the name of the field (i.e. 'fooBar'); it will
      *   search for a method named 'setFooBar'.
-     * @param object The class to find the method in.
+     * @param clazz The class to find the method in.
      * @return null or the method found.
      */
     public static Method getSetter( String fieldName, Class clazz )
@@ -69,6 +70,25 @@ public final class ReflectionUtils
         }
 
         return null;
+    }
+
+
+    /**
+     * attempts to set the value to the variable in the object passed in
+     *
+     * @param object
+     * @param variable
+     * @param value
+     * @throws IllegalAccessException
+     */
+    public static void setVariableValueInObject( Object object, String variable, Object value )
+        throws IllegalAccessException
+    {
+        Field field = getFieldByNameIncludingSuperclasses( variable, object.getClass() );
+
+        field.setAccessible( true );
+
+        field.set(object, value );
     }
 
 
