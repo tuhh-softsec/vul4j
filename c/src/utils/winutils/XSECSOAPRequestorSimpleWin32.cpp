@@ -279,7 +279,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
             {
                 //
                 // Header is not yet read, do another recv() to get more data...
-                aLent = XSECBinHTTPURIInputStream::recv((unsigned short) s, fBufferEnd, (sizeof(fBuffer) - 1) - (fBufferEnd - fBuffer), 0);
+                aLent = XSECBinHTTPURIInputStream::recv((unsigned short) s, fBufferEnd, ((int) sizeof(fBuffer) - 1) - (int)(fBufferEnd - fBuffer), 0);
                 if (aLent == SOCKET_ERROR || aLent == 0)
                 {
                     // Call WSAGetLastError() to get the error number.

@@ -458,7 +458,7 @@ unsigned int DSIGAlgorithmHandlerDefault::signToSafeBuffer(
 
 	result = b64Buf;
 
-	return strlen(b64Buf);
+	return (unsigned int) strlen(b64Buf);
 
 }
 
@@ -515,7 +515,7 @@ bool DSIGAlgorithmHandlerDefault::verifyBase64Signature(
 			hash, 
 			hashLen,
 			(char *) sig, 
-			strlen(sig));
+			(unsigned int) strlen(sig));
 
 		break;
 
@@ -533,7 +533,7 @@ bool DSIGAlgorithmHandlerDefault::verifyBase64Signature(
 			hash,
 			hashLen,
 			sig,
-			strlen(sig));
+			(unsigned int) strlen(sig));
 
 		break;
 

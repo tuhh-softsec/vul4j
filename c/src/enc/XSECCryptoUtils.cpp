@@ -239,7 +239,7 @@ int SASLCleanXKMSPassPhrase(unsigned char * input, int inputLen, safeBuffer &out
 	ArrayJanitor<char> j_utf8output(utf8output);
 	output.sbStrcpyIn(utf8output);
 
-	return strlen(utf8output);
+	return (int) strlen(utf8output);
 
 }
 
@@ -395,7 +395,7 @@ unsigned int DSIG_EXPORT DecodeFromBase64XMLCh(const XMLCh * input, unsigned cha
 	ArrayJanitor<char> j_tinput(tinput);
 
 	b64->decodeInit();
-	unsigned int j = b64->decode((unsigned char *) tinput, strlen(tinput), output, maxOutputLen - 1);
+	unsigned int j = b64->decode((unsigned char *) tinput, (unsigned int) strlen(tinput), output, maxOutputLen - 1);
 	j += b64->decodeFinish(&output[j], maxOutputLen - j - 1);
 
 	return j;
@@ -407,7 +407,7 @@ unsigned int DSIG_EXPORT DecodeFromBase64(const char * input, unsigned char * ou
 	Janitor<XSECCryptoBase64> j_b64(b64);
 
 	b64->decodeInit();
-	unsigned int j = b64->decode((unsigned char *) input, strlen(input), output, maxOutputLen - 1);
+	unsigned int j = b64->decode((unsigned char *) input, (unsigned int) strlen(input), output, maxOutputLen - 1);
 	j += b64->decodeFinish(&output[j], maxOutputLen - j - 1);
 
 	return j;

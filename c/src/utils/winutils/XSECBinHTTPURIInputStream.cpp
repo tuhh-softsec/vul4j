@@ -369,7 +369,7 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
             {
                 //
                 // Header is not yet read, do another recv() to get more data...
-                aLent = recv((unsigned short) s, fBufferEnd, (sizeof(fBuffer) - 1) - (fBufferEnd - fBuffer), 0);
+                aLent = (unsigned int) recv((unsigned short) s, fBufferEnd, ((int) sizeof(fBuffer) - 1) - (int) (fBufferEnd - fBuffer), 0);
                 if (aLent == SOCKET_ERROR || aLent == 0)
                 {
                     // Call WSAGetLastError() to get the error number.

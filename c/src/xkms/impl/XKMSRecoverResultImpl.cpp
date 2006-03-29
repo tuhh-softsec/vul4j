@@ -233,7 +233,7 @@ XKMSRSAKeyPair * XKMSRecoverResultImpl::getRSAKeyPair(const char * passPhrase) {
 
 	// Yep!  Load the key
 	unsigned char kbuf[XSEC_MAX_HASH_SIZE];
-	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
+	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, (int) strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
 
 	XSECProvider prov;
 	XENCCipher * cipher = prov.newCipher(m_msg.mp_env->getParentDocument());
@@ -329,7 +329,7 @@ XENCEncryptedData * XKMSRecoverResultImpl::setRSAKeyPair(const char * passPhrase
 	}
 
 	unsigned char kbuf[XSEC_MAX_HASH_SIZE];
-	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
+	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, (int) strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
 
 	XSECCryptoKey * sk = handler->createKeyForURI(
 					uri,

@@ -407,8 +407,8 @@ void printLocateRequestUsage(void) {
 XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printLocateRequestUsage();
 		return NULL;
@@ -423,9 +423,9 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 	else
 		lr = cr->createLocateRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+		if (_stricmp(argv[paramCount], "--add-cert") == 0 || _stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc) {
 				printLocateRequestUsage();
 				delete lr;
@@ -455,7 +455,7 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			paramCount++;
 		}
 
-		else if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-name") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			if (++paramCount >= argc) {
 				printLocateRequestUsage();
 				delete lr;
@@ -465,7 +465,7 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-opaque") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printLocateRequestUsage();
 				delete lr;
@@ -474,28 +474,28 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			lr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-sig") == 0 || _stricmp(argv[paramCount], "-us") == 0) {
 			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
 			if (qkb == NULL)
 				qkb = lr->addQueryKeyBinding();
 			qkb->setSignatureKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-exc") == 0 || _stricmp(argv[paramCount], "-ux") == 0) {
 			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
 			if (qkb == NULL)
 				qkb = lr->addQueryKeyBinding();
 			qkb->setExchangeKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-enc") == 0 || _stricmp(argv[paramCount], "-ue") == 0) {
 			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
 			if (qkb == NULL)
 				qkb = lr->addQueryKeyBinding();
 			qkb->setEncryptionKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responselimit") == 0 || stricmp(argv[paramCount], "-l") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responselimit") == 0 || _stricmp(argv[paramCount], "-l") == 0) {
 			if (paramCount >= argc+1) {
 				printLocateRequestUsage();
 				delete lr;
@@ -505,7 +505,7 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			lr->setResponseLimit(atoi(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usekeywith") == 0 || _stricmp(argv[paramCount], "-u") == 0) {
 			if (++paramCount >= argc + 1) {
 				printLocateRequestUsage();
 				delete lr;
@@ -518,7 +518,7 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			qkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
-		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-respondwith") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printLocateRequestUsage();
 				delete lr;
@@ -527,7 +527,7 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			lr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responsemechanism") == 0 || _stricmp(argv[paramCount], "-m") == 0) {
 			if (++paramCount >= argc) {
 				printLocateRequestUsage();
 				delete lr;
@@ -537,8 +537,8 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			paramCount++;
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
-				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
+				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
 				printLocateRequestUsage();
 				delete lr;
@@ -579,7 +579,7 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			}
 			XSECCryptoKey *key;
 			DSIGSignature * sig;
-			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+			if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0) {
 
 				// Check type is correct
 
@@ -677,8 +677,8 @@ void printValidateRequestUsage(void) {
 XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printValidateRequestUsage();
 		return NULL;
@@ -694,9 +694,9 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 	else
 		vr = cr->createValidateRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+		if (_stricmp(argv[paramCount], "--add-cert") == 0 || _stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc) {
 				printValidateRequestUsage();
 				delete vr;
@@ -727,7 +727,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 
 		}
 
-		else if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-name") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			if (++paramCount >= argc) {
 				printValidateRequestUsage();
 				delete vr;
@@ -737,7 +737,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-opaque") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printValidateRequestUsage();
 				delete vr;
@@ -746,7 +746,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			vr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-respondwith") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printValidateRequestUsage();
 				delete vr;
@@ -755,7 +755,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			vr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responsemechanism") == 0 || _stricmp(argv[paramCount], "-m") == 0) {
 			if (++paramCount >= argc) {
 				printLocateRequestUsage();
 				delete vr;
@@ -764,7 +764,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			vr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responselimit") == 0 || stricmp(argv[paramCount], "-l") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responselimit") == 0 || _stricmp(argv[paramCount], "-l") == 0) {
 			if (paramCount >= argc+1) {
 				printValidateRequestUsage();
 				delete vr;
@@ -774,28 +774,28 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			vr->setResponseLimit(atoi(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-sig") == 0 || _stricmp(argv[paramCount], "-us") == 0) {
 			XKMSQueryKeyBinding * qkb = vr->getQueryKeyBinding();
 			if (qkb == NULL)
 				qkb = vr->addQueryKeyBinding();
 			qkb->setSignatureKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-exc") == 0 || _stricmp(argv[paramCount], "-ux") == 0) {
 			XKMSQueryKeyBinding * qkb = vr->getQueryKeyBinding();
 			if (qkb == NULL)
 				qkb = vr->addQueryKeyBinding();
 			qkb->setExchangeKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-enc") == 0 || _stricmp(argv[paramCount], "-ue") == 0) {
 			XKMSQueryKeyBinding * qkb = vr->getQueryKeyBinding();
 			if (qkb == NULL)
 				qkb = vr->addQueryKeyBinding();
 			qkb->setEncryptionKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usekeywith") == 0 || _stricmp(argv[paramCount], "-u") == 0) {
 			if (++paramCount >= argc + 1) {
 				printValidateRequestUsage();
 				delete vr;
@@ -809,8 +809,8 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			paramCount += 2;
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
-				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
+				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
 				printValidateRequestUsage();
 				delete vr;
@@ -851,7 +851,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			}
 			XSECCryptoKey *key;
 			DSIGSignature * sig;
-			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+			if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0) {
 
 				// Check type is correct
 
@@ -902,7 +902,7 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 
 			
 		} /* argv[1] = "dsa/rsa" */
-		else if (stricmp(argv[paramCount], "--sign-cert") == 0 || stricmp(argv[paramCount], "-sc") == 0) {
+		else if (_stricmp(argv[paramCount], "--sign-cert") == 0 || _stricmp(argv[paramCount], "-sc") == 0) {
 			if (++paramCount >= argc) {
 				printValidateRequestUsage();
 				delete vr;
@@ -989,8 +989,8 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 	signatureMethod proofOfPossessionSm = SIGNATURE_DSA;
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printRegisterRequestUsage();
 		return NULL;
@@ -1006,9 +1006,9 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 	else
 		rr = cr->createRegisterRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		if (_stricmp(argv[paramCount], "--add-name") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1021,7 +1021,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			pkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-opaque") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1030,7 +1030,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			rr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--kek") == 0 || stricmp(argv[paramCount], "-k") == 0) {
+		else if (_stricmp(argv[paramCount], "--kek") == 0 || _stricmp(argv[paramCount], "-k") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1038,7 +1038,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			}
 			g_authPassPhrase = argv[paramCount++];
 		}
-		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-respondwith") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1047,7 +1047,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			rr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responsemechanism") == 0 || _stricmp(argv[paramCount], "-m") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1056,28 +1056,28 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			rr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-sig") == 0 || _stricmp(argv[paramCount], "-us") == 0) {
 			XKMSPrototypeKeyBinding * pkb = rr->getPrototypeKeyBinding();
 			if (pkb == NULL)
 				pkb = rr->addPrototypeKeyBinding();
 			pkb->setSignatureKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-exc") == 0 || _stricmp(argv[paramCount], "-ux") == 0) {
 			XKMSPrototypeKeyBinding * pkb = rr->getPrototypeKeyBinding();
 			if (pkb == NULL)
 				pkb = rr->addPrototypeKeyBinding();
 			pkb->setExchangeKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-enc") == 0 || _stricmp(argv[paramCount], "-ue") == 0) {
 			XKMSPrototypeKeyBinding * pkb = rr->getPrototypeKeyBinding();
 			if (pkb == NULL)
 				pkb = rr->addPrototypeKeyBinding();
 			pkb->setEncryptionKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usekeywith") == 0 || _stricmp(argv[paramCount], "-u") == 0) {
 			if (++paramCount >= argc + 1) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1091,7 +1091,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			paramCount += 2;
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--output-private-key") == 0 || stricmp(argv[paramCount], "-p") == 0) {
+		else if (_stricmp(argv[paramCount], "--output-private-key") == 0 || _stricmp(argv[paramCount], "-p") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1102,7 +1102,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			g_privateKeyPassPhrase = argv[paramCount++];
 		}
 #endif
-		else if (stricmp(argv[paramCount], "--revocation") == 0 || stricmp(argv[paramCount], "-v") == 0) {
+		else if (_stricmp(argv[paramCount], "--revocation") == 0 || _stricmp(argv[paramCount], "-v") == 0) {
 			if (++paramCount >= argc) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1129,7 +1129,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 
 			paramCount++;;
 		}		
-		else if (stricmp(argv[paramCount], "--authenticate") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+		else if (_stricmp(argv[paramCount], "--authenticate") == 0 || _stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc + 1) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1160,8 +1160,8 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
-				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
+				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1202,7 +1202,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			}
 			XSECCryptoKey *key;
 			DSIGSignature * sig;
-			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+			if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0) {
 
 				// Check type is correct
 
@@ -1253,8 +1253,8 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 
 			
 		} /* argv[1] = "sign dsa/rsa" */
-		else if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0 ||
-				stricmp(argv[paramCount], "--add-value-rsa") == 0 || stricmp(argv[paramCount], "-vr") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0 ||
+				_stricmp(argv[paramCount], "--add-value-rsa") == 0 || _stricmp(argv[paramCount], "-vr") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1299,7 +1299,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 				pkb = rr->addPrototypeKeyBinding();
 
 
-			if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0) {
+			if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0) {
 
 				// Check type is correct
 
@@ -1406,8 +1406,8 @@ void printRevokeRequestUsage(void) {
 XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printRegisterRequestUsage();
 		return NULL;
@@ -1423,9 +1423,9 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 	else
 		rr = cr->createRevokeRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		if (_stricmp(argv[paramCount], "--add-name") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			if (++paramCount >= argc) {
 				printRevokeRequestUsage();
 				delete rr;
@@ -1438,7 +1438,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			rkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-opaque") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printRevokeRequestUsage();
 				delete rr;
@@ -1447,7 +1447,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			rr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-respondwith") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printRevokeRequestUsage();
 				delete rr;
@@ -1456,7 +1456,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			rr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responsemechanism") == 0 || _stricmp(argv[paramCount], "-m") == 0) {
 			if (++paramCount >= argc) {
 				printRevokeRequestUsage();
 				delete rr;
@@ -1465,28 +1465,28 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			rr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-sig") == 0 || _stricmp(argv[paramCount], "-us") == 0) {
 			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
 			if (rkb == NULL)
 				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
 			rkb->setSignatureKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-exc") == 0 || _stricmp(argv[paramCount], "-ux") == 0) {
 			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
 			if (rkb == NULL)
 				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
 			rkb->setExchangeKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-enc") == 0 || _stricmp(argv[paramCount], "-ue") == 0) {
 			XKMSRevokeKeyBinding * rkb = rr->getRevokeKeyBinding();
 			if (rkb == NULL)
 				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
 			rkb->setEncryptionKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usekeywith") == 0 || _stricmp(argv[paramCount], "-u") == 0) {
 			if (++paramCount >= argc + 1) {
 				printRevokeRequestUsage();
 				delete rr;
@@ -1499,7 +1499,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			rkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
-		else if (stricmp(argv[paramCount], "--revocation") == 0 || stricmp(argv[paramCount], "-v") == 0) {
+		else if (_stricmp(argv[paramCount], "--revocation") == 0 || _stricmp(argv[paramCount], "-v") == 0) {
 			if (++paramCount >= argc) {
 				printRevokeRequestUsage();
 				delete rr;
@@ -1522,7 +1522,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			XSEC_RELEASE_XMLCH(str);
 
 			paramCount++;;
-		}		else if (stricmp(argv[paramCount], "--authenticate") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+		}		else if (_stricmp(argv[paramCount], "--authenticate") == 0 || _stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc + 1) {
 				printRevokeRequestUsage();
 				delete rr;
@@ -1553,8 +1553,8 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
-				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
+				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1595,7 +1595,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 			}
 			XSECCryptoKey *key;
 			DSIGSignature * sig;
-			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+			if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0) {
 
 				// Check type is correct
 
@@ -1646,8 +1646,8 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 
 			
 		} /* argv[1] = "sign dsa/rsa" */
-		else if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0 ||
-				stricmp(argv[paramCount], "--add-value-rsa") == 0 || stricmp(argv[paramCount], "-vr") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0 ||
+				_stricmp(argv[paramCount], "--add-value-rsa") == 0 || _stricmp(argv[paramCount], "-vr") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -1692,7 +1692,7 @@ XKMSMessageAbstractType * createRevokeRequest(XSECProvider &prov, DOMDocument **
 				rkb = rr->addRevokeKeyBinding(XKMSStatus::Indeterminate);
 
 
-			if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0) {
+			if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0) {
 
 				// Check type is correct
 
@@ -1784,8 +1784,8 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 	signatureMethod proofOfPossessionSm = SIGNATURE_DSA;
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printReissueRequestUsage();
 		return NULL;
@@ -1801,9 +1801,9 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 	else
 		rr = cr->createReissueRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		if (_stricmp(argv[paramCount], "--add-name") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			if (++paramCount >= argc) {
 				printReissueRequestUsage();
 				delete rr;
@@ -1816,7 +1816,7 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 			pkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-opaque") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printReissueRequestUsage();
 				delete rr;
@@ -1825,7 +1825,7 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 			rr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-respondwith") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printReissueRequestUsage();
 				delete rr;
@@ -1834,7 +1834,7 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 			rr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responsemechanism") == 0 || _stricmp(argv[paramCount], "-m") == 0) {
 			if (++paramCount >= argc) {
 				printReissueRequestUsage();
 				delete rr;
@@ -1843,28 +1843,28 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 			rr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-sig") == 0 || _stricmp(argv[paramCount], "-us") == 0) {
 			XKMSReissueKeyBinding * pkb = rr->getReissueKeyBinding();
 			if (pkb == NULL)
 				pkb = rr->addReissueKeyBinding(XKMSStatus::Indeterminate);
 			pkb->setSignatureKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-exc") == 0 || _stricmp(argv[paramCount], "-ux") == 0) {
 			XKMSReissueKeyBinding * pkb = rr->getReissueKeyBinding();
 			if (pkb == NULL)
 				pkb = rr->addReissueKeyBinding(XKMSStatus::Indeterminate);
 			pkb->setExchangeKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-enc") == 0 || _stricmp(argv[paramCount], "-ue") == 0) {
 			XKMSReissueKeyBinding * pkb = rr->getReissueKeyBinding();
 			if (pkb == NULL)
 				pkb = rr->addReissueKeyBinding(XKMSStatus::Indeterminate);
 			pkb->setEncryptionKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usekeywith") == 0 || _stricmp(argv[paramCount], "-u") == 0) {
 			if (++paramCount >= argc + 1) {
 				printReissueRequestUsage();
 				delete rr;
@@ -1877,7 +1877,7 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 			pkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
-		else if (stricmp(argv[paramCount], "--authenticate") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+		else if (_stricmp(argv[paramCount], "--authenticate") == 0 || _stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc + 1) {
 				printReissueRequestUsage();
 				delete rr;
@@ -1908,8 +1908,8 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
-				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
+				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
 				printReissueRequestUsage();
 				delete rr;
@@ -1950,7 +1950,7 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 			}
 			XSECCryptoKey *key;
 			DSIGSignature * sig;
-			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+			if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0) {
 
 				// Check type is correct
 
@@ -2001,8 +2001,8 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 
 			
 		} /* argv[1] = "sign dsa/rsa" */
-		else if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0 ||
-				stricmp(argv[paramCount], "--add-value-rsa") == 0 || stricmp(argv[paramCount], "-vr") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0 ||
+				_stricmp(argv[paramCount], "--add-value-rsa") == 0 || _stricmp(argv[paramCount], "-vr") == 0) {
 			if (paramCount >= argc + 2) {
 				printReissueRequestUsage();
 				delete rr;
@@ -2047,7 +2047,7 @@ XKMSMessageAbstractType * createReissueRequest(XSECProvider &prov, DOMDocument *
 				pkb = rr->addReissueKeyBinding(XKMSStatus::Indeterminate);
 
 
-			if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0) {
+			if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0) {
 
 				// Check type is correct
 
@@ -2157,8 +2157,8 @@ void printRecoverRequestUsage(void) {
 XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printRegisterRequestUsage();
 		return NULL;
@@ -2174,9 +2174,9 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 	else
 		rr = cr->createRecoverRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		if (_stricmp(argv[paramCount], "--add-name") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			if (++paramCount >= argc) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2189,7 +2189,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			rkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-opaque") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2198,7 +2198,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			rr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-respondwith") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2207,7 +2207,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			rr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-responsemechanism") == 0 || _stricmp(argv[paramCount], "-m") == 0) {
 			if (++paramCount >= argc) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2216,28 +2216,28 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			rr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-sig") == 0 || _stricmp(argv[paramCount], "-us") == 0) {
 			XKMSRecoverKeyBinding * rkb = rr->getRecoverKeyBinding();
 			if (rkb == NULL)
 				rkb = rr->addRecoverKeyBinding(XKMSStatus::Indeterminate);
 			rkb->setSignatureKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-exc") == 0 || _stricmp(argv[paramCount], "-ux") == 0) {
 			XKMSRecoverKeyBinding * rkb = rr->getRecoverKeyBinding();
 			if (rkb == NULL)
 				rkb = rr->addRecoverKeyBinding(XKMSStatus::Indeterminate);
 			rkb->setExchangeKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usage-enc") == 0 || _stricmp(argv[paramCount], "-ue") == 0) {
 			XKMSRecoverKeyBinding * rkb = rr->getRecoverKeyBinding();
 			if (rkb == NULL)
 				rkb = rr->addRecoverKeyBinding(XKMSStatus::Indeterminate);
 			rkb->setEncryptionKeyUsage();
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-usekeywith") == 0 || _stricmp(argv[paramCount], "-u") == 0) {
 			if (++paramCount >= argc + 1) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2250,7 +2250,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			rkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
-		else if (stricmp(argv[paramCount], "--kek") == 0 || stricmp(argv[paramCount], "-k") == 0) {
+		else if (_stricmp(argv[paramCount], "--kek") == 0 || _stricmp(argv[paramCount], "-k") == 0) {
 			if (++paramCount >= argc) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2259,7 +2259,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			g_authPassPhrase = argv[paramCount++];
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--output-private-key") == 0 || stricmp(argv[paramCount], "-p") == 0) {
+		else if (_stricmp(argv[paramCount], "--output-private-key") == 0 || _stricmp(argv[paramCount], "-p") == 0) {
 			if (paramCount >= argc + 2) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2270,7 +2270,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			g_privateKeyPassPhrase = argv[paramCount++];
 		}
 #endif		
-		else if (stricmp(argv[paramCount], "--authenticate") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+		else if (_stricmp(argv[paramCount], "--authenticate") == 0 || _stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc + 1) {
 				printRecoverRequestUsage();
 				delete rr;
@@ -2301,8 +2301,8 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
-				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+		else if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0 ||
+				_stricmp(argv[paramCount], "--sign-rsa") == 0 || _stricmp(argv[paramCount], "-sr") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -2343,7 +2343,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 			}
 			XSECCryptoKey *key;
 			DSIGSignature * sig;
-			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+			if (_stricmp(argv[paramCount], "--sign-dsa") == 0 || _stricmp(argv[paramCount], "-sd") == 0) {
 
 				// Check type is correct
 
@@ -2394,8 +2394,8 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 
 			
 		} /* argv[1] = "sign dsa/rsa" */
-		else if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0 ||
-				stricmp(argv[paramCount], "--add-value-rsa") == 0 || stricmp(argv[paramCount], "-vr") == 0) {
+		else if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0 ||
+				_stricmp(argv[paramCount], "--add-value-rsa") == 0 || _stricmp(argv[paramCount], "-vr") == 0) {
 			if (paramCount >= argc + 2) {
 				printRegisterRequestUsage();
 				delete rr;
@@ -2440,7 +2440,7 @@ XKMSMessageAbstractType * createRecoverRequest(XSECProvider &prov, DOMDocument *
 				rkb = rr->addRecoverKeyBinding(XKMSStatus::Indeterminate);
 
 
-			if (stricmp(argv[paramCount], "--add-value-dsa") == 0 || stricmp(argv[paramCount], "-vd") == 0) {
+			if (_stricmp(argv[paramCount], "--add-value-dsa") == 0 || _stricmp(argv[paramCount], "-vd") == 0) {
 
 				// Check type is correct
 
@@ -2513,8 +2513,8 @@ void printPendingRequestUsage(void) {
 XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
 	if (paramCount  >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printPendingRequestUsage();
 		return NULL;
@@ -2526,9 +2526,9 @@ XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument *
 	XKMSPendingRequest * pr = 
 		factory->createPendingRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--original-request-id") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		if (_stricmp(argv[paramCount], "--original-request-id") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printPendingRequestUsage();
 				delete pr;
@@ -2537,7 +2537,7 @@ XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument *
 
 			pr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
 		}
-		else if (stricmp(argv[paramCount], "--response-id") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--response-id") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printPendingRequestUsage();
 				delete pr;
@@ -2573,8 +2573,8 @@ void printStatusRequestUsage(void) {
 XKMSMessageAbstractType * createStatusRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
 	if (paramCount  >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printStatusRequestUsage();
 		return NULL;
@@ -2586,9 +2586,9 @@ XKMSMessageAbstractType * createStatusRequest(XSECProvider &prov, DOMDocument **
 	XKMSStatusRequest * sr = 
 		factory->createStatusRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
 
-	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+	while (paramCount < argc && _stricmp(argv[paramCount], "--") != 0) {
 
-		if (stricmp(argv[paramCount], "--original-request-id") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		if (_stricmp(argv[paramCount], "--original-request-id") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (++paramCount >= argc) {
 				printStatusRequestUsage();
 				delete sr;
@@ -2597,7 +2597,7 @@ XKMSMessageAbstractType * createStatusRequest(XSECProvider &prov, DOMDocument **
 
 			sr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
 		}
-		else if (stricmp(argv[paramCount], "--response-id") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--response-id") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printStatusRequestUsage();
 				delete sr;
@@ -2629,8 +2629,8 @@ void printCompoundRequestUsage(void) {
 XKMSMessageAbstractType * createCompoundRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 
 		printCompoundRequestUsage();
 		return NULL;
@@ -2644,8 +2644,8 @@ XKMSMessageAbstractType * createCompoundRequest(XSECProvider &prov, DOMDocument 
 
 	while (paramCount < argc) {
 
-		if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
-			(stricmp(argv[paramCount], "lr") == 0)) {
+		if ((_stricmp(argv[paramCount], "LocateRequest") == 0) ||
+			(_stricmp(argv[paramCount], "lr") == 0)) {
 
 			paramCount++;
 			XKMSLocateRequest * r = 
@@ -2657,8 +2657,8 @@ XKMSMessageAbstractType * createCompoundRequest(XSECProvider &prov, DOMDocument 
 			}
 
 		}
-		else if ((stricmp(argv[paramCount], "ValidateRequest") == 0) ||
-			(stricmp(argv[paramCount], "vr") == 0)) {
+		else if ((_stricmp(argv[paramCount], "ValidateRequest") == 0) ||
+			(_stricmp(argv[paramCount], "vr") == 0)) {
 
 			paramCount++;
 			XKMSValidateRequest * r = 
@@ -2677,7 +2677,7 @@ XKMSMessageAbstractType * createCompoundRequest(XSECProvider &prov, DOMDocument 
 			return NULL;
 		}
 
-		if (paramCount < argc && stricmp(argv[paramCount], "--") == 0)
+		if (paramCount < argc && _stricmp(argv[paramCount], "--") == 0)
 			paramCount++;
 	}
 
@@ -2907,12 +2907,12 @@ void doKeyBindingAbstractDump(XKMSKeyBindingAbstractType * msg, int level) {
 		XKMSUseKeyWith * ukw = msg->getUseKeyWithItem(i);
 		levelSet(level+2);
 		char * a = XMLString::transcode(ukw->getApplication());
-		char * i = XMLString::transcode(ukw->getIdentifier());
+		char * id = XMLString::transcode(ukw->getIdentifier());
 		cout << "Application : \"" << a << "\"\n";
 		levelSet(level+2);
-		cout << "Identifier  : \"" << i << "\"" << endl;
+		cout << "Identifier  : \"" << id << "\"" << endl;
 		XSEC_RELEASE_XMLCH(a);
-		XSEC_RELEASE_XMLCH(i);
+		XSEC_RELEASE_XMLCH(id);
 
 	}
 
@@ -3227,14 +3227,14 @@ int doRegisterResultDump(XKMSRegisterResult *msg) {
 
 				// Create the RSA key file
 				RSA * rsa = RSA_new();
-				rsa->n = OpenSSLCryptoBase64::b642BN(sModulus, strlen(sModulus));
-				rsa->e = OpenSSLCryptoBase64::b642BN(sExponent, strlen(sExponent));
-				rsa->d = OpenSSLCryptoBase64::b642BN(sD, strlen(sD));
-				rsa->p = OpenSSLCryptoBase64::b642BN(sP, strlen(sP));
-				rsa->q = OpenSSLCryptoBase64::b642BN(sQ, strlen(sQ));
-				rsa->dmp1 = OpenSSLCryptoBase64::b642BN(sDP, strlen(sDP));
-				rsa->dmq1 = OpenSSLCryptoBase64::b642BN(sDQ, strlen(sDQ));
-				rsa->iqmp = OpenSSLCryptoBase64::b642BN(sInverseQ, strlen(sInverseQ));
+				rsa->n = OpenSSLCryptoBase64::b642BN(sModulus, (unsigned int) strlen(sModulus));
+				rsa->e = OpenSSLCryptoBase64::b642BN(sExponent, (unsigned int) strlen(sExponent));
+				rsa->d = OpenSSLCryptoBase64::b642BN(sD, (unsigned int) strlen(sD));
+				rsa->p = OpenSSLCryptoBase64::b642BN(sP, (unsigned int) strlen(sP));
+				rsa->q = OpenSSLCryptoBase64::b642BN(sQ, (unsigned int) strlen(sQ));
+				rsa->dmp1 = OpenSSLCryptoBase64::b642BN(sDP, (unsigned int) strlen(sDP));
+				rsa->dmq1 = OpenSSLCryptoBase64::b642BN(sDQ, (unsigned int) strlen(sDQ));
+				rsa->iqmp = OpenSSLCryptoBase64::b642BN(sInverseQ, (unsigned int) strlen(sInverseQ));
 
 				// Write it to disk
 				BIO *out;
@@ -3343,14 +3343,14 @@ int doRecoverResultDump(XKMSRecoverResult *msg) {
 
 				// Create the RSA key file
 				RSA * rsa = RSA_new();
-				rsa->n = OpenSSLCryptoBase64::b642BN(sModulus, strlen(sModulus));
-				rsa->e = OpenSSLCryptoBase64::b642BN(sExponent, strlen(sExponent));
-				rsa->d = OpenSSLCryptoBase64::b642BN(sD, strlen(sD));
-				rsa->p = OpenSSLCryptoBase64::b642BN(sP, strlen(sP));
-				rsa->q = OpenSSLCryptoBase64::b642BN(sQ, strlen(sQ));
-				rsa->dmp1 = OpenSSLCryptoBase64::b642BN(sDP, strlen(sDP));
-				rsa->dmq1 = OpenSSLCryptoBase64::b642BN(sDQ, strlen(sDQ));
-				rsa->iqmp = OpenSSLCryptoBase64::b642BN(sInverseQ, strlen(sInverseQ));
+				rsa->n = OpenSSLCryptoBase64::b642BN(sModulus, (unsigned int) strlen(sModulus));
+				rsa->e = OpenSSLCryptoBase64::b642BN(sExponent, (unsigned int) strlen(sExponent));
+				rsa->d = OpenSSLCryptoBase64::b642BN(sD, (unsigned int) strlen(sD));
+				rsa->p = OpenSSLCryptoBase64::b642BN(sP, (unsigned int) strlen(sP));
+				rsa->q = OpenSSLCryptoBase64::b642BN(sQ, (unsigned int) strlen(sQ));
+				rsa->dmp1 = OpenSSLCryptoBase64::b642BN(sDP, (unsigned int) strlen(sDP));
+				rsa->dmq1 = OpenSSLCryptoBase64::b642BN(sDQ, (unsigned int) strlen(sDQ));
+				rsa->iqmp = OpenSSLCryptoBase64::b642BN(sInverseQ, (unsigned int) strlen(sInverseQ));
 
 				// Write it to disk
 				BIO *out;
@@ -3860,14 +3860,14 @@ int doMsgCreate(int argc, char ** argv, int paramCount) {
 	XKMSMessageAbstractType *msg;
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 		printMsgCreateUsage();
 		return -1;
 	}
 
-	if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
-		(stricmp(argv[paramCount], "lr") == 0)) {
+	if ((_stricmp(argv[paramCount], "LocateRequest") == 0) ||
+		(_stricmp(argv[paramCount], "lr") == 0)) {
 
 		paramCount++;
 		msg = createLocateRequest(prov, &doc, argc, argv, paramCount);
@@ -3938,22 +3938,22 @@ int doRequest(int argc, char ** argv, int paramCount) {
 	char * originalRequestId = NULL;
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 		printDoRequestUsage();
 		return -1;
 	}
 
 	while (!parmsDone) {
-		if ((stricmp(argv[paramCount], "--two-phase") == 0) ||
-			(stricmp(argv[paramCount], "-t") == 0)) {
+		if ((_stricmp(argv[paramCount], "--two-phase") == 0) ||
+			(_stricmp(argv[paramCount], "-t") == 0)) {
 
 			twoPhase = true;
 			paramCount++;
 
 		}
-		else if ((stricmp(argv[paramCount], "--nonce") == 0) ||
-			(stricmp(argv[paramCount], "-n") == 0)) {
+		else if ((_stricmp(argv[paramCount], "--nonce") == 0) ||
+			(_stricmp(argv[paramCount], "-n") == 0)) {
 
 			paramCount++;
 			if (paramCount == argc) {
@@ -3963,8 +3963,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 			nonce=argv[paramCount++];
 		}
-		else if ((stricmp(argv[paramCount], "--original-requestid") == 0) ||
-			(stricmp(argv[paramCount], "-o") == 0)) {
+		else if ((_stricmp(argv[paramCount], "--original-requestid") == 0) ||
+			(_stricmp(argv[paramCount], "-o") == 0)) {
 
 			paramCount++;
 			if (paramCount == argc) {
@@ -3974,8 +3974,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 			originalRequestId=argv[paramCount++];
 		}		
-		else if ((stricmp(argv[paramCount], "--envelope") == 0) ||
-			(stricmp(argv[paramCount], "-e") == 0)) {
+		else if ((_stricmp(argv[paramCount], "--envelope") == 0) ||
+			(_stricmp(argv[paramCount], "-e") == 0)) {
 
 			// Set the wrapper envelope type
 
@@ -3985,13 +3985,13 @@ int doRequest(int argc, char ** argv, int paramCount) {
 				return -1;
 			}
 
-			if (stricmp(argv[paramCount], "NONE") == 0) {
+			if (_stricmp(argv[paramCount], "NONE") == 0) {
 				et = XSECSOAPRequestorSimple::ENVELOPE_NONE;
 			}
-			else if (stricmp(argv[paramCount], "SOAP11") == 0) {
+			else if (_stricmp(argv[paramCount], "SOAP11") == 0) {
 				et = XSECSOAPRequestorSimple::ENVELOPE_SOAP11;
 			}
-			else if (stricmp(argv[paramCount], "SOAP12") == 0) {
+			else if (_stricmp(argv[paramCount], "SOAP12") == 0) {
 				et = XSECSOAPRequestorSimple::ENVELOPE_SOAP12;
 			}
 			else {
@@ -4000,8 +4000,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			}
 			paramCount++;
 		}
-		else if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
-			(stricmp(argv[paramCount], "lr") == 0)) {
+		else if ((_stricmp(argv[paramCount], "LocateRequest") == 0) ||
+			(_stricmp(argv[paramCount], "lr") == 0)) {
 
 			paramCount++;
 			XKMSLocateRequest * r = 
@@ -4018,8 +4018,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
-		else if ((stricmp(argv[paramCount], "ValidateRequest") == 0) ||
-			(stricmp(argv[paramCount], "vr") == 0)) {
+		else if ((_stricmp(argv[paramCount], "ValidateRequest") == 0) ||
+			(_stricmp(argv[paramCount], "vr") == 0)) {
 
 			paramCount++;
 			XKMSValidateRequest * r = 
@@ -4035,8 +4035,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
-		else if ((stricmp(argv[paramCount], "RegisterRequest") == 0) ||
-			(stricmp(argv[paramCount], "rr") == 0)) {
+		else if ((_stricmp(argv[paramCount], "RegisterRequest") == 0) ||
+			(_stricmp(argv[paramCount], "rr") == 0)) {
 
 			paramCount++;
 			XKMSRegisterRequest * r = 
@@ -4052,8 +4052,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
-		else if ((stricmp(argv[paramCount], "RevokeRequest") == 0) ||
-			(stricmp(argv[paramCount], "er") == 0)) {
+		else if ((_stricmp(argv[paramCount], "RevokeRequest") == 0) ||
+			(_stricmp(argv[paramCount], "er") == 0)) {
 
 			paramCount++;
 			XKMSRevokeRequest * r = 
@@ -4069,8 +4069,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}		
-		else if ((stricmp(argv[paramCount], "RecoverRequest") == 0) ||
-			(stricmp(argv[paramCount], "or") == 0)) {
+		else if ((_stricmp(argv[paramCount], "RecoverRequest") == 0) ||
+			(_stricmp(argv[paramCount], "or") == 0)) {
 
 			paramCount++;
 			XKMSRecoverRequest * r = 
@@ -4086,8 +4086,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
-		else if ((stricmp(argv[paramCount], "ReissueRequest") == 0) ||
-			(stricmp(argv[paramCount], "ir") == 0)) {
+		else if ((_stricmp(argv[paramCount], "ReissueRequest") == 0) ||
+			(_stricmp(argv[paramCount], "ir") == 0)) {
 
 			paramCount++;
 			XKMSReissueRequest * r = 
@@ -4103,8 +4103,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
-		else if ((stricmp(argv[paramCount], "PendingRequest") == 0) ||
-			(stricmp(argv[paramCount], "pr") == 0)) {
+		else if ((_stricmp(argv[paramCount], "PendingRequest") == 0) ||
+			(_stricmp(argv[paramCount], "pr") == 0)) {
 
 			paramCount++;
 			XKMSPendingRequest * r = 
@@ -4120,8 +4120,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
-		else if ((stricmp(argv[paramCount], "StatusRequest") == 0) ||
-			(stricmp(argv[paramCount], "sr") == 0)) {
+		else if ((_stricmp(argv[paramCount], "StatusRequest") == 0) ||
+			(_stricmp(argv[paramCount], "sr") == 0)) {
 
 			paramCount++;
 			XKMSStatusRequest * r = 
@@ -4137,8 +4137,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
-		else if ((stricmp(argv[paramCount], "CompoundRequest") == 0) ||
-			(stricmp(argv[paramCount], "cr") == 0)) {
+		else if ((_stricmp(argv[paramCount], "CompoundRequest") == 0) ||
+			(_stricmp(argv[paramCount], "cr") == 0)) {
 
 			XKMSCompoundRequest * r = 
 				(XKMSCompoundRequest *) (createCompoundRequest(prov, &doc, argc, argv, paramCount + 1));
@@ -4343,29 +4343,29 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 	bool doValidate = false;
 
 	if (paramCount >= argc || 
-		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") == 0)) {
+		(_stricmp(argv[paramCount], "--help") == 0) ||
+		(_stricmp(argv[paramCount], "-h") == 0)) {
 		printMsgDumpUsage();
 		return -1;
 	}
 
 	while (paramCount < argc-1) {
-		if ((stricmp(argv[paramCount], "--validate") == 0) ||
-			(stricmp(argv[paramCount], "-v") == 0)) {
+		if ((_stricmp(argv[paramCount], "--validate") == 0) ||
+			(_stricmp(argv[paramCount], "-v") == 0)) {
 
 			doValidate = true;
 			paramCount++;
 
 		}
-		else if ((stricmp(argv[paramCount], "--auth-phrase") == 0) ||
-			(stricmp(argv[paramCount], "-a") == 0)) {
+		else if ((_stricmp(argv[paramCount], "--auth-phrase") == 0) ||
+			(_stricmp(argv[paramCount], "-a") == 0)) {
 
 			paramCount++;
 			g_authPassPhrase = argv[paramCount];
 			paramCount++;
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--output-private-key") == 0 || stricmp(argv[paramCount], "-p") == 0) {
+		else if (_stricmp(argv[paramCount], "--output-private-key") == 0 || _stricmp(argv[paramCount], "-p") == 0) {
 			if (paramCount >= argc + 2) {
 				printMsgDumpUsage();
 				return -1;
@@ -4499,23 +4499,23 @@ int evaluate(int argc, char ** argv) {
 
 	while (paramCount < argc) {
 
-		if (stricmp(argv[paramCount], "--text") == 0 || stricmp(argv[paramCount], "-t") == 0) {
+		if (_stricmp(argv[paramCount], "--text") == 0 || _stricmp(argv[paramCount], "-t") == 0) {
 			g_txtOut = true;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "MsgDump") == 0 || stricmp(argv[paramCount], "md") == 0) {
+		else if (_stricmp(argv[paramCount], "MsgDump") == 0 || _stricmp(argv[paramCount], "md") == 0) {
 			
 			// Perform a MsgDump operation
 			return doMsgDump(argc, argv, paramCount +1);
 
 		}
-		else if (stricmp(argv[paramCount], "MsgCreate") == 0 || stricmp(argv[paramCount], "mc") == 0) {
+		else if (_stricmp(argv[paramCount], "MsgCreate") == 0 || _stricmp(argv[paramCount], "mc") == 0) {
 			
 			// Perform a MsgDump operation
 			return doMsgCreate(argc, argv, paramCount +1);
 
 		}
-		else if (stricmp(argv[paramCount], "Request") == 0 || stricmp(argv[paramCount], "req") == 0) {
+		else if (_stricmp(argv[paramCount], "Request") == 0 || _stricmp(argv[paramCount], "req") == 0) {
 			
 			// Perform a MsgDump operation
 			return doRequest(argc, argv, paramCount +1);

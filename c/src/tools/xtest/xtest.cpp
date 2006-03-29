@@ -2165,16 +2165,16 @@ int main(int argc, char **argv) {
 
 	while (paramCount < argc) {
 
-		if (stricmp(argv[paramCount], "--help") == 0 || stricmp(argv[paramCount], "-h") == 0) {
+		if (_stricmp(argv[paramCount], "--help") == 0 || _stricmp(argv[paramCount], "-h") == 0) {
 			printUsage();
 			exit(0);
 		}
-		else if (stricmp(argv[paramCount], "--print-docs") == 0 || stricmp(argv[paramCount], "-p") == 0) {
+		else if (_stricmp(argv[paramCount], "--print-docs") == 0 || _stricmp(argv[paramCount], "-p") == 0) {
 			g_printDocs = true;
 			paramCount++;
 		}
 #if defined(HAVE_WINCAPI) && defined(HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0) {
+		else if (_stricmp(argv[paramCount], "--wincapi") == 0 || _stricmp(argv[paramCount], "-w") == 0) {
 			g_useWinCAPI = true;
 			paramCount++;
 		}
@@ -2186,28 +2186,28 @@ int main(int argc, char **argv) {
 		}
 #endif
 
-		else if (stricmp(argv[paramCount], "--signature-only") == 0 || stricmp(argv[paramCount], "-s") == 0) {
+		else if (_stricmp(argv[paramCount], "--signature-only") == 0 || _stricmp(argv[paramCount], "-s") == 0) {
 			doEncryptionTest = false;
 			doEncryptionUnitTests = false;
 			doSignatureUnitTests = false;
 			doXKMSTest = false;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--encryption-only") == 0 || stricmp(argv[paramCount], "-e") == 0) {
+		else if (_stricmp(argv[paramCount], "--encryption-only") == 0 || _stricmp(argv[paramCount], "-e") == 0) {
 			doSignatureTest = false;
 			doEncryptionUnitTests = false;
 			doSignatureUnitTests = false;
 			doXKMSTest = false;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--encryption-unit-only") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+		else if (_stricmp(argv[paramCount], "--encryption-unit-only") == 0 || _stricmp(argv[paramCount], "-u") == 0) {
 			doEncryptionTest = false;
 			doSignatureTest = false;
 			doSignatureUnitTests = false;
 			doXKMSTest = false;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--signature-unit-only") == 0 || stricmp(argv[paramCount], "-t") == 0) {
+		else if (_stricmp(argv[paramCount], "--signature-unit-only") == 0 || _stricmp(argv[paramCount], "-t") == 0) {
 			doEncryptionTest = false;
 			doSignatureTest = false;
 			doEncryptionUnitTests = false;

@@ -642,7 +642,7 @@ int main(int argc, char **argv) {
 
 		// Run through all parameters
 
-		if (stricmp(argv[paramCount], "--x509subjectname") == 0 || stricmp(argv[paramCount], "-s") == 0) {
+		if (_stricmp(argv[paramCount], "--x509subjectname") == 0 || _stricmp(argv[paramCount], "-s") == 0) {
 
 			if (paramCount +2 >= argc) {
 
@@ -658,8 +658,8 @@ int main(int argc, char **argv) {
 
 #if defined (HAVE_OPENSSL)
 
-		else if (stricmp(argv[paramCount], "--dsakey") == 0 || stricmp(argv[paramCount], "-d") == 0 ||
-			stricmp(argv[paramCount], "--rsakey") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--dsakey") == 0 || _stricmp(argv[paramCount], "-d") == 0 ||
+			_stricmp(argv[paramCount], "--rsakey") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 
 			// DSA or RSA OpenSSL Key
 
@@ -707,7 +707,7 @@ int main(int argc, char **argv) {
 
 			}
 
-			if (stricmp(argv[paramCount], "--dsakey") == 0 || stricmp(argv[paramCount], "-d") == 0) {
+			if (_stricmp(argv[paramCount], "--dsakey") == 0 || _stricmp(argv[paramCount], "-d") == 0) {
 
 				// Check type is correct
 
@@ -735,7 +735,7 @@ int main(int argc, char **argv) {
 		} /* argv[1] = "dsa/rsa" */
 
 
-		else if (stricmp(argv[paramCount], "--x509cert") == 0 || stricmp(argv[paramCount], "-x") == 0) {
+		else if (_stricmp(argv[paramCount], "--x509cert") == 0 || _stricmp(argv[paramCount], "-x") == 0) {
 
 			// X509Data keyInfo
 
@@ -789,7 +789,7 @@ int main(int argc, char **argv) {
 		
 		else 
 #endif
-		if (stricmp(argv[paramCount], "--hmackey") == 0 || stricmp(argv[paramCount], "-h") == 0) {
+		if (_stricmp(argv[paramCount], "--hmackey") == 0 || _stricmp(argv[paramCount], "-h") == 0) {
 
 #if defined (HAVE_OPENSSL)
 			OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
@@ -804,7 +804,7 @@ int main(int argc, char **argv) {
 
 		}
 
-		else if (stricmp(argv[paramCount], "--clearkeys") == 0 || stricmp(argv[paramCount], "-c") == 0) {
+		else if (_stricmp(argv[paramCount], "--clearkeys") == 0 || _stricmp(argv[paramCount], "-c") == 0) {
 
 			clearKeyInfo = true;
 			paramCount += 1;
@@ -812,7 +812,7 @@ int main(int argc, char **argv) {
 		}
 
 #if defined (HAVE_WINCAPI)
-		else if (stricmp(argv[paramCount], "--windss") == 0 || stricmp(argv[paramCount], "-wd") == 0) {
+		else if (_stricmp(argv[paramCount], "--windss") == 0 || _stricmp(argv[paramCount], "-wd") == 0) {
 
 			WinCAPICryptoProvider * cp;
 			// First set windows as the crypto provider
@@ -852,7 +852,7 @@ int main(int argc, char **argv) {
 			paramCount++;
 		}
 
-		else if (stricmp(argv[paramCount], "--winrsa") == 0 || stricmp(argv[paramCount], "-wr") == 0) {
+		else if (_stricmp(argv[paramCount], "--winrsa") == 0 || _stricmp(argv[paramCount], "-wr") == 0) {
 			WinCAPICryptoProvider * cp;
 			cp = new WinCAPICryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
@@ -889,7 +889,7 @@ int main(int argc, char **argv) {
 			paramCount++;
 		}
 
-		else if (stricmp(argv[paramCount], "--winhmac") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
+		else if (_stricmp(argv[paramCount], "--winhmac") == 0 || _stricmp(argv[paramCount], "-wh") == 0) {
 
 			WinCAPICryptoProvider * cp;
 			// Obtain default PROV_RSA, with default user key container
@@ -955,12 +955,12 @@ int main(int argc, char **argv) {
 
 		}
 
-		else if (stricmp(argv[paramCount], "--windsskeyinfo") == 0 || stricmp(argv[paramCount], "-wdi") == 0) {
+		else if (_stricmp(argv[paramCount], "--windsskeyinfo") == 0 || _stricmp(argv[paramCount], "-wdi") == 0) {
 			winDssKeyInfo = true;
 			paramCount++;
 		}
 
-		else if (stricmp(argv[paramCount], "--winrsakeyinfo") == 0 || stricmp(argv[paramCount], "-wri") == 0) {
+		else if (_stricmp(argv[paramCount], "--winrsakeyinfo") == 0 || _stricmp(argv[paramCount], "-wri") == 0) {
 			winRsaKeyInfo = true;
 			paramCount++;
 		}
@@ -978,7 +978,7 @@ int main(int argc, char **argv) {
 		//this example you'll need to replace your old wincrypt.h and crypt32.lib with new versions.
 		//This example below is compatible with Windows 98/IE 5 and above OS/IE versions.
 
-		else if (stricmp(argv[paramCount], "--wincer") == 0 || stricmp(argv[paramCount], "-wc") == 0) {
+		else if (_stricmp(argv[paramCount], "--wincer") == 0 || _stricmp(argv[paramCount], "-wc") == 0) {
 			WinCAPICryptoProvider * cp;
 			PCCERT_CONTEXT          pSignerCert = NULL;
 			DWORD                   dwKeySpec;
@@ -1143,7 +1143,7 @@ int main(int argc, char **argv) {
 	char * filename=argv[argc-1];
 	char path[_MAX_PATH];
 	char baseURI[(_MAX_PATH * 2) + 10];
-	getcwd(path, _MAX_PATH);
+	_getcwd(path, _MAX_PATH);
 
 	strcpy(baseURI, "file:///");		
 

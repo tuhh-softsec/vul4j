@@ -143,12 +143,12 @@ WinCAPICryptoProvider::WinCAPICryptoProvider(
 	// Copy parameters for later use
 
 	if (provDSSName != NULL)
-		m_provDSSName = strdup(provDSSName); 
+		m_provDSSName = _strdup(provDSSName); 
 	else
 		m_provDSSName = NULL;
 
 	if (provRSAName != NULL)
-		m_provRSAName = strdup(provRSAName);
+		m_provRSAName = _strdup(provRSAName);
 	else
 		m_provRSAName = NULL;
 

@@ -193,19 +193,19 @@ int evaluate(int argc, char ** argv) {
 
 	while (paramCount < argc - 1) {
 
-		if (stricmp(argv[paramCount], "--hmackey") == 0 || stricmp(argv[paramCount], "-h") == 0) {
+		if (_stricmp(argv[paramCount], "--hmackey") == 0 || _stricmp(argv[paramCount], "-h") == 0) {
 			paramCount++;
 			hmacKeyStr = argv[paramCount++];
 		}
-		else if (stricmp(argv[paramCount], "--skiprefs") == 0 || stricmp(argv[paramCount], "-s") == 0) {
+		else if (_stricmp(argv[paramCount], "--skiprefs") == 0 || _stricmp(argv[paramCount], "-s") == 0) {
 			skipRefs = true;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--xsecresolver") == 0 || stricmp(argv[paramCount], "-x") == 0) {
+		else if (_stricmp(argv[paramCount], "--xsecresolver") == 0 || _stricmp(argv[paramCount], "-x") == 0) {
 			useXSECURIResolver = true;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--idns") == 0 || stricmp(argv[paramCount], "-d") == 0) {
+		else if (_stricmp(argv[paramCount], "--idns") == 0 || _stricmp(argv[paramCount], "-d") == 0) {
 			if (paramCount +2 >= argc) {
 				printUsage();
 				return 2;
@@ -215,24 +215,24 @@ int evaluate(int argc, char ** argv) {
 			useIdAttributeName = argv[paramCount++];
 		}
 #if defined (HAVE_OPENSSL)
-		else if (stricmp(argv[paramCount], "--interop") == 0 || stricmp(argv[paramCount], "-i") == 0) {
+		else if (_stricmp(argv[paramCount], "--interop") == 0 || _stricmp(argv[paramCount], "-i") == 0) {
 			// Use the interop key resolver
 			useInteropResolver = true;
 			paramCount++;
 		}
 #endif
-		else if (stricmp(argv[paramCount], "--anonymousresolver") == 0 || stricmp(argv[paramCount], "-a") ==0) {
+		else if (_stricmp(argv[paramCount], "--anonymousresolver") == 0 || _stricmp(argv[paramCount], "-a") ==0) {
 			useAnonymousResolver = true;
 			paramCount++;
 		}
 #if defined (HAVE_WINCAPI)
-		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0 ||
-			stricmp(argv[paramCount], "--winhmackey") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
+		else if (_stricmp(argv[paramCount], "--wincapi") == 0 || _stricmp(argv[paramCount], "-w") == 0 ||
+			_stricmp(argv[paramCount], "--winhmackey") == 0 || _stricmp(argv[paramCount], "-wh") == 0) {
 
 			WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 
-			if (stricmp(argv[paramCount], "--winhmackey") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
+			if (_stricmp(argv[paramCount], "--winhmackey") == 0 || _stricmp(argv[paramCount], "-wh") == 0) {
 
 				// Create a SHA-1 based key based on the <string> parameter
 
@@ -422,7 +422,7 @@ int evaluate(int argc, char ** argv) {
 		// Map out base path of the file
 		char path[_MAX_PATH];
 		char baseURI[(_MAX_PATH * 2) + 10];
-		getcwd(path, _MAX_PATH);
+		_getcwd(path, _MAX_PATH);
 
 		strcpy(baseURI, "file:///");		
 

@@ -424,7 +424,7 @@ int evaluate(int argc, char ** argv) {
 
 	while (paramCount < argc - 1) {
 
-		if (stricmp(argv[paramCount], "--skiprefs") == 0 || stricmp(argv[paramCount], "-s") == 0) {
+		if (_stricmp(argv[paramCount], "--skiprefs") == 0 || _stricmp(argv[paramCount], "-s") == 0) {
 			skipRefs = true;
 			paramCount++;
 		}

@@ -171,7 +171,7 @@ outputter::~outputter() {
 
 void outputter::setFilename(const char * name) {
 
-	m_name = strdup(name);
+	m_name = _strdup(name);
 	m_cout = false;
 
 }
@@ -374,21 +374,21 @@ int main(int argc, char **argv) {
 
 	while (paramCount < argc - 1) {
 
-		if (stricmp(argv[paramCount], "--signedinfo") == 0 || stricmp(argv[paramCount], "-s") == 0) {
+		if (_stricmp(argv[paramCount], "--signedinfo") == 0 || _stricmp(argv[paramCount], "-s") == 0) {
 			paramCount++;
 			references = false;
 		}
-		else if (stricmp(argv[paramCount], "--out") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--out") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			paramCount++;
 			theOutputter.setFilename(argv[paramCount++]);
 		}
-		else if (stricmp(argv[paramCount], "--references") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+		else if (_stricmp(argv[paramCount], "--references") == 0 || _stricmp(argv[paramCount], "-r") == 0) {
 			paramCount++;
 			signedInfo = false;
 			if (argv[paramCount][0] >= '0' && argv[paramCount][0] <= '9')
 				refNum = atoi(argv[paramCount++]);
 		}
-		else if (stricmp(argv[paramCount], "--newfiles") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		else if (_stricmp(argv[paramCount], "--newfiles") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			paramCount++;
 			theOutputter.setNewFilePerOpen();
 		}
@@ -503,7 +503,7 @@ int main(int argc, char **argv) {
 	// Map out base path of the file
 	char path[_MAX_PATH];
 	char baseURI[(_MAX_PATH * 2) + 10];
-	getcwd(path, _MAX_PATH);
+	_getcwd(path, _MAX_PATH);
 
 	strcpy(baseURI, "file:///");
 	strcat(baseURI, path);

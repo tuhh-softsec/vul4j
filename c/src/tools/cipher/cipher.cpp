@@ -246,19 +246,19 @@ int evaluate(int argc, char ** argv) {
 
 	while (paramCount < argc - 1) {
 
-		if (stricmp(argv[paramCount], "--decrypt-element") == 0 || stricmp(argv[paramCount], "-de") == 0) {
+		if (_stricmp(argv[paramCount], "--decrypt-element") == 0 || _stricmp(argv[paramCount], "-de") == 0) {
 			paramCount++;
 			doDecrypt = true;
 			doDecryptElement = true;
 			doXMLOutput = true;
 			parseXMLInput = true;
 		}
-		else if (stricmp(argv[paramCount], "--interop") == 0 || stricmp(argv[paramCount], "-i") == 0) {
+		else if (_stricmp(argv[paramCount], "--interop") == 0 || _stricmp(argv[paramCount], "-i") == 0) {
 			// Use the interop key resolver
 			useInteropResolver = true;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--encrypt-file") == 0) {
+		else if (_stricmp(argv[paramCount], "--encrypt-file") == 0) {
 			// Use this file as the input
 			doDecrypt = false;
 			encryptFileAsData = true;
@@ -266,7 +266,7 @@ int evaluate(int argc, char ** argv) {
 			parseXMLInput = false;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--encrypt-xml") == 0 || stricmp(argv[paramCount], "-ex") == 0) {
+		else if (_stricmp(argv[paramCount], "--encrypt-xml") == 0 || _stricmp(argv[paramCount], "-ex") == 0) {
 			// Us this file as an XML input file
 			doDecrypt = false;
 			encryptFileAsData = false;
@@ -274,7 +274,7 @@ int evaluate(int argc, char ** argv) {
 			parseXMLInput = true;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--out-file") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+		else if (_stricmp(argv[paramCount], "--out-file") == 0 || _stricmp(argv[paramCount], "-o") == 0) {
 			if (paramCount +2 >= argc) {
 				printUsage();
 				return 1;
@@ -283,13 +283,13 @@ int evaluate(int argc, char ** argv) {
 			outfile = argv[paramCount];
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--xkms") == 0 || stricmp(argv[paramCount], "-x") == 0) {
+		else if (_stricmp(argv[paramCount], "--xkms") == 0 || _stricmp(argv[paramCount], "-x") == 0) {
 			paramCount++;
 			isXKMSKey = true;
 		}
 
 #if defined (HAVE_WINCAPI)
-		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0) {
+		else if (_stricmp(argv[paramCount], "--wincapi") == 0 || _stricmp(argv[paramCount], "-w") == 0) {
 			// Use the interop key resolver
 			WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
@@ -297,14 +297,14 @@ int evaluate(int argc, char ** argv) {
 		}
 #endif
 #if defined (HAVE_NSS)
-		else if (stricmp(argv[paramCount], "--nss") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+		else if (_stricmp(argv[paramCount], "--nss") == 0 || _stricmp(argv[paramCount], "-n") == 0) {
 			// NSS Crypto Provider
 			NSSCryptoProvider * cp = new NSSCryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 			paramCount++;
 		}
 #endif
-		else if (stricmp(argv[paramCount], "--key") == 0 || stricmp(argv[paramCount], "-k") == 0) {
+		else if (_stricmp(argv[paramCount], "--key") == 0 || _stricmp(argv[paramCount], "-k") == 0) {
 
 			// Have a key!
 			paramCount++;
@@ -312,7 +312,7 @@ int evaluate(int argc, char ** argv) {
 			XSECCryptoSymmetricKey::SymmetricKeyType loadKeyAs =
 				XSECCryptoSymmetricKey::KEY_NONE;
 
-			if (stricmp(argv[paramCount], "kek") == 0) {
+			if (_stricmp(argv[paramCount], "kek") == 0) {
 				isKEK = true;
 				paramCount++;
 				if (paramCount >= argc) {
@@ -321,10 +321,10 @@ int evaluate(int argc, char ** argv) {
 				}
 			}
 
-			if (stricmp(argv[paramCount], "3DES") == 0 ||
-				stricmp(argv[paramCount], "AES128") == 0 ||
-				stricmp(argv[paramCount], "AES192") == 0 ||
-				stricmp(argv[paramCount], "AES256") == 0 ) {
+			if (_stricmp(argv[paramCount], "3DES") == 0 ||
+				_stricmp(argv[paramCount], "AES128") == 0 ||
+				_stricmp(argv[paramCount], "AES192") == 0 ||
+				_stricmp(argv[paramCount], "AES256") == 0 ) {
 				
 				if (paramCount +2 >= argc) {
 					printUsage();
@@ -380,7 +380,7 @@ int evaluate(int argc, char ** argv) {
 
 				if (isXKMSKey) {
 					unsigned char kbuf[XSEC_MAX_HASH_SIZE];
-					CalculateXKMSKEK((unsigned char *) argv[paramCount], strlen(argv[paramCount]), kbuf, XSEC_MAX_HASH_SIZE);
+					CalculateXKMSKEK((unsigned char *) argv[paramCount], (int) strlen(argv[paramCount]), kbuf, XSEC_MAX_HASH_SIZE);
 					sk->setKey(kbuf, keyLen);
 				}
 				else {
@@ -398,7 +398,7 @@ int evaluate(int argc, char ** argv) {
 
 #if defined (HAVE_OPENSSL)
 
-			else if (stricmp(argv[paramCount], "RSA") == 0) {
+			else if (_stricmp(argv[paramCount], "RSA") == 0) {
 				// RSA private key file
 
 				if (paramCount + 3 >= argc) {
@@ -445,7 +445,7 @@ int evaluate(int argc, char ** argv) {
 				paramCount += 3;
 			}
 
-			else if (stricmp(argv[paramCount], "X509") == 0) {
+			else if (_stricmp(argv[paramCount], "X509") == 0) {
 
 				// X509 cert used to load an encrypting key
 
@@ -626,7 +626,7 @@ int evaluate(int argc, char ** argv) {
 				// Map out base path of the file
 				char path[_MAX_PATH];
 				char baseURI[(_MAX_PATH * 2) + 10];
-				getcwd(path, _MAX_PATH);
+				_getcwd(path, _MAX_PATH);
 
 				strcpy(baseURI, "file:///");		
 
