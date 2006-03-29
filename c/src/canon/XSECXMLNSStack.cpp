@@ -118,10 +118,13 @@ void XSECXMLNSStack::popElement() {
 		if (t->mp_owner == e->mp_elt) {
 
 			// Need to delete this
-			it = m_currentNS.erase(it);
+			m_currentNS.erase(it);
 			if (t->mp_hides != NULL) {
 				m_currentNS.push_back(t->mp_hides);
 			}
+			// TODO - Fix this, it is naieve and slow
+			it = m_currentNS.begin();
+
 		}
 		else {
 			if (t->mp_printed == e->mp_elt)
