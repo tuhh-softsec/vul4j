@@ -54,6 +54,9 @@ my $checksig_args = "-x";
 my $checksig;
 my $cipher;
 
+my $checksig_vc8 = "../Build/Win32/VC8/Debug/checksig.exe";
+my $cipher_vc8 = "../Build/Win32/VC8/Debug/cipher.exe";
+
 my $checksig_vc7 = "../Build/Win32/VC7/Debug/checksig.exe";
 my $cipher_vc7 = "../Build/Win32/VC7/Debug/cipher.exe";
 
@@ -62,6 +65,9 @@ my $cipher_release = "../Build/Win32/VC6/Release/cipher.exe";
 
 my $checksig_vc7release = "../Build/Win32/VC7/Release/checksig.exe";
 my $cipher_vc7release = "../Build/Win32/VC7/Release/cipher.exe";
+
+my $checksig_vc8release = "../Build/Win32/VC8/Release/checksig.exe";
+my $cipher_vc8release = "../Build/Win32/VC8/Release/cipher.exe";
 
 if ($^O =~ m/Win/) {
   $checksig = "../Build/Win32/VC6/Debug/checksig.exe";
@@ -258,7 +264,7 @@ my @xenc_array=(
 
 sub print_args {
 
-  print STDERR "\nUsage: basicTests.pl [--noxalan] [--nopothole] [--noaes] [--vc7] [--vc7release] [--vc6release]\n\n";
+  print STDERR "\nUsage: basicTests.pl [--noxalan] [--nopothole] [--noaes] [--vc8] [--vc8release] [--vc7] [--vc7release] [--vc6release]\n\n";
   exit(1);
 
 }
@@ -271,6 +277,8 @@ foreach (@ARGV) {
     if (/^--noxalan$/ || /^-x$/) {$have_xalan = 0; last SWITCH;}
     if (/^--nopothole$/ || /^-p$/) {$have_pothole = 0; last SWITCH;}
     if (/^--noaes$/ || /^-a$/) {$have_aes = 0; last SWITCH;}
+    if (/^--vc8$/) {$checksig = $checksig_vc8 ; $cipher = $cipher_vc8; last SWITCH;}
+    if (/^--vc8release$/) {$checksig = $checksig_vc8release ; $cipher = $cipher_vc8release; last SWITCH;}
     if (/^--vc7$/) {$checksig = $checksig_vc7 ; $cipher = $cipher_vc7; last SWITCH;}
     if (/^--vc7release$/) {$checksig = $checksig_vc7release ; $cipher = $cipher_vc7release; last SWITCH;}
     if (/^--vc6release$/) {$checksig = $checksig_release ; $cipher = $cipher_release; last SWITCH;}
