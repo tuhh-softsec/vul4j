@@ -145,6 +145,12 @@ AC_CHECK_HEADERS(unistd.h direct.h)
 
 AC_CANONICAL_HOST
 
+# Ensure we are always compiling using library defs
+
+CFLAGS="${CFLAGS} -DXSEC_LIBRARY_BUILD"
+CXXFLAGS="${CXXFLAGS} -DXSEC_LIBRARY_BUILD"
+
+
 # Platform-specific Makefile setup
 # We have put most of the platform specific configuration here rather than
 # in the Makefile.  Autoconf is designed with platform portability in mind,
@@ -679,6 +685,19 @@ AC_TRY_COMPILE([#include <openssl/x509.h>],
 	[AC_MSG_RESULT([yes])]
 	[AC_DEFINE(XSEC_OPENSSL_D2IX509_CONST_BUFFER)],
 	[AC_MSG_RESULT([no])])
+
+# String functions
+AC_CHECK_DECL(_strdup,
+	[AC_DEFINE(XSEC_HAVE__STRDUP)],
+	,[#include <string.h>])
+
+AC_CHECK_DECL(_stricmp,
+	[AC_DEFINE(XSEC_HAVE__STRDUP)],
+	,[#include <string.h>])
+
+AC_CHECK_DECL(_getcwd,
+	[AC_DEFINE(XSEC_HAVE__GETCWD)],
+	,[#include <string.h>])
 
 # Build the object file lists necessary to link the library
 # At the same time, build the include list

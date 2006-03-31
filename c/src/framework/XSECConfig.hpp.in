@@ -104,6 +104,16 @@
 #undef XSEC_OPENSSL_HAVE_CRYPTO_CLEANUP_ALL_EX_DATA
 
 /*
+ * Some string functions (mainly to get past microsoft warning
+ * messages
+ */
+
+/* Do we have _strdup(const char *) - probably not, but... */
+
+#undef XSEC_HAVE__STRDUP
+#undef XSEC_HAVE__STRICMP
+
+/*
  * Macros used to determine what header files exist on this
  * system
  */

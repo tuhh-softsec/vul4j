@@ -145,4 +145,27 @@
 
 #endif
 
+
+/*
+ * The following definitions are *only* made if we are
+ * building library code to make sure we don't interfere
+ * with the way apps are doing things
+ */
+
+#ifdef XSEC_LIBRARY_BUILD
+
+#    ifndef XSEC_HAVE__STRDUP
+#        define _strdup(x) strdup(x)
+#    endif
+
+#    ifndef XSEC_HAVE__STRICMP
+#        define _stricmp(x,y) stricmp(x,y)
+#    endif
+
+#    ifndef XSEC_HAVE__GETCWD
+#        define _getcwd(x,y) getcwd(x,y)
+#    endif
+
+#endif
+
 #endif /* XSECDEFS_HEADER */
