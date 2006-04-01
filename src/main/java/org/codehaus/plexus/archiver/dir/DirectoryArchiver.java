@@ -167,10 +167,12 @@ public class DirectoryArchiver
     private void chmod( File file, int mode )
         throws ArchiverException
     {
-        if ( ! Os.isArch( "unix" ) )
+        if ( ! Os.isFamily( "unix" ) )
         {
             return;
         }
+
+        String m = Integer.toOctalString( mode & 0xfff );
 
         try
         {
@@ -180,7 +182,7 @@ public class DirectoryArchiver
 
             commandline.setExecutable( "chmod" );
 
-            commandline.createArgument().setValue( Integer.toOctalString( mode & 0xfff ) );
+            commandline.createArgument().setValue( m  );
 
             commandline.createArgument().setValue( file.getAbsolutePath() );
 
