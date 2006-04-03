@@ -193,11 +193,6 @@ public class CommandlineTest
         cmd.addArguments( new String[] { "a", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
 
-        for ( int i = 0; i < shellCommandline.length; i++ )
-        {
-            System.out.println( shellCommandline[i] );
-        }
-
         assertEquals( "cmd.exe", shellCommandline[0] );
         assertEquals( "/X", shellCommandline[1] );
         assertEquals( "/C", shellCommandline[2] );
@@ -219,11 +214,6 @@ public class CommandlineTest
         cmd.setExecutable( "/usr/bin" );
         cmd.addArguments( new String[] { "a", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
-
-        for ( int i = 0; i < shellCommandline.length; i++ )
-        {
-            System.out.println( shellCommandline[i] );
-        }
 
         assertEquals( File.separator + "usr" + File.separator + "bin", shellCommandline[0] );
         assertEquals( "a", shellCommandline[1] );
