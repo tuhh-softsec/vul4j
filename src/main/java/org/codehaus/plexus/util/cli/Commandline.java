@@ -447,12 +447,34 @@ public class Commandline
             commandLine.addAll( Arrays.asList( getShellArgs() ) );
         }
 
-        if ( executable != null )
+        if ( getShell() == null )
         {
-            commandLine.add( executable );
+            if ( executable != null )
+            {
+                commandLine.add( executable );
+            }
+            commandLine.addAll( Arrays.asList( getArguments() ) );
         }
-
-        commandLine.addAll( Arrays.asList( getArguments() ) );
+        else
+        {
+            /* When using a shell we need to quote the full command */
+            StringBuffer sb = new StringBuffer();
+            sb.append( "\"" );
+            if ( executable != null )
+            {
+                sb.append( "\"" );
+                sb.append( executable );
+                sb.append( "\"" );
+            }
+            for (int i = 0 ; i < getArguments().length; i++ )
+            {
+                sb.append( " \"" );
+                sb.append( getArguments()[i] );
+                sb.append( "\"" );
+            }
+            sb.append( "\"" );
+            commandLine.add( sb.toString() );
+        }
 
         return (String[]) commandLine.toArray( new String[0] );
     }

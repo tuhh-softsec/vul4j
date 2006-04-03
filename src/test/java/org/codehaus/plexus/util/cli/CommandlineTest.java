@@ -193,16 +193,12 @@ public class CommandlineTest
         cmd.addArguments( new String[] { "a", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
 
+        assertEquals( "Command line size", 4, shellCommandline.length );
+
         assertEquals( "cmd.exe", shellCommandline[0] );
         assertEquals( "/X", shellCommandline[1] );
         assertEquals( "/C", shellCommandline[2] );
-        //TODO PLX-161 should be like this
-        //assertEquals( "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" a b", shellCommandline[3] );
-        assertEquals( "c:" + File.separator + "Program Files" + File.separator + "xxx", shellCommandline[3] );
-        assertEquals( "a", shellCommandline[4] );
-        assertEquals( "b", shellCommandline[5] );
-
-        assertEquals( "Command line size", 6, shellCommandline.length );
+        assertEquals( "\"\"c:" + File.separator + "Program Files" + File.separator + "xxx\" \"a\" \"b\"\"", shellCommandline[3] );
     }
 
     public void testGetShellCommandLineNonWindows()
@@ -215,11 +211,11 @@ public class CommandlineTest
         cmd.addArguments( new String[] { "a", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
 
+        assertEquals( "Command line size", 3, shellCommandline.length );
+
         assertEquals( File.separator + "usr" + File.separator + "bin", shellCommandline[0] );
         assertEquals( "a", shellCommandline[1] );
         assertEquals( "b", shellCommandline[2] );
-
-        assertEquals( "Command line size", 3, shellCommandline.length );
     }
 
     public void testEnvironment()
