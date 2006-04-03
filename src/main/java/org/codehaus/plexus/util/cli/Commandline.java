@@ -80,7 +80,10 @@ package org.codehaus.plexus.util.cli;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -432,32 +435,26 @@ public class Commandline
      */
     public String[] getShellCommandline()
     {
-        int shellCount = 0;
-        int arrayPos = 0;
-        if ( shell != null )
-        {
-            shellCount = 1;
-        }
-        shellCount += shellArgs.length;
-        final String[] args = getArguments();
+        List commandLine = new ArrayList();
 
-        String[] result = new String[shellCount + args.length + ( ( executable == null ) ? 0 : 1 )];
-        //Build shell and arguments into result
-        if ( shell != null )
+        if ( getShell() != null )
         {
-            result[0] = shell;
-            arrayPos++;
+            commandLine.add( getShell() );
         }
-        System.arraycopy( shellArgs, 0, result, arrayPos, shellArgs.length );
-        arrayPos += shellArgs.length;
-        //Build excutable and arguments into result
+
+        if ( getShellArgs() != null )
+        {
+            commandLine.addAll( Arrays.asList( getShellArgs() ) );
+        }
+
         if ( executable != null )
         {
-            result[arrayPos] = executable;
-            arrayPos++;
+            commandLine.add( executable );
         }
-        System.arraycopy( args, 0, result, arrayPos, args.length );
-        return result;
+
+        commandLine.addAll( Arrays.asList( getArguments() ) );
+
+        return (String[]) commandLine.toArray( new String[0] );
     }
 
     /**
