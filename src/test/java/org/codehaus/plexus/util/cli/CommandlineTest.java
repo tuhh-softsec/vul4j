@@ -183,6 +183,55 @@ public class CommandlineTest
         }
     }
 
+    public void testGetShellCommandLineWindows()
+        throws Exception
+    {
+        Commandline cmd = new Commandline();
+        cmd.setShell( "cmd.exe" );
+        cmd.setShellArgs( new String[] { "/X", "/C" } );
+        cmd.setExecutable( "c:\\Program Files\\xxx" );
+        cmd.addArguments( new String[] { "a", "b" } );
+        String[] shellCommandline = cmd.getShellCommandline();
+
+        for ( int i = 0; i < shellCommandline.length; i++ )
+        {
+            System.out.println( shellCommandline[i] );
+        }
+
+        assertEquals( "cmd.exe", shellCommandline[0] );
+        assertEquals( "/X", shellCommandline[1] );
+        assertEquals( "/C", shellCommandline[2] );
+        //TODO PLX-161 should be like this
+        //assertEquals( "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" a b", shellCommandline[3] );
+        assertEquals( "c:" + File.separator + "Program Files" + File.separator + "xxx", shellCommandline[3] );
+        assertEquals( "a", shellCommandline[4] );
+        assertEquals( "b", shellCommandline[5] );
+
+        assertEquals( "Command line size", 6, shellCommandline.length );
+    }
+
+    public void testGetShellCommandLineNonWindows()
+        throws Exception
+    {
+        Commandline cmd = new Commandline();
+        cmd.setShell( null );
+        cmd.setShellArgs( new String[] {} );
+        cmd.setExecutable( "/usr/bin" );
+        cmd.addArguments( new String[] { "a", "b" } );
+        String[] shellCommandline = cmd.getShellCommandline();
+
+        for ( int i = 0; i < shellCommandline.length; i++ )
+        {
+            System.out.println( shellCommandline[i] );
+        }
+
+        assertEquals( File.separator + "usr" + File.separator + "bin", shellCommandline[0] );
+        assertEquals( "a", shellCommandline[1] );
+        assertEquals( "b", shellCommandline[2] );
+
+        assertEquals( "Command line size", 3, shellCommandline.length );
+    }
+
     public void testEnvironment()
     {
         Commandline cmd = new Commandline();

@@ -82,7 +82,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -118,7 +117,7 @@ public class Commandline
 
     private String shell = null;
 
-    private Vector shellArgs = new Vector();
+    private String[] shellArgs = null;
 
     protected String executable = null;
 
@@ -289,14 +288,13 @@ public class Commandline
         {
             if ( os.indexOf( "95" ) != -1 || os.indexOf( "98" ) != -1 || os.indexOf( "Me" ) != -1 )
             {
-                shell = "COMMAND.COM";
-                shellArgs.add( "/C" );
+                setShell( "COMMAND.COM" );
+                setShellArgs( new String[]{ "/C" } );
             }
             else
             {
-                shell = "CMD.EXE";
-                shellArgs.add( "/X" );
-                shellArgs.add( "/C" );
+                setShell( "CMD.EXE" );
+                setShellArgs( new String[]{ "/X", "/C" } );
             }
         }
     }
@@ -440,7 +438,7 @@ public class Commandline
         {
             shellCount = 1;
         }
-        shellCount += shellArgs.size();
+        shellCount += shellArgs.length;
         final String[] args = getArguments();
 
         String[] result = new String[shellCount + args.length + ( ( executable == null ) ? 0 : 1 )];
@@ -450,8 +448,8 @@ public class Commandline
             result[0] = shell;
             arrayPos++;
         }
-        System.arraycopy( shellArgs.toArray(), 0, result, arrayPos, shellArgs.size() );
-        arrayPos += shellArgs.size();
+        System.arraycopy( shellArgs, 0, result, arrayPos, shellArgs.length );
+        arrayPos += shellArgs.length;
         //Build excutable and arguments into result
         if ( executable != null )
         {
@@ -737,6 +735,57 @@ public class Commandline
         throws Exception
     {
         return CommandLineUtils.getSystemEnvVars();
+    }
+
+    /**
+     * <p>
+     * Set the shell command to use. If not set explicitly the class will autodetect it from the operating system name
+     * </p>
+     * <p>
+     * eg. <code>COMMAND.COM</code> in Win9x and WinMe or <code>CMD.EXE</code> in WinNT, Win2000 or WinXP
+     * </p>
+     * @since 1.2
+     * @param shell shell command
+     */
+    public void setShell( String shell )
+    {
+        this.shell = shell;
+    }
+
+    /**
+     * Get the shell command to use
+     * @since 1.2
+     * @return
+     */
+    public String getShell()
+    {
+        return shell;
+    }
+
+    /**
+     * <p>
+     * Shell arguments to use when using a shell command. If not set explicitly the class will autodetect it from the operating system name
+     * </p>
+     * <p>
+     * eg. <code>/C</code> for <code>COMMAND.COM</code> and <code>/X /C</code> for <code>CMD.EXE</code>
+     * </p>
+     * @see setShell
+     * @since 1.2
+     * @param shellArgs
+     */
+    public void setShellArgs( String[] shellArgs )
+    {
+        this.shellArgs = shellArgs;
+    }
+
+    /**
+     * Get the shell arguments to use with the shell command
+     * @since 1.2
+     * @return the arguments
+     */
+    public String[] getShellArgs()
+    {
+        return shellArgs;
     }
 
 }
