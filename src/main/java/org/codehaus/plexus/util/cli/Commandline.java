@@ -194,7 +194,10 @@ public class Commandline
          */
         public void setValue( String value )
         {
-            parts = new String[]{value};
+            if ( value != null )
+            {
+                parts = new String[]{value};
+            }
         }
 
         /**
