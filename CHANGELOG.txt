@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in v...
+    Fixed bug 38655
 	Fixed bug 38444.
 	Fixed bug 38605.
 		Refactored the way keyresolver works instead of calling canResolve/resolveX only resolveX is used  
