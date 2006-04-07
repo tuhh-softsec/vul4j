@@ -16,16 +16,10 @@
  */
 package org.apache.xml.security.c14n.implementations;
 
-import java.lang.reflect.Array;
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 
 
 import org.w3c.dom.Attr;
@@ -366,6 +360,7 @@ class SymbMap implements Cloneable{
         if (cur == null || (cur.equals( obj))) {
 			return index;
         }
+        length=length-1;
         do {
 			index=index==length? 0:++index;
 			cur = set[index];
