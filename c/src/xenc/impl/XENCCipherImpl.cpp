@@ -462,7 +462,23 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 
 }
 
-DOMDocument * XENCCipherImpl::decryptElement(void) {
+DOMNode * XENCCipherImpl::decryptElementDetached(DOMElement * element) {
+
+	// First of all load the element
+	if (mp_encryptedData != NULL)
+		delete mp_encryptedData;
+
+	XSECnew(mp_encryptedData, 
+		XENCEncryptedDataImpl(mp_env, element));
+
+	// Load
+	mp_encryptedData->load();
+
+	return decryptElementDetached();
+
+}
+
+DOMNode * XENCCipherImpl::decryptElementDetached(void) {
 
 	XSECAlgorithmHandler *handler;
 
@@ -557,6 +573,16 @@ DOMDocument * XENCCipherImpl::decryptElement(void) {
 	// Now de-serialise
 	DOMElement * element = mp_encryptedData->getElement();
 	DOMDocumentFragment * frag = deSerialise(sb, element);
+
+	return frag;
+
+}
+
+DOMDocument * XENCCipherImpl::decryptElement(void) {
+
+	// Call the worker
+	DOMElement * element = mp_encryptedData->getElement();
+	DOMDocumentFragment * frag = (DOMDocumentFragment *) decryptElementDetached();
 
 	if (frag != NULL) {
 
@@ -1028,7 +1054,7 @@ XENCEncryptedData * XENCCipherImpl::createEncryptedData(
 //			Encrypt an element
 // --------------------------------------------------------------------------------
 
-DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element, 
+DOMNode * XENCCipherImpl::encryptElementDetached(DOMElement * element, 
 											 encryptionMethod em,
 											 const XMLCh * algorithmURI) {
 
@@ -1061,6 +1087,16 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 	encryptTXFMChain(c, em, algorithmURI);
 
 	mp_encryptedData->setType(DSIGConstants::s_unicodeStrURIXENC_ELEMENT);
+	return mp_encryptedData->getElement();
+
+}
+
+DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element, 
+											 encryptionMethod em,
+											 const XMLCh * algorithmURI) {
+
+	// Do the actual encryption work
+	encryptElementDetached(element, em, algorithmURI);
 
 	// Replace original element
 	DOMNode * p = element->getParentNode();
@@ -1079,11 +1115,39 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 
 }
 
+
 // --------------------------------------------------------------------------------
 //			Encrypt an element's children
 // --------------------------------------------------------------------------------
 
 DOMDocument * XENCCipherImpl::encryptElementContent(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI) {
+	
+	// Do the work
+	encryptElementContentDetached(element, em, algorithmURI);
+
+	// Delete current children 
+	DOMNode * n = element->getFirstChild();
+	while (n != NULL) {
+
+		element->removeChild(n);
+		n->release();
+
+		n = element->getFirstChild();
+
+	}
+	
+	// Now add the EncryptedData
+	element->appendChild(mp_encryptedData->getElement());
+
+	return mp_doc;
+
+}
+
+
+DOMNode * XENCCipherImpl::encryptElementContentDetached(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
 		encryptionMethod em,
 		const XMLCh * algorithmURI) {
@@ -1135,24 +1199,9 @@ DOMDocument * XENCCipherImpl::encryptElementContent(
 
 	mp_encryptedData->setType(DSIGConstants::s_unicodeStrURIXENC_CONTENT);
 
-	// Delete current children 
-	n = element->getFirstChild();
-	while (n != NULL) {
-
-		element->removeChild(n);
-		n->release();
-
-		n = element->getFirstChild();
-
-	}
-	
-	// Now add the EncryptedData
-	element->appendChild(mp_encryptedData->getElement());
-
-	return mp_doc;
+	return mp_encryptedData->getElement();
 
 }
-
 
 
 

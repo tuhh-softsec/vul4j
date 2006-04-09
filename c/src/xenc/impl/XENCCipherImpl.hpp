@@ -53,8 +53,12 @@ public:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * 
 		decryptElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * 
+		decryptElementDetached(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * 
 		decryptElement(void);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * 
+		decryptElementDetached(void);
 	XSECBinTXFMInputStream * decryptToBinInputStream(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
 	);
@@ -76,6 +80,14 @@ public:
 		encryptionMethod em,
 		const XMLCh * uri = NULL);
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElementContent(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * encryptElementDetached(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * uri = NULL);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * encryptElementContentDetached(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
 		encryptionMethod em,
 		const XMLCh * algorithmURI = NULL);

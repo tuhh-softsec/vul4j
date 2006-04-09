@@ -110,6 +110,25 @@ public:
 	) = 0;
 
 	/**
+	 * \brief Decrypt the nominated element without replacing it.
+	 *
+	 * Decrypts the passed in element, which must be the root
+	 * node of a \<EncryptedData\> method with a type of "#Element".
+	 * If not, the library will throw an XSECException exception.  Rather
+	 * than replacing the element with the decrypted content, the
+	 * result is passed to the caller as an orphaned document fragment.
+	 *
+	 * @param element Root of EncryptedData DOM structyre to decrypt
+	 * @returns The document fragment containing the decrypted node-set.
+	 * @throws XSECException if the decryption fails, or if this is
+	 * not a valid EncryptedData DOM structure.
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * decryptElementDetached(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
+	) = 0;
+
+	/**
 	 * \brief Decrypt currently loaded element.
 	 *
 	 * Decrypts the an element that was previously passed in via 
@@ -130,6 +149,26 @@ public:
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * decryptElement(void) = 0;
 
+	/**
+	 * \brief Decrypt currently loaded element without replacing it.
+	 *
+	 * Decrypts the an element that was previously passed in via 
+	 * loadEncryptedData with a type of "#Element".
+	 * If not, the library will throw an XSECException exception.
+	 *
+	 * This does not replace the currently existing DOM document.  It returns
+	 * an "orphaned" document fragment containing the serialised version of the
+	 * decrypted data.
+	 *
+	 * @param element Root of EncryptedData DOM structyre to decrypt
+	 * @returns The owning document with the element replaced, or NULL
+	 * if the decryption fails for some reason (normally an exception).
+	 * @throws XSECException if the decryption fails, or if this is
+	 * not a valid EncryptedData DOM structure.
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * decryptElementDetached(void) = 0;
+	
 	/**
 	 * \brief Decrypt the nominated element and put the output to an InputStream.
 	 *
@@ -217,6 +256,31 @@ public:
 	) = 0;
 
 	/**
+	 * \brief Encrypt the nominated element without affecting the current document.
+	 * 
+	 * Encrypts the passed in element and all children.  The element
+	 * is not replaced - the return node is an "orphaned" subtree from
+	 * the passed in document and the original document is untouched.
+	 *
+	 * @param element Element (and children) to encrypt
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI If ENCRYPT_NONE is passed in, this will be
+	 * used to set the algorithm URI.  If this is also NULL - no
+	 * EncryptionMethod will be set.  <b>NULL Value Unsupported if em not
+	 * set!  It's use could cause problems!</b>
+	 *
+	 * @returns The resulting document fragment containing the encrypted data.
+	 * @throws XSECException if the encryption fails.
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * encryptElementDetached(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	) = 0;
+	
+	/**
 	 * \brief Encrypt the children of the nominated element
 	 * 
 	 * Encrypts the all children of the passed in element, but
@@ -242,6 +306,33 @@ public:
 		const XMLCh * algorithmURI = NULL
 	) = 0;
 
+	/**
+	 * \brief Encrypt the children of the nominated element
+	 * 
+	 * Encrypts the all children of the passed in element.  The input
+	 * DOM node set is untouched, but the function returns an orphaned
+	 * sub-tree owned by the passed in document containing the encrypted
+	 * data.
+	 *
+	 * @param element Element whose children are to be encrypted
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI If ENCRYPT_NONE is passed in, this will be
+	 * used to set the algorithm URI.  If this is also NULL - no
+	 * EncryptionMethod will be set.  <b>NULL Value Unsupported if em not
+	 * set!  It's use could cause problems!</b>
+	 *
+	 * @returns The resulting (orphaned) sub-tree from the passed in document
+	 * containing the encrypted data.
+	 * @throws XSECException if the encryption fails.
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * encryptElementContentDetached(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	) = 0;
+	
 	/**
 	 * \brief Encrypt a buffer of data as a key
 	 *
