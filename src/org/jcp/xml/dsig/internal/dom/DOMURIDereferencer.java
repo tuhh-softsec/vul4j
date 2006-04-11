@@ -78,11 +78,9 @@ public class DOMURIDereferencer implements URIDereferencer {
             // this is a bit of a hack to check for registered 
 	    // IDRefs and manually register them with Apache's IdResolver 
 	    // map which includes builtin schema knowledge of DSig/Enc IDs
-	    if (context instanceof XMLSignContext) {
-	        Node referencedElem = dcc.getElementById(id);
-	        if (referencedElem != null) {
-	            IdResolver.registerElementById((Element) referencedElem, id);
-	        }
+            Node referencedElem = dcc.getElementById(id);
+	    if (referencedElem != null) {
+	        IdResolver.registerElementById((Element) referencedElem, id);
 	    }
 	} 
 
