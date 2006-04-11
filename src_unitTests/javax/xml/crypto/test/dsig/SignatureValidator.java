@@ -54,9 +54,8 @@ public class SignatureValidator {
 	return validate(fn, ks, null);
     }
 
-    public boolean validate(String fn, KeySelector ks, URIDereferencer ud)
+    public DOMValidateContext getValidateContext(String fn, KeySelector ks)
 	throws Exception {
-
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         dbf.setValidating(false);
@@ -67,12 +66,25 @@ public class SignatureValidator {
 	}
 	DOMValidateContext vc = new DOMValidateContext(ks, sigElement);
 	vc.setBaseURI(dir.toURI().toString());
-        XMLSignatureFactory factory = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-    	XMLSignature signature = factory.unmarshalXMLSignature(vc);
+	return vc;
+    }
+
+    public boolean validate(String fn, KeySelector ks, URIDereferencer ud)
+	throws Exception {
+
+	DOMValidateContext vc = getValidateContext(fn, ks);
 	if (ud != null) {
 	    vc.setURIDereferencer(ud);
 	}
+
+	return validate(vc);
+    }
+
+    public boolean validate(DOMValidateContext vc) throws Exception {
+
+        XMLSignatureFactory factory = XMLSignatureFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+    	XMLSignature signature = factory.unmarshalXMLSignature(vc);
     	boolean coreValidity = signature.validate(vc);
     
     	// Check core validation status
@@ -86,7 +98,7 @@ public class SignatureValidator {
     	}
         return coreValidity;
     }
-    
+
     public static Element getSignatureElement(Document doc) {
         NodeIterator ni = ((DocumentTraversal)doc).createNodeIterator(
             doc.getDocumentElement(), NodeFilter.SHOW_ELEMENT, null, false);
