@@ -16,9 +16,6 @@
  */
 package org.apache.xml.security.utils;
 
-
-
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,188 +43,188 @@ import java.lang.ref.WeakReference;
  */
 public class IdResolver {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log =
+    /** {@link org.apache.commons.logging} logging facility */
+    private static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(IdResolver.class.getName());
 
-   static WeakHashMap docMap = new WeakHashMap();
+    private static WeakHashMap docMap = new WeakHashMap();
     
-   /**
-    * Constructor IdResolver
-    *
-    */
-   private IdResolver() {
+    /**
+     * Constructor IdResolver
+     *
+     */
+    private IdResolver() {
+       // we don't allow instantiation
+    }
 
-      // we don't allow instantiation
-   }
+    /**
+     * Method registerElementById
+     *
+     * @param element the element to register
+     * @param idValue the value of the ID attribute
+     */
+    public static void registerElementById(Element element, String idValue) {
+        Document doc = element.getOwnerDocument();
+        WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
+        if(elementMap == null) {
+            elementMap = new WeakHashMap();
+            docMap.put(doc, elementMap);
+        }
+        elementMap.put(idValue, new WeakReference(element));
+    }
 
-   /**
-    * Method registerElementById
-    *
-    * @param element
-    * @param idValue
-    */
-   public static void registerElementById(Element element, String idValue) {
-      Document doc = element.getOwnerDocument();
-      WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
-      if(elementMap == null) {
-          elementMap = new WeakHashMap();
-          docMap.put(doc, elementMap);
-      }
-      elementMap.put(idValue, new WeakReference(element));
-   }
+    /**
+     * Method registerElementById
+     *
+     * @param element the element to register
+     * @param id the ID attribute
+     */
+    public static void registerElementById(Element element, Attr id) {
+        IdResolver.registerElementById(element, id.getNodeValue());
+    }
 
-   /**
-    * Method registerElementById
-    *
-    * @param element
-    * @param id
-    */
-   public static void registerElementById(Element element, Attr id) {
-      IdResolver.registerElementById(element, id.getNodeValue());
-   }
+    /**
+     * Method getElementById
+     *
+     * @param doc the document
+     * @param id the value of the ID 
+     * @return the element obtained by the id, or null if it is not found.
+     */
+    public static Element getElementById(Document doc, String id) {
 
-   /**
-    * Method getElementById
-    *
-    * @param doc
-    * @param id
-    * @return the element obtained by the Id, or null if it is not found.
-    */
-   public static Element getElementById(Document doc, String id) {
+        Element result = IdResolver.getElementByIdType(doc, id);
 
-      Element result = null;
-
-      result = IdResolver.getElementByIdType(doc, id);
-
-      if (result != null) {
-         log.debug(
+        if (result != null) {
+            log.debug(
             "I could find an Element using the simple getElementByIdType method: "
             + result.getTagName());
 
-         return result;
-      }
+            return result;
+        }
 
-       result = IdResolver.getElementByIdUsingDOM(doc, id);
+        result = IdResolver.getElementByIdUsingDOM(doc, id);
 
-       if (result != null) {
-          log.debug(
+        if (result != null) {
+            log.debug(
              "I could find an Element using the simple getElementByIdUsingDOM method: "
             + result.getTagName());
 
-         return result;
-      }
-       // this must be done so that Xalan can catch ALL namespaces
-       //XMLUtils.circumventBug2650(doc);
-      result = IdResolver.getElementBySearching(doc, id);
+            return result;
+        }
+        // this must be done so that Xalan can catch ALL namespaces
+        //XMLUtils.circumventBug2650(doc);
+        result = IdResolver.getElementBySearching(doc, id);
 
-      if (result != null) {
-		  IdResolver.registerElementById(result, id);
+        if (result != null) {
+	    IdResolver.registerElementById(result, id);
 
-         return result;
-      }
+            return result;
+        }
 
-      return null;
-   }
+        return null;
+    }
    
 
     /**
      * Method getElementByIdUsingDOM
      *
-     * @param doc
-     * @param id
-     * @return the element obtained by the Id, or null if it is not found.
+     * @param doc the document
+     * @param id the value of the ID
+     * @return the element obtained by the id, or null if it is not found.
      */
     private static Element getElementByIdUsingDOM(Document doc, String id) {
         if (log.isDebugEnabled())
-        	log.debug("getElementByIdUsingDOM() Search for ID " + id);
+       	    log.debug("getElementByIdUsingDOM() Search for ID " + id);
         return doc.getElementById(id);
     }
 
-   /**
-    * Method getElementByIdType
-    *
-    * @param doc
-    * @param id
-    * @return the element obtained by the Id, or null if it is not found.
-    */
-   private static Element getElementByIdType(Document doc, String id) {
-   	  if (log.isDebugEnabled())
-   	  	log.debug("getElementByIdType() Search for ID " + id);
-       WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
-       if (elementMap != null) {
-           WeakReference weakReference = (WeakReference) elementMap.get(id);
-           if (weakReference != null)
-           {
+    /**
+     * Method getElementByIdType
+     *
+     * @param doc the document
+     * @param id the value of the ID
+     * @return the element obtained by the id, or null if it is not found.
+     */
+    private static Element getElementByIdType(Document doc, String id) {
+        if (log.isDebugEnabled())
+	    log.debug("getElementByIdType() Search for ID " + id);
+        WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
+        if (elementMap != null) {
+            WeakReference weakReference = (WeakReference) elementMap.get(id);
+            if (weakReference != null) {
                 return (Element) weakReference.get();   
-           }
-       }
-       return null;
-   }
-
+            }
+        }
+        return null;
+    }
    
-   static java.util.List names;
-   static {
+    private static java.util.List names;
+    static {
 	   String namespaces[]={ Constants.SignatureSpecNS,
 			   EncryptionConstants.EncryptionSpecNS,
 			   "http://schemas.xmlsoap.org/soap/security/2000-12",
-			   "http://www.w3.org/2002/03/xkms#"	   	   
+			   "http://www.w3.org/2002/03/xkms#",
+			   "urn:oasis:names:tc:SAML:1.0:assertion"
 		   };
 	   names=Arrays.asList(namespaces);
-   }
+    }
    
 
-   private static Element getElementBySearching(Node root,String id) {
-	   Element []els=new Element[5];
-	   getElementBySearching(root,id,els);
-	   for (int i=0;i<els.length;i++) {
-		   if (els[i]!=null) {
-			   return els[i];
-		   }
-	   }
-	   return null;
-	   
-   }
-   private static int getElementBySearching(Node root,String id,Element []els) {
-	   switch (root.getNodeType()) {
-	   case Node.ELEMENT_NODE:
-		   Element el=(Element)root;
-		   if (el.hasAttributes()) {			  
-			   int index=names.indexOf(el.getNamespaceURI());
-			   if (index<0) {
-				   index=4;
-			   }		   
-			   if (el.getAttribute("Id").equals(id)) {				   
-				   els[index]=el;
-				   if (index==0) {
-					   return 1;
-				   }
-			   } else if ( el.getAttribute("id").equals(id) ) {
-				   if (index!=2) {
-					   index=4;
-				   }			    				   
-				   els[index]=el;
-			   } else if ( el.getAttribute("ID").equals(id) ) {
-				   if (index!=3) {
-					   index=4;
-				   }
-				   els[index]=el;				   
-			   } else if ((index==3)&&(
-				   el.getAttribute("OriginalRequestID").equals(id) ||
-				   el.getAttribute("RequestID").equals(id) ||
-				   el.getAttribute("ResponseID" ).equals(id))) {
-				   els[3]=el;				   
-			   }
-		   }
-	   	case Node.DOCUMENT_NODE:
-			Node sibling=root.getFirstChild();
-			while (sibling!=null) {
-				if (getElementBySearching(sibling,id,els)==1)
-					return 1;
-				sibling=sibling.getNextSibling();
-			}
-	   }
-	   return 0;
-   }
+    private static Element getElementBySearching(Node root,String id) {
+        Element []els=new Element[6];
+	getElementBySearching(root,id,els);
+	for (int i=0;i<els.length;i++) {
+	    if (els[i]!=null) {
+		return els[i];
+	    }
+	}
+	return null;
+    }
 
+    private static int getElementBySearching(Node root,String id,Element []els) {
+	switch (root.getNodeType()) {
+	    case Node.ELEMENT_NODE:
+		Element el=(Element)root;
+		if (el.hasAttributes()) {			  
+		    int index=names.indexOf(el.getNamespaceURI());
+		    if (index<0) {
+		        index=5;
+		    }		   
+		    if (el.getAttribute("Id").equals(id)) {				   
+		        els[index]=el;
+		        if (index==0) {
+			    return 1;
+		        }
+		    } else if ( el.getAttribute("id").equals(id) ) {
+			if (index!=2) {
+			    index=5;
+		        }			    				   
+		        els[index]=el;
+		    } else if ( el.getAttribute("ID").equals(id) ) {
+		        if (index!=3) {
+		            index=5;
+		        }
+		        els[index]=el;				   
+		    } else if ((index==3)&&(
+			el.getAttribute("OriginalRequestID").equals(id) ||
+			el.getAttribute("RequestID").equals(id) ||
+			el.getAttribute("ResponseID").equals(id))) {
+			els[3]=el;				   
+		    } else if ((index==4)&&(
+			el.getAttribute("AssertionID").equals(id) ||
+			el.getAttribute("RequestID").equals(id) ||
+			el.getAttribute("ResponseID").equals(id))) {
+			els[4]=el;				   
+		    }
+		}
+	    case Node.DOCUMENT_NODE:
+		Node sibling=root.getFirstChild();
+		while (sibling!=null) {
+		    if (getElementBySearching(sibling,id,els)==1)
+			return 1;
+		    sibling=sibling.getNextSibling();
+		}
+	}
+	return 0;
+    }
 }
