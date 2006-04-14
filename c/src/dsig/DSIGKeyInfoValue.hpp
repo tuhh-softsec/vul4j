@@ -232,7 +232,7 @@ public:
 	 */
 	
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
-		DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
+		createBlankRSAKeyValue(const XMLCh * modulus,
 			const XMLCh * exponent);
 
 	/**
@@ -243,7 +243,7 @@ public:
 	 * @param modulus Base64 encoded value to set
 	 */
 
-	void DSIGKeyInfoValue::setRSAModulus(const XMLCh * modulus);
+	void setRSAModulus(const XMLCh * modulus);
 
 	/**
 	 * \brief Set the exponent
@@ -253,7 +253,7 @@ public:
 	 * @param exponent Base64 encoded value to set
 	 */
 
-	void DSIGKeyInfoValue::setRSAExponent(const XMLCh * exponent);
+	void setRSAExponent(const XMLCh * exponent);
 
 	//@}
 

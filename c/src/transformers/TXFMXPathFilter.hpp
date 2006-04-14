@@ -77,7 +77,7 @@ public:
 	// XPathFilter unique
 
 	void evaluateExprs(DSIGTransformXPathFilter::exprVectorType * exprs);
-	XSECXPathNodeList * TXFMXPathFilter::evaluateSingleExpr(DSIGXPathFilterExpr *expr);
+	XSECXPathNodeList * evaluateSingleExpr(DSIGXPathFilterExpr *expr);
 
 	// Methods to get output data
 

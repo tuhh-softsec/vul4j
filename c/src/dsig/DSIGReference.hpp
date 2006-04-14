@@ -422,7 +422,7 @@ public:
 	 * transforms.
 	 */
 
-	static TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input, 
+	static TXFMChain * createTXFMChainFromList(TXFMBase * input, 
 							DSIGTransformList * lst);
 
 	/**

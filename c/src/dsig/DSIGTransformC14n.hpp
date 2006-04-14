@@ -187,7 +187,7 @@ public:
 	 * @param ns The (space separated) list of prefixes to set.
 	 */
 
-	void DSIGTransformC14n::setInclusiveNamespaces(XMLCh * ns);
+	void setInclusiveNamespaces(XMLCh * ns);
 	
 	/**
 	 * \brief Get the string containing the inclusive namespaces.

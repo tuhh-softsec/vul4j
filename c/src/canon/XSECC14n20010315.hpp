@@ -128,7 +128,7 @@ protected:
 
 private:
 
-	void XSECC14n20010315::init();
+	void init();
 	bool checkRenderNameSpaceNode(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *e, 
 								  XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *a);
 	void stackInit(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);

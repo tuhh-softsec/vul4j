@@ -53,7 +53,7 @@ public:
 	void load(void);
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
-		XKMSResultTypeImpl::createBlankResultType(
+		createBlankResultType(
 		const XMLCh * tag,
 		const XMLCh * service,
 		const XMLCh * id,

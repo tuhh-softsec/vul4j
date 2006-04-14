@@ -232,7 +232,7 @@ public:
 	 */
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
-		DSIGKeyInfoList::createKeyInfo(void);
+		createKeyInfo(void);
 
 	/**
 	 * \brief Append a DSA KeyValue element 
