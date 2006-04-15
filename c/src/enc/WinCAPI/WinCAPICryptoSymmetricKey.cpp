@@ -254,6 +254,17 @@ unsigned int WinCAPICryptoSymmetricKey::decrypt(const unsigned char * inBuf,
 		}
 	}
 
+	/* As per bug #38365 - we need to ensure there are enough characters to decrypt.
+	   Otherwise we get some nasty errors due to rounding calculations when inputs
+	   are too small */
+
+	else if (m_bytesInLastBlock + inLength < m_blockSize) {
+		// Not enough input data
+		memcpy(&m_lastBlock[m_bytesInLastBlock], inBuf, inLength);
+		m_bytesInLastBlock += inLength;
+		return 0;
+	}
+
 	DWORD outl = inLength - offset;
 
 	// Copy in last block
@@ -487,6 +498,19 @@ unsigned int WinCAPICryptoSymmetricKey::encrypt(const unsigned char * inBuf,
 		outl += m_ivSize;
 		m_ivSize = 0;
 
+	}
+
+	/* As per bug #38365 - we need to ensure there are enough characters to encrypt.
+	   Otherwise we get some nasty errors due to rounding calculations when inputs
+	   are too small */
+
+	if (m_bytesInLastBlock + inLength < m_blockSize) {
+		// Not enough input data
+		memcpy(&m_lastBlock[m_bytesInLastBlock], inBuf, inLength);
+		m_bytesInLastBlock += inLength;
+
+		// Just in case we have returned an IV
+		return outl;
 	}
 
 	bufPtr = &cipherBuf[offset];
