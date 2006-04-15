@@ -1533,6 +1533,115 @@ void unitTestElementContentEncrypt(DOMImplementation *impl, XSECCryptoKey * key,
 
 }
 
+void unitTestSmallElement(DOMImplementation *impl) {
+	
+	cerr << "Encrypt small input... ";
+
+	// Create a document
+    
+	DOMDocument * doc = createTestDoc(impl);
+	DOMElement * productNode = (DOMElement *) findNode(doc, MAKE_UNICODE_STRING("product"));
+	if (productNode == NULL) {
+
+		cerr << "Error finding product node for small input encryption test" << endl;
+		exit(1);
+
+	}
+
+	// Shrink the input text
+	DOMNode * textNode = productNode->getFirstChild();
+	textNode->setNodeValue(MAKE_UNICODE_STRING("sm"));
+
+	// Create and execute cipher
+
+	XSECProvider prov;
+	XENCCipher * cipher;
+
+	try {
+		
+		/*
+		 * Now we have a document, find the data node.
+		 */
+
+		cipher = prov.newCipher(doc);
+		cipher->setXENCNSPrefix(MAKE_UNICODE_STRING("xenc"));
+		cipher->setPrettyPrint(true);
+
+		// Set a key
+		XSECCryptoSymmetricKey * ks = 
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
+		ks->setKey((unsigned char *) s_keyStr, 24);
+
+		cipher->setKey(ks->clone());
+	
+		// Now encrypt!
+		cipher->encryptElementContent(productNode, ENCRYPT_3DES_CBC);
+
+		cerr << "done ... check encrypted ... ";
+
+		DOMNode * t = findNode(doc, MAKE_UNICODE_STRING("product"));
+		t = findFirstChildOfType(t, DOMNode::TEXT_NODE);
+		while (t != NULL && ! strEquals(t->getNodeValue(), "sm"))
+			t = findNextChildOfType(t, DOMNode::TEXT_NODE);
+
+		if (t != NULL) {
+
+			cerr << "no - text child still exists" << endl;
+			exit(1);
+
+		}
+		else
+			cerr << "yes" << endl;
+		
+		outputDoc(impl, doc);
+		
+		cerr << "Decrypting Element content ... ";
+
+		// OK - Now we try to decrypt
+		// Find the EncryptedData node
+		DOMNode * n = findXENCNode(doc, "EncryptedData");
+
+		XENCCipher * cipher2 = prov.newCipher(doc);
+
+		cipher2->setKey(ks);
+
+		cipher2->decryptElement(static_cast<DOMElement *>(n));
+
+		cerr << "done ... check decrypt ... ";
+		t = findNode(doc, MAKE_UNICODE_STRING("product"));
+		t = findFirstChildOfType(t, DOMNode::TEXT_NODE);
+		if (t == NULL || !strEquals(t->getNodeValue(), "sm")) {
+
+			cerr << " failed - small text did not decrypt properly" << endl;
+			exit(1);
+
+		}
+		else
+			cerr << "OK" << endl;
+
+		outputDoc(impl, doc);
+
+	}
+	catch (XSECException &e)
+	{
+		cerr << "An error occured during encryption processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "A cryptographic error occured during encryption processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+	doc->release();
+
+}
+
 
 void unitTestKeyEncrypt(DOMImplementation *impl, XSECCryptoKey * k, encryptionMethod em) {
 
@@ -1811,7 +1920,8 @@ void unitTestEncrypt(DOMImplementation *impl) {
 #else
 		cerr << "Skipped Cipher Reference Test (requires XPath)" << endl;
 #endif
-
+		cerr << "Misc. encryption tests" << endl;
+		unitTestSmallElement(impl);
 	}
 	catch (XSECCryptoException &e)
 	{
