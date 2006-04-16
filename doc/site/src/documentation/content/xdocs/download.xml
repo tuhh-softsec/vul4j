@@ -67,17 +67,18 @@ limitations under the License.
 	  </source>
 	</section>
     <section>
-      <title>CVS Download</title>
+      <title>SVN Download</title>
       <p>
-		For the adventurous, this project's CVS repository can be checked 
-		out through anonymous (pserver) CVS with the following instruction 
-		set.  When prompted for a password for anonymous, simply enter 
-		"anoncvs" without quotes: 
+		For the adventurous, this project's SVN repository can be checked 
+		out through anonymous SVN with the following instruction 
+		set.
       </p>
-      <source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
-	password: anoncvs
-	cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security
-      </source>
+      <source>svn co https://svn.apache.org/repos/asf/xml/security/trunk xml-security</source>
+      <p>
+               This will check out the code into a subdirectory named
+               "xml-security".  The checkout will contain both the Java and
+               the C++ source.
+      </p>
 	</section>
   </body>
 </document>
