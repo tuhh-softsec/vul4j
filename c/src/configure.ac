@@ -665,9 +665,21 @@ AC_TRY_COMPILE([#include <openssl/rsa.h>],
 	[AC_DEFINE(XSEC_OPENSSL_CONST_BUFFERS)],
 	[AC_MSG_RESULT([no])])
 
-AC_CHECK_DECL(EVP_aes_128_cbc,
+# Check for full strength AES - Solaris 10 install is broken
+# and only supports low end AES.  As the library does not have
+# this granularity, we have to disable AES in this instance.
+
+# AC_CHECK_DECL(EVP_aes_256_cbc,
+# 	[AC_DEFINE(XSEC_OPENSSL_HAVE_AES)],
+# 	,[#include <openssl/evp.h>])
+
+AC_MSG_CHECKING([for non-broken AES support])
+AC_TRY_LINK([#include <openssl/evp.h>],
+	[ EVP_aes_256_cbc();
+	],
+	[AC_MSG_RESULT([yes])]
 	[AC_DEFINE(XSEC_OPENSSL_HAVE_AES)],
-	,[#include <openssl/evp.h>])
+	[AC_MSG_RESULT([no])])
 
 AC_CHECK_DECL(EVP_CIPHER_CTX_set_padding(NULL,0),
 	[AC_DEFINE(XSEC_OPENSSL_CANSET_PADDING)],
