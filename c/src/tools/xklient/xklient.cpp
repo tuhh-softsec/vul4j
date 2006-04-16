@@ -2148,7 +2148,8 @@ void printRecoverRequestUsage(void) {
 #if defined (HAVE_OPENSSL)
 	cerr << "   --output-private-key/-p <file> <pass phrase>\n";
 	cerr << "                            : Write PEM encoded private key to file\n";
-#endif	cerr << "   --authenticate/-a <phrase>\n";
+#endif	
+	cerr << "   --authenticate/-a <phrase>\n";
 	cerr << "           : Use <phrase> as the authentication key for the request\n";
 	cerr << "             NOTE - This must come *after* adding of KeyInfo elements\n\n";
 
