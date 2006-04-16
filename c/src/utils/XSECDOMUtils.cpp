@@ -734,7 +734,7 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 		retPath[i] = chNull;
 		len = i;
 
-		percentIndex = XMLString::indexOf(retPath, chPercent, percentIndex);
+		percentIndex = XMLString::indexOf(retPath, chPercent, ++percentIndex);
 
 	}
 
