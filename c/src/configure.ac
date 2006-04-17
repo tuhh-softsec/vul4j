@@ -49,10 +49,42 @@ AC_CONFIG_HEADERS([framework/XSECConfig.hpp])
 
 # Get user options
 
+AC_ARG_WITH(xerces, 
+	AC_HELP_STRING(--with-xerces, 
+		[Define Xerces directory.  Values = 'yes' or installation directory. 'No' is not permitted (Default = yes)]), 
+	use_xerces=$withval, use_xerces=yes)
+
+if test x"$use_xerces" != "xyes" ; then
+  if test x"$use_xerces" != "xno" ; then
+    XERCESCROOT=$use_xerces
+  else
+    AC_MSG_ERROR([Cannot configure without Xerces])
+  fi
+fi
+
+
 AC_ARG_WITH(xalan, 
 	AC_HELP_STRING(--with-xalan, 
-		[Enable Xalan integration (Default = yes)]), 
+		[Enable Xalan integration.  Values = 'yes' or installation directory (Default = yes)]), 
 	use_xalan=$withval, use_xalan=yes)
+
+if test x"$use_xalan" != "xyes" ; then
+  if test x"$use_xalan" != "xno" ; then
+    XALANCROOT=$use_xalan
+  fi
+fi
+
+AC_ARG_WITH(openssl,
+    AC_HELP_STRING(--with-openssl,
+        [Use Openssl.  Values = 'yes' or installation directory (Default = yes)]),
+    use_openssl=$withval, use_openssl=yes)
+
+if test x"$use_openssl" != "xyes" ; then
+  if test x"$use_openssl" != "xno" ; then
+    # Must be the source directory
+    OPENSSL=$use_openssl
+  fi
+fi
 
 AC_ARG_ENABLE(debug,
 	AC_HELP_STRING(--enable-debug,
@@ -66,6 +98,13 @@ else
 	CFLAGS="${CFLAGS} -O2 -DNDEBUG"
 	CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
 fi
+
+# As of version 1.3, by default treat warnings as errors
+
+AC_ARG_ENABLE(warnerror,
+	AC_HELP_STRING(--enable-warnerrer,
+		[Treat warnings as errors during compile (Default = no)]),
+	enable_warnerror=$enableval, enable_warnerror=no)
 
 # Create the Makefile.in files in each directory
 library_l1_src_dirs="canon transformers dsig enc framework utils xenc xkms"
@@ -171,6 +210,9 @@ case "${host}" in
 							# Not sure if these will work - only tested with g++
 							PIC=["-KPIC"]
 							PLATFORM_OPTIONS=["-mt"]
+	                        cflags_warnerror="-xwe -errtags"
+	                        cxxflags_warnerror="-xwe -errtags"
+
 						fi
 						# Should use -D_REENTRANT - but not yet OK
 						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"]
@@ -413,7 +455,7 @@ AC_TRY_COMPILE([#include <xercesc/dom/DOM.hpp>],
 
 # Now check for Xalan
 
-if test "$use_xalan" = "yes" ; then
+if test x"$use_xalan" != x"no" ; then
 
   if test $XALANCROOT; then
 
@@ -421,8 +463,9 @@ if test "$use_xalan" = "yes" ; then
 
     OLD_CPPFLAGS=$CPPFLAGS
     # Updated to include nls/include as this is generally needed for
-    # compilation against non-installed xalan
-    CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src -I${XALANCROOT}/nls/include"]
+    # compilation against non-installed xalan.
+    # Also now include XALANCROOT/include to cater for installed xalan
+    CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src -I${XALANCROOT}/include -I${XALANCROOT}/nls/include"]
 
     AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 
@@ -609,6 +652,8 @@ AC_TRY_CPP([#include <openssl/opensslv.h>],
    [AC_MSG_RESULT([no])]);
 
 # Now check libs
+# Note we keep both the base OPENSSL dir and /lib to handle
+# both an installed version or a source dir
 
 OLD_LIBS=$LIBS
 LIBS=["${LIBS} -L${OPENSSL} -lcrypto"]
@@ -710,6 +755,20 @@ AC_CHECK_DECL(_stricmp,
 AC_CHECK_DECL(_getcwd,
 	[AC_DEFINE(XSEC_HAVE__GETCWD)],
 	,[#include <string.h>])
+
+# Configure for warnings as errors if necessary
+# Note that we disable deprecation warnings for this case
+
+if test "x${enable_warnerror}" = "xyes" ; then
+  AC_MSG_WARN([Enabling error on warnings])
+  if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
+	CC1="${CC1} -Werror -Wno-deprecated"
+  else
+    if test "x${cflags_warnerror}" != "x" ; then
+	  CC1="${CC1} ${cxxflags_warnerror}"
+    fi
+  fi
+fi
 
 # Build the object file lists necessary to link the library
 # At the same time, build the include list

@@ -862,11 +862,19 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-debug          Compile a version of the library with symbols
                           (Default = no)
+  --enable-warnerrer      Treat warnings as errors during compile (Default =
+                          no)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-xalan            Enable Xalan integration (Default = yes)
+  --with-xerces           Define Xerces directory. Values = 'yes' or
+                          installation directory. 'No' is not permitted
+                          (Default = yes)
+  --with-xalan            Enable Xalan integration. Values = 'yes' or
+                          installation directory (Default = yes)
+  --with-openssl          Use Openssl. Values = 'yes' or installation
+                          directory (Default = yes)
 
 Some influential environment variables:
   CC          C compiler command
@@ -1346,6 +1354,26 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 # Get user options
 
 
+# Check whether --with-xerces or --without-xerces was given.
+if test "${with_xerces+set}" = set; then
+  withval="$with_xerces"
+  use_xerces=$withval
+else
+  use_xerces=yes
+fi;
+
+if test x"$use_xerces" != "xyes" ; then
+  if test x"$use_xerces" != "xno" ; then
+    XERCESCROOT=$use_xerces
+  else
+    { { echo "$as_me:$LINENO: error: Cannot configure without Xerces" >&5
+echo "$as_me: error: Cannot configure without Xerces" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
+fi
+
+
+
 # Check whether --with-xalan or --without-xalan was given.
 if test "${with_xalan+set}" = set; then
   withval="$with_xalan"
@@ -1353,6 +1381,28 @@ if test "${with_xalan+set}" = set; then
 else
   use_xalan=yes
 fi;
+
+if test x"$use_xalan" != "xyes" ; then
+  if test x"$use_xalan" != "xno" ; then
+    XALANCROOT=$use_xalan
+  fi
+fi
+
+
+# Check whether --with-openssl or --without-openssl was given.
+if test "${with_openssl+set}" = set; then
+  withval="$with_openssl"
+  use_openssl=$withval
+else
+  use_openssl=yes
+fi;
+
+if test x"$use_openssl" != "xyes" ; then
+  if test x"$use_openssl" != "xno" ; then
+    # Must be the source directory
+    OPENSSL=$use_openssl
+  fi
+fi
 
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
@@ -1369,6 +1419,16 @@ else
 	CFLAGS="${CFLAGS} -O2 -DNDEBUG"
 	CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
 fi
+
+# As of version 1.3, by default treat warnings as errors
+
+# Check whether --enable-warnerror or --disable-warnerror was given.
+if test "${enable_warnerror+set}" = set; then
+  enableval="$enable_warnerror"
+  enable_warnerror=$enableval
+else
+  enable_warnerror=no
+fi;
 
 # Create the Makefile.in files in each directory
 library_l1_src_dirs="canon transformers dsig enc framework utils xenc xkms"
@@ -3987,6 +4047,9 @@ case "${host}" in
 							# Not sure if these will work - only tested with g++
 							PIC="-KPIC"
 							PLATFORM_OPTIONS="-mt"
+	                        cflags_warnerror="-xwe -errtags"
+	                        cxxflags_warnerror="-xwe -errtags"
+
 						fi
 						# Should use -D_REENTRANT - but not yet OK
 						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"
@@ -4452,7 +4515,7 @@ rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 
 # Now check for Xalan
 
-if test "$use_xalan" = "yes" ; then
+if test x"$use_xalan" != x"no" ; then
 
   if test $XALANCROOT; then
 
@@ -4461,8 +4524,9 @@ echo $ECHO_N "checking for Xalan headers in XALANCROOT... $ECHO_C" >&6
 
     OLD_CPPFLAGS=$CPPFLAGS
     # Updated to include nls/include as this is generally needed for
-    # compilation against non-installed xalan
-    CPPFLAGS="${CPPFLAGS} -I${XALANCROOT}/src -I${XALANCROOT}/nls/include"
+    # compilation against non-installed xalan.
+    # Also now include XALANCROOT/include to cater for installed xalan
+    CPPFLAGS="${CPPFLAGS} -I${XALANCROOT}/src -I${XALANCROOT}/include -I${XALANCROOT}/nls/include"
 
     cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
@@ -4949,6 +5013,8 @@ fi
 rm -f conftest.err conftest.$ac_ext;
 
 # Now check libs
+# Note we keep both the base OPENSSL dir and /lib to handle
+# both an installed version or a source dir
 
 OLD_LIBS=$LIBS
 LIBS="${LIBS} -L${OPENSSL} -lcrypto"
@@ -5665,6 +5731,21 @@ _ACEOF
 
 fi
 
+
+# Configure for warnings as errors if necessary
+# Note that we disable deprecation warnings for this case
+
+if test "x${enable_warnerror}" = "xyes" ; then
+  { echo "$as_me:$LINENO: WARNING: Enabling error on warnings" >&5
+echo "$as_me: WARNING: Enabling error on warnings" >&2;}
+  if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
+	CC1="${CC1} -Werror -Wno-deprecated"
+  else
+    if test "x${cflags_warnerror}" != "x" ; then
+	  CC1="${CC1} ${cxxflags_warnerror}"
+    fi
+  fi
+fi
 
 # Build the object file lists necessary to link the library
 # At the same time, build the include list
