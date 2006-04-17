@@ -118,7 +118,7 @@ public:
 		RecoverRequest,			/** A RecoverRequest message */
 		RecoverResult,			/** A RecoverResult message */
 		ReissueRequest,			/** A ReissueRequest message */
-		ReissueResult,			/** A ReissueResult message */
+		ReissueResult			/** A ReissueResult message */
 
 	};
 

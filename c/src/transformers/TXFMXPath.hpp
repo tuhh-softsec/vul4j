@@ -92,7 +92,7 @@ public:
 	// XPath unique
 
 	void setNameSpace(XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap *xpAtts);
-	void evaluateExpr(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *h, safeBuffer expr);
+	void evaluateExpr(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *h, safeBuffer inexpr);
 	void evaluateEnvelope(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *t);
 
 	// Methods to get output data

@@ -513,22 +513,18 @@ const XMLCh * canonicalizationMethod2UNICODEURI(canonicalizationMethod cm) {
 	case (CANON_C14N_NOC) :
 
 		return DSIGConstants::s_unicodeStrURIC14N_NOC;
-		break;
 
 	case (CANON_C14N_COM) :
 
 		return DSIGConstants::s_unicodeStrURIC14N_COM;
-		break;
 
 	case (CANON_C14NE_NOC) :
 
 		return DSIGConstants::s_unicodeStrURIEXC_C14N_NOC;
-		break;
 
 	case (CANON_C14NE_COM) :
 
 		return DSIGConstants::s_unicodeStrURIEXC_C14N_COM;
-		break;
 
 	default :
 		break;

@@ -151,7 +151,7 @@ private :
 
 		B64_UNINITIALISED,
 		B64_ENCODE,
-		B64_DECODE,
+		B64_DECODE
 	};
 
 	safeBuffer				m_inputBuffer;		// Carry over buffer

@@ -74,7 +74,7 @@ public:
 
 		NO_TYPE			= 0,    /** Not Set */
 		VALUE_TYPE		= 1,
-		REFERENCE_TYPE	= 2,
+		REFERENCE_TYPE	= 2
 
 	};
 

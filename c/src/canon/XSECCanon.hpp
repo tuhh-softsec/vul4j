@@ -29,8 +29,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
-XSEC_DECLARE_XERCES_CLASS(DOMNode);
-XSEC_DECLARE_XERCES_CLASS(DOMDocument);
+XSEC_DECLARE_XERCES_CLASS(DOMNode)
+XSEC_DECLARE_XERCES_CLASS(DOMDocument)
 
 // --------------------------------------------------------------------------------
 //           Defines

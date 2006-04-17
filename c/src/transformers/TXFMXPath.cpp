@@ -275,7 +275,7 @@ XalanNode * findHereNodeFromXalan(XercesWrapperNavigator * xwn, XalanNode * n, D
 		
 
 
-void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
+void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer inexpr) {
 
 	// Temporarily add any necessary name spaces into the document
 
@@ -418,19 +418,19 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 		safeBuffer k(KLUDGE_PREFIX);
 		k.sbStrcatIn(":");
 
-		offset = expr.sbStrstr("here()");
+		offset = inexpr.sbStrstr("here()");
 
 		while (offset >= 0) {
 
 			if (offset == 0 || offset == 1 || 
-				(!(expr[offset - 1] == ':' && expr[offset - 2] != ':') &&
-				separator(expr[offset - 1]))) {
+				(!(inexpr[offset - 1] == ':' && inexpr[offset - 2] != ':') &&
+				separator(inexpr[offset - 1]))) {
 
-				expr.sbStrinsIn(k.rawCharBuffer(), offset);
+				inexpr.sbStrinsIn(k.rawCharBuffer(), offset);
 
 			}
 
-			offset = expr.sbOffsetStrstr("here()", offset + 11);
+			offset = inexpr.sbOffsetStrstr("here()", offset + 11);
 
 		}
 
@@ -443,7 +443,7 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 		}
 
 		str.sbStrcpyIn("(descendant-or-self::node() | descendant-or-self::node()/attribute::* | descendant-or-self::node()/namespace::*)[");
-		str.sbStrcatIn(expr);
+		str.sbStrcatIn(inexpr);
 		str.sbStrcatIn("]");
 
 		XPath * xp = xpf.create();
