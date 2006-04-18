@@ -247,10 +247,22 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 			<File
 				RelativePath="..\..\..\..\src\canon\XSECCanon.hpp">
 			</File>
+			<File
+				RelativePath="..\..\..\..\src\canon\XSECXMLNSStack.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\canon\XSECXMLNSStack.hpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="dsig"
 			Filter="">
+			<File
+				RelativePath="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.hpp">
+			</File>
 			<File
 				RelativePath="..\..\..\..\src\dsig\DSIGConstants.cpp">
 			</File>
@@ -954,10 +966,31 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				RelativePath="..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSRSAKeyPair.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSRecoverKeyBinding.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSRecoverRequest.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSRecoverResult.hpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\xkms\XKMSRegisterRequest.hpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\xkms\XKMSRegisterResult.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSReissueKeyBinding.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSReissueRequest.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSReissueResult.hpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\xkms\XKMSRequestAbstractType.hpp">
@@ -973,6 +1006,15 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\xkms\XKMSResultType.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSRevokeKeyBinding.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSRevokeRequest.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\xkms\XKMSRevokeResult.hpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\xkms\XKMSStatus.hpp">
@@ -1080,6 +1122,30 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 					RelativePath="..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.hpp">
 				</File>
 				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRSAKeyPairImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverKeyBindingImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverRequestImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRecoverResultImpl.hpp">
+				</File>
+				<File
 					RelativePath="..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.cpp">
 				</File>
 				<File
@@ -1090,6 +1156,24 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueKeyBindingImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueRequestImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSReissueResultImpl.hpp">
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.cpp">
@@ -1120,6 +1204,24 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeKeyBindingImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeRequestImpl.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\xkms\impl\XKMSRevokeResultImpl.hpp">
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\xkms\impl\XKMSStatusImpl.cpp">
