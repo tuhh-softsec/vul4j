@@ -129,6 +129,7 @@ XSECXPathNodeList::btn * XSECXPathNodeList::copy_tree(btn * t) const {
 		return NULL;
 
 	btn * n, *c, *cp, *ret;
+    c = cp = NULL;
 
 	n = t;
 	bool create = true;
@@ -398,6 +399,7 @@ void XSECXPathNodeList::addNode(const DOMNode *n) {
 void XSECXPathNodeList::removeNode(const DOMNode *n) {
 
 	btn * t, * last;
+    last = NULL;
 	btn * i = findNodeIndex(n);
 
 	if (i == NULL)

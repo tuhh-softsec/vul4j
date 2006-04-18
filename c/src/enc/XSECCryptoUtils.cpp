@@ -130,7 +130,8 @@ int SASLCleanXKMSPassPhrase(unsigned char * input, int inputLen, safeBuffer &out
 			}
 
 			// ASCII Control characters
-			if ((ch1 >=0 && ch1 <= 0x1F) || ch1 == 0x7F) {
+            // Note - us unsigned, so always >= 0)
+			if ((ch1 <= 0x1F) || (ch1 == 0x7F)) {
 				throw XSECException(XSECException::XKMSError,
 					"SASLCleanXKMSPassPhrase - ASCII control character in XKMS pass phrase");
 			}
@@ -175,7 +176,7 @@ int SASLCleanXKMSPassPhrase(unsigned char * input, int inputLen, safeBuffer &out
 
 			// Non-character code points
 			if ((ch1 >= 0xFDD0 && ch1 <= 0xFDEF) ||
-				(ch1 >= 0xFFFE && ch1 <= 0xFFFF)) {
+				(ch1 >= 0xFFFE)) {
 
 				throw XSECException(XSECException::XKMSError,
 					"SASLCleanXKMSPassPhrase - Non-character code points in XKMS pass phrase");

@@ -46,7 +46,7 @@ XERCES_CPP_NAMESPACE_USE
 //			Some useful defines
 // --------------------------------------------------------------------------------
 
-
+/*
 static XMLCh s_dsa[] = {
 
 	chLatin_d,
@@ -54,6 +54,7 @@ static XMLCh s_dsa[] = {
 	chLatin_a,
 	chNull
 };
+*/
 
 static XMLCh s_rsa[] = {
 

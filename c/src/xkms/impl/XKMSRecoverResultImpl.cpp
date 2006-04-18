@@ -52,8 +52,8 @@ XKMSRecoverResultImpl::XKMSRecoverResultImpl(
 		const XSECEnv * env) :
 m_result(env),
 m_msg(m_result.m_msg),
-mp_privateKeyElement(NULL),
-mp_RSAKeyPair(NULL) {
+mp_RSAKeyPair(NULL),
+mp_privateKeyElement(NULL) {
 
 }
 
@@ -62,8 +62,8 @@ XKMSRecoverResultImpl::XKMSRecoverResultImpl(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
 m_result(env, node),
 m_msg(m_result.m_msg),
-mp_privateKeyElement(NULL),
-mp_RSAKeyPair(NULL) {
+mp_RSAKeyPair(NULL),
+mp_privateKeyElement(NULL) {
 
 }
 
@@ -235,6 +235,11 @@ XKMSRSAKeyPair * XKMSRecoverResultImpl::getRSAKeyPair(const char * passPhrase) {
 	unsigned char kbuf[XSEC_MAX_HASH_SIZE];
 	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, (int) strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
 
+    if (len == 0) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRecoverResult::getRSAKeyPair - error deriving KEK");
+    }
+
 	XSECProvider prov;
 	XENCCipher * cipher = prov.newCipher(m_msg.mp_env->getParentDocument());
 
@@ -315,7 +320,10 @@ XENCEncryptedData * XKMSRecoverResultImpl::setRSAKeyPair(const char * passPhrase
 				"XKMSRecoverResult::setRSAKeyPair - Unknown encryption method");
 		}
 		uri = algorithmSB.sbStrToXMLCh();
-	}		
+	}
+    else
+        uri = algorithmURI;
+
 	// Find if we can get an algorithm for this URI
 	XSECAlgorithmHandler *handler;
 
@@ -330,6 +338,11 @@ XENCEncryptedData * XKMSRecoverResultImpl::setRSAKeyPair(const char * passPhrase
 
 	unsigned char kbuf[XSEC_MAX_HASH_SIZE];
 	unsigned int len = CalculateXKMSKEK((unsigned char *) passPhrase, (int) strlen(passPhrase), kbuf, XSEC_MAX_HASH_SIZE);
+
+    if (len == 0) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRecoverResult::setRSAKeyPair - error deriving KEK");
+    }
 
 	XSECCryptoKey * sk = handler->createKeyForURI(
 					uri,
