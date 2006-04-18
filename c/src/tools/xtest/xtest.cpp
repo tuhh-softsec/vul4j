@@ -2261,8 +2261,10 @@ int main(int argc, char **argv) {
 	/* We output a version number to overcome a "feature" in Microsoft's memory
 	   leak detection */
 
-	cerr << "DSIG Info (Using Apache XML-Security-C Library v" << XSEC_VERSION_MAJOR <<
-		"." << XSEC_VERSION_MEDIUM << "." << XSEC_VERSION_MINOR << ")\n";
+	cerr << "DSIG Info - Using Apache XML-Security-C Library v" << 
+        XSEC_VERSION_MAJOR <<
+		"." << XSEC_VERSION_MEDIUM << "." << XSEC_VERSION_MINOR << 
+        " (" << _XSEC_VERSION_FULL << ")\n";
 
 	// Check parameters
 	bool		doEncryptionTest = true;
