@@ -437,6 +437,7 @@ public class Commandline
      * Returns the shell, executable and all defined arguments.
      */
     public String[] getShellCommandline()
+        throws CommandLineException
     {
         List commandLine = new ArrayList();
 
@@ -456,26 +457,23 @@ public class Commandline
             {
                 commandLine.add( executable );
             }
+
             commandLine.addAll( Arrays.asList( getArguments() ) );
         }
         else
         {
-            /* When using a shell we need to quote the full command */
             StringBuffer sb = new StringBuffer();
-            sb.append( "\"" );
+
             if ( executable != null )
             {
-                sb.append( "\"" );
-                sb.append( executable );
-                sb.append( "\"" );
+                sb.append( quoteArgument( executable ) );
             }
             for (int i = 0 ; i < getArguments().length; i++ )
             {
-                sb.append( " \"" );
-                sb.append( getArguments()[i] );
-                sb.append( "\"" );
+                sb.append( " " );
+                sb.append( quoteArgument( getArguments()[i] ) );
             }
-            sb.append( "\"" );
+
             commandLine.add( sb.toString() );
         }
 

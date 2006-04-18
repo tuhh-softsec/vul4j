@@ -198,7 +198,9 @@ public class CommandlineTest
         assertEquals( "cmd.exe", shellCommandline[0] );
         assertEquals( "/X", shellCommandline[1] );
         assertEquals( "/C", shellCommandline[2] );
-        assertEquals( "\"\"c:" + File.separator + "Program Files" + File.separator + "xxx\" \"a\" \"b\"\"", shellCommandline[3] );
+        System.out.println( "commandline=" + cmd );
+        System.out.println( "commandline=cmd.exe /X /C " + shellCommandline[3] );
+        assertEquals( "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" a b", shellCommandline[3] );
     }
 
     public void testGetShellCommandLineNonWindows()
