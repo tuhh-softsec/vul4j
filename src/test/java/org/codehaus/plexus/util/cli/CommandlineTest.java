@@ -28,6 +28,8 @@ import junit.framework.TestCase;
 
 import java.io.File;
 
+import org.codehaus.plexus.util.cli.shell.CmdShell;
+
 public class CommandlineTest
     extends TestCase
 {
@@ -187,8 +189,7 @@ public class CommandlineTest
         throws Exception
     {
         Commandline cmd = new Commandline();
-        cmd.setShell( "cmd.exe" );
-        cmd.setShellArgs( new String[] { "/X", "/C" } );
+        cmd.setShell( new CmdShell() );
         cmd.setExecutable( "c:\\Program Files\\xxx" );
         cmd.addArguments( new String[] { "a", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
@@ -198,17 +199,58 @@ public class CommandlineTest
         assertEquals( "cmd.exe", shellCommandline[0] );
         assertEquals( "/X", shellCommandline[1] );
         assertEquals( "/C", shellCommandline[2] );
-        System.out.println( "commandline=" + cmd );
-        System.out.println( "commandline=cmd.exe /X /C " + shellCommandline[3] );
-        assertEquals( "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" a b", shellCommandline[3] );
+        String expectedShellCmd = "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" a b";
+        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        assertEquals( expectedShellCmd, shellCommandline[3] );
     }
+
+    public void testGetShellCommandLineWindowsWithSeveralQuotes()
+        throws Exception
+    {
+        Commandline cmd = new Commandline();
+        cmd.setShell( new CmdShell() );
+        cmd.setExecutable( "c:\\Program Files\\xxx" );
+        cmd.addArguments( new String[] { "c:\\Documents and Settings\\whatever", "b" } );
+        String[] shellCommandline = cmd.getShellCommandline();
+    
+        assertEquals( "Command line size", 4, shellCommandline.length );
+    
+        assertEquals( "cmd.exe", shellCommandline[0] );
+        assertEquals( "/X", shellCommandline[1] );
+        assertEquals( "/C", shellCommandline[2] );
+        String expectedShellCmd = "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" \"c:\\Documents and Settings\\whatever\" b";
+        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        assertEquals( expectedShellCmd, shellCommandline[3] );
+    }
+
+    /**
+     * Test the command line generated for the bash shell
+     * @throws Exception
+     */
+//    public void testGetShellCommandLineBash()
+//        throws Exception
+//    {
+//        Commandline cmd = new Commandline();
+//        cmd.setShell( "/bin/bash" );
+//        cmd.setShellArgs( new String[] { "-c" } );
+//        cmd.setExecutable( "/bin/echo" );
+//        cmd.addArguments( new String[] { "hello world" } );
+//        String[] shellCommandline = cmd.getShellCommandline();
+//
+//        assertEquals( "Command line size", 3, shellCommandline.length );
+//
+//        assertEquals( "/bin/bash", shellCommandline[0] );
+//        assertEquals( "-c", shellCommandline[1] );
+//        String expectedShellCmd = File.separator + "bin" + File.separator + "echo \\\"hello world\\\"";
+//        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+//        assertEquals( expectedShellCmd, shellCommandline[2] );
+//    }
 
     public void testGetShellCommandLineNonWindows()
         throws Exception
     {
         Commandline cmd = new Commandline();
         cmd.setShell( null );
-        cmd.setShellArgs( new String[] {} );
         cmd.setExecutable( "/usr/bin" );
         cmd.addArguments( new String[] { "a", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
