@@ -143,17 +143,68 @@ public class ManifestTest
     public void testAttributeMultiLineValue()
         throws Exception
     {
+        checkMultiLineAttribute( 
+             "123456789" + Manifest.EOL + "123456789",
+             "123456789" + Manifest.EOL + " 123456789" + Manifest.EOL );
+    }
+
+    public void testAttributeDifferentLineEndings()
+        throws Exception
+    {
+        checkMultiLineAttribute( 
+            "\tA\rB\n\t C\r\n \tD\n\r",
+            "\tA" + Manifest.EOL +
+                " B" + Manifest.EOL +
+                " \t C" + Manifest.EOL +
+                "  \tD" + Manifest.EOL );
+    }
+
+
+    public void checkMultiLineAttribute( String in, String expected )
+        throws Exception
+    {
         StringWriter writer = new StringWriter();
         Manifest.Attribute attr = new Manifest.Attribute();
-        String multiLineValue = "123456789" + Manifest.EOL + "123456789";
         attr.setName( "test" );
-        attr.setValue( multiLineValue );
+        attr.setValue( in );
         attr.write( new PrintWriter( writer ) );
         writer.flush();
+
+        // Print the string with whitespace replaced with special codes
+        // so in case of failure you can see what went wrong.
+        System.err.println( "String: " + dumpString( writer.toString() ) );
+
         assertEquals( "should be indented multiline", 
-                      "test: 123456789" + Manifest.EOL + " 123456789" + Manifest.EOL,
-                      writer.toString() );
+                      "test: " + expected, writer.toString() );
     }
+
+    private static String dumpString( String in )
+    {
+        String out = "";
+
+        char [] chars = in.toCharArray();
+
+        for ( int i = 0; i < chars.length; i ++ )
+        {
+            switch ( chars[i] )
+            {
+                case '\t': out+="\\t";
+                       break;
+                case '\r': out+="\\r";
+                       break;
+                case '\n': out+="\\n";
+                       break;
+                case ' ': out+="\\s";
+                      break;
+                default:
+                      out+= chars[i];
+                      break;
+            }
+        }
+
+        return out;
+    }
+
 
     /**
      * Reads a Manifest file.

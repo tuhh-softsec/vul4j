@@ -29,6 +29,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -360,21 +361,16 @@ public class Manifest
             throws IOException
         {
             String nameValue = name + ": " + value;
-            for( int idx = nameValue.indexOf( '\n' ); idx >=0; idx = nameValue.indexOf( '\n' ) )
+
+            StringTokenizer tokenizer = new StringTokenizer( nameValue, "\n\r" );
+
+            String prefix = "";
+
+            while ( tokenizer.hasMoreTokens() )
             {
-                String line;
-                if ( nameValue.charAt( idx - 1) == '\r' ) 
-                {
-                    line = nameValue.substring( 0, idx -1 );
-                }
-                else
-                {
-                    line = nameValue.substring( 0, idx );
-                }
-                writeLine( writer, line );
-                nameValue = " " + nameValue.substring( idx + 1 );
+                writeLine( writer, prefix + tokenizer.nextToken() );
+                prefix = " ";
             }
-            writeLine( writer, nameValue );
         }
 
         /**
