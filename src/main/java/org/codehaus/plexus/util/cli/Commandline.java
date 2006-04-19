@@ -93,12 +93,15 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
+ * <p>
  * Commandline objects help handling command lines specifying processes to
  * execute.
- * <p/>
+ * </p>
+ * <p>
  * The class can be used to define a command line as nested elements or as a
  * helper to define a command line by an application.
- * <p/>
+ * </p>
+ * <p>
  * <code>
  * &lt;someelement&gt;<br>
  * &nbsp;&nbsp;&lt;acommandline executable="/executable/to/run"&gt;<br>
@@ -108,8 +111,11 @@ import java.util.Vector;
  * &nbsp;&nbsp;&lt;/acommandline&gt;<br>
  * &lt;/someelement&gt;<br>
  * </code>
+ * </p>
+ * <p>
  * The element <code>someelement</code> must provide a method
  * <code>createAcommandline</code> which returns an instance of this class.
+ * </p>
  *
  * @author thomas.haas@softwired-inc.com
  * @author <a href="mailto:stefan.bodewig@epost.de">Stefan Bodewig</a>
@@ -135,6 +141,12 @@ public class Commandline
 
     private Shell shell;
 
+    /**
+     * Create a new command line object.
+     * Shell is autodetected from operating system
+     *
+     * @param toProcess
+     */
     public Commandline( String toProcess )
     {
         super();
@@ -158,6 +170,10 @@ public class Commandline
         }
     }
 
+    /**
+     * Create a new command line object.
+     * Shell is autodetected from operating system
+     */
     public Commandline()
     {
         super();
@@ -745,6 +761,11 @@ public class Commandline
         this.shell = shell;
     }
 
+    /**
+     * Get the shell to be used in this command line.
+     *
+     * @since 1.2
+     */
     public Shell getShell()
     {
         return shell;

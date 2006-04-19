@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 /**
- * <p/>
+ * <p>
  * Implementation to call the CMD Shell present on Windows NT, 2000 and XP
  * </p>
  *

@@ -17,7 +17,7 @@ package org.codehaus.plexus.util.cli.shell;
  */
 
 /**
- * <p/>
+ * <p>
  * Implementation to call the Command.com Shell present on Windows 95, 98 and Me
  * </p>
  *

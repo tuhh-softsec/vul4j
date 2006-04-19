@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <p/>
+ * <p>
  * Class that abstracts the Shell functionality,
  * with subclases for shells that behave particularly, like
  * <ul>
