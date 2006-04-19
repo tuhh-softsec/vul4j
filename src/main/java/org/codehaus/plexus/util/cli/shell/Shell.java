@@ -1,12 +1,5 @@
 package org.codehaus.plexus.util.cli.shell;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.Commandline;
-
 /*
  * Copyright 2001-2006 The Apache Software Foundation.
  *
@@ -23,28 +16,35 @@ import org.codehaus.plexus.util.cli.Commandline;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.util.cli.CommandLineException;
+import org.codehaus.plexus.util.cli.Commandline;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * <p>
+ * <p/>
  * Class that abstracts the Shell functionality,
  * with subclases for shells that behave particularly, like
  * <ul>
- *   <li><code>command.com</code></li>
- *   <li><code>cmd.exe</code></li>
+ * <li><code>command.com</code></li>
+ * <li><code>cmd.exe</code></li>
  * </ul>
  * </p>
- * 
- * @since 1.2
+ *
  * @author <a href="mailto:carlos@apache.org">Carlos Sanchez</a>
+ * @since 1.2
  */
 public class Shell
 {
-
     private String shellCommand;
 
     private String[] shellArgs;
 
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
+     *
      * @param shellCommand
      */
     public void setShellCommand( String shellCommand )
@@ -53,7 +53,8 @@ public class Shell
     }
 
     /**
-     * Get the command to execute the shell 
+     * Get the command to execute the shell
+     *
      * @return
      */
     public String getShellCommand()
@@ -64,6 +65,7 @@ public class Shell
     /**
      * Set the shell arguments when calling a command line (not the executable arguments)
      * (eg. /X /C for CMD.EXE)
+     *
      * @param shellArgs
      */
     public void setShellArgs( String[] shellArgs )
@@ -72,7 +74,8 @@ public class Shell
     }
 
     /**
-     * Get the shell arguments 
+     * Get the shell arguments
+     *
      * @return
      */
     public String[] getShellArgs()
@@ -82,8 +85,9 @@ public class Shell
 
     /**
      * Get the command line for the provided executable and arguments in this shell
+     *
      * @param executable executable that the shell has to call
-     * @param arguments arguments for the executable, not the shell
+     * @param arguments  arguments for the executable, not the shell
      * @return List with one String object with executable and arguments quoted as needed
      */
     public List getCommandLine( String executable, String[] arguments )
@@ -117,10 +121,11 @@ public class Shell
     /**
      * Get the full command line to execute, including shell command, shell arguments,
      * executable and executable arguments
+     *
      * @param executable executable that the shell has to call
-     * @param arguments arguments for the executable, not the shell
-     * @return List of String objects, whose array version is suitable to be used as argument 
-     * of Runtime.getRuntime().exec()
+     * @param arguments  arguments for the executable, not the shell
+     * @return List of String objects, whose array version is suitable to be used as argument
+     *         of Runtime.getRuntime().exec()
      */
     public List getShellCommandLine( String executable, String[] arguments )
     {

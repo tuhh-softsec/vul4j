@@ -44,7 +44,7 @@ public class WriterStreamConsumer
     public void consumeLine( String line )
     {
         writer.println( line );
-        
+
         writer.flush();
     }
 }

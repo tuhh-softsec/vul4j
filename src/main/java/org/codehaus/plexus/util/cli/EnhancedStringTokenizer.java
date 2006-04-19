@@ -52,30 +52,36 @@ import java.util.StringTokenizer;
 public final class EnhancedStringTokenizer
 {
     private StringTokenizer cst = null;
+
     String cdelim;
+
     final boolean cdelimSingleChar;
+
     final char cdelimChar;
+
     boolean creturnDelims;
+
     String lastToken = null;
+
     boolean delimLast = true;
 
-    public EnhancedStringTokenizer(String str)
+    public EnhancedStringTokenizer( String str )
     {
-        this(str, " \t\n\r\f", false);
+        this( str, " \t\n\r\f", false );
     }
 
-    public EnhancedStringTokenizer(String str, String delim)
+    public EnhancedStringTokenizer( String str, String delim )
     {
-        this(str, delim, false);
+        this( str, delim, false );
     }
 
-    public EnhancedStringTokenizer(String str, String delim, boolean returnDelims)
+    public EnhancedStringTokenizer( String str, String delim, boolean returnDelims )
     {
-        cst = new StringTokenizer(str, delim, true);
+        cst = new StringTokenizer( str, delim, true );
         cdelim = delim;
         creturnDelims = returnDelims;
-        cdelimSingleChar = (delim.length() == 1);
-        cdelimChar = delim.charAt(0);
+        cdelimSingleChar = ( delim.length() == 1 );
+        cdelimChar = delim.charAt( 0 );
     }
 
     public boolean hasMoreTokens()
@@ -85,7 +91,7 @@ public final class EnhancedStringTokenizer
 
     private String internalNextToken()
     {
-        if (lastToken != null)
+        if ( lastToken != null )
         {
             String last = lastToken;
             lastToken = null;
@@ -93,9 +99,9 @@ public final class EnhancedStringTokenizer
         }
 
         String token = cst.nextToken();
-        if (isDelim(token))
+        if ( isDelim( token ) )
         {
-            if (delimLast)
+            if ( delimLast )
             {
                 lastToken = token;
                 return "";
@@ -116,29 +122,35 @@ public final class EnhancedStringTokenizer
     public String nextToken()
     {
         String token = internalNextToken();
-        if (creturnDelims)
+        if ( creturnDelims )
+        {
             return token;
-        if (isDelim(token))
+        }
+        if ( isDelim( token ) )
+        {
             return hasMoreTokens() ? internalNextToken() : "";
+        }
         else
+        {
             return token;
+        }
     }
 
-    private boolean isDelim(String str)
+    private boolean isDelim( String str )
     {
-        if (str.length() == 1)
+        if ( str.length() == 1 )
         {
-            char ch = str.charAt(0);
-            if (cdelimSingleChar)
+            char ch = str.charAt( 0 );
+            if ( cdelimSingleChar )
             {
-                if (cdelimChar == ch)
+                if ( cdelimChar == ch )
                 {
                     return true;
                 }
             }
             else
             {
-                if (cdelim.indexOf(ch) >= 0)
+                if ( cdelim.indexOf( ch ) >= 0 )
                 {
                     return true;
                 }

@@ -30,7 +30,7 @@ import java.io.OutputStream;
 
 /**
  * Read from an InputStream and write the output to an OutputStream.
- * 
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
@@ -45,7 +45,8 @@ public class StreamFeeder
 
     /**
      * Create a new StreamFeeder
-     * @param input Stream to read from
+     *
+     * @param input  Stream to read from
      * @param output Stream to write to
      */
     public StreamFeeder( InputStream input, OutputStream output )

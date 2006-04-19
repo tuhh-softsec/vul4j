@@ -46,10 +46,10 @@ package org.codehaus.plexus.util.cli;
  * @version $Id$
  */
 public class DefaultConsumer
-	implements StreamConsumer
+    implements StreamConsumer
 {
-    public void consumeLine(String line)
+    public void consumeLine( String line )
     {
-        System.out.println(line);
+        System.out.println( line );
     }
 }

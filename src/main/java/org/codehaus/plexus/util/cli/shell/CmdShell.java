@@ -20,25 +20,24 @@ import java.util.List;
  */
 
 /**
- * <p>
+ * <p/>
  * Implementation to call the CMD Shell present on Windows NT, 2000 and XP
  * </p>
- * 
- * @since 1.2
+ *
  * @author <a href="mailto:carlos@apache.org">Carlos Sanchez</a>
+ * @since 1.2
  */
 public class CmdShell
     extends Shell
 {
-
     public CmdShell()
     {
         setShellCommand( "cmd.exe" );
-        setShellArgs( new String[] { "/X", "/C" } );
+        setShellArgs( new String[]{"/X", "/C"} );
     }
 
     /**
-     * Specific implementation that quotes the all the command line 
+     * Specific implementation that quotes the all the command line
      */
     public List getCommandLine( String executable, String[] arguments )
     {
@@ -47,7 +46,7 @@ public class CmdShell
         sb.append( super.getCommandLine( executable, arguments ).get( 0 ) );
         sb.append( "\"" );
 
-        return Arrays.asList( new String[] { sb.toString() } );
+        return Arrays.asList( new String[]{sb.toString()} );
     }
 
 }

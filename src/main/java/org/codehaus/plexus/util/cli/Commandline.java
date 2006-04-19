@@ -78,6 +78,10 @@ package org.codehaus.plexus.util.cli;
  * ====================================================================
  */
 
+import org.codehaus.plexus.util.cli.shell.CmdShell;
+import org.codehaus.plexus.util.cli.shell.CommandShell;
+import org.codehaus.plexus.util.cli.shell.Shell;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,10 +91,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.codehaus.plexus.util.cli.shell.CmdShell;
-import org.codehaus.plexus.util.cli.shell.CommandShell;
-import org.codehaus.plexus.util.cli.shell.Shell;
 
 /**
  * Commandline objects help handling command lines specifying processes to
@@ -117,7 +117,6 @@ import org.codehaus.plexus.util.cli.shell.Shell;
 public class Commandline
     implements Cloneable
 {
-
     protected static final String OS_NAME = "os.name";
 
     protected static final String WINDOWS = "Windows";
@@ -133,7 +132,7 @@ public class Commandline
     private File workingDir = null;
 
     private long pid = -1;
-    
+
     private Shell shell;
 
     public Commandline( String toProcess )
@@ -169,8 +168,7 @@ public class Commandline
     {
         if ( pid == -1 )
         {
-            pid = Long.parseLong(
-                String.valueOf( System.currentTimeMillis() ) );
+            pid = Long.parseLong( String.valueOf( System.currentTimeMillis() ) );
         }
 
         return pid;
@@ -439,7 +437,7 @@ public class Commandline
     public String[] getShellCommandline()
     {
 
-        if ( shell == null )
+        if ( getShell() == null )
         {
             if ( executable != null )
             {
@@ -456,7 +454,7 @@ public class Commandline
         }
         else
         {
-            return (String[]) shell.getShellCommandLine( executable, getArguments() ).toArray( new String[0] );
+            return (String[]) getShell().getShellCommandLine( executable, getArguments() ).toArray( new String[0] );
         }
     }
 
@@ -738,13 +736,17 @@ public class Commandline
 
     /**
      * Allows to set the shell to be used in this command line.
-     * For testing purposes only
-     * @since 1.2
+     *
      * @param shell
+     * @since 1.2
      */
-    void setShell( Shell shell )
+    public void setShell( Shell shell )
     {
         this.shell = shell;
     }
 
+    public Shell getShell()
+    {
+        return shell;
+    }
 }

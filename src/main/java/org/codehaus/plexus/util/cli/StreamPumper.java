@@ -78,20 +78,20 @@ package org.codehaus.plexus.util.cli;
  * ====================================================================
  */
 
+import org.codehaus.plexus.util.IOUtil;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import org.codehaus.plexus.util.IOUtil;
-
 /**
  * Class to pump the error stream during Process's runtime. Copied from the Ant
  * built-in task.
  *
- * @since June 11, 2001
  * @author <a href="mailto:fvancea@maxiq.com">Florin Vancea </a>
  * @author <a href="mailto:pj@thoughtworks.com">Paul Julius </a>
+ * @since June 11, 2001
  */
 public class StreamPumper
     extends Thread
@@ -162,7 +162,7 @@ public class StreamPumper
 
             done = true;
 
-            synchronized( this )
+            synchronized ( this )
             {
                 this.notifyAll();
             }

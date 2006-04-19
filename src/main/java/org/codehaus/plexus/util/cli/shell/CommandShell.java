@@ -17,21 +17,20 @@ package org.codehaus.plexus.util.cli.shell;
  */
 
 /**
- * <p>
+ * <p/>
  * Implementation to call the Command.com Shell present on Windows 95, 98 and Me
  * </p>
- * 
- * @since 1.2
+ *
  * @author <a href="mailto:carlos@apache.org">Carlos Sanchez</a>
+ * @since 1.2
  */
 public class CommandShell
     extends Shell
 {
-
     public CommandShell()
     {
         setShellCommand( "command.com" );
-        setShellArgs( new String[]{ "/C" } );
+        setShellArgs( new String[]{"/C"} );
     }
 
 }

@@ -29,7 +29,7 @@ package org.codehaus.plexus.util.cli;
  * @version $Id$
  */
 public class CommandLineException
-	extends Exception
+    extends Exception
 {
     public CommandLineException( String message )
     {
