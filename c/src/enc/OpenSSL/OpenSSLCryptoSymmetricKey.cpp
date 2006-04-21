@@ -440,7 +440,7 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 
 	outl += offset;
 
-	if (m_doPad && offset > 0) {
+	if (m_doPad && outl > 0) {
 
 		/* Strip any padding */
 		outl -= scrPlainBuf[outl - 1];
