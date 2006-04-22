@@ -1412,14 +1412,6 @@ else
   enable_debug=no
 fi;
 
-if test "$enable_debug" = "yes" ; then
-	CFLAGS="${CFLAGS} -g"
-	CXXFLAGS="${CXXFLAGS} -g"
-else
-	CFLAGS="${CFLAGS} -O2 -DNDEBUG"
-	CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
-fi
-
 # As of version 1.3, by default treat warnings as errors
 
 # Check whether --enable-warnerror or --disable-warnerror was given.
@@ -3464,6 +3456,11 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f conftest.err conftest.$ac_ext
 
+# Need to reset CXXFLAGS if defaults have been set
+if test "$ac_test_CXXFLAGS" != set; then
+  CXXFLAGS=""
+fi
+
 # Check for Intel > 8.0 (which fools configure into thinking it is GNU
 if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
 	echo "$as_me:$LINENO: checking for Intel compiler disguised as GNU" >&5
@@ -4034,35 +4031,29 @@ CXXFLAGS="${CXXFLAGS} -DXSEC_LIBRARY_BUILD"
 # portable makefile.
 
 case "${host}" in
-        *-*-solaris*)   platform=SOLARIS
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
-						# if test "x${CXX}" = "xg++"; then
-							PLATFORM_OPTIONS="-Wall"
-							PIC="-fPIC"
-						else
-							# Not sure if these will work - only tested with g++
-							PIC="-KPIC"
-							PLATFORM_OPTIONS="-mt"
-	                        cflags_warnerror="-xwe -errtags"
-	                        cxxflags_warnerror="-xwe -errtags"
+  *-*-solaris*)
+    platform=SOLARIS
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
 
-						fi
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"
-						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						MAKE_SHARED="${CXX} ${CXXFLAGS} -DSOLARIS -G ${PIC}"
-						LINK="${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}"
-						LINK_COMMAND_1="(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"
-						LINK_COMMAND_2="(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"
-						INSTALL_COMMAND_1="\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"
-						INSTALL_COMMAND_2="\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"
-						INSTALL_COMMAND_3="\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"
+    if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
+      # Assume SunCC
+      PIC="-KPIC"
+      PLATFORM_OPTIONS="-mt"
+      # Flags for warnings as errors
+      cxxflags_warnerror="-xwe -errtags"
+      # Flags for Optimise
+      cxxflags_optimise="-xO2"
+      # Flags for debug
+      cxxflags_debug="-g"
+    fi
 
+    # Should use -D_REENTRANT - but not yet OK
+    PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"
+    SHARED_OPTIONS="-G -DSOLARIS"
+    LINK_OPTIONS="-DSOLARIS"
 						;;
 
         *-*-netbsd*)   platform=NETBSD
@@ -4087,53 +4078,35 @@ case "${host}" in
 
 						;;
 
-        *-*-freebsd*)   platform=FREEBSD
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						PLATFORM_OPTIONS="-Wall"
-						PIC="-fPIC"
+  *-*-freebsd*)   platform=FREEBSD
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
 
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"
-						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						MAKE_SHARED="${CXX} ${CXXFLAGS} -DFREEBSD -shared ${PIC} -pthread -lc_r"
-						LINK="${CXX} ${CXXFLAGS} -DFREEBSD ${PIC} -pthread -lc_r"
-						LINK_COMMAND_1="(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"
-						LINK_COMMAND_2="(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"
-						INSTALL_COMMAND_1="\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"
-						INSTALL_COMMAND_2="\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"
-						INSTALL_COMMAND_3="\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"
+    # Should use -D_REENTRANT - but not yet OK
+    PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"
+    SHARED_OPTIONS="-DFREEBSD -shared -pthread -lc_r"
+    LINK_OPTIONS="-DFREEBSD -pthread -lc_r"
 
 						;;
 
-        *-*-linux*)     platform=LINUX ;
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						#if test "x${CXX}" = "xg++"; then
-						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
-							PLATFORM_OPTIONS="-Wall"
-							PIC="-fPIC"
-						else
-							# Not sure if these will work - only tested with g++
-							PIC="-KPIC"
-							PLATFORM_OPTIONS="-w1 -mp -prec_div"
-						fi
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DLINUX"
-						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						MAKE_SHARED="${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DLINUX -shared ${PIC}"
-						LINK="${CXX} ${CXXFLAGS} -DLINUX -ldl ${PIC}"
-						LINK_COMMAND_1="(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"
-						LINK_COMMAND_2="(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"
-						INSTALL_COMMAND_1="\$(INSTALL) -d \$(DESTDIR)\${libdir} && \$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"
-						INSTALL_COMMAND_2="\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"
-						INSTALL_COMMAND_3="\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"
+  *-*-linux*)     platform=LINUX ;
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
+
+    if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
+      # Assume Intel CC
+      PIC="-KPIC"
+      PLATFORM_OPTIONS="-w1 -mp -prec_div"
+    fi
+
+	# Should use -D_REENTRANT - but not yet OK
+    PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DLINUX"
+    SHARED_OPTIONS="-Wl,-soname,\$(LIBNAME) -DLINUX -shared"
+    LINK_OPTIONS="-DLINUX -ldl"
 
 						;;
 
@@ -4147,6 +4120,7 @@ case "${host}" in
 
 						# Should use -D_REENTRANT - but not yet OK
 						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} -DCYGWIN"
+                        PIC=""
 						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
 						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
 						MAKE_SHARED="${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DCYGWIN -shared -Xlinker --warn-once -Xlinker -Map -Xlinker ../lib/lib${PACKAGE_TARNAME}.map -Xlinker --output-def -Xlinker ../lib/lib${PACKAGE_TARNAME}.def -Xlinker --out-implib -Xlinker ../lib/\$(LIBMAJORNAME)"
@@ -4201,6 +4175,65 @@ echo "$as_me: error: Unknown Platform.  Aborting" >&2;}
    { (exit 1); exit 1; }; }
 						;;
 esac
+
+# Now we should have all compiler specific flags.  So set up specific flags
+# we need
+
+# First if we are using gcc then...
+if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
+
+  PLATFORM_OPTIONS="${PLATFORM_OPTIONS} -Wall"
+  PIC="-fPIC"
+
+  if test "$enable_debug" = "yes" ; then
+	CXXFLAGS="${CXXFLAGS} -g"
+  else
+	CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
+  fi
+
+  if test "x${enable_warnerror}" = "xyes" ; then
+    { echo "$as_me:$LINENO: WARNING: Enabling error on warnings" >&5
+echo "$as_me: WARNING: Enabling error on warnings" >&2;}
+	CXXFLAGS="${CXXFLAGS} -Werror -Wno-deprecated"
+  fi
+else
+
+  if test "$enable_debug" = "yes" ; then
+	CXXFLAGS="${CXXFLAGS} ${cxxflags_debug}"
+  else
+	CXXFLAGS="${CXXFLAGS} ${cxxflags_optimise} -DNDEBUG"
+  fi
+
+  if test "x${enable_warnerror}" = "xyes" ; then
+    { echo "$as_me:$LINENO: WARNING: Enabling error on warnings" >&5
+echo "$as_me: WARNING: Enabling error on warnings" >&2;}
+	CXXFLAGS="${CXXFLAGS} ${cxxflags_warnerror}"
+  fi
+
+fi
+
+# How do we run the C++ compiler?
+CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
+# Command to make the shared library
+MAKE_SHARED="${CXX} ${CXXFLAGS} ${SHARED_OPTIONS} ${PIC}"
+# Command to link an executable
+LINK="${CXX} ${CXXFLAGS} ${LINK_OPTIONS} ${PIC}"
+
+# Default commands to create the library in the correct place
+
+if test -z "$LINK_COMMAND_1" ; then
+    LINK_COMMAND_1="(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"
+    LINK_COMMAND_2="(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"
+fi
+
+# Default commands to install
+
+if test -z "$INSTALL_COMMAND_1" ; then
+    INSTALL_COMMAND_1="\$(INSTALL) -d \$(DESTDIR)\${libdir} && \$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"
+    INSTALL_COMMAND_2="\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"
+    INSTALL_COMMAND_3="\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"
+fi
+
 
 # Find Xerces
 
@@ -4555,7 +4588,7 @@ else
 fi
 if test -z "$ac_cpp_err"; then
   xalan_found=yes
-      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c"
+      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c -lxalanMsg"
       echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
@@ -4601,7 +4634,7 @@ else
 fi
 if test -z "$ac_cpp_err"; then
   xalan_found=yes
-      LIBS="${LIBS} -lxalan-c"
+      LIBS="${LIBS} -lxalan-c -lxalanMsg"
       echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
@@ -4951,12 +4984,7 @@ rm -f conftest.err conftest.$ac_objext conftest.$ac_ext;
 
 fi
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
+# AC_LANG(C)
 
 # Check for OpenSSL
 if test $OPENSSL ; then
@@ -4986,8 +5014,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null; then
   if test -s conftest.err; then
-    ac_cpp_err=$ac_c_preproc_warn_flag
-    ac_cpp_err=$ac_cpp_err$ac_c_werror_flag
+    ac_cpp_err=$ac_cxx_preproc_warn_flag
+    ac_cpp_err=$ac_cpp_err$ac_cxx_werror_flag
   else
     ac_cpp_err=
   fi
@@ -5057,7 +5085,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -5130,7 +5158,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -5190,8 +5218,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null; then
   if test -s conftest.err; then
-    ac_cpp_err=$ac_c_preproc_warn_flag
-    ac_cpp_err=$ac_cpp_err$ac_c_werror_flag
+    ac_cpp_err=$ac_cxx_preproc_warn_flag
+    ac_cpp_err=$ac_cpp_err$ac_cxx_werror_flag
   else
     ac_cpp_err=
   fi
@@ -5356,9 +5384,9 @@ fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
 
-echo "$as_me:$LINENO: checking whether EVP_CIPHER_CTX_set_padding(NULL,0) is declared" >&5
-echo $ECHO_N "checking whether EVP_CIPHER_CTX_set_padding(NULL,0) is declared... $ECHO_C" >&6
-if test "${ac_cv_have_decl_EVP_CIPHER_CTX_set_padding_NULL_0_+set}" = set; then
+echo "$as_me:$LINENO: checking whether EVP_CIPHER_CTX_set_padding is declared" >&5
+echo $ECHO_N "checking whether EVP_CIPHER_CTX_set_padding is declared... $ECHO_C" >&6
+if test "${ac_cv_have_decl_EVP_CIPHER_CTX_set_padding+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -5372,8 +5400,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 int
 main ()
 {
-#ifndef EVP_CIPHER_CTX_set_padding(NULL,0)
-  char *p = (char *) EVP_CIPHER_CTX_set_padding(NULL,0);
+#ifndef EVP_CIPHER_CTX_set_padding
+  char *p = (char *) EVP_CIPHER_CTX_set_padding;
 #endif
 
   ;
@@ -5401,18 +5429,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_have_decl_EVP_CIPHER_CTX_set_padding_NULL_0_=yes
+  ac_cv_have_decl_EVP_CIPHER_CTX_set_padding=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_have_decl_EVP_CIPHER_CTX_set_padding_NULL_0_=no
+ac_cv_have_decl_EVP_CIPHER_CTX_set_padding=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-echo "$as_me:$LINENO: result: $ac_cv_have_decl_EVP_CIPHER_CTX_set_padding_NULL_0_" >&5
-echo "${ECHO_T}$ac_cv_have_decl_EVP_CIPHER_CTX_set_padding_NULL_0_" >&6
-if test $ac_cv_have_decl_EVP_CIPHER_CTX_set_padding_NULL_0_ = yes; then
+echo "$as_me:$LINENO: result: $ac_cv_have_decl_EVP_CIPHER_CTX_set_padding" >&5
+echo "${ECHO_T}$ac_cv_have_decl_EVP_CIPHER_CTX_set_padding" >&6
+if test $ac_cv_have_decl_EVP_CIPHER_CTX_set_padding = yes; then
   cat >>confdefs.h <<\_ACEOF
 #define XSEC_OPENSSL_CANSET_PADDING 1
 _ACEOF
@@ -5731,21 +5759,6 @@ _ACEOF
 
 fi
 
-
-# Configure for warnings as errors if necessary
-# Note that we disable deprecation warnings for this case
-
-if test "x${enable_warnerror}" = "xyes" ; then
-  { echo "$as_me:$LINENO: WARNING: Enabling error on warnings" >&5
-echo "$as_me: WARNING: Enabling error on warnings" >&2;}
-  if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
-	CC1="${CC1} -Werror -Wno-deprecated"
-  else
-    if test "x${cflags_warnerror}" != "x" ; then
-	  CC1="${CC1} ${cxxflags_warnerror}"
-    fi
-  fi
-fi
 
 # Build the object file lists necessary to link the library
 # At the same time, build the include list

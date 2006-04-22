@@ -91,14 +91,6 @@ AC_ARG_ENABLE(debug,
 		[Compile a version of the library with symbols (Default = no)]),
 	enable_debug=$enableval, enable_debug=no)
 
-if test "$enable_debug" = "yes" ; then
-	CFLAGS="${CFLAGS} -g"
-	CXXFLAGS="${CXXFLAGS} -g"
-else
-	CFLAGS="${CFLAGS} -O2 -DNDEBUG"
-	CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
-fi
-
 # As of version 1.3, by default treat warnings as errors
 
 AC_ARG_ENABLE(warnerror,
@@ -160,6 +152,11 @@ AC_TRY_CPP()
 AC_LANG(C++)
 AC_TRY_CPP()
 
+# Need to reset CXXFLAGS if defaults have been set
+if test "$ac_test_CXXFLAGS" != set; then
+  CXXFLAGS=""
+fi
+
 # Check for Intel > 8.0 (which fools configure into thinking it is GNU
 if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
 	AC_MSG_CHECKING([for Intel compiler disguised as GNU])
@@ -197,35 +194,29 @@ CXXFLAGS="${CXXFLAGS} -DXSEC_LIBRARY_BUILD"
 # portable makefile.
 
 case "${host}" in
-        *-*-solaris*)   platform=SOLARIS 
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
-						# if test "x${CXX}" = "xg++"; then
-							PLATFORM_OPTIONS=["-Wall"]
-							PIC=["-fPIC"]
-						else
-							# Not sure if these will work - only tested with g++
-							PIC=["-KPIC"]
-							PLATFORM_OPTIONS=["-mt"]
-	                        cflags_warnerror="-xwe -errtags"
-	                        cxxflags_warnerror="-xwe -errtags"
+  *-*-solaris*)   
+    platform=SOLARIS 
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
 
-						fi
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"]
-						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						MAKE_SHARED=["${CXX} ${CXXFLAGS} -DSOLARIS -G ${PIC}"]
-						LINK=["${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}"]
-						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
-						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
+    if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
+      # Assume SunCC
+      PIC=["-KPIC"]
+      PLATFORM_OPTIONS=["-mt"]
+      # Flags for warnings as errors
+      cxxflags_warnerror="-xwe -errtags"
+      # Flags for Optimise
+      cxxflags_optimise="-xO2"
+      # Flags for debug
+      cxxflags_debug="-g"
+    fi
 
+    # Should use -D_REENTRANT - but not yet OK
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"]
+    SHARED_OPTIONS="-G -DSOLARIS"
+    LINK_OPTIONS="-DSOLARIS"
 						;;
 
         *-*-netbsd*)   platform=NETBSD 
@@ -250,53 +241,35 @@ case "${host}" in
 
 						;;
 
-        *-*-freebsd*)   platform=FREEBSD 
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						PLATFORM_OPTIONS=["-Wall"]
-						PIC=["-fPIC"]
+  *-*-freebsd*)   platform=FREEBSD 
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
 
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"]
-						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						MAKE_SHARED=["${CXX} ${CXXFLAGS} -DFREEBSD -shared ${PIC} -pthread -lc_r"]
-						LINK=["${CXX} ${CXXFLAGS} -DFREEBSD ${PIC} -pthread -lc_r"]
-						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
-						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
+    # Should use -D_REENTRANT - but not yet OK
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"]
+    SHARED_OPTIONS="-DFREEBSD -shared -pthread -lc_r"
+    LINK_OPTIONS="-DFREEBSD -pthread -lc_r"
 
 						;;
 
-        *-*-linux*)     platform=LINUX ;
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						#if test "x${CXX}" = "xg++"; then
-						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
-							PLATFORM_OPTIONS=["-Wall"]
-							PIC=["-fPIC"]
-						else
-							# Not sure if these will work - only tested with g++
-							PIC=["-KPIC"]
-							PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
-						fi
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DLINUX"]
-						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						MAKE_SHARED=["${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DLINUX -shared ${PIC}"]
-						LINK=["${CXX} ${CXXFLAGS} -DLINUX -ldl ${PIC}"]
-						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
-						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) -d \$(DESTDIR)\${libdir} && \$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
+  *-*-linux*)     platform=LINUX ;
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
+
+    if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
+      # Assume Intel CC
+      PIC=["-KPIC"]
+      PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
+    fi
+
+	# Should use -D_REENTRANT - but not yet OK
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DLINUX"]
+    SHARED_OPTIONS=["-Wl,-soname,\$(LIBNAME) -DLINUX -shared"]
+    LINK_OPTIONS=["-DLINUX -ldl"]
 
 						;;
 
@@ -310,6 +283,7 @@ case "${host}" in
 
 						# Should use -D_REENTRANT - but not yet OK
 						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DCYGWIN"]
+                        PIC=""
 						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						MAKE_SHARED=["${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DCYGWIN -shared -Xlinker --warn-once -Xlinker -Map -Xlinker ../lib/lib${PACKAGE_TARNAME}.map -Xlinker --output-def -Xlinker ../lib/lib${PACKAGE_TARNAME}.def -Xlinker --out-implib -Xlinker ../lib/\$(LIBMAJORNAME)"]
@@ -362,6 +336,63 @@ case "${host}" in
 						AC_MSG_ERROR([Unknown Platform.  Aborting])
 						;;
 esac
+
+# Now we should have all compiler specific flags.  So set up specific flags
+# we need
+
+# First if we are using gcc then...
+if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
+
+  PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -Wall"]
+  PIC=["-fPIC"]
+
+  if test "$enable_debug" = "yes" ; then
+	CXXFLAGS="${CXXFLAGS} -g"
+  else
+	CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
+  fi
+
+  if test "x${enable_warnerror}" = "xyes" ; then
+    AC_MSG_WARN([Enabling error on warnings])
+	CXXFLAGS="${CXXFLAGS} -Werror -Wno-deprecated"
+  fi
+else
+
+  if test "$enable_debug" = "yes" ; then
+	CXXFLAGS="${CXXFLAGS} ${cxxflags_debug}"
+  else
+	CXXFLAGS="${CXXFLAGS} ${cxxflags_optimise} -DNDEBUG"
+  fi
+
+  if test "x${enable_warnerror}" = "xyes" ; then
+    AC_MSG_WARN([Enabling error on warnings])
+	CXXFLAGS="${CXXFLAGS} ${cxxflags_warnerror}"
+  fi
+
+fi
+
+# How do we run the C++ compiler?
+CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
+# Command to make the shared library
+MAKE_SHARED=["${CXX} ${CXXFLAGS} ${SHARED_OPTIONS} ${PIC}"]
+# Command to link an executable
+LINK=["${CXX} ${CXXFLAGS} ${LINK_OPTIONS} ${PIC}"]
+
+# Default commands to create the library in the correct place
+
+if test -z "$LINK_COMMAND_1" ; then 
+    LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
+    LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
+fi
+
+# Default commands to install
+
+if test -z "$INSTALL_COMMAND_1" ; then
+    INSTALL_COMMAND_1=["\$(INSTALL) -d \$(DESTDIR)\${libdir} && \$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
+    INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
+    INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
+fi
+
 
 # Find Xerces
 
@@ -469,7 +500,7 @@ if test x"$use_xalan" != x"no" ; then
 
     AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 
-      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c"
+      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c -lxalanMsg"
       [AC_MSG_RESULT([found])], 
       CPPFLAGS=$OLD_CPPFLAGS
       [AC_MSG_RESULT([no])]);
@@ -481,7 +512,7 @@ if test x"$use_xalan" != x"no" ; then
     AC_MSG_CHECKING([for Xalan in system includes])
     AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 
-      LIBS="${LIBS} -lxalan-c"
+      LIBS="${LIBS} -lxalan-c -lxalanMsg"
       [AC_MSG_RESULT([found])],
       [AC_DEFINE(XSEC_NO_XALAN)] 
       [AC_MSG_RESULT([no - WARNING - configuring for no Xalan])]);
@@ -632,7 +663,7 @@ XALAN_CPP_NAMESPACE_END
 
 fi
 
-AC_LANG(C)
+# AC_LANG(C)
 
 # Check for OpenSSL
 if test $OPENSSL ; then
@@ -726,7 +757,7 @@ AC_TRY_LINK([#include <openssl/evp.h>],
 	[AC_DEFINE(XSEC_OPENSSL_HAVE_AES)],
 	[AC_MSG_RESULT([no])])
 
-AC_CHECK_DECL(EVP_CIPHER_CTX_set_padding(NULL,0),
+AC_CHECK_DECL(EVP_CIPHER_CTX_set_padding,
 	[AC_DEFINE(XSEC_OPENSSL_CANSET_PADDING)],
 	,[#include <openssl/evp.h>])
 
@@ -755,20 +786,6 @@ AC_CHECK_DECL(_stricmp,
 AC_CHECK_DECL(_getcwd,
 	[AC_DEFINE(XSEC_HAVE__GETCWD)],
 	,[#include <string.h>])
-
-# Configure for warnings as errors if necessary
-# Note that we disable deprecation warnings for this case
-
-if test "x${enable_warnerror}" = "xyes" ; then
-  AC_MSG_WARN([Enabling error on warnings])
-  if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
-	CC1="${CC1} -Werror -Wno-deprecated"
-  else
-    if test "x${cflags_warnerror}" != "x" ; then
-	  CC1="${CC1} ${cxxflags_warnerror}"
-    fi
-  fi
-fi
 
 # Build the object file lists necessary to link the library
 # At the same time, build the include list

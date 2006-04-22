@@ -338,7 +338,8 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 	parser->parse(*memIS);
     errorCount = parser->getErrorCount();
     if (errorCount > 0)
-		throw XSECException(XSECException::CipherError, "Errors occured during de-serialisation of decrypted element content");
+        
+		throw XSECException(XSECException::CipherError, (const char *) sbt.rawBuffer());
 
     DOMDocument * doc = parser->getDocument();
 
