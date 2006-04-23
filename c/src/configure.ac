@@ -219,26 +219,19 @@ case "${host}" in
     LINK_OPTIONS="-DSOLARIS"
 						;;
 
-        *-*-netbsd*)   platform=NETBSD 
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						PLATFORM_OPTIONS=["-Wall"]
-						PIC=["-fPIC"]
+  *-*-netbsd*)   platform=NETBSD 
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
 
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DNETBSD"]
-						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						MAKE_SHARED=["${CXX} ${CXXFLAGS} -DNETBSD -shared ${PIC}"]
-						LINK=["${CXX} ${CXXFLAGS} -DNETBSD ${PIC}"]
-						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
-						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"]
+    SHARED_OPTIONS=["-DNETBSD -shared"]
+	LINK_OPTIONS=["-DNETBSD"]
 
+    # NetBSD puts packages in /usr/pkg
+    CPPFLAGS="${CPPFLAGS} -I/usr/pkg/include"
+    LIBS="${LIBS} -L/usr/pkg/lib"
 						;;
 
   *-*-freebsd*)   platform=FREEBSD 
@@ -345,7 +338,10 @@ esac
 if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
 
   PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -Wall"]
-  PIC=["-fPIC"]
+  if test "${PLATFORM}" != "CYGWIN" ; then
+    PIC=["-fPIC"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC}"]
+  fi
 
   if test "$enable_debug" = "yes" ; then
 	CXXFLAGS="${CXXFLAGS} -g"
@@ -404,9 +400,9 @@ AC_LANG(C++)
 if test $XERCESCROOT; then
 
   OLDCPPFLAGS=$CPPFLAGS
-  CPPFLAGS=["${CPPFLAGS} -I${XERCESCROOT}/src"]
+  CPPFLAGS=["${CPPFLAGS} -I${XERCESCROOT}/include"]
 
-  AC_MSG_CHECKING([for Xerces 2.x headers in XERCESCROOT/src])
+  AC_MSG_CHECKING([for Xerces 2.x headers in XERCESCROOT/include])
   AC_TRY_RUN([#include <xercesc/util/XercesVersion.hpp>
     int main(int argc, char **argv) {
       if (XERCES_VERSION_MAJOR < 2)
@@ -414,7 +410,7 @@ if test $XERCESCROOT; then
       else
         return 0;
     }],
-    LIBS="${LIBS} -L${XERCESCROOT}/lib -lxerces-c"
+    LIBS="-L${XERCESCROOT}/lib -lxerces-c ${LIBS}"
     xerces_found=yes
     [AC_MSG_RESULT([found])],
     CPPFLAGS=$OLD_CPPFLAGS
@@ -497,11 +493,11 @@ if test x"$use_xalan" != x"no" ; then
     # Updated to include nls/include as this is generally needed for
     # compilation against non-installed xalan.
     # Also now include XALANCROOT/include to cater for installed xalan
-    CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src -I${XALANCROOT}/include -I${XALANCROOT}/nls/include"]
+    CPPFLAGS=["-I${XALANCROOT}/src -I${XALANCROOT}/include -I${XALANCROOT}/nls/include ${CPPFLAGS}"]
 
     AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 
-      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c -lxalanMsg"
+      LIBS="-L${XALANCROOT}/lib -lxalan-c ${LIBS}"
       [AC_MSG_RESULT([found])], 
       CPPFLAGS=$OLD_CPPFLAGS
       [AC_MSG_RESULT([no])]);
@@ -513,7 +509,7 @@ if test x"$use_xalan" != x"no" ; then
     AC_MSG_CHECKING([for Xalan in system includes])
     AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 
-      LIBS="${LIBS} -lxalan-c -lxalanMsg"
+      LIBS="${LIBS} -lxalan-c"
       [AC_MSG_RESULT([found])],
       [AC_DEFINE(XSEC_NO_XALAN)] 
       [AC_MSG_RESULT([no - WARNING - configuring for no Xalan])]);
@@ -529,6 +525,18 @@ else
 
 fi
 
+if test "${xalan_found}" = "yes" ; then
+  # Do we need xalanMsg.so?
+  AC_MSG_CHECKING([if libxalanMsg is required])
+  old_libs=$LIBS
+  LIBS="${LIBS} -lxalanMsg"
+  AC_TRY_LINK([],[
+    int test=1;
+  ],
+  AC_MSG_RESULT([yes]),
+  AC_MSG_RESULT([no])
+  LIBS=${old_libs});
+fi
 
 # Check for handling of XSLException types
 if test "$xalan_found" = "yes" ; then
