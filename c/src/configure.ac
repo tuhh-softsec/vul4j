@@ -266,33 +266,34 @@ case "${host}" in
       PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
     fi
 
-	# Should use -D_REENTRANT - but not yet OK
+    # Should use -D_REENTRANT - but not yet OK
     PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DLINUX"]
     SHARED_OPTIONS=["-Wl,-soname,\$(LIBNAME) -DLINUX -shared"]
     LINK_OPTIONS=["-DLINUX -ldl"]
 
 						;;
 
-		*-*-cygwin*)	platform=CYGWIN
-						shlibsuffix=.dll
-						lib_name="cyg${PACKAGE_TARNAME}-${package_lib_version}.dll"
-					    lib_major_name="lib${PACKAGE_TARNAME}.dll.a"
-						lib_short_name="cyg${PACKAGE_TARNAME}.dll"
-						# Assume g++
-						PLATFORM_OPTIONS=["-Wall"]
+  *-*-cygwin*)	
+    platform=CYGWIN
+    shlibsuffix=.dll
+    lib_name="cyg${PACKAGE_TARNAME}-${package_lib_version}.dll"
+    lib_major_name="lib${PACKAGE_TARNAME}.dll.a"
+    lib_short_name="cyg${PACKAGE_TARNAME}.dll"
 
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DCYGWIN"]
-                        PIC=""
-						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						MAKE_SHARED=["${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DCYGWIN -shared -Xlinker --warn-once -Xlinker -Map -Xlinker ../lib/lib${PACKAGE_TARNAME}.map -Xlinker --output-def -Xlinker ../lib/lib${PACKAGE_TARNAME}.def -Xlinker --out-implib -Xlinker ../lib/\$(LIBMAJORNAME)"]
-						LINK=["${CXX} ${CXXFLAGS} -DCYGWIN"]
+    # Assume g++
+    PLATFORM_OPTIONS=["-Wall"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DCYGWIN"]
+    PIC=""
+    SHARED_OPTIONS="-Wl,-soname,\$(LIBNAME) -DCYGWIN -shared -Xlinker --warn-once -Xlinker -Map -Xlinker ../lib/lib${PACKAGE_TARNAME}.map -Xlinker --output-def -Xlinker ../lib/lib${PACKAGE_TARNAME}.def -Xlinker --out-implib -Xlinker ../lib/\$(LIBMAJORNAME)"
+    LINK_OPTIONS=["-DCYGWIN"]
 
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${bindir}"]
-						INSTALL_COMMAND_2=["\$(INSTALL) \$(LIB_DIR)/\$(LIBMAJORNAME) \$(DESTDIR)\${libdir}"]
+    # Define installation commands as cygwin uses different defaults
+    INSTALL_COMMAND_1=["\$(INSTALL) -d \$(DESTDIR)\${bindir} && \$(INSTALL) \${THISLIB} \$(DESTDIR)\${bindir}"]
+    INSTALL_COMMAND_2=["\$(INSTALL) -d \$(DESTDIR)\${libdir} && \$(INSTALL) \$(LIB_DIR)/\$(LIBMAJORNAME) \$(DESTDIR)\${libdir}"]
 
-						;;
+    # Define this to kill the link commands
+    LINK_COMMAND_1=true
+    ;;
 						
 #        *-*-irix*)      platform=IRIX ;;
 #        *-*-aix*)       platform=AIX ;;
