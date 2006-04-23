@@ -10,7 +10,7 @@
 AC_DEFUN(AC_CREATE_OBJ_FILELIST,
 [AC_MSG_NOTICE([Creating object file list from files in $1])
 ac_find_files=""
-for fl in `(cd $1; ls $2)`
+for fl in `(cd $1; ls $2 2>/dev/null)`
 do
   fl_rep=`echo $fl | sed "s/\$3/$4/"`
   fl_rep_full="$5/${fl_rep}"
