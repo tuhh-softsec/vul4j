@@ -299,35 +299,26 @@ case "${host}" in
 #        *-*-mvs*)       platform=OS390 ;;
 #        *-*-osf*)       platform=TRU64 ;;
 
-        *-apple-darwin*)
-                        platform=MACOSX 
-                        shlibsuffix=.dylib
-                        lib_name="lib${PACKAGE_TARNAME}.${package_lib_version}.dylib"
-                        lib_major_name="lib${PACKAGE_TARNAME}.${package_lib_major}.dylib"
-                        lib_short_name="lib${PACKAGE_TARNAME}.dylib"
-                        if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
-                            PLATFORM_OPTIONS=["-Wall"]
-                            PIC=["-fPIC"]
-                        else
-                            # Not sure if these will work - only tested with g++
-                            PIC=["-KPIC"]
-                            PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
-                        fi
-                        # Should use -D_REENTRANT - but not yet OK
-                        PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DMACOSX"]
-                        CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-                        CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-                        MAKE_SHARED=["${CXX} ${CXXFLAGS} -Xlinker -install_name -Xlinker \$(LIBNAME) -DMACOSX -dynamiclib ${PIC}"]
-                        LINK=["${CXX} ${CXXFLAGS} -DMACOSX ${PIC}"]
-                        LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
-                        LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-                        INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${DESTDIR}\${libdir}"]
-                        INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \$(DESTDIR)\${libdir}/\${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
-                        INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \$(DESTDIR)\${libdir}/\${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
+  *-apple-darwin*)
+    platform=MACOSX 
+    shlibsuffix=.dylib
+    lib_name="lib${PACKAGE_TARNAME}.${package_lib_version}.dylib"
+    lib_major_name="lib${PACKAGE_TARNAME}.${package_lib_major}.dylib"
+    lib_short_name="lib${PACKAGE_TARNAME}.dylib"
+
+    if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
+      # Not sure if these will work - only tested with g++
+      PIC=["-KPIC"]
+      PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
+    fi
+
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DMACOSX"]
+    SHARED_OPTIONS=["-Xlinker -install_name -Xlinker \$(LIBNAME) -DMACOSX -dynamiclib"]
+    LINK_OPTIONS=["-DMACOSX"]
                         ;;
 
-        *)              platform=UNKNOWN ;
-						AC_MSG_ERROR([Unknown Platform.  Aborting])
+  *)              platform=UNKNOWN 
+    AC_MSG_ERROR([Unknown Platform.  Aborting])
 						;;
 esac
 
