@@ -1440,12 +1440,34 @@ public class FileUtils
         return size;
     }
 
+    /**
+     * Return the files contained in the directory, using inclusion and exclusion Ant patterns,
+     * including the directory name in each of the files
+     * 
+     * @see getFileNames( File, String, String, boolean )
+     * @param directory the directory to scan
+     * @param includes the includes pattern, comma separated
+     * @param excludes the excludes pattern, comma separated
+     * @return a list of File objects
+     * @throws IOException
+     */
     public static List getFiles( File directory, String includes, String excludes )
         throws IOException
     {
         return getFiles( directory, includes, excludes, true );
     }
 
+    /**
+     * Return the files contained in the directory, using inclusion and exclusion Ant patterns
+     * 
+     * @see getFileNames( File, String, String, boolean )
+     * @param directory the directory to scan
+     * @param includes the includes pattern, comma separated
+     * @param excludes the excludes pattern, comma separated
+     * @param includeBasedir true to include the base dir in each file
+     * @return a list of File objects
+     * @throws IOException
+     */
     public static List getFiles( File directory, String includes, String excludes, boolean includeBasedir )
         throws IOException
     {
