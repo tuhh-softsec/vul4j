@@ -7,6 +7,9 @@ import java.util.LinkedList;
 public class PrettyPrintXMLWriter
     implements XMLWriter
 {
+
+    private static final String LS = System.getProperty("line.separator");
+
     private PrintWriter writer;
 
     private LinkedList elementStack = new LinkedList();
@@ -238,7 +241,7 @@ public class PrettyPrintXMLWriter
      */
     protected void endOfLine()
     {
-        write( "\n" );
+        write( LS );
 
         for ( int i = 0; i < getDepth(); i++ )
         {

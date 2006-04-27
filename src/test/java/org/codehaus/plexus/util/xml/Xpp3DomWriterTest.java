@@ -10,6 +10,9 @@ import java.io.StringWriter;
 public class Xpp3DomWriterTest
     extends TestCase
 {
+
+    private static final String LS = System.getProperty("line.separator");
+
     public void testWriter()
     {
         StringWriter writer = new StringWriter();
@@ -22,12 +25,18 @@ public class Xpp3DomWriterTest
     private String createExpectedXML()
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "<root>\n" );
-        buf.append( "  <el1>element1</el1>\n" );
-        buf.append( "  <el2 att2=\"attribute2&#10;nextline\">\n" );
-        buf.append( "    <el3 att3=\"attribute3\">element3</el3>\n" );
-        buf.append( "  </el2>\n" );
-        buf.append( "  <el4></el4>\n" );
+        buf.append( "<root>" );
+        buf.append( LS );
+        buf.append( "  <el1>element1</el1>" );
+        buf.append( LS );
+        buf.append( "  <el2 att2=\"attribute2&#10;nextline\">" );
+        buf.append( LS );
+        buf.append( "    <el3 att3=\"attribute3\">element3</el3>" );
+        buf.append( LS );
+        buf.append( "  </el2>" );
+        buf.append( LS );
+        buf.append( "  <el4></el4>" );
+        buf.append( LS );
         buf.append( "</root>" );
 
         return buf.toString();

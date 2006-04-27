@@ -18,6 +18,9 @@ import java.io.StringWriter;
 public class Xpp3DomBuilderTest
     extends TestCase
 {
+
+    private static final String LS = System.getProperty("line.separator");
+
     public void testBuildFromReader()
         throws Exception
     {
@@ -151,8 +154,10 @@ public class Xpp3DomBuilderTest
     private static String getAttributeEncodedString()
     {
         StringBuffer domString = new StringBuffer();
-        domString.append( "<root>\n" );
-        domString.append( "  <el att=\"&lt;foo&gt;\">bar</el>\n" );
+        domString.append( "<root>" );
+        domString.append( LS );
+        domString.append( "  <el att=\"&lt;foo&gt;\">bar</el>" );
+        domString.append( LS );
         domString.append( "</root>" );
 
         return domString.toString();
@@ -173,10 +178,14 @@ public class Xpp3DomBuilderTest
     private static String getExpectedString()
     {
         StringBuffer domString = new StringBuffer();
-        domString.append( "<root>\n" );
-        domString.append( "  <el>&quot;text&quot;</el>\n" );
-        domString.append( "  <ela>&lt;b&gt;&quot;text&quot;&lt;/b&gt;</ela>\n" );
-        domString.append( "  <elb>&lt;b&gt;&quot;text&quot;&lt;/b&gt;</elb>\n" );
+        domString.append( "<root>" );
+        domString.append( LS );
+        domString.append( "  <el>&quot;text&quot;</el>" );
+        domString.append( LS );
+        domString.append( "  <ela>&lt;b&gt;&quot;text&quot;&lt;/b&gt;</ela>" );
+        domString.append( LS );
+        domString.append( "  <elb>&lt;b&gt;&quot;text&quot;&lt;/b&gt;</elb>" );
+        domString.append( LS );
         domString.append( "</root>" );
 
         return domString.toString();
