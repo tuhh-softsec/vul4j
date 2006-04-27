@@ -25,6 +25,28 @@ import org.xml.sax.Attributes;
 /**
  * Concrete implementations of this class implement actions to be taken when
  * a corresponding nested pattern of XML elements has been matched.
+ * <p>
+ * Writing a custom Rule is considered perfectly normal when using Digester,
+ * and is encouraged whenever the default set of Rule classes don't meet your
+ * requirements; the digester framework can help process xml even when the
+ * built-in rules aren't quite what is needed. Creating a custom Rule is
+ * just as easy as subclassing javax.servlet.http.HttpServlet for webapps,
+ * or javax.swing.Action for GUI applications.
+ * <p>
+ * If a rule wishes to manipulate a digester stack (the default object stack,
+ * a named stack, or the parameter stack) then it should only ever push
+ * objects in the rule's begin method and always pop exactly the same
+ * number of objects off the stack during the rule's end method. Of course
+ * peeking at the objects on the stacks can be done from anywhere.
+ * <p>
+ * Rule objects should be stateless, ie they should not update any instance
+ * member during the parsing process. A rule instance that changes state
+ * will encounter problems if invoked in a "nested" manner; this can happen
+ * if the same instance is added to digester multiple times or if a 
+ * wildcard pattern is used which can match both an element and a child of the
+ * same element. The digester object stack and named stacks should be used to
+ * store any state that a rule requires, making the rule class safe under all
+ * possible uses.
  */
 
 public abstract class Rule {
