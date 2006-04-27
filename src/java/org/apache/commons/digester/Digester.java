@@ -97,8 +97,7 @@ public class Digester extends DefaultHandler {
     /**
      * Construct a new Digester, allowing a SAXParser to be passed in.  This
      * allows Digester to be used in environments which are unfriendly to
-     * JAXP1.1 (such as WebLogic 6.0).  Thanks for the request to change go to
-     * James House (james@interobjective.com).  This may help in places where
+     * JAXP1.1 (such as WebLogic 6.0). This may help in places where
      * you are able to load JAXP 1.1 classes yourself.
      */
     public Digester(SAXParser parser) {
