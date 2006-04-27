@@ -47,15 +47,15 @@ public class PrettyPrintXMLWriter
 
     public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter, String encoding, String doctype )
     {
-        this.writer = writer;
+        setWriter( writer );
 
-        this.lineIndenter = lineIndenter;
+        setLineIndenter( lineIndenter );
 
-        this.encoding = encoding;
+        setEncoding( encoding );
 
-        this.docType = doctype;
+        setDocType( doctype );
 
-        if ( docType != null || encoding != null )
+        if ( doctype != null || encoding != null )
         {
             writeDocumentHeaders();
         }
@@ -90,7 +90,7 @@ public class PrettyPrintXMLWriter
 
         tagInProgress = true;
 
-        depth++;
+        setDepth( getDepth() + 1 );
 
         readyForNewLine = true;
 
@@ -167,7 +167,7 @@ public class PrettyPrintXMLWriter
 
     public void endElement()
     {
-        depth--;
+        setDepth( getDepth() - 1 );
 
         if ( tagIsEmpty )
         {
@@ -189,9 +189,13 @@ public class PrettyPrintXMLWriter
         readyForNewLine = true;
     }
 
+    /**
+     * Write a string to the underlying writer
+     * @param str
+     */
     private void write( String str )
     {
-        writer.write( str );
+        getWriter().write( str );
     }
 
     private void finishTag()
@@ -212,13 +216,33 @@ public class PrettyPrintXMLWriter
         tagIsEmpty = false;
     }
 
+    /**
+     * Get the string used as line indenter
+     * @return the line indenter
+     */
+    protected String getLineIndenter(){
+        return lineIndenter;
+    }
+
+    /**
+     * Set the string used as line indenter 
+     * @param lineIndenter
+     */
+    protected void setLineIndenter( String lineIndenter ){
+        this.lineIndenter = lineIndenter;
+    }
+
+    /**
+     * Write the end of line character (using system line separator)
+     * and start new line with indentation 
+     */
     protected void endOfLine()
     {
         write( "\n" );
 
-        for ( int i = 0; i < depth; i++ )
+        for ( int i = 0; i < getDepth(); i++ )
         {
-            write( lineIndenter );
+            write( getLineIndenter() );
         }
     }
 
@@ -226,24 +250,81 @@ public class PrettyPrintXMLWriter
     {
         write( "<?xml version=\"1.0\"" );
 
-        if ( encoding != null )
+        if ( getEncoding() != null )
         {
-            write( " encoding=\"" + encoding + "\"" );
+            write( " encoding=\"" + getEncoding() + "\"" );
         }
 
         write( "?>" );
 
         endOfLine();
 
-        if ( docType != null )
+        if ( getDocType() != null )
         {
             write( "<!DOCTYPE " );
 
-            write( docType );
+            write( getDocType() );
 
             write( ">" );
 
             endOfLine();
         }
     }
+
+    /**
+     * Set the underlying writer
+     * @param writer
+     */
+    protected void setWriter( PrintWriter writer )
+    {
+        this.writer = writer;
+    }
+
+    /**
+     * Get the underlying writer
+     * @return the underlying writer
+     */
+    protected PrintWriter getWriter()
+    {
+        return writer;
+    }
+
+    /**
+     * Set the current depth in the xml indentation
+     * @param depth
+     */
+    protected void setDepth( int depth )
+    {
+        this.depth = depth;
+    }
+
+    /**
+     * Get the current depth in the xml indentation
+     * @return
+     */
+    protected int getDepth()
+    {
+        return depth;
+    }
+
+    protected void setEncoding( String encoding )
+    {
+        this.encoding = encoding;
+    }
+
+    protected String getEncoding()
+    {
+        return encoding;
+    }
+
+    protected void setDocType( String docType )
+    {
+        this.docType = docType;
+    }
+
+    protected String getDocType()
+    {
+        return docType;
+    }
+
 }
