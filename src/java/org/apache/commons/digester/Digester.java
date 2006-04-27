@@ -2559,7 +2559,8 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Clear the current contents of the object stack.
+     * Clear the current contents of the default object stack, the param stack,
+     * all named stacks, and other internal variables. 
      * <p>
      * Calling this method <i>might</i> allow another document of the same type
      * to be correctly parsed. However this method was not intended for this 
