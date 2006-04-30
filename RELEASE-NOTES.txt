@@ -34,6 +34,12 @@ Compatible Dependency Sets:
 NEW FEATURES
 =============
 
+Kaffe/GNU-Classpath compatibility
+-------------------
+All Digester unit tests now pass with the Kaffe 1.1.6 JVM. It is expected
+that Digester works with other free Java implementations that also use the
+GNU Classpath libraries.
+
 Xmlrules Enhancements
 ----------------------
 The xmlrules module has had the following updates to provide access
@@ -47,6 +53,11 @@ BUGS FROM PREVIOUS RELEASE
 
 Reports Addressed
 ------------------
+* Bugzilla #37034 raises issue with jarfiles being "locked" on Windows machines.
+  A bug in Sun's java libraries can cause a jarfile to become "locked"
+  when a jarfile is the source of an xml or dtd file used by Digester.
+  In particular, this can cause problems when redeploying a J2EE webapp.
+  A workaround for the Sun bug has been added to Digester to resolve this.
 
 Fixes without Bugzilla entries
 ------------------------------
