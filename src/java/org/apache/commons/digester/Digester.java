@@ -1019,10 +1019,21 @@ public class Digester extends DefaultHandler {
         customContentHandler = handler;
     }
 
+    /** 
+     * Define a callback object which is invoked whever an object is pushed onto
+     * a digester object stack, or popped off one.
+     * 
+     * @since 1.7.1
+     */
     public void setStackAction(StackAction stackAction) {
     	this.stackAction = stackAction;
     }
 
+    /**
+     * See setStackAction. 
+     * 
+     * @since 1.7.1
+     */
     public StackAction getStackAction() {
     	return stackAction;
     }
