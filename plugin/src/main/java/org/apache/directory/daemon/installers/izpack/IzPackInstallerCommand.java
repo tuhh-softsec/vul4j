@@ -305,16 +305,38 @@ public class IzPackInstallerCommand extends MojoCommand
                 }
             }
 
-            try
+            if ( target.getScriptFile() != null && target.getScriptFile().exists() )
             {
-                MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, getClass().getResourceAsStream(
-                    "../template.init" ), layout.getInitScript(), true );
+                try
+                {
+                    MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, target.getScriptFile(), 
+                        layout.getInitScript(), true );
+                }
+                catch ( IOException e )
+                {
+                    mymojo.getLog().error( "Failed to copy project supplied init script " + target.getScriptFile()
+                        + " into position " + layout.getInitScript(), e );
+                }
+
+                if ( mymojo.getLog().isInfoEnabled() )
+                {
+                    mymojo.getLog().info( "Using project supplied init script file: "
+                            + target.getScriptFile() );
+                }
             }
-            catch ( IOException e )
+            else
             {
-                mymojo.getLog().error(
-                    "Failed to copy init script " + getClass().getResource( "../template.init" ) + " into position "
-                        + layout.getInitScript(), e );
+                try
+                {
+                    MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, getClass().getResourceAsStream(
+                        "server.init" ), layout.getInitScript(), true );
+                }
+                catch ( IOException e )
+                {
+                    mymojo.getLog().error(
+                        "Failed to copy init script " + getClass().getResource( "server.init" ) + " into position "
+                            + layout.getInitScript(), e );
+                }
             }
         }
 

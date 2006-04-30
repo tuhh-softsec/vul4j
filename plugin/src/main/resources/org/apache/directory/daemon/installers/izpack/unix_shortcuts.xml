@@ -32,10 +32,10 @@
     applications="no"
     startMenu="no"
     startup="no"
-    target="sh"
+    target="$INSTALL_PATH/bin/${server.init}"
     workingDirectory="$INSTALL_PATH/bin"
-    commandLine="$INSTALL_PATH/etc/${server.init} start"
-    iconFile="$INSTALL_PATH/icons/${app.icon}"
+    commandLine=" start"
+    iconFile="$INSTALL_PATH/start.png"
     type="Application"
     encoding="UTF-8"
     description="Start ${app} Server">
@@ -49,16 +49,49 @@
     applications="no"
     startMenu="no"
     startup="no"
-    target="sh"
+    target="$INSTALL_PATH/bin/${server.init}"
     workingDirectory="$INSTALL_PATH/bin"
-    commandLine="$INSTALL_PATH/etc/${server.init} stop"
-    iconFile="$INSTALL_PATH/icons/${app.icon}"
+    commandLine=" stop"
+    iconFile="$INSTALL_PATH/stop.png"
     type="Application"
     encoding="UTF-8"
     description="Start ${app} Server">
     <createForPack name="Binaries"/>
   </shortcut>
-
+  
+  <shortcut
+    name="Debug ${app} Server"
+    programGroup="yes"
+    desktop="yes"
+    applications="no"
+    startMenu="no"
+    terminal="true"
+    startup="no"
+    target="$INSTALL_PATH/bin/${server.init}"
+    workingDirectory="$INSTALL_PATH/bin"
+    commandLine=" debug"
+    iconFile="$INSTALL_PATH/debug.png"
+    type="Application"
+    encoding="UTF-8"
+    description="Debug ${app} Server">
+    <createForPack name="Binaries"/>
+  </shortcut>
+  
+  <shortcut
+    name="${app} Documentation"
+    programGroup="yes"
+    desktop="yes"
+    applications="no"
+    startMenu="no"
+    startup="no"
+    url="$INSTALL_PATH/docs/index.html"
+    iconFile="$INSTALL_PATH/docs/docs.png"
+    type="Link"
+    encoding="UTF-8"
+    description="${app} Documentation">
+    <createForPack name="Documentation"/>
+  </shortcut>
+  
   <shortcut
     name="Uninstaller"
     programGroup="yes"
@@ -66,8 +99,8 @@
     applications="no"
     startMenu="no"
     startup="no"
-    target="java"
-    commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+    target="$JAVA_HOME/bin/java"
+    commandLine=" -jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
     initialState="noShow"
     iconFile="trashcan_full"
     iconIndex="0"

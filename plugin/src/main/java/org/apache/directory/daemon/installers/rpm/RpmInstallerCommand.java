@@ -133,18 +133,40 @@ public class RpmInstallerCommand extends MojoCommand
 
         String version = target.getApplication().getVersion().replace( '-', '_' );
         
-        try
+        if ( target.getScriptFile() != null && target.getScriptFile().exists() )
         {
-            MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, getClass()
-                .getResourceAsStream( "../template.init" ), target.getLayout().getInitScript(), true );
-        }
-        catch ( IOException e )
-        {
-            mymojo.getLog().error(
-                "Failed to copy init script " + getClass().getResource( "../template.init" ) + " into position "
-                    + target.getLayout().getInitScript(), e );
-        }
+            try
+            {
+                MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, target.getScriptFile(), 
+                    target.getLayout().getInitScript(), true );
+            }
+            catch ( IOException e )
+            {
+                mymojo.getLog().error( "Failed to copy project supplied init script " + target.getScriptFile()
+                    + " into position " + target.getLayout().getInitScript(), e );
+            }
 
+            if ( mymojo.getLog().isInfoEnabled() )
+            {
+                mymojo.getLog().info( "Using project supplied init script file: "
+                        + target.getScriptFile() );
+            }
+        }
+        else
+        {
+            try
+            {
+                MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, getClass().getResourceAsStream(
+                    "server.init" ), target.getLayout().getInitScript(), true );
+            }
+            catch ( IOException e )
+            {
+                mymojo.getLog().error(
+                    "Failed to copy init script " + getClass().getResource( "server.init" ) + " into position "
+                        + target.getLayout().getInitScript(), e );
+            }
+        }
+        
         // check first to see if the default spec file is present in src/main/installers
         File projectRpmFile = new File( mymojo.getSourceDirectory(), "spec.template" );
         if ( target.getRpmSpecificationFile() != null && target.getRpmSpecificationFile().exists() )
@@ -294,7 +316,6 @@ public class RpmInstallerCommand extends MojoCommand
         filterProperties.put( "verify.append.libs", getVerifyLibraryJars() );
         filterProperties.put( "installer.output.directory", target.getLayout().getBaseDirectory().getParent() );
         filterProperties.put( "server.init", target.getLayout().getInitScript().getName() );
-
         filterProperties.put( "app.install.base", "/usr/local/" + target.getApplication().getName() + "-" + version );
 
         if ( target.getDocsDirectory() != null )

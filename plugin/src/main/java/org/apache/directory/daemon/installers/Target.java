@@ -73,6 +73,7 @@ public class Target
     private File docsDirectory;
     private String sourcesTargetPath;
     private String docsTargetPath;
+    private File scriptFile;
 
     private InstallationLayout layout;
     private List libArtifacts;
@@ -323,5 +324,17 @@ public class Target
     public PackagedFile[] getPackagedFiles()
     {
         return packagedFiles;
+    }
+
+
+    public void setScriptFile( File scriptFile )
+    {
+        this.scriptFile = scriptFile;
+    }
+
+
+    public File getScriptFile()
+    {
+        return scriptFile;
     }
 }
