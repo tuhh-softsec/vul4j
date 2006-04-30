@@ -340,6 +340,12 @@ public class Digester extends DefaultHandler {
      */
     private ContentHandler customContentHandler = null;
 
+    /**
+     * Object which will receive callbacks for every pop/push action
+     * on the default stack or named stacks. 
+     */
+    private StackAction stackAction = null;
+
     // ------------------------------------------------------------- Properties
 
     /**
@@ -1011,6 +1017,14 @@ public class Digester extends DefaultHandler {
      */
     public void setCustomContentHandler(ContentHandler handler) {
         customContentHandler = handler;
+    }
+
+    public void setStackAction(StackAction stackAction) {
+    	this.stackAction = stackAction;
+    }
+
+    public StackAction getStackAction() {
+    	return stackAction;
     }
 
     // ------------------------------------------------- ContentHandler Methods
@@ -2622,7 +2636,11 @@ public class Digester extends DefaultHandler {
     public Object pop() {
 
         try {
-            return (stack.pop());
+        	Object popped = stack.pop();
+        	if (stackAction != null) {
+        		popped = stackAction.onPop(this, null, popped);
+        	}
+            return popped;
         } catch (EmptyStackException e) {
             log.warn("Empty stack (returning null)");
             return (null);
@@ -2638,11 +2656,14 @@ public class Digester extends DefaultHandler {
      */
     public void push(Object object) {
 
+        if (stackAction != null) {
+        	object = stackAction.onPush(this, null, object);
+        }
+
         if (stack.size() == 0) {
             root = object;
         }
         stack.push(object);
-
     }
 
     /**
@@ -2655,6 +2676,10 @@ public class Digester extends DefaultHandler {
      * @since 1.6
      */
     public void push(String stackName, Object value) {
+        if (stackAction != null) {
+        	value = stackAction.onPush(this, stackName, value);
+        }
+
         ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
         if (namedStack == null) {
             namedStack = new ArrayStack();
@@ -2669,7 +2694,7 @@ public class Digester extends DefaultHandler {
      * <p><strong>Note:</strong> a stack is considered empty
      * if no objects have been pushed onto it yet.</p>
      * 
-     * @param stackName the name of the stack from which the top value is to be popped
+     * @param stackName the name of the stack from which the top value is to be popped.
      * @return the top <code>Object</code> on the stack or or null if the stack is either 
      * empty or has not been created yet
      * @throws EmptyStackException if the named stack is empty
@@ -2684,11 +2709,14 @@ public class Digester extends DefaultHandler {
                 log.debug("Stack '" + stackName + "' is empty");
             }
             throw new EmptyStackException();
-            
-        } else {
-        
-            result = namedStack.pop();
         }
+        
+        result = namedStack.pop();
+        
+        if (stackAction != null) {
+        	result = stackAction.onPop(this, stackName, result);
+        }
+
         return result;
     }
     
