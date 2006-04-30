@@ -26,7 +26,7 @@ import java.util.ArrayList;
 /**
  * <p>Wrapper for an org.xml.sax.Attributes object which expands any 
  * "variables" referenced in the attribute value via ${foo} or similar. 
- * This is only done something actually asks for the attribute value, 
+ * This is only done when something actually asks for the attribute value, 
  * thereby imposing no performance penalty if the attribute is not used.</p>
  *
  * @since 1.6
