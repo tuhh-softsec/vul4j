@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.apache.directory</groupId>
     <artifactId>build</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
   </parent>
   <groupId>org.apache.directory.daemon</groupId>
   <artifactId>build</artifactId>
   <name>Apache Directory Daemon</name>
   <packaging>pom</packaging>  
-  <version>1.0-RC2</version>
+  <version>1.0-RC3-SNAPSHOT</version>
   <description>
     Reusable framework for daemon applications based on Commons Daemon
     Jsvc and Procrun. A small installation layout pattern combined with
