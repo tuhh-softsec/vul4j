@@ -20,7 +20,7 @@
     <homepage rdf:resource="http://xml.apache.org/security" />
     <asfext:pmc rdf:resource="http://xml.apache.org" />
     <shortdesc>Library implementing XML Digital Signature Specification &amp; XML Encryption Specification</shortdesc>
-    <bug-database rdf:resource="http://issues.apache.org" />
+    <bug-database rdf:resource="http://issues.apache.org/bugzilla/buglist.cgi?product=Security" />
     <mailing-list rdf:resource="http://xml.apache.org/mail.html#security-dev" />
     <download-page rdf:resource="http://xml.apache.org/security/dist" />
     <programming-language>Java</programming-language>
@@ -39,44 +39,44 @@
       </SVNRepository>
     </repository>
     <asfext:implements>
-    <asfext:standard>
+    <asfext:Standard>
       <asfext:title>XML-Signature Syntax and Processing</asfext:title>
       <asfext:body>W3C</asfext:body>
       <asfext:id>XML Signature</asfext:id>
       <asfext:url rdf:resource="http://www.w3.org/TR/xmldsig-core/"/>
-    </asfext:standard>
+    </asfext:Standard>
     </asfext:implements>
     <asfext:implements>
-    <asfext:standard>
+    <asfext:Standard>
       <asfext:title>XML-Signature Syntax and Processing</asfext:title>
       <asfext:body>IETF</asfext:body>
       <asfext:id>3275</asfext:id>
       <asfext:url rdf:resource="http://www.ietf.org/rfc/rfc3275.txt"/>
-    </asfext:standard>
+    </asfext:Standard>
     </asfext:implements>
     <asfext:implements>
-    <asfext:standard>
+    <asfext:Standard>
       <asfext:title>Canonical XML</asfext:title>
       <asfext:body>W3C</asfext:body>
       <asfext:id>Canonical XML</asfext:id>
       <asfext:url rdf:resource="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-    </asfext:standard>
+    </asfext:Standard>
     </asfext:implements>
     <asfext:implements>
-    <asfext:standard>
+    <asfext:Standard>
       <asfext:title>Exclusive XML Canonicalization</asfext:title>
       <asfext:body>W3C</asfext:body>
       <asfext:id>Exclusive XML Canonicalization</asfext:id>
       <asfext:url rdf:resource="http://www.w3.org/TR/xml-exc-c14n/"/>
-    </asfext:standard>
+    </asfext:Standard>
     </asfext:implements>
     <asfext:implements>    
-    <asfext:standard>
+    <asfext:Standard>
       <asfext:title>XML Encryption Syntax and Processing</asfext:title>
       <asfext:body>W3C</asfext:body>
       <asfext:id>Exclusive XML Encryption</asfext:id>
       <asfext:url rdf:resource="http://www.w3.org/TR/2002/CR-xmlenc-core-20020304/"/>
-    </asfext:standard>
+    </asfext:Standard>
 	</asfext:implements>
 
   </Project>
