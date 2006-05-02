@@ -2418,7 +2418,7 @@ public class XMLCipher {
                     EncryptionConstants.EncryptionSpecNS,
                     EncryptionConstants._TAG_CARRIEDKEYNAME).item(0);
             if (null != carriedNameElement) {
-                result.setCarriedName(carriedNameElement.getNodeValue());
+                result.setCarriedName(carriedNameElement.getFirstChild().getNodeValue());
             }
 
             return (result);
