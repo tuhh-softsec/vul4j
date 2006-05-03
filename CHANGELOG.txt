@@ -3,6 +3,7 @@ New in v...
     Fixed bug 38655
 	Fixed bug 38444.
 	Fixed bug 38605.
+	Fixed bug 39200
 		Refactored the way keyresolver works instead of calling canResolve/resolveX only resolveX is used  
 		and if it returns null it means it cannot resolve.
 		
