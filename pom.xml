@@ -8,6 +8,11 @@
   <artifactId>plexus-archiver</artifactId>
   <name>Plexus Archiver Component</name>
   <version>1.0-alpha-6-SNAPSHOT</version>
+  <contributors>
+    <contributor>
+      <name>Dan Tran</name>
+    </contributor>
+  </contributors>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
