@@ -464,15 +464,16 @@ public class JarArchiver
                     cpEntries[ c++ ] = tok.nextToken();
                 }
             }
-            String[] indexJarEntries = (String[]) indexJars.toArray();
-            for ( int i = 0; i < indexJarEntries.length; i++ )
+
+            for ( Iterator i = indexJars.iterator(); i.hasNext(); )
             {
-                String name = findJarName( indexJarEntries[ i ], cpEntries );
+                String indexJar = (String)i.next();
+                String name = findJarName( indexJar, cpEntries );
                 if ( name != null )
                 {
                     ArrayList dirs = new ArrayList();
                     ArrayList files = new ArrayList();
-                    grabFilesAndDirs( indexJarEntries[ i ], dirs, files );
+                    grabFilesAndDirs( indexJar, dirs, files );
                     if ( dirs.size() + files.size() > 0 )
                     {
                         writer.println( name );
