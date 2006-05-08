@@ -95,6 +95,34 @@
       <implementation>org.codehaus.plexus.archiver.zip.ZipUnArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
+    
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>tgz</role-hint>
+      <implementation>org.codehaus.plexus.archiver.tar.TarGZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>tar.gz</role-hint>
+      <implementation>org.codehaus.plexus.archiver.tar.TarGZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>tbz2</role-hint>
+      <implementation>org.codehaus.plexus.archiver.tar.TarBZip2UnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>tar.bz2</role-hint>
+      <implementation>org.codehaus.plexus.archiver.tar.TarBZip2UnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+        
     <!--
      |
      | ArchiverManager

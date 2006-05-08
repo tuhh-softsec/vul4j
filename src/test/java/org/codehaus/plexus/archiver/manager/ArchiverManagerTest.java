@@ -99,5 +99,96 @@ public class ArchiverManagerTest
         {
         }
     }
+    
+    public void testLookupUnArchiverUsingFile()
+        throws Exception
+    {
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
 
+        UnArchiver unarchiver = manager.getUnArchiver( new File( "test.tar.gz" ) );
+        assertNotNull( unarchiver );
+        
+        unarchiver = manager.getUnArchiver( new File( "test.tar.bz2" ) );
+        assertNotNull( unarchiver );
+      
+        unarchiver = manager.getUnArchiver( new File( "test.tgz" ) );
+        assertNotNull( unarchiver );
+
+        unarchiver = manager.getUnArchiver( new File( "test.tbz2" ) );
+        assertNotNull( unarchiver );
+        
+        unarchiver = manager.getUnArchiver( new File( "test.bzip2" ) );
+        assertNotNull( unarchiver );
+
+        unarchiver = manager.getUnArchiver( new File( "test.tar" ) );
+        assertNotNull( unarchiver );
+        
+    }    
+    
+    public void testLookupArchiverUsingFile()
+        throws Exception
+    {
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
+
+        Archiver archiver = manager.getArchiver( new File( "test.gzip" ) );
+        assertNotNull( archiver );
+
+        archiver = manager.getArchiver( new File( "test.bzip2" ) );
+        assertNotNull( archiver );
+
+        archiver = manager.getArchiver( new File( "test.tar" ) );
+        assertNotNull( archiver );
+
+    }        
+
+    public void testUnspportedLookupArchiverUsingFile()
+        throws Exception
+    {
+        ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
+
+        try 
+        {
+            manager.getArchiver( new File( "test.tbz2" ) );
+            //until we support this type, this must fail
+            fail ( "Please remove this test." );
+        }
+        catch ( NoSuchArchiverException e )
+        {
+            
+        }
+
+        try 
+        {
+            manager.getArchiver( new File( "test.tgz" ) );
+            //until we support this type, this must fail
+            fail ( "Please remove this test." );
+        }
+        catch ( NoSuchArchiverException e )
+        {
+            
+        }
+        
+        try 
+        {
+            manager.getArchiver( new File( "test.tar.gz" ) );
+            //until we support this type, this must fail
+            fail ( "Please remove this test." );
+        }
+        catch ( NoSuchArchiverException e )
+        {
+            
+        }     
+        
+        try 
+        {
+            manager.getArchiver( new File( "test.tar.bz2" ) );
+            //until we support this type, this must fail
+            fail ( "Please remove this test." );
+        }
+        catch ( NoSuchArchiverException e )
+        {
+            
+        }        
+    }
+    
 }

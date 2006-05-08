@@ -18,6 +18,8 @@ package org.codehaus.plexus.archiver.manager;
  */
 
 
+import java.io.File;
+
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 
@@ -32,7 +34,12 @@ public interface ArchiverManager
     Archiver getArchiver( String archiverName )
         throws NoSuchArchiverException;
 
+    Archiver getArchiver( File file )
+      throws NoSuchArchiverException;
+    
     UnArchiver getUnArchiver( String unArchiverName )
         throws NoSuchArchiverException;
 
+    UnArchiver getUnArchiver( File file )
+        throws NoSuchArchiverException;    
 }

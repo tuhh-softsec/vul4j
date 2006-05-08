@@ -18,6 +18,8 @@ package org.codehaus.plexus.archiver.manager;
  */
 
 
+import java.io.File;
+
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.Archiver;
@@ -26,6 +28,8 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author dantran
@@ -78,4 +82,35 @@ public class DefaultArchiverManager
 
         return archiver;
     }
+    
+    private static String getFileExtention ( File file )
+    {
+        String path = file.getAbsolutePath();
+        
+        String archiveExt = FileUtils.getExtension( path ).toLowerCase();
+        
+        if ( "gz".equals( archiveExt ) || "bz2".equals( archiveExt ) )
+        {
+            String [] tokens = StringUtils.split( path, "." );
+            
+            if ( tokens.length > 2  && "tar".equals( tokens[tokens.length -2].toLowerCase() ) )
+            {
+                archiveExt = "tar." + archiveExt;
+            }
+        }
+        
+        return archiveExt;
+        
+    }
+    public Archiver getArchiver( File file )
+        throws NoSuchArchiverException
+    {
+        return getArchiver( getFileExtention( file ) );
+    }
+    
+    public UnArchiver getUnArchiver( File file )
+        throws NoSuchArchiverException
+    {        
+        return getUnArchiver( getFileExtention( file ) );
+    }    
 }
