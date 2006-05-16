@@ -48,7 +48,7 @@
   <shortDescription>Rule based XML->Java object mapping module</shortDescription>
 
   <url>http://jakarta.apache.org/commons/digester/</url>
-  <issueTrackingUrl>http://issues.apache.org/bugzilla/</issueTrackingUrl>
+  <issueTrackingUrl>http://issues.apache.org/jira/</issueTrackingUrl>
   <siteAddress>people.apache.org</siteAddress>
   <siteDirectory>/www/jakarta.apache.org/commons/digester/</siteDirectory>
   <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-commons/digester/</distributionDirectory>
