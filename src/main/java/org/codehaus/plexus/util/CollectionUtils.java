@@ -213,7 +213,11 @@ public class CollectionUtils
     {
         try
         {
-            return ( (Integer) ( freqMap.get( obj ) ) ).intValue();
+            Object o = freqMap.get( obj );
+            if ( o != null )  // minimize NullPointerExceptions
+            {
+                return ( (Integer) o ).intValue();
+            }
         }
         catch ( NullPointerException e )
         {
