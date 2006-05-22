@@ -61,6 +61,6 @@ public class IndexTest extends PlexusTestCase {
         byte buf[] = new byte[1024];
         int i = bis.read(buf);
         String res = new String(buf,0,i);
-        assertEquals("JarIndex-Version: 1.0\n\narchive2.jar\ntwo.txt\n\narchive1.jar\none.txt\n\n", res);
+        assertEquals("JarIndex-Version: 1.0\n\narchive2.jar\ntwo.txt\n\narchive1.jar\none.txt\n\n", res.replaceAll("\r\n", "\n"));
     }
 }
