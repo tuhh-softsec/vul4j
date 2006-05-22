@@ -33,7 +33,7 @@ public final class ReflectionUtils
         {
             Class superclass = clazz.getSuperclass();
 
-            if ( !Object.class.equals(  superclass ) )
+            if ( superclass != null )
             {
                 retValue = getFieldByNameIncludingSuperclasses( fieldName, superclass );
             }
