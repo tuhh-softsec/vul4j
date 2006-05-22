@@ -213,7 +213,10 @@ public class Os
 
     /**
      * Determines if the OS on which Ant is executing matches the
-     * given OS family, name, architecture and version
+     * given OS family, name, architecture and version.
+     *
+     * The name, archictecture and version are compared to the System
+     * properties os.name, os.version and os.arch in a case-independent way.
      *
      * @param family   The OS family
      * @param name   The OS name
@@ -238,37 +241,37 @@ public class Os
 
             if ( family != null )
             {
-                if ( family.equals( "windows" ) )
+                if ( family.equalsIgnoreCase( "windows" ) )
                 {
                     isFamily = OS_NAME.indexOf( "windows" ) > -1;
                 }
-                else if ( family.equals( "os/2" ) )
+                else if ( family.equalsIgnoreCase( "os/2" ) )
                 {
                     isFamily = OS_NAME.indexOf( "os/2" ) > -1;
                 }
-                else if ( family.equals( "netware" ) )
+                else if ( family.equalsIgnoreCase( "netware" ) )
                 {
                     isFamily = OS_NAME.indexOf( "netware" ) > -1;
                 }
-                else if ( family.equals( "dos" ) )
+                else if ( family.equalsIgnoreCase( "dos" ) )
                 {
                     isFamily = PATH_SEP.equals( ";" ) && !isFamily( "netware" );
                 }
-                else if ( family.equals( "mac" ) )
+                else if ( family.equalsIgnoreCase( "mac" ) )
                 {
                     isFamily = OS_NAME.indexOf( "mac" ) > -1;
                 }
-                else if ( family.equals( "tandem" ) )
+                else if ( family.equalsIgnoreCase( "tandem" ) )
                 {
                     isFamily = OS_NAME.indexOf( "nonstop_kernel" ) > -1;
                 }
-                else if ( family.equals( "unix" ) )
+                else if ( family.equalsIgnoreCase( "unix" ) )
                 {
                     isFamily = PATH_SEP.equals( ":" )
                         && !isFamily( "openvms" )
                         && ( !isFamily( "mac" ) || OS_NAME.endsWith( "x" ) );
                 }
-                else if ( family.equals( "win9x" ) )
+                else if ( family.equalsIgnoreCase( "win9x" ) )
                 {
                     isFamily = isFamily( "windows" )
                         && ( OS_NAME.indexOf( "95" ) >= 0
@@ -276,31 +279,31 @@ public class Os
                         || OS_NAME.indexOf( "me" ) >= 0
                         || OS_NAME.indexOf( "ce" ) >= 0 );
                 }
-                else if ( family.equals( "z/os" ) )
+                else if ( family.equalsIgnoreCase( "z/os" ) )
                 {
                     isFamily = OS_NAME.indexOf( "z/os" ) > -1
                         || OS_NAME.indexOf( "os/390" ) > -1;
                 }
-                else if ( family.equals( "os/400" ) )
+                else if ( family.equalsIgnoreCase( "os/400" ) )
                 {
                     isFamily = OS_NAME.indexOf( "os/400" ) > -1;
                 }
-                else if ( family.equals( "openvms" ) )
+                else if ( family.equalsIgnoreCase( "openvms" ) )
                 {
                     isFamily = OS_NAME.indexOf( "openvms" ) > -1;
                 }
             }
             if ( name != null )
             {
-                isName = name.equals( OS_NAME );
+                isName = name.toLowerCase( Locale.US ).equals( OS_NAME );
             }
             if ( arch != null )
             {
-                isArch = arch.equals( OS_ARCH );
+                isArch = arch.toLowerCase( Locale.US ).equals( OS_ARCH );
             }
             if ( version != null )
             {
-                isVersion = version.equals( OS_VERSION );
+                isVersion = version.toLowerCase( Locale.US ).equals( OS_VERSION );
             }
             retValue = isFamily && isName && isArch && isVersion;
         }
