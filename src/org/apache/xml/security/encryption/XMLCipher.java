@@ -18,6 +18,7 @@ package org.apache.xml.security.encryption;
 
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
@@ -907,6 +908,34 @@ public class XMLCipher {
 
     /**
      * Returns an <code>EncryptedData</code> interface. Use this operation if
+     * you want to have full control over the serialization of the element
+     * or element content.
+     *
+     * This does not change the source document in any way.
+     *
+     * @param context the context <code>Document</code>.
+     * @param type a URI identifying type information about the plaintext form
+     *    of the encrypted content (may be <code>null</code>)
+     * @param serializedData the serialized data
+     * @return the <code>EncryptedData</code>
+     * @throws Exception
+     */
+    public EncryptedData encryptData(Document context, String type,
+        InputStream serializedData) throws Exception {
+
+        logger.debug("Encrypting element...");
+        if (null == context)
+            logger.error("Context document unexpectedly null...");
+        if (null == serializedData)
+            logger.error("Serialized data unexpectedly null...");
+        if (_cipherMode != ENCRYPT_MODE)
+            logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+
+        return encryptData(context, null, type, serializedData);
+    }
+
+    /**
+     * Returns an <code>EncryptedData</code> interface. Use this operation if
      * you want to have full control over the contents of the
      * <code>EncryptedData</code> structure.
      *
@@ -919,79 +948,104 @@ public class XMLCipher {
      * @return the <code>EncryptedData</code>
      * @throws Exception
      */
-    public EncryptedData encryptData(Document context, Element element, boolean contentMode) throws
-            /* XMLEncryption */ Exception {
-		logger.debug("Encrypting element...");
-		if (null == context)
-			logger.error("Context document unexpectedly null...");
-		if (null == element)
-			logger.error("Element unexpectedly null...");
-		if (_cipherMode != ENCRYPT_MODE)
-			logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+    public EncryptedData encryptData(
+        Document context, Element element, boolean contentMode)
+        throws /* XMLEncryption */ Exception {
 
-		_contextDocument = context;
+        logger.debug("Encrypting element...");
+        if (null == context)
+            logger.error("Context document unexpectedly null...");
+        if (null == element)
+            logger.error("Element unexpectedly null...");
+        if (_cipherMode != ENCRYPT_MODE)
+            logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
-		if (_algorithm == null) {
-			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
-		}
+        if (contentMode) {
+            return encryptData
+                (context, element, EncryptionConstants.TYPE_CONTENT, null);
+        } else {
+            return encryptData
+                (context, element, EncryptionConstants.TYPE_ELEMENT, null);
+        }
+    }
 
-		String serializedOctets = null;
-		if (contentMode) {
-			NodeList children = element.getChildNodes();
-			if ((null != children)) {
-				serializedOctets = _serializer.serialize(children);
-			} else {
-				Object exArgs[] = { "Element has no content." };
-				throw new XMLEncryptionException("empty", exArgs);
-			}
+    private EncryptedData encryptData(
+        Document context, Element element, String type,
+        InputStream serializedData) throws /* XMLEncryption */ Exception {
+
+	_contextDocument = context;
+
+	if (_algorithm == null) {
+	    throw new XMLEncryptionException
+		("XMLCipher instance without transformation specified");
+	}
+
+	String serializedOctets = null;
+	if (serializedData == null) {
+	    if (type == EncryptionConstants.TYPE_CONTENT) {
+		NodeList children = element.getChildNodes();
+		if (null != children) {
+		    serializedOctets = _serializer.serialize(children);
 		} else {
-			serializedOctets = _serializer.serialize(element);
+		    Object exArgs[] = { "Element has no content." };
+		    throw new XMLEncryptionException("empty", exArgs);
 		}
-		logger.debug("Serialized octets:\n" + serializedOctets);
+	    } else {
+		serializedOctets = _serializer.serialize(element);
+	    }
+	    logger.debug("Serialized octets:\n" + serializedOctets);
+	}
 
         byte[] encryptedBytes = null;
 
-		// Now create the working cipher if none was created already
-		Cipher c;
-		if (_contextCipher == null) {
-			String jceAlgorithm =
-				JCEMapper.translateURItoJCEID(_algorithm);
+	// Now create the working cipher if none was created already
+	Cipher c;
+	if (_contextCipher == null) {
+	    String jceAlgorithm = JCEMapper.translateURItoJCEID(_algorithm);
+	    logger.debug("alg = " + jceAlgorithm);
 
-			logger.debug("alg = " + jceAlgorithm);
+	    try {
+                if (_requestedJCEProvider == null)
+		    c = Cipher.getInstance(jceAlgorithm);
+                else
+                    c = Cipher.getInstance(jceAlgorithm, _requestedJCEProvider);
+	    } catch (NoSuchAlgorithmException nsae) {
+		throw new XMLEncryptionException("empty", nsae);
+	    } catch (NoSuchProviderException nspre) {
+		throw new XMLEncryptionException("empty", nspre);
+	    } catch (NoSuchPaddingException nspae) {
+		throw new XMLEncryptionException("empty", nspae);
+	    }
+	} else {
+	    c = _contextCipher;
+	}
+	// Now perform the encryption
 
-			try {
-                            if (_requestedJCEProvider == null)
-				c = Cipher.getInstance(jceAlgorithm);
-                            else
-                                c = Cipher.getInstance(jceAlgorithm, _requestedJCEProvider);
-			} catch (NoSuchAlgorithmException nsae) {
-				throw new XMLEncryptionException("empty", nsae);
-			} catch (NoSuchProviderException nspre) {
-				throw new XMLEncryptionException("empty", nspre);
-			} catch (NoSuchPaddingException nspae) {
-				throw new XMLEncryptionException("empty", nspae);
-			}
-		}
-		else {
-			c = _contextCipher;
-		}
-		// Now perform the encryption
-
-		try {
-			// Should internally generate an IV
-			// todo - allow user to set an IV
-			c.init(_cipherMode, _key);
-		} catch (InvalidKeyException ike) {
-			throw new XMLEncryptionException("empty", ike);
-		}
+	try {
+	    // Should internally generate an IV
+	    // todo - allow user to set an IV
+	    c.init(_cipherMode, _key);
+	} catch (InvalidKeyException ike) {
+	    throw new XMLEncryptionException("empty", ike);
+	}
 
         try {
-            encryptedBytes =
-                c.doFinal(serializedOctets.getBytes("UTF-8"));
-
-            logger.debug("Expected cipher.outputSize = " +
-                Integer.toString(c.getOutputSize(
-                    serializedOctets.getBytes().length)));
+	    if (serializedData != null) {
+                int numBytes;
+                byte[] buf = new byte[8192];
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                while ((numBytes = serializedData.read(buf)) != -1) {
+                    byte[] data = c.update(buf, 0, numBytes);
+                    baos.write(data);
+                }
+                baos.write(c.doFinal());
+                encryptedBytes = baos.toByteArray();
+            } else {
+                encryptedBytes = c.doFinal(serializedOctets.getBytes("UTF-8"));
+                logger.debug("Expected cipher.outputSize = " +
+                    Integer.toString(c.getOutputSize(
+                        serializedOctets.getBytes().length)));
+	    }
             logger.debug("Actual cipher.outputSize = " +
                 Integer.toString(encryptedBytes.length));
         } catch (IllegalStateException ise) {
@@ -1001,46 +1055,36 @@ public class XMLCipher {
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
         } catch (UnsupportedEncodingException uee) {
-		   	throw new XMLEncryptionException("empty", uee);
-		}
+	    throw new XMLEncryptionException("empty", uee);
+	}
 
-		// Now build up to a properly XML Encryption encoded octet stream
-		// IvParameterSpec iv;
-
-		byte[] iv = c.getIV();
-		byte[] finalEncryptedBytes = 
-			new byte[iv.length + encryptedBytes.length];
-		System.arraycopy(iv, 0, finalEncryptedBytes, 0,
-						 iv.length);
-		System.arraycopy(encryptedBytes, 0, finalEncryptedBytes, 
-						 iv.length,
-						 encryptedBytes.length);
-
+	// Now build up to a properly XML Encryption encoded octet stream
+	// IvParameterSpec iv;
+	byte[] iv = c.getIV();
+	byte[] finalEncryptedBytes = 
+		new byte[iv.length + encryptedBytes.length];
+	System.arraycopy(iv, 0, finalEncryptedBytes, 0, iv.length);
+	System.arraycopy(encryptedBytes, 0, finalEncryptedBytes, iv.length,
+			 encryptedBytes.length);
         String base64EncodedEncryptedOctets = Base64.encode(finalEncryptedBytes);
 
         logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
         logger.debug("Encrypted octets length = " +
             base64EncodedEncryptedOctets.length());
 
-		try {
-			CipherData cd = _ed.getCipherData();
-			CipherValue cv = cd.getCipherValue();
-			// cv.setValue(base64EncodedEncryptedOctets.getBytes());
-			cv.setValue(base64EncodedEncryptedOctets);
+	try {
+	    CipherData cd = _ed.getCipherData();
+	    CipherValue cv = cd.getCipherValue();
+	    // cv.setValue(base64EncodedEncryptedOctets.getBytes());
+	    cv.setValue(base64EncodedEncryptedOctets);
 
-			if (contentMode) {
-				_ed.setType(
-					new URI(EncryptionConstants.TYPE_CONTENT).toString());
-			} else {
-				_ed.setType(
-					new URI(EncryptionConstants.TYPE_ELEMENT).toString());
-			}
-			EncryptionMethod method =
-				_factory.newEncryptionMethod(new URI(_algorithm).toString());
-			_ed.setEncryptionMethod(method);
-		} catch (URI.MalformedURIException mfue) {
-			throw new XMLEncryptionException("empty", mfue);
-		}
+	    _ed.setType(new URI(type).toString());
+	    EncryptionMethod method =
+		_factory.newEncryptionMethod(new URI(_algorithm).toString());
+	    _ed.setEncryptionMethod(method);
+	} catch (URI.MalformedURIException mfue) {
+	    throw new XMLEncryptionException("empty", mfue);
+	}
         return (_ed);
     }
 
