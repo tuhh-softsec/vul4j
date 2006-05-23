@@ -1,6 +1,15 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in v...
-    Fixed bug 38655
+	Fixed bug 38668: Add XMLCipher.encryptData method that takes 
+			 serialized data as parameter (mullan)
+	Fixed bug 39273: JSR 105 DOMCryptoContext.setIdAttributeNS not working 
+			 when validating signatures (mullan)
+	Fixed bug 38405: ElementProxy.length() is not working (Java) (mullan)
+	Fixed bug 37708: Different behaviour with NodeSet and RootNode with 
+			 InclusiveNamespaces (mullan)
+	Fixed bug 37456: Signing throws an exception if custom resource 
+			 resolver is registered (mullan)
+        Fixed bug 38655
 	Fixed bug 38444.
 	Fixed bug 38605.
 	Fixed bug 39200
