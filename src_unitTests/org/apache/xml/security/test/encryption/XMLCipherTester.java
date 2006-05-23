@@ -16,6 +16,7 @@
  */
 package org.apache.xml.security.test.encryption;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.security.Key;
@@ -46,6 +47,7 @@ import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.EncryptionMethod;
 import org.apache.xml.security.encryption.CipherData;
 import org.apache.xml.security.transforms.params.XPathContainer;
+import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.keys.KeyInfo;
 import org.w3c.dom.Document;
@@ -661,6 +663,46 @@ public class XMLCipherTester extends TestCase {
 		}
 
 	}
+
+    public void testSerializedData() throws Exception {
+        byte[] bits128 = {
+            (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13,
+            (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17,
+            (byte) 0x18, (byte) 0x19, (byte) 0x1A, (byte) 0x1B,
+            (byte) 0x1C, (byte) 0x1D, (byte) 0x1E, (byte) 0x1F};
+        Key key = new SecretKeySpec(bits128, "AES");
+
+        Document d = document(); // source
+        Element e = (Element) d.getElementsByTagName(element()).item(index());
+
+        // encrypt
+        cipher = XMLCipher.getInstance(XMLCipher.AES_128);
+        cipher.init(XMLCipher.ENCRYPT_MODE, key);
+
+        // serialize element ...
+        Canonicalizer canon =
+            Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        canon.setWriter(baos);
+        canon.notReset();
+        canon.canonicalizeSubtree(e);
+        baos.close();
+        String before = baos.toString("UTF-8");
+
+        EncryptedData encryptedData = cipher.encryptData
+            (d, EncryptionConstants.TYPE_ELEMENT,
+             new ByteArrayInputStream(baos.toByteArray()));
+
+        //decrypt
+        cipher = XMLCipher.getInstance(XMLCipher.AES_128);
+        cipher.init(XMLCipher.DECRYPT_MODE, key);
+        Assert.assertEquals
+            (encryptedData.getEncryptionMethod().getAlgorithm(),
+             XMLCipher.AES_128);
+        byte[] bytes = cipher.decryptToByteArray(cipher.martial(encryptedData));
+        String after = new String(bytes, "UTF-8");
+        Assert.assertEquals(before, after);
+    }
 
 	private String toString (Node n)
 		throws Exception {
