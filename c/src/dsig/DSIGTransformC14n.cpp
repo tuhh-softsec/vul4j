@@ -125,7 +125,7 @@ DOMElement * DSIGTransformC14n::createBlankTransform(DOMDocument * parentDoc) {
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
 	ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	ret->setAttribute(DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIC14N_NOC);
+	ret->setAttributeNS(NULL,DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIC14N_NOC);
 
 	mp_txfmNode = ret;
 	mp_inclNSStr = NULL;
@@ -245,7 +245,7 @@ void DSIGTransformC14n::setCanonicalizationMethod(canonicalizationMethod method)
 
 	// Now do the set.
 
-	((DOMElement *) mp_txfmNode)->setAttribute(MAKE_UNICODE_STRING("Algorithm"), m);
+	((DOMElement *) mp_txfmNode)->setAttributeNS(NULL,MAKE_UNICODE_STRING("Algorithm"), m);
 	m_cMethod = method;
 
 }
@@ -314,7 +314,7 @@ void DSIGTransformC14n::setInclusiveNamespaces(XMLCh * ns) {
 
 	// Now create the prefix list
 
-	mp_inclNSNode->setAttribute(MAKE_UNICODE_STRING("PrefixList"), ns);
+	mp_inclNSNode->setAttributeNS(NULL,MAKE_UNICODE_STRING("PrefixList"), ns);
 	mp_inclNSStr = mp_inclNSNode->getAttributes()->getNamedItem(MAKE_UNICODE_STRING("PrefixList"))->getNodeValue();
 
 }
@@ -336,7 +336,7 @@ void DSIGTransformC14n::addInclusiveNamespace(const char * ns) {
 
 		// Now create the prefix list
 
-		mp_inclNSNode->setAttribute(MAKE_UNICODE_STRING("PrefixList"), MAKE_UNICODE_STRING(ns));
+		mp_inclNSNode->setAttributeNS(NULL,MAKE_UNICODE_STRING("PrefixList"), MAKE_UNICODE_STRING(ns));
 		mp_inclNSStr = mp_inclNSNode->getAttributes()->getNamedItem(MAKE_UNICODE_STRING("PrefixList"))->getNodeValue();
 
 	}
@@ -349,7 +349,7 @@ void DSIGTransformC14n::addInclusiveNamespace(const char * ns) {
 		str << (*(mp_env->getSBFormatter()) << mp_inclNSStr);
 		str.sbStrcatIn(" ");
 		str.sbStrcatIn((char *) ns);
-		mp_inclNSNode->setAttribute(MAKE_UNICODE_STRING("PrefixList"), str.sbStrToXMLCh());
+		mp_inclNSNode->setAttributeNS(NULL,MAKE_UNICODE_STRING("PrefixList"), str.sbStrToXMLCh());
 		mp_inclNSStr = mp_inclNSNode->getAttributes()->getNamedItem(MAKE_UNICODE_STRING("PrefixList"))->getNodeValue();
 
 	}

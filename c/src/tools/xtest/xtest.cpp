@@ -405,7 +405,7 @@ DOMDocument * createTestDoc(DOMImplementation * impl) {
 
 	DOMElement  *catElem = doc->createElement(MAKE_UNICODE_STRING("category"));
 	rootElem->appendChild(catElem);
-	catElem->setAttribute(MAKE_UNICODE_STRING("idea"), MAKE_UNICODE_STRING("great"));
+	catElem->setAttributeNS(NULL,MAKE_UNICODE_STRING("idea"), MAKE_UNICODE_STRING("great"));
 
 	DOMText    *catDataVal = doc->createTextNode(MAKE_UNICODE_STRING("XML Security Tools"));
 	catElem->appendChild(catDataVal);
@@ -1351,7 +1351,7 @@ void unitTestCipherReference(DOMImplementation * impl) {
 		// Now create the data that is referenced
 		DOMElement * cipherVal = doc->createElement(MAKE_UNICODE_STRING("MyCipherValue"));
 		rootElem->appendChild(cipherVal);
-		cipherVal->setAttribute(MAKE_UNICODE_STRING("Id"), MAKE_UNICODE_STRING("CipherText"));
+		cipherVal->setAttributeNS(NULL, MAKE_UNICODE_STRING("Id"), MAKE_UNICODE_STRING("CipherText"));
 #if defined(XSEC_XERCES_HAS_SETIDATTRIBUTE)
 		cipherVal->setIdAttribute(MAKE_UNICODE_STRING("Id"));
 #endif

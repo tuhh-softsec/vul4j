@@ -121,7 +121,7 @@ DOMElement * DSIGTransformBase64::createBlankTransform(DOMDocument * parentDoc) 
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
 	ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	ret->setAttribute(DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIBASE64);
+	ret->setAttributeNS(NULL,DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIBASE64);
 
 	mp_txfmNode = ret;
 

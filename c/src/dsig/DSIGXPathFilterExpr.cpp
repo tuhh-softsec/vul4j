@@ -187,17 +187,17 @@ DOMElement * DSIGXPathFilterExpr::setFilter(xpathFilterType filterType,
 
 	case FILTER_INTERSECT :
 
-		xe->setAttribute(MAKE_UNICODE_STRING("Filter"), MAKE_UNICODE_STRING("intersect"));
+		xe->setAttributeNS(NULL,MAKE_UNICODE_STRING("Filter"), MAKE_UNICODE_STRING("intersect"));
 		break;
 
 	case FILTER_SUBTRACT :
 
-		xe->setAttribute(MAKE_UNICODE_STRING("Filter"), MAKE_UNICODE_STRING("subtract"));
+		xe->setAttributeNS(NULL,MAKE_UNICODE_STRING("Filter"), MAKE_UNICODE_STRING("subtract"));
 		break;
 
 	case FILTER_UNION :
 
-		xe->setAttribute(MAKE_UNICODE_STRING("Filter"), MAKE_UNICODE_STRING("union"));
+		xe->setAttributeNS(NULL,MAKE_UNICODE_STRING("Filter"), MAKE_UNICODE_STRING("union"));
 		break;
 
 	default :

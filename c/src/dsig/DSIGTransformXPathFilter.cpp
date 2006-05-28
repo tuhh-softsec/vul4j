@@ -123,7 +123,7 @@ DOMElement * DSIGTransformXPathFilter::createBlankTransform(DOMDocument * parent
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
 	ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	ret->setAttribute(DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIXPF);
+	ret->setAttributeNS(NULL,DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIXPF);
 	
 	mp_txfmNode = ret;
 

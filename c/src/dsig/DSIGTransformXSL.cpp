@@ -132,7 +132,7 @@ DOMElement * DSIGTransformXSL::createBlankTransform(DOMDocument * parentDoc) {
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
 	ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	ret->setAttribute(DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIXSLT);
+	ret->setAttributeNS(NULL,DSIGConstants::s_unicodeStrAlgorithm, DSIGConstants::s_unicodeStrURIXSLT);
 
 	mp_txfmNode = ret;
 	mp_stylesheetNode = NULL;

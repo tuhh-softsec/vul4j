@@ -447,7 +447,7 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 	XalanDocument* theDoc = theParserLiaison.createDocument(mp_doc);
 
 	XalanElement * xe = theDoc->createElement(XalanDOMString("ns"));
-	xe->setAttribute(/*XalanDOMString(""), */XalanDOMString("xmlns:ietf"), XalanDOMString("http://www.ietf.org"));
+	xe->setAttributeNS(NULL,/*XalanDOMString(""), */XalanDOMString("xmlns:ietf"), XalanDOMString("http://www.ietf.org"));
 
 	// Set up the XPath evaluator
 	

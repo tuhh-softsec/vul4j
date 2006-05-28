@@ -234,7 +234,7 @@ DOMElement * DSIGSignedInfo::createBlankSignedInfo(
 	mp_signedInfoNode->appendChild(canMeth);
 	mp_env->doPrettyPrint(mp_signedInfoNode);
 
-	canMeth->setAttribute(DSIGConstants::s_unicodeStrAlgorithm,
+	canMeth->setAttributeNS(NULL,DSIGConstants::s_unicodeStrAlgorithm,
 		canonicalizationAlgorithmURI);
 
 	// Now the SignatureMethod
