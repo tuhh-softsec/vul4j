@@ -131,6 +131,12 @@ public :
 
 	virtual HashType getHashType(void);
 
+	/**
+	 * \brief Get OpenSSL hash context structure
+	 */
+
+	EVP_MD_CTX * getOpenSSLEVP_MD_CTX(void) {return &m_mdctx;}
+
 	//@}
 
 

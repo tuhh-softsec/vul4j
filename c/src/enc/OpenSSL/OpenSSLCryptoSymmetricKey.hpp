@@ -267,6 +267,17 @@ public :
 
 	//@}
 
+	/** @name OpenSSL Library Specific functions */
+	//@{
+
+	/**
+	 * \brief Get OpenSSL cipher context structure
+	 */
+
+	EVP_CIPHER_CTX * getOpenSSLEVP_CIPHER_CTX(void) {return &m_ctx;}
+
+	//@}
+
 private:
 
 	// Unimplemented constructors

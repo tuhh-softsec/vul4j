@@ -199,6 +199,13 @@ public :
 
 	OpenSSLCryptoKeyDSA(EVP_PKEY *k);
 
+	/**
+	 * \brief Get OpenSSL DSA structure
+	 */
+
+	DSA * getOpenSSLDSA(void) {return mp_dsaKey;}
+
+	//@}
 	//@}
 
 

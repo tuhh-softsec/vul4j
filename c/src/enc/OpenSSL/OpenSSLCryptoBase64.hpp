@@ -182,6 +182,18 @@ public :
 	
 	static BIGNUM * b642BN(char * b64in, unsigned int len);
 
+	/**
+	 * \brief Get OpenSSL encode context structure
+	 */
+
+	EVP_ENCODE_CTX * getOpenSSLEncodeEVP_ENCODE_CTX(void) {return &m_ectx;}
+
+	/**
+	 * \brief Get OpenSSL encode context structure
+	 */
+
+	EVP_ENCODE_CTX * getOpenSSLDecodeEVP_ENCODE_CTX(void) {return &m_dctx;}
+
 	//@}
 
 private :

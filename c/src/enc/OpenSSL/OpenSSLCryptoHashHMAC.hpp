@@ -155,6 +155,12 @@ public :
 
 	virtual HashType getHashType(void);
 
+	/**
+	 * \brief Get OpenSSL Hash Context
+	 */
+
+	HMAC_CTX * getOpenSSLHMAC_CTX(void) {return &m_hctx;}
+
 	//@}
 
 private:

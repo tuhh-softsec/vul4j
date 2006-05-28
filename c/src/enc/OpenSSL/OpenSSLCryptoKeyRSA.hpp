@@ -258,6 +258,12 @@ public :
 
 	OpenSSLCryptoKeyRSA(EVP_PKEY *k);
 
+	/**
+	 * \brief Get OpenSSL RSA Object
+	 */
+
+	RSA * getOpenSSLRSA(void) {return mp_rsaKey;}
+
 	//@}
 
 private:
