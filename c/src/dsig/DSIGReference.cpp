@@ -854,13 +854,16 @@ void DSIGReference::hashReferenceList(DSIGReferenceList *lst, bool interlocking)
 			
 			r = lst->item(j);
 
-			r->setHash();
-		
 			// If this is a manifest we need to set all the references in the manifest as well
 			
 			if (r->isManifest())
 				hashReferenceList(r->getManifestReferenceList());
+			
+			// Re-ordered as per suggestion by Peter Gubis to make it more likely
+			// that hashes are correct on first pass when manifests are involved
 
+			r->setHash();
+		
 		}
 
 	} while (interlocking && !DSIGReference::verifyReferenceList(lst, errStr) && i-- >= 0);
