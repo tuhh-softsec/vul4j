@@ -185,9 +185,8 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 
 	DOMSubTreeData subTree = new DOMSubTreeData(localSiElem, true);
 
-	OctetStreamData data = null;
 	try {
-	    data = (OctetStreamData) ((DOMCanonicalizationMethod) 
+	    Data data = ((DOMCanonicalizationMethod) 
 		canonicalizationMethod).canonicalize(subTree, context, os);
 	} catch (TransformException te) {
 	    throw new XMLSignatureException(te);
@@ -202,9 +201,11 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
             char[] siBytes = new char[signedInfoBytes.length];
             try {
                 isr.read(siBytes);
-            } catch (IOException ioex) {} //ignore since this is logging code
-            log.log(Level.FINE, "Canonicalized SignedInfo:\n" 
-		+ new String(siBytes));
+                log.log(Level.FINE, "Canonicalized SignedInfo:\n" 
+		    + new String(siBytes));
+            } catch (IOException ioex) {
+		log.log(Level.FINE, "IOException reading SignedInfo bytes");
+	    } 
 	    log.log(Level.FINE, "Data to be signed/verified:"
                 + Base64.encode(signedInfoBytes));
 	}
@@ -257,5 +258,11 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 	return (canonicalizationMethod.equals(osi.getCanonicalizationMethod()) 
 	    && signatureMethod.equals(osi.getSignatureMethod()) && 
 	    references.equals(osi.getReferences()) && idEqual);
+    }
+
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 59;
     }
 }
