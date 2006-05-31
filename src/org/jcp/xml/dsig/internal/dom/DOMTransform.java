@@ -66,7 +66,6 @@ public class DOMTransform extends DOMStructure implements Transform {
      */
     public DOMTransform(Element transElem, XMLCryptoContext context,
 	Provider provider) throws MarshalException {
-        Document ownerDoc = transElem.getOwnerDocument();
         String algorithm = DOMUtils.getAttributeValue(transElem, "Algorithm");
 	try {
 	    spi = TransformService.getInstance(algorithm, "DOM");
@@ -163,6 +162,12 @@ public class DOMTransform extends DOMStructure implements Transform {
 	return (getAlgorithm().equals(otransform.getAlgorithm()) && 
 	    DOMUtils.paramsEqual
 		(getParameterSpec(), otransform.getParameterSpec()));
+    }
+
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 58;
     }
 
     /**
