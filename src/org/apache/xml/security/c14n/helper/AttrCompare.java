@@ -41,8 +41,8 @@ import org.w3c.dom.Attr;
  */
 public class AttrCompare implements java.util.Comparator {
 
-   private final int ATTR0_BEFORE_ATTR1 = -1;
-   private final int ATTR1_BEFORE_ATTR0 = 1;
+   private static final int ATTR0_BEFORE_ATTR1 = -1;
+   private static final int ATTR1_BEFORE_ATTR0 = 1;
 
    private final static String XMLNS=Constants.NamespaceSpecNS;
    /**
