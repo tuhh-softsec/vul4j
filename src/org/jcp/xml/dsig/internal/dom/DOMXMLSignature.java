@@ -419,6 +419,12 @@ public final class DOMXMLSignature extends DOMStructure
 	    objects.equals(osig.getObjects()));
     }
 
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 54;
+    }
+
     private void digestReference(DOMReference ref, XMLSignContext signContext)
 	throws XMLSignatureException {
 	if (ref.isDigested()) {
@@ -549,6 +555,12 @@ public final class DOMXMLSignature extends DOMStructure
 
 	    //XXX compare signature values?
 	    return idEqual;
+	}
+    
+        public int hashCode() {
+	    // uncomment when JDK 1.4 is required
+	    // assert false : "hashCode not designed";
+	    return 55;
 	}
 
 	public void marshal(Node parent, String dsPrefix,
