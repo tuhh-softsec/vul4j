@@ -97,4 +97,10 @@ public class DOMCanonicalizationMethod extends DOMTransform
 	return (getAlgorithm().equals(ocm.getAlgorithm()) && 
 	    DOMUtils.paramsEqual(getParameterSpec(), ocm.getParameterSpec()));
     }
+
+    public int hashCode() {
+//	uncomment when JDK 1.4 is required
+//	assert false : "hashCode not designed";
+	return 42;
+    }
 }
