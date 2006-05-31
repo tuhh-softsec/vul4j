@@ -265,4 +265,10 @@ public final class DOMKeyValue extends DOMStructure implements KeyValue {
         
         return true;
     }
+
+    public int hashCode() {
+//	uncomment when JDK 1.4 is required
+//	assert false : "hashCode not designed";
+	return 45;
+    }
 }
