@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.algorithms;
 
-
-
 import java.security.MessageDigest;
 import java.security.NoSuchProviderException;
 
@@ -36,11 +34,6 @@ import org.w3c.dom.Document;
  *
  */
 public class MessageDigestAlgorithm extends Algorithm {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                    MessageDigestAlgorithm.class.getName());
 
     /** Message Digest - NOT RECOMMENDED MD5*/
    public static final String ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5 = Constants.MoreAlgorithmsSpecNS + "md5";
