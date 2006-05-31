@@ -474,6 +474,12 @@ public final class DOMReference extends DOMStructure
 	    urisEqual && typesEqual && transforms.equals(oref.getTransforms()));
     }
 
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 47;
+    }
+
     boolean isDigested() {
 	return digested;
     }
