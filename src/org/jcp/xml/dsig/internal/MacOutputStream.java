@@ -28,18 +28,12 @@ import java.io.ByteArrayOutputStream;
  *
  */
 public class MacOutputStream extends ByteArrayOutputStream {
-    private final static byte none[]="error".getBytes();
     private final HmacSHA1 mac;
 
     public MacOutputStream(HmacSHA1 mac) {
         this.mac = mac;
     }
 
-    /** @inheritDoc */
-    public byte[] toByteArray() {
-        return none;
-    }
-    
     /** @inheritDoc */
     public void write(byte[] arg0)  {
         mac.update(arg0);
