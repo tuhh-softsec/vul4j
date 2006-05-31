@@ -230,10 +230,8 @@ public abstract class TransformService implements Transform {
 
     private static class MechanismMapEntry implements Map.Entry {
 	private final String mechanism;
-	private final String algorithm;
 	private final String key;
 	MechanismMapEntry(String algorithm, String mechanism) {
-	    this.algorithm = algorithm;
 	    this.mechanism = mechanism;
 	    this.key = "TransformService." + algorithm + " MechanismType";
 	}
