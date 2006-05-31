@@ -195,4 +195,10 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
 
 	return (keyInfoTypes.equals(oki.getContent()) && idsEqual);
     }
+
+    public int hashCode() {
+//	uncomment when JDK 1.4 is required
+//	assert false : "hashCode not designed";
+	return 43;
+    }
 }
