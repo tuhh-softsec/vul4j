@@ -322,6 +322,7 @@ public class DOMUtils {
             XPathType type = (XPathType) types.get(i);
             XPathType otype = (XPathType) otypes.get(i);
             if (!type.getExpression().equals(otype.getExpression()) ||
+		!type.getNamespaceMap().equals(otype.getNamespaceMap()) ||
                 type.getFilter() != otype.getFilter()) {
                 return false;
             }
@@ -336,8 +337,8 @@ public class DOMUtils {
 
     private static boolean paramsEqual(XPathFilterParameterSpec spec1,
 	XPathFilterParameterSpec spec2) {
-
-        return spec1.getXPath().equals(spec2.getXPath());
+        return (spec1.getXPath().equals(spec2.getXPath()) && 
+	    spec1.getNamespaceMap().equals(spec2.getNamespaceMap()));
     }
 
     private static boolean paramsEqual(XSLTTransformParameterSpec spec1,
