@@ -3,6 +3,8 @@ package org.codehaus.plexus.util.xml;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PrettyPrintXMLWriter
     implements XMLWriter
@@ -148,7 +150,7 @@ public class PrettyPrintXMLWriter
         text = text.replaceAll( "\n\r", "&#10;" );
 
         Pattern pattern = Pattern.compile( "([\000-\037])" );
-        Matcher m = pattern.matcher( s );
+        Matcher m = pattern.matcher( text );
         StringBuffer b = new StringBuffer();
         while ( m.find() )
         {
