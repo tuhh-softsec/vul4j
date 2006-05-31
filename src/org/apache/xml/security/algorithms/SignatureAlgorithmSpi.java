@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.algorithms;
 
-
-
 import java.security.Key;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
@@ -32,10 +30,6 @@ import org.w3c.dom.Element;
  * @author $Author$
  */
 public abstract class SignatureAlgorithmSpi {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureAlgorithmSpi.class.getName());
 
    /**
     * Returns the URI representation of <code>Transformation algorithm</code>
