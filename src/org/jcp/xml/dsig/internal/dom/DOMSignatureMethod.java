@@ -224,4 +224,10 @@ public abstract class DOMSignatureMethod extends DOMStructure
 	return (algorithm.equals(osm.getAlgorithm()) && 
 	    paramsEqual(osm.getParameterSpec()));
     }
+
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 57;
+    }
 }
