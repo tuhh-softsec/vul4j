@@ -31,10 +31,6 @@ import org.w3c.dom.Element;
  */
 public abstract class Algorithm extends ElementProxy {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Algorithm.class.getName());
-
    /**
     *
     * @param doc
