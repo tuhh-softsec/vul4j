@@ -147,12 +147,16 @@ public class PrettyPrintXMLWriter
 
         text = text.replaceAll( "\n\r", "&#10;" );
 
-        for( int c = 0; c < 32; c++ )
+        Pattern pattern = Pattern.compile( "([\000-\037])" );
+        Matcher m = pattern.matcher( s );
+        StringBuffer b = new StringBuffer();
+        while ( m.find() )
         {
-            text = text.replaceAll( Character.toString( (char) c ), "&#"+ c + ";" );
+            m = m.appendReplacement( b, "&#" + Integer.toString( m.group( 1 ).charAt( 0 ) ) + ";" );
         }
+        m.appendTail( b );
 
-        return text;
+        return b.toString();
     }
 
     public void addAttribute( String key, String value )
