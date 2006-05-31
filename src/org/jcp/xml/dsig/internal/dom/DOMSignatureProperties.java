@@ -143,4 +143,10 @@ public final class DOMSignatureProperties extends DOMStructure
 
 	return (properties.equals(osp.getProperties()) && idsEqual);
     }
+
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 49;
+    }
 }
