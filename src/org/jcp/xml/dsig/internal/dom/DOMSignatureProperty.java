@@ -155,6 +155,12 @@ public final class DOMSignatureProperty extends DOMStructure
 	    target.equals(osp.getTarget()) && idsEqual);
     }
 
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 50;
+    }
+
     private boolean equalsContent(List otherContent) {
 	int osize = otherContent.size();
 	if (content.size() != osize) {
