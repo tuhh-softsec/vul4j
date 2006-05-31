@@ -249,4 +249,10 @@ public final class DOMRetrievalMethod extends DOMStructure
 	return (uri.equals(orm.getURI()) && 
 	    transforms.equals(orm.getTransforms()) && typesEqual);
     }
+
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 48;
+    }
 }
