@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,11 +16,8 @@
  */
 package org.apache.xml.security.transforms;
 
-
-
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -37,10 +33,6 @@ import org.xml.sax.SAXException;
  * @author Christian Geuer-Pollmann
  */
 public abstract class TransformSpi {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(TransformSpi.class.getName());
 
    protected Transform _transformObject = null;
    protected void setTransform(Transform transform) {
