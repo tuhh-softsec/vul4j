@@ -16,13 +16,10 @@
  */
 package org.apache.xml.security.keys.content;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Element;
-
 
 /**
  *
@@ -30,10 +27,6 @@ import org.w3c.dom.Element;
  * $todo$ implement
  */
 public class SPKIData extends SignatureElementProxy implements KeyInfoContent {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SPKIData.class.getName());
 
    /**
     * Constructor SPKIData
