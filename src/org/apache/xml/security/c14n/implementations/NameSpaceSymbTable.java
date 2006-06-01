@@ -320,54 +320,54 @@ class NameSpaceSymbEntry implements Cloneable {
     Attr n;        
 };
 
-class SymbMap implements Cloneable{	
-	int free=23;
-	NameSpaceSymbEntry[] entries=new NameSpaceSymbEntry[free];
-	String[] keys=new String[free];
+class SymbMap implements Cloneable {
+    int free=23;
+    NameSpaceSymbEntry[] entries=new NameSpaceSymbEntry[free];
+    String[] keys=new String[free];
 	
-	void put(String key, NameSpaceSymbEntry value) {		
+    void put(String key, NameSpaceSymbEntry value) {		
         int index = index(key);
-		Object oldKey = keys[index];
-		keys[index] = key;
-		entries[index] = value;
+	Object oldKey = keys[index];
+	keys[index] = key;
+	entries[index] = value;
         if (oldKey==null || !oldKey.equals(key)) {	        	        
-	        if (--free == 0) {
-				free=entries.length;
-	            int newCapacity = free<<2;				
-	            rehash(newCapacity);			
-	        }
+            if (--free == 0) {
+		free=entries.length;
+	        int newCapacity = free<<2;				
+	        rehash(newCapacity);			
+            }
         }
     }
 	
     List entrySet() {
-		List a=new ArrayList();
-		for (int i=0;i<entries.length;i++) {
-			if ((entries[i]!=null) && !("".equals(entries[i]))) {
-				a.add(entries[i]);
-			}
-		}
-		return a;		
+	List a=new ArrayList();
+	for (int i=0;i<entries.length;i++) {
+	    if ((entries[i]!=null) && !("".equals(entries[i].uri))) {
+		a.add(entries[i]);
+	    }
 	}
+	return a;		
+    }
 
-
-	protected int index(Object obj) {		
+    protected int index(Object obj) {		
         Object[] set = keys;
-		int length = set.length;
-		//abs of index
+	int length = set.length;
+	//abs of index
         int index = (obj.hashCode() & 0x7fffffff) %  length;
         Object cur = set[index];
 
         if (cur == null || (cur.equals( obj))) {
-			return index;
+	    return index;
         }
         length=length-1;
         do {
-			index=index==length? 0:++index;
-			cur = set[index];
+	    index=index==length? 0:++index;
+	    cur = set[index];
         } while (cur != null && (!cur.equals(obj)));       
         return index;
     }
-	 /**
+
+    /**
      * rehashes the map to the new capacity.
      *
      * @param newCapacity an <code>int</code> value
@@ -375,37 +375,39 @@ class SymbMap implements Cloneable{
     protected void rehash(int newCapacity) {
         int oldCapacity = keys.length;
         String oldKeys[] = keys;
-		NameSpaceSymbEntry oldVals[] = entries;
+	NameSpaceSymbEntry oldVals[] = entries;
 
-		keys = new String[newCapacity];        
-		entries = new NameSpaceSymbEntry[newCapacity];
+	keys = new String[newCapacity];        
+	entries = new NameSpaceSymbEntry[newCapacity];
 
         for (int i = oldCapacity; i-- > 0;) {
             if(oldKeys[i] != null) {
                 String o = oldKeys[i];
                 int index = index(o);
-				keys[index] = o;
-				entries[index] = oldVals[i];
+		keys[index] = o;
+		entries[index] = oldVals[i];
             }
         }
     }
-	 NameSpaceSymbEntry get(String key) {
-	        return  entries[index(key)];
-	    }
-	 protected Object clone()  {
-		// TODO Auto-generated method stub
-		try {
-			SymbMap copy=(SymbMap) super.clone();
-			copy.entries=new NameSpaceSymbEntry[entries.length];
-			System.arraycopy(entries,0,copy.entries,0,entries.length);
-			copy.keys=new String[keys.length];
-			System.arraycopy(keys,0,copy.keys,0,keys.length);
+
+    NameSpaceSymbEntry get(String key) {
+        return  entries[index(key)];
+    }
+
+    protected Object clone()  {
+	// TODO Auto-generated method stub
+	try {
+	    SymbMap copy=(SymbMap) super.clone();
+	    copy.entries=new NameSpaceSymbEntry[entries.length];
+	    System.arraycopy(entries,0,copy.entries,0,entries.length);
+	    copy.keys=new String[keys.length];
+	    System.arraycopy(keys,0,copy.keys,0,keys.length);
 			
-			return copy;
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	    return copy;
+	} catch (CloneNotSupportedException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
+	return null;
+    }
 }
