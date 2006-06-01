@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.signature;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IdResolver;
@@ -37,10 +35,6 @@ import org.w3c.dom.Element;
  *
  */
 public class SignatureProperties extends SignatureElementProxy {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureProperties.class.getName());
 
    /**
     * Constructor SignatureProperties
