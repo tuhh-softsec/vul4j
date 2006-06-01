@@ -26,17 +26,12 @@ import org.w3c.dom.Node;
 
 /**
  * Handles <code>&lt;ds:SignatureProperty&gt;</code> elements
- * Addittional information item concerning the generation of the signature(s) can
+ * Additional information item concerning the generation of the signature(s) can
  * be placed in this Element
  *
  * @author Christian Geuer-Pollmann
  */
 public class SignatureProperty extends SignatureElementProxy {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                            SignatureProperty.class.getName());
 
    /**
     * Constructs{@link SignatureProperty} using specified <code>Target</code> attribute
