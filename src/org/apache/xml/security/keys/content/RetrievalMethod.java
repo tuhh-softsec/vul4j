@@ -16,9 +16,6 @@
  */
 package org.apache.xml.security.keys.content;
 
-
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.transforms.Transforms;
@@ -29,7 +26,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  *
  * @author $Author$
@@ -37,9 +33,6 @@ import org.w3c.dom.Element;
 public class RetrievalMethod extends SignatureElementProxy
         implements KeyInfoContent {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(RetrievalMethod.class.getName());
    //J-
     /** DSA retrieval */
    public static final String TYPE_DSA     = Constants.SignatureSpecNS + "DSAKeyValue";
