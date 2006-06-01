@@ -54,9 +54,6 @@ public class ResourceResolver {
    /** these are the system-wide resolvers */
    static List _resolverVector = null;
 
-   /** Field _individualResolverVector */
-   List _individualResolverVector = null;
-
    /** Field transformSpi */
    protected ResourceResolverSpi _resolverSpi = null;
 
