@@ -16,16 +16,12 @@
  */
 package org.apache.xml.security.keys.keyresolver;
 
-
-
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-
 import javax.crypto.SecretKey;
 
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.w3c.dom.Element;
-
 
 /**
  * This class is abstract class for a child KeyInfo Elemnet.
@@ -42,10 +38,6 @@ import org.w3c.dom.Element;
  */
 public abstract class KeyResolverSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(KeyResolverSpi.class.getName());
-  
    /**
     * Method engineResolvePublicKey
     *
