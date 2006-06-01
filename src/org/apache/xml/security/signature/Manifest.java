@@ -64,9 +64,6 @@ public class Manifest extends SignatureElementProxy {
    /** Field verificationResults[] */
    private boolean verificationResults[] = null;
 
-   /** Field _signedContents */
-   List _signedContents = new ArrayList();
-
    /** Field _resolverProperties */
    HashMap _resolverProperties = new HashMap(10);
 
