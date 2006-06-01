@@ -32,10 +32,6 @@ import org.w3c.dom.Attr;
  */
 
 public class ResolverAnonymous extends ResourceResolverSpi {
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                        ResolverAnonymous.class.getName());
 
    private XMLSignatureInput _input = null;
 
