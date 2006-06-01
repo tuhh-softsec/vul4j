@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.signature;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IdResolver;
@@ -31,15 +29,10 @@ import org.w3c.dom.Node;
  * Handles <code>&lt;ds:Object&gt;</code> elements
  * <code>Object<code> {@link Element} supply facility which can contain any kind data
  *
- *
  * @author Christian Geuer-Pollmann
  * $todo$ if we remove childen, the boolean values are not updated
  */
 public class ObjectContainer extends SignatureElementProxy {
-
-   /** {@link org.apache.commons.logging} logging facility */
-   static org.apache.commons.logging.Log log = 
-       org.apache.commons.logging.LogFactory.getLog(ObjectContainer.class.getName());
 
    /**
     * Constructs {@link ObjectContainer}
@@ -131,9 +124,9 @@ public class ObjectContainer extends SignatureElementProxy {
    }
 
    /**
-    * Adds childe Node
+    * Adds child Node
     *
-    * @param node childe Node
+    * @param node child Node
     * @return the new node in the tree.
     */
    public Node appendChild(Node node) {
