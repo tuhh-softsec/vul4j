@@ -16,29 +16,19 @@
  */
 package org.apache.xml.security.keys.content.x509;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
- *
- *
- *
  *
  * @author $Author$
  *
  */
 public class XMLX509CRL extends SignatureElementProxy
         implements XMLX509DataContent {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLX509CRL.class.getName());
 
    /**
     * Constructor XMLX509CRL
