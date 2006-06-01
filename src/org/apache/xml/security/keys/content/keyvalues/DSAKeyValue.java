@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.keys.content.keyvalues;
 
-
-
 import java.math.BigInteger;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -35,17 +33,12 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  *
  * @author $Author$
  */
 public class DSAKeyValue extends SignatureElementProxy
         implements KeyValueContent {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(DSAKeyValue.class.getName());
 
    /**
     * Constructor DSAKeyValue
