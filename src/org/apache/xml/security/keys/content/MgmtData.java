@@ -16,24 +16,17 @@
  */
 package org.apache.xml.security.keys.content;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  *
  * @author $Author$
  */
 public class MgmtData extends SignatureElementProxy implements KeyInfoContent {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(MgmtData.class.getName());
 
    /**
     * Constructor MgmtData
