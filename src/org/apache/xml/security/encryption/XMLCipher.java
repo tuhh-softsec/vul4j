@@ -2107,7 +2107,7 @@ public class XMLCipher {
         AgreementMethod newAgreementMethod(Element element) throws
                 XMLEncryptionException {
             if (null == element) {
-                //complain
+                throw new NullPointerException("element is null");
             }
 
             String algorithm = element.getAttributeNS(null, 
@@ -2173,7 +2173,7 @@ public class XMLCipher {
         CipherData newCipherData(Element element) throws
                 XMLEncryptionException {
             if (null == element) {
-                // complain
+                throw new NullPointerException("element is null");
             }
 
             int type = 0;
