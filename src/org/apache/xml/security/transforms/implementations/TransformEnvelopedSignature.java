@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
-
-
 import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -27,7 +25,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 
 /**
  * Implements the <CODE>http://www.w3.org/2000/09/xmldsig#enveloped-signature</CODE>
@@ -120,18 +117,18 @@ public class TransformEnvelopedSignature extends TransformSpi {
 	    }
 	    return signatureElement;
     }
-    class EnvelopedNodeFilter implements NodeFilter {
+    static class EnvelopedNodeFilter implements NodeFilter {
     	Node exclude;    	
     	EnvelopedNodeFilter(Node n) {
-    		exclude=n;
+	    exclude=n;
     	}
-		/**
-		 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
-		 */
-		public boolean isNodeInclude(Node n) {
-			// TODO Optimize me.
-			return !XMLUtils.isDescendantOrSelf(exclude,n);
-		}
-    	
+
+	/**
+	 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
+	 */
+	public boolean isNodeInclude(Node n) {
+	    // TODO Optimize me.
+	    return !XMLUtils.isDescendantOrSelf(exclude,n);
+	}
     }
 }
