@@ -3683,8 +3683,8 @@ public class XMLCipher {
                     _contextDocument, EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_ENCRYPTIONPROPERTY);
                 if (null != target) {
-                    result.setAttributeNS(null, EncryptionConstants._ATT_TARGET, 
-                        target.toString());
+                    result.setAttributeNS(null, EncryptionConstants._ATT_TARGET,
+                        target);
                 }
                 if (null != id) {
                     result.setAttributeNS(null, EncryptionConstants._ATT_ID, 
