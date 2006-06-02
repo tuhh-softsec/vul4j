@@ -99,7 +99,7 @@ import org.w3c.dom.Text;
 public class Reference extends SignatureElementProxy {
 
    /** Field CacheSignedNodes */
-   public static boolean CacheSignedNodes = false;
+   public final static boolean CacheSignedNodes = false;
 
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
