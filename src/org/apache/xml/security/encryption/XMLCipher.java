@@ -3263,8 +3263,7 @@ public class XMLCipher {
                 }
                 if (null != super.getType()) {
                     result.setAttributeNS(
-                        null, EncryptionConstants._ATT_TYPE, 
-                        super.getType().toString());
+                        null, EncryptionConstants._ATT_TYPE, super.getType());
                 }
                 if (null != super.getMimeType()) {
                     result.setAttributeNS(null, 
