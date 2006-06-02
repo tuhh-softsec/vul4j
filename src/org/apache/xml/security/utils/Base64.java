@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.utils;
 
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,16 +47,9 @@ import org.xml.sax.InputSource;
  */
 public class Base64 {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Base64.class.getName());
-
 
    /** Field BASE64DEFAULTLENGTH */
    public static final int BASE64DEFAULTLENGTH = 76;
-
-   /** Field _base64length */
-   static int _base64length = Base64.BASE64DEFAULTLENGTH;
 
    private Base64() {
      // we don't allow instantiation
