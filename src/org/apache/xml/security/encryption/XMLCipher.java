@@ -3514,7 +3514,7 @@ public class XMLCipher {
                     _contextDocument, EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_ENCRYPTIONMETHOD);
                 result.setAttributeNS(null, EncryptionConstants._ATT_ALGORITHM, 
-                    algorithm.toString());
+                    algorithm);
                 if (keySize > 0) {
                     result.appendChild(
                         ElementProxy.createElementForFamily(_contextDocument, 
