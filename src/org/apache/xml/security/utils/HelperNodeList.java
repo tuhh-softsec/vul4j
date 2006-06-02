@@ -17,30 +17,21 @@
  */
 package org.apache.xml.security.utils;
 
-
-
 import java.util.ArrayList;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 /**
- *
  *
  * @author Christian Geuer-Pollmann
  *
  */
 public class HelperNodeList implements NodeList {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-    org.apache.commons.logging.LogFactory.getLog(HelperNodeList.class.getName());
-
    /** Field nodes */
    ArrayList nodes = new ArrayList(20);
-
    boolean _allNodesMustHaveSameParent = false;
 
    /**
