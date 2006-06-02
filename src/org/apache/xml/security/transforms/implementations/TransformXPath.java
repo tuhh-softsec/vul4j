@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
-
-
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
@@ -36,7 +34,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-
 /**
  * Class TransformXPath
  *
@@ -49,14 +46,9 @@ import org.w3c.dom.Node;
  */
 public class TransformXPath extends TransformSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(TransformXPath.class.getName());
-
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH;
-
 
    /**
     * Method engineGetURI
@@ -127,40 +119,39 @@ public class TransformXPath extends TransformSpi {
     private boolean needsCircunvent(String str) {
     	return true;
     	//return str.contains("namespace");
-    	
     }
-    class XPathNodeFilter implements NodeFilter {
-    	 PrefixResolverDefault prefixResolver;
-    	 CachedXPathFuncHereAPI xPathFuncHereAPI =
-             new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
-          ;
-    	Node xpathnode; 
+
+    static class XPathNodeFilter implements NodeFilter {
+    	PrefixResolverDefault prefixResolver;
+    	CachedXPathFuncHereAPI xPathFuncHereAPI =
+            new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
+	Node xpathnode; 
     	String str;
     	XPathNodeFilter(Element xpathElement,
     			Node xpathnode, String str) {
-    		this.xpathnode=xpathnode;
-    		this.str=str;
-    		prefixResolver =new PrefixResolverDefault(xpathElement);
+    	    this.xpathnode=xpathnode;
+    	    this.str=str;
+    	    prefixResolver =new PrefixResolverDefault(xpathElement);
     	}
-    	    
 
-		/**
-		 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
-		 */
-		public boolean isNodeInclude(Node currentNode) {			
-			XObject includeInResult;
-			try {
-				includeInResult = xPathFuncHereAPI.eval(currentNode,
-				        xpathnode, str,prefixResolver);
-				return includeInResult.bool();
-			} catch (TransformerException e) {
+	/**
+	 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
+	 */
+	public boolean isNodeInclude(Node currentNode) {			
+	    XObject includeInResult;
+	    try {
+		includeInResult = xPathFuncHereAPI.eval(currentNode,
+			        xpathnode, str,prefixResolver);
+		return includeInResult.bool();
+	    } catch (TransformerException e) {
                 Object[] eArgs = {currentNode};
-				throw new XMLSecurityRuntimeException("signature.Transform.node", eArgs, e);
-			}	
-			catch (Exception e) {
+	        throw new XMLSecurityRuntimeException
+		    ("signature.Transform.node", eArgs, e);
+	    } catch (Exception e) {
                 Object[] eArgs = {currentNode, new Short(currentNode.getNodeType())};
-				throw new XMLSecurityRuntimeException("signature.Transform.nodeAndType",eArgs, e);
-			}
-		}
+		throw new XMLSecurityRuntimeException
+		    ("signature.Transform.nodeAndType",eArgs, e);
+	    }
+	}
     }
 }
