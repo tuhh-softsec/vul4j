@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.utils.resolver.implementations;
 
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,11 +63,12 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
                             ResolverDirectHTTP.class.getName());
 
    /** Field properties[] */
-   static final String properties[] = { "http.proxy.host", "http.proxy.port",
-                                        "http.proxy.username",
-                                        "http.proxy.password",
-                                        "http.basic.username",
-                                        "http.basic.password" };
+   private static final String properties[] = 
+	{ "http.proxy.host", "http.proxy.port",
+          "http.proxy.username",
+          "http.proxy.password",
+          "http.basic.username",
+          "http.basic.password" };
 
    /** Field HttpProxyHost */
    private static final int HttpProxyHost = 0;
@@ -280,7 +279,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     * @inheritDoc 
     */
    public String[] engineGetPropertyKeys() {
-      return ResolverDirectHTTP.properties;
+      return (String[]) ResolverDirectHTTP.properties.clone();
    }
 
    private URI getNewURI(String uri, String BaseURI)
