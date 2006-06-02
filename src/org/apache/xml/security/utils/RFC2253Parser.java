@@ -470,7 +470,7 @@ public class RFC2253Parser {
    static String trim(String str) {
 
       String trimed = str.trim();
-      int i = str.indexOf(trimed.substring(0)) + trimed.length();
+      int i = str.indexOf(trimed) + trimed.length();
 
       if ((str.length() > i) && trimed.endsWith("\\")
               &&!trimed.endsWith("\\\\")) {
