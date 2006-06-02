@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.keys.content.x509;
 
-
-
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -199,22 +197,30 @@ public class XMLX509SKI extends SignatureElementProxy
       }
    }
 
-   /** @inheritDoc */
-   public boolean equals(Object obj) {
+    /** @inheritDoc */
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
+        if (!this.getClass().getName().equals(obj.getClass().getName())) {
+            return false;
+        }
 
-      if (!obj.getClass().getName().equals(this.getClass().getName())) {
-         return false;
-      }
+        XMLX509SKI other = (XMLX509SKI) obj;
 
-      XMLX509SKI other = (XMLX509SKI) obj;
-
-      try {
-         return java.security.MessageDigest.isEqual(other.getSKIBytes(),
+        try {
+            return java.security.MessageDigest.isEqual(other.getSKIBytes(),
                                         this.getSKIBytes());
-      } catch (XMLSecurityException ex) {
-         return false;
-      }
-   }
+        } catch (XMLSecurityException ex) {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 92;
+    }
 
    /** @inheritDoc */
    public String getBaseLocalName() {
