@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.keys.storage;
 
-
-
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -157,13 +155,10 @@ public class StorageResolver {
     * @author $Author$
     * @version $Revision$
     */
-   class StorageResolverIterator implements Iterator {
+   static class StorageResolverIterator implements Iterator {
 
       /** Field _resolvers */
-	   Iterator _resolvers = null;
-
-      /** Field _currentResolver */
-      int _currentResolver = 0;
+      Iterator _resolvers = null;
 
       /**
        * Constructor FilesystemIterator
@@ -176,17 +171,16 @@ public class StorageResolver {
 
       /** @inheritDoc */
       public boolean hasNext() {
-		  return _resolvers.hasNext();
+	  return _resolvers.hasNext();
       }
 
       /** @inheritDoc */
       public Object next() {
-		  return _resolvers.next();
+	  return _resolvers.next();
       }
 
       /**
        * Method remove
-       *
        */
       public void remove() {
          throw new UnsupportedOperationException(
