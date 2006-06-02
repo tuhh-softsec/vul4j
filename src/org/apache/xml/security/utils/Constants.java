@@ -16,10 +16,7 @@
  */
 package org.apache.xml.security.utils;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
-
 
 /**
  * Provides all constants and some translation functions for i18n.
@@ -32,12 +29,8 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  */
 public class Constants {
 
-   /** {@link org.apache.commons.logging} logging facility */
-   static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Constants.class.getName());
-
    /** Field configurationFile */
-   public static String configurationFile = "data/websig.conf";
+   public static final String configurationFile = "data/websig.conf";
 
    /** Field configurationFileNew */
    public static final String configurationFileNew = ".xmlsecurityconfig";
