@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.keys.content.x509;
 
-
-
 import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -33,10 +31,6 @@ import org.w3c.dom.Element;
  */
 public class XMLX509SubjectName extends SignatureElementProxy
         implements XMLX509DataContent {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLX509SubjectName.class.getName());
 
    /**
     * Constructor X509SubjectName
@@ -84,24 +78,28 @@ public class XMLX509SubjectName extends SignatureElementProxy
       return RFC2253Parser.normalize(this.getTextFromTextChild());
    }
 
-   /** @inheritDoc */
-   public boolean equals(Object obj) {
+    /** @inheritDoc */
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
 
-      if (!obj.getClass().getName().equals(this.getClass().getName())) {
-         return false;
-      }
+        if (!this.getClass().getName().equals(obj.getClass().getName())) {
+            return false;
+        }
 
-      XMLX509SubjectName other = (XMLX509SubjectName) obj;
-      String otherSubject = other.getSubjectName();
-      String thisSubject = this.getSubjectName();
+        XMLX509SubjectName other = (XMLX509SubjectName) obj;
+        String otherSubject = other.getSubjectName();
+        String thisSubject = this.getSubjectName();
 
-      if (otherSubject.equals(thisSubject)) {
-            return true;
-      }
-
-       return false;
-      
+        return thisSubject.equals(otherSubject);
    }
+
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 52;
+    }
    
    /** @inheritDoc */
    public String getBaseLocalName() {
