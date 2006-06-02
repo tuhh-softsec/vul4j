@@ -151,23 +151,27 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
                                      Constants.SignatureSpecNS));
    }
 
-   /** @inheritDoc */
-   public boolean equals(Object obj) {
+    /** @inheritDoc */
+    public boolean equals(Object obj) {
 
-      if (!obj.getClass().getName().equals(this.getClass().getName())) {
-         return false;
-      }
+	if (obj == null) {
+	    return false;
+	}
+        if (!this.getClass().getName().equals(obj.getClass().getName())) {
+            return false;
+        }
 
-      XMLX509IssuerSerial other = (XMLX509IssuerSerial) obj;
+        XMLX509IssuerSerial other = (XMLX509IssuerSerial) obj;
 
+        return this.getSerialNumber().equals(other.getSerialNumber())
+               && this.getIssuerName().equals(other.getIssuerName());
+    }
 
-      if (other.getSerialNumber().equals(this.getSerialNumber())
-                 && other.getIssuerName().equals(this.getIssuerName())) {
-           return true;
-      }
-
-       return false;      
-   }
+    public int hashCode() {
+	// uncomment when JDK 1.4 is required
+	// assert false : "hashCode not designed";
+	return 82;
+    }
 
    /** @inheritDoc */
    public String getBaseLocalName() {
