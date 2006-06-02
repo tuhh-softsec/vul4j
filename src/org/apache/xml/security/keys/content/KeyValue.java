@@ -16,10 +16,7 @@
  */
 package org.apache.xml.security.keys.content;
 
-
-
 import java.security.PublicKey;
-
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
@@ -41,10 +38,6 @@ import org.w3c.dom.Element;
  * @author $Author$
  */
 public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
-
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(KeyValue.class.getName());
 
    /**
     * Constructor KeyValue
@@ -136,30 +129,23 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
     */
    public PublicKey getPublicKey() throws XMLSecurityException {
 
-      
-         Element rsa = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+       Element rsa = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
          				Constants._TAG_RSAKEYVALUE,0);
          
-         if (rsa != null) {
-            RSAKeyValue kv = new RSAKeyValue(rsa,
-                                             this._baseURI);
+       if (rsa != null) {
+           RSAKeyValue kv = new RSAKeyValue(rsa, this._baseURI);
+           return kv.getPublicKey();
+       }
 
-            return kv.getPublicKey();
-         }
-
-         Element dsa = XMLUtils.selectDsNode(this._constructionElement,
+       Element dsa = XMLUtils.selectDsNode(this._constructionElement,
          		 Constants._TAG_DSAKEYVALUE,0);
-            
 
-         if (dsa != null) {
-            DSAKeyValue kv = new DSAKeyValue(dsa,
-                                             this._baseURI);
-
+       if (dsa != null) {
+            DSAKeyValue kv = new DSAKeyValue(dsa, this._baseURI);
             return kv.getPublicKey();
-         }
-      
+       }
 
-      return null;
+       return null;
    }
 
    /** @inheritDoc */
