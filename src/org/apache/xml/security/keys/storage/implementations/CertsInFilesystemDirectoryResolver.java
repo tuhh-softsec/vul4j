@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.keys.storage.implementations;
 
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,7 +33,6 @@ import java.util.List;
 import org.apache.xml.security.keys.storage.StorageResolverException;
 import org.apache.xml.security.keys.storage.StorageResolverSpi;
 import org.apache.xml.security.utils.Base64;
-
 
 /**
  * This {@link StorageResolverSpi} makes all raw (binary) {@link X509Certificate}s
@@ -156,7 +153,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
     * @author $Author$
     * @version $Revision$
     */
-   class FilesystemIterator implements Iterator {
+   private static class FilesystemIterator implements Iterator {
 
       /** Field _certs */
       List _certs = null;
