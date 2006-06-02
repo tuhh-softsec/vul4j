@@ -2824,7 +2824,7 @@ public class XMLCipher {
                 } catch (URI.MalformedURIException mfue) {
                     //complain
                 }
-                algorithm = tmpAlgorithm.toString();
+                algorithmURI = tmpAlgorithm.toString();
             }
 
             // <element name="AgreementMethod" type="xenc:AgreementMethodType"/>
