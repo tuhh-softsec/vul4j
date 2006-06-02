@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.keys.storage.implementations;
 
-
-
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
@@ -65,7 +63,7 @@ public class KeyStoreResolver extends StorageResolverSpi {
     * @author $Author$
     * @version $Revision$
     */
-   class KeyStoreIterator implements Iterator {
+   static class KeyStoreIterator implements Iterator {
 
       /** Field _keyStore */
       KeyStore _keyStore = null;
