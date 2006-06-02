@@ -16,17 +16,12 @@
  */
 package org.apache.xml.security.utils;
 
-
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-
 /**
  * The Internationalization (I18N) pack.
- *
- *
  *
  * @author Christian Geuer-Pollmann
  */
@@ -39,22 +34,22 @@ public class I18n {
       + "before you use any functionality from that library.";
 
    /** Field defaultLanguageCode */
-   public static String defaultLanguageCode;    // will be set in static{} block
+   static String defaultLanguageCode;    // will be set in static{} block
 
    /** Field defaultCountryCode */
-   public static String defaultCountryCode;    // will be set in static{} block
+   static String defaultCountryCode;    // will be set in static{} block
 
    /** Field resourceBundle */
-   protected static ResourceBundle resourceBundle;
+   static ResourceBundle resourceBundle;
 
    /** Field alreadyInitialized */
-   protected static boolean alreadyInitialized = false;
+   static boolean alreadyInitialized = false;
 
    /** Field _languageCode */
-   protected static String _languageCode = null;
+   static String _languageCode = null;
 
    /** Field _countryCode */
-   protected static String _countryCode = null;
+   static String _countryCode = null;
 
    /**
     * Constructor I18n
