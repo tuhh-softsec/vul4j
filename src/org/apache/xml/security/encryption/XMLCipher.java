@@ -3064,7 +3064,7 @@ public class XMLCipher {
                     _contextDocument, EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_CIPHERVALUE);
                 result.appendChild(_contextDocument.createTextNode(
-                    new String(cipherValue)));
+                    cipherValue));
 
                 return (result);
             }
