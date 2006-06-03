@@ -173,6 +173,7 @@ AC_LANG(C)
 
 # Checks for required libraries
 AC_CHECK_LIB(m, floor)
+AC_CHECK_LIB(socket, getservent)
 
 # Determine the host system and Makefile fragment
 
@@ -689,18 +690,25 @@ AC_TRY_CPP([#include <openssl/opensslv.h>],
 OLD_LIBS=$LIBS
 LIBS=["${LIBS} -L${OPENSSL} -lcrypto"]
 
-AC_CHECK_LIB([crypto], 
-   [EVP_EncryptInit],
+# As of 1.3 - use AC_TRY_LINK to check as AC_CHECK_LIB does
+# the wrong thing
+
+AC_MSG_CHECKING([for libcrypto])
+AC_TRY_LINK([#include <openssl/evp.h>],
+   [EVP_EncryptInit(NULL, NULL, NULL, NULL) ; return 0; ],
+   [AC_MSG_RESULT([found])]
    openssllib_found=yes,
    [LIBS=$OLD_LIBS])
 
    if test -z $openssllib_found ; then
 
    LIBS=["${LIBS} -L${OPENSSL}/lib -lcrypto"]
-   AC_CHECK_LIB([crypto],
-      [EVP_DecryptInit],
+   AC_TRY_LINK([#include <openssl/evp.h>],
+     [EVP_EncryptInit(NULL, NULL, NULL, NULL) ; return 0; ],
+      [AC_MSG_RESULT([found])]
       openssllib_found=yes,
       [LIBS=$OLD_LIBS]
+          [AC_MSG_RESULT([no])]
 	  [AC_MSG_ERROR(["Unable to find libcrypto"])])
 
   fi
