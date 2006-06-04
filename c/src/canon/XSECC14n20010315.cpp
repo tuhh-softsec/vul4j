@@ -777,7 +777,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 					// Have a hit!
 					while (parent != NULL) {
 						atts = parent->getAttributes();
-						att = atts->getNamedItem(a->getNodeName());
+						att = (atts != NULL) ? atts->getNamedItem(a->getNodeName()) : NULL;
 						if (att != NULL && (!m_XPathSelection || m_XPathMap.hasNode(att))) {
 
 							// Check URI is the same
