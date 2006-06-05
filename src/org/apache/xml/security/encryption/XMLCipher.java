@@ -27,6 +27,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -3614,8 +3615,7 @@ public class XMLCipher {
         private class EncryptionPropertyImpl implements EncryptionProperty {
             private String target = null;
             private String id = null;
-            private String attributeName = null;
-            private String attributeValue = null;
+	    private HashMap attributeMap = new HashMap();
             private List encryptionInformation = null;
 
             /**
@@ -3649,12 +3649,11 @@ public class XMLCipher {
             }
             /** @inheritDoc */
             public String getAttribute(String attribute) {
-                return (attributeValue);
+                return (String) attributeMap.get(attribute);
             }
             /** @inheritDoc */
             public void setAttribute(String attribute, String value) {
-                attributeName = attribute;
-                attributeValue = value;
+		attributeMap.put(attribute, value);
             }
             /** @inheritDoc */
             public Iterator getEncryptionInformation() {
