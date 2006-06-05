@@ -390,31 +390,30 @@ public class XMLSignatureInput  implements Cloneable {
    }
 
    
-   /**
-    * Method toString
-    * @inheritDoc
-    *
-    */
-   public String toString() {
-
-      if (this.isNodeSet()) {
-         return "XMLSignatureInput/NodeSet/" + this._inputNodeSet.size()
+    /**
+     * Method toString
+     * @inheritDoc
+     *
+     */
+    public String toString() {
+        if (this.isNodeSet()) {
+            return "XMLSignatureInput/NodeSet/" + this._inputNodeSet.size()
                    + " nodes/" + this.getSourceURI();         
-      } 
-      if (this.isElement()) {
-        return "XMLSignatureInput/Element/" + this._subNode
-        + " exclude "+ this.excludeNode + " comments:" + 
-        this.excludeComments
-        +"/" + this.getSourceURI();
-      }
-         try {
+        } 
+        if (this.isElement()) {
+            return "XMLSignatureInput/Element/" + this._subNode
+                + " exclude "+ this.excludeNode + " comments:" + 
+                this.excludeComments +"/" + this.getSourceURI();
+        }
+        try {
             return "XMLSignatureInput/OctetStream/" + this.getBytes().length
                    + " octets/" + this.getSourceURI();
-         } catch (Exception ex) {
+        } catch (IOException iex) {
             return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
-         }
-      
-   }
+        } catch (CanonicalizationException cex) {
+            return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
+        }
+    }
 
    /**
     * Method getHTMLRepresentation
