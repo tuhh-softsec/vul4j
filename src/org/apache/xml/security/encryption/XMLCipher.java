@@ -3138,7 +3138,7 @@ public class XMLCipher {
                 if (null != super.getEncoding()) {
                     result.setAttributeNS(
                         null, EncryptionConstants._ATT_ENCODING, 
-                        super.getEncoding().toString());
+                        super.getEncoding());
                 }
                 if (null != super.getEncryptionMethod()) {
                     result.appendChild(((EncryptionMethodImpl)
@@ -3271,7 +3271,7 @@ public class XMLCipher {
                 }
                 if (null != super.getEncoding()) {
                     result.setAttributeNS(null, Constants._ATT_ENCODING,
-                        super.getEncoding().toString());
+                        super.getEncoding());
                 }
                 if (null != getRecipient()) {
                     result.setAttributeNS(null, 
