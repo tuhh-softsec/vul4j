@@ -287,6 +287,7 @@ public class CachedXPathFuncHereAPI {
                                       .getDocumentElement()
                                    : namespaceNode);
 
+      // only check if string points to different object (for performance)
       if (str!=xpathStr) {
         if (str.indexOf("here()")>0) {
             _context.reset();
@@ -336,6 +337,7 @@ public class CachedXPathFuncHereAPI {
       //    XPathContext should be done away with.)
       // Create the XPath object.
       //String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
+    // only check if string points to different object (for performance)
     if (str!=xpathStr) {
         if (str.indexOf("here()")>0) {
             _context.reset();
