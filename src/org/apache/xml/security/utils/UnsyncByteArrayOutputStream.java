@@ -29,11 +29,12 @@ public class UnsyncByteArrayOutputStream extends OutputStream  {
             return new byte[8*1024];
         }        
     };
-    byte[] buf=(byte[])bufCahce.get();
+    byte[] buf;
 	int size=8*1024;//buf.length;	
 	int pos=0;
 	/** @inheritDoc */
-	public UnsyncByteArrayOutputStream() {	
+	public UnsyncByteArrayOutputStream() {
+		buf=(byte[])bufCahce.get();
 	}
 	public void write(byte[] arg0) {
 		int newPos=pos+arg0.length;
