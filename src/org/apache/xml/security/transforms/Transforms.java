@@ -257,12 +257,6 @@ public class Transforms extends SignatureElementProxy {
     */
    public int getLength()
    {
-		/*Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-	                                              Constants.SignatureSpecNS);
-	     NodeList transformElems =
-	        XPathAPI.selectNodeList(this._constructionElement,
-	                                "./ds:Transform", nscontext);
-	     return transformElems.getLength();*/
        if (transforms==null) {
         transforms=XMLUtils.selectDsNodes(this._constructionElement.getFirstChild(),
            "Transform");
