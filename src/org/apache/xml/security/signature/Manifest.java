@@ -65,10 +65,10 @@ public class Manifest extends SignatureElementProxy {
    private boolean verificationResults[] = null;
 
    /** Field _resolverProperties */
-   HashMap _resolverProperties = new HashMap(10);
+   HashMap _resolverProperties = null;
 
    /** Field _perManifestResolvers */
-   List _perManifestResolvers = new ArrayList();
+   List _perManifestResolvers = null;
 
    /**
     * Consturts {@link Manifest}
@@ -451,9 +451,13 @@ public class Manifest extends SignatureElementProxy {
     */
    public void addResourceResolver(ResourceResolver resolver) {
 
-      if (resolver != null) {
-         this._perManifestResolvers.add(resolver);
+      if (resolver == null) {
+    	  return;
       }
+      if (_perManifestResolvers==null)
+    	  _perManifestResolvers = new ArrayList();
+      this._perManifestResolvers.add(resolver);
+      
    }
 
    /**
@@ -463,9 +467,13 @@ public class Manifest extends SignatureElementProxy {
     */
    public void addResourceResolver(ResourceResolverSpi resolverSpi) {
 
-      if (resolverSpi != null) {
-         this._perManifestResolvers.add(new ResourceResolver(resolverSpi));
+      if (resolverSpi == null) {
+    	  return;
       }
+      if (_perManifestResolvers==null)
+        	  _perManifestResolvers = new ArrayList();
+      this._perManifestResolvers.add(new ResourceResolver(resolverSpi));
+      
    }
 
    /**
@@ -476,6 +484,9 @@ public class Manifest extends SignatureElementProxy {
     * @param value the value
     */
    public void setResolverProperty(String key, String value) {
+	   if (_resolverProperties==null) {
+		   _resolverProperties=new HashMap(10);
+	   }
       this._resolverProperties.put(key, value);
    }
 
