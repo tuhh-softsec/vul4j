@@ -114,26 +114,28 @@ public abstract class ElementProxy {
       this._doc = doc;
       this._state = ElementProxy.MODE_CREATE;
       this._constructionElement = createElementForFamilyLocal(this._doc,
-              this.getBaseNamespace(), this.getBaseLocalName());      
-   }
-   String tagName=null;
-   String prefix=ElementProxy.getDefaultPrefix(this.getBaseNamespace());
-   String defaultPrefixNaming=ElementProxy.getDefaultPrefixBindings(this.getBaseNamespace());
+    		  this.getBaseNamespace(), this.getBaseLocalName());      
+   }       
    private Element createElementForFamilyLocal(Document doc, String namespace,
-           String localName) {
-	   	Element result = null;
+           String localName) {	   	  
+	 	  Element result = null;
 	      if (namespace == null) {
 	         result = doc.createElementNS(null, localName);
 	      } else {
+	    	  String baseName=this.getBaseNamespace();
+	    	  String prefix=ElementProxy.getDefaultPrefix(baseName);
 	         if ((prefix == null) || (prefix.length() == 0)) {
 	            result = doc.createElementNS(namespace, localName);
 
 	            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
 	                                  namespace);
 	         } else {
-	        	 if (tagName==null) {
-	        		 tagName=prefix + ":" + localName;
-	        	 }
+	        	 String tagName=null;
+	        	 String defaultPrefixNaming=ElementProxy.getDefaultPrefixBindings(baseName);
+	        	 StringBuffer sb=new StringBuffer(prefix);
+	        	 sb.append(':');
+	        	 sb.append(localName);
+	        	 tagName=sb.toString();	        	
 	            result = doc.createElementNS(namespace, tagName );
 
 	            result.setAttributeNS(Constants.NamespaceSpecNS,  defaultPrefixNaming,
