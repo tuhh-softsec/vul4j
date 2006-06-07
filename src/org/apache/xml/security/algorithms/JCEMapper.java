@@ -41,9 +41,9 @@ public class JCEMapper {
 
 
    
-   private static Map uriToJCEName = new HashMap();
+   private static Map uriToJCEName;
    
-   private static Map algorithmsMap = new HashMap();
+   private static Map algorithmsMap;
 
    private static String providerName = null;
    /**
@@ -59,6 +59,8 @@ public class JCEMapper {
 
    static void loadAlgorithms( Element algorithmsEl) {
        Element[] algorithms = XMLUtils.selectNodes(algorithmsEl.getFirstChild(),Init.CONF_NS,"Algorithm");
+       uriToJCEName = new HashMap( algorithms.length * 2); 
+       algorithmsMap = new HashMap( algorithms.length * 2);
        for (int i = 0 ;i < algorithms.length ;i ++) {
            Element el = algorithms[i];
            String id = el.getAttribute("URI");
@@ -66,6 +68,7 @@ public class JCEMapper {
            uriToJCEName.put(id, jceName);
            algorithmsMap.put(id, new Algorithm(el));
        }
+       
    }
 
    static Algorithm getAlgorithmMapping(String algoURI) {
