@@ -18,6 +18,8 @@ package org.apache.xml.security.keys.keyresolver;
 
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+
 import javax.crypto.SecretKey;
 
 import org.apache.xml.security.keys.storage.StorageResolver;
@@ -81,7 +83,7 @@ public abstract class KeyResolverSpi {
          throws KeyResolverException;
 
    /** Field _properties */
-   protected java.util.Map _properties = new java.util.HashMap(10);
+   protected java.util.Map _properties = null;
 
    /**
     * Method engineSetProperty
@@ -89,20 +91,9 @@ public abstract class KeyResolverSpi {
     * @param key
     * @param value
     */
-   public void engineSetProperty(String key, String value) {
-
-      java.util.Iterator i = this._properties.keySet().iterator();
-
-      while (i.hasNext()) {
-         String c = (String) i.next();
-
-         if (c.equals(key)) {
-            key = c;
-
-            break;
-         }
-      }
-
+   public void engineSetProperty(String key, String value) {     
+	   if (_properties==null)
+		   _properties=new HashMap();
       this._properties.put(key, value);
    }
 
@@ -113,29 +104,10 @@ public abstract class KeyResolverSpi {
     * @return obtain the property appointed by key
     */
    public String engineGetProperty(String key) {
-
-      java.util.Iterator i = this._properties.keySet().iterator();
-
-      while (i.hasNext()) {
-         String c = (String) i.next();
-
-         if (c.equals(key)) {
-            key = c;
-
-            break;
-         }
-      }
-
+	   if (_properties==null)
+		   return null;
+      
       return (String) this._properties.get(key);
-   }
-
-   /**
-    * Method engineGetPropertyKeys
-    *
-    * @return the keys of properties known by this resolver
-    */
-   public String[] engineGetPropertyKeys() {
-      return new String[0];
    }
 
    /**
@@ -145,17 +117,9 @@ public abstract class KeyResolverSpi {
     * @return true if understood the property
     */
    public boolean understandsProperty(String propertyToTest) {
-
-      String[] understood = this.engineGetPropertyKeys();
-
-      if (understood != null) {
-         for (int i = 0; i < understood.length; i++) {
-            if (understood[i].equals(propertyToTest)) {
-               return true;
-            }
-         }
-      }
-
-      return false;
+	   if (_properties==null)
+		   return false;
+      
+      return  this._properties.get(propertyToTest)!=null;
    }
 }
