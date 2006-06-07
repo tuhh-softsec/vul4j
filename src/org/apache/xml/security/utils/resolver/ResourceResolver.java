@@ -81,6 +81,7 @@ public class ResourceResolver {
       this._resolverSpi = resourceResolver;
    }
 
+   
    /**
     * Method getInstance
     *
@@ -102,6 +103,17 @@ public class ResourceResolver {
          	log.debug("check resolvability by class " + resolver._resolverSpi.getClass().getName());
 
          if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
+        	 if (i!=0) {
+            	 //update resolver.
+        		 //System.out.println("Swaping");
+        		 List resolverVector=(List)((ArrayList)_resolverVector).clone();
+        		 resolverVector.remove(i);
+        		 resolverVector.add(0,resolver);        		 
+        		 _resolverVector=resolverVector;        		 
+        	 } else {
+        		 //System.out.println("hitting");
+        	 }
+        	 
             return resolver;
          }
       }
