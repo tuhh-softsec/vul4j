@@ -21,6 +21,7 @@ package org.apache.xml.security.algorithms;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -29,7 +30,7 @@ import org.w3c.dom.Element;
  * The Algorithm class which stores the Algorithm URI as a string.
  *
  */
-public abstract class Algorithm extends ElementProxy {
+public abstract class Algorithm extends SignatureElementProxy {
 
    /**
     *
