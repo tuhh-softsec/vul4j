@@ -37,7 +37,15 @@ public abstract class SignatureElementProxy extends ElementProxy {
     * @param doc
     */
    public SignatureElementProxy(Document doc) {
-      super(doc);
+	   if (doc == null) {
+	         throw new RuntimeException("Document is null");
+	      }
+
+	      this._doc = doc;
+	      this._state = ElementProxy.MODE_CREATE;
+	      this._constructionElement =  XMLUtils.createElementInSignatureSpace(this._doc,
+	    		   this.getBaseLocalName());
+      //super(doc);
       //this._constructionElement.setAttributeNS(Constants.NamespaceSpecNS,"xmlns:ds",
         //          Constants.SignatureSpecNS);
    }
