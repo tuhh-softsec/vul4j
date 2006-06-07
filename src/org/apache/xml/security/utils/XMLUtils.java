@@ -21,8 +21,10 @@ package org.apache.xml.security.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -214,6 +216,8 @@ public class XMLUtils {
    }
 
 
+   static final String dsPrefix= Constants.getSignatureSpecNSprefix();
+   static Map namePrefixes=new HashMap();
    /**
     * Creates an Element in the XML Signature specification namespace.
     *
@@ -227,10 +231,9 @@ public class XMLUtils {
       if (doc == null) {
          throw new RuntimeException("Document is null");
       }
+     
 
-      String ds = Constants.getSignatureSpecNSprefix();
-
-      if ((ds == null) || (ds.length() == 0)) {
+      if ((dsPrefix == null) || (dsPrefix.length() == 0)) {
          Element element = doc.createElementNS(Constants.SignatureSpecNS,
                                                elementName);
 
@@ -239,9 +242,16 @@ public class XMLUtils {
 
          return element;
       } 
-         Element element = doc.createElementNS(Constants.SignatureSpecNS,
-                                               ds + ":" + elementName);         
-         element.setAttributeNS(Constants.NamespaceSpecNS, ElementProxy.getDefaultPrefixBindings(Constants.SignatureSpecNS),
+      String namePrefix=(String) namePrefixes.get(elementName);
+      if (namePrefix==null) {
+    	  StringBuffer tag=new StringBuffer(dsPrefix);
+    	  tag.append(':');
+    	  tag.append(elementName);
+    	  namePrefix=tag.toString();
+    	  namePrefixes.put(elementName,namePrefix);
+      }
+         Element element = doc.createElementNS(Constants.SignatureSpecNS, namePrefix);         
+         element.setAttributeNS(Constants.NamespaceSpecNS, dsPrefix,
                                 Constants.SignatureSpecNS);
 
          return element;
