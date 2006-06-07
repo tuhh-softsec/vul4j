@@ -36,20 +36,22 @@ import org.w3c.dom.Node;
 public class NameSpaceSymbTable {
 	
 	/**The map betwen prefix-> entry table. */
-	SymbMap symb = new SymbMap();
+	SymbMap symb;
 	/**The level of nameSpaces (for Inclusive visibility).*/
 	int nameSpaces=0;
 	/**The stacks for removing the definitions when doing pop.*/
-	List level = new ArrayList();
+	List level;
     boolean cloned=true;	
 	static final String XMLNS="xmlns";
     /**
      * Default constractor
      **/		
     public NameSpaceSymbTable() {
-    	//Insert the default binding for xmlns.
+    	symb = new SymbMap();
+    	level = new ArrayList(10);
+    	//Insert the default binding for xmlns.    	
     	NameSpaceSymbEntry ne=new NameSpaceSymbEntry("",null,true);
-		ne.lastrendered="";
+		ne.lastrendered="";		
     	symb.put(XMLNS,ne);    
     }
     
@@ -94,10 +96,6 @@ public class NameSpaceSymbTable {
      **/
 	public void push() {		
 		//Put the number of namespace definitions in the stack.
-        /**if (cloned) {
-        	Object ob[]= {symb,cloned ? symb : null};
-        	level.add(ob);
-        } **/
         level.add(null);
         cloned=false;
 	}
@@ -114,7 +112,7 @@ public class NameSpaceSymbTable {
             if (size==0) {
                cloned=false;   
             } else
-            cloned=(level.get(size-1)!=symb);
+            	cloned=(level.get(size-1)!=symb);
         } else {
         	cloned=false;
         }
@@ -123,9 +121,8 @@ public class NameSpaceSymbTable {
 	}
 	
 	final void needsClone() {
-		if (!cloned) {
-            level.remove(level.size()-1);
-            level.add(symb);
+		if (!cloned) {			
+            level.set(level.size()-1,symb);
 			symb=(SymbMap) symb.clone();
             cloned=true;
         }
@@ -322,47 +319,50 @@ class NameSpaceSymbEntry implements Cloneable {
 
 class SymbMap implements Cloneable {
     int free=23;
-    NameSpaceSymbEntry[] entries=new NameSpaceSymbEntry[free];
-    String[] keys=new String[free];
-	
+    NameSpaceSymbEntry[] entries;
+    String[] keys;
+	SymbMap() {
+		entries=new NameSpaceSymbEntry[free];
+		keys=new String[free];
+	}
     void put(String key, NameSpaceSymbEntry value) {		
         int index = index(key);
-	Object oldKey = keys[index];
-	keys[index] = key;
-	entries[index] = value;
+        Object oldKey = keys[index];
+        keys[index] = key;
+        entries[index] = value;
         if (oldKey==null || !oldKey.equals(key)) {	        	        
             if (--free == 0) {
-		free=entries.length;
-	        int newCapacity = free<<2;				
-	        rehash(newCapacity);			
+            	free=entries.length;
+            	int newCapacity = free<<2;				
+            	rehash(newCapacity);			
             }
         }
     }
 	
     List entrySet() {
-	List a=new ArrayList();
-	for (int i=0;i<entries.length;i++) {
-	    if ((entries[i]!=null) && !("".equals(entries[i].uri))) {
-		a.add(entries[i]);
+    	List a=new ArrayList();
+    	for (int i=0;i<entries.length;i++) {
+    		if ((entries[i]!=null) && !("".equals(entries[i].uri))) {
+    			a.add(entries[i]);
 	    }
-	}
-	return a;		
+    	}
+    	return a;		
     }
 
     protected int index(Object obj) {		
         Object[] set = keys;
-	int length = set.length;
-	//abs of index
+        int length = set.length;
+        //abs of index
         int index = (obj.hashCode() & 0x7fffffff) %  length;
         Object cur = set[index];
 
         if (cur == null || (cur.equals( obj))) {
-	    return index;
+        	return index;
         }
         length=length-1;
         do {
-	    index=index==length? 0:++index;
-	    cur = set[index];
+        	index=index==length? 0:++index;
+        	cur = set[index];
         } while (cur != null && (!cur.equals(obj)));       
         return index;
     }
@@ -375,17 +375,17 @@ class SymbMap implements Cloneable {
     protected void rehash(int newCapacity) {
         int oldCapacity = keys.length;
         String oldKeys[] = keys;
-	NameSpaceSymbEntry oldVals[] = entries;
+        NameSpaceSymbEntry oldVals[] = entries;
 
-	keys = new String[newCapacity];        
-	entries = new NameSpaceSymbEntry[newCapacity];
+        keys = new String[newCapacity];        
+        entries = new NameSpaceSymbEntry[newCapacity];
 
         for (int i = oldCapacity; i-- > 0;) {
             if(oldKeys[i] != null) {
                 String o = oldKeys[i];
                 int index = index(o);
-		keys[index] = o;
-		entries[index] = oldVals[i];
+                keys[index] = o;
+                entries[index] = oldVals[i];
             }
         }
     }
@@ -395,15 +395,14 @@ class SymbMap implements Cloneable {
     }
 
     protected Object clone()  {
-	// TODO Auto-generated method stub
-	try {
-	    SymbMap copy=(SymbMap) super.clone();
-	    copy.entries=new NameSpaceSymbEntry[entries.length];
-	    System.arraycopy(entries,0,copy.entries,0,entries.length);
-	    copy.keys=new String[keys.length];
-	    System.arraycopy(keys,0,copy.keys,0,keys.length);
+    	try {
+    		SymbMap copy=(SymbMap) super.clone();
+    		copy.entries=new NameSpaceSymbEntry[entries.length];
+    		System.arraycopy(entries,0,copy.entries,0,entries.length);
+    		copy.keys=new String[keys.length];
+    		System.arraycopy(keys,0,copy.keys,0,keys.length);
 			
-	    return copy;
+    		return copy;
 	} catch (CloneNotSupportedException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
