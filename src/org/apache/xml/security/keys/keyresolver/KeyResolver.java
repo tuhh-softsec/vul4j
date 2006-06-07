@@ -87,14 +87,25 @@ public class KeyResolver {
     * @return the number i resolver registerd
     * @throws KeyResolverException
     */
-   public static KeyResolver item(int i) throws KeyResolverException {
+   public static KeyResolverSpi item(int i) throws KeyResolverException {
 
 	   KeyResolver resolver = (KeyResolver) KeyResolver._resolverVector.get(i);
       if (resolver==null) {
          throw new KeyResolverException("utils.resolver.noClass");
       }
 
-      return resolver;
+      return resolver._resolverSpi;
+   }
+   
+   public static void hit(int i) {
+	   if (i!=0) {
+		   List resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
+  		Object ob=resolverVector.remove(i);
+  		resolverVector.add(0,ob);
+  		 _resolverVector=resolverVector; 
+  	 } else {
+  		 //System.out.println("KeyResolver hitting");
+  	 }
    }
 
    /**
@@ -171,8 +182,16 @@ public class KeyResolver {
          	log.debug("check resolvability by class " + resolver.getClass());
 
          PublicKey cert=resolver.resolvePublicKey(element, BaseURI, storage);
-         if (cert!=null)
+         if (cert!=null) {
+        	 if (i!=0) {
+            	 //update resolver.        		 
+        		 List resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
+		  		 Object ob=resolverVector.remove(i);
+		  		 resolverVector.add(0,ob);
+   		 		 _resolverVector=resolverVector;
+        	 } 
         	 return cert;
+         }
       }
 
       Object exArgs[] = {
@@ -289,14 +308,6 @@ public class KeyResolver {
       return this._resolverSpi.engineGetProperty(key);
    }
 
-   /**
-    * Method getPropertyKeys
-    *
-    * @return the properties key registerd in this resolver
-    */
-   public String[] getPropertyKeys() {
-      return this._resolverSpi.engineGetPropertyKeys();
-   }
 
    /**
     * Method understandsProperty
