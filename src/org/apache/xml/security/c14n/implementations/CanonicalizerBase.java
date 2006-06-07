@@ -93,7 +93,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    
    List nodeFilter;
    
-   boolean _includeComments;
+   boolean _includeComments;  
    Set _xpathNodeSet = null;
    /**
     * The node to be skiped/excluded from the DOM tree 
@@ -186,11 +186,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     	this._excludeNode = excludeNode;
         try {
          NameSpaceSymbTable ns=new NameSpaceSymbTable();
+         int nodeLevel=NODE_BEFORE_DOCUMENT_ELEMENT;
          if (rootNode instanceof Element) {
          	//Fills the nssymbtable with the definitions of the parent of the root subnode
          	getParentNameSpaces((Element)rootNode,ns);
+         	nodeLevel=NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
          }         
-         this.canonicalizeSubTree(rootNode,ns,rootNode);
+         this.canonicalizeSubTree(rootNode,ns,rootNode,nodeLevel);
          this._writer.close();
          if (this._writer instanceof ByteArrayOutputStream) {
             byte []result=((ByteArrayOutputStream)this._writer).toByteArray();
@@ -224,13 +226,15 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @throws CanonicalizationException
     * @throws IOException
     */
-    final void canonicalizeSubTree(Node currentNode, NameSpaceSymbTable ns,Node endnode)
+    final void canonicalizeSubTree(Node currentNode, NameSpaceSymbTable ns,Node endnode,
+    		int documentLevel)
     throws CanonicalizationException, IOException {
     	Node sibling=null;
-    	Node parentNode=null;
-    	final OutputStream writer=this._writer;
+    	Node parentNode=null;    	
+    	final OutputStream writer=this._writer;    
     	final Node excludeNode=this._excludeNode;
     	final boolean includeComments=this._includeComments;
+    	boolean inElement=(documentLevel==NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT);
     	Map cache=new HashMap();
     	do {
     		switch (currentNode.getNodeType()) {
@@ -248,18 +252,17 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             case Node.DOCUMENT_FRAGMENT_NODE :
     		case Node.DOCUMENT_NODE :
     			ns.outputNodePush();
-    			//currentNode = currentNode.getFirstChild();  
     			sibling= currentNode.getFirstChild();
     			break;
     			
     		case Node.COMMENT_NODE :
     			if (includeComments) {
-    				outputCommentToWriter((Comment) currentNode, writer);
+    				outputCommentToWriter((Comment) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
     			}
     			break;
     			
     		case Node.PROCESSING_INSTRUCTION_NODE :
-    			outputPItoWriter((ProcessingInstruction) currentNode, writer);
+    			outputPItoWriter((ProcessingInstruction) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
     			break;
     			
     		case Node.TEXT_NODE :
@@ -267,7 +270,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			outputTextToWriter(currentNode.getNodeValue(), writer);
     			break;
     			
-    		case Node.ELEMENT_NODE :        
+    		case Node.ELEMENT_NODE :
+    			inElement=true;
     			if (currentNode==excludeNode) {
     				break;
     			}      
@@ -294,9 +298,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         			writer.write('>');
         			//We fineshed with this level, pop to the previous definitions.
         			ns.outputNodePop();
-				if (parentNode != null) {
+				    if (parentNode != null) {
        			    		sibling= currentNode.getNextSibling();
-				}
+				    }
     			} else {
     				parentNode=currentElement;
     			}
@@ -313,6 +317,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			sibling=parentNode.getNextSibling();
     			parentNode=parentNode.getParentNode();   
     			if (!(parentNode instanceof Element)) {
+    				documentLevel=NODE_AFTER_DOCUMENT_ELEMENT;
+    				inElement=false;
     				parentNode=null;
     			}    			
     		}      
@@ -323,35 +329,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     	} while(true);
     }
 
-   /**
-    * Checks whether a Comment or ProcessingInstruction is before or after the
-    * document element. This is needed for prepending or appending "\n"s.
-    *
-    * @param currentNode comment or pi to check
-    * @return NODE_BEFORE_DOCUMENT_ELEMENT, NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT or NODE_AFTER_DOCUMENT_ELEMENT
-    * @see #NODE_BEFORE_DOCUMENT_ELEMENT
-    * @see #NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT
-    * @see #NODE_AFTER_DOCUMENT_ELEMENT
-    */
-   final static int getPositionRelativeToDocumentElement(Node currentNode) {
-            
-      if ((currentNode == null) || 
-            (currentNode.getParentNode().getNodeType() != Node.DOCUMENT_NODE) ) {
-         return CanonicalizerBase.NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
-      }
-      Element documentElement = currentNode.getOwnerDocument().getDocumentElement();
-      if ( (documentElement == null)  || (documentElement == currentNode) ){
-         return CanonicalizerBase.NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
-      }
-      
-      for (Node x = currentNode; x != null; x = x.getNextSibling()) {
-         if (x == documentElement) {
-            return CanonicalizerBase.NODE_BEFORE_DOCUMENT_ELEMENT;
-         }
-      }
 
-      return CanonicalizerBase.NODE_AFTER_DOCUMENT_ELEMENT;
-   }
      
    /**
     * Method engineCanonicalizeXPathNodeSet
@@ -407,6 +385,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
   	Node sibling=null;
 	Node parentNode=null;	
 	OutputStream writer=this._writer;
+	int documentLevel=NODE_BEFORE_DOCUMENT_ELEMENT;
+	boolean inElement=false;
 	Map cache=new HashMap();
 	do {
 		switch (currentNode.getNodeType()) {
@@ -430,13 +410,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			
 		case Node.COMMENT_NODE :			
 			if (this._includeComments && isVisible(currentNode)) {
-				outputCommentToWriter((Comment) currentNode, writer);
+				outputCommentToWriter((Comment) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
 			}
 			break;
 			
 		case Node.PROCESSING_INSTRUCTION_NODE :
 			if (isVisible(currentNode))
-				outputPItoWriter((ProcessingInstruction) currentNode, writer);
+				outputPItoWriter((ProcessingInstruction) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
 			break;
 			
 		case Node.TEXT_NODE :
@@ -457,7 +437,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			}
 			break;
 			
-		case Node.ELEMENT_NODE :             
+		case Node.ELEMENT_NODE :
+			inElement=true;
+			documentLevel=NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
 			Element currentElement = (Element) currentNode;
 			//Add a level to the nssymbtable. So latter can be pop-back.
 			String name=null;
@@ -518,6 +500,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			parentNode=parentNode.getParentNode();   
 			if (!(parentNode instanceof Element)) {
 				parentNode=null;
+				inElement=false;
+				documentLevel=NODE_AFTER_DOCUMENT_ELEMENT;
 			}    			
 		}      
 		if (sibling==null)
@@ -782,8 +766,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @param writer where to write the things
     * @throws IOException
     */
-   static final void outputPItoWriter(ProcessingInstruction currentPI, OutputStream writer) throws IOException {
-   	  final int position = getPositionRelativeToDocumentElement(currentPI);
+   static final void outputPItoWriter(ProcessingInstruction currentPI, OutputStream writer,int position) throws IOException {   	  
 
       if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
         writer.write('\n');
@@ -836,8 +819,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @param writer writer where to write the things
     * @throws IOException
     */
-   static final void outputCommentToWriter(Comment currentComment, OutputStream writer) throws IOException {
-   	  final int position = getPositionRelativeToDocumentElement(currentComment);
+   static final void outputCommentToWriter(Comment currentComment, OutputStream writer,int position) throws IOException {   	  
    	  if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
    		writer.write('\n');
    	  }
