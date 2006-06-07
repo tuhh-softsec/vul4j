@@ -18,6 +18,7 @@
 package org.apache.xml.security.utils.resolver;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -37,7 +38,7 @@ public abstract class ResourceResolverSpi {
                     ResourceResolverSpi.class.getName());
 
    /** Field _properties */
-   protected java.util.Map _properties = new java.util.HashMap(10);
+   protected java.util.Map _properties = null;
 
    /**
     * This is the workhorse method used to resolve resources.
@@ -58,19 +59,9 @@ public abstract class ResourceResolverSpi {
     * @param value
     */
    public void engineSetProperty(String key, String value) {
-
-      java.util.Iterator i = this._properties.keySet().iterator();
-
-      while (i.hasNext()) {
-         String c = (String) i.next();
-
-         if (c.equals(key)) {
-            key = c;
-
-            break;
-         }
-      }
-
+	  if (_properties==null) {
+		  _properties=new HashMap();
+	  }
       this._properties.put(key, value);
    }
 
@@ -81,19 +72,9 @@ public abstract class ResourceResolverSpi {
     * @return the value of the property
     */
    public String engineGetProperty(String key) {
-
-      java.util.Iterator i = this._properties.keySet().iterator();
-
-      while (i.hasNext()) {
-         String c = (String) i.next();
-
-         if (c.equals(key)) {
-            key = c;
-
-            break;
-         }
-      }
-
+	  if (_properties==null) {
+			return null;
+	  }
       return (String) this._properties.get(key);
    }
 
@@ -102,7 +83,12 @@ public abstract class ResourceResolverSpi {
     * @param properties
     */
    public void engineAddProperies(Map properties) {
-      this._properties.putAll(properties);
+	  if (properties!=null) {
+		  if (_properties==null) {
+			  _properties=new HashMap();
+		  }
+		  this._properties.putAll(properties);
+	  }
    }
 
    /**
