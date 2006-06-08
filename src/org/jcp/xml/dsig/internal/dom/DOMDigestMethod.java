@@ -27,9 +27,6 @@ import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.spec.DigestMethodParameterSpec;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.security.DigestException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.spec.AlgorithmParameterSpec;
 import org.w3c.dom.Document;
@@ -44,28 +41,22 @@ import org.w3c.dom.Node;
 public abstract class DOMDigestMethod extends DOMStructure 
     implements DigestMethod {
 
-    private String algorithm;
     private DigestMethodParameterSpec params;
 
     /**
      * Creates a <code>DOMDigestMethod</code>.
      *
-     * @param algorithm the URI identifying the digest algorithm
      * @param params the algorithm-specific params (may be <code>null</code>)
      * @throws InvalidAlgorithmParameterException if the parameters are not
      *    appropriate for this digest method
      */
-    protected DOMDigestMethod(String algorithm, AlgorithmParameterSpec params)
+    protected DOMDigestMethod(AlgorithmParameterSpec params)
 	throws InvalidAlgorithmParameterException {
-	if (algorithm == null) {
-	    throw new NullPointerException("algorithm cannot be null");
-	}
 	if (params != null && !(params instanceof DigestMethodParameterSpec)) {
 	    throw new InvalidAlgorithmParameterException
 		("params must be of type DigestMethodParameterSpec");
 	}
 	checkParams((DigestMethodParameterSpec) params);
-	this.algorithm = algorithm;
 	this.params = (DigestMethodParameterSpec) params;
     }
 
@@ -77,7 +68,6 @@ public abstract class DOMDigestMethod extends DOMStructure
      * @param dmElem a DigestMethod element
      */
     protected DOMDigestMethod(Element dmElem) throws MarshalException {
-        algorithm = DOMUtils.getAttributeValue(dmElem, "Algorithm");
 	Element paramsElem = DOMUtils.getFirstChildElement(dmElem);
 	if (paramsElem != null) {
 	    params = unmarshalParams(paramsElem);
@@ -92,7 +82,11 @@ public abstract class DOMDigestMethod extends DOMStructure
     static DigestMethod unmarshal(Element dmElem) throws MarshalException {
         String alg = DOMUtils.getAttributeValue(dmElem, "Algorithm");
         if (alg.equals(DigestMethod.SHA1)) {
-            return new DOMSHA1DigestMethod(dmElem);
+            return DOMSHADigestMethod.SHA1(dmElem);
+        } else if (alg.equals(DigestMethod.SHA256)) {
+            return DOMSHADigestMethod.SHA256(dmElem);
+        } else if (alg.equals(DigestMethod.SHA512)) {
+            return DOMSHADigestMethod.SHA512(dmElem);
         } else {
             throw new MarshalException("unsupported digest algorithm: " + alg);
         }
@@ -110,10 +104,6 @@ public abstract class DOMDigestMethod extends DOMStructure
 
     public final AlgorithmParameterSpec getParameterSpec() {
 	return params;
-    }
-
-    public final String getAlgorithm() {
-	return algorithm;
     }
 
     /**
@@ -138,7 +128,7 @@ public abstract class DOMDigestMethod extends DOMStructure
 
         Element dmElem = DOMUtils.createElement
 	    (ownerDoc, "DigestMethod", XMLSignature.XMLNS, prefix);
-        DOMUtils.setAttribute(dmElem, "Algorithm", algorithm);
+        DOMUtils.setAttribute(dmElem, "Algorithm", getAlgorithm());
 
         if (params != null) {
 	    marshalParams(dmElem, prefix);
@@ -146,18 +136,6 @@ public abstract class DOMDigestMethod extends DOMStructure
 
         parent.appendChild(dmElem);
     }
-
-    /**
-     * Digests the specified data using the underlying message digest algorithm.
-     *
-     * @param is the input stream containing the data to be digested
-     * @return the resulting hash value
-     * @throws IOException if an I/O error occurs while reading from the stream
-     * @throws DigestException if an unexpected error occurs while digesting
-     * @throws NullPointerException if <code>is</code> is <code>null</code>
-     */
-    public abstract byte[] digest(InputStream is) 
-	throws IOException, DigestException;
 
     public boolean equals(Object o) {
 	if (this == o) {
@@ -172,7 +150,7 @@ public abstract class DOMDigestMethod extends DOMStructure
 	boolean paramsEqual = (params == null ? odm.getParameterSpec() == null :
 	    params.equals(odm.getParameterSpec()));
 
-	return (algorithm.equals(odm.getAlgorithm()) && paramsEqual);
+	return (getAlgorithm().equals(odm.getAlgorithm()) && paramsEqual);
     }
 
     public int hashCode() {
@@ -191,4 +169,9 @@ public abstract class DOMDigestMethod extends DOMStructure
      */
     protected abstract void marshalParams(Element parent, String prefix)
 	throws MarshalException;
+
+    /**
+     * Returns the MessageDigest standard algorithm name.
+     */
+    abstract String getMessageDigestAlgorithm();
 }

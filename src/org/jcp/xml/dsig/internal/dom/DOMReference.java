@@ -382,7 +382,8 @@ public final class DOMReference extends DOMStructure
 
 	if (md == null) {
 	    try {
-	        md = MessageDigest.getInstance("SHA-1");
+	        md = MessageDigest.getInstance
+		    (((DOMDigestMethod) digestMethod).getMessageDigestAlgorithm());
 	    } catch (NoSuchAlgorithmException nsae) {
 	        throw new XMLSignatureException(nsae);
 	    }

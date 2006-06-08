@@ -187,7 +187,11 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 	    throw new NullPointerException();
 	}
         if (algorithm.equals(DigestMethod.SHA1)) {
-            return new DOMSHA1DigestMethod(params);
+            return DOMSHADigestMethod.SHA1(params);
+        } else if (algorithm.equals(DigestMethod.SHA256)) {
+            return DOMSHADigestMethod.SHA256(params);
+        } else if (algorithm.equals(DigestMethod.SHA512)) {
+            return DOMSHADigestMethod.SHA512(params);
 	} else {
 	    throw new NoSuchAlgorithmException("unsupported algorithm");
 	}
