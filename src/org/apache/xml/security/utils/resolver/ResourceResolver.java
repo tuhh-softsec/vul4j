@@ -139,7 +139,8 @@ public class ResourceResolver {
            Attr uri, String BaseURI, List individualResolvers)
               throws ResourceResolverException {
       if (log.isDebugEnabled()) {
-      	log.debug("I was asked to create a ResourceResolver and got " + individualResolvers.size());
+    	  
+      	log.debug("I was asked to create a ResourceResolver and got " + (individualResolvers==null? 0 : individualResolvers.size()) );
       	log.debug(" extra resolvers to my existing " + ResourceResolver._resolverVector.size() + " system-wide resolvers");
       }
 
