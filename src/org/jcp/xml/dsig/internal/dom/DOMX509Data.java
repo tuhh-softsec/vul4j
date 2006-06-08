@@ -73,7 +73,7 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
         if (contentCopy.isEmpty()) {
             throw new IllegalArgumentException("content cannot be empty");
         }
-        for (int i = 0; i < contentCopy.size(); i++) {
+        for (int i = 0, size = contentCopy.size(); i < size; i++) {
 	    Object x509Type = contentCopy.get(i);
 	    if (x509Type instanceof String) {
 		new X500Principal((String) x509Type);
@@ -97,8 +97,9 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
     public DOMX509Data(Element xdElem) throws MarshalException {
         // get all children nodes
         NodeList nl = xdElem.getChildNodes();
-	List content = new ArrayList(nl.getLength());
-        for (int i = 0; i < nl.getLength(); i++) {
+	int length = nl.getLength();
+	List content = new ArrayList(length);
+        for (int i = 0; i < length; i++) {
             Node child = nl.item(i);
             // ignore all non-Element nodes
             if (child.getNodeType() != Node.ELEMENT_NODE) {
@@ -106,19 +107,20 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
 	    }
 
             Element childElem = (Element) child;
-            if (childElem.getLocalName().equals("X509IssuerSerial")) {
+	    String localName = childElem.getLocalName();
+            if (localName.equals("X509Certificate")) {
+                content.add(unmarshalX509Certificate(childElem));
+            } else if (localName.equals("X509IssuerSerial")) {
                 content.add(new DOMX509IssuerSerial(childElem));
-            } else if (childElem.getLocalName().equals("X509SKI")) {
+            } else if (localName.equals("X509SubjectName")) {
+                content.add(childElem.getFirstChild().getNodeValue());
+            } else if (localName.equals("X509SKI")) {
 		try {
                     content.add(Base64.decode(childElem));
 		} catch (Base64DecodingException bde) {
 		    throw new MarshalException("cannot decode X509SKI", bde);
 		}
-            } else if (childElem.getLocalName().equals("X509SubjectName")) {
-                content.add(childElem.getFirstChild().getNodeValue());
-            } else if (childElem.getLocalName().equals("X509Certificate")) {
-                content.add(unmarshalX509Certificate(childElem));
-            } else if (childElem.getLocalName().equals("X509CRL")) {
+            } else if (localName.equals("X509CRL")) {
                 content.add(unmarshalX509CRL(childElem));
             } else {
 		content.add(new javax.xml.crypto.dom.DOMStructure(childElem));
@@ -139,26 +141,25 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
             (ownerDoc, "X509Data", XMLSignature.XMLNS, dsPrefix);
 
         // append children and preserve order
-        Iterator i = content.iterator();
-        while (i.hasNext()) {
-	    Object content = i.next();
-	    if (content instanceof XMLStructure) {
-	        if (content instanceof X509IssuerSerial) {
-		    ((DOMX509IssuerSerial) content).marshal
+	for (int i = 0, size = content.size(); i < size; i++) {
+	    Object object = content.get(i);
+            if (object instanceof X509Certificate) {
+                marshalCert((X509Certificate) object,xdElem,ownerDoc,dsPrefix);
+	    } else if (object instanceof XMLStructure) {
+	        if (object instanceof X509IssuerSerial) {
+		    ((DOMX509IssuerSerial) object).marshal
 			(xdElem, dsPrefix, context);
 		} else {
 		    javax.xml.crypto.dom.DOMStructure domContent =
-			(javax.xml.crypto.dom.DOMStructure) content;
+			(javax.xml.crypto.dom.DOMStructure) object;
 		    DOMUtils.appendChild(xdElem, domContent.getNode());
 		}
-	    } else if (content instanceof byte[]) {
-                marshalSKI((byte[]) content, xdElem, ownerDoc, dsPrefix);
-            } else if (content instanceof String) {
-                marshalSubjectName((String) content, xdElem, ownerDoc,dsPrefix);
-            } else if (content instanceof X509Certificate) {
-                marshalCert((X509Certificate) content,xdElem,ownerDoc,dsPrefix);
-            } else if (content instanceof X509CRL) {
-                marshalCRL((X509CRL) content, xdElem, ownerDoc, dsPrefix);
+	    } else if (object instanceof byte[]) {
+                marshalSKI((byte[]) object, xdElem, ownerDoc, dsPrefix);
+            } else if (object instanceof String) {
+                marshalSubjectName((String) object, xdElem, ownerDoc,dsPrefix);
+            } else if (object instanceof X509CRL) {
+                marshalCRL((X509CRL) object, xdElem, ownerDoc, dsPrefix);
             }
         }
 
@@ -255,11 +256,12 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
         X509Data oxd = (X509Data) o;
 
 	List ocontent = oxd.getContent();
-	if (content.size() != ocontent.size()) {
+	int size = content.size();
+	if (size != ocontent.size()) {
 	    return false;
 	}
 
-	for (int i = 0; i < content.size(); i++) {
+	for (int i = 0; i < size; i++) {
 	    Object x = content.get(i);
 	    Object ox = ocontent.get(i);
 	    if (x instanceof byte[]) {
