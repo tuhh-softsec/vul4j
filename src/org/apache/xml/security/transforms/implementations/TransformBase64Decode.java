@@ -29,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
@@ -91,13 +92,13 @@ public class TransformBase64Decode extends TransformSpi {
     * @throws IOException
     * @throws TransformationException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
+   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
            throws IOException, CanonicalizationException,
                   TransformationException {
-   	return enginePerformTransform(input,null);
+   	return enginePerformTransform(input,null, null);
    }
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,
-            OutputStream os)
+            OutputStream os, Transform _transformObject)
     throws IOException, CanonicalizationException,
            TransformationException {
 	 try {

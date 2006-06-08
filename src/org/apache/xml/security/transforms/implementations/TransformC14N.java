@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
 
@@ -50,11 +51,11 @@ public class TransformC14N extends TransformSpi {
    /**
     *  @inheritDoc 
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
+   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
            throws CanonicalizationException {
-   	    return enginePerformTransform(input,null);
+   	    return enginePerformTransform(input,null, null);
    }
-    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream os)
+    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream os, Transform _transformObject)
     throws CanonicalizationException {   
          Canonicalizer20010315OmitComments c14n = new Canonicalizer20010315OmitComments();
          if (os!=null) {

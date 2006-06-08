@@ -30,6 +30,7 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
@@ -84,9 +85,9 @@ public class TransformXPath2Filter extends TransformSpi {
     *
     * @throws TransformationException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
+   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
            throws TransformationException {
-	  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
+	  CachedXPathAPIHolder.setDoc(_transformObject.getElement().getOwnerDocument());
       try {
     	  List unionNodes=new ArrayList();
     	   List substractNodes=new ArrayList();
@@ -97,7 +98,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
          
          Element []xpathElements =XMLUtils.selectNodes(
-                this._transformObject.getElement().getFirstChild(),
+                _transformObject.getElement().getFirstChild(),
                    XPath2FilterContainer.XPathFilter2NS,
                    XPath2FilterContainer._TAG_XPATH2);
          int noOfSteps = xpathElements.length;
@@ -118,7 +119,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
          for (int i = 0; i < noOfSteps; i++) {
             Element xpathElement =XMLUtils.selectNode(
-               this._transformObject.getElement().getFirstChild(),
+               _transformObject.getElement().getFirstChild(),
                   XPath2FilterContainer.XPathFilter2NS,
                   XPath2FilterContainer._TAG_XPATH2,i);
             XPath2FilterContainer xpathContainer =

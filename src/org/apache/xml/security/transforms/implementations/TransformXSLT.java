@@ -35,6 +35,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
@@ -78,16 +79,16 @@ public class TransformXSLT extends TransformSpi {
     * @throws IOException
     * @throws TransformationException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
+   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
            throws IOException,
                   TransformationException {
-   	return enginePerformTransform(input,null);
+   	return enginePerformTransform(input,null, null);
    }
-    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream baos)
+    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream baos, Transform _transformObject)
     throws IOException,
            TransformationException {
       try {
-         Element transformElement = this._transformObject.getElement();        
+         Element transformElement = _transformObject.getElement();        
 
          Element _xsltElement =
             XMLUtils.selectNode(transformElement.getFirstChild(),

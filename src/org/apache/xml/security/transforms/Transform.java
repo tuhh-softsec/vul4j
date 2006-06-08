@@ -65,7 +65,7 @@ public final class Transform extends SignatureElementProxy {
    /** All available Transform classes are registered here */
    static Map _transformHash = null;
    
-   static Map classesHash = new HashMap();
+   static HashMap classesHash =  new HashMap();	      
 
    /** Field transformSpi */
    protected TransformSpi transformSpi = null;
@@ -104,7 +104,7 @@ public final class Transform extends SignatureElementProxy {
          }
 
          // create the custom Transform object        
-         this.transformSpi.setTransform(this);
+         //this.transformSpi.setTransform(this);
 
          // give it to the current document
          if (contextNodes != null) {
@@ -148,19 +148,17 @@ public final class Transform extends SignatureElementProxy {
          throw new TransformationException("xml.WrongContent", exArgs);
       }
 
-      try {
-        // Class implementingClass = (Class) _transformHash.get(AlgorithmURI);		 
-         this.transformSpi = Transform.getImplementingClass(AlgorithmURI);
-           // (TransformSpi) implementingClass.newInstance();
-
-         this.transformSpi.setTransform(this);
      
-      } catch (NullPointerException e) {
+      // Class implementingClass = (Class) _transformHash.get(AlgorithmURI);		 
+      this.transformSpi = Transform.getImplementingClass(AlgorithmURI);
+      //this.transformSpi.setTransform(this);
+     
+      if (this.transformSpi==null) {
 		  Object exArgs[] = { AlgorithmURI };
 
 	         throw new InvalidTransformException(
 	            "signature.Transform.UnknownTransform", exArgs);
-	}
+      }
    }
 
    /**
@@ -289,7 +287,7 @@ public final class Transform extends SignatureElementProxy {
       XMLSignatureInput result = null;
 
       try {
-         result = transformSpi.enginePerformTransform(input);
+         result = transformSpi.enginePerformTransform(input, this);
       } catch (ParserConfigurationException ex) {
          Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
 
@@ -323,7 +321,7 @@ public final class Transform extends SignatureElementProxy {
    	    XMLSignatureInput result = null;
 
    	    try {
-   	    	result = transformSpi.enginePerformTransform(input,os);
+   	    	result = transformSpi.enginePerformTransform(input,os, this);
    	    } catch (ParserConfigurationException ex) {
    	    	Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
 
@@ -357,7 +355,7 @@ public final class Transform extends SignatureElementProxy {
     		   TransformSpi tr= (TransformSpi)cl.newInstance();
     		   classesHash.put(URI,tr);
     		   return tr;
-    	   }
+    	   } 
 	} catch (InstantiationException ex) {
 		Object exArgs[] = { URI };
          throw new InvalidTransformException(
@@ -367,7 +365,7 @@ public final class Transform extends SignatureElementProxy {
          throw new InvalidTransformException(
             "signature.Transform.UnknownTransform", exArgs, ex);      
 	}
-	return null;
+	return null;	
    }
 
    

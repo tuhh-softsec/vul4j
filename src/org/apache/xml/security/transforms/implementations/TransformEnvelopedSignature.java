@@ -18,6 +18,7 @@ package org.apache.xml.security.transforms.implementations;
 
 import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
@@ -50,7 +51,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
    /**
     * @inheritDoc
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
+   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
            throws TransformationException {
 
 
@@ -66,15 +67,8 @@ public class TransformEnvelopedSignature extends TransformSpi {
           * The evaluation of this expression includes all of the document's nodes
           * (including comments) in the node-set representing the octet stream.
           */
-
-         /*
-         if (input.isOctetStream()) {
-            input.setNodesetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
-         }
-         */
-         
-         Element transformElement = this._transformObject.getElement();
-         Node signatureElement = transformElement;
+                 
+         Node signatureElement = _transformObject.getElement();
          
 
          signatureElement = searchSignatureElement(signatureElement);        

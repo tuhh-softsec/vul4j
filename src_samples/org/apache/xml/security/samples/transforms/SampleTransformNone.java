@@ -20,6 +20,7 @@ package org.apache.xml.security.samples.transforms;
 
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 
 
@@ -61,7 +62,7 @@ public class SampleTransformNone extends TransformSpi {
     * @param input
     *
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input) {
+   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject) {
       return input;
    }
 

@@ -81,7 +81,7 @@ public class XMLCipherTester extends TestCase {
     }
 
     protected void setUp() {
-        String basedir = System.getProperty("basedir");
+        String basedir = System.getProperty("basedir",".");
         documentName = System.getProperty("org.apache.xml.enc.test.doc",
             basedir + "/build.xml");
         elementName = System.getProperty("org.apache.xml.enc.test.elem",

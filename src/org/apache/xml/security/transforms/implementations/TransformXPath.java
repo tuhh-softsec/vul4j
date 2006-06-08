@@ -21,6 +21,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
@@ -66,7 +67,7 @@ public class TransformXPath extends TransformSpi {
     *
     * @throws TransformationException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
+   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
            throws TransformationException {
 
       try {
@@ -82,12 +83,12 @@ public class TransformXPath extends TransformSpi {
           * The evaluation of this expression includes all of the document's nodes
           * (including comments) in the node-set representing the octet stream.
           */
-		  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
+		  CachedXPathAPIHolder.setDoc(_transformObject.getElement().getOwnerDocument());
          
          
 
          Element xpathElement =XMLUtils.selectDsNode(
-            this._transformObject.getElement().getFirstChild(),
+            _transformObject.getElement().getFirstChild(),
                Constants._TAG_XPATH,0);
 
          if (xpathElement == null) {
