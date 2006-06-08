@@ -15,6 +15,15 @@ New in v...
 	Fixed bug 39200
 		Refactored the way keyresolver works instead of calling canResolve/resolveX only resolveX is used  
 		and if it returns null it means it cannot resolve.
+	Minor Optimizations. 
+		Lazy fields initialization, initialize with null and create the object only when needed
+		Registered Class reorder, in several parts the library contains a list of workers
+			that are asked if it can solve a problem. Now the one that said yes is move to the front
+			wishing that the next time it also hits.
+	API Change: Make Transform & TransformSpi reusable between threads.	
+		remove setTransform(Transform t) method in TransformSpi and pass 
+		the Transform object in enginePerformTransfor methods.
+		
 		
 New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
