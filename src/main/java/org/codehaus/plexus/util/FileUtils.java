@@ -906,13 +906,17 @@ public class FileUtils
      * @throws java.io.FileNotFoundException if <code>destination</code> is a directory
      * (use {@link #copyFileToDirectory}).
      */
-    public static void copyFileIfModified( final File source, final File destination )
+    public static boolean copyFileIfModified( final File source, final File destination )
         throws IOException
     {
         if ( destination.lastModified() < source.lastModified() )
         {
             copyFile( source, destination );
+
+            return true;
         }
+
+        return false;
     }
     /**
      * Copies bytes from the URL <code>source</code> to a file <code>destination</code>.
