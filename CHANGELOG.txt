@@ -23,6 +23,8 @@ New in v...
 	API Change: Make Transform & TransformSpi reusable between threads.	
 		remove setTransform(Transform t) method in TransformSpi and pass 
 		the Transform object in enginePerformTransfor methods.
+	Fixed bug 39685: bugs reported by findbugs (mullan)
+	Added support for SHA256 & SHA512 DigestMethods to JSR 105. (mullan)
 		
 		
 New in v1.3
