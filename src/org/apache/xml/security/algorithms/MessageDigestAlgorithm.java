@@ -18,6 +18,8 @@ package org.apache.xml.security.algorithms;
 
 import java.security.MessageDigest;
 import java.security.NoSuchProviderException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
@@ -64,6 +66,12 @@ public class MessageDigestAlgorithm extends Algorithm {
 
       this.algorithm = messageDigest;
    }
+   
+   static ThreadLocal instances=new ThreadLocal() {
+	   protected Object initialValue() {
+		   return new HashMap();
+	   };
+   };
 
    /**
     * Factory method for constructing a message digest algorithm by name.
@@ -75,8 +83,15 @@ public class MessageDigestAlgorithm extends Algorithm {
     */
    public static MessageDigestAlgorithm getInstance(
            Document doc, String algorithmURI) throws XMLSignatureException {
+	  MessageDigest md = getDigestInstance(algorithmURI);
+      return new MessageDigestAlgorithm(doc, md, algorithmURI);
+   }
 
-      String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
+private static MessageDigest getDigestInstance(String algorithmURI) throws XMLSignatureException {
+	MessageDigest result=(MessageDigest) ((Map)instances.get()).get(algorithmURI);
+	if (result!=null)
+		return result;
+    String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
 
 	  if (algorithmID == null) {
 		  Object[] exArgs = { algorithmURI };
@@ -102,8 +117,9 @@ public class MessageDigestAlgorithm extends Algorithm {
       	
       	throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
 	}
-      return new MessageDigestAlgorithm(doc, md, algorithmURI);
-   }
+      ((Map)instances.get()).put(algorithmURI, md);  
+	return md;
+}
 
    /**
     * Returns the actual {@link java.security.MessageDigest} algorithm object
