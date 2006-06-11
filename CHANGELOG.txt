@@ -25,7 +25,9 @@ New in v...
 		the Transform object in enginePerformTransfor methods.
 	Fixed bug 39685: bugs reported by findbugs (mullan)
 	Added support for SHA256 & SHA512 DigestMethods to JSR 105. (mullan)
-		
+	Optimization to not create instances of Signature or MessageDigest objects, but mantain one for thread. 
+		Also don't change the key if it was already used. (raul)
+			
 		
 New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
