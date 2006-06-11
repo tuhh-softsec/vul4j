@@ -157,28 +157,13 @@ public abstract class SignatureAlgorithmSpi {
    protected abstract void engineSetParameter(AlgorithmParameterSpec params)
       throws XMLSignatureException;
 
-   /** Field _doc */
-   Document _doc = null;
-
-   /**
-    * Method engineSetDocument
-    *
-    * @param doc
-    */
-   protected void engineSetDocument(Document doc) {
-      this._doc = doc;
-   }
-
-   /** Field _constructionElement */
-   Element _constructionElement = null;
-
+   
    /**
     * Method engineGetContextFromElement
     *
     * @param element
     */
    protected void engineGetContextFromElement(Element element) {
-      this._constructionElement = element;
    }
 
    /**
@@ -189,4 +174,7 @@ public abstract class SignatureAlgorithmSpi {
     */
    protected abstract void engineSetHMACOutputLength(int HMACOutputLength)
       throws XMLSignatureException;
+
+    public void reset() {
+	}
 }

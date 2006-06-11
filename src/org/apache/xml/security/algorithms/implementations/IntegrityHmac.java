@@ -95,6 +95,10 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       throw new XMLSignatureException("empty");
    }
 
+   public void reset() {
+	   _HMACOutputLength=0;
+   }
+
    /**
     * Proxy method for {@link java.security.Signature#verify(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.

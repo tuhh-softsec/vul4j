@@ -21,6 +21,7 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.xml.security.algorithms.implementations.IntegrityHmac;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
@@ -47,6 +48,13 @@ public class SignatureAlgorithm extends Algorithm {
 
    /** All available algorithm classes are registered here */
    static HashMap _algorithmHash = null;
+   
+   static ThreadLocal instances=new ThreadLocal() {
+	   protected Object initialValue() {
+		   return new HashMap();
+	   };
+   };
+   static ThreadLocal keys=new ThreadLocal();
 
    /** Field _signatureAlgorithm */
    protected SignatureAlgorithmSpi _signatureAlgorithm = null;
@@ -63,15 +71,24 @@ public class SignatureAlgorithm extends Algorithm {
 
       super(doc, algorithmURI);
 
-      try {
+      this._signatureAlgorithm = getInstance(algorithmURI);
+   }
+
+   private SignatureAlgorithmSpi getInstance(String algorithmURI) throws XMLSignatureException {
+	   SignatureAlgorithmSpi result=(SignatureAlgorithmSpi) ((Map)instances.get()).get(algorithmURI);
+	   if (result!=null) {
+		   result.reset();
+		   return result;
+	   }
+ 	try {
          Class implementingClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
          if (log.isDebugEnabled())
          	log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
-
-         this._signatureAlgorithm =
-            (SignatureAlgorithmSpi) implementingClass.newInstance();
+         result=(SignatureAlgorithmSpi) implementingClass.newInstance();
+         ((Map)instances.get()).put(algorithmURI,result);
+         return   result;
       }  catch (IllegalAccessException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
 
@@ -88,7 +105,7 @@ public class SignatureAlgorithm extends Algorithm {
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
                                          ex);
       }
-   }
+}
 
    /**
     * Constructor SignatureAlgorithm
@@ -122,35 +139,11 @@ public class SignatureAlgorithm extends Algorithm {
       super(element, BaseURI);
 
       String algorithmURI = this.getURI();
+      this._signatureAlgorithm  = getInstance(algorithmURI);
 
-      try {
-         Class implementingClass =
-            SignatureAlgorithm.getImplementingClass(algorithmURI);
-         if (log.isDebugEnabled())
-         	log.debug("Create URI \"" + algorithmURI + "\" class \""
-                   + implementingClass + "\"");
+      this._signatureAlgorithm
+      .engineGetContextFromElement(this._constructionElement);
 
-         this._signatureAlgorithm =
-            (SignatureAlgorithmSpi) implementingClass.newInstance();
-
-         this._signatureAlgorithm
-            .engineGetContextFromElement(this._constructionElement);
-      }  catch (IllegalAccessException ex) {
-         Object exArgs[] = { algorithmURI, ex.getMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
-                                         ex);
-      } catch (InstantiationException ex) {
-         Object exArgs[] = { algorithmURI, ex.getMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
-                                         ex);
-      } catch (NullPointerException ex) {
-         Object exArgs[] = { algorithmURI, ex.getMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
-                                         ex);
-      }
    }
 
    /**
@@ -227,7 +220,11 @@ public class SignatureAlgorithm extends Algorithm {
     * @throws XMLSignatureException
     */
    public void initSign(Key signingKey) throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitSign(signingKey);
+       if ((keys.get())==signingKey) {
+    	   return;
+       }
+       keys.set(signingKey);
+	   this._signatureAlgorithm.engineInitSign(signingKey);
    }
 
    /**
@@ -278,7 +275,11 @@ public class SignatureAlgorithm extends Algorithm {
     * @throws XMLSignatureException
     */
    public void initVerify(Key verificationKey) throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitVerify(verificationKey);
+	   if ((keys.get())==verificationKey) {
+    	   return;
+       }
+       keys.set(verificationKey);
+	   this._signatureAlgorithm.engineInitVerify(verificationKey);
    }
 
    /**
