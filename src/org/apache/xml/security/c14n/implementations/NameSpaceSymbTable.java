@@ -52,8 +52,7 @@ public class NameSpaceSymbTable {
     /**
      * Default constractor
      **/		
-    public NameSpaceSymbTable() {
-    	symb = new SymbMap();
+    public NameSpaceSymbTable() {    	
     	level = new ArrayList(10);
     	//Insert the default binding for xmlns.    	
     	symb=(SymbMap) initialMap.clone();
