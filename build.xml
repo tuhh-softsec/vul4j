@@ -15,8 +15,8 @@
     <property name="product.shortname" value="xmlsec"/>
 
     <property name="product.version.major" value="1"/>
-    <property name="product.version.minor" value="3"/>
-    <property name="product.version.level" value="0"/>
+    <property name="product.version.minor" value="4"/>
+    <property name="product.version.level" value="Beta0"/>
     <property name="product.Version" 
 			  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product.version" 
