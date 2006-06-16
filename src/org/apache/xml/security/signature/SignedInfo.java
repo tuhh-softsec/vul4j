@@ -341,6 +341,9 @@ private Element signatureMethod;
                                   .getJCEAlgorithmString());
    }
 
+   protected SignatureAlgorithm getSignatureAlgorithm() {
+	   return _signatureAlgorithm;
+   }
    /**
     * Method getBaseLocalName
     * @inheritDoc

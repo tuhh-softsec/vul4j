@@ -477,21 +477,11 @@ private Element signatureValueElement;
 
       try {
          if (this._state == MODE_SIGN) {
-
-            // XMLUtils.indentSignature(this._constructionElement, "   ", 0);
-            // get the SignatureMethodElement
-            Element signatureMethodElement =
-               this._signedInfo.getSignatureMethodElement();
-
             //Create a SignatureAlgorithm object
-            SignatureAlgorithm sa =
-               new SignatureAlgorithm(signatureMethodElement,
-                                      this.getBaseURI());
-
+        	SignedInfo si = this.getSignedInfo();
+            SignatureAlgorithm sa = si.getSignatureAlgorithm();               
             // initialize SignatureAlgorithm for signing
-            sa.initSign(signingKey);
-
-            SignedInfo si = this.getSignedInfo();
+            sa.initSign(signingKey);            
 
             // generate digest values for all References in this SignedInfo
             si.generateDigestValues();
@@ -579,23 +569,20 @@ private Element signatureValueElement;
 
          throw new XMLSignatureException("empty", exArgs);
       }
-
       // all references inside the signedinfo need to be dereferenced and
       // digested again to see if the outcome matches the stored value in the
       // SignedInfo.
       // If _followManifestsDuringValidation is true it will do the same for
       // References inside a Manifest.
       try {
-         if (!this.getSignedInfo()
-                 .verify(this._followManifestsDuringValidation)) {
+    	  SignedInfo si=this.getSignedInfo();
+         if (!si.verify(this._followManifestsDuringValidation)) {
             return false;
          }
 
          //create a SignatureAlgorithms from the SignatureMethod inside
          //SignedInfo. This is used to validate the signature.
-         SignatureAlgorithm sa =
-            new SignatureAlgorithm(this.getSignedInfo()
-               .getSignatureMethodElement(), this.getBaseURI());
+         SignatureAlgorithm sa =si.getSignatureAlgorithm();               
          if (log.isDebugEnabled()) {
          	log.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
          	log.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
@@ -607,7 +594,7 @@ private Element signatureValueElement;
          // Get the canonicalized (normalized) SignedInfo
          SignerOutputStream so=new SignerOutputStream(sa);
          OutputStream bos=new UnsyncBufferedOutputStream(so);
-         this._signedInfo.signInOctectStream(bos);
+         si.signInOctectStream(bos);
          try {
 			bos.close();
 		} catch (IOException e) {
