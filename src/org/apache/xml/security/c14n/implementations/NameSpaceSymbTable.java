@@ -43,6 +43,12 @@ public class NameSpaceSymbTable {
 	List level;
     boolean cloned=true;	
 	static final String XMLNS="xmlns";
+	final static SymbMap initialMap=new SymbMap();
+	static {
+		NameSpaceSymbEntry ne=new NameSpaceSymbEntry("",null,true);
+		ne.lastrendered="";		
+		initialMap.put(XMLNS,ne);
+	}
     /**
      * Default constractor
      **/		
@@ -50,9 +56,7 @@ public class NameSpaceSymbTable {
     	symb = new SymbMap();
     	level = new ArrayList(10);
     	//Insert the default binding for xmlns.    	
-    	NameSpaceSymbEntry ne=new NameSpaceSymbEntry("",null,true);
-		ne.lastrendered="";		
-    	symb.put(XMLNS,ne);    
+    	symb=(SymbMap) initialMap.clone();
     }
     
     /**
