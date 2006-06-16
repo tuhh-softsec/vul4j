@@ -90,12 +90,7 @@ public abstract class ElementProxy {
     * Constructor ElementProxy
     *
     */
-   public ElementProxy() {
-
-      this._doc = null;
-      this._state = ElementProxy.MODE_UNKNOWN;
-      this._baseURI = null;
-      this._constructionElement = null;
+   public ElementProxy() {	   
    }
 
    /**
@@ -104,9 +99,6 @@ public abstract class ElementProxy {
     * @param doc
     */
    public ElementProxy(Document doc) {
-
-      this();
-
       if (doc == null) {
          throw new RuntimeException("Document is null");
       }
@@ -216,9 +208,6 @@ public abstract class ElementProxy {
     */
    public ElementProxy(Element element, String BaseURI)
            throws XMLSecurityException {
-
-      this();
-
       if (element == null) {
          throw new XMLSecurityException("ElementProxy.nullElement");
       }
