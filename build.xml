@@ -778,60 +778,55 @@
 	</target>
 
     <!-- jars -->
-	<target name="manifest">
+    <target name="manifest">
+	<mkdir dir="${dir.manifest}"/>
+	<manifest file="${jar.manifest}" mode="replace">
+            <attribute name="Built-By" value="${user.name}"/>
+            <section name="${product.shortname}">
+		<attribute name="Implementation-Title"
+                           value="${product.Name}"/>
+		<attribute name="Implementation-Version"
+                           value="${product.Version} ${TODAY}"/>
+		<attribute name="Implementation-Vendor"
+                           value="Apache Software Foundation"/>
+            </section>
+        </manifest>
+    </target>
 
-		<mkdir dir="${dir.manifest}"/>
+    <target name="build.jar"
+	    depends="manifest,build.src,build.test,build.samples">
 
-		<manifest file="${jar.manifest}" mode="replace">
-                        <attribute name="Built-By" value="${user.name}"/>
-                        <section name="${product.shortname}">
-                                <attribute name="Implementation-Title"
-                                        value="${product.Name}"/>
-                                <attribute name="Implementation-Version"
-                                        value="${product.Version} ${TODAY}"/>
-                                <attribute name="Implementation-Vendor"
-                                        value="Apache Software Foundation"/>
-                        </section>
-                </manifest>
+	<!-- Main Library -->
+	<jar basedir="${dir.build.bin}" 
+	     excludes="org/apache/xml/security/temp/**"
+	     includes="**/LICENSE, **/NOTICE, org/apache/**, org/jcp/**, javax/xml/crypto/**, *.txt" 
+	     jarfile="${jar.library}" 
+	     manifest="${jar.manifest}"/>
 
-	</target>
-
-	<target name="build.jar"
-		depends="manifest,build.src,build.test,build.samples">
-
-		<!-- Main Library -->
-		<jar basedir="${dir.build.bin}" 
-			excludes="org/apache/xml/security/temp/**"
-			includes="**/LICENSE, **/NOTICE, org/apache/**, *.txt" 
-			jarfile="${jar.library}" 
-			manifest="${jar.manifest}"/>
-
-		<!-- Samples -->
-		<jar basedir="${dir.build.samples}" 
-			excludes="org/apache/xml/security/temp/**" 
-			includes="**/LICENSE, **/NOTICE, org/apache/**" 
-			jarfile="${jar.samples}" 
-			manifest="${jar.manifest}"/>
+	<!-- Samples -->
+	<jar basedir="${dir.build.samples}" 
+	     excludes="org/apache/xml/security/temp/**" 
+	     includes="**/LICENSE, **/NOTICE, org/apache/**, javax/xml/crypto/**"
+	     jarfile="${jar.samples}" 
+	     manifest="${jar.manifest}"/>
 		
-		<!-- Tests -->
-		<jar basedir="${dir.build.test}" 
-			excludes="org/apache/xml/security/temp/**" 
-			includes="**/LICENSE, **/NOTICE, org/apache/**"
-			jarfile="${jar.tests}" 
-			manifest="${jar.manifest}"/>
+	<!-- Tests -->
+	<jar basedir="${dir.build.test}" 
+	     excludes="org/apache/xml/security/temp/**" 
+	     includes="**/LICENSE, **/NOTICE, org/apache/**, javax/xml/crypto/**"
+	     jarfile="${jar.tests}" 
+	     manifest="${jar.manifest}"/>
+    </target>
 
-	</target>
+    <target name="build.src.jar"
+	    depends="manifest,build.src">
 
-	<target name="build.src.jar"
-		depends="manifest,build.src">
-
-		<jar basedir="${dir.build.bin}" 
-			excludes="org/apache/xml/security/temp/**"
-			includes="**/LICENSE, **/NOTICE, org/apache/**, *.txt" 
-			jarfile="${jar.library}" 
-			manifest="${jar.manifest}"/>
-
-	</target>
+	<jar basedir="${dir.build.bin}" 
+	     excludes="org/apache/xml/security/temp/**"
+	     includes="**/LICENSE, **/NOTICE, org/apache/**, org/jcp/**, javax/xml/crypto/**, *.txt" 
+	     jarfile="${jar.library}" 
+	     manifest="${jar.manifest}"/>
+    </target>
 
 <!--
     <target name="build.jar"
