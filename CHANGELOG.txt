@@ -25,6 +25,7 @@ New in v...
 		the Transform object in enginePerformTransfor methods.
 	Fixed bug 39685: bugs reported by findbugs (mullan)
 	Added support for SHA256 & SHA512 DigestMethods to JSR 105. (mullan)
+	Fix JSR 105 unmarshaling bug: now recognizes PGPData. (mullan)
 	Optimization to not create instances of Signature or MessageDigest objects, but mantain one for thread. 
 		Also don't change the key if it was already used. (raul)
 			
