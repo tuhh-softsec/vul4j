@@ -110,6 +110,8 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
             } else if (localName.equals("RetrievalMethod")) {
 	        content.add
 		    (new DOMRetrievalMethod(childElem, context, provider));
+            } else if (localName.equals("PGPData")) {
+	        content.add(new DOMPGPData(childElem));
 	    } else { //may be MgmtData, SPKIData or element from other namespace
 	        content.add(new javax.xml.crypto.dom.DOMStructure((childElem)));
 	    }
