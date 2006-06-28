@@ -342,9 +342,8 @@
 
 	<!-- T E S T  T A R G E T S -->  
 	<!-- big test -->
-	<target name="test"
-			depends="build.test"
-			description="Starts all Junit tests">
+	<target name="test" depends="build.test"
+		description="Starts all Junit tests">
 	    <delete dir="${dir.build.junit.xml}"/>
 	    <delete dir="${dir.build.junit.html}"/>
 	    <mkdir dir="${dir.build.junit.xml}"/>
@@ -366,36 +365,41 @@
 	         IBM is 'magically' included in the test ;-))
 	    -->
 	    <available file="data/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
-        <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xerces.1}" todir="${dir.build.libs2}"/>
-	    <junit filtertrace="true" fork="true" printsummary="on" failureproperty="build.test.failed">
-	       <jvmarg value="-Djava.compiler=NONE"/>
-	       <sysproperty key="basedir" value="${basedir}"/>
-           <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
-	       <classpath refid="id.classpath.test"/>
-	       <formatter type="xml"/>
-	       <!-- Also put output to screen -->
-	       <formatter type="plain" usefile="false"/>
-	       <batchtest fork="yes" todir="${dir.build.junit.xml}">
-	         <fileset dir="${dir.src.test}">
-	           <include name="**/*Test*.java"/>
-	           <include name="org/apache/xml/security/test/c14n/implementations/ExclusiveC14NInterop.java"/>
-	           <exclude name="org/apache/xml/security/test/*Test*.java"/>
-	           <exclude name="org/apache/xml/security/test/interop/InteropTest.java"/>
-	           <exclude name="**/TestVectorResolver.java"/>
-	           <exclude name="**/IBMTest.java"/>
-	           <exclude name="javax/xml/crypto/**"/>
-	         </fileset>
-	       </batchtest>
-	       <test if="ibm.available" name="org.apache.xml.security.test.interop.IBMTest" todir="${dir.build.junit.xml}"/>
+            <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
+            <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
+            <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
+            <copy file="${lib.xerces.1}" todir="${dir.build.libs2}"/>
+	    <junit filtertrace="true" fork="true" printsummary="on" 
+		   failureproperty="build.test.failed">
+	        <jvmarg value="-Djava.compiler=NONE"/>
+	        <sysproperty key="basedir" value="${basedir}"/>
+                <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
+                <sysproperty key="proxyHost" value="${proxy.host}"/>
+                <sysproperty key="proxyPort" value="${proxy.port}"/>
+                <sysproperty key="java.util.logging.config.file" 
+			     value="${basedir}/logging.properties"/>
+	        <classpath refid="id.classpath.test"/>
+	        <formatter type="xml"/>
+	        <!-- Also put output to screen -->
+	        <formatter type="plain" usefile="false"/>
+	        <batchtest fork="yes" todir="${dir.build.junit.xml}">
+	            <fileset dir="${dir.src.test}">
+	                <include name="**/*Test*.java"/>
+	                <include name="org/apache/xml/security/test/c14n/implementations/ExclusiveC14NInterop.java"/>
+	                <exclude name="org/apache/xml/security/test/*Test*.java"/>
+	                <exclude name="org/apache/xml/security/test/interop/InteropTest.java"/>
+	                <exclude name="**/TestVectorResolver.java"/>
+	                <exclude name="**/IBMTest.java"/>
+	                <exclude name="javax/xml/crypto/test/dsig/TestUtils.java"/>
+	             </fileset>
+	        </batchtest>
+	        <test if="ibm.available" name="org.apache.xml.security.test.interop.IBMTest" todir="${dir.build.junit.xml}"/>
 	    </junit>
 	    <junitreport todir="${dir.build.junit.xml}">
-	      <fileset dir="${dir.build.junit.xml}">
-	        <include name="TEST-*.xml"/>
-	      </fileset>
-	      <report format="frames" todir="${dir.build.junit.html}"/>
+	        <fileset dir="${dir.build.junit.xml}">
+	            <include name="TEST-*.xml"/>
+	        </fileset>
+	        <report format="frames" todir="${dir.build.junit.html}"/>
 	    </junitreport>
 	    <fail if="build.test.failed" message="Unit Tests Failed"/>
 	</target>
