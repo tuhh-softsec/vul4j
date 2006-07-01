@@ -138,12 +138,14 @@ public class TransformXPath extends TransformSpi {
 	/**
 	 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
 	 */
-	public boolean isNodeInclude(Node currentNode) {			
+	public int isNodeInclude(Node currentNode) {			
 	    XObject includeInResult;
 	    try {
 		includeInResult = xPathFuncHereAPI.eval(currentNode,
 			        xpathnode, str,prefixResolver);
-		return includeInResult.bool();
+		if (includeInResult.bool())
+			return 1;
+		return 0;
 	    } catch (TransformerException e) {
                 Object[] eArgs = {currentNode};
 	        throw new XMLSecurityRuntimeException

@@ -180,18 +180,25 @@ class XPath2NodeFilter implements NodeFilter {
    /**
     * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
     */
-   public boolean isNodeInclude(Node currentNode) {	 
+   public int isNodeInclude(Node currentNode) {	 
 	   boolean notIncluded=false;
 	   if (!substractNodes.isEmpty() && rooted(currentNode, substractNodes)) {
 		      notIncluded = true;
 	   } else if (!intersectNodes.isEmpty() && !rooted(currentNode, intersectNodes)) {
 		   notIncluded = true;
 	   }
-	   if (!unionNodes.isEmpty() && notIncluded && rooted(currentNode, unionNodes)) {
-		   notIncluded = false;
+	   	   
+	  //TODO OPTIMIZE
+      if (!notIncluded)     	        
+    	  return 1;
+      boolean hasUnionNodes=!unionNodes.isEmpty();
+      if (hasUnionNodes && rooted(currentNode, unionNodes)) {
+		   return 1;
 	   }
-
-      return !notIncluded;
+      if (!hasUnionNodes) {
+    	  return -1; //Not union nodes to safe a node that has been exclude.
+      }
+      return 0;
 
    }
 

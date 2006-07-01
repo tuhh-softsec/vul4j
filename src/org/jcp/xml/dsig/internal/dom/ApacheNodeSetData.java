@@ -78,7 +78,7 @@ public class ApacheNodeSetData implements ApacheData, NodeSetData {
             boolean skipNode = false;
             while (it.hasNext() && !skipNode) {
                 NodeFilter nf = (NodeFilter) it.next();
-                if (!nf.isNodeInclude(currentNode)) {
+                if (nf.isNodeInclude(currentNode)!=1) {
                     skipNode = true;
                 }
             }

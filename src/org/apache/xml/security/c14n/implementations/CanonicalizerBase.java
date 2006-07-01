@@ -443,7 +443,12 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			Element currentElement = (Element) currentNode;
 			//Add a level to the nssymbtable. So latter can be pop-back.
 			String name=null;
-			currentNodeIsVisible=isVisible(currentNode);
+			int i=isVisibleElement(currentNode);
+			if (i==-1) {
+				sibling= currentNode.getNextSibling();
+				break;
+			}
+			currentNodeIsVisible=(i==1);
 			if (currentNodeIsVisible) {
 				ns.outputNodePush();
 				writer.write('<');
@@ -481,7 +486,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				}
 			} else {
 				parentNode=currentElement;
-			}
+			}			
 			break;
 		}
 		while (sibling==null  && parentNode!=null) {    
@@ -510,12 +515,24 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		sibling=currentNode.getNextSibling();  
 	} while(true);
    }
-
+   int isVisibleElement(Node currentNode) {
+	   if (nodeFilter!=null) {
+	   		Iterator it=nodeFilter.iterator();
+	   		while (it.hasNext()) {   	
+	   			int i=((NodeFilter)it.next()).isNodeInclude(currentNode);
+	   			if (i!=1)
+	   				return i;
+	   		}
+		   }
+	   if ((this._xpathNodeSet!=null) && !this._xpathNodeSet.contains(currentNode))
+  			return 0;
+	   return 1;
+   }
    boolean isVisible(Node currentNode) {
 	   if (nodeFilter!=null) {
    		Iterator it=nodeFilter.iterator();
-   		while (it.hasNext()) {
-   			if (!((NodeFilter)it.next()).isNodeInclude(currentNode))
+   		while (it.hasNext()) {   			
+   			if (((NodeFilter)it.next()).isNodeInclude(currentNode)!=1)
    				return false;
    		}
 	   }

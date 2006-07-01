@@ -27,8 +27,11 @@ public interface NodeFilter {
 	/**
 	 * Tells if a node must be outputed in c14n.
 	 * @param n
-	 * @return true if node must be outputed, false otherwise.
+	 * @return 1 if the node should be outputed.
+	 * 		   0 if node must not be outputed, 
+	 * 		  -1 if the node and all it's child must not be output.
+	 * 			
 	 */
-	public boolean isNodeInclude(Node n);
+	public int isNodeInclude(Node n);
 
 }
