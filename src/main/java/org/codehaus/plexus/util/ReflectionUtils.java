@@ -6,20 +6,21 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.AccessibleObject;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- *
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @author <a href="mailto:jesse@codehaus.org">Jesse McConnell</a>
- *
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public final class ReflectionUtils
 {
-    private ReflectionUtils()
-    {
-        // requirement for utility class
-    }
+    // ----------------------------------------------------------------------
+    // Field utils
+    // ----------------------------------------------------------------------
 
     public static Field getFieldByNameIncludingSuperclasses( String fieldName, Class clazz  )
     {
@@ -42,12 +43,29 @@ public final class ReflectionUtils
         return retValue;
     }
 
+    public static List getFieldsIncludingSuperclasses( Class clazz )
+    {
+        List fields = new ArrayList( Arrays.asList( clazz.getDeclaredFields() ) );
+
+        Class superclass = clazz.getSuperclass();
+
+        if ( superclass != null )
+        {
+            fields.addAll( getFieldsIncludingSuperclasses( superclass ) );
+        }
+
+        return fields;
+    }
+
+    // ----------------------------------------------------------------------
+    // Setter utils
+    // ----------------------------------------------------------------------
+
     /**
      * Finds a setter in the given class for the given field. It searches
      * interfaces and superclasses too.
      *
-     * @param fieldName the name of the field (i.e. 'fooBar'); it will
-     *   search for a method named 'setFooBar'.
+     * @param fieldName the name of the field (i.e. 'fooBar'); it will search for a method named 'setFooBar'.
      * @param clazz The class to find the method in.
      * @return null or the method found.
      */
@@ -59,19 +77,57 @@ public final class ReflectionUtils
 
         for ( int i = 0; i < methods.length; i++ )
         {
-            if ( methods[i].getName().equals( fieldName ) &&
-                methods[i].getReturnType().equals( Void.TYPE ) && // FIXME: needed /required?
-                !Modifier.isStatic( methods[i].getModifiers() ) &&
-                methods[i].getParameterTypes().length == 1
-            )
+            Method method = methods[i];
+
+            if ( method.getName().equals( fieldName ) && isSetter( method ) )
             {
-                return methods[i];
+                return method;
             }
         }
 
         return null;
     }
 
+    /**
+     * Finds all setters in the given class and super classes.
+     */
+    public static List getSetters( Class clazz )
+    {
+        Method[] methods = clazz.getMethods();
+
+        List list = new ArrayList();
+
+        for ( int i = 0; i < methods.length; i++ )
+        {
+            Method method = methods[i];
+
+            if ( isSetter( method ) )
+            {
+                list.add( method );
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Returns the class of the argument to the setter.
+     *
+     * Will throw an RuntimeException if the method isn't a setter.
+     */
+    public static Class getSetterType( Method method )
+    {
+        if ( !isSetter( method ) )
+        {
+            throw new RuntimeException( "The method " + method.getDeclaringClass().getName() + "." + method.getName() + " is not a setter." );
+        }
+
+        return method.getParameterTypes()[0];
+    }
+
+    // ----------------------------------------------------------------------
+    // Value accesstors
+    // ----------------------------------------------------------------------
 
     /**
      * attempts to set the value to the variable in the object passed in
@@ -90,7 +146,6 @@ public final class ReflectionUtils
 
         field.set(object, value );
     }
-
 
     /**
      * Generates a map of the fields and values on a given object,
@@ -127,6 +182,16 @@ public final class ReflectionUtils
         return map;
     }
 
+    // ----------------------------------------------------------------------
+    // Private
+    // ----------------------------------------------------------------------
+
+    public static boolean isSetter( Method method )
+    {
+        return method.getReturnType().equals( Void.TYPE ) && // FIXME: needed /required?
+               !Modifier.isStatic( method.getModifiers() ) &&
+               method.getParameterTypes().length == 1;
+    }
 
     /**
      * populates a map of the fields and values on a given object,
@@ -160,6 +225,4 @@ public final class ReflectionUtils
             gatherVariablesAndValuesIncludingSuperclasses( superclass, map );
         }
     }
-
-
 }

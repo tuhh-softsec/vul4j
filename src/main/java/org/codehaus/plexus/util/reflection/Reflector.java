@@ -1,3 +1,5 @@
+package org.codehaus.plexus.util.reflection;
+
 /*
  *
  * Copyright (c) 2004 John Dennis Casey
@@ -28,12 +30,6 @@
  SEE licenses/cj-license.txt FOR MORE INFORMATION.
 
  */
-/*
- * Reflector.java
- *
- * Created on November 1, 2002, 7:31 AM
- */
-package org.codehaus.plexus.util.reflection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -202,8 +198,7 @@ public final class Reflector
             {
                 StringBuffer buffer = new StringBuffer();
 
-                buffer.append( "Singleton-producing method named \'" + methodName
-                    + "\' not found with specified parameter classes: " );
+                buffer.append( "Singleton-producing method named '" ).append( methodName ).append( "' not found with specified parameter classes: " );
 
                 for ( int i = 0; i < paramTypes.length; i++ )
                 {
@@ -437,7 +432,7 @@ public final class Reflector
     }
     
     public Object getObjectProperty( Object target, String propertyName )
-    throws ReflectorException
+        throws ReflectorException
     {
         if(propertyName == null || propertyName.trim().length() < 1)
         {
