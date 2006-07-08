@@ -113,6 +113,7 @@ mp_keyInfoResolver(NULL) {
 	mp_env->setDSIGNSPrefix(s_ds);
 	m_keyDerived = false;
 	m_kekDerived = false;
+	m_useExcC14nSerialisation = true;
 
 }
 
@@ -1080,7 +1081,8 @@ DOMNode * XENCCipherImpl::encryptElementDetached(DOMElement * element,
 	c->appendTxfm(tc14n);
 
 	tc14n->activateComments();
-	tc14n->setExclusive();
+	if (m_useExcC14nSerialisation)
+		tc14n->setExclusive();
 
 	// Do the hard work
 
@@ -1189,7 +1191,8 @@ DOMNode * XENCCipherImpl::encryptElementContentDetached(
 		tc->appendTxfm(tc14n);
 
 		tc14n->activateComments();
-		tc14n->setExclusive();
+		if (m_useExcC14nSerialisation)
+			tc14n->setExclusive();
 
 		n = n->getNextSibling();
 
@@ -1209,6 +1212,21 @@ DOMNode * XENCCipherImpl::encryptElementContentDetached(
 //			Pretty Print functions
 // --------------------------------------------------------------------------------
 
+void XENCCipherImpl::setExclusiveC14nSerialisation(bool flag) {
+
+	m_useExcC14nSerialisation = flag;
+}
+
+bool XENCCipherImpl::getExclusiveC14nSerialisation(void) {
+
+	return m_useExcC14nSerialisation;
+
+}
+
+// --------------------------------------------------------------------------------
+//			Exclusive C14n serialisation setting
+// --------------------------------------------------------------------------------
+
 void XENCCipherImpl::setPrettyPrint(bool flag) {
 
 	mp_env->setPrettyPrintFlag(flag);
@@ -1220,4 +1238,3 @@ bool XENCCipherImpl::getPrettyPrint(void) {
 	return mp_env->getPrettyPrintFlag();
 
 }
-

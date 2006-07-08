@@ -117,7 +117,7 @@ public:
 	const XMLCh * getXENCNSPrefix(void) const;
 	virtual XENCEncryptedData * getEncryptedData(void);
 	bool getPrettyPrint(void);
-
+	bool getExclusiveC14nSerialisation(void);
 
 	// Setter methods
 	void setKey(XSECCryptoKey * key);
@@ -126,6 +126,7 @@ public:
 
 	void setXENCNSPrefix(const XMLCh * prefix);
 	void setPrettyPrint(bool flag);
+	void setExclusiveC14nSerialisation(bool flag);
 
 	// Creation methods
 	XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type,
@@ -180,6 +181,9 @@ private:
 
 	// Resolvers
 	XSECKeyInfoResolver		* mp_keyInfoResolver;
+
+	// Use exclusive canonicalisation?
+	bool					m_useExcC14nSerialisation;
 
 	friend class XSECProvider;
 	friend class XSECPlatformUtils;

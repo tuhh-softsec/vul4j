@@ -445,6 +445,21 @@ public:
 
 	virtual bool getPrettyPrint(void) = 0;
 
+	/**
+	 * \brief Tell caller whether the serialisation routines will
+	 * use exclusive or normal canonicalisation.
+	 *
+	 * When serialising an element prior to encryption, the c14n
+	 * canonicalisation routines are used.  By default, exclusive
+	 * c14n is used, however this can be turned off using the
+	 * setExclusiveC14nSerialisation call.  This function returns 
+	 * the current state of the associated flag.
+	 *
+	 * @returns True if Exclusive c14n will be used, false if standard
+	 */
+
+	virtual bool getExclusiveC14nSerialisation(void) = 0;
+
 	//@}
 
 	/** @name Setter Functions */
@@ -514,6 +529,21 @@ public:
 	 */
 
 	virtual void setPrettyPrint(bool flag) = 0;
+
+	/**
+	 * \brief Set whether the serialisation routines will
+	 * use exclusive or normal canonicalisation.
+	 *
+	 * When serialising an element prior to encryption, the c14n
+	 * canonicalisation routines are used.  By default, exclusive
+	 * c14n is used, however this can be turned off using the
+	 * setExclusiveC14nSerialisation call.
+	 *
+	 * @param flag Set for true if Exclusive c14n will be used, 
+	 * false otherwise
+	 */
+
+	virtual void setExclusiveC14nSerialisation(bool flag) = 0;
 
 	//@}
 
