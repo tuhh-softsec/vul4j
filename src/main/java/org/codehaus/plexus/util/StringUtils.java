@@ -2064,7 +2064,7 @@ public class StringUtils
 
             if ( obj == null )
             {
-                throw new NullPointerException( "The value of " + key + "key is null." );
+                throw new NullPointerException( "The value of the key '" + key + "' is null." );
             }
 
             String value = obj.toString();
@@ -2081,7 +2081,7 @@ public class StringUtils
 
     public static String removeAndHump( String data, String replaceThis )
     {
-        String temp = null;
+        String temp;
 
         StringBuffer out = new StringBuffer();
 
