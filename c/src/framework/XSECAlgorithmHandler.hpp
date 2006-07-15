@@ -302,7 +302,7 @@ public:
 
 	virtual XSECCryptoKey * createKeyForURI(
 		const XMLCh * uri,
-		unsigned char * keyBuffer,
+		const unsigned char * keyBuffer,
 		unsigned int keyLen
 	) = 0;
 

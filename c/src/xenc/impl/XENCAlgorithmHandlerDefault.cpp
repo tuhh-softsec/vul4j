@@ -925,7 +925,7 @@ bool XENCAlgorithmHandlerDefault::encryptToSafeBuffer(
 
 XSECCryptoKey * XENCAlgorithmHandlerDefault::createKeyForURI(
 		const XMLCh * uri,
-		unsigned char * keyBuffer,
+		const unsigned char * keyBuffer,
 		unsigned int keyLen
 		) {
 

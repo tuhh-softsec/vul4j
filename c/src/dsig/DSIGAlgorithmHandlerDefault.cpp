@@ -669,7 +669,7 @@ bool DSIGAlgorithmHandlerDefault::encryptToSafeBuffer(
 
 XSECCryptoKey * DSIGAlgorithmHandlerDefault::createKeyForURI(
 		const XMLCh * uri,
-		unsigned char * keyBuffer,
+		const unsigned char * keyBuffer,
 		unsigned int keyLen
 		) {
 
