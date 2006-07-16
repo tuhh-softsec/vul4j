@@ -72,6 +72,7 @@ public class NameSpaceSymbTable {
 	   		if ((!n.rendered) && (n.n!=null)) {
 	   			result.add(n.n);
 	   			n.rendered=true;
+	   			n.lastrendered=n.uri;
 	   		}
 	   }	   
 	}

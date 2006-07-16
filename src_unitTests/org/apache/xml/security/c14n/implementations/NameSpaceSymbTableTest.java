@@ -21,14 +21,19 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.xml.security.test.utils.Base64Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class NameSpaceSymbTableTest extends TestCase {
-    
+	public static Test suite() {
+	      return new TestSuite(NameSpaceSymbTableTest.class);
+	   }
 	static Attr node1,node2;
     static {
     	try {
@@ -120,9 +125,20 @@ public class NameSpaceSymbTableTest extends TestCase {
         ns.push();        
         assertEquals(node1,ns.getMapping("a"));
         ns.pop();
-        assertEquals(node1,ns.getMapping("a"));
-        
+        assertEquals(node1,ns.getMapping("a"));        
      }
+    public void testGetUnrenderedNodes() {
+    	NameSpaceSymbTable ns=new NameSpaceSymbTable();
+        ns.push();
+        List l=new ArrayList();
+        ns.addMapping("xmlns","http://a",node1);
+        ns.push();
+        ns.getUnrenderedNodes(l);
+        assertTrue(l.contains(node1));
+        Attr n=(Attr)ns.addMappingAndRender("xmlns","",node2);
+        assertNotNull("xmlns=\"\" not rendered",n);
+        assertEquals(n, node2);
+    }
     public void notPasstestUnrederedNodes() {
     	NameSpaceSymbTable ns=new NameSpaceSymbTable();
         ns.push();
