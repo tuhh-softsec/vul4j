@@ -783,6 +783,7 @@
 
     <!-- jars -->
     <target name="manifest">
+	<tstamp/>
 	<mkdir dir="${dir.manifest}"/>
 	<manifest file="${jar.manifest}" mode="replace">
             <attribute name="Built-By" value="${user.name}"/>
