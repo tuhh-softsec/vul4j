@@ -48,6 +48,14 @@ API:
      -- node-create-rule tag added to provide access to NodeCreateRule.
         Patch provided by Kevin Ross; bugzilla 36482
 
+Stack Monitoring
+----------------
+
+Method "setStackAction" has been added to the Digester class. This allows user
+code to monitor all objects pushed onto and popped off digester stacks. In
+particular, this makes it easier to store source file/line info for all
+objects created during parsing.
+
 BUGS FROM PREVIOUS RELEASE
 ==========================
 
