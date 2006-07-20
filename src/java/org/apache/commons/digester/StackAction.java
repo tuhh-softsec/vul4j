@@ -39,6 +39,8 @@ package org.apache.commons.digester;
  * methods. This allows multiple actions to be "chained" together.
  * <p>
  * See also Digester.setStackAction.
+ * 
+ * @since 1.7.1
  */
 public interface StackAction {
 	/**
