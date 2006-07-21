@@ -116,13 +116,15 @@ public class TransformEnvelopedSignature extends TransformSpi {
     	EnvelopedNodeFilter(Node n) {
 	    exclude=n;
     	}
-
+    public int isNodeIncludeDO(Node n, int level) {
+    	if ((n==exclude))
+			return -1;
+    	return 1;
+    }
 	/**
 	 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
 	 */
 	public int isNodeInclude(Node n) {
-		if ((n==exclude))
-			return -1;
 		if ((n==exclude) || XMLUtils.isDescendantOrSelf(exclude,n)) 
 			return -1;
 		return 1;
