@@ -216,7 +216,8 @@ public class XMLUtils {
    }
 
 
-   static final String dsPrefix= Constants.getSignatureSpecNSprefix();
+   static  String dsPrefix=null;
+   static String xmlnsDsPrefix=null;
    static Map namePrefixes=new HashMap();
    /**
     * Creates an Element in the XML Signature specification namespace.
@@ -251,7 +252,7 @@ public class XMLUtils {
     	  namePrefixes.put(elementName,namePrefix);
       }
          Element element = doc.createElementNS(Constants.SignatureSpecNS, namePrefix);         
-         element.setAttributeNS(Constants.NamespaceSpecNS, dsPrefix,
+         element.setAttributeNS(Constants.NamespaceSpecNS, xmlnsDsPrefix,
                                 Constants.SignatureSpecNS);
 
          return element;

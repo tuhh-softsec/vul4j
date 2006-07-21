@@ -542,6 +542,10 @@ public abstract class ElementProxy {
          	throw new XMLSecurityException("prefix.AlreadyAssigned", exArgs);
          }
     }
+   	if (Constants.SignatureSpecNS.equals(namespace)) {
+   		XMLUtils.dsPrefix=prefix;
+   		XMLUtils.xmlnsDsPrefix="xmlns:"+prefix;
+   	}
       ElementProxy._prefixMappings.put(namespace, prefix.intern());
       ElementProxy._prefixMappingsBindings.put(namespace, ("xmlns:"+prefix).intern());
    }
