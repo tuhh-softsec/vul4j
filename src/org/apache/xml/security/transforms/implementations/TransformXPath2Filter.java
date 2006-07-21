@@ -201,6 +201,9 @@ class XPath2NodeFilter implements NodeFilter {
       return 0;
 
    }
+   public int isNodeIncludeDO(Node n, int level) {
+	   return isNodeInclude(n);
+   }
 
    /**
     * Method rooted

@@ -156,5 +156,8 @@ public class TransformXPath extends TransformSpi {
 		    ("signature.Transform.nodeAndType",eArgs, e);
 	    }
 	}
+	public int isNodeIncludeDO(Node n, int level) {
+		return isNodeInclude(n);
+	}
     }
 }

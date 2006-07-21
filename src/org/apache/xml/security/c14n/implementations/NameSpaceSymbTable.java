@@ -290,6 +290,11 @@ public class NameSpaceSymbTable {
 		}	
 		return ne.n;
 	}
+
+	public int getLevel() {
+		// TODO Auto-generated method stub
+		return level.size();
+	}
 }
 
 /**

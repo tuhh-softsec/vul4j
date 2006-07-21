@@ -227,7 +227,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 		//The prefix visibly utilized(in the attribute or in the name) in the element
 		Set visiblyUtilized =null;
 		//It's the output selected.
-		boolean isOutputElement = isVisible(E);			
+		boolean isOutputElement=isVisibleDO(E,ns.getLevel())==1;			
 		if (isOutputElement) {
 			visiblyUtilized =  (Set) this._inclusiveNSSet.clone();
 		}

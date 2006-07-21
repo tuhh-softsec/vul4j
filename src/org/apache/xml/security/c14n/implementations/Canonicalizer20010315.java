@@ -178,7 +178,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     */
    Iterator handleAttributes(Element E,  NameSpaceSymbTable ns ) throws CanonicalizationException {    
     // result will contain the attrs which have to be outputted
-    boolean isRealVisible=isVisible(E);    
+    boolean isRealVisible=isVisibleDO(E,ns.getLevel())==1;    
     NamedNodeMap attrs = null;
     int attrsLength = 0;
     if (E.hasAttributes()) {

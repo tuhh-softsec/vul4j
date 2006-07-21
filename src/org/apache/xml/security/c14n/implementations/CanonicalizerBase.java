@@ -229,6 +229,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     final void canonicalizeSubTree(Node currentNode, NameSpaceSymbTable ns,Node endnode,
     		int documentLevel)
     throws CanonicalizationException, IOException {
+    	if (isVisibleInt(currentNode)==-1)
+    		return;
     	Node sibling=null;
     	Node parentNode=null;    	
     	final OutputStream writer=this._writer;    
@@ -380,8 +382,10 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     */
    final void canonicalizeXPathNodeSet(Node currentNode,Node endnode )
            throws CanonicalizationException, IOException {
-	   boolean currentNodeIsVisible = false;	  
-	   NameSpaceSymbTable ns=new  NameSpaceSymbTable();
+   	if (isVisibleInt(currentNode)==-1)
+		return;
+	boolean currentNodeIsVisible = false;	  
+	NameSpaceSymbTable ns=new  NameSpaceSymbTable();
   	Node sibling=null;
 	Node parentNode=null;	
 	OutputStream writer=this._writer;
@@ -409,7 +413,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			break;
 			
 		case Node.COMMENT_NODE :			
-			if (this._includeComments && isVisible(currentNode)) {
+			if (this._includeComments && (isVisibleDO(currentNode,ns.getLevel())==1)) {
 				outputCommentToWriter((Comment) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
 			}
 			break;
@@ -443,7 +447,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			Element currentElement = (Element) currentNode;
 			//Add a level to the nssymbtable. So latter can be pop-back.
 			String name=null;
-			int i=isVisibleElement(currentNode);
+			int i=isVisibleDO(currentNode,ns.getLevel());
 			if (i==-1) {
 				sibling= currentNode.getNextSibling();
 				break;
@@ -515,11 +519,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		sibling=currentNode.getNextSibling();  
 	} while(true);
    }
-   int isVisibleElement(Node currentNode) {
+   int isVisibleDO(Node currentNode,int level) {
 	   if (nodeFilter!=null) {
 	   		Iterator it=nodeFilter.iterator();
 	   		while (it.hasNext()) {   	
-	   			int i=((NodeFilter)it.next()).isNodeInclude(currentNode);
+	   			int i=((NodeFilter)it.next()).isNodeIncludeDO(currentNode,level);
 	   			if (i!=1)
 	   				return i;
 	   		}
@@ -528,6 +532,20 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
   			return 0;
 	   return 1;
    }
+   int isVisibleInt(Node currentNode) {
+	   if (nodeFilter!=null) {
+   		Iterator it=nodeFilter.iterator();
+   		while (it.hasNext()) {   			
+   			int i=((NodeFilter)it.next()).isNodeInclude(currentNode);
+   			if (i!=1)
+   				return i;
+   		}
+	   }
+   		if ((this._xpathNodeSet!=null) && !this._xpathNodeSet.contains(currentNode))
+   			return 0;
+   		return 1;
+   	}
+   
    boolean isVisible(Node currentNode) {
 	   if (nodeFilter!=null) {
    		Iterator it=nodeFilter.iterator();
