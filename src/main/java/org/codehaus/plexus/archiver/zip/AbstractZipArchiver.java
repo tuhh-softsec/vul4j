@@ -19,8 +19,13 @@ package org.codehaus.plexus.archiver.zip;
 
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
+import org.codehaus.plexus.archiver.ArchiveFilterException;
+import org.codehaus.plexus.archiver.ArchiveFinalizer;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.FilterEnabled;
+import org.codehaus.plexus.archiver.FinalizerEnabled;
 import org.codehaus.plexus.archiver.UnixStat;
+import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -34,6 +39,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -44,6 +50,7 @@ import java.util.zip.CRC32;
  */
 public abstract class AbstractZipArchiver
     extends AbstractArchiver
+    implements FilterEnabled, FinalizerEnabled
 {
 
     private String comment;
@@ -96,6 +103,15 @@ public abstract class AbstractZipArchiver
      * next even number of seconds.
      */
     private boolean roundUp = true;
+    
+    private FilterSupport filterSupport;
+
+    private List finalizers;
+    
+    public void setArchiveFilters( List filters )
+    {
+        filterSupport = new FilterSupport( filters, getLogger() );
+    }
 
     public String getComment()
     {
@@ -557,6 +573,18 @@ public abstract class AbstractZipArchiver
                             long lastModified, File fromArchive, int mode )
         throws IOException, ArchiverException
     {
+        try
+        {
+            if ( filterSupport != null && !filterSupport.include( in, vPath ) )
+            {
+                return;
+            }
+        }
+        catch ( ArchiveFilterException e )
+        {
+            throw new ArchiverException( "Error verifying \'" + vPath + "\' for inclusion: " + e.getMessage(), e );
+        }
+        
         if ( entries.contains( vPath ) )
         {
             if ( duplicate.equals( "preserve" ) )
@@ -830,5 +858,30 @@ public abstract class AbstractZipArchiver
     protected void finalizeZipOutputStream( ZipOutputStream zOut )
         throws IOException, ArchiverException
     {
+        runArchiveFinalizers();
+    }
+    
+    public void setArchiveFinalizers( List archiveFinalizers )
+    {
+        this.finalizers = archiveFinalizers;
+    }
+
+    protected List getArchiveFinalizers()
+    {
+        return finalizers;
+    }
+
+    protected void runArchiveFinalizers()
+        throws ArchiverException
+    {
+        if ( finalizers != null )
+        {
+            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
+            {
+                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+                
+                finalizer.finalizeArchiveCreation( this );
+            }
+        }
     }
 }

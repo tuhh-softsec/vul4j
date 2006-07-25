@@ -17,13 +17,6 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
-import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.archiver.zip.ZipEntry;
-import org.codehaus.plexus.archiver.zip.ZipFile;
-import org.codehaus.plexus.archiver.zip.ZipOutputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,6 +39,13 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
+import org.codehaus.plexus.archiver.zip.ZipArchiver;
+import org.codehaus.plexus.archiver.zip.ZipEntry;
+import org.codehaus.plexus.archiver.zip.ZipFile;
+import org.codehaus.plexus.archiver.zip.ZipOutputStream;
 
 /**
  * Base class for tasks that build archives in JAR file format.
@@ -140,7 +140,7 @@ public class JarArchiver
      * Path containing jars that shall be indexed in addition to this archive.
      */
     private ArrayList indexJars;
-
+    
     /**
      * constructor
      */

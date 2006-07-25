@@ -18,7 +18,12 @@ package org.codehaus.plexus.archiver.zip;
  */
 
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
+import org.codehaus.plexus.archiver.ArchiveFilterException;
+import org.codehaus.plexus.archiver.ArchiveFinalizer;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.FilterEnabled;
+import org.codehaus.plexus.archiver.FinalizerEnabled;
+import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -28,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -35,10 +42,20 @@ import java.util.Enumeration;
  */
 public abstract class AbstractZipUnArchiver
     extends AbstractUnArchiver
+    implements FilterEnabled, FinalizerEnabled
 {
     private static final String NATIVE_ENCODING = "native-encoding";
 
     private String encoding = "UTF8";
+
+    private FilterSupport filterSupport;
+
+    private List finalizers;
+
+    public void setArchiveFilters( List filters )
+    {
+        filterSupport = new FilterSupport( filters, getLogger() );
+    }
 
     /**
      * Sets the encoding to assume for file names and comments.
@@ -67,9 +84,11 @@ public abstract class AbstractZipUnArchiver
             while ( e.hasMoreElements() )
             {
                 ZipEntry ze = (ZipEntry) e.nextElement();
-                extractFile( getSourceFile(), getDestDirectory(), zf.getInputStream( ze ),
-                             ze.getName(), new Date( ze.getTime() ), ze.isDirectory() );
+                extractFileIfIncluded( getSourceFile(), getDestDirectory(), zf.getInputStream( ze ), ze.getName(),
+                                       new Date( ze.getTime() ), ze.isDirectory() );
             }
+            
+            runArchiveFinalizers();
 
             getLogger().debug( "expand complete" );
         }
@@ -93,82 +112,96 @@ public abstract class AbstractZipUnArchiver
         }
     }
 
-    protected void extractFile( File srcF, File dir,
-                                InputStream compressedInputStream,
-                                String entryName,
+    private void extractFileIfIncluded( File sourceFile, File destDirectory, InputStream inputStream, String name,
+                                        Date time, boolean isDirectory )
+        throws IOException, ArchiverException
+    {
+        try
+        {
+            if ( filterSupport == null || filterSupport.include( inputStream, name ) )
+            {
+                extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory );
+            }
+        }
+        catch ( ArchiveFilterException e )
+        {
+            throw new ArchiverException( "Error verifying \'" + name + "\' for inclusion: " + e.getMessage(), e );
+        }
+    }
+
+    protected void extractFile( File srcF, File dir, InputStream compressedInputStream, String entryName,
                                 Date entryDate, boolean isDirectory )
         throws IOException
     {
-/*        if ( patternsets != null && patternsets.size() > 0 )
-        {
-            String name = entryName.replace( '/', File.separatorChar)
-                .replace('\\', File.separatorChar );
-            boolean included = false;
-            for ( int v = 0; v < patternsets.size(); v++ )
-            {
-                PatternSet p = (PatternSet) patternsets.elementAt( v );
-                String[] incls = p.getIncludePatterns( getProject() );
-                if ( incls == null || incls.length == 0 )
-                {
-                    // no include pattern implicitly means includes="**"
-                    incls = new String[] { "**" };
-                }
+        /*        if ( patternsets != null && patternsets.size() > 0 )
+         {
+         String name = entryName.replace( '/', File.separatorChar)
+         .replace('\\', File.separatorChar );
+         boolean included = false;
+         for ( int v = 0; v < patternsets.size(); v++ )
+         {
+         PatternSet p = (PatternSet) patternsets.elementAt( v );
+         String[] incls = p.getIncludePatterns( getProject() );
+         if ( incls == null || incls.length == 0 )
+         {
+         // no include pattern implicitly means includes="**"
+         incls = new String[] { "**" };
+         }
 
-                for ( int w = 0; w < incls.length; w++ )
-                {
-                    String pattern = incls[w].replace( '/', File.separatorChar )
-                        .replace( '\\', File.separatorChar );
-                    if ( pattern.endsWith(File.separator) )
-                    {
-                        pattern += "**";
-                    }
+         for ( int w = 0; w < incls.length; w++ )
+         {
+         String pattern = incls[w].replace( '/', File.separatorChar )
+         .replace( '\\', File.separatorChar );
+         if ( pattern.endsWith(File.separator) )
+         {
+         pattern += "**";
+         }
 
-                    included = SelectorUtils.matchPath( pattern, name );
-                    if ( included )
-                    {
-                        break;
-                    }
-                }
+         included = SelectorUtils.matchPath( pattern, name );
+         if ( included )
+         {
+         break;
+         }
+         }
 
-                if ( !included )
-                {
-                    break;
-                }
+         if ( !included )
+         {
+         break;
+         }
 
 
-                String[] excls = p.getExcludePatterns( getProject() );
-                if ( excls != null )
-                {
-                    for ( int w = 0; w < excls.length; w++ )
-                    {
-                        String pattern = excls[w]
-                            .replace( '/', File.separatorChar )
-                            .replace( '\\', File.separatorChar );
-                        if ( pattern.endsWith( File.separator ) )
-                        {
-                            pattern += "**";
-                        }
-                        included = ! ( SelectorUtils.matchPath( pattern, name ) );
-                        if ( ! included )
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            if ( ! included )
-            {
-                //Do not process this file
-                return;
-            }
-        }
-*/
+         String[] excls = p.getExcludePatterns( getProject() );
+         if ( excls != null )
+         {
+         for ( int w = 0; w < excls.length; w++ )
+         {
+         String pattern = excls[w]
+         .replace( '/', File.separatorChar )
+         .replace( '\\', File.separatorChar );
+         if ( pattern.endsWith( File.separator ) )
+         {
+         pattern += "**";
+         }
+         included = ! ( SelectorUtils.matchPath( pattern, name ) );
+         if ( ! included )
+         {
+         break;
+         }
+         }
+         }
+         }
+         if ( ! included )
+         {
+         //Do not process this file
+         return;
+         }
+         }
+         */
         File f = FileUtils.resolveFile( dir, entryName );
 
         try
         {
-            if ( !isOverwrite() && f.exists()
-                 && f.lastModified() >= entryDate.getTime() )
+            if ( !isOverwrite() && f.exists() && f.lastModified() >= entryDate.getTime() )
             {
                 getLogger().debug( "Skipping " + f + " as it is up-to-date" );
                 return;
@@ -226,4 +259,24 @@ public abstract class AbstractZipUnArchiver
             getLogger().warn( "Unable to expand to file " + f.getPath() );
         }
     }
+    
+    public void setArchiveFinalizers( List archiveFinalizers )
+    {
+        this.finalizers = archiveFinalizers;
+    }
+    
+    protected void runArchiveFinalizers()
+        throws ArchiverException
+    {
+        if ( finalizers != null )
+        {
+            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
+            {
+                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+
+                finalizer.finalizeArchiveExtraction( this );
+            }
+        }
+    }
+
 }

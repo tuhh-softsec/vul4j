@@ -49,6 +49,18 @@ public interface Archiver
     void addFile( File inputFile, String destFileName, int permissions )
         throws ArchiverException;
 
+    void addArchivedFileSet( File archiveFile )
+        throws ArchiverException;
+
+    void addArchivedFileSet( File archiveFile, String prefix )
+        throws ArchiverException;
+
+    void addArchivedFileSet( File archiveFile, String[] includes, String[] excludes )
+        throws ArchiverException;
+
+    void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
+        throws ArchiverException;
+
     File getDestFile();
 
     void setDestFile( File destFile );
@@ -64,6 +76,6 @@ public interface Archiver
     boolean getIncludeEmptyDirs();
 
     void setIncludeEmptyDirs( boolean includeEmptyDirs );
-
+    
     Map getFiles();
 }

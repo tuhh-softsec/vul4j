@@ -17,21 +17,31 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.DirectoryScanner;
-
-import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @version $Id$
  */
 public abstract class AbstractArchiver
     extends AbstractLogEnabled
-    implements Archiver
+    implements Archiver, Contextualizable
 {
     /**
      * Default value for the dirmode attribute.
@@ -56,6 +66,9 @@ public abstract class AbstractArchiver
     private boolean includeEmptyDirs = true;
 
     private int defaultDirectoryMode = DEFAULT_DIR_MODE;
+
+    // contextualized.
+    private ArchiverManager archiverManager;
 
     public void setDefaultFileMode( int mode )
     {
@@ -131,7 +144,7 @@ public abstract class AbstractArchiver
 
         if ( includeEmptyDirs )
         {
-            String [] dirs = scanner.getIncludedDirectories();
+            String[] dirs = scanner.getIncludedDirectories();
 
             for ( int i = 0; i < dirs.length; i++ )
             {
@@ -139,8 +152,10 @@ public abstract class AbstractArchiver
 
                 String targetDir = ( prefix == null ? "" : prefix ) + sourceDir;
 
-                getDirs().put( targetDir, ArchiveEntry.createEntry( targetDir, new File( basedir, sourceDir ),
-                                                                    getDefaultFileMode(), getDefaultDirectoryMode() ) );
+                getDirs().put(
+                               targetDir,
+                               ArchiveEntry.createEntry( targetDir, new File( basedir, sourceDir ),
+                                                         getDefaultFileMode(), getDefaultDirectoryMode() ) );
             }
         }
 
@@ -231,5 +246,86 @@ public abstract class AbstractArchiver
     public Map getDirs()
     {
         return dirsMap;
+    }
+
+    /**
+     * @since 1.0-alpha-7
+     */
+    public void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
+        throws ArchiverException
+    {
+        UnArchiver unArchiver;
+        try
+        {
+            unArchiver = archiverManager.getUnArchiver( archiveFile );
+        }
+        catch ( NoSuchArchiverException e )
+        {
+            throw new ArchiverException( "Error adding archived file-set. UnArchiver not found for: " + archiveFile, e );
+        }
+
+        File tempDir = FileUtils.createTempFile( "archived-file-set.", ".tmp", null );
+
+        tempDir.mkdirs();
+
+        unArchiver.setSourceFile( archiveFile );
+        unArchiver.setDestDirectory( tempDir );
+
+        try
+        {
+            unArchiver.extract();
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "Error adding archived file-set. Failed to extract: " + archiveFile, e );
+        }
+
+        addDirectory( tempDir, prefix, includes, excludes );
+    }
+
+    /**
+     * @since 1.0-alpha-7
+     */
+    public void addArchivedFileSet( File archiveFile, String prefix )
+        throws ArchiverException
+    {
+        addArchivedFileSet( archiveFile, prefix, null, null );
+    }
+
+    /**
+     * @since 1.0-alpha-7
+     */
+    public void addArchivedFileSet( File archiveFile, String[] includes, String[] excludes )
+        throws ArchiverException
+    {
+        addArchivedFileSet( archiveFile, null, includes, excludes );
+    }
+
+    /**
+     * @since 1.0-alpha-7
+     */
+    public void addArchivedFileSet( File archiveFile )
+        throws ArchiverException
+    {
+        addArchivedFileSet( archiveFile, null, null, null );
+    }
+
+    /**
+     * Allows us to pull the ArchiverManager instance out of the container without
+     * causing a chicken-and-egg instantiation/composition problem.
+     */
+    public void contextualize( Context context )
+        throws ContextException
+    {
+        PlexusContainer container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+
+        try
+        {
+            archiverManager = (ArchiverManager) container.lookup( ArchiverManager.ROLE );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new ContextException( "Error retrieving ArchiverManager instance: " + e.getMessage(), e );
+        }
     }
 }

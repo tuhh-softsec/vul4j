@@ -17,10 +17,10 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-
 import java.io.File;
 import java.io.IOException;
+
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -98,7 +98,7 @@ public abstract class AbstractUnArchiver
             throw new ArchiverException( "The source must not be a directory." );
         }
 
-        if ( ! sourceFile.exists() )
+        if ( !sourceFile.exists() )
         {
             throw new ArchiverException( "The source doesn't exists." );
         }
@@ -113,7 +113,7 @@ public abstract class AbstractUnArchiver
             throw new ArchiverException( "You must choose between a destination directory and a destination file." );
         }
 
-        if ( destDirectory != null && ! destDirectory.isDirectory() )
+        if ( destDirectory != null && !destDirectory.isDirectory() )
         {
             destFile = destDirectory;
             destDirectory = null;
@@ -128,4 +128,5 @@ public abstract class AbstractUnArchiver
 
     protected abstract void execute()
         throws ArchiverException, IOException;
+
 }
