@@ -654,6 +654,7 @@ public class DirectoryScanner
      *              prevent problems with an absolute path when using
      *              dir). Must not be <code>null</code>.
      * @param fast  Whether or not this call is part of a fast scan.
+     * @throws IOException 
      *
      * @see #filesIncluded
      * @see #filesNotIncluded
@@ -676,7 +677,19 @@ public class DirectoryScanner
              * (2) an IO error occurred (why doesn't it throw an exception
              *     then???)
              */
-            //throw new Exception( "IO error scanning directory " + dir.getAbsolutePath() );
+            
+
+            /*
+             * [jdcasey] (2) is apparently happening to me, as this is killing one of my tests... 
+             * this is affecting the assembly plugin, fwiw. I will initialize the newfiles array as 
+             * zero-length for now.
+             * 
+             * NOTE: I can't find the problematic code, as it appears to come from a native method 
+             * in UnixFileSystem...
+             */
+            newfiles = new String[0];
+            
+            // throw new IOException( "IO error scanning directory " + dir.getAbsolutePath() );
         }
 
         if ( !followSymlinks )
