@@ -139,7 +139,7 @@ public class NameSpaceSymbTableTest extends TestCase {
         assertNotNull("xmlns=\"\" not rendered",n);
         assertEquals(n, node2);
     }
-    public void notPasstestUnrederedNodes() {
+    public void testUnrederedNodes() {
     	NameSpaceSymbTable ns=new NameSpaceSymbTable();
         ns.push();
         List l=new ArrayList();
@@ -148,19 +148,25 @@ public class NameSpaceSymbTableTest extends TestCase {
         l.clear();
         ns.push();
         ns.addMapping("xmlns","http://a",node1);
+        ns.addMapping("a","http://a",node2);
+
         ns.push();
         
         ns.getUnrenderedNodes(l);
         assertTrue(l.contains(node1));
+        assertTrue(l.contains(node2));
         ns.push();
         l.clear();
         ns.getUnrenderedNodes(l);
         assertFalse(l.contains(node1));
+        assertFalse(l.contains(node2));   
         ns.pop();
         ns.pop();
         l.clear();
         ns.getUnrenderedNodes(l);
         assertTrue(l.contains(node1));
+        assertTrue(l.contains(node2));
+        
     }
     public void testBug38655() {
     	 NameSpaceSymbTable ns=new NameSpaceSymbTable();
