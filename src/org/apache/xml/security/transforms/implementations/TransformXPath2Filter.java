@@ -140,7 +140,6 @@ public class TransformXPath2Filter extends TransformSpi {
              } 
          }
 
-         input.setNeedsToBeExpanded(true);
          
          input.addNodeFilter(new XPath2NodeFilter(unionNodes,substractNodes,intersectNodes));
          input.setNodeSet(true);

@@ -60,7 +60,6 @@ public class TransformC14NWithComments extends TransformSpi {
         }
         
          byte[] result = null;
-         input.setNeedsToBeExpanded(true);
          result=c14n.engineCanonicalize(input);         		         	         
          XMLSignatureInput output=new XMLSignatureInput(result);         
          if (os!=null) {

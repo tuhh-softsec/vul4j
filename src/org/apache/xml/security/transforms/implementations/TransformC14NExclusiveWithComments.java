@@ -85,7 +85,6 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
         if (os!=null) {
            c14n.setWriter( os);
         }
-        input.setNeedsToBeExpanded(true);
         byte []result;  
         result =c14n.engineCanonicalize(input, inclusiveNamespaces);
         XMLSignatureInput output=new XMLSignatureInput(result);

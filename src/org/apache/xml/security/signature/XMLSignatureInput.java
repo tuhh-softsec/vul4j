@@ -590,7 +590,6 @@ public class XMLSignatureInput  implements Cloneable {
 
            Document doc = db.parse(this.getOctetStream());
            
-           XMLUtils.circumventBug2650(doc);
            this._subNode=doc.getDocumentElement();                    
         } catch (SAXException ex) {
 
