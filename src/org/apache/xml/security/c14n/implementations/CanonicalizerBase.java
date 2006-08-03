@@ -43,7 +43,6 @@ import org.apache.xml.security.utils.UnsyncByteArrayOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -142,15 +141,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				return bytes;
 			} else if (input.isNodeSet()) {
 				nodeFilter=input.getNodeFilters();
-                                Document doc = null;
-                                if (input.getSubNode() != null) {
-                                    doc=XMLUtils.getOwnerDocument(input.getSubNode());
-                                } else {
-                                    doc=XMLUtils.getOwnerDocument(input.getNodeSet());
-                                }
-				if (input.isNeedsToBeExpanded()) {
-					XMLUtils.circumventBug2650(doc);
-				}
+                                
+                circumventBugIfNeeded(input);
+				
 
 				if (input.getSubNode() != null) {
 				    bytes = engineCanonicalizeXPathNodeSetInternal(input.getSubNode());
@@ -386,6 +379,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		return;
 	boolean currentNodeIsVisible = false;	  
 	NameSpaceSymbTable ns=new  NameSpaceSymbTable();
+	if (currentNode instanceof Element)
+		getParentNameSpaces((Element)currentNode,ns);
   	Node sibling=null;
 	Node parentNode=null;	
 	OutputStream writer=this._writer;
@@ -565,13 +560,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    	 * @param ns
    	 */
    	final static void getParentNameSpaces(Element el,NameSpaceSymbTable ns)  {
-   		List parents=new ArrayList();
+   		List parents=new ArrayList(10);
    		Node n1=el.getParentNode();
    		if (!(n1 instanceof Element)) {
    			return;
    		}
    		//Obtain all the parents of the elemnt
-   		Element parent=(Element) el.getParentNode();
+   		Element parent=(Element) n1;
    		while (parent!=null) {
    			parents.add(parent);
    			Node n=parent.getParentNode();
@@ -583,27 +578,27 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    		//Visit them in reverse order.
    		ListIterator it=parents.listIterator(parents.size());
    		while (it.hasPrevious()) {
-   		Element ele=(Element)it.previous();
-        if (!ele.hasAttributes()) {
-        	continue;
-        }
-		NamedNodeMap attrs = ele.getAttributes();
-   		int attrsLength = attrs.getLength();
-   		 for (int i = 0; i < attrsLength; i++) {
-            Attr N = (Attr) attrs.item(i);
-            if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {
-               //Not a namespace definition, ignore.
-               continue;
-            }
+   			Element ele=(Element)it.previous();
+   			if (!ele.hasAttributes()) {
+   				continue;
+   			}
+   			NamedNodeMap attrs = ele.getAttributes();
+   			int attrsLength = attrs.getLength();
+   			for (int i = 0; i < attrsLength; i++) {
+   				Attr N = (Attr) attrs.item(i);
+   				if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {
+   					//Not a namespace definition, ignore.
+   					continue;
+   				}
 
-            String NName=N.getLocalName();
-            String NValue=N.getNodeValue();
-            if (XML.equals(NName)
+   				String NName=N.getLocalName();
+   				String NValue=N.getNodeValue();
+   				if (XML.equals(NName)
                     && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
-               continue;
-            }            
-            ns.addMapping(NName,NValue,N);             
-   		 }   			
+   					continue;
+   				}            
+   				ns.addMapping(NName,NValue,N);             
+   			}   			
    		}
         Attr nsprefix;
         if (((nsprefix=ns.getMappingWithoutRendered("xmlns"))!=null) 
@@ -947,6 +942,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    abstract Iterator handleAttributesSubtree(Element E, NameSpaceSymbTable ns)
    throws CanonicalizationException;
 
+   abstract void circumventBugIfNeeded(XMLSignatureInput input) throws CanonicalizationException, ParserConfigurationException, IOException, SAXException;
 
     
     /**

@@ -45,7 +45,7 @@ public class NameSpaceSymbTable {
 	static final String XMLNS="xmlns";
 	final static SymbMap initialMap=new SymbMap();
 	static {
-		NameSpaceSymbEntry ne=new NameSpaceSymbEntry("",null,true);
+		NameSpaceSymbEntry ne=new NameSpaceSymbEntry("",null,true,XMLNS);
 		ne.lastrendered="";		
 		initialMap.put(XMLNS,ne);
 	}
@@ -70,9 +70,14 @@ public class NameSpaceSymbTable {
 	   		NameSpaceSymbEntry n=(NameSpaceSymbEntry)(it.next());
 	   		//put them rendered?
 	   		if ((!n.rendered) && (n.n!=null)) {
+	   			n=(NameSpaceSymbEntry) n.clone();
+                needsClone();
+                symb.put(n.prefix,n);         
+                n.lastrendered=n.uri;
+                n.rendered=true;
+                
 	   			result.add(n.n);
-	   			n.rendered=true;
-	   			n.lastrendered=n.uri;
+	   			
 	   		}
 	   }	   
 	}
@@ -191,7 +196,7 @@ public class NameSpaceSymbTable {
 			return false;
 		}			
 		//Creates and entry in the table for this new definition.
-		NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,false);		
+		NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,false,prefix);		
         needsClone();
 		symb.put(prefix, ne);
 		if (ob != null) {
@@ -229,7 +234,7 @@ public class NameSpaceSymbTable {
             return null;
         }   
         
-        NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,true);
+        NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,true,prefix);
         ne.lastrendered=uri;
         needsClone();
         symb.put(prefix, ne);
@@ -242,58 +247,38 @@ public class NameSpaceSymbTable {
         }       
         return ne.n;
     }
-	/** 
-     * Adds & gets(if needed) the attribute node that defines the binding for the prefix. 
-     * Take on account if the rules of rendering in the inclusive c14n.
-     * For inclusive c14n.
-     * @param prefix the prefix to obtain the attribute.
-     * @param outputNode the container element is an output element.
-     * @param uri the Uri of the definition
-     * @param n the attribute that have the definition
-     * @return null if there is no need to render the prefix. Otherwise the node of
-     * definition.     
-     **/
-	public Node addMappingAndRenderXNodeSet(String prefix, String uri,Attr n,boolean outputNode) {						
-		NameSpaceSymbEntry ob = symb.get(prefix);
-		int visibleNameSpaces=nameSpaces;		
-		if ((ob!=null) && uri.equals(ob.uri)) {
-			if (!ob.rendered) {					
-				ob=(NameSpaceSymbEntry)ob.clone();
-                needsClone();
-                symb.put(prefix,ob);				
-				ob.rendered=true;
-				ob.level=visibleNameSpaces;
-				return ob.n;
-			}						
-            ob=(NameSpaceSymbEntry)ob.clone();
-            needsClone();
-            symb.put(prefix,ob);
-			if (outputNode && (((visibleNameSpaces-ob.level)<2) || XMLNS.equals(prefix)) ) {
-				ob.level=visibleNameSpaces;
-				return null; //Already rendered, just return nulll
-			}
-			ob.level=visibleNameSpaces;
-			return ob.n;
-		}	
-		
-		NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,true);
-		ne.level=nameSpaces;
-		ne.rendered=true;
-        needsClone();
-		symb.put(prefix, ne);
-		if (ob != null) {			
-			ne.lastrendered=ob.lastrendered;
-			
-			if ((ob.lastrendered!=null)&& (ob.lastrendered.equals(uri))) {
-				ne.rendered=true;
-			}
-		}	
-		return ne.n;
-	}
 
 	public int getLevel() {
 		// TODO Auto-generated method stub
 		return level.size();
+	}
+
+	public void removeMapping(String prefix) {
+		NameSpaceSymbEntry ob = symb.get(prefix);
+        
+        if (ob!=null) {
+            needsClone();
+            symb.put(prefix,null);         
+        }
+	}
+
+	public void removeMappingIfNotRender(String prefix) {
+		NameSpaceSymbEntry ob = symb.get(prefix);
+        
+        if (ob!=null && !ob.rendered) {
+            needsClone();
+            symb.put(prefix,null);         
+        }
+	}
+
+	public boolean removeMappingIfRender(String prefix) {
+		NameSpaceSymbEntry ob = symb.get(prefix);
+        
+        if (ob!=null && ob.rendered) {
+            needsClone();
+            symb.put(prefix,null);         
+        }
+        return false;
 	}
 }
 
@@ -301,10 +286,11 @@ public class NameSpaceSymbTable {
  * The internal structure of NameSpaceSymbTable.
  **/
 class NameSpaceSymbEntry implements Cloneable {
-    NameSpaceSymbEntry(String name,Attr n,boolean rendered) {
+    NameSpaceSymbEntry(String name,Attr n,boolean rendered,String prefix) {
         this.uri=name;          
         this.rendered=rendered;
         this.n=n;            
+        this.prefix=prefix;
     }
     /** @inheritDoc */
     public Object clone() {         
@@ -316,6 +302,7 @@ class NameSpaceSymbEntry implements Cloneable {
     }
     /** The level where the definition was rendered(Only for inclusive) */
     int level=0;
+    String prefix;
     /**The URI that the prefix defines */
     String uri;
     /**The last output in the URI for this prefix (This for speed reason).*/
