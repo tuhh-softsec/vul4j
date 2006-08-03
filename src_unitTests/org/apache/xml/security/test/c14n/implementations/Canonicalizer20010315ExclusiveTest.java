@@ -339,18 +339,13 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       Document doc =
          this.db
             .parse(getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_3.xml"));
-      XMLUtils.circumventBug2650(doc);
       NodeList nodes = XPathAPI.selectNodeList(doc.getDocumentElement(),
                                  "(//. | //@* | //namespace::*)[ancestor-or-self::p]");
       Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
       byte[] reference = JavaUtils.getBytesFromFile(
       		getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeXPathNodeSet(nodes);
-      boolean equals = java.security.MessageDigest.isEqual(reference, result);
-      if (!equals) {
-          log.warn("Error output = " + new String(result));
-      }
-      assertTrue(equals);
+      assertEquals(new String(reference),new String(result));
    }
 
     /**
@@ -386,20 +381,14 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 	    + "</env:Body>";
 
         Document doc = this.db.parse(new InputSource(new StringReader(XML)));
-        XMLUtils.circumventBug2650(doc);
         Canonicalizer20010315ExclOmitComments c14n = 
 	    new Canonicalizer20010315ExclOmitComments();
         Set nodeSet = new HashSet();
         XMLUtils.getSet
 	    (doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
         XMLSignatureInput input = new XMLSignatureInput(nodeSet);
-        input.setNeedsToBeExpanded(true);
         byte[] bytes = c14n.engineCanonicalize(input, "env ns0 xsi wsu");
-	boolean equals = java.security.MessageDigest.isEqual(c14nXML.getBytes(), bytes);
-        if (!equals) {
-            log.warn("Error output = " + new String(bytes));
-        }
-        assertTrue(equals);
+        assertEquals(c14nXML,new String(bytes));
     }
 
    private String getAbsolutePath(String path)

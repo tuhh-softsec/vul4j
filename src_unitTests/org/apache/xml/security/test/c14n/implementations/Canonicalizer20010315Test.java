@@ -658,8 +658,6 @@ public class Canonicalizer20010315Test extends TestCase {
       //J+
       CachedXPathAPI xpathAPI = new CachedXPathAPI();
 
-      XMLUtils.circumventBug2650(doc);
-
       NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
@@ -667,9 +665,7 @@ public class Canonicalizer20010315Test extends TestCase {
       InputStream refStream = resolver.resolveEntity(null,
                                  fileRef).getByteStream();
       byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
-      boolean equal = java.security.MessageDigest.isEqual(refBytes, c14nBytes);
-
-      assertTrue(equal);
+      assertEquals(new String(refBytes),new String(c14nBytes));
    }
 
    /**
@@ -1134,7 +1130,6 @@ public class Canonicalizer20010315Test extends TestCase {
             
       Document doc = documentBuilder.parse(fileIn);
 
-      XMLUtils.circumventBug2650(doc);
 
       Canonicalizer c14n = Canonicalizer.getInstance(c14nURI);
       byte c14nBytes[] = null;
@@ -1164,7 +1159,7 @@ public class Canonicalizer20010315Test extends TestCase {
       // if everything is OK, result is true; we do a binary compare, byte by byte
       boolean result = java.security.MessageDigest.isEqual(refBytes, c14nBytes);
 
-      if (result == false) {
+      if (result == false) {    	  
          File f = new File(fileOut);
          if (!f.exists()) {
          	File parent = new File(f.getParent());
@@ -1175,6 +1170,7 @@ public class Canonicalizer20010315Test extends TestCase {
 
          fos.write(c14nBytes);
          log.debug("Wrote errornous result to file " + f.toURL().toString());
+         assertEquals(new String(refBytes),new String(c14nBytes));
       }
 
       return result;
