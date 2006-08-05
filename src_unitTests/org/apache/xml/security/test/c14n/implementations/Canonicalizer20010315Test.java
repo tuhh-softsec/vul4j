@@ -1086,7 +1086,7 @@ public class Canonicalizer20010315Test extends TestCase {
          xpathAPI.selectNodeList(doc, "(//*[local-name()='included'] | //@*[parent::node()[local-name()='included']])");
       byte result[] = c14nizer.canonicalizeXPathNodeSet(nodes);
       byte defined[] = definedOutput.getBytes();
-
+      assertEquals(definedOutput, new String(result));
       return java.security.MessageDigest.isEqual(defined, result);
    }
 
