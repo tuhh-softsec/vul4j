@@ -89,7 +89,8 @@ public class UtfHelpper {
 
 	public final static byte[] getStringInUtf8(final String str) {
 		   final int length=str.length();
-		   byte []result=new byte[length*3];
+		   boolean expanded=false;
+		   byte []result=new byte[length];
 		   	int i=0;
 		   	int out=0;
 		    char c;    
@@ -98,6 +99,12 @@ public class UtfHelpper {
 		        if ((c & 0x80) == 0) {
 		            result[out++]=(byte)c;
 		            continue;
+		        }
+		        if (!expanded) {
+		        	byte newResult[]=new byte[3*length];
+				   	System.arraycopy(result, 0, newResult, 0, out);				   	    	
+				   	result=newResult;
+				   	expanded=true;
 		        }
 		        char ch;
 		        int bias;
@@ -123,9 +130,12 @@ public class UtfHelpper {
 		        result[out++]=(byte)(0x80 | ((c) & 0x3F));       
 		           		
 		   	}
-		   	byte newResult[]=new byte[out];
-		   	System.arraycopy(result, 0, newResult, 0, out);
-		   	return newResult;
+		   	if (expanded) {
+		   		byte newResult[]=new byte[out];
+		   		System.arraycopy(result, 0, newResult, 0, out);
+		   		result=newResult;
+		   	}
+		   	return result;
 	   }
 
 	
