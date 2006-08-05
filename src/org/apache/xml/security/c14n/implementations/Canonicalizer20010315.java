@@ -20,8 +20,11 @@ package org.apache.xml.security.c14n.implementations;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -54,7 +57,85 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 	final SortedSet result= new TreeSet(COMPARE);
     static final String XMLNS_URI=Constants.NamespaceSpecNS;
     static final String XML_LANG_URI=Constants.XML_LANG_SPACE_SpecNS;
-   /**
+    static class XmlAttrStack {
+    	int currentLevel=0;
+    	int lastlevel=0;
+    	XmlsStackElement cur;
+    	static class XmlsStackElement {
+    		int level;
+    		boolean rendered=false;
+    		List nodes=new ArrayList();
+    	};
+    	List levels=new ArrayList();    	
+    	void push(int level) {
+    		currentLevel=level;
+    		if (currentLevel==-1)
+    			return;
+    		cur=null;
+    		while (lastlevel>currentLevel) {
+    			levels.remove(levels.size()-1);
+    			if (levels.size()==0) {
+    				lastlevel=0;
+    				return;    				
+    			}
+    			lastlevel=((XmlsStackElement)levels.get(levels.size()-1)).level;
+    		}
+    	}
+    	void addXmlnsAttr(Attr n) {
+    		if (cur==null) {
+    			cur=new XmlsStackElement();
+    			cur.level=currentLevel;
+    			levels.add(cur);
+    			lastlevel=currentLevel;
+    		}
+    		cur.nodes.add(n);
+    	}
+    	void getXmlnsAttr(Collection col) {
+    		int size=levels.size()-1;
+    		if (cur==null) {
+    			cur=new XmlsStackElement();
+    			cur.level=currentLevel;
+    			lastlevel=currentLevel;
+    			levels.add(cur);
+    		}
+    		boolean parentRendered=false;
+    		XmlsStackElement e=null;
+    		if (size==-1) {
+    			parentRendered=true;
+    		} else {
+    			e=(XmlsStackElement)levels.get(size);
+    			if (e.rendered && e.level+1==currentLevel)
+    				parentRendered=true;
+        		
+    		}
+    		if (parentRendered) {
+				col.addAll(cur.nodes);
+				cur.rendered=true;
+				return;
+			}
+    		
+			Map loa = new HashMap();    		
+    		for (;size>=0;size--) {
+    			e=(XmlsStackElement)levels.get(size);
+    			Iterator it=e.nodes.iterator();
+    			while (it.hasNext()) {
+    				Attr n=(Attr)it.next();
+    				if (!loa.containsKey(n.getName()))
+    					loa.put(n.getName(),n);
+    			}
+    			//if (e.rendered)
+    				//break;
+    			
+    		};
+    		//cur.nodes.clear();
+    		//cur.nodes.addAll(loa.values());
+			cur.rendered=true;
+    		col.addAll(loa.values());
+    	}
+    	
+    }
+    XmlAttrStack xmlattrStack=new XmlAttrStack();
+    /**
     * Constructor Canonicalizer20010315
     *
     * @param includeComments
@@ -124,52 +205,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
       	//Obtain all the namespaces defined in the parents, and added to the output.
       	ns.getUnrenderedNodes(result);          	      		            
       	//output the attributes in the xml namespace.
-		addXmlAttributesSubtree(E, result);
-        firstCall=false;
+      	xmlattrStack.getXmlnsAttr(result);
+		firstCall=false;
       } 
       
       return result.iterator();
    }
-
-   /**
-    * Float the xml:* attributes of the parent nodes to the root node of c14n
-    * @param E the root node.
-    * @param result the xml:* attributes  to output.
-    */
-   private void addXmlAttributesSubtree(Element E, SortedSet result) {
-         // E is in the node-set
-         Node parent = E.getParentNode();
-         Map loa = new HashMap();
-
-         if ((parent != null) && (parent.getNodeType() == Node.ELEMENT_NODE)) {
-            // parent element is not in node set
-            for (Node ancestor = parent;
-                    (ancestor != null)
-                    && (ancestor.getNodeType() == Node.ELEMENT_NODE);
-                    ancestor = ancestor.getParentNode()) {
-               Element el=((Element) ancestor);
-               if (!el.hasAttributes()) {
-                    continue;
-               }
-               // for all ancestor elements
-               NamedNodeMap ancestorAttrs = el.getAttributes();
-               int length=ancestorAttrs.getLength();
-               for (int i = 0; i <  length; i++) {
-                  // for all attributes in the ancestor element
-                  Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);				  
-                  if (XML_LANG_URI==currentAncestorAttr.getNamespaceURI()) {
-                	  String name=currentAncestorAttr.getName();                  
-                      if (!loa.containsKey(name) ) {
-                           loa.put(name, currentAncestorAttr);                                             
-                      }
-                  }
-               }
-            }
-         }
-
-         result.addAll( loa.values());
-         
-      }
 
    /**
     * Returns the Attr[]s to be outputted for the given element.
@@ -185,6 +226,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     */
    Iterator handleAttributes(Element E,  NameSpaceSymbTable ns ) throws CanonicalizationException {    
     // result will contain the attrs which have to be outputted
+	xmlattrStack.push(ns.getLevel());
     boolean isRealVisible=isVisibleDO(E,ns.getLevel())==1;    
     NamedNodeMap attrs = null;
     int attrsLength = 0;
@@ -203,10 +245,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
        
        if (XMLNS_URI!=NUri) {
        	  //A non namespace definition node.
-       	  if (isRealVisible){
+    	   if (XML_LANG_URI==NUri) {
+        		  xmlattrStack.addXmlnsAttr(N);
+           } else if (isRealVisible){
        		//The node is visible add the attribute to the list of output attributes.
            	result.add(N);
-          }
+          } 
        	  //keep working
           continue;
        }
@@ -262,68 +306,14 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     			result.add(n);
     	}
         //Float all xml:* attributes of the unselected parent elements to this one. 
-    	addXmlAttributes(E,result);
+    	//addXmlAttributes(E,result);
+        xmlattrStack.getXmlnsAttr(result);
     	ns.getUnrenderedNodes(result);
         
     }
     
     return result.iterator();
    }
-   /**
-    *  Float the xml:* attributes of the unselected parent nodes to the ciurrent node.
-    * @param E
-    * @param result
-    */
-   private void addXmlAttributes(Element E, SortedSet result) {
-	/* The processing of an element node E MUST be modified slightly when an
-       * XPath node-set is given as input and the element's parent is omitted
-       * from the node-set. The method for processing the attribute axis of an
-       * element E in the node-set is enhanced. All element nodes along E's
-       * ancestor axis are examined for nearest occurrences of attributes in
-       * the xml namespace, such as xml:lang and xml:space (whether or not they
-       * are in the node-set). From this list of attributes, remove any that are
-       * in E's attribute axis (whether or not they are in the node-set). Then,
-       * lexicographically merge this attribute list with the nodes of E's
-       * attribute axis that are in the node-set. The result of visiting the
-       * attribute axis is computed by processing the attribute nodes in this
-       * merged attribute list.
-       */
-      
-         // E is in the node-set
-         Node parent = E.getParentNode();
-         Map loa = new HashMap();
-
-         if ((parent != null) && (parent.getNodeType() == Node.ELEMENT_NODE)
-                 &&!isVisible(parent)) {
-
-            // parent element is not in node set
-            for (Node ancestor = parent;
-                    (ancestor != null)
-                    && (ancestor.getNodeType() == Node.ELEMENT_NODE);
-                    ancestor = ancestor.getParentNode()) {
-            	Element el=((Element) ancestor);
-                if (!el.hasAttributes()) {
-                	continue;
-                }
-               // for all ancestor elements
-               NamedNodeMap ancestorAttrs =el.getAttributes();
-               int length=ancestorAttrs.getLength();
-               for (int i = 0; i < length; i++) {
-                  // for all attributes in the ancestor element
-                  Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);
-                  if (XML_LANG_URI==currentAncestorAttr.getNamespaceURI()) {
-                	  String name=currentAncestorAttr.getName();                  
-                      if (!loa.containsKey(name) ) {
-                           loa.put(name, currentAncestorAttr);                                             
-                      }
-                  }                  
-               }
-            }
-         }
-         result.addAll(loa.values());
-               
-}
-
    /**
     * Always throws a CanonicalizationException because this is inclusive c14n.
     *
@@ -366,5 +356,32 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
        }
 	   XMLUtils.circumventBug2650(doc);
 		
+   }
+   
+   void handleParent(Element e, NameSpaceSymbTable ns) {
+	   if (!e.hasAttributes()) {
+			return;
+	   }
+	   xmlattrStack.push(-1);
+	   NamedNodeMap attrs = e.getAttributes();
+	   int attrsLength = attrs.getLength();
+	   for (int i = 0; i < attrsLength; i++) {
+		   Attr N = (Attr) attrs.item(i);
+		   if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {			   
+			   //Not a namespace definition, ignore.
+			   if (XML_LANG_URI==N.getNamespaceURI()) {
+				   xmlattrStack.addXmlnsAttr(N);
+			   }
+			   continue;
+		   }
+
+		   String NName=N.getLocalName();
+		   String NValue=N.getNodeValue();
+		   if (XML.equals(NName)
+				   && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+				continue;
+		   }            
+		   ns.addMapping(NName,NValue,N);             
+	   }
    }
 }

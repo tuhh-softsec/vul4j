@@ -121,6 +121,18 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    		return engineCanonicalizeSubTree(rootNode,(Node)null);
    }
    /**
+    * Method engineCanonicalizeXPathNodeSet
+    * @inheritDoc
+    * @param xpathNodeSet
+    * @throws CanonicalizationException
+    */
+   public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
+           throws CanonicalizationException {
+	   this._xpathNodeSet = xpathNodeSet;
+	   return engineCanonicalizeXPathNodeSetInternal(XMLUtils.getOwnerDocument(this._xpathNodeSet));
+   }
+
+   /**
     * Canonicalizes a Subtree node.
     * @param input the root of the subtree to canicalize
     * @return The canonicalize stream.
@@ -144,7 +156,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                                 
                 circumventBugIfNeeded(input);
 				
-
 				if (input.getSubNode() != null) {
 				    bytes = engineCanonicalizeXPathNodeSetInternal(input.getSubNode());
 				} else {
@@ -165,6 +176,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		}
    }
    /**
+    * @param _writer The _writer to set.
+    */
+    public void setWriter(OutputStream _writer) {
+    	this._writer = _writer;
+    }
+
+    /**
 	 * Canonicalizes a Subtree node.
 	 * 
 	 * @param rootNode
@@ -229,7 +247,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     	final OutputStream writer=this._writer;    
     	final Node excludeNode=this._excludeNode;
     	final boolean includeComments=this._includeComments;
-    	boolean inElement=(documentLevel==NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT);
     	Map cache=new HashMap();
     	do {
     		switch (currentNode.getNodeType()) {
@@ -252,12 +269,12 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			
     		case Node.COMMENT_NODE :
     			if (includeComments) {
-    				outputCommentToWriter((Comment) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
+    				outputCommentToWriter((Comment) currentNode, writer, documentLevel);
     			}
     			break;
     			
     		case Node.PROCESSING_INSTRUCTION_NODE :
-    			outputPItoWriter((ProcessingInstruction) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
+    			outputPItoWriter((ProcessingInstruction) currentNode, writer, documentLevel);
     			break;
     			
     		case Node.TEXT_NODE :
@@ -266,7 +283,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			break;
     			
     		case Node.ELEMENT_NODE :
-    			inElement=true;
+    			documentLevel=NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
     			if (currentNode==excludeNode) {
     				break;
     			}      
@@ -275,7 +292,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			ns.outputNodePush();
     			writer.write('<');
     			String name=currentElement.getTagName();
-    			writeByte(name,writer,cache);
+    			UtfHelpper.writeByte(name,writer,cache);
     			
     			Iterator attrs = this.handleAttributesSubtree(currentElement,ns);
     			if (attrs!=null) {
@@ -289,7 +306,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			sibling= currentNode.getFirstChild(); 
     			if (sibling==null) {
     				writer.write(_END_TAG);
-        			writeStringToUtf8(name,writer);        
+    				UtfHelpper.writeStringToUtf8(name,writer);        
         			writer.write('>');
         			//We fineshed with this level, pop to the previous definitions.
         			ns.outputNodePop();
@@ -303,7 +320,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     		}
     		while (sibling==null  && parentNode!=null) {    		      		      			
     			writer.write(_END_TAG);
-    			writeByte(((Element)parentNode).getTagName(),writer,cache);        
+    			UtfHelpper.writeByte(((Element)parentNode).getTagName(),writer,cache);        
     			writer.write('>');
     			//We fineshed with this level, pop to the previous definitions.
     			ns.outputNodePop();
@@ -313,7 +330,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			parentNode=parentNode.getParentNode();   
     			if (!(parentNode instanceof Element)) {
     				documentLevel=NODE_AFTER_DOCUMENT_ELEMENT;
-    				inElement=false;
     				parentNode=null;
     			}    			
     		}      
@@ -326,17 +342,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 
 
      
-   /**
-    * Method engineCanonicalizeXPathNodeSet
-    * @inheritDoc
-    * @param xpathNodeSet
-    * @throws CanonicalizationException
-    */
-   public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
-           throws CanonicalizationException {
-	   this._xpathNodeSet = xpathNodeSet;
-	   return engineCanonicalizeXPathNodeSetInternal(XMLUtils.getOwnerDocument(this._xpathNodeSet));
-   }
    private  byte[] engineCanonicalizeXPathNodeSetInternal(Node doc)
            throws CanonicalizationException {   
       
@@ -385,7 +390,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 	Node parentNode=null;	
 	OutputStream writer=this._writer;
 	int documentLevel=NODE_BEFORE_DOCUMENT_ELEMENT;
-	boolean inElement=false;
 	Map cache=new HashMap();
 	do {
 		switch (currentNode.getNodeType()) {
@@ -409,13 +413,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			
 		case Node.COMMENT_NODE :			
 			if (this._includeComments && (isVisibleDO(currentNode,ns.getLevel())==1)) {
-				outputCommentToWriter((Comment) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
+				outputCommentToWriter((Comment) currentNode, writer, documentLevel);
 			}
 			break;
 			
 		case Node.PROCESSING_INSTRUCTION_NODE :
 			if (isVisible(currentNode))
-				outputPItoWriter((ProcessingInstruction) currentNode, writer,inElement? NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT : documentLevel);
+				outputPItoWriter((ProcessingInstruction) currentNode, writer, documentLevel);
 			break;
 			
 		case Node.TEXT_NODE :
@@ -437,7 +441,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			break;
 			
 		case Node.ELEMENT_NODE :
-			inElement=true;
 			documentLevel=NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
 			Element currentElement = (Element) currentNode;
 			//Add a level to the nssymbtable. So latter can be pop-back.
@@ -452,7 +455,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				ns.outputNodePush();
 				writer.write('<');
 				name=currentElement.getTagName();
-				writeByte(name,writer,cache);
+				UtfHelpper.writeByte(name,writer,cache);
 			} else {
 				ns.push();
 			}
@@ -473,7 +476,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			if (sibling==null) {
 				if (currentNodeIsVisible) {
 					writer.write(_END_TAG);
-					writeByte(name,writer,cache);        
+					UtfHelpper.writeByte(name,writer,cache);        
 					writer.write('>');
 					//We fineshed with this level, pop to the previous definitions.
 					ns.outputNodePop();
@@ -491,7 +494,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		while (sibling==null  && parentNode!=null) {    
 			if (isVisible(parentNode)) {
 				writer.write(_END_TAG);
-				writeByte(((Element)parentNode).getTagName(),writer,cache);        
+				UtfHelpper.writeByte(((Element)parentNode).getTagName(),writer,cache);        
 				writer.write('>');
 				//We fineshed with this level, pop to the previous definitions.
 				ns.outputNodePop();
@@ -504,7 +507,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 			parentNode=parentNode.getParentNode();   
 			if (!(parentNode instanceof Element)) {
 				parentNode=null;
-				inElement=false;
 				documentLevel=NODE_AFTER_DOCUMENT_ELEMENT;
 			}    			
 		}      
@@ -554,12 +556,35 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    		return true;
    	}
 
+	void handleParent(Element e,NameSpaceSymbTable ns) {
+	   if (!e.hasAttributes()) {
+				return;
+		}
+		NamedNodeMap attrs = e.getAttributes();
+		int attrsLength = attrs.getLength();
+		for (int i = 0; i < attrsLength; i++) {
+			Attr N = (Attr) attrs.item(i);
+			if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {
+				//Not a namespace definition, ignore.
+				continue;
+			}
+
+			String NName=N.getLocalName();
+			String NValue=N.getNodeValue();
+			if (XML.equals(NName)
+               && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+					continue;
+			}            
+			ns.addMapping(NName,NValue,N);             
+		}   			
+   }
+
 	/**
 	 * Adds to ns the definitons from the parent elements of el
    	 * @param el
    	 * @param ns
    	 */
-   	final static void getParentNameSpaces(Element el,NameSpaceSymbTable ns)  {
+   	final void getParentNameSpaces(Element el,NameSpaceSymbTable ns)  {
    		List parents=new ArrayList(10);
    		Node n1=el.getParentNode();
    		if (!(n1 instanceof Element)) {
@@ -579,347 +604,14 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    		ListIterator it=parents.listIterator(parents.size());
    		while (it.hasPrevious()) {
    			Element ele=(Element)it.previous();
-   			if (!ele.hasAttributes()) {
-   				continue;
-   			}
-   			NamedNodeMap attrs = ele.getAttributes();
-   			int attrsLength = attrs.getLength();
-   			for (int i = 0; i < attrsLength; i++) {
-   				Attr N = (Attr) attrs.item(i);
-   				if (Constants.NamespaceSpecNS!=N.getNamespaceURI()) {
-   					//Not a namespace definition, ignore.
-   					continue;
-   				}
-
-   				String NName=N.getLocalName();
-   				String NValue=N.getNodeValue();
-   				if (XML.equals(NName)
-                    && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
-   					continue;
-   				}            
-   				ns.addMapping(NName,NValue,N);             
-   			}   			
-   		}
+   			handleParent(ele, ns);
+      	}
         Attr nsprefix;
         if (((nsprefix=ns.getMappingWithoutRendered("xmlns"))!=null) 
                 && "".equals(nsprefix.getValue())) {
              ns.addMappingAndRender("xmlns","",nullNode);
         }
    	}
-   /**
-    * Outputs an Attribute to the internal Writer.
-    *
-    * The string value of the node is modified by replacing
-    * <UL>
-    * <LI>all ampersands (&) with <CODE>&amp;amp;</CODE></LI>
-    * <LI>all open angle brackets (<) with <CODE>&amp;lt;</CODE></LI>
-    * <LI>all quotation mark characters with <CODE>&amp;quot;</CODE></LI>
-    * <LI>and the whitespace characters <CODE>#x9</CODE>, #xA, and #xD, with character
-    * references. The character references are written in uppercase
-    * hexadecimal with no leading zeroes (for example, <CODE>#xD</CODE> is represented
-    * by the character reference <CODE>&amp;#xD;</CODE>)</LI>
-    * </UL>
-    *
-    * @param name
-    * @param value
-    * @param writer 
-    * @throws IOException
-    */
-   static final void outputAttrToWriter(final String name, final String value, final OutputStream writer,
-		   	final Map cache) throws IOException {
-      writer.write(' ');
-      writeByte(name,writer,cache);
-      writer.write(equalsStr);
-      byte  []toWrite;
-      final int length = value.length();
-      int i=0;
-      while (i < length) {        
-         char c = value.charAt(i++);
-
-         switch (c) {
-
-         case '&' :
-         	toWrite=_AMP_;
-            break;
-
-         case '<' :
-         	toWrite=_LT_;
-            break;
-
-         case '"' :
-         	toWrite=_QUOT_;
-            break;
-
-         case 0x09 :    // '\t'
-         	toWrite=__X9_;
-            break;
-
-         case 0x0A :    // '\n'
-         	toWrite=__XA_;
-            break;
-
-         case 0x0D :    // '\r'
-         	toWrite=__XD_;
-            break;
-
-         default :
-        	if( (c & 0x80) ==0) {
-        		writer.write(c);
-        	} else {
-        		writeCharToUtf8(c,writer);
-        	};
-            continue;
-         }
-         writer.write(toWrite);
-      }
-
-      writer.write('\"');
-   }
-
-   final static void writeCharToUtf8(final char c,final OutputStream out) throws IOException{   	
-   	if ( (c & 0x80) ==0) {
-        out.write(c);
-        return;
-    }
-    int bias;
-    int write;
-    char ch;
-    if (c > 0x07FF) {
-        ch=(char)(c>>>12);      
-        write=0xE0;
-        if (ch>0) {
-            write |= ( ch & 0x0F);
-        } 
-        out.write(write);
-        write=0x80;
-        bias=0x3F;        
-    } else {
-    	write=0xC0;
-    	bias=0x1F;
-    }
-    ch=(char)(c>>>6);
-    if (ch>0) {
-         write|= (ch & bias);
-    } 
-    out.write(write);
-    out.write(0x80 | ((c) & 0x3F));    
-   	
-   }   
-   final static void writeByte(final String str,final OutputStream out,Map cache) throws IOException {
-	   byte []result=(byte[]) cache.get(str);	 
-	   if (result==null) {
-		   result=getStringInUtf8(str);
-		   cache.put(str,result);
-	   }
-	   
-	   out.write(result);
-	   
-   }
-   final static byte[] getStringInUtf8(final String str) {
-	   final int length=str.length();
-	   byte []result=new byte[length];
-	   	int i=0;
-	   	int out=0;
-	    char c;    
-	   	while (i<length) {
-	   		c=str.charAt(i++);        
-	        if ((c & 0x80) == 0) {
-	            result[out++]=(byte)c;
-	            continue;
-	        }
-	        char ch;
-	        int bias;
-	        byte write;
-	        if (c > 0x07FF) {
-	            ch=(char)(c>>>12);      
-	            write=(byte)0xE0;
-	            if (ch>0) {
-	                write |= ( ch & 0x0F);
-	            } 
-	            result[out++]=write;
-	            write=(byte)0x80;
-	            bias=0x3F;        
-	        } else {
-	        	write=(byte)0xC0;
-	        	bias=0x1F;
-	        }
-	        ch=(char)(c>>>6);
-	        if (ch>0) {
-	             write|= (ch & bias);
-	        } 
-	        result[out++]=write;
-	        result[out++]=(byte)(0x80 | ((c) & 0x3F));       
-	           		
-	   	} 
-	   	return result;
-   }
-   final static void writeStringToUtf8(final String str,final OutputStream out) throws IOException{	   
-   	final int length=str.length();
-   	int i=0;
-    char c;    
-   	while (i<length) {
-   		c=str.charAt(i++);        
-        if ((c & 0x80) == 0) {
-            out.write(c);
-            continue;
-        }
-        char ch;
-        int bias;
-        int write;
-        if (c > 0x07FF) {
-            ch=(char)(c>>>12);      
-            write=0xE0;
-            if (ch>0) {
-                write |= ( ch & 0x0F);
-            } 
-            out.write(write);
-            write=0x80;
-            bias=0x3F;        
-        } else {
-        	write=0xC0;
-        	bias=0x1F;
-        }
-        ch=(char)(c>>>6);
-        if (ch>0) {
-             write|= (ch & bias);
-        } 
-        out.write(write);
-        out.write(0x80 | ((c) & 0x3F));       
-           		
-   	}
-    
-   }
-   /**
-    * Outputs a PI to the internal Writer.
-    *
-    * @param currentPI
-    * @param writer where to write the things
-    * @throws IOException
-    */
-   static final void outputPItoWriter(ProcessingInstruction currentPI, OutputStream writer,int position) throws IOException {   	  
-
-      if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
-        writer.write('\n');
-      }
-      writer.write(_BEGIN_PI);
-
-      final String target = currentPI.getTarget();
-      int length = target.length();
-
-      for (int i = 0; i < length; i++) {         
-      	 char c=target.charAt(i);
-         if (c==0x0D) {
-            writer.write(__XD_);
-         } else {
-        	 if( (c & 0x80) ==0) {
-         		writer.write(c);
-         	} else {
-         		writeCharToUtf8(c,writer);
-         	};           
-         }
-      }
-
-      final String data = currentPI.getData();
-     
-      length = data.length();
-
-      if (length > 0) {
-         writer.write(' ');
-
-         for (int i = 0; i < length; i++) {            
-         	char c=data.charAt(i);
-            if (c==0x0D) {
-               writer.write(__XD_);
-            } else {
-               writeCharToUtf8(c,writer);               
-            }
-         }
-      }
-
-      writer.write(_END_PI);
-      if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
-        writer.write('\n');
-     }
-   }
-
-   /**
-    * Method outputCommentToWriter
-    *
-    * @param currentComment
-    * @param writer writer where to write the things
-    * @throws IOException
-    */
-   static final void outputCommentToWriter(Comment currentComment, OutputStream writer,int position) throws IOException {   	  
-   	  if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
-   		writer.write('\n');
-   	  }
-      writer.write(_BEGIN_COMM);
-
-      final String data = currentComment.getData();
-      final int length = data.length();      
-
-      for (int i = 0; i < length; i++) {         
-         char c=data.charAt(i);
-         if (c==0x0D) {
-            writer.write(__XD_);
-         } else {
-        	 if( (c & 0x80) ==0) {
-         		writer.write(c);
-         	} else {
-         		writeCharToUtf8(c,writer);
-         	};               
-         }      
-      }
-
-      writer.write(_END_COMM);
-      if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
-		writer.write('\n');
-	 }
-   }
-
-   /**
-    * Outputs a Text of CDATA section to the internal Writer.
-    *
-    * @param text
-    * @param writer writer where to write the things
-    * @throws IOException
-    */
-   static final void outputTextToWriter(final String text, final OutputStream writer) throws IOException {
-      final int length = text.length();
-      byte []toWrite;
-      for (int i = 0; i < length; i++) {
-         char c = text.charAt(i);
-
-         switch (c) {
-
-         case '&' :
-         	toWrite=_AMP_;
-            break;
-
-         case '<' :
-         	toWrite=_LT_;
-            break;
-
-         case '>' :
-         	toWrite=_GT_;
-            break;
-
-         case 0xD :
-         	toWrite=__XD_;
-            break;
-
-         default :
-        	 if ((c & 0x80) ==0) {
-        		 writer.write(c);
-        	 } else {
-        		 writeCharToUtf8(c,writer);
-        	 };
-            continue;
-         }
-         writer.write(toWrite);
-      }
-   }
-
    /**
     * Obtain the attributes to output for this node in XPathNodeSet c14n. 
     *
@@ -943,13 +635,206 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    throws CanonicalizationException;
 
    abstract void circumventBugIfNeeded(XMLSignatureInput input) throws CanonicalizationException, ParserConfigurationException, IOException, SAXException;
+   
+   /**
+	    * Outputs an Attribute to the internal Writer.
+	    *
+	    * The string value of the node is modified by replacing
+	    * <UL>
+	    * <LI>all ampersands (&) with <CODE>&amp;amp;</CODE></LI>
+	    * <LI>all open angle brackets (<) with <CODE>&amp;lt;</CODE></LI>
+	    * <LI>all quotation mark characters with <CODE>&amp;quot;</CODE></LI>
+	    * <LI>and the whitespace characters <CODE>#x9</CODE>, #xA, and #xD, with character
+	    * references. The character references are written in uppercase
+	    * hexadecimal with no leading zeroes (for example, <CODE>#xD</CODE> is represented
+	    * by the character reference <CODE>&amp;#xD;</CODE>)</LI>
+	    * </UL>
+	    *
+	    * @param name
+	    * @param value
+	    * @param writer 
+	    * @throws IOException
+	    */
+	   static final void outputAttrToWriter(final String name, final String value, final OutputStream writer,
+			   	final Map cache) throws IOException {
+	      writer.write(' ');
+	      UtfHelpper.writeByte(name,writer,cache);
+	      writer.write(equalsStr);
+	      byte  []toWrite;
+	      final int length = value.length();
+	      int i=0;
+	      while (i < length) {        
+	         char c = value.charAt(i++);
+	
+	         switch (c) {
+	
+	         case '&' :
+	         	toWrite=_AMP_;
+	            break;
+	
+	         case '<' :
+	         	toWrite=_LT_;
+	            break;
+	
+	         case '"' :
+	         	toWrite=_QUOT_;
+	            break;
+	
+	         case 0x09 :    // '\t'
+	         	toWrite=__X9_;
+	            break;
+	
+	         case 0x0A :    // '\n'
+	         	toWrite=__XA_;
+	            break;
+	
+	         case 0x0D :    // '\r'
+	         	toWrite=__XD_;
+	            break;
+	
+	         default :
+	        	if( (c & 0x80) ==0) {
+	        		writer.write(c);
+	        	} else {
+	        		UtfHelpper.writeCharToUtf8(c,writer);
+	        	};
+	            continue;
+	         }
+	         writer.write(toWrite);
+	      }
+	
+	      writer.write('\"');
+	   }
 
-    
-    /**
-     * @param _writer The _writer to set.
-     */
-    public void setWriter(OutputStream _writer) {
-    	this._writer = _writer;
-    }
+	/**
+	    * Outputs a PI to the internal Writer.
+	    *
+	    * @param currentPI
+	    * @param writer where to write the things
+	    * @throws IOException
+	    */
+	   static final void outputPItoWriter(ProcessingInstruction currentPI, OutputStream writer,int position) throws IOException {   	  
+	
+	      if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
+	        writer.write('\n');
+	      }
+	      writer.write(_BEGIN_PI);
+	
+	      final String target = currentPI.getTarget();
+	      int length = target.length();
+	
+	      for (int i = 0; i < length; i++) {         
+	      	 char c=target.charAt(i);
+	         if (c==0x0D) {
+	            writer.write(__XD_);
+	         } else {
+	        	 if( (c & 0x80) ==0) {
+	         		writer.write(c);
+	         	} else {
+	         		UtfHelpper.writeCharToUtf8(c,writer);
+	         	};           
+	         }
+	      }
+	
+	      final String data = currentPI.getData();
+	     
+	      length = data.length();
+	
+	      if (length > 0) {
+	         writer.write(' ');
+	
+	         for (int i = 0; i < length; i++) {            
+	         	char c=data.charAt(i);
+	            if (c==0x0D) {
+	               writer.write(__XD_);
+	            } else {
+	            	UtfHelpper.writeCharToUtf8(c,writer);               
+	            }
+	         }
+	      }
+	
+	      writer.write(_END_PI);
+	      if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
+	        writer.write('\n');
+	     }
+	   }
+
+	   /**
+	    * Method outputCommentToWriter
+	    *
+	    * @param currentComment
+	    * @param writer writer where to write the things
+	    * @throws IOException
+	    */
+	   static final void outputCommentToWriter(Comment currentComment, OutputStream writer,int position) throws IOException {   	  
+	   	  if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
+	   		writer.write('\n');
+	   	  }
+	      writer.write(_BEGIN_COMM);
+	
+	      final String data = currentComment.getData();
+	      final int length = data.length();      
+	
+	      for (int i = 0; i < length; i++) {         
+	         char c=data.charAt(i);
+	         if (c==0x0D) {
+	            writer.write(__XD_);
+	         } else {
+	        	 if( (c & 0x80) ==0) {
+	         		writer.write(c);
+	         	} else {
+	         		UtfHelpper.writeCharToUtf8(c,writer);
+	         	};               
+	         }      
+	      }
+	
+	      writer.write(_END_COMM);
+	      if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
+			writer.write('\n');
+		 }
+	   }
+
+	   /**
+	    * Outputs a Text of CDATA section to the internal Writer.
+	    *
+	    * @param text
+	    * @param writer writer where to write the things
+	    * @throws IOException
+	    */
+	   static final void outputTextToWriter(final String text, final OutputStream writer) throws IOException {
+	      final int length = text.length();
+	      byte []toWrite;
+	      for (int i = 0; i < length; i++) {
+	         char c = text.charAt(i);
+	
+	         switch (c) {
+	
+	         case '&' :
+	         	toWrite=_AMP_;
+	            break;
+	
+	         case '<' :
+	         	toWrite=_LT_;
+	            break;
+	
+	         case '>' :
+	         	toWrite=_GT_;
+	            break;
+	
+	         case 0xD :
+	         	toWrite=__XD_;
+	            break;
+	
+	         default :
+	        	 if ((c & 0x80) ==0) {
+	        		 writer.write(c);
+	        	 } else {
+	        		 UtfHelpper.writeCharToUtf8(c,writer);
+	        	 };
+	            continue;
+	         }
+	         writer.write(toWrite);
+	      }
+	   }
      
 }
