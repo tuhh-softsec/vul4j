@@ -33,6 +33,8 @@ New in v...
 	Changes in the NodeFilter API in order to let the transformations
          do some optimizations take into account the c14n order.
 	Optimization in signature transformation in node-sets(xpath, xpath2), 20-40% speed-up.
+	Optimization in c14n in node-sets.
+	Optimization for the xml:* inheritance in inclusive the c14n.
 		
 New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
