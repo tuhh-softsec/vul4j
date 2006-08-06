@@ -27,7 +27,7 @@ RAUL:
 [X] Change Symbol table to a more efficient and simple structure
 [ ] constrac name bindings on the fly like XMLSerialicer does.
 [ ] Optimize ouputstream with native jce, nio & threads.
-[ ] Migrate to JSR105 API
-[ ] Optimize certifacate & public key getting. for loops look wrong, 
+[X] Migrate to JSR105 API
+[X] Optimize certifacate & public key getting. for loops look wrong, 
 	better registring..
-[ ] ...
+[ ] Optimize xpath2 to only look for the node not for the node and all the parents.

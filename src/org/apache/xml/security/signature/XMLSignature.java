@@ -111,6 +111,10 @@ public final class XMLSignature extends SignatureElementProxy {
    public static final String ALGO_ID_MAC_HMAC_SHA384 = Constants.MoreAlgorithmsSpecNS + "hmac-sha384";
    /** HMAC - Optional HMAC-SHA512 */
    public static final String ALGO_ID_MAC_HMAC_SHA512 = Constants.MoreAlgorithmsSpecNS + "hmac-sha512";
+   /**Signature - Optional ECDSAwithSHA1 */
+   public static final String ALGO_ID_SIGNATURE_ECDSA_SHA1 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1";
+
+
    //J+
 
    /** ds:Signature.ds:SignedInfo element */

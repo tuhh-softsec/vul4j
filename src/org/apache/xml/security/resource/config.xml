@@ -66,6 +66,8 @@
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA384" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA512" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureECDSA$SignatureECDSASHA1" />
 
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacMD5" />
@@ -166,6 +168,13 @@
                     RequirementLevel="OPTIONAL"
                     SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt"
                     JCEName="SHA512withRSA"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"
+                    Description="ECDSA Signature with SHA-1 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt"
+                    JCEName="ECDSAwithSHA1"/>
 
          <!-- MAC Algorithms -->
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"

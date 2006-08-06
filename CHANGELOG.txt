@@ -65,6 +65,7 @@ New in v1.3
 	Fixed bug 35919, Submited by: Luda <ludab.at.lanl.gov>
 	out of the box j2se 1.5 ready(no adding xalan in the classpath or endorsed if no
 	   xpath transformation is needed)
+	Added ECDSA signature
 	    
 	
 
