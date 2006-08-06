@@ -28,13 +28,14 @@ New in v...
 	Fix JSR 105 unmarshaling bug: now recognizes PGPData. (mullan)
 	Optimization to not create instances of Signature or MessageDigest objects, but mantain one for thread. 
 		Also don't change the key if it was already used. (raul)
-	Fixed bug 40032.
-	Fixed bug when the prefix digital signature uri is not null.
+	Fixed bug 40032. Fixed BUG 40031 Fixed bug when the prefix digital signature uri is not null.
 	Changes in the NodeFilter API in order to let the transformations
          do some optimizations take into account the c14n order.
 	Optimization in signature transformation in node-sets(xpath, xpath2), 20-40% speed-up.
 	Optimization in c14n in node-sets.
 	Optimization for the xml:* inheritance in inclusive the c14n.
+	Added ECDSA signature thanks Markus Lindner 
+	    
 		
 New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
@@ -65,8 +66,6 @@ New in v1.3
 	Fixed bug 35919, Submited by: Luda <ludab.at.lanl.gov>
 	out of the box j2se 1.5 ready(no adding xalan in the classpath or endorsed if no
 	   xpath transformation is needed)
-	Added ECDSA signature
-	    
 	
 
 New in v1.2.1
