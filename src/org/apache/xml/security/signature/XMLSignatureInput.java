@@ -235,7 +235,7 @@ public class XMLSignatureInput  implements Cloneable {
       if (this._inputNodeSet!=null) {
       	  return this._inputNodeSet;
       }
-   	  if (this.isElement()) {
+   	  if ((this._inputOctetStreamProxy==null)&& (this._subNode!=null) ) {
             
    	  	    if (circunvent) {           
    	  	    	XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(_subNode));

@@ -24,7 +24,15 @@ import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.RetrievalMethod;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
@@ -40,6 +48,7 @@ import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -51,7 +60,7 @@ import org.w3c.dom.Node;
  * RetrievalMethodResolver cannot handle itself, resolving of the extracted
  * element is delegated back to the KeyResolver mechanism.
  *
- * @author $Author$
+ * @author $Author: raul $ modified by Dave Garcia
  */
 public class RetrievalMethodResolver extends KeyResolverSpi {
 
@@ -75,73 +84,52 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                Constants._TAG_RETRIEVALMETHOD)) {      
 		   return null;
 	   }
+
       try {
-         RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
-         Attr uri = rm.getURIAttr();
-
-         // type can be null because it's optional
-         String type = rm.getType();
-         Transforms transforms = rm.getTransforms();
-         ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI);
-
-         if (resRes != null) {
-            XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
-            if (log.isDebugEnabled())
-            	log.debug("Before applying Transforms, resource has "
-                      + resource.getBytes().length + "bytes");
-
-            if (transforms != null) {
-               log.debug("We have Transforms");
-
-               resource = transforms.performTransforms(resource);
-            }
-            if (log.isDebugEnabled()) {
-            	log.debug("After applying Transforms, resource has "
-                      + resource.getBytes().length + "bytes");
-            	log.debug("Resolved to resource " + resource.getSourceURI());
-            }
-
-            byte inputBytes[] = resource.getBytes();
-
-            if ((type != null) && type.equals(RetrievalMethod.TYPE_RAWX509)) {
-
-               // if the resource stores a raw certificate, we have to handle it
-               CertificateFactory certFact =
-                  CertificateFactory
-                     .getInstance(XMLX509Certificate.JCA_CERT_ID);
-               X509Certificate cert =
-                  (X509Certificate) certFact
-                     .generateCertificate(new ByteArrayInputStream(inputBytes));
-
-               if (cert != null) {
-                  return cert.getPublicKey();
-               }
-            } else {
-
-               // otherwise, we parse the resource, create an Element and delegate
-                if (log.isDebugEnabled())
-                	log.debug("we have to parse " + inputBytes.length + " bytes");
-
-               Element e = this.getDocFromBytes(inputBytes);
-               if (log.isDebugEnabled())
-               	    log.debug("Now we have a {" + e.getNamespaceURI() + "}"
-                         + e.getLocalName() + " Element");
-
-               if (e != null) {
-                  return KeyResolver.getPublicKey(getFirstElementChild(e),
-                                                  BaseURI, storage);
-               }
-            }
-         }
-      } catch (XMLSecurityException ex) {
+		   //Create a retrieval method over the given element
+		   RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
+	       String type = rm.getType();		   
+		   XMLSignatureInput resource=this.resolveInput(rm,BaseURI);			
+           if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
+                //a raw certificate, direct parsing is done!
+            	X509Certificate cert=this.getRawCertificate(resource);
+				if (cert != null) {
+			         return cert.getPublicKey();
+			    }
+				return null;
+            };
+			Element e = obtainRefrenceElement(resource);
+			return this.resolveKey(e,BaseURI,storage);
+	  } catch (XMLSecurityException ex) {
          log.debug("XMLSecurityException", ex);
       } catch (CertificateException ex) {
          log.debug("CertificateException", ex);
       } catch (IOException ex) {
          log.debug("IOException", ex);
-      }
-
+      } catch (ParserConfigurationException e) {
+		  log.debug("ParserConfigurationException", e);
+	  } catch (SAXException e) {
+		 log.debug("SAXException", e);
+	  } 
       return null;
+   }
+
+   private Element obtainRefrenceElement(XMLSignatureInput resource) throws CanonicalizationException, ParserConfigurationException, IOException, SAXException, KeyResolverException {
+	   Element e;
+	   if (resource.isElement()){
+		   e=(Element) resource.getSubNode();
+	   } else if (resource.isNodeSet()) {
+		   //Retrieved resource is a nodeSet
+		   e=getDocumentElement(resource.getNodeSet());							   
+	   } else {
+		   //Retrieved resource is an inputStream
+		   byte inputBytes[] = resource.getBytes();
+		   e = this.getDocFromBytes(inputBytes);						
+		   //otherwise, we parse the resource, create an Element and delegate
+		   if (log.isDebugEnabled()) 
+			   log.debug("we have to parse " + inputBytes.length + " bytes");
+	   }
+	   return e;
    }
 
    /**
@@ -155,79 +143,99 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
    public X509Certificate engineResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               {
+	   if  (!XMLUtils.elementIsInSignatureSpace(element,
+               Constants._TAG_RETRIEVALMETHOD)) {      
+		   return null;
+	   }
 
-      try {
+	   try {
          RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
-         Attr uri = rm.getURIAttr();
-         Transforms transforms = rm.getTransforms();
-         if (log.isDebugEnabled())
-         	log.debug("Asked to resolve URI " + uri);
-
-         ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI);
-
-         if (resRes != null) {
-            XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
-            if (log.isDebugEnabled())
-            	log.debug("Before applying Transforms, resource has "
-                      + resource.getBytes().length + "bytes");
-
-            if (transforms != null) {
-               log.debug("We have Transforms");
-
-               resource = transforms.performTransforms(resource);
-            }
-            
-            if (log.isDebugEnabled()) {
-            	log.debug("After applying Transforms, resource has "
-                      + resource.getBytes().length + "bytes");
-            	log.debug("Resolved to resource " + resource.getSourceURI());
-            }
-
-            byte inputBytes[] = resource.getBytes();
-
-            if ((rm.getType() != null)
-                    && rm.getType().equals(RetrievalMethod.TYPE_RAWX509)) {
-
-               // if the resource stores a raw certificate, we have to handle it
-               CertificateFactory certFact =
-                  CertificateFactory
-                     .getInstance(XMLX509Certificate.JCA_CERT_ID);
-               X509Certificate cert =
-                  (X509Certificate) certFact
-                     .generateCertificate(new ByteArrayInputStream(inputBytes));
-
-               if (cert != null) {
-                  return cert;
-               }
-            } else {
-
-               // otherwise, we parse the resource, create an Element and delegate
-                if (log.isDebugEnabled())
-                	log.debug("we have to parse " + inputBytes.length + " bytes");
-
-               Element e = this.getDocFromBytes(inputBytes);
-
-               if (log.isDebugEnabled())
-               	    log.debug("Now we have a {" + e.getNamespaceURI() + "}"
-                         + e.getLocalName() + " Element");
-
-               if (e != null) {
-                  return KeyResolver.getX509Certificate(/*getFirstElementChild(*/e,
-                                                  BaseURI, storage);
-               }
-            }
-         }
+		 String type = rm.getType();		   
+		 XMLSignatureInput resource=this.resolveInput(rm,BaseURI);			         
+		 if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
+        	X509Certificate cert=this.getRawCertificate(resource);
+            return cert;
+		 } 
+		 Element e = obtainRefrenceElement(resource);
+		 return this.resolveCertificate(e,BaseURI,storage);
       } catch (XMLSecurityException ex) {
          log.debug("XMLSecurityException", ex);
       } catch (CertificateException ex) {
          log.debug("CertificateException", ex);
       } catch (IOException ex) {
          log.debug("IOException", ex);
-      }
-
+	  } catch (ParserConfigurationException e) {
+		  log.debug("ParserConfigurationException", e);
+	  } catch (SAXException e) {
+		 log.debug("SAXException", e);
+	  } 
       return null;
    }
+   
+   /**
+    * Retrieves a x509Certificate from the given information
+    * @param e
+    * @param BaseURI
+    * @param storage
+    * @return
+    * @throws KeyResolverException 
+    */
+   private X509Certificate resolveCertificate(Element e,String BaseURI,StorageResolver storage) throws KeyResolverException{
+		  if (log.isDebugEnabled()) 
+			  log.debug("Now we have a {" + e.getNamespaceURI() + "}"+ e.getLocalName() + " Element");
+		  //An element has been provided
+       	  if (e != null) { 
+			  return KeyResolver.getX509Certificate(e,BaseURI, storage);		  	  
+   		  }
+		  return null;
+   } 
+   
+   /**
+    * Retrieves a x509Certificate from the given information
+    * @param e
+    * @param BaseURI
+    * @param storage
+    * @return
+    * @throws KeyResolverException 
+    */
+   private PublicKey resolveKey(Element e,String BaseURI,StorageResolver storage) throws KeyResolverException{
+		  if (log.isDebugEnabled()) 
+			  log.debug("Now we have a {" + e.getNamespaceURI() + "}"+ e.getLocalName() + " Element");
+		  //An element has been provided
+       	  if (e != null) { 
+			  return KeyResolver.getPublicKey(e,BaseURI, storage);		  	  
+   		  }
+		  return null;
+   }
 
+   private X509Certificate getRawCertificate(XMLSignatureInput resource) throws CanonicalizationException, IOException, CertificateException{
+	   byte inputBytes[] = resource.getBytes();	   
+       // if the resource stores a raw certificate, we have to handle it
+       CertificateFactory certFact =CertificateFactory.getInstance(XMLX509Certificate.JCA_CERT_ID);
+       X509Certificate cert =(X509Certificate) certFact.generateCertificate(new ByteArrayInputStream(inputBytes));
+       return cert;
+   }
+   /**
+    * Resolves the input from the given retrieval method 
+    * @return
+    * @throws XMLSecurityException 
+    */
+   private XMLSignatureInput resolveInput(RetrievalMethod rm,String BaseURI) throws XMLSecurityException{
+       Attr uri = rm.getURIAttr();
+	   //Apply the trnasforms
+       Transforms transforms = rm.getTransforms();
+       ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI);
+       if (resRes != null) {
+          XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
+          if (transforms != null) {
+        	  log.debug("We have Transforms");
+			  resource = transforms.performTransforms(resource);
+          }		  
+		  return resource;
+       }
+	   return null;
+   }
+   
    /**
     * Parses a byte array and returns the parsed Element.
     *
@@ -236,17 +244,12 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @throws KeyResolverException if something goes wrong
     */
    Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
-
       try {
-         javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-
+         javax.xml.parsers.DocumentBuilderFactory dbf =javax.xml.parsers.DocumentBuilderFactory.newInstance();
          dbf.setNamespaceAware(true);
-
          javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
          org.w3c.dom.Document doc =
             db.parse(new java.io.ByteArrayInputStream(bytes));
-
          return doc.getDocumentElement();
       } catch (org.xml.sax.SAXException ex) {
          throw new KeyResolverException("empty", ex);
@@ -270,11 +273,42 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
    {
       return null;
    }
-   static Element getFirstElementChild(Element e){
-   	    Node n=e.getFirstChild();
-   	    while (n!=null && n.getNodeType()!=Node.ELEMENT_NODE) {
-   	    	n=n.getNextSibling();
-   	    }
-   		return (Element)n;
+   
+   static Element getDocumentElement(Set set) {
+	   Iterator it=set.iterator();
+	   Element e=null;
+	   while (it.hasNext()) {
+		   Node currentNode=(Node)it.next();
+		   if (currentNode instanceof Element) {
+			   e=(Element)currentNode;
+			   break;
+		   }
+		   
+	   }
+	   List parents=new ArrayList(10);
+  		
+  		//Obtain all the parents of the elemnt
+  		Element parent=e;
+  		while (parent!=null) {
+  			parents.add(parent);
+  			Node n=parent.getParentNode();
+  			if (!(n instanceof Element )) {
+  				break;
+  			}
+  			parent=(Element)n;
+  		}
+  		//Visit them in reverse order.
+  		boolean firstFound=false;
+  		ListIterator it2=parents.listIterator(parents.size());
+  		while (it2.hasPrevious()) {
+  			Element ele=(Element)it2.previous();
+  			if (set.contains(ele)) {
+  				if (firstFound)
+  					return ele;
+  				firstFound=true;
+  			}
+     	}
+		return null;
    }
 }
+

@@ -35,6 +35,7 @@ New in v...
 	Optimization in c14n in node-sets.
 	Optimization for the xml:* inheritance in inclusive the c14n.
 	Added ECDSA signature thanks Markus Lindner 
+	Optimization in RetrievelMethod handling don't reparse the bytes into a DOM tree if not needed thanks David Garcia.
 	    
 		
 New in v1.3
