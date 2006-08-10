@@ -476,20 +476,26 @@ public class Base64 {
        return new String(encodedData);
    }
 
-   /**
-    * Decodes Base64 data into octects
-    *
-    * @param encoded Byte array containing Base64 data
-    * @return Array containind decoded data.
-    * @throws Base64DecodingException
-    */
-   public final static byte[] decode(String encoded) throws Base64DecodingException {
+    /**
+     * Decodes Base64 data into octects
+     *
+     * @param encoded String containing base64 encoded data
+     * @return byte array containing the decoded data
+     * @throws Base64DecodingException if there is a problem decoding the data
+     */
+    public final static byte[] decode(String encoded) throws Base64DecodingException {
 
-       if (encoded == null)
-           return null;
+	if (encoded == null)
+	    return null;
 
-       return decodeInternal(encoded.getBytes());
-   }
+	try {
+            return decodeInternal(encoded.getBytes("US-ASCII"));
+	} catch (java.io.UnsupportedEncodingException e) {
+	    throw new Base64DecodingException
+		("US-ASCII encoding not available on platform: " + e);
+	}
+    }
+
    protected final static byte[] decodeInternal(byte[] base64Data) throws Base64DecodingException {
        // remove white spaces
        int len = removeWhiteSpace(base64Data);
