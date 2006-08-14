@@ -89,17 +89,17 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 		   //Create a retrieval method over the given element
 		   RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
 	       String type = rm.getType();		   
-		   XMLSignatureInput resource=this.resolveInput(rm,BaseURI);			
+		   XMLSignatureInput resource=resolveInput(rm,BaseURI);			
            if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 //a raw certificate, direct parsing is done!
-            	X509Certificate cert=this.getRawCertificate(resource);
+            	X509Certificate cert=getRawCertificate(resource);
 				if (cert != null) {
 			         return cert.getPublicKey();
 			    }
 				return null;
             };
-			Element e = obtainRefrenceElement(resource);
-			return this.resolveKey(e,BaseURI,storage);
+			Element e = obtainRefrenceElement(resource); 
+			return resolveKey(e,BaseURI,storage);
 	  } catch (XMLSecurityException ex) {
          log.debug("XMLSecurityException", ex);
       } catch (CertificateException ex) {
@@ -114,7 +114,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
       return null;
    }
 
-   private Element obtainRefrenceElement(XMLSignatureInput resource) throws CanonicalizationException, ParserConfigurationException, IOException, SAXException, KeyResolverException {
+   static private Element obtainRefrenceElement(XMLSignatureInput resource) throws CanonicalizationException, ParserConfigurationException, IOException, SAXException, KeyResolverException {
 	   Element e;
 	   if (resource.isElement()){
 		   e=(Element) resource.getSubNode();
@@ -124,7 +124,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 	   } else {
 		   //Retrieved resource is an inputStream
 		   byte inputBytes[] = resource.getBytes();
-		   e = this.getDocFromBytes(inputBytes);						
+		   e = getDocFromBytes(inputBytes);						
 		   //otherwise, we parse the resource, create an Element and delegate
 		   if (log.isDebugEnabled()) 
 			   log.debug("we have to parse " + inputBytes.length + " bytes");
@@ -151,13 +151,13 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 	   try {
          RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
 		 String type = rm.getType();		   
-		 XMLSignatureInput resource=this.resolveInput(rm,BaseURI);			         
+		 XMLSignatureInput resource=resolveInput(rm,BaseURI);			         
 		 if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
-        	X509Certificate cert=this.getRawCertificate(resource);
+        	X509Certificate cert=getRawCertificate(resource);
             return cert;
 		 } 
 		 Element e = obtainRefrenceElement(resource);
-		 return this.resolveCertificate(e,BaseURI,storage);
+		 return resolveCertificate(e,BaseURI,storage);
       } catch (XMLSecurityException ex) {
          log.debug("XMLSecurityException", ex);
       } catch (CertificateException ex) {
@@ -180,7 +180,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @return
     * @throws KeyResolverException 
     */
-   private X509Certificate resolveCertificate(Element e,String BaseURI,StorageResolver storage) throws KeyResolverException{
+   static private X509Certificate resolveCertificate(Element e,String BaseURI,StorageResolver storage) throws KeyResolverException{
 		  if (log.isDebugEnabled()) 
 			  log.debug("Now we have a {" + e.getNamespaceURI() + "}"+ e.getLocalName() + " Element");
 		  //An element has been provided
@@ -198,7 +198,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @return
     * @throws KeyResolverException 
     */
-   private PublicKey resolveKey(Element e,String BaseURI,StorageResolver storage) throws KeyResolverException{
+   static private PublicKey resolveKey(Element e,String BaseURI,StorageResolver storage) throws KeyResolverException{
 		  if (log.isDebugEnabled()) 
 			  log.debug("Now we have a {" + e.getNamespaceURI() + "}"+ e.getLocalName() + " Element");
 		  //An element has been provided
@@ -208,7 +208,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 		  return null;
    }
 
-   private X509Certificate getRawCertificate(XMLSignatureInput resource) throws CanonicalizationException, IOException, CertificateException{
+   static private X509Certificate getRawCertificate(XMLSignatureInput resource) throws CanonicalizationException, IOException, CertificateException{
 	   byte inputBytes[] = resource.getBytes();	   
        // if the resource stores a raw certificate, we have to handle it
        CertificateFactory certFact =CertificateFactory.getInstance(XMLX509Certificate.JCA_CERT_ID);
@@ -220,7 +220,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @return
     * @throws XMLSecurityException 
     */
-   private XMLSignatureInput resolveInput(RetrievalMethod rm,String BaseURI) throws XMLSecurityException{
+   static private XMLSignatureInput resolveInput(RetrievalMethod rm,String BaseURI) throws XMLSecurityException{
        Attr uri = rm.getURIAttr();
 	   //Apply the trnasforms
        Transforms transforms = rm.getTransforms();
@@ -243,7 +243,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @return the Document Element after parsing bytes 
     * @throws KeyResolverException if something goes wrong
     */
-   Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
+   static Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
       try {
          javax.xml.parsers.DocumentBuilderFactory dbf =javax.xml.parsers.DocumentBuilderFactory.newInstance();
          dbf.setNamespaceAware(true);
@@ -288,24 +288,21 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 	   List parents=new ArrayList(10);
   		
   		//Obtain all the parents of the elemnt
-  		Element parent=e;
-  		while (parent!=null) {
-  			parents.add(parent);
-  			Node n=parent.getParentNode();
+  		do {
+  			parents.add(e);
+  			Node n=e.getParentNode();
   			if (!(n instanceof Element )) {
   				break;
   			}
-  			parent=(Element)n;
-  		}
+  			e=(Element)n;
+  		} while (e!=null);
   		//Visit them in reverse order.
-  		boolean firstFound=false;
-  		ListIterator it2=parents.listIterator(parents.size());
+  		ListIterator it2=parents.listIterator(parents.size()-1);
+  		Element ele=null;
   		while (it2.hasPrevious()) {
-  			Element ele=(Element)it2.previous();
+  			ele=(Element)it2.previous();
   			if (set.contains(ele)) {
-  				if (firstFound)
-  					return ele;
-  				firstFound=true;
+  				return ele;
   			}
      	}
 		return null;

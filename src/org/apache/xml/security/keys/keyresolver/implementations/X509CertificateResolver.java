@@ -86,16 +86,22 @@ public class X509CertificateResolver extends KeyResolverSpi {
       try {
     	  Element[] els=XMLUtils.selectDsNodes(element.getFirstChild(),
                   Constants._TAG_X509CERTIFICATE);
-         if ((els == null) || (els.length == 0)) {           
-               return null;            
+         if ((els == null) || (els.length == 0)) {  
+        	 Element el=XMLUtils.selectDsNode(element.getFirstChild(),
+                     Constants._TAG_X509DATA,0);
+             if (el!=null) {
+            	 return engineResolveX509Certificate(el, BaseURI, storage);
+             }        	 
+        	 return null;            
          }
 
          // populate Object array
          for (int i = 0; i < els.length; i++) {
         	 XMLX509Certificate xmlCert=new XMLX509Certificate(els[i], BaseURI);
         	 X509Certificate cert = xmlCert.getX509Certificate();
-            if (cert!=null)
+            if (cert!=null) {
             	return cert;
+            }
          }
          return null;
       } catch (XMLSecurityException ex) {

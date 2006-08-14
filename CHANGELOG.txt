@@ -40,7 +40,7 @@ New in v...
 	acastro.dit@aeat.es for fix.
 	Big optimizations in XPath2 transformation.
 	Fixed bug 40245 in XPATH2 transformation(only in development version)
-	    
+	Fixed bug no resolver for X509Data with just a X509Certificate.	    
 		
 New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
