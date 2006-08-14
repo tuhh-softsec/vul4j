@@ -20,7 +20,10 @@ package org.apache.xml.security.transforms.implementations;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -141,7 +144,8 @@ public class TransformXPath2Filter extends TransformSpi {
          }
 
          
-         input.addNodeFilter(new XPath2NodeFilter(unionNodes,substractNodes,intersectNodes));
+         input.addNodeFilter(new XPath2NodeFilter(convertNodeListToSet(unionNodes),
+        		 convertNodeListToSet(substractNodes),convertNodeListToSet(intersectNodes)));
          input.setNodeSet(true);
          return input;
       } catch (TransformerException ex) {
@@ -162,18 +166,39 @@ public class TransformXPath2Filter extends TransformSpi {
          throw new TransformationException("empty", ex);
       } 
    }
+   static Set convertNodeListToSet(List l){
+	   Set result=new HashSet();
+	   for (int j=0;j<l.size();j++) {
+		   NodeList rootNodes=(NodeList) l.get(j);	   
+	       int length = rootNodes.getLength();
+
+	       for (int i = 0; i < length; i++) {
+	            Node rootNode = rootNodes.item(i);
+	            result.add(rootNode);
+	            
+	         }
+	         
+	   }
+	   return result;
+   }
 }
 
 class XPath2NodeFilter implements NodeFilter {
-	XPath2NodeFilter(List unionNodes, List substractNodes,
-			List intersectNodes) {
+	boolean hasUnionNodes;
+	boolean hasSubstractNodes;
+	boolean hasIntersectNodes;
+	XPath2NodeFilter(Set unionNodes, Set substractNodes,
+			Set intersectNodes) {
 		this.unionNodes=unionNodes;
+		hasUnionNodes=!unionNodes.isEmpty();
 		this.substractNodes=substractNodes;
+		hasSubstractNodes=!substractNodes.isEmpty();
 		this.intersectNodes=intersectNodes;
+		hasIntersectNodes=!intersectNodes.isEmpty();
 	}
-	List unionNodes=new ArrayList();
-	List substractNodes=new ArrayList();
-	List intersectNodes=new ArrayList();
+	Set unionNodes;
+	Set substractNodes;
+	Set intersectNodes;
 
 
    /**
@@ -181,27 +206,71 @@ class XPath2NodeFilter implements NodeFilter {
     */
    public int isNodeInclude(Node currentNode) {	 
 	   boolean notIncluded=false;
-	   if (!substractNodes.isEmpty() && rooted(currentNode, substractNodes)) {
+	   if (hasSubstractNodes && rooted(currentNode, substractNodes)) {
 		      notIncluded = true;
-	   } else if (!intersectNodes.isEmpty() && !rooted(currentNode, intersectNodes)) {
+	   } else if (hasIntersectNodes && !rooted(currentNode, intersectNodes)) {
 		   notIncluded = true;
 	   }
 	   	   
 	  //TODO OPTIMIZE
       if (!notIncluded)     	        
     	  return 1;
-      boolean hasUnionNodes=!unionNodes.isEmpty();
       if (hasUnionNodes && rooted(currentNode, unionNodes)) {
 		   return 1;
 	   }
-      if (!hasUnionNodes) {
+      if (!hasUnionNodes && !hasIntersectNodes) {
     	  return -1; //Not union nodes to safe a node that has been exclude.
       }
       return 0;
 
    }
+   int inSubstract=-1;
+   int inIntersect=-1;
+   int inUnion=-1;
    public int isNodeIncludeDO(Node n, int level) {
-	   return isNodeInclude(n);
+	   boolean notIncluded=false;
+	   if (hasSubstractNodes) {
+		   if ((inSubstract==-1) || (level<=inSubstract)) {
+			   if (inList(n,  substractNodes)) {
+				   inSubstract=level;
+			   } else {
+				   inSubstract=-1;   			   
+			   }		   
+		   } 
+		   if (inSubstract!=-1){
+			   notIncluded=true;
+		   }
+	   } 
+	   if (!notIncluded){ 
+		   if (hasIntersectNodes) {
+		   if ((inIntersect==-1) || (level<=inIntersect)) {
+			   if (!inList(n,  intersectNodes)) {
+				   inIntersect=-1;
+				   notIncluded = true;
+			   } else {
+				   notIncluded=false;
+				   inIntersect=level;   			   
+			   }		   
+		   }
+		   }
+	   }
+	   	   
+	  if (level<=inUnion)
+		   inUnion=-1;
+      if (!notIncluded)     	        
+    	  return 1;
+      if (hasUnionNodes) {
+    	  if ((inUnion==-1) && inList(n,  unionNodes)) {
+    		  inUnion=level;
+    	  }
+    	  if (inUnion!=-1)
+    		  return 1;
+      }
+		
+      if (!hasUnionNodes && !hasIntersectNodes) {
+    	  return -1; //Not union nodes to safe a node that has been exclude.
+      }
+      return 0;
    }
 
    /**
@@ -211,20 +280,28 @@ class XPath2NodeFilter implements NodeFilter {
     *
     * @return if rooted bye the rootnodes
     */
-   boolean rooted(Node currentNode, List nodeList ) {
-	   for (int j=0;j<nodeList.size();j++) {
-		   NodeList rootNodes=(NodeList) nodeList.get(j);	   
-      int length = rootNodes.getLength();
-
-      for (int i = 0; i < length; i++) {
-         Node rootNode = rootNodes.item(i);
-
-         if (XMLUtils.isDescendantOrSelf(rootNode,currentNode)) {
-            return true;
-         }
-      }
-   
+   static boolean  rooted(Node currentNode, Set nodeList ) {
+	   if (nodeList.contains(currentNode)) {
+		   return true;
+	   }
+	   Iterator it=nodeList.iterator();
+	   while (it.hasNext()) {
+	   		Node rootNode = (Node) it.next();
+			if (XMLUtils.isDescendantOrSelf(rootNode,currentNode)) {
+				   return true;
+			}
 	   }
 	   return false;
    }
+   
+      /**
+       * Method rooted
+       * @param currentNode 
+       * @param nodeList 
+       *
+       * @return if rooted bye the rootnodes
+       */
+      static boolean  inList(Node currentNode, Set nodeList ) {
+   	      return nodeList.contains(currentNode);
+      }
 }

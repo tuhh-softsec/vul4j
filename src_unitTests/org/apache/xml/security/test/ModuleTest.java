@@ -19,6 +19,7 @@ package org.apache.xml.security.test;
 import org.apache.xml.security.c14n.implementations.NameSpaceSymbTableTest;
 import org.apache.xml.security.c14n.implementations.UtfHelperTest;
 import org.apache.xml.security.c14n.implementations.UtfHelpper;
+import org.apache.xml.security.test.transforms.implementations.Xpath2TransformationTest;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -58,6 +59,7 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
       suite.addTest(NameSpaceSymbTableTest.suite());
       suite.addTest(UtfHelperTest.suite());
+      suite.addTest(Xpath2TransformationTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
       //J+

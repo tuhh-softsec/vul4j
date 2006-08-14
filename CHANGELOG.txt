@@ -38,6 +38,8 @@ New in v...
 	Optimization in RetrievelMethod handling don't reparse the bytes into a DOM tree if not needed thanks David Garcia.
 	Fixed bug 40215: Base64 is not working in EBCDIC platform. Thanks to
 	acastro.dit@aeat.es for fix.
+	Big optimizations in XPath2 transformation.
+	Fixed bug 40245 in XPATH2 transformation(only in development version)
 	    
 		
 New in v1.3

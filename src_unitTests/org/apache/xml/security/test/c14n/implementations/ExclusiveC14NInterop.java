@@ -156,14 +156,7 @@ public class ExclusiveC14NInterop extends InteropTest {
 
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.parse(f);
-      long start = System.currentTimeMillis();
-
-      //XMLUtils.circumventBug2650(doc);
-
-      long end = System.currentTimeMillis();
-
-      log.debug("fixSubtree took " + (int) (end - start));
-
+      
       Element sigElement =
          (Element) doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
                                               Constants._TAG_SIGNATURE).item(0);

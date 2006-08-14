@@ -30,4 +30,6 @@ RAUL:
 [X] Migrate to JSR105 API
 [X] Optimize certifacate & public key getting. for loops look wrong, 
 	better registring..
-[ ] Optimize xpath2 to only look for the node not for the node and all the parents.
+[X] Optimize xpath2 to only look for the node not for the node and all the parents.
+[ ] There are several places in the library where a Dom is created from a byte array
+see if this is really needed and unified this creation in one class.
