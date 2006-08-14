@@ -205,30 +205,31 @@ class XPath2NodeFilter implements NodeFilter {
     * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
     */
    public int isNodeInclude(Node currentNode) {	 
-	   boolean notIncluded=false;
+	   int result=1;
+	   
 	   if (hasSubstractNodes && rooted(currentNode, substractNodes)) {
-		      notIncluded = true;
+		      result = -1;
 	   } else if (hasIntersectNodes && !rooted(currentNode, intersectNodes)) {
-		   notIncluded = true;
+		   result = 0;
 	   }
 	   	   
 	  //TODO OPTIMIZE
-      if (!notIncluded)     	        
+      if (result==1)     	        
     	  return 1;
-      if (hasUnionNodes && rooted(currentNode, unionNodes)) {
+      if (hasUnionNodes) { 
+    	  if (rooted(currentNode, unionNodes)) {
 		   return 1;
-	   }
-      if (!hasUnionNodes && !hasIntersectNodes) {
-    	  return -1; //Not union nodes to safe a node that has been exclude.
-      }
-      return 0;
+    	  }
+    	  result=0;
+      }    	
+      return result;
 
    }
    int inSubstract=-1;
    int inIntersect=-1;
    int inUnion=-1;
    public int isNodeIncludeDO(Node n, int level) {
-	   boolean notIncluded=false;
+	   int result=1;
 	   if (hasSubstractNodes) {
 		   if ((inSubstract==-1) || (level<=inSubstract)) {
 			   if (inList(n,  substractNodes)) {
@@ -238,17 +239,16 @@ class XPath2NodeFilter implements NodeFilter {
 			   }		   
 		   } 
 		   if (inSubstract!=-1){
-			   notIncluded=true;
+			   result=-1;
 		   }
 	   } 
-	   if (!notIncluded){ 
+	   if (result!=-1){ 
 		   if (hasIntersectNodes) {
 		   if ((inIntersect==-1) || (level<=inIntersect)) {
 			   if (!inList(n,  intersectNodes)) {
 				   inIntersect=-1;
-				   notIncluded = true;
+				   result=0;
 			   } else {
-				   notIncluded=false;
 				   inIntersect=level;   			   
 			   }		   
 		   }
@@ -257,7 +257,7 @@ class XPath2NodeFilter implements NodeFilter {
 	   	   
 	  if (level<=inUnion)
 		   inUnion=-1;
-      if (!notIncluded)     	        
+      if (result==1)     	        
     	  return 1;
       if (hasUnionNodes) {
     	  if ((inUnion==-1) && inList(n,  unionNodes)) {
@@ -265,12 +265,10 @@ class XPath2NodeFilter implements NodeFilter {
     	  }
     	  if (inUnion!=-1)
     		  return 1;
+    	  result=0;
       }
-		
-      if (!hasUnionNodes && !hasIntersectNodes) {
-    	  return -1; //Not union nodes to safe a node that has been exclude.
-      }
-      return 0;
+		      
+      return result;
    }
 
    /**
