@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 public class UtfHelpper {
 
 	final static void writeByte(final String str,final OutputStream out,Map cache) throws IOException {
