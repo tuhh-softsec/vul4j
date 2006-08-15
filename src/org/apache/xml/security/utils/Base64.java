@@ -20,18 +20,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.math.BigInteger;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
-import org.xml.sax.InputSource;
 
 
 /**
@@ -263,7 +258,7 @@ public class Base64 {
     *
     */
    public final static byte[] decode(byte[] base64) throws Base64DecodingException  {   	   
-         return decodeInternal(base64);
+         return decodeInternal(base64, -1);
    }
 
 
@@ -485,20 +480,29 @@ public class Base64 {
      */
     public final static byte[] decode(String encoded) throws Base64DecodingException {
 
-	if (encoded == null)
-	    return null;
-
-	try {
-            return decodeInternal(encoded.getBytes("US-ASCII"));
-	} catch (java.io.UnsupportedEncodingException e) {
-	    throw new Base64DecodingException
-		("US-ASCII encoding not available on platform: " + e);
+    	if (encoded == null)
+    		return null;
+    	byte []bytes=new byte[encoded.length()];
+    	int len=getBytesInternal(encoded, bytes);
+    	return decodeInternal(bytes, len);
 	}
-    }
 
-   protected final static byte[] decodeInternal(byte[] base64Data) throws Base64DecodingException {
+    protected static final int getBytesInternal(String s,byte[] result) {
+    	int length=s.length();
+    	
+    	int newSize=0;
+    	for (int i = 0; i < length; i++) {
+            byte dataS=(byte)s.charAt(i);
+            if (!isWhiteSpace(dataS))
+                result[newSize++] = dataS;
+        }
+    	return newSize;
+    	
+    }
+   protected final static byte[] decodeInternal(byte[] base64Data, int len) throws Base64DecodingException {
        // remove white spaces
-       int len = removeWhiteSpace(base64Data);
+	   if (len==-1)
+          len = removeWhiteSpace(base64Data);
        
        if (len%FOURBYTE != 0) {
            throw new Base64DecodingException("decoding.divisible.four");
@@ -577,7 +581,20 @@ public class Base64 {
        }            
        return decodedData;
    }
-   
+   /**
+    * Decodes Base64 data into  outputstream
+    *
+    * @param base64Data String containing Base64 data
+    * @param os the outputstream
+    * @throws IOException
+    * @throws Base64DecodingException
+    */
+   public final static void decode(String base64Data,
+        OutputStream os) throws Base64DecodingException, IOException {
+	   byte[] bytes=new byte[base64Data.length()];
+	   int len=getBytesInternal(base64Data, bytes);
+	   decode(bytes,os,len);
+   }
    /**
     * Decodes Base64 data into  outputstream
     *
@@ -588,8 +605,14 @@ public class Base64 {
     */
    public final static void decode(byte[] base64Data,
         OutputStream os) throws Base64DecodingException, IOException {	    
-    // remove white spaces
-    int len = removeWhiteSpace(base64Data);
+	    decode(base64Data,os,-1);
+   }
+   protected final static void decode(byte[] base64Data,
+		        OutputStream os,int len) throws Base64DecodingException, IOException {	    
+		   
+	// remove white spaces
+    if (len==-1)
+       len = removeWhiteSpace(base64Data);
     
     if (len%FOURBYTE != 0) {
         throw new Base64DecodingException("decoding.divisible.four");

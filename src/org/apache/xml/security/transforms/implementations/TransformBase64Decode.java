@@ -113,7 +113,7 @@ public class TransformBase64Decode extends TransformSpi {
          	byte[] decodedBytes = Base64.decode(sb.toString());            
          	return new XMLSignatureInput(decodedBytes);
          } 
-         	Base64.decode(sb.toString().getBytes(),os);
+         	Base64.decode(sb.toString(),os);
             XMLSignatureInput output=new XMLSignatureInput((byte[])null);
             output.setOutputStream(os);
             return output;

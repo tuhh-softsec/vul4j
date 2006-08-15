@@ -37,10 +37,11 @@ New in v...
 	Added ECDSA signature thanks Markus Lindner 
 	Optimization in RetrievelMethod handling don't reparse the bytes into a DOM tree if not needed thanks David Garcia.
 	Fixed bug 40215: Base64 is not working in EBCDIC platform. Thanks to
-	acastro.dit@aeat.es for fix.
+	     acastro.dit@aeat.es for fix.
 	Big optimizations in XPath2 transformation.
 	Fixed bug 40245 in XPATH2 transformation(only in development version)
-	Fixed bug no resolver for X509Data with just a X509Certificate.	    
+	Fixed bug no resolver for X509Data with just a X509Certificate.	
+	Optimization in Base64 to do simple transformation from String to  byte[]    
 		
 New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
