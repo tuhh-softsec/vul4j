@@ -251,55 +251,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.0-alpha-7
      */
-    public void addArchivedFileSet( File archiveFile, Map pathMappings )
-        throws ArchiverException
-    {
-        addArchivedFileSet( archiveFile, "", pathMappings );
-    }
-    
-    /**
-     * @since 1.0-alpha-7
-     */
-    public void addArchivedFileSet( File archiveFile, String prefix, Map pathMappings )
-        throws ArchiverException
-    {
-        File tempDir = extractArchive( archiveFile );
-
-        DirectoryScanner scanner = new DirectoryScanner();
-
-        scanner.setIncludes( new String[]{ "**/*" } );
-
-        String basedir = tempDir.getAbsolutePath();
-        
-        scanner.setBasedir( basedir );
-        scanner.scan();
-        
-        String[] sourcePaths = scanner.getIncludedFiles();
-        
-        String formattedPrefix = prefix;
-        
-        if ( formattedPrefix.length() > 0 && !formattedPrefix.endsWith( "/" ) )
-        {
-            formattedPrefix += "/";
-        }
-        
-        for ( int i = 0; i < sourcePaths.length; i++ )
-        {
-            String sourcePath = sourcePaths[i];
-            
-            String destPath = (String) pathMappings.get( sourcePath );
-            
-            // only include those files which are mapped.
-            if ( destPath != null )
-            {
-                String fullDestPath = formattedPrefix + destPath;
-                
-                addFile( new File( tempDir, sourcePath ), fullDestPath );
-            }
-        }
-    }
-
-    private File extractArchive( File archiveFile )
+    public void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
         throws ArchiverException
     {
         UnArchiver unArchiver;
@@ -327,17 +279,6 @@ public abstract class AbstractArchiver
         {
             throw new ArchiverException( "Error adding archived file-set. Failed to extract: " + archiveFile, e );
         }
-
-        return tempDir;
-    }
-
-    /**
-     * @since 1.0-alpha-7
-     */
-    public void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
-        throws ArchiverException
-    {
-        File tempDir = extractArchive( archiveFile );
 
         addDirectory( tempDir, prefix, includes, excludes );
     }
@@ -370,17 +311,17 @@ public abstract class AbstractArchiver
     }
 
     /**
-     * Allows us to pull the ArchiverManager instance out of the container without causing a chicken-and-egg
-     * instantiation/composition problem.
+     * Allows us to pull the ArchiverManager instance out of the container without
+     * causing a chicken-and-egg instantiation/composition problem.
      */
     public void contextualize( Context context )
         throws ContextException
     {
-        PlexusContainer container = ( PlexusContainer ) context.get( PlexusConstants.PLEXUS_KEY );
+        PlexusContainer container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
 
         try
         {
-            archiverManager = ( ArchiverManager ) container.lookup( ArchiverManager.ROLE );
+            archiverManager = (ArchiverManager) container.lookup( ArchiverManager.ROLE );
         }
         catch ( ComponentLookupException e )
         {
