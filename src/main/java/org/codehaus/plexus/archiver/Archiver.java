@@ -54,6 +54,12 @@ public interface Archiver
 
     void addArchivedFileSet( File archiveFile, String prefix )
         throws ArchiverException;
+    
+    void addArchivedFileSet( File archiveFile, Map pathMappings )
+        throws ArchiverException;
+
+    void addArchivedFileSet( File archiveFile, String prefix, Map pathMappings )
+        throws ArchiverException;
 
     void addArchivedFileSet( File archiveFile, String[] includes, String[] excludes )
         throws ArchiverException;
