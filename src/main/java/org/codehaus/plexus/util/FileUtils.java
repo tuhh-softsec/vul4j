@@ -135,6 +135,8 @@ public class FileUtils
      */
     public static final int ONE_GB = ONE_KB * ONE_MB;
 
+    public static String FS = System.getProperty( "file.separator" );
+
     public static String[] getDefaultExcludes()
     {
         return DirectoryScanner.DEFAULTEXCLUDES;
@@ -1487,8 +1489,6 @@ public class FileUtils
         return files;
     }
 
-    public static String FS = System.getProperty( "file.separator" );
-
     /**
      * Return a list of files as String depending options.
      * This method use case sensitive file name.
@@ -1521,6 +1521,61 @@ public class FileUtils
                                      boolean isCaseSensitive )
         throws IOException
     {
+        return getFileAndDirectoryNames( directory, includes, excludes, includeBasedir, isCaseSensitive, true, false );
+    }
+
+    /**
+     * Return a list of directories as String depending options.
+     * This method use case sensitive file name.
+     * 
+     * @param directory the directory to scan
+     * @param includes the includes pattern, comma separated
+     * @param excludes the excludes pattern, comma separated
+     * @param includeBasedir true to include the base dir in each String of file
+     * @return a list of directories as String
+     * @throws IOException
+     */
+    public static List getDirectoryNames( File directory, String includes, String excludes, boolean includeBasedir )
+        throws IOException
+    {
+        return getDirectoryNames( directory, includes, excludes, includeBasedir, true );
+    }
+
+    /**
+     * Return a list of directories as String depending options.
+     * 
+     * @param directory the directory to scan
+     * @param includes the includes pattern, comma separated
+     * @param excludes the excludes pattern, comma separated
+     * @param includeBasedir true to include the base dir in each String of file
+     * @param isCaseSensitive true if case sensitive
+     * @return a list of directories as String
+     * @throws IOException
+     */
+    public static List getDirectoryNames( File directory, String includes, String excludes, boolean includeBasedir,
+                                     boolean isCaseSensitive )
+        throws IOException
+    {
+        return getFileAndDirectoryNames( directory, includes, excludes, includeBasedir, isCaseSensitive, false, true );
+    }
+
+    /**
+     * Return a list of files as String depending options.
+     * 
+     * @param directory the directory to scan
+     * @param includes the includes pattern, comma separated
+     * @param excludes the excludes pattern, comma separated
+     * @param includeBasedir true to include the base dir in each String of file
+     * @param isCaseSensitive true if case sensitive
+     * @param getFiles true if get files
+     * @param getDirectories true if get directories
+     * @return a list of files as String
+     * @throws IOException
+     */
+    public static List getFileAndDirectoryNames( File directory, String includes, String excludes, boolean includeBasedir,
+                                     boolean isCaseSensitive, boolean getFiles, boolean getDirectories)
+        throws IOException
+    {
         DirectoryScanner scanner = new DirectoryScanner();
 
         scanner.setBasedir( directory );
@@ -1539,19 +1594,39 @@ public class FileUtils
 
         scanner.scan();
 
-        String[] files = scanner.getIncludedFiles();
-
         List list = new ArrayList();
 
-        for ( int i = 0; i < files.length; i++ )
+        if ( getFiles )
         {
-            if ( includeBasedir )
+            String[] files = scanner.getIncludedFiles();
+
+            for ( int i = 0; i < files.length; i++ )
             {
-                list.add( directory + FileUtils.FS + files[i] );
+                if ( includeBasedir )
+                {
+                    list.add( directory + FileUtils.FS + files[i] );
+                }
+                else
+                {
+                    list.add( files[i] );
+                }
             }
-            else
+        }
+
+        if ( getDirectories )
+        {
+            String[] directories = scanner.getIncludedDirectories();
+
+            for ( int i = 0; i < directories.length; i++ )
             {
-                list.add( files[i] );
+                if ( includeBasedir )
+                {
+                    list.add( directory + FileUtils.FS + directories[i] );
+                }
+                else
+                {
+                    list.add( directories[i] );
+                }
             }
         }
 
