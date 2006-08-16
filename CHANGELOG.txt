@@ -1,5 +1,17 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
-New in v...
+New in ...
+New in v1.4beta2
+    Optimization in c14n in node-sets.
+	Optimization for the xml:* inheritance in inclusive the c14n.
+	Added ECDSA signature thanks Markus Lindner 
+	Optimization in RetrievelMethod handling don't reparse the bytes into a DOM tree if not needed thanks David Garcia.
+	Fixed bug 40215: Base64 is not working in EBCDIC platform. Thanks to
+	     acastro.dit@aeat.es for fix.
+	Big optimizations in XPath2 transformation.
+	Fixed bug 40245 in XPATH2 transformation(only in development version)
+	Fixed bug no resolver for X509Data with just a X509Certificate.	
+	Optimization in Base64 to do simple transformation from String to  byte[]
+New in v1.4beta1
 	Fixed bug 38668: Add XMLCipher.encryptData method that takes 
 			 serialized data as parameter (mullan)
 	Fixed bug 39273: JSR 105 DOMCryptoContext.setIdAttributeNS not working 
@@ -31,17 +43,7 @@ New in v...
 	Fixed bug 40032. Fixed BUG 40031 Fixed bug when the prefix digital signature uri is not null.
 	Changes in the NodeFilter API in order to let the transformations
          do some optimizations take into account the c14n order.
-	Optimization in signature transformation in node-sets(xpath, xpath2), 20-40% speed-up.
-	Optimization in c14n in node-sets.
-	Optimization for the xml:* inheritance in inclusive the c14n.
-	Added ECDSA signature thanks Markus Lindner 
-	Optimization in RetrievelMethod handling don't reparse the bytes into a DOM tree if not needed thanks David Garcia.
-	Fixed bug 40215: Base64 is not working in EBCDIC platform. Thanks to
-	     acastro.dit@aeat.es for fix.
-	Big optimizations in XPath2 transformation.
-	Fixed bug 40245 in XPATH2 transformation(only in development version)
-	Fixed bug no resolver for X509Data with just a X509Certificate.	
-	Optimization in Base64 to do simple transformation from String to  byte[]    
+	Optimization in signature transformation in node-sets(xpath, xpath2), 20-40% speed-up.	    
 		
 New in v1.3
 	Init-Don't fail if a transformation don't have all of its dependecies.
