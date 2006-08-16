@@ -1089,7 +1089,7 @@ public class FileUtils
         }
 
         // deal with absolute files
-        if ( filenm.startsWith( File.separator ) )
+        if ( filenm.startsWith( File.separator ) || ( Os.isFamily( "windows" ) && filenm.indexOf( ":" ) > 0 ) )
         {
             File file = new File( filenm );
 
