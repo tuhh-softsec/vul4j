@@ -22,6 +22,15 @@ limitations under the License.
   <body> 
     <section>
       <title>News</title>
+      <section>      
+      	<title>August 2006</title>
+		<p>
+		  Version 1.3 of the C++ library has been released. This release
+          features performance improvements and a complete message set
+          for XKMS.
+		  <link href="site:changes">changelog</link> for more information.
+		</p>
+      </section>
       <section>
 		<title>October 2005</title>
 		<p>

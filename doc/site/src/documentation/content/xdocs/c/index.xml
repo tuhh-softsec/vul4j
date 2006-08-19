@@ -22,25 +22,20 @@ limitations under the License.
   
   <body>
     <section>
-      <title>Version 1.2 Released</title>
+      <title>Version 1.3 Released</title>
       <p>
         The Apache XML Security team are proud to announce the release
-        of version 1.2 of the xml-security-c library.  This is the first
-        version of the library to provide processing and handling of 
-        <link href="http://www.w3.org/2001/XKMS/">XML Key Management
-          Specification (XKMS)</link> (currently XML Key Information Service
-        Specification - XKISS - only) messages together with a command
-        line client for performing XKMS requests and reading/dumping
-        XKMS messages.
+        of version 1.3 of the xml-security-c library.  This release now 
+        provides full support for  loading and processing of XKMS messages.
       </p>
       <p>
-        The team were involved in <link href="http://www.w3c.org">World Wide
-          Web Consortium (w3c)</link> interoperability testing with
-        a reference XKMS server built using the xml-security-c library.
+        A number of optimisations have now been built into the canonicalisation
+        routines, creating significant speed improvements when processing
+        large documents.
       </p>
       <p>
         This version also includes a number of other changes and bugfixes,
-        including updates to support Xerces 2.6 with Xalan 1.9.
+        including updates to support Xerces 2.7 with Xalan 1.9.
         See <link href="../changes.html">changes.html</link> for more
         information.
       </p>
@@ -68,6 +63,30 @@ limitations under the License.
     </section>
 	<section>
 	  <title>Old News</title>
+      <section>
+        <title>Version 1.2 Released</title>
+        <p>
+          The Apache XML Security team are proud to announce the release
+          of version 1.2 of the xml-security-c library.  This is the first
+          version of the library to provide processing and handling of 
+          <link href="http://www.w3.org/2001/XKMS/">XML Key Management
+            Specification (XKMS)</link> (currently XML Key Information Service
+          Specification - XKISS - only) messages together with a command
+          line client for performing XKMS requests and reading/dumping
+          XKMS messages.
+        </p>
+        <p>
+          The team were involved in <link href="http://www.w3c.org">World Wide
+            Web Consortium (w3c)</link> interoperability testing with
+          a reference XKMS server built using the xml-security-c library.
+        </p>
+        <p>
+          This version also includes a number of other changes and bugfixes,
+          including updates to support Xerces 2.6 with Xalan 1.9.
+          See <link href="../changes.html">changes.html</link> for more
+          information.
+        </p>
+      </section>
       <section>
         <title>News - March 2004</title>
         <p>
