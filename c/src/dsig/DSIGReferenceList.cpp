@@ -65,7 +65,7 @@ DSIGReference * DSIGReferenceList::removeReference(size_type index) {
 	if (index < m_referenceList.size()) {
 
 		ret = m_referenceList[index];
-		m_referenceList.erase(m_referenceList.begin() + index - 1);
+		m_referenceList.erase(m_referenceList.begin() + index);
 	
 	}
 
@@ -85,7 +85,10 @@ bool DSIGReferenceList::empty() {
 
 	// Clear out the list - note we do NOT delete the reference elements
 
-	return m_referenceList.empty();
+	ReferenceListVectorType::iterator retTest;
+
+	retTest = m_referenceList.erase(m_referenceList.begin(), m_referenceList.end());
+	return (retTest == m_referenceList.end());
 
 }
 
