@@ -121,7 +121,7 @@ public class ArchiveEntry
      * @param file
      * @param filePerm
      * @param dirPerm
-     * @return
+     * @return The created entry
      * @throws ArchiverException when file is neither a directory nor a file.
      */
     public static ArchiveEntry createEntry( String target, File file, int filePerm, int dirPerm )

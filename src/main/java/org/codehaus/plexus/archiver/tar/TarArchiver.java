@@ -144,6 +144,11 @@ public class TarArchiver
     public void createArchive()
         throws ArchiverException, IOException
     {
+    	if ( ! checkForced() )
+    	{
+    		return;
+    	}
+        
         Map archiveEntries = getFiles();
 
         if ( archiveEntries == null || archiveEntries.size() == 0 )
@@ -614,4 +619,8 @@ public class TarArchiver
             return ostream;
         }
     }
+
+	public boolean isSupportingForced() {
+		return true;
+	}
 }

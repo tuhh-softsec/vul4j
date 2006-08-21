@@ -78,4 +78,56 @@ public interface Archiver
     void setIncludeEmptyDirs( boolean includeEmptyDirs );
     
     Map getFiles();
+
+    /**
+     * <p>Returns, whether recreating the archive is forced (default). Setting
+     * this option to false means, that the archiver should compare the
+     * timestamps of included files with the timestamp of the target archive
+     * and rebuild the archive only, if the latter timestamp precedes the
+     * former timestamps. Checking for timestamps will typically offer a
+     * performance gain (in particular, if the following steps in a build
+     * can be suppressed, if an archive isn't recrated) on the cost that
+     * you get inaccurate results from time to time. In particular, removal
+     * of source files won't be detected.</p>
+     * <p>An archiver doesn't necessarily support checks for uptodate. If
+     * so, setting this option to true will simply be ignored. The method
+     * {@link #isSupportingForced()} may be called to check whether an
+     * archiver does support uptodate checks.</p>
+     * @return True, if the target archive should always be created; false
+     *   otherwise
+     * @see #setForced(boolean)
+     * @see #isSupportingForced()
+     */
+    boolean isForced();
+
+    /**
+     * <p>Sets, whether recreating the archive is forced (default). Setting
+     * this option to false means, that the archiver should compare the
+     * timestamps of included files with the timestamp of the target archive
+     * and rebuild the archive only, if the latter timestamp precedes the
+     * former timestamps. Checking for timestamps will typically offer a
+     * performance gain (in particular, if the following steps in a build
+     * can be suppressed, if an archive isn't recrated) on the cost that
+     * you get inaccurate results from time to time. In particular, removal
+     * of source files won't be detected.</p>
+     * <p>An archiver doesn't necessarily support checks for uptodate. If
+     * so, setting this option to true will simply be ignored. The method
+     * {@link #isSupportingForced()} may be called to check whether an
+     * archiver does support uptodate checks.</p>
+     * @param forced True, if the target archive should always be created; false
+     *   otherwise
+     * @see #isForced()
+     * @see #isSupportingForced()
+     */
+    void setForced( boolean forced );
+
+    /**
+     * Returns, whether the archive supports uptodate checks. If so, you
+     * may set {@link #setForced(boolean)} to true.
+     * @return True, if the archiver does support uptodate checks, false
+     *   otherwise
+     * @see #setForced(boolean)
+     * @see #isForced()
+     */
+    boolean isSupportingForced();
 }

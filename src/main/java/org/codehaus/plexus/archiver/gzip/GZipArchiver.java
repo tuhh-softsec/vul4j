@@ -32,6 +32,11 @@ public class GZipArchiver
     public void createArchive()
         throws ArchiverException, IOException
     {
+    	if ( ! checkForced() )
+    	{
+    		return;
+    	}
+        
         GZipCompressor compressor = new GZipCompressor();
         if ( getFiles().size() > 1 )
         {
@@ -42,4 +47,8 @@ public class GZipArchiver
         compressor.setDestFile( getDestFile() );
         compressor.execute();
     }
+
+	public boolean isSupportingForced() {
+		return true;
+	}
 }

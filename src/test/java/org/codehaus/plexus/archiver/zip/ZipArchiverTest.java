@@ -26,8 +26,11 @@ package org.codehaus.plexus.archiver.zip;
 
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnixStat;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
 
 /**
@@ -40,9 +43,15 @@ public class ZipArchiverTest
     public void testCreateArchive()
         throws Exception
     {
-        ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        ZipArchiver archiver = newArchiver();
 
-        archiver.setDefaultDirectoryMode( 0500 );
+        createArchive(archiver);
+    }
+
+    private ZipArchiver newArchiver() throws Exception {
+    	ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+
+    	archiver.setDefaultDirectoryMode( 0500 );
         archiver.setDefaultFileMode( 0400 );
         archiver.addDirectory( getTestFile( "src" ) );
 
@@ -59,6 +68,11 @@ public class ZipArchiverTest
         archiver.addDirectory( getTestFile( "src/test/resources/group-writable/" ), "groupwritable/" );
 
         archiver.setDestFile( getTestFile( "target/output/archive.zip" ) );
+
+        return archiver;
+	}
+
+	private void createArchive(ZipArchiver archiver) throws ArchiverException, IOException {
         archiver.createArchive();
 
         ZipFile zf = new ZipFile( archiver.getDestFile() );
@@ -100,5 +114,33 @@ public class ZipArchiverTest
             }
 
         }
-    }
+	}
+
+	public void testForced()
+		throws Exception
+	{
+        ZipArchiver archiver = newArchiver();
+
+        assertTrue( archiver.isForced() );
+        File f = archiver.getDestFile();
+        f.delete();
+        assertFalse( f.exists() );
+        createArchive( archiver );
+        long l1 = f.lastModified();
+        assertTrue( f.exists() );
+
+        Thread.sleep( 1 ); // Make sure, that we get a new timestamp
+        createArchive( archiver );
+        long l2 = f.lastModified();
+        assertTrue( f.exists() );
+        assertTrue( l2 > l1 );
+
+        assertTrue( archiver.isSupportingForced() );
+        archiver.setForced( false );
+        assertFalse( archiver.isForced() );
+        createArchive( archiver );
+        long l3 = f.lastModified();
+        assertTrue( f.exists() );
+        assertEquals(l2, l3);
+	}
 }

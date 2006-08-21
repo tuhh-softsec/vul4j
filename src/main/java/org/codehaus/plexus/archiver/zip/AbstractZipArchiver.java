@@ -233,6 +233,11 @@ public abstract class AbstractZipArchiver
     public void createArchive()
         throws ArchiverException, IOException
     {
+        if ( ! checkForced() )
+        {
+            return;
+        }
+
         if ( doubleFilePass )
         {
             skipWriting = true;
@@ -883,5 +888,9 @@ public abstract class AbstractZipArchiver
                 finalizer.finalizeArchiveCreation( this );
             }
         }
+    }
+
+    public boolean isSupportingForced() {
+        return true;
     }
 }

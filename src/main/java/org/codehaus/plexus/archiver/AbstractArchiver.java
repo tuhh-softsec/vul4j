@@ -19,6 +19,7 @@ package org.codehaus.plexus.archiver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -66,6 +67,8 @@ public abstract class AbstractArchiver
     private boolean includeEmptyDirs = true;
 
     private int defaultDirectoryMode = DEFAULT_DIR_MODE;
+
+    private boolean forced = true;
 
     // contextualized.
     private ArchiverManager archiverManager;
@@ -327,5 +330,71 @@ public abstract class AbstractArchiver
         {
             throw new ContextException( "Error retrieving ArchiverManager instance: " + e.getMessage(), e );
         }
+    }
+
+    public boolean isForced()
+    {
+    	return forced;
+    }
+
+    public void setForced( boolean forced )
+    {
+    	this.forced = forced;
+    }
+
+    protected boolean isUptodate()
+    {
+    	File zipFile = getDestFile();
+    	long destTimestamp = zipFile.lastModified();
+    	if ( destTimestamp == 0)
+    	{
+    		getLogger().debug( "isUp2date: false (Destination "
+    				+ zipFile.getPath() + " not found.)" );
+    		return false; // File doesn't yet exist
+    	}
+
+    	Map archiveEntries = getFiles();
+    	if ( archiveEntries == null  ||  archiveEntries.isEmpty() )
+    	{
+    		getLogger().debug( "isUp2date: false (No input files.)" );
+    		return false; // No timestamp to compare
+    	}
+
+    	for ( Iterator iter = archiveEntries.values().iterator();  iter.hasNext(); )
+    	{
+    	    ArchiveEntry entry = (ArchiveEntry) iter.next();
+    	    long l = entry.getFile().lastModified();
+    	    if ( l == 0 )
+    	    {
+    	        // Don't know what to do. Safe thing is to assume not up2date.
+    	        getLogger().debug( "isUp2date: false (Input file "
+    	                           + entry.getFile().getPath()
+    	                           + " not found.)" );
+    	        return false;
+    	    }
+    	    if ( l > destTimestamp )
+    	    {
+    	        getLogger().debug( "isUp2date: false (Input file "
+    	                           + entry.getFile().getPath()
+    	                           + " is newer.)" );
+    	        return false;
+    	    }
+    	}
+
+    	getLogger().debug( "isUp2date: true" );
+    	return true;
+    }
+
+    protected boolean checkForced() {
+        if ( !isForced()  &&  isSupportingForced()  &&  isUptodate() )
+        {
+            getLogger().debug( "Archive " + getDestFile() + " is uptodate." ); 
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isSupportingForced() {
+        return false;
     }
 }

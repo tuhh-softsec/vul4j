@@ -32,6 +32,11 @@ public class BZip2Archiver
     public void createArchive()
         throws ArchiverException, IOException
     {
+    	if ( ! checkForced() )
+    	{
+    		return;
+    	}
+        
         BZip2Compressor compressor = new BZip2Compressor();
         if ( getFiles().size() > 1 )
         {
@@ -42,4 +47,8 @@ public class BZip2Archiver
         compressor.setDestFile( getDestFile() );
         compressor.execute();
     }
+
+	public boolean isSupportingForced() {
+		return true;
+	}
 }
