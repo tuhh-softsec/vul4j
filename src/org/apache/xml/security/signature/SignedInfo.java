@@ -133,10 +133,13 @@ private Element signatureMethod;
               throws XMLSecurityException {
 
       super(doc);
-
       this._constructionElement.appendChild(CanonicalizationMethodElem);
       XMLUtils.addReturnToElement(this._constructionElement);
-
+      //Check this?
+      this.c14nMethod=CanonicalizationMethodElem;
+      this._constructionElement.appendChild(c14nMethod);
+      XMLUtils.addReturnToElement(this._constructionElement);
+   
       this._signatureAlgorithm = new SignatureAlgorithm(SignatureMethodElem, null);
 
       signatureMethod=this._signatureAlgorithm.getElement();

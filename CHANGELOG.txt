@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+	Fixed bug 40290.
+
 New in v1.4beta2
     Optimization in c14n in node-sets.
 	Optimization for the xml:* inheritance in inclusive  c14n.
@@ -11,6 +13,7 @@ New in v1.4beta2
 	Fixed bug 40245 in XPATH2 transformation(only in development version)
 	Fixed bug no resolver for X509Data with just a X509Certificate.	
 	Optimization in Base64 to do simple transformation from String to  byte[]
+
 New in v1.4beta1
     Fixed bug 40032. Fixed BUG 40031 Fixed bug when the prefix digital signature uri is not null.
 	Changes in the NodeFilter API in order to let the transformations
