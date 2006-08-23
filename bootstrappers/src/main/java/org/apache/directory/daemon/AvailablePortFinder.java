@@ -30,7 +30,7 @@ import java.util.TreeSet;
 /**
  * Finds currently available server ports.
  *
- * @author The Apache Directory Project
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  * @see <a href="http://www.iana.org/assignments/port-numbers">IANA.org</a>
  */
