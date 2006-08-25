@@ -3,6 +3,7 @@ package org.codehaus.plexus.util.interpolation;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Properties;
 
 public class EnvarBasedValueSource
@@ -13,7 +14,17 @@ public class EnvarBasedValueSource
 
     public EnvarBasedValueSource() throws IOException
     {
-        this.envars = CommandLineUtils.getSystemEnvVars();
+        Properties props = CommandLineUtils.getSystemEnvVars();
+        
+        envars = new Properties();
+        
+        for ( Iterator it = props.keySet().iterator(); it.hasNext(); )
+        {
+            String key = ( String ) it.next();
+            String value = props.getProperty( key );
+            
+            envars.setProperty( key.toLowerCase(), value );
+        }
     }
 
     public Object getValue( String expression )
@@ -25,6 +36,6 @@ public class EnvarBasedValueSource
             expr = expr.substring( "env.".length() );
         }
         
-        return envars.getProperty( expr );
+        return envars.getProperty( expr.toLowerCase() );
     }
 }
