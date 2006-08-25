@@ -161,6 +161,20 @@ public abstract class CommandLineUtils
     public static Properties getSystemEnvVars()
         throws IOException
     {
+        return getSystemEnvVars( true );
+    }
+    
+    /**
+     * Return the shell environment variables. If <code>caseSensitive == true</code>, then envar
+     * keys will all be upper-case.
+     * 
+     * @param caseSensitive Whether environment variable keys should be treated case-sensitively.
+     * @return Properties object of (possibly modified) envar keys mapped to their values.
+     * @throws IOException
+     */
+    public static Properties getSystemEnvVars( boolean caseSensitive )
+        throws IOException
+    {
         Process p = null;
 
         Properties envVars = new Properties();
@@ -200,6 +214,11 @@ public abstract class CommandLineUtils
             if ( idx > 1 )
             {
                 lastKey = line.substring( 0, idx );
+                
+                if ( !caseSensitive )
+                {
+                    lastKey = lastKey.toUpperCase();
+                }
 
                 lastVal = line.substring( idx + 1 );
 
@@ -242,4 +261,5 @@ public abstract class CommandLineUtils
     {
         return ( processes.get( new Long( pid ) ) != null );
     }
+
 }

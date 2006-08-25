@@ -3,7 +3,6 @@ package org.codehaus.plexus.util.interpolation;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Properties;
 
 public class EnvarBasedValueSource
@@ -11,20 +10,31 @@ public class EnvarBasedValueSource
 {
     
     private Properties envars;
+    private final boolean caseSensitive;
 
+    /**
+     * Create a new value source for interpolation based on shell environment variables. In this
+     * case, envar keys ARE CASE SENSITIVE.
+     * 
+     * @throws IOException
+     */
     public EnvarBasedValueSource() throws IOException
     {
-        Properties props = CommandLineUtils.getSystemEnvVars();
+        this( true );
+    }
+
+    /**
+     * Create a new value source for interpolation based on shell environment variables.
+     * 
+     * @param caseSensitive Whether the environment variable key should be treated in a 
+     *                      case-sensitive manner for lookups
+     * @throws IOException
+     */
+    public EnvarBasedValueSource( boolean caseSensitive ) throws IOException
+    {
+        this.caseSensitive = caseSensitive;
         
-        envars = new Properties();
-        
-        for ( Iterator it = props.keySet().iterator(); it.hasNext(); )
-        {
-            String key = ( String ) it.next();
-            String value = props.getProperty( key );
-            
-            envars.setProperty( key.toLowerCase(), value );
-        }
+        envars = CommandLineUtils.getSystemEnvVars( caseSensitive );
     }
 
     public Object getValue( String expression )
@@ -36,6 +46,11 @@ public class EnvarBasedValueSource
             expr = expr.substring( "env.".length() );
         }
         
-        return envars.getProperty( expr.toLowerCase() );
+        if ( !caseSensitive )
+        {
+            expr = expr.toUpperCase();
+        }
+        
+        return envars.getProperty( expr );
     }
 }
