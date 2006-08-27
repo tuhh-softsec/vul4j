@@ -221,7 +221,7 @@ case "$1" in
     $JAVA_HOME/bin/java\
     -Dlog4j.configuration=file://$SERVER_HOME/conf/log4j.properties\
     -Xms384m -Xmx384m \
-    -Xcom.sun.management.jmxremote \
+    -Dcom.sun.management.jmxremote \
     -Xdebug -Xnoagent -Djava.compiler=NONE\
     -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$DEBUG_PORT\
     -jar $DAEMON_HOME/bootstrapper.jar \
