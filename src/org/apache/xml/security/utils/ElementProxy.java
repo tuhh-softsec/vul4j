@@ -108,7 +108,7 @@ public abstract class ElementProxy {
       this._constructionElement = createElementForFamilyLocal(this._doc,
     		  this.getBaseNamespace(), this.getBaseLocalName());      
    }       
-   private Element createElementForFamilyLocal(Document doc, String namespace,
+   protected Element createElementForFamilyLocal(Document doc, String namespace,
            String localName) {	   	  
 	 	  Element result = null;
 	      if (namespace == null) {

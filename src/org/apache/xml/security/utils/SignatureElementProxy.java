@@ -30,14 +30,15 @@ import org.w3c.dom.Element;
  * @version $Revision$
  */
 public abstract class SignatureElementProxy extends ElementProxy {
-
+	protected SignatureElementProxy() {
+	};
    /**
     * Constructor SignatureElementProxy
     *
     * @param doc
     */
    public SignatureElementProxy(Document doc) {
-	   if (doc == null) {
+	      if (doc == null) {
 	         throw new RuntimeException("Document is null");
 	      }
 

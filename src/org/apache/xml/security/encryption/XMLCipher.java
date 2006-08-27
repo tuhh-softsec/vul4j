@@ -3717,7 +3717,14 @@ public class XMLCipher {
 			 * @param doc
 			 */
 			public TransformsImpl(Document doc) {
-				super(doc);
+				if (doc == null) {
+			         throw new RuntimeException("Document is null");
+			      }
+
+			      this._doc = doc;
+			      this._state = ElementProxy.MODE_CREATE;
+				  this._constructionElement =  createElementForFamilyLocal(this._doc,
+			    		  this.getBaseNamespace(), this.getBaseLocalName()); 
 			}
 			/**
              * 

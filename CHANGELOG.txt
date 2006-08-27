@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
 	Fixed bug 40290.
+	Fixed bug 40298
 
 New in v1.4beta2
     Optimization in c14n in node-sets.

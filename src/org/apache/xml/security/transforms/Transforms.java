@@ -77,6 +77,8 @@ public class Transforms extends SignatureElementProxy {
    public static final String TRANSFORM_XPATHFILTERCHGP = "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
    //J+
    Element []transforms;
+   protected Transforms() {	   
+   };
    /**
     * Consturcts {@link Transforms}
     *
