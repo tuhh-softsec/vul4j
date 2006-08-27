@@ -43,12 +43,12 @@ public class ZipArchiverTest
     public void testCreateArchive()
         throws Exception
     {
-        ZipArchiver archiver = newArchiver();
+        ZipArchiver archiver = newArchiver( "archive1.zip" );
 
         createArchive(archiver);
     }
 
-    private ZipArchiver newArchiver() throws Exception {
+    private ZipArchiver newArchiver( String name ) throws Exception {
     	ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
 
     	archiver.setDefaultDirectoryMode( 0500 );
@@ -67,7 +67,7 @@ public class ZipArchiverTest
         archiver.setDefaultDirectoryMode( 0070 );
         archiver.addDirectory( getTestFile( "src/test/resources/group-writable/" ), "groupwritable/" );
 
-        archiver.setDestFile( getTestFile( "target/output/archive.zip" ) );
+        archiver.setDestFile( getTestFile( "target/output/" + name ) );
 
         return archiver;
 	}
@@ -119,7 +119,7 @@ public class ZipArchiverTest
 	public void testForced()
 		throws Exception
 	{
-        ZipArchiver archiver = newArchiver();
+        ZipArchiver archiver = newArchiver( "archive2.zip" );
 
         assertTrue( archiver.isForced() );
         File f = archiver.getDestFile();
