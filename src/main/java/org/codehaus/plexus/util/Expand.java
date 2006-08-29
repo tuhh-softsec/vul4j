@@ -149,7 +149,7 @@ public class Expand
                                 boolean isDirectory )
         throws Exception
     {
-        File f = resolveFile( dir, entryName );
+        File f = resolveFile( dir.getCanonicalFile(), entryName );
         try
         {
             if ( !overwrite && f.exists()
@@ -253,6 +253,7 @@ public class Expand
      *      current platform.
      */
     public File resolveFile( File file, String filename )
+        throws IOException
     {
         filename = filename.replace( '/', File.separatorChar )
             .replace( '\\', File.separatorChar );
@@ -270,7 +271,7 @@ public class Expand
             return new File( filename );
         }
 
-        File helpFile = new File( file.getAbsolutePath() );
+        File helpFile = new File( file.getCanonicalPath() );
         StringTokenizer tok = new StringTokenizer( filename, File.separator );
         while ( tok.hasMoreTokens() )
         {
