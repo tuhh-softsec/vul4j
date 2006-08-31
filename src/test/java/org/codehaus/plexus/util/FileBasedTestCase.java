@@ -57,19 +57,23 @@ public abstract class FileBasedTestCase
         return testDir;
     }
 
-    protected void createFile( final File file, final long size )
+    protected byte[] createFile( final File file, final long size )
         throws IOException
     {
         if ( !file.getParentFile().exists() )
         {
-            throw new IOException( "Cannot create file " + file
-                                   + " as the parent directory does not exist" );
+            throw new IOException( "Cannot create file " + file + " as the parent directory does not exist" );
         }
-        final BufferedOutputStream output =
-            new BufferedOutputStream( new java.io.FileOutputStream( file ) );
+
+        byte[] data = generateTestData( size );
+
+        final BufferedOutputStream output = new BufferedOutputStream( new java.io.FileOutputStream( file ) );
+
         try
         {
-            generateTestData( output, size );
+            output.write( data );
+
+            return data;
         }
         finally
         {

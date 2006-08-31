@@ -783,6 +783,45 @@ public final class FileUtilsTest
 
     }
 
+    public void testCopyDirectoryStructureToSelf()
+        throws Exception
+    {
+        // Make a structure to copy
+        File toFrom = new File( getTestDirectory(), "tofrom" );
+
+        FileUtils.deleteDirectory( toFrom );
+
+        File fRoot = new File( toFrom, "root.txt" );
+
+        File dSub = new File( toFrom, "subdir" );
+
+        File f1 = new File( dSub, "notempty.txt" );
+
+        File dSubSub = new File( dSub, "subsubdir" );
+
+        File f2 = new File( dSubSub, "notemptytoo.txt" );
+
+        assertTrue( toFrom.mkdir() );
+
+        assertTrue( dSub.mkdir() );
+
+        assertTrue( dSubSub.mkdir() );
+
+        byte[] rootData = createFile( fRoot, 100 );
+
+        byte[] f1Data = createFile( f1, 100 );
+
+        byte[] f2Data = createFile( f2, 100 );
+
+        FileUtils.copyDirectoryStructure( toFrom, toFrom );
+
+        assertEqualContent( rootData, fRoot );
+
+        assertEqualContent( f1Data, f1 );
+
+        assertEqualContent( f2Data, f2 );
+    }
+
     public void testFilteredFileCopy()
         throws Exception
     {
