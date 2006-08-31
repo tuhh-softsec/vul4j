@@ -1660,7 +1660,7 @@ public class FileUtils
     public static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory )
         throws IOException
     {
-        copyDirectoryStructure( sourceDirectory, destinationDirectory, false );
+        copyDirectoryStructure( sourceDirectory, destinationDirectory, destinationDirectory, false );
     }
 
     /**
@@ -1679,11 +1679,11 @@ public class FileUtils
     public static void copyDirectoryStructureIfModified( File sourceDirectory, File destinationDirectory )
         throws IOException
     {
-        copyDirectoryStructure( sourceDirectory, destinationDirectory, true );
+        copyDirectoryStructure( sourceDirectory, destinationDirectory, destinationDirectory, true );
     }
 
     private static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory,
-                                                boolean onlyModifiedFiles )
+                                                File rootDestinationDirectory, boolean onlyModifiedFiles )
         throws IOException
     {
         if ( sourceDirectory == null )
@@ -1714,6 +1714,12 @@ public class FileUtils
         {
             File file = files[i];
 
+            if ( file.equals( rootDestinationDirectory ) )
+            {
+                // We don't copy the destination directory in itself
+                continue;
+            }
+
             String dest = file.getAbsolutePath();
 
             dest = dest.substring( sourcePath.length() + 1 );
@@ -1741,7 +1747,7 @@ public class FileUtils
                         "Could not create destination directory '" + destination.getAbsolutePath() + "'." );
                 }
 
-                copyDirectoryStructure( file, destination, onlyModifiedFiles );
+                copyDirectoryStructure( file, destination, rootDestinationDirectory, onlyModifiedFiles );
             }
             else
             {
