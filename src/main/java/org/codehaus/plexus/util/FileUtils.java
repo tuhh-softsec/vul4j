@@ -1660,46 +1660,7 @@ public class FileUtils
     public static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory )
         throws IOException
     {
-        if ( !sourceDirectory.exists() )
-        {
-            throw new IOException( "Source directory doesn't exists (" + sourceDirectory.getAbsolutePath() + ")." );
-        }
-
-        File[] files = sourceDirectory.listFiles();
-
-        String sourcePath = sourceDirectory.getAbsolutePath();
-
-        for ( int i = 0; i < files.length; i++ )
-        {
-            File file = files[i];
-
-            String dest = file.getAbsolutePath();
-
-            dest = dest.substring( sourcePath.length() + 1 );
-
-            File destination = new File( destinationDirectory, dest );
-
-            if ( file.isFile() )
-            {
-                destination = destination.getParentFile();
-
-                FileUtils.copyFileToDirectory( file, destination );
-            }
-            else if ( file.isDirectory() )
-            {
-                if ( !destination.exists() && !destination.mkdirs() )
-                {
-                    throw new IOException(
-                        "Could not create destination directory '" + destination.getAbsolutePath() + "'." );
-                }
-
-                copyDirectoryStructure( file, destination );
-            }
-            else
-            {
-                throw new IOException( "Unknown file type: " + file.getAbsolutePath() );
-            }
-        }
+        copyDirectoryStructure( sourceDirectory, destinationDirectory, false );
     }
 
     /**
@@ -1718,6 +1679,28 @@ public class FileUtils
     public static void copyDirectoryStructureIfModified( File sourceDirectory, File destinationDirectory )
         throws IOException
     {
+        copyDirectoryStructure( sourceDirectory, destinationDirectory, true );
+    }
+
+    private static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory,
+                                                boolean onlyModifiedFiles )
+        throws IOException
+    {
+        if ( sourceDirectory == null )
+        {
+            throw new IOException( "source directory can't be null." );
+        }
+
+        if ( destinationDirectory == null )
+        {
+            throw new IOException( "destination directory can't be null." );
+        }
+
+        if ( sourceDirectory.equals( destinationDirectory ) )
+        {
+            throw new IOException( "source and destination are the same directory." );
+        }
+
         if ( !sourceDirectory.exists() )
         {
             throw new IOException( "Source directory doesn't exists (" + sourceDirectory.getAbsolutePath() + ")." );
@@ -1741,7 +1724,14 @@ public class FileUtils
             {
                 destination = destination.getParentFile();
 
-                copyFileToDirectoryIfModified( file, destination );
+                if ( onlyModifiedFiles )
+                {
+                    copyFileToDirectoryIfModified( file, destination );
+                }
+                else
+                {
+                    copyFileToDirectory( file, destination );
+                }
             }
             else if ( file.isDirectory() )
             {
@@ -1751,7 +1741,7 @@ public class FileUtils
                         "Could not create destination directory '" + destination.getAbsolutePath() + "'." );
                 }
 
-                copyDirectoryStructureIfModified( file, destination );
+                copyDirectoryStructure( file, destination, onlyModifiedFiles );
             }
             else
             {

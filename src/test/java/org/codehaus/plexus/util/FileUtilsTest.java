@@ -26,8 +26,8 @@ package org.codehaus.plexus.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URL;
@@ -52,9 +52,11 @@ public final class FileUtilsTest
     private static final int TEST_DIRECTORY_SIZE = 0;
 
     private final File testFile1;
+
     private final File testFile2;
 
     private static int testFile1Size;
+
     private static int testFile2Size;
 
     public FileUtilsTest()
@@ -303,6 +305,7 @@ public final class FileUtilsTest
     // isFileNewer
 
     // TODO Finish test
+
     public void XtestIsFileNewer()
     {
     }
@@ -366,8 +369,7 @@ public final class FileUtilsTest
         FileUtils.copyFile( testFile1, desintation );
 
         // Copy will occur when desintation is newer
-        assertFalse( "Source file should not have been copied.",
-                     FileUtils.copyFileIfModified( source, desintation ) );
+        assertFalse( "Source file should not have been copied.", FileUtils.copyFileIfModified( source, desintation ) );
     }
 
     // forceDelete
@@ -520,9 +522,7 @@ public final class FileUtilsTest
         }
     }
 
-    private String replaceAll( String text,
-                               String lookFor,
-                               String replaceWith )
+    private String replaceAll( String text, String lookFor, String replaceWith )
     {
         StringBuffer sb = new StringBuffer( text );
         while ( true )
@@ -807,19 +807,20 @@ public final class FileUtilsTest
 
         assertTrue( dSubSub.mkdir() );
 
-        byte[] rootData = createFile( fRoot, 100 );
+        createFile( fRoot, 100 );
 
-        byte[] f1Data = createFile( f1, 100 );
+        createFile( f1, 100 );
 
-        byte[] f2Data = createFile( f2, 100 );
+        createFile( f2, 100 );
 
-        FileUtils.copyDirectoryStructure( toFrom, toFrom );
-
-        assertEqualContent( rootData, fRoot );
-
-        assertEqualContent( f1Data, f1 );
-
-        assertEqualContent( f2Data, f2 );
+        try
+        {
+            FileUtils.copyDirectoryStructure( toFrom, toFrom );
+            fail( "An exception must be thrown." );
+        }
+        catch ( IOException e )
+        {
+        }
     }
 
     public void testFilteredFileCopy()
