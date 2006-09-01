@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -40,6 +41,27 @@ import java.util.Properties;
 public abstract class CommandLineUtils
 {
     private static Map processes = Collections.synchronizedMap( new HashMap() );
+
+    static
+    {
+        Runtime.getRuntime().addShutdownHook( new Thread( "CommandlineUtil shutdown" )
+        {
+            public void run()
+            {
+                if ( processes.size() > 0 )
+                {
+                    System.err.println( "Destroying " + processes.size() + " processes" );
+                    for ( Iterator it = processes.values().iterator(); it.hasNext(); )
+                    {
+                        System.err.println( "Destroying process.." );
+                        ( (Process) it.next() ).destroy();
+
+                    }
+                    System.err.println( "Destroyed " + processes.size() + " processes" );
+                }
+            }
+        } );
+    }
 
     public static class StringStreamConsumer
         implements StreamConsumer
@@ -115,25 +137,19 @@ public abstract class CommandLineUtils
                 }
             }
 
-            if ( outputPumper != null )
+            synchronized ( outputPumper )
             {
-                synchronized ( outputPumper )
+                if ( !outputPumper.isDone() )
                 {
-                    if ( !outputPumper.isDone() )
-                    {
-                        outputPumper.wait();
-                    }
+                    outputPumper.wait();
                 }
             }
 
-            if ( errorPumper != null )
+            synchronized ( errorPumper )
             {
-                synchronized ( errorPumper )
+                if ( !errorPumper.isDone() )
                 {
-                    if ( !errorPumper.isDone() )
-                    {
-                        errorPumper.wait();
-                    }
+                    errorPumper.wait();
                 }
             }
 
@@ -143,7 +159,8 @@ public abstract class CommandLineUtils
         }
         catch ( InterruptedException ex )
         {
-            throw new CommandLineException( "Error while executing external command.", ex );
+            killProcess( new Long( cl.getPid() ) );
+            throw new CommandLineException( "Error while executing external command, process killed.", ex );
         }
         finally
         {
@@ -163,11 +180,11 @@ public abstract class CommandLineUtils
     {
         return getSystemEnvVars( true );
     }
-    
+
     /**
      * Return the shell environment variables. If <code>caseSensitive == true</code>, then envar
      * keys will all be upper-case.
-     * 
+     *
      * @param caseSensitive Whether environment variable keys should be treated case-sensitively.
      * @return Properties object of (possibly modified) envar keys mapped to their values.
      * @throws IOException
@@ -214,7 +231,7 @@ public abstract class CommandLineUtils
             if ( idx > 1 )
             {
                 lastKey = line.substring( 0, idx );
-                
+
                 if ( !caseSensitive )
                 {
                     lastKey = lastKey.toUpperCase();
