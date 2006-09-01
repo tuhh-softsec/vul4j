@@ -159,7 +159,7 @@ public abstract class CommandLineUtils
         }
         catch ( InterruptedException ex )
         {
-            killProcess( new Long( cl.getPid() ) );
+            killProcess( cl.getPid() );
             throw new CommandLineException( "Error while executing external command, process killed.", ex );
         }
         finally
