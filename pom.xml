@@ -10,6 +10,7 @@
   <artifactId>build</artifactId>
   <name>Apache Directory Daemon</name>
   <packaging>pom</packaging>  
+  <!-- note that this skipped a RC in being bumped up -->
   <version>1.0-RC3</version>
   <description>
     Reusable framework for daemon applications based on Commons Daemon
