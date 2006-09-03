@@ -100,6 +100,7 @@ public class AxisSigner {
 
 
       bodyElem.setAttributeNS(SOAPSECNS, "SOAP-SEC:id", "Body");
+      bodyElem.setIdAttributeNS(SOAPSECNS, "id", true);
 
       Element soapSignatureElem = doc.createElementNS(SOAPSECNS, "SOAP-SEC:Signature");
 

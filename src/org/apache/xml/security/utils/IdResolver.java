@@ -16,14 +16,15 @@
  */
 package org.apache.xml.security.utils;
 
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.WeakHashMap;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
-import java.util.Arrays;
-import java.util.WeakHashMap;
-import java.lang.ref.WeakReference;
 
 
 /**
@@ -172,7 +173,7 @@ public class IdResolver {
 
     private static Element getElementBySearching(Node root,String id) {
         Element []els=new Element[6];
-	getElementBySearching(root,id,els);
+	getEl(root,id,els);
 	for (int i=0;i<els.length;i++) {
 	    if (els[i]!=null) {
 		return els[i];
@@ -181,50 +182,93 @@ public class IdResolver {
 	return null;
     }
 
-    private static int getElementBySearching(Node root,String id,Element []els) {
-	switch (root.getNodeType()) {
-	    case Node.ELEMENT_NODE:
-		Element el=(Element)root;
-		if (el.hasAttributes()) {			  
-		    int index=names.indexOf(el.getNamespaceURI());
-		    if (index<0) {
-		        index=5;
-		    }		   
-		    if (el.getAttribute("Id").equals(id)) {				   
-		        els[index]=el;
-		        if (index==0) {
-			    return 1;
-		        }
-		    } else if ( el.getAttribute("id").equals(id) ) {
-			if (index!=2) {
-			    index=5;
+    private static int getEl(Node currentNode,String id,Element []els) {
+    	Node sibling=null;
+    	Node parentNode=null;    	
+    	do {
+    		switch (currentNode.getNodeType()) {    		
+    		case Node.DOCUMENT_FRAGMENT_NODE :
+    		case Node.DOCUMENT_NODE :
+    			sibling= currentNode.getFirstChild();
+    			break;
+    			
+    			
+    		case Node.ELEMENT_NODE :
+    			Element currentElement = (Element) currentNode;
+    			if (isElement(currentElement, id, els)==1)
+    				return 1;
+    			sibling= currentNode.getFirstChild(); 
+    			if (sibling==null) {
+    			    if (parentNode != null) {
+       			    		sibling= currentNode.getNextSibling();
+				    }
+    			} else {
+    				parentNode=currentElement;
+    			}
+    			break;
+    	} while (sibling==null  && parentNode!=null) {    		      		      			
+    			sibling=parentNode.getNextSibling();
+    			parentNode=parentNode.getParentNode();   
+    			if (!(parentNode instanceof Element)) {
+    				parentNode=null;
+    			}    			
+    		}      
+    		if (sibling==null)
+    			return 1;
+    		currentNode=sibling;      
+    		sibling=currentNode.getNextSibling();  
+    	} while(true);
+
+    }
+    public static int isElement(Element el, String id,Element[] els) {
+    	if (!el.hasAttributes()) {
+    		return 0;
+    	}
+    	NamedNodeMap ns=el.getAttributes();
+    	int elementIndex=names.indexOf(el.getNamespaceURI());
+	    elementIndex=(elementIndex<0) ? 5 : elementIndex;
+    	for (int length=ns.getLength(), i=0; i<length; i++) {
+    		Attr n=(Attr)ns.item(i);
+    		String s=n.getNamespaceURI();
+    		
+		    int index=s==null ? elementIndex : names.indexOf(n.getNamespaceURI());
+		    index=(index<0) ? 5 : index;
+		    String name=n.getLocalName();
+		    if (name.length()>2)
+		    	continue;
+		    String value=n.getNodeValue();
+		    if (name.charAt(0)=='I') {
+		    	char ch=name.charAt(1);		    
+		    	if (ch=='d' && value.equals(id)) {				   		    
+		    		els[index]=el;
+		        	if (index==0) {
+		        		return 1;
+		        	}
+		    	} else if (ch=='D' &&value.endsWith(id)) {
+		    		if (index!=3) {
+			            index=5;
+			        }
+			        els[index]=el;
+		    	}
+		    } else if ( n.getLocalName().equals("id") && value.equals(id) ) {
+		    	if (index!=2) {
+		    		index=5;
 		        }			    				   
 		        els[index]=el;
-		    } else if ( el.getAttribute("ID").equals(id) ) {
-		        if (index!=3) {
-		            index=5;
-		        }
-		        els[index]=el;				   
-		    } else if ((index==3)&&(
-			el.getAttribute("OriginalRequestID").equals(id) ||
-			el.getAttribute("RequestID").equals(id) ||
-			el.getAttribute("ResponseID").equals(id))) {
-			els[3]=el;				   
-		    } else if ((index==4)&&(
-			el.getAttribute("AssertionID").equals(id) ||
-			el.getAttribute("RequestID").equals(id) ||
-			el.getAttribute("ResponseID").equals(id))) {
-			els[4]=el;				   
-		    }
-		}
-	    case Node.DOCUMENT_NODE:
-		Node sibling=root.getFirstChild();
-		while (sibling!=null) {
-		    if (getElementBySearching(sibling,id,els)==1)
-			return 1;
-		    sibling=sibling.getNextSibling();
-		}
-	}
-	return 0;
+		    } 
+    	}
+    	//For an element namespace search for importants
+    	if ((elementIndex==3)&&(
+		    el.getAttribute("OriginalRequestID").equals(id) ||
+		    el.getAttribute("RequestID").equals(id) ||
+		    el.getAttribute("ResponseID").equals(id))) {
+		    els[3]=el;				   		    
+    	} else if ((elementIndex==4)&&(
+		    el.getAttribute("AssertionID").equals(id) ||
+		    el.getAttribute("RequestID").equals(id) ||
+		    el.getAttribute("ResponseID").equals(id))) {
+		    els[4]=el;				   
+		 }		
+    	return 0;
     }
 }
