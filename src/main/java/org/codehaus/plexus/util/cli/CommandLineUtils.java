@@ -48,7 +48,7 @@ public abstract class CommandLineUtils
         {
             public void run()
             {
-                if ( processes.size() > 0 )
+                if ( ( processes != null ) && ( processes.size() > 0 ) )
                 {
                     System.err.println( "Destroying " + processes.size() + " processes" );
                     for ( Iterator it = processes.values().iterator(); it.hasNext(); )
