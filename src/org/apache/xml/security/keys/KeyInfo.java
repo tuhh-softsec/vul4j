@@ -91,7 +91,9 @@ public class KeyInfo extends SignatureElementProxy {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(KeyInfo.class.getName());
-
+    List x509Datas=null;
+    List encryptedKeys=null;
+    
     static List nullList=new ArrayList();
     static {
     	nullList.add(null);
@@ -106,7 +108,7 @@ public class KeyInfo extends SignatureElementProxy {
       super(doc);
 
       XMLUtils.addReturnToElement(this._constructionElement);
-
+      
    }
 
    /**
@@ -305,6 +307,9 @@ public class KeyInfo extends SignatureElementProxy {
    public void add(X509Data x509data) {
 
       if (this._state == MODE_SIGN) {
+    	  if (x509Datas==null)
+    		  x509Datas=new ArrayList();
+    	  x509Datas.add(x509data);
          this._constructionElement.appendChild(x509data.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       }
@@ -321,6 +326,9 @@ public class KeyInfo extends SignatureElementProxy {
 		throws XMLEncryptionException {
 
 		if (this._state == MODE_SIGN) {
+			if (encryptedKeys==null)
+				encryptedKeys=new ArrayList();
+			encryptedKeys.add(encryptedKey);
 			XMLCipher cipher = XMLCipher.getInstance();
 			this._constructionElement.appendChild(cipher.martial(encryptedKey));
 		}
@@ -401,6 +409,9 @@ public class KeyInfo extends SignatureElementProxy {
     *@return the number of the X509Data tags
     */
    public int lengthX509Data() {
+	   if (x509Datas!=null) {
+		   return x509Datas.size(); 
+	   }
       return this.length(Constants.SignatureSpecNS, Constants._TAG_X509DATA);
    }
 
@@ -548,7 +559,9 @@ public class KeyInfo extends SignatureElementProxy {
     * @throws XMLSecurityException
     */
    public X509Data itemX509Data(int i) throws XMLSecurityException {
-
+	   if (x509Datas!=null) {
+		   return (X509Data) x509Datas.get(i); 
+	   }
       Element e = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
                                                 Constants._TAG_X509DATA,i);
 
@@ -567,7 +580,9 @@ public class KeyInfo extends SignatureElementProxy {
 	*/
 
 	public EncryptedKey itemEncryptedKey(int i) throws XMLSecurityException {
-
+		if (encryptedKeys!=null) {
+			return (EncryptedKey) encryptedKeys.get(i);
+		}
 		Element e = 
 			XMLUtils.selectXencNode(this._constructionElement.getFirstChild(),
 										  EncryptionConstants._TAG_ENCRYPTEDKEY,i);

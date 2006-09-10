@@ -4,6 +4,7 @@ New in ...
 	Fixed bug 40298.
 	Fixed bug 40360. Changed a little  the way the IdResolver works when 
 	    Document.getElementById fails.
+	Fixed bug 40404.
 
 New in v1.4beta2
     Optimization in c14n in node-sets.

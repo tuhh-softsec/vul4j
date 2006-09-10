@@ -52,8 +52,7 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315ExclusiveTest.suite());
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.XalanBug1425Test.suite());
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.AttributeAncestorOrSelfTest.suite());
-      suite.addTest(org.apache.xml.security.test.signature.XMLSignatureInputTest.suite());
-      suite.addTest(org.apache.xml.security.test.signature.UnknownAlgoSignatureTest.suite());
+      suite.addTest(org.apache.xml.security.test.signature.AllTests.suite());
       suite.addTest(org.apache.xml.security.test.transforms.implementations.TransformBase64DecodeTest.suite());      
       suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
       suite.addTest(org.apache.xml.security.test.utils.IdResolverTest.suite());      
@@ -81,8 +80,6 @@ public class ModuleTest extends TestCase {
       if (useTextUI) {
          junit.textui.TestRunner.run(suite());
       } else {
-         String[] testCaseName = { "-noloading", ModuleTest.class.getName() };
-
          try {
             String lookAndFeelClass =
                "com.incors.plaf.kunststoff.KunststoffLookAndFeel";
