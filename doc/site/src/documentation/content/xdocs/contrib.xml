@@ -41,7 +41,7 @@ limitations under the License.
       <p>
 	You can get your local working copy of the
         <link href="http://svn.apache.org/repos/asf/xml/security/trunk/">latest and
-	  greatest code</link> (which you find in the xml/security module in the SVN code
+	  greatest code</link> (which you find in the xml/security module in the Subversion code
 	repository). Review the todo list, choose a task (or perhaps you have noticed
 	something that needs patching). Make the changes, do the testing, generate a
 	patch, and post to the dev mailing list. (Do not worry - the process is easy
@@ -83,19 +83,18 @@ limitations under the License.
       </ul>
     </section> <anchor id="cvshowto"/>
     <section>
-    <title>CVS Usage Precis</title>
+    <title>Subversion (SVN) Usage Overview</title>
       <p>
-	An overview of how to use CVS to participate in the XML Security development.
+	An overview of how to use Subversion to participate in the XML Security development.
         Do not be afraid - you cannot accidently destroy the actual code repository,
         because you are working with a local copy as an anonymous user. Therefore, you
         do not have the system permissions to change anything. You can only update your
         local repository and compare your revisions with the real repository. 
       </p>
       <p> 
-	(Further general CVS usage information is at
-        <link href="http://www.cvshome.org/">www.cvshome.org</link> and your local
-	<code>info cvs</code> pages or <code>man cvs</code> pages or user
-	documentation.) 
+	(Further general Subversion usage information is at
+        <link href="http://subversion.tigris.org/">subversion.tigris.org</link> and your local
+	user documentation.) 
       </p>
       <p> 
 	Have a look at the <link href="site:java/installation">Java</link> or
