@@ -103,20 +103,20 @@ limitations under the License.
       </p>
     </section> <anchor id="ssh"/>
     <section>
-    <title>CVS Committer with Secure Shell access</title>
+    <title>Subversion Committer with HTTPS access</title>
       <p>
 	After a developer has consistently provided contributions (code,
         documentation and discussion), then the rest of the dev community may vote to
-        grant this developer commit access to CVS. 
+        grant this developer commit access to SVN. 
       </p>
       <p>
 	You will need secure access to the repository to be able to commit
         patches. Here are some resources that help to get your machine configured to
-        use the repository over SSH. 
+        use the repository via HTTPS. 
       </p>
       <ul>
-        <li><link href="http://cvsbook.red-bean.com/">The CVS Book</link></li>
-	<li><link href="http://www.cvshome.org/">www.cvshome.org</link></li>
+        <li><link href="http://apache.org/dev/version-control.html#https-svn">Apache Committer Subversion Access</link></li>
+	<li><link href="http://svnbook.red-bean.com/">Subversion book</link></li>
       </ul>
     </section> <anchor id="procedure"/>
     <section>
