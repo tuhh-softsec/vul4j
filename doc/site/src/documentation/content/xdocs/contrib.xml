@@ -40,9 +40,9 @@ limitations under the License.
       </p>
       <p>
 	You can get your local working copy of the
-        <link href="http://cvs.apache.org/viewcvs.cgi/xml-security">latest and
-	  greatest code</link> (which you find in the xml-security module in the CVS code
-	repository. Review the todo list, choose a task (or perhaps you have noticed
+        <link href="http://svn.apache.org/repos/asf/xml/security/trunk/">latest and
+	  greatest code</link> (which you find in the xml/security module in the SVN code
+	repository). Review the todo list, choose a task (or perhaps you have noticed
 	something that needs patching). Make the changes, do the testing, generate a
 	patch, and post to the dev mailing list. (Do not worry - the process is easy
 	and explained below.) 
