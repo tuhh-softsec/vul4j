@@ -36,7 +36,7 @@ limitations under the License.
 
   <getting-involved label="Getting Involved">
     <contrib label="Contributing" href="contrib.html"/>
-    <SVN label="SVN" href="http://svn.apache.org/repos/asf/xml/security/trunk/"/>
+    <SVN label="SVN" href="http://svn.apache.org/viewvc/xml/security/trunk/"/>
     <mail-lists label="Mail lists" href="mail-lists.html"/>
   </getting-involved>
 
