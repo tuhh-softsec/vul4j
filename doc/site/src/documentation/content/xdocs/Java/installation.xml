@@ -73,19 +73,17 @@ limitations under the License.
 	</jump>
       </p>
       <p>
-	This project's CVS repository can be checked out through anonymous
-	(pserver) CVS with the following instruction set. The module you wish
-	to check out must be specified as the modulename. When prompted for a
-	password for anonymous, simply enter "anoncvs" without quotes: 
+	This project's Subversion repository can be checked out anonymously
+	via HTTP as follows. You will need a Subversion client. 
       </p>
-      <source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
-	password: anoncvs
-	cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout
-	xml-security
+      <source>svn checkout https://svn.apache.org/repos/asf/xml/security/trunk xml-security
       </source>
+      <p>This will check out the code into a subdirectory named "xml-security". 
+	 The checkout will contain both the Java and the C++ source.
+      </p>
       <p>
 	A HTTP interface to browse the sources online is available via 
-	<jump href="site:getting-involved/CVS">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump>
+	<jump href="site:getting-involved/SVN">http://svn.apache.org/viewvc/xml/security/trunk/</jump>
       </p>
     </section>
     
