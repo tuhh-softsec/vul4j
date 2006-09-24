@@ -28,6 +28,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnixStat;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,7 +124,10 @@ public class ZipArchiverTest
 
         assertTrue( archiver.isForced() );
         File f = archiver.getDestFile();
-        f.delete();
+        if ( f.exists() )
+        {
+            FileUtils.fileDelete( f.getPath() );
+        }
         assertFalse( f.exists() );
         createArchive( archiver );
         long l1 = f.lastModified();
