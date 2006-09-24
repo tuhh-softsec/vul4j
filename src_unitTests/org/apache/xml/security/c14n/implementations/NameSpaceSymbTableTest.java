@@ -21,14 +21,12 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.xml.security.test.utils.Base64Test;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 
 public class NameSpaceSymbTableTest extends TestCase {
 	public static Test suite() {

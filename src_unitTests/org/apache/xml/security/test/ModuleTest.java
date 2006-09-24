@@ -20,10 +20,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.xml.security.c14n.implementations.NameSpaceSymbTableTest;
-import org.apache.xml.security.c14n.implementations.UtfHelperTest;
-import org.apache.xml.security.test.transforms.implementations.Xpath2TransformationTest;
-
 
 public class ModuleTest extends TestCase {
 
@@ -52,13 +48,10 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315ExclusiveTest.suite());
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.XalanBug1425Test.suite());
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.AttributeAncestorOrSelfTest.suite());
-      suite.addTest(org.apache.xml.security.test.signature.AllTests.suite());
-      suite.addTest(org.apache.xml.security.test.transforms.implementations.TransformBase64DecodeTest.suite());      
-      suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
-      suite.addTest(org.apache.xml.security.test.utils.IdResolverTest.suite());      
-      suite.addTest(NameSpaceSymbTableTest.suite());
-      suite.addTest(UtfHelperTest.suite());
-      suite.addTest(Xpath2TransformationTest.suite());
+      suite.addTest(org.apache.xml.security.test.signature.AllTests.suite());      
+      suite.addTest(org.apache.xml.security.test.utils.AllTests.suite());
+      suite.addTest(org.apache.xml.security.c14n.implementations.AllTests.suite());
+      suite.addTest(org.apache.xml.security.test.transforms.implementations.AllTests.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
       //J+

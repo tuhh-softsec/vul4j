@@ -1,19 +1,15 @@
 package org.apache.xml.security.test.transforms.implementations;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.apache.xml.security.Init;
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.JavaUtils;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.xml.security.Init;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.Constants;
+import org.w3c.dom.Element;
 
 public class Xpath2TransformationTest extends TestCase {
 	static {
