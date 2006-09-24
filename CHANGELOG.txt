@@ -1,5 +1,10 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+	Fixed bug 40512. Made TransformSPI backward compatible. Now it is possible 
+		to use implementations for the >1.3 versions paying the performance hit
+		of the old implementation.
+
+New in 1.4RC1	
 	Fixed bug 40290.
 	Fixed bug 40298.
 	Fixed bug 40360. Changed a little  the way the IdResolver works when 
@@ -37,7 +42,7 @@ New in v1.4beta0
         Fixed bug 38655
 	Fixed bug 38444.
 	Fixed bug 38605.
-	Fixed bug 39200
+	Fixed bug 39200(API CHANGE)
 		Refactored the way keyresolver works instead of calling canResolve/resolveX only resolveX is used  
 		and if it returns null it means it cannot resolve.
 	Minor Optimizations. 
