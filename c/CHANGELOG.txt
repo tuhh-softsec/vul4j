@@ -22,7 +22,12 @@ Changes between version 1.2.1 and 1.3
   --enable-warnerror flags in configure
 * Configure now detects if Xalan is installed rather than having
   XALANCROOT being a pointer to the compile directory
-
+- Reorder hashing in DSIGReference.cpp as per suggestion by Peter Gubis
+- Update microsoft project files to reflect new version as per Scott Cantor
+- Replace setAttribute with setAttributeNS calls
+- Add methods to OpenSSL classes to extract OpenSSL objects
+- Fix handling of libcrypto on Solaris platform
+- Fix bug in Canoncicalisation courtesy of Scott Cantor
 
 Changes between version 1.2 and 1.2.1
 =====================================

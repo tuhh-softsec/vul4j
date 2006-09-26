@@ -20,32 +20,27 @@
 # Process this file with autoconf to produce a configure script
 
 AC_INIT([[XML-Security-C]], [1.3.0], [security-dev@xml.apache.org], [xml-security-c])
+AC_CONFIG_AUX_DIR([config])
+
+# kick off automake
+
+AM_INIT_AUTOMAKE(XMl-Security-C, 1.3.0)
+AM_PROG_LIBTOOL
 
 # framework is a unique directory in src/ - allows configure to check
 # it is running in the correct directory
 
-AC_CONFIG_SRCDIR(framework)
+AC_CONFIG_SRCDIR(src)
 
 # Define the files we wish to generate
 
-AC_CONFIG_FILES([Makefile \
-	canon/Makefile \
-	transformers/Makefile \
-	dsig/Makefile \
-	enc/Makefile \
-	enc/OpenSSL/Makefile \
-	enc/XSCrypt/Makefile \
-	framework/Makefile \
-	utils/Makefile \
-	utils/unixutils/Makefile \
-	tools/Makefile \
-	xenc/Makefile \
-	xenc/impl/Makefile \
-	xkms/Makefile \
-	xkms/impl/Makefile \
-	samples/Makefile])
+AC_CONFIG_FILES([Makefile\
+  lib/Makefile \
+  include/Makefile \
+  bin/Makefile ])
+
 # AC_CONFIG_FILES([Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile])
-AC_CONFIG_HEADERS([framework/XSECConfig.hpp])
+AC_CONFIG_HEADERS([src/framework/XSECConfig.hpp])
 
 # Get user options
 
@@ -97,31 +92,6 @@ AC_ARG_ENABLE(warnerror,
 	AC_HELP_STRING(--enable-warnerrer,
 		[Treat warnings as errors during compile (Default = no)]),
 	enable_warnerror=$enableval, enable_warnerror=no)
-
-# Create the Makefile.in files in each directory
-library_l1_src_dirs="canon transformers dsig enc framework utils xenc xkms"
-library_l2_src_dirs="enc/OpenSSL enc/XSCrypt utils/unixutils xenc/impl xkms/impl"
-
-AC_CONFIG_COMMANDS_PRE(
-[# Define the library directories
-for lib_dir in ${library_l1_src_dirs}
-do
-	AC_MSG_NOTICE([Creating Makefile.in in ${lib_dir}])
-	lib_dir_tran=`echo ${lib_dir} | sed "s/\//_/g"`
-    sed "s/__DIRECTORY__/${lib_dir_tran}/g" Makefile.in.tmpl | \
-    sed "s/__DIRECTORY_PATH__/${lib_dir}/g" | \
-	sed "s/__SRCBASEDISTANCE__/\.\./g" > ${lib_dir}/Makefile.in
-done
-# Now layer 2
-for lib_dir in ${library_l2_src_dirs}
-do
-	AC_MSG_NOTICE([Creating Makefile.in in ${lib_dir}])
-	lib_dir_tran=`echo ${lib_dir} | sed "s/\//_/g"`
-	lib_dir_sed=`echo ${lib_dir} | sed "s/\//\\\\\\\\\\//g"`
-    sed "s/__DIRECTORY__/${lib_dir_tran}/g" Makefile.in.tmpl | \
-    sed "s/__DIRECTORY_PATH__/${lib_dir_sed}/g" | \
-	sed "s/__SRCBASEDISTANCE__/\.\.\/\.\./g" > ${lib_dir}/Makefile.in
-done])
 
 # Check for basic programs
 
@@ -795,89 +765,6 @@ AC_CHECK_DECL(_getcwd,
 	[AC_DEFINE(XSEC_HAVE__GETCWD)],
 	,[#include <string.h>])
 
-# Build the object file lists necessary to link the library
-# At the same time, build the include list
-
-lib_obj_files=""
-
-for lib_dir in ${library_l1_src_dirs}
-do
-	AC_CREATE_OBJ_FILELIST([${lib_dir}], 
-		[*.cpp], 
-		[\.cpp], 
-		[[${objsuffix}]], 
-		[../../lib/obj])
-	eval ${lib_dir}_obj_files="\${ac_find_files}"
-
-	# Create the libraries list
-	AC_REPLACE_STRING([${ac_find_files}], [[\.\.\/\.\.\/]], [[\.\.\/]])
-	lib_obj_files="${lib_obj_files} $ac_replace_string"
-
-	# Create the Include list
-	AC_CREATE_FILELIST([${lib_dir}],[*.hpp])
-	eval ${lib_dir}_include_files="\${ac_find_files}"
-
-done
-
-for lib_dir in ${library_l2_src_dirs}
-do
-	lib_dir_tran=`echo ${lib_dir} | sed "s/\//_/g"`
-	AC_CREATE_OBJ_FILELIST([${lib_dir}], 
-		[*.cpp], 
-		[\.cpp], 
-		[[${objsuffix}]], 
-		[../../../lib/obj])
-	eval ${lib_dir_tran}_obj_files="\${ac_find_files}"
-
-	# Create the libraries list
-	AC_REPLACE_STRING([${ac_find_files}], [[\.\.\/\.\.\/\.\.\/]], [[\.\.\/]])
-	lib_obj_files="${lib_obj_files} $ac_replace_string"
-
-	# Create the Include list
-	AC_CREATE_FILELIST([${lib_dir}],[*.hpp])
-	eval ${lib_dir_tran}_include_files="\${ac_find_files}"
-
-
-done
-
-# Check to ensure the config.hpp file has been added :
-check_cnf=`echo ${framework_include_files} | grep XSECConfig`
-check_cnf2=`echo ${framework_include_files} | grep XSEC`
-
-if test "${check_cnf2}" != "${check_cnf}" ; then
-	framework_include_files="${framework_include_files} XSECConfig.hpp"
-fi
-
-# Use the found lists to populate the relevant makefiles
-
-AC_SUBST(canon_obj_files)
-AC_SUBST(transformers_obj_files)
-AC_SUBST(dsig_obj_files)
-AC_SUBST(enc_obj_files)
-AC_SUBST(enc_OpenSSL_obj_files)
-AC_SUBST(enc_XSCrypt_obj_files)
-AC_SUBST(framework_obj_files)
-AC_SUBST(utils_obj_files)
-AC_SUBST(utils_unixutils_obj_files)
-AC_SUBST(lib_obj_files)
-AC_SUBST(xenc_obj_files)
-AC_SUBST(xenc_impl_obj_files)
-AC_SUBST(xkms_obj_files)
-AC_SUBST(xkms_impl_obj_files)
-
-AC_SUBST(canon_include_files)
-AC_SUBST(transformers_include_files)
-AC_SUBST(dsig_include_files)
-AC_SUBST(enc_include_files)
-AC_SUBST(enc_OpenSSL_include_files)
-AC_SUBST(enc_XSCrypt_include_files)
-AC_SUBST(framework_include_files)
-AC_SUBST(utils_include_files)
-AC_SUBST(utils_unixutils_include_files)
-AC_SUBST(lib_include_files)
-AC_SUBST(xenc_include_files)
-AC_SUBST(xkms_include_files)
-
 # Populate Install directories
 
 AC_SUBST(prefix)
@@ -955,10 +842,15 @@ AC_SUBST(link)
 AC_SUBST(objsuffix)
 AC_SUBST(shlibsuffix)
 
+# Populate the Makefile conditionals
+AM_CONDITIONAL(XSEC_AM_HAVE_OPENSSL, test x$openssl_found = xyes)
+
 # Versioning
 package_version=${PACKAGE_VERSION}
+package_libtool_version="${package_version_major}${package_version_medium}:${package_version_minor}"
 AC_SUBST(package_version)
 AC_SUBST(package_version_major)
+AC_SUBST(package_libtool_version)
 AC_DEFINE_UNQUOTED(XSEC_VERSION, "$package_version")
 AC_DEFINE_UNQUOTED(XSEC_VERSION_MAJOR, $package_version_major)
 AC_DEFINE_UNQUOTED(XSEC_VERSION_MEDIUM, $package_version_medium)
