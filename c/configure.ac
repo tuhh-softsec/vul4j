@@ -27,6 +27,10 @@ AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE(XMl-Security-C, 1.3.0)
 AM_PROG_LIBTOOL
 
+# We want to control the autotools invocation
+
+AM_MAINTAINER_MODE
+
 # framework is a unique directory in src/ - allows configure to check
 # it is running in the correct directory
 
@@ -150,7 +154,9 @@ AC_CHECK_LIB(socket, getservent)
 # Check for required includes
 AC_CHECK_HEADERS(unistd.h direct.h)
 
-AC_CANONICAL_HOST
+# As a part of the automake process, AM_CHECK_LIBTOOL calls
+# this automatically.  Adding here causes spurious warning messages
+#AC_CANONICAL_HOST
 
 # Ensure we are always compiling using library defs
 
