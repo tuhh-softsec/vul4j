@@ -1038,6 +1038,34 @@ public class Digester extends DefaultHandler {
     	return stackAction;
     }
 
+    /**
+     * Get the most current namespaces for all prefixes.
+     *
+     * @return Map A map with namespace prefixes as keys and most current
+     *             namespace URIs for the corresponding prefixes as values
+     *
+     * @since 1.8
+     */
+    public Map getCurrentNamespaces() {
+        if (!namespaceAware) {
+            log.warn("Digester is not namespace aware");
+        }
+        Map currentNamespaces = new HashMap();
+        Iterator nsIterator = namespaces.entrySet().iterator();
+        while (nsIterator.hasNext()) {
+            Map.Entry nsEntry = (Map.Entry) nsIterator.next();
+            try {
+                currentNamespaces.put(nsEntry.getKey(),
+                    ((ArrayStack) nsEntry.getValue()).peek());
+            } catch (RuntimeException e) {
+                // rethrow, after logging
+                log.error(e.getMessage(), e);
+                throw e;
+            }
+        }
+        return currentNamespaces;
+    }
+
     // ------------------------------------------------- ContentHandler Methods
 
 
