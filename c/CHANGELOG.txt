@@ -1,3 +1,11 @@
+Changes between version 1.3 and 1.3.1
+=====================================
+
+* Refactor NIX build to use automake and libtool
+* Initial support for API changes in Xerces 3.0
+* Fix bug in autconf that would stop proper detection of Xerces
+  ability to set Id attributes
+
 Changes between version 1.2.1 and 1.3
 =====================================
 
