@@ -57,6 +57,25 @@
 
 #undef XSEC_XERCES_REQUIRES_MEMMGR
 
+/* Is it possible to setIdAttributes? - DOM level 3 call */
+
+#undef XSEC_XERCES_HAS_SETIDATTRIBUTE
+
+/* Is it possible to setIdAttributes? - DOM level 3 call.  V3.x
+   API Version */
+
+#undef XSEC_XERCES_HAS_BOOLSETIDATTRIBUTE
+
+/* 3.0 no longer supports DOMWriter, must use DOMLSSerializer instead
+*/
+
+#undef XSEC_XERCES_DOMLSSERIALIZER
+
+/* 3.0 now uses getInputEncoding rather than getEncoding to determine
+   encoding that was found in input document */
+
+#undef XSEC_XERCES_DOMENTITYINPUTENCODING
+
 /*
  * Find out the idiosyncracies of the version of Xalan we are using
  */
@@ -86,10 +105,6 @@
 
 #undef XSEC_XERCES_XMLSTRING_HAS_RELEASE
 
-/* Is it possible to setIdAttributes? - DOM level 3 call */
-
-#undef XSEC_XERCES_HAS_SETIDATTRIBUTE
-
 /*
  * Define presence of cryptographic providers
  */
@@ -118,6 +133,11 @@
 
 #undef XSEC_HAVE__STRDUP
 #undef XSEC_HAVE__STRICMP
+
+/* How do we handle stricmp style requirements? */
+
+#undef XSEC_HAVE_STRICMP
+#undef XSEC_HAVE_STRCASECMP
 
 /*
  * Macros used to determine what header files exist on this

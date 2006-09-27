@@ -106,6 +106,25 @@ char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 	XMLCh tempStr[100];
 	XMLString::transcode("Core", tempStr, 99);    
 	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+    // DOM L3 version as per Xerces 3.0 API
+    DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+    Janitor<DOMLSSerializer> j_theSerializer(theSerializer);
+
+    // Get the config so we can set up pretty printing
+    DOMConfiguration *dc = theSerializer->getDomConfig();
+    dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+    // Now create an output object to format to UTF-8
+    DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+    Janitor<DOMLSOutput> j_theOutput(theOutput);
+	MemBufFormatTarget *formatTarget = new MemBufFormatTarget;
+	Janitor<MemBufFormatTarget> j_formatTarget(formatTarget);
+
+    theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+    theOutput->setByteStream(formatTarget);
+
+#else
 	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 	Janitor<DOMWriter> j_theSerializer(theSerializer);
 
@@ -115,6 +134,8 @@ char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 
 	MemBufFormatTarget *formatTarget = new MemBufFormatTarget;
 	Janitor<MemBufFormatTarget> j_formatTarget(formatTarget);
+
+#endif
 
 	if (m_envelopeType != ENVELOPE_NONE) {
 
@@ -166,12 +187,20 @@ char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 		// OK - Now we have the SOAP request as a document, we serialise to a string buffer
 		// and return
 
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+        theSerializer->write(doc, theOutput);
+#else
 		theSerializer->writeNode(formatTarget, *doc);
+#endif
 		doc->release();
 
 	}
 	else {
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+        theSerializer->write(request, theOutput);
+#else
 		theSerializer->writeNode(formatTarget, *request);
+#endif
 	}
 
 	// Now replicate the buffer

@@ -743,7 +743,27 @@ int evaluate(int argc, char ** argv) {
 				XERCES_CPP_NAMESPACE_QUALIFIER chNull
 			};
 
-			DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(core);
+            DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(core);
+
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+            // DOM L3 version as per Xerces 3.0 API
+            DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+            Janitor<DOMLSSerializer> j_theSerializer(theSerializer);
+            
+            // Get the config so we can set up pretty printing
+            DOMConfiguration *dc = theSerializer->getDomConfig();
+            dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+            // Now create an output object to format to UTF-8
+            DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+            Janitor<DOMLSOutput> j_theOutput(theOutput);
+
+            theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+            theOutput->setByteStream(formatTarget);
+
+            theSerializer->write(doc, theOutput);
+
+#else			
 			DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 			Janitor<DOMWriter> j_theSerializer(theSerializer);
 
@@ -752,7 +772,7 @@ int evaluate(int argc, char ** argv) {
 				theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
 			theSerializer->writeNode(formatTarget, *doc);
-			
+#endif	
 			cout << endl;
 
 		}

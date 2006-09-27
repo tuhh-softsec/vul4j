@@ -422,18 +422,41 @@ void outputDoc(DOMImplementation * impl, DOMDocument * doc) {
 	if (g_printDocs == false)
 		return;
 
+	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
+
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+
+    // DOM L3 version as per Xerces 3.0 API
+    DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+    // Get the config so we can set up pretty printing
+    DOMConfiguration *dc = theSerializer->getDomConfig();
+    dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+    // Now create an output object to format to UTF-8
+    DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+    Janitor<DOMLSOutput> j_theOutput(theOutput);
+
+    theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+    theOutput->setByteStream(formatTarget);
+
+#else
+
 	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
 	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
 	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
 		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
-
-	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
+#endif
 
 	cerr << endl;
 
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+    theSerializer->write(doc, theOutput);
+#else
 	theSerializer->writeNode(formatTarget, *doc);
+#endif
 	
 	cout << endl;
 
@@ -454,6 +477,26 @@ bool reValidateSig(DOMImplementation *impl, DOMDocument * inDoc, XSECCryptoKey *
 
 	try {
 
+		MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+
+        // DOM L3 version as per Xerces 3.0 API
+        DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+        // Get the config so we can set up pretty printing
+        DOMConfiguration *dc = theSerializer->getDomConfig();
+        dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+        
+        // Now create an output object to format to UTF-8
+        DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+        Janitor<DOMLSOutput> j_theOutput(theOutput);
+        
+        theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+        theOutput->setByteStream(formatTarget);
+
+        theSerializer->write(inDoc,theOutput);
+#else
+
 		DOMWriter *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
 		theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
@@ -461,9 +504,10 @@ bool reValidateSig(DOMImplementation *impl, DOMDocument * inDoc, XSECCryptoKey *
 		if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
 			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
-		MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
 
 		theSerializer->writeNode(formatTarget, *inDoc);
+
+#endif
 
 		// Copy to a new buffer
 		int len = formatTarget->getLen();
@@ -1157,16 +1201,35 @@ count(ancestor-or-self::dsig:Signature)");
 
 		cerr << "Serialising the document to a memory buffer ... ";
 
+		MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
+
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+
+        // DOM L3 version as per Xerces 3.0 API
+        DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+        // Get the config so we can set up pretty printing
+        DOMConfiguration *dc = theSerializer->getDomConfig();
+        dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+        
+        // Now create an output object to format to UTF-8
+        DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+        Janitor<DOMLSOutput> j_theOutput(theOutput);
+        
+        theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+        theOutput->setByteStream(formatTarget);
+
+        theSerializer->write(doc,theOutput);
+#else
+
 		DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
 		theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
 		if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
 			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
-
-		MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
-
 		theSerializer->writeNode(formatTarget, *doc);
+#endif
 
 		// Copy to a new buffer
 		len = formatTarget->getLen();

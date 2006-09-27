@@ -908,7 +908,13 @@ void docSetup(DOMDocument *doc) {
     DOMNode *aNode = doc->getFirstChild();
     if (aNode->getNodeType() == DOMNode::ENTITY_NODE)
     {
-        const XMLCh* aStr = ((DOMEntity *)aNode)->getEncoding();
+        const XMLCh* aStr = ((DOMEntity *)aNode)->
+#if defined XSEC_XERCES_DOMENTITYINPUTENCODING
+            getInputEncoding();
+#else
+            getEncoding();
+#endif
+
         if (!strEquals(aStr, ""))
         {
             encNameStr = aStr;

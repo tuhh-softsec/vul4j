@@ -87,18 +87,26 @@
 //           Project Library Handling
 // --------------------------------------------------------------------------------
 
+#if defined (PLATFORM_EXPORT)
+#  define XSEC_PLATFORM_EXPORT PLATFORM_EXPORT
+#  define XSEC_PLATFORM_IMPORT PLATFORM_IMPORT
+#else
+#  define XSEC_PLATFORM_EXPORT XERCES_PLATFORM_EXPORT
+#  define XSEC_PLATFORM_IMPORT XERCES_PLATFORM_IMPORT
+#endif
+
 #if defined (PROJ_CANON)
 
-#define CANON_EXPORT PLATFORM_EXPORT
+#define CANON_EXPORT XSEC_PLATFORM_EXPORT
 #else
-#define CANON_EXPORT PLATFORM_IMPORT
+#define CANON_EXPORT XSEC_PLATFORM_IMPORT
 #endif
 
 #if defined (PROJ_DSIG)
 
-#define DSIG_EXPORT PLATFORM_EXPORT
+#define DSIG_EXPORT XSEC_PLATFORM_EXPORT
 #else
-#define DSIG_EXPORT PLATFORM_IMPORT
+#define DSIG_EXPORT XSEC_PLATFORM_IMPORT
 #endif
 
 // Platform includes.  Much of this is taken from Xalan
@@ -159,7 +167,13 @@
 #    endif
 
 #    ifndef XSEC_HAVE__STRICMP
-#        define _stricmp(x,y) stricmp(x,y)
+#        ifdef XSEC_HAVE_STRICMP
+#            define _stricmp(x,y) stricmp(x,y)
+#        else
+#            ifdef XSEC_HAVE_STRCASECMP
+#                define _stricmp(x,y) strcasecmp(x,y)
+#            endif
+#        endif
 #    endif
 
 #    ifndef XSEC_HAVE__GETCWD

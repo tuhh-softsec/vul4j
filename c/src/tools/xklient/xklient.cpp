@@ -208,6 +208,29 @@ void outputDoc(DOMDocument * doc) {
 	XMLCh tempStr[100];
 	XMLString::transcode("Core", tempStr, 99);    
 	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
+
+	cerr << endl;
+
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+
+    // DOM L3 version as per Xerces 3.0 API
+    DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+    // Get the config so we can set up pretty printing
+    DOMConfiguration *dc = theSerializer->getDomConfig();
+    dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+    // Now create an output object to format to UTF-8
+    DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+    Janitor<DOMLSOutput> j_theOutput(theOutput);
+
+    theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+    theOutput->setByteStream(formatTarget);
+
+    theSerializer->write(doc, theOutput);
+
+#else
 
 	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
@@ -215,13 +238,10 @@ void outputDoc(DOMDocument * doc) {
 	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
 		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
-
-	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
-
-	cerr << endl;
-
 	theSerializer->writeNode(formatTarget, *doc);
 	
+#endif
+
 	cout << endl;
 
 	cerr << endl;
@@ -4414,7 +4434,6 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 	// Schema handling
 	if (doValidate) {
 		parser->setDoSchema(true);
-		parser->setDoValidation(true);
 		parser->setExternalSchemaLocation("http://www.w3.org/2002/03/xkms# http://www.w3.org/TR/xkms2/Schemas/xkms.xsd");
 	}
 
