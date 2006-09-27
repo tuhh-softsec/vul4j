@@ -225,6 +225,7 @@ threads = @threads@
 transcoder = @transcoder@
 SUBDIRS = include lib bin
 AUTOMAKE_OPTIONS = foreign
+ACLOCAL_AMFLAGS = -I m4
 all: all-recursive
 
 .SUFFIXES:

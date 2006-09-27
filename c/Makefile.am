@@ -16,4 +16,4 @@
 
 SUBDIRS = include lib bin
 AUTOMAKE_OPTIONS=foreign
-
+ACLOCAL_AMFLAGS = -I m4
