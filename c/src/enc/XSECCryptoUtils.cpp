@@ -437,6 +437,97 @@ bool ASN2DSASig(const unsigned char * input, unsigned char * r, unsigned char * 
 }
 
 
+// --------------------------------------------------------------------------------
+//           Calculate correct OIDs for an RSA sig
+// --------------------------------------------------------------------------------
+
+/* As per RSA's PKCS #1 v 2.1, Section 9.2 Note 1, the DER encodings for
+ * the has types are as follows:
+ *
+ * MD2: (0x)30 20 30 0c 06 08 2a 86 48 86 f7 0d 02 02 05 00 04 10 || H.
+ * MD5: (0x)30 20 30 0c 06 08 2a 86 48 86 f7 0d 02 05 05 00 04 10 || H.
+ * SHA-1: (0x)30 21 30 09 06 05 2b 0e 03 02 1a 05 00 04 14 || H.
+ * SHA-256: (0x)30 31 30 0d 06 09 60 86 48 01 65 03 04 02 01 05 00 04 20 || H.
+ * SHA-384: (0x)30 41 30 0d 06 09 60 86 48 01 65 03 04 02 02 05 00 04 30 || H.
+ * SHA-512: (0x)30 51 30 0d 06 09 60 86 48 01 65 03 04 02 03 05 00 04 40 || H.
+ *
+ * More recently the following has been provided for SHA-224
+ *
+ * SHA-224: 30 2d 30 0d 06 09 60 86 48 01 65 03 04 02 04 05 00 04 1c
+ *
+ */
+
+int MD5OIDLen = 18;
+unsigned char MD5OID[] = {
+	0x30, 0x20, 0x30, 0x0c, 0x06, 0x08, 0x2a, 0x86, 
+	0x48, 0x86, 0xf7, 0x0d, 0x02, 0x05, 0x05, 0x00, 
+	0x04, 0x10
+};
+
+
+int sha1OIDLen = 15;
+unsigned char sha1OID[] = {
+	0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 0x0E, 
+	0x03, 0x02, 0x1A, 0x05, 0x00, 0x04, 0x14
+};
+
+int sha224OIDLen = 19;
+unsigned char sha224OID[] = {
+	0x30, 0x2d, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 
+	0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x04, 0x05, 
+	0x00, 0x04, 0x1c
+};
+
+int sha256OIDLen = 19;
+unsigned char sha256OID[] = {
+	0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 
+	0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 
+	0x00, 0x04, 0x20
+};
+
+int sha384OIDLen = 19;
+unsigned char sha384OID[] = {
+	0x30, 0x41, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 
+	0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x02, 0x05, 
+	0x00, 0x04, 0x30
+};
+
+int sha512OIDLen = 19;
+unsigned char sha512OID[] = {
+	0x30, 0x51, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 
+	0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03, 0x05, 
+	0x00, 0x04, 0x40
+};
+
+
+unsigned char * getRSASigOID(hashMethod hm, int &oidLen) {
+
+	switch (hm) {
+
+	case (HASH_MD5):
+		oidLen = MD5OIDLen;
+		return MD5OID;
+	case (HASH_SHA1):
+		oidLen = sha1OIDLen;
+		return sha1OID;
+	case (HASH_SHA224):
+		oidLen = sha224OIDLen;
+		return sha224OID;
+	case (HASH_SHA256):
+		oidLen = sha256OIDLen;
+		return sha256OID;
+	case (HASH_SHA384):
+		oidLen = sha384OIDLen;
+		return sha384OID;
+	case (HASH_SHA512):
+		oidLen = sha512OIDLen;
+		return sha512OID;
+	default:
+		oidLen = 0;
+		return NULL;
+
+	}
+}
 
 
 

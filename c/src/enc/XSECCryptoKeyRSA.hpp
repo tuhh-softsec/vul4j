@@ -135,13 +135,15 @@ public :
 	 * @param hashLen Length of the data in the digest buffer
 	 * @param base64Signature Buffer containing the Base64 encoded signature
 	 * @param sigLen Length of the data in the signature buffer
+	 * @param hm The type of hash that the signature is accross - must be a SHA variant
 	 * @returns true if the signature was valid, false otherwise
 	 */
 
 	virtual bool verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf, 
 								 unsigned int hashLen,
 								 const char * base64Signature,
-								 unsigned int sigLen) = 0;
+								 unsigned int sigLen,
+								 hashMethod hm) = 0;
 
 	/**
 	 * \brief Create a signature
@@ -159,13 +161,16 @@ public :
 	 * in.
 	 * @param base64SignatureBufLen Implementations need to ensure they do
 	 * not write more bytes than this into the buffer
+	 * @param hm Hash method used to calculate the Hash - needs to be passed
+	 * in order to calculate correct OID to be embedded in signature
 	 */
 
 
 	virtual unsigned int signSHA1PKCS1Base64Signature(unsigned char * hashBuf,
 		unsigned int hashLen,
 		char * base64SignatureBuf,
-		unsigned int base64SignatureBufLen) = 0;
+		unsigned int base64SignatureBufLen,
+		hashMethod hm) = 0;
 
 	/**
 	 * \brief Decrypt using private key

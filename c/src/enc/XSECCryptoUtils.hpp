@@ -30,6 +30,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
+#include <xsec/dsig/DSIGConstants.hpp>
 
 /**
  * \brief Helper utilities for crypto.
@@ -69,6 +70,12 @@ unsigned int DSIG_EXPORT DecodeFromBase64(const char * input, unsigned char * ou
 // NOTE - both r and s must be at least 20 bytes long
 
 bool DSIG_EXPORT ASN2DSASig(const unsigned char * input, unsigned char * r, unsigned char * s);
+
+// --------------------------------------------------------------------------------
+//           Calculate correct OIDs for an RSA sig
+// --------------------------------------------------------------------------------
+
+unsigned char * getRSASigOID(hashMethod hm, int &oidLen);
 
 #endif /* XSECCRYPTOUTILS_INCLUDE */
 

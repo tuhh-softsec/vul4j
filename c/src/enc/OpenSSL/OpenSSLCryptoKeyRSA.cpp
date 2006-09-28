@@ -31,6 +31,7 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+#include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 
 #include <openssl/rsa.h>
@@ -40,16 +41,6 @@
 XSEC_USING_XERCES(ArrayJanitor);
 
 #include <memory.h>
-
-// Define OID for SHA-1 hash
-
-unsigned char sha1OID[] = {
-	0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 
-	0x0E, 0x03, 0x02, 0x1A, 0x05, 0x00, 0x04, 
-	0x14,
-};
-
-int sha1OIDLen = 15;
 
 OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA() :
 mp_oaepParams(NULL),
@@ -187,7 +178,8 @@ OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA(EVP_PKEY *k) {
 bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf, 
 								 unsigned int hashLen,
 								 const char * base64Signature,
-								 unsigned int sigLen) {
+								 unsigned int sigLen,
+								 hashMethod hm = HASH_SHA1) {
 
 	// Use the currently loaded key to validate the Base64 encoded signature
 
@@ -257,15 +249,24 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 		return false;
 	}
 
-	if (decryptSize != (int) (sha1OIDLen + hashLen)) {
+	/* Check the OID */
+	int oidLen = 0;
+	unsigned char * oid = getRSASigOID(hm, oidLen);
+	
+	if (oid == NULL) {
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA::verify() - Unsupported HASH algorithm for RSA");
+	}
+
+	if (decryptSize != (int) (oidLen + hashLen) || hashLen != oid[oidLen-1]) {
 
 		return false;
 	
 	}
 
-	for (t = 0; t < sha1OIDLen; ++t) {
+	for (t = 0; t < oidLen; ++t) {
 		
-		if (sha1OID[t] != decryptBuf[t]) {
+		if (oid[t] != decryptBuf[t]) {
 
 			return false;
 
@@ -275,7 +276,7 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 
 	for (;t < decryptSize; ++t) {
 
-		if (hashBuf[t-sha1OIDLen] != decryptBuf[t]) {
+		if (hashBuf[t-oidLen] != decryptBuf[t]) {
 
 			return false;
 
@@ -296,7 +297,8 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 unsigned int OpenSSLCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * hashBuf,
 		unsigned int hashLen,
 		char * base64SignatureBuf,
-		unsigned int base64SignatureBufLen) {
+		unsigned int base64SignatureBufLen,
+		hashMethod hm) {
 
 	// Sign a pre-calculated hash using this key
 
@@ -310,15 +312,29 @@ unsigned int OpenSSLCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 
 	unsigned char * encryptBuf;
 	unsigned char * preEncryptBuf;
+	unsigned char * oid;
+	int oidLen;
 	int encryptLen;
 	int preEncryptLen;
+	
+	oid = getRSASigOID(hm, oidLen);
+	
+	if (oid == NULL) {
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA::sign() - Unsupported HASH algorithm for RSA");
+	}
 
-	preEncryptLen = hashLen + sha1OIDLen;
+	if (hashLen != oid[oidLen-1]) {
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA::sign() - hashLen incorrect for hash type");
+	}
+
+	preEncryptLen = hashLen + oidLen;
 	preEncryptBuf = new unsigned char[preEncryptLen];
 	encryptBuf = new unsigned char[RSA_size(mp_rsaKey)];
 
-	memcpy(preEncryptBuf, sha1OID, sha1OIDLen);
-	memcpy(&preEncryptBuf[sha1OIDLen], hashBuf, hashLen);
+	memcpy(preEncryptBuf, oid, oidLen);
+	memcpy(&preEncryptBuf[oidLen], hashBuf, hashLen);
 
 	// Now encrypt
 

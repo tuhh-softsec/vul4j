@@ -393,10 +393,10 @@ bool NSSCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) {
 
 		return true;
 
-	case (XSECCryptoHash::HASH_SHA224) :
 	case (XSECCryptoHash::HASH_SHA256) :
 	case (XSECCryptoHash::HASH_SHA384) :
 	case (XSECCryptoHash::HASH_SHA512) :
+	case (XSECCryptoHash::HASH_SHA224) :
 
 		return false;
 
@@ -438,6 +438,7 @@ bool NSSCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyT
 	return false;
 
 }
+
 
 // --------------------------------------------------------------------------------
 //           Generate random data

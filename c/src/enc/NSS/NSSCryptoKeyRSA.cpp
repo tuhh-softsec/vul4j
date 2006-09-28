@@ -33,6 +33,9 @@
 
 #if defined (HAVE_NSS)
 
+#include <secder.h>
+#include <secdig.h>
+
 XSEC_USING_XERCES(ArrayJanitor);
 
 // --------------------------------------------------------------------------------
@@ -231,7 +234,8 @@ void NSSCryptoKeyRSA::importKey(void) {
 bool NSSCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf, 
 								 unsigned int hashLen,
 								 const char * base64Signature,
-								 unsigned int sigLen) {
+								 unsigned int sigLen,
+								 hashMethod hm) {
 
 	// Use the currently loaded key to validate the Base64 encoded signature
 
@@ -267,7 +271,7 @@ bool NSSCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashB
   signature.data = rawSig;
   signature.len = rawSigLen;
 
-  SECItem data;
+  SECItem data; 
   data.type = siBuffer;
   data.data = (unsigned char *)hashBuf;
   data.len = hashLen;
@@ -286,48 +290,108 @@ bool NSSCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashB
 unsigned int NSSCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * hashBuf,
 		unsigned int hashLen,
 		char * base64SignatureBuf,
-		unsigned int base64SignatureBufLen) {
+		unsigned int base64SignatureBufLen,
+		hashMethod hm) {
 
 	// Sign a pre-calculated hash using this key
 
 	if (mp_privkey == 0) {
-
+		
 		throw XSECCryptoException(XSECCryptoException::RSAError,
 			"NSS:RSA - Attempt to sign data using a public or un-loaded key");
-
-  }
-
-  unsigned char * rawSig;
+		
+	}
+	
+	unsigned char * rawSig;
 	XSECnew(rawSig, BYTE [base64SignatureBufLen]);
 	ArrayJanitor<BYTE> j_rawSig(rawSig);
+	
+	SECItem signature;
+	signature.type = siBuffer;
+	signature.data = rawSig;
+	signature.len = base64SignatureBufLen;
+	
+	SECItem data;
+	data.data = 0;
+	SECOidTag hashalg;
+	PRArenaPool * arena = 0;
+	SGNDigestInfo *di = 0;
+	SECItem * res;
 
-  SECItem signature;
-  signature.type = siBuffer;
-  signature.data = rawSig;
-  signature.len = base64SignatureBufLen;
+	switch (hm) {
 
-  SECItem data;
-  data.type = siBuffer;
-  data.data = hashBuf;
-  data.len = hashLen;
+	case (HASH_MD5):
+		hashalg = SEC_OID_MD5;
+		break;
+	case (HASH_SHA1):
+		hashalg = SEC_OID_SHA1;
+		break;
+	case (HASH_SHA256):
+		hashalg = SEC_OID_SHA256;
+		break;
+	case (HASH_SHA384):
+		hashalg = SEC_OID_SHA384;
+		break;
+	case (HASH_SHA512):
+		hashalg = SEC_OID_SHA512;
+		break;
+	default:
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"NSS:RSA - Unsupported hash algorithm in RSA sign");
+	}
 
-  SECStatus s = PK11_Sign(mp_privkey, &signature, &data);
+	arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+	if (!arena) {
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"NSS:RSA - Error creating arena");
+	}
 
-  if (s != SECSuccess) {
+	di = SGN_CreateDigestInfo(hashalg, hashBuf, hashLen);	
+	if (di == NULL) {
+		
+		PORT_FreeArena(arena, PR_FALSE);
 
-    throw XSECCryptoException(XSECCryptoException::RSAError,
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"NSS:RSA - Error creating digest info");
+	}
+
+	res = SEC_ASN1EncodeItem(arena, &data, di, NSS_Get_sgn_DigestInfoTemplate(NULL, FALSE));
+
+	if (!res) {
+		SGN_DestroyDigestInfo(di);
+		PORT_FreeArena(arena, PR_FALSE);
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"NSS:RSA - Error encoding digest info for RSA sign");
+	}
+
+/*	data.type = siBuffer;
+	data.data = hashBuf;
+	data.len = hashLen;*/
+
+	/* As of V1.3.1 - create a DigestInfo block */
+
+	
+	SECStatus s = PK11_Sign(mp_privkey, &signature, &data);
+	
+	SGN_DestroyDigestInfo(di);
+	PORT_FreeArena(arena, PR_FALSE);
+
+	if (s != SECSuccess) {
+		
+		throw XSECCryptoException(XSECCryptoException::RSAError,
 			"NSS:RSA - Error during signing operation");
-
-  }
-
-  // Now encode
+		
+	}
+	
+	// Now encode
 	XSCryptCryptoBase64 b64;
 	b64.encodeInit();
 	unsigned int ret = b64.encode(signature.data, signature.len, (unsigned char *) base64SignatureBuf, base64SignatureBufLen);
 	ret += b64.encodeFinish((unsigned char *) &base64SignatureBuf[ret], base64SignatureBufLen - ret);
-
-  return ret;
-
+	
+	return ret;
+	
 }
 
 // --------------------------------------------------------------------------------

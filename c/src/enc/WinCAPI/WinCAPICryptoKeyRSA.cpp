@@ -257,7 +257,8 @@ HCRYPTKEY WinCAPICryptoKeyRSA::importKey(void) {
 bool WinCAPICryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf, 
 								 unsigned int hashLen,
 								 const char * base64Signature,
-								 unsigned int sigLen) {
+								 unsigned int sigLen,
+								 hashMethod hm) {
 
 	// Use the currently loaded key to validate the Base64 encoded signature
 
@@ -270,6 +271,20 @@ bool WinCAPICryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 			throw XSECCryptoException(XSECCryptoException::RSAError,
 				"WinCAPI:RSA - Attempt to validate signature with empty key");
 		}
+	}
+
+	/* Is this a hash we support? */
+	ALG_ID alg;
+	switch (hm) {
+	case (HASH_MD5):
+		alg = CALG_MD5;
+		break;
+	case (HASH_SHA1):
+		alg=CALG_SHA1;
+		break;
+	default:
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPI:RSA Unsupported hash algorithm for RSA sign - only MD5 or SHA1 supported");
 	}
 
 	// Decode the signature
@@ -301,7 +316,7 @@ bool WinCAPICryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	BOOL fResult;
 	HCRYPTHASH h;
 	fResult = CryptCreateHash(m_p, 
-					CALG_SHA1, 
+					alg, 
 					0, 
 					0,
 					&h);
@@ -362,7 +377,8 @@ bool WinCAPICryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * hashBuf,
 		unsigned int hashLen,
 		char * base64SignatureBuf,
-		unsigned int base64SignatureBufLen) {
+		unsigned int base64SignatureBufLen,
+		hashMethod hm) {
 
 	// Sign a pre-calculated hash using this key
 
@@ -372,11 +388,25 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 			"WinCAPI:RSA - Attempt to sign data using a public or un-loaded key");
 	}
 
+	/* Is this a hash we support? */
+	ALG_ID alg;
+	switch (hm) {
+	case (HASH_MD5):
+		alg = CALG_MD5;
+		break;
+	case (HASH_SHA1):
+		alg=CALG_SHA1;
+		break;
+	default:
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPI:RSA Unsupported hash algorithm for RSA sign - only MD5 or SHA1 supported");
+	}
+
 	// Have to create a Windows hash object and feed in the hash
 	BOOL fResult;
 	HCRYPTHASH h;
 	fResult = CryptCreateHash(m_p, 
-					CALG_SHA1, 
+					alg, 
 					0, 
 					0,
 					&h);
