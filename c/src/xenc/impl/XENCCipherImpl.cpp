@@ -552,10 +552,11 @@ DOMNode * XENCCipherImpl::decryptElementDetached(void) {
 	}
 
 	safeBuffer sb("");
+	unsigned int decryptLen;
 
 	if (handler != NULL) {
 
-		handler->decryptToSafeBuffer(c, 
+		decryptLen = handler->decryptToSafeBuffer(c, 
 			mp_encryptedData->getEncryptionMethod(), 
 			mp_key,
 			mp_env->getParentDocument(),
@@ -570,7 +571,9 @@ DOMNode * XENCCipherImpl::decryptElementDetached(void) {
 			"XENCCipherImpl::decryptElement - Error retrieving a handler for algorithm");
 
 	}
-
+	
+	sb[decryptLen] = '\0';
+	
 	// Now de-serialise
 	DOMElement * element = mp_encryptedData->getElement();
 	DOMDocumentFragment * frag = deSerialise(sb, element);
