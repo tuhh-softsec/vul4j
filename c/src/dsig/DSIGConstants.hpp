@@ -107,7 +107,7 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_RSA_SHA256	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
 #define URI_ID_RSA_SHA384	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
 #define URI_ID_RSA_SHA512	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
-#define URI_ID_RSA_MD5		"http://www.w3.org/2000/09/xmldsig#rsa-md5"
+#define URI_ID_RSA_MD5		"http://www.w3.org/2001/04/xmldsig-more#rsa-md5"
 
 // Encryption defines
 #define URI_ID_XENC_ELEMENT	"http://www.w3.org/2001/04/xmlenc#Element"
@@ -459,6 +459,7 @@ public:
 	static const XMLCh * s_unicodeStrURIEXC_C14N_COM;
 	static const XMLCh * s_unicodeStrURIDSA_SHA1;
 
+	static const XMLCh * s_unicodeStrURIRSA_MD5;
 	static const XMLCh * s_unicodeStrURIRSA_SHA1;
 	static const XMLCh * s_unicodeStrURIRSA_SHA224;
 	static const XMLCh * s_unicodeStrURIRSA_SHA256;
