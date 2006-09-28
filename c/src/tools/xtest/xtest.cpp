@@ -837,9 +837,11 @@ void unitTestLongSHA(DOMImplementation * impl) {
 		obj->appendChild(txt);
 
 		// Add a Reference
-		cerr << "224 ... ";
-		ref[0] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), 
-			DSIGConstants::s_unicodeStrURISHA224);
+		if (XSECPlatformUtils::g_cryptoProvider->algorithmSupported(XSECCryptoHash::HASH_SHA224)) {
+			cerr << "224 ... ";
+			ref[0] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), 
+				DSIGConstants::s_unicodeStrURISHA224);
+		}
 		cerr << "256 ... ";
 		ref[1] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), 
 			DSIGConstants::s_unicodeStrURISHA256);
@@ -964,7 +966,216 @@ void unitTestLongSHA(DOMImplementation * impl) {
 	}
 
 }
+
+void unitTestRSASig(DOMImplementation * impl, XSECCryptoKeyRSA * k, const XMLCh * AlgURI) {
+
+	// Given a specific RSA key and particular algorithm URI, sign and validate a document
+
+	try {
+		
+		// Create a document
+    
+		DOMDocument * doc = impl->createDocument();
+
+		// Create the signature
+
+		XSECProvider prov;
+		DSIGSignature *sig;
+		DOMElement *sigNode;
+		DSIGReference *ref[4];
+		
+		sig = prov.newSignature();
+		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
+		sig->setPrettyPrint(true);
+
+		sigNode = sig->createBlankSignature(doc, 
+			DSIGConstants::s_unicodeStrURIC14N_COM,
+			AlgURI);
+
+		doc->appendChild(sigNode);
+
+		// Add an object
+		DSIGObject * obj = sig->appendObject();
+		obj->setId(MAKE_UNICODE_STRING("ObjectId"));
+
+		// Create a text node
+		DOMText * txt= doc->createTextNode(MAKE_UNICODE_STRING("A test string"));
+		obj->appendChild(txt);
+
+		// Add a Reference
+		ref[0] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), 
+			DSIGConstants::s_unicodeStrURISHA1);
+
+		// Get a key
+		cerr << "signing ... ";
+
+		sig->setSigningKey(k->clone());
+		sig->sign();
+
+		cerr << "OK ... ";
+
+		cerr << "validating ... ";
+		if (!sig->verify()) {
+			cerr << "bad verify!" << endl;
+			exit(1);
+		}
+
+		cerr << "OK ... serialise and re-verify ... ";
+		if (!reValidateSig(impl, doc, k)) {
+
+			cerr << "bad verify!" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK";
+
+#if 0
+#if defined HAVE_OPENSSL
+
+		if (g_useWinCAPI || g_useNSS) {
+
+			cerr << " ... validate against OpenSSL" << endl;
+
+			BIO * bioMem = BIO_new(BIO_s_mem());
+			BIO_puts(bioMem, s_tstRSAPrivateKey);
+			EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
+
+			OpenSSLCryptoKeyRSA * rsaKey = new OpenSSLCryptoKeyRSA(pk);
+
+			sig->setSigningKey(rsaKey);
+			if (!sig->verify()) {
+				cerr << "bad verify!" << endl;
+				exit (1);
+			}
+
+			cerr << "OK";
+
+			BIO_free(bioMem);
+			EVP_PKEY_free(pk);
+		}
+#endif
+#endif
+
+		cerr << "\n";	
+
+		outputDoc(impl, doc);
+		doc->release();
+		
+
+	}
+
+	catch (XSECException &e)
+	{
+		cerr << "An error occured during signature processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "A cryptographic error occured during signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+}
+
+
+void unitTestRSA(DOMImplementation * impl) {
+
+	/* First we load some keys to use! */
+
+	XSECCryptoKeyRSA * rsaKey;
+
+#if defined (HAVE_OPENSSL)
+	if (!g_useWinCAPI && !g_useNSS) {
+		// Load the key
+		BIO * bioMem = BIO_new(BIO_s_mem());
+		BIO_puts(bioMem, s_tstRSAPrivateKey);
+		EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
+
+		rsaKey = new OpenSSLCryptoKeyRSA(pk);
+
+		BIO_free(bioMem);
+		EVP_PKEY_free(pk);
+	}
+#endif
+
+#if defined (HAVE_WINCAPI)
+	if (g_useWinCAPI) {
+
+		// Use the internal key
+		WinCAPICryptoProvider *cp = (WinCAPICryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
+		HCRYPTPROV p = cp->getApacheKeyStore();
+			
+		rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
+	}
+
+#endif
+
+#if defined (HAVE_NSS)
+	if (g_useNSS) {
+		// Use the internal key
+		NSSCryptoProvider *cp = (NSSCryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
+		
+		// Heavily based on Mozilla example code
+		SECKEYPrivateKey *prvKey = 0;
+		SECKEYPublicKey *pubKey = 0;
+		PK11SlotInfo *slot = 0;
+		PK11RSAGenParams rsaParams;
+
+		// Use a bog standard key size
+		rsaParams.keySizeInBits = 1024;
+		rsaParams.pe = 65537;
+		
+		// We need somewhere to temporarily store a generated key
+		slot = PK11_GetInternalKeySlot();
+		if (!slot) { 
+			cerr << "Error generating key - can't get NSS slot\n";
+			exit (1);
+		}
+		
+		// Do the generate
+		prvKey = PK11_GenerateKeyPair(slot, CKM_RSA_PKCS_KEY_PAIR_GEN, &rsaParams,
+			&pubKey, PR_FALSE, PR_TRUE, 0);
+		
+		if (!prvKey) {
+			if (slot)
+				PK11_FreeSlot(slot);
+			cerr << "Error generating key within NSS\n";
+			exit (1);
+		}
+		
+		// Now use the key!
+		rsaKey = new NSSCryptoKeyRSA(pubKey, prvKey);
+
+	}
+#endif
+
+	cerr << "Unit testing RSA-SHA1 signature ... ";
+	unitTestRSASig(impl, (XSECCryptoKeyRSA *) rsaKey->clone(), DSIGConstants::s_unicodeStrURIRSA_SHA1);
+
+	if (XSECPlatformUtils::g_cryptoProvider->algorithmSupported(XSECCryptoHash::HASH_SHA512)) {
+		cerr << "Unit testing RSA-SHA224 signature ... ";
+		unitTestRSASig(impl, (XSECCryptoKeyRSA *) rsaKey->clone(), DSIGConstants::s_unicodeStrURIRSA_SHA224);
+		cerr << "Unit testing RSA-SHA256 signature ... ";
+		unitTestRSASig(impl, (XSECCryptoKeyRSA *) rsaKey->clone(), DSIGConstants::s_unicodeStrURIRSA_SHA256);
+		cerr << "Unit testing RSA-SHA384 signature ... ";
+		unitTestRSASig(impl, (XSECCryptoKeyRSA *) rsaKey->clone(), DSIGConstants::s_unicodeStrURIRSA_SHA384);
+		cerr << "Unit testing RSA-SHA512 signature ... ";
+		unitTestRSASig(impl, (XSECCryptoKeyRSA *) rsaKey->clone(), DSIGConstants::s_unicodeStrURIRSA_SHA512);
+	}
+	else
+		cerr << "Skipping non SHA 224/256/384/512 RSA signatures" << endl;
+
+	cerr << "Unit testing RSA-MD5 signature ... ";
+	unitTestRSASig(impl, rsaKey, DSIGConstants::s_unicodeStrURIRSA_MD5);
 	
+		
+}
 void unitTestSignature(DOMImplementation * impl) {
 
 	// Test an enveloping signature
@@ -980,6 +1191,9 @@ void unitTestSignature(DOMImplementation * impl) {
 		unitTestLongSHA(impl);
 	else
 		cerr << "Skipping long SHA hash tests as SHA512 not supported by crypto provider" << endl;
+
+	// Test RSA Signatures
+	unitTestRSA(impl);
 }
 
 // --------------------------------------------------------------------------------
