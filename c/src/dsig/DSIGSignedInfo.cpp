@@ -369,98 +369,36 @@ void DSIGSignedInfo::load(void) {
 	
 	mp_algorithmURI = algorithm->getNodeValue();
 
-	tmpSB << (*mp_formatter << mp_algorithmURI);
+	/* NOTE - as of version 1.3.1 all code relating to parsing the algorithm 
+	 * has been removed.  This should all be handled inside the algorithm mappers.
+	 * Having code here restricts available algorithms, as this code is not extended for
+	 * new algorthms.
+	 */
 
-	if (tmpSB.sbStrcmp(URI_ID_DSA_SHA1) == 0) {
+	/* Look for maximum output value. Really only applies to HMACs, but as we no
+	 * longer know at this point if this is an HMAC, we need to check. */
 
-		m_signatureMethod = SIGNATURE_DSA;
-		m_hashMethod = HASH_SHA1;
+	DOMNode *tmpSOV = tmpSI->getFirstChild();
+	while (tmpSOV != NULL && 
+		tmpSOV->getNodeType() != DOMNode::ELEMENT_NODE && 
+		!strEquals(getDSIGLocalName(tmpSOV), "HMACOutputLength"))
+		tmpSOV = tmpSOV->getNextSibling();
 
-	}
+	if (tmpSOV != NULL) {
 
-	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA1) == 0) {
-
-		m_signatureMethod = SIGNATURE_RSA;
-		m_hashMethod = HASH_SHA1;
-
-	}
-
-	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA224) == 0) {
-
-		m_signatureMethod = SIGNATURE_RSA;
-		m_hashMethod = HASH_SHA224;
-
-	}
-
-	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA256) == 0) {
-
-		m_signatureMethod = SIGNATURE_RSA;
-		m_hashMethod = HASH_SHA256;
-
-	}
-
-	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA384) == 0) {
-
-		m_signatureMethod = SIGNATURE_RSA;
-		m_hashMethod = HASH_SHA384;
-
-	}
-
-	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA512) == 0) {
-
-		m_signatureMethod = SIGNATURE_RSA;
-		m_hashMethod = HASH_SHA512;
-
-	}
-
-	else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA1) == 0 ||
-		     tmpSB.sbStrcmp(URI_ID_HMAC_SHA224) == 0 ||
-		     tmpSB.sbStrcmp(URI_ID_HMAC_SHA256) == 0 ||
-		     tmpSB.sbStrcmp(URI_ID_HMAC_SHA384) == 0 ||
-			 tmpSB.sbStrcmp(URI_ID_HMAC_SHA512) == 0) {
-
-		m_signatureMethod = SIGNATURE_HMAC;
-		if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA1) == 0)
-			m_hashMethod = HASH_SHA1;
-		else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA224) == 0)
-			m_hashMethod = HASH_SHA224;
-		else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA256) == 0)
-			m_hashMethod = HASH_SHA256;
-		else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA384) == 0)
-			m_hashMethod = HASH_SHA384;
-		else 
-			m_hashMethod = HASH_SHA512;
-
-		// Check to see if there is a maximum output value
-
-		DOMNode *tmpSOV = tmpSI->getFirstChild();
-		while (tmpSOV != NULL && 
-			tmpSOV->getNodeType() != DOMNode::ELEMENT_NODE && 
-			!strEquals(getDSIGLocalName(tmpSOV), "HMACOutputLength"))
+		// Have a max output value!
+		tmpSOV = tmpSOV->getFirstChild();
+		while (tmpSOV != NULL && tmpSOV->getNodeType() != DOMNode::TEXT_NODE)
 			tmpSOV = tmpSOV->getNextSibling();
 
 		if (tmpSOV != NULL) {
 
-			// Have a max output value!
-			tmpSOV = tmpSOV->getFirstChild();
-			while (tmpSOV != NULL && tmpSOV->getNodeType() != DOMNode::TEXT_NODE)
-				tmpSOV = tmpSOV->getNextSibling();
+			safeBuffer val;
+			val << (*mp_formatter << tmpSOV->getNodeValue());
+			m_HMACOutputLength = atoi((char *) val.rawBuffer());
 
-			if (tmpSOV != NULL) {
-
-				safeBuffer val;
-				val << (*mp_formatter << tmpSOV->getNodeValue());
-				m_HMACOutputLength = atoi((char *) val.rawBuffer());
-
-			}
 		}
-	
 	}
-
-	else
-
-		throw XSECException(XSECException::UnknownSignatureAlgorithm);
-
 
 	// Now look at references....
 
