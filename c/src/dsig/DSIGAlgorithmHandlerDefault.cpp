@@ -210,6 +210,21 @@ TXFMBase * addHashTxfm(signatureMethod sm, hashMethod hm, XSECCryptoKey * key,
 	
 	switch (hm) {
 
+	case HASH_MD5 :
+
+		if (sm == SIGNATURE_HMAC){
+			if (key->getKeyType() != XSECCryptoKey::KEY_HMAC) {
+				throw XSECException(XSECException::AlgorithmMapperError,
+					"DSIGAlgorithmHandlerDefault::addHashTxfm - non HMAC key passed in to HMAC signature");
+			}
+			XSECnew(txfm, TXFMMD5(doc, key));
+		}
+		else  {
+			XSECnew(txfm, TXFMMD5(doc));
+		}
+
+		break;
+
 	case HASH_SHA1 :
 
 		if (sm == SIGNATURE_HMAC){
@@ -415,7 +430,8 @@ unsigned int DSIGAlgorithmHandlerDefault::signToSafeBuffer(
 			hash, 
 			hashLen,
 			(char *) b64Buf, 
-			1024);
+			1024,
+			hm);
 
 		if (b64Len <= 0) {
 
@@ -536,7 +552,8 @@ bool DSIGAlgorithmHandlerDefault::verifyBase64Signature(
 			hash,
 			hashLen,
 			sig,
-			(unsigned int) strlen(sig));
+			(unsigned int) strlen(sig),
+			hm);
 
 		break;
 
