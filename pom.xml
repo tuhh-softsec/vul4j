@@ -11,7 +11,7 @@
   <name>Apache Directory Daemon</name>
   <packaging>pom</packaging>  
   <!-- note that this skipped a RC in being bumped up -->
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <description>
     Reusable framework for daemon applications based on Commons Daemon
     Jsvc and Procrun. A small installation layout pattern combined with
