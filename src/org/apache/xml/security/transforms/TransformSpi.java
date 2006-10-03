@@ -93,9 +93,8 @@ public abstract class TransformSpi {
                TransformationException, ParserConfigurationException,
                SAXException {
 	//Default implementation overide with a much better
-	TransformSpi tmp;
 	try {
-	    tmp = (TransformSpi) getClass().newInstance();
+		TransformSpi tmp = (TransformSpi) getClass().newInstance();
 	    tmp.setTransform(_transformObject);
 	    return tmp.enginePerformTransform(input);
 	} catch (InstantiationException e) {
