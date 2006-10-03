@@ -120,7 +120,7 @@ public class TransformXPath extends TransformSpi {
     private boolean needsCircunvent(String str) {
     	//return true;
     	//return false;
-    	return str.contains("namespace") || str.contains("name()");
+    	return (str.indexOf("namespace") != -1) || (str.indexOf("name()") != -1);
     }
 
     static class XPathNodeFilter implements NodeFilter {
