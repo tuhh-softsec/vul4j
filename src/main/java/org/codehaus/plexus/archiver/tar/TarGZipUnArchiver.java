@@ -30,30 +30,41 @@ import java.io.IOException;
  */
 public class TarGZipUnArchiver
     extends TarUnArchiver
-{
+{       
+    public TarGZipUnArchiver()
+    {
+    }
+
+    public TarGZipUnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+    }
+
     protected void execute()
         throws ArchiverException, IOException
     {
         File tempTarFile = File.createTempFile("tmp",".tar");
-        //remove the temp file so that GZipUnArchiver does not do date comparision
+
         tempTarFile.delete();
         
         File originalSourceFile = this.getSourceFile();
         
         try
         {
-            GZipUnArchiver zipUnArchiver = new GZipUnArchiver();
+            GZipUnArchiver zipUnArchiver = new GZipUnArchiver( getSourceFile() );
             
             zipUnArchiver.enableLogging( this.getLogger() );
             
             zipUnArchiver.setDestFile( tempTarFile );
-            
-            zipUnArchiver.setSourceFile( this.getSourceFile() ); 
-                       
+                                   
             zipUnArchiver.extract();
-            
-            this.setSourceFile( tempTarFile );
-            
+
+            // This is so nasty. You have to make it clear what you're doing. If you're going to take a source file
+            // and do something with it like gunzip it and then untar the result then use methods named what they
+            // actually do. And setters for this stuff is just so confusing, use a method with a parameter.
+
+            setSourceFile( tempTarFile );
+
             super.execute();
         }
         finally

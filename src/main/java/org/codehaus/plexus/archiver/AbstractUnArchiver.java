@@ -25,6 +25,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
  * @version $Revision$ $Date$
+ * @todo there should really be constructors which take the source file.
  */
 public abstract class AbstractUnArchiver
     extends AbstractLogEnabled
@@ -37,6 +38,15 @@ public abstract class AbstractUnArchiver
     private File sourceFile;
 
     private boolean overwrite = true;
+
+    public AbstractUnArchiver()
+    {
+    }
+
+    public AbstractUnArchiver( File sourceFile )
+    {
+        this.sourceFile = sourceFile;
+    }
 
     public File getDestDirectory()
     {
@@ -90,7 +100,7 @@ public abstract class AbstractUnArchiver
     {
         if ( sourceFile == null )
         {
-            throw new ArchiverException( "The source file isn't define." );
+            throw new ArchiverException( "The source file isn't defined." );
         }
 
         if ( sourceFile.isDirectory() )
@@ -100,7 +110,7 @@ public abstract class AbstractUnArchiver
 
         if ( !sourceFile.exists() )
         {
-            throw new ArchiverException( "The source doesn't exists." );
+            throw new ArchiverException( "The source file " + sourceFile + " doesn't exists." );
         }
 
         if ( destDirectory == null && destFile == null )
@@ -129,4 +139,9 @@ public abstract class AbstractUnArchiver
     protected abstract void execute()
         throws ArchiverException, IOException;
 
+    public void extract( String path, File outputDirectory )
+        throws ArchiverException
+    {
+        throw new UnsupportedOperationException();
+    }
 }

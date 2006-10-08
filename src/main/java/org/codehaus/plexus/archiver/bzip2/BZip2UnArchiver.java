@@ -24,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.File;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -32,6 +33,15 @@ import java.io.IOException;
 public class BZip2UnArchiver
     extends AbstractUnArchiver
 {
+    public BZip2UnArchiver()
+    {
+    }
+
+    public BZip2UnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+    }
+
     protected void execute()
         throws ArchiverException, IOException
     {

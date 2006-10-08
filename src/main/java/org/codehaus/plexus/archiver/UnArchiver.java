@@ -27,13 +27,31 @@ public interface UnArchiver
 {
     String ROLE = UnArchiver.class.getName();
 
+    /**
+     * Extract the archive.
+     *
+     * @throws ArchiverException
+     * @throws IOException
+     */
     void extract()
         throws ArchiverException, IOException;
-    
+
+    /**
+     * Take a patch into the archive and extract it to the specified directory.
+     *
+     * @param path Path inside the archive to be extracted.
+     * @param outputDirectory Directory to extract to.
+     * @throws ArchiverException
+     */
+    void extract( String path, File outputDirectory )
+        throws ArchiverException;    
+
     File getDestDirectory();
 
     void setDestDirectory( File destDirectory );
 
+    //todo What is this? If you're extracting isn't it always to a directory. I think it would be cool to extract an
+    // archive to another archive but I don't think we support this right now.
     File getDestFile();
 
     void setDestFile( File destFile );

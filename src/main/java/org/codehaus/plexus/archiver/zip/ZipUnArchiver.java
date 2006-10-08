@@ -1,5 +1,7 @@
 package org.codehaus.plexus.archiver.zip;
 
+import java.io.File;
+
 /**
  *
  * Copyright 2004 The Apache Software Foundation
@@ -24,4 +26,12 @@ package org.codehaus.plexus.archiver.zip;
 public class ZipUnArchiver
     extends AbstractZipUnArchiver
 {
+    public ZipUnArchiver()
+    {
+    }
+
+    public ZipUnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+    }
 }

@@ -23,6 +23,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.File;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -32,6 +33,15 @@ import java.util.zip.GZIPInputStream;
 public class GZipUnArchiver
     extends AbstractUnArchiver
 {
+    public GZipUnArchiver()
+    {
+    }
+
+    public GZipUnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+    }
+
     protected void execute()
         throws ArchiverException, IOException
     {

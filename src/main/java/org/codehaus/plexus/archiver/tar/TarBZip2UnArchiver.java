@@ -31,27 +31,35 @@ import java.io.IOException;
 public class TarBZip2UnArchiver
     extends TarUnArchiver
 {
+    public TarBZip2UnArchiver()
+    {
+    }
+
+    public TarBZip2UnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+    }
+
     protected void execute()
         throws ArchiverException, IOException
     {
         File tempTarFile = File.createTempFile( "tmp", ".tar" );
+        
         tempTarFile.delete();
 
         File originalSourceFile = this.getSourceFile();
 
         try
         {
-            BZip2UnArchiver zipUnArchiver = new BZip2UnArchiver();
+            BZip2UnArchiver zipUnArchiver = new BZip2UnArchiver( getSourceFile() );
 
             zipUnArchiver.enableLogging( this.getLogger() );
 
             zipUnArchiver.setDestFile( tempTarFile );
 
-            zipUnArchiver.setSourceFile( this.getSourceFile() );
-
             zipUnArchiver.extract();
 
-            this.setSourceFile( tempTarFile );
+            setSourceFile( tempTarFile );
 
             super.execute();
         }

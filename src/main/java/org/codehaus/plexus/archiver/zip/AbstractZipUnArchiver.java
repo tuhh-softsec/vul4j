@@ -23,6 +23,7 @@ import org.codehaus.plexus.archiver.ArchiveFinalizer;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.FilterEnabled;
 import org.codehaus.plexus.archiver.FinalizerEnabled;
+import org.codehaus.plexus.archiver.UnArchiverException;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -42,7 +43,8 @@ import java.util.List;
  */
 public abstract class AbstractZipUnArchiver
     extends AbstractUnArchiver
-    implements FilterEnabled, FinalizerEnabled
+    implements FilterEnabled,
+    FinalizerEnabled
 {
     private static final String NATIVE_ENCODING = "native-encoding";
 
@@ -51,6 +53,15 @@ public abstract class AbstractZipUnArchiver
     private FilterSupport filterSupport;
 
     private List finalizers;
+
+    public AbstractZipUnArchiver()
+    {
+    }
+
+    public AbstractZipUnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+    }
 
     public void setArchiveFilters( List filters )
     {
@@ -87,7 +98,7 @@ public abstract class AbstractZipUnArchiver
                 extractFileIfIncluded( getSourceFile(), getDestDirectory(), zf.getInputStream( ze ), ze.getName(),
                                        new Date( ze.getTime() ), ze.isDirectory() );
             }
-            
+
             runArchiveFinalizers();
 
             getLogger().debug( "expand complete" );
@@ -112,8 +123,12 @@ public abstract class AbstractZipUnArchiver
         }
     }
 
-    private void extractFileIfIncluded( File sourceFile, File destDirectory, InputStream inputStream, String name,
-                                        Date time, boolean isDirectory )
+    private void extractFileIfIncluded( File sourceFile,
+                                        File destDirectory,
+                                        InputStream inputStream,
+                                        String name,
+                                        Date time,
+                                        boolean isDirectory )
         throws IOException, ArchiverException
     {
         try
@@ -129,85 +144,23 @@ public abstract class AbstractZipUnArchiver
         }
     }
 
-    protected void extractFile( File srcF, File dir, InputStream compressedInputStream, String entryName,
-                                Date entryDate, boolean isDirectory )
+    protected void extractFile( File srcF,
+                                File dir,
+                                InputStream compressedInputStream,
+                                String entryName,
+                                Date entryDate,
+                                boolean isDirectory )
         throws IOException
     {
-        /*        if ( patternsets != null && patternsets.size() > 0 )
-         {
-         String name = entryName.replace( '/', File.separatorChar)
-         .replace('\\', File.separatorChar );
-         boolean included = false;
-         for ( int v = 0; v < patternsets.size(); v++ )
-         {
-         PatternSet p = (PatternSet) patternsets.elementAt( v );
-         String[] incls = p.getIncludePatterns( getProject() );
-         if ( incls == null || incls.length == 0 )
-         {
-         // no include pattern implicitly means includes="**"
-         incls = new String[] { "**" };
-         }
-
-         for ( int w = 0; w < incls.length; w++ )
-         {
-         String pattern = incls[w].replace( '/', File.separatorChar )
-         .replace( '\\', File.separatorChar );
-         if ( pattern.endsWith(File.separator) )
-         {
-         pattern += "**";
-         }
-
-         included = SelectorUtils.matchPath( pattern, name );
-         if ( included )
-         {
-         break;
-         }
-         }
-
-         if ( !included )
-         {
-         break;
-         }
-
-
-         String[] excls = p.getExcludePatterns( getProject() );
-         if ( excls != null )
-         {
-         for ( int w = 0; w < excls.length; w++ )
-         {
-         String pattern = excls[w]
-         .replace( '/', File.separatorChar )
-         .replace( '\\', File.separatorChar );
-         if ( pattern.endsWith( File.separator ) )
-         {
-         pattern += "**";
-         }
-         included = ! ( SelectorUtils.matchPath( pattern, name ) );
-         if ( ! included )
-         {
-         break;
-         }
-         }
-         }
-         }
-         if ( ! included )
-         {
-         //Do not process this file
-         return;
-         }
-         }
-         */
         File f = FileUtils.resolveFile( dir, entryName );
 
         try
         {
             if ( !isOverwrite() && f.exists() && f.lastModified() >= entryDate.getTime() )
             {
-                getLogger().debug( "Skipping " + f + " as it is up-to-date" );
                 return;
             }
 
-            getLogger().debug( "expanding " + entryName + " to " + f );
             // create intermediary directories - sometimes zip don't add them
             File dirF = f.getParentFile();
             if ( dirF != null )
@@ -259,12 +212,12 @@ public abstract class AbstractZipUnArchiver
             getLogger().warn( "Unable to expand to file " + f.getPath() );
         }
     }
-    
+
     public void setArchiveFinalizers( List archiveFinalizers )
     {
         this.finalizers = archiveFinalizers;
     }
-    
+
     protected void runArchiveFinalizers()
         throws ArchiverException
     {
@@ -279,4 +232,48 @@ public abstract class AbstractZipUnArchiver
         }
     }
 
+    public void extract( String path,
+                         File outputDirectory )
+        throws ArchiverException
+    {
+        ZipFile zipFile = null;
+
+        try
+        {
+            zipFile = new ZipFile( getSourceFile(), encoding );
+
+            Enumeration e = zipFile.getEntries();
+
+            while ( e.hasMoreElements() )
+            {
+                ZipEntry ze = (ZipEntry) e.nextElement();
+
+                if ( ze.getName().startsWith( path ) )
+                {
+                    extractFileIfIncluded( getSourceFile(), outputDirectory, zipFile.getInputStream( ze ), ze.getName(),
+                                           new Date( ze.getTime() ), ze.isDirectory() );
+                }
+            }
+
+            runArchiveFinalizers();
+        }
+        catch ( IOException ioe )
+        {
+            throw new ArchiverException( "Error while expanding " + getSourceFile().getAbsolutePath(), ioe );
+        }
+        finally
+        {
+            if ( zipFile != null )
+            {
+                try
+                {
+                    zipFile.close();
+                }
+                catch ( IOException e )
+                {
+                    //ignore
+                }
+            }
+        }
+    }
 }

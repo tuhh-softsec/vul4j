@@ -36,6 +36,15 @@ import java.util.zip.GZIPInputStream;
 public class TarUnArchiver
     extends AbstractZipUnArchiver
 {
+    public TarUnArchiver()
+    {
+    }
+
+    public TarUnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+    }
+
     /**
      * compression method
      */
@@ -181,8 +190,6 @@ public class TarUnArchiver
          * @param istream input stream
          * @return input stream with on-the-fly decompression
          * @throws IOException    thrown by GZIPInputStream constructor
-         * @throws BuildException thrown if bzip stream does not
-         *                        start with expected magic values
          */
         private InputStream decompress( final File file, final InputStream istream )
             throws IOException, ArchiverException

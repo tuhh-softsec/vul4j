@@ -38,7 +38,6 @@ import org.codehaus.plexus.archiver.gzip.GZipArchiver;
 public class TarGZipUnArchiverTest
     extends PlexusTestCase
 {
-
     public void testExtract()
         throws Exception
     {
@@ -51,8 +50,6 @@ public class TarGZipUnArchiverTest
         file1InTar.delete();
         file2InTar.delete();
 
-        File testGZipFile = getTestFile( "target/output/archive.tar.gz" );
-
         tarArchiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), fileName1 );
         tarArchiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), fileName2, 0664 );
         tarArchiver.setDestFile( getTestFile( "target/output/archive.tar" ) );
@@ -60,12 +57,12 @@ public class TarGZipUnArchiverTest
 
         GZipArchiver gzipArchiver = (GZipArchiver) lookup( Archiver.ROLE, "gzip" );
 
+        File testGZipFile = getTestFile( "target/output/archive.tar.gz" );
         gzipArchiver.setDestFile( testGZipFile );
         gzipArchiver.addFile( getTestFile( "target/output/archive.tar" ), "dontcare" );
         gzipArchiver.createArchive();
 
         TarGZipUnArchiver tarGZipUnArchiver = (TarGZipUnArchiver) lookup( UnArchiver.ROLE, "tgz" );
-
         tarGZipUnArchiver.setDestDirectory( getTestFile( "target/output" ) );
         tarGZipUnArchiver.setSourceFile( testGZipFile );
         tarGZipUnArchiver.extract();
@@ -73,8 +70,9 @@ public class TarGZipUnArchiverTest
         assertTrue( file1InTar.exists() );
         assertTrue( file2InTar.exists() );
 
-        //makesure we place the source file back
+        //make sure we place the source file back
         assertEquals( testGZipFile, tarGZipUnArchiver.getSourceFile() );
+
 
     }
 
