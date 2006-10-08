@@ -110,12 +110,12 @@ public abstract class AbstractUnArchiver
 
         if ( !sourceFile.exists() )
         {
-            throw new ArchiverException( "The source file " + sourceFile + " doesn't exists." );
+            throw new ArchiverException( "The source file " + sourceFile + " doesn't exist." );
         }
 
         if ( destDirectory == null && destFile == null )
         {
-            throw new ArchiverException( "The destination isn't define." );
+            throw new ArchiverException( "The destination isn't defined." );
         }
 
         if ( destDirectory != null && destFile != null )
