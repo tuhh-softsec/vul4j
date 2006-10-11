@@ -17,16 +17,11 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
@@ -37,12 +32,20 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @version $Id$
  */
 public abstract class AbstractArchiver
     extends AbstractLogEnabled
-    implements Archiver, Contextualizable
+    implements Archiver, Contextualizable, FilterEnabled, FinalizerEnabled
 {
     /**
      * Default value for the dirmode attribute.
@@ -69,6 +72,10 @@ public abstract class AbstractArchiver
     private int defaultDirectoryMode = DEFAULT_DIR_MODE;
 
     private boolean forced = true;
+
+    private FilterSupport filterSupport;
+
+    private List finalizers;
 
     // contextualized.
     private ArchiverManager archiverManager;
@@ -267,7 +274,23 @@ public abstract class AbstractArchiver
             throw new ArchiverException( "Error adding archived file-set. UnArchiver not found for: " + archiveFile, e );
         }
 
-        File tempDir = FileUtils.createTempFile( "archived-file-set.", ".tmp", null );
+        final File tempDir = FileUtils.createTempFile( "archived-file-set.", ".tmp", null );
+        
+        Runtime.getRuntime().addShutdownHook( new Thread( new Runnable(){
+
+            public void run()
+            {
+                try
+                {
+                    FileUtils.deleteDirectory( tempDir );
+                }
+                catch ( IOException e )
+                {
+                    getLogger().debug( "Error deleting temp directory: " + tempDir, e );
+                }
+            }
+            
+        } ) );
 
         tempDir.mkdirs();
 
@@ -334,67 +357,173 @@ public abstract class AbstractArchiver
 
     public boolean isForced()
     {
-    	return forced;
+        return forced;
     }
 
     public void setForced( boolean forced )
     {
-    	this.forced = forced;
+        this.forced = forced;
+    }
+
+    public void setArchiveFilters( List filters )
+    {
+        filterSupport = new FilterSupport( filters, getLogger() );
+    }
+
+    public void setArchiveFinalizers( List archiveFinalizers )
+    {
+        this.finalizers = archiveFinalizers;
     }
 
     protected boolean isUptodate()
     {
-    	File zipFile = getDestFile();
-    	long destTimestamp = zipFile.lastModified();
-    	if ( destTimestamp == 0)
-    	{
-    		getLogger().debug( "isUp2date: false (Destination "
-    				+ zipFile.getPath() + " not found.)" );
-    		return false; // File doesn't yet exist
-    	}
+        File zipFile = getDestFile();
+        long destTimestamp = zipFile.lastModified();
+        if ( destTimestamp == 0 )
+        {
+            getLogger().debug( "isUp2date: false (Destination " + zipFile.getPath() + " not found.)" );
+            return false; // File doesn't yet exist
+        }
 
-    	Map archiveEntries = getFiles();
-    	if ( archiveEntries == null  ||  archiveEntries.isEmpty() )
-    	{
-    		getLogger().debug( "isUp2date: false (No input files.)" );
-    		return false; // No timestamp to compare
-    	}
+        Map archiveEntries = getFiles();
+        if ( archiveEntries == null || archiveEntries.isEmpty() )
+        {
+            getLogger().debug( "isUp2date: false (No input files.)" );
+            return false; // No timestamp to compare
+        }
 
-    	for ( Iterator iter = archiveEntries.values().iterator();  iter.hasNext(); )
-    	{
-    	    ArchiveEntry entry = (ArchiveEntry) iter.next();
-    	    long l = entry.getFile().lastModified();
-    	    if ( l == 0 )
-    	    {
-    	        // Don't know what to do. Safe thing is to assume not up2date.
-    	        getLogger().debug( "isUp2date: false (Input file "
-    	                           + entry.getFile().getPath()
-    	                           + " not found.)" );
-    	        return false;
-    	    }
-    	    if ( l > destTimestamp )
-    	    {
-    	        getLogger().debug( "isUp2date: false (Input file "
-    	                           + entry.getFile().getPath()
-    	                           + " is newer.)" );
-    	        return false;
-    	    }
-    	}
+        for ( Iterator iter = archiveEntries.values().iterator(); iter.hasNext(); )
+        {
+            ArchiveEntry entry = (ArchiveEntry) iter.next();
+            long l = entry.getFile().lastModified();
+            if ( l == 0 )
+            {
+                // Don't know what to do. Safe thing is to assume not up2date.
+                getLogger().debug( "isUp2date: false (Input file " + entry.getFile().getPath() + " not found.)" );
+                return false;
+            }
+            if ( l > destTimestamp )
+            {
+                getLogger().debug( "isUp2date: false (Input file " + entry.getFile().getPath() + " is newer.)" );
+                return false;
+            }
+        }
 
-    	getLogger().debug( "isUp2date: true" );
-    	return true;
+        getLogger().debug( "isUp2date: true" );
+        return true;
     }
 
-    protected boolean checkForced() {
-        if ( !isForced()  &&  isSupportingForced()  &&  isUptodate() )
+    protected boolean checkForced()
+    {
+        if ( !isForced() && isSupportingForced() && isUptodate() )
         {
-            getLogger().debug( "Archive " + getDestFile() + " is uptodate." ); 
+            getLogger().debug( "Archive " + getDestFile() + " is uptodate." );
             return false;
         }
         return true;
     }
 
-    public boolean isSupportingForced() {
+    public boolean isSupportingForced()
+    {
         return false;
     }
+
+    protected List getArchiveFinalizers()
+    {
+        return finalizers;
+    }
+
+    protected void runArchiveFinalizers()
+        throws ArchiverException
+    {
+        if ( finalizers != null )
+        {
+            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
+            {
+                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+
+                finalizer.finalizeArchiveCreation( this );
+            }
+        }
+    }
+
+    protected boolean include( InputStream in, String path )
+        throws ArchiveFilterException
+    {
+        return ( filterSupport != null && !filterSupport.include( in, path ) );
+    }
+
+    public final void createArchive()
+        throws ArchiverException, IOException
+    {
+        validate();
+        try
+        {
+            try
+            {
+                runArchiveFinalizers();
+                execute();
+            }
+            finally
+            {
+                close();
+            }
+        }
+        catch ( IOException e )
+        {
+            String msg = "Problem creating " + getArchiveType() + ": " + e.getMessage();
+
+            StringBuffer revertBuffer = new StringBuffer();
+            if ( !revert( revertBuffer ) )
+            {
+                msg += revertBuffer.toString();
+            }
+
+            throw new ArchiverException( msg, e );
+        }
+        finally
+        {
+            cleanUp();
+        }
+    }
+
+    protected boolean hasVirtualFiles()
+    {
+        if ( finalizers != null )
+        {
+            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
+            {
+                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+                
+                List virtualFiles = finalizer.getVirtualFiles();
+                
+                if ( virtualFiles != null && !virtualFiles.isEmpty() )
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean revert( StringBuffer messageBuffer )
+    {
+        return true;
+    }
+
+    protected void validate()
+        throws ArchiverException, IOException
+    {
+    }
+
+    protected abstract String getArchiveType();
+
+    protected abstract void close()
+        throws IOException;
+
+    protected abstract void cleanUp();
+
+    protected abstract void execute()
+        throws ArchiverException, IOException;
+
 }

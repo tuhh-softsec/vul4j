@@ -39,13 +39,10 @@ public class DirectoryArchiver
 {
     public void resetArchiver()
     {
-        setIncludeEmptyDirs( false );
-        getDirs().clear();
-        getFiles().clear();
-        setIncludeEmptyDirs( true );
+        cleanUp();
     }
 
-    public void createArchive()
+    public void execute()
         throws ArchiverException, IOException
     {
         //Most of this method was copied from org.codehaus.plexus.archiver.tar.TarArchiver
@@ -211,5 +208,23 @@ public class DirectoryArchiver
         {
             throw new ArchiverException( "Error while executing chmod.", e );
         }
+    }
+
+    protected void cleanUp()
+    {
+        setIncludeEmptyDirs( false );
+        getDirs().clear();
+        getFiles().clear();
+        setIncludeEmptyDirs( true );
+    }
+
+    protected void close()
+        throws IOException
+    {
+    }
+
+    protected String getArchiveType()
+    {
+        return "directory";
     }
 }

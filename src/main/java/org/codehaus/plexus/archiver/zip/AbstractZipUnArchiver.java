@@ -19,12 +19,7 @@ package org.codehaus.plexus.archiver.zip;
 
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
-import org.codehaus.plexus.archiver.ArchiveFinalizer;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.FilterEnabled;
-import org.codehaus.plexus.archiver.FinalizerEnabled;
-import org.codehaus.plexus.archiver.UnArchiverException;
-import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -34,8 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -43,16 +36,10 @@ import java.util.List;
  */
 public abstract class AbstractZipUnArchiver
     extends AbstractUnArchiver
-    implements FilterEnabled,
-    FinalizerEnabled
 {
     private static final String NATIVE_ENCODING = "native-encoding";
 
     private String encoding = "UTF8";
-
-    private FilterSupport filterSupport;
-
-    private List finalizers;
 
     public AbstractZipUnArchiver()
     {
@@ -61,11 +48,6 @@ public abstract class AbstractZipUnArchiver
     public AbstractZipUnArchiver( File sourceFile )
     {
         super( sourceFile );
-    }
-
-    public void setArchiveFilters( List filters )
-    {
-        filterSupport = new FilterSupport( filters, getLogger() );
     }
 
     /**
@@ -99,8 +81,6 @@ public abstract class AbstractZipUnArchiver
                                        new Date( ze.getTime() ), ze.isDirectory() );
             }
 
-            runArchiveFinalizers();
-
             getLogger().debug( "expand complete" );
         }
         catch ( IOException ioe )
@@ -133,7 +113,7 @@ public abstract class AbstractZipUnArchiver
     {
         try
         {
-            if ( filterSupport == null || filterSupport.include( inputStream, name ) )
+            if ( include( inputStream, name ) )
             {
                 extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory );
             }
@@ -213,26 +193,7 @@ public abstract class AbstractZipUnArchiver
         }
     }
 
-    public void setArchiveFinalizers( List archiveFinalizers )
-    {
-        this.finalizers = archiveFinalizers;
-    }
-
-    protected void runArchiveFinalizers()
-        throws ArchiverException
-    {
-        if ( finalizers != null )
-        {
-            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
-            {
-                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
-
-                finalizer.finalizeArchiveExtraction( this );
-            }
-        }
-    }
-
-    public void extract( String path,
+    protected void execute( String path,
                          File outputDirectory )
         throws ArchiverException
     {
@@ -254,8 +215,6 @@ public abstract class AbstractZipUnArchiver
                                            new Date( ze.getTime() ), ze.isDirectory() );
                 }
             }
-
-            runArchiveFinalizers();
         }
         catch ( IOException ioe )
         {

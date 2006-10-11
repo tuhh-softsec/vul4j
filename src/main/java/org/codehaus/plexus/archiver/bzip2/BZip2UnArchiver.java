@@ -133,4 +133,10 @@ public class BZip2UnArchiver
             }
         }
     }
+
+    protected void execute( String path, File outputDirectory )
+        throws ArchiverException, IOException
+    {
+        throw new UnsupportedOperationException( "Targeted extraction not supported in BZIP2 format." );
+    }
 }

@@ -107,20 +107,27 @@ public abstract class Compressor
     {
         validate();
 
-        if ( !sourceFile.exists() )
+        try
         {
-//            getLogger().info( "Nothing to do: " + sourceFile.getAbsolutePath()
-//                + " doesn't exist." );
+            if ( !sourceFile.exists() )
+            {
+//                getLogger().info( "Nothing to do: " + sourceFile.getAbsolutePath()
+//                    + " doesn't exist." );
+            }
+            else if ( destFile.lastModified() < sourceFile.lastModified() )
+            {
+//                getLogger().info( "Building: " + destFile.getAbsolutePath() );
+                compress();
+            }
+            else
+            {
+//                getLogger().info( "Nothing to do: " + destFile.getAbsolutePath()
+//                    + " is up to date." );
+            }
         }
-        else if ( destFile.lastModified() < sourceFile.lastModified() )
+        finally
         {
-//            getLogger().info( "Building: " + destFile.getAbsolutePath() );
-            compress();
-        }
-        else
-        {
-//            getLogger().info( "Nothing to do: " + destFile.getAbsolutePath()
-//                + " is up to date." );
+            close();
         }
     }
 
@@ -167,7 +174,16 @@ public abstract class Compressor
 
     /**
      * subclasses must implement this method to do their compression
+     * 
+     * this is public so the process of compression and closing can be dealt with separately.
      */
-    protected abstract void compress()
+    public abstract void compress()
         throws ArchiverException;
+    
+    /**
+     * subclasses must implement this method to cleanup after compression
+     * 
+     * this is public so the process of compression and closing can be dealt with separately.
+     */
+    public abstract void close();
 }

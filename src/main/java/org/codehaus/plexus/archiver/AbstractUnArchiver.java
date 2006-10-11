@@ -19,7 +19,11 @@ package org.codehaus.plexus.archiver;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
 
+import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
@@ -29,7 +33,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
  */
 public abstract class AbstractUnArchiver
     extends AbstractLogEnabled
-    implements UnArchiver
+    implements UnArchiver, FinalizerEnabled, FilterEnabled
 {
     private File destDirectory;
 
@@ -38,6 +42,10 @@ public abstract class AbstractUnArchiver
     private File sourceFile;
 
     private boolean overwrite = true;
+
+    private FilterSupport filterSupport;
+
+    private List finalizers;
 
     public AbstractUnArchiver()
     {
@@ -88,11 +96,54 @@ public abstract class AbstractUnArchiver
         overwrite = b;
     }
 
-    public void extract()
+    public final void extract()
         throws ArchiverException, IOException
     {
         validate();
         execute();
+        runArchiveFinalizers();
+    }
+
+    public final void extract( String path, File outputDirectory )
+        throws ArchiverException, IOException
+    {
+        validate( path, outputDirectory );
+        execute( path, outputDirectory );
+        runArchiveFinalizers();
+    }
+
+    public void setArchiveFilters( List filters )
+    {
+        filterSupport = new FilterSupport( filters, getLogger() );
+    }
+
+    public void setArchiveFinalizers( List archiveFinalizers )
+    {
+        this.finalizers = archiveFinalizers;
+    }
+
+    private final void runArchiveFinalizers()
+        throws ArchiverException
+    {
+        if ( finalizers != null )
+        {
+            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
+            {
+                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+
+                finalizer.finalizeArchiveExtraction( this );
+            }
+        }
+    }
+
+    protected boolean include( InputStream inputStream, String name )
+        throws ArchiveFilterException
+    {
+        return ( filterSupport == null || filterSupport.include( inputStream, name ) );
+    }
+
+    protected void validate( String path, File outputDirectory )
+    {
     }
 
     protected void validate()
@@ -139,9 +190,7 @@ public abstract class AbstractUnArchiver
     protected abstract void execute()
         throws ArchiverException, IOException;
 
-    public void extract( String path, File outputDirectory )
-        throws ArchiverException
-    {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract void execute( String path, File outputDirectory )
+        throws ArchiverException, IOException;
+
 }

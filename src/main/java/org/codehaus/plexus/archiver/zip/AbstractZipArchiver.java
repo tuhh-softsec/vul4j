@@ -20,12 +20,8 @@ package org.codehaus.plexus.archiver.zip;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
-import org.codehaus.plexus.archiver.ArchiveFinalizer;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.FilterEnabled;
-import org.codehaus.plexus.archiver.FinalizerEnabled;
 import org.codehaus.plexus.archiver.UnixStat;
-import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -39,7 +35,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -50,7 +45,6 @@ import java.util.zip.CRC32;
  */
 public abstract class AbstractZipArchiver
     extends AbstractArchiver
-    implements FilterEnabled, FinalizerEnabled
 {
 
     private String comment;
@@ -75,7 +69,6 @@ public abstract class AbstractZipArchiver
      * archive should be kept (for example when updating an archive).
      */
     //not used: private boolean keepCompression = false;
-
     private boolean doFilesonly = false;
 
     protected Hashtable entries = new Hashtable();
@@ -103,15 +96,15 @@ public abstract class AbstractZipArchiver
      * next even number of seconds.
      */
     private boolean roundUp = true;
-    
-    private FilterSupport filterSupport;
 
-    private List finalizers;
-    
-    public void setArchiveFilters( List filters )
-    {
-        filterSupport = new FilterSupport( filters, getLogger() );
-    }
+    // Renamed version of original file, if it exists
+    private File renamedFile = null;
+
+    private File zipFile;
+
+    private boolean success;
+
+    private ZipOutputStream zOut;
 
     public String getComment()
     {
@@ -230,7 +223,7 @@ public abstract class AbstractZipArchiver
         return roundUp;
     }
 
-    public void createArchive()
+    protected void execute()
         throws ArchiverException, IOException
     {
         if ( ! checkForced() )
@@ -249,37 +242,42 @@ public abstract class AbstractZipArchiver
         {
             createArchiveMain();
         }
+        
+        finalizeZipOutputStream( zOut );
+    }
+
+    protected void finalizeZipOutputStream( ZipOutputStream zOut )
+        throws IOException, ArchiverException
+    {
     }
 
     private void createArchiveMain()
-        throws ArchiverException
+        throws ArchiverException, IOException
     {
         Map archiveEntries = getFiles();
 
-        if ( archiveEntries == null || archiveEntries.size() == 0 )
+        if ( ( archiveEntries == null || archiveEntries.size() == 0 ) && !hasVirtualFiles() )
         {
-            new ArchiverException( "You must set at least one file." );
+            throw new ArchiverException( "You must set at least one file." );
         }
 
-        File zipFile = getDestFile();
+        zipFile = getDestFile();
 
         if ( zipFile == null )
         {
-            new ArchiverException( "You must set the destination " + archiveType + "file." );
+            throw new ArchiverException( "You must set the destination " + archiveType + "file." );
         }
 
         if ( zipFile.exists() && !zipFile.isFile() )
         {
-            new ArchiverException( zipFile + " isn't a file." );
+            throw new ArchiverException( zipFile + " isn't a file." );
         }
 
         if ( zipFile.exists() && !zipFile.canWrite() )
         {
-            new ArchiverException( zipFile + " is read-only." );
+            throw new ArchiverException( zipFile + " is read-only." );
         }
 
-        // Renamed version of original file, if it exists
-        File renamedFile = null;
         // Whether or not an actual update is required -
         // we don't need to update if the original file doesn't exist
 
@@ -291,142 +289,69 @@ public abstract class AbstractZipArchiver
             getLogger().debug( "ignoring update attribute as " + archiveType + " doesn't exist." );
         }
 
-        boolean success = false;
+        success = false;
 
-        try
+        if ( doUpdate )
         {
-            if ( doUpdate )
-            {
-                renamedFile =
-                    FileUtils.createTempFile( "zip", ".tmp",
-                                              zipFile.getParentFile() );
-                renamedFile.deleteOnExit();
+            renamedFile = FileUtils.createTempFile( "zip", ".tmp", zipFile.getParentFile() );
+            renamedFile.deleteOnExit();
 
-                try
-                {
-                    FileUtils.rename( zipFile, renamedFile );
-                }
-                catch ( SecurityException e )
-                {
-                    getLogger().debug( e.toString() );
-                    throw new ArchiverException(
-                        "Not allowed to rename old file ("
-                        + zipFile.getAbsolutePath()
-                        + ") to temporary file", e );
-                }
-                catch ( IOException e )
-                {
-                    getLogger().debug( e.toString() );
-                    throw new ArchiverException(
-                        "Unable to rename old file ("
-                        + zipFile.getAbsolutePath()
-                        + ") to temporary file", e );
-                }
-            }
-
-            String action = doUpdate ? "Updating " : "Building ";
-
-            getLogger().info( action + archiveType + ": " + zipFile.getAbsolutePath() );
-
-            ZipOutputStream zOut = null;
             try
             {
-                if ( !skipWriting )
-                {
-                    zOut = new ZipOutputStream( zipFile );
-
-                    zOut.setEncoding( encoding );
-                    if ( doCompress )
-                    {
-                        zOut.setMethod( ZipOutputStream.DEFLATED );
-                    }
-                    else
-                    {
-                        zOut.setMethod( ZipOutputStream.STORED );
-                    }
-                }
-                initZipOutputStream( zOut );
-
-                // Add the new files to the archive.
-                addResources( getResourcesToAdd( zipFile ), zOut );
-
-                if ( doUpdate )
-                {
-                    addResources( getResourcesToUpdate( zipFile ), zOut );
-                }
-                finalizeZipOutputStream( zOut );
-
-                // If we've been successful on an update, delete the
-                // temporary file
-                if ( doUpdate )
-                {
-                    if ( !renamedFile.delete() )
-                    {
-                        getLogger().warn( "Warning: unable to delete temporary file "
-                                          + renamedFile.getName() );
-                    }
-                }
-                success = true;
+                FileUtils.rename( zipFile, renamedFile );
             }
-            finally
+            catch ( SecurityException e )
             {
-                // Close the output stream.
-                try
-                {
-                    if ( zOut != null )
-                    {
-                        zOut.close();
-                    }
-                }
-                catch ( IOException ex )
-                {
-                    // If we're in this finally clause because of an
-                    // exception, we don't really care if there's an
-                    // exception when closing the stream. E.g. if it
-                    // throws "ZIP file must have at least one entry",
-                    // because an exception happened before we added
-                    // any files, then we must swallow this
-                    // exception. Otherwise, the error that's reported
-                    // will be the close() error, which is not the
-                    // real cause of the problem.
-                    if ( success )
-                    {
-                        throw ex;
-                    }
-                }
+                getLogger().debug( e.toString() );
+                throw new ArchiverException( "Not allowed to rename old file (" + zipFile.getAbsolutePath()
+                    + ") to temporary file", e );
+            }
+            catch ( IOException e )
+            {
+                getLogger().debug( e.toString() );
+                throw new ArchiverException( "Unable to rename old file (" + zipFile.getAbsolutePath()
+                    + ") to temporary file", e );
             }
         }
-        catch ( IOException ioe )
+
+        String action = doUpdate ? "Updating " : "Building ";
+
+        getLogger().info( action + archiveType + ": " + zipFile.getAbsolutePath() );
+
+        if ( !skipWriting )
         {
-            String msg = "Problem creating " + archiveType + ": "
-                         + ioe.getMessage();
+            zOut = new ZipOutputStream( zipFile );
 
-            // delete a bogus ZIP file (but only if it's not the original one)
-            if ( ( !doUpdate || renamedFile != null ) && !zipFile.delete() )
+            zOut.setEncoding( encoding );
+            if ( doCompress )
             {
-                msg += " (and the archive is probably corrupt but I could not "
-                       + "delete it)";
+                zOut.setMethod( ZipOutputStream.DEFLATED );
             }
-
-            if ( doUpdate && renamedFile != null )
+            else
             {
-                try
-                {
-                    FileUtils.rename( renamedFile, zipFile );
-                }
-                catch ( IOException e )
-                {
-                    msg += " (and I couldn't rename the temporary file "
-                           + renamedFile.getName() + " back)";
-                }
+                zOut.setMethod( ZipOutputStream.STORED );
             }
-
-            throw new ArchiverException( msg, ioe );
         }
-        finally
+        initZipOutputStream( zOut );
+
+        // Add the new files to the archive.
+        addResources( getResourcesToAdd( zipFile ), zOut );
+
+        if ( doUpdate )
         {
-            cleanUp();
+            addResources( getResourcesToUpdate( zipFile ), zOut );
         }
+
+        // If we've been successful on an update, delete the
+        // temporary file
+        if ( doUpdate )
+        {
+            if ( !renamedFile.delete() )
+            {
+                getLogger().warn( "Warning: unable to delete temporary file " + renamedFile.getName() );
+            }
+        }
+        success = true;
     }
 
     protected Map getResourcesToAdd( File file )
@@ -522,8 +447,7 @@ public abstract class AbstractZipArchiver
     /**
      * Ensure all parent dirs of a given entry have been added.
      */
-    protected final void addParentDirs( File baseDir, String entry,
-                                        ZipOutputStream zOut, String prefix )
+    protected final void addParentDirs( File baseDir, String entry, ZipOutputStream zOut, String prefix )
         throws IOException
     {
         if ( !doFilesonly && getIncludeEmptyDirs() )
@@ -574,13 +498,13 @@ public abstract class AbstractZipArchiver
      *                     entry from, will be null if we are not copying from an archive.
      * @param mode         the Unix permissions to set.
      */
-    protected void zipFile( InputStream in, ZipOutputStream zOut, String vPath,
-                            long lastModified, File fromArchive, int mode )
+    protected void zipFile( InputStream in, ZipOutputStream zOut, String vPath, long lastModified, File fromArchive,
+                            int mode )
         throws IOException, ArchiverException
     {
         try
         {
-            if ( filterSupport != null && !filterSupport.include( in, vPath ) )
+            if ( include( in, vPath ) )
             {
                 return;
             }
@@ -589,7 +513,7 @@ public abstract class AbstractZipArchiver
         {
             throw new ArchiverException( "Error verifying \'" + vPath + "\' for inclusion: " + e.getMessage(), e );
         }
-        
+
         if ( entries.contains( vPath ) )
         {
             if ( duplicate.equals( "preserve" ) )
@@ -599,15 +523,13 @@ public abstract class AbstractZipArchiver
             }
             else if ( duplicate.equals( "fail" ) )
             {
-                throw new ArchiverException( "Duplicate file " + vPath
-                                             + " was found and the duplicate "
-                                             + "attribute is 'fail'." );
+                throw new ArchiverException( "Duplicate file " + vPath + " was found and the duplicate "
+                    + "attribute is 'fail'." );
             }
             else
             {
                 // duplicate equal to add, so we continue
-                getLogger().debug( "duplicate file " + vPath
-                                   + " found, adding." );
+                getLogger().debug( "duplicate file " + vPath + " found, adding." );
             }
         }
         else
@@ -624,12 +546,12 @@ public abstract class AbstractZipArchiver
             ze.setMethod( doCompress ? ZipEntry.DEFLATED : ZipEntry.STORED );
 
             /*
-            * ZipOutputStream.putNextEntry expects the ZipEntry to
-            * know its size and the CRC sum before you start writing
-            * the data when using STORED mode - unless it is seekable.
-            *
-            * This forces us to process the data twice.
-            */
+             * ZipOutputStream.putNextEntry expects the ZipEntry to
+             * know its size and the CRC sum before you start writing
+             * the data when using STORED mode - unless it is seekable.
+             *
+             * This forces us to process the data twice.
+             */
             if ( !zOut.isSeekable() && !doCompress )
             {
                 long size = 0;
@@ -724,8 +646,7 @@ public abstract class AbstractZipArchiver
     /**
      *
      */
-    protected void zipDir( File dir, ZipOutputStream zOut, String vPath,
-                           int mode )
+    protected void zipDir( File dir, ZipOutputStream zOut, String vPath, int mode )
         throws IOException
     {
         if ( addedDirs.get( vPath ) != null )
@@ -780,17 +701,16 @@ public abstract class AbstractZipArchiver
             os = new FileOutputStream( zipFile );
             // Cf. PKZIP specification.
             byte[] empty = new byte[22];
-            empty[ 0 ] = 80; // P
-            empty[ 1 ] = 75; // K
-            empty[ 2 ] = 5;
-            empty[ 3 ] = 6;
+            empty[0] = 80; // P
+            empty[1] = 75; // K
+            empty[2] = 5;
+            empty[3] = 6;
             // remainder zeros
             os.write( empty );
         }
         catch ( IOException ioe )
         {
-            throw new ArchiverException( "Could not create empty ZIP archive "
-                                         + "(" + ioe.getMessage() + ")", ioe );
+            throw new ArchiverException( "Could not create empty ZIP archive " + "(" + ioe.getMessage() + ")", ioe );
         }
         finally
         {
@@ -830,6 +750,10 @@ public abstract class AbstractZipArchiver
         entries.clear();
         addingNewFiles = false;
         doUpdate = savedDoUpdate;
+        success = false;
+        zOut = null;
+        renamedFile = null;
+        zipFile = null;
     }
 
     /**
@@ -860,37 +784,70 @@ public abstract class AbstractZipArchiver
     /**
      * method for subclasses to override
      */
-    protected void finalizeZipOutputStream( ZipOutputStream zOut )
-        throws IOException, ArchiverException
+    public boolean isSupportingForced()
     {
-        runArchiveFinalizers();
-    }
-    
-    public void setArchiveFinalizers( List archiveFinalizers )
-    {
-        this.finalizers = archiveFinalizers;
+        return true;
     }
 
-    protected List getArchiveFinalizers()
+    protected boolean revert( StringBuffer messageBuffer )
     {
-        return finalizers;
-    }
+        int initLength = messageBuffer.length();
 
-    protected void runArchiveFinalizers()
-        throws ArchiverException
-    {
-        if ( finalizers != null )
+        // delete a bogus ZIP file (but only if it's not the original one)
+        if ( ( !doUpdate || renamedFile != null ) && !zipFile.delete() )
         {
-            for ( Iterator it = finalizers.iterator(); it.hasNext(); )
+            messageBuffer.append( " (and the archive is probably corrupt but I could not delete it)" );
+        }
+
+        if ( doUpdate && renamedFile != null )
+        {
+            try
             {
-                ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
-                
-                finalizer.finalizeArchiveCreation( this );
+                FileUtils.rename( renamedFile, zipFile );
+            }
+            catch ( IOException e )
+            {
+                messageBuffer.append( " (and I couldn't rename the temporary file " );
+                messageBuffer.append( renamedFile.getName() );
+                messageBuffer.append( " back)" );
+            }
+        }
+
+        return messageBuffer.length() == initLength;
+    }
+
+    protected void close()
+        throws IOException
+    {
+        // Close the output stream.
+        try
+        {
+            if ( zOut != null )
+            {
+                zOut.close();
+            }
+        }
+        catch ( IOException ex )
+        {
+            // If we're in this finally clause because of an
+            // exception, we don't really care if there's an
+            // exception when closing the stream. E.g. if it
+            // throws "ZIP file must have at least one entry",
+            // because an exception happened before we added
+            // any files, then we must swallow this
+            // exception. Otherwise, the error that's reported
+            // will be the close() error, which is not the
+            // real cause of the problem.
+            if ( success )
+            {
+                throw ex;
             }
         }
     }
 
-    public boolean isSupportingForced() {
-        return true;
+    protected String getArchiveType()
+    {
+        return archiveType;
     }
+
 }

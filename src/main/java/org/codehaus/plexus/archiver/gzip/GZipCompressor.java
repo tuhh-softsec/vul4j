@@ -30,13 +30,14 @@ import java.util.zip.GZIPOutputStream;
 public class GZipCompressor
     extends Compressor
 {
+    private GZIPOutputStream zOut;
+
     /**
      * perform the GZip compression operation.
      */
-    protected void compress()
+    public void compress()
         throws ArchiverException
     {
-        GZIPOutputStream zOut = null;
         try
         {
             zOut = new GZIPOutputStream( new FileOutputStream( getDestFile() ) );
@@ -47,20 +48,23 @@ public class GZipCompressor
             String msg = "Problem creating gzip " + ioe.getMessage();
             throw new ArchiverException( msg, ioe );
         }
-        finally
+    }
+
+    public void close()
+    {
+        if ( zOut != null )
         {
-            if ( zOut != null )
+            try
             {
-                try
-                {
-                    // close up
-                    zOut.close();
-                }
-                catch ( IOException e )
-                {
-                    // do nothing
-                }
+                // close up
+                zOut.close();
             }
+            catch ( IOException e )
+            {
+                // do nothing
+            }
+            
+            zOut = null;
         }
     }
 }

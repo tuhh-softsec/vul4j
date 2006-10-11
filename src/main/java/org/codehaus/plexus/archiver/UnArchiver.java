@@ -44,7 +44,7 @@ public interface UnArchiver
      * @throws ArchiverException
      */
     void extract( String path, File outputDirectory )
-        throws ArchiverException;    
+        throws ArchiverException, IOException;    
 
     File getDestDirectory();
 

@@ -29,7 +29,9 @@ import java.io.IOException;
 public class GZipArchiver
     extends AbstractArchiver
 {
-    public void createArchive()
+    GZipCompressor compressor = new GZipCompressor();
+    
+    protected void execute()
         throws ArchiverException, IOException
     {
     	if ( ! checkForced() )
@@ -37,18 +39,32 @@ public class GZipArchiver
     		return;
     	}
         
-        GZipCompressor compressor = new GZipCompressor();
         if ( getFiles().size() > 1 )
         {
             throw new ArchiverException( "There is more than one file in input." );
         }
+        
         ArchiveEntry entry = (ArchiveEntry) getFiles().values().toArray()[ 0 ];
         compressor.setSourceFile( entry.getFile() );
         compressor.setDestFile( getDestFile() );
-        compressor.execute();
+        compressor.compress();
     }
 
 	public boolean isSupportingForced() {
 		return true;
 	}
+
+    protected void cleanUp()
+    {
+    }
+
+    protected void close()
+    {
+        compressor.close();
+    }
+
+    protected String getArchiveType()
+    {
+        return "gzip";
+    }
 }

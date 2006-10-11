@@ -133,7 +133,7 @@ public class ZipArchiverTest
         long l1 = f.lastModified();
         assertTrue( f.exists() );
 
-        Thread.sleep( 100 ); // Make sure, that we get a new timestamp
+        Thread.sleep( 500 ); // Make sure, that we get a new timestamp
         createArchive( archiver );
         long l2 = f.lastModified();
         assertTrue( f.exists() );

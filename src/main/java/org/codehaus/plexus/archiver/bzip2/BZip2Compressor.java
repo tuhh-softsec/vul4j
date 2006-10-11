@@ -30,13 +30,14 @@ import java.io.IOException;
 public class BZip2Compressor
     extends Compressor
 {
+    private CBZip2OutputStream zOut;
+    
     /**
      * perform the GZip compression operation.
      */
-    protected void compress()
+    public void compress()
         throws ArchiverException
     {
-        CBZip2OutputStream zOut = null;
         try
         {
             BufferedOutputStream bos =
@@ -51,20 +52,23 @@ public class BZip2Compressor
             String msg = "Problem creating bzip2 " + ioe.getMessage();
             throw new ArchiverException( msg, ioe );
         }
-        finally
+    }
+
+    public void close()
+    {
+        if ( zOut != null )
         {
-            if ( zOut != null )
+            try
             {
-                try
-                {
-                    // close up
-                    zOut.close();
-                }
-                catch ( IOException e )
-                {
-                    //ignore
-                }
+                // close up
+                zOut.close();
             }
+            catch ( IOException e )
+            {
+                //ignore
+            }
+            
+            zOut = null;
         }
     }
 }

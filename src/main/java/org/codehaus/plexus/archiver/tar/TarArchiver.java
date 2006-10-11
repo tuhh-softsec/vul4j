@@ -54,6 +54,8 @@ public class TarArchiver
 
     private TarOptions options = new TarOptions();
 
+    private TarOutputStream tOut;
+
     /**
      *
      */
@@ -141,7 +143,7 @@ public class TarArchiver
         this.compression = mode;
     }
 
-    public void createArchive()
+    protected void execute()
         throws ArchiverException, IOException
     {
     	if ( ! checkForced() )
@@ -179,56 +181,32 @@ public class TarArchiver
 
         getLogger().info( "Building tar : " + tarFile.getAbsolutePath() );
 
-        TarOutputStream tOut = null;
-        try
+        tOut = new TarOutputStream(
+            compression.compress( new BufferedOutputStream( new FileOutputStream( tarFile ) ) ) );
+        tOut.setDebug( true );
+        if ( longFileMode.isTruncateMode() )
         {
-            tOut = new TarOutputStream(
-                compression.compress( new BufferedOutputStream( new FileOutputStream( tarFile ) ) ) );
-            tOut.setDebug( true );
-            if ( longFileMode.isTruncateMode() )
-            {
-                tOut.setLongFileMode( TarOutputStream.LONGFILE_TRUNCATE );
-            }
-            else if ( longFileMode.isFailMode() || longFileMode.isOmitMode() )
-            {
-                tOut.setLongFileMode( TarOutputStream.LONGFILE_ERROR );
-            }
-            else
-            {
-                // warn or GNU
-                tOut.setLongFileMode( TarOutputStream.LONGFILE_GNU );
-            }
-
-            longWarningGiven = false;
-            for ( Iterator iter = archiveEntries.keySet().iterator(); iter.hasNext(); )
-            {
-                String fileName = (String) iter.next();
-                String name = StringUtils.replace( fileName, File.separatorChar, '/' );
-
-                ArchiveEntry entry = (ArchiveEntry) archiveEntries.get( fileName );
-
-                tarFile( entry, tOut, name );
-            }
+            tOut.setLongFileMode( TarOutputStream.LONGFILE_TRUNCATE );
         }
-        catch ( IOException ioe )
+        else if ( longFileMode.isFailMode() || longFileMode.isOmitMode() )
         {
-            String message = "Problem creating TAR : " + ioe.getMessage();
-            throw new ArchiverException( message, ioe );
+            tOut.setLongFileMode( TarOutputStream.LONGFILE_ERROR );
         }
-        finally
+        else
         {
-            if ( tOut != null )
-            {
-                try
-                {
-                    // close up
-                    tOut.close();
-                }
-                catch ( IOException e )
-                {
-                    // ignore
-                }
-            }
+            // warn or GNU
+            tOut.setLongFileMode( TarOutputStream.LONGFILE_GNU );
+        }
+
+        longWarningGiven = false;
+        for ( Iterator iter = archiveEntries.keySet().iterator(); iter.hasNext(); )
+        {
+            String fileName = (String) iter.next();
+            String name = StringUtils.replace( fileName, File.separatorChar, '/' );
+
+            ArchiveEntry entry = (ArchiveEntry) archiveEntries.get( fileName );
+
+            tarFile( entry, tOut, name );
         }
     }
 
@@ -623,4 +601,32 @@ public class TarArchiver
 	public boolean isSupportingForced() {
 		return true;
 	}
+
+    protected void cleanUp()
+    {
+        tOut = null;
+    }
+
+    protected void close()
+        throws IOException
+    {
+        if ( tOut != null )
+        {
+            try
+            {
+                // close up
+                tOut.close();
+            }
+            catch ( IOException e )
+            {
+                // ignore
+            }
+        }
+    }
+
+    protected String getArchiveType()
+    {
+        return "TAR";
+    }
+
 }
