@@ -97,7 +97,7 @@ public abstract class AbstractUnArchiver
     }
 
     public final void extract()
-        throws ArchiverException, IOException
+        throws ArchiverException
     {
         validate();
         execute();
@@ -105,7 +105,7 @@ public abstract class AbstractUnArchiver
     }
 
     public final void extract( String path, File outputDirectory )
-        throws ArchiverException, IOException
+        throws ArchiverException
     {
         validate( path, outputDirectory );
         execute( path, outputDirectory );
@@ -188,9 +188,9 @@ public abstract class AbstractUnArchiver
     }
 
     protected abstract void execute()
-        throws ArchiverException, IOException;
+        throws ArchiverException;
 
     protected abstract void execute( String path, File outputDirectory )
-        throws ArchiverException, IOException;
+        throws ArchiverException;
 
 }

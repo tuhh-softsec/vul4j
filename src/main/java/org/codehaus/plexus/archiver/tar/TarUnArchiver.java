@@ -76,7 +76,7 @@ public class TarUnArchiver
     }
 
     protected void execute()
-        throws ArchiverException, IOException
+        throws ArchiverException
     {
         TarInputStream tis = null;
         try

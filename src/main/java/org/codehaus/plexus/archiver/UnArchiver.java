@@ -18,7 +18,6 @@ package org.codehaus.plexus.archiver;
  */
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @version $Revision$ $Date$
@@ -31,10 +30,9 @@ public interface UnArchiver
      * Extract the archive.
      *
      * @throws ArchiverException
-     * @throws IOException
      */
     void extract()
-        throws ArchiverException, IOException;
+        throws ArchiverException;
 
     /**
      * Take a patch into the archive and extract it to the specified directory.
@@ -44,7 +42,7 @@ public interface UnArchiver
      * @throws ArchiverException
      */
     void extract( String path, File outputDirectory )
-        throws ArchiverException, IOException;    
+        throws ArchiverException;
 
     File getDestDirectory();
 

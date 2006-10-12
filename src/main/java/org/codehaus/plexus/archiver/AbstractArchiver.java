@@ -179,7 +179,7 @@ public abstract class AbstractArchiver
             String sourceFile = files[i].replace( '\\', '/' );
 
             String targetFile = ( prefix == null ? "" : prefix ) + sourceFile;
-            
+
             File source = new File( basedir, sourceFile );
 
             addFile( source, targetFile );
@@ -200,15 +200,15 @@ public abstract class AbstractArchiver
         {
             throw new ArchiverException( inputFile.getAbsolutePath() + " isn't a file." );
         }
-        
+
         FileInputStream fileStream = null;
-        
+
         destFileName = destFileName.replace( '\\', '/' );
-        
+
         try
         {
             fileStream = new FileInputStream( inputFile );
-            
+
             if ( include( fileStream, destFileName ) )
             {
                 filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
@@ -295,7 +295,7 @@ public abstract class AbstractArchiver
         try
         {
             unArchiver = archiverManager.getUnArchiver( archiveFile );
-            
+
             if ( unArchiver instanceof FilterEnabled )
             {
                 ( (FilterEnabled) unArchiver ).setArchiveFilters( Collections.emptyList() );
@@ -307,7 +307,7 @@ public abstract class AbstractArchiver
         }
 
         final File tempDir = FileUtils.createTempFile( "archived-file-set.", ".tmp", null );
-        
+
         Runtime.getRuntime().addShutdownHook( new Thread( new Runnable(){
 
             public void run()
@@ -321,22 +321,14 @@ public abstract class AbstractArchiver
                     getLogger().debug( "Error deleting temp directory: " + tempDir, e );
                 }
             }
-            
+
         } ) );
 
         tempDir.mkdirs();
 
         unArchiver.setSourceFile( archiveFile );
         unArchiver.setDestDirectory( tempDir );
-
-        try
-        {
-            unArchiver.extract();
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException( "Error adding archived file-set. Failed to extract: " + archiveFile, e );
-        }
+        unArchiver.extract();
 
         addDirectory( tempDir, prefix, includes, excludes );
     }
@@ -526,9 +518,9 @@ public abstract class AbstractArchiver
             for ( Iterator it = finalizers.iterator(); it.hasNext(); )
             {
                 ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
-                
+
                 List virtualFiles = finalizer.getVirtualFiles();
-                
+
                 if ( virtualFiles != null && !virtualFiles.isEmpty() )
                 {
                     return true;

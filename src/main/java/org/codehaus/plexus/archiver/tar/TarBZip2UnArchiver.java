@@ -41,10 +41,18 @@ public class TarBZip2UnArchiver
     }
 
     protected void execute()
-        throws ArchiverException, IOException
+        throws ArchiverException
     {
-        File tempTarFile = File.createTempFile( "tmp", ".tar" );
-        
+        File tempTarFile;
+        try
+        {
+            tempTarFile = File.createTempFile( "tmp", ".tar" );
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "Cannot create temporary file for bzip2 uncompression", e );
+        }
+
         tempTarFile.delete();
 
         File originalSourceFile = this.getSourceFile();

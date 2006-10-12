@@ -43,7 +43,7 @@ public class GZipUnArchiver
     }
 
     protected void execute()
-        throws ArchiverException, IOException
+        throws ArchiverException
     {
         if ( getSourceFile().lastModified() > getDestFile().lastModified() )
         {
@@ -112,7 +112,6 @@ public class GZipUnArchiver
     }
 
     protected void execute( String path, File outputDirectory )
-        throws ArchiverException, IOException
     {
         throw new UnsupportedOperationException( "Targeted extraction not supported in GZIP format." );
     }

@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public class TarGZipUnArchiver
     extends TarUnArchiver
-{       
+{
     public TarGZipUnArchiver()
     {
     }
@@ -41,22 +41,30 @@ public class TarGZipUnArchiver
     }
 
     protected void execute()
-        throws ArchiverException, IOException
+        throws ArchiverException
     {
-        File tempTarFile = File.createTempFile("tmp",".tar");
+        File tempTarFile;
+        try
+        {
+            tempTarFile = File.createTempFile("tmp",".tar");
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException("Cannot create temporary file for gzip uncompression", e );
+        }
 
         tempTarFile.delete();
-        
+
         File originalSourceFile = this.getSourceFile();
-        
+
         try
         {
             GZipUnArchiver zipUnArchiver = new GZipUnArchiver( getSourceFile() );
-            
+
             zipUnArchiver.enableLogging( this.getLogger() );
-            
+
             zipUnArchiver.setDestFile( tempTarFile );
-                                   
+
             zipUnArchiver.extract();
 
             // This is so nasty. You have to make it clear what you're doing. If you're going to take a source file
@@ -70,9 +78,9 @@ public class TarGZipUnArchiver
         finally
         {
             tempTarFile.delete();
-            
+
             this.setSourceFile( originalSourceFile );
-        }        
+        }
 
     }
 }

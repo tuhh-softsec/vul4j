@@ -66,7 +66,7 @@ public abstract class AbstractZipUnArchiver
     }
 
     protected void execute()
-        throws ArchiverException, IOException
+        throws ArchiverException
     {
         getLogger().info( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
         ZipFile zf = null;
