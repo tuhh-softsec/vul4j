@@ -31,10 +31,13 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -164,8 +167,8 @@ public abstract class AbstractArchiver
 
                 getDirs().put(
                                targetDir,
-                               ArchiveEntry.createEntry( targetDir, new File( basedir, sourceDir ),
-                                                         getDefaultFileMode(), getDefaultDirectoryMode() ) );
+                               ArchiveEntry.createDirectoryEntry( targetDir, new File( basedir, sourceDir ),
+                                                                  getDefaultDirectoryMode() ) );
             }
         }
 
@@ -176,9 +179,10 @@ public abstract class AbstractArchiver
             String sourceFile = files[i].replace( '\\', '/' );
 
             String targetFile = ( prefix == null ? "" : prefix ) + sourceFile;
+            
+            File source = new File( basedir, sourceFile );
 
-            filesMap.put( targetFile, ArchiveEntry.createEntry( targetFile, new File( basedir, sourceFile ),
-                                                                getDefaultFileMode(), getDefaultDirectoryMode() ) );
+            addFile( source, targetFile );
         }
 
     }
@@ -196,9 +200,32 @@ public abstract class AbstractArchiver
         {
             throw new ArchiverException( inputFile.getAbsolutePath() + " isn't a file." );
         }
-
+        
+        FileInputStream fileStream = null;
+        
         destFileName = destFileName.replace( '\\', '/' );
-        filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+        
+        try
+        {
+            fileStream = new FileInputStream( inputFile );
+            
+            if ( include( fileStream, destFileName ) )
+            {
+                filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "Failed to determine inclusion status for: " + inputFile, e );
+        }
+        catch ( ArchiveFilterException e )
+        {
+            throw new ArchiverException( "Failed to determine inclusion status for: " + inputFile, e );
+        }
+        finally
+        {
+            IOUtil.close( fileStream );
+        }
     }
 
     // TODO: convert this to Collection?
@@ -268,6 +295,11 @@ public abstract class AbstractArchiver
         try
         {
             unArchiver = archiverManager.getUnArchiver( archiveFile );
+            
+            if ( unArchiver instanceof FilterEnabled )
+            {
+                ( (FilterEnabled) unArchiver ).setArchiveFilters( Collections.emptyList() );
+            }
         }
         catch ( NoSuchArchiverException e )
         {
@@ -447,10 +479,10 @@ public abstract class AbstractArchiver
         }
     }
 
-    protected boolean include( InputStream in, String path )
+    private boolean include( InputStream in, String path )
         throws ArchiveFilterException
     {
-        return ( filterSupport != null && !filterSupport.include( in, path ) );
+        return filterSupport == null || filterSupport.include( in, path );
     }
 
     public final void createArchive()

@@ -19,7 +19,6 @@ package org.codehaus.plexus.archiver.zip;
 
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
-import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.util.FileUtils;
@@ -420,7 +419,7 @@ public abstract class AbstractZipArchiver
             String name = (String) iter.next();
             ArchiveEntry entry = (ArchiveEntry) resources.get( name );
             name = name.replace( File.separatorChar, '/' );
-
+            
             if ( "".equals( name ) )
             {
                 continue;
@@ -502,18 +501,6 @@ public abstract class AbstractZipArchiver
                             int mode )
         throws IOException, ArchiverException
     {
-        try
-        {
-            if ( include( in, vPath ) )
-            {
-                return;
-            }
-        }
-        catch ( ArchiveFilterException e )
-        {
-            throw new ArchiverException( "Error verifying \'" + vPath + "\' for inclusion: " + e.getMessage(), e );
-        }
-
         if ( entries.contains( vPath ) )
         {
             if ( duplicate.equals( "preserve" ) )

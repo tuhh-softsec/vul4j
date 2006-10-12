@@ -139,7 +139,7 @@ public abstract class AbstractUnArchiver
     protected boolean include( InputStream inputStream, String name )
         throws ArchiveFilterException
     {
-        return ( filterSupport == null || filterSupport.include( inputStream, name ) );
+        return filterSupport == null || filterSupport.include( inputStream, name );
     }
 
     protected void validate( String path, File outputDirectory )
