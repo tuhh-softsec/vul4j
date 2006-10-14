@@ -37,6 +37,8 @@ public class Xpp3DomWriterTest
         buf.append( LS );
         buf.append( "  <el4></el4>" );
         buf.append( LS );
+        buf.append( "  <el5/>" );
+        buf.append( LS );
         buf.append( "</root>" );
 
         return buf.toString();
@@ -62,6 +64,9 @@ public class Xpp3DomWriterTest
         Xpp3Dom el4 = new Xpp3Dom( "el4" );
         el4.setValue( "" );
         dom.addChild( el4 );
+
+        Xpp3Dom el5 = new Xpp3Dom( "el5" );
+        dom.addChild( el5 );
 
         return dom;
     }

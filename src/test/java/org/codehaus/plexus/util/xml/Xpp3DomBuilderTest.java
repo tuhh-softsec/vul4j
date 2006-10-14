@@ -204,6 +204,7 @@ public class Xpp3DomBuilderTest
         buf.append( "  <el3 att3='attribute3'>element3</el3>\n" );
         buf.append( " </el2>\n" );
         buf.append( " <el4></el4>\n" );
+        buf.append( " <el5/>\n" );
         buf.append( "</root>\n" );
 
         return buf.toString();
@@ -225,6 +226,8 @@ public class Xpp3DomBuilderTest
         Xpp3Dom el4 = new Xpp3Dom( "el4" );
         el4.setValue( "" );
         expectedDom.addChild( el4 );
+        Xpp3Dom el5 = new Xpp3Dom( "el5" );
+        expectedDom.addChild( el5 );
         return expectedDom;
     }
 }

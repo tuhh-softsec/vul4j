@@ -122,7 +122,14 @@ public class Xpp3DomBuilder
 
                 elements.add( childConfiguration );
 
-                values.add( new StringBuffer() );
+                if ( parser.isEmptyElementTag() )
+                {
+                    values.add( null );
+                }
+                else
+                {
+                    values.add( new StringBuffer() );
+                }
 
                 int attributesSize = parser.getAttributeCount();
 
@@ -156,11 +163,19 @@ public class Xpp3DomBuilder
 
                 Xpp3Dom finishedConfiguration = (Xpp3Dom) elements.remove( depth );
 
-                String accumulatedValue = values.remove( depth ).toString();
+                /* this Object could be null if it is a singleton tag */
+                Object accumulatedValue = values.remove( depth );
 
                 if ( finishedConfiguration.getChildCount() == 0 )
                 {
-                    finishedConfiguration.setValue( accumulatedValue );
+                    if ( accumulatedValue == null )
+                    {
+                        finishedConfiguration.setValue( null );
+                    }
+                    else
+                    {
+                        finishedConfiguration.setValue( accumulatedValue.toString() );
+                    }
                 }
 
                 if ( depth == 0 )
