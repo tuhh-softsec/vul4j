@@ -104,6 +104,10 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7g
 		  can also tell your compiler where to find these things via
 		  the <em>CXXFLAGS</em> and <em>LDFLAGS</em> environment variables.
 		</p>
+        <note>
+          As of version 1.3.1 the Xerces and OpenSSL directories can be
+          defined on the configure command line - see below.
+        </note>
 		<p>
 		  If configure cannot find anything for Xalan, it will assume that
 		  you are not interested in XPath or XSLT support and will compile
@@ -114,7 +118,7 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7g
 	  <section>
 		<title>Configure</title>
 		<p>
-		  Now go to the $XSECCROOT/src directory and run the command
+		  Now go to the $XSECCROOT directory and run the command
 		  <em>./configure</em>.  This will create the necessary makefiles
 		  and header files necessary to build the package.
 		</p>
@@ -124,6 +128,10 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7g
 		</p>
 		<ul>
 		  <li><em>--without-xalan</em> disable linkage to Xalan.</li>
+          <li><em>--with-xerces=&lt;dir&gt;</em> define Xerces directory 
+            rather than use XERCESCROOT</li>
+          <li><em>--with-openssl=&lt;dir&gt;</em> define OpenSSL directory 
+            rather than use OPENSSLROOT</li>
 		  <li><em>--enable-debug</em> cause the library to be built with symbols</li>
 		</ul>
 		<note>
@@ -138,7 +146,7 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7g
 		<p>
 		  Assuming the output of the above command looks reasonable simply
 		  type <em>make</em> (or <em>gmake</em> - you must use the GNU
-		  make utility) in the <em>src</em> directory.  This
+		  make utility) in the base directory.  This
 		  will make the shared library.  In addition,  <em>make tools</em>
 		  will make the tools (or examples) in the src/tools directory.
 		</p>
@@ -245,13 +253,20 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7g
 	  <section>
 		<title>Build Library and Tools</title>
 		<p>
-		  The main workspace is found in :
+		  The main workspace (for VC 6.0) is found in :
 		</p>
 		<p><em>.../Projects/VC6.0/xsec/xsec.dsw</em></p>
 		<p>
 		  You can load this to build the tools or the library using the relevant
-		  project.  (The library is xsec_lib.)
+		  project.  (The library is xsec_lib.)  Project files for VC++ 7.0 and
+          8.0 also exist in the appropriate Project directories.
 		</p>
+        <note>
+          Note that as of version 1.3.1, Xerces 3.0 is supported.  However
+          this uses an updated library file name, so this must be modified
+          in <em>all</em> the projects in the workspace.  This can be set
+          in the Linker option for all versions of Visual C++.
+        </note>
 		<p>
 		  Samples can be built using the workspace found in :
 		</p>

@@ -22,22 +22,17 @@ limitations under the License.
   
   <body>
     <section>
-      <title>Version 1.3 Released</title>
+      <title>Version 1.3.1 Released</title>
       <p>
         The Apache XML Security team are proud to announce the release
-        of version 1.3 of the xml-security-c library.  This release now 
-        provides full support for  loading and processing of XKMS messages.
+        of version 1.3.1 of the xml-security-c library.  This release
+        provides some bug fixes and an updated Automake based build on
+        Linux/Solaris/BSD.
       </p>
       <p>
-        A number of optimisations have now been built into the canonicalisation
-        routines, creating significant speed improvements when processing
-        large documents.
-      </p>
-      <p>
-        This version also includes a number of other changes and bugfixes,
-        including updates to support Xerces 2.7 with Xalan 1.9.
-        See <link href="../changes.html">changes.html</link> for more
-        information.
+        This version also provides initial support for Xerces 3.0.  If
+        you are building for the 3.0 library under Windows, you will need
+        to change the Xerces library (in link includes) to xerces_3?.lib.
       </p>
     </section>
     <section>
@@ -63,6 +58,25 @@ limitations under the License.
     </section>
 	<section>
 	  <title>Old News</title>
+      <section>
+        <title>Version 1.3 Released</title>
+        <p>
+          The Apache XML Security team are proud to announce the release
+          of version 1.3 of the xml-security-c library.  This release now 
+          provides full support for  loading and processing of XKMS messages.
+        </p>
+        <p>
+          A number of optimisations have now been built into the canonicalisation
+          routines, creating significant speed improvements when processing
+          large documents.
+        </p>
+        <p>
+          This version also includes a number of other changes and bugfixes,
+          including updates to support Xerces 2.7 with Xalan 1.9.
+          See <link href="../changes.html">changes.html</link> for more
+          information.
+        </p>
+      </section>
       <section>
         <title>Version 1.2 Released</title>
         <p>
