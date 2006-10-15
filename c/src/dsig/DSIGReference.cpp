@@ -552,9 +552,9 @@ void DSIGReference::load(void) {
 
 	if (atts != 0) {
 
-		unsigned int size = atts->getLength();
+		XMLSize_t size = atts->getLength();
 
-		for (unsigned int i = 0; i < size; ++i) {
+		for (XMLSize_t i = 0; i < size; ++i) {
 
 			name = atts->item(i)->getNodeName();
 			sbName << (*mp_formatter << atts->item(i)->getNodeName());

@@ -177,9 +177,9 @@ bool visiblyUtilises(DOMNode *node, safeBuffer &ns) {
 	if (atts == NULL)
 		return false;
 
-	int size = atts->getLength();
+	XMLSize_t size = atts->getLength();
 
-	for (int i = 0; i < size; ++i) {
+	for (XMLSize_t i = 0; i < size; ++i) {
 
 		if (strEquals(atts->item(i)->getPrefix(), (char *) ns.rawBuffer()) &&
 			!strEquals(atts->item(i)->getLocalName(), "xmlns"))
@@ -291,7 +291,7 @@ void XSECC14n20010315::stackInit(DOMNode * n) {
 
 	stackInit(n->getParentNode());
 	m_nsStack.pushElement(n);
-	int size;
+	XMLSize_t size;
 
 	DOMNamedNodeMap *tmpAtts = n->getAttributes();
 	safeBuffer currentName;
@@ -301,7 +301,7 @@ void XSECC14n20010315::stackInit(DOMNode * n) {
 	else 
 		size = 0;
 
-	int i;
+	XMLSize_t i;
 
 	for (i = 0; i < size; ++i) {
 
@@ -1101,7 +1101,7 @@ int XSECC14n20010315::processNextNode() {
 
 			// Need to sort the attributes
 
-			int size;
+			XMLSize_t size;
 
 			if (tmpAtts != NULL)
 				size = tmpAtts->getLength();
@@ -1109,7 +1109,7 @@ int XSECC14n20010315::processNextNode() {
 				size = 0;
 
 			XSECNodeListElt *toIns;
-			int i;
+			XMLSize_t i;
 
 			for (i = 0; i < size; ++i) {
 
@@ -1182,7 +1182,7 @@ int XSECC14n20010315::processNextNode() {
 							t = mp_nextNode;
 							while (t != next) {
 								DOMNamedNodeMap *ta;
-								int sz;
+								XMLSize_t sz;
 
 								ta = t->getAttributes();
 
@@ -1191,7 +1191,7 @@ int XSECC14n20010315::processNextNode() {
 								else 
 									sz = 0;
 
-								for (int j = 0; j < sz; ++j) {
+								for (XMLSize_t j = 0; j < sz; ++j) {
 
 									if (strEquals(ta->item(j)->getNodeName(), 
 										tmpAtts->item(i)->getNodeName()) == true) {
@@ -1384,7 +1384,7 @@ int XSECC14n20010315::processNextNode() {
 					while (next != NULL && !m_useNamespaceStack && (m_XPathSelection && !m_XPathMap.hasNode(next)))
 						next = next->getParentNode();
 
-					int size;
+					XMLSize_t size;
 					if (next != NULL)
 						tmpAtts = next->getAttributes();
 					
@@ -1393,7 +1393,7 @@ int XSECC14n20010315::processNextNode() {
 					else
 						size = 0;
 
-					for (int i = 0; i < size; ++i) {
+					for (XMLSize_t i = 0; i < size; ++i) {
 
 						currentName << (*mp_formatter << tmpAtts->item(i)->getNodeName());
 						currentValue << (*mp_formatter << tmpAtts->item(i)->getNodeValue());

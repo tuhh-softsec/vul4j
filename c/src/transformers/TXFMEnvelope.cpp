@@ -120,7 +120,7 @@ void addEnvelopeNode(DOMNode *startNode, XSECXPathNodeList & XPathMap, DOMNode *
 	
 	DOMNode *tmp;
 	DOMNamedNodeMap *atts;
-	int attsSize, i;
+	XMLSize_t attsSize, i;
 	
 	if (startNode == sigNode)
 		return;
@@ -162,7 +162,7 @@ void addEnvelopeParentNSNodes(DOMNode *startNode, XSECXPathNodeList & XPathMap) 
 	
 	DOMNode *tmp;
 	DOMNamedNodeMap *atts;
-	int attsSize, i;
+	XMLSize_t attsSize, i;
 	
 	if (startNode == NULL)
 		return;

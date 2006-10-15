@@ -213,12 +213,12 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 
 			DOMNamedNodeMap *atts = tmpKI->getAttributes();
 			const XMLCh * name;
-			unsigned int size;
+			XMLSize_t size;
 
 			if (atts == 0 || (size = atts->getLength()) == 0)
 				return true;
 
-			for (unsigned int i = 0; i < size; ++i) {
+			for (XMLSize_t i = 0; i < size; ++i) {
 
 				name = atts->item(i)->getNodeName();
 

@@ -245,13 +245,13 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 	while (wk != NULL) {
 
 		DOMNamedNodeMap * atts = wk->getAttributes();
-		int length;
+		XMLSize_t length;
 		if (atts != NULL)
 			length = atts->getLength();
 		else
 			length = 0;
 
-		for (int i = 0 ; i < length ; ++i) {
+		for (XMLSize_t i = 0 ; i < length ; ++i) {
 			DOMNode * att = atts->item(i);
 			if (strEquals(att->getNodeName(), DSIGConstants::s_unicodeStrXmlns) ||
 				(XMLString::compareNString(att->getNodeName(), DSIGConstants::s_unicodeStrXmlns, 5) &&

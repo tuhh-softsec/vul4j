@@ -70,7 +70,7 @@ void XSECNameSpaceExpander::recurse(DOMElement *n) {
 		return;
 
 	DOMNamedNodeMap *pmap = p->getAttributes();
-	int psize = pmap->getLength();
+	XMLSize_t psize = pmap->getLength();
 
 	DOMNamedNodeMap *nmap = n->getAttributes();
 
@@ -79,7 +79,7 @@ void XSECNameSpaceExpander::recurse(DOMElement *n) {
 
 	XSECNameSpaceEntry * tmpEnt;
 
-	for (int i = 0; i < psize; i++) {
+	for (XMLSize_t i = 0; i < psize; i++) {
 
 		// Run through each parent node to find namespaces
 		pname << (*mp_formatter << pmap->item(i)->getNodeName());
@@ -126,7 +126,7 @@ void XSECNameSpaceExpander::recurse(DOMElement *n) {
 
 int attNodeCount(DOMElement * d) {
 
-	int ret;
+	XMLSize_t ret;
 
 	ret = d->getAttributes()->getLength();
 
@@ -143,7 +143,7 @@ int attNodeCount(DOMElement * d) {
 
 	}
 
-	return ret;
+	return (int) ret;
 
 }
 
