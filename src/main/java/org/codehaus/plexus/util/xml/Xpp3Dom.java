@@ -420,11 +420,11 @@ public class Xpp3Dom
 
         Xpp3Dom dom = (Xpp3Dom) obj;
 
-        if ( name == null ? dom.name != null : !dom.name.equals( name ) )
+        if ( name == null ? dom.name != null : !name.equals( dom.name ) )
         {
             return false;
         }
-        else if ( value == null ? dom.value != null : !dom.value.equals( value ) )
+        else if ( value == null ? dom.value != null : !value.equals( dom.value ) )
         {
             return false;
         }

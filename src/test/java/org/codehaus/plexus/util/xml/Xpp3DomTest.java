@@ -139,4 +139,12 @@ public class Xpp3DomTest
         t1.toString();
     }
 
+    public void testEquals()
+    {
+        Xpp3Dom dom = new Xpp3Dom( "top" );
+
+        assertEquals( dom, dom );
+        assertFalse( dom.equals( null ) );
+        assertFalse( dom.equals( new Xpp3Dom( (String) null ) ) );
+    }
 }
