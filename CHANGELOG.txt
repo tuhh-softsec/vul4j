@@ -4,6 +4,7 @@ New in ...
 		to use implementations for the >1.3 versions paying the performance hit
 		of the old implementation.
     Fix a small & unneeded java 1.4 dependecy.
+    KeyResolver & ResourceResolver can work like <1.3 mode when used with old implementations.
 
 New in 1.4RC1	
 	Fixed bug 40290.

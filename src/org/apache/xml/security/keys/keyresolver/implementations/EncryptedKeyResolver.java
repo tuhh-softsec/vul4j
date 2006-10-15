@@ -78,20 +78,20 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
 	}
 	
     /** @inheritDoc */
-   public PublicKey engineResolvePublicKey(
+   public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
 
 	   return null;
    }
 
    /** @inheritDoc */
-   public X509Certificate engineResolveX509Certificate(
+   public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
 
    /** @inheritDoc */
-   public javax.crypto.SecretKey engineResolveSecretKey(
+   public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage) {
 	   SecretKey key=null;
 	   if (log.isDebugEnabled())

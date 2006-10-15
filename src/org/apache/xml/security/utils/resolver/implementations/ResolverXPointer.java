@@ -49,6 +49,9 @@ public class ResolverXPointer extends ResourceResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(
                             ResolverXPointer.class.getName());
 
+    public boolean engineIsThreadSafe() {
+  	   return true;
+   }
    /**
     * @inheritDoc
     */

@@ -254,7 +254,7 @@ public class KeyResolver {
    public PublicKey resolvePublicKey(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-      return this._resolverSpi.engineResolvePublicKey(element, BaseURI, storage);
+      return this._resolverSpi.engineLookupAndResolvePublicKey(element, BaseURI, storage);
    }
 
    /**
@@ -270,7 +270,7 @@ public class KeyResolver {
    public X509Certificate resolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-      return this._resolverSpi.engineResolveX509Certificate(element, BaseURI,
+      return this._resolverSpi.engineLookupResolveX509Certificate(element, BaseURI,
               storage);
    }
 
@@ -284,7 +284,7 @@ public class KeyResolver {
    public SecretKey resolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-      return this._resolverSpi.engineResolveSecretKey(element, BaseURI,
+      return this._resolverSpi.engineLookupAndResolveSecretKey(element, BaseURI,
               storage);
    }
 

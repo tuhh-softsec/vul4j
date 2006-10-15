@@ -90,7 +90,15 @@ public abstract class ResourceResolverSpi {
 		  this._properties.putAll(properties);
 	  }
    }
-
+   /**
+    * Tells if the implementation does can be reused by several threads safely.
+    * It normally means that the implemantation does not have any member, or there is
+    * member change betwen engineCanResolve & engineResolve invocations. Or it mantians all
+    * member info in ThreadLocal methods.
+    */
+   public boolean engineIsThreadSafe() {
+	   return false;
+   }
    /**
     * This method helps the {@link ResourceResolver} to decide whether a
     * {@link ResourceResolverSpi} is able to perform the requested action.

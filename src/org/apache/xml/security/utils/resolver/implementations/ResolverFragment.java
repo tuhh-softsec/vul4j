@@ -41,7 +41,9 @@ public class ResolverFragment extends ResourceResolverSpi {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
                             ResolverFragment.class.getName());
-
+   public boolean engineIsThreadSafe() {
+ 	   return true;
+   }
    /**
     * Method engineResolve
     *

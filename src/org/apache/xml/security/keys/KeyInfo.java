@@ -758,7 +758,7 @@ public class KeyInfo extends SignatureElementProxy {
                         (StorageResolver) this._storageResolvers.get(k);
 
                      PublicKey pk =
-                           keyResolver.engineResolvePublicKey((Element) currentChild,
+                           keyResolver.engineLookupAndResolvePublicKey((Element) currentChild,
                                                        uri,
                                                         storage);
 
@@ -796,7 +796,7 @@ public class KeyInfo extends SignatureElementProxy {
                    StorageResolver storage =
                       (StorageResolver) this._storageResolvers.get(k);
                    PublicKey pk = keyResolver
-                           .engineResolvePublicKey((Element) currentChild, uri, storage);
+                           .engineLookupAndResolvePublicKey((Element) currentChild, uri, storage);
 
                      if (pk != null) {
                          return pk;
@@ -883,7 +883,7 @@ public class KeyInfo extends SignatureElementProxy {
 	              (StorageResolver) this._storageResolvers.get(k);
 
 	           X509Certificate cert = keyResolver
-	                .engineResolveX509Certificate((Element) currentChild, uri,
+	                .engineLookupResolveX509Certificate((Element) currentChild, uri,
 	                		storage);
 
 	           if (cert != null) {                	   
@@ -973,7 +973,7 @@ public class KeyInfo extends SignatureElementProxy {
                         (StorageResolver) this._storageResolvers.get(k);
 
                      SecretKey sk =
-                           keyResolver.engineResolveSecretKey((Element) currentChild,
+                           keyResolver.engineLookupAndResolveSecretKey((Element) currentChild,
                                                         uri,
                                                         storage);
 
@@ -1011,7 +1011,7 @@ public class KeyInfo extends SignatureElementProxy {
                         (StorageResolver) this._storageResolvers.get(k);
 
                      SecretKey sk = keyResolver
-                           .engineResolveSecretKey((Element) currentChild, uri, storage);
+                           .engineLookupAndResolveSecretKey((Element) currentChild, uri, storage);
 
                      if (sk != null) {
                         return sk;

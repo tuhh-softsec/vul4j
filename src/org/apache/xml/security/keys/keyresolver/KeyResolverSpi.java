@@ -39,6 +39,19 @@ import org.w3c.dom.Element;
  * @version $Revision$
  */
 public abstract class KeyResolverSpi {
+   /**
+    * This method helps the {@link org.apache.xml.security.utils.resolver.ResourceResolver} to decide whether a
+    * {@link org.apache.xml.security.utils.resolver.ResourceResolverSpi} is able to perform the requested action.
+    *
+    * @param element
+    * @param BaseURI
+    * @param storage
+    * @return
+    */
+   public boolean engineCanResolve(Element element, String BaseURI,
+	                                            StorageResolver storage) {
+	   throw new UnsupportedOperationException();
+   }
 
    /**
     * Method engineResolvePublicKey
@@ -50,10 +63,53 @@ public abstract class KeyResolverSpi {
     * 
     * @throws KeyResolverException
     */
-   abstract public PublicKey engineResolvePublicKey(
+   public PublicKey engineResolvePublicKey(
       Element element, String BaseURI, StorageResolver storage)
-         throws KeyResolverException;
+         throws KeyResolverException {
+      	   throw new UnsupportedOperationException();
+    };
+   
+   /**
+    * Method engineResolvePublicKey
+    *
+    * @param element
+    * @param BaseURI
+    * @param storage
+    * @return resolved public key from the registered from the element.
+    * 
+    * @throws KeyResolverException
+    */
+    public PublicKey engineLookupAndResolvePublicKey(
+      Element element, String BaseURI, StorageResolver storage)
+         throws KeyResolverException {
+    	try {
+    		KeyResolverSpi tmp = (KeyResolverSpi) getClass().newInstance();
+    	    if (!tmp.engineCanResolve(element, BaseURI, storage))
+    	    	return null;
+    	    return tmp.engineResolvePublicKey(element, BaseURI, storage);
+    	} catch (InstantiationException e) {
+    	    throw new KeyResolverException("",e);
+    	} catch (IllegalAccessException e) {
+    	    throw new KeyResolverException("",e);
+    	}
+    }
 
+    /**
+     * Method engineResolveCertificate
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return resolved X509Certificate key from the registered from the elements
+     *
+     * @throws KeyResolverException
+     */
+    public X509Certificate engineResolveX509Certificate(
+       Element element, String BaseURI, StorageResolver storage)
+          throws KeyResolverException{
+         	   throw new UnsupportedOperationException();
+    };
+    
    /**
     * Method engineResolveCertificate
     *
@@ -64,10 +120,36 @@ public abstract class KeyResolverSpi {
     *
     * @throws KeyResolverException
     */
-   abstract public X509Certificate engineResolveX509Certificate(
+    public X509Certificate engineLookupResolveX509Certificate(
       Element element, String BaseURI, StorageResolver storage)
-         throws KeyResolverException;
-
+         throws KeyResolverException {
+    	try {    
+    		KeyResolverSpi tmp = (KeyResolverSpi) getClass().newInstance();
+    	    if (!tmp.engineCanResolve(element, BaseURI, storage))
+    	    	return null;
+    	    return tmp.engineResolveX509Certificate(element, BaseURI, storage);
+    	} catch (InstantiationException e) {
+    	    throw new KeyResolverException("",e);
+    	} catch (IllegalAccessException e) {
+    	    throw new KeyResolverException("",e);
+    	}
+    }
+    /**
+     * Method engineResolveSecretKey
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return resolved SecretKey key from the registered from the elements
+     *
+     * @throws KeyResolverException
+     */
+    public SecretKey engineResolveSecretKey(
+       Element element, String BaseURI, StorageResolver storage)
+          throws KeyResolverException{
+        	   throw new UnsupportedOperationException();
+    }; 
+    
    /**
     * Method engineResolveSecretKey
     *
@@ -78,9 +160,20 @@ public abstract class KeyResolverSpi {
     *
     * @throws KeyResolverException
     */
-   abstract public SecretKey engineResolveSecretKey(
+   public SecretKey engineLookupAndResolveSecretKey(
       Element element, String BaseURI, StorageResolver storage)
-         throws KeyResolverException;
+         throws KeyResolverException {
+	   try {    
+   			KeyResolverSpi tmp = (KeyResolverSpi) getClass().newInstance();
+   			if (!tmp.engineCanResolve(element, BaseURI, storage))
+   				return null;
+   			return tmp.engineResolveSecretKey(element, BaseURI, storage);
+   		} catch (InstantiationException e) {
+   			throw new KeyResolverException("",e);
+   		} catch (IllegalAccessException e) {
+   			throw new KeyResolverException("",e);
+   		}
+   }
 
    /** Field _properties */
    protected java.util.Map _properties = null;

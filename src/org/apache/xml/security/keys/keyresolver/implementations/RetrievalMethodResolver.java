@@ -77,7 +77,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @param storage
     *
     */
-   public PublicKey engineResolvePublicKey(
+   public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage)
               {
 	   if  (!XMLUtils.elementIsInSignatureSpace(element,
@@ -140,7 +140,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @param storage
     *
     */
-   public X509Certificate engineResolveX509Certificate(
+   public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               {
 	   if  (!XMLUtils.elementIsInSignatureSpace(element,
@@ -268,7 +268,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @param storage
     *
     */
-   public javax.crypto.SecretKey engineResolveSecretKey(
+   public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
    {
       return null;

@@ -89,7 +89,7 @@ public class BobKeyResolver extends KeyResolverSpi {
 	 * @return null if no {@link PublicKey} could be obtained
 	 * @throws KeyResolverException
 	 */
-	public PublicKey engineResolvePublicKey(
+	public PublicKey engineLookupAndResolvePublicKey(
 		  Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
 
@@ -105,7 +105,7 @@ public class BobKeyResolver extends KeyResolverSpi {
 	 *
 	 * @throws KeyResolverException
 	 */
-	public X509Certificate engineResolveX509Certificate(
+	public X509Certificate engineLookupResolveX509Certificate(
 			   Element element, String BaseURI, StorageResolver storage)
 		throws KeyResolverException {
 		return null;
@@ -120,7 +120,7 @@ public class BobKeyResolver extends KeyResolverSpi {
 	 *
 	 * @throws KeyResolverException
 	 */
-	public javax.crypto.SecretKey engineResolveSecretKey(
+	public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
 		throws KeyResolverException {
 

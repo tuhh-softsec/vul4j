@@ -53,11 +53,11 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
     * @return null if no {@link PublicKey} could be obtained
     * @throws KeyResolverException
     */
-   public PublicKey engineResolvePublicKey(
+   public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
 
-      X509Certificate cert = this.engineResolveX509Certificate(element,
+      X509Certificate cert = this.engineLookupResolveX509Certificate(element,
                                 BaseURI, storage);
 
       if (cert != null) {
@@ -76,7 +76,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
     *
     * @throws KeyResolverException
     */
-   public X509Certificate engineResolveX509Certificate(
+   public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
 	   if (log.isDebugEnabled())
@@ -155,7 +155,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
     * @param storage
     *
     */
-   public javax.crypto.SecretKey engineResolveSecretKey(
+   public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
    {
       return null;

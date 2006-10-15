@@ -53,6 +53,8 @@ public class ResourceResolver {
 
    /** these are the system-wide resolvers */
    static List _resolverVector = null;
+   
+   static boolean allThreadSafeInList=true;
 
    /** Field transformSpi */
    protected ResourceResolverSpi _resolverSpi = null;
@@ -97,12 +99,20 @@ public class ResourceResolver {
       for (int i = 0; i < length; i++) {
 		  ResourceResolver resolver =
             (ResourceResolver) ResourceResolver._resolverVector.get(i);
-         
+		  ResourceResolver resolverTmp=null;
+		  try {
+			resolverTmp =  allThreadSafeInList || resolver._resolverSpi.engineIsThreadSafe() ? resolver : 
+				  	new ResourceResolver((ResourceResolverSpi)resolver._resolverSpi.getClass().newInstance());
+		  } catch (InstantiationException e) {
+			  throw new ResourceResolverException("",e,uri,BaseURI);
+		  } catch (IllegalAccessException e) {
+			  throw new ResourceResolverException("",e,uri,BaseURI);			
+		  }
 
          if (log.isDebugEnabled())
          	log.debug("check resolvability by class " + resolver._resolverSpi.getClass().getName());
 
-         if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
+         if ((resolver != null) && resolverTmp.canResolve(uri, BaseURI)) {
         	 if (i!=0) {
             	 //update resolver.
         		 //System.out.println("Swaping");
@@ -114,7 +124,7 @@ public class ResourceResolver {
         		 //System.out.println("hitting");
         	 }
         	 
-            return resolver;
+            return resolverTmp;
          }
       }
 
@@ -205,9 +215,12 @@ public class ResourceResolver {
 	    if (start) {
 	        ResourceResolver._resolverVector.add(0, resolver);
 	        log.debug("registered resolver");
-	    } else {
+	    } else {	       
 	        ResourceResolver._resolverVector.add(resolver);
 	    }
+	    if (!resolver._resolverSpi.engineIsThreadSafe()) {
+        	allThreadSafeInList=false; 
+        }
         } catch (Exception e) {
 	    log.warn("Error loading resolver " + className +" disabling it");
         } catch (NoClassDefFoundError e) {

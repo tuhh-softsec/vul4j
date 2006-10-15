@@ -39,6 +39,9 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(
                     ResolverLocalFilesystem.class.getName());
 
+    public boolean engineIsThreadSafe() {
+  	   return true;
+   }
    /**
     * @inheritDoc
     */
@@ -68,6 +71,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
       }
    }
 
+   private static int FILE_URI_LENGTH="file:/".length();
    /**
     * Method translateUriToFilename
     *
@@ -76,7 +80,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     */
    private static String translateUriToFilename(String uri) {
 
-      String subStr = uri.substring("file:/".length());
+      String subStr = uri.substring(FILE_URI_LENGTH);
 
       if (subStr.indexOf("%20") > -1)
       {

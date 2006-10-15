@@ -45,7 +45,7 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
     * @param storage
     * @return null if no {@link PublicKey} could be obtained
     */
-   public PublicKey engineResolvePublicKey(
+   public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
 	    if (element == null) {
 	         return null;
@@ -84,13 +84,13 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
 
    
    /** @inheritDoc */
-   public X509Certificate engineResolveX509Certificate(
+   public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
 
    /** @inheritDoc */
-   public javax.crypto.SecretKey engineResolveSecretKey(
+   public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage){
       return null;
    }

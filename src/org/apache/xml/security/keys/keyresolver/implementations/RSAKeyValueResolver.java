@@ -47,7 +47,7 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
    
 
    /** @inheritDoc */
-   public PublicKey engineResolvePublicKey(
+   public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
 	   if (log.isDebugEnabled())
 		 	log.debug("Can I resolve " + element.getTagName());
@@ -87,13 +87,13 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
    }
 
    /** @inheritDoc */
-   public X509Certificate engineResolveX509Certificate(
+   public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
 
    /** @inheritDoc */
-   public javax.crypto.SecretKey engineResolveSecretKey(
+   public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
