@@ -105,6 +105,14 @@ my $expected_failures = 0;
 my $doenc = 1;
 my $dosig = 1;
 
+# The following array defines how checksig will be called to validate the sig
+#
+# The fields are:
+# Filename = the file that contains the signature.  Relative to the data dir
+# Flags = additional flags to pass to checksig
+# Requires Xalan = y/n - if y only run if Xalan available
+# Requires pothole = y/n - if y only run if pothole site available
+
 my @dsig_array=(
 
 "at/iaik/ixsil/coreFeatures/signatures/anonymousReferenceSignature.xml,-a,n,n",
@@ -170,6 +178,10 @@ my @dsig_array=(
 
 "interop/xfilter2/merlin-xpath-filter2-three/sign-spec.xml,,y,n",
 "interop/xfilter2/merlin-xpath-filter2-three/sign-xfdl.xml,,y,n",
+
+# Extra unit tests provided for bug reports
+
+"org/apache/xml/security/testcases/SAML2ArtifactResponse.xml,,n,n",
 
 );
 
@@ -264,7 +276,7 @@ my @xenc_array=(
 
 sub print_args {
 
-  print STDERR "\nUsage: basicTests.pl [--noxalan] [--nopothole] [--noaes] [--vc8] [--vc8release] [--vc7] [--vc7release] [--vc6release]\n\n";
+  print STDERR "\nUsage: basicTests.pl [--noxalan] [--nopothole] [--noaes] [--vc8] [--vc8release] [--vc7] [--vc7release] [--vc6release] [--nosig] --[noenc]\n\n";
   exit(1);
 
 }
