@@ -35,3 +35,4 @@ RAUL:
 see if this is really needed and unified this creation in one class.
 [ ] Get rid of Init.init()
 [ ] Get rid of all if (MODE_SIGN) create a class for signing and another for verifying.
+[ ] Work on examples there are out of sync with the code.Unitest the examples?
