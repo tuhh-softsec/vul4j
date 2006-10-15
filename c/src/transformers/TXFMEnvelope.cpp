@@ -27,7 +27,11 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
+
 XERCES_CPP_NAMESPACE_USE
+
 
 TXFMEnvelope::TXFMEnvelope(DOMDocument *doc) :
 TXFMBase(doc) {
@@ -152,6 +156,40 @@ void addEnvelopeNode(DOMNode *startNode, XSECXPathNodeList & XPathMap, DOMNode *
 	}
 }
 
+void addEnvelopeParentNSNodes(DOMNode *startNode, XSECXPathNodeList & XPathMap) {
+
+	XSEC_USING_XERCES(DOMNamedNodeMap);
+	
+	DOMNode *tmp;
+	DOMNamedNodeMap *atts;
+	int attsSize, i;
+	
+	if (startNode == NULL)
+		return;
+
+	if (startNode->getNodeType() == DOMNode::ELEMENT_NODE) {
+
+		atts = startNode->getAttributes();
+		if (atts != NULL)
+			attsSize = atts->getLength();
+		else
+			attsSize = 0;
+
+		for (i = 0; i < attsSize; ++i) {
+
+			tmp = atts->item(i);
+			if (XMLString::compareNString(tmp->getNodeName(), DSIGConstants::s_unicodeStrXmlns, 5) == 0 &&
+				(tmp->getNodeName()[5] == chNull || tmp->getNodeName()[5] == chColon))
+				XPathMap.addNode(tmp);
+
+		}
+
+	}
+
+	// Now do parent
+	addEnvelopeParentNSNodes(startNode->getParentNode(), XPathMap);
+	
+}
 
 void TXFMEnvelope::evaluateEnvelope(DOMNode *t) {
 
@@ -182,6 +220,7 @@ void TXFMEnvelope::evaluateEnvelope(DOMNode *t) {
 	}
 
 	addEnvelopeNode(mp_startNode, m_XPathMap, sigNode);
+	addEnvelopeParentNSNodes(mp_startNode->getParentNode(), m_XPathMap);
 
 }
 
