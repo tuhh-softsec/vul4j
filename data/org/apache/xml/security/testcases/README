@@ -1,0 +1,9 @@
+These are test cases that have been discovered to test particular
+types of transforms or interactions that can cause problems.
+
+In general they are provided via bug reports from end users.
+
+SAMP2ArtifactResponse.xml - Provided by Scott Cantor.  Tests
+enveloped transforms that make use of namespaces from parent
+nodes that are not in the input nodeset.
+
