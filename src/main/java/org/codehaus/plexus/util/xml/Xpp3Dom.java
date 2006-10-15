@@ -363,8 +363,8 @@ public class Xpp3Dom
     /**
      * Merge two DOMs, with one having dominance in the case of collision.
      * 
-     * @see CHILDREN_COMBINATION_MODE_ATTRIBUTE
-     * @see SELF_COMBINATION_MODE_ATTRIBUTE
+     * @see #CHILDREN_COMBINATION_MODE_ATTRIBUTE
+     * @see #SELF_COMBINATION_MODE_ATTRIBUTE
      * 
      * @param dominant The dominant DOM into which the recessive value/attributes/children will be merged
      * @param recessive The recessive DOM, which will be merged into the dominant DOM
@@ -386,8 +386,8 @@ public class Xpp3Dom
      * Merge mechanisms (vs. override for nodes, or vs. append for children) is determined by
      * attributes of the dominant root node.
      * 
-     * @see CHILDREN_COMBINATION_MODE_ATTRIBUTE
-     * @see SELF_COMBINATION_MODE_ATTRIBUTE
+     * @see #CHILDREN_COMBINATION_MODE_ATTRIBUTE
+     * @see #SELF_COMBINATION_MODE_ATTRIBUTE
      * 
      * @param dominant The dominant DOM into which the recessive value/attributes/children will be merged
      * @param recessive The recessive DOM, which will be merged into the dominant DOM
