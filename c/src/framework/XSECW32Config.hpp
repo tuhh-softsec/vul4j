@@ -38,14 +38,32 @@
 
 #define XSEC_VERSION_MAJOR   1
 #define XSEC_VERSION_MEDIUM  3
-#define XSEC_VERSION_MINOR   0
+#define XSEC_VERSION_MINOR   1
 
 /*
  * Because we don't have a configure script, we need to rely on version
  * numbers to understand library idiosycracies
  */
 
-#if (XERCES_VERSION_MAJOR >= 2) && (XERCES_VERSION_MINOR >= 3)
+#if (XERCES_VERSION_MAJOR >= 3)
+
+/* Is it possible to setIdAttributes? - DOM level 3 call.  V3.x
+   API Version */
+
+#	define XSEC_XERCES_HAS_BOOLSETIDATTRIBUTE 1
+
+/* 3.0 no longer supports DOMWriter, must use DOMLSSerializer instead
+*/
+
+#	define XSEC_XERCES_DOMLSSERIALIZER 1
+
+/* 3.0 now uses getInputEncoding rather than getEncoding to determine
+   encoding that was found in input document */
+
+#	define XSEC_XERCES_DOMENTITYINPUTENCODING 1
+#endif
+
+#if (XERCES_VERSION_MAJOR == 3) || ((XERCES_VERSION_MAJOR == 2) && (XERCES_VERSION_MINOR >= 3))
 /* 
  * As of version 2.3, xerces requires a version parameter in XMLFormatter
  * constructors
@@ -60,11 +78,14 @@
 
 /* Does XMLString::release() exist */
 
-#define XSEC_XERCES_XMLSTRING_HAS_RELEASE 1
+#	define XSEC_XERCES_XMLSTRING_HAS_RELEASE 1
 
-/* Is it possible to setIdAttributes? - DOM level 3 call */
+#	if (XERCES_VERSION_MAJOR < 3)
+		/* Is it possible to setIdAttributes? - DOM level 3 call.  V2.x API */
 
-#define XSEC_XERCES_HAS_SETIDATTRIBUTE 1
+#		define XSEC_XERCES_HAS_SETIDATTRIBUTE 1
+
+#	endif
 
 #else
 /*
@@ -82,7 +103,7 @@
  * Activate this #define if Xalan is not required (or desired)
  */
 
-//  #define XSEC_NO_XALAN
+// #define XSEC_NO_XALAN
 
 #if !defined (XSEC_NO_XALAN)
 
