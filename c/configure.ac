@@ -1,4 +1,4 @@
-# Copyright 2002-2004 The Apache Software Foundation.
+# Copyright 2002-2006 The Apache Software Foundation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@
 
 # Process this file with autoconf to produce a configure script
 
-AC_INIT([[XML-Security-C]], [1.3.0], [security-dev@xml.apache.org], [xml-security-c])
+AC_INIT([[XML-Security-C]], [1.3.1], [security-dev@xml.apache.org], [xml-security-c])
 AC_CONFIG_AUX_DIR([config])
 
 # kick off automake
 
-AM_INIT_AUTOMAKE(XMl-Security-C, 1.3.0)
+AM_INIT_AUTOMAKE(XMl-Security-C, 1.3.1)
 AM_PROG_LIBTOOL
 
 # We want to control the autotools invocation
