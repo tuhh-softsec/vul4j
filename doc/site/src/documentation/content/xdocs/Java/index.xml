@@ -26,44 +26,54 @@ limitations under the License.
   </header> 
   <body> 
     <section>
-      <title>News</title>
-       <p>
-        Version 1.3 released on 28 Octuber 2005. Improves performance and memory usage over 1.2, and 
-        include several bugfixes.
-      </p>
+      <title>Version 1.4 Released</title>
       <p>
-        Version 1.2.1 released on 28 February 2005. Is a bugfix version over 1.2 is recomended to 
-        upgrade to this version. 
+        TBD
       </p>
-      <p>
-        Version 1.2 released on 11 December 2004. Improves the performance and memory usage over 1.1
-        release together with an easier integration of JCE providers.
-      </p>
-	  <p>
-		Version 1.1 released on 7 April 2004.  Includes a beta implementation
-		of XML Encryption together with minor bug fixes for the XML Signature
-		code.
-	  </p>
     </section>
     <section>
-      <title>XML Security Release</title>
+      <title>Overview of the Java Library</title>
       <p>
-		The &packagenamelong; &packageversion; supports
-		<jump href="ext:w3c/xmldsig_java_supported">&supp_java_dsig;
-		</jump> and (in beta)
-		<jump href="ext:w3c/xmlenc_java_supported">&supp_java_enc;
-		</jump>
+	The &packagenamelong; &packageversion; supports
+	<jump href="ext:w3c/xmldsig_java_supported">&supp_java_dsig;
+	</jump> and 
+	<jump href="ext:w3c/xmlenc_java_supported">&supp_java_enc;
+	</jump>
       </p>
       <p>
-	Note that there is no standard API avaliable at the moment. SUN is
-	working on a JAVA Specification Request 
+	As of version 1.4, the Java library supports the standard Java API
 	<jump href="http://jcp.org/jsr/detail/105.jsp">
 	  JSR-105: XML Digital Signature APIs
-	</jump> on an API for XML Signature and 
+	</jump> for creating and validating XML Signatures. A standard Java
+	API for XML Encryption 
 	<jump href="http://jcp.org/jsr/detail/106.jsp">
 	  JSR-106: XML Digital Encryption APIs
-	</jump>, but until now, nothing has been published. So, this software
-	does <em>not</em> conform to any of these specifications.
+	</jump> is in progress and is not final, so this
+	API is not yet supported. You can continue to use the existing
+	non-standard APIs in the Java Library (there are no immediate plans
+	to discontinue or deprecate them), but you should consider moving
+	to the standard APIs.
+      </p>
+    </section>
+    <section>
+      <title>Old News</title>
+      <p>
+        Version 1.3 released on 28 October 2005. Improves performance and 
+	memory usage over 1.2, and includes several bugfixes.
+      </p>
+      <p>
+        Version 1.2.1 released on 28 February 2005. It is a bugfix version 
+	over 1.2 and it is recomended to upgrade to this version. 
+      </p>
+      <p>
+        Version 1.2 released on 11 December 2004. Improves the performance and 
+	memory usage over 1.1 release together with an easier integration of 
+	JCE providers.
+      </p>
+      <p>
+	Version 1.1 released on 7 April 2004. Includes a beta implementation
+	of XML Encryption together with minor bug fixes for the XML Signature
+	code.
       </p>
     </section>
     <section>
@@ -84,7 +94,3 @@ limitations under the License.
     </section>
   </body>
 </document>
-
-
-
-
