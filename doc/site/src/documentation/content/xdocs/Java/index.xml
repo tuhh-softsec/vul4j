@@ -50,7 +50,7 @@ limitations under the License.
 	  JSR-106: XML Digital Encryption APIs
 	</jump> is in progress and is not final, so this
 	API is not yet supported. You can continue to use the existing
-	non-standard APIs in the Java Library (there are no immediate plans
+	non-standard APIs in the Java Library (there are no plans
 	to discontinue or deprecate them), but you should consider moving
 	to the standard APIs.
       </p>
