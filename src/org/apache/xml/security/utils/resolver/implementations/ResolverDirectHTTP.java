@@ -265,7 +265,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
       	log.debug("I was asked whether I can resolve " + uriNodeValue);
 
       if ( uriNodeValue.startsWith("http:") ||
-				 BaseURI.startsWith("http:")) {
+				(BaseURI!=null && BaseURI.startsWith("http:") )) {
          if (log.isDebugEnabled())
          	log.debug("I state that I can resolve " + uriNodeValue);
 

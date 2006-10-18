@@ -1,5 +1,7 @@
 package org.apache.xml.security.test.utils;
 
+import com.sun.corba.se.spi.resolver.Resolver;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -13,6 +15,7 @@ public class AllTests {
 		suite.addTest(Base64Test.suite());
 		suite.addTestSuite(OldApiTest.class);
 		//$JUnit-END$
+		suite.addTest(org.apache.xml.security.test.utils.resolver.AllTests.suite());
 		return suite;
 	}
 
