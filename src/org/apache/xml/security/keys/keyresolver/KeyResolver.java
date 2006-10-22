@@ -69,6 +69,7 @@ public class KeyResolver {
                   InstantiationException {
       this._resolverSpi =
          (KeyResolverSpi) Class.forName(className).newInstance();
+      this._resolverSpi.setGlobalResolver(true);
    }
 
    /**

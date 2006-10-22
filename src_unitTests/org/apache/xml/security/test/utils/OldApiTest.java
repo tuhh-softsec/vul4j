@@ -1,7 +1,10 @@
 package org.apache.xml.security.test.utils;
 
 import java.io.IOException;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 
+import javax.crypto.SecretKey;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -10,6 +13,11 @@ import junit.framework.TestCase;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
+import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -89,4 +97,86 @@ public class OldApiTest extends TestCase {
 		
 		
 	};
+	static class PublicKeyMock implements PublicKey {
+
+		   public String getAlgorithm() {
+			   // TODO Auto-generated method stub
+			   return null;
+		   }
+
+		   public byte[] getEncoded() {
+			   // TODO Auto-generated method stub
+			   return null;
+		   }
+
+		   public String getFormat() {
+			   // TODO Auto-generated method stub
+			   return null;
+		   }				   
+	   };			
+	static public class OldKeyResolverSpi extends KeyResolverSpi {
+		static int number=0;
+		PublicKey pk=null;
+		public OldKeyResolverSpi() {
+			number++;
+		};
+		public boolean engineCanResolve(Element element, String BaseURI,
+			                                            StorageResolver storage) {
+			   if ("!!!testUri".equals(BaseURI)) 
+				   return true;
+			   return false;
+		}
+		   public PublicKey engineResolvePublicKey(
+		      Element element, String BaseURI, StorageResolver storage)
+		         throws KeyResolverException {
+			   if (pk==null)
+				   pk=new PublicKeyMock();
+			   return pk;
+		    };
+		   
+		   
+		    public X509Certificate engineResolveX509Certificate(
+		       Element element, String BaseURI, StorageResolver storage)
+		         throws KeyResolverException{
+		        return null;
+		    };
+
+		    public SecretKey engineResolveSecretKey(
+		       Element element, String BaseURI, StorageResolver storage)
+		          throws KeyResolverException{
+		    	return null;
+		    }; 
+	};
+	
+	public void testOldKeyResolverSpi() throws Exception{
+		KeyResolver.register(OldKeyResolverSpi.class.getName());
+		Document doc=DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();				
+		Element el=((Element)doc.createElement("test"));
+		PublicKey pk=KeyResolver.getPublicKey(el, "!!!testUri", null);
+		assertNotNull(pk);
+		assertTrue(pk instanceof PublicKeyMock);
+		assertEquals(2, OldKeyResolverSpi.number);
+		PublicKey pk1=KeyResolver.getPublicKey(el, "!!!testUri", null);
+		assertNotSame(pk,pk1);
+		assertEquals(3, OldKeyResolverSpi.number);
+	}
+	static public class OldKeyResolverNoPublicConsSpi extends OldKeyResolverSpi {
+		protected OldKeyResolverNoPublicConsSpi() {		
+		};
+		public OldKeyResolverNoPublicConsSpi(PublicKey pk) {
+			this.pk=pk;
+		}
+	};
+	
+
+	public void testOldKeyResolverSpiInKeyInfo() throws Exception{
+		Document doc=DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		Element el=(Element)doc.createElementNS("http://www.w3.org/2000/09/xmldsig#","KeyInfo");
+		el.appendChild((Element)doc.createElementNS("http://www.w3.org/2000/09/xmldsig#","KeyInfo"));
+		KeyInfo ki=new KeyInfo(el,"!!!testUri");
+		PublicKey pk=new PublicKeyMock();
+		ki.registerInternalKeyResolver(new OldKeyResolverNoPublicConsSpi(pk));
+		assertNotNull(ki.getPublicKey());
+		
+	}
 }
