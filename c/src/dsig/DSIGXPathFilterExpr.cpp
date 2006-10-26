@@ -59,14 +59,16 @@ XMLCh filterStr[] = {
 DSIGXPathFilterExpr::DSIGXPathFilterExpr(const XSECEnv * env, DOMNode * node) :
 mp_env(env),
 mp_xpathFilterNode(node),
-mp_NSMap(NULL) {
+mp_NSMap(NULL),
+m_loaded(false) {
 
 }
 
 DSIGXPathFilterExpr::DSIGXPathFilterExpr(const XSECEnv * env) :
 mp_env(env),
 mp_xpathFilterNode(NULL),
-mp_NSMap(NULL) {
+mp_NSMap(NULL),
+m_loaded(false)  {
 
 }
 

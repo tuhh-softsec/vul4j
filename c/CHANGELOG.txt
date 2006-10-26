@@ -13,6 +13,8 @@ Changes between version 1.3 and 1.3.1
 * Fix bug in envelope transform when input nodeset is a document
   fragment rather than the entire document and the canonicalisation
   uses a namespace that was not defined directly in the fragment
+* Fix bug in DSIGXPathFilterExpr where m_loaded was not initialised
+  potentially causing an exception when an XPath expression was loaded
 
 Changes between version 1.2.1 and 1.3
 =====================================
