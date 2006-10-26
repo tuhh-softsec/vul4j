@@ -1891,4 +1891,31 @@ public class FileUtils
     {
         public abstract Reader getReader( Reader fileReader );
     }
+    
+    public static List loadFile( File file ) throws IOException
+    {
+                List lines = new ArrayList();
+            
+                if ( file.exists() )
+        {
+                        BufferedReader reader = new BufferedReader( new FileReader( file ) );
+               
+                        String line = reader.readLine();
+               
+                        while ( line != null )
+            {
+                                line = line.trim();
+                   
+                                if ( !line.startsWith( "#" ) && line.length() != 0 )
+                {
+                                        lines.add ( line );
+                }
+                                line = reader.readLine();
+            }
+               
+                        reader.close();
+        }
+            
+                return lines;
+    }
 }

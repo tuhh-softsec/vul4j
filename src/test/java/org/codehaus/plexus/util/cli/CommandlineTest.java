@@ -263,9 +263,10 @@ public class CommandlineTest
     }
 
     public void testEnvironment()
+        throws Exception
     {
         Commandline cmd = new Commandline();
         cmd.addEnvironment( "name", "value" );
-        assertEquals( "name=value", cmd.getEnvironments()[0] );
+        assertEquals( "name=value", cmd.getEnvironmentVariables()[0] );
     }
 }

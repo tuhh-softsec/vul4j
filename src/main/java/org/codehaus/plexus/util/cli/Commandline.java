@@ -78,9 +78,9 @@ package org.codehaus.plexus.util.cli;
  * ====================================================================
  */
 
+import org.codehaus.plexus.util.cli.shell.Shell;
 import org.codehaus.plexus.util.cli.shell.CmdShell;
 import org.codehaus.plexus.util.cli.shell.CommandShell;
-import org.codehaus.plexus.util.cli.shell.Shell;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,15 +93,15 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- * <p>
+ * <p/>
  * Commandline objects help handling command lines specifying processes to
  * execute.
  * </p>
- * <p>
+ * <p/>
  * The class can be used to define a command line as nested elements or as a
  * helper to define a command line by an application.
  * </p>
- * <p>
+ * <p/>
  * <code>
  * &lt;someelement&gt;<br>
  * &nbsp;&nbsp;&lt;acommandline executable="/executable/to/run"&gt;<br>
@@ -112,7 +112,7 @@ import java.util.Vector;
  * &lt;/someelement&gt;<br>
  * </code>
  * </p>
- * <p>
+ * <p/>
  * The element <code>someelement</code> must provide a method
  * <code>createAcommandline</code> which returns an instance of this class.
  * </p>
@@ -132,8 +132,6 @@ public class Commandline
     protected Vector arguments = new Vector();
 
     protected Vector envVars = new Vector();
-
-    private boolean newEnvironment = false;
 
     private File workingDir = null;
 
@@ -306,9 +304,9 @@ public class Commandline
         String os = System.getProperty( OS_NAME );
 
         //If this is windows set the shell to command.com or cmd.exe with correct arguments.
-        if ( os.indexOf( WINDOWS ) != -1 )
+        if ( os.indexOf( WINDOWS ) > -1 )
         {
-            if ( os.indexOf( "95" ) != -1 || os.indexOf( "98" ) != -1 || os.indexOf( "Me" ) != -1 )
+            if ( os.indexOf( "95" ) > -1 || os.indexOf( "98" ) > -1 || os.indexOf( "Me" ) > -1 )
             {
                 setShell( new CommandShell() );
             }
@@ -385,10 +383,10 @@ public class Commandline
     /**
      * Add an environment variable
      */
-    public void addEnvironment( String name, String value )
+    public void addEnvironment( String name,
+                                String value )
     {
         envVars.add( name + "=" + value );
-        newEnvironment = true;
     }
 
     /**
@@ -410,25 +408,19 @@ public class Commandline
     /**
      * Return the list of environment variables
      */
-    public String[] getEnvironments()
+    public String[] getEnvironmentVariables()
+        throws CommandLineException
     {
-        return (String[]) envVars.toArray( new String[envVars.size()] );
-    }
-
-    /**
-     * Return the current list of environment variables or null if user
-     * doesn't have add any variable.
-     *
-     * @todo return the list of proc env variables with user env variables if user add some var.
-     */
-    public String[] getCurrentEnvironment()
-    {
-        if ( ! newEnvironment )
+        try
         {
-            return null;
+            addSystemEnvironment();
+        }
+        catch ( Exception e )
+        {
+            throw new CommandLineException( "Error setting up environmental variables", e );
         }
 
-        return getEnvironments();
+        return (String[]) envVars.toArray( new String[envVars.size()] );
     }
 
     /**
@@ -608,7 +600,7 @@ public class Commandline
                         current.append( nextTok );
                     }
                     break;
-                default :
+                default:
                     if ( "\'".equals( nextTok ) )
                     {
                         state = inQuote;
@@ -712,13 +704,17 @@ public class Commandline
     public Process execute()
         throws CommandLineException
     {
-        Process process = null;
+        Process process;
+
+        //addEnvironment( "MAVEN_TEST_ENVAR", "MAVEN_TEST_ENVAR_VALUE" );
+
+        String[] environment = getEnvironmentVariables();
 
         try
         {
             if ( workingDir == null )
             {
-                process = Runtime.getRuntime().exec( getShellCommandline(), getCurrentEnvironment() );
+                process = Runtime.getRuntime().exec( getShellCommandline(), environment );
             }
             else
             {
@@ -733,7 +729,7 @@ public class Commandline
                         "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
                 }
 
-                process = Runtime.getRuntime().exec( getShellCommandline(), getCurrentEnvironment(), workingDir );
+                process = Runtime.getRuntime().exec( getShellCommandline(), environment, workingDir );
             }
         }
         catch ( IOException ex )
