@@ -54,6 +54,10 @@ limitations under the License.
       <action dev="BL" type="fix" context="c_rel">
         Fix bug in Envelope transform
       </action>
+      <action dev="BL" type="fix" context="c_rel">
+        Fix bug in DSIGXPathFilterExpr with non-initalised vars.
+	Reported by Ralf "Sabo" Saborowski.
+      </action>
     </release>
 
 
