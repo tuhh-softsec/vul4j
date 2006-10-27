@@ -20,6 +20,7 @@ package org.codehaus.plexus.archiver.zip;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -78,7 +79,7 @@ public abstract class AbstractZipUnArchiver
             {
                 ZipEntry ze = (ZipEntry) e.nextElement();
                 extractFileIfIncluded( getSourceFile(), getDestDirectory(), zf.getInputStream( ze ), ze.getName(),
-                                       new Date( ze.getTime() ), ze.isDirectory() );
+                                       new Date( ze.getTime() ), ze.isDirectory(), null );
             }
 
             getLogger().debug( "expand complete" );
@@ -108,14 +109,14 @@ public abstract class AbstractZipUnArchiver
                                         InputStream inputStream,
                                         String name,
                                         Date time,
-                                        boolean isDirectory )
+                                        boolean isDirectory, Integer mode )
         throws IOException, ArchiverException
     {
         try
         {
             if ( include( inputStream, name ) )
             {
-                extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory );
+                extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode );
             }
         }
         catch ( ArchiveFilterException e )
@@ -129,8 +130,8 @@ public abstract class AbstractZipUnArchiver
                                 InputStream compressedInputStream,
                                 String entryName,
                                 Date entryDate,
-                                boolean isDirectory )
-        throws IOException
+                                boolean isDirectory, Integer mode )
+        throws IOException, ArchiverException
     {
         File f = FileUtils.resolveFile( dir, entryName );
 
@@ -186,6 +187,11 @@ public abstract class AbstractZipUnArchiver
             }
 
             f.setLastModified( entryDate.getTime() );
+            
+            if ( mode != null )
+            {
+                ArchiveEntryUtils.chmod( f, mode.intValue(), getLogger() );
+            }
         }
         catch ( FileNotFoundException ex )
         {
@@ -212,7 +218,7 @@ public abstract class AbstractZipUnArchiver
                 if ( ze.getName().startsWith( path ) )
                 {
                     extractFileIfIncluded( getSourceFile(), outputDirectory, zipFile.getInputStream( ze ), ze.getName(),
-                                           new Date( ze.getTime() ), ze.isDirectory() );
+                                           new Date( ze.getTime() ), ze.isDirectory(), null );
                 }
             }
         }

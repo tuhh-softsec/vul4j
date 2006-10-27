@@ -16,19 +16,16 @@ package org.codehaus.plexus.archiver.dir;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.archiver.AbstractArchiver;
+import org.codehaus.plexus.archiver.ArchiveEntry;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
+import org.codehaus.plexus.util.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.codehaus.plexus.archiver.AbstractArchiver;
-import org.codehaus.plexus.archiver.ArchiveEntry;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.codehaus.plexus.util.cli.CommandLineException;
 
 /**
  * A plexus archiver implementation that stores the files to archive in a
@@ -139,7 +136,7 @@ public class DirectoryArchiver
                 }
             }
             FileUtils.copyFile( inFile, outFile );
-            chmod( outFile, entry.getMode() );
+            ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger() );
         }
         else
         { //file is a directory
@@ -158,55 +155,6 @@ public class DirectoryArchiver
                 //Failure, unable to create specified directory for some unknown reason.
                 throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
             }
-        }
-    }
-
-    private void chmod( File file, int mode )
-        throws ArchiverException
-    {
-        if ( ! Os.isFamily( "unix" ) )
-        {
-            return;
-        }
-
-        String m = Integer.toOctalString( mode & 0xfff );
-
-        try
-        {
-            Commandline commandline = new Commandline();
-
-            commandline.setWorkingDirectory( file.getParentFile().getAbsolutePath() );
-
-            commandline.setExecutable( "chmod" );
-
-            commandline.createArgument().setValue( m  );
-
-            commandline.createArgument().setValue( file.getAbsolutePath() );
-
-            CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
-
-            CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
-
-            int exitCode = CommandLineUtils.executeCommandLine( commandline, stderr, stdout );
-
-            if ( exitCode != 0 )
-            {
-                getLogger().warn( "-------------------------------" );
-                getLogger().warn( "Standard error:" );
-                getLogger().warn( "-------------------------------" );
-                getLogger().warn( stderr.getOutput() );
-                getLogger().warn( "-------------------------------" );
-                getLogger().warn( "Standard output:" );
-                getLogger().warn( "-------------------------------" );
-                getLogger().warn( stdout.getOutput() );
-                getLogger().warn( "-------------------------------" );
-
-                throw new ArchiverException( "chmod exit code was: " + exitCode );
-            }
-        }
-        catch ( CommandLineException e )
-        {
-            throw new ArchiverException( "Error while executing chmod.", e );
         }
     }
 
