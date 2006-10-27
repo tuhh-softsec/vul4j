@@ -298,7 +298,7 @@ public abstract class AbstractArchiver
 
             if ( unArchiver instanceof FilterEnabled )
             {
-                ( (FilterEnabled) unArchiver ).setArchiveFilters( Collections.emptyList() );
+                ( (FilterEnabled) unArchiver ).setArchiveFilters( Collections.EMPTY_LIST );
             }
         }
         catch ( NoSuchArchiverException e )
