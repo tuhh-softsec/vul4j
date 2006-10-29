@@ -1023,7 +1023,7 @@ public class Digester extends DefaultHandler {
      * Define a callback object which is invoked whever an object is pushed onto
      * a digester object stack, or popped off one.
      * 
-     * @since 1.7.1
+     * @since 1.8
      */
     public void setStackAction(StackAction stackAction) {
     	this.stackAction = stackAction;
@@ -1032,7 +1032,7 @@ public class Digester extends DefaultHandler {
     /**
      * See setStackAction. 
      * 
-     * @since 1.7.1
+     * @since 1.8
      */
     public StackAction getStackAction() {
     	return stackAction;
