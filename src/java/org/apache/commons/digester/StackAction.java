@@ -40,7 +40,7 @@ package org.apache.commons.digester;
  * <p>
  * See also Digester.setStackAction.
  * 
- * @since 1.7.1
+ * @since 1.8
  */
 public interface StackAction {
 	/**
