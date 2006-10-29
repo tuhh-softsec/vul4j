@@ -2,11 +2,11 @@ $Id$
 
 
                           Commons Digester Package
-                                Version 1.7.1-dev
+                                Version 1.8-dev
                                Release Notes
 
 
-*** Release notes current as of 2005-09-10
+*** Release notes current as of 2006-10-29
 
 INTRODUCTION
 ============
@@ -24,12 +24,12 @@ none
 
 Dependencies
 =============
-Release 1.7.1 has the same dependencies as release 1.7.
+Release 1.8 has the same dependencies as release 1.7.
 
 Compatible Dependency Sets:
-   Digester 1.7 + Logging 1.0.x + BeanUtils 1.x + Collections 2.x
-   Digester 1.7 + Logging 1.0.x + BeanUtils 1.x + Collections 3.x
-   Digester 1.7 + Logging 1.0.x + BeanUtils 1.7
+   Digester 1.8 + Logging 1.0.x + BeanUtils 1.x + Collections 2.x
+   Digester 1.8 + Logging 1.0.x + BeanUtils 1.x + Collections 3.x
+   Digester 1.8 + Logging 1.0.x + BeanUtils 1.7
 
 NEW FEATURES
 =============
@@ -55,6 +55,14 @@ Method "setStackAction" has been added to the Digester class. This allows user
 code to monitor all objects pushed onto and popped off digester stacks. In
 particular, this makes it easier to store source file/line info for all
 objects created during parsing.
+
+Namespace Access
+----------------
+
+Method "getCurrentNamespaces" has been added to the Digester class. This allows user
+code to get a snapshot of all the prefix->url mappings applicable at a point in time.
+This is particularly useful for elements that contain xpath expressions that should
+be evaluated later using the same namespaces defined for the element.
 
 BUGS FROM PREVIOUS RELEASE
 ==========================
