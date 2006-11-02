@@ -1939,14 +1939,7 @@ public class XMLCipher {
 			String fragment = sb.toString();
 
             try {
-                DocumentBuilderFactory dbf =
-                    DocumentBuilderFactory.newInstance();
-				dbf.setNamespaceAware(true);
-				dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
-				DocumentBuilder db = dbf.newDocumentBuilder();
-				Document d = db.parse(
-				    new InputSource(new StringReader(fragment)));
-
+                Document d = parseFragment(fragment);
 				Element fragElt = (Element) _contextDocument.importNode(
 						 d.getDocumentElement(), true);
 				result = _contextDocument.createDocumentFragment();
@@ -1956,8 +1949,6 @@ public class XMLCipher {
 					result.appendChild(child);
 					child = fragElt.getFirstChild();
 				}
-				// String outp = serialize(d);
-
             } catch (SAXException se) {
                 throw new XMLEncryptionException("empty", se);
             } catch (ParserConfigurationException pce) {
@@ -1967,6 +1958,17 @@ public class XMLCipher {
             }
 
             return (result);
+        }
+
+        protected Document parseFragment(String fragment) throws ParserConfigurationException, SAXException, IOException {
+            DocumentBuilderFactory dbf =
+                DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document d = db.parse(
+                new InputSource(new StringReader(fragment)));
+            return d;
         }
     }
 
