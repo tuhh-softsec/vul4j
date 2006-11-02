@@ -1,7 +1,5 @@
 package org.apache.xml.security.test.utils;
 
-import com.sun.corba.se.spi.resolver.Resolver;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

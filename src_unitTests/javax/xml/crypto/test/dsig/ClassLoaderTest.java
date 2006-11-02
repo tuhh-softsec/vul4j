@@ -34,9 +34,9 @@ public class ClassLoaderTest extends TestCase {
         Class c2 = uc2.loadClass("javax.xml.crypto.test.dsig.Driver");
         Object o1 = c1.newInstance();
         Object o2 = c2.newInstance();
-        Method m1 = c1.getMethod("dsig");
-        Method m2 = c2.getMethod("dsig");
-        m1.invoke(o1);
-        m2.invoke(o2);
+        Method m1 = c1.getMethod("dsig", null);
+        Method m2 = c2.getMethod("dsig", null);
+        m1.invoke(o1, null);
+        m2.invoke(o2, null);
     }
 }
