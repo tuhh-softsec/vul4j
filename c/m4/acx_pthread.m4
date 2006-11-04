@@ -117,7 +117,7 @@ case "${host_cpu}-${host_os}" in
         # who knows whether they'll stub that too in a future libc.)  So,
         # we'll just look for -pthreads and -lpthread first:
 
-        acx_pthread_flags="-pthreads pthread -mt -pthread $acx_pthread_flags"
+        acx_pthread_flags="-mt -pthreads pthread -pthread $acx_pthread_flags"
         ;;
 esac
 
