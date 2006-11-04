@@ -183,9 +183,6 @@ case "${host}" in
     lib_short_name="lib${PACKAGE_TARNAME}.so"
 
     if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
-      # Assume SunCC
-      PIC=["-KPIC"]
-      PLATFORM_OPTIONS=["-mt"]
       # Flags for warnings as errors
       cxxflags_warnerror="-xwe -errtags"
       # Flags for Optimise
@@ -195,7 +192,7 @@ case "${host}" in
     fi
 
     # Should use -D_REENTRANT - but not yet OK
-    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DSOLARIS"]
     SHARED_OPTIONS="-G -DSOLARIS"
     LINK_OPTIONS="-DSOLARIS"
 						;;
@@ -206,7 +203,7 @@ case "${host}" in
     lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
     lib_short_name="lib${PACKAGE_TARNAME}.so"
 
-    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DFREEBSD"]
     SHARED_OPTIONS=["-DNETBSD -shared"]
 	LINK_OPTIONS=["-DNETBSD"]
 
@@ -222,7 +219,7 @@ case "${host}" in
     lib_short_name="lib${PACKAGE_TARNAME}.so"
 
     # Should use -D_REENTRANT - but not yet OK
-    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DFREEBSD"]
     SHARED_OPTIONS="-DFREEBSD -shared -pthread -lc_r"
     LINK_OPTIONS="-DFREEBSD -pthread -lc_r"
 
@@ -236,12 +233,11 @@ case "${host}" in
 
     if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
       # Assume Intel CC
-      PIC=["-KPIC"]
       PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
     fi
 
     # Should use -D_REENTRANT - but not yet OK
-    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DLINUX"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DLINUX"]
     SHARED_OPTIONS=["-Wl,-soname,\$(LIBNAME) -DLINUX -shared"]
     LINK_OPTIONS=["-DLINUX -ldl"]
 
@@ -289,11 +285,10 @@ case "${host}" in
 
     if test "x${ac_cv_cxx_compiler_gnu}" != "xyes"; then
       # Not sure if these will work - only tested with g++
-      PIC=["-KPIC"]
       PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
     fi
 
-    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DMACOSX"]
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DMACOSX"]
     SHARED_OPTIONS=["-Xlinker -install_name -Xlinker \$(LIBNAME) -DMACOSX -dynamiclib"]
     LINK_OPTIONS=["-DMACOSX"]
                         ;;
@@ -309,11 +304,7 @@ esac
 # First if we are using gcc then...
 if test "x${ac_cv_cxx_compiler_gnu}" = "xyes" ; then
 
-  PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -Wall"]
-  if test "${PLATFORM}" != "CYGWIN" ; then
-    PIC=["-fPIC"]
-    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC}"]
-  fi
+  CXXFLAGS=["${CXXFLAGS} ${PLATFORM_OPTIONS} -Wall"]
 
   if test "$enable_debug" = "yes" ; then
 	CXXFLAGS="${CXXFLAGS} -g"
@@ -341,11 +332,11 @@ else
 fi
 
 # How do we run the C++ compiler?
-CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
+CC1=["${CXX} ${CXXFLAGS}"]
 # Command to make the shared library
-MAKE_SHARED=["${CXX} ${CXXFLAGS} ${SHARED_OPTIONS} ${PIC}"]
+MAKE_SHARED=["${CXX} ${CXXFLAGS} ${SHARED_OPTIONS}"]
 # Command to link an executable
-LINK=["${CXX} ${CXXFLAGS} ${LINK_OPTIONS} ${PIC}"]
+LINK=["${CXX} ${CXXFLAGS} ${LINK_OPTIONS}"]
 
 # Default commands to create the library in the correct place
 
