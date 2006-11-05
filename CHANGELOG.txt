@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+	Fixed bug 40896
+	
 New in 1.4RC4
 	Fixed bug 40880
 	

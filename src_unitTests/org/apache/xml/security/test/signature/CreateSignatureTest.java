@@ -16,16 +16,28 @@
  */
 package org.apache.xml.security.test.signature;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.ObjectContainer;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import junit.framework.Test;
@@ -44,7 +56,6 @@ public class CreateSignatureTest extends TestCase {
         org.apache.commons.logging.LogFactory.getLog
 	    (CreateSignatureTest.class.getName());
 
-    private DocumentBuilder db;
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
 
@@ -63,13 +74,7 @@ public class CreateSignatureTest extends TestCase {
         junit.textui.TestRunner.main(testCaseName);
     }
 
-    public void setUp() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
-        org.apache.xml.security.Init.init();
-    }
-
+    
     /**
      * Test for bug 36044 - Canonicalizing an empty node-set throws an 
      * ArrayIndexOutOfBoundsException.
@@ -123,4 +128,75 @@ public class CreateSignatureTest extends TestCase {
 
 	sig.sign(privateKey);
     }
+    
+    KeyPair kp = null;    
+    javax.xml.parsers.DocumentBuilder db;
+    
+    protected void setUp() throws Exception {
+    	javax.xml.parsers.DocumentBuilderFactory dbf = javax.xml.parsers.DocumentBuilderFactory
+        .newInstance();
+    	dbf.setNamespaceAware(true);
+    	db = dbf.newDocumentBuilder();
+    	org.apache.xml.security.Init.init();
+    	kp=KeyPairGenerator.getInstance("RSA").genKeyPair();
+    }
+    public void testOne() throws Exception {        
+        doVerify(doSign()); 
+        doVerify(doSign());
+    }
+
+    String doSign() throws Exception {
+        PrivateKey privateKey = kp.getPrivate();
+        org.w3c.dom.Document doc = db.newDocument();
+        doc.appendChild(doc.createComment(" Comment before "));
+        Element root = doc.createElementNS("",
+                "RootElement");
+
+        doc.appendChild(root);
+        root.appendChild(doc.createTextNode("Some simple text\n"));
+
+        Element canonElem = XMLUtils.createElementInSignatureSpace(doc,
+                Constants._TAG_CANONICALIZATIONMETHOD);
+        canonElem.setAttributeNS(null, Constants._ATT_ALGORITHM,
+                Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+
+        SignatureAlgorithm signatureAlgorithm = new SignatureAlgorithm(doc,
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1);
+        XMLSignature sig = new XMLSignature(doc, null, signatureAlgorithm
+                .getElement(), canonElem);
+
+        root.appendChild(sig.getElement());
+        doc.appendChild(doc.createComment(" Comment after "));
+        Transforms transforms = new Transforms(doc);
+        transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+        transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+        sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
+
+        sig.addKeyInfo(kp.getPublic());
+        sig.sign(privateKey);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        XMLUtils.outputDOMc14nWithComments(doc, bos);
+        return new String(bos.toByteArray());
+    }
+
+    void doVerify(String signedXML) throws Exception {
+        org.w3c.dom.Document doc = db.parse(new ByteArrayInputStream(signedXML.getBytes()));
+        Element nscontext = XMLUtils.createDSctx(doc, "ds",Constants.SignatureSpecNS);
+        Element sigElement = (Element) XPathAPI.selectSingleNode(doc,"//ds:Signature[1]", nscontext);
+        XMLSignature signature = new XMLSignature(sigElement, "");
+        KeyInfo ki = signature.getKeyInfo();
+
+        if (ki == null) {
+        	throw new RuntimeException("No keyinfo");
+        }
+        PublicKey pk = signature.getKeyInfo().getPublicKey();
+
+        if (pk == null) {
+        	throw new RuntimeException("No public key");
+        }
+        assertTrue(signature.checkSignatureValue(pk) );
+    }
+
 }

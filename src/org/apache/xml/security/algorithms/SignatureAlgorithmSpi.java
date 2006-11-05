@@ -21,7 +21,6 @@ import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.xml.security.signature.XMLSignatureException;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 

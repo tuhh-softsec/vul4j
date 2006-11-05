@@ -250,7 +250,7 @@ public class IdResolver {
 			        }
 			        els[index]=el;
 		    	}
-		    } else if ( n.getLocalName().equals("id") && value.equals(id) ) {
+		    } else if ( "id".equals(name) && value.equals(id) ) {
 		    	if (index!=2) {
 		    		index=5;
 		        }			    				   
