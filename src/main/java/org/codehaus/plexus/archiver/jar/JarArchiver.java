@@ -56,6 +56,11 @@ public class JarArchiver
     extends ZipArchiver
 {
     /**
+     * the name of the meta-inf dir
+     */
+    private static final String META_INF_NAME = "META-INF";
+    
+    /**
      * The index file name.
      */
     private static final String INDEX_NAME = "META-INF/INDEX.LIST";
@@ -443,7 +448,25 @@ public class JarArchiver
         // header newline
         writer.println( getDestFile().getName() );
 
-        writeIndexLikeList( new ArrayList( addedDirs.keySet() ),
+        // filter out META-INF if it doesn't contain anything other than the index and manifest.
+        // this is what sun.misc.JarIndex does, guess we ought to be consistent.
+        HashSet filteredDirs = new HashSet(addedDirs.keySet());
+        // our added dirs always have a trailing slash
+        if(filteredDirs.contains(META_INF_NAME+"/")) {
+            boolean add = false;
+            Iterator i = entries.keySet().iterator();
+            while(i.hasNext()) {
+                String entry = (String)i.next();
+                if(entry.startsWith(META_INF_NAME+"/") &&
+                        !entry.equals(INDEX_NAME) && !entry.equals(MANIFEST_NAME)) {
+                    add = true;
+                    break;
+                }
+            }
+            if(!add)
+                filteredDirs.remove(META_INF_NAME+"/");
+        }
+        writeIndexLikeList( new ArrayList( filteredDirs ),
                             rootEntries, writer );
         writer.println();
 
@@ -809,14 +832,7 @@ public class JarArchiver
             {
                 dir = dir.substring( 0, pos );
             }
-
-            // looks like nothing from META-INF should be added
-            // and the check is not case insensitive.
-            // see sun.misc.JarIndex
-            if ( dir.startsWith( "META-INF" ) )
-            {
-                continue;
-            }
+            
             // name newline
             writer.println( dir );
         }
@@ -911,9 +927,9 @@ public class JarArchiver
                 ZipEntry ze =
                     (ZipEntry) entries.nextElement();
                 String name = ze.getName();
-                // META-INF would be skipped anyway, avoid index for
-                // manifest-only jars.
-                if ( !name.startsWith( "META-INF/" ) )
+                // avoid index for manifest-only jars.
+                if (!name.equals(META_INF_NAME) && !name.equals(META_INF_NAME+"/") && 
+                        !name.equals(INDEX_NAME) && !name.equals(MANIFEST_NAME))
                 {
                     if ( ze.isDirectory() )
                     {
