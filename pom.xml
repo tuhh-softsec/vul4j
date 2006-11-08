@@ -8,6 +8,10 @@
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
   <version>1.4-SNAPSHOT</version>
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection>
+  </scm>
   <build>
     <plugins>
       <plugin>
