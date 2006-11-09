@@ -75,7 +75,7 @@ public class LoaderFromClass extends RuleLoader {
 
         try {
             Object[] params = {d, path};
-            Object none = rulesMethod.invoke(null, params);
+            rulesMethod.invoke(null, params);
         } catch (Exception e) {
             throw new PluginException(
                 "Unable to invoke rules method " + rulesMethod
