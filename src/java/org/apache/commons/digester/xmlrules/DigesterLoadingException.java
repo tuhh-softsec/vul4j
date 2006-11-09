@@ -54,4 +54,13 @@ public class DigesterLoadingException extends Exception {
         this.cause = cause;
     }
 
+    /**
+     * Return the cause of this exception (if any) as specified in the
+     * exception constructor.
+     * 
+     * @since 1.8
+     */
+    public Throwable getCause() {
+    	return cause;
+    }
 }
