@@ -19,8 +19,20 @@
 
 
 <!--
-        "Digester" component of the Jakarta Commons Subproject
-        $Id$
+  "Digester" component of the Jakarta Commons Subproject
+  $Id$
+
+  The most useful targets in this build file are:
+    * compile
+    * test (includes preceding target)
+    * dist (includes preceding targets)
+
+  Before running any targets it is necessary to indicate where all required
+  libraries can be found on the local system. See file "build.properties.sample"
+  for more information.
+
+  Alternately, use maven 2.x or maven 1.x instead of Ant; the appropriate files
+  are provided by this project to download necessary dependencies automatically.
 -->
 
 
