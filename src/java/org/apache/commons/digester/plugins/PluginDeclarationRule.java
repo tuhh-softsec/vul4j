@@ -20,10 +20,8 @@ package org.apache.commons.digester.plugins;
 
 import java.util.Properties;
 
-import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.Digester;
-
-import org.apache.commons.logging.Log;
+import org.apache.commons.digester.Rule;
 
 /**
  * A Digester rule which allows the user to pre-declare a class which is to
@@ -89,9 +87,6 @@ public class PluginDeclarationRule extends Rule {
     
     public static void declarePlugin(Digester digester, Properties props)
     throws PluginException {
-        
-        Log log = digester.getLogger();
-        boolean debug = log.isDebugEnabled();
         
         String id = props.getProperty("id");
         String pluginClassName = props.getProperty("class");
