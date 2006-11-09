@@ -119,7 +119,6 @@ public class RulesBaseTestCase extends TestCase {
         digester.getRules().clear();
 
         // perform tests
-        List list = null;
 
         assertEquals("Initial rules list is empty",
                 0, digester.getRules().match("a").size());

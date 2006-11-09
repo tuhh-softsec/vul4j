@@ -312,7 +312,6 @@ public class EBRTestCase extends RulesBaseTestCase {
 
 
         List list = null;
-        Iterator it = null;
 
         list = digester.getRules().match(null, "a");
 

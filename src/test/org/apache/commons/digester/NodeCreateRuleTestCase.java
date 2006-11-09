@@ -129,6 +129,7 @@ public class NodeCreateRuleTestCase extends TestCase {
         try {
             Rule rule = new NodeCreateRule(Node.ATTRIBUTE_NODE);
             fail("IllegalArgumentException expected for type ATTRIBUTE_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
@@ -136,18 +137,21 @@ public class NodeCreateRuleTestCase extends TestCase {
             Rule rule = new NodeCreateRule(Node.CDATA_SECTION_NODE);
             fail("IllegalArgumentException expected for type " +
                  "CDATA_SECTION_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
         try {
             Rule rule = new NodeCreateRule(Node.COMMENT_NODE);
             fail("IllegalArgumentException expected for type COMMENT_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
         try {
             Rule rule = new NodeCreateRule(Node.DOCUMENT_NODE);
             fail("IllegalArgumentException expected for type DOCUMENT_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
@@ -155,12 +159,14 @@ public class NodeCreateRuleTestCase extends TestCase {
             Rule rule = new NodeCreateRule(Node.DOCUMENT_TYPE_NODE);
             fail("IllegalArgumentException expected for type " +
                  "DOCUMENT_TYPE_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
         try {
             Rule rule = new NodeCreateRule(Node.ENTITY_NODE);
             fail("IllegalArgumentException expected for type ENTITY_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
@@ -168,12 +174,14 @@ public class NodeCreateRuleTestCase extends TestCase {
             Rule rule = new NodeCreateRule(Node.ENTITY_REFERENCE_NODE);
             fail("IllegalArgumentException expected for type " +
                  "ENTITY_REFERENCE_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
         try {
             Rule rule = new NodeCreateRule(Node.NOTATION_NODE);
             fail("IllegalArgumentException expected for type NOTATION_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
@@ -181,12 +189,14 @@ public class NodeCreateRuleTestCase extends TestCase {
             Rule rule = new NodeCreateRule(Node.PROCESSING_INSTRUCTION_NODE);
             fail("IllegalArgumentException expected for type " +
                  "PROCESSING_INSTRUCTION_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }
         try {
             Rule rule = new NodeCreateRule(Node.TEXT_NODE);
             fail("IllegalArgumentException expected for type TEXT_NODE");
+            assertNotNull(rule); // just to prevent compiler warning on unused var
         } catch (IllegalArgumentException iae) {
             // expected
         }

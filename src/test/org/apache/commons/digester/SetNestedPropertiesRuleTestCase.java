@@ -175,6 +175,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
 
             // we should never get here...
             fail("No exception thrown by parse when unknown child element found.");
+            assertNotNull(bean); // just to prevent compiler warning on unused var
         } catch(org.xml.sax.SAXParseException e) {
             String msg = e.getMessage();
             if (msg.indexOf("badprop") >= 0) {
@@ -448,6 +449,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
         try {
             SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
             fail("Expected to generate an exception.");
+            assertNotNull(bean); // just to prevent compiler warning on unused var
         } catch(SAXException e) {
             Exception nested = e.getException();
             if ((nested==null) || !(nested instanceof NoSuchMethodException)) {

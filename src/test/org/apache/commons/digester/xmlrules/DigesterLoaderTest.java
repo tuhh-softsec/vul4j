@@ -130,6 +130,7 @@ public class DigesterLoaderTest extends TestCase {
         URL rules = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/testCircularRules.xml");
         try {
             Digester digester = DigesterLoader.createDigester(rules);
+            assertNotNull(digester); // just to prevent compiler warning on unused var
         } catch (Exception ex) {
             return;
         }

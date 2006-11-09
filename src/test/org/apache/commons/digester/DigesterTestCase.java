@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.Test;
@@ -202,8 +201,6 @@ public class DigesterTestCase extends TestCase {
      * Basic test for rule creation and matching.
      */
     public void testRules() {
-
-        List list = null;
 
         assertEquals("Initial rules list is empty",
                 0, digester.getRules().match(null, "a").size());

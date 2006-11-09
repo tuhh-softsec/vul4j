@@ -46,8 +46,6 @@ public class TestObject {
     public TestObject() {
     }
 
-    private static int idx = 0;
-
     public String toString() {
         String str = value;
         for (Iterator i = children.iterator(); i.hasNext();) {

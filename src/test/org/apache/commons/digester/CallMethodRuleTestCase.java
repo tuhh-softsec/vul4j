@@ -120,11 +120,10 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addCallMethod("employee", "toString", 0, new String[] {});
         digester.addCallMethod("employee", "toString");
 
-        // Parse our test input
-        Object root1 = null;
-        // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-
+        // Parse our test input.
+        // An exception will be thrown if the method can't be found
+        Object root1 = digester.parse(getInputStream("Test5.xml"));
+        assertNotNull(root1);
     }
 
 
@@ -322,7 +321,7 @@ public class CallMethodRuleTestCase extends TestCase {
         try {
             // an exception will be thrown if the method can't be found
             root1 = digester.parse(getInputStream("Test8.xml"));
-            
+            assertNotNull(root1);
         } catch (Throwable t) {
             // this means that the method can't be found and so the test fails
             fail("Digester threw Exception:  " + t);

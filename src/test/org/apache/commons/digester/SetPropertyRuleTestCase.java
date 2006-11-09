@@ -162,6 +162,7 @@ public class SetPropertyRuleTestCase extends TestCase {
             SimpleTestBean bean =
                 (SimpleTestBean) digester.parse(xmlTestReader(TEST_XML_2));
             fail("Should have thrown NoSuchMethodException");
+            assertNotNull(bean); // just to prevent compiler warning on unused var
         } catch (Exception e) {
             if (e instanceof NoSuchMethodException) {
                 ; // Expected result

@@ -85,8 +85,6 @@ public class TestConfigurablePluginAttributes extends TestCase {
             throw e;
         }
 
-        Object child;
-        
         List widgets = root.getWidgets();
         assertTrue(widgets != null);
         assertEquals(4, widgets.size());
@@ -144,8 +142,6 @@ public class TestConfigurablePluginAttributes extends TestCase {
             throw e;
         }
 
-        Object child;
-        
         List widgets = root.getWidgets();
         assertTrue(widgets != null);
         assertEquals(4, widgets.size());
@@ -204,8 +200,6 @@ public class TestConfigurablePluginAttributes extends TestCase {
             throw e;
         }
 
-        Object child;
-        
         List widgets = root.getWidgets();
         assertTrue(widgets != null);
         assertEquals(4, widgets.size());
