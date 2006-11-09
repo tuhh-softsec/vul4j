@@ -301,9 +301,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>src/checkstyle/fileupload_checks.xml</configLocation>
-        </configuration>
+        <!--configuration>
+          <configLocation>TODO</configLocation>
+        </configuration-->
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -329,11 +329,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
+        <!--configuration>
           <rulesets>
-            <ruleset>src/checkstyle/fileupload_basic.xml</ruleset>
+            <ruleset>TODO</ruleset>
           </rulesets>
-        </configuration>
+        </configuration-->
       </plugin>
     </plugins>
   </reporting>
