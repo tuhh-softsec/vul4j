@@ -392,8 +392,6 @@ public class SetNestedPropertiesRule extends Rule {
         }
         
         public void body(String value) throws Exception {
-            boolean debug = log.isDebugEnabled();
-
             String propName = currChildElementName;
             if (elementNames.containsKey(currChildElementName)) {
                 // overide propName
@@ -404,21 +402,23 @@ public class SetNestedPropertiesRule extends Rule {
                 }
             }
     
-            if (digester.log.isDebugEnabled()) {
-                digester.log.debug("[SetNestedPropertiesRule]{" + digester.match +
+            boolean debug = log.isDebugEnabled();
+
+            if (debug) {
+                log.debug("[SetNestedPropertiesRule]{" + digester.match +
                         "} Setting property '" + propName + "' to '" +
                         value + "'");
             }
     
             // Populate the corresponding properties of the top object
             Object top = digester.peek();
-            if (digester.log.isDebugEnabled()) {
+            if (debug) {
                 if (top != null) {
-                    digester.log.debug("[SetNestedPropertiesRule]{" + digester.match +
+                    log.debug("[SetNestedPropertiesRule]{" + digester.match +
                                        "} Set " + top.getClass().getName() +
                                        " properties");
                 } else {
-                    digester.log.debug("[SetPropertiesRule]{" + digester.match +
+                    log.debug("[SetPropertiesRule]{" + digester.match +
                                        "} Set NULL properties");
                 }
             }
@@ -452,7 +452,7 @@ public class SetNestedPropertiesRule extends Rule {
             BeanUtils.setProperty(top, propName, value);
             }
             catch(NullPointerException e) {
-                digester.log.error("NullPointerException: "
+                log.error("NullPointerException: "
                  + "top=" + top + ",propName=" + propName + ",value=" + value + "!");
                  throw e;
             }
