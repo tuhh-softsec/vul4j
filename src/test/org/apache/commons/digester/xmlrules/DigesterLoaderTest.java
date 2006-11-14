@@ -65,8 +65,8 @@ public class DigesterLoaderTest extends TestCase {
      * file, and also includes programmatically created rules.
      */
     public void testCreateDigester() throws Exception {
-        URL rules = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/testrules.xml");
-        URL input = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/test.xml");
+        URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/testrules.xml");
+        URL input = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test.xml");
         assertNotNull("The test could not locate testrules.xml", rules);
         assertNotNull("The test could not locate test.xml", input);
         Digester digester = DigesterLoader.createDigester(rules);
@@ -108,8 +108,8 @@ public class DigesterLoaderTest extends TestCase {
      * DigesterLoader as an InputStream instead of a URL.
      */
     public void testLoad2() throws Exception {
-        URL rules = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/testrules.xml");
-        InputStream input = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/test.xml").openStream();
+        URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/testrules.xml");
+        InputStream input = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test.xml").openStream();
         Object root = DigesterLoader.load(rules, getClass().getClassLoader(), input, new ArrayList());
         if (!(root instanceof ArrayList)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
@@ -141,9 +141,9 @@ public class DigesterLoaderTest extends TestCase {
     /**
      */
     public void testSetCustomProperties() throws Exception {
-        URL rules = ClassLoader.getSystemResource
+        URL rules = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/xmlrules/testPropertyAliasRules.xml");
-        InputStream input = ClassLoader.getSystemResource
+        InputStream input = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/Test7.xml").openStream();
             
         Object obj = DigesterLoader.load(
@@ -195,7 +195,7 @@ public class DigesterLoaderTest extends TestCase {
     }
     
    public void testFactoryCreateRule() throws Exception {
-        URL rules = ClassLoader.getSystemResource
+        URL rules = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/xmlrules/testfactory.xml");
             
         String xml = "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><foo/></root>";
@@ -230,7 +230,7 @@ public class DigesterLoaderTest extends TestCase {
                     "ugly");   
 
         
-        rules = ClassLoader.getSystemResource
+        rules = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/xmlrules/testfactoryignore.xml");
             
         xml = "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><foo/></root>";
@@ -243,7 +243,7 @@ public class DigesterLoaderTest extends TestCase {
             fail("This exception should have been ignored: " + e.getClass().getName());
         }
         
-        rules = ClassLoader.getSystemResource
+        rules = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/xmlrules/testfactorynoignore.xml");
             
         xml = "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><foo/></root>";
@@ -261,7 +261,7 @@ public class DigesterLoaderTest extends TestCase {
 
     public void testCallParamRule() throws Exception {
     
-        URL rules = ClassLoader.getSystemResource
+        URL rules = getClass().getClassLoader().getResource
             ("org/apache/commons/digester/xmlrules/test-call-param-rules.xml");
         
         String xml = "<?xml version='1.0' ?>"
@@ -317,8 +317,8 @@ public class DigesterLoaderTest extends TestCase {
 
     public void testNodeCreateRule() throws Exception {
         
-        URL rules = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/test-node-create-rules.xml");
-        URL input = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/test-node-create-rules-input.xml");
+        URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test-node-create-rules.xml");
+        URL input = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test-node-create-rules-input.xml");
         assertNotNull("The test could not locate test-node-create-rules.xml", rules);
         assertNotNull("The test could not locate test-node-create-rules-input.xml", input);
         Digester digester = DigesterLoader.createDigester(rules);
