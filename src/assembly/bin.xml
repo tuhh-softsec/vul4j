@@ -20,13 +20,12 @@
 TODO:
  1. Site isn't getting included in binary distro
     (check includeSiteDirectory usage)
- 2. Would like binary distros to be *.zip rather than *-bin.zip, for example
- 3. Make source and binary distros unpack in separate directories
+ 2. Make source and binary distros unpack in separate directories
     (*-src for source distro is conventional in our distros)
 -->
 
 <assembly>
-  <id>bin</id>
+  <id></id>
   <formats>
     <format>tar.gz</format>
     <format>zip</format>
