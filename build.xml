@@ -52,7 +52,6 @@
   <property name="junit.home"              value="/usr/local/junit3.7"/>
   <property name="commons.home"            value=".."/>
   <property name="beanutils.home"          value="${commons.home}/beanutils"/>
-  <property name="collections.home"        value="${commons.home}/collections"/>
   <property name="logging.home"            value="${commons.home}/logging"/>
 
 
@@ -65,8 +64,6 @@
   <property name="junit.jar"               value="${junit.home}/junit.jar"/>
   <property name="commons-beanutils.api"   value="${beanutils.home}/dist/docs/api"/>
   <property name="commons-beanutils.jar"   value="${beanutils.home}/dist/commons-beanutils.jar"/>
-  <property name="commons-collections.api" value="${collections.home}/dist/docs/api"/>
-  <property name="commons-collections.jar" value="${collections.home}/dist/commons-collections.jar"/>
   <property name="commons-logging.api"     value="${logging.home}/dist/docs/api"/>
   <property name="commons-logging.jar"     value="${logging.home}/dist/commons-logging.jar"/>
 
@@ -120,7 +117,6 @@
     <pathelement location="${jaxp.jaxp.jar}"/>
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${commons-beanutils.jar}"/>
-    <pathelement location="${commons-collections.jar}"/>
     <pathelement location="${commons-logging.jar}"/>
     <pathelement location="${junit.jar}"/>
   </path>
@@ -145,7 +141,6 @@
     <pathelement location="${jaxp.jaxp.jar}"/>
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${commons-beanutils.jar}"/>
-    <pathelement location="${commons-collections.jar}"/>
     <pathelement location="${commons-logging.jar}"/>
   </path>
 
@@ -255,8 +250,6 @@
                  bottom='Copyright 2001-2005 The Apache Software Foundation.'>
       <link     offline="true" packagelistLoc="${commons-beanutils.api}"
                    href="http://jakarta.apache.org/commons/beanutils/api/"/>
-      <link     offline="true" packagelistLoc="${commons-collections.api}"
-                   href="http://jakarta.apache.org/commons/collections/api/"/>
       <link     offline="true" packagelistLoc="${commons-logging.api}"
                    href="http://jakarta.apache.org/commons/logging/api/"/>
       <classpath  refid="compile.classpath"/>
