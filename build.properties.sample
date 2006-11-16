@@ -43,8 +43,6 @@ jaxp.parser.jar=${jaxp.home}/crimson.jar
 
 commons-beanutils.home=../beanutils/dist
 commons-beanutils.jar=${commons-beanutils.home}/commons-beanutils.jar
-commons-collections.home=../collections/dist
-commons-collections.jar=${commons-collections.home}/commons-collections.jar
 commons-logging.home=../logging/dist
 commons-logging.jar=${commons-logging.home}/commons-logging.jar
 
