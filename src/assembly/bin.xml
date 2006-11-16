@@ -18,9 +18,7 @@
 
 <!--
 TODO:
- 1. Site isn't getting included in binary distro
-    (check includeSiteDirectory usage)
- 2. Make source and binary distros unpack in separate directories
+ 1. Make source and binary distros unpack in separate directories
     (*-src for source distro is conventional in our distros)
 -->
 
@@ -30,7 +28,7 @@ TODO:
     <format>tar.gz</format>
     <format>zip</format>
   </formats>
-  <includeSiteDirectory/>
+  <includeSiteDirectory>true</includeSiteDirectory>
   <fileSets>
     <fileSet>
       <includes>
