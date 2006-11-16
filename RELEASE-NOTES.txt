@@ -64,6 +64,11 @@ code to get a snapshot of all the prefix->url mappings applicable at a point in 
 This is particularly useful for elements that contain xpath expressions that should
 be evaluated later using the same namespaces defined for the element.
 
+Maven 2.x build support
+-----------------------
+
+This release now comes with a pom.xml file to allow digester to be built using maven 2.x.
+
 BUGS FROM PREVIOUS RELEASE
 ==========================
 
