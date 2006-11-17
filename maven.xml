@@ -17,26 +17,6 @@
 <project default="jar:jar" xmlns:j="jelly:core">
 
   <!-- ==================================================================
-    -   COMMONS-BUILD TWEAKS
-    -
-    -  Ensure commons-build stylesheets are copied into target directory
-    -  when executing the xdoc goal (part of the site goal), so that the
-    -  resulting website has the correct look-and-feel.
-    -
-    -  This goal assumes that commons-build is checked out as a sibling
-    -  to the directory we are doing the build in. 
-    ================================================================== -->
-
-  <postGoal name="xdoc:copy-resources">  
-    <copy todir="${basedir}/target/docs/style/" failonerror="false">
-      <fileset dir="${basedir}/../commons-build/xdocs/style">
-        <include name='**/*'/>
-        <exclude name='**/CVS/**'/>
-      </fileset>
-    </copy>
-  </postGoal>
-
-  <!-- ==================================================================
     -   src compilation tweaks
     -
     -  The LICENSE.txt file gets copied to the META-INF dir of the jar
