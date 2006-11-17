@@ -434,11 +434,11 @@ public class NodeCreateRuleTestCase extends TestCase {
         assertTrue(result instanceof Element);
         Element element = (Element)result;
         
-        assertNotNull(element.getAttributeNodeNS(null, "firstName"));
-        assertEquals("First Name", element.getAttributeNodeNS(null, "firstName").getNodeValue());
-        assertEquals("firstName", element.getAttributeNodeNS(null, "firstName").getLocalName());
-        assertEquals(null, element.getAttributeNodeNS(null, "firstName").getPrefix());
-        assertEquals("firstName", element.getAttributeNodeNS(null, "firstName").getName());
+        assertNotNull(element.getAttributeNode("firstName"));
+        assertEquals("First Name", element.getAttributeNode("firstName").getNodeValue());
+        assertEquals("firstName", element.getAttributeNode("firstName").getLocalName());
+        assertEquals(null, element.getAttributeNode("firstName").getPrefix());
+        assertEquals("firstName", element.getAttributeNode("firstName").getName());
 
     }     
 
