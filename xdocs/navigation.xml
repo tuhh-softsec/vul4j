@@ -21,7 +21,12 @@
       - Note that the links in these menu options require manual installation of the
       - appropriate dirs on the website; maven won't set this up.
       -->
-    <menu name="Release 1.7 (Current)">
+    <menu name="Release 1.8 (Current)">
+      <item name="Guide" href="http://jakarta.apache.org/commons/digester/commons-digester-1.8/docs/apidocs/org/apache/commons/digester/package-summary.html"/>
+      <item name="Javadoc" href="http://jakarta.apache.org/commons/digester/commons-digester-1.8/docs/api"/>
+      <item name="Release Notes" href="http://jakarta.apache.org/commons/digester/commons-digester-1.8/RELEASE-NOTES.txt"/>
+    </menu>
+    <menu name="Release 1.7">
       <item name="Guide" href="http://jakarta.apache.org/commons/digester/commons-digester-1.7/docs/apidocs/org/apache/commons/digester/package-summary.html"/>
       <item name="Javadoc" href="http://jakarta.apache.org/commons/digester/commons-digester-1.7/docs/api"/>
       <item name="Release Notes" href="http://jakarta.apache.org/commons/digester/commons-digester-1.7/RELEASE-NOTES.txt"/>

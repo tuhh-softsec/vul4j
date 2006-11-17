@@ -39,12 +39,12 @@ include:</p>
 <section name="Documentation">
 
 <p>User documentation is available as package descriptions within the 
-<a href="http://jakarta.apache.org/commons/digester/commons-digester-1.7/docs/api/">JavaDoc
+<a href="http://jakarta.apache.org/commons/digester/commons-digester-1.8/docs/api/">JavaDoc
 API documents</a>.  In particular, you should read the package description for 
 the <code>org.apache.commons.digester</code> package for detailed information 
 on using the package.</p>
 
-<p>The <a href="http://jakarta.apache.org/commons/digester/commons-digester-1.7/RELEASE-NOTES.txt">
+<p>The <a href="http://jakarta.apache.org/commons/digester/commons-digester-1.8/RELEASE-NOTES.txt">
 Release Notes</a> document the new features and bug fixes that have been
 included in this release.</p>
 
@@ -64,29 +64,39 @@ download the files.
 </section>
 
 <section name="Releases">
-    <subsection name='Digester 1.7 Release (12 June 2005)'>
+    <subsection name='Digester 1.8 Release (DD MONTH YYYY)'>
         <p>
-Digester 1.7 is a minor bugfix and maintenance release. A few small features have been added.
+Digester 1.8 is a minor bugfix and maintenance release. A few small features have been added.
 New projects are encouraged to use this release of digester, but there is no urgency
-for existing projects to upgrade; Digester 1.6 has proven to be a stable release. See
+for existing projects to upgrade; Digester 1.7 has proven to be a stable release. See
 the release notes for more details.
         </p>
         <p>
-The dependencies for Digester 1.7 are identical to the dependencies for Digester 1.6.
+The dependencies for Digester 1.8 are identical to the dependencies for Digester 1.6.
         </p>
         <p>
 Digester has a dependency on
 <a href='http://jakarta.apache.org/commons/collections'>Commons Collections</a>.
-This threatens to raise compatibility issues now that two incompatible series of releases exist.
-Fortunately, this dependency is only upon a single mature class (ArrayStack) and the versions
-of this class to be found in different versions of the library are binary compatible. 
-Therefore a release from the 2.x series or from the 3.x series of commons collections
-will do equally well (even though these libraries are incompatible). The dependency can
-alternatively be satisfied by including the latest BeanUtils release (1.7) 
-(which includes the class). 
+The dependency can alternatively be satisfied by including the latest BeanUtils
+releases (1.7 or above) (which includes the stable collections ArrayStack class
+necessary).
         </p>
         <p>
-The dependencies neccessary for Digester 1.7 can be summarized as follows:
+The recommended dependency set for Digester 1.8 is:
+        </p>
+<table>
+<tr>
+<th colspan='4'>Recommended Dependency Set</th>
+</tr>
+<tr>
+<td>Digester</td>
+<td>+Logging 1.1.x</td>
+<td>+BeanUtils 1.7</td>
+<td>-</td>
+</tr>
+</table>
+        <p>
+Other compatible dependency sets for Digester 1.8 can be summarized as follows:
         </p>
 <table>
 <tr>
@@ -94,23 +104,20 @@ The dependencies neccessary for Digester 1.7 can be summarized as follows:
 </tr>
 <tr>
 <td>Digester</td>
-<td>+Logging 1.0.x</td>
+<td>+Logging 1.1.x</td>
 <td>+BeanUtils 1.x</td>
 <td>+Collections 2.x</td>
 </tr>
 <tr>
 <td>Digester</td>
-<td>+Logging 1.0.x</td>
+<td>+Logging 1.1.x</td>
 <td>+BeanUtils 1.x</td>
 <td>+Collections 3.x</td>
 </tr>
-<tr>
-<td>Digester</td>
-<td>+Logging 1.0.x</td>
-<td>+BeanUtils 1.7</td>
-<td>-</td>
-</tr>
 </table>
+        <p>
+It is also possible to use Logging 1.0.x instead.
+        </p>
     </subsection>
     <subsection name='Downloading'>
  <ul>
