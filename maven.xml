@@ -78,6 +78,7 @@
             <include name="build.properties.sample"/>
             <include name="checkstyle.xml"/>
             <include name="file-header.txt"/>
+            <include name="pom.xml"/>
         </fileset>
         <fileset dir="${basedir}">
             <include name="xdocs/**"/>
