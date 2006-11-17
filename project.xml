@@ -245,17 +245,33 @@
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
       <version>1.7.0</version>
+      <url>http://jakarta.apache.org/commons/beanutils/</url>
+      <properties>
+        <comment>
+          &lt;strong&gt;Required&lt;/strong&gt;
+        </comment>
+      </properties>
     </dependency>
     <dependency> 
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.1</version>
+      <url>http://jakarta.apache.org/commons/logging/</url>
+      <properties>
+        <comment>
+          &lt;strong&gt;Required&lt;/strong&gt;
+        </comment>
+      </properties>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
       <version>1.0.b2</version>
+      <url>http://xml.apache.org/commons/</url>
       <properties>
+        <comment>
+          &lt;strong&gt;Provided&lt;/strong&gt;
+        </comment>
         <scope>provided</scope>
       </properties>
     </dependency>
@@ -263,7 +279,11 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
+      <url>http://www.junit.org/</url>
       <properties>
+        <comment>
+          &lt;strong&gt;Test Only&lt;/strong&gt;
+        </comment>
         <scope>test</scope>
       </properties>
     </dependency>
