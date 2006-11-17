@@ -86,13 +86,12 @@ The recommended dependency set for Digester 1.8 is:
         </p>
 <table>
 <tr>
-<th colspan='4'>Recommended Dependency Set</th>
+<th colspan='3'>Recommended Dependency Set</th>
 </tr>
 <tr>
 <td>Digester</td>
 <td>+Logging 1.1.x</td>
 <td>+BeanUtils 1.7</td>
-<td>-</td>
 </tr>
 </table>
         <p>

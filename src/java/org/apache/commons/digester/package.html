@@ -60,16 +60,28 @@ standard libraries:</p>
 </ul>
 <p>
 It is also dependent on a compatible set of 
-<a href='http://jakarta.apache.org/commons'>Jakarta Commons</a> library components:
+<a href='http://jakarta.apache.org/commons'>Jakarta Commons</a> library components.
+The recommended dependency set is:
+</p>
+<blockquote>
+    <table border="1" cellspacing="2" cellpadding="3">
+        <tr class="a"><th colspan="3">Recommended Dependency Set</th></tr>   
+        <tr class="b"><td>Digester</td><td>+Logging 1.1.x</td><td>+BeanUtils 1.7</td></tr>
+    </table>
+</blockquote>
+<p>
+Other compatible dependency sets include:
 </p>
 <blockquote>
     <table border="1" cellspacing="2" cellpadding="3">
         <tr class="a"><th colspan="4">Compatible Dependency Sets</th></tr>   
-        <tr class="b"><td>Digester</td><td>+Logging 1.0.x</td><td>+BeanUtils 1.x</td><td>+Collections 2.x</td></tr>
-        <tr class="a"><td>Digester</td><td>+Logging 1.0.x</td><td>+BeanUtils 1.x</td><td>+Collections 3.x</td></tr>
-        <tr class="b"><td>Digester</td><td>+Logging 1.0.x</td><td>+BeanUtils 1.7</td><td>-</td></tr>
+        <tr class="b"><td>Digester</td><td>+Logging 1.1.x</td><td>+BeanUtils 1.x</td><td>+Collections 2.x</td></tr>
+        <tr class="a"><td>Digester</td><td>+Logging 1.1.x</td><td>+BeanUtils 1.x</td><td>+Collections 3.x</td></tr>
     </table>
 </blockquote>
+<p>
+It is also possible to use Logging 1.0.x instead.
+</p>
 <a name="doc.Intro"></a>
 <h3>Introduction</h3>
 
