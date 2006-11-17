@@ -35,7 +35,7 @@
   <groupId>org.apache.commons</groupId>
   <artifactId>commons-digester</artifactId>
   <name>Digester</name>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.8-RC1</version>
 
   <description>
     The Digester package lets you configure an XML->Java object mapping module

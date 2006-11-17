@@ -2,7 +2,7 @@ $Id$
 
 
                           Commons Digester Package
-                                Version 1.8-dev
+                              Version 1.8-RC1
                                Release Notes
 
 

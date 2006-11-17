@@ -27,7 +27,7 @@
   <artifactId>commons-digester</artifactId>
   <name>Digester</name>
 
-  <currentVersion>1.8-SNAPSHOT</currentVersion>
+  <currentVersion>1.8-RC1</currentVersion>
 
   <organization>
     <name>The Apache Software Foundation</name>
