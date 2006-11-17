@@ -329,11 +329,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <!--configuration>
-          <rulesets>
-            <ruleset>TODO</ruleset>
-          </rulesets>
-        </configuration-->
+        <!--Use default rules-->
       </plugin>
     </plugins>
   </reporting>
