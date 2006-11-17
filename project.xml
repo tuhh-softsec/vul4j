@@ -169,6 +169,11 @@
       <id>skitching</id>
       <email>skitching@apache.org</email>
     </developer>
+    <developer>
+      <name>Rahul Akolkar</name>
+      <id>rahul</id>
+      <email>rahul AT apache DOT org</email>
+    </developer>
   </developers>
 
   <contributors>
