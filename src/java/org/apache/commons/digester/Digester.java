@@ -704,11 +704,11 @@ public class Digester extends DefaultHandler {
                     properties.put("schemaLanguage", schemaLanguage);
                 }
                 parser = ParserFeatureSetterFactory.newSAXParser(properties);
-	    } else {
-               // The user doesn't want to use any non-portable parsing features,
-               // so we can just use the portable API here. Note that method
-               // getFactory returns a factory already configured with the
-               // appropriate namespaceAware and validating properties.
+            } else {
+                // The user doesn't want to use any non-portable parsing features,
+                // so we can just use the portable API here. Note that method
+                // getFactory returns a factory already configured with the
+                // appropriate namespaceAware and validating properties.
 
                 parser = getFactory().newSAXParser();
             }
@@ -1027,7 +1027,7 @@ public class Digester extends DefaultHandler {
      * @since 1.8
      */
     public void setStackAction(StackAction stackAction) {
-    	this.stackAction = stackAction;
+        this.stackAction = stackAction;
     }
 
     /**
@@ -1036,7 +1036,7 @@ public class Digester extends DefaultHandler {
      * @since 1.8
      */
     public StackAction getStackAction() {
-    	return stackAction;
+        return stackAction;
     }
 
     /**
@@ -1865,7 +1865,7 @@ public class Digester extends DefaultHandler {
         URL location = new URL(url);
         URLConnection connection = location.openConnection();
         connection.setUseCaches(false);
-	InputStream stream = connection.getInputStream();
+        InputStream stream = connection.getInputStream();
         InputSource source = new InputSource(stream);
         source.setSystemId(url);
         return source;
@@ -2676,10 +2676,10 @@ public class Digester extends DefaultHandler {
     public Object pop() {
 
         try {
-        	Object popped = stack.pop();
-        	if (stackAction != null) {
-        		popped = stackAction.onPop(this, null, popped);
-        	}
+            Object popped = stack.pop();
+            if (stackAction != null) {
+                popped = stackAction.onPop(this, null, popped);
+            }
             return popped;
         } catch (EmptyStackException e) {
             log.warn("Empty stack (returning null)");
@@ -2697,7 +2697,7 @@ public class Digester extends DefaultHandler {
     public void push(Object object) {
 
         if (stackAction != null) {
-        	object = stackAction.onPush(this, null, object);
+            object = stackAction.onPush(this, null, object);
         }
 
         if (stack.size() == 0) {
@@ -2717,7 +2717,7 @@ public class Digester extends DefaultHandler {
      */
     public void push(String stackName, Object value) {
         if (stackAction != null) {
-        	value = stackAction.onPush(this, stackName, value);
+            value = stackAction.onPush(this, stackName, value);
         }
 
         ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
@@ -2754,7 +2754,7 @@ public class Digester extends DefaultHandler {
         result = namedStack.pop();
         
         if (stackAction != null) {
-        	result = stackAction.onPop(this, stackName, result);
+            result = stackAction.onPop(this, stackName, result);
         }
 
         return result;

@@ -62,6 +62,6 @@ public class PluginConfigurationException extends RuntimeException {
      * @since 1.8
      */
     public Throwable getCause() {
-    	return cause;
+        return cause;
     }
 }

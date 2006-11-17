@@ -49,13 +49,13 @@ public class ParserFeatureSetterFactory {
     static {
         try{
             // Use reflection to avoid a build dependency with Xerces.
-	    //
-	    // Note that this does not detect Sun's repackaging of 
-	    // Xerces as com.sun.org.apache.xerces; perhaps it should?
-	    SAXParserFactory factory = SAXParserFactory.newInstance();
-	    if (factory.getClass().getName().startsWith("org.apache.xerces")) {
+            //
+            // Note that this does not detect Sun's repackaging of 
+            // Xerces as com.sun.org.apache.xerces; perhaps it should?
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            if (factory.getClass().getName().startsWith("org.apache.xerces")) {
                 isXercesUsed = true;
-	    }
+            }
         } catch (Exception ex) {
             isXercesUsed = false;
         }

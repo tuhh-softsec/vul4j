@@ -58,6 +58,6 @@ public class PluginInvalidInputException extends PluginException {
      * @since 1.8
      */
     public Throwable getCause() {
-    	return cause;
+        return cause;
     }
 }

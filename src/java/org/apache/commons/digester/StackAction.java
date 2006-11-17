@@ -44,35 +44,35 @@ package org.apache.commons.digester;
  * @since 1.8
  */
 public interface StackAction {
-	/**
-	 * Invoked just before an object is to be pushed onto a digester stack.
-	 * 
-	 * @param d is the digester instance.
-	 * 
-	 * @param stackName is the name of the stack onto which the object
-	 * has been pushed. Null is passed to indicate the default stack.
-	 * 
-	 * @param o is the object that has just been pushed. Calling peek on the
-	 * specified stack will return the same object.
-	 * 
-	 * @return the object to be pushed. Normally, parameter o is returned
-	 * but this method could return an alternate object to be pushed
-	 * instead (eg a proxy for the provided object).
-	 */
+    /**
+     * Invoked just before an object is to be pushed onto a digester stack.
+     * 
+     * @param d is the digester instance.
+     * 
+     * @param stackName is the name of the stack onto which the object
+     * has been pushed. Null is passed to indicate the default stack.
+     * 
+     * @param o is the object that has just been pushed. Calling peek on the
+     * specified stack will return the same object.
+     * 
+     * @return the object to be pushed. Normally, parameter o is returned
+     * but this method could return an alternate object to be pushed
+     * instead (eg a proxy for the provided object).
+     */
     public Object onPush(Digester d, String stackName, Object o);
 
     /**
      * Invoked just after an object has been popped from a digester stack.
      * 
-	 * @param d is the digester instance.
-	 * 
-	 * @param stackName is the name of the stack from which the object
-	 * has been popped. Null is passed to indicate the default stack.
-	 * 
-	 * @param o is the object that has just been popped.
-	 * 
-	 * @return the object to be returned to the called. Normally, parameter
-	 * o is returned but this method could return an alternate object.
+     * @param d is the digester instance.
+     * 
+     * @param stackName is the name of the stack from which the object
+     * has been popped. Null is passed to indicate the default stack.
+     * 
+     * @param o is the object that has just been popped.
+     * 
+     * @return the object to be returned to the called. Normally, parameter
+     * o is returned but this method could return an alternate object.
      */
     public Object onPop(Digester d, String stackName, Object o);
 }
