@@ -79,6 +79,9 @@
             <include name="checkstyle.xml"/>
             <include name="file-header.txt"/>
         </fileset>
+        <fileset dir="${basedir}">
+            <include name="xdocs/**"/>
+        </fileset>
     </copy>
   </preGoal>
     
