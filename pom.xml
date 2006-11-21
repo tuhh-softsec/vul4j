@@ -35,5 +35,11 @@
       <version>1.0.1</version>
     </dependency>
   </dependencies>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/trunks/daemon</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/directory/trunks/daemon</developerConnection>
+  </scm>
+
 </project>
 
