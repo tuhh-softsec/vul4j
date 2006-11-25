@@ -2,11 +2,11 @@ $Id$
 
 
                           Commons Digester Package
-                              Version 1.8-RC1
+                          Version 1.8-RC2-SNAPSHOT
                                Release Notes
 
 
-*** Release notes current as of 2006-10-29
+*** Release notes current as of 2006-11-25
 
 INTRODUCTION
 ============
