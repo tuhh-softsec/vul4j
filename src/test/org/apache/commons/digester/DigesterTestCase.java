@@ -170,7 +170,7 @@ public class DigesterTestCase extends TestCase {
         for (int i = 0; i < registrations.length; i += 2) {
             URL url = this.getClass().getResource(registrations[i + 1]);
             if (url != null) {
-                digester.register(registrations[i], url.toString());
+                digester.register(registrations[i], url);
                 n++;
             }
         }

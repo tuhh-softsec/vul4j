@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1573,14 +1574,14 @@ public class Digester extends DefaultHandler {
             this.publicId = publicId;
                                        
         // Has this system identifier been registered?
-        String entityURL = null;
+        URL entityURL = null;
         if (publicId != null) {
-            entityURL = (String) entityValidator.get(publicId);
+            entityURL = (URL) entityValidator.get(publicId);
         }
          
         // Redirect the schema location to a local destination
         if (schemaLocation != null && entityURL == null && systemId != null){
-            entityURL = (String)entityValidator.get(systemId);
+            entityURL = (URL) entityValidator.get(systemId);
         } 
 
         if (entityURL == null) { 
@@ -1596,7 +1597,11 @@ public class Digester extends DefaultHandler {
                 if (log.isDebugEnabled()) {
                     log.debug(" Trying to resolve using system ID '" + systemId + "'");
                 } 
-                entityURL = systemId;
+                try {
+                    entityURL = new URL(systemId);
+                } catch (MalformedURLException e) {
+                    throw new IllegalArgumentException(systemId, e);
+                }
             }
         }
         
@@ -1720,6 +1725,7 @@ public class Digester extends DefaultHandler {
         InputSource input = new InputSource(new FileInputStream(file));
         input.setSystemId(file.toURL().toString());
         getXMLReader().parse(input);
+        cleanup();
         return (root);
 
     }   
@@ -1736,6 +1742,7 @@ public class Digester extends DefaultHandler {
  
         configure();
         getXMLReader().parse(input);
+        cleanup();
         return (root);
 
     }
@@ -1755,6 +1762,7 @@ public class Digester extends DefaultHandler {
         configure();
         InputSource is = new InputSource(input);
         getXMLReader().parse(is);
+        cleanup();
         return (root);
 
     }
@@ -1774,6 +1782,7 @@ public class Digester extends DefaultHandler {
         configure();
         InputSource is = new InputSource(reader);
         getXMLReader().parse(is);
+        cleanup();
         return (root);
 
     }
@@ -1793,6 +1802,29 @@ public class Digester extends DefaultHandler {
         configure();
         InputSource is = createInputSourceFromURL(uri);
         getXMLReader().parse(is);
+        cleanup();
+        return (root);
+
+    }
+
+
+    /**
+     * Parse the content of the specified URL using this Digester.
+     * Returns the root element from the object stack (if any).
+     *
+     * @param urL URL containing the XML data to be parsed
+     *
+     * @exception IOException if an input/output error occurs
+     * @exception SAXException if a parsing exception occurs
+     *
+     * @since 1.8
+     */
+    public Object parse(URL url) throws IOException, SAXException {
+
+        configure();
+        InputSource is = createInputSourceFromURL(url);
+        getXMLReader().parse(is);
+        cleanup();
         return (root);
 
     }
@@ -1818,8 +1850,10 @@ public class Digester extends DefaultHandler {
      * </p>
      * @param publicId Public identifier of the DTD to be resolved
      * @param entityURL The URL to use for reading this DTD
+     *
+     * @since 1.8
      */
-    public void register(String publicId, String entityURL) {
+    public void register(String publicId, URL entityURL) {
 
         if (log.isDebugEnabled()) {
             log.debug("register('" + publicId + "', '" + entityURL + "'");
@@ -1827,6 +1861,38 @@ public class Digester extends DefaultHandler {
         entityValidator.put(publicId, entityURL);
 
     }
+
+
+    /**
+     * <p>Convenience method that registers the string version of an entity URL
+     * instead of a URL version.</p>
+     *
+     * @param publicId Public identifier of the entity to be resolved
+     * @param entityURL The URL to use for reading this entity
+     */
+    public void register(String publicId, String entityURL) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("register('" + publicId + "', '" + entityURL + "'");
+        }
+        try {
+            entityValidator.put(publicId, new URL(entityURL));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(entityURL, e);
+        }
+
+    }
+
+
+    /**
+     * <p><code>List</code> of <code>InputSource</code> instances
+     * created by a <code>createInputSourceFromURL()</code> method
+     * call.  These represent open input streams that need to be
+     * closed to avoid resource leaks, as well as potentially locked
+     * JAR files on Windows.</p>
+     */
+    protected List inputSources = new ArrayList(5);
+
 
     /**
      * Given a URL, return an InputSource that reads from that URL.
@@ -1848,28 +1914,49 @@ public class Digester extends DefaultHandler {
      * fEntityManager.startDocumentEntity(source), where fEntityManager
      * is declared in ancestor class XMLScanner to be an XMLEntityManager. In
      * that class, if the input source stream is null, then:
-     * <code>
+     * <pre>
      *  URL location = new URL(expandedSystemId);
      *  URLConnection connect = location.openConnection();
      *  if (connect instanceof HttpURLConnection) {
      *    setHttpProperties(connect,xmlInputSource);
      *  }
      *  stream = connect.getInputStream();
-     * </code>
+     * </pre>
      * This method pretty much duplicates the standard behaviour, except
      * that it calls URLConnection.setUseCaches(false) before opening
      * the connection.
+     *
+     * @since 1.8
      */
-    public static InputSource createInputSourceFromURL(String url)
-    throws MalformedURLException, IOException {
-        URL location = new URL(url);
-        URLConnection connection = location.openConnection();
+    public InputSource createInputSourceFromURL(URL url)
+      throws MalformedURLException, IOException {
+
+        URLConnection connection = url.openConnection();
         connection.setUseCaches(false);
         InputStream stream = connection.getInputStream();
         InputSource source = new InputSource(stream);
-        source.setSystemId(url);
+        source.setSystemId(url.toExternalForm());
+        inputSources.add(source);
         return source;
+
     }
+
+
+    /**
+     * <p>Convenience method that creates an <code>InputSource</code>
+     * from the string version of a URL.</p>
+     *
+     * @param url URL for which to create an <code>InputSource</code>
+     *
+     * @since 1.8
+     */
+    public InputSource createInputSourceFromURL(String url)
+      throws MalformedURLException, IOException {
+
+        return createInputSourceFromURL(new URL(url));
+
+    }
+
 
     // --------------------------------------------------------- Rule Methods
 
@@ -2876,6 +2963,31 @@ public class Digester extends DefaultHandler {
 
 
     // ------------------------------------------------------ Protected Methods
+
+
+    /**
+     * <p>Clean up allocated resources after parsing is complete.  The
+     * default method closes input streams that have been created by
+     * Digester itself.  If you override this method in a subclass, be
+     * sure to call <code>super.cleanup()</code> to invoke this logic.</p>
+     *
+     * @since 1.8
+     */
+    protected void cleanup() {
+
+        // If we created any InputSource objects in this instance,
+        // they each have an input stream that should be closed
+        Iterator sources = inputSources.iterator();
+        while (sources.hasNext()) {
+            InputSource source = (InputSource) sources.next();
+            try {
+                source.getByteStream().close();
+            } catch (IOException e) {
+                ; // Fall through so we get them all
+            }
+        }
+
+    }
 
 
     /**
