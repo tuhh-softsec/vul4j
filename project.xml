@@ -23,7 +23,7 @@
 <project>
   <pomVersion>3</pomVersion>
 
-  <groupId>org.apache.commons</groupId>
+  <groupId>commons-digester</groupId>
   <artifactId>commons-digester</artifactId>
   <name>Digester</name>
 
