@@ -24,9 +24,7 @@ none
 
 Dependencies
 =============
-Release 1.8 has the same dependencies as release 1.7.
-
-The Recommended Dependency Set is:
+The Recommended Dependency Set for Digester 1.8 is:
    Digester 1.8 + Logging 1.1.x + BeanUtils 1.7
 
 Other Compatible Dependency Sets:
