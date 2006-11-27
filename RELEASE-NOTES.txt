@@ -24,6 +24,9 @@ none
 
 Dependencies
 =============
+Digester 1.8 works with all sets of dependencies that worked for Digester 1.7.
+Users should upgrade to the recommended dependency set below where possible.
+
 The Recommended Dependency Set for Digester 1.8 is:
    Digester 1.8 + Logging 1.1.x + BeanUtils 1.7
 
