@@ -6,8 +6,6 @@ $Id$
                                Release Notes
 
 
-*** Release notes current as of 2006-11-25
-
 INTRODUCTION
 ============
 
@@ -51,7 +49,7 @@ The xmlrules module has had the following updates to provide access
 to functionality that was previously accessable only via the digester
 API:
      -- node-create-rule tag added to provide access to NodeCreateRule.
-        Patch provided by Kevin Ross; bugzilla 36482
+        Patch provided by Kevin Ross; [DIGESTER-75]
 
 Stack Monitoring
 ----------------
@@ -74,19 +72,25 @@ Maven 2.x build support
 
 This release now comes with a pom.xml file to allow digester to be built using maven 2.x.
 
+APIs that accept URLs
+---------------------
+
+[DIGESTER-110] Digester class now provides alternative public APIs
+               that accept URLs directly.
+
 BUGS FROM PREVIOUS RELEASE
 ==========================
 
 Reports Addressed
 ------------------
-* Bugzilla #37034 raises issue with jarfiles being "locked" on Windows machines.
+* [DIGESTER-29] raises issue with jarfiles being "locked" on Windows machines.
   A bug in Sun's java libraries can cause a jarfile to become "locked"
   when a jarfile is the source of an xml or dtd file used by Digester.
   In particular, this can cause problems when redeploying a J2EE webapp.
   A workaround for the Sun bug has been added to Digester to resolve this.
 
-Fixes without Bugzilla entries
-------------------------------
+Fixes without JIRA entries
+---------------------------
 * digester-rules.dtd file defined xml attribute "param" for xml element
   object-param-rule. This has been removed as it wasn't being used.
 
