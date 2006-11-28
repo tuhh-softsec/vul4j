@@ -1600,7 +1600,8 @@ public class Digester extends DefaultHandler {
                 try {
                     entityURL = new URL(systemId);
                 } catch (MalformedURLException e) {
-                    throw new IllegalArgumentException(systemId, e);
+                    throw new IllegalArgumentException("Malformed URL '" + systemId
+                        + "' : " + e.getMessage());
                 }
             }
         }
@@ -1878,7 +1879,8 @@ public class Digester extends DefaultHandler {
         try {
             entityValidator.put(publicId, new URL(entityURL));
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(entityURL, e);
+            throw new IllegalArgumentException("Malformed URL '" + entityURL
+                + "' : " + e.getMessage());
         }
 
     }
