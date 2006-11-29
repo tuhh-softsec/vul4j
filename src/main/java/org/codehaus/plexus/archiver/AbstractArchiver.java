@@ -81,6 +81,8 @@ public abstract class AbstractArchiver
 
     private List finalizers;
 
+    private File dotFileDirectory;
+
     // contextualized.
     private ArchiverManager archiverManager;
 
@@ -410,6 +412,11 @@ public abstract class AbstractArchiver
         this.finalizers = archiveFinalizers;
     }
 
+    public void setDotFileDirectory( File dotFileDirectory )
+    {
+        this.dotFileDirectory = dotFileDirectory;
+    }
+
     protected boolean isUptodate()
     {
         File zipFile = getDestFile();
@@ -496,6 +503,11 @@ public abstract class AbstractArchiver
         {
             try
             {
+                if ( dotFileDirectory != null )
+                {
+                    addArchiveFinalizer( new DotDirectiveArchiveFinalizer( dotFileDirectory ) );
+                }
+
                 runArchiveFinalizers();
 
                 execute();

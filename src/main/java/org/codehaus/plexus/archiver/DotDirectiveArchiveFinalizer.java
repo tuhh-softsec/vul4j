@@ -22,7 +22,7 @@ import java.util.List;
 public class DotDirectiveArchiveFinalizer
     extends AbstractArchiveFinalizer
 {
-    private static String DEFAULT_DOT_FILE_PREFIX = ".resources";
+    private static String DEFAULT_DOT_FILE_PREFIX = ".plxarc";
 
     private File dotFileDirectory;
 

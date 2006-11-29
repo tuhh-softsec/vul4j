@@ -36,4 +36,31 @@ public class DotDirectiveArchiveFinalizerTest
 
         assertNotNull( jar.getEntry( "META-INF/maven/NOTICE.txt" ) );
     }
+
+    public void testDefaultDotDirectiveBehaviour()
+        throws Exception
+    {
+        File dotFileDirectory = new File( getBasedir(), "src/test/dotfiles" );
+
+        JarArchiver archiver = new JarArchiver();
+
+        archiver.setDotFileDirectory( dotFileDirectory );
+
+        File jarFile = new File( getBasedir(), "target/default-dotfiles.jar" );
+
+        archiver.setDestFile( jarFile );
+
+        archiver.createArchive();
+
+        JarFile jar = new JarFile( jarFile );
+
+        assertNotNull( jar.getEntry( "LICENSE.txt" ) );
+
+        assertNotNull( jar.getEntry( "NOTICE.txt" ) );
+
+        assertNotNull( jar.getEntry( "META-INF/maven/NOTICE.txt" ) );
+
+        assertNotNull( jar.getEntry( "META-INF/maven/NOTICE.txt" ) );
+    }
+
 }
