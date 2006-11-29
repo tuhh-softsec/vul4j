@@ -76,7 +76,9 @@ public interface Archiver
     boolean getIncludeEmptyDirs();
 
     void setIncludeEmptyDirs( boolean includeEmptyDirs );
-    
+
+    void setDotFileDirectory( File dotFileDirectory );
+
     Map getFiles();
 
     /**
