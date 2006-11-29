@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -116,6 +117,16 @@ public abstract class AbstractUnArchiver
     {
         filterSupport = new FilterSupport( filters, getLogger() );
     }
+
+    public void addArchiveFinalizer( ArchiveFinalizer finalizer )
+    {
+        if ( finalizers == null )
+        {
+            finalizers = new ArrayList();
+        }
+
+        finalizers.add( finalizer );
+    }    
 
     public void setArchiveFinalizers( List archiveFinalizers )
     {

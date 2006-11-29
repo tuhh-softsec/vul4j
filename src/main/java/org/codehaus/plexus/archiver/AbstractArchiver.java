@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * @version $Id$
@@ -394,6 +395,16 @@ public abstract class AbstractArchiver
         filterSupport = new FilterSupport( filters, getLogger() );
     }
 
+    public void addArchiveFinalizer( ArchiveFinalizer finalizer )
+    {
+        if ( finalizers == null )
+        {
+            finalizers = new ArrayList();
+        }
+
+        finalizers.add( finalizer );
+    }
+
     public void setArchiveFinalizers( List archiveFinalizers )
     {
         this.finalizers = archiveFinalizers;
@@ -486,6 +497,7 @@ public abstract class AbstractArchiver
             try
             {
                 runArchiveFinalizers();
+
                 execute();
             }
             finally
