@@ -64,11 +64,15 @@ public class DotDirectiveArchiveFinalizer
                     {
                         File directory = new File( dotFileDirectory, s[0] );
 
+                        System.out.println( "adding directory = " + directory );
+
                         archiver.addDirectory( directory );
                     }
                     else
                     {
                         File directory = new File( dotFileDirectory, s[0] );
+
+                        System.out.println( "adding directory = " + directory );
 
                         if ( s[1].endsWith( "/" ) )
                         {
