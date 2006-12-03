@@ -61,6 +61,11 @@
 
   <versions>
     <version>
+      <id>1.8</id>
+      <name>1.8</name>
+      <tag>DIGESTER_1_8</tag>
+    </version>
+    <version>
       <id>1.7</id>
       <name>1.7</name>
       <tag>DIGESTER_1_7</tag>
