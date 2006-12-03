@@ -64,7 +64,7 @@ download the files.
 </section>
 
 <section name="Releases">
-    <subsection name='Digester 1.8 Release (DD MONTH YYYY)'>
+    <subsection name='Digester 1.8 Release (03 December 2006)'>
         <p>
 Digester 1.8 is a minor bugfix and maintenance release. A few small features have been added.
 New projects are encouraged to use this release of digester, but there is no urgency
@@ -72,7 +72,7 @@ for existing projects to upgrade; Digester 1.7 has proven to be a stable release
 the release notes for more details.
         </p>
         <p>
-The dependencies for Digester 1.8 are identical to the dependencies for Digester 1.6.
+The dependencies for Digester 1.8 are identical to the dependencies for Digester 1.7.
         </p>
         <p>
 Digester has a dependency on
