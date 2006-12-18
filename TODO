@@ -36,3 +36,7 @@ see if this is really needed and unified this creation in one class.
 [ ] Get rid of Init.init()
 [ ] Get rid of all if (MODE_SIGN) create a class for signing and another for verifying.
 [ ] Work on examples there are out of sync with the code.Unitest the examples?
+[ ] Clean build.xml, why is still needed the jce?
+[ ] Change to forrest 0.7 instead of 0.6
+[ ] Remove all references to CVS in documentation
+[ ] Add performance section to documentation.
