@@ -60,7 +60,7 @@ limitations under the License.
       </source>
       <p>
 		A HTTP interface to browse the sources online is available via 
-		<jump href="site:getting-involved/CVS">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump>
+		<jump href="site:getting-involved/SVN">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump>
       </p>
     </section>
     
