@@ -50,9 +50,9 @@ public class ZipArchiverTest
     }
 
     private ZipArchiver newArchiver( String name ) throws Exception {
-    	ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
 
-    	archiver.setDefaultDirectoryMode( 0500 );
+        archiver.setDefaultDirectoryMode( 0500 );
         archiver.setDefaultFileMode( 0400 );
         archiver.addDirectory( getTestFile( "src" ) );
 
@@ -71,9 +71,9 @@ public class ZipArchiverTest
         archiver.setDestFile( getTestFile( "target/output/" + name ) );
 
         return archiver;
-	}
+    }
 
-	private void createArchive(ZipArchiver archiver) throws ArchiverException, IOException {
+    private void createArchive(ZipArchiver archiver) throws ArchiverException, IOException {
         archiver.createArchive();
 
         ZipFile zf = new ZipFile( archiver.getDestFile() );
@@ -115,11 +115,38 @@ public class ZipArchiverTest
             }
 
         }
-	}
+    }
 
-	public void testForced()
-		throws Exception
-	{
+    /**
+     * Ensure that when a new file is created at the specified location that the timestamp of
+     * that file will be greater than the one specified as a reference.
+     * 
+     * Warning: Runs in a busy loop creating a file until the output file is newer than the reference timestamp.
+     * This should be better than sleeping for a race condition time out value.
+     * 
+     * @param outputFile the file to be created
+     * @param timestampReference the created file will have a newer timestamp than this reference timestamp.
+     * @throws Exception failures
+     */
+    private void waitUntilNewTimestamp( File outputFile, long timestampReference ) throws Exception
+    {
+        File tmpFile = File.createTempFile( "ZipArchiverTest.waitUntilNewTimestamp", null );
+        // slurp the file into a temp file and then copy the temp back over the top until it is newer.
+        FileUtils.copyFile( outputFile, tmpFile );
+        
+        FileUtils.copyFile( tmpFile, outputFile );       
+        while ( timestampReference >= outputFile.lastModified() )
+        {
+            FileUtils.copyFile( tmpFile, outputFile );
+            Thread.yield();
+        }
+        
+        tmpFile.delete();
+    }    
+    
+    public void testForced()
+        throws Exception
+    {
         ZipArchiver archiver = newArchiver( "archive2.zip" );
 
         assertTrue( archiver.isForced() );
@@ -133,7 +160,7 @@ public class ZipArchiverTest
         long l1 = f.lastModified();
         assertTrue( f.exists() );
 
-        Thread.sleep( 500 ); // Make sure, that we get a new timestamp
+        waitUntilNewTimestamp( archiver.getDestFile(), l1 );
         createArchive( archiver );
         long l2 = f.lastModified();
         assertTrue( f.exists() );
