@@ -189,6 +189,7 @@ public class SweeperPoolTest extends TestCase
     protected void tearDown() throws Exception
     {
         pool.dispose();
+        assertTrue( pool.isDisposed() );
         pool = null;
         super.tearDown();
 

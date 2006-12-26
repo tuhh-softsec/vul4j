@@ -147,25 +147,58 @@ public class SweeperPool
      * Dispose of this pool. Stops the sweeper and disposes each object in the pool
      *
      */
-    public synchronized void dispose()
+    public void dispose()
     {
         shuttingDown = true;
 
         if ( sweeper != null )
         {
             sweeper.stop();
+            try
+            {
+                sweeper.join();
+            }
+            catch ( InterruptedException e )
+            {
+                System.err.println( "Unexpected execption occurred: " );
+                e.printStackTrace();
+            }
         }
 
-        //use an array here as objects may still be being put back in the pool
-        //and we don't want to throw a ConcurrentModificationException
-        Object[] objects = pooledObjects.toArray();
+        synchronized ( this )
+        {               
+            // use an array here as objects may still be being put back in the pool
+            // and we don't want to throw a ConcurrentModificationException
+            Object[] objects = pooledObjects.toArray();
+    
+            for ( int i = 0; i < objects.length; i++ )
+            {
+                objectDisposed( objects[i] );
+            }
+    
+            pooledObjects.clear();
+        }        
+    }
 
-        for ( int i = 0; i < objects.length; i++ )
+    /**
+     * A pool has been disposed if has been shutdown and the sweeper has completed running.
+     * 
+     * @return true if the pool has been disposed, false otherwise
+     */
+    boolean isDisposed()
+    {
+        if ( !shuttingDown )
         {
-            objectDisposed( objects[i] );
+            return false;
         }
 
-        pooledObjects.clear();
+        // A null sweeper means one was never started.
+        if ( sweeper == null )
+        {
+            return true;
+        }
+
+        return sweeper.hasStopped();
     }
 
     /**
@@ -228,6 +261,7 @@ public class SweeperPool
         private final transient SweeperPool pool;
         private transient boolean service = false;
         private final transient int sweepInterval;
+        private transient Thread t = null;
 
         /**
          *
@@ -271,14 +305,14 @@ public class SweeperPool
             debug( "stopped" );
         }
 
-        public synchronized void start()
+        public void start()
         {
             if ( !service )
             {
                 service = true;
-                Thread t = new Thread( this );
+                t = new Thread( this );
+                t.setName( "Sweeper" );
                 t.start();
-
             }
         }
 
@@ -286,6 +320,17 @@ public class SweeperPool
         {
             service = false;
             notifyAll();
+        }
+
+        void join()
+            throws InterruptedException
+        {
+            t.join();
+        }
+
+        boolean hasStopped()
+        {
+            return !service && !t.isAlive();
         }
 
         private final void debug( String msg )
