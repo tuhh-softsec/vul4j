@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-archiver</artifactId>
   <name>Plexus Archiver Component</name>
-  <version>1.0-alpha-8</version>
+  <version>1.0-alpha-9-SNAPSHOT</version>
   <contributors>
     <contributor>
       <name>Dan Tran</name>
@@ -28,10 +28,4 @@
       <version>1.0-alpha-15</version>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.0-alpha-8</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.0-alpha-8</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-components/tags/plexus-archiver-1.0-alpha-8</url>
-  </scm>
 </project>
