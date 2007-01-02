@@ -32,7 +32,70 @@ limitations under the License.
   <changes>
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
-
+   <release version="Java 1.4" date="January 2007">
+       <action dev="SM" type="add" context="java_transformations"> 
+		JSR 105 implementation.
+      </action>
+        <action dev="SM" type="fix" fixes-bug="40783" context="java_general" due-to="Frank Cornelis">
+    	NPE in ResolverDirectHTTP.engineCanResolve.
+    	</action>    	
+    	<action dev="RB" type="fix" fixes-bug="40360" context="java_general" due-to="Jean-Luc Cooke">
+    	AxisSigner.java doesn't work out of the box    	
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="40404" context="java_general" due-to="Jean-Luc Cooke">
+    	Imposible to add X509 subelements for signing    	
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="40215" context="java_general" due-to="ACastro">
+    	Base64 does not work in EBDIC machines.     	
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="40032" context="java_general" due-to="Bob Shanahan ">
+    	Subtree canonicalization produce incorrect results in certain cases. 	
+    	</action>    	    
+    	<action dev="RB" type="fix" fixes-bug="40896" context="java_general" due-to="Ruchith Fernando">
+    	Internal. Cannot sign-verify twice in the same thread with different XMLSignature instances.
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="40796" context="java_general" due-to="Frank Cornelis">
+    	Internal. KeyResolverSpi derived classes require default constructor.
+    	</action>    	
+    	<action dev="SM" type="fix" fixes-bug="37708" context="java_general" due-to="Pete Hendry">
+    	Different behaviour with NodeSet and RootNode with InclusiveNamespaces    	  
+    	</action>
+    	<action dev="SM" type="fix" fixes-bug="37456" context="java_general" due-to="Vishal Mahajan">
+    	Signing throws an exception if custom resource resolver is registered    	  
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="38655" context="java_general" due-to="katoy">  
+    	Canonicalizer gets exception in many namespaces.  	  
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="38444" context="java_general" due-to="Stefano Del Sal">   
+    	Transform TRANSFORM_XPATH2FILTER subtract filter does not work correctly.	  
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="38605" context="java_general" due-to="Peter Bacik">   
+    	X509CertificateResolver does not work in multithread environment 	  
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="39200" context="java_general" due-to="Yvan Hess"> 
+    	XMLCipher-loadEncryptedKey() doesn't set the correct CarriedKeyName element.   	  
+    	</action>
+    	<action dev="SM" type="fix" fixes-bug="39685" context="java_general" due-to="Sean Mullan">
+    	Findbugs reporting fixed.    	  
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="40290" context="java_general" due-to="FIXME">
+    	Internal    	
+    	</action>
+    	<action dev="RB" type="fix" fixes-bug="40298" context="java_general" due-to="FIXME">   
+    	Internal 	
+    	</action>
+    	<action dev="" type="fix" fixes-bug="38405" context="java_general" due-to="FIXME">
+    	Internal    	
+    	</action>
+    	<action dev="" type="add" fixes-bug="38668" context="java_general" due-to="FIXME">   
+    	Add XMLCipher.encryptData method that takes serialized data as parameter 	  
+    	</action>    	
+    	<action dev="" type="fix" fixes-bug="39273" context="java_general" due-to="FIXME">  
+    	Internal  	  
+    	</action>
+    	
+    	
+    </release>
     <release version="C++ 1.3.1" date="October 2006">
       <action dev="BL" type="update" context="c_rel">
         Refactor NIX build to use automake and libtool
