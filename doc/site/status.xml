@@ -33,8 +33,24 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
    <release version="Java 1.4" date="January 2007">
-       <action dev="SM" type="add" context="java_transformations"> 
+       <action dev="SM" type="add" context="java_general"> 
 		JSR 105 implementation.
+      </action>
+      <action dev="RB" type="update" context="java_general">
+       Major optimizations for signatures that use node-set transformations(xpath,xpath2,etc), 20-40% speed-up.  
+      </action>
+      <action dev="RB" type="update" context="java_general">
+       Major optimizations for signatures that use xpath2 transformation.  
+      </action>
+      <action dev="RB" type="update" context="java_general">
+       Major optimizations in inclusive c14n when using xml:* attributtes.  
+      </action>
+      <action dev="RB" type="update" context="java_general">
+       Memory footprint reduction: Less object creation. Reuse of "expensive" objects between 
+       operations in the same thread.  
+      </action>
+      <action dev="RB" type="update" context="java_general">
+       Minor Optimizations. Reuse the same Signature object if the key are identical.  
       </action>
         <action dev="SM" type="fix" fixes-bug="40783" context="java_general" due-to="Frank Cornelis">
     	NPE in ResolverDirectHTTP.engineCanResolve.
@@ -43,10 +59,10 @@ limitations under the License.
     	AxisSigner.java doesn't work out of the box    	
     	</action>
     	<action dev="RB" type="fix" fixes-bug="40404" context="java_general" due-to="Jean-Luc Cooke">
-    	Imposible to add X509 subelements for signing    	
+    	Impossible to add X509 subelements for signing    	
     	</action>
     	<action dev="RB" type="fix" fixes-bug="40215" context="java_general" due-to="ACastro">
-    	Base64 does not work in EBDIC machines.     	
+    	Base64 does not work in EBCDIC machines.     	
     	</action>
     	<action dev="RB" type="fix" fixes-bug="40032" context="java_general" due-to="Bob Shanahan ">
     	Subtree canonicalization produce incorrect results in certain cases. 	
@@ -78,6 +94,10 @@ limitations under the License.
     	<action dev="SM" type="fix" fixes-bug="39685" context="java_general" due-to="Sean Mullan">
     	Findbugs reporting fixed.    	  
     	</action>
+    	<action dev="SM" type="add" fixes-bug="38668" context="java_general" due-to="">   
+    	Add XMLCipher.encryptData method that takes serialized data as parameter 	  
+    	</action>    	
+    	
     	<action dev="RB" type="fix" fixes-bug="40290" context="java_general" due-to="FIXME">
     	Internal    	
     	</action>
@@ -87,9 +107,6 @@ limitations under the License.
     	<action dev="" type="fix" fixes-bug="38405" context="java_general" due-to="FIXME">
     	Internal    	
     	</action>
-    	<action dev="" type="add" fixes-bug="38668" context="java_general" due-to="FIXME">   
-    	Add XMLCipher.encryptData method that takes serialized data as parameter 	  
-    	</action>    	
     	<action dev="" type="fix" fixes-bug="39273" context="java_general" due-to="FIXME">  
     	Internal  	  
     	</action>
