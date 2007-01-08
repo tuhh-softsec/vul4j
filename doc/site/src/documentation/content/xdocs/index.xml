@@ -23,6 +23,22 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>      
+      	<title>January 2007</title>
+		<p>
+		  Version 1.4 of the Java library has been released. 
+		  The main changes for this version are:
+		</p>
+		<ul>
+          <li>Implementation of the standard API JSR105</li>
+          <li>Rewritting c14n that increase performance for signature 
+          with node-set transformation.</li>
+          <li>Memory footprint reduction and several bugfixes</li>
+         </ul> 
+         <p> Refer to the 
+		  <link href="site:changes">changelog</link> for more information.
+		</p>
+      </section>
+      <section>      
       	<title>October 2006</title>
 		<p>
 		  Version 1.3.1 of the C++ library has been released. This release
