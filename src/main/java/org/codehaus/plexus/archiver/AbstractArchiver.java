@@ -311,21 +311,23 @@ public abstract class AbstractArchiver
 
         final File tempDir = FileUtils.createTempFile( "archived-file-set.", ".tmp", null );
 
-        Runtime.getRuntime().addShutdownHook( new Thread( new Runnable(){
-
-            public void run()
-            {
-                try
-                {
-                    FileUtils.deleteDirectory( tempDir );
-                }
-                catch ( IOException e )
-                {
-                    getLogger().debug( "Error deleting temp directory: " + tempDir, e );
-                }
-            }
-
-        } ) );
+        // FIXME: It's not a good idea to litter the temp dir with these file-set directories...
+        // However, the IDEs cannot accommodate shutdown hooks, so I'm taking this out.
+//        Runtime.getRuntime().addShutdownHook( new Thread( new Runnable(){
+//
+//            public void run()
+//            {
+//                try
+//                {
+//                    FileUtils.deleteDirectory( tempDir );
+//                }
+//                catch ( IOException e )
+//                {
+//                    getLogger().debug( "Error deleting temp directory: " + tempDir, e );
+//                }
+//            }
+//
+//        } ) );
 
         tempDir.mkdirs();
 
