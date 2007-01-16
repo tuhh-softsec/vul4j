@@ -30,8 +30,8 @@ limitations under the License.
 		</p>
 		<ul>
           <li>Implementation of the standard API JSR105</li>
-          <li>Rewritten c14n that increase performance for signature 
-          with node-set transformation.</li>
+          <li>Rewritten c14n that increases performance for signature 
+          with node-set transformations.</li>
           <li>Memory footprint reduction and several bugfixes</li>
          </ul> 
          <p> Refer to the 
