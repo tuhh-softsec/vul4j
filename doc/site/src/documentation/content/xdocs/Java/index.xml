@@ -27,9 +27,19 @@ limitations under the License.
   <body> 
     <section>
       <title>Version 1.4 Released</title>
-      <p>
-        TBD
-      </p>
+		<p>
+		  Version 1.4 of the Java library has been released. 
+		  The main changes for this version are:
+		</p>
+		<ul>
+          <li>Implementation of the standard API JSR105</li>
+          <li>Rewritten c14n that increases performance for signature 
+          with node-set transformations.</li>
+          <li>Memory footprint reduction and several bugfixes</li>
+         </ul> 
+         <p> Refer to the 
+		  <link href="site:changes">changelog</link> for more information.
+		</p>      
     </section>
     <section>
       <title>Overview of the Java Library</title>
