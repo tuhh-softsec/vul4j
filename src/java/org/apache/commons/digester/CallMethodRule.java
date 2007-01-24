@@ -382,7 +382,7 @@ public class CallMethodRule extends Rule {
      * top of the digester object stack. The default value of zero
      * means the target object is the one on top of the stack.
      */
-    private int targetOffset = 0;
+    protected int targetOffset = 0;
 
     /**
      * The method name to call on the parent object.
