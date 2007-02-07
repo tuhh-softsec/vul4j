@@ -292,6 +292,10 @@ public class Os
                 {
                     isFamily = OS_NAME.indexOf( "openvms" ) > -1;
                 }
+                else
+                {
+                    isFamily = false;
+                }
             }
             if ( name != null )
             {
