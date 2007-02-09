@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.algorithms.implementations;
 
-
-
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -35,342 +33,345 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 
-
 /**
  *
  * @author $Author$
  */
 public class SignatureDSA extends SignatureAlgorithmSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(SignatureDSA.class.getName());
 
-   /** Field _URI */
-   public static final String _URI = Constants.SignatureSpecNS + "dsa-sha1";
+    /** Field _URI */
+    public static final String _URI = Constants.SignatureSpecNS + "dsa-sha1";
 
-   /** Field algorithm */
-   private java.security.Signature _signatureAlgorithm = null;
+    /** Field algorithm */
+    private java.security.Signature _signatureAlgorithm = null;
 
-   /**
-    * Method engineGetURI
-    *
-    * @inheritDoc
-    */
-   protected String engineGetURI() {
-      return SignatureDSA._URI;
-   }
+    /**
+     * Method engineGetURI
+     *
+     * @inheritDoc
+     */
+    protected String engineGetURI() {
+        return SignatureDSA._URI;
+    }
 
-   /**
-    * Constructor SignatureDSA
-    *
-    * @throws XMLSignatureException
-    */
-   public SignatureDSA() throws XMLSignatureException {
+    /**
+     * Constructor SignatureDSA
+     *
+     * @throws XMLSignatureException
+     */
+    public SignatureDSA() throws XMLSignatureException {
 
-      String algorithmID = JCEMapper.translateURItoJCEID(SignatureDSA._URI);
-      if (log.isDebugEnabled())
-      	log.debug("Created SignatureDSA using " + algorithmID);
+        String algorithmID = JCEMapper.translateURItoJCEID(SignatureDSA._URI);
+        if (log.isDebugEnabled())
+      	    log.debug("Created SignatureDSA using " + algorithmID);
 
-      try {
-         this._signatureAlgorithm = Signature.getInstance(algorithmID);
-      } catch (java.security.NoSuchAlgorithmException ex) {
-         Object[] exArgs = { algorithmID,
-                             ex.getLocalizedMessage() };
+	String provider = JCEMapper.getProviderId();
+        try {
+	    if (provider == null) {
+                this._signatureAlgorithm = Signature.getInstance(algorithmID);
+	    } else {
+                this._signatureAlgorithm = 
+		    Signature.getInstance(algorithmID, provider);
+	    }
+        } catch (java.security.NoSuchAlgorithmException ex) {
+            Object[] exArgs = { algorithmID, ex.getLocalizedMessage() };
+            throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
+        } catch (java.security.NoSuchProviderException ex) {
+            Object[] exArgs = { algorithmID, ex.getLocalizedMessage() };
+            throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
+        }
+    }
 
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
-      }
-   }
+    /**
+     * @inheritDoc
+     */
+    protected void engineSetParameter(AlgorithmParameterSpec params)
+        throws XMLSignatureException {
 
-   /**
-    * @inheritDoc
-    */
-   protected void engineSetParameter(AlgorithmParameterSpec params)
+        try {
+            this._signatureAlgorithm.setParameter(params);
+        } catch (InvalidAlgorithmParameterException ex) {
+	    throw new XMLSignatureException("empty", ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected boolean engineVerify(byte[] signature)
            throws XMLSignatureException {
 
-      try {
-         this._signatureAlgorithm.setParameter(params);
-      } catch (InvalidAlgorithmParameterException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
-
-   /**
-    * @inheritDoc
-    */
-   protected boolean engineVerify(byte[] signature)
-           throws XMLSignatureException {
-
-      try {
-         if (log.isDebugEnabled())
+        try {
+            if (log.isDebugEnabled())
          	log.debug("Called DSA.verify() on " + Base64.encode(signature));
 
-         byte[] jcebytes = SignatureDSA.convertXMLDSIGtoASN1(signature);
+            byte[] jcebytes = SignatureDSA.convertXMLDSIGtoASN1(signature);
 
-         return this._signatureAlgorithm.verify(jcebytes);
-      } catch (SignatureException ex) {
-         throw new XMLSignatureException("empty", ex);
-      } catch (IOException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
+            return this._signatureAlgorithm.verify(jcebytes);
+        } catch (SignatureException ex) {
+            throw new XMLSignatureException("empty", ex);
+        } catch (IOException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-   /**
-    * @inheritDoc
-    */
-   protected void engineInitVerify(Key publicKey) throws XMLSignatureException {
+    /**
+     * @inheritDoc
+     */
+    protected void engineInitVerify(Key publicKey) throws XMLSignatureException {
 
-      if (!(publicKey instanceof PublicKey)) {
-         String supplied = publicKey.getClass().getName();
-         String needed = PublicKey.class.getName();
-         Object exArgs[] = { supplied, needed };
+        if (!(publicKey instanceof PublicKey)) {
+            String supplied = publicKey.getClass().getName();
+            String needed = PublicKey.class.getName();
+            Object exArgs[] = { supplied, needed };
 
-         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
-                                         exArgs);
-      }
+            throw new XMLSignatureException
+		("algorithms.WrongKeyForThisOperation", exArgs);
+        }
 
-      try {
-         this._signatureAlgorithm.initVerify((PublicKey) publicKey);
-      } catch (InvalidKeyException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
+        try {
+            this._signatureAlgorithm.initVerify((PublicKey) publicKey);
+        } catch (InvalidKeyException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-   /**
-    * @inheritDoc
-    */
-   protected byte[] engineSign() throws XMLSignatureException {
+    /**
+     * @inheritDoc
+     */
+    protected byte[] engineSign() throws XMLSignatureException {
 
-      try {
-         byte jcebytes[] = this._signatureAlgorithm.sign();
+        try {
+            byte jcebytes[] = this._signatureAlgorithm.sign();
 
-         return SignatureDSA.convertASN1toXMLDSIG(jcebytes);
-      } catch (IOException ex) {
-         throw new XMLSignatureException("empty", ex);
-      } catch (SignatureException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
+            return SignatureDSA.convertASN1toXMLDSIG(jcebytes);
+        } catch (IOException ex) {
+            throw new XMLSignatureException("empty", ex);
+        } catch (SignatureException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-   /**
-    * @inheritDoc
-    */
-   protected void engineInitSign(Key privateKey, SecureRandom secureRandom)
+    /**
+     * @inheritDoc
+     */
+    protected void engineInitSign(Key privateKey, SecureRandom secureRandom)
            throws XMLSignatureException {
 
-      if (!(privateKey instanceof PrivateKey)) {
-         String supplied = privateKey.getClass().getName();
-         String needed = PrivateKey.class.getName();
-         Object exArgs[] = { supplied, needed };
+        if (!(privateKey instanceof PrivateKey)) {
+            String supplied = privateKey.getClass().getName();
+            String needed = PrivateKey.class.getName();
+            Object exArgs[] = { supplied, needed };
 
-         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
-                                         exArgs);
-      }
+            throw new XMLSignatureException
+		("algorithms.WrongKeyForThisOperation", exArgs);
+        }
 
-      try {
-         this._signatureAlgorithm.initSign((PrivateKey) privateKey,
+        try {
+            this._signatureAlgorithm.initSign((PrivateKey) privateKey,
                                            secureRandom);
-      } catch (InvalidKeyException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
+        } catch (InvalidKeyException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-   /**
-    * @inheritDoc
-    */
-   protected void engineInitSign(Key privateKey) throws XMLSignatureException {
+    /**
+     * @inheritDoc
+     */
+    protected void engineInitSign(Key privateKey) throws XMLSignatureException {
 
-      if (!(privateKey instanceof PrivateKey)) {
-         String supplied = privateKey.getClass().getName();
-         String needed = PrivateKey.class.getName();
-         Object exArgs[] = { supplied, needed };
+        if (!(privateKey instanceof PrivateKey)) {
+            String supplied = privateKey.getClass().getName();
+            String needed = PrivateKey.class.getName();
+            Object exArgs[] = { supplied, needed };
 
-         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
-                                         exArgs);
-      }
+            throw new XMLSignatureException
+		("algorithms.WrongKeyForThisOperation", exArgs);
+        }
 
-      try {
-         this._signatureAlgorithm.initSign((PrivateKey) privateKey);
-      } catch (InvalidKeyException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
+        try {
+            this._signatureAlgorithm.initSign((PrivateKey) privateKey);
+        } catch (InvalidKeyException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-   /**
-    * @inheritDoc
-    */
-   protected void engineUpdate(byte[] input) throws XMLSignatureException {
+    /**
+     * @inheritDoc
+     */
+    protected void engineUpdate(byte[] input) throws XMLSignatureException {
+        try {
+            this._signatureAlgorithm.update(input);
+        } catch (SignatureException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-      try {
-         this._signatureAlgorithm.update(input);
-      } catch (SignatureException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
+    /**
+     * @inheritDoc
+     */
+    protected void engineUpdate(byte input) throws XMLSignatureException {
+        try {
+            this._signatureAlgorithm.update(input);
+        } catch (SignatureException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-   /**
-    * @inheritDoc
-    */
-   protected void engineUpdate(byte input) throws XMLSignatureException {
-
-      try {
-         this._signatureAlgorithm.update(input);
-      } catch (SignatureException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
-
-   /**
-    * @inheritDoc
-    */
-   protected void engineUpdate(byte buf[], int offset, int len)
+    /**
+     * @inheritDoc
+     */
+    protected void engineUpdate(byte buf[], int offset, int len)
            throws XMLSignatureException {
+        try {
+            this._signatureAlgorithm.update(buf, offset, len);
+        } catch (SignatureException ex) {
+            throw new XMLSignatureException("empty", ex);
+        }
+    }
 
-      try {
-         this._signatureAlgorithm.update(buf, offset, len);
-      } catch (SignatureException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
+    /**
+     * Method engineGetJCEAlgorithmString
+     *
+     * @inheritDoc
+     */
+    protected String engineGetJCEAlgorithmString() {
+        return this._signatureAlgorithm.getAlgorithm();
+    }
 
-   /**
-    * Method engineGetJCEAlgorithmString
-    *
-    * @inheritDoc
-    */
-   protected String engineGetJCEAlgorithmString() {
-      return this._signatureAlgorithm.getAlgorithm();
-   }
+    /**
+     * Method engineGetJCEProviderName
+     *
+     * @inheritDoc
+     */
+    protected String engineGetJCEProviderName() {
+        return this._signatureAlgorithm.getProvider().getName();
+    }
 
-   /**
-    * Method engineGetJCEProviderName
-    *
-    * @inheritDoc
-    */
-   protected String engineGetJCEProviderName() {
-      return this._signatureAlgorithm.getProvider().getName();
-   }
-
-
-   /**
-    * Converts an ASN.1 DSA value to a XML Signature DSA Value.
-    *
-    * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value
-    * pairs; the XML Signature requires the core BigInteger values.
-    *
-    * @param asn1Bytes
-    * @return the decode bytes
-    *
-    * @throws IOException
-    * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-    */
-   private static byte[] convertASN1toXMLDSIG(byte asn1Bytes[])
+    /**
+     * Converts an ASN.1 DSA value to a XML Signature DSA Value.
+     *
+     * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value
+     * pairs; the XML Signature requires the core BigInteger values.
+     *
+     * @param asn1Bytes
+     * @return the decode bytes
+     *
+     * @throws IOException
+     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
+     */
+    private static byte[] convertASN1toXMLDSIG(byte asn1Bytes[])
            throws IOException {
 
-      byte rLength = asn1Bytes[3];
-      int i;
+        byte rLength = asn1Bytes[3];
+        int i;
 
-      for (i = rLength; (i > 0) && (asn1Bytes[(4 + rLength) - i] == 0); i--);
+        for (i = rLength; (i > 0) && (asn1Bytes[(4 + rLength) - i] == 0); i--);
 
-      byte sLength = asn1Bytes[5 + rLength];
-      int j;
+        byte sLength = asn1Bytes[5 + rLength];
+        int j;
 
-      for (j = sLength;
+        for (j = sLength;
               (j > 0) && (asn1Bytes[(6 + rLength + sLength) - j] == 0); j--);
 
-      if ((asn1Bytes[0] != 48) || (asn1Bytes[1] != asn1Bytes.length - 2)
+        if ((asn1Bytes[0] != 48) || (asn1Bytes[1] != asn1Bytes.length - 2)
               || (asn1Bytes[2] != 2) || (i > 20)
               || (asn1Bytes[4 + rLength] != 2) || (j > 20)) {
-         throw new IOException("Invalid ASN.1 format of DSA signature");
-      } 
-      byte xmldsigBytes[] = new byte[40];
+            throw new IOException("Invalid ASN.1 format of DSA signature");
+        } 
+        byte xmldsigBytes[] = new byte[40];
 
-      System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, 20 - i,
+        System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, 20 - i,
                           i);
-      System.arraycopy(asn1Bytes, (6 + rLength + sLength) - j, xmldsigBytes,
+        System.arraycopy(asn1Bytes, (6 + rLength + sLength) - j, xmldsigBytes,
                           40 - j, j);
 
-       return xmldsigBytes;      
-   }
+        return xmldsigBytes;      
+    }
 
-   /**
-    * Converts a XML Signature DSA Value to an ASN.1 DSA value.
-    *
-    * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value
-    * pairs; the XML Signature requires the core BigInteger values.
-    *
-    * @param xmldsigBytes
-    * @return the encoded ASN.1 bytes
-    *
-    * @throws IOException
-    * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-    */
-   private static byte[] convertXMLDSIGtoASN1(byte xmldsigBytes[])
+    /**
+     * Converts a XML Signature DSA Value to an ASN.1 DSA value.
+     *
+     * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value
+     * pairs; the XML Signature requires the core BigInteger values.
+     *
+     * @param xmldsigBytes
+     * @return the encoded ASN.1 bytes
+     *
+     * @throws IOException
+     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
+     */
+    private static byte[] convertXMLDSIGtoASN1(byte xmldsigBytes[])
            throws IOException {
 
-      if (xmldsigBytes.length != 40) {
-         throw new IOException("Invalid XMLDSIG format of DSA signature");
-      }
+        if (xmldsigBytes.length != 40) {
+            throw new IOException("Invalid XMLDSIG format of DSA signature");
+        }
 
-      int i;
+        int i;
 
-      for (i = 20; (i > 0) && (xmldsigBytes[20 - i] == 0); i--);
+        for (i = 20; (i > 0) && (xmldsigBytes[20 - i] == 0); i--);
 
-      int j = i;
+        int j = i;
 
-      if (xmldsigBytes[20 - i] < 0) {
+        if (xmldsigBytes[20 - i] < 0) {
          j += 1;
-      }
+        }
 
-      int k;
+        int k;
 
-      for (k = 20; (k > 0) && (xmldsigBytes[40 - k] == 0); k--);
+        for (k = 20; (k > 0) && (xmldsigBytes[40 - k] == 0); k--);
 
-      int l = k;
+        int l = k;
 
-      if (xmldsigBytes[40 - k] < 0) {
-         l += 1;
-      }
+        if (xmldsigBytes[40 - k] < 0) {
+            l += 1;
+        }
 
-      byte asn1Bytes[] = new byte[6 + j + l];
+        byte asn1Bytes[] = new byte[6 + j + l];
 
-      asn1Bytes[0] = 48;
-      asn1Bytes[1] = (byte) (4 + j + l);
-      asn1Bytes[2] = 2;
-      asn1Bytes[3] = (byte) j;
+        asn1Bytes[0] = 48;
+        asn1Bytes[1] = (byte) (4 + j + l);
+        asn1Bytes[2] = 2;
+        asn1Bytes[3] = (byte) j;
 
-      System.arraycopy(xmldsigBytes, 20 - i, asn1Bytes, (4 + j) - i, i);
+        System.arraycopy(xmldsigBytes, 20 - i, asn1Bytes, (4 + j) - i, i);
 
-      asn1Bytes[4 + j] = 2;
-      asn1Bytes[5 + j] = (byte) l;
+        asn1Bytes[4 + j] = 2;
+        asn1Bytes[5 + j] = (byte) l;
 
-      System.arraycopy(xmldsigBytes, 40 - k, asn1Bytes, (6 + j + l) - k, k);
+        System.arraycopy(xmldsigBytes, 40 - k, asn1Bytes, (6 + j + l) - k, k);
 
-      return asn1Bytes;
-   }
+        return asn1Bytes;
+    }
 
-   /**
-    * Method engineSetHMACOutputLength
-    *
-    * @param HMACOutputLength
-    * @throws XMLSignatureException
-    */
-   protected void engineSetHMACOutputLength(int HMACOutputLength)
-           throws XMLSignatureException {
-      throw new XMLSignatureException("algorithms.HMACOutputLengthOnlyForHMAC");
-   }
+    /**
+     * Method engineSetHMACOutputLength
+     *
+     * @param HMACOutputLength
+     * @throws XMLSignatureException
+     */
+    protected void engineSetHMACOutputLength(int HMACOutputLength)
+            throws XMLSignatureException {
+        throw new XMLSignatureException(
+	    "algorithms.HMACOutputLengthOnlyForHMAC");
+    }
 
-   /**
-    * Method engineInitSign
-    *
-    * @param signingKey
-    * @param algorithmParameterSpec
-    * @throws XMLSignatureException
-    */
-   protected void engineInitSign(
-           Key signingKey, AlgorithmParameterSpec algorithmParameterSpec)
-              throws XMLSignatureException {
-      throw new XMLSignatureException(
-         "algorithms.CannotUseAlgorithmParameterSpecOnDSA");
-   }
+    /**
+     * Method engineInitSign
+     *
+     * @param signingKey
+     * @param algorithmParameterSpec
+     * @throws XMLSignatureException
+     */
+    protected void engineInitSign(
+        Key signingKey, AlgorithmParameterSpec algorithmParameterSpec)
+            throws XMLSignatureException {
+        throw new XMLSignatureException(
+            "algorithms.CannotUseAlgorithmParameterSpecOnDSA");
+    }
 }
