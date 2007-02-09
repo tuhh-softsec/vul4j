@@ -21,6 +21,7 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class Shell
 {
     private String shellCommand;
 
-    private String[] shellArgs;
+    private List shellArgs = new ArrayList();
 
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
@@ -70,7 +71,8 @@ public class Shell
      */
     public void setShellArgs( String[] shellArgs )
     {
-        this.shellArgs = shellArgs;
+        this.shellArgs.clear();
+        this.shellArgs.addAll( Arrays.asList( shellArgs ) );
     }
 
     /**
@@ -80,7 +82,14 @@ public class Shell
      */
     public String[] getShellArgs()
     {
-        return shellArgs;
+        if ( shellArgs == null || shellArgs.isEmpty() )
+        {
+            return null;
+        }
+        else
+        {
+            return (String[]) shellArgs.toArray( new String[shellArgs.size()] );
+        }
     }
 
     /**
@@ -139,13 +148,23 @@ public class Shell
 
         if ( getShellArgs() != null )
         {
-            commandLine.addAll( Arrays.asList( getShellArgs() ) );
+            commandLine.addAll( getShellArgsList() );
         }
 
         commandLine.addAll( getCommandLine( executable, arguments ) );
 
         return commandLine;
 
+    }
+
+    public List getShellArgsList()
+    {
+        return shellArgs;
+    }
+    
+    public void addShellArg( String arg )
+    {
+        this.shellArgs.add( arg );
     }
 
 }
