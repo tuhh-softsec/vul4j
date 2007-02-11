@@ -32,6 +32,28 @@ public class UtfHelperTest extends TestCase {
 		}
 		
 	}
+	public void testUtf() {
+		int it=1024*1024; int chunk=Integer.MAX_VALUE/it;
+		for (int j=0;j<it;j++) {
+		char chs[]=new char[chunk];
+		for (int i=0;i<chunk; i++) {
+			chs[i]=(char)((chunk*j)+i);
+		}
+		String str=new String(chs);
+		byte a[]=UtfHelpper.getStringInUtf8(str);
+		try {
+			byte correct[]=str.getBytes("UTF8");
+			boolean equals=Arrays.equals(correct, a);
+			if (!equals) {
+			   System.out.println("Utf error in range:"+(chunk*j)+"-"+(chunk*(j+1)));	
+			}
+			//assertTrue("Utf error in range:"+(chunk*j)+"-"+(chunk*(j+1)), equals);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+	}
 	public static Test suite() {
 		return new TestSuite(UtfHelperTest.class);
 	}

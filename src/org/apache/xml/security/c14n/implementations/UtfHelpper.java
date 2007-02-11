@@ -93,7 +93,7 @@ public class UtfHelpper {
 		    char c;    
 		   	while (i<length) {
 		   		c=str.charAt(i++);        
-		        if ((c & 0x80) == 0) {
+		        if ( c < 0x80 ) {
 		            result[out++]=(byte)c;
 		            continue;
 		        }
