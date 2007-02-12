@@ -1362,12 +1362,11 @@ public class XMLCipher {
      */
     private void removeContent(Node node) {
         NodeList list = node.getChildNodes();
-        if (list.getLength() > 0) {
-            Node n = list.item(0);
-            if (null != n) {
+        for (int i=0; i<list.getLength(); i++) {
+            Node n = list.item(i);
+            if (n != null) {
                 n.getParentNode().removeChild(n);
             }
-            removeContent(node);
         }
     }
 
