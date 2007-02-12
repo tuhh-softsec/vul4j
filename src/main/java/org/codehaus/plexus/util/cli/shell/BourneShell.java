@@ -1,5 +1,8 @@
 package org.codehaus.plexus.util.cli.shell;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Jason van Zyl
  */
@@ -19,6 +22,21 @@ public class BourneShell
         {
             addShellArg( "-l" );
         }
+    }
+    
+    public List getShellArgsList()
+    {
+        List shellArgs = new ArrayList();
+        List existingShellArgs = super.getShellArgsList();
+        
+        if ( existingShellArgs != null && !existingShellArgs.isEmpty() )
+        {
+            shellArgs.addAll( existingShellArgs );
+        }
+        
+        existingShellArgs.add( "-c" );
+        
+        return shellArgs;
     }
     
     public String[] getShellArgs()
