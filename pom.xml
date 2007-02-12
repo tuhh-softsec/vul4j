@@ -41,6 +41,7 @@
     <developerConnection>scm:svn:http://svn.apache.org/repos/asf/directory/trunks/daemon</developerConnection>
   </scm>
 
+  <build>
   <pluginManagement>
     <plugins>
       <plugin>
@@ -53,6 +54,6 @@
       </plugin>
     </plugins>
   </pluginManagement>
-
+  </build>
 </project>
 
