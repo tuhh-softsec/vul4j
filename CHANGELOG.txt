@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 41510: org.apache.xml.security.keys.content.KeyValue.getPublicKey() 
+        returns null for DSA key. Thanks to Stepan Hrbacek for fix.
     Fixed bug 41569: Cannot specify dynamically a specific JCE Provider with 
         the DSA Signature. Thanks to Julien Pasquier for fix.
     Fixed bug 41573: XMLCipher StackOverflowError. Thanks to Marek Jablonski 
