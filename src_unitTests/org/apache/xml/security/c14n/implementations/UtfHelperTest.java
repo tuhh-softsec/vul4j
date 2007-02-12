@@ -45,9 +45,18 @@ public class UtfHelperTest extends TestCase {
 			byte correct[]=str.getBytes("UTF8");
 			boolean equals=Arrays.equals(correct, a);
 			if (!equals) {
-			   System.out.println("Utf error in range:"+(chunk*j)+"-"+(chunk*(j+1)));	
+				for (int i=0;i<chunk; i++) {
+					char old[]={(char)((chunk*j)+i)};
+					String strChar=new String(old);
+					a=UtfHelpper.getStringInUtf8(strChar);
+					correct=strChar.getBytes("UTF8");
+					if (!Arrays.equals(correct, a)) {
+						assertEquals("Error in character :"+(int)old[0],strChar,new String(a));
+					}
+					
+				}
+					
 			}
-			//assertTrue("Utf error in range:"+(chunk*j)+"-"+(chunk*(j+1)), equals);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
