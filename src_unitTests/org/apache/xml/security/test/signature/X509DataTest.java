@@ -17,6 +17,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class X509DataTest extends TestCase {
+
+    private static final String BASEDIR = System.getProperty("basedir");
+
 	KeyStore ks=null;
 	KeyStore getKeyStore() throws Exception {
 		if (ks!=null)
@@ -25,7 +28,12 @@ public class X509DataTest extends TestCase {
 	    String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
 	    String keystorePass = "xmlsecurity";	    
 	    ks = KeyStore.getInstance(keystoreType);
-	    FileInputStream fis = new FileInputStream(keystoreFile);
+	    FileInputStream fis = null;
+            if (BASEDIR != null && !"".equals(BASEDIR)) {
+                fis = new FileInputStream(BASEDIR + "/" + keystoreFile);
+	    } else {
+                fis = new FileInputStream(keystoreFile);
+	    }
 	    //load the keystore
 	    ks.load(fis, keystorePass.toCharArray());
 	    return ks;
