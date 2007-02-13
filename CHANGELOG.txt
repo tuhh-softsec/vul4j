@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 41474: two text nodes with the value '\n' in succession within
+        <ds:SignedInfo> and <ds:X509IssuerSerial>. Thanks to Lijun Liao for fix.
     Fixed bug 41510: org.apache.xml.security.keys.content.KeyValue.getPublicKey() 
         returns null for DSA key. Thanks to Stepan Hrbacek for fix.
     Fixed bug 41569: Cannot specify dynamically a specific JCE Provider with 
