@@ -42,6 +42,8 @@ public class Shell
     private String shellCommand;
 
     private List shellArgs = new ArrayList();
+    
+    private boolean quotedArgumentsEnabled = true;
 
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
@@ -109,12 +111,27 @@ public class Shell
 
             if ( executable != null )
             {
-                sb.append( Commandline.quoteArgument( executable ) );
+                if ( quotedArgumentsEnabled )
+                {
+                    sb.append( Commandline.quoteArgument( executable ) );
+                }
+                else
+                {
+                    sb.append( executable );
+                }
             }
             for ( int i = 0; i < arguments.length; i++ )
             {
                 sb.append( " " );
-                sb.append( Commandline.quoteArgument( arguments[i] ) );
+                
+                if ( quotedArgumentsEnabled )
+                {
+                    sb.append( Commandline.quoteArgument( arguments[i] ) );
+                }
+                else
+                {
+                    sb.append( arguments[i] );
+                }
             }
 
             commandLine.add( sb.toString() );
@@ -165,6 +182,16 @@ public class Shell
     public void addShellArg( String arg )
     {
         this.shellArgs.add( arg );
+    }
+    
+    public void setQuotedArgumentsEnabled( boolean quotedArgumentsEnabled )
+    {
+        this.quotedArgumentsEnabled = quotedArgumentsEnabled;
+    }
+    
+    public boolean isQuotedArgumentsEnabled()
+    {
+        return quotedArgumentsEnabled;
     }
 
 }
