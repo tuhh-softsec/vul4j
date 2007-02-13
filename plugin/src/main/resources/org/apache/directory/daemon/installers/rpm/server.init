@@ -6,6 +6,9 @@
 # Shell script to start/stop ${app} 
 # If you want to change ${app} service settings please modify the server.xml
 # file.
+#
+# NOTE: using bash for RPM based distros should be ok
+#
 
 DISPLAY=:0.0
 export DISPLAY
@@ -160,7 +163,7 @@ case "$1" in
         fi
     fi
 
-    exit $?
+    exit $RETVAL
     ;;
 
   stop)
@@ -191,7 +194,7 @@ case "$1" in
         fi
     fi
 
-    exit $?
+    exit $RETVAL
     ;;
 
   debug)

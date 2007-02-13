@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # chkconfig: - 91 35
 # description: Starts and stops ${app} server. 
@@ -165,7 +165,7 @@ case "$1" in
         fi
     fi
 
-    exit $?
+    exit $RETVAL
     ;;
 
   stop)
@@ -196,7 +196,7 @@ case "$1" in
         fi
     fi
 
-    exit $?
+    exit $RETVAL
     ;;
 
   debug)
