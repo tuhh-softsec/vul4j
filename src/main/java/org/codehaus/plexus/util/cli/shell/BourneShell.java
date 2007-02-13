@@ -34,7 +34,7 @@ public class BourneShell
             shellArgs.addAll( existingShellArgs );
         }
         
-        existingShellArgs.add( "-c" );
+        shellArgs.add( "-c" );
         
         return shellArgs;
     }
