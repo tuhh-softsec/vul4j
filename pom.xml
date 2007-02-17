@@ -28,4 +28,14 @@
     <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection> 
     <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
   </scm>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>  
 </project>
