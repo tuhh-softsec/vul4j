@@ -16,10 +16,9 @@
  */
 package org.apache.xml.security;
 
-
-
 import java.io.InputStream;
-
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -108,10 +107,15 @@ public class Init {
 
             DocumentBuilder db = dbf.newDocumentBuilder();
             // InputStream is = Class.forName("org.apache.xml.security.Init").getResourceAsStream("resource/config.xml");
-            String cfile = System.getProperty("org.apache.xml.security.resource.config");
-            InputStream is =
-               Class.forName("org.apache.xml.security.Init")
-                  .getResourceAsStream(cfile != null ? cfile : "resource/config.xml");
+            InputStream is = (InputStream) AccessController.doPrivileged(
+		new PrivilegedAction() {
+		    public Object run() {
+            		String cfile = System.getProperty
+			    ("org.apache.xml.security.resource.config");
+               		return getClass().getResourceAsStream
+			    (cfile != null ? cfile : "resource/config.xml");
+		    }
+		});
 
             Document doc = db.parse(is);
             long XX_parsing_end = System.currentTimeMillis();                       
