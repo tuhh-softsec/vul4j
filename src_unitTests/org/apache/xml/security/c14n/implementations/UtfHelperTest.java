@@ -1,6 +1,7 @@
 package org.apache.xml.security.c14n.implementations;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -32,36 +33,36 @@ public class UtfHelperTest extends TestCase {
 		}
 		
 	}
-	public void testUtf() {
-		int it=1024*1024; int chunk=Integer.MAX_VALUE/it;
-		for (int j=0;j<it;j++) {
+	public void testUtf() throws Exception {
+		int chunk=1<<16; int j=0;
+		ByteArrayOutputStream charByCharOs=new ByteArrayOutputStream();
+		ByteArrayOutputStream strOs=new ByteArrayOutputStream();
+		
+		System.out.println("DDD"+chunk);
 		char chs[]=new char[chunk];
 		for (int i=0;i<chunk; i++) {
-			chs[i]=(char)((chunk*j)+i);
+			int ch=(chunk*j)+i;
+			if (ch==0xDBFF) {
+				ch=1;
+			}
+			chs[i]=(char)ch;
+			UtfHelpper.writeCharToUtf8((char) ch, charByCharOs);
 		}
 		String str=new String(chs);
 		byte a[]=UtfHelpper.getStringInUtf8(str);
 		try {
+			System.out.println("chunk:"+j);
 			byte correct[]=str.getBytes("UTF8");
-			boolean equals=Arrays.equals(correct, a);
-			if (!equals) {
-				for (int i=0;i<chunk; i++) {
-					char old[]={(char)((chunk*j)+i)};
-					String strChar=new String(old);
-					a=UtfHelpper.getStringInUtf8(strChar);
-					correct=strChar.getBytes("UTF8");
-					if (!Arrays.equals(correct, a)) {
-						assertEquals("Error in character :"+(int)old[0],strChar,new String(a));
-					}
-					
-				}
-					
-			}
+			assertTrue("UtfHelper.getStringInUtf8 failse",Arrays.equals(correct, a));
+			assertTrue("UtfHelper.getStringInUtf8 failse",Arrays.equals(correct, charByCharOs.toByteArray()));
+			UtfHelpper.writeStringToUtf8(str, strOs);
+			assertTrue("UtfHelper.writeStringToUtf8 failse",Arrays.equals(correct, strOs.toByteArray()));
+			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		}
+		
 	}
 	public static Test suite() {
 		return new TestSuite(UtfHelperTest.class);

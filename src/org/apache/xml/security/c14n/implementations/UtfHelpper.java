@@ -18,10 +18,15 @@ public class UtfHelpper {
 	   }
 
 	final static void writeCharToUtf8(final char c,final OutputStream out) throws IOException{   	
-	   	if ( (c & 0x80) ==0) {
+	   	if (c < 0x80) {
 	        out.write(c);
 	        return;
 	    }
+	   	if ((c >= 0xD800 && c <= 0xDBFF) || (c >= 0xDC00 && c <= 0xDFFF) ){
+        	//No Surrogates in sun java
+        	out.write(0x3f);
+        	return;
+        }
 	    int bias;
 	    int write;
 	    char ch;
@@ -53,9 +58,14 @@ public class UtfHelpper {
 	    char c;    
 	   	while (i<length) {
 	   		c=str.charAt(i++);        
-	        if ((c & 0x80) == 0) {
+	        if (c < 0x80)  {
 	            out.write(c);
 	            continue;
+	        }
+	        if ((c >= 0xD800 && c <= 0xDBFF) || (c >= 0xDC00 && c <= 0xDFFF) ){
+	        	//No Surrogates in sun java
+	        	out.write(0x3f);
+	        	continue;
 	        }
 	        char ch;
 	        int bias;
@@ -83,7 +93,6 @@ public class UtfHelpper {
 	   	}
 	    
 	   }
-
 	public final static byte[] getStringInUtf8(final String str) {
 		   final int length=str.length();
 		   boolean expanded=false;
@@ -97,12 +106,18 @@ public class UtfHelpper {
 		            result[out++]=(byte)c;
 		            continue;
 		        }
+		        if ((c >= 0xD800 && c <= 0xDBFF) || (c >= 0xDC00 && c <= 0xDFFF) ){  	
+		        	   //No Surrogates in sun java
+		        	   result[out++]=0x3f;
+		        	
+		        	continue;
+		        }
 		        if (!expanded) {
 		        	byte newResult[]=new byte[3*length];
 				   	System.arraycopy(result, 0, newResult, 0, out);				   	    	
 				   	result=newResult;
 				   	expanded=true;
-		        }
+		        } 
 		        char ch;
 		        int bias;
 		        byte write;
@@ -124,8 +139,8 @@ public class UtfHelpper {
 		             write|= (ch & bias);
 		        } 
 		        result[out++]=write;
-		        result[out++]=(byte)(0x80 | ((c) & 0x3F));       
-		           		
+		        result[out++]=(byte)(0x80 | ((c) & 0x3F));/**/       
+		          		
 		   	}
 		   	if (expanded) {
 		   		byte newResult[]=new byte[out];

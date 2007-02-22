@@ -8,6 +8,7 @@ New in ...
         the DSA Signature. Thanks to Julien Pasquier for fix.
     Fixed bug 41573: XMLCipher StackOverflowError. Thanks to Marek Jablonski 
         for fix.
+    Fixed bug 41462: Xml canonization - UTF-8 encoding issue in Xml security 1.4.0 Thanks to Karol Rewera.    
 
 New in 1.4
 	Fixed bug 40896
