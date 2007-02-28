@@ -1,20 +1,10 @@
-package org.codehaus.plexus.util.dag;
-
 /*
- * Copyright 2007 The Codehaus Foundation.
+ * Created on 2003-09-21
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * To change the template for this generated file go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
+package org.codehaus.plexus.util.dag;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +47,7 @@ public class TopologicalSorter
         return retValue;
     }
 
+
     private static List dfs( final DAG graph )
     {
         final List verticies = graph.getVerticies();
@@ -68,7 +59,7 @@ public class TopologicalSorter
 
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
-            final Vertex vertex = (Vertex) iter.next();
+            final Vertex vertex = ( Vertex ) iter.next();
 
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
@@ -90,10 +81,11 @@ public class TopologicalSorter
         {
             return true;
         }
-        final Integer state = (Integer) vertexStateMap.get( vertex );
+        final Integer state = ( Integer ) vertexStateMap.get( vertex );
 
         return NOT_VISTITED.equals( state );
     }
+
 
     private static void dfsVisit( final Vertex vertex, final Map vertexStateMap, final LinkedList list )
     {
@@ -103,7 +95,7 @@ public class TopologicalSorter
 
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
-            final Vertex v = (Vertex) iter.next();
+            final Vertex v = ( Vertex ) iter.next();
 
             if ( isNotVisited( v, vertexStateMap ) )
             {
@@ -117,3 +109,4 @@ public class TopologicalSorter
     }
 
 }
+

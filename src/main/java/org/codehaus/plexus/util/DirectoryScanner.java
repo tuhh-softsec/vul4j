@@ -1,20 +1,58 @@
-package org.codehaus.plexus.util;
-
 /*
- * Copyright 2007 The Codehaus Foundation.
+ * The Apache Software License, Version 1.1
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2000-2003 The Apache Software Foundation.  All rights
+ * reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.codehaus.org/)."
+ *    Alternately, this acknowlegement may appear in the software itself,
+ *    if and wherever such third-party acknowlegements normally appear.
+ *
+ * 4. The names "Ant" and "Apache Software
+ *    Foundation" must not be used to endorse or promote products derived
+ *    from this software without prior written permission. For written
+ *    permission, please contact codehaus@codehaus.org.
+ *
+ * 5. Products derived from this software may not be called "Apache"
+ *    nor may "Apache" appear in their names without prior written
+ *    permission of the Apache Group.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.codehaus.org/>.
  */
+
+package org.codehaus.plexus.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +154,7 @@ public class DirectoryScanner
      * @see #addDefaultExcludes()
      */
     public static final String[] DEFAULTEXCLUDES = {
-    // Miscellaneous typical temporary files
+        // Miscellaneous typical temporary files
         "**/*~",
         "**/#*#",
         "**/.#*",
@@ -151,7 +189,8 @@ public class DirectoryScanner
         "**/.MySCMServerInfo",
 
         // Mac
-        "**/.DS_Store" };
+        "**/.DS_Store"
+    };
 
     /** The base directory to be scanned. */
     protected File basedir;
@@ -265,7 +304,8 @@ public class DirectoryScanner
      * @return whether or not a given path matches the start of a given
      * pattern up to the first "**".
      */
-    protected static boolean matchPatternStart( String pattern, String str, boolean isCaseSensitive )
+    protected static boolean matchPatternStart( String pattern, String str,
+                                                boolean isCaseSensitive )
     {
         return SelectorUtils.matchPatternStart( pattern, str, isCaseSensitive );
     }
@@ -299,7 +339,8 @@ public class DirectoryScanner
      * @return <code>true</code> if the pattern matches against the string,
      *         or <code>false</code> otherwise.
      */
-    protected static boolean matchPath( String pattern, String str, boolean isCaseSensitive )
+    protected static boolean matchPath( String pattern, String str,
+                                        boolean isCaseSensitive )
     {
         return SelectorUtils.matchPath( pattern, str, isCaseSensitive );
     }
@@ -340,7 +381,8 @@ public class DirectoryScanner
      * @return <code>true</code> if the string matches against the pattern,
      *         or <code>false</code> otherwise.
      */
-    protected static boolean match( String pattern, String str, boolean isCaseSensitive )
+    protected static boolean match( String pattern, String str,
+                                    boolean isCaseSensitive )
     {
         return SelectorUtils.match( pattern, str, isCaseSensitive );
     }
@@ -356,7 +398,8 @@ public class DirectoryScanner
      */
     public void setBasedir( String basedir )
     {
-        setBasedir( new File( basedir.replace( '/', File.separatorChar ).replace( '\\', File.separatorChar ) ) );
+        setBasedir( new File( basedir.replace( '/', File.separatorChar ).replace(
+            '\\', File.separatorChar ) ) );
     }
 
     /**
@@ -428,7 +471,8 @@ public class DirectoryScanner
             for ( int i = 0; i < includes.length; i++ )
             {
                 String pattern;
-                pattern = includes[i].trim().replace( '/', File.separatorChar ).replace( '\\', File.separatorChar );
+                pattern = includes[i].trim().replace( '/', File.separatorChar ).replace(
+                    '\\', File.separatorChar );
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
@@ -437,6 +481,7 @@ public class DirectoryScanner
             }
         }
     }
+
 
     /**
      * Sets the list of exclude patterns to use. All '/' and '\' characters
@@ -462,7 +507,8 @@ public class DirectoryScanner
             for ( int i = 0; i < excludes.length; i++ )
             {
                 String pattern;
-                pattern = excludes[i].trim().replace( '/', File.separatorChar ).replace( '\\', File.separatorChar );
+                pattern = excludes[i].trim().replace( '/', File.separatorChar ).replace(
+                    '\\', File.separatorChar );
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
@@ -493,8 +539,7 @@ public class DirectoryScanner
      *            incorrectly (i.e. if it is <code>null</code>, doesn't exist,
      *            or isn't a directory).
      */
-    public void scan()
-        throws IllegalStateException
+    public void scan() throws IllegalStateException
     {
         if ( basedir == null )
         {
@@ -502,11 +547,13 @@ public class DirectoryScanner
         }
         if ( !basedir.exists() )
         {
-            throw new IllegalStateException( "basedir " + basedir + " does not exist" );
+            throw new IllegalStateException( "basedir " + basedir
+                                             + " does not exist" );
         }
         if ( !basedir.isDirectory() )
         {
-            throw new IllegalStateException( "basedir " + basedir + " is not a directory" );
+            throw new IllegalStateException( "basedir " + basedir
+                                             + " is not a directory" );
         }
 
         if ( includes == null )
@@ -579,7 +626,8 @@ public class DirectoryScanner
         {
             if ( !couldHoldIncluded( excl[i] ) )
             {
-                scandir( new File( basedir, excl[i] ), excl[i] + File.separator, false );
+                scandir( new File( basedir, excl[i] ),
+                         excl[i] + File.separator, false );
             }
         }
 
@@ -587,7 +635,8 @@ public class DirectoryScanner
         {
             if ( !couldHoldIncluded( notIncl[i] ) )
             {
-                scandir( new File( basedir, notIncl[i] ), notIncl[i] + File.separator, false );
+                scandir( new File( basedir, notIncl[i] ),
+                         notIncl[i] + File.separator, false );
             }
         }
 
@@ -628,6 +677,7 @@ public class DirectoryScanner
              * (2) an IO error occurred (why doesn't it throw an exception
              *     then???)
              */
+            
 
             /*
              * [jdcasey] (2) is apparently happening to me, as this is killing one of my tests... 
@@ -638,7 +688,7 @@ public class DirectoryScanner
              * in UnixFileSystem...
              */
             newfiles = new String[0];
-
+            
             // throw new IOException( "IO error scanning directory " + dir.getAbsolutePath() );
         }
 
@@ -669,7 +719,8 @@ public class DirectoryScanner
                 }
                 catch ( IOException ioe )
                 {
-                    String msg = "IOException caught while checking " + "for links, couldn't get cannonical path!";
+                    String msg = "IOException caught while checking "
+                        + "for links, couldn't get cannonical path!";
                     // will be caught and redirected to Ant's logging system
                     System.err.println( msg );
                     noLinks.addElement( newfiles[i] );
@@ -992,8 +1043,8 @@ public class DirectoryScanner
         }
         for ( int i = 0; i < DEFAULTEXCLUDES.length; i++ )
         {
-            newExcludes[i + excludesLength] = DEFAULTEXCLUDES[i].replace( '/', File.separatorChar )
-                .replace( '\\', File.separatorChar );
+            newExcludes[i + excludesLength] = DEFAULTEXCLUDES[i].replace( '/',
+                                                                          File.separatorChar ).replace( '\\', File.separatorChar );
         }
         excludes = newExcludes;
     }

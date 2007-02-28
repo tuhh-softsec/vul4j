@@ -1,20 +1,5 @@
 package org.codehaus.plexus.util.xml;
 
-/*
- * Copyright 2007 The Codehaus Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 
@@ -45,32 +30,32 @@ public class Xpp3Dom
     private static final Xpp3Dom[] EMPTY_DOM_ARRAY = new Xpp3Dom[0];
 
     public static final String CHILDREN_COMBINATION_MODE_ATTRIBUTE = "combine.children";
-
+    
     public static final String CHILDREN_COMBINATION_MERGE = "merge";
-
+    
     public static final String CHILDREN_COMBINATION_APPEND = "append";
-
+    
     /** 
      * This default mode for combining children DOMs during merge means that where element names
      * match, the process will try to merge the element data, rather than putting the dominant
      * and recessive elements (which share the same element name) as siblings in the resulting
      * DOM.
-     */
+     */ 
     public static final String DEFAULT_CHILDREN_COMBINATION_MODE = CHILDREN_COMBINATION_MERGE;
 
     public static final String SELF_COMBINATION_MODE_ATTRIBUTE = "combine.self";
-
+    
     public static final String SELF_COMBINATION_OVERRIDE = "override";
-
+    
     public static final String SELF_COMBINATION_MERGE = "merge";
-
+    
     /** 
      * This default mode for combining a DOM node during merge means that where element names
      * match, the process will try to merge the element attributes and values, rather than 
      * overriding the recessive element completely with the dominant one. This means that
      * wherever the dominant element doesn't provide the value or a particular attribute, that
      * value or attribute will be set from the recessive DOM node.
-     */
+     */ 
     public static final String DEFAULT_SELF_COMBINATION_MODE = SELF_COMBINATION_MERGE;
 
     public Xpp3Dom( String name )
@@ -150,12 +135,10 @@ public class Xpp3Dom
      */
     public void setAttribute( String name, String value )
     {
-        if ( null == value )
-        {
+        if ( null == value ) {
             throw new NullPointerException( "Attribute value can not be null" );
         }
-        if ( null == name )
-        {
+        if ( null == name ) {
             throw new NullPointerException( "Attribute name can not be null" );
         }
         if ( null == attributes )
@@ -319,36 +302,36 @@ public class Xpp3Dom
         {
             return;
         }
-
+        
         boolean mergeSelf = true;
-
+        
         String selfMergeMode = dominant.getAttribute( SELF_COMBINATION_MODE_ATTRIBUTE );
-
+        
         if ( StringUtils.isNotEmpty( selfMergeMode ) && SELF_COMBINATION_OVERRIDE.equals( selfMergeMode ) )
         {
             mergeSelf = false;
         }
-
+        
         if ( mergeSelf )
         {
             if ( StringUtils.isEmpty( dominant.getValue() ) )
             {
                 dominant.setValue( recessive.getValue() );
             }
-
+            
             String[] recessiveAttrs = recessive.getAttributeNames();
             for ( int i = 0; i < recessiveAttrs.length; i++ )
             {
                 String attr = recessiveAttrs[i];
-
+                
                 if ( StringUtils.isEmpty( dominant.getAttribute( attr ) ) )
                 {
-                    dominant.setAttribute( attr, recessive.getAttribute( attr ) );
+                    dominant.setAttribute( attr, recessive.getAttribute( attr ) ); 
                 }
             }
-
+            
             boolean mergeChildren = true;
-
+            
             if ( childMergeOverride != null )
             {
                 mergeChildren = childMergeOverride.booleanValue();
@@ -356,13 +339,13 @@ public class Xpp3Dom
             else
             {
                 String childMergeMode = dominant.getAttribute( CHILDREN_COMBINATION_MODE_ATTRIBUTE );
-
+                
                 if ( StringUtils.isNotEmpty( childMergeMode ) && CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
                 {
                     mergeChildren = false;
                 }
             }
-
+            
             Xpp3Dom[] children = recessive.getChildren();
             for ( int i = 0; i < children.length; i++ )
             {
@@ -379,7 +362,7 @@ public class Xpp3Dom
             }
         }
     }
-
+    
     /**
      * Merge two DOMs, with one having dominance in the case of collision.
      * 

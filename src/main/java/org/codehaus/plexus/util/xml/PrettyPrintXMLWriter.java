@@ -247,8 +247,7 @@ public class PrettyPrintXMLWriter
      * Get the string used as line indenter
      * @return the line indenter
      */
-    protected String getLineIndenter()
-    {
+    protected String getLineIndenter(){
         return lineIndenter;
     }
 
@@ -256,8 +255,7 @@ public class PrettyPrintXMLWriter
      * Set the string used as line indenter 
      * @param lineIndenter
      */
-    protected void setLineIndenter( String lineIndenter )
-    {
+    protected void setLineIndenter( String lineIndenter ){
         this.lineIndenter = lineIndenter;
     }
 
