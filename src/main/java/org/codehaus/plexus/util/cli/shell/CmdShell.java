@@ -1,7 +1,5 @@
 package org.codehaus.plexus.util.cli.shell;
 
-import java.util.Arrays;
-import java.util.List;
 
 /*
  * Copyright 2001-2006 The Apache Software Foundation.
@@ -34,20 +32,8 @@ public class CmdShell
     public CmdShell()
     {
         setShellCommand( "cmd.exe" );
+        setQuotedExecutableEnabled( true );
         setShellArgs( new String[]{"/X", "/C"} );
     }
-
-    /**
-     * Specific implementation that quotes the all the command line
-     */
-    public List getCommandLine( String executable, String[] arguments )
-    {
-        StringBuffer sb = new StringBuffer();
-        sb.append( "\"" );
-        sb.append( super.getCommandLine( executable, arguments ).get( 0 ) );
-        sb.append( "\"" );
-
-        return Arrays.asList( new String[]{sb.toString()} );
-    }
-
+    
 }

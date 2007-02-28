@@ -15,6 +15,7 @@ package org.codehaus.plexus.util.cli.shell;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class BourneShell
     public BourneShell( boolean isLoginShell )
     {
         setShellCommand( "/bin/bash" );
+        setSingleQuotedArgumentEscaped( true );
+        setSingleQuotedExecutableEscaped( true );
+        setQuotedExecutableEnabled( false );
         
         if ( isLoginShell )
         {
@@ -74,6 +78,20 @@ public class BourneShell
         }
         
         return shellArgs;
+    }
+    
+    public String getExecutable()
+    {
+        File wd = getWorkingDirectory();
+        
+        if ( wd != null )
+        {
+            return "cd " + getWorkingDirectory().getAbsolutePath() + " && " + super.getExecutable();
+        }
+        else
+        {
+            return super.getExecutable();
+        }
     }
     
 }

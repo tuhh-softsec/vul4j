@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
@@ -87,8 +89,7 @@ public abstract class CommandLineUtils
         return executeCommandLine( cl, null, systemOut, systemErr );
     }
 
-    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
-                                          StreamConsumer systemErr )
+    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut, StreamConsumer systemErr )
         throws CommandLineException
     {
         if ( cl == null )
@@ -277,6 +278,195 @@ public abstract class CommandLineUtils
     public static boolean isAlive( long pid )
     {
         return ( processes.get( new Long( pid ) ) != null );
+    }
+
+    public static String[] translateCommandline( String toProcess )
+        throws Exception
+    {
+        if ( toProcess == null || toProcess.length() == 0 )
+        {
+            return new String[0];
+        }
+
+        // parse with a simple finite state machine
+
+        final int normal = 0;
+        final int inQuote = 1;
+        final int inDoubleQuote = 2;
+        int state = normal;
+        StringTokenizer tok = new StringTokenizer( toProcess, "\"\' ", true );
+        Vector v = new Vector();
+        StringBuffer current = new StringBuffer();
+
+        while ( tok.hasMoreTokens() )
+        {
+            String nextTok = tok.nextToken();
+            switch ( state )
+            {
+                case inQuote:
+                    if ( "\'".equals( nextTok ) )
+                    {
+                        state = normal;
+                    }
+                    else
+                    {
+                        current.append( nextTok );
+                    }
+                    break;
+                case inDoubleQuote:
+                    if ( "\"".equals( nextTok ) )
+                    {
+                        state = normal;
+                    }
+                    else
+                    {
+                        current.append( nextTok );
+                    }
+                    break;
+                default:
+                    if ( "\'".equals( nextTok ) )
+                    {
+                        state = inQuote;
+                    }
+                    else if ( "\"".equals( nextTok ) )
+                    {
+                        state = inDoubleQuote;
+                    }
+                    else if ( " ".equals( nextTok ) )
+                    {
+                        if ( current.length() != 0 )
+                        {
+                            v.addElement( current.toString() );
+                            current.setLength( 0 );
+                        }
+                    }
+                    else
+                    {
+                        current.append( nextTok );
+                    }
+                    break;
+            }
+        }
+
+        if ( current.length() != 0 )
+        {
+            v.addElement( current.toString() );
+        }
+
+        if ( state == inQuote || state == inDoubleQuote )
+        {
+            throw new CommandLineException( "unbalanced quotes in " + toProcess );
+        }
+
+        String[] args = new String[v.size()];
+        v.copyInto( args );
+        return args;
+    }
+
+    /**
+     * <p>Put quotes around the given String if necessary.</p>
+     * <p>If the argument doesn't include spaces or quotes, return it
+     * as is. If it contains double quotes, use single quotes - else
+     * surround the argument by double quotes.</p>
+     *
+     * @throws CommandLineException if the argument contains both, single
+     *                              and double quotes.
+     */
+    public static String quote( String argument )
+        throws CommandLineException
+    {
+        return quote( argument, false, false, true );
+    }
+
+    /**
+     * <p>Put quotes around the given String if necessary.</p>
+     * <p>If the argument doesn't include spaces or quotes, return it
+     * as is. If it contains double quotes, use single quotes - else
+     * surround the argument by double quotes.</p>
+     *
+     * @throws CommandLineException if the argument contains both, single
+     *                              and double quotes.
+     */
+    public static String quote( String argument, boolean wrapExistingQuotes )
+        throws CommandLineException
+    {
+        return quote( argument, false, false, wrapExistingQuotes );
+    }
+
+    public static String quote( String argument, boolean escapeSingleQuotes, boolean escapeDoubleQuotes,
+                                boolean wrapExistingQuotes )
+        throws CommandLineException
+    {
+        if ( argument.indexOf( "\"" ) > -1 )
+        {
+            if ( argument.indexOf( "\'" ) > -1 )
+            {
+                throw new CommandLineException( "Can't handle single and double quotes in same argument" );
+            }
+            else
+            {
+                if ( escapeSingleQuotes )
+                {
+                    return "\\\'" + argument + "\\\'";
+                }
+                else if ( wrapExistingQuotes )
+                {
+                    return '\'' + argument + '\'';
+                }
+            }
+        }
+        else if ( argument.indexOf( "\'" ) > -1 )
+        {
+            if ( escapeDoubleQuotes )
+            {
+                return "\\\"" + argument + "\\\"";
+            }
+            else if ( wrapExistingQuotes )
+            {
+                return '\"' + argument + '\"';
+            }
+        }
+        else if ( argument.indexOf( " " ) > -1 )
+        {
+            if ( escapeDoubleQuotes )
+            {
+                return "\\\"" + argument + "\\\"";
+            }
+            else
+            {
+                return '\"' + argument + '\"'; 
+            }
+        }
+
+        return argument;
+    }
+
+    public static String toString( String[] line )
+    {
+        // empty path return empty string
+        if ( line == null || line.length == 0 )
+        {
+            return "";
+        }
+
+        // path containing one or more elements
+        final StringBuffer result = new StringBuffer();
+        for ( int i = 0; i < line.length; i++ )
+        {
+            if ( i > 0 )
+            {
+                result.append( ' ' );
+            }
+            try
+            {
+                result.append( quote( line[i] ) );
+            }
+            catch ( Exception e )
+            {
+                System.err.println( "Error quoting argument: " + e.getMessage() );
+            }
+        }
+        return result.toString();
     }
 
 }

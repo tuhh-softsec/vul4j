@@ -17,11 +17,11 @@ package org.codehaus.plexus.util.cli.shell;
  */
 
 import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,12 +39,27 @@ import java.util.List;
  * @version $Id$
  */
 public class Shell
+    implements Cloneable
 {
     private String shellCommand;
 
     private List shellArgs = new ArrayList();
-    
+
     private boolean quotedArgumentsEnabled = true;
+
+    private String executable;
+
+    private File workingDir;
+
+    private boolean quotedExecutableEnabled = true;
+
+    private boolean doubleQuotedArgumentEscaped = false;
+
+    private boolean singleQuotedArgumentEscaped = false;
+
+    private boolean doubleQuotedExecutableEscaped = false;
+
+    private boolean singleQuotedExecutableEscaped = false;
 
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
@@ -104,7 +119,11 @@ public class Shell
      */
     public List getCommandLine( String executable, String[] arguments )
     {
+        return getRawCommandLine( executable, arguments );
+    }
 
+    private List getRawCommandLine( String executable, String[] arguments )
+    {
         List commandLine = new ArrayList();
         try
         {
@@ -112,9 +131,10 @@ public class Shell
 
             if ( executable != null )
             {
-                if ( quotedArgumentsEnabled )
+                if ( isQuotedExecutableEnabled() )
                 {
-                    sb.append( Commandline.quoteArgument( executable ) );
+                    sb.append( CommandLineUtils.quote( executable, isSingleQuotedExecutableEscaped(),
+                                                       isDoubleQuotedExecutableEscaped(), false ) );
                 }
                 else
                 {
@@ -123,11 +143,15 @@ public class Shell
             }
             for ( int i = 0; i < arguments.length; i++ )
             {
-                sb.append( " " );
-                
-                if ( quotedArgumentsEnabled )
+                if ( sb.length() > 0 )
                 {
-                    sb.append( Commandline.quoteArgument( arguments[i] ) );
+                    sb.append( " " );
+                }
+
+                if ( isQuotedArgumentsEnabled() )
+                {
+                    sb.append( CommandLineUtils.quote( arguments[i], isSingleQuotedArgumentEscaped(),
+                                                       isDoubleQuotedArgumentEscaped(), false ) );
                 }
                 else
                 {
@@ -139,22 +163,41 @@ public class Shell
         }
         catch ( CommandLineException e )
         {
-            throw new RuntimeException( e );
+            throw new RuntimeException( e.getMessage() );
         }
 
         return commandLine;
+    }
+
+    protected boolean isDoubleQuotedArgumentEscaped()
+    {
+        return doubleQuotedArgumentEscaped;
+    }
+
+    protected boolean isSingleQuotedArgumentEscaped()
+    {
+        return singleQuotedArgumentEscaped;
+    }
+
+    protected boolean isDoubleQuotedExecutableEscaped()
+    {
+        return doubleQuotedExecutableEscaped;
+    }
+
+    protected boolean isSingleQuotedExecutableEscaped()
+    {
+        return singleQuotedExecutableEscaped;
     }
 
     /**
      * Get the full command line to execute, including shell command, shell arguments,
      * executable and executable arguments
      *
-     * @param executable executable that the shell has to call
      * @param arguments  arguments for the executable, not the shell
      * @return List of String objects, whose array version is suitable to be used as argument
      *         of Runtime.getRuntime().exec()
      */
-    public List getShellCommandLine( String executable, String[] arguments )
+    public List getShellCommandLine( String[] arguments )
     {
 
         List commandLine = new ArrayList();
@@ -169,7 +212,7 @@ public class Shell
             commandLine.addAll( getShellArgsList() );
         }
 
-        commandLine.addAll( getCommandLine( executable, arguments ) );
+        commandLine.addAll( getCommandLine( getExecutable(), arguments ) );
 
         return commandLine;
 
@@ -179,20 +222,115 @@ public class Shell
     {
         return shellArgs;
     }
-    
+
     public void addShellArg( String arg )
     {
         this.shellArgs.add( arg );
     }
-    
+
     public void setQuotedArgumentsEnabled( boolean quotedArgumentsEnabled )
     {
         this.quotedArgumentsEnabled = quotedArgumentsEnabled;
     }
-    
+
     public boolean isQuotedArgumentsEnabled()
     {
         return quotedArgumentsEnabled;
+    }
+
+    public void setQuotedExecutableEnabled( boolean quotedExecutableEnabled )
+    {
+        this.quotedExecutableEnabled = quotedExecutableEnabled;
+    }
+
+    public boolean isQuotedExecutableEnabled()
+    {
+        return quotedExecutableEnabled;
+    }
+
+    /**
+     * Sets the executable to run.
+     */
+    public void setExecutable( String executable )
+    {
+        if ( executable == null || executable.length() == 0 )
+        {
+            return;
+        }
+        this.executable = executable.replace( '/', File.separatorChar ).replace( '\\', File.separatorChar );
+    }
+
+    public String getExecutable()
+    {
+        return executable;
+    }
+
+    /**
+     * Sets execution directory.
+     */
+    public void setWorkingDirectory( String path )
+    {
+        if ( path != null )
+        {
+            workingDir = new File( path );
+        }
+    }
+
+    /**
+     * Sets execution directory.
+     */
+    public void setWorkingDirectory( File workingDir )
+    {
+        this.workingDir = workingDir;
+    }
+
+    public File getWorkingDirectory()
+    {
+        return workingDir;
+    }
+
+    public void clearArguments()
+    {
+        shellArgs.clear();
+    }
+
+    public Object clone()
+    {
+        Shell shell = new Shell();
+        shell.setExecutable( getExecutable() );
+        shell.setWorkingDirectory( getWorkingDirectory() );
+        shell.setShellArgs( getShellArgs() );
+        return shell;
+    }
+
+    public String getOriginalExecutable()
+    {
+        return executable;
+    }
+
+    public List getOriginalCommandLine( String executable, String[] arguments )
+    {
+        return getRawCommandLine( executable, arguments );
+    }
+
+    protected void setDoubleQuotedArgumentEscaped( boolean doubleQuotedArgumentEscaped )
+    {
+        this.doubleQuotedArgumentEscaped = doubleQuotedArgumentEscaped;
+    }
+
+    protected void setDoubleQuotedExecutableEscaped( boolean doubleQuotedExecutableEscaped )
+    {
+        this.doubleQuotedExecutableEscaped = doubleQuotedExecutableEscaped;
+    }
+
+    protected void setSingleQuotedArgumentEscaped( boolean singleQuotedArgumentEscaped )
+    {
+        this.singleQuotedArgumentEscaped = singleQuotedArgumentEscaped;
+    }
+
+    protected void setSingleQuotedExecutableEscaped( boolean singleQuotedExecutableEscaped )
+    {
+        this.singleQuotedExecutableEscaped = singleQuotedExecutableEscaped;
     }
 
 }
