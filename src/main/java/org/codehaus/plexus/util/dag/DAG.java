@@ -1,5 +1,20 @@
 package org.codehaus.plexus.util.dag;
 
+/*
+ * Copyright 2007 The Codehaus Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +29,8 @@ import java.util.Set;
  * @version $Id$
  * @todo this class should be reanmed from DAG to Dag
  */
-public class DAG implements Cloneable, Serializable
+public class DAG
+    implements Cloneable, Serializable
 {
     //------------------------------------------------------------
     //Fields
@@ -57,7 +73,6 @@ public class DAG implements Cloneable, Serializable
         return vertexList;
     }
 
-
     public Set getLabels()
     {
         final Set retValue = vertexMap.keySet();
@@ -80,11 +95,11 @@ public class DAG implements Cloneable, Serializable
     public Vertex addVertex( final String label )
     {
         Vertex retValue = null;
-        
+
         // check if vertex is alredy in DAG
         if ( vertexMap.containsKey( label ) )
         {
-            retValue = ( Vertex ) vertexMap.get( label );
+            retValue = (Vertex) vertexMap.get( label );
         }
         else
         {
@@ -98,7 +113,8 @@ public class DAG implements Cloneable, Serializable
         return retValue;
     }
 
-    public void addEdge( final String from, final String to ) throws CycleDetectedException
+    public void addEdge( final String from, final String to )
+        throws CycleDetectedException
     {
         final Vertex v1 = addVertex( from );
 
@@ -107,7 +123,8 @@ public class DAG implements Cloneable, Serializable
         addEdge( v1, v2 );
     }
 
-    public void addEdge( final Vertex from, final Vertex to ) throws CycleDetectedException
+    public void addEdge( final Vertex from, final Vertex to )
+        throws CycleDetectedException
     {
 
         from.addEdgeTo( to );
@@ -128,7 +145,6 @@ public class DAG implements Cloneable, Serializable
         }
     }
 
-
     public void removeEdge( final String from, final String to )
     {
         final Vertex v1 = addVertex( from );
@@ -145,10 +161,9 @@ public class DAG implements Cloneable, Serializable
         to.removeEdgeFrom( from );
     }
 
-
     public Vertex getVertex( final String label )
     {
-        final Vertex retValue = ( Vertex ) vertexMap.get( label );
+        final Vertex retValue = (Vertex) vertexMap.get( label );
 
         return retValue;
     }
@@ -187,18 +202,17 @@ public class DAG implements Cloneable, Serializable
         return vertex.getParentLabels();
     }
 
-
     /**
      * @see java.lang.Object#clone()
      */
-    public Object clone() throws CloneNotSupportedException
+    public Object clone()
+        throws CloneNotSupportedException
     {
         // this is what's failing..
         final Object retValue = super.clone();
 
         return retValue;
     }
-
 
     /**
      * Indicates if there is at least one edge leading to or from vertex of given label
@@ -215,7 +229,6 @@ public class DAG implements Cloneable, Serializable
 
     }
 
-
     /**
      * Return the list of labels of successor in order decided by topological sort
      *
@@ -230,7 +243,7 @@ public class DAG implements Cloneable, Serializable
         final Vertex vertex = getVertex( label );
 
         final List retValue;
-        
+
         //optimization.
         if ( vertex.isLeaf() )
         {
@@ -245,6 +258,5 @@ public class DAG implements Cloneable, Serializable
 
         return retValue;
     }
-
 
 }

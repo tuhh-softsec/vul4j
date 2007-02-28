@@ -1,5 +1,20 @@
 package org.codehaus.plexus.util;
 
+/*
+ * Copyright 2007 The Codehaus Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,6 +25,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+/**
+ * @author <a href="mailto:olamy@codehaus.org">olamy</a>
+ * @since 28 févr. 07
+ * @version $Id$
+ */
 public class CollectionUtils
 {
     // ----------------------------------------------------------------------
@@ -37,7 +57,7 @@ public class CollectionUtils
      */
     public static Map mergeMaps( Map dominantMap, Map recessiveMap )
     {
-        
+
         if ( dominantMap == null && recessiveMap == null )
         {
             return null;
@@ -50,9 +70,9 @@ public class CollectionUtils
 
         if ( dominantMap == null && recessiveMap != null )
         {
-            return recessiveMap;        
+            return recessiveMap;
         }
-        
+
         Map result = new HashMap();
 
         // Grab the keys from the dominant and recessive maps.
@@ -62,9 +82,8 @@ public class CollectionUtils
         // Create the set of keys that will be contributed by the
         // recessive Map by subtracting the intersection of keys
         // from the recessive Map's keys.
-        Collection contributingRecessiveKeys =
-            CollectionUtils.subtract( recessiveMapKeys,
-                                      CollectionUtils.intersection( dominantMapKeys, recessiveMapKeys ) );
+        Collection contributingRecessiveKeys = CollectionUtils.subtract( recessiveMapKeys, CollectionUtils
+            .intersection( dominantMapKeys, recessiveMapKeys ) );
 
         result.putAll( dominantMap );
 
@@ -133,7 +152,7 @@ public class CollectionUtils
         while ( it.hasNext() )
         {
             Object obj = it.next();
-            for ( int i = 0,m = Math.min( getFreq( obj, mapa ), getFreq( obj, mapb ) ); i < m; i++ )
+            for ( int i = 0, m = Math.min( getFreq( obj, mapa ), getFreq( obj, mapb ) ); i < m; i++ )
             {
                 list.add( obj );
             }
@@ -214,7 +233,7 @@ public class CollectionUtils
         try
         {
             Object o = freqMap.get( obj );
-            if ( o != null )  // minimize NullPointerExceptions
+            if ( o != null ) // minimize NullPointerExceptions
             {
                 return ( (Integer) o ).intValue();
             }

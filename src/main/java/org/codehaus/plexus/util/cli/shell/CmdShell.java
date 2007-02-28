@@ -1,10 +1,6 @@
 package org.codehaus.plexus.util.cli.shell;
-
-import java.util.Arrays;
-import java.util.List;
-
 /*
- * Copyright 2001-2006 The Apache Software Foundation.
+ * Copyright 2007 The Codehaus Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +14,9 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * <p>
@@ -26,6 +25,7 @@ import java.util.List;
  *
  * @author <a href="mailto:carlos@apache.org">Carlos Sanchez</a>
  * @since 1.2
+ * @version $Id$
  */
 public class CmdShell
     extends Shell

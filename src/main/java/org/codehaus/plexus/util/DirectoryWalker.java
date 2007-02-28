@@ -1,7 +1,7 @@
 package org.codehaus.plexus.util;
 
 /*
- * Copyright 2001-2006 The Apache Software Foundation.
+ * Copyright 2007 The Codehaus Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ package org.codehaus.plexus.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +23,7 @@ import java.util.Stack;
 
 /**
  * DirectoryWalker
+ * @version $Id$
  */
 public class DirectoryWalker
 {

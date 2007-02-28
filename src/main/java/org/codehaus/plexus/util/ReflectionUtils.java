@@ -1,5 +1,20 @@
 package org.codehaus.plexus.util;
 
+/*
+ * Copyright 2007 The Codehaus Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -22,7 +37,7 @@ public final class ReflectionUtils
     // Field utils
     // ----------------------------------------------------------------------
 
-    public static Field getFieldByNameIncludingSuperclasses( String fieldName, Class clazz  )
+    public static Field getFieldByNameIncludingSuperclasses( String fieldName, Class clazz )
     {
         Field retValue = null;
 
@@ -71,7 +86,7 @@ public final class ReflectionUtils
      */
     public static Method getSetter( String fieldName, Class clazz )
     {
-        Method [] methods = clazz.getMethods();
+        Method[] methods = clazz.getMethods();
 
         fieldName = "set" + StringUtils.capitalizeFirstLetter( fieldName );
 
@@ -119,7 +134,8 @@ public final class ReflectionUtils
     {
         if ( !isSetter( method ) )
         {
-            throw new RuntimeException( "The method " + method.getDeclaringClass().getName() + "." + method.getName() + " is not a setter." );
+            throw new RuntimeException( "The method " + method.getDeclaringClass().getName() + "." + method.getName()
+                + " is not a setter." );
         }
 
         return method.getParameterTypes()[0];
@@ -144,7 +160,7 @@ public final class ReflectionUtils
 
         field.setAccessible( true );
 
-        field.set(object, value );
+        field.set( object, value );
     }
 
     /**
@@ -175,9 +191,9 @@ public final class ReflectionUtils
     public static Map getVariablesAndValuesIncludingSuperclasses( Object object )
         throws IllegalAccessException
     {
-        HashMap map = new HashMap ();
+        HashMap map = new HashMap();
 
-        gatherVariablesAndValuesIncludingSuperclasses(object, map);
+        gatherVariablesAndValuesIncludingSuperclasses( object, map );
 
         return map;
     }
@@ -189,8 +205,7 @@ public final class ReflectionUtils
     public static boolean isSetter( Method method )
     {
         return method.getReturnType().equals( Void.TYPE ) && // FIXME: needed /required?
-               !Modifier.isStatic( method.getModifiers() ) &&
-               method.getParameterTypes().length == 1;
+            !Modifier.isStatic( method.getModifiers() ) && method.getParameterTypes().length == 1;
     }
 
     /**
@@ -208,9 +223,9 @@ public final class ReflectionUtils
 
         Field[] fields = clazz.getDeclaredFields();
 
-        AccessibleObject.setAccessible( fields, true);
+        AccessibleObject.setAccessible( fields, true );
 
-        for (int i = 0; i < fields.length; ++i)
+        for ( int i = 0; i < fields.length; ++i )
         {
             Field field = fields[i];
 
@@ -220,7 +235,7 @@ public final class ReflectionUtils
 
         Class superclass = clazz.getSuperclass();
 
-        if ( !Object.class.equals(  superclass ) )
+        if ( !Object.class.equals( superclass ) )
         {
             gatherVariablesAndValuesIncludingSuperclasses( superclass, map );
         }
