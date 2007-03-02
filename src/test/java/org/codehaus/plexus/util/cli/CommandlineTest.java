@@ -24,6 +24,7 @@ package org.codehaus.plexus.util.cli;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.cli.shell.BourneShell;
 import org.codehaus.plexus.util.cli.shell.CmdShell;
 import org.codehaus.plexus.util.cli.shell.Shell;
@@ -56,13 +57,13 @@ public class CommandlineTest
     {
         super.setUp();
         baseDir = System.getProperty( "basedir" );
-        
+
         if ( baseDir == null )
         {
             baseDir = new File( "." ).getCanonicalPath();
         }
     }
-    
+
     public void testCommandlineWithoutCommandInConstructor()
     {
         try
@@ -71,7 +72,7 @@ public class CommandlineTest
             cmd.setWorkingDirectory( baseDir );
             cmd.createArgument().setValue( "cd" );
             cmd.createArgument().setValue( "." );
-            
+
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
             assertEquals( "\"cd .\"", cmd.toString() );
         }
@@ -87,7 +88,7 @@ public class CommandlineTest
         {
             Commandline cmd = new Commandline( "cd .", new Shell() );
             cmd.setWorkingDirectory( baseDir );
-            
+
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
             assertEquals( "\"cd .\"", cmd.toString() );
         }
@@ -107,21 +108,21 @@ public class CommandlineTest
             cmd.setExecutable( "echo" );
             assertEquals( "echo", cmd.getShell().getOriginalExecutable() );
             cmd.createArgument().setValue( "Hello" );
-            
+
             StringWriter swriter = new StringWriter();
             Process process = cmd.execute();
-            
+
             Reader reader = new InputStreamReader( process.getInputStream() );
-            
+
             char[] chars = new char[16];
             int read = -1;
-            while( ( read = reader.read( chars ) ) > -1 )
+            while ( ( read = reader.read( chars ) ) > -1 )
             {
                 swriter.write( chars, 0, read );
             }
-            
+
             String output = swriter.toString().trim();
-            
+
             assertEquals( "Hello", output );
         }
         catch ( Exception e )
@@ -139,7 +140,7 @@ public class CommandlineTest
             cmd.setExecutable( "echo" );
             cmd.createArgument().setLine( null );
             cmd.createArgument().setLine( "Hello" );
-            
+
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
             assertEquals( "\"echo Hello\"", cmd.toString() );
         }
@@ -157,7 +158,7 @@ public class CommandlineTest
             cmd.setWorkingDirectory( baseDir );
             cmd.createArgument().setValue( "." );
             cmd.createArgument( true ).setValue( "cd" );
-            
+
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
             assertEquals( "\"cd .\"", cmd.toString() );
         }
@@ -181,7 +182,7 @@ public class CommandlineTest
             {
                 fileName = "\"" + fileName + "\"";
             }
-            
+
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
             assertEquals( "\"more " + fileName + "\"", cmd.toString() );
         }
@@ -205,7 +206,7 @@ public class CommandlineTest
         assertEquals( "/X", shellCommandline[1] );
         assertEquals( "/C", shellCommandline[2] );
         String expectedShellCmd = "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" a b";
-//        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[3] );
     }
 
@@ -216,14 +217,15 @@ public class CommandlineTest
         cmd.setExecutable( "c:\\Program Files\\xxx" );
         cmd.addArguments( new String[] { "c:\\Documents and Settings\\whatever", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
-    
+
         assertEquals( "Command line size", 4, shellCommandline.length );
-    
+
         assertEquals( "cmd.exe", shellCommandline[0] );
         assertEquals( "/X", shellCommandline[1] );
         assertEquals( "/C", shellCommandline[2] );
-        String expectedShellCmd = "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" \"c:\\Documents and Settings\\whatever\" b";
-//        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        String expectedShellCmd = "\"c:" + File.separator + "Program Files" + File.separator
+            + "xxx\" \"c:\\Documents and Settings\\whatever\" b";
+        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[3] );
     }
 
@@ -237,7 +239,7 @@ public class CommandlineTest
         Commandline cmd = new Commandline( new BourneShell() );
         cmd.setExecutable( "/bin/echo" );
         cmd.addArguments( new String[] { "hello world" } );
-        
+
         String[] shellCommandline = cmd.getShellCommandline();
 
         assertEquals( "Command line size", 3, shellCommandline.length );
@@ -245,7 +247,11 @@ public class CommandlineTest
         assertEquals( "/bin/bash", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \"hello world\"";
-//        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        if (Os.isFamily( "windows" ))
+        {
+            expectedShellCmd = "\\bin\\echo \"hello world\"";
+        }
+        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
 
@@ -259,7 +265,7 @@ public class CommandlineTest
         Commandline cmd = new Commandline( new BourneShell() );
         cmd.setExecutable( "/bin/echo" );
         cmd.addArguments( new String[] { "\'hello world\'" } );
-        
+
         String[] shellCommandline = cmd.getShellCommandline();
 
         assertEquals( "Command line size", 3, shellCommandline.length );
@@ -267,7 +273,11 @@ public class CommandlineTest
         assertEquals( "/bin/bash", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \'hello world\'";
-//        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        if (Os.isFamily( "windows" ))
+        {
+            expectedShellCmd = "\\bin\\echo \'hello world\'";
+        }
+        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
 
@@ -278,12 +288,22 @@ public class CommandlineTest
         cmd.setExecutable( "/usr/bin" );
         cmd.addArguments( new String[] { "a", "b" } );
         String[] shellCommandline = cmd.getShellCommandline();
-        
+
         assertEquals( "Command line size", 3, shellCommandline.length );
 
         assertEquals( "/bin/bash", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
-        assertEquals( "/usr/bin a b", shellCommandline[2] );
+        
+        
+        
+        if ( Os.isFamily( "windows" ) )
+        {
+            assertEquals( "\\usr\\bin a b", shellCommandline[2] );
+        }
+        else
+        {
+            assertEquals( "/usr/bin a b", shellCommandline[2] );
+        }
     }
 
     public void testEnvironment()
