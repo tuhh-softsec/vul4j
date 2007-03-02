@@ -131,6 +131,17 @@ public class Commandline
     private long pid = -1;
 
     private Shell shell;
+    
+    /**
+     * @deprecated Use {@link Commandline#setExecutable(String)} instead.
+     */
+    protected String executable;
+    
+    /**
+     * @deprecated Use {@link Commandline#setWorkingDirectory(File)} or 
+     * {@link Commandline#setWorkingDirectory(String)} instead.
+     */
+    private File workingDir;
 
     /**
      * Create a new command line object.
@@ -140,8 +151,8 @@ public class Commandline
      */
     public Commandline( String toProcess, Shell shell )
     {
-        super();
-        setShell( shell );
+        this.shell = shell;
+        
         String[] tmp = new String[0];
         try
         {
@@ -167,8 +178,7 @@ public class Commandline
      */
     public Commandline( Shell shell )
     {
-        super();
-        setShell( shell );
+        this.shell = shell;
     }
 
     /**
@@ -179,7 +189,6 @@ public class Commandline
      */
     public Commandline( String toProcess )
     {
-        super();
         setDefaultShell();
         String[] tmp = new String[0];
         try
@@ -206,7 +215,6 @@ public class Commandline
      */
     public Commandline()
     {
-        super();
         setDefaultShell();
     }
 
@@ -254,7 +262,7 @@ public class Commandline
         {
             if ( realPos == -1 )
             {
-                realPos = ( shell.getExecutable() == null ? 0 : 1 );
+                realPos = ( getExecutable() == null ? 0 : 1 );
                 for ( int i = 0; i < position; i++ )
                 {
                     Arg arg = (Arg) arguments.elementAt( i );
@@ -371,14 +379,10 @@ public class Commandline
     }
 
     /**
-     * Creates an argument object.
-     * <p/>
-     * <p>Each commandline object has at most one instance of the
-     * argument class.  This method calls
-     * <code>this.createArgument(false)</code>.</p>
+     * Adds an argument object to our list of args.
      *
      * @return the argument object.
-     * @see #createArgument(boolean)
+     * @see #addArg(Arg,boolean)
      */
     public void addArg( Arg argument )
     {
@@ -387,9 +391,6 @@ public class Commandline
 
     /**
      * Adds an argument object to our list of args.
-     * <p/>
-     * <p>Each commandline object has at most one instance of the
-     * argument class.</p>
      *
      * @param insertAtStart if true, the argument is inserted at the
      *                      beginning of the list of args, otherwise it is appended.
@@ -412,11 +413,19 @@ public class Commandline
     public void setExecutable( String executable )
     {
         shell.setExecutable( executable );
+        this.executable = executable;
     }
 
     public String getExecutable()
     {
-        return shell.getExecutable();
+        String exec = shell.getExecutable();
+        
+        if ( exec == null )
+        {
+            exec = executable;
+        }
+        
+        return exec;
     }
 
     public void addArguments( String[] line )
@@ -476,7 +485,7 @@ public class Commandline
     public String[] getCommandline()
     {
         final String[] args = getArguments();
-        String executable = shell.getExecutable();
+        String executable = getExecutable();
         
         if ( executable == null )
         {
@@ -493,6 +502,9 @@ public class Commandline
      */
     public String[] getShellCommandline()
     {
+        // TODO: Provided only for backward compat. with <= 1.4
+        verifyShellState();
+        
         return (String[]) getShell().getShellCommandLine( getArguments() ).toArray( new String[0] );
     }
 
@@ -534,6 +546,8 @@ public class Commandline
     public Object clone()
     {
         Commandline c = new Commandline( (Shell) shell.clone() );
+        c.executable = executable;
+        c.workingDir = workingDir;
         c.addArguments( getArguments() );
         return c;
     }
@@ -543,6 +557,8 @@ public class Commandline
      */
     public void clear()
     {
+        executable = null;
+        workingDir = null;
         shell.setExecutable( null );
         shell.clearArguments();
         arguments.removeAllElements();
@@ -574,6 +590,7 @@ public class Commandline
     public void setWorkingDirectory( String path )
     {
         shell.setWorkingDirectory( path );
+        this.workingDir = new File( path );
     }
 
     /**
@@ -582,11 +599,19 @@ public class Commandline
     public void setWorkingDirectory( File workingDirectory )
     {
         shell.setWorkingDirectory( workingDirectory );
+        this.workingDir = workingDirectory;
     }
 
     public File getWorkingDirectory()
     {
-        return shell.getWorkingDirectory();
+        File workDir = shell.getWorkingDirectory();
+        
+        if ( workDir == null )
+        {
+            workDir = workingDir;
+        }
+        
+        return workDir;
     }
 
     /**
@@ -595,6 +620,9 @@ public class Commandline
     public Process execute()
         throws CommandLineException
     {
+        // TODO: Provided only for backward compat. with <= 1.4
+        verifyShellState();
+        
         Process process;
 
         //addEnvironment( "MAVEN_TEST_ENVAR", "MAVEN_TEST_ENVAR_VALUE" );
@@ -631,6 +659,22 @@ public class Commandline
         }
 
         return process;
+    }
+
+    /**
+     * @deprecated Remove once backward compat with plexus-utils <= 1.4 is no longer a consideration
+     */
+    private void verifyShellState()
+    {
+        if ( shell.getWorkingDirectory() == null )
+        {
+            shell.setWorkingDirectory( workingDir );
+        }
+        
+        if ( shell.getExecutable() == null )
+        {
+            shell.setExecutable( executable );
+        }
     }
 
     public Properties getSystemEnvVars()
