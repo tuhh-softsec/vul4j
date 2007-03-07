@@ -1,19 +1,8 @@
 package org.apache.xml.security.c14n.implementations;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.xml.security.c14n.implementations.UtfHelpper;
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.transforms.Transforms;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -38,7 +27,6 @@ public class UtfHelperTest extends TestCase {
 		ByteArrayOutputStream charByCharOs=new ByteArrayOutputStream();
 		ByteArrayOutputStream strOs=new ByteArrayOutputStream();
 		
-		System.out.println("DDD"+chunk);
 		char chs[]=new char[chunk];
 		for (int i=0;i<chunk; i++) {
 			int ch=(chunk*j)+i;
@@ -59,7 +47,6 @@ public class UtfHelperTest extends TestCase {
 			assertTrue("UtfHelper.writeStringToUtf8 failse",Arrays.equals(correct, strOs.toByteArray()));
 			
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
