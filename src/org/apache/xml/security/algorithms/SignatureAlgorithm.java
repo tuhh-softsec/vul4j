@@ -61,8 +61,16 @@ public class SignatureAlgorithm extends Algorithm {
 	   };
    };
    
-   static ThreadLocal keysSigning=new ThreadLocal();
-   static ThreadLocal keysVerify=new ThreadLocal();
+   static ThreadLocal keysSigning=new ThreadLocal() {
+	   protected Object initialValue() {
+		   return new HashMap();
+	   };
+   };
+   static ThreadLocal keysVerify=new ThreadLocal() {
+	   protected Object initialValue() {
+		   return new HashMap();
+	   };
+   };
 //   boolean isForSigning=false;
 
    /** Field _signatureAlgorithm */
@@ -258,10 +266,11 @@ public class SignatureAlgorithm extends Algorithm {
     */
    public void initSign(Key signingKey) throws XMLSignatureException {	   
 	   initializeAlgorithm(true);
-       if (keysSigning.get()==signingKey) {
+	   Map map=(Map)keysSigning.get();
+       if (map.get(this.algorithmURI)==signingKey) {
     	   return;
        }
-       keysSigning.set(signingKey);
+       map.put(this.algorithmURI,signingKey);
 	   this._signatureAlgorithm.engineInitSign(signingKey);
    }
 
@@ -316,10 +325,11 @@ public class SignatureAlgorithm extends Algorithm {
     */
    public void initVerify(Key verificationKey) throws XMLSignatureException {
 	   initializeAlgorithm(false);
-	   if (keysVerify.get()==verificationKey) {
+	   Map map=(Map)keysVerify.get();
+	   if (map.get(this.algorithmURI)==verificationKey) {
     	   return;
        }
-	   keysVerify.set(verificationKey);
+	   map.put(this.algorithmURI,verificationKey);
 	   this._signatureAlgorithm.engineInitVerify(verificationKey);
    }
 

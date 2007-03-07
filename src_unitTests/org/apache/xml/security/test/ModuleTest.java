@@ -52,6 +52,7 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.utils.AllTests.suite());
       suite.addTest(org.apache.xml.security.c14n.implementations.AllTests.suite());
       suite.addTest(org.apache.xml.security.test.transforms.implementations.AllTests.suite());
+      suite.addTest(org.apache.xml.security.test.algorithms.AllTests.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
       //J+

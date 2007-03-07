@@ -21,8 +21,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.xml.security.utils.XMLUtils;
-
 
 /**
  * All org.apache.xml.security.test JUnit Tests

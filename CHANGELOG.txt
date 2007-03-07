@@ -9,7 +9,7 @@ New in ...
     Fixed bug 41573: XMLCipher StackOverflowError. Thanks to Marek Jablonski 
         for fix.
     Fixed bug 41462: Xml canonization - UTF-8 encoding issue in Xml security 1.4.0 Thanks to Karol Rewera.    
-
+    Fixed bug 41520: Cannot generate signatures with the same key but different algorithms in sucession. Thanks to Lijun Liao
 New in 1.4
 	Fixed bug 40896
 	
