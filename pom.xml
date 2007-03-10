@@ -2,13 +2,13 @@
   <parent>
     <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.11</version>
     <relativePath>../pom/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.1</version>
   <build>
     <plugins>
       <plugin>
@@ -33,9 +33,9 @@
     </plugins>
   </build>
   <scm> 
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection> 
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/tags/plexus-utils-1.4.1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/tags/plexus-utils-1.4.1</developerConnection> 
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/tags/plexus-utils-1.4.1</url>
   </scm>
   <reporting>
     <plugins>
