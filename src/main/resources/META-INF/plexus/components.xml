@@ -49,6 +49,13 @@
       <implementation>org.codehaus.plexus.archiver.zip.ZipArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
+    <component>
+      <role>org.codehaus.plexus.archiver.Archiver</role>
+      <role-hint>rar</role-hint>
+	  <!-- there is no implementaion of RarArchiver, but JarArchiver will do the job -->
+      <implementation>org.codehaus.plexus.archiver.jar.JarArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>	  
     <!-- UnArchiver -->
     <component>
       <role>org.codehaus.plexus.archiver.UnArchiver</role>
@@ -122,6 +129,14 @@
       <implementation>org.codehaus.plexus.archiver.tar.TarBZip2UnArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
+	  
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>rar</role-hint>
+      <!-- there is no implementaion of RarUnArchiver, but ZipUnArchive will do the job -->
+      <implementation>org.codehaus.plexus.archiver.zip.ZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>	  
         
     <!--
      |
