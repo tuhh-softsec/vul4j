@@ -160,20 +160,23 @@ public class IdResolver {
     }
    
     private static java.util.List names;
+    private static int namesLength;
     static {
-	   String namespaces[]={ Constants.SignatureSpecNS,
-			   EncryptionConstants.EncryptionSpecNS,
-			   "http://schemas.xmlsoap.org/soap/security/2000-12",
-			   "http://www.w3.org/2002/03/xkms#",
-			   "urn:oasis:names:tc:SAML:1.0:assertion",
-			   "urn:oasis:names:tc:SAML:1.0:protocol"
-		   };
-	   names=Arrays.asList(namespaces);
+	String namespaces[]={ 
+	    Constants.SignatureSpecNS,
+	    EncryptionConstants.EncryptionSpecNS,
+	    "http://schemas.xmlsoap.org/soap/security/2000-12",
+	    "http://www.w3.org/2002/03/xkms#",
+	    "urn:oasis:names:tc:SAML:1.0:assertion",
+	    "urn:oasis:names:tc:SAML:1.0:protocol"
+	};
+	names = Arrays.asList(namespaces);
+	namesLength = names.size();
     }
    
 
     private static Element getElementBySearching(Node root,String id) {
-        Element []els=new Element[6];
+        Element []els=new Element[namesLength + 1];
 	getEl(root,id,els);
 	for (int i=0;i<els.length;i++) {
 	    if (els[i]!=null) {
@@ -227,13 +230,13 @@ public class IdResolver {
     	}
     	NamedNodeMap ns=el.getAttributes();
     	int elementIndex=names.indexOf(el.getNamespaceURI());
-	    elementIndex=(elementIndex<0) ? 5 : elementIndex;
+	    elementIndex=(elementIndex<0) ? namesLength : elementIndex;
     	for (int length=ns.getLength(), i=0; i<length; i++) {
     		Attr n=(Attr)ns.item(i);
     		String s=n.getNamespaceURI();
     		
 		    int index=s==null ? elementIndex : names.indexOf(n.getNamespaceURI());
-		    index=(index<0) ? 5 : index;
+		    index=(index<0) ? namesLength : index;
 		    String name=n.getLocalName();
 		    if (name.length()>2)
 		    	continue;
@@ -247,13 +250,13 @@ public class IdResolver {
 		        	}
 		    	} else if (ch=='D' &&value.endsWith(id)) {
 		    		if (index!=3) {
-			            index=5;
+			            index=namesLength;
 			        }
 			        els[index]=el;
 		    	}
 		    } else if ( "id".equals(name) && value.equals(id) ) {
 		    	if (index!=2) {
-		    		index=5;
+		    		index=namesLength;
 		        }			    				   
 		        els[index]=el;
 		    } 
