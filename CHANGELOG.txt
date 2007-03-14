@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 41805: Resolution of SAML 1.x ID attributes, incorrect namespace. Thanks to
+	Brent Putman for fix.
     Fixed bug 41474: two text nodes with the value '\n' in succession within
         <ds:SignedInfo> and <ds:X509IssuerSerial>. Thanks to Lijun Liao for fix.
     Fixed bug 41510: org.apache.xml.security.keys.content.KeyValue.getPublicKey() 
