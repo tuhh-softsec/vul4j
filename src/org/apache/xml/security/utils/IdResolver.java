@@ -165,7 +165,8 @@ public class IdResolver {
 			   EncryptionConstants.EncryptionSpecNS,
 			   "http://schemas.xmlsoap.org/soap/security/2000-12",
 			   "http://www.w3.org/2002/03/xkms#",
-			   "urn:oasis:names:tc:SAML:1.0:assertion"
+			   "urn:oasis:names:tc:SAML:1.0:assertion",
+			   "urn:oasis:names:tc:SAML:1.0:protocol"
 		   };
 	   names=Arrays.asList(namespaces);
     }
@@ -264,10 +265,12 @@ public class IdResolver {
 		    el.getAttribute("ResponseID").equals(id))) {
 		    els[3]=el;				   		    
     	} else if ((elementIndex==4)&&(
-		    el.getAttribute("AssertionID").equals(id) ||
+		    el.getAttribute("AssertionID").equals(id))) {
+		    els[4]=el;				   
+    	} else if ((elementIndex==5)&&(
 		    el.getAttribute("RequestID").equals(id) ||
 		    el.getAttribute("ResponseID").equals(id))) {
-		    els[4]=el;				   
+		    els[5]=el;				   
 		 }		
     	return 0;
     }
