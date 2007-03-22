@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
-
-
 import java.io.OutputStream;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -31,7 +29,6 @@ import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
-
 /**
  * Implements the <CODE>http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments</CODE>
  * transform.
@@ -43,7 +40,6 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS;
-
 
    /**
     * Method engineGetURI
@@ -57,10 +53,12 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
    /**
     * @inheritDoc 
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
+   protected XMLSignatureInput enginePerformTransform
+	(XMLSignatureInput input, Transform _transformObject)
            throws CanonicalizationException {
-   	    return enginePerformTransform(input,null, null);
+   	    return enginePerformTransform(input, null, _transformObject);
    }
+
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream os, Transform _transformObject)
     throws CanonicalizationException {
      try {

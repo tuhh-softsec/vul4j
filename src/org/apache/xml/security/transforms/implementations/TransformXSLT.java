@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
-
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,7 +40,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
-
 /**
  * Class TransformXSLT
  *
@@ -61,7 +58,6 @@ public class TransformXSLT extends TransformSpi {
    static final String defaultXSLTSpecNSprefix = "xslt";
    static final String XSLTSTYLESHEET          = "stylesheet";
 
-
    /**
     * Method engineGetURI
     *
@@ -79,11 +75,13 @@ public class TransformXSLT extends TransformSpi {
     * @throws IOException
     * @throws TransformationException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
+   protected XMLSignatureInput enginePerformTransform
+	(XMLSignatureInput input, Transform _transformObject)
            throws IOException,
                   TransformationException {
-   	return enginePerformTransform(input,null, null);
+   	return enginePerformTransform(input, null, _transformObject);
    }
+
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream baos, Transform _transformObject)
     throws IOException,
            TransformationException {

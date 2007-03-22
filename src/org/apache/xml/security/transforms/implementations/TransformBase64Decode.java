@@ -40,7 +40,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-
 /**
  * Implements the <CODE>http://www.w3.org/2000/09/xmldsig#base64</CODE> decoding
  * transform.
@@ -92,11 +91,13 @@ public class TransformBase64Decode extends TransformSpi {
     * @throws IOException
     * @throws TransformationException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
+   protected XMLSignatureInput enginePerformTransform
+	(XMLSignatureInput input, Transform _transformObject)
            throws IOException, CanonicalizationException,
                   TransformationException {
-   	return enginePerformTransform(input,null, null);
+   	return enginePerformTransform(input, null, _transformObject);
    }
+
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,
             OutputStream os, Transform _transformObject)
     throws IOException, CanonicalizationException,

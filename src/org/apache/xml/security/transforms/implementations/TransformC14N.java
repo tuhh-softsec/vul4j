@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
-
-
 import java.io.OutputStream;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -26,7 +24,6 @@ import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
-
 
 /**
  * Implements the <CODE>http://www.w3.org/TR/2001/REC-xml-c14n-20010315</CODE>
@@ -51,10 +48,12 @@ public class TransformC14N extends TransformSpi {
    /**
     *  @inheritDoc 
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject)
+   protected XMLSignatureInput enginePerformTransform
+	(XMLSignatureInput input, Transform _transformObject)
            throws CanonicalizationException {
-   	    return enginePerformTransform(input,null, null);
+   	    return enginePerformTransform(input, null, _transformObject);
    }
+
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream os, Transform _transformObject)
     throws CanonicalizationException {   
          Canonicalizer20010315OmitComments c14n = new Canonicalizer20010315OmitComments();
