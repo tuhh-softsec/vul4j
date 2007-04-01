@@ -21,6 +21,7 @@ import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
+import org.codehaus.plexus.components.io.fileselectors.FileInfo;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -66,6 +67,42 @@ public abstract class AbstractZipUnArchiver
         this.encoding = encoding;
     }
 
+    private static class ZipEntryFileInfo implements FileInfo
+    {
+        private final ZipFile zipFile;
+        private ZipEntry zipEntry;
+
+        ZipEntryFileInfo( ZipFile zipFile )
+        {
+            this.zipFile = zipFile;
+        }
+
+        void setZipEntry( ZipEntry zipEntry )
+        {
+            this.zipEntry = zipEntry;
+        }
+
+        public InputStream getContents() throws IOException
+        {
+            return zipFile.getInputStream( zipEntry );
+        }
+
+        public String getName()
+        {
+            return zipEntry.getName();
+        }
+
+        public boolean isDirectory()
+        {
+            return zipEntry.isDirectory();
+        }
+
+        public boolean isFile()
+        {
+            return !zipEntry.isDirectory();
+        }
+    }
+
     protected void execute()
         throws ArchiverException
     {
@@ -74,10 +111,16 @@ public abstract class AbstractZipUnArchiver
         try
         {
             zf = new ZipFile( getSourceFile(), encoding );
+            ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zf );
             Enumeration e = zf.getEntries();
             while ( e.hasMoreElements() )
             {
                 ZipEntry ze = (ZipEntry) e.nextElement();
+                fileInfo.setZipEntry( ze );
+                if ( !isSelected( ze.getName(), fileInfo ) )
+                {
+                    continue;
+                }
                 extractFileIfIncluded( getSourceFile(), getDestDirectory(), zf.getInputStream( ze ), ze.getName(),
                                        new Date( ze.getTime() ), ze.isDirectory(), null );
             }
@@ -208,12 +251,18 @@ public abstract class AbstractZipUnArchiver
         try
         {
             zipFile = new ZipFile( getSourceFile(), encoding );
+            ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zipFile );
 
             Enumeration e = zipFile.getEntries();
 
             while ( e.hasMoreElements() )
             {
                 ZipEntry ze = (ZipEntry) e.nextElement();
+                fileInfo.setZipEntry( ze );
+                if ( !isSelected( ze.getName(), fileInfo ) )
+                {
+                    continue;
+                }
 
                 if ( ze.getName().startsWith( path ) )
                 {

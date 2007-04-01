@@ -1,6 +1,9 @@
 package org.codehaus.plexus.archiver.zip;
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 
@@ -10,7 +13,7 @@ import java.io.File;
 public class ZipUnArchiverTest
     extends PlexusTestCase
 {
-    public void testExtractingADirectoryFromAJarFile()
+    private void runUnarchiver( String path, FileSelector[] selectors, boolean[] results )
         throws Exception
     {
         String s = "target/zip-unarchiver-tests";
@@ -20,15 +23,48 @@ public class ZipUnArchiverTest
         File outputDirectory = new File( getBasedir(), s );
 
         ZipUnArchiver zu = new ZipUnArchiver( testJar );
+        zu.setFileSelectors( selectors );
 
-        zu.extract( "resources/artifactId", outputDirectory );
+        FileUtils.deleteDirectory( outputDirectory );
+
+        zu.extract( path, outputDirectory );
 
         File f0 = new File( getBasedir(), s + "/resources/artifactId/test.properties" );
 
-        assertTrue( f0.exists() );
+        assertEquals( results[0], f0.exists() );
 
         File f1 = new File( getBasedir(), s + "/resources/artifactId/directory/test.properties" );
 
-        assertTrue( f1.exists() );
+        assertEquals( results[1], f1.exists() );
+
+        File f2 = new File( getBasedir(), s + "/META-INF/MANIFEST.MF" );
+
+        assertEquals( results[2], f2.exists() );
+    }
+    
+    
+    public void testExtractingADirectoryFromAJarFile()
+        throws Exception
+    {
+            runUnarchiver( "resources/artifactId", null, new boolean[]{ true, true, false } );
+            runUnarchiver( "", null, new boolean[]{ true, true, true } );
+    }
+
+    public void testSelectors()
+        throws Exception
+    {
+        IncludeExcludeFileSelector fileSelector = new IncludeExcludeFileSelector();
+        runUnarchiver( "", new FileSelector[]{ fileSelector },
+                       new boolean[]{ true, true, true } );
+        fileSelector.setExcludes( new String[]{ "**/test.properties" } );
+        runUnarchiver( "", new FileSelector[]{ fileSelector },
+                       new boolean[]{ false, false, true } );
+        fileSelector.setIncludes( new String[]{ "**/test.properties" } );
+        fileSelector.setExcludes( null );
+        runUnarchiver( "", new FileSelector[]{ fileSelector },
+                       new boolean[]{ true, true, false } );
+        fileSelector.setExcludes( new String[]{ "resources/artifactId/directory/test.properties" } );
+        runUnarchiver( "", new FileSelector[]{ fileSelector },
+                       new boolean[]{ true, false, false } );
     }
 }

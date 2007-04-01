@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.codehaus.plexus.archiver.util.FilterSupport;
+import org.codehaus.plexus.components.io.fileselectors.FileInfo;
+import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
@@ -47,6 +49,8 @@ public abstract class AbstractUnArchiver
     private FilterSupport filterSupport;
 
     private List finalizers;
+
+    private FileSelector[] fileSelectors;
 
     public AbstractUnArchiver()
     {
@@ -196,6 +200,41 @@ public abstract class AbstractUnArchiver
             destDirectory = destFile;
             destFile = null;
         }
+    }
+
+    public void setFileSelectors( FileSelector[] fileSelectors )
+    {
+        this.fileSelectors = fileSelectors;
+    }
+
+    public FileSelector[] getFileSelectors( )
+    {
+        return fileSelectors;
+    }
+
+    protected boolean isSelected( String fileName, FileInfo fileInfo )
+            throws ArchiverException
+    {
+        if ( fileSelectors != null )
+        {
+            for ( int i = 0;  i < fileSelectors.length;  i++ )
+            {
+                try {
+                    if ( !fileSelectors[i].isSelected( fileInfo ) )
+                    {
+                        return false;
+                    }
+                }
+                catch ( IOException e )
+                {
+                    throw new ArchiverException( "Failed to check, whether "
+                                                 + fileInfo.getName()
+                                                 + " is selected: "
+                                                 + e.getMessage(), e );
+                }
+            }
+        }
+        return true;
     }
 
     protected abstract void execute()

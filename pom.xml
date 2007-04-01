@@ -27,5 +27,10 @@
       <artifactId>plexus-container-default</artifactId>
       <version>1.0-alpha-15</version>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-io</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

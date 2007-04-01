@@ -19,6 +19,8 @@ package org.codehaus.plexus.archiver;
 
 import java.io.File;
 
+import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+
 /**
  * @version $Revision$ $Date$
  */
@@ -63,4 +65,20 @@ public interface UnArchiver
      * the corresponding entries in the archive?
      */
     void setOverwrite( boolean b );
+
+    /**
+     * Sets a set of {@link FileSelector} instances, which may be used to
+     * select the files to extract from the archive. If file selectors
+     * are present, then a file is only extracted, if it is confirmed
+     * by all file selectors.
+     */
+    void setFileSelectors( FileSelector[] selectors );
+
+    /**
+     * Returns a set of {@link FileSelector} instances, which may be used to
+     * select the files to extract from the archive. If file selectors
+     * are present, then a file is only extracted, if it is confirmed
+     * by all file selectors.
+     */
+    FileSelector[] getFileSelectors( );
 }
