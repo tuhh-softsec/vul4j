@@ -31,17 +31,40 @@ public interface Archiver
     void createArchive()
         throws ArchiverException, IOException;
 
+    /**
+     * Obsolete, use {@link #addFileSet(FileSet)}.
+     */
     void addDirectory( File directory )
         throws ArchiverException;
 
+    /**
+     * Obsolete, use {@link #addFileSet(FileSet)}.
+     */
     void addDirectory( File directory, String prefix )
         throws ArchiverException;
 
+    /**
+     * Obsolete, use {@link #addFileSet(FileSet)}.
+     */
     void addDirectory( File directory, String[] includes, String[] excludes )
         throws ArchiverException;
 
+    /**
+     * Obsolete, use {@link #addFileSet(FileSet)}.
+     */
     void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
+
+    /**
+     * Adds the given file set to the archive.
+     * This method is basically obsoleting {@link #addDirectory(File)},
+     * {@link #addDirectory(File, String)}, {@link #addDirectory(File, String[], String[])},
+     * and {@link #addDirectory(File, String, String[], String[])}. However, as these
+     * methods are in widespread use, they cannot easily be made deprecated.
+     * @throws ArchiverException Adding the file set failed.
+     * @since 1.0-alpha-9
+     */
+    void addFileSet( FileSet fileSet ) throws ArchiverException;
 
     void addFile( File inputFile, String destFileName )
         throws ArchiverException;
@@ -61,6 +84,18 @@ public interface Archiver
     void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
 
+    /**
+     * Adds the given archive file set to the archive.
+     * This method is basically obsoleting {@link #addArchivedFileSet(File)},
+     * {@link #addArchivedFileSet(File, String[], String[])}, and
+     * {@link #addArchivedFileSet(File, String, String[], String[])}.
+     * However, as these methods are in widespread use, they cannot easily
+     * be made deprecated.
+     * @since 1.0-alpha-9
+     */
+    void addArchivedFileSet( ArchivedFileSet fileSet )
+        throws ArchiverException;
+    
     File getDestFile();
 
     void setDestFile( File destFile );

@@ -6,8 +6,14 @@ import java.util.List;
 
 import org.codehaus.plexus.archiver.ArchiveFileFilter;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
+import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.logging.Logger;
 
+
+/**
+ * @deprecated Use {@link FileSelector} and {@link Archiver#addFileSet}.
+ */
 public class FilterSupport
 {
     

@@ -6,18 +6,15 @@ import org.codehaus.plexus.archiver.ArchiveFileFilter;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.util.SelectorUtils;
 
+
+/**
+ * @deprecated Use {@link JarSecurityFileSelector}
+ */
 public class JarSecurityFileFilter
     implements ArchiveFileFilter
 {
     
-    public static final String[] SECURITY_FILE_PATTERNS = { 
-        "/META-INF/*.RSA", 
-        "/META-INF/*.DSA", 
-        "/META-INF/*.SF", 
-        "/META-INF/*.rsa", 
-        "/META-INF/*.dsa", 
-        "/META-INF/*.sf" 
-    };
+    public static final String[] SECURITY_FILE_PATTERNS = JarSecurityFileSelector.SECURITY_FILE_PATTERNS;
     
     public boolean include( InputStream dataStream, String entryName )
         throws ArchiveFilterException

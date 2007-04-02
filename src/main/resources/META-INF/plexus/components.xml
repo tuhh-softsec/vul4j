@@ -147,5 +147,17 @@
       <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
       <implementation>org.codehaus.plexus.archiver.manager.DefaultArchiverManager</implementation>
     </component>
+
+    <!--
+     |
+     | File selectors
+     |
+     -->
+    <component>
+      <role>org.codehaus.plexus.components.io.fileselectors.FileSelector</role>
+      <role-hint>jar-security</role-hint>
+      <implementation>org.codehaus.plexus.archiver.filters.JarSecurityFileSelector</implementation>
+      <instantiation-strategy>singleton</instantiation-strategy>
+    </component>
   </components>
 </component-set>

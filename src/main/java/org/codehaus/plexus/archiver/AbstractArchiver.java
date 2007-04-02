@@ -21,8 +21,12 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
+import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.components.io.fileselectors.FileInfo;
+import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -137,18 +141,35 @@ public abstract class AbstractArchiver
     public void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException
     {
+        DefaultFileSet fileSet = new DefaultFileSet();
+        fileSet.setDirectory( directory );
+        fileSet.setPrefix( prefix );
+        fileSet.setIncludes( includes );
+        fileSet.setExcludes( excludes );
+        fileSet.setIncludingEmptyDirectories( includeEmptyDirs );
+        addFileSet( fileSet );
+    }
+
+    public void addFileSet( FileSet fileSet )
+        throws ArchiverException
+    {
         DirectoryScanner scanner = new DirectoryScanner();
 
-        if ( includes != null )
+        if ( fileSet.getIncludes() != null )
         {
-            scanner.setIncludes( includes );
+            scanner.setIncludes( fileSet.getIncludes() );
         }
 
-        if ( excludes != null )
+        if ( fileSet.getExcludes() != null )
         {
-            scanner.setExcludes( excludes );
+            scanner.setExcludes( fileSet.getExcludes() );
         }
 
+        File directory = fileSet.getDirectory();
+        if ( directory == null )
+        {
+            throw new ArchiverException( "The file sets base directory is null." );
+        }
         if ( !directory.isDirectory() )
         {
             throw new ArchiverException( directory.getAbsolutePath() + " isn't a directory." );
@@ -158,20 +179,28 @@ public abstract class AbstractArchiver
         scanner.setBasedir( basedir );
         scanner.scan();
 
-        if ( includeEmptyDirs )
+        String prefix = fileSet.getPrefix() == null ? "" : fileSet.getPrefix();
+        ArchiverFileInfo fileInfo = new ArchiverFileInfo();
+        FileSelector[] fileSelectors = fileSet.getFileSelectors();
+        if ( fileSet.isIncludingEmptyDirectories() )
         {
             String[] dirs = scanner.getIncludedDirectories();
 
             for ( int i = 0; i < dirs.length; i++ )
             {
-                String sourceDir = dirs[i].replace( '\\', '/' );
-
-                String targetDir = ( prefix == null ? "" : prefix ) + sourceDir;
-
-                getDirs().put(
-                               targetDir,
-                               ArchiveEntry.createDirectoryEntry( targetDir, new File( basedir, sourceDir ),
-                                                                  getDefaultDirectoryMode() ) );
+                String name = dirs[i];
+                String sourceDir = name.replace( '\\', '/' );
+                File dir = new File( basedir, sourceDir );
+                fileInfo.setFile( dir );
+                fileInfo.setName( name );
+                if ( isSelected( fileSelectors, fileInfo ) )
+                {
+                    String targetDir = prefix + sourceDir;
+    
+                    getDirs().put( targetDir,
+                                   ArchiveEntry.createDirectoryEntry( targetDir, dir,
+                                                                      getDefaultDirectoryMode() ) );
+                }
             }
         }
 
@@ -179,15 +208,78 @@ public abstract class AbstractArchiver
 
         for ( int i = 0; i < files.length; i++ )
         {
-            String sourceFile = files[i].replace( '\\', '/' );
-
-            String targetFile = ( prefix == null ? "" : prefix ) + sourceFile;
-
+            String file = files[i];
+            String sourceFile = file.replace( '\\', '/' );
             File source = new File( basedir, sourceFile );
+            fileInfo.setName( file );
+            fileInfo.setFile( source );
+            if ( isSelected( fileSelectors, fileInfo ) )
+            {
+                String targetFile = prefix + sourceFile;
+                addFile( source, targetFile );
+            }
+        }
+    }
 
-            addFile( source, targetFile );
+    private boolean isSelected( FileSelector[] fileSelectors, FileInfo fileInfo )
+        throws ArchiverException
+    {
+        if ( fileSelectors != null )
+        {
+            for ( int i = 0;  i < fileSelectors.length;  i++ )
+            {
+                try
+                {
+                    if ( !fileSelectors[i].isSelected( fileInfo ) )
+                    {
+                        return false;
+                    }
+                }
+                catch ( IOException e )
+                {
+                    throw new ArchiverException( "Failed to check, whether "
+                                                 + fileInfo.getName()
+                                                 + " is selected.", e );
+                }
+            }
+        }
+        return true;
+    }
+
+    private static class ArchiverFileInfo implements FileInfo
+    {
+        private String name;
+        private File file;
+
+        void setFile( File file )
+        {
+            this.file = file;
         }
 
+        void setName( String name )
+        {
+            this.name = name;
+        }
+
+        public InputStream getContents() throws IOException
+        {
+            return new FileInputStream( file );
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public boolean isDirectory()
+        {
+            return file.isDirectory();
+        }
+
+        public boolean isFile()
+        {
+            return file.isFile();
+        }
     }
 
     public void addFile( File inputFile, String destFileName )
@@ -288,12 +380,10 @@ public abstract class AbstractArchiver
         return dirsMap;
     }
 
-    /**
-     * @since 1.0-alpha-7
-     */
-    public void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
+    public void addArchivedFileSet( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
+        File archiveFile = fileSet.getArchive();
         UnArchiver unArchiver;
         try
         {
@@ -335,7 +425,62 @@ public abstract class AbstractArchiver
         unArchiver.setDestDirectory( tempDir );
         unArchiver.extract();
 
-        addDirectory( tempDir, prefix, includes, excludes );
+        addFileSet( new FileSet(){
+            public File getDirectory()
+            {
+                return tempDir;
+            }
+
+            public String[] getExcludes()
+            {
+                return fileSet.getExcludes();
+            }
+
+            public FileSelector[] getFileSelectors()
+            {
+                return fileSet.getFileSelectors();
+            }
+
+            public String[] getIncludes()
+            {
+                return fileSet.getIncludes();
+            }
+
+            public String getPrefix()
+            {
+                return fileSet.getPrefix();
+            }
+
+            public boolean isCaseSensitive()
+            {
+                return fileSet.isCaseSensitive();
+            }
+
+            public boolean isIncludingEmptyDirectories()
+            {
+                return fileSet.isIncludingEmptyDirectories();
+            }
+
+            public boolean isUsingDefaultExcludes()
+            {
+                return fileSet.isUsingDefaultExcludes();
+            }
+        } );
+    }
+
+    /**
+     * @since 1.0-alpha-7
+     */
+    public void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
+        throws ArchiverException
+    {
+        DefaultArchivedFileSet fileSet = new DefaultArchivedFileSet();
+        fileSet.setArchive( archiveFile );
+        fileSet.setPrefix( prefix );
+        fileSet.setIncludes( includes );
+        fileSet.setExcludes( excludes );
+        fileSet.setIncludingEmptyDirectories( includeEmptyDirs );
+        addArchivedFileSet( fileSet );
     }
 
     /**
