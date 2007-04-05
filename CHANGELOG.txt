@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 41892: XML Security 1.4.0 does not build with IBM's JDK
     Fixed bug 41927: Cannot canonicalize with XSLT transform. Thanks to
 Lijun Liao for fix.
     Fixed bug 41805: Resolution of SAML 1.x ID attributes, incorrect namespace. Thanks to
