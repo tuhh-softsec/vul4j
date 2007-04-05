@@ -30,88 +30,81 @@ import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import sun.security.util.DerValue;
-
-
 /**
  * Handles SubjectKeyIdentifier (SKI) for X.509v3.
  *
  * @author $Author$
- * @see <A HREF="http://java.sun.com/products/jdk/1.2/docs/api/java/security/cert/X509Extension.html">Interface X509Extension</A>
+ * @see <A HREF="http://java.sun.com/j2se/1.5.0/docs/api/java/security/cert/X509Extension.html">Interface X509Extension</A>
  */
 public class XMLX509SKI extends SignatureElementProxy
         implements XMLX509DataContent {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(XMLX509SKI.class.getName());
 
-   /**
-    * <CODE>SubjectKeyIdentifier (id-ce-subjectKeyIdentifier) (2.5.29.14)</CODE>:
-    * This extension identifies the public key being certified. It enables
-    * distinct keys used by the same subject to be differentiated
-    * (e.g., as key updating occurs).
-    * <BR />
-    * A key identifer shall be unique with respect to all key identifiers
-    * for the subject with which it is used. This extension is always non-critical.
-    */
-   public static final String SKI_OID = "2.5.29.14";
+    /**
+     * <CODE>SubjectKeyIdentifier (id-ce-subjectKeyIdentifier) (2.5.29.14)</CODE>:
+     * This extension identifies the public key being certified. It enables
+     * distinct keys used by the same subject to be differentiated
+     * (e.g., as key updating occurs).
+     * <BR />
+     * A key identifer shall be unique with respect to all key identifiers
+     * for the subject with which it is used. This extension is always non-critical.
+     */
+    public static final String SKI_OID = "2.5.29.14";
 
-   /**
-    * Constructor X509SKI
-    *
-    * @param doc
-    * @param skiBytes
-    */
-   public XMLX509SKI(Document doc, byte[] skiBytes) {
+    /**
+     * Constructor X509SKI
+     *
+     * @param doc
+     * @param skiBytes
+     */
+    public XMLX509SKI(Document doc, byte[] skiBytes) {
+        super(doc);
+        this.addBase64Text(skiBytes);
+    }
 
-      super(doc);
-
-      this.addBase64Text(skiBytes);
-   }
-
-   /**
-    * Constructor XMLX509SKI
-    *
-    * @param doc
-    * @param x509certificate
-    * @throws XMLSecurityException
-    */
-   public XMLX509SKI(Document doc, X509Certificate x509certificate)
+    /**
+     * Constructor XMLX509SKI
+     *
+     * @param doc
+     * @param x509certificate
+     * @throws XMLSecurityException
+     */
+    public XMLX509SKI(Document doc, X509Certificate x509certificate)
            throws XMLSecurityException {
+        super(doc);
+        this.addBase64Text(XMLX509SKI.getSKIBytesFromCert(x509certificate));
+    }
 
-      super(doc);
-
-      this.addBase64Text(XMLX509SKI.getSKIBytesFromCert(x509certificate));
-   }
-
-   /**
-    * Constructor XMLX509SKI
-    *
-    * @param element
-    * @param BaseURI
-    * @throws XMLSecurityException
-    */
-   public XMLX509SKI(Element element, String BaseURI)
+    /**
+     * Constructor XMLX509SKI
+     *
+     * @param element
+     * @param BaseURI
+     * @throws XMLSecurityException
+     */
+    public XMLX509SKI(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI);
-   }
+        super(element, BaseURI);
+    }
 
-   /**
-    * Method getSKIBytes
-    *
-    * @return the skibytes
-    * @throws XMLSecurityException
-    */
-   public byte[] getSKIBytes() throws XMLSecurityException {
-      return this.getBytesFromTextChild();
-   }
+    /**
+     * Method getSKIBytes
+     *
+     * @return the skibytes
+     * @throws XMLSecurityException
+     */
+    public byte[] getSKIBytes() throws XMLSecurityException {
+        return this.getBytesFromTextChild();
+    }
 
     /**
      * Method getSKIBytesFromCert
      *
      * @param cert
-     * @return sky bytes from the given certificate
+     * @return ski bytes from the given certificate
      *
      * @throws XMLSecurityException
      * @see java.security.cert.X509Extension#getExtensionValue(java.lang.String)
@@ -125,83 +118,32 @@ public class XMLX509SKI extends SignatureElementProxy
                                            exArgs);
         }
 
-        try {
-            /*
-	     * Gets the DER-encoded OCTET string for the extension value 
-	     * (extnValue) identified by the passed-in oid String. The oid 
-	     * string is represented by a set of positive whole numbers 
- 	     * separated by periods.
-             */
-            byte[] derEncodedValue = cert.getExtensionValue(XMLX509SKI.SKI_OID);
-            byte[] extensionValue = null;
-          
-            /**
-             * Use sun.security.util.DerValue if it is present.
-             */ 
-            try {              
-                DerValue dervalue = new DerValue(derEncodedValue);
-                if (dervalue == null) {
-                    throw new XMLSecurityException("certificate.noSki.null");
-                }
-                if (dervalue.tag != DerValue.tag_OctetString) {
-                    throw new XMLSecurityException
-			("certificate.noSki.notOctetString");
-                }
-                extensionValue = dervalue.getOctetString();              
-            } catch (NoClassDefFoundError e) {}
-          
-            /**
-             * Fall back to org.bouncycastle.asn1.DERInputStream
-             */ 
-            if (extensionValue == null) {
-                try {
-                    Class clazz = 
-			Class.forName("org.bouncycastle.asn1.DERInputStream");
-                    if (clazz != null) {
-                        Constructor constructor = clazz.getConstructor
-			    (new Class[]{InputStream.class});
-                        InputStream is = (InputStream) constructor.newInstance
-			    (new Object[]{
-				new ByteArrayInputStream(derEncodedValue)});
-                        Method method = 
-			    clazz.getMethod("readObject", new Class[]{});
-                        Object obj = method.invoke(is, new Object[]{});
-                        if (obj == null) {
-                            throw new XMLSecurityException
-				("certificate.noSki.null");
-                        }
-                        Class clazz2 = Class.forName
-			    ("org.bouncycastle.asn1.ASN1OctetString");
-                        if (!clazz2.isInstance(obj)) {
-                            throw new XMLSecurityException
-				("certificate.noSki.notOctetString");
-                        }
-                        Method method2 = clazz2.getMethod
-			    ("getOctets", new Class[]{});
-                        extensionValue = (byte[]) 
-			    method2.invoke(obj, new Object[]{});
-                    }
-                } catch (Throwable t) {}
-            }
-
-	    if (extensionValue == null) {
-                throw new XMLSecurityException("certificate.noSki.null");
-            }
-            /**
-             * Strip away first two bytes from the DerValue (tag and length)
-             */
-            byte abyte0[] = new byte[extensionValue.length - 2];
-
-            System.arraycopy(extensionValue, 2, abyte0, 0, abyte0.length);
-
-            if (log.isDebugEnabled()) {
-       	        log.debug("Base64 of SKI is " + Base64.encode(abyte0));
-	    }
-
-            return abyte0;
-        } catch (IOException ex) {
-             throw new XMLSecurityException("generic.EmptyMessage", ex);
+        /*
+         * Gets the DER-encoded OCTET string for the extension value 
+	 * (extnValue) identified by the passed-in oid String. The oid 
+	 * string is represented by a set of positive whole numbers 
+ 	 * separated by periods.
+         */
+        byte[] extensionValue = cert.getExtensionValue(XMLX509SKI.SKI_OID);
+        if (extensionValue == null) {
+            throw new XMLSecurityException("certificate.noSki.null");
         }
+          
+        /**
+         * Strip away first four bytes from the extensionValue 
+	 * The first two bytes are the tag and length of the extensionValue
+	 * OCTET STRING, and the next two bytes are the tag and length of
+	 * the skid OCTET STRING.
+         */
+        byte skidValue[] = new byte[extensionValue.length - 4];
+
+        System.arraycopy(extensionValue, 4, skidValue, 0, skidValue.length);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Base64 of SKI is " + Base64.encode(skidValue));
+	}
+
+        return skidValue;
     }
 
     /** @inheritDoc */
@@ -229,8 +171,8 @@ public class XMLX509SKI extends SignatureElementProxy
 	return 92;
     }
 
-   /** @inheritDoc */
-   public String getBaseLocalName() {
-      return Constants._TAG_X509SKI;
-   }
+    /** @inheritDoc */
+    public String getBaseLocalName() {
+        return Constants._TAG_X509SKI;
+    }
 }
