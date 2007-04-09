@@ -822,6 +822,12 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 	if (strEquals(a->getNodeName(), "xmlns") && strEquals(a->getNodeValue(), ""))
 		return false;
 
+	// If using a namespace stack, then we need to check whether the current node is in the nodeset
+	// Only really necessary for envelope txfms in boundary conditions
+
+	if (m_useNamespaceStack && m_XPathSelection && !m_XPathMap.hasNode(e))
+		return false;
+
 	// Otherwise, of node is at base of selected document, then print
 	if (e == mp_firstElementNode)
 		return true;
@@ -834,27 +840,27 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 		parent = e->getParentNode();
 		while (parent != NULL) {
 
-			DOMNamedNodeMap *pmap = parent->getAttributes();
-			DOMNode *pns;
-			if (pmap)
-				pns = pmap->getNamedItem(a->getNodeName());
-			else
-				pns = NULL;
-
-			if (pns != NULL) {
-
-				// Note we don't check XPath inclusion, as we shouldn't be
-				// using the namespace stack for XPath expressions
-
-				if (strEquals(pns->getNodeValue(), a->getNodeValue()))
-					return false;
+			if (!m_XPathSelection || m_XPathMap.hasNode(parent)) {
+				DOMNamedNodeMap *pmap = parent->getAttributes();
+				DOMNode *pns;
+				if (pmap)
+					pns = pmap->getNamedItem(a->getNodeName());
 				else
-					return true;		// Was defined but differently
+					pns = NULL;
+
+				if (pns != NULL) {
+
+					// Note we don't check XPath inclusion, as we shouldn't be
+					// using the namespace stack for XPath expressions
+
+					if (strEquals(pns->getNodeValue(), a->getNodeValue()))
+						return false;
+					else
+						return true;		// Was defined but differently
+				}
 			}
 			parent = parent->getParentNode();
-
 		}
-
 		// Obviously we haven't found it!
 		return true;
 	}
