@@ -1813,7 +1813,7 @@ public class Digester extends DefaultHandler {
      * Parse the content of the specified URL using this Digester.
      * Returns the root element from the object stack (if any).
      *
-     * @param urL URL containing the XML data to be parsed
+     * @param url URL containing the XML data to be parsed
      *
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
