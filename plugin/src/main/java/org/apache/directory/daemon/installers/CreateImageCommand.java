@@ -272,6 +272,21 @@ public class CreateImageCommand extends MojoCommand
             }
         }
 
+        // now copy over the jsvc executable renaming it to the applicationName 
+        if ( target.getOsName().equals( "linux" ) && target.getOsArch().equals( "x86_64" ) )
+        {
+            File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
+            try
+            {
+                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_linux_x86_64" ), executable );
+            }
+            catch ( IOException e )
+            {
+                throw new MojoFailureException( "Failed to copy jsvc executable file "
+                    + getClass().getResource( "jsvc_linux_x86_64" ) + " into position " + executable.getAbsolutePath() );
+            }
+        }
+
         // now copy over the jsvc executable renaming it to the mymojo.getApplicationName() 
         if ( target.getOsName().equals( "sunos" ) && target.getOsArch().equals( "sparc" ) )
         {
