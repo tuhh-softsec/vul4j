@@ -1,6 +1,5 @@
 package org.codehaus.plexus.util.xml;
 
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 
 import java.io.IOException;
@@ -307,14 +306,14 @@ public class Xpp3Dom
         
         String selfMergeMode = dominant.getAttribute( SELF_COMBINATION_MODE_ATTRIBUTE );
         
-        if ( StringUtils.isNotEmpty( selfMergeMode ) && SELF_COMBINATION_OVERRIDE.equals( selfMergeMode ) )
+        if ( isNotEmpty( selfMergeMode ) && SELF_COMBINATION_OVERRIDE.equals( selfMergeMode ) )
         {
             mergeSelf = false;
         }
         
         if ( mergeSelf )
         {
-            if ( StringUtils.isEmpty( dominant.getValue() ) )
+            if ( isEmpty( dominant.getValue() ) )
             {
                 dominant.setValue( recessive.getValue() );
             }
@@ -324,7 +323,7 @@ public class Xpp3Dom
             {
                 String attr = recessiveAttrs[i];
                 
-                if ( StringUtils.isEmpty( dominant.getAttribute( attr ) ) )
+                if ( isEmpty( dominant.getAttribute( attr ) ) )
                 {
                     dominant.setAttribute( attr, recessive.getAttribute( attr ) ); 
                 }
@@ -340,7 +339,7 @@ public class Xpp3Dom
             {
                 String childMergeMode = dominant.getAttribute( CHILDREN_COMBINATION_MODE_ATTRIBUTE );
                 
-                if ( StringUtils.isNotEmpty( childMergeMode ) && CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
+                if ( isNotEmpty( childMergeMode ) && CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
                 {
                     mergeChildren = false;
                 }
@@ -472,4 +471,15 @@ public class Xpp3Dom
         Xpp3DomWriter.write( xmlWriter, this, false );
         return writer.toString();
     }
+
+    public static boolean isNotEmpty( String str )
+    {
+        return ( str != null && str.length() > 0 );
+    }
+
+    public static boolean isEmpty( String str )
+    {
+        return ( str == null || str.trim().length() == 0 );
+    }
+
 }
