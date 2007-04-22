@@ -11,6 +11,7 @@ import java.util.Map;
 
 /**
  * @version $Id$
+ * NOTE: remove all the util code in here when separated, this class should be pure data.
  */
 public class Xpp3Dom
 {
