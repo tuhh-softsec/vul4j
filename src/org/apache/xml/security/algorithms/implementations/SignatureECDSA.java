@@ -18,6 +18,7 @@ package org.apache.xml.security.algorithms.implementations;
 
 
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -33,6 +34,7 @@ import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.Base64;
 
 
 /**
@@ -50,6 +52,105 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
 
    /** Field algorithm */
    private java.security.Signature _signatureAlgorithm = null;
+
+   /**
+    * Converts an ASN.1 ECDSA value to a XML Signature ECDSA Value.
+    *
+    * The JAVA JCE ECDSA Signature algorithm creates ASN.1 encoded (r,s) value
+    * pairs; the XML Signature requires the core BigInteger values.
+    *
+    * @param asn1Bytes
+    * @return the decode bytes
+    *
+    * @throws IOException
+    * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
+    * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
+    */
+   private static byte[] convertASN1toXMLDSIG(byte asn1Bytes[])
+           throws IOException {
+
+      byte rLength = asn1Bytes[3];
+      int i;
+
+      for (i = rLength; (i > 0) && (asn1Bytes[(4 + rLength) - i] == 0); i--);
+
+      byte sLength = asn1Bytes[5 + rLength];
+      int j;
+
+      for (j = sLength;
+              (j > 0) && (asn1Bytes[(6 + rLength + sLength) - j] == 0); j--);
+
+      if ((asn1Bytes[0] != 48) || (asn1Bytes[1] != asn1Bytes.length - 2)
+              || (asn1Bytes[2] != 2) || (i > 24)
+              || (asn1Bytes[4 + rLength] != 2) || (j > 24)) {
+         throw new IOException("Invalid ASN.1 format of ECDSA signature");
+      } 
+      byte xmldsigBytes[] = new byte[48];
+
+      System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, 24 - i,
+                          i);
+      System.arraycopy(asn1Bytes, (6 + rLength + sLength) - j, xmldsigBytes,
+                          48 - j, j);
+
+       return xmldsigBytes;      
+   }
+
+   /**
+    * Converts a XML Signature ECDSA Value to an ASN.1 DSA value.
+    *
+    * The JAVA JCE ECDSA Signature algorithm creates ASN.1 encoded (r,s) value
+    * pairs; the XML Signature requires the core BigInteger values.
+    *
+    * @param xmldsigBytes
+    * @return the encoded ASN.1 bytes
+    *
+    * @throws IOException
+    * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
+    * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
+    */
+   private static byte[] convertXMLDSIGtoASN1(byte xmldsigBytes[])
+           throws IOException {
+
+      if (xmldsigBytes.length != 48) {
+         throw new IOException("Invalid XMLDSIG format of ECDSA signature");
+      }
+
+      int i;
+
+      for (i = 24; (i > 0) && (xmldsigBytes[24 - i] == 0); i--);
+
+      int j = i;
+
+      if (xmldsigBytes[24 - i] < 0) {
+         j += 1;
+      }
+
+      int k;
+
+      for (k = 24; (k > 0) && (xmldsigBytes[48 - k] == 0); k--);
+
+      int l = k;
+
+      if (xmldsigBytes[48 - k] < 0) {
+         l += 1;
+      }
+
+      byte asn1Bytes[] = new byte[6 + j + l];
+
+      asn1Bytes[0] = 48;
+      asn1Bytes[1] = (byte) (4 + j + l);
+      asn1Bytes[2] = 2;
+      asn1Bytes[3] = (byte) j;
+
+      System.arraycopy(xmldsigBytes, 24 - i, asn1Bytes, (4 + j) - i, i);
+
+      asn1Bytes[4 + j] = 2;
+      asn1Bytes[5 + j] = (byte) l;
+
+      System.arraycopy(xmldsigBytes, 48 - k, asn1Bytes, (6 + j + l) - k, k);
+
+      return asn1Bytes;
+   }
 
    /**
     * Constructor SignatureRSA
@@ -98,8 +199,15 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
            throws XMLSignatureException {
 
       try {
-         return this._signatureAlgorithm.verify(signature);
+         byte[] jcebytes = SignatureECDSA.convertXMLDSIGtoASN1(signature);
+
+         if (log.isDebugEnabled())
+            log.debug("Called ECDSA.verify() on " + Base64.encode(signature));
+          
+         return this._signatureAlgorithm.verify(jcebytes);
       } catch (SignatureException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (IOException ex) {
          throw new XMLSignatureException("empty", ex);
       }
    }
@@ -127,9 +235,13 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
    protected byte[] engineSign() throws XMLSignatureException {
 
       try {
-         return this._signatureAlgorithm.sign();
+         byte jcebytes[] = this._signatureAlgorithm.sign();
+
+         return SignatureECDSA.convertASN1toXMLDSIG(jcebytes);
       } catch (SignatureException ex) {
          throw new XMLSignatureException("empty", ex);
+      } catch (IOException ex) {
+          throw new XMLSignatureException("empty", ex);
       }
    }
 
