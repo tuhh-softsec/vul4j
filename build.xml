@@ -286,6 +286,15 @@
 
 
     <!-- B U I L D  T A R G E T S -->
+	<!-- Forrest new -->
+	<property environment="env"/>
+	<property name="forrest.home" value="${env.FORREST_HOME}"/>
+	<property name="project.home" value="${dir.docs}"/>
+	<import file="${env.FORREST_HOME}/forrest.build.xml"/>
+	<!-- 'site' is a target imported from forrest.build.xml -->
+	<target name="raul-forrest" depends="site">			    	    	    
+	    <echo>something here</echo>
+	</target>
     <!-- source -->
     <target name="build.src"
             depends="do.check.libs,do.build.src,env.mk.dirs,do.check.bindist"
