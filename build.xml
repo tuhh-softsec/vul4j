@@ -289,13 +289,15 @@
 	<!-- Forrest new -->
 	<property environment="env"/>
 	<property name="forrest.home" value="${env.FORREST_HOME}"/>
-	<property name="project.home" value="${dir.docs}"/>
-	<import file="${env.FORREST_HOME}/forrest.build.xml"/>
+	<property name="project.home" value="${dir.docs}"/>	
 	<!-- 'site' is a target imported from forrest.build.xml -->
-	<target name="raul-forrest" depends="site">			    	    	    
-	    <echo>something here</echo>
+	<import file="${env.FORREST_HOME}/forrest.build.xml" optional="true"/>
+	<target name="raul-forrest"  if="env.FORREST_HOME">			    	    	    
+			
+			<antcall target="site"></antcall>
+			<echo>something here</echo>
 	</target>
-    <!-- source -->
+	<!-- source -->
     <target name="build.src"
             depends="do.check.libs,do.build.src,env.mk.dirs,do.check.bindist"
 			unless="is.bin.dist"
