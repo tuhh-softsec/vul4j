@@ -16,7 +16,7 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="4"/>
-    <property name="product.version.level" value="1Beta1"/>
+    <property name="product.version.level" value="1"/>
     <property name="product.Version" 
 			  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product.version" 
