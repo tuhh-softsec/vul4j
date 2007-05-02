@@ -269,29 +269,48 @@ public class FileUtils
     public static String fileRead( String file )
         throws IOException
     {
-        return fileRead( new File( file ) );
+        return fileRead( file, null );
+    }
+
+    public static String fileRead( String file, String encoding )
+        throws IOException
+    {
+        return fileRead( new File( file ), encoding );
     }
 
     public static String fileRead( File file )
         throws IOException
     {
+        return fileRead( file, null);
+    }
+
+    public static String fileRead( File file, String encoding )
+        throws IOException
+    {
         StringBuffer buf = new StringBuffer();
 
-        FileInputStream in = null;
+        Reader reader = null;
 
         try
         {
-            in = new FileInputStream( file );
-            int count;
-            byte[] b = new byte[512];
-            while ( ( count = in.read( b ) ) > 0 )  // blocking read
+            if ( encoding != null )
             {
-                buf.append( new String( b, 0, count ) );
+                reader = new InputStreamReader( new FileInputStream( file ), encoding );
+            }
+            else
+            {
+                reader = new InputStreamReader( new FileInputStream( file ) );
+            }
+            int count;
+            char[] b = new char[512];
+            while ( ( count = reader.read( b ) ) > 0 )  // blocking read
+            {
+                buf.append( b, 0, count );
             }
         }
         finally
         {
-            IOUtil.close( in );
+            IOUtil.close( reader );
         }
 
         return buf.toString();
@@ -306,11 +325,30 @@ public class FileUtils
     public static void fileAppend( String fileName, String data )
         throws IOException
     {
+        fileAppend( fileName, null, data);
+    }
+
+    /**
+     * Appends data to a file. The file will be created if it does not exist.
+     *
+     * @param fileName The name of the file to write.
+     * @param encoding The encoding of the file.
+     * @param data The content to write to the file.
+     */
+    public static void fileAppend( String fileName, String encoding, String data )
+    throws IOException
+    {
         FileOutputStream out = null;
         try
         {
             out = new FileOutputStream( fileName, true );
-            out.write( data.getBytes() );
+            if ( encoding != null ) {
+                out.write( data.getBytes( encoding ) );
+            }
+            else
+            {
+                out.write( data.getBytes() );
+            }
         }
         finally
         {
@@ -327,11 +365,30 @@ public class FileUtils
     public static void fileWrite( String fileName, String data )
         throws IOException
     {
+        fileWrite( fileName, null, data );
+    }
+
+    /**
+     * Writes data to a file. The file will be created if it does not exist.
+     *
+     * @param fileName The name of the file to write.
+     * @param encoding The encoding of the file.
+     * @param data The content to write to the file.
+     */
+    public static void fileWrite( String fileName, String encoding, String data )
+        throws IOException
+    {
         FileOutputStream out = null;
         try
         {
             out = new FileOutputStream( fileName );
-            out.write( data.getBytes() );
+            if ( encoding != null ) {
+                out.write( data.getBytes( encoding ) );
+            }
+            else
+            {
+                out.write( data.getBytes() );
+            }                    
         }
         finally
         {

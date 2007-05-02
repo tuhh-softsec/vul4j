@@ -29,7 +29,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import java.util.Properties;
 
@@ -858,4 +860,118 @@ public final class FileUtilsTest
         compareFile.delete();
     }
 
+    public void testFileRead() throws IOException
+    {
+        File testFile = new File( getTestDirectory(), "testFileRead.txt" );
+        String testFileName = testFile.getAbsolutePath();
+        // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
+        String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
+        Writer writer = null;
+        try
+        {
+            writer = new OutputStreamWriter( new FileOutputStream( testFile ) );
+            writer.write( testString );
+            writer.flush();
+        }
+        finally
+        {
+            writer.close();
+        }
+        assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFile ) );
+        assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFileName ) );
+        testFile.delete();
+    }
+
+    public void testFileReadWithEncoding() throws IOException
+    {
+        String encoding = "UTF-8";
+        File testFile = new File( getTestDirectory(), "testFileRead.txt" );
+        String testFileName = testFile.getAbsolutePath();
+        // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
+        String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
+        Writer writer = null;
+        try
+        {
+            writer = new OutputStreamWriter( new FileOutputStream( testFile ), encoding );
+            writer.write( testString );
+            writer.flush();
+        }
+        finally
+        {
+            writer.close();
+        }
+        assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFile, "UTF-8" ) );
+        assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFileName, "UTF-8" ) );
+        testFile.delete();
+    }
+
+    public void testFileAppend() throws IOException
+    {
+        String baseString = "abc";
+        File testFile = new File( getTestDirectory(), "testFileAppend.txt" );
+        String testFileName = testFile.getAbsolutePath();
+        Writer writer = null;
+        try
+        {
+            writer = new OutputStreamWriter( new FileOutputStream( testFile ) );
+            writer.write( baseString );
+            writer.flush();
+        }
+        finally
+        {
+            writer.close();
+        }
+        // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
+        String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
+        FileUtils.fileAppend( testFileName, testString );
+        assertEqualContent( ( baseString + testString ).getBytes(), testFile );
+        testFile.delete();
+    }
+
+    public void testFileAppendWithEncoding() throws IOException
+    {
+        String baseString = "abc";
+        String encoding = "UTF-8";
+        File testFile = new File( getTestDirectory(), "testFileAppend.txt" );
+        String testFileName = testFile.getAbsolutePath();
+        Writer writer = null;
+        try
+        {
+            writer = new OutputStreamWriter( new FileOutputStream( testFile ), encoding );
+            writer.write( baseString );
+            writer.flush();
+        }
+        finally
+        {
+            writer.close();
+        }
+        // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
+        String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
+        FileUtils.fileAppend( testFileName, encoding, testString );
+        assertEqualContent( ( baseString + testString ).getBytes( encoding ), testFile );
+        testFile.delete();
+    }
+
+    public void testFileWrite() throws IOException
+    {
+        File testFile = new File( getTestDirectory(), "testFileWrite.txt" );
+        String testFileName = testFile.getAbsolutePath();
+        // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
+        String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
+        FileUtils.fileWrite( testFileName, testString );
+        assertEqualContent( testString.getBytes(), testFile );
+        testFile.delete();
+    }
+
+    public void testFileWriteWithEncoding() throws IOException
+    {
+        String encoding = "UTF-8";
+        File testFile = new File( getTestDirectory(), "testFileWrite.txt" );
+        String testFileName = testFile.getAbsolutePath();
+        // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
+        String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
+        FileUtils.fileWrite( testFileName, encoding, testString );
+        assertEqualContent( testString.getBytes( encoding ), testFile );
+        testFile.delete();
+    }
 }
