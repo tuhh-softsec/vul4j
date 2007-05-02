@@ -23,6 +23,18 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>      
+      	<title>May 2007</title>
+		<p>
+		  Version 1.4.1 of the Jave library has been released. This a bugfix release that 
+          contains a major bugfix to the canonicalization engine introduced in 1.4 release. 
+          It is recomend that 1.4 users upgrade to the new version as signatures contianing 
+          non ascii characters created by this library are not according to the standard, and will be only validated by 1.4 library. 
+        </p>
+		<p>
+		 Please see <link href="site:changes">changelog</link> for more information.
+		</p>
+      </section>
+      <section>      
       	<title>January 2007</title>
 		<p>
 		  Version 1.3.1 of the C++ library has been released. This release
