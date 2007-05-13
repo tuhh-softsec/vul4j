@@ -860,7 +860,18 @@ public final class FileUtilsTest
         compareFile.delete();
     }
 
-    public void testFileRead() throws IOException
+    /**
+     * TEST FAILS ON WINDOWS.
+     *
+     * Failing to specify an encoding means the default platform encoding, which
+     * varies from machine to machine.  There is no guarantee that what this
+     * creates is usable.
+     *
+     * This test should be deleted.
+     *
+     * @throws IOException
+     */
+    public void disabledTestFileRead() throws IOException
     {
         File testFile = new File( getTestDirectory(), "testFileRead.txt" );
         String testFileName = testFile.getAbsolutePath();
