@@ -24,17 +24,17 @@ package org.codehaus.plexus.util.cli;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.cli.shell.BourneShell;
-import org.codehaus.plexus.util.cli.shell.CmdShell;
-import org.codehaus.plexus.util.cli.shell.Shell;
-
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 
 import junit.framework.TestCase;
+
+import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.cli.shell.BourneShell;
+import org.codehaus.plexus.util.cli.shell.CmdShell;
+import org.codehaus.plexus.util.cli.shell.Shell;
 
 public class CommandlineTest
     extends TestCase
@@ -206,7 +206,7 @@ public class CommandlineTest
         assertEquals( "/X", shellCommandline[1] );
         assertEquals( "/C", shellCommandline[2] );
         String expectedShellCmd = "\"c:" + File.separator + "Program Files" + File.separator + "xxx\" a b";
-        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[3] );
     }
 
@@ -225,7 +225,7 @@ public class CommandlineTest
         assertEquals( "/C", shellCommandline[2] );
         String expectedShellCmd = "\"c:" + File.separator + "Program Files" + File.separator
             + "xxx\" \"c:\\Documents and Settings\\whatever\" b";
-        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
+        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[3] );
     }
 
@@ -251,7 +251,6 @@ public class CommandlineTest
         {
             expectedShellCmd = "\\bin\\echo \"hello world\"";
         }
-        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
 
@@ -277,7 +276,6 @@ public class CommandlineTest
         {
             expectedShellCmd = "\\bin\\echo \'hello world\'";
         }
-        //        expectedShellCmd = "\"" + expectedShellCmd + "\"";
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
 
