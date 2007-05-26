@@ -9,10 +9,12 @@
   <artifactId>daemon-bootstrappers</artifactId>
   <name>Apache Directory Daemon Bootstrappers</name>
   <packaging>jar</packaging>
+
   <description>
     Daemon bootstrappers which initialize a classloader with jars laid out in 
     an installation footprint.
   </description>
+
   <distributionManagement>
     <site>
       <id>apache.websites</id>
@@ -21,6 +23,7 @@
       </url>
     </site>
   </distributionManagement>
+
   <build>
     <plugins>
       <plugin>

@@ -9,36 +9,43 @@
   <artifactId>daemon-plugin</artifactId>
   <name>Apache Directory Daemon Plugin (Maven 2)</name>
   <packaging>maven-plugin</packaging>
+
   <description>
     A plugin that builds installers using bootstrappers and commons-daemon procrun and jsvc
   </description>
+
   <distributionManagement>
     <site>
       <id>apache.websites</id>
       <url>scp://minotaur.apache.org/www/directory.apache.org/newsite/subprojects/daemon/</url>
     </site>
   </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>daemon-bootstrappers</artifactId>
       <version>${pom.version}</version>
     </dependency>  
+
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>2.0.1</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>2.0</version>
     </dependency>
+
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>1.0.2</version>
     </dependency>
+
     <dependency>
       <groupId>izpack</groupId>
       <artifactId>standalone-compiler</artifactId>
@@ -51,14 +58,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
       </plugin>
 
     </plugins>
   </build>
 
 </project>
-
