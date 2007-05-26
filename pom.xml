@@ -9,6 +9,7 @@
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
   <version>1.4.3-SNAPSHOT</version>
+  <url>http://plexus.codehaus.org/plexus-utils</url>
   <build>
     <plugins>
       <plugin>

@@ -388,7 +388,7 @@ public class FileUtils
             else
             {
                 out.write( data.getBytes() );
-            }                    
+            }
         }
         finally
         {
@@ -1205,7 +1205,7 @@ public class FileUtils
     public static void forceDelete( final File file )
         throws IOException
     {
-        if ( !file.exists() )
+        if ( !( file.exists() || file.getAbsoluteFile().exists() || file.getCanonicalFile().exists() ) )
         {
             return;
         }
@@ -1241,6 +1241,7 @@ public class FileUtils
         {
             if ( System.getProperty( "os.name" ).toLowerCase().indexOf( "windows" ) > -1 )
             {
+                file = file.getCanonicalFile();
                 System.gc();
             }
 
@@ -1948,31 +1949,32 @@ public class FileUtils
     {
         public abstract Reader getReader( Reader fileReader );
     }
-    
-    public static List loadFile( File file ) throws IOException
+
+    public static List loadFile( File file )
+        throws IOException
     {
-                List lines = new ArrayList();
-            
-                if ( file.exists() )
+        List lines = new ArrayList();
+
+        if ( file.exists() )
         {
-                        BufferedReader reader = new BufferedReader( new FileReader( file ) );
-               
-                        String line = reader.readLine();
-               
-                        while ( line != null )
+            BufferedReader reader = new BufferedReader( new FileReader( file ) );
+
+            String line = reader.readLine();
+
+            while ( line != null )
             {
-                                line = line.trim();
-                   
-                                if ( !line.startsWith( "#" ) && line.length() != 0 )
+                line = line.trim();
+
+                if ( !line.startsWith( "#" ) && line.length() != 0 )
                 {
-                                        lines.add ( line );
+                    lines.add( line );
                 }
-                                line = reader.readLine();
+                line = reader.readLine();
             }
-               
-                        reader.close();
+
+            reader.close();
         }
-            
-                return lines;
+
+        return lines;
     }
 }

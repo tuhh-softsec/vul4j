@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -984,5 +985,50 @@ public final class FileUtilsTest
         FileUtils.fileWrite( testFileName, encoding, testString );
         assertEqualContent( testString.getBytes( encoding ), testFile );
         testFile.delete();
+    }
+
+    /**
+     * Workaround for the following Sun bugs. They are fixed in JDK 6u1 and JDK 5u11.
+     *
+     * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4403166">Sun bug id=4403166</a>
+     * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6182812">Sun bug id=6182812</a>
+     * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6481955">Sun bug id=6481955</a>
+     *
+     * @throws Exception
+     */
+    public void testDeleteLongPathOnWindows()
+        throws Exception
+    {
+        if ( System.getProperty( "os.name" ).toLowerCase().indexOf( "windows" ) == -1 )
+        {
+            return;
+        }
+
+        File a = new File( getTestDirectory(), "longpath" );
+        a.mkdir();
+        File a1 = new File( a, "a" );
+        a1.mkdir();
+
+        StringBuffer path = new StringBuffer( "" );
+        for ( int i = 0; i < 100; i++ )
+        {
+            path.append( "../a/" );
+        }
+
+        File f = new File( a1, path.toString() + "test.txt" );
+
+        InputStream is = new StringInputStream( "Blabla" );
+        OutputStream os = new FileOutputStream( f.getCanonicalFile() );
+        IOUtil.copy( is, os );
+        IOUtil.close( is );
+        IOUtil.close( os );
+
+        FileUtils.forceDelete( f );
+
+        File f1 = new File( a1, "test.txt" );
+        if ( f1.exists() )
+        {
+            throw new Exception( "Unable to delete the file :" + f1.getAbsolutePath() );
+        }
     }
 }
