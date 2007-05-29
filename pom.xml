@@ -2,9 +2,9 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.directory</groupId>
-    <artifactId>build</artifactId>
-    <version>1.0.7-SNAPSHOT</version>
+    <groupId>org.apache.directory.project</groupId>
+    <artifactId>project</artifactId>
+    <version>7</version>
   </parent>
   <groupId>org.apache.directory.daemon</groupId>
   <artifactId>build</artifactId>
@@ -19,32 +19,41 @@
     Windows NT services.  Reusable bootstrappers along with an installer
     plugin allow for the rapid creation of standalone daemon applications.
   </description>
+
   <modules>
     <module>bootstrappers</module>
     <module>plugin</module>
   </modules>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>nlog4j</artifactId>
       <version>1.2.25</version>
     </dependency>
+
     <dependency>
       <groupId>commons-daemon</groupId>
       <artifactId>commons-daemon</artifactId>
       <version>1.0.1</version>
     </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+
   </dependencies>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/trunks/daemon</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/directory/trunks/daemon</developerConnection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/daemon/trunk</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/directory/daemon/trunk</developerConnection>
   </scm>
 
   <build>
     <pluginManagement>
       <plugins>
-  
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -62,12 +71,10 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>2.0.2</version>
         </plugin>
-
       </plugins>
     </pluginManagement>
  
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -87,7 +94,6 @@
           <encoding>ISO-8859-1</encoding>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>
