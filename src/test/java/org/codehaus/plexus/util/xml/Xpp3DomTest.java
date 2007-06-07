@@ -1,5 +1,10 @@
 package org.codehaus.plexus.util.xml;
 
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.StringReader;
+
 import junit.framework.TestCase;
 
 public class Xpp3DomTest
@@ -92,7 +97,7 @@ public class Xpp3DomTest
 
         // this is still 2, since we're not using the merge-control attribute.
         assertEquals( 2, result.getAttributeNames().length );
-        
+
         assertEquals( result.getValue(), t2.getValue() );
     }
 
@@ -146,5 +151,44 @@ public class Xpp3DomTest
         assertEquals( dom, dom );
         assertFalse( dom.equals( null ) );
         assertFalse( dom.equals( new Xpp3Dom( (String) null ) ) );
+    }
+
+    public void testShouldOverwritePluginConfigurationSubItemsByDefault()
+        throws XmlPullParserException, IOException
+    {
+        String parentConfigStr = "<configuration><items><item>one</item><item>two</item></items></configuration>";
+        Xpp3Dom parentConfig = Xpp3DomBuilder.build( new StringReader( parentConfigStr ) );
+
+        String childConfigStr = "<configuration><items><item>three</item></items></configuration>";
+        Xpp3Dom childConfig = Xpp3DomBuilder.build( new StringReader( childConfigStr ) );
+
+        Xpp3Dom result = Xpp3Dom.mergeXpp3Dom( childConfig, parentConfig );
+        Xpp3Dom items = result.getChild( "items" );
+
+        assertEquals( 1, items.getChildCount() );
+
+        Xpp3Dom item = items.getChild( 0 );
+        assertEquals( "three", item.getValue() );
+    }
+
+    public void testShouldMergePluginConfigurationSubItemsWithMergeAttributeSet()
+        throws XmlPullParserException, IOException
+    {
+        String parentConfigStr = "<configuration><items><item>one</item><item>two</item></items></configuration>";
+        Xpp3Dom parentConfig = Xpp3DomBuilder.build( new StringReader( parentConfigStr ) );
+
+        String childConfigStr = "<configuration><items combine.children=\"append\"><item>three</item></items></configuration>";
+        Xpp3Dom childConfig = Xpp3DomBuilder.build( new StringReader( childConfigStr ) );
+
+        Xpp3Dom result = Xpp3Dom.mergeXpp3Dom( childConfig, parentConfig );
+        Xpp3Dom items = result.getChild( "items" );
+
+        assertEquals( 3, items.getChildCount() );
+
+        Xpp3Dom[] item = items.getChildren();
+
+        assertEquals( "one", item[0].getValue() );
+        assertEquals( "two", item[1].getValue() );
+        assertEquals( "three", item[2].getValue() );
     }
 }
