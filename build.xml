@@ -183,6 +183,7 @@
     <patternset id="id.patternset.srcUnitTestsFiles">
 		<include name="src_unitTests/org/apache/xml/security/test/**/*"/>
 		<include name="src_unitTests/org/apache/xml/security/test/**/*.html"/>
+		<include name="src_unitTests/org/apache/xml/security/c14n/**/*"/>
     </patternset>
 
     <!-- T A R G E T S -->
