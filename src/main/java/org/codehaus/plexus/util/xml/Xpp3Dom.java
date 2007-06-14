@@ -21,9 +21,9 @@ public class Xpp3Dom
 
     protected Map attributes;
 
-    protected List childList;
+    protected final List childList;
 
-    protected Map childMap;
+    protected final Map childMap;
 
     protected Xpp3Dom parent;
 
@@ -65,6 +65,9 @@ public class Xpp3Dom
         childMap = new HashMap();
     }
 
+    /**
+     * Copy constructor.
+     */
     public Xpp3Dom( Xpp3Dom src )
     {
         this( src.getName() );
@@ -347,13 +350,10 @@ public class Xpp3Dom
             }
 
             Xpp3Dom[] dominantChildren = dominant.getChildren();
-            if ( !mergeChildren && ( dominantChildren != null ) )
+            if ( !mergeChildren )
             {
                 // remove these now, so we can append them to the recessive list later.
-                for ( int i = 0; i < dominantChildren.length; i++ )
-                {
-                    dominant.removeChild( i );
-                }
+                dominant.childList.clear();
             }
 
             Xpp3Dom[] children = recessive.getChildren();
@@ -371,7 +371,7 @@ public class Xpp3Dom
                 }
             }
 
-            if ( !mergeChildren && ( dominantChildren != null ) )
+            if ( !mergeChildren )
             {
                 // now, re-add these children so they'll be appended to the recessive list.
                 for ( int i = 0; i < dominantChildren.length; i++ )
