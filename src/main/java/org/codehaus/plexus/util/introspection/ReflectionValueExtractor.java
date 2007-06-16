@@ -17,7 +17,7 @@ package org.codehaus.plexus.util.introspection;
  */
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -33,13 +33,16 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class ReflectionValueExtractor
 {
-    private static Class[] args = new Class[ 0 ];
+    private static final Class[] CLASS_ARGS = new Class[ 0 ];
 
-    private static Object[] params = new Object[ 0 ];
+    private static final Object[] OBJECT_ARGS = new Object[ 0 ];
 
-    private static ClassMap classMap;
-
-    private static Map classMaps = new HashMap();
+    /**
+     * Use a WeakHashMap here, so the keys (Class objects) can be garbage collected.
+     * This approach prevents permgen space overflows due to retention of discarded
+     * classloaders.
+     */
+    private static final Map classMaps = new WeakHashMap();
 
     private ReflectionValueExtractor()
     {
@@ -79,20 +82,20 @@ public class ReflectionValueExtractor
                 return null;
             }
 
-            classMap = getClassMap( value.getClass() );
+            ClassMap classMap = getClassMap( value.getClass() );
 
             String methodBase = StringUtils.capitalizeFirstLetter( token );
             
             String methodName = "get" + methodBase;
 
-            Method method = classMap.findMethod( methodName, args );
+            Method method = classMap.findMethod( methodName, CLASS_ARGS );
             
             if ( method == null )
             {
                 // perhaps this is a boolean property??
                 methodName = "is" + methodBase;
                 
-                method = classMap.findMethod( methodName, args );
+                method = classMap.findMethod( methodName, CLASS_ARGS );
             }
 
             if ( method == null )
@@ -100,7 +103,7 @@ public class ReflectionValueExtractor
                 return null;
             }
 
-            value = method.invoke( value, params );
+            value = method.invoke( value, OBJECT_ARGS );
         }
 
         return value;
@@ -108,7 +111,7 @@ public class ReflectionValueExtractor
 
     private static ClassMap getClassMap( Class clazz )
     {
-        classMap = (ClassMap) classMaps.get( clazz );
+        ClassMap classMap = (ClassMap) classMaps.get( clazz );
 
         if ( classMap == null )
         {
