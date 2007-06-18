@@ -2,92 +2,76 @@ package org.codehaus.plexus.util.cli;
 
 /*
  * The MIT License
- *
+ * 
  * Copyright (c) 2004, The Codehaus
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do
- * so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/********************************************************************************
- * CruiseControl, a Continuous Integration Toolkit
- * Copyright (c) 2001-2003, ThoughtWorks, Inc.
- * 651 W Washington Ave. Suite 500
- * Chicago, IL 60661 USA
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *     + Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *
- *     + Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *
- *     + Neither the name of ThoughtWorks, Inc., CruiseControl, nor the
- *       names of its contributors may be used to endorse or promote
- *       products derived from this software without specific prior
- *       written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- ********************************************************************************/
+/***************************************************************************************************
+ * CruiseControl, a Continuous Integration Toolkit Copyright (c) 2001-2003, ThoughtWorks, Inc. 651 W
+ * Washington Ave. Suite 500 Chicago, IL 60661 USA All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, are permitted
+ * provided that the following conditions are met: + Redistributions of source code must retain the
+ * above copyright notice, this list of conditions and the following disclaimer. + Redistributions
+ * in binary form must reproduce the above copyright notice, this list of conditions and the
+ * following disclaimer in the documentation and/or other materials provided with the distribution. +
+ * Neither the name of ThoughtWorks, Inc., CruiseControl, nor the names of its contributors may be
+ * used to endorse or promote products derived from this software without specific prior written
+ * permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+ * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ **************************************************************************************************/
 
-/* ====================================================================
- * Copyright 2003-2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ====================================================================
+/*
+ * ==================================================================== Copyright 2003-2004 The
+ * Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License. ====================================================================
  */
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 
 import org.codehaus.plexus.util.cli.shell.BourneShell;
 import org.codehaus.plexus.util.cli.shell.CmdShell;
 import org.codehaus.plexus.util.cli.shell.CommandShell;
 import org.codehaus.plexus.util.cli.shell.Shell;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Vector;
 
 /**
  * <p/>
@@ -126,17 +110,19 @@ public class Commandline
 
     protected Vector arguments = new Vector();
 
-    protected Vector envVars = new Vector();
+    //protected Vector envVars = new Vector();
+    // synchronized added to preserve synchronize of Vector class 
+    protected Map envVars = Collections.synchronizedMap( new LinkedHashMap() );
 
     private long pid = -1;
 
     private Shell shell;
-    
+
     /**
      * @deprecated Use {@link Commandline#setExecutable(String)} instead.
      */
     protected String executable;
-    
+
     /**
      * @deprecated Use {@link Commandline#setWorkingDirectory(File)} or 
      * {@link Commandline#setWorkingDirectory(String)} instead.
@@ -152,7 +138,7 @@ public class Commandline
     public Commandline( String toProcess, Shell shell )
     {
         this.shell = shell;
-        
+
         String[] tmp = new String[0];
         try
         {
@@ -233,7 +219,6 @@ public class Commandline
         this.pid = pid;
     }
 
-
     /**
      * Class to keep track of the position of an Argument.
      */
@@ -272,7 +257,6 @@ public class Commandline
             return realPos;
         }
     }
-
 
     /**
      * <p>Sets the shell or command-line interpretor for the detected operating system,
@@ -419,12 +403,12 @@ public class Commandline
     public String getExecutable()
     {
         String exec = shell.getExecutable();
-        
+
         if ( exec == null )
         {
             exec = executable;
         }
-        
+
         return exec;
     }
 
@@ -439,10 +423,10 @@ public class Commandline
     /**
      * Add an environment variable
      */
-    public void addEnvironment( String name,
-                                String value )
+    public void addEnvironment( String name, String value )
     {
-        envVars.add( name + "=" + value );
+        //envVars.add( name + "=" + value );
+        envVars.put( name, value );
     }
 
     /**
@@ -451,13 +435,15 @@ public class Commandline
     public void addSystemEnvironment()
         throws Exception
     {
-        Properties envVars = CommandLineUtils.getSystemEnvVars();
+        Properties systemEnvVars = CommandLineUtils.getSystemEnvVars();
 
-        for ( Iterator i = envVars.keySet().iterator(); i.hasNext(); )
+        for ( Iterator i = systemEnvVars.keySet().iterator(); i.hasNext(); )
         {
             String key = (String) i.next();
-
-            addEnvironment( key, envVars.getProperty( key ) );
+            if ( !envVars.containsKey( key ) )
+            {
+                addEnvironment( key, systemEnvVars.getProperty( key ) );
+            }
         }
     }
 
@@ -475,8 +461,16 @@ public class Commandline
         {
             throw new CommandLineException( "Error setting up environmental variables", e );
         }
-
-        return (String[]) envVars.toArray( new String[envVars.size()] );
+        String[] environmentVars = new String[envVars.size()];
+        int i = 0;
+        for ( Iterator iterator = envVars.keySet().iterator(); iterator.hasNext(); )
+        {
+            String name = (String) iterator.next();
+            String value = (String) envVars.get( name );
+            environmentVars[i] = name + "=" + value;
+            i++;
+        }
+        return environmentVars;
     }
 
     /**
@@ -486,7 +480,7 @@ public class Commandline
     {
         final String[] args = getArguments();
         String executable = getExecutable();
-        
+
         if ( executable == null )
         {
             return args;
@@ -504,7 +498,7 @@ public class Commandline
     {
         // TODO: Provided only for backward compat. with <= 1.4
         verifyShellState();
-        
+
         return (String[]) getShell().getShellCommandLine( getArguments() ).toArray( new String[0] );
     }
 
@@ -605,12 +599,12 @@ public class Commandline
     public File getWorkingDirectory()
     {
         File workDir = shell.getWorkingDirectory();
-        
+
         if ( workDir == null )
         {
             workDir = workingDir;
         }
-        
+
         return workDir;
     }
 
@@ -622,7 +616,7 @@ public class Commandline
     {
         // TODO: Provided only for backward compat. with <= 1.4
         verifyShellState();
-        
+
         Process process;
 
         //addEnvironment( "MAVEN_TEST_ENVAR", "MAVEN_TEST_ENVAR_VALUE" );
@@ -630,7 +624,7 @@ public class Commandline
         String[] environment = getEnvironmentVariables();
 
         File workingDir = shell.getWorkingDirectory();
-        
+
         try
         {
             if ( workingDir == null )
@@ -641,13 +635,13 @@ public class Commandline
             {
                 if ( !workingDir.exists() )
                 {
-                    throw new CommandLineException(
-                        "Working directory \"" + workingDir.getPath() + "\" does not exist!" );
+                    throw new CommandLineException( "Working directory \"" + workingDir.getPath()
+                        + "\" does not exist!" );
                 }
                 else if ( !workingDir.isDirectory() )
                 {
-                    throw new CommandLineException(
-                        "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
+                    throw new CommandLineException( "Path \"" + workingDir.getPath()
+                        + "\" does not specify a directory." );
                 }
 
                 process = Runtime.getRuntime().exec( getShellCommandline(), environment, workingDir );
@@ -670,7 +664,7 @@ public class Commandline
         {
             shell.setWorkingDirectory( workingDir );
         }
-        
+
         if ( shell.getExecutable() == null )
         {
             shell.setExecutable( executable );
@@ -712,7 +706,7 @@ public class Commandline
     {
         return CommandLineUtils.translateCommandline( toProcess );
     }
-    
+
     /**
      * @deprecated Use {@link CommandLineUtils#quote(String)} instead.
      */
@@ -729,7 +723,7 @@ public class Commandline
     {
         return CommandLineUtils.toString( line );
     }
-    
+
     public static class Argument
         implements Arg
     {

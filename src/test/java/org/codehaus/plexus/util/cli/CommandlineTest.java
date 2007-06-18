@@ -2,32 +2,31 @@ package org.codehaus.plexus.util.cli;
 
 /*
  * The MIT License
- *
+ * 
  * Copyright (c) 2004, The Codehaus
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do
- * so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -247,7 +246,7 @@ public class CommandlineTest
         assertEquals( "/bin/bash", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \"hello world\"";
-        if (Os.isFamily( "windows" ))
+        if ( Os.isFamily( "windows" ) )
         {
             expectedShellCmd = "\\bin\\echo \"hello world\"";
         }
@@ -272,7 +271,7 @@ public class CommandlineTest
         assertEquals( "/bin/bash", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \'hello world\'";
-        if (Os.isFamily( "windows" ))
+        if ( Os.isFamily( "windows" ) )
         {
             expectedShellCmd = "\\bin\\echo \'hello world\'";
         }
@@ -291,9 +290,7 @@ public class CommandlineTest
 
         assertEquals( "/bin/bash", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
-        
-        
-        
+
         if ( Os.isFamily( "windows" ) )
         {
             assertEquals( "\\usr\\bin a b", shellCommandline[2] );
@@ -311,4 +308,44 @@ public class CommandlineTest
         cmd.addEnvironment( "name", "value" );
         assertEquals( "name=value", cmd.getEnvironmentVariables()[0] );
     }
+
+    public void testEnvironmentWitOverrideSystemEnvironment()
+        throws Exception
+    {
+
+        Commandline cmd = new Commandline();
+        cmd.addSystemEnvironment();
+        cmd.addEnvironment( "JAVA_HOME", "/usr/jdk1.5" );
+        String[] environmentVariables = cmd.getEnvironmentVariables();
+
+        for ( int i = 0, size = environmentVariables.length; i < size; i++ )
+        {
+            if ( "JAVA_HOME=/usr/jdk1.5".equals( environmentVariables[i] ) )
+            {
+                return;
+            }
+        }
+
+        fail( "can't find JAVA_HOME=/usr/jdk1.5" );
+    }
+
+    public void testEnvironmentWitSystemEnvironment()
+        throws Exception
+    {
+        String javaHome = System.getProperty( "JAVA_HOME" );
+        Commandline cmd = new Commandline();
+        cmd.addSystemEnvironment();
+        String[] environmentVariables = cmd.getEnvironmentVariables();
+
+        for ( int i = 0, size = environmentVariables.length; i < size; i++ )
+        {
+            if ( ( "JAVA_HOME=" + javaHome ).equals( environmentVariables[i] ) )
+            {
+                return;
+            }
+        }
+
+        fail( "can't find JAVA_HOME=" + javaHome );
+    }
+
 }
