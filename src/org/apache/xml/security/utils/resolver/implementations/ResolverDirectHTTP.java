@@ -117,25 +117,26 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
             useProxy = true;
          }
 
-         String oldProxySet =
-            (String) System.getProperties().get("http.proxySet");
-         String oldProxyHost =
-            (String) System.getProperties().get("http.proxyHost");
-         String oldProxyPort =
-            (String) System.getProperties().get("http.proxyPort");
+	 String oldProxySet = null;
+	 String oldProxyHost = null;
+	 String oldProxyPort = null;
+         // switch on proxy usage
+         if (useProxy) {
+            if (log.isDebugEnabled()) {
+            	log.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
+                      + proxyPort);
+	    }
+            oldProxySet = System.getProperty("http.proxySet");
+            oldProxyHost = System.getProperty("http.proxyHost");
+            oldProxyPort = System.getProperty("http.proxyPort");
+            System.setProperty("http.proxySet", "true");
+            System.setProperty("http.proxyHost", proxyHost);
+            System.setProperty("http.proxyPort", proxyPort);
+         }
+
          boolean switchBackProxy = ((oldProxySet != null)
                                     && (oldProxyHost != null)
                                     && (oldProxyPort != null));
-
-         // switch on proxy usage
-         if (useProxy) {
-            if (log.isDebugEnabled())
-            	log.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
-                      + proxyPort);
-            System.getProperties().put("http.proxySet", "true");
-            System.getProperties().put("http.proxyHost", proxyHost);
-            System.getProperties().put("http.proxyPort", proxyPort);
-         }
 
          // calculate new URI
          URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
@@ -223,10 +224,10 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          result.setMIMEType(mimeType);
 
          // switch off proxy usage
-         if (switchBackProxy) {
-            System.getProperties().put("http.proxySet", oldProxySet);
-            System.getProperties().put("http.proxyHost", oldProxyHost);
-            System.getProperties().put("http.proxyPort", oldProxyPort);
+         if (useProxy && switchBackProxy) {
+            System.setProperty("http.proxySet", oldProxySet);
+            System.setProperty("http.proxyHost", oldProxyHost);
+            System.setProperty("http.proxyPort", oldProxyPort);
          }
 
          return result;
@@ -261,19 +262,22 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          return false;
       }
 
-      if (log.isDebugEnabled())
-      	log.debug("I was asked whether I can resolve " + uriNodeValue);
+      if (log.isDebugEnabled()) {
+      	 log.debug("I was asked whether I can resolve " + uriNodeValue);
+      }
 
       if ( uriNodeValue.startsWith("http:") ||
 				(BaseURI!=null && BaseURI.startsWith("http:") )) {
-         if (log.isDebugEnabled())
-         	log.debug("I state that I can resolve " + uriNodeValue);
+         if (log.isDebugEnabled()) {
+       	    log.debug("I state that I can resolve " + uriNodeValue);
+	 }
 
          return true;
       }
 
-      if (log.isDebugEnabled())
-      	log.debug("I state that I can't resolve " + uriNodeValue);
+      if (log.isDebugEnabled()) {
+      	 log.debug("I state that I can't resolve " + uriNodeValue);
+      }
 
       return false;
    }
