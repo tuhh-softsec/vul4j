@@ -229,7 +229,7 @@ public abstract class CommandLineUtils
         {
             int idx = line.indexOf( '=' );
 
-            if ( idx > 1 )
+            if ( idx > 0 )
             {
                 lastKey = line.substring( 0, idx );
 
