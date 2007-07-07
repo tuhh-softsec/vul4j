@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.plexus.util.StringUtils;
+
 /**
  * @author Jason van Zyl
  *  @version $Id$
@@ -30,35 +32,35 @@ public class BourneShell
     {
         this( false );
     }
-    
+
     public BourneShell( boolean isLoginShell )
     {
         setShellCommand( "/bin/bash" );
         setSingleQuotedArgumentEscaped( true );
         setSingleQuotedExecutableEscaped( true );
         setQuotedExecutableEnabled( false );
-        
+
         if ( isLoginShell )
         {
             addShellArg( "-l" );
         }
     }
-    
+
     public List getShellArgsList()
     {
         List shellArgs = new ArrayList();
         List existingShellArgs = super.getShellArgsList();
-        
+
         if ( existingShellArgs != null && !existingShellArgs.isEmpty() )
         {
             shellArgs.addAll( existingShellArgs );
         }
-        
+
         shellArgs.add( "-c" );
-        
+
         return shellArgs;
     }
-    
+
     public String[] getShellArgs()
     {
         String[] shellArgs = super.getShellArgs();
@@ -66,32 +68,58 @@ public class BourneShell
         {
            shellArgs = new String[0];
         }
-        
+
         if ( shellArgs.length > 0 && !shellArgs[shellArgs.length-1].equals( "-c" ) )
         {
             String[] newArgs = new String[shellArgs.length + 1];
-            
+
             System.arraycopy( shellArgs, 0, newArgs, 0, shellArgs.length );
             newArgs[shellArgs.length] = "-c";
-            
+
             shellArgs = newArgs;
         }
-        
+
         return shellArgs;
     }
-    
+
     public String getExecutable()
     {
         File wd = getWorkingDirectory();
-        
+
         if ( wd != null )
         {
-            return "cd " + getWorkingDirectory().getAbsolutePath() + " && " + super.getExecutable();
+            String path = getWorkingDirectory().getAbsolutePath();
+            String exe = super.getExecutable();
+            return "cd " + handleQuote( path ) + " && " + handleQuote( exe );
         }
         else
         {
             return super.getExecutable();
         }
     }
-    
+
+    /**
+     * Convenience method to handle single or double quote in a path
+     *
+     * @param path
+     * @return corrected path
+     */
+    private static String handleQuote( String path )
+    {
+        if ( path.indexOf( "\'" ) > -1 )
+        {
+            return StringUtils.replace( path, "\'", "\\'" );
+        }
+        if ( path.indexOf( "'" ) > -1 )
+        {
+            return StringUtils.replace( path, "'", "\\'" );
+        }
+        if ( path.indexOf( "\"" ) > -1 )
+        {
+            return StringUtils.replace( path, "\"", "\\\"" );
+        }
+
+
+        return path;
+    }
 }

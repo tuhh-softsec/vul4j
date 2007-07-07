@@ -2,18 +2,18 @@ package org.codehaus.plexus.util.cli;
 
 /*
  * The MIT License
- * 
+ *
  * Copyright (c) 2004, The Codehaus
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
  * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
@@ -22,12 +22,15 @@ package org.codehaus.plexus.util.cli;
  */
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import junit.framework.TestCase;
 
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.cli.shell.BourneShell;
 import org.codehaus.plexus.util.cli.shell.CmdShell;
@@ -346,4 +349,64 @@ public class CommandlineTest
         fail( "can't find JAVA_HOME=" + javaHome );
     }
 
+    /**
+     * Test an executable with a quote in its path
+     *
+     * @throws Exception
+     */
+    public void testQuotedPath()
+        throws Exception
+    {
+        File dir = new File( "target/quotedpath'test" );
+        dir.mkdirs();
+
+        // Create a script file
+        File bat;
+        if ( Os.isFamily( "windows" ) )
+        {
+            bat = new File( dir, "echo.bat" );
+        }
+        else
+        {
+            bat = new File( dir, "echo" );
+        }
+
+        Writer w = new FileWriter( bat );
+        try{
+            IOUtil.copy( "echo Quoted", w );
+        }
+        finally
+        {
+            IOUtil.close( w );
+        }
+
+        // Change permission
+        if ( !Os.isFamily( "windows" ) )
+        {
+            Runtime.getRuntime().exec( new String[] { "chmod", "a+x", bat.getAbsolutePath() } );
+        }
+
+        Commandline cmd = new Commandline();
+        cmd.setExecutable( bat.getAbsolutePath() );
+        cmd.setWorkingDirectory( dir );
+
+        CommandLineUtils.StringStreamConsumer err = new CommandLineUtils.StringStreamConsumer();
+
+        try
+        {
+            int exitCode = CommandLineUtils.executeCommandLine( cmd, new DefaultConsumer(), err );
+
+            if ( exitCode != 0 )
+            {
+                StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - " + err.getOutput() );
+                msg.append( '\n' );
+                msg.append( "Command line was:" + Commandline.toString( cmd.getCommandline() ) );
+                throw new Exception( msg.toString() );
+            }
+        }
+        catch ( CommandLineException e )
+        {
+            throw new Exception( "Unable to execute command: " + e.getMessage(), e );
+        }
+    }
 }
