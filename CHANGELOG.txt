@@ -1,4 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
+New in ...
+    Fixed bug 42820: ClassLoader issue causing NoSuchAlgorithmException loading 
+	Provider Implementation. Thanks to James Washington.
 New in 1.4.1
     Fixed bug 42239: ECDSA signature value interoperability patch. Thanks to Wolfgang Glas for fix.
 
