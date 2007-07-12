@@ -173,15 +173,11 @@ final class XMLDSigSecurity {
         String providerName = pp.provider.getName();
 
     	try {
-            // Load the implementation class using the same class loader that
-	    // was used to load the associated provider.
-	    // In order to get the class loader of a class, the caller's class
-	    // loader must be the same as or an ancestor of the class loader
-	    // being returned.
-	    // Since java.security.Security is a system class, it can get the
-	    // class loader of any class (the system class loader is an
-	    // ancestor of all class loaders).
-	    ClassLoader cl = pp.provider.getClass().getClassLoader();
+            // Load the implementation class using the class loader of 
+	    // typeClass. This insures checkSuperClass won't fail due to
+	    // typeClass and the implementation class being loaded from
+	    // two different class loaders.
+	    ClassLoader cl = typeClass.getClassLoader();
 	    Class implClass;
 	    if (cl != null) {
 		implClass = cl.loadClass(className);
