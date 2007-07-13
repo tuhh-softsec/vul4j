@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
-  <version>1.4.3</version>
+  <version>1.4.4-SNAPSHOT</version>
   <url>http://plexus.codehaus.org/plexus-utils</url>
   <build>
     <plugins>
@@ -44,9 +44,9 @@
     </plugins>
   </build>
   <scm> 
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/tags/plexus-utils-1.4.3</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/tags/plexus-utils-1.4.3</developerConnection> 
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/tags/plexus-utils-1.4.3</url>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection> 
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
   </scm>
   <reporting>
     <plugins>
