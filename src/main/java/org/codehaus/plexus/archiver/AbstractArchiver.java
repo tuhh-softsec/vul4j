@@ -42,11 +42,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @version $Id$
@@ -89,6 +91,8 @@ public abstract class AbstractArchiver
 
     // contextualized.
     private ArchiverManager archiverManager;
+
+    private Set explodedArchiveDirs = new HashSet();
 
     public void setDefaultFileMode( int mode )
     {
@@ -196,7 +200,7 @@ public abstract class AbstractArchiver
                 if ( isSelected( fileSelectors, fileInfo ) )
                 {
                     String targetDir = prefix + sourceDir;
-    
+
                     getDirs().put( targetDir,
                                    ArchiveEntry.createDirectoryEntry( targetDir, dir,
                                                                       getDefaultDirectoryMode() ) );
@@ -400,6 +404,7 @@ public abstract class AbstractArchiver
         }
 
         final File tempDir = FileUtils.createTempFile( "archived-file-set.", ".tmp", null );
+        explodedArchiveDirs.add( tempDir );
 
         // FIXME: It's not a good idea to litter the temp dir with these file-set directories...
         // However, the IDEs cannot accommodate shutdown hooks, so I'm taking this out.
@@ -556,7 +561,7 @@ public abstract class AbstractArchiver
 
     public void setArchiveFinalizers( List archiveFinalizers )
     {
-        this.finalizers = archiveFinalizers;
+        finalizers = archiveFinalizers;
     }
 
     public void setDotFileDirectory( File dotFileDirectory )
@@ -575,7 +580,7 @@ public abstract class AbstractArchiver
         }
 
         Map archiveEntries = getFiles();
-        if ( archiveEntries == null || archiveEntries.isEmpty() )
+        if ( ( archiveEntries == null ) || archiveEntries.isEmpty() )
         {
             getLogger().debug( "isUp2date: false (No input files.)" );
             return false; // No timestamp to compare
@@ -639,7 +644,7 @@ public abstract class AbstractArchiver
     private boolean include( InputStream in, String path )
         throws ArchiveFilterException
     {
-        return filterSupport == null || filterSupport.include( in, path );
+        return ( filterSupport == null ) || filterSupport.include( in, path );
     }
 
     public final void createArchive()
@@ -678,6 +683,8 @@ public abstract class AbstractArchiver
         }
         finally
         {
+            cleanUpInternal();
+
             cleanUp();
         }
     }
@@ -692,7 +699,7 @@ public abstract class AbstractArchiver
 
                 List virtualFiles = finalizer.getVirtualFiles();
 
-                if ( virtualFiles != null && !virtualFiles.isEmpty() )
+                if ( ( virtualFiles != null ) && !virtualFiles.isEmpty() )
                 {
                     return true;
                 }
@@ -709,6 +716,26 @@ public abstract class AbstractArchiver
     protected void validate()
         throws ArchiverException, IOException
     {
+    }
+
+    private void cleanUpInternal()
+    {
+        for ( Iterator it = explodedArchiveDirs.iterator(); it.hasNext(); )
+        {
+            File dir = (File) it.next();
+
+            if ( dir.exists() )
+            {
+                try
+                {
+                    FileUtils.forceDelete( dir );
+                }
+                catch ( IOException e )
+                {
+                    getLogger().debug( "Failed to delete exploded-archive temp directory: " + dir, e );
+                }
+            }
+        }
     }
 
     protected abstract String getArchiveType();
