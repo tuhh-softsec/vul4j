@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 42866: Error when removing encrypted content in 1.4.1. Thanks to
+	Julien Taupin and Daniele Gagliardi.
     Fixed bug 42820: ClassLoader issue causing NoSuchAlgorithmException loading 
 	Provider Implementation. Thanks to James Washington.
 New in 1.4.1
