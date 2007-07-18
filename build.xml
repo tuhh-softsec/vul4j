@@ -256,20 +256,22 @@
     </javadoc>
   </target>
 
-
-  <target name="dist" depends="compile,javadoc"
-   description="Create binary distribution">
+  <target name="jar" depends="compile, test"
+   description="Create commons-digester.jar">
     <mkdir      dir="${dist.home}"/>
+    <jar    jarfile="${dist.home}/commons-${component.name}.jar"
+            basedir="${build.home}/classes"
+           manifest="${build.home}/conf/MANIFEST.MF"/>
+  </target>
+
+  <target name="dist" depends="jar,javadoc"
+   description="Create binary distribution">
     <copy      file="LICENSE.txt"
               todir="${dist.home}"/>
-    <mkdir      dir="${build.home}/classes/META-INF"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
     <copy      file="NOTICE.txt"
               todir="${dist.home}"/>
-    <jar    jarfile="${dist.home}/commons-${component.name}.jar"
-            basedir="${build.home}/classes"
-           manifest="${build.home}/conf/MANIFEST.MF"/>
   </target>
 
 
