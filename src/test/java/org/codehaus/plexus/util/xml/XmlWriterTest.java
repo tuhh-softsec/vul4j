@@ -1,6 +1,6 @@
 package org.codehaus.plexus.util.xml;
 
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.codehaus.plexus.util.IOUtil;
@@ -8,7 +8,7 @@ import org.codehaus.plexus.util.IOUtil;
 import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 
-public class XmlReaderTest
+public class XmlWriterTest
     extends TestCase
 {
     /** french */
@@ -40,13 +40,16 @@ public class XmlReaderTest
     private static void checkXmlContent( String xml, String encoding )
     throws IOException
     {
-        byte[] xmlContent = xml.getBytes( encoding );
-        XmlReader reader = new XmlReader( new ByteArrayInputStream( xmlContent ) );
-        String result = IOUtil.toString( reader );
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        XmlWriter writer = new XmlWriter( out );
+        writer.write( xml );
+        writer.close();
+        byte[] xmlContent = out.toByteArray();
+        String result = new String( xmlContent, encoding );
         assertEquals( xml, result );
     }
 
-    private static void checkXmlReader( String text, String encoding )
+    private static void checkXmlWriter( String text, String encoding )
     throws IOException
     {
         String xml = createXmlContent( text, encoding );
@@ -61,77 +64,76 @@ public class XmlReaderTest
         checkXmlContent( xml, "UTF-8" );
     }
 
+    public void testEmpty()
+    throws IOException
+    {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        XmlWriter writer = new XmlWriter( out );
+        writer.flush();
+        writer.write( "" );
+        writer.flush();
+        writer.write( "." );
+        writer.flush();
+        writer.close();
+    }
+
     public void testDefaultEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, null );
+        checkXmlWriter( TEXT_UNICODE, null );
     }
 
     public void testUTF8Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-8" );
+        checkXmlWriter( TEXT_UNICODE, "UTF-8" );
     }
 
     public void testUTF16Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-16" );
+        checkXmlWriter( TEXT_UNICODE, "UTF-16" );
     }
 
     public void testUTF16BEEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-16BE" );
+        checkXmlWriter( TEXT_UNICODE, "UTF-16BE" );
     }
 
     public void testUTF16LEEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-16LE" );
+        checkXmlWriter( TEXT_UNICODE, "UTF-16LE" );
     }
 
     public void testLatin1Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_LATIN1, "ISO-8859-1" );
+        checkXmlWriter( TEXT_LATIN1, "ISO-8859-1" );
     }
 
     public void testLatin7Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_LATIN7, "ISO-8859-7" );
+        checkXmlWriter( TEXT_LATIN7, "ISO-8859-7" );
     }
 
     public void testLatin15Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_LATIN15, "ISO-8859-15" );
+        checkXmlWriter( TEXT_LATIN15, "ISO-8859-15" );
     }
 
     public void testEUC_JPEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_EUC_JP, "EUC-JP" );
+        checkXmlWriter( TEXT_EUC_JP, "EUC-JP" );
     }
 
     public void testEBCDICEncoding()
     throws IOException
     {
-        checkXmlReader( "simple text in EBCDIC", "CP1047" );
-    }
-
-    public void testInappropriateEncoding()
-    throws IOException
-    {
-        try
-        {
-            checkXmlReader( TEXT_UNICODE, "ISO-8859-2" );
-            fail( "Check should have failed, since some characters are not available in the specified encoding" );
-        }
-        catch ( ComparisonFailure cf )
-        {
-            // expected failure, since the encoding does not contain some characters
-        }
+        checkXmlWriter( "simple text in EBCDIC", "CP1047" );
     }
 }

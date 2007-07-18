@@ -20,21 +20,20 @@ package org.codehaus.plexus.util;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.xml.XmlWriter;
 
 /**
- * Utility to create Readers from streams, with explicit encoding choice: platform default,
+ * Utility to create Writers, with explicit encoding choice: platform default,
  * XML, or specified.
  * 
  * @author <a href="mailto:hboutemy@codehaus.org">Herve Boutemy</a>
@@ -42,7 +41,7 @@ import org.codehaus.plexus.util.xml.XmlReader;
  * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
  * @version $Id$
  */
-public class ReaderFactory
+public class WriterFactory
 {
     /**
      * ISO Latin Alphabet #1, also known as ISO-LATIN-1.
@@ -93,88 +92,59 @@ public class ReaderFactory
     public static final String FILE_ENCODING = System.getProperty( "file.encoding" );
     
     /**
-     * Create a new Reader with XML encoding detection rules.
-     * @see XmlReader
+     * Create a new Writer with XML encoding detection rules.
+     * @see XmlWriter
      */
-    public static XmlReader newXmlReader( InputStream in )
+    public static XmlWriter newXmlWriter( OutputStream out )
     throws IOException
     {
-        return new XmlReader( in );
+        return new XmlWriter( out );
     }
 
     /**
-     * Create a new Reader with XML encoding detection rules.
-     * @see XmlReader
+     * Create a new Writer with XML encoding detection rules.
+     * @see XmlWriter
      */
-    public static XmlReader newXmlReader( File file )
+    public static XmlWriter newXmlWriter( File file )
     throws IOException
     {
-        return new XmlReader( file );
+        return new XmlWriter( file );
     }
 
     /**
-     * Create a new Reader with XML encoding detection rules.
-     * @see XmlReader
+     * Create a new Writer with default plaform encoding.
      */
-    public static XmlReader newXmlReader( URL url )
+    public static Writer newPlatformWriter( OutputStream out )
+    {
+        return new OutputStreamWriter( out );
+    }
+
+    /**
+     * Create a new Writer with default plaform encoding.
+     */
+    public static Writer newPlatformWriter( File file )
     throws IOException
     {
-        return new XmlReader( url );
+        return new FileWriter( file );
     }
 
     /**
-     * Create a new Reader with default plaform encoding.
-     */
-    public static Reader newPlatformReader( InputStream in )
-    {
-        return new InputStreamReader( in );
-    }
-
-    /**
-     * Create a new Reader with default plaform encoding.
-     */
-    public static Reader newPlatformReader( File file )
-    throws FileNotFoundException
-    {
-        return new FileReader( file );
-    }
-
-    /**
-     * Create a new Reader with default plaform encoding.
-     */
-    public static Reader newPlatformReader( URL url )
-    throws IOException
-    {
-        return new InputStreamReader( url.openStream() );
-    }
-
-    /**
-     * Create a new Reader with specified encoding.
+     * Create a new Writer with specified encoding.
      * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
      */
-    public static Reader newReader( InputStream in, String encoding )
+    public static Writer newWriter( OutputStream out, String encoding )
     throws UnsupportedEncodingException
     {
-        return new InputStreamReader( in, encoding );
+        return new OutputStreamWriter( out, encoding );
     }
 
     /**
-     * Create a new Reader with specified encoding.
+     * Create a new Writer with specified encoding.
      * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
      */
-    public static Reader newReader( File file, String encoding )
-    throws FileNotFoundException, UnsupportedEncodingException
+    public static Writer newWriter( File file, String encoding )
+    throws UnsupportedEncodingException, FileNotFoundException
     {
-        return new InputStreamReader( new FileInputStream(file), encoding );
-    }
-
-    /**
-     * Create a new Reader with specified encoding.
-     * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
-     */
-    public static Reader newReader( URL url, String encoding )
-    throws IOException
-    {
-        return new InputStreamReader( url.openStream(), encoding );
+        return newWriter( new FileOutputStream(file), encoding );
     }
 }

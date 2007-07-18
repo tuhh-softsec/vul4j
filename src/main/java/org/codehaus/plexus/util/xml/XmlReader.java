@@ -689,7 +689,7 @@ public class XmlReader extends Reader
         return encoding;
     }
 
-    private static final Pattern ENCODING_PATTERN =
+    static final Pattern ENCODING_PATTERN =
         Pattern.compile( "<\\?xml.*encoding[\\s]*=[\\s]*((?:\".[^\"]*\")|(?:'.[^']*'))", Pattern.MULTILINE );
 
     // returns the encoding declared in the <?xml encoding=...?>, NULL if none
