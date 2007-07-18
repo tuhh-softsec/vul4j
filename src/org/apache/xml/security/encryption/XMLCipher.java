@@ -1360,13 +1360,9 @@ public class XMLCipher {
      *
      * @param node the <code>Node</code> to clear.
      */
-    private void removeContent(Node node) {
-        NodeList list = node.getChildNodes();
-        for (int i=0; i<list.getLength(); i++) {
-            Node n = list.item(i);
-            if (n != null) {
-                n.getParentNode().removeChild(n);
-            }
+    private static void removeContent(Node node) {
+       while (node.hasChildNodes()) {
+            node.removeChild(node.getFirstChild());
         }
     }
 
