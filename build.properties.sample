@@ -1,57 +1,56 @@
-#------------------------------------------------------------------------
-# Ant configuration file
+#   Licensed to the Apache Software Foundation (ASF) under one or more
+#   contributor license agreements.  See the NOTICE file distributed with
+#   this work for additional information regarding copyright ownership.
+#   The ASF licenses this file to You under the Apache License, Version 2.0
+#   (the "License"); you may not use this file except in compliance with
+#   the License.  You may obtain a copy of the License at
 #
-# When building Digester using Ant it is necessary to provide Ant with
-# some configuration information about the setup of the host machine on
-# which the build is happening. 
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+##########################################################################
+# Sample Ant build.properties file
+#
+# This setup assumes dependent jars are in a local maven 1 repository.
+# However the jars are located, the properties ending in ".jar" need
+# expand to full paths to the jars.
 #
 # Copy this file (build.properties.sample) to "build.properties" then edit
 # entries below as appropriate before running any Ant commands.
-#
-#------------------------------------------------------------------------
+##########################################################################
 
-# Specify a base directory where required jar files can be found.
-# Alternatively, provide complete paths to all of the needed libaries below.
+# Repository base path
+repository=${user.home}/.maven/repository
 
-root=/java/jars
+# JUnit
+junit.home=${repository}/junit/jars
+junit.jar=${junit.home}/junit-3.8.1.jar
 
+# XML parser
 # When using java 1.3 or earlier, JAXP is not included in the standard
 # libraries, so external jar files are required. If you are using Java
 # 1.4 or later, you can omit these libraries
-#
-# Note that when using xerces parser, the bundled xml-apis.jar provides the
-# same classes as Sun's jaxp.jar.
+jaxp.parser.home=${repository}/xerces/jars
+jaxp.parser.jar=${jaxp.parser.home}/xerces-2.0.2.jar
+jaxp.jaxp.home=${repository}/xml-apis/jars
+jaxp.jaxp.jar=${jaxp.jaxp.home}/xml-apis-1.0.b2.jar
 
-jaxp.home=${root}
-jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
-jaxp.parser.jar=${jaxp.home}/crimson.jar
+# Commons logging
+commons-logging.home=${repository}/commons-logging/jars
+commons-logging.jar=${commons-logging.home}/commons-logging-1.1.jar
 
-# Digester depends upon several other commons projects. 
-#
-# If you are building Digester from a checkout of the "trunks-proper" directory
-# and have already built the latest code for each of the dependent projects 
-# then these paths are automatically correct. 
-#
-# In other circumstances, provide direct paths (possibly based on ${root}
-# to all these required libraries.
-#
-# Note that Digester no longer depends on commons-collections itself; there is
-# a runtime dependency currently inherited from commons-beanutils, however.
-#
-# See file project.xml or RELEASE-NOTES.txt for the specific versions of these
-# files which are required.
-
-commons-beanutils.home=../beanutils/dist
-commons-beanutils.jar=${commons-beanutils.home}/commons-beanutils.jar
-commons-logging.home=../logging/dist
-commons-logging.jar=${commons-logging.home}/commons-logging.jar
-
-# JUnit is required if compiling/running the unit tests
-
-junit.jar=${root}/junit.jar
+# Commons beanutils
+commons-beanutils.home=${repository}/commons-beanutils/jars
+commons-beanutils.jar=${commons-beanutils.home}/commons-beanutils-1.7.0.jar
 
 # The digester tests output logging information (including Exceptions) 
 # which can often be confusing to new developers.
 # This output is suppressed by default but can be re-enabled by
 #suppressLogOutputDuringTests=false 
 suppressLogOutputDuringTests=true
+
