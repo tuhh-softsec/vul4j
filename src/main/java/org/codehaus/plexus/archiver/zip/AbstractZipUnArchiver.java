@@ -106,7 +106,7 @@ public abstract class AbstractZipUnArchiver
     protected void execute()
         throws ArchiverException
     {
-        getLogger().info( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
+        getLogger().debug( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
         ZipFile zf = null;
         try
         {
@@ -180,7 +180,7 @@ public abstract class AbstractZipUnArchiver
 
         try
         {
-            if ( !isOverwrite() && f.exists() && f.lastModified() >= entryDate.getTime() )
+            if ( !isOverwrite() && f.exists() && ( f.lastModified() >= entryDate.getTime() ) )
             {
                 return;
             }
@@ -230,7 +230,7 @@ public abstract class AbstractZipUnArchiver
             }
 
             f.setLastModified( entryDate.getTime() );
-            
+
             if ( mode != null )
             {
                 ArchiveEntryUtils.chmod( f, mode.intValue(), getLogger() );

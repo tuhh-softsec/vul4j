@@ -306,9 +306,17 @@ public abstract class AbstractArchiver
 
         try
         {
-            fileStream = new FileInputStream( inputFile );
+            // do a null check here, to avoid creating a file stream if there are no filters...
+            if ( filterSupport != null )
+            {
+                fileStream = new FileInputStream( inputFile );
 
-            if ( include( fileStream, destFileName ) )
+                if ( include( fileStream, destFileName ) )
+                {
+                    filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+                }
+            }
+            else
             {
                 filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
             }
