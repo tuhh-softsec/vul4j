@@ -14,6 +14,11 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.w3c.dom.Document;
 
 public class SignatureAlgorithmTest extends TestCase {
+
+	static {
+	    org.apache.xml.security.Init.init();
+	}
+
 	public void testSameKeySeveralAlgorithSigning() throws Exception {
 		Document doc=DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		SignatureAlgorithm signatureAlgorithm = new SignatureAlgorithm(doc,XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1);
