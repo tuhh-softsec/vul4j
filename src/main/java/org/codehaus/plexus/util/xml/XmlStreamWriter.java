@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * Character stream that handles (or at least attemtps to) all the necessary Voodo to figure out the charset encoding of
  * the XML document written to the stream.
  */
-public class XmlWriter
+public class XmlStreamWriter
 extends Writer
 {
     private static final int BUFFER_SIZE = 4096;
@@ -47,12 +47,12 @@ extends Writer
 
     private String encoding;
     
-    public XmlWriter( OutputStream out )
+    public XmlStreamWriter( OutputStream out )
     {
         this.out = out;
     }
     
-    public XmlWriter( File file )
+    public XmlStreamWriter( File file )
     throws FileNotFoundException
     {
         this( new FileOutputStream( file ) );

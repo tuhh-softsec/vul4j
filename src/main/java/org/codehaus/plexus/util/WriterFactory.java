@@ -30,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import org.codehaus.plexus.util.xml.XmlWriter;
+import org.codehaus.plexus.util.xml.XmlStreamWriter;
 
 /**
  * Utility to create Writers, with explicit encoding choice: platform default,
@@ -93,22 +93,22 @@ public class WriterFactory
     
     /**
      * Create a new Writer with XML encoding detection rules.
-     * @see XmlWriter
+     * @see XmlStreamWriter
      */
-    public static XmlWriter newXmlWriter( OutputStream out )
+    public static XmlStreamWriter newXmlWriter( OutputStream out )
     throws IOException
     {
-        return new XmlWriter( out );
+        return new XmlStreamWriter( out );
     }
 
     /**
      * Create a new Writer with XML encoding detection rules.
-     * @see XmlWriter
+     * @see XmlStreamWriter
      */
-    public static XmlWriter newXmlWriter( File file )
+    public static XmlStreamWriter newXmlWriter( File file )
     throws IOException
     {
-        return new XmlWriter( file );
+        return new XmlStreamWriter( file );
     }
 
     /**

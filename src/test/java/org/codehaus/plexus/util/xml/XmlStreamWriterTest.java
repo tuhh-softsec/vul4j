@@ -8,7 +8,7 @@ import org.codehaus.plexus.util.IOUtil;
 import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 
-public class XmlWriterTest
+public class XmlStreamWriterTest
     extends TestCase
 {
     /** french */
@@ -41,7 +41,7 @@ public class XmlWriterTest
     throws IOException
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        XmlWriter writer = new XmlWriter( out );
+        XmlStreamWriter writer = new XmlStreamWriter( out );
         writer.write( xml );
         writer.close();
         byte[] xmlContent = out.toByteArray();
@@ -68,7 +68,7 @@ public class XmlWriterTest
     throws IOException
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        XmlWriter writer = new XmlWriter( out );
+        XmlStreamWriter writer = new XmlStreamWriter( out );
         writer.flush();
         writer.write( "" );
         writer.flush();
