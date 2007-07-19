@@ -52,6 +52,7 @@ import java.text.MessageFormat;
  * 
  * @author Alejandro Abdelnur
  * @version revision 1.17 taken on 26/06/2007 from Rome (see https://rome.dev.java.net/source/browse/rome/src/java/com/sun/syndication/io/XmlReader.java)
+ * @deprecated use XmlStreamReader
  */
 public class XmlReader extends Reader
 {
@@ -156,7 +157,7 @@ public class XmlReader extends Reader
      * <p>
      * Else 'UTF-8' is used.
      * <p>
-     * If lenient detection is indicated an XmlReaderException is never thrown.
+     * If lenient detection is indicated an XmlStreamReaderException is never thrown.
      * <p>
      * 
      * @param is
@@ -165,18 +166,18 @@ public class XmlReader extends Reader
      *            indicates if the charset encoding detection should be relaxed.
      * @throws IOException
      *             thrown if there is a problem reading the stream.
-     * @throws XmlReaderException
+     * @throws XmlStreamReaderException
      *             thrown if the charset encoding could not be determined according to the specs.
      * 
      */
-    public XmlReader( InputStream is, boolean lenient ) throws IOException, XmlReaderException
+    public XmlReader( InputStream is, boolean lenient ) throws IOException, XmlStreamReaderException
     {
         _defaultEncoding = _staticDefaultEncoding;
         try
         {
             doRawStream( is, lenient );
         }
-        catch ( XmlReaderException ex )
+        catch ( XmlStreamReaderException ex )
         {
             if ( !lenient )
             {
@@ -240,7 +241,7 @@ public class XmlReader extends Reader
             {
                 doHttpStream( conn.getInputStream(), conn.getContentType(), lenient );
             }
-            catch ( XmlReaderException ex )
+            catch ( XmlStreamReaderException ex )
             {
                 doLenientDetection( conn.getContentType(), ex );
             }
@@ -251,7 +252,7 @@ public class XmlReader extends Reader
             {
                 doHttpStream( conn.getInputStream(), conn.getContentType(), lenient );
             }
-            catch ( XmlReaderException ex )
+            catch ( XmlStreamReaderException ex )
             {
                 doLenientDetection( conn.getContentType(), ex );
             }
@@ -262,7 +263,7 @@ public class XmlReader extends Reader
             {
                 doRawStream( conn.getInputStream(), lenient );
             }
-            catch ( XmlReaderException ex )
+            catch ( XmlStreamReaderException ex )
             {
                 doLenientDetection( null, ex );
             }
@@ -311,7 +312,7 @@ public class XmlReader extends Reader
      * <p>
      * Else 'UTF-8' is used.
      * <p>
-     * If lenient detection is indicated an XmlReaderException is never thrown.
+     * If lenient detection is indicated an XmlStreamReaderException is never thrown.
      * <p>
      * 
      * @param is
@@ -322,19 +323,19 @@ public class XmlReader extends Reader
      *            indicates if the charset encoding detection should be relaxed.
      * @throws IOException
      *             thrown if there is a problem reading the file.
-     * @throws XmlReaderException
+     * @throws XmlStreamReaderException
      *             thrown if the charset encoding could not be determined according to the specs.
      * 
      */
     public XmlReader( InputStream is, String httpContentType, boolean lenient, String defaultEncoding )
-        throws IOException, XmlReaderException
+        throws IOException, XmlStreamReaderException
     {
         _defaultEncoding = ( defaultEncoding == null ) ? _staticDefaultEncoding : defaultEncoding;
         try
         {
             doHttpStream( is, httpContentType, lenient );
         }
-        catch ( XmlReaderException ex )
+        catch ( XmlStreamReaderException ex )
         {
             if ( !lenient )
             {
@@ -366,7 +367,7 @@ public class XmlReader extends Reader
      * <p>
      * Else 'UTF-8' is used.
      * <p>
-     * If lenient detection is indicated an XmlReaderException is never thrown.
+     * If lenient detection is indicated an XmlStreamReaderException is never thrown.
      * <p>
      * 
      * @param is
@@ -377,16 +378,16 @@ public class XmlReader extends Reader
      *            indicates if the charset encoding detection should be relaxed.
      * @throws IOException
      *             thrown if there is a problem reading the file.
-     * @throws XmlReaderException
+     * @throws XmlStreamReaderException
      *             thrown if the charset encoding could not be determined according to the specs.
      * 
      */
-    public XmlReader( InputStream is, String httpContentType, boolean lenient ) throws IOException, XmlReaderException
+    public XmlReader( InputStream is, String httpContentType, boolean lenient ) throws IOException, XmlStreamReaderException
     {
         this( is, httpContentType, lenient, null );
     }
 
-    private void doLenientDetection( String httpContentType, XmlReaderException ex ) throws IOException
+    private void doLenientDetection( String httpContentType, XmlStreamReaderException ex ) throws IOException
     {
         if ( httpContentType != null )
         {
@@ -399,7 +400,7 @@ public class XmlReader extends Reader
                     doHttpStream( ex.getInputStream(), httpContentType, true );
                     ex = null;
                 }
-                catch ( XmlReaderException ex2 )
+                catch ( XmlStreamReaderException ex2 )
                 {
                     ex = ex2;
                 }
@@ -478,7 +479,7 @@ public class XmlReader extends Reader
         _encoding = encoding;
     }
 
-    // InputStream is passed for XmlReaderException creation only
+    // InputStream is passed for XmlStreamReaderException creation only
     private String calculateRawEncoding( String bomEnc, String xmlGuessEnc, String xmlEnc, InputStream is )
         throws IOException
     {
@@ -502,12 +503,12 @@ public class XmlReader extends Reader
         {
             if ( xmlGuessEnc != null && !xmlGuessEnc.equals( UTF_8 ) )
             {
-                throw new XmlReaderException( RAW_EX_1.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
+                throw new XmlStreamReaderException( RAW_EX_1.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
                                               xmlGuessEnc, xmlEnc, is );
             }
             if ( xmlEnc != null && !xmlEnc.equals( UTF_8 ) )
             {
-                throw new XmlReaderException( RAW_EX_1.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
+                throw new XmlStreamReaderException( RAW_EX_1.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
                                               xmlGuessEnc, xmlEnc, is );
             }
             encoding = UTF_8;
@@ -520,20 +521,20 @@ public class XmlReader extends Reader
             }
             if ( xmlEnc != null && !xmlEnc.equals( UTF_16 ) && !xmlEnc.equals( bomEnc ) )
             {
-                throw new XmlReaderException( RAW_EX_1.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
+                throw new XmlStreamReaderException( RAW_EX_1.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
                                               xmlGuessEnc, xmlEnc, is );
             }
             encoding = bomEnc;
         }
         else
         {
-            throw new XmlReaderException( RAW_EX_2.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
+            throw new XmlStreamReaderException( RAW_EX_2.format( new Object[] { bomEnc, xmlGuessEnc, xmlEnc } ), bomEnc,
                                           xmlGuessEnc, xmlEnc, is );
         }
         return encoding;
     }
 
-    // InputStream is passed for XmlReaderException creation only
+    // InputStream is passed for XmlStreamReaderException creation only
     private String calculateHttpEncoding( String cTMime, String cTEnc, String bomEnc, String xmlGuessEnc,
                                           String xmlEnc, InputStream is, boolean lenient ) throws IOException
     {
@@ -561,7 +562,7 @@ public class XmlReader extends Reader
                 }
                 else if ( bomEnc != null && ( cTEnc.equals( UTF_16BE ) || cTEnc.equals( UTF_16LE ) ) )
                 {
-                    throw new XmlReaderException( HTTP_EX_1.format( new Object[] { cTMime, cTEnc, bomEnc, xmlGuessEnc,
+                    throw new XmlStreamReaderException( HTTP_EX_1.format( new Object[] { cTMime, cTEnc, bomEnc, xmlGuessEnc,
                         xmlEnc } ), cTMime, cTEnc, bomEnc, xmlGuessEnc, xmlEnc, is );
                 }
                 else if ( cTEnc.equals( UTF_16 ) )
@@ -572,7 +573,7 @@ public class XmlReader extends Reader
                     }
                     else
                     {
-                        throw new XmlReaderException( HTTP_EX_2.format( new Object[] { cTMime, cTEnc, bomEnc,
+                        throw new XmlStreamReaderException( HTTP_EX_2.format( new Object[] { cTMime, cTEnc, bomEnc,
                             xmlGuessEnc, xmlEnc } ), cTMime, cTEnc, bomEnc, xmlGuessEnc, xmlEnc, is );
                     }
                 }
@@ -583,7 +584,7 @@ public class XmlReader extends Reader
             }
             else
             {
-                throw new XmlReaderException( HTTP_EX_3.format( new Object[] { cTMime, cTEnc, bomEnc, xmlGuessEnc,
+                throw new XmlStreamReaderException( HTTP_EX_3.format( new Object[] { cTMime, cTEnc, bomEnc, xmlGuessEnc,
                     xmlEnc } ), cTMime, cTEnc, bomEnc, xmlGuessEnc, xmlEnc, is );
             }
         }

@@ -8,7 +8,7 @@ import org.codehaus.plexus.util.IOUtil;
 import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 
-public class XmlReaderTest
+public class XmlStreamReaderTest
     extends TestCase
 {
     /** french */
@@ -41,12 +41,12 @@ public class XmlReaderTest
     throws IOException
     {
         byte[] xmlContent = xml.getBytes( encoding );
-        XmlReader reader = new XmlReader( new ByteArrayInputStream( xmlContent ) );
+        XmlStreamReader reader = new XmlStreamReader( new ByteArrayInputStream( xmlContent ) );
         String result = IOUtil.toString( reader );
         assertEquals( xml, result );
     }
 
-    private static void checkXmlReader( String text, String encoding )
+    private static void checkXmlStreamReader( String text, String encoding )
     throws IOException
     {
         String xml = createXmlContent( text, encoding );
@@ -64,61 +64,61 @@ public class XmlReaderTest
     public void testDefaultEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, null );
+        checkXmlStreamReader( TEXT_UNICODE, null );
     }
 
     public void testUTF8Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-8" );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-8" );
     }
 
     public void testUTF16Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-16" );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-16" );
     }
 
     public void testUTF16BEEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-16BE" );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-16BE" );
     }
 
     public void testUTF16LEEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_UNICODE, "UTF-16LE" );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-16LE" );
     }
 
     public void testLatin1Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_LATIN1, "ISO-8859-1" );
+        checkXmlStreamReader( TEXT_LATIN1, "ISO-8859-1" );
     }
 
     public void testLatin7Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_LATIN7, "ISO-8859-7" );
+        checkXmlStreamReader( TEXT_LATIN7, "ISO-8859-7" );
     }
 
     public void testLatin15Encoding()
     throws IOException
     {
-        checkXmlReader( TEXT_LATIN15, "ISO-8859-15" );
+        checkXmlStreamReader( TEXT_LATIN15, "ISO-8859-15" );
     }
 
     public void testEUC_JPEncoding()
     throws IOException
     {
-        checkXmlReader( TEXT_EUC_JP, "EUC-JP" );
+        checkXmlStreamReader( TEXT_EUC_JP, "EUC-JP" );
     }
 
     public void testEBCDICEncoding()
     throws IOException
     {
-        checkXmlReader( "simple text in EBCDIC", "CP1047" );
+        checkXmlStreamReader( "simple text in EBCDIC", "CP1047" );
     }
 
     public void testInappropriateEncoding()
@@ -126,7 +126,7 @@ public class XmlReaderTest
     {
         try
         {
-            checkXmlReader( TEXT_UNICODE, "ISO-8859-2" );
+            checkXmlStreamReader( TEXT_UNICODE, "ISO-8859-2" );
             fail( "Check should have failed, since some characters are not available in the specified encoding" );
         }
         catch ( ComparisonFailure cf )
