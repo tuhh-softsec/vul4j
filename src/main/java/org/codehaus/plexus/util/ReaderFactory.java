@@ -31,7 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.xml.XmlStreamReader;
 
 /**
  * Utility to create Readers from streams, with explicit encoding choice: platform default,
@@ -94,32 +94,32 @@ public class ReaderFactory
     
     /**
      * Create a new Reader with XML encoding detection rules.
-     * @see XmlReader
+     * @see XmlStreamReader
      */
-    public static XmlReader newXmlReader( InputStream in )
+    public static XmlStreamReader newXmlStreamReader( InputStream in )
     throws IOException
     {
-        return new XmlReader( in );
+        return new XmlStreamReader( in );
     }
 
     /**
      * Create a new Reader with XML encoding detection rules.
-     * @see XmlReader
+     * @see XmlStreamReader
      */
-    public static XmlReader newXmlReader( File file )
+    public static XmlStreamReader newXmlStreamReader( File file )
     throws IOException
     {
-        return new XmlReader( file );
+        return new XmlStreamReader( file );
     }
 
     /**
      * Create a new Reader with XML encoding detection rules.
-     * @see XmlReader
+     * @see XmlStreamReader
      */
-    public static XmlReader newXmlReader( URL url )
+    public static XmlStreamReader newXmlStreamReader( URL url )
     throws IOException
     {
-        return new XmlReader( url );
+        return new XmlStreamReader( url );
     }
 
     /**
