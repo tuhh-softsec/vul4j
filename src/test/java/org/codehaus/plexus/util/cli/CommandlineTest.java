@@ -330,6 +330,12 @@ public class CommandlineTest
         fail( "can't find JAVA_HOME=/usr/jdk1.5" );
     }
 
+    /**
+     This test doesn't mean anything. There is no System propertry called "JAVA_HOME" unless you set
+     -DJAVA_HOME=XXX from the command line. There is a System property called "java.home" though so
+     I'm not sure what this test is trying to accomplish and it indeed fails if you don't manually
+     set the System property to the value of your JAVA_HOME envar.
+
     public void testEnvironmentWitSystemEnvironment()
         throws Exception
     {
@@ -348,6 +354,7 @@ public class CommandlineTest
 
         fail( "can't find JAVA_HOME=" + javaHome );
     }
+    */
 
     /**
      * Test an executable with a quote in its path
@@ -357,7 +364,8 @@ public class CommandlineTest
     public void testQuotedPath()
         throws Exception
     {
-        File dir = new File( "target/quotedpath'test" );
+        File dir = new File( System.getProperty( "basedir" ), "target/quotedpath'test" );
+
         dir.mkdirs();
 
         // Create a script file
