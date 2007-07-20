@@ -331,32 +331,6 @@ public class CommandlineTest
     }
 
     /**
-     This test doesn't mean anything. There is no System propertry called "JAVA_HOME" unless you set
-     -DJAVA_HOME=XXX from the command line. There is a System property called "java.home" though so
-     I'm not sure what this test is trying to accomplish and it indeed fails if you don't manually
-     set the System property to the value of your JAVA_HOME envar.
-
-    public void testEnvironmentWitSystemEnvironment()
-        throws Exception
-    {
-        String javaHome = System.getProperty( "JAVA_HOME" );
-        Commandline cmd = new Commandline();
-        cmd.addSystemEnvironment();
-        String[] environmentVariables = cmd.getEnvironmentVariables();
-
-        for ( int i = 0, size = environmentVariables.length; i < size; i++ )
-        {
-            if ( ( "JAVA_HOME=" + javaHome ).equals( environmentVariables[i] ) )
-            {
-                return;
-            }
-        }
-
-        fail( "can't find JAVA_HOME=" + javaHome );
-    }
-    */
-
-    /**
      * Test an executable with a quote in its path
      *
      * @throws Exception
