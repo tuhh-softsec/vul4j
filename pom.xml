@@ -2,7 +2,7 @@
   <parent>
     <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
-    <version>1.0.12-SNAPSHOT</version>
+    <version>1.0.11</version>
     <relativePath>../pom/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
