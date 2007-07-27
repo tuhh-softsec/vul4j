@@ -1079,7 +1079,9 @@ public class XMLCipher {
 	    // cv.setValue(base64EncodedEncryptedOctets.getBytes());
 	    cv.setValue(base64EncodedEncryptedOctets);
 
-	    _ed.setType(new URI(type).toString());
+	    if (type != null) {
+	        _ed.setType(new URI(type).toString());
+	    }
 	    EncryptionMethod method =
 		_factory.newEncryptionMethod(new URI(_algorithm).toString());
 	    _ed.setEncryptionMethod(method);
