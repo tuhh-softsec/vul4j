@@ -55,7 +55,7 @@
     </repository>
   </repositories>
 
-  <url>http://jakarta.apache.org/commons/digester/</url>
+  <url>http://commons.apache.org/digester/</url>
 
   <issueManagement>
     <system>jira</system>
@@ -168,9 +168,9 @@
   </contributors>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jakarta/commons/proper/digester/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jakarta/commons/proper/digester/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/jakarta/commons/proper/digester/trunk</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/digester/trunk</url>
   </scm>
 
   <build>
