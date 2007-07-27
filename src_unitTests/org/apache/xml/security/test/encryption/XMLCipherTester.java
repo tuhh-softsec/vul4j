@@ -689,19 +689,24 @@ public class XMLCipherTester extends TestCase {
         baos.close();
         String before = baos.toString("UTF-8");
 
+	byte[] serialized = baos.toByteArray();
         EncryptedData encryptedData = cipher.encryptData
             (d, EncryptionConstants.TYPE_ELEMENT,
-             new ByteArrayInputStream(baos.toByteArray()));
+             new ByteArrayInputStream(serialized));
 
         //decrypt
-        cipher = XMLCipher.getInstance(XMLCipher.AES_128);
-        cipher.init(XMLCipher.DECRYPT_MODE, key);
+        XMLCipher dcipher = XMLCipher.getInstance(XMLCipher.AES_128);
+        dcipher.init(XMLCipher.DECRYPT_MODE, key);
         Assert.assertEquals
             (encryptedData.getEncryptionMethod().getAlgorithm(),
              XMLCipher.AES_128);
-        byte[] bytes = cipher.decryptToByteArray(cipher.martial(encryptedData));
+        byte[] bytes = dcipher.decryptToByteArray(dcipher.martial(encryptedData));
         String after = new String(bytes, "UTF-8");
         Assert.assertEquals(before, after);
+
+	// test with null type
+        encryptedData = cipher.encryptData
+            (d, null, new ByteArrayInputStream(serialized));
     }
 
 	private String toString (Node n)
