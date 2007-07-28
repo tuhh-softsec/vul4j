@@ -39,7 +39,8 @@ import org.codehaus.plexus.util.xml.XmlStreamWriter;
  * @author <a href="mailto:hboutemy@codehaus.org">Herve Boutemy</a>
  * @see Charset
  * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
- * @version $Id$
+ * @version $Id: $
+ * @since 1.4.4
  */
 public class WriterFactory
 {

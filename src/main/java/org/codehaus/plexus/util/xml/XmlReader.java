@@ -53,6 +53,7 @@ import java.text.MessageFormat;
  * @author Alejandro Abdelnur
  * @version revision 1.17 taken on 26/06/2007 from Rome (see https://rome.dev.java.net/source/browse/rome/src/java/com/sun/syndication/io/XmlReader.java)
  * @deprecated use XmlStreamReader
+ * @since 1.4.3
  */
 public class XmlReader extends Reader
 {

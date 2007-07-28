@@ -42,6 +42,7 @@ import java.net.URLConnection;
  * 
  * @author Alejandro Abdelnur
  * @version revision 1.17 taken on 26/06/2007 from Rome (see https://rome.dev.java.net/source/browse/rome/src/java/com/sun/syndication/io/XmlReader.java)
+ * @since 1.4.4
  */
 public class XmlStreamReader
 extends XmlReader

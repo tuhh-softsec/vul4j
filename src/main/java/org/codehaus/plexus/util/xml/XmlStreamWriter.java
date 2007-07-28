@@ -33,6 +33,9 @@ import java.util.regex.Pattern;
 /**
  * Character stream that handles (or at least attemtps to) all the necessary Voodo to figure out the charset encoding of
  * the XML document written to the stream.
+ * @author <a href="mailto:hboutemy@codehaus.org">Herve Boutemy</a>
+ * @version $Id: $
+ * @since 1.4.4
  */
 public class XmlStreamWriter
 extends Writer
