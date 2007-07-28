@@ -2,7 +2,7 @@
   <parent>
     <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
-    <version>1.0.11</version>
+    <version>1.0.12-SNAPSHOT</version>
     <relativePath>../pom/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -32,20 +32,20 @@
           <systemProperties>
             <property>
               <name>JAVA_HOME</name>
-              <value>${JAVA_HOME}</value>    
+              <value>${JAVA_HOME}</value>
             </property>
             <property>
               <name>M2_HOME</name>
-              <value>${M2_HOME}</value>    
-            </property>                      
-          </systemProperties>          
+              <value>${M2_HOME}</value>
+            </property>
+          </systemProperties>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  <scm> 
+  <scm>
     <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection> 
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection>
     <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
   </scm>
   <reporting>
@@ -57,5 +57,5 @@
         <artifactId>maven-jxr-plugin</artifactId>
       </plugin>
     </plugins>
-  </reporting>  
+  </reporting>
 </project>
