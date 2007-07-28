@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
-  <version>1.4.5-SNAPSHOT</version>
+  <version>1.4.4-SNAPSHOT</version>
   <url>http://plexus.codehaus.org/plexus-utils</url>
   <build>
     <plugins>
