@@ -97,7 +97,7 @@ public class ReaderFactory
      * Create a new Reader with XML encoding detection rules.
      * @see XmlStreamReader
      */
-    public static Reader newXmlReader( InputStream in )
+    public static XmlStreamReader newXmlReader( InputStream in )
     throws IOException
     {
         return new XmlStreamReader( in );
@@ -107,7 +107,7 @@ public class ReaderFactory
      * Create a new Reader with XML encoding detection rules.
      * @see XmlStreamReader
      */
-    public static Reader newXmlReader( File file )
+    public static XmlStreamReader newXmlReader( File file )
     throws IOException
     {
         return new XmlStreamReader( file );
@@ -117,7 +117,7 @@ public class ReaderFactory
      * Create a new Reader with XML encoding detection rules.
      * @see XmlStreamReader
      */
-    public static Reader newXmlReader( URL url )
+    public static XmlStreamReader newXmlReader( URL url )
     throws IOException
     {
         return new XmlStreamReader( url );
