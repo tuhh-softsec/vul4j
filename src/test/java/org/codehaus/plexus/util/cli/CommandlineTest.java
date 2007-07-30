@@ -366,6 +366,7 @@ public class CommandlineTest
         if ( !Os.isFamily( "windows" ) )
         {
             Runtime.getRuntime().exec( new String[] { "chmod", "a+x", bat.getAbsolutePath() } );
+            Thread.sleep( 10 );
         }
 
         Commandline cmd = new Commandline();
