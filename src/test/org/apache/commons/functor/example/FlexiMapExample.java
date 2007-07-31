@@ -207,7 +207,7 @@ public class FlexiMapExample extends TestCase {
 
     /*
      * A more interesting specialization is that used by the 
-     * Jakarta Commons Collections MultiMap class, which allows 
+     * Apache Commons Collections MultiMap class, which allows 
      * one to associate multiple values with each key.  The put
      * function still accepts a single value, but the get function
      * will return a Collection of values.  Associating multiple values

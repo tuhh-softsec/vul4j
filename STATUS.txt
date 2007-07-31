@@ -1,17 +1,17 @@
 Commons Functor Status
 $Revision$ $Date$
-http://jakarta.apache.org/commons/sandbox/functor/
+http://commons.apache.org/sandbox/functor/
 
 Summary:
 
   Commons Functor is developing a common set of functor interfaces
   and related utilities in Java under an ASF licence.
 
-  Commons Functor is a component developed by Jakarta Commons, 
+  Commons Functor is a component developed by Apache Commons, 
   a subproject of the Apache Jakarta project.
 
   Commons Functor is a currently a "sandboxed" project.  It has
-  not yet been accepted as an offical part of of the Jakarta Commons
+  not yet been accepted as an offical part of of the Apache Commons
   project.
   
 Releases:
@@ -27,10 +27,10 @@ Releases:
 
 Assets:
 
-  Web site:         http://jakarta.apache.org/commons/sandbox/functor
+  Web site:         http://commons.apache.org/sandbox/functor
 
-  Mailing lists:    commons-dev@jakarta.apache.org  (developers)
-                    commons-user@jakarta.apache.org (users)
+  Mailing lists:    dev@commons.apache.org  (developers)
+                    user@commons.apache.org (users)
 
   Repositories:     jakarta/commons/sandbox/functor
 

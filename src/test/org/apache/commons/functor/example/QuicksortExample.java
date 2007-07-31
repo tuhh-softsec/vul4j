@@ -43,7 +43,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * Here's an example of the Quicksort sorting algorithm, implemented using
  * Commons Functor.
  * 
- * See http://jakarta.apache.org/commons/sandbox/functor/examples.html 
+ * See http://commons.apache.org/sandbox/functor/examples.html 
  * for additional examples.
  */
 

@@ -17,7 +17,7 @@
 <document>
   <properties>
     <title>Examples</title>
-    <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+    <author email="dev@commons.apache.org">Apache Commons Development Team</author>
     <author email="rwaldhoff@apache.org">Rodney Waldhoff</author>
   </properties>
 
@@ -81,7 +81,7 @@
           Commons-Functor library.
         </p>
         <dl>
-          <dt><a href="http://svn.apache.org/viewcvs/jakarta/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/kata/one/">Kata One: Supermarket Pricing</a></dt>
+          <dt><a href="http://svn.apache.org/viewvc/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/kata/one/">Kata One: Supermarket Pricing</a></dt>
           <dd>
             Dave's <a href="http://pragprog.com/pragdave/Practices/Kata/KataOne.rdoc,v">Kata One</a> asks how
             one might implement supermarket pricing rules, like "three for a dollar" or "buy two get one free".
@@ -90,7 +90,7 @@
             <a href="http://svn.apache.org/viewcvs/*checkout*/jakarta/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/kata/one/SupermarketPricingExample.java">SupermarketPricingExample</a>.
           </dd>
 
-          <dt><a href="http://svn.apache.org/viewcvs/jakarta/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/kata/two/">Kata Two: Binary Chop</a></dt>
+          <dt><a href="http://svn.apache.org/viewvc/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/kata/two/">Kata Two: Binary Chop</a></dt>
           <dd>
             <a href="http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v">Kata Two</a> asks us
             to create several different implemenations of the binary search algorithm, which once you
@@ -100,7 +100,7 @@
           </dd>
 
 
-          <dt><a href="http://svn.apache.org/viewcvs/jakarta/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/kata/four/">Kata Four: Data Munging</a></dt>
+          <dt><a href="http://svn.apache.org/viewvc/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/kata/four/">Kata Four: Data Munging</a></dt>
           <dd>
             <a href="http://pragprog.com/pragdave/Practices/Kata/KataFour.doc,v">Kata Four</a> asks us
             to explore extreme reuse.  Our
@@ -117,7 +117,7 @@
       
       <subsection name="Generators">        
         <p>
-          The <a href="http://svn.apache.org/viewcvs/jakarta/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/lines/">lines</a>
+          The <a href="http://svn.apache.org/viewvc/commons/sandbox/functor/trunk/src/test/org/apache/commons/functor/example/lines/">lines</a>
           package demonstrates a functional approach to IO using Generators and the Algorithms class.
         </p>
       </subsection>      
@@ -141,7 +141,7 @@
             and behavior specialiazation: composition.  Following a compositional
             design, we create a number of simple objects and then combine them to 
             create more complex behaviors.  For example, the 
-            <a href="http://jakarta.apache.org/commons/pool/">Commons Pool</a> 
+            <a href="http://commons.apache.org/pool/">Commons Pool</a> 
             component defines an <code>ObjectPool</code> type that maintains
             a collection of pooled objects, but delegates to a 
             <code>PoolableObjectFactory</code> to create, validate and destroy 
