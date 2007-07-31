@@ -19,7 +19,7 @@
 
 
 <!--
-  "Digester" component of the Jakarta Commons Subproject
+  "Digester" component of the Apache Commons Subproject
   $Id$
 
   The most useful targets in this build file are:
@@ -249,9 +249,9 @@
             windowtitle="${component.title} (Version ${component.version})"
                  bottom='Copyright 2001-2005 The Apache Software Foundation.'>
       <link     offline="true" packagelistLoc="${commons-beanutils.api}"
-                   href="http://jakarta.apache.org/commons/beanutils/api/"/>
+                   href="http://commons.apache.org/beanutils/api/"/>
       <link     offline="true" packagelistLoc="${commons-logging.api}"
-                   href="http://jakarta.apache.org/commons/logging/api/"/>
+                   href="http://commons.apache.org/logging/api/"/>
       <classpath  refid="compile.classpath"/>
     </javadoc>
   </target>
