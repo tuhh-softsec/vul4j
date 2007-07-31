@@ -21,7 +21,7 @@
       - appropriate dirs on the website; maven won't set this up.
       -->
     <menu name="Release 1.8 (Current)">
-      <item name="Guide" href="http://commons.apache.org/commons-digester-1.8/docs/api/org/apache/commons/digester/package-summary.html"/>
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.8/docs/api/org/apache/commons/digester/package-summary.html"/>
       <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.8/docs/api"/>
       <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.8/RELEASE-NOTES.txt"/>
     </menu>
