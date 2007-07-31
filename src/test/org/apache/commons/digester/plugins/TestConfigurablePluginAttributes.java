@@ -180,9 +180,9 @@ public class TestConfigurablePluginAttributes extends TestCase {
         // "plugin-id" and "plugin-class".
         PluginCreateRule widgetPluginRule = new PluginCreateRule(Widget.class);
         widgetPluginRule.setPluginIdAttribute(
-            "http://jakarta.apache.org/digester/plugins", "id");
+            "http://commons.apache.org/digester/plugins", "id");
         widgetPluginRule.setPluginClassAttribute(
-            "http://jakarta.apache.org/digester/plugins", "class");
+            "http://commons.apache.org/digester/plugins", "class");
         digester.addRule("root/widget", widgetPluginRule);
         digester.addSetNext("root/widget", "addWidget");
 

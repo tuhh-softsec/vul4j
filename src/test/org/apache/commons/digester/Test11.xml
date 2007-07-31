@@ -22,20 +22,20 @@
 -->
 
 <box id="root" xmlns=""
-     xmlns:foo="http://jakarta.apache.org/digester/Foo"
-     xmlns:bar="http://jakarta.apache.org/digester/Bar">
+     xmlns:foo="http://commons.apache.org/digester/Foo"
+     xmlns:bar="http://commons.apache.org/digester/Bar">
 
  <subBox id="child1"
-     xmlns:foo="http://jakarta.apache.org/digester/Foo1"
-     xmlns:bar="http://jakarta.apache.org/digester/Bar1"/>
+     xmlns:foo="http://commons.apache.org/digester/Foo1"
+     xmlns:bar="http://commons.apache.org/digester/Bar1"/>
 
  <subBox id="child2"
-     xmlns:alpha="http://jakarta.apache.org/digester/Alpha"
-     xmlns:beta="http://jakarta.apache.org/digester/Beta"/>
+     xmlns:alpha="http://commons.apache.org/digester/Alpha"
+     xmlns:beta="http://commons.apache.org/digester/Beta"/>
 
  <subBox id="child3"
-     xmlns:foo="http://jakarta.apache.org/digester/Foo3"
-     xmlns:alpha="http://jakarta.apache.org/digester/Alpha"/>
+     xmlns:foo="http://commons.apache.org/digester/Foo3"
+     xmlns:alpha="http://commons.apache.org/digester/Alpha"/>
 
 </box>
 

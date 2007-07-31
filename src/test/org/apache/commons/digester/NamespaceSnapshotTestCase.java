@@ -73,8 +73,8 @@ public class NamespaceSnapshotTestCase extends TestCase {
         Map nsmap = root.getNamespaces();
         assertEquals(3, nsmap.size());
         assertEquals("", nsmap.get(""));
-        assertEquals("http://jakarta.apache.org/digester/Foo", nsmap.get("foo"));
-        assertEquals("http://jakarta.apache.org/digester/Bar", nsmap.get("bar"));
+        assertEquals("http://commons.apache.org/digester/Foo", nsmap.get("foo"));
+        assertEquals("http://commons.apache.org/digester/Bar", nsmap.get("bar"));
 
         List children = root.getChildren();
         assertEquals(3, children.size());
@@ -83,25 +83,25 @@ public class NamespaceSnapshotTestCase extends TestCase {
         nsmap = child1.getNamespaces();
         assertEquals(3, nsmap.size());
         assertEquals("", nsmap.get(""));
-        assertEquals("http://jakarta.apache.org/digester/Foo1", nsmap.get("foo"));
-        assertEquals("http://jakarta.apache.org/digester/Bar1", nsmap.get("bar"));
+        assertEquals("http://commons.apache.org/digester/Foo1", nsmap.get("foo"));
+        assertEquals("http://commons.apache.org/digester/Bar1", nsmap.get("bar"));
 
         NamespacedBox child2 = (NamespacedBox) children.get(1);
         nsmap = child2.getNamespaces();
         assertEquals(5, nsmap.size());
         assertEquals("", nsmap.get(""));
-        assertEquals("http://jakarta.apache.org/digester/Foo", nsmap.get("foo"));
-        assertEquals("http://jakarta.apache.org/digester/Bar", nsmap.get("bar"));
-        assertEquals("http://jakarta.apache.org/digester/Alpha", nsmap.get("alpha"));
-        assertEquals("http://jakarta.apache.org/digester/Beta", nsmap.get("beta"));
+        assertEquals("http://commons.apache.org/digester/Foo", nsmap.get("foo"));
+        assertEquals("http://commons.apache.org/digester/Bar", nsmap.get("bar"));
+        assertEquals("http://commons.apache.org/digester/Alpha", nsmap.get("alpha"));
+        assertEquals("http://commons.apache.org/digester/Beta", nsmap.get("beta"));
 
         NamespacedBox child3 = (NamespacedBox) children.get(2);
         nsmap = child3.getNamespaces();
         assertEquals(4, nsmap.size());
         assertEquals("", nsmap.get(""));
-        assertEquals("http://jakarta.apache.org/digester/Foo3", nsmap.get("foo"));
-        assertEquals("http://jakarta.apache.org/digester/Alpha", nsmap.get("alpha"));
-        assertEquals("http://jakarta.apache.org/digester/Bar", nsmap.get("bar"));
+        assertEquals("http://commons.apache.org/digester/Foo3", nsmap.get("foo"));
+        assertEquals("http://commons.apache.org/digester/Alpha", nsmap.get("alpha"));
+        assertEquals("http://commons.apache.org/digester/Bar", nsmap.get("bar"));
 
     }
 

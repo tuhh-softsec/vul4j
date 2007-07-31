@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 
-<root xmlns:plugin="http://jakarta.apache.org/digester/plugins">
+<root xmlns:plugin="http://commons.apache.org/digester/plugins">
   <plugin id="label" class="org.apache.commons.digester.plugins.TextLabel"/>
   <plugin id="slider" class="org.apache.commons.digester.plugins.Slider"/>
   <plugin id="label2" class="org.apache.commons.digester.plugins.TextLabel2"/>

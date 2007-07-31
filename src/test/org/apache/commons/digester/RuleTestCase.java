@@ -345,7 +345,7 @@ public class RuleTestCase extends TestCase {
         // Configure the digester as required
         digester.setNamespaceAware(true);
         RuleSet rs = new TestRuleSet(null,
-                "http://jakarta.apache.org/digester/Foo");
+                "http://commons.apache.org/digester/Foo");
         digester.addRuleSet(rs);
 
         // Parse our test input.
@@ -380,7 +380,7 @@ public class RuleTestCase extends TestCase {
         // Configure the digester as required
         digester.setNamespaceAware(true);
         RuleSet rs = new TestRuleSet(null,
-                "http://jakarta.apache.org/digester/Foo");
+                "http://commons.apache.org/digester/Foo");
         digester.addRuleSet(rs);
 
         // Parse our test input.

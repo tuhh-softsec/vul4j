@@ -367,7 +367,7 @@ public class NodeCreateRuleTestCase extends TestCase {
         assertEquals(Node.ELEMENT_NODE, fragment.getFirstChild().getNodeType());
         Element address1 = (Element)fragment.getFirstChild();
         assertEquals("address", address1.getNodeName());
-        assertEquals("http://jakarta.apache.org/digester/Bar",
+        assertEquals("http://commons.apache.org/digester/Bar",
                      address1.getNamespaceURI());
         assertEquals("address", address1.getLocalName());
         assertEquals(5, address1.getAttributes().getLength());
@@ -380,7 +380,7 @@ public class NodeCreateRuleTestCase extends TestCase {
         assertEquals(Node.ELEMENT_NODE, fragment.getLastChild().getNodeType());
         Element address2 = (Element)fragment.getLastChild();
         assertEquals("address", address2.getNodeName());
-        assertEquals("http://jakarta.apache.org/digester/Bar",
+        assertEquals("http://commons.apache.org/digester/Bar",
                      address2.getNamespaceURI());
         assertEquals("address", address2.getLocalName());
         assertEquals(5, address2.getAttributes().getLength());
@@ -409,11 +409,11 @@ public class NodeCreateRuleTestCase extends TestCase {
         assertTrue(result instanceof Element);
         Element element = (Element)result;
         
-        assertNotNull(element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test"));
-        assertEquals("MyTestAttribute", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getNodeValue());
-        assertEquals("test", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getLocalName());
-        assertEquals("bar", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getPrefix());
-        assertEquals("bar:test", element.getAttributeNodeNS("http://jakarta.apache.org/digester/Bar", "test").getName());
+        assertNotNull(element.getAttributeNodeNS("http://commons.apache.org/digester/Bar", "test"));
+        assertEquals("MyTestAttribute", element.getAttributeNodeNS("http://commons.apache.org/digester/Bar", "test").getNodeValue());
+        assertEquals("test", element.getAttributeNodeNS("http://commons.apache.org/digester/Bar", "test").getLocalName());
+        assertEquals("bar", element.getAttributeNodeNS("http://commons.apache.org/digester/Bar", "test").getPrefix());
+        assertEquals("bar:test", element.getAttributeNodeNS("http://commons.apache.org/digester/Bar", "test").getName());
 
     }      
     

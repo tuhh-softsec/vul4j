@@ -18,5 +18,5 @@
 -->
 
 <foo:employee firstName="First Name" lastName="Last Name"
-   xmlns:foo="http://jakarta.apache.org/digester/Foo"
-   xmlns:bar="http://jakarta.apache.org/digester/Bar" bar:test="MyTestAttribute"/>
+   xmlns:foo="http://commons.apache.org/digester/Foo"
+   xmlns:bar="http://commons.apache.org/digester/Bar" bar:test="MyTestAttribute"/>
