@@ -8,7 +8,7 @@
 
 <!-- This document type defines an XML format for defining Digester rules.
      Digester is a framework for pattern-matching-based parsing of XML into
-     Java objects. See http://jakarta.apache.org/commons/digester.html.  -->
+     Java objects. See http://commons.apache.org/digester/.  -->
 
 <!ENTITY % rule-elements "bean-property-setter-rule | call-method-rule |
                    call-param-rule | object-param-rule |
