@@ -11,7 +11,7 @@
 
 <section name="The Digester Component">
 
-<p>Many Jakarta projects read XML configuration files to provide initialization
+<p>Many projects read XML configuration files to provide initialization
 of various Java objects within the system.  There are several ways of doing
 this, and the <em>Digester</em> component was designed to provide a common
 implementation that can be used in many different projects.</p>
@@ -121,11 +121,11 @@ It is also possible to use Logging 1.0.x instead.
     <subsection name='Downloading'>
  <ul>
   <li>The most recent release is available from apache mirrors via
-  <a href="http://jakarta.apache.org/site/downloads/downloads_commons-digester.cgi">
+  <a href="http://commons.apache.org/downloads/download_digester.cgi">
   the regular download page</a>.</li>
   <li>Reasonably recent releases are also available from apache mirrors, via the
   "browse downloads" link at
-  <a href="http://jakarta.apache.org/site/downloads/downloads_commons-digester.cgi">
+  <a href="http://commons.apache.org/downloads/download_digester.cgi">
   the regular download page</a>.</li>
   <li>Older releases can be found 
   <a href="http://archive.apache.org/dist/jakarta/commons/digester/old">
