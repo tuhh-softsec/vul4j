@@ -128,7 +128,7 @@ It is also possible to use Logging 1.0.x instead.
   <a href="http://commons.apache.org/downloads/download_digester.cgi">
   the regular download page</a>.</li>
   <li>Older releases can be found 
-  <a href="http://archive.apache.org/dist/jakarta/commons/digester/old">
+  <a href="http://archive.apache.org/dist/commons/digester/old">
   on the archive site</a>.</li>
  </ul>
    <p>Please remember to verify the MD5 check sums.</p>
