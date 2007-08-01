@@ -7,8 +7,7 @@ Summary:
   Commons Functor is developing a common set of functor interfaces
   and related utilities in Java under an ASF licence.
 
-  Commons Functor is a component developed by Apache Commons, 
-  a subproject of the Apache Jakarta project.
+  Commons Functor is a component developed by Apache Commons.
 
   Commons Functor is a currently a "sandboxed" project.  It has
   not yet been accepted as an offical part of of the Apache Commons
