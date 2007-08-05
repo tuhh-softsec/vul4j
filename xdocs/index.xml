@@ -58,7 +58,7 @@ download the files.
 </p>
 
 <p>For the FAQ and other digester-related information, see
- <a href="http://wiki.apache.org/jakarta-commons/Digester">the Digester wiki page</a>.
+ <a href="http://wiki.apache.org/commons/Digester">the Digester wiki page</a>.
 </p>
 
 </section>
@@ -139,7 +139,7 @@ It is also possible to use Logging 1.0.x instead.
  <ul>
   <!-- newest first sounds like a reasonable rule -->
   <li>
-   <a href="http://wiki.apache.org/jakarta-commons/Digester">The Apache wiki page for the commons digester component</a>.
+   <a href="http://wiki.apache.org/commons/Digester">The Apache wiki page for the commons digester component</a>.
   </li>
   <li>
    Jan 6, 2005 - <a href="http://www.onjava.com/pub/a/onjava/2004/12/22/jakarta-gems-1.html">O&apos;Reilly article</a> by Timothy M. O&apos;Brien about jakarta commons in general, including info on Digester.
