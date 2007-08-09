@@ -33,6 +33,8 @@ import org.apache.directory.daemon.installers.izpack.IzPackInstallerCommand;
 import org.apache.directory.daemon.installers.izpack.IzPackTarget;
 import org.apache.directory.daemon.installers.rpm.RpmInstallerCommand;
 import org.apache.directory.daemon.installers.rpm.RpmTarget;
+import org.apache.directory.daemon.installers.nsis.NsisTarget;
+import org.apache.directory.daemon.installers.nsis.NsisInstallerCommand;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Developer;
@@ -105,6 +107,11 @@ public class ServiceInstallersMojo extends AbstractMojo
      * @parameter
      */
     private InnoTarget[] innoTargets;
+
+    /**
+     * @parameter
+     */
+    private NsisTarget[] nsisTargets;
 
     /**
      * @parameter
@@ -231,6 +238,13 @@ public class ServiceInstallersMojo extends AbstractMojo
                 innoCmd.execute();
             }
 
+            if ( target instanceof NsisTarget )
+            {
+                NsisInstallerCommand nsisCmd = null;
+                nsisCmd = new NsisInstallerCommand( this, ( NsisTarget ) target );
+                nsisCmd.execute();
+            }
+
             if ( target instanceof RpmTarget )
             {
                 RpmInstallerCommand rpmCmd = null;
@@ -246,6 +260,7 @@ public class ServiceInstallersMojo extends AbstractMojo
         allTargets = new ArrayList();
         addAll( allTargets, izPackTargets );
         addAll( allTargets, innoTargets );
+        addAll( allTargets, nsisTargets );
         addAll( allTargets, rpmTargets );
         addAll( allTargets, debTargets );
         addAll( allTargets, pkgTargets );
@@ -389,9 +404,9 @@ public class ServiceInstallersMojo extends AbstractMojo
                 target.setLoggerConfigurationFile( new File( sourceDirectory, "log4j.properties" ) );
             }
 
-            if ( target.getBootstrapperConfiguraitonFile() == null )
+            if ( target.getBootstrapperConfigurationFile() == null )
             {
-                target.setBootstrapperConfiguraitonFile( new File( sourceDirectory, "bootstrapper.properties" ) );
+                target.setBootstrapperConfigurationFile( new File( sourceDirectory, "bootstrapper.properties" ) );
             }
 
             if ( target.getServerConfigurationFile() == null )
@@ -512,8 +527,8 @@ public class ServiceInstallersMojo extends AbstractMojo
                 getLog().info(
                     "loggerConfigurationFile: " + ( ( Target ) allTargets.get( ii ) ).getLoggerConfigurationFile() );
                 getLog().info(
-                    "bootstrapperConfiguraitonFiles: "
-                        + ( ( Target ) allTargets.get( ii ) ).getBootstrapperConfiguraitonFile() );
+                    "bootstrapperConfigurationFiles: "
+                        + ( ( Target ) allTargets.get( ii ) ).getBootstrapperConfigurationFile() );
                 getLog().info(
                     "serverConfigurationFil: " + ( ( Target ) allTargets.get( ii ) ).getServerConfigurationFile() );
 

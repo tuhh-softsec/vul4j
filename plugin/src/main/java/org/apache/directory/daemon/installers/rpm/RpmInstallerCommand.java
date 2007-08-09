@@ -110,13 +110,28 @@ public class RpmInstallerCommand extends MojoCommand
             return;
         }
 
-        if ( !System.getProperties().getProperty( "user.name" ).equals( "root" ) && !target.isDoSudo() )
+        if ( target.getRpmTopDir() == null )
         {
-            log.warn( "RPM target " + target.getId() + " can only be built by a super user or regular user "
-                + "with sudo capabilities that bypass the password!" );
-            log.warn( "The target will not be built." );
-            log.warn( "The rest of the build will not fail because of this acceptable situation." );
-            return;
+            target.setRpmTopDir( new File( System.getProperty( "user.home" ) + "/rpmbuild" ) );
+        }
+
+        if ( !target.getRpmTopDir().exists() )
+        {
+            try
+            {
+                target.getRpmTopDir().mkdirs();
+                String baseDir = target.getRpmTopDir().getAbsolutePath();
+                new File( baseDir + "/BUILD" ).mkdirs();
+                new File( baseDir + "/RPMS" ).mkdirs();
+                new File( baseDir + "/SOURCES" ).mkdirs();
+                new File( baseDir + "/SPECS" ).mkdirs();
+                new File( baseDir + "/SRPMS" ).mkdirs();
+            } catch ( Exception e )
+            {
+                log.warn( "Please set the rpmTopDir in the pom.xml to a directory where the build" );
+                log.warn( "user has proper permissions to create dirs and files." );
+                return;
+            }
         }
 
         // @todo this should really be a parameter taken from the user's settings
@@ -191,7 +206,7 @@ public class RpmInstallerCommand extends MojoCommand
             {
                 MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, projectRpmFile, rpmConfigurationFile, true );
             }
-            catch ( IOException e )
+           catch ( IOException e )
             {
                 throw new MojoFailureException( "Failed to filter and copy project provided " + projectRpmFile + " to "
                     + rpmConfigurationFile );
@@ -216,10 +231,10 @@ public class RpmInstallerCommand extends MojoCommand
 
         buildSourceTarball();
         String[] cmd = new String[]
-            { rpmBuilder.getAbsolutePath(), "-ba", rpmConfigurationFile.getAbsolutePath() };
+            { rpmBuilder.getAbsolutePath(), "-ba", "--define", "_topdir " + target.getRpmTopDir().getAbsolutePath(), rpmConfigurationFile.getAbsolutePath() };
         MojoHelperUtils.exec( cmd, target.getLayout().getBaseDirectory().getParentFile(), target.isDoSudo() );
         String rpmName = target.getApplication().getName() + "-" + version + "-0.i386.rpm";
-        File srcFile = new File( "/usr/src/redhat/RPMS/i386", rpmName );
+        File srcFile = new File( System.getProperty("user.home") + "/rpmbuild/RPMS/i386", rpmName );
         File dstFile = null;
 
         if ( target.getFinalName() == null )
@@ -240,6 +255,7 @@ public class RpmInstallerCommand extends MojoCommand
         try
         {
             FileUtils.copyFile( srcFile, dstFile );
+            srcFile.delete();
         }
         catch ( IOException e )
         {
@@ -255,6 +271,7 @@ public class RpmInstallerCommand extends MojoCommand
         filterProperties.put( "app", target.getApplication().getName() );
         filterProperties.put( "app.caps", target.getApplication().getName().toUpperCase() );
         filterProperties.put( "app.server.class", mymojo.getApplicationClass() );
+        filterProperties.put( "app.java.home", "java");
 
         char firstChar = target.getApplication().getName().charAt( 0 );
         firstChar = Character.toUpperCase( firstChar );
@@ -319,7 +336,7 @@ public class RpmInstallerCommand extends MojoCommand
         filterProperties.put( "verify.append.libs", getVerifyLibraryJars() );
         filterProperties.put( "installer.output.directory", target.getLayout().getBaseDirectory().getParent() );
         filterProperties.put( "server.init", target.getLayout().getInitScript().getName() );
-        filterProperties.put( "app.install.base", "/usr/local/" + target.getApplication().getName() + "-" + version );
+        filterProperties.put( "app.install.base", "/opt/" + target.getApplication().getName() + "-" + version );
 
         if ( target.getDocsDirectory() != null )
         {
@@ -357,8 +374,8 @@ public class RpmInstallerCommand extends MojoCommand
         if ( noticeFile.exists() )
         {
             filterProperties.put( "install.notice.file", "install -m 644 " + target.getLayout().getBaseDirectory()
-                + "/NOTICE.txt $RPM_BUILD_ROOT/usr/local/" + target.getApplication().getName() + "-%{version}" );
-            filterProperties.put( "verify.notice.file", "/usr/local/" + target.getApplication().getName()
+                + "/NOTICE.txt $RPM_BUILD_ROOT/opt/" + target.getApplication().getName() + "-%{version}" );
+            filterProperties.put( "verify.notice.file", "/opt/" + target.getApplication().getName()
                 + "-%{version}/NOTICE.txt" );
         }
         else
@@ -386,7 +403,7 @@ public class RpmInstallerCommand extends MojoCommand
             }
 
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( "mkdir -p $RPM_BUILD_ROOT/opt/" );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/" );
             buf.append( path );
@@ -413,7 +430,7 @@ public class RpmInstallerCommand extends MojoCommand
             }
 
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "mkdir -p $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( "mkdir -p $RPM_BUILD_ROOT/opt/" );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/" );
             buf.append( path );
@@ -464,7 +481,7 @@ public class RpmInstallerCommand extends MojoCommand
             buf.append( "install -m 644 " );
             buf.append( target.getLayout().getBaseDirectory() ).append( "/" );
             buf.append( path );
-            buf.append( " $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( " $RPM_BUILD_ROOT/opt/" );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/" );
             buf.append( path );
@@ -486,7 +503,7 @@ public class RpmInstallerCommand extends MojoCommand
         {
             File file = ( File ) docList.get( ii );
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "/usr/local/" );
+            buf.append( target.getLayout().getBaseDirectory() );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/" );
             buf.append( path );
@@ -516,7 +533,7 @@ public class RpmInstallerCommand extends MojoCommand
             buf.append( "install -m 644 " );
             buf.append( target.getLayout().getBaseDirectory() ).append( "/" );
             buf.append( path );
-            buf.append( " $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( " $RPM_BUILD_ROOT/opt/" );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/" );
             buf.append( path );
@@ -538,7 +555,7 @@ public class RpmInstallerCommand extends MojoCommand
         {
             File file = ( File ) sourceList.get( ii );
             String path = file.getAbsolutePath().substring( basePathSize );
-            buf.append( "/usr/local/" );
+            buf.append( "/opt/" );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/" );
             buf.append( path );
@@ -555,7 +572,7 @@ public class RpmInstallerCommand extends MojoCommand
         for ( int ii = 0; ii < artifacts.size(); ii++ )
         {
             File artifact = ( ( Artifact ) artifacts.get( ii ) ).getFile();
-            buf.append( "/usr/local/" );
+            buf.append( "/opt/" );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/lib/" );
             buf.append( artifact.getName() );
@@ -575,7 +592,7 @@ public class RpmInstallerCommand extends MojoCommand
             buf.append( "install -m 644 " );
             File artifact = ( ( Artifact ) artifacts.get( ii ) ).getFile();
             buf.append( artifact.getAbsoluteFile() );
-            buf.append( " $RPM_BUILD_ROOT/usr/local/" );
+            buf.append( " $RPM_BUILD_ROOT/opt/" );
             buf.append( target.getApplication().getName() );
             buf.append( "-%{version}/lib/" );
             buf.append( artifact.getName() );
@@ -612,7 +629,7 @@ public class RpmInstallerCommand extends MojoCommand
 
         String[] cmd = new String[]
             { "tar", "-zcvf",
-                "/usr/src/redhat/SOURCES/" + target.getApplication().getName() + "-" + version + ".tar.gz",
+                System.getProperty("user.home") + "/rpmbuild/SOURCES/" + target.getApplication().getName() + "-" + version + ".tar.gz",
                 sourcesDir.getAbsolutePath() };
 
         MojoHelperUtils.exec( cmd, target.getLayout().getBaseDirectory().getParentFile(), target.isDoSudo() );

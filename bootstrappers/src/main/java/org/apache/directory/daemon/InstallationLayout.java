@@ -40,6 +40,9 @@ public class InstallationLayout
 {
     private final static Logger log = LoggerFactory.getLogger( InstallationLayout.class );
     private final static FileFilter JAR_FILTER;
+    public static final String VAR_DIR = "apacheds.var.dir";
+    public static final String LOG_DIR = "apacheds.log.dir";
+    public static final String RUN_DIR = "apacheds.run.dir";
 
     static
     {
@@ -92,18 +95,39 @@ public class InstallationLayout
 
     public File getVarDirectory()
     {
+        String varDir = System.getProperty(VAR_DIR);
+
+        if ( varDir != null)
+        {
+            return new File( varDir );
+        }
+        
         return new File( baseDirectory, "var" );
     }
 
 
     public File getLogDirectory()
     {
+        String logDir = System.getProperty(LOG_DIR);
+
+        if ( logDir != null)
+        {
+            return new File( logDir );
+        }
+
         return new File( getVarDirectory(), "log" );
     }
 
 
     public File getRunDirectory()
     {
+        String runDir = System.getProperty(RUN_DIR);
+
+        if ( runDir != null)
+        {
+            return new File( runDir );
+        }
+
         return new File( getVarDirectory(), "run" );
     }
 
@@ -116,19 +140,19 @@ public class InstallationLayout
 
     public File getBootstrapper()
     {
-        return new File( getBinDirectory(), "bootstrapper.jar" );
+        return new File( getLibDirectory(), "bootstrapper.jar" );
     }
 
 
     public File getLogger()
     {
-        return new File( getBinDirectory(), "logger.jar" );
+        return new File( getLibDirectory(), "logger.jar" );
     }
 
 
     public File getDaemon()
     {
-        return new File( getBinDirectory(), "daemon.jar" );
+        return new File( getLibDirectory(), "wrapper.jar" );
     }
 
 
@@ -224,7 +248,7 @@ public class InstallationLayout
 
     public File getBootstrapperConfigurationFile()
     {
-        return new File( getConfigurationDirectory(), "bootstrapper.properties" );
+        return new File( getConfigurationDirectory(), "apacheds.conf" );
     }
 
 

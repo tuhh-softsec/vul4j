@@ -152,10 +152,10 @@ public class MojoHelperUtils
             {
                 rejects.add( key );
             }
-            else if ( artifact.equals( mymojo.getLogger() ) )
-            {
-                rejects.add( key );
-            }
+//            else if ( artifact.equals( mymojo.getLogger() ) )
+//            {
+//                rejects.add( key );
+//            }
             else
             {
                 if ( mymojo.getExcludes().contains( key ) )

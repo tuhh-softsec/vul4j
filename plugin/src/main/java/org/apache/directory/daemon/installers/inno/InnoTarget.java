@@ -34,7 +34,7 @@ import org.apache.directory.daemon.installers.Target;
  */
 public class InnoTarget extends Target
 {
-    private String prunmgrExecutablePath = "src\\main\\installers\\prunmgr.exe";
+    private String prunmgrExecutablePath = "src\\main\\installers\\wrapper\\bin\\wrapper-windows-x86-32.exe";
     private String prunsrvExecutablePath = "src\\main\\installers\\prunsrv.exe";
     private File innoCompiler = new File( "C:\\Program Files\\Inno Setup 5\\ISCC.exe" );
     private File innoConfigurationFile;

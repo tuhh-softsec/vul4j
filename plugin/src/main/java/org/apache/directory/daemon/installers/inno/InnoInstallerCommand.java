@@ -192,12 +192,12 @@ public class InnoInstallerCommand extends MojoCommand
             {
                 try
                 {
-                    MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "../prunsrv.exe" ), executableTarget );
+                    MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "../wrapper/bin/wrapper-windows-x86-32.exe" ), executableTarget );
                 }
                 catch ( IOException e )
                 {
                     throw new MojoFailureException( "Failed to copy prunsrv executable file "
-                        + getClass().getResource( "../prunsrv.exe" ) + " into position " + executableTarget.getAbsolutePath() );
+                        + getClass().getResource( "../wrapper/bin/wrapper-windows-x86-32.exe" ) + " into position " + executableTarget.getAbsolutePath() );
                 }
             }
             
@@ -206,9 +206,10 @@ public class InnoInstallerCommand extends MojoCommand
             // Handle the manager process: prunmgr.exe 
             // ---------------------------------------------------------------
 
-            executableTarget = new File( target.getLayout().getBinDirectory(), 
+/*
+            executableTarget = new File( target.getLayout().getBinDirectory(),
                 target.getApplication().getName() + "w.exe" );
-            override = new File( mymojo.getSourceDirectory(), target.getPrunmgrExecutablePath() );
+            override = new File( mymojo.getSourceDirectory(), target.getWrapperExecutablePath() );
             if ( override.exists() )
             {
                 mymojo.getLog().info( "Using procrun prunmgr.exe supplied by project: " + override.getAbsolutePath() );
@@ -234,6 +235,7 @@ public class InnoInstallerCommand extends MojoCommand
                         + getClass().getResource( "../prunmgr.exe" ) + " into position " + executableTarget.getAbsolutePath() );
                 }
             }
+*/
         }
 
         processPackagedFiles( target, target.getPackagedFiles() );

@@ -128,7 +128,7 @@ public class Bootstrapper
         Thread.currentThread().setContextClassLoader( application );
         try
         {
-            startClass = application.loadClass( startClassName );
+            startClass = application.loadClass( args[0] );
         }
         catch ( ClassNotFoundException e )
         {
@@ -148,7 +148,7 @@ public class Bootstrapper
 
         try
         {
-            start.init( this.layout, args );
+            start.init( this.layout, Bootstrapper.shift(args, 1));
         }
         catch ( Exception e )
         {
@@ -180,10 +180,11 @@ public class Bootstrapper
         Thread.currentThread().setContextClassLoader( application );
         Class clazz = null;
 
-        if ( startClassName.equals( stopClassName ) && start != null )
-        {
+//        if ( startClassName.equals( stopClassName ) && start != null )
+//        {
             clazz = startClass;
             stop = start;
+/*
         }
         else
         {
@@ -207,6 +208,7 @@ public class Bootstrapper
                 System.exit( ExitCodes.INSTANTIATION );
             }
         }
+*/
 
         try
         {

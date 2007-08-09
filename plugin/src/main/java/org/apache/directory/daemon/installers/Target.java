@@ -57,7 +57,7 @@ public class Target
     public final static String[] ARCHITECTURES = new String[]
         { "intel", "sparc", "ppc" };
     public final static String[] DAEMON_FRAMEWORKS = new String[]
-        { "jsvc", "procrun" };
+        { "jsvc", "procrun", "tanuki" };
 
     // required stuff
     private String id;
@@ -71,7 +71,7 @@ public class Target
     private String copyrightYear = "2006";
     private File loggerConfigurationFile;
     private File serverConfigurationFile;
-    private File bootstrapperConfiguraitonFile;
+    private File bootstrapperConfigurationFile;
     private File sourcesDirectory;
     private File docsDirectory;
     private String sourcesTargetPath;
@@ -186,15 +186,15 @@ public class Target
     }
 
 
-    public void setBootstrapperConfiguraitonFile( File bootstrapperConfiguraitonFile )
+    public void setBootstrapperConfigurationFile( File bootstrapperConfigurationFile )
     {
-        this.bootstrapperConfiguraitonFile = bootstrapperConfiguraitonFile;
+        this.bootstrapperConfigurationFile = bootstrapperConfigurationFile;
     }
 
 
-    public File getBootstrapperConfiguraitonFile()
+    public File getBootstrapperConfigurationFile()
     {
-        return bootstrapperConfiguraitonFile;
+        return bootstrapperConfigurationFile;
     }
 
 

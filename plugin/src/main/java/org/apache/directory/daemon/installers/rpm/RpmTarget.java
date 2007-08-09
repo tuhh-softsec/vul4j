@@ -35,6 +35,7 @@ public class RpmTarget extends Target
 {
     private File rpmBuilder = new File( "/usr/bin/rpmbuild" );
     private File rpmSpecificationFile;
+    private File rpmTopDir;
     private boolean doSudo = false;
 
 
@@ -71,5 +72,15 @@ public class RpmTarget extends Target
     public boolean isDoSudo()
     {
         return doSudo;
+    }
+
+    public File getRpmTopDir()
+    {
+        return rpmTopDir;
+    }
+
+    public void setRpmTopDir(File rpmTopDir)
+    {
+        this.rpmTopDir = rpmTopDir;
     }
 }
