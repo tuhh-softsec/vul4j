@@ -194,25 +194,7 @@ public class CreateImageCommand extends MojoCommand
         }
 
         // copy over the optional bootstrapper configuration file
-        if ( target.getBootstrapperConfigurationFile() == null || !target.getBootstrapperConfigurationFile().exists() )
-        {
-            File dest = target.getBootstrapperConfigurationFile();
-            try
-            {
-                PrintWriter out = new PrintWriter( new FileWriter( dest ) );
-                out.println( Bootstrapper.START_CLASS_PROP + "=" + mymojo.getApplicationClass() );
-                out.println( Bootstrapper.STOP_CLASS_PROP + "=" + mymojo.getApplicationClass() );
-                out.flush();
-                out.close();
-            }
-            catch ( IOException e )
-            {
-                throw new MojoFailureException( "Failed to copy project bootstrapper configuration file "
-                    + target.getBootstrapperConfigurationFile() + " into position "
-                    + layout.getBootstrapperConfigurationFile() );
-            }
-        }
-        else
+        if ( target.getBootstrapperConfigurationFile() != null )
         {
             try
             {
