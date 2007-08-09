@@ -90,14 +90,19 @@ public class NsisInstallerCommand extends MojoCommand
 
         if ( !target.getOsFamily().equals( "windows" ) )
         {
-            throw new MojoFailureException( "NSIS installer can only be targeted for windows platforms!" );
+            log.warn( "NSIS installer can only be targeted for windows platforms!" );
+            log.warn( "The build will continue, but please check the the platform" );
+            log.warn( "of this installer target" );
+            return;
         }
 
         // @todo this should really be a parameter taken from the user's settings
         // because the compiler may be installed in different places and is specific
         if ( !target.getNsisCompiler().exists() )
         {
-            throw new MojoFailureException( "Cannot find NSIS compiler: " + target.getNsisCompiler() );
+            log.warn( "Cannot find NSIS compiler at this location: " + target.getNsisCompiler() );
+            log.warn( "The build will continue, but please check the location of your makensis executable ");
+            return;
         }
         else
         {
