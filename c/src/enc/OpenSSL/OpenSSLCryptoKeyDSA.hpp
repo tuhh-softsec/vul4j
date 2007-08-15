@@ -74,19 +74,19 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType();
+	virtual XSECCryptoKey::KeyType getKeyType() const;
 
 	/**
 	 *\brief Return the OpenSSL string identifier
 	 */
 
-	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
+	virtual const XMLCh * getProviderName() const {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
 
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const;
 
 	//@}
 
@@ -204,6 +204,12 @@ public :
 	 */
 
 	DSA * getOpenSSLDSA(void) {return mp_dsaKey;}
+
+    /**
+	 * \brief Get OpenSSL DSA structure
+	 */
+
+	const DSA * getOpenSSLDSA(void) const {return mp_dsaKey;}
 
 	//@}
 	//@}

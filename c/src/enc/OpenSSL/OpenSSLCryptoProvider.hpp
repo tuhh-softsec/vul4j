@@ -73,7 +73,7 @@ public :
 	 * @see XSECCryptoHash
 	 */
 
-	virtual XSECCryptoHash			* hashSHA1();
+	virtual XSECCryptoHash			* hashSHA1() const;
 
 	/**
 	 * \brief Return a SHA implementation.
@@ -86,7 +86,7 @@ public :
 	 * @see OpenSSLCryptoHash
 	 */
 	 
-	virtual XSECCryptoHash			* hashSHA(int length = 160);
+	virtual XSECCryptoHash			* hashSHA(int length = 160) const;
 
 	/**
 	 * \brief Return a HMAC SHA1 implementation.
@@ -99,7 +99,7 @@ public :
 	 * @see OpenSSLCryptoHash
 	 */
 
-	virtual XSECCryptoHash			* hashHMACSHA1();
+	virtual XSECCryptoHash			* hashHMACSHA1() const;
 
 	/**
 	 * \brief Return a HMAC SHA(1-512) implementation.
@@ -113,7 +113,7 @@ public :
 	 * @see OpenSSLCryptoHash
 	 */
 
-	virtual XSECCryptoHash			* hashHMACSHA(int length = 160);
+	virtual XSECCryptoHash			* hashHMACSHA(int length = 160) const;
 	
 	/**
 	 * \brief Return a MD5 implementation.
@@ -125,7 +125,7 @@ public :
 	 * @see OpenSSLCryptoHash
 	 */
 	 
-	virtual XSECCryptoHash			* hashMD5();
+	virtual XSECCryptoHash			* hashMD5() const;
 
 	/**
 	 * \brief Return a HMAC MD5 implementation.
@@ -143,7 +143,7 @@ public :
 	 * @see OpenSSLCryptoHash
 	 */
 
-	virtual XSECCryptoHash			* hashHMACMD5();
+	virtual XSECCryptoHash			* hashHMACMD5() const;
 
 	/**
 	 * \brief Return a HMAC key
@@ -155,7 +155,7 @@ public :
 	 * a value set within it.
 	 */
 
-	virtual XSECCryptoKeyHMAC		* keyHMAC(void);
+	virtual XSECCryptoKeyHMAC		* keyHMAC(void) const;
 
 	//@}
 
@@ -172,7 +172,7 @@ public :
 	 * @see OpenSSLCryptoBase64
 	 */
 
-	virtual XSECCryptoBase64		* base64();
+	virtual XSECCryptoBase64		* base64() const;
 
 	//@}
 
@@ -188,7 +188,7 @@ public :
 	 * @see OpenSSLCryptoKeyDSA
 	 */
 
-	virtual XSECCryptoKeyDSA		* keyDSA();
+	virtual XSECCryptoKeyDSA		* keyDSA() const;
 
 	/**
 	 * \brief Return an RSA key implementation object.
@@ -199,7 +199,7 @@ public :
 	 * @see OpenSSLCryptoKeyRSA
 	 */
 
-	virtual XSECCryptoKeyRSA		* keyRSA();
+	virtual XSECCryptoKeyRSA		* keyRSA() const;
 
 	/**
 	 * \brief Return an X509 implementation object.
@@ -211,7 +211,7 @@ public :
 	 * @see OpenSSLCryptoX509
 	 */
 
-	virtual XSECCryptoX509			* X509();
+	virtual XSECCryptoX509			* X509() const;
 
 	/**
 	 * \brief Determine whether a given algorithm is supported
@@ -220,7 +220,7 @@ public :
 	 * symmetric algorithm is supported
 	 */
 
-	virtual bool algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg);
+	virtual bool algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) const;
 
 	/**
 	 * \brief Determine whether a given algorithm is supported
@@ -229,7 +229,7 @@ public :
 	 * digest algorithm is supported
 	 */
 
-	virtual bool algorithmSupported(XSECCryptoHash::HashType alg);
+	virtual bool algorithmSupported(XSECCryptoHash::HashType alg) const;
 	
 	/**
 	 * \brief Return a Symmetric Key implementation object.
@@ -241,7 +241,7 @@ public :
 	 * @see XSECCryptoSymmetricKey
 	 */
 
-	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg);
+	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) const;
 
 	/**
 	 * \brief Obtain some random octets
@@ -255,7 +255,7 @@ public :
 	 * @returns Number of bytes obtained.
 	 */
 
-	virtual unsigned int getRandom(unsigned char * buffer, unsigned int numOctets);
+	virtual unsigned int getRandom(unsigned char * buffer, unsigned int numOctets) const;
 
 
 	//@}
@@ -267,7 +267,7 @@ public :
 	 * \brief Returns a string that identifies the Crypto Provider
 	 */
 
-	virtual const XMLCh * getProviderName();
+	virtual const XMLCh * getProviderName() const;
 
 	//@}
 

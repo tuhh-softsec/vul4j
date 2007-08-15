@@ -163,7 +163,7 @@ WinCAPICryptoProvider::~WinCAPICryptoProvider() {
 
 }
 
-const XMLCh * WinCAPICryptoProvider::getProviderName() {
+const XMLCh * WinCAPICryptoProvider::getProviderName() const {
 
 	return DSIGConstants::s_unicodeStrPROVWinCAPI;
 
@@ -172,7 +172,7 @@ const XMLCh * WinCAPICryptoProvider::getProviderName() {
 
 // Hashing classes
 
-XSECCryptoHash	* WinCAPICryptoProvider::hashSHA1() {
+XSECCryptoHash	* WinCAPICryptoProvider::hashSHA1() const {
 
 	WinCAPICryptoHash * ret;
 
@@ -182,7 +182,7 @@ XSECCryptoHash	* WinCAPICryptoProvider::hashSHA1() {
 
 }
 
-XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA1() {
+XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA1() const {
 
 	WinCAPICryptoHashHMAC * ret;
 
@@ -192,7 +192,7 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA1() {
 
 }
 
-XSECCryptoHash	* WinCAPICryptoProvider::hashSHA(int length) {
+XSECCryptoHash	* WinCAPICryptoProvider::hashSHA(int length) const {
 
 
 	if (length == 160)
@@ -201,7 +201,7 @@ XSECCryptoHash	* WinCAPICryptoProvider::hashSHA(int length) {
 	else return NULL;
 }
 
-XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA(int length) {
+XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA(int length) const {
 
 	if (length == 160)
 		return hashHMACSHA1();
@@ -210,7 +210,7 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA(int length) {
 
 }
 
-XSECCryptoHash	* WinCAPICryptoProvider::hashMD5() {
+XSECCryptoHash	* WinCAPICryptoProvider::hashMD5() const {
 
 	WinCAPICryptoHash * ret;
 
@@ -220,7 +220,7 @@ XSECCryptoHash	* WinCAPICryptoProvider::hashMD5() {
 
 }
 
-XSECCryptoHash * WinCAPICryptoProvider::hashHMACMD5() {
+XSECCryptoHash * WinCAPICryptoProvider::hashHMACMD5() const {
 
 	WinCAPICryptoHashHMAC * ret;
 
@@ -230,7 +230,7 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACMD5() {
 
 }
 
-XSECCryptoKeyHMAC * WinCAPICryptoProvider::keyHMAC(void) {
+XSECCryptoKeyHMAC * WinCAPICryptoProvider::keyHMAC(void) const {
 
 	WinCAPICryptoKeyHMAC * ret;
 	XSECnew(ret, WinCAPICryptoKeyHMAC(m_provDSS));
@@ -240,7 +240,7 @@ XSECCryptoKeyHMAC * WinCAPICryptoProvider::keyHMAC(void) {
 }
 
 
-XSECCryptoKeyDSA * WinCAPICryptoProvider::keyDSA() {
+XSECCryptoKeyDSA * WinCAPICryptoProvider::keyDSA() const {
 	
 	WinCAPICryptoKeyDSA * ret;
 
@@ -250,7 +250,7 @@ XSECCryptoKeyDSA * WinCAPICryptoProvider::keyDSA() {
 
 }
 
-XSECCryptoKeyRSA * WinCAPICryptoProvider::keyRSA() {
+XSECCryptoKeyRSA * WinCAPICryptoProvider::keyRSA() const {
 	
 	WinCAPICryptoKeyRSA * ret;
 
@@ -261,7 +261,7 @@ XSECCryptoKeyRSA * WinCAPICryptoProvider::keyRSA() {
 }
 
 
-XSECCryptoX509 * WinCAPICryptoProvider::X509() {
+XSECCryptoX509 * WinCAPICryptoProvider::X509() const {
 
 	WinCAPICryptoX509 * ret;
 
@@ -271,7 +271,7 @@ XSECCryptoX509 * WinCAPICryptoProvider::X509() {
 
 }
 
-XSECCryptoBase64 * WinCAPICryptoProvider::base64() {
+XSECCryptoBase64 * WinCAPICryptoProvider::base64() const {
 
 	// The Windows CAPI does not provide a Base64 decoder/encoder.
 	// Use the internal implementation.
@@ -284,7 +284,7 @@ XSECCryptoBase64 * WinCAPICryptoProvider::base64() {
 
 }
 
-bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) const {
 
 	switch (alg) {
 
@@ -308,7 +308,7 @@ bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::Symmetric
 
 }
 
-bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) {
+bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) const {
 
 	switch (alg) {
 
@@ -332,7 +332,7 @@ bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) {
 
 }
 	
-XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) const {
 
 	// Only temporary
 
@@ -344,7 +344,7 @@ XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetric
 
 }
 
-unsigned int WinCAPICryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) {
+unsigned int WinCAPICryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) const {
 
 	if (!CryptGenRandom(m_provApacheKeyStore, numOctets, buffer)) {
 		throw XSECException(XSECException::InternalError,

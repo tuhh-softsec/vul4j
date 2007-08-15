@@ -66,19 +66,7 @@ WinCAPICryptoSymmetricKey::~WinCAPICryptoSymmetricKey() {
 //           Basic Key interface methods
 // --------------------------------------------------------------------------------
 
-XSECCryptoSymmetricKey::SymmetricKeyType WinCAPICryptoSymmetricKey::getSymmetricKeyType() {
-
-	return m_keyType;
-
-}
-
-const XMLCh * WinCAPICryptoSymmetricKey::getProviderName() {
-
-	return DSIGConstants::s_unicodeStrPROVWinCAPI;
-
-}
-
-XSECCryptoKey * WinCAPICryptoSymmetricKey::clone() {
+XSECCryptoKey * WinCAPICryptoSymmetricKey::clone() const {
 
 	WinCAPICryptoSymmetricKey * ret;
 

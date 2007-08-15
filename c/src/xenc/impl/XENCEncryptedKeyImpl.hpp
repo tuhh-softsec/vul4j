@@ -57,8 +57,8 @@ public:
 								 const XMLCh * value);
 
 	// KeyInfo Interface methods
-	virtual const XMLCh * getKeyName(void) {return NULL;}
-	virtual keyInfoType getKeyInfoType(void) {return DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY;}
+	virtual const XMLCh * getKeyName(void) const {return NULL;}
+	virtual keyInfoType getKeyInfoType(void) const {return DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY;}
 
 
 	// Inherited from XENCEncryptedData - need to re-implement

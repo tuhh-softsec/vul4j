@@ -163,13 +163,13 @@ void OpenSSLCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 
 // Info functions
 
-const XMLCh * OpenSSLCryptoX509::getProviderName() {
+const XMLCh * OpenSSLCryptoX509::getProviderName() const {
 
 	return DSIGConstants::s_unicodeStrPROVOpenSSL;
 
 }
 
-XSECCryptoKey::KeyType OpenSSLCryptoX509::getPublicKeyType() {
+XSECCryptoKey::KeyType OpenSSLCryptoX509::getPublicKeyType() const {
 
 	if (mp_X509 == NULL) {
 		throw XSECCryptoException(XSECCryptoException::X509Error,
@@ -213,7 +213,7 @@ XSECCryptoKey::KeyType OpenSSLCryptoX509::getPublicKeyType() {
 		
 
 // Get functions
-XSECCryptoKey * OpenSSLCryptoX509::clonePublicKey() {
+XSECCryptoKey * OpenSSLCryptoX509::clonePublicKey() const {
 
 	if (mp_X509 == NULL) {
 		throw XSECCryptoException(XSECCryptoException::X509Error,

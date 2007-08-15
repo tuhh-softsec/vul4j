@@ -407,7 +407,7 @@ unsigned int WinCAPICryptoHashHMAC::finish(unsigned char * hash,
 
 // Get information
 
-XSECCryptoHash::HashType WinCAPICryptoHashHMAC::getHashType(void) {
+XSECCryptoHash::HashType WinCAPICryptoHashHMAC::getHashType(void) const {
 
 	return m_hashType;			// This could be any kind of hash
 

@@ -47,14 +47,14 @@ void WinCAPICryptoKeyHMAC::setKey(unsigned char * inBuf, unsigned int inLength) 
 
 }
 
-unsigned int WinCAPICryptoKeyHMAC::getKey(safeBuffer &outBuf) {
+unsigned int WinCAPICryptoKeyHMAC::getKey(safeBuffer &outBuf) const {
 
 	outBuf = m_keyBuf;
 	return m_keyLen;
 
 }
 
-XSECCryptoKey * WinCAPICryptoKeyHMAC::clone() {
+XSECCryptoKey * WinCAPICryptoKeyHMAC::clone() const {
 
 	WinCAPICryptoKeyHMAC * ret;
 
@@ -102,13 +102,13 @@ void WinCAPICryptoKeyHMAC::setWinKey(HCRYPTKEY k) {
 
 }
 
-HCRYPTKEY WinCAPICryptoKeyHMAC::getWinKey(void) {
+HCRYPTKEY WinCAPICryptoKeyHMAC::getWinKey(void) const {
 
 	return m_k;
 
 }
 
-HCRYPTPROV WinCAPICryptoKeyHMAC::getWinKeyProv(void) {
+HCRYPTPROV WinCAPICryptoKeyHMAC::getWinKeyProv(void) const {
 
 	return m_p;
 

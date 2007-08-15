@@ -65,19 +65,19 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType();
+	virtual XSECCryptoKey::KeyType getKeyType() const;
 
 	/**
 	 * \brief Return the OpenSSL identifier string
 	 */
 
-	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
+	virtual const XMLCh * getProviderName() const {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
 
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const;
 
 	//@}
 
@@ -108,7 +108,7 @@ public :
 	 * @returns the number of bytes of the OAEPparams buffer (assuming it has been set)
 	 */
 
-	virtual unsigned int getOAEPparamsLen(void);
+	virtual unsigned int getOAEPparamsLen(void) const;
 
 	/**
 	 * \brief Get the OAEPparams
@@ -117,7 +117,7 @@ public :
 	 * or NULL if no params are held
 	 */
 
-	virtual const unsigned char * getOAEPparams(void);
+	virtual const unsigned char * getOAEPparams(void) const;
 
 	/**
 	 * \brief Verify a SHA1 PKCS1 encoded signature
@@ -214,7 +214,7 @@ public :
 	 * @returns The length of the rsa key (in bytes)
 	 */
 
-	virtual unsigned int getLength(void);
+	virtual unsigned int getLength(void) const;
 
 	//@}
 
@@ -268,6 +268,12 @@ public :
 	 */
 
 	RSA * getOpenSSLRSA(void) {return mp_rsaKey;}
+
+    /**
+	 * \brief Get OpenSSL RSA Object
+	 */
+
+	const RSA * getOpenSSLRSA(void) const {return mp_rsaKey;}
 
 	//@}
 

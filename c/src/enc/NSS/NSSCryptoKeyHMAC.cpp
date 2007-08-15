@@ -55,7 +55,7 @@ void NSSCryptoKeyHMAC::setKey(unsigned char * inBuf, unsigned int inLength) {
 //           Get key
 // --------------------------------------------------------------------------------
 
-unsigned int NSSCryptoKeyHMAC::getKey(safeBuffer &outBuf) {
+unsigned int NSSCryptoKeyHMAC::getKey(safeBuffer &outBuf) const {
 
 	outBuf = m_keyBuf;
 	return m_keyLen;
@@ -66,7 +66,7 @@ unsigned int NSSCryptoKeyHMAC::getKey(safeBuffer &outBuf) {
 //           Replicate key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey * NSSCryptoKeyHMAC::clone() {
+XSECCryptoKey * NSSCryptoKeyHMAC::clone() const {
 
 	NSSCryptoKeyHMAC * ret;
 

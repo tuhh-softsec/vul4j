@@ -80,13 +80,13 @@ void OpenSSLCryptoKeyRSA::setOAEPparams(unsigned char * params, unsigned int par
 
 }
 
-unsigned int OpenSSLCryptoKeyRSA::getOAEPparamsLen(void) {
+unsigned int OpenSSLCryptoKeyRSA::getOAEPparamsLen(void) const {
 
 	return m_oaepParamsLen;
 
 }
 
-const unsigned char * OpenSSLCryptoKeyRSA::getOAEPparams(void) {
+const unsigned char * OpenSSLCryptoKeyRSA::getOAEPparams(void) const {
 
 	return mp_oaepParams;
 
@@ -94,7 +94,7 @@ const unsigned char * OpenSSLCryptoKeyRSA::getOAEPparams(void) {
 
 // Generic key functions
 
-XSECCryptoKey::KeyType OpenSSLCryptoKeyRSA::getKeyType() {
+XSECCryptoKey::KeyType OpenSSLCryptoKeyRSA::getKeyType() const {
 
 	// Find out what we have
 	if (mp_rsaKey == NULL)
@@ -619,7 +619,7 @@ unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 //           Size in bytes
 // --------------------------------------------------------------------------------
 
-unsigned int OpenSSLCryptoKeyRSA::getLength(void) {
+unsigned int OpenSSLCryptoKeyRSA::getLength(void) const {
 
 	if (mp_rsaKey != NULL)
 		return RSA_size(mp_rsaKey);
@@ -632,7 +632,7 @@ unsigned int OpenSSLCryptoKeyRSA::getLength(void) {
 //           Clone this key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey * OpenSSLCryptoKeyRSA::clone() {
+XSECCryptoKey * OpenSSLCryptoKeyRSA::clone() const {
 
 	OpenSSLCryptoKeyRSA * ret;
 

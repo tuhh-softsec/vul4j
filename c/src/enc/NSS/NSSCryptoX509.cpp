@@ -164,7 +164,7 @@ void NSSCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 //           Get NSS provider name
 // --------------------------------------------------------------------------------
 
-const XMLCh * NSSCryptoX509::getProviderName() {
+const XMLCh * NSSCryptoX509::getProviderName() const {
 
 	return DSIGConstants::s_unicodeStrPROVNSS;
 
@@ -174,7 +174,7 @@ const XMLCh * NSSCryptoX509::getProviderName() {
 //           Get publickey type: RSA or DSA
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey::KeyType NSSCryptoX509::getPublicKeyType() {
+XSECCryptoKey::KeyType NSSCryptoX509::getPublicKeyType() const {
 
   if (mp_cert == NULL) {
 
@@ -210,7 +210,7 @@ XSECCryptoKey::KeyType NSSCryptoX509::getPublicKeyType() {
 //           Replicate public key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey * NSSCryptoX509::clonePublicKey() {
+XSECCryptoKey * NSSCryptoX509::clonePublicKey() const {
 
 	if (mp_cert == NULL) {
 

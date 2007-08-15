@@ -119,13 +119,7 @@ void WinCAPICryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 
 // Info functions
 
-const XMLCh * WinCAPICryptoX509::getProviderName() {
-
-	return DSIGConstants::s_unicodeStrPROVWinCAPI;
-
-}
-
-XSECCryptoKey::KeyType WinCAPICryptoX509::getPublicKeyType() {
+XSECCryptoKey::KeyType WinCAPICryptoX509::getPublicKeyType() const {
 
 	if (mp_certContext == NULL) {
 		throw XSECCryptoException(XSECCryptoException::X509Error,
@@ -144,7 +138,7 @@ XSECCryptoKey::KeyType WinCAPICryptoX509::getPublicKeyType() {
 		
 
 // Get functions
-XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
+XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() const {
 
 
 	if (mp_certContext == NULL) {

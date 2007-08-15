@@ -116,7 +116,7 @@ public:
 	 * Can be used to find what type of KeyInfo this is
 	 */
 
-	virtual keyInfoType getKeyInfoType(void) = 0;
+	virtual keyInfoType getKeyInfoType(void) const = 0;
 
 	/**
 	 * \brief Return the DOMNode that heads up this DOMNode
@@ -134,7 +134,7 @@ public:
 	 * @returns A pointer to a buffer containing the name
 	 */
 
-	virtual const XMLCh * getKeyName(void) = 0;
+	virtual const XMLCh * getKeyName(void) const = 0;
 
 	//@}
 

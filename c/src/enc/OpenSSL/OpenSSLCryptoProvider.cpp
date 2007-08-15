@@ -71,14 +71,14 @@ OpenSSLCryptoProvider::~OpenSSLCryptoProvider() {
 }
 
 
-const XMLCh * OpenSSLCryptoProvider::getProviderName() {
+const XMLCh * OpenSSLCryptoProvider::getProviderName() const {
 
 	return DSIGConstants::s_unicodeStrPROVOpenSSL;
 
 }
 	// Hashing classes
 
-XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA1() {
+XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA1() const {
 
 	OpenSSLCryptoHash * ret;
 
@@ -88,7 +88,7 @@ XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA1() {
 
 }
 
-XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA1() {
+XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA1() const {
 
 	OpenSSLCryptoHashHMAC * ret;
 
@@ -98,7 +98,7 @@ XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA1() {
 
 }
 
-XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA(int length) {
+XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA(int length) const {
 
 
 	OpenSSLCryptoHash * ret;
@@ -123,7 +123,7 @@ XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA(int length) {
 
 }
 
-XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA(int length) {
+XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA(int length) const {
 
 	OpenSSLCryptoHashHMAC * ret;
 
@@ -147,7 +147,7 @@ XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA(int length) {
 
 }
 
-XSECCryptoHash	* OpenSSLCryptoProvider::hashMD5() {
+XSECCryptoHash	* OpenSSLCryptoProvider::hashMD5() const {
 
 	OpenSSLCryptoHash * ret;
 
@@ -157,7 +157,7 @@ XSECCryptoHash	* OpenSSLCryptoProvider::hashMD5() {
 
 }
 
-XSECCryptoHash * OpenSSLCryptoProvider::hashHMACMD5() {
+XSECCryptoHash * OpenSSLCryptoProvider::hashHMACMD5() const {
 
 	OpenSSLCryptoHashHMAC * ret;
 
@@ -167,7 +167,7 @@ XSECCryptoHash * OpenSSLCryptoProvider::hashHMACMD5() {
 
 }
 
-XSECCryptoKeyHMAC * OpenSSLCryptoProvider::keyHMAC(void) {
+XSECCryptoKeyHMAC * OpenSSLCryptoProvider::keyHMAC(void) const {
 
 	OpenSSLCryptoKeyHMAC * ret;
 	XSECnew(ret, OpenSSLCryptoKeyHMAC);
@@ -176,7 +176,7 @@ XSECCryptoKeyHMAC * OpenSSLCryptoProvider::keyHMAC(void) {
 
 }
 
-XSECCryptoKeyDSA * OpenSSLCryptoProvider::keyDSA() {
+XSECCryptoKeyDSA * OpenSSLCryptoProvider::keyDSA() const {
 	
 	OpenSSLCryptoKeyDSA * ret;
 
@@ -186,7 +186,7 @@ XSECCryptoKeyDSA * OpenSSLCryptoProvider::keyDSA() {
 
 }
 
-XSECCryptoKeyRSA * OpenSSLCryptoProvider::keyRSA() {
+XSECCryptoKeyRSA * OpenSSLCryptoProvider::keyRSA() const {
 	
 	OpenSSLCryptoKeyRSA * ret;
 
@@ -197,7 +197,7 @@ XSECCryptoKeyRSA * OpenSSLCryptoProvider::keyRSA() {
 }
 
 
-XSECCryptoX509 * OpenSSLCryptoProvider::X509() {
+XSECCryptoX509 * OpenSSLCryptoProvider::X509() const {
 
 	OpenSSLCryptoX509 * ret;
 
@@ -207,7 +207,7 @@ XSECCryptoX509 * OpenSSLCryptoProvider::X509() {
 
 }
 
-XSECCryptoBase64 * OpenSSLCryptoProvider::base64() {
+XSECCryptoBase64 * OpenSSLCryptoProvider::base64() const {
 
 #if 0
 	OpenSSLCryptoBase64 * ret;
@@ -222,7 +222,7 @@ XSECCryptoBase64 * OpenSSLCryptoProvider::base64() {
 
 }
 
-bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) const {
 
 	switch (alg) {
 
@@ -247,7 +247,7 @@ bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::Symmetric
 
 }
 
-bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg)  {
+bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) const {
 
 	switch (alg) {
 
@@ -277,7 +277,7 @@ bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg)  {
 }
 
 
-XSECCryptoSymmetricKey	* OpenSSLCryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+XSECCryptoSymmetricKey	* OpenSSLCryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) const {
 
 	OpenSSLCryptoSymmetricKey * ret;
 
@@ -287,7 +287,7 @@ XSECCryptoSymmetricKey	* OpenSSLCryptoProvider::keySymmetric(XSECCryptoSymmetric
 
 }
 
-unsigned int OpenSSLCryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) {
+unsigned int OpenSSLCryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) const {
 
 	if (RAND_status() != 1) {
 

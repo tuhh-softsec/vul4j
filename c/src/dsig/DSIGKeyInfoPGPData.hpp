@@ -106,7 +106,7 @@ public:
 	 * PGP Key ID
 	 */
 
-	virtual const XMLCh * getKeyID(void) {return mp_keyID;}
+	virtual const XMLCh * getKeyID(void) const {return mp_keyID;}
 
 	/**
 	 * \brief Get the PGP Key Packet
@@ -117,13 +117,13 @@ public:
 	 * base64 encoded format
 	 */
 
-	virtual const XMLCh * getKeyPacket(void) {return mp_keyPacket;}
+	virtual const XMLCh * getKeyPacket(void) const {return mp_keyPacket;}
 
 	/**
 	 * \brief Get key name - unimplemented for PGP packets
 	 */
 
-	virtual const XMLCh * getKeyName(void) {return NULL;}
+	virtual const XMLCh * getKeyName(void) const {return NULL;}
 
 	//@}
 
@@ -173,7 +173,7 @@ public:
 	 * \brief Return type of this KeyInfo element
 	 */
 	
-	virtual keyInfoType getKeyInfoType(void) {return DSIGKeyInfo::KEYINFO_PGPDATA;}
+	virtual keyInfoType getKeyInfoType(void) const {return DSIGKeyInfo::KEYINFO_PGPDATA;}
 
 	//@}
 

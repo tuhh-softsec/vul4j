@@ -276,7 +276,7 @@ void DSIGKeyInfoX509::load(void) {
 
 }
 
-const XMLCh * DSIGKeyInfoX509::getKeyName(void) {
+const XMLCh * DSIGKeyInfoX509::getKeyName(void) const {
 
 	return mp_X509SubjectName;
 
@@ -284,38 +284,38 @@ const XMLCh * DSIGKeyInfoX509::getKeyName(void) {
 
 }
 
-const XMLCh * DSIGKeyInfoX509::getX509SubjectName(void) {
+const XMLCh * DSIGKeyInfoX509::getX509SubjectName(void) const {
 
 
 	return mp_X509SubjectName;
 
 }
 
-const XMLCh * DSIGKeyInfoX509::getX509IssuerName(void) {
+const XMLCh * DSIGKeyInfoX509::getX509IssuerName(void) const {
 
 	return mp_X509IssuerName;
 
 }
 
-const XMLCh * DSIGKeyInfoX509::getX509CRL(void) {
+const XMLCh * DSIGKeyInfoX509::getX509CRL(void) const {
 
 	return mp_X509CRL;
 
 }
 
-const XMLCh * DSIGKeyInfoX509::getX509SKI(void) {
+const XMLCh * DSIGKeyInfoX509::getX509SKI(void) const {
 
 	return mp_X509SKI;
 
 }
 
-const XMLCh * DSIGKeyInfoX509::getX509IssuerSerialNumber(void) {
+const XMLCh * DSIGKeyInfoX509::getX509IssuerSerialNumber(void) const {
 
 	return mp_X509SerialNumber;
 
 }
 
-int DSIGKeyInfoX509::getCertificateListSize(void) {
+int DSIGKeyInfoX509::getCertificateListSize(void) const {
 
 	return (int) m_X509List.size();
 
@@ -323,7 +323,7 @@ int DSIGKeyInfoX509::getCertificateListSize(void) {
 
 
 
-const XMLCh * DSIGKeyInfoX509::getCertificateItem(int item) {
+const XMLCh * DSIGKeyInfoX509::getCertificateItem(int item) const {
 
 	if (item >=0 && (unsigned int) item < m_X509List.size())
 		return m_X509List[item]->mp_encodedX509;
@@ -334,13 +334,21 @@ const XMLCh * DSIGKeyInfoX509::getCertificateItem(int item) {
 
 XSECCryptoX509 * DSIGKeyInfoX509::getCertificateCryptoItem(int item) {
 
+    if (item >=0 && (unsigned int) item < m_X509List.size())
+        return m_X509List[item]->mp_cryptoX509;
+
+    return 0;
+}
+
+const XSECCryptoX509 * DSIGKeyInfoX509::getCertificateCryptoItem(int item) const {
+
 	if (item >=0 && (unsigned int) item < m_X509List.size())
 		return m_X509List[item]->mp_cryptoX509;
 
 	return 0;
 }
 
-const XMLCh * DSIGKeyInfoX509::getRawRetrievalURI(void) {
+const XMLCh * DSIGKeyInfoX509::getRawRetrievalURI(void) const {
 
 	return mp_rawRetrievalURI;
 

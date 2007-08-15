@@ -84,7 +84,7 @@ NSSCryptoKeyDSA::~NSSCryptoKeyDSA() {
 //           Get key type
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey::KeyType NSSCryptoKeyDSA::getKeyType() {
+XSECCryptoKey::KeyType NSSCryptoKeyDSA::getKeyType() const {
 
   // Find out what we have
 	if (mp_pubkey == NULL) {
@@ -372,7 +372,7 @@ unsigned int NSSCryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 //           Clone key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey * NSSCryptoKeyDSA::clone() {
+XSECCryptoKey * NSSCryptoKeyDSA::clone() const {
 
 	NSSCryptoKeyDSA * ret = NULL;
 

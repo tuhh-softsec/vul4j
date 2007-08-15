@@ -70,19 +70,19 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_HMAC;}
+	virtual XSECCryptoKey::KeyType getKeyType() const {return KEY_HMAC;}
 	
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const;
 
 	/**
 	 * \brief Return the NSS string identifier
 	 */
 
-	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVNSS;}
+	virtual const XMLCh * getProviderName() const {return DSIGConstants::s_unicodeStrPROVNSS;}
 
 	//@}
 
@@ -113,7 +113,7 @@ public :
 	 * @returns number of bytes copied in
 	 */
 
-	virtual unsigned int getKey(safeBuffer &outBuf);
+	virtual unsigned int getKey(safeBuffer &outBuf) const;
 
 	//@}
 

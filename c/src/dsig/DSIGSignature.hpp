@@ -276,7 +276,7 @@ public:
 	 * @returns True if Pretty Printing is active, false if not
 	 */
 
-	bool getPrettyPrint(void);
+	bool getPrettyPrint(void) const;
 
 	/**
 	 * \brief Create a \<Signature\> DOM structure.
@@ -439,6 +439,17 @@ public:
 	DSIGReferenceList * getReferenceList(void);
 
 	/**
+	 * \brief Return the reference list for outside use.
+	 *
+	 * Returns a pointer to the list of references which can
+	 * then be read by the caller.
+	 *
+	 * @returns The referenceList
+	 */
+
+	const DSIGReferenceList * getReferenceList(void) const;
+
+	/**
 	 * \brief Create an input stream from SignedInfo.
 	 *
 	 * This method allows applications to read the fully canonicalised
@@ -467,7 +478,7 @@ public:
 	 *
 	 */
 
-	const XMLCh * getErrMsgs(void);
+	const XMLCh * getErrMsgs(void) const;
 
 	/**
 	 * \brief Get the NS Prefix being used for DSIG elements.
@@ -477,7 +488,7 @@ public:
 	 *
 	 */
 
-	const XMLCh * getDSIGNSPrefix();
+	const XMLCh * getDSIGNSPrefix() const;
 
 	/**
 	 * \brief Get the NS being used for EC nodes
@@ -486,7 +497,7 @@ public:
 	 * @see #setECNSPrefix
 	 */
 
-	const XMLCh * getECNSPrefix();
+	const XMLCh * getECNSPrefix() const;
 
 	/**
 	 * \brief Get the NS being used for XPath Filter2 nodes
@@ -495,7 +506,7 @@ public:
 	 * @see #setXPFNSPrefix
 	 */
 
-	const XMLCh * getXPFNSPrefix();
+	const XMLCh * getXPFNSPrefix() const;
 
 	/**
 	 * \brief
@@ -507,7 +518,7 @@ public:
 	 * @returns The DOM_Document node.
 	 */
 
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getParentDocument() 
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getParentDocument() const
 		{return mp_doc;}
 
 	/**
@@ -519,7 +530,7 @@ public:
 	 * @returns The canonicalisation method
 	 */
 
-	canonicalizationMethod getCanonicalizationMethod(void) 
+	canonicalizationMethod getCanonicalizationMethod(void) const
 	{return (mp_signedInfo != NULL ? 
 			 mp_signedInfo->getCanonicalizationMethod() : CANON_NONE);}
 
@@ -533,7 +544,7 @@ public:
 	 * @returns the Hash (digest) Method
 	 */
 
-	hashMethod getHashMethod(void)
+	hashMethod getHashMethod(void) const
 	{return (mp_signedInfo != NULL ? 
 			 mp_signedInfo->getHashMethod() : HASH_NONE);}
 
@@ -546,7 +557,7 @@ public:
 	 * @returns the Signature method
 	 */
 
-	signatureMethod getSignatureMethod(void)
+	signatureMethod getSignatureMethod(void) const
 	{return (mp_signedInfo != NULL ? 
 			 mp_signedInfo->getSignatureMethod() : SIGNATURE_NONE);}
 
@@ -610,7 +621,7 @@ public:
 	 * @return Value of flag - true for interlocking references, false for standalone
 	 */
 
-	bool getInterlockingReferences(void) {return m_interlockingReferences;}
+	bool getInterlockingReferences(void) const {return m_interlockingReferences;}
 
 	//@}
 
@@ -633,7 +644,7 @@ public:
 	 * @returns A pointer to the URIResolver registered in this signature
 	 */
 
-	XSECURIResolver * getURIResolver(void);
+	XSECURIResolver * getURIResolver(void) const;
 
 	/**
 	 * \brief Register a KeyInfoResolver 
@@ -651,7 +662,7 @@ public:
 	 * @returns A pointer to the KeyInfoResolver registered in this signature
 	 */
 
-	XSECKeyInfoResolver * getKeyInfoResolver(void);
+	XSECKeyInfoResolver * getKeyInfoResolver(void) const;
 
 	//@}
 
@@ -675,6 +686,23 @@ public:
 	 */
 	
 	DSIGKeyInfoList * getKeyInfoList() {return &m_keyInfoList;}
+
+	/**
+	 * \brief Get the list of \<KeyInfo\> elements.
+	 *
+	 * <p>This function recovers list that contains the KeyInfo elements
+	 * read in from the DOM document.</p>
+	 *
+	 * <p>This list should be used by calling applications to determine what key
+	 * is appropriate for validating (or even signing) the Signature.</p>
+	 *
+	 * @todo The KeyInfo process is very primitive.  An interface needs to be
+	 * created to allow application developers to install an object into the Signature
+	 * that the Signature can call on to translate KeyInfo lists into a Key.
+	 * @returns A pointer to the DSIGKeyInfoList object held by the DSIGSignature
+	 */
+	
+	const DSIGKeyInfoList * getKeyInfoList() const {return &m_keyInfoList;}
 
 	/**
 	 * \brief Clear out all KeyInfo elements in the signature.
@@ -799,7 +827,7 @@ public:
 	 * @returns the number of ds:Object nodes held in the Signature, 0 if none
 	 */
 
-	int getObjectLength(void);
+	int getObjectLength(void) const;
 
 	/**
 	 * \brief Get a particular ds:Object from within the Signature
@@ -809,6 +837,15 @@ public:
 	 */
 
 	DSIGObject * getObjectItem(int i);
+
+	/**
+	 * \brief Get a particular ds:Object from within the Signature
+	 *
+	 * @returns the ith Object from the list of ds:Object nodes in the signature.
+	 * Items are ordered in tree order.
+	 */
+
+	const DSIGObject * getObjectItem(int i) const;
 
 	//@}
 
@@ -851,7 +888,7 @@ public:
 	 * @returns The value of the IdByAttributeName flag
 	 */
 
-	bool getIdByAttributeName(void);
+	bool getIdByAttributeName(void) const;
 
 	/**
 	 * \brief Add an attribute name to be searched for when looking for Id attributes
@@ -943,13 +980,13 @@ private:
 	DSIGKeyInfoList				m_keyInfoList;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
 								* mp_KeyInfoNode;
-	safeBuffer					m_errStr;
+	safeBuffer			        m_errStr;
 
 	// Environment
 	XSECEnv						* mp_env;
 	
 	// The signing/verifying key
-	XSECCryptoKey				* mp_signingKey;
+	mutable XSECCryptoKey		* mp_signingKey;
 
 	// Resolvers
 	XSECKeyInfoResolver			* mp_KeyInfoResolver;

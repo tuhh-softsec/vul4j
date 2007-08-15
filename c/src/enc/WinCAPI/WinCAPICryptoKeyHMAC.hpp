@@ -89,19 +89,19 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_HMAC;}
+	virtual XSECCryptoKey::KeyType getKeyType() const {return KEY_HMAC;}
 	
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const ;
 
 	/**
 	 * \brief Return the WinCAPI string identifier
 	 */
 
-	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
+	virtual const XMLCh * getProviderName() const {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
 
 	//@}
 
@@ -132,7 +132,7 @@ public :
 	 * @returns number of bytes copied in
 	 */
 
-	virtual unsigned int getKey(safeBuffer &outBuf);
+	virtual unsigned int getKey(safeBuffer &outBuf) const;
 
 	//@}
 
@@ -160,7 +160,7 @@ public :
 	 * @returns The key to use or 0 if this object does not hold one
 	 */
 
-	HCRYPTKEY getWinKey(void);
+	HCRYPTKEY getWinKey(void) const;
 
 	/**
 	 * \brief Get a windows key provider
@@ -171,7 +171,7 @@ public :
 	 * @returns The key to use or 0 if this object does not hold one
 	 */
 
-	HCRYPTPROV getWinKeyProv(void);
+	HCRYPTPROV getWinKeyProv(void) const;
 
 	//@}
 

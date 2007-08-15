@@ -106,7 +106,7 @@ public:
 	 * @returns the number of elements in the list
 	 */
 
-	size_t getSize();
+	size_t getSize() const;
 
 	/*
 	 * \brief Get an item
@@ -120,6 +120,19 @@ public:
 	 */
 
 	DSIGKeyInfo * item(size_type index);
+
+	/*
+	 * \brief Get an item
+	 *
+	 * Returns the item at index point in the list
+	 *
+	 * @note This is an internal function and should not be called directly
+	 *
+	 * @param index Pointer into the list
+	 * @returns The indicated element or 0 if it does not exist.
+	 */
+
+	const DSIGKeyInfo * item(size_type index) const;
 
 	//@}
 
@@ -217,7 +230,7 @@ public:
 	 * @returns true Iff there are no elements in the list
 	 */
 
-	bool isEmpty();
+	bool isEmpty() const;
 
 	//@}
 

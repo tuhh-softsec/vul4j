@@ -62,13 +62,13 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_NONE;}
+	virtual XSECCryptoKey::KeyType getKeyType() const {return KEY_NONE;}
 
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone() = 0;
+	virtual XSECCryptoKey * clone() const = 0;
 
 	//@}
 

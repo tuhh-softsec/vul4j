@@ -19,12 +19,12 @@
 
 # Process this file with autoconf to produce a configure script
 
-AC_INIT([[XML-Security-C]], [1.3.1], [security-dev@xml.apache.org], [xml-security-c])
+AC_INIT([[XML-Security-C]], [1.4.0], [security-dev@xml.apache.org], [xml-security-c])
 AC_CONFIG_AUX_DIR([config])
 
 # kick off automake
 
-AM_INIT_AUTOMAKE(XMl-Security-C, 1.3.1)
+AM_INIT_AUTOMAKE(XMl-Security-C, 1.4.0)
 AM_PROG_LIBTOOL
 
 # We want to control the autotools invocation

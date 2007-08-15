@@ -80,19 +80,19 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType();
+	virtual XSECCryptoKey::KeyType getKeyType() const;
 
 	/**
 	 *\brief Return the NSS string identifier
 	 */
 
-	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVNSS;}
+	virtual const XMLCh * getProviderName() const {return DSIGConstants::s_unicodeStrPROVNSS;}
 	
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const;
 
 	//@}
 

@@ -123,7 +123,7 @@ NSSCryptoProvider::~NSSCryptoProvider()
 //           Get NSS string
 // --------------------------------------------------------------------------------
 
-const XMLCh * NSSCryptoProvider::getProviderName() {
+const XMLCh * NSSCryptoProvider::getProviderName() const {
 
 	return DSIGConstants::s_unicodeStrPROVNSS;
 
@@ -133,7 +133,7 @@ const XMLCh * NSSCryptoProvider::getProviderName() {
 //           Hash SHA1
 // --------------------------------------------------------------------------------
 
-XSECCryptoHash	* NSSCryptoProvider::hashSHA1() {
+XSECCryptoHash	* NSSCryptoProvider::hashSHA1() const {
 
 	NSSCryptoHash * ret;
 
@@ -147,7 +147,7 @@ XSECCryptoHash	* NSSCryptoProvider::hashSHA1() {
 //           Hash SHA
 // --------------------------------------------------------------------------------
 
-XSECCryptoHash	* NSSCryptoProvider::hashSHA(int length) {
+XSECCryptoHash	* NSSCryptoProvider::hashSHA(int length) const {
 
 	NSSCryptoHash * ret;
 
@@ -173,7 +173,7 @@ XSECCryptoHash	* NSSCryptoProvider::hashSHA(int length) {
 //           Hash HMAC SHA1
 // --------------------------------------------------------------------------------
 
-XSECCryptoHash * NSSCryptoProvider::hashHMACSHA1() {
+XSECCryptoHash * NSSCryptoProvider::hashHMACSHA1() const {
 
 	NSSCryptoHashHMAC * ret;
 
@@ -187,7 +187,7 @@ XSECCryptoHash * NSSCryptoProvider::hashHMACSHA1() {
 //           Hash HMAC SHA
 // --------------------------------------------------------------------------------
 
-XSECCryptoHash * NSSCryptoProvider::hashHMACSHA(int length) {
+XSECCryptoHash * NSSCryptoProvider::hashHMACSHA(int length) const {
 
 	NSSCryptoHashHMAC * ret;
 
@@ -213,7 +213,7 @@ XSECCryptoHash * NSSCryptoProvider::hashHMACSHA(int length) {
 //           Hash MD5
 // --------------------------------------------------------------------------------
 
-XSECCryptoHash	* NSSCryptoProvider::hashMD5() {
+XSECCryptoHash	* NSSCryptoProvider::hashMD5() const {
 
 	NSSCryptoHash * ret;
 
@@ -227,7 +227,7 @@ XSECCryptoHash	* NSSCryptoProvider::hashMD5() {
 //           Hash HMAC MD5
 // --------------------------------------------------------------------------------
 
-XSECCryptoHash * NSSCryptoProvider::hashHMACMD5() {
+XSECCryptoHash * NSSCryptoProvider::hashHMACMD5()const {
 
 	NSSCryptoHashHMAC * ret;
 
@@ -241,7 +241,7 @@ XSECCryptoHash * NSSCryptoProvider::hashHMACMD5() {
 //           Get HMAC key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKeyHMAC * NSSCryptoProvider::keyHMAC(void) {
+XSECCryptoKeyHMAC * NSSCryptoProvider::keyHMAC(void) const {
 
 	NSSCryptoKeyHMAC * ret;
 
@@ -255,7 +255,7 @@ XSECCryptoKeyHMAC * NSSCryptoProvider::keyHMAC(void) {
 //           Get DSA key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKeyDSA * NSSCryptoProvider::keyDSA() {
+XSECCryptoKeyDSA * NSSCryptoProvider::keyDSA() const {
 	
 	NSSCryptoKeyDSA * ret;
 
@@ -269,7 +269,7 @@ XSECCryptoKeyDSA * NSSCryptoProvider::keyDSA() {
 //           Get RSA key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKeyRSA * NSSCryptoProvider::keyRSA() {
+XSECCryptoKeyRSA * NSSCryptoProvider::keyRSA() const {
 	
 	NSSCryptoKeyRSA * ret;
 
@@ -284,7 +284,7 @@ XSECCryptoKeyRSA * NSSCryptoProvider::keyRSA() {
 // --------------------------------------------------------------------------------
 
 XSECCryptoSymmetricKey	* NSSCryptoProvider::keySymmetric(
-                               XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+                               XSECCryptoSymmetricKey::SymmetricKeyType alg) const {
 
 	// Only temporary
 
@@ -300,7 +300,7 @@ XSECCryptoSymmetricKey	* NSSCryptoProvider::keySymmetric(
 //           Get X509 class
 // --------------------------------------------------------------------------------
 
-XSECCryptoX509 * NSSCryptoProvider::X509() {
+XSECCryptoX509 * NSSCryptoProvider::X509() const {
 
 	NSSCryptoX509 * ret;
 
@@ -314,7 +314,7 @@ XSECCryptoX509 * NSSCryptoProvider::X509() {
 //           Get Base64
 // --------------------------------------------------------------------------------
 
-XSECCryptoBase64 * NSSCryptoProvider::base64() {
+XSECCryptoBase64 * NSSCryptoProvider::base64() const {
 
 	// NSS does provide a Base64 decoder/encoder,
 	// but rather use the internal implementation.
@@ -384,7 +384,7 @@ unsigned char * NSSCryptoProvider::SI2b64(SECItem * n, unsigned int &retLen) {
 //           Check if hash algorithm is supported
 // --------------------------------------------------------------------------------
 
-bool NSSCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) {
+bool NSSCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) const {
 
 	switch (alg) {
 
@@ -414,7 +414,7 @@ bool NSSCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) {
 //           Check if cypher algorithm is supported
 // --------------------------------------------------------------------------------
 
-bool NSSCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+bool NSSCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) const {
 
 	switch (alg) {
 
@@ -444,7 +444,7 @@ bool NSSCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyT
 //           Generate random data
 // --------------------------------------------------------------------------------
 
-unsigned int NSSCryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) {
+unsigned int NSSCryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) const {
 
   SECStatus s = PK11_GenerateRandom(buffer, numOctets);
 

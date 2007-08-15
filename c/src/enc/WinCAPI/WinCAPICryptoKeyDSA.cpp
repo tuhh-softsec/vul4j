@@ -109,7 +109,7 @@ WinCAPICryptoKeyDSA::~WinCAPICryptoKeyDSA() {
 
 // Generic key functions
 
-XSECCryptoKey::KeyType WinCAPICryptoKeyDSA::getKeyType() {
+XSECCryptoKey::KeyType WinCAPICryptoKeyDSA::getKeyType() const {
 
 	// Find out what we have
 	if (m_key == NULL) {
@@ -507,7 +507,7 @@ unsigned int WinCAPICryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 // --------------------------------------------------------------------------------
 
 
-XSECCryptoKey * WinCAPICryptoKeyDSA::clone() {
+XSECCryptoKey * WinCAPICryptoKeyDSA::clone() const {
 
 	WinCAPICryptoKeyDSA * ret;
 

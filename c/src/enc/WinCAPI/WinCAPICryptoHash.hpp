@@ -146,7 +146,7 @@ public :
 	 * @returns The hash type
 	 */
 
-	virtual HashType getHashType(void);
+	virtual HashType getHashType(void) const;
 
 	//@}
 

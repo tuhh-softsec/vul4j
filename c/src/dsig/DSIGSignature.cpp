@@ -329,6 +329,12 @@ DSIGReferenceList * DSIGSignature::getReferenceList(void) {
 
 }
 
+const DSIGReferenceList * DSIGSignature::getReferenceList(void) const {
+
+	return mp_signedInfo->getReferenceList();
+
+}
+
 // --------------------------------------------------------------------------------
 //           Set and Get Resolvers
 // --------------------------------------------------------------------------------
@@ -340,7 +346,7 @@ void DSIGSignature::setURIResolver(XSECURIResolver * resolver) {
 
 }
 
-XSECURIResolver * DSIGSignature::getURIResolver(void) {
+XSECURIResolver * DSIGSignature::getURIResolver(void) const {
 
 	return mp_env->getURIResolver();
 
@@ -355,7 +361,7 @@ void DSIGSignature::setKeyInfoResolver(XSECKeyInfoResolver * resolver) {
 
 }
 
-XSECKeyInfoResolver * DSIGSignature::getKeyInfoResolver(void) {
+XSECKeyInfoResolver * DSIGSignature::getKeyInfoResolver(void) const {
 
 	return mp_KeyInfoResolver;
 
@@ -380,13 +386,24 @@ DSIGObject * DSIGSignature::appendObject(void) {
 
 }
 
-int DSIGSignature::getObjectLength(void) {
+int DSIGSignature::getObjectLength(void) const {
 
 	return (unsigned int) m_objects.size();
 
 }
 
 DSIGObject * DSIGSignature::getObjectItem(int i) {
+
+	if ( i < 0 || i >= ((int) m_objects.size())) {
+		throw XSECException(XSECException::ObjectError,
+			"DSIGSignature::getObjectItem - index out of range");
+	}
+
+	return m_objects[i];
+
+}
+
+const DSIGObject * DSIGSignature::getObjectItem(int i) const {
 
 	if ( i < 0 || i >= ((int) m_objects.size())) {
 		throw XSECException(XSECException::ObjectError,
@@ -488,7 +505,7 @@ DSIGSignature::~DSIGSignature() {
 
 // Actions
 
-const XMLCh * DSIGSignature::getErrMsgs() {
+const XMLCh * DSIGSignature::getErrMsgs() const {
 
 	return m_errStr.rawXMLChBuffer();
 
@@ -505,7 +522,7 @@ void DSIGSignature::setPrettyPrint(bool flag) {
 }
 
 
-bool DSIGSignature::getPrettyPrint(void) {
+bool DSIGSignature::getPrettyPrint(void) const {
 
 	return mp_env->getPrettyPrintFlag();
 
@@ -535,20 +552,20 @@ void DSIGSignature::setXPFNSPrefix(const XMLCh * prefix) {
 
 // get
 
-const XMLCh * DSIGSignature::getDSIGNSPrefix() {
+const XMLCh * DSIGSignature::getDSIGNSPrefix() const {
 
 	return mp_env->getDSIGNSPrefix();
 
 }
 
 
-const XMLCh * DSIGSignature::getECNSPrefix() {
+const XMLCh * DSIGSignature::getECNSPrefix() const {
 
 	return mp_env->getECNSPrefix();
 
 }
 
-const XMLCh * DSIGSignature::getXPFNSPrefix() {
+const XMLCh * DSIGSignature::getXPFNSPrefix() const {
 
 	return mp_env->getXPFNSPrefix();
 
@@ -1228,7 +1245,7 @@ void DSIGSignature::setIdByAttributeName(bool flag) {
 
 }
 
-bool DSIGSignature::getIdByAttributeName(void) {
+bool DSIGSignature::getIdByAttributeName(void) const {
 
 	return mp_env->getIdByAttributeName();
 

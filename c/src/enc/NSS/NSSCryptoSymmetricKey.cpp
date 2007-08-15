@@ -68,7 +68,7 @@ NSSCryptoSymmetricKey::~NSSCryptoSymmetricKey() {
 //           Get key type
 // --------------------------------------------------------------------------------
 
-XSECCryptoSymmetricKey::SymmetricKeyType NSSCryptoSymmetricKey::getSymmetricKeyType() {
+XSECCryptoSymmetricKey::SymmetricKeyType NSSCryptoSymmetricKey::getSymmetricKeyType() const {
 
 	return m_keyType;
 
@@ -78,7 +78,7 @@ XSECCryptoSymmetricKey::SymmetricKeyType NSSCryptoSymmetricKey::getSymmetricKeyT
 //           Get provider name
 // --------------------------------------------------------------------------------
 
-const XMLCh * NSSCryptoSymmetricKey::getProviderName() {
+const XMLCh * NSSCryptoSymmetricKey::getProviderName() const {
 
 	return DSIGConstants::s_unicodeStrPROVNSS;
 
@@ -88,7 +88,7 @@ const XMLCh * NSSCryptoSymmetricKey::getProviderName() {
 //           Replicate key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey * NSSCryptoSymmetricKey::clone() {
+XSECCryptoKey * NSSCryptoSymmetricKey::clone() const {
 
 	NSSCryptoSymmetricKey * ret;
 

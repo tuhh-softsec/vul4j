@@ -102,13 +102,13 @@ public :
 	 * \brief Returns the type of this key.
 	 */
 
-	virtual KeyType getKeyType() {return KEY_NONE;}
+	virtual KeyType getKeyType() const {return KEY_NONE;}
 
 	/**
 	 * \brief Returns a string that identifies the crypto owner of this library.
 	 */
 
-	virtual const XMLCh * getProviderName() = 0;
+	virtual const XMLCh * getProviderName() const = 0;
 
 	/**
 	 * \brief Clone the key
@@ -118,7 +118,7 @@ public :
 	 * duplicate keys.
 	 */
 
-	virtual XSECCryptoKey * clone() = 0;
+	virtual XSECCryptoKey * clone() const = 0;
 
   //@}
 

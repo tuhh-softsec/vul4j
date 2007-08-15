@@ -77,13 +77,13 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_NONE;}
+	virtual XSECCryptoKey::KeyType getKeyType() const {return KEY_NONE;}
 	
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone() = 0;
+	virtual XSECCryptoKey * clone() const = 0;
 
 	//@}
 
@@ -114,7 +114,7 @@ public :
 	 * @returns the number of bytes of the OAEPparams buffer (assuming it has been set)
 	 */
 
-	virtual unsigned int getOAEPparamsLen(void) = 0;
+	virtual unsigned int getOAEPparamsLen(void) const = 0;
 
 	/**
 	 * \brief Get the OAEPparams
@@ -123,7 +123,7 @@ public :
 	 * or NULL if no params are held
 	 */
 
-	virtual const unsigned char * getOAEPparams(void) = 0;
+	virtual const unsigned char * getOAEPparams(void) const = 0;
 
 	/**
 	 * \brief Verify a SHA1 PKCS1 encoded signature
@@ -223,7 +223,7 @@ public :
 	 * @returns The length of the rsa key (in bytes)
 	 */
 
-	virtual unsigned int getLength(void) = 0;
+	virtual unsigned int getLength(void) const = 0;
 
 	//@}
 

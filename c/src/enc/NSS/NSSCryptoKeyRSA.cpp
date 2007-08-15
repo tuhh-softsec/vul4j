@@ -79,7 +79,7 @@ NSSCryptoKeyRSA::~NSSCryptoKeyRSA() {
 //           Get key type
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey::KeyType NSSCryptoKeyRSA::getKeyType() {
+XSECCryptoKey::KeyType NSSCryptoKeyRSA::getKeyType() const {
 
 	// Find out what we have
 	if (mp_pubkey == 0) {
@@ -119,7 +119,7 @@ void NSSCryptoKeyRSA::setOAEPparams(unsigned char * params, unsigned int paramsL
 //           Get OAEP parameters length
 // --------------------------------------------------------------------------------
 
-unsigned int NSSCryptoKeyRSA::getOAEPparamsLen(void) {
+unsigned int NSSCryptoKeyRSA::getOAEPparamsLen(void) const {
 
 	return 0;
 
@@ -129,7 +129,7 @@ unsigned int NSSCryptoKeyRSA::getOAEPparamsLen(void) {
 //           Get OAEP parameters
 // --------------------------------------------------------------------------------
 
-const unsigned char * NSSCryptoKeyRSA::getOAEPparams(void) {
+const unsigned char * NSSCryptoKeyRSA::getOAEPparams(void) const {
 
 	return NULL;
 
@@ -398,7 +398,7 @@ unsigned int NSSCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * hashB
 //           Clone key
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey * NSSCryptoKeyRSA::clone() {
+XSECCryptoKey * NSSCryptoKeyRSA::clone() const {
 
 	NSSCryptoKeyRSA * ret;
 
@@ -645,7 +645,7 @@ unsigned int NSSCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 //           Get key size in bytes
 // --------------------------------------------------------------------------------
 
-unsigned int NSSCryptoKeyRSA::getLength(void) {
+unsigned int NSSCryptoKeyRSA::getLength(void)  const {
 
   unsigned int ret = 0;
 

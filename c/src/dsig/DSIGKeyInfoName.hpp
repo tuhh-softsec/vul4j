@@ -103,7 +103,7 @@ public:
 	 * @returns A pointer to the char buffer containing the key name
 	 */
 
-	virtual const XMLCh * getKeyName(void) {return mp_name;};
+	virtual const XMLCh * getKeyName(void) const {return mp_name;};
 
 	/**
 	 * \brief Get the decoded key name (for distinguished names)
@@ -156,7 +156,7 @@ public:
 	 * \brief Return type of this KeyInfo element
 	 */
 	
-	virtual keyInfoType getKeyInfoType(void) {return DSIGKeyInfo::KEYINFO_NAME;}
+	virtual keyInfoType getKeyInfoType(void) const {return DSIGKeyInfo::KEYINFO_NAME;}
 
 	//@}
 

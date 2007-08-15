@@ -106,13 +106,13 @@ public :
 	 * \brief Returns the type of this key.
 	 */
 
-	virtual KeyType getKeyType() {return KEY_SYMMETRIC;}
+	virtual KeyType getKeyType() const {return KEY_SYMMETRIC;}
 
 	/**
 	 * \brief Returns a string that identifies the crypto owner of this library.
 	 */
 
-	virtual const XMLCh * getProviderName() = 0;
+	virtual const XMLCh * getProviderName() const = 0;
 
 	/**
 	 * \brief Clone the key
@@ -122,7 +122,7 @@ public :
 	 * duplicate keys.
 	 */
 
-	virtual XSECCryptoKey * clone() = 0;
+	virtual XSECCryptoKey * clone() const = 0;
 
 	//@}
 
@@ -137,7 +137,7 @@ public :
 	 * particular key
 	 */
 
-	virtual SymmetricKeyType getSymmetricKeyType(void) = 0;
+	virtual SymmetricKeyType getSymmetricKeyType(void) const = 0;
 
 	/**
 	 * \brief Set the key from the provided bytes

@@ -110,19 +110,19 @@ public :
 	 * public key, private key or a key pair
 	 */
 
-	virtual XSECCryptoKey::KeyType getKeyType();
+	virtual XSECCryptoKey::KeyType getKeyType() const;
 
 	/**
 	 * \brief Return the WinCAPI identifier string
 	 */
 	
-	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
+	virtual const XMLCh * getProviderName() const {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
 	
 	/**
 	 * \brief Replicate key
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const;
 
 	//@}
 
@@ -159,7 +159,7 @@ public :
 	 * the ability to set OAEP parameters, so this will always return 0
 	 */
 
-	virtual unsigned int getOAEPparamsLen(void);
+	virtual unsigned int getOAEPparamsLen(void) const;
 
 	/**
 	 * \brief Get the OAEPparams
@@ -170,7 +170,7 @@ public :
 	 * the ability to set OAEP parameters, so this will always return NULL
 	 */
 
-	virtual const unsigned char * getOAEPparams(void);
+	virtual const unsigned char * getOAEPparams(void) const;
 
 	/**
 	 * \brief Verify a SHA1 PKCS1 encoded signature
@@ -267,7 +267,7 @@ public :
 	 * @returns The length of the rsa key (in bytes)
 	 */
 
-	virtual unsigned int getLength(void);
+	virtual unsigned int getLength(void) const;
 
 	//@}
 

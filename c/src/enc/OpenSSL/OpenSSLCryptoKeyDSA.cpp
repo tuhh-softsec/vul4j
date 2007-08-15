@@ -55,7 +55,7 @@ OpenSSLCryptoKeyDSA::~OpenSSLCryptoKeyDSA() {
 
 // Generic key functions
 
-XSECCryptoKey::KeyType OpenSSLCryptoKeyDSA::getKeyType() {
+XSECCryptoKey::KeyType OpenSSLCryptoKeyDSA::getKeyType() const {
 
 	// Find out what we have
 	if (mp_dsaKey == NULL)
@@ -327,7 +327,7 @@ unsigned int OpenSSLCryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 
 
 
-XSECCryptoKey * OpenSSLCryptoKeyDSA::clone() {
+XSECCryptoKey * OpenSSLCryptoKeyDSA::clone() const {
 
 	OpenSSLCryptoKeyDSA * ret;
 

@@ -160,7 +160,7 @@ public :
 	 * @deprecated Use hashSHA instead
 	 */
 	 
-	virtual XSECCryptoHash			* hashSHA1() = 0;
+	virtual XSECCryptoHash			* hashSHA1() const = 0;
 
 	/**
 	 * \brief Return a SHA implementation.
@@ -173,7 +173,7 @@ public :
 	 * @see XSECCryptoHash
 	 */
 	 
-	virtual XSECCryptoHash			* hashSHA(int length = 160) = 0;
+	virtual XSECCryptoHash			* hashSHA(int length = 160) const = 0;
 
 	/**
 	 * \brief Return a HMAC SHA1 implementation.
@@ -187,7 +187,7 @@ public :
 	 * @deprecated use hashHMACSHA instead
 	 */
 
-	virtual XSECCryptoHash			* hashHMACSHA1() = 0;
+	virtual XSECCryptoHash			* hashHMACSHA1() const = 0;
 
 	/**
 	 * \brief Return a HMAC SHA(1-512) implementation.
@@ -201,7 +201,7 @@ public :
 	 * @see XSECCryptoHash
 	 */
 
-	virtual XSECCryptoHash			* hashHMACSHA(int length = 160) = 0;
+	virtual XSECCryptoHash			* hashHMACSHA(int length = 160) const = 0;
 
 	/**
 	 * \brief Return a MD5 implementation.
@@ -213,7 +213,7 @@ public :
 	 * @see XSECCryptoHash
 	 */
 	 
-	virtual XSECCryptoHash			* hashMD5() = 0;
+	virtual XSECCryptoHash			* hashMD5() const = 0;
 
 	/**
 	 * \brief Return a HMAC MD5 implementation.
@@ -231,7 +231,7 @@ public :
 	 * @see XSECCryptoHash
 	 */
 
-	virtual XSECCryptoHash			* hashHMACMD5() = 0;
+	virtual XSECCryptoHash			* hashHMACMD5() const = 0;
 
 	/**
 	 * \brief Return a HMAC key
@@ -243,7 +243,7 @@ public :
 	 * a value set within it.
 	 */
 
-	virtual XSECCryptoKeyHMAC		* keyHMAC(void) = 0;
+	virtual XSECCryptoKeyHMAC		* keyHMAC() const = 0;
 
 	//@}
 
@@ -259,7 +259,7 @@ public :
 	 * @see XSECCryptoBase64
 	 */
 
-	virtual XSECCryptoBase64		* base64() = 0;
+	virtual XSECCryptoBase64		* base64() const = 0;
 
 	//@}
 
@@ -275,7 +275,7 @@ public :
 	 * @see XSECCryptoKeyDSA
 	 */
 
-	virtual XSECCryptoKeyDSA		* keyDSA() = 0;
+	virtual XSECCryptoKeyDSA		* keyDSA() const = 0;
 
 	/**
 	 * \brief Return an RSA key implementation object.
@@ -286,7 +286,7 @@ public :
 	 * @see XSECCryptoKeyRSA
 	 */
 
-	virtual XSECCryptoKeyRSA		* keyRSA() = 0;
+	virtual XSECCryptoKeyRSA		* keyRSA() const = 0;
 
 	/**
 	 * \brief Return an X509 implementation object.
@@ -298,7 +298,7 @@ public :
 	 * @see XSECCryptoX509
 	 */
 
-	virtual XSECCryptoX509			* X509() = 0;
+	virtual XSECCryptoX509			* X509() const = 0;
 
 	/**
 	 * \brief Determine whether a given algorithm is supported
@@ -307,7 +307,7 @@ public :
 	 * symmetric algorithm is supported
 	 */
 
-	virtual bool algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) = 0;
+	virtual bool algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) const = 0;
 
 	/**
 	 * \brief Determine whether a given algorithm is supported
@@ -316,7 +316,7 @@ public :
 	 * digest algorithm is supported
 	 */
 
-	virtual bool algorithmSupported(XSECCryptoHash::HashType alg) = 0;
+	virtual bool algorithmSupported(XSECCryptoHash::HashType alg) const = 0;
 	
 	/**
 	 * \brief Return a Symmetric Key implementation object.
@@ -328,7 +328,7 @@ public :
 	 * @see XSECCryptoSymmetricKey
 	 */
 
-	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) = 0;
+	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) const = 0;
 
 	/**
 	 * \brief Obtain some random octets
@@ -342,7 +342,7 @@ public :
 	 * @returns Number of bytes obtained.
 	 */
 
-	virtual unsigned int getRandom(unsigned char * buffer, unsigned int numOctets) = 0;
+	virtual unsigned int getRandom(unsigned char * buffer, unsigned int numOctets) const = 0;
 
 	//@}
 
@@ -353,7 +353,7 @@ public :
 	 * \brief Returns a string that identifies the Crypto Provider
 	 */
 
-	virtual const XMLCh * getProviderName() = 0;
+	virtual const XMLCh * getProviderName() const = 0;
 
 	//@}
 

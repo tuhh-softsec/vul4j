@@ -135,7 +135,7 @@ public:
 	void setBufferType(bufferType bt);		// Use with care
 
 	// Unicode (UTF-16 manipulation)
-	const XMLCh * sbStrToXMLCh(void);			// Note does not affect internal buffer
+	const XMLCh * sbStrToXMLCh(void) const;		// Note does not affect internal buffer
 	void sbTranscodeIn(const XMLCh * inStr);	// Create a local string from UTF-16
 	void sbTranscodeIn(const char * inStr);		// Create a UTF-16 string from local
 	void sbXMLChIn(const XMLCh * in);			// Buffer holds XMLCh *
@@ -158,7 +158,7 @@ private:
 
 	unsigned char * buffer;
 	unsigned int	bufferSize;
-	XMLCh			* mp_XMLCh;
+	mutable XMLCh   * mp_XMLCh;
 	bufferType		m_bufferType;
 
 	// For XMLCh manipulation

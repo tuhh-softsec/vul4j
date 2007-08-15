@@ -149,7 +149,7 @@ unsigned int WinCAPICryptoHash::finish(unsigned char * hash,
 
 // Get information
 
-XSECCryptoHash::HashType WinCAPICryptoHash::getHashType(void) {
+XSECCryptoHash::HashType WinCAPICryptoHash::getHashType(void) const {
 
 	return m_hashType;			// This could be any kind of hash
 

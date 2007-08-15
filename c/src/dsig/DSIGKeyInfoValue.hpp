@@ -114,7 +114,7 @@ public:
 	 * @returns a pointer to the DSA P string value.
 	 */
 
-	const XMLCh * getDSAP(void) {return mp_PTextNode->getNodeValue();}
+	const XMLCh * getDSAP(void) const {return mp_PTextNode->getNodeValue();}
 
 	/**
 	 * \brief Get Q value
@@ -122,7 +122,7 @@ public:
 	 * @returns a pointer to the DSA Q string value.
 	 */
 
-	const XMLCh * getDSAQ(void) {return mp_QTextNode->getNodeValue();}
+	const XMLCh * getDSAQ(void) const {return mp_QTextNode->getNodeValue();}
 
 	/**
 	 * \brief Get G value
@@ -130,7 +130,7 @@ public:
 	 * @returns a pointer to the DSA G string value.
 	 */
 
-	const XMLCh * getDSAG(void) {return mp_GTextNode->getNodeValue();}
+	const XMLCh * getDSAG(void) const {return mp_GTextNode->getNodeValue();}
 
 	/**
 	 * \brief Get Y value
@@ -138,7 +138,7 @@ public:
 	 * @returns a pointer to the DSA Y string value.
 	 */
 
-	const XMLCh * getDSAY(void) {return mp_YTextNode->getNodeValue();}
+	const XMLCh * getDSAY(void) const {return mp_YTextNode->getNodeValue();}
 
 	/**
 	 * \brief Get Modulus
@@ -146,7 +146,7 @@ public:
 	 * @returns A pointer to the RSA Modulus
 	 */
 
-	const XMLCh * getRSAModulus(void);
+	const XMLCh * getRSAModulus(void) const;
 
 	/**
 	 * \brief Get Exponent
@@ -154,7 +154,7 @@ public:
 	 * @returns A pointer to the buffer containing the RSA Modulus string
 	 */
 
-	const XMLCh * getRSAExponent(void);
+	const XMLCh * getRSAExponent(void) const;
 
 	//@}
 
@@ -266,7 +266,7 @@ public:
 	 * @returns the type of this keyInfo node
 	 */
 
-	virtual keyInfoType getKeyInfoType(void);
+	virtual keyInfoType getKeyInfoType(void) const;
 
 	/**
 	 * \brief Get the name of this key (irrelevant for a KeyValue)
@@ -274,7 +274,7 @@ public:
 	 * @returns NULL
 	 */
 
-	virtual const XMLCh * getKeyName(void);
+	virtual const XMLCh * getKeyName(void) const;
 
 	//@}
 private:

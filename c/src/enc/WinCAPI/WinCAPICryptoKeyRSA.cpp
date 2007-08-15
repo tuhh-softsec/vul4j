@@ -112,7 +112,7 @@ m_p(prov) {
 
 // Generic key functions
 
-XSECCryptoKey::KeyType WinCAPICryptoKeyRSA::getKeyType() {
+XSECCryptoKey::KeyType WinCAPICryptoKeyRSA::getKeyType() const {
 
 	// Find out what we have
 	if (m_key == 0) {
@@ -148,13 +148,13 @@ void WinCAPICryptoKeyRSA::setOAEPparams(unsigned char * params, unsigned int par
 
 }
 
-unsigned int WinCAPICryptoKeyRSA::getOAEPparamsLen(void) {
+unsigned int WinCAPICryptoKeyRSA::getOAEPparamsLen(void) const {
 
 	return 0;
 
 }
 
-const unsigned char * WinCAPICryptoKeyRSA::getOAEPparams(void) {
+const unsigned char * WinCAPICryptoKeyRSA::getOAEPparams(void) const {
 
 	return NULL;
 
@@ -498,7 +498,7 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 
 }
 
-XSECCryptoKey * WinCAPICryptoKeyRSA::clone() {
+XSECCryptoKey * WinCAPICryptoKeyRSA::clone() const {
 
 	WinCAPICryptoKeyRSA * ret;
 
@@ -703,7 +703,7 @@ unsigned int WinCAPICryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 //           Size in bytes
 // --------------------------------------------------------------------------------
 
-unsigned int WinCAPICryptoKeyRSA::getLength(void) {
+unsigned int WinCAPICryptoKeyRSA::getLength(void) const {
 
 	DWORD len;
 	DWORD pLen = 4;

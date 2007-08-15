@@ -46,14 +46,14 @@ void OpenSSLCryptoKeyHMAC::setKey(unsigned char * inBuf, unsigned int inLength) 
 
 }
 
-unsigned int OpenSSLCryptoKeyHMAC::getKey(safeBuffer &outBuf) {
+unsigned int OpenSSLCryptoKeyHMAC::getKey(safeBuffer &outBuf) const {
 
 	outBuf = m_keyBuf;
 	return m_keyLen;
 
 }
 
-XSECCryptoKey * OpenSSLCryptoKeyHMAC::clone() {
+XSECCryptoKey * OpenSSLCryptoKeyHMAC::clone() const {
 
 	OpenSSLCryptoKeyHMAC * ret;
 

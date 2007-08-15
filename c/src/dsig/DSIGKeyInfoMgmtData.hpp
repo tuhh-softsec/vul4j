@@ -100,7 +100,7 @@ public:
 	 * \brief Get key name - unimplemented for MgmtData
 	 */
 
-	virtual const XMLCh * getKeyName(void) {return NULL;}
+	virtual const XMLCh * getKeyName(void) const {return NULL;}
 
 	/**
 	 * \brief Get the MgmtData string
@@ -110,7 +110,7 @@ public:
 	 * @returns A pointer to the XMLCh buffer containing the data
 	 */
 
-	virtual const XMLCh * getData(void) {return mp_data;};
+	virtual const XMLCh * getData(void) const {return mp_data;};
 
 	//@}
 
@@ -148,7 +148,7 @@ public:
 	 * \brief Return type of this KeyInfo element
 	 */
 	
-	virtual keyInfoType getKeyInfoType(void) {return DSIGKeyInfo::KEYINFO_MGMTDATA;}
+	virtual keyInfoType getKeyInfoType(void) const {return DSIGKeyInfo::KEYINFO_MGMTDATA;}
 
 	//@}
 

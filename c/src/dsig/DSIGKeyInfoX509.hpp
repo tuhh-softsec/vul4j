@@ -128,7 +128,7 @@ public:
 	 * (NULL if not set.)
 	 */
 
-	const XMLCh * getX509SubjectName(void);
+	const XMLCh * getX509SubjectName(void) const;
 
 	/**
 	 * \brief Get the name of the certificate (interface function)
@@ -141,7 +141,7 @@ public:
 	 * @see setX509SubjectName(void)
 	 */
 
-	const XMLCh * getKeyName(void);
+	const XMLCh * getKeyName(void) const;
 	
 	/**
 	 * \brief Get the IssuerSerialName
@@ -152,7 +152,7 @@ public:
 	 * (0 if not set.)
 	 */
 
-	const XMLCh * getX509IssuerName(void);
+	const XMLCh * getX509IssuerName(void) const;
 
 	/**
 	 * \brief Get the IsserSerialNumber
@@ -165,7 +165,7 @@ public:
 	 * @see setX509IssuerSerial
 	 */
 
-	const XMLCh * getX509IssuerSerialNumber(void);
+	const XMLCh * getX509IssuerSerialNumber(void) const;
 
 	/**
 	 * \brief Get any associated CRL
@@ -177,7 +177,7 @@ public:
 	 * (0 if not set)
 	 */
 
-	const XMLCh * getX509CRL(void);
+	const XMLCh * getX509CRL(void) const;
 
 	/**
 	 * \brief Get the SKI value (if set)
@@ -189,7 +189,7 @@ public:
 	 * @returns the base64 encoded (plan - not DER) encoded SKI value
 	 */
 
-	const XMLCh * getX509SKI(void);
+	const XMLCh * getX509SKI(void) const;
 
 	/**
 	 * \brief Return the raw Retrieval method to find this certificate
@@ -199,7 +199,7 @@ public:
 	 * this string to allow others to find the certificate
 	 */
 
-	const XMLCh * getRawRetrievalURI(void);
+	const XMLCh * getRawRetrievalURI(void) const;
 
 	/**
 	 * \brief Find the number of certificates held
@@ -209,7 +209,7 @@ public:
 	 * @returns The number of certificates
 	 */
 
-	int getCertificateListSize(void);
+	int getCertificateListSize(void) const;
 
 	/**
 	 * \brief Get the DER encoded certificate pointed to in the list.
@@ -221,7 +221,7 @@ public:
 	 * no certificate exists at that point in the list.
 	 */
 
-	const XMLCh * getCertificateItem(int item);
+	const XMLCh * getCertificateItem(int item) const;
 
 	/**
 	 * \brief Get the Crypto Interface X509 structure version of the certificate
@@ -234,11 +234,22 @@ public:
 
 	XSECCryptoX509 * getCertificateCryptoItem(int item);
 
+    /**
+	 * \brief Get the Crypto Interface X509 structure version of the certificate
+	 *
+	 * Use the index to find the required certificate and return a pointer
+	 * to the XSECCryptoX509 cert
+	 *
+	 * @returns A pointer to the XSECCryptoX509 cert structure
+	 */
+
+	const XSECCryptoX509 * getCertificateCryptoItem(int item) const;
+
 	/**
 	 * \brief Interface function to find the type of this KeyInfo
 	 */
 	
-	virtual keyInfoType getKeyInfoType(void) {return DSIGKeyInfo::KEYINFO_X509;}
+	virtual keyInfoType getKeyInfoType(void) const {return DSIGKeyInfo::KEYINFO_X509;}
 
 	//@}
 

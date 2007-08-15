@@ -68,19 +68,19 @@ OpenSSLCryptoSymmetricKey::~OpenSSLCryptoSymmetricKey() {
 //           Basic Key interface methods
 // --------------------------------------------------------------------------------
 
-XSECCryptoSymmetricKey::SymmetricKeyType OpenSSLCryptoSymmetricKey::getSymmetricKeyType() {
+XSECCryptoSymmetricKey::SymmetricKeyType OpenSSLCryptoSymmetricKey::getSymmetricKeyType() const {
 
 	return m_keyType;
 
 }
 
-const XMLCh * OpenSSLCryptoSymmetricKey::getProviderName() {
+const XMLCh * OpenSSLCryptoSymmetricKey::getProviderName() const {
 
 	return DSIGConstants::s_unicodeStrPROVOpenSSL;
 
 }
 
-XSECCryptoKey * OpenSSLCryptoSymmetricKey::clone() {
+XSECCryptoKey * OpenSSLCryptoSymmetricKey::clone() const {
 
 	OpenSSLCryptoSymmetricKey * ret;
 

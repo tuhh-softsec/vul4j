@@ -75,7 +75,7 @@ DSIGKeyInfo * DSIGKeyInfoList::removeKeyInfo(size_type index) {
 
 }
 
-size_t DSIGKeyInfoList::getSize() {
+size_t DSIGKeyInfoList::getSize() const {
 
 	return m_keyInfoList.size();
 
@@ -83,6 +83,15 @@ size_t DSIGKeyInfoList::getSize() {
 
 
 DSIGKeyInfo * DSIGKeyInfoList::item(size_type index) {
+
+	if (index < m_keyInfoList.size())
+		return m_keyInfoList[index];
+	
+	return NULL;
+
+}
+
+const DSIGKeyInfo * DSIGKeyInfoList::item(size_type index) const {
 
 	if (index < m_keyInfoList.size())
 		return m_keyInfoList[index];
@@ -103,7 +112,7 @@ void DSIGKeyInfoList::empty() {
 
 }
 
-bool DSIGKeyInfoList::isEmpty() {
+bool DSIGKeyInfoList::isEmpty() const {
 
 		return (m_keyInfoList.size() == 0);
 

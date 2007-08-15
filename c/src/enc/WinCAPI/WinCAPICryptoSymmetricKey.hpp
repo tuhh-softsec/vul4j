@@ -93,7 +93,7 @@ public :
 	 * \brief Returns a string that identifies the crypto owner of this library.
 	 */
 
-	virtual const XMLCh * getProviderName();
+    virtual const XMLCh * getProviderName() const {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
 
 	/**
 	 * \brief Clone the key
@@ -103,7 +103,7 @@ public :
 	 * duplicate keys.
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const;
 
 	//@}
 
@@ -118,7 +118,7 @@ public :
 	 * particular key
 	 */
 
-	SymmetricKeyType getSymmetricKeyType(void);
+    SymmetricKeyType getSymmetricKeyType(void) const {return m_keyType;}
 
 	/**
 	 * \brief Set the key from the provided bytes

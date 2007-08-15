@@ -150,7 +150,7 @@ unsigned int OpenSSLCryptoHash::finish(unsigned char * hash,
 
 // Get information
 
-XSECCryptoHash::HashType OpenSSLCryptoHash::getHashType(void) {
+XSECCryptoHash::HashType OpenSSLCryptoHash::getHashType(void) const {
 
 	return m_hashType;			// This could be any kind of hash
 

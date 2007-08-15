@@ -106,7 +106,7 @@ public:
 	 * @returns The number of S-expressions
 	 */
 
-	unsigned int getSexpSize(void);
+	unsigned int getSexpSize(void) const;
 
 	/**
 	 * \brief returns the indicated SExpression
@@ -118,13 +118,13 @@ public:
 	 * S-expression
 	 */
 
-	virtual const XMLCh * getSexp(unsigned int index);
+	virtual const XMLCh * getSexp(unsigned int index) const;
 
 	/**
 	 * \brief Get key name - unimplemented for SPKI packets
 	 */
 
-	virtual const XMLCh * getKeyName(void) {return NULL;}
+	virtual const XMLCh * getKeyName(void) const {return NULL;}
 
 	//@}
 
@@ -165,7 +165,7 @@ public:
 	 * \brief Return type of this KeyInfo element
 	 */
 	
-	virtual keyInfoType getKeyInfoType(void) {return DSIGKeyInfo::KEYINFO_SPKIDATA;}
+	virtual keyInfoType getKeyInfoType(void) const {return DSIGKeyInfo::KEYINFO_SPKIDATA;}
 
 	//@}
 

@@ -86,7 +86,7 @@ public :
 	 * \brief Returns a string that identifies the crypto owner of this library.
 	 */
 
-	virtual const XMLCh * getProviderName();
+	virtual const XMLCh * getProviderName() const;
 
 	/**
 	 * \brief Clone the key
@@ -96,7 +96,7 @@ public :
 	 * duplicate keys.
 	 */
 
-	virtual XSECCryptoKey * clone();
+	virtual XSECCryptoKey * clone() const;
 
 	//@}
 
@@ -111,7 +111,7 @@ public :
 	 * particular key
 	 */
 
-	SymmetricKeyType getSymmetricKeyType(void);
+	SymmetricKeyType getSymmetricKeyType(void) const;
 
 	/**
 	 * \brief Set the key from the provided bytes
@@ -275,6 +275,12 @@ public :
 	 */
 
 	EVP_CIPHER_CTX * getOpenSSLEVP_CIPHER_CTX(void) {return &m_ctx;}
+
+    /**
+	 * \brief Get OpenSSL cipher context structure
+	 */
+
+	const EVP_CIPHER_CTX * getOpenSSLEVP_CIPHER_CTX(void) const {return &m_ctx;}
 
 	//@}
 

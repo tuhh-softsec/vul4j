@@ -82,7 +82,7 @@ public :
 	 *
 	 */
 
-	virtual XSECCryptoKey::KeyType getPublicKeyType();
+	virtual XSECCryptoKey::KeyType getPublicKeyType() const;
 
 	/**
 	 * \brief Get a copy of the public key.
@@ -92,13 +92,13 @@ public :
 	 *
 	 */
 
-	virtual XSECCryptoKey * clonePublicKey();
+	virtual XSECCryptoKey * clonePublicKey() const;
 
 	/**
 	 * \brief Returns a string that identifies the crypto owner of this library.
 	 */
 
-	virtual const XMLCh * getProviderName();
+	virtual const XMLCh * getProviderName() const;
 
 	//@}
 
@@ -123,6 +123,14 @@ public :
 	 */
 
 	virtual safeBuffer &getDEREncodingSB(void) {return m_DERX509;}
+
+	/**
+	 * \brief Get a Base64 DER encoded copy of the certificate
+	 *
+	 * @returns A safeBuffer containing the DER encoded certificate
+	 */
+
+	virtual const safeBuffer &getDEREncodingSB(void) const {return m_DERX509;}
 
 	//@}
 

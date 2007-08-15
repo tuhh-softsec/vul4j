@@ -159,7 +159,7 @@ unsigned int NSSCryptoHash::finish(unsigned char * hash,
 //           Get information
 // --------------------------------------------------------------------------------
 
-XSECCryptoHash::HashType NSSCryptoHash::getHashType(void) {
+XSECCryptoHash::HashType NSSCryptoHash::getHashType(void) const {
 
 	return m_hashType;			// This could be any kind of hash
 

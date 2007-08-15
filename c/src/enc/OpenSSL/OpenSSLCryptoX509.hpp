@@ -68,13 +68,13 @@ public :
 	 *
 	 */
 
-	virtual XSECCryptoKey::KeyType getPublicKeyType();
+	virtual XSECCryptoKey::KeyType getPublicKeyType() const;
 
 	/**
 	 * \brief Returns a string that identifies the crypto owner of this library.
 	 */
 
-	virtual const XMLCh * getProviderName();
+	virtual const XMLCh * getProviderName() const;
 
 	/**
 	 * \brief Get a copy of the public key.
@@ -84,7 +84,7 @@ public :
 	 *
 	 */
 
-	virtual XSECCryptoKey * clonePublicKey();
+	virtual XSECCryptoKey * clonePublicKey() const;
 
 	//@}
 
@@ -110,6 +110,14 @@ public :
 
 	virtual safeBuffer &getDEREncodingSB(void) {return m_DERX509;}
 
+    /**
+	 * \brief Get a Base64 DER encoded copy of the certificate
+	 *
+	 * @returns A safeBuffer containing the DER encoded certificate
+	 */
+
+	virtual const safeBuffer &getDEREncodingSB(void) const {return m_DERX509;}
+
 	//@}
 
 	/** @name OpenSSL Library Specific functions */
@@ -128,6 +136,12 @@ public :
 	 */
 
 	X509 * getOpenSSLX509(void) {return mp_X509;}
+
+    /**
+	 * \brief Get OpenSSL certificate structure
+	 */
+
+	const X509 * getOpenSSLX509(void) const {return mp_X509;}
 
 	//@}
 

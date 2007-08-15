@@ -191,7 +191,7 @@ unsigned int OpenSSLCryptoHashHMAC::finish(unsigned char * hash,
 
 // Get information
 
-XSECCryptoHash::HashType OpenSSLCryptoHashHMAC::getHashType(void) {
+XSECCryptoHash::HashType OpenSSLCryptoHashHMAC::getHashType(void) const {
 
 	return m_hashType;			// This could be any kind of hash
 

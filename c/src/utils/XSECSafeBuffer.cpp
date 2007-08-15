@@ -542,7 +542,7 @@ safeBuffer & safeBuffer::operator << (TXFMBase * t) {
 
 // Unicode Functions
 
-const XMLCh * safeBuffer::sbStrToXMLCh(void) {
+const XMLCh * safeBuffer::sbStrToXMLCh(void) const {
 
 	checkBufferType(BUFFER_CHAR);
 	if (mp_XMLCh != NULL)

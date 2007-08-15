@@ -189,7 +189,7 @@ void DSIGKeyInfoValue::load(void) {
 //           Get RSA Values
 // --------------------------------------------------------------------------------
 
-const XMLCh* DSIGKeyInfoValue::getRSAModulus(void) {
+const XMLCh* DSIGKeyInfoValue::getRSAModulus(void) const {
 
 	if (m_keyInfoType != KEYINFO_VALUE_RSA) {
 
@@ -205,7 +205,7 @@ const XMLCh* DSIGKeyInfoValue::getRSAModulus(void) {
 
 }
 
-const XMLCh * DSIGKeyInfoValue::getRSAExponent(void) {
+const XMLCh * DSIGKeyInfoValue::getRSAExponent(void) const {
 
 	if (m_keyInfoType != KEYINFO_VALUE_RSA) {
 
@@ -417,13 +417,13 @@ void DSIGKeyInfoValue::setRSAExponent(const XMLCh * exponent) {
 //           Other interface functions
 // --------------------------------------------------------------------------------
 
-DSIGKeyInfo::keyInfoType DSIGKeyInfoValue::getKeyInfoType(void) {
+DSIGKeyInfo::keyInfoType DSIGKeyInfoValue::getKeyInfoType(void) const {
 
 	return m_keyInfoType;
 
 }
 
-const XMLCh * DSIGKeyInfoValue::getKeyName(void) {
+const XMLCh * DSIGKeyInfoValue::getKeyName(void) const {
 
 	return DSIGConstants::s_unicodeStrEmpty;
 
