@@ -9,14 +9,14 @@
   <groupId>org.apache.directory.daemon</groupId>
   <artifactId>daemon-parent</artifactId>
   <name>Apache Directory Daemon</name>
-  <packaging>pom</packaging>  
+  <packaging>pom</packaging>
   <!-- note that this skipped a RC in being bumped up -->
   <version>1.1.1-SNAPSHOT</version>
   <description>
     Reusable framework for daemon applications based on Commons Daemon
     Jsvc and Procrun. A small installation layout pattern combined with
     some utility classes allows applications to be come UNIX daemons or
-    Windows NT services.  Reusable bootstrappers along with an installer
+    Windows NT services. Reusable bootstrappers along with an installer
     plugin allow for the rapid creation of standalone daemon applications.
   </description>
 
@@ -52,11 +52,10 @@
     </dependency>
 
     <dependency>
-        <groupId>org.tanukisoftware</groupId>
-        <artifactId>wrapper</artifactId>
-        <version>3.2.3</version>
+      <groupId>org.tanukisoftware</groupId>
+      <artifactId>wrapper</artifactId>
+      <version>3.2.3</version>
     </dependency>
-
 
   </dependencies>
 
@@ -113,9 +112,15 @@
           <version>2.2</version>
         </plugin>
 
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+
       </plugins>
     </pluginManagement>
- 
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -145,5 +150,38 @@
 
     </plugins>
   </build>
+
+  <reporting>
+    <excludeDefaults>true</excludeDefaults>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>project-team</report>
+              <report>mailing-list</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </reporting>
+
+
 </project>
 
