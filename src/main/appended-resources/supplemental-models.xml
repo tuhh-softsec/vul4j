@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<supplementalDataModels>
+  <supplement>
+    <project>
+      <groupId>org.slf4j</groupId>
+      <artifactId>nlog4j</artifactId>
+      <name>NLOG4J SLF4J implementation</name>
+      <organization>
+        <name>QOS.ch</name>
+        <url>http://www.qos.ch</url>
+      </organization>
+      <licenses>
+        <license>
+          <name>MIT</name>
+          <url>http://www.slf4j.org/license.html</url>
+        </license>
+      </licenses>
+    </project>
+  </supplement>
+  <supplement>
+    <project>
+      <groupId>commons-daemon</groupId>
+      <artifactId>commons-daemon</artifactId>
+      <name>Apache Commons Daemon</name>
+      <organization>
+        <name>The Apache Software Foundation</name>
+        <url>http://www.apache.org/</url>
+      </organization>
+      <licenses>
+        <license>
+          <name>ASF 2</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
+    </project>
+  </supplement>
+  <supplement>
+    <project>
+      <groupId>org.tanukisoftware</groupId>
+      <artifactId>wrapper</artifactId>
+      <name>Java Service Wrapper</name>
+      <organization>
+        <name>tanuki software</name>
+        <url>http://www.apache.org/</url>
+      </organization>
+      <licenses>
+        <license>
+          <name>MIT</name>
+          <url>http://wrapper.tanukisoftware.org/doc/english/license.html</url>
+        </license>
+      </licenses>
+    </project>
+  </supplement>
+
+</supplementalDataModels>
