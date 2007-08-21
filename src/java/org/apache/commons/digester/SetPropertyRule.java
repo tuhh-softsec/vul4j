@@ -103,6 +103,10 @@ public class SetPropertyRule extends Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
+        if (attributes.getLength() == 0 ) {
+            return;
+        }
+
         // Identify the actual property name and value to be used
         String actualName = null;
         String actualValue = null;

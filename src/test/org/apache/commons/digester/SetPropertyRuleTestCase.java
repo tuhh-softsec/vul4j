@@ -201,6 +201,21 @@ public class SetPropertyRuleTestCase extends TestCase {
         return new StringReader(xml);
     }
 
+    /**
+     * Test SetPropertyRule when matched XML element has no attributes.
+     * See: DIGESTER-114
+     */
+    public void testElementWithNoAttributes() throws Exception {
+        String TEST_XML_3 = "<?xml version='1.0'?><root><set/></root>";
+
+        // Set up the rules we need
+        digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
+        digester.addSetProperty("root/set", "name", "value");
+
+        // Parse the input - should not throw an exception
+        SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader(TEST_XML_3));
+    } 
+
 }
 
 
