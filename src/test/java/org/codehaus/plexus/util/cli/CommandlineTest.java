@@ -244,7 +244,7 @@ public class CommandlineTest
 
         assertEquals( "Command line size", 3, shellCommandline.length );
 
-        assertEquals( "/bin/bash", shellCommandline[0] );
+        assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \"hello world\"";
         if ( Os.isFamily( "windows" ) )
@@ -269,7 +269,7 @@ public class CommandlineTest
 
         assertEquals( "Command line size", 3, shellCommandline.length );
 
-        assertEquals( "/bin/bash", shellCommandline[0] );
+        assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \'hello world\'";
         if ( Os.isFamily( "windows" ) )
@@ -289,7 +289,7 @@ public class CommandlineTest
 
         assertEquals( "Command line size", 3, shellCommandline.length );
 
-        assertEquals( "/bin/bash", shellCommandline[0] );
+        assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
 
         if ( Os.isFamily( "windows" ) )
@@ -354,7 +354,8 @@ public class CommandlineTest
         }
 
         Writer w = new FileWriter( bat );
-        try{
+        try
+        {
             IOUtil.copy( "echo Quoted", w );
         }
         finally

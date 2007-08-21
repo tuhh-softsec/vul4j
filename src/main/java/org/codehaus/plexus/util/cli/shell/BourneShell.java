@@ -35,7 +35,7 @@ public class BourneShell
 
     public BourneShell( boolean isLoginShell )
     {
-        setShellCommand( "/bin/bash" );
+        setShellCommand( "/bin/sh" );
         setSingleQuotedArgumentEscaped( true );
         setSingleQuotedExecutableEscaped( true );
         setQuotedExecutableEnabled( false );
