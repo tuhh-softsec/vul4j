@@ -1031,4 +1031,20 @@ public final class FileUtilsTest
             throw new Exception( "Unable to delete the file :" + f1.getAbsolutePath() );
         }
     }
+    
+    //Test for bug PLXUTILS-10
+    public void testCopyFileOnSameFile()
+        throws IOException
+    {
+        String content = "ggrgreeeeeeeeeeeeeeeeeeeeeeeoierjgioejrgiojregioejrgufcdxivbsdibgfizgerfyaezgv!zeez";
+        final File theFile = File.createTempFile( "test", ".txt" );
+        FileUtils.fileAppend( theFile.getAbsolutePath(), content );
+
+        assertTrue( theFile.length() > 0 );
+        // Now copy file over itself
+        FileUtils.copyFile( theFile, theFile );
+
+        // This should not fail
+        assertTrue( theFile.length() > 0 );
+    }    
 }

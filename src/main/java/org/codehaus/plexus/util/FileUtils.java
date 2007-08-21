@@ -901,6 +901,13 @@ public class FileUtils
             final String message = "File " + source + " does not exist";
             throw new IOException( message );
         }
+        
+        //check source != destination, see PLXUTILS-10
+        if ( source.getCanonicalPath().equals( destination.getCanonicalPath() ) )
+        {
+            //if they are equal, we can exit the method without doing any work
+            return;
+        }        
 
         //does destinations directory exist ?
         if ( destination.getParentFile() != null && !destination.getParentFile().exists() )
