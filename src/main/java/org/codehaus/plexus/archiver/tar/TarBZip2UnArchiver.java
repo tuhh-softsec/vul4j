@@ -19,6 +19,7 @@ package org.codehaus.plexus.archiver.tar;
 
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
+import org.codehaus.plexus.archiver.tar.TarUnArchiver.UntarCompressionMethod;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,50 +34,19 @@ public class TarBZip2UnArchiver
 {
     public TarBZip2UnArchiver()
     {
+    	this.setupCompressionMethod();
     }
 
     public TarBZip2UnArchiver( File sourceFile )
     {
         super( sourceFile );
+        this.setupCompressionMethod();
     }
 
-    protected void execute()
-        throws ArchiverException
+    private void setupCompressionMethod()
     {
-        File tempTarFile;
-        try
-        {
-            tempTarFile = File.createTempFile( "tmp", ".tar" );
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException( "Cannot create temporary file for bzip2 uncompression", e );
-        }
-
-        tempTarFile.delete();
-
-        File originalSourceFile = this.getSourceFile();
-
-        try
-        {
-            BZip2UnArchiver zipUnArchiver = new BZip2UnArchiver( getSourceFile() );
-
-            zipUnArchiver.enableLogging( this.getLogger() );
-
-            zipUnArchiver.setDestFile( tempTarFile );
-
-            zipUnArchiver.extract();
-
-            setSourceFile( tempTarFile );
-
-            super.execute();
-        }
-        finally
-        {
-            tempTarFile.delete();
-
-            this.setSourceFile( originalSourceFile );
-        }
-
+    	UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.BZIP2 );
+    	this.setCompression( untarCompressionMethod );
     }
+    
 }

@@ -127,17 +127,17 @@ public class TarUnArchiver
         /**
          * No compression
          */
-        private static final String NONE = "none";
+        public static final String NONE = "none";
 
         /**
          * GZIP compression
          */
-        private static final String GZIP = "gzip";
+        public static final String GZIP = "gzip";
 
         /**
          * BZIP2 compression
          */
-        private static final String BZIP2 = "bzip2";
+        public static final String BZIP2 = "bzip2";
 
 
         /**

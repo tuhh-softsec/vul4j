@@ -33,54 +33,19 @@ public class TarGZipUnArchiver
 {
     public TarGZipUnArchiver()
     {
+    	this.setupCompressionMethod();
     }
 
     public TarGZipUnArchiver( File sourceFile )
     {
         super( sourceFile );
+        this.setupCompressionMethod();
     }
-
-    protected void execute()
-        throws ArchiverException
+    
+    private void setupCompressionMethod()
     {
-        File tempTarFile;
-        try
-        {
-            tempTarFile = File.createTempFile("tmp",".tar");
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException("Cannot create temporary file for gzip uncompression", e );
-        }
-
-        tempTarFile.delete();
-
-        File originalSourceFile = this.getSourceFile();
-
-        try
-        {
-            GZipUnArchiver zipUnArchiver = new GZipUnArchiver( getSourceFile() );
-
-            zipUnArchiver.enableLogging( this.getLogger() );
-
-            zipUnArchiver.setDestFile( tempTarFile );
-
-            zipUnArchiver.extract();
-
-            // This is so nasty. You have to make it clear what you're doing. If you're going to take a source file
-            // and do something with it like gunzip it and then untar the result then use methods named what they
-            // actually do. And setters for this stuff is just so confusing, use a method with a parameter.
-
-            setSourceFile( tempTarFile );
-
-            super.execute();
-        }
-        finally
-        {
-            tempTarFile.delete();
-
-            this.setSourceFile( originalSourceFile );
-        }
-
+    	UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.GZIP );
+    	this.setCompression( untarCompressionMethod );
     }
+
 }
