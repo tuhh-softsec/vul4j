@@ -387,12 +387,11 @@ XSECC14n20010315::~XSECC14n20010315() {
 
 	for (int i = 0; i < size; ++i) {
 
-		delete [] m_exclNSList[i];
+		free(m_exclNSList[i]);
 
 	}
 
 	m_exclNSList.clear();
-
 }
 
 // --------------------------------------------------------------------------------
