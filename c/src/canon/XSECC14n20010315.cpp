@@ -392,6 +392,15 @@ XSECC14n20010315::~XSECC14n20010315() {
 	}
 
 	m_exclNSList.clear();
+
+    while (mp_attributes != NULL) {
+
+        mp_currentAttribute = mp_attributes->next;
+        delete mp_attributes;
+        mp_attributes = mp_currentAttribute;
+    }
+
+    mp_attributes = mp_currentAttribute = mp_firstNonNsAttribute = NULL;
 }
 
 // --------------------------------------------------------------------------------
