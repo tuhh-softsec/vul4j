@@ -34,7 +34,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>commons-digester</groupId>
   <artifactId>commons-digester</artifactId>
-  <name>Digester</name>
+  <name>Commons Digester</name>
   <version>1.8.1-SNAPSHOT</version>
 
   <description>
