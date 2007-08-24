@@ -224,7 +224,7 @@ public class InstallationLayout
 
     public File getLicenseFile()
     {
-        return getLicenseFile( "LICENSE.txt" );
+        return getLicenseFile( "LICENSE" );
     }
 
 
@@ -236,7 +236,7 @@ public class InstallationLayout
 
     public File getReadmeFile()
     {
-        return getReadmeFile( "README.txt" );
+        return getReadmeFile( "README" );
     }
 
 

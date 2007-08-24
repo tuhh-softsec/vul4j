@@ -62,7 +62,7 @@ public class ServiceInstallersMojo extends AbstractMojo
 { 
     static final String BOOTSTRAPPER_ARTIFACT_ID = "daemon-bootstrappers";
     static final String BOOTSTRAPPER_GROUP_ID = "org.apache.directory.daemon";
-    static final String LOGGER_ARTIFACT_ID = "nlog4j";
+    static final String LOGGER_ARTIFACT_ID = "slf4j-api";
     static final String LOGGER_GROUP_ID = "org.slf4j";
     static final String DAEMON_ARTIFACT_ID = "commons-daemon";
     static final String DAEMON_GROUP_ID = "commons-daemon";
@@ -382,12 +382,12 @@ public class ServiceInstallersMojo extends AbstractMojo
 
         if ( application.getReadme() == null )
         {
-            application.setReadme( new File( "README.txt" ) );
+            application.setReadme( new File( "README" ) );
         }
 
         if ( application.getLicense() == null )
         {
-            application.setLicense( new File( "LICENSE.txt" ) );
+            application.setLicense( new File( "LICENSE" ) );
         }
 
         for ( int ii = 0; ii < allTargets.size(); ii++ )

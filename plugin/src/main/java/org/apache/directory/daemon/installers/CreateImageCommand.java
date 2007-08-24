@@ -122,12 +122,12 @@ public class CreateImageCommand extends MojoCommand
             try
             {
                 MojoHelperUtils.copyAsciiFile( mymojo, filterProperties,
-                    getClass().getResourceAsStream( "LICENSE.txt" ), licenseTarget, false );
+                    getClass().getResourceAsStream( "LICENSE" ), licenseTarget, false );
             }
             catch ( IOException e )
             {
                 throw new MojoFailureException( "Failed to bundled ASL license file "
-                    + getClass().getResource( "LICENSE.txt" ) + " into position " + licenseTarget );
+                    + getClass().getResource( "LICENSE" ) + " into position " + licenseTarget );
             }
         }
 
@@ -170,6 +170,7 @@ public class CreateImageCommand extends MojoCommand
         }
 
         // copy over the REQUIRED logger artifact
+/*
         try
         {
             FileUtils.copyFile( mymojo.getLogger().getFile(), layout.getLogger() );
@@ -179,6 +180,7 @@ public class CreateImageCommand extends MojoCommand
             throw new MojoFailureException( "Failed to copy logger.jar " + mymojo.getLogger().getFile()
                 + " into position " + layout.getLogger() );
         }
+*/
 
         // copy over the REQUIRED daemon.jar file 
         try
