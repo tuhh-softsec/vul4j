@@ -228,7 +228,8 @@ public class NsisInstallerCommand extends MojoCommand
     {
         filterProperties.putAll( mymojo.getProject().getProperties() );
         filterProperties.put( "app", target.getApplication().getName() );
-
+        filterProperties.put( "app.base.dir", mymojo.getProject().getBasedir().getAbsolutePath() );
+                                 
         char firstChar = target.getApplication().getName().charAt( 0 );
         firstChar = Character.toUpperCase( firstChar );
         filterProperties.put( "app.displayname", firstChar + target.getApplication().getName().substring( 1 ) );
