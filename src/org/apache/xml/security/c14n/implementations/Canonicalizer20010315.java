@@ -72,7 +72,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     		if (currentLevel==-1)
     			return;
     		cur=null;
-    		while (lastlevel>currentLevel) {
+    		while (lastlevel>=currentLevel) {
     			levels.remove(levels.size()-1);
     			if (levels.size()==0) {
     				lastlevel=0;
