@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 43230: Inclusive C14n doesn't always handle xml:space & xml:lang 
+	attributes correctly
     Fixed bug 38668: Add XMLCipher.encryptData method that takes serialized 
 	data as parameter. Thanks to Vladimir Ionescu.
     Fixed bug 42866: Error when removing encrypted content in 1.4.1. Thanks to
