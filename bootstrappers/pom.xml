@@ -55,26 +55,6 @@
           </archive>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>install-library</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <groupId>org.tanukisoftware</groupId>
-              <artifactId>wrapper</artifactId>
-              <version>3.2.3</version>
-              <packaging>jar</packaging>
-              <file>../plugin/src/main/resources/org/apache/directory/daemon/installers/wrapper/lib/wrapper.jar</file>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 </project>
