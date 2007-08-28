@@ -65,9 +65,18 @@ public class ValidateSignatureTest extends TestCase {
 	boolean coreValidity = validator.validate(vc);
 	assertTrue("Signature failed core validation", coreValidity);
     }
+
+    public void test_signature_external_c14n_xmlattrs() throws Exception {
+	String file = "signature-external-c14n-xmlatrs.xml";
+
+	boolean coreValidity = validator.validate(file, 
+	    new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
+	assertTrue("Signature failed core validation", coreValidity);
+    }
     
     public static void main(String[] args) throws Exception {
         ValidateSignatureTest vst = new ValidateSignatureTest("");
         vst.test_signature_with_ID();
+        vst.test_signature_external_c14n_xmlattrs();
     }
 }
