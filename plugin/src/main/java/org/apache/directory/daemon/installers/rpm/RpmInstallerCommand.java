@@ -310,7 +310,7 @@ public class RpmInstallerCommand extends MojoCommand
         else
         {
             String finalName = target.getApplication().getName() + "-" + target.getApplication().getVersion()
-                + "-linux-i386.rpm";
+                + "-linux-" + target.getOsArch() + ".rpm";
             filterProperties.put( "app.final.name", finalName );
         }
 

@@ -64,8 +64,8 @@ public class ServiceInstallersMojo extends AbstractMojo
     static final String BOOTSTRAPPER_GROUP_ID = "org.apache.directory.daemon";
     static final String LOGGER_ARTIFACT_ID = "slf4j-api";
     static final String LOGGER_GROUP_ID = "org.slf4j";
-    static final String DAEMON_ARTIFACT_ID = "commons-daemon";
-    static final String DAEMON_GROUP_ID = "commons-daemon";
+    static final String DAEMON_ARTIFACT_ID = "wrapper";
+    static final String DAEMON_GROUP_ID = "tanukisoft";
 
     /**
      * The target directory into which the mojo creates os and platform 

@@ -21,12 +21,9 @@ package org.apache.directory.daemon.installers;
 
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Properties;
 
-import org.apache.directory.daemon.Bootstrapper;
 import org.apache.directory.daemon.InstallationLayout;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -185,9 +182,7 @@ public class CreateImageCommand extends MojoCommand
         // copy over the REQUIRED daemon.jar file 
         try
         {
-            MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/lib/wrapper.jar" ),
-                    new File( layout.getLibDirectory(), "wrapper.jar" ) );
-
+            FileUtils.copyFile( mymojo.getDaemon().getFile(), new File( layout.getLibDirectory(), "wrapper.jar" ) );
         }
         catch ( IOException e )
         {
@@ -251,8 +246,6 @@ public class CreateImageCommand extends MojoCommand
                         new File( layout.getBinDirectory(), target.getApplication().getName() ) );
                 MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/lib/libwrapper-linux-x86-32.so" ),
                         new File( layout.getLibDirectory(), "libwrapper.so" ) );
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/lib/wrapper.jar" ),
-                        new File( layout.getLibDirectory(), "wrapper.jar" ) );
             }
             catch ( IOException e )
             {
@@ -261,18 +254,18 @@ public class CreateImageCommand extends MojoCommand
         }
 
 
-        // now copy over the jsvc executable renaming it to the applicationName 
-        if ( target.getOsName().equals( "linux" ) && target.getOsArch().equals( "x86_64" ) )
+        if ( target.getOsName().equals( "linux" ) && target.getOsArch().equals( "x86_64" ) && target.getDaemonFramework().equals("tanuki"))
         {
-            File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
             try
             {
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_linux_x86_64" ), executable );
+                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/bin/wrapper-linux-x86-64" ),
+                        new File( layout.getBinDirectory(), target.getApplication().getName() ) );
+                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/lib/libwrapper-linux-x86-64.so" ),
+                        new File( layout.getLibDirectory(), "libwrapper.so" ) );
             }
             catch ( IOException e )
             {
-                throw new MojoFailureException( "Failed to copy jsvc executable file "
-                    + getClass().getResource( "jsvc_linux_x86_64" ) + " into position " + executable.getAbsolutePath() );
+                throw new MojoFailureException( "Failed to copy Tanuki binary files to lib and bin directories");
             }
         }
 
