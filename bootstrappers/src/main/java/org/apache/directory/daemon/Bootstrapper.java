@@ -178,37 +178,7 @@ public class Bootstrapper
     public void callStop( String[] args )
     {
         Thread.currentThread().setContextClassLoader( application );
-        Class clazz = null;
-
-//        if ( startClassName.equals( stopClassName ) && start != null )
-//        {
-            clazz = startClass;
-            stop = start;
-/*
-        }
-        else
-        {
-            try
-            {
-                clazz = application.loadClass( stopClassName );
-            }
-            catch ( ClassNotFoundException e )
-            {
-                log.error( "Could not find " + stopClassName, e );
-                System.exit( ExitCodes.CLASS_LOOKUP );
-            }
-
-            try
-            {
-                stop = ( DaemonApplication ) clazz.newInstance();
-            }
-            catch ( Exception e )
-            {
-                log.error( "Could not instantiate " + stopClassName, e );
-                System.exit( ExitCodes.INSTANTIATION );
-            }
-        }
-*/
+        stop = start;
 
         try
         {

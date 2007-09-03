@@ -29,7 +29,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.tools.ant.taskdefs.Execute;
 import org.apache.tools.ant.taskdefs.Touch;
 import org.apache.tools.ant.Project;
-import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.util.Properties;

@@ -25,10 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.tanukisoftware.wrapper.WrapperListener;
 import org.tanukisoftware.wrapper.WrapperManager;
 
-import javax.naming.directory.InitialDirContext;
-import java.util.Hashtable;
-import java.util.Properties;
-
 /**
  * The bootstrapper used by Tanuki Wrapper.
  *
