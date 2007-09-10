@@ -85,6 +85,20 @@ public class ResourceResolverTest extends TestCase {
 	} catch (Exception e) { }
     }
 
+    public static void testLocalFileWithEmptyBaseURI() throws Exception {
+	Document doc = 
+        DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+	Attr uriAttr = doc.createAttribute("URI");
+	uriAttr.setValue("file:/tmp/foo.xml");
+	ResourceResolver res = 
+	    ResourceResolver.getInstance(uriAttr, "file:/tmp/foo.xml");
+	try {
+	    res.resolve(uriAttr, "");
+	} catch (Exception e) {
+	    fail(e.getMessage());
+	}
+    }
+
     static {
 	org.apache.xml.security.Init.init();
     }
