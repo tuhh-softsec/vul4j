@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.utils.resolver.implementations;
 
-
-
 import java.io.FileInputStream;
 
 import org.apache.xml.utils.URI;
@@ -25,7 +23,6 @@ import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
-
 
 /**
  * A simple ResourceResolver for requests into the local filesystem.
@@ -49,7 +46,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
            throws ResourceResolverException {
 
      try {
-        URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
+        URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
 
         // if the URI contains a fragment, ignore it
         URI uriNewNoFrag = new URI(uriNew);
@@ -142,5 +139,14 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
       log.debug("But I can't");
 
       return false;
+   }
+
+   private static URI getNewURI(String uri, String BaseURI)
+           throws URI.MalformedURIException {
+
+      if ((BaseURI == null) || "".equals(BaseURI)) {
+         return new URI(uri);
+      }
+      return new URI(new URI(BaseURI), uri);
    }
 }
