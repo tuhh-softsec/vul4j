@@ -70,14 +70,22 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
-            VALUE "Comments", "XML Security C++ Library\0"
+            VALUE "Comments", "\0"
             VALUE "CompanyName", "The Apache Software Foundation\0"
-            VALUE "FileDescription", "xsec_1D\0"
+            VALUE "FileDescription", "XML Security C++ Library\0"
             VALUE "FileVersion", "1, 4, 0, 0\0"
-            VALUE "InternalName", "xsec_1D\0"
+#ifdef _DEBUG
+            VALUE "InternalName", "xsec_1_4_0D\0"
+#else
+            VALUE "InternalName", "xsec_1_4_0\0"
+#endif
             VALUE "LegalCopyright", "Copyright © 2002-2007 The Apache Software Foundation\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "xsec_1D.dll\0"
+#ifdef _DEBUG
+            VALUE "OriginalFilename", "xsec_1_4_0D.dll\0"
+#else
+            VALUE "OriginalFilename", "xsec_1_4_0.dll\0"
+#endif
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "XML-Security-C - C++ XML Security Library\0"
             VALUE "ProductVersion", "1, 4, 0, 0\0"
