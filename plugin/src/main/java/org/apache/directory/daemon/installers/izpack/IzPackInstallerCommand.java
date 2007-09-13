@@ -112,7 +112,7 @@ public class IzPackInstallerCommand extends MojoCommand
     }
 
 
-    private void doIzPackFiles() throws MojoFailureException
+    private void doIzPackFiles()
     {
         // -------------------------------------------------------------------
         // For windows we include use a different template file than for unix

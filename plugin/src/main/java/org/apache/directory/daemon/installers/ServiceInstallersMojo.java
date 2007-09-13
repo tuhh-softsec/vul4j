@@ -23,6 +23,7 @@ package org.apache.directory.daemon.installers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -179,7 +180,7 @@ public class ServiceInstallersMojo extends AbstractMojo
 
     private File exportedSources;
     private File docsBase;
-    private List allTargets;
+    private List<Target> allTargets;
 
 
     public void execute() throws MojoExecutionException, MojoFailureException
@@ -212,10 +213,8 @@ public class ServiceInstallersMojo extends AbstractMojo
         setBootstrapArtifacts();
 
         // generate installers for all targets
-        for ( int ii = 0; ii < allTargets.size(); ii++ )
+        for ( Target target:allTargets )
         {
-            Target target = ( Target ) allTargets.get( ii );
-
             // create the installation image first
             CreateImageCommand imgCmd = new CreateImageCommand( this, target );
             imgCmd.execute();
@@ -257,7 +256,7 @@ public class ServiceInstallersMojo extends AbstractMojo
 
     private void initializeAllTargets()
     {
-        allTargets = new ArrayList();
+        allTargets = new ArrayList<Target>();
         addAll( allTargets, izPackTargets );
         addAll( allTargets, innoTargets );
         addAll( allTargets, nsisTargets );
@@ -267,16 +266,15 @@ public class ServiceInstallersMojo extends AbstractMojo
     }
 
 
-    private void addAll( List list, Object[] array )
+    private void addAll( List<Target> list, Target[] array )
     {
         if ( array == null )
-            return;
-        for ( int ii = 0; ii < array.length; ii++ )
         {
-            list.add( array[ii] );
+            return;
         }
+        
+        list = Arrays.asList( array );
     }
-
 
     private void setDefaults() throws MojoFailureException
     {
@@ -347,11 +345,12 @@ public class ServiceInstallersMojo extends AbstractMojo
 
         if ( application.getAuthors() == null )
         {
-            List authors = new ArrayList();
-            List developers = project.getDevelopers();
-            for ( int ii = 0; ii < developers.size(); ii++ )
+            List<String> authors = new ArrayList<String>();
+            @SuppressWarnings(value={"unchecked"})
+            List<Developer> developers = project.getDevelopers();
+            
+            for ( Developer developer:developers )
             {
-                Developer developer = ( Developer ) developers.get( ii );
                 if ( developer.getEmail() != null )
                 {
                     authors.add( developer.getEmail() );
@@ -390,10 +389,8 @@ public class ServiceInstallersMojo extends AbstractMojo
             application.setLicense( new File( "LICENSE" ) );
         }
 
-        for ( int ii = 0; ii < allTargets.size(); ii++ )
+        for ( Target target:allTargets )
         {
-            Target target = ( Target ) allTargets.get( ii );
-
             if ( target.getApplication() == null )
             {
                 target.setApplication( this.application );
@@ -445,6 +442,7 @@ public class ServiceInstallersMojo extends AbstractMojo
     private void setupSourcesAndDocs() throws MojoFailureException
     {
         File generatedDocs = null;
+        
         if ( svnBaseUrl != null )
         {
             exportedSources = new File( outputDirectory, "src" );
@@ -465,6 +463,7 @@ public class ServiceInstallersMojo extends AbstractMojo
     {
         Artifact artifact = null;
         Iterator artifacts = project.getDependencyArtifacts().iterator();
+        
         while ( artifacts.hasNext() )
         {
             artifact = ( Artifact ) artifacts.next();
@@ -515,27 +514,33 @@ public class ServiceInstallersMojo extends AbstractMojo
         getLog().info( "outputDirectory = " + outputDirectory );
         getLog().info( "----------------------------- allTargets -----------------------------" );
 
+        boolean isFirst = true;
+        
         if ( allTargets != null )
         {
-            for ( int ii = 0; ii < allTargets.size(); ii++ )
+            if ( isFirst )
             {
-                getLog().info( "id: " + ( ( Target ) allTargets.get( ii ) ).getId() );
-                getLog().info( "osName: " + ( ( Target ) allTargets.get( ii ) ).getOsName() );
-                getLog().info( "osArch: " + ( ( Target ) allTargets.get( ii ) ).getOsArch() );
-                getLog().info( "osVersion: " + ( ( Target ) allTargets.get( ii ) ).getOsVersion() );
-                getLog().info( "daemonFramework: " + ( ( Target ) allTargets.get( ii ) ).getDaemonFramework() );
+                isFirst = false;
+            }
+            else
+            {
+                getLog().info( "" );
+            }
+            
+            for ( Target target:allTargets )
+            {
+                getLog().info( "id: " + target.getId() );
+                getLog().info( "osName: " + target.getOsName() );
+                getLog().info( "osArch: " + target.getOsArch() );
+                getLog().info( "osVersion: " + target.getOsVersion() );
+                getLog().info( "daemonFramework: " + target.getDaemonFramework() );
                 getLog().info(
-                    "loggerConfigurationFile: " + ( ( Target ) allTargets.get( ii ) ).getLoggerConfigurationFile() );
+                    "loggerConfigurationFile: " + target.getLoggerConfigurationFile() );
                 getLog().info(
                     "bootstrapperConfigurationFiles: "
-                        + ( ( Target ) allTargets.get( ii ) ).getBootstrapperConfigurationFile() );
+                        + target.getBootstrapperConfigurationFile() );
                 getLog().info(
-                    "serverConfigurationFil: " + ( ( Target ) allTargets.get( ii ) ).getServerConfigurationFile() );
-
-                if ( ii + 1 < allTargets.size() )
-                {
-                    getLog().info( "" );
-                }
+                    "serverConfigurationFil: " + target.getServerConfigurationFile() );
             }
         }
 

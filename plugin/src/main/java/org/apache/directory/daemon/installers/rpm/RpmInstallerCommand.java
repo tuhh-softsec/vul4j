@@ -60,7 +60,7 @@ public class RpmInstallerCommand extends MojoCommand
     private File rpmBuilder;
 
 
-    public RpmInstallerCommand(ServiceInstallersMojo mymojo, RpmTarget target) throws MojoFailureException
+    public RpmInstallerCommand(ServiceInstallersMojo mymojo, RpmTarget target)
     {
         super( mymojo );
         this.target = target;
@@ -265,7 +265,7 @@ public class RpmInstallerCommand extends MojoCommand
     }
 
 
-    private void initializeFiltering() throws MojoFailureException
+    private void initializeFiltering()
     {
         filterProperties.putAll( mymojo.getProject().getProperties() );
         filterProperties.put( "app", target.getApplication().getName() );
@@ -341,7 +341,7 @@ public class RpmInstallerCommand extends MojoCommand
         if ( target.getDocsDirectory() != null )
         {
             File docRoot = new File( target.getLayout().getBaseDirectory(), target.getDocsTargetPath() );
-            ArrayList docList = new ArrayList( 200 );
+            List<File> docList = new ArrayList<File>( 200 );
             listFiles( docList, docRoot );
             filterProperties.put( "mk.docs.dirs", getMkDocsDirs( docList, target ) );
             filterProperties.put( "install.docs", getInstallDocs( docList, target ) );
@@ -357,7 +357,7 @@ public class RpmInstallerCommand extends MojoCommand
         if ( target.getSourcesDirectory() != null )
         {
             File srcRoot = new File( target.getLayout().getBaseDirectory(), target.getSourcesTargetPath() );
-            ArrayList srcList = new ArrayList( 200 );
+            List<File> srcList = new ArrayList<File>( 200 );
             listFiles( srcList, srcRoot );
             filterProperties.put( "mk.sources.dirs", getMkSourcesDirs( srcList, target ) );
             filterProperties.put( "install.sources", getInstallSources( srcList, target ) );
@@ -440,7 +440,7 @@ public class RpmInstallerCommand extends MojoCommand
     }
 
 
-    static void listFiles( List fileList, File dir )
+    static void listFiles( List<File> fileList, File dir )
     {
         if ( dir.isFile() )
         {
@@ -449,14 +449,15 @@ public class RpmInstallerCommand extends MojoCommand
 
         fileList.add( dir );
         File[] files = dir.listFiles();
-        for ( int ii = 0; ii < files.length; ii++ )
+        
+        for ( File file:files )
         {
-            if ( files[ii].isFile() )
+            if ( file.isFile() )
             {
-                fileList.add( files[ii] );
+                fileList.add( file );
             }
 
-            listFiles( fileList, files[ii] );
+            listFiles( fileList, file );
         }
     }
 
@@ -583,7 +584,7 @@ public class RpmInstallerCommand extends MojoCommand
     }
 
 
-    private String getInstallLibraryJars() throws MojoFailureException
+    private String getInstallLibraryJars()
     {
         StringBuffer buf = new StringBuffer();
         List artifacts = target.getLibArtifacts();

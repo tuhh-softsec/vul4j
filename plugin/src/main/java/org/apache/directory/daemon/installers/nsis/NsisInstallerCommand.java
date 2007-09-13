@@ -54,7 +54,7 @@ public class NsisInstallerCommand extends MojoCommand
     private File nsisCompiler;
 
 
-    public NsisInstallerCommand( ServiceInstallersMojo mymojo, NsisTarget target ) throws MojoFailureException
+    public NsisInstallerCommand( ServiceInstallersMojo mymojo, NsisTarget target )
     {
         super( mymojo );
         this.target = target;
@@ -223,7 +223,7 @@ public class NsisInstallerCommand extends MojoCommand
     }
 
 
-    private void initializeFiltering() throws MojoFailureException
+    private void initializeFiltering()
     {
         filterProperties.putAll( mymojo.getProject().getProperties() );
         filterProperties.put( "app", target.getApplication().getName() );
@@ -339,7 +339,7 @@ public class NsisInstallerCommand extends MojoCommand
     }
 
 
-    private String getApplicationLibraryJars() throws MojoFailureException
+    private String getApplicationLibraryJars()
     {
         StringBuffer buf = new StringBuffer();
         List artifacts = target.getLibArtifacts();

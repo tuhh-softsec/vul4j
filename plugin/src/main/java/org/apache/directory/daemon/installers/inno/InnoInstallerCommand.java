@@ -59,7 +59,7 @@ public class InnoInstallerCommand extends MojoCommand
     private File innoCompiler;
 
 
-    public InnoInstallerCommand( ServiceInstallersMojo mymojo, InnoTarget target ) throws MojoFailureException
+    public InnoInstallerCommand( ServiceInstallersMojo mymojo, InnoTarget target )
     {
         super( mymojo );
         this.target = target;
@@ -266,7 +266,7 @@ public class InnoInstallerCommand extends MojoCommand
     }
 
 
-    private void initializeFiltering() throws MojoFailureException
+    private void initializeFiltering()
     {
         filterProperties.putAll( mymojo.getProject().getProperties() );
         filterProperties.put( "app", target.getApplication().getName() );
@@ -381,7 +381,7 @@ public class InnoInstallerCommand extends MojoCommand
     }
 
 
-    private String getApplicationLibraryJars() throws MojoFailureException
+    private String getApplicationLibraryJars()
     {
         StringBuffer buf = new StringBuffer();
         List artifacts = target.getLibArtifacts();

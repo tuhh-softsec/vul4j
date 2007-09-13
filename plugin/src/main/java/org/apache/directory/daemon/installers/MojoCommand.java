@@ -43,7 +43,7 @@ import org.codehaus.plexus.util.FileUtils;
  */
 public abstract class MojoCommand
 {
-    protected final Map dependencyMap;
+    protected final Map<String, Artifact> dependencyMap;
     protected final Log log;
     protected final ServiceInstallersMojo mymojo;
     
@@ -55,7 +55,7 @@ public abstract class MojoCommand
     {
         this.mymojo = mymojo;
         this.log = mymojo.getLog();
-        this.dependencyMap = new HashMap();
+        this.dependencyMap = new HashMap<String, Artifact>();
         
         for ( Iterator ii = mymojo.getProject().getDependencyArtifacts().iterator(); ii.hasNext(); /* */ )
         {
@@ -77,7 +77,7 @@ public abstract class MojoCommand
     }
     
     
-    public void processPackagedFiles( Target target, PackagedFile[] packagedFiles ) throws MojoFailureException
+    public void processPackagedFiles( Target target, PackagedFile[] packagedFiles )
     {
         if ( packagedFiles == null )
         {
@@ -98,7 +98,7 @@ public abstract class MojoCommand
             {
                 if ( packagedFiles[ii].isDependency() )
                 {
-                    Artifact artifact = ( Artifact ) dependencyMap.get( packagedFiles[ii].getSource() );
+                    Artifact artifact = dependencyMap.get( packagedFiles[ii].getSource() );
                     
                     if ( artifact == null )
                     {

@@ -131,14 +131,15 @@ public class MojoHelperUtils
     public static List copyDependencies( ServiceInstallersMojo mymojo, InstallationLayout layout )
         throws MojoFailureException
     {
-        List libArtifacts = new ArrayList();
+        List<Artifact> libArtifacts = new ArrayList<Artifact>();
         Artifact artifact = null;
-        List rejects = new ArrayList();
+        List<String> rejects = new ArrayList<String>();
 
         mymojo.getLog().info( "" );
         mymojo.getLog().info( "    Including artifacts: " );
         mymojo.getLog().info( "    -------------------" );
         Iterator artifacts = mymojo.getProject().getRuntimeArtifacts().iterator();
+        
         while ( artifacts.hasNext() )
         {
             artifact = ( Artifact ) artifacts.next();
@@ -152,10 +153,6 @@ public class MojoHelperUtils
             {
                 rejects.add( key );
             }
-//            else if ( artifact.equals( mymojo.getLogger() ) )
-//            {
-//                rejects.add( key );
-//            }
             else
             {
                 if ( mymojo.getExcludes().contains( key ) )
