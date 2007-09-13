@@ -169,7 +169,7 @@ public class AvailablePortFinder
             throw new IllegalArgumentException( "Invalid port range: " + fromPort + " ~ " + toPort );
         }
 
-        Set result = new TreeSet();
+        Set<Integer> result = new TreeSet<Integer>();
 
         for ( int i = fromPort; i <= toPort; i++ )
         {
