@@ -26,9 +26,8 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 
-#include "TXFMConcatChains.hpp"
-
 #include <xsec/transformers/TXFMChain.hpp>
+#include <xsec/transformers/TXFMConcatChains.hpp>
 #include <xsec/framework/XSECError.hpp>
 
 XERCES_CPP_NAMESPACE_USE
