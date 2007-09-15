@@ -67,8 +67,8 @@
 #include <netdb.h>
 #include <errno.h>
 
-#include "XSECBinHTTPURIInputStream.hpp"
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp>
 
 #include <xercesc/util/XMLNetAccessor.hpp>
 #include <xercesc/util/XMLString.hpp>

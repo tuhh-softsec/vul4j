@@ -67,7 +67,7 @@
  *
  */
 
-#include "XSECURIResolverGenericWin32.hpp"
+#include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/XMLUri.hpp>
