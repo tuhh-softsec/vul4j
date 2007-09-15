@@ -34,28 +34,32 @@ samples =
 samples += simpleHMAC
 simpleHMAC_SOURCES = \
   ../src/samples/simpleHMAC.cpp \
-  ../src/samples/IOStreamOutputter.cpp
+  ../src/samples/IOStreamOutputter.cpp \
+  ../src/samples/IOStreamOutputter.hpp
 
 # HMAC validate
 
 samples += simpleValidate
 simpleValidate_SOURCES = \
   ../src/samples/simpleValidate.cpp \
-  ../src/samples/IOStreamOutputter.cpp
+  ../src/samples/IOStreamOutputter.cpp \
+  ../src/samples/IOStreamOutputter.hpp
 
 # Encrypt
 
 samples += simpleEncrypt
 simpleEncrypt_SOURCES = \
   ../src/samples/simpleEncrypt.cpp \
-  ../src/samples/IOStreamOutputter.cpp
+  ../src/samples/IOStreamOutputter.cpp \
+  ../src/samples/IOStreamOutputter.hpp
 
 # Decrypt
 
 samples += simpleDecrypt
 simpleDecrypt_SOURCES = \
   ../src/samples/simpleDecrypt.cpp \
-  ../src/samples/IOStreamOutputter.cpp
+  ../src/samples/IOStreamOutputter.cpp \
+  ../src/samples/IOStreamOutputter.hpp
 
 #
 # Finally we compile the tools that can be used to manipulate
@@ -77,7 +81,9 @@ c14n_SOURCES = \
 tools += checksig
 checksig_SOURCES = \
   ../src/tools/checksig/checksig.cpp \
+  ../src/tools/checksig/AnonymousResolver.hpp \
   ../src/tools/checksig/AnonymousResolver.cpp \
+  ../src/tools/checksig/InteropResolver.hpp \
   ../src/tools/checksig/InteropResolver.cpp
 
 tools += templatesign
@@ -95,6 +101,7 @@ siginf_SOURCES = \
 tools += cipher
 cipher_SOURCES = \
   ../src/tools/cipher/cipher.cpp \
+  ../src/tools/cipher/XencInteropResolver.hpp \
   ../src/tools/cipher/XencInteropResolver.cpp
 
 tools += xklient
