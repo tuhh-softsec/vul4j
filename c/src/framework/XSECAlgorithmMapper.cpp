@@ -27,12 +27,10 @@
 // XSEC Includes
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/framework/XSECAlgorithmHandler.hpp>
 #include <xsec/framework/XSECAlgorithmMapper.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
-
-#include "XSECAlgorithmMapper.hpp"
-#include "XSECAlgorithmHandler.hpp"
 
 // Xerces
 
