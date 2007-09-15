@@ -35,7 +35,7 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 
-#include "DSIGAlgorithmHandlerDefault.hpp"
+#include <xsec/dsig/DSIGAlgorithmHandlerDefault.hpp>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/Janitor.hpp>
