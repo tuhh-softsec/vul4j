@@ -25,9 +25,9 @@
  */
 
 
-#include "XSECTXFMInputSource.hpp"
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
+#include <xsec/utils/XSECTXFMInputSource.hpp>
 #include <xsec/framework/XSECError.hpp>
 
 #include <xercesc/util/BinInputStream.hpp>
