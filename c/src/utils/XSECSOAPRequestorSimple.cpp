@@ -25,11 +25,10 @@
  *
  */
 
-#include "XSECSOAPRequestorSimple.hpp"
-
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
 #include <stdio.h>
