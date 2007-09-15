@@ -199,7 +199,7 @@ xkms_sources = \
   ../src/xkms/impl/XKMSMessageAbstractTypeImpl.cpp \
   ../src/xkms/impl/XKMSMessageFactoryImpl.hpp \
   ../src/xkms/impl/XKMSMessageFactoryImpl.cpp \
-  ../src/xkms/impl/XKMSNotBoundAuthentication.hpp \
+  ../src/xkms/impl/XKMSNotBoundAuthenticationImpl.hpp \
   ../src/xkms/impl/XKMSNotBoundAuthentication.cpp \
   ../src/xkms/impl/XKMSPendingRequestImpl.hpp \
   ../src/xkms/impl/XKMSPendingRequestImpl.cpp \
