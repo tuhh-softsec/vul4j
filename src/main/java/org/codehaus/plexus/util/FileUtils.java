@@ -1428,6 +1428,12 @@ public class FileUtils
         IOException exception = null;
 
         final File[] files = directory.listFiles();
+
+        if ( files == null )
+        {
+            return;
+        }
+
         for ( int i = 0; i < files.length; i++ )
         {
             final File file = files[i];
