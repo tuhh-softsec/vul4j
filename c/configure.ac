@@ -25,6 +25,7 @@ AC_CONFIG_AUX_DIR([config])
 # kick off automake
 
 AM_INIT_AUTOMAKE(xml-security-c, 1.4.0)
+sinclude(m4/acx_pthread.m4)
 AM_PROG_LIBTOOL
 
 # We want to control the autotools invocation
