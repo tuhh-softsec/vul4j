@@ -28,7 +28,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
-#include <exception>
+#include <new>
 
 /**
  * @defgroup pubsig Main Signature API
