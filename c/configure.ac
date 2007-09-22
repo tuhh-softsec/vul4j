@@ -711,7 +711,7 @@ if test $OPENSSL ; then
 
 # First check includes
 
-AC_MSG_CHECKING([for OpenSSL headers in OPENSSL])
+AC_MSG_CHECKING([for OpenSSL headers in $OPENSSL])
 
 OLD_CPPFLAGS=$CPPFLAGS
 CPPFLAGS=["${CPPFLAGS} -I${OPENSSL}/include"]
@@ -720,8 +720,7 @@ AC_TRY_CPP([#include <openssl/opensslv.h>],
    openssl_found=yes 
    AC_DEFINE(HAVE_OPENSSL)
    [AC_MSG_RESULT([found])], 
-   CPPFLAGS=$OLD_CPPFLAGS
-   [AC_MSG_RESULT([no])]);
+   [AC_MSG_ERROR(["Unable to find OpenSSL headers"])]);
 
 # Now check libs
 # Note we keep both the base OPENSSL dir and /lib to handle
@@ -757,14 +756,26 @@ fi
 
 if test -z $openssl_found ; then
 
-AC_MSG_CHECKING([for OpenSSL in system includes])
-AC_TRY_CPP([#include <openssl/opensslv.h>], 
-   openssl_found=yes 
-   AC_DEFINE(HAVE_OPENSSL)
-   LIBS="${LIBS} -lcrypto"
-   [AC_MSG_RESULT([found])],
-   [AC_MSG_RESULT([no])]
-   [AC_MSG_ERROR([OpenSSL header files not found.  Please define OPENSSL])]);
+    AC_PATH_PROG(PKG_CONFIG, pkg-config)
+    if test "x$PKG_CONFIG" != x && test "x$PKG_CONFIG" != "xno" ; then
+        if pkg-config openssl ; then
+            CPPFLAGS="$CPPFLAGS `$PKG_CONFIG --cflags openssl`"
+            LIBS="$LIBS `$PKG_CONFIG --libs openssl`"
+        else
+            AC_MSG_WARN([OpenSSL not supported by pkg-config, using default settings])
+            LIBS="${LIBS} -lcrypto"
+        fi
+    else
+        LIBS="${LIBS} -lcrypto"
+    fi
+
+    AC_MSG_CHECKING([for OpenSSL in system includes])
+    AC_TRY_CPP([#include <openssl/opensslv.h>], 
+       openssl_found=yes 
+       AC_DEFINE(HAVE_OPENSSL)
+       [AC_MSG_RESULT([found])],
+       [AC_MSG_RESULT([no])]
+       [AC_MSG_ERROR([OpenSSL header files not found.  Please define OPENSSL])]);
 
 fi
 
