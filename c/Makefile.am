@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+AUTOMAKE_OPTIONS = foreign
+
 SUBDIRS = include lib bin
-AUTOMAKE_OPTIONS=foreign
 ACLOCAL_AMFLAGS = -I m4
+
+EXTRA_DIST = m4/acx_pthread.m4
