@@ -27,6 +27,8 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECException.hpp>
+#include <xsec/enc/XSECCryptoException.hpp>
+#include <exception>
 
 /**
  * @defgroup pubsig Main Signature API
@@ -54,11 +56,11 @@ extern const char * XSECExceptionStrings [];
 			throw XSECException (XSECException::MemoryAllocationFail); \
 		}\
 	} \
-	catch (XSECException &e) \
+	catch (XSECCryptoException &e) \
 	{\
 		throw XSECException (XSECException::InternalError, e.getMsg()); \
 	} \
-	catch (...) { \
+	catch (std::bad_alloc&) { \
 		throw XSECException (XSECException::MemoryAllocationFail); \
 	}
 
@@ -70,11 +72,12 @@ extern const char * XSECExceptionStrings [];
 			throw XSECException (XSECException::MemoryAllocationFail); \
 		} \
 	} \
-	catch (XSECException &e) \
+	catch (XSECCryptoException &e) \
 	{\
 		throw XSECException (XSECException::InternalError, e.getMsg()); \
 	} \
-	catch (...) { \
+	catch (std::bad_alloc&) { \
 		throw XSECException (XSECException::MemoryAllocationFail); \
 	}
+
 #endif
