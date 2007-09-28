@@ -2,6 +2,10 @@ Changes between version 1.3.1 and 1.4
 =====================================
 * Fix exclusive c14n namespace bug (rev. 526939) (BL)
 * Add const specifiers and methods to various classes (SC)
+* Add better extraction of openssl build settings using pkg-config (SC)
+* Fix XSECnew macro to stop catching arbitrary errors and report
+  crypto exceptions instead of turning them into allocation errors (SC)
+* Add various missing files to dist target (SC)
 
 Changes between version 1.3 and 1.3.1
 =====================================
@@ -12,7 +16,7 @@ Changes between version 1.3 and 1.3.1
   ability to set Id attributes
 * Fix bug 40085 - incorrect OIDs on non SHA1 based RSA signatures.
 * Update support for non SHA1 based RSA signatures
-* Remove redundant code from SignedInfo that was prevening the 
+* Remove redundant code from SignedInfo that was preventing the 
   library from loading signatures it did not have an algorithm hard
   wired for
 * Fix bug in envelope transform when input nodeset is a document
