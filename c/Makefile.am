@@ -19,4 +19,7 @@ AUTOMAKE_OPTIONS = foreign
 SUBDIRS = include lib bin
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = m4/acx_pthread.m4
+EXTRA_DIST = m4/acx_pthread.m4 Projects
+
+dist-hook:
+    rm -rf `find $(distdir)/Projects -name .svn`
