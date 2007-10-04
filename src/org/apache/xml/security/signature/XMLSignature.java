@@ -364,12 +364,16 @@ private Element signatureValueElement;
          String base64codedValue = Base64.encode(bytes);
 
          if (base64codedValue.length() > 76) {
-            base64codedValue = "\n" + base64codedValue + "\n";
+	    XMLUtils.addReturnToElement(signatureValueElement);
          }
 
          Text t = this._doc.createTextNode(base64codedValue);
 
          signatureValueElement.appendChild(t);
+
+         if (base64codedValue.length() > 76) {
+	    XMLUtils.addReturnToElement(signatureValueElement);
+         }
       }
    }
 
@@ -400,8 +404,7 @@ private Element signatureValueElement;
                // add it before the object
                this._constructionElement.insertBefore(keyInfoElement,
                                                       firstObject);
-               this._constructionElement
-                  .insertBefore(this._doc.createTextNode("\n"), firstObject);
+	       XMLUtils.addReturnBeforeChild(this._constructionElement, firstObject);
             } else {
 
                // add it as the last element to the signature
@@ -579,7 +582,7 @@ private Element signatureValueElement;
       // If _followManifestsDuringValidation is true it will do the same for
       // References inside a Manifest.
       try {
-    	  SignedInfo si=this.getSignedInfo();
+         SignedInfo si=this.getSignedInfo();
          if (!si.verify(this._followManifestsDuringValidation)) {
             return false;
          }
