@@ -22,6 +22,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.HelperNodeList;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -184,7 +185,7 @@ public class XPath2FilterContainer extends ElementProxy
 
       HelperNodeList nl = new HelperNodeList();
 
-      nl.appendChild(doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(doc, nl);
 
       for (int i = 0; i < params.length; i++) {
          String type = params[i][0];
@@ -203,7 +204,7 @@ public class XPath2FilterContainer extends ElementProxy
          XPath2FilterContainer c = new XPath2FilterContainer(doc, xpath, type);
 
          nl.appendChild(c.getElement());
-         nl.appendChild(doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(doc, nl);
       }
 
       return nl;

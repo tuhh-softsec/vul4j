@@ -21,6 +21,7 @@ package org.apache.xml.security.transforms.params;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
 import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -83,8 +84,9 @@ public class XPath2FilterContainer04 extends ElementProxy
 
       if ((xpath2filter.length() > 2)
               && (!Character.isWhitespace(xpath2filter.charAt(0)))) {
-         this._constructionElement.appendChild(doc.createTextNode("\n"
-                 + xpath2filter + "\n"));
+	 XMLUtils.addReturnToElement(this._constructionElement);
+	 this._constructionElement.appendChild(doc.createTextNode(xpath2filter));
+	 XMLUtils.addReturnToElement(this._constructionElement);
       } else {
          this._constructionElement
             .appendChild(doc.createTextNode(xpath2filter));
