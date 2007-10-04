@@ -264,13 +264,16 @@ public class Base64 {
 
 
    /**
-    * Encode a byte array and fold lines at the standard 76th character.
+    * Encode a byte array and fold lines at the standard 76th character unless 
+    * ignore line breaks property is set.
     *
     * @param binaryData <code>byte[]<code> to be base64 encoded
     * @return the <code>String<code> with encoded data
     */
    public static final String encode(byte[] binaryData) {
-        return encode(binaryData,BASE64DEFAULTLENGTH);
+      return XMLUtils.ignoreLineBreaks 
+         ? encode(binaryData, Integer.MAX_VALUE) 
+	 : encode(binaryData, BASE64DEFAULTLENGTH);
    }
    
    /**

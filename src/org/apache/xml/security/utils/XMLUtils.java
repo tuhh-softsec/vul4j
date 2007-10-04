@@ -47,6 +47,16 @@ import org.w3c.dom.Text;
  */
 public class XMLUtils {
 
+   static boolean ignoreLineBreaks = false;
+   static {
+      try {
+         ignoreLineBreaks = Boolean.getBoolean
+	    ("org.apache.xml.security.ignoreLineBreaks");
+      } catch (Exception e) {
+         // ignore exceptions
+      }
+   }
+	
    /**
     * Constructor XMLUtils
     *
@@ -398,9 +408,24 @@ public class XMLUtils {
     */
    public static void addReturnToElement(Element e) {
 
-      Document doc = e.getOwnerDocument();
+      if (!ignoreLineBreaks) {
+         Document doc = e.getOwnerDocument();
+         e.appendChild(doc.createTextNode("\n"));
+      }
+   }
 
-      e.appendChild(doc.createTextNode("\n"));
+   public static void addReturnToElement(Document doc, HelperNodeList nl) {
+
+      if (!ignoreLineBreaks) {
+         nl.appendChild(doc.createTextNode("\n"));
+      }
+   }
+
+   public static void addReturnBeforeChild(Element e, Node child) {
+      if (!ignoreLineBreaks) {
+         Document doc = e.getOwnerDocument();
+         e.insertBefore(doc.createTextNode("\n"), child);
+      }
    }
 
    /**

@@ -320,7 +320,7 @@ public abstract class ElementProxy {
          Element e = Base64.encodeToElement(this._doc, localname, bytes);
 
          this._constructionElement.appendChild(e);
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+	 XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -348,9 +348,11 @@ public abstract class ElementProxy {
    public void addBase64Text(byte[] bytes) {
 
       if (bytes != null) {
-         Text t = this._doc.createTextNode("\n" + Base64.encode(bytes) + "\n");
+	 XMLUtils.addReturnToElement(this._constructionElement);
+         Text t = this._doc.createTextNode(Base64.encode(bytes));
 
          this._constructionElement.appendChild(t);
+	 XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
