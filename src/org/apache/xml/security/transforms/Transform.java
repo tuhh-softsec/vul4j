@@ -33,6 +33,7 @@ import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -189,9 +190,9 @@ public final class Transform extends SignatureElementProxy {
 
       HelperNodeList contextNodes = new HelperNodeList();
 
-      contextNodes.appendChild(doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(doc, contextNodes);
       contextNodes.appendChild(contextChild);
-      contextNodes.appendChild(doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(doc, contextNodes);
 
       return Transform.getInstance(doc, algorithmURI, contextNodes);
    }
