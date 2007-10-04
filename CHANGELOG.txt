@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 42597: Unnecessary namespace declarations on Signature children
+	Thanks to Brent Putnam.
     Fixed bug 42061: Method to disable XMLUtils.addReturnToElement. Thanks to
 	Michael McIntosh.
     Fixed bug 42865: Problem with empty BaseURI in ResolverLocalFilesystem.
