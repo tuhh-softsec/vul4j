@@ -197,6 +197,15 @@ private Element signatureValueElement;
 
       super(doc);
 
+      String xmlnsDsPrefix = 
+         getDefaultPrefixBindings(Constants.SignatureSpecNS);
+      if (xmlnsDsPrefix == null || xmlnsDsPrefix.length() == 0) {
+         this._constructionElement.setAttributeNS
+	    (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
+      } else {
+         this._constructionElement.setAttributeNS
+	    (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
+      }
       XMLUtils.addReturnToElement(this._constructionElement);
 
       this._baseURI = BaseURI;
@@ -229,6 +238,15 @@ private Element signatureValueElement;
 
       super(doc);
 
+      String xmlnsDsPrefix = 
+         getDefaultPrefixBindings(Constants.SignatureSpecNS);
+      if (xmlnsDsPrefix == null || xmlnsDsPrefix.length() == 0) {
+         this._constructionElement.setAttributeNS
+	    (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
+      } else {
+         this._constructionElement.setAttributeNS
+	    (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
+      }
       XMLUtils.addReturnToElement(this._constructionElement);
 
       this._baseURI = BaseURI;

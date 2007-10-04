@@ -243,15 +243,8 @@ public class XMLUtils {
          throw new RuntimeException("Document is null");
       }
      
-
       if ((dsPrefix == null) || (dsPrefix.length() == 0)) {
-         Element element = doc.createElementNS(Constants.SignatureSpecNS,
-                                               elementName);
-
-         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
-                                Constants.SignatureSpecNS);
-
-         return element;
+         return doc.createElementNS(Constants.SignatureSpecNS, elementName);
       } 
       String namePrefix=(String) namePrefixes.get(elementName);
       if (namePrefix==null) {
@@ -261,14 +254,8 @@ public class XMLUtils {
     	  namePrefix=tag.toString();
     	  namePrefixes.put(elementName,namePrefix);
       }
-         Element element = doc.createElementNS(Constants.SignatureSpecNS, namePrefix);         
-         element.setAttributeNS(Constants.NamespaceSpecNS, xmlnsDsPrefix,
-                                Constants.SignatureSpecNS);
-
-         return element;
-      
+      return doc.createElementNS(Constants.SignatureSpecNS, namePrefix);
    }
-
 
    /**
     * Returns true if the element is in XML Signature namespace and the local
