@@ -71,6 +71,9 @@ public class InterpolationFilterReader
     /** Index into replacement data */
     private int replaceIndex = -1;
 
+    /** Index into previous data */
+    private int previousIndex = -1;
+
     /** Hashtable to hold the replacee-replacer pairs (String to String). */
     private Map variables = new HashMap();
 
@@ -188,7 +191,7 @@ public class InterpolationFilterReader
      */
     public int read() throws IOException
     {
-        if ( replaceIndex != -1 )
+        if ( replaceIndex != -1 && replaceIndex < replaceData.length() )
         {
             int ch = replaceData.charAt( replaceIndex++ );
             if ( replaceIndex >= replaceData.length() )
@@ -198,7 +201,15 @@ public class InterpolationFilterReader
             return ch;
         }
 
-        int ch = in.read();
+        int ch = -1;
+        if ( previousIndex != -1 && previousIndex < endTokenLength )
+        {
+            ch = endToken.charAt( previousIndex++ );
+        }
+        else
+        {
+            ch = in.read();
+        }
 
         if ( ch == beginToken.charAt( 0 ) )
         {
@@ -208,7 +219,14 @@ public class InterpolationFilterReader
 
             do
             {
-                ch = in.read();
+                if ( previousIndex != -1 && previousIndex < endTokenLength )
+                {
+                    ch = endToken.charAt( previousIndex++ );
+                }
+                else
+                {
+                    ch = in.read();
+                }
                 if ( ch != -1 )
                 {
                     key.append( (char) ch );
@@ -234,8 +252,15 @@ public class InterpolationFilterReader
 
                 do
                 {
-                    ch = in.read();
-                    
+                    if ( previousIndex != -1 && previousIndex < endTokenLength )
+                    {
+                        ch = endToken.charAt( previousIndex++ );
+                    }
+                    else
+                    {
+                        ch = in.read();
+                    }
+
                     if ( ch != -1 )
                     {
                         key.append( (char) ch );
@@ -280,7 +305,8 @@ public class InterpolationFilterReader
             }
             else
             {
-                replaceData = key.toString();
+                previousIndex = 0;
+                replaceData = key.substring(0, key.length() - endTokenLength );
                 replaceIndex = 0;
                 return beginToken.charAt(0);
             }

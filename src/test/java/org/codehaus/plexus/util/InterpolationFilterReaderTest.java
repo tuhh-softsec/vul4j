@@ -158,6 +158,18 @@ public class InterpolationFilterReaderTest
         assertEquals( "jason is an asshole", interpolate( foo, m, "@", "@" ) );
     }
 
+    public void testInterpolationWithSpecifiedBoundaryTokensAndAdditionalTokenCharacter()
+        throws Exception
+    {
+        Map m = new HashMap();
+        m.put( "name", "jason" );
+        m.put( "noun", "asshole" );
+
+        String foo = "@name@ (known as jason@somewhere) is an @noun@";
+
+        assertEquals( "jason (known as jason@somewhere) is an asshole", interpolate( foo, m, "@", "@" ) );
+   }
+
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
