@@ -26,30 +26,20 @@ Requires:       %{name} = %{version}-%{release}
 %description    devel
 %{summary}.
 
-%package        docs
-Summary:        Developer documentation for the Apache C++ XML security library
-Group:          Documentation
-
-%description    docs
-%{summary}.
-
-
 %prep
 %setup0 -q
 
 %build
 %configure %{!?_with_xalan: --without-xalan}
-make # %{?_smp_mflags} # fails as of 1.[01].0.
-
+%{__make} # %{?_smp_mflags} # fails as of 1.[01].0.
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -pm 755 $RPM_BUILD_ROOT%{_libdir} # FIXME in Makefiles
-make install DESTDIR=$RPM_BUILD_ROOT
-
+%{__rm} -rf $RPM_BUILD_ROOT
+%{__mkdir} -pm 755 $RPM_BUILD_ROOT%{_libdir} # FIXME in Makefiles
+%{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+%{__rm} -rf $RPM_BUILD_ROOT
 
 
 %post -p /sbin/ldconfig
@@ -58,7 +48,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc LICENSE NOTICE
 %{_libdir}/*.so.*
 %{_libdir}/*.a
 %exclude %{_libdir}/*.la
@@ -68,11 +57,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_includedir}/xsec
 %{_libdir}/*.so
-
-%files docs
-%defattr(644,root,root,755)
-%doc doc/c/*
-
 
 %changelog
 * Wed Aug 15 2007   Scott Cantor  <cantor.2@osu.edu> 1.4.0-1
