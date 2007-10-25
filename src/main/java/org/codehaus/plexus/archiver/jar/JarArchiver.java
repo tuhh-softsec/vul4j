@@ -59,7 +59,7 @@ public class JarArchiver
      * the name of the meta-inf dir
      */
     private static final String META_INF_NAME = "META-INF";
-    
+
     /**
      * The index file name.
      */
@@ -145,7 +145,7 @@ public class JarArchiver
      * Path containing jars that shall be indexed in addition to this archive.
      */
     private ArrayList indexJars;
-    
+
     /**
      * constructor
      */
@@ -302,7 +302,7 @@ public class JarArchiver
         filesetManifestConfig = config;
         mergeManifestsMain = "merge".equals( config.getValue() );
 
-        if ( filesetManifestConfig != null
+        if ( ( filesetManifestConfig != null )
              && !filesetManifestConfig.getValue().equals( "skip" ) )
         {
 
@@ -343,6 +343,11 @@ public class JarArchiver
             Manifest jarManifest = createManifest();
             writeManifest( zOut, jarManifest );
         }
+    }
+
+    protected boolean hasVirtualFiles()
+    {
+        return ( manifest != null ) || ( manifestFile != null ) || super.hasVirtualFiles();
     }
 
     private Manifest createManifest()
@@ -464,7 +469,9 @@ public class JarArchiver
                 }
             }
             if(!add)
+            {
                 filteredDirs.remove(META_INF_NAME+"/");
+            }
         }
         writeIndexLikeList( new ArrayList( filteredDirs ),
                             rootEntries, writer );
@@ -536,7 +543,7 @@ public class JarArchiver
         }
         else
         {
-            if ( index && vPath.indexOf( "/" ) == -1 )
+            if ( index && ( vPath.indexOf( "/" ) == -1 ) )
             {
                 rootEntries.addElement( vPath );
             }
@@ -547,7 +554,7 @@ public class JarArchiver
     private void filesetManifest( File file, InputStream is )
         throws ArchiverException
     {
-        if ( manifestFile != null && manifestFile.equals( file ) )
+        if ( ( manifestFile != null ) && manifestFile.equals( file ) )
         {
             // If this is the same name specified in 'manifest', this
             // is the manifest to use
@@ -578,7 +585,7 @@ public class JarArchiver
                                              + "manifest: " + e.getMessage(), e );
             }
         }
-        else if ( filesetManifestConfig != null
+        else if ( ( filesetManifestConfig != null )
                   && !filesetManifestConfig.getValue().equals( "skip" ) )
         {
             // we add this to our group of fileset manifests
@@ -832,7 +839,7 @@ public class JarArchiver
             {
                 dir = dir.substring( 0, pos );
             }
-            
+
             // name newline
             writer.println( dir );
         }
@@ -872,7 +879,7 @@ public class JarArchiver
             // longest match comes first
             public int compare( Object o1, Object o2 )
             {
-                if ( o1 instanceof String && o2 instanceof String )
+                if ( ( o1 instanceof String ) && ( o2 instanceof String ) )
                 {
                     return ( (String) o2 ).length()
                            - ( (String) o1 ).length();
@@ -928,7 +935,7 @@ public class JarArchiver
                     (ZipEntry) entries.nextElement();
                 String name = ze.getName();
                 // avoid index for manifest-only jars.
-                if (!name.equals(META_INF_NAME) && !name.equals(META_INF_NAME+"/") && 
+                if (!name.equals(META_INF_NAME) && !name.equals(META_INF_NAME+"/") &&
                         !name.equals(INDEX_NAME) && !name.equals(MANIFEST_NAME))
                 {
                     if ( ze.isDirectory() )
