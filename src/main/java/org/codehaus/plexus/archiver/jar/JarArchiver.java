@@ -347,7 +347,7 @@ public class JarArchiver
 
     protected boolean hasVirtualFiles()
     {
-        return ( manifest != null ) || ( manifestFile != null ) || super.hasVirtualFiles();
+        return ( configuredManifest != null ) || ( manifest != null ) || ( manifestFile != null ) || super.hasVirtualFiles();
     }
 
     private Manifest createManifest()
