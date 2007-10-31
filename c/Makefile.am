@@ -19,7 +19,9 @@ AUTOMAKE_OPTIONS = foreign
 SUBDIRS = include lib bin
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = m4/acx_pthread.m4 Projects xml-security-c.spec
+EXTRA_DIST = m4/acx_pthread.m4 Projects xml-security-c.spec \
+    src/framework/resource.h \
+    src/framework/version.rc
 
 dist-hook:
     rm -rf `find $(distdir)/Projects -name .svn`
