@@ -24,4 +24,4 @@ EXTRA_DIST = m4/acx_pthread.m4 Projects xml-security-c.spec \
     src/framework/version.rc
 
 dist-hook:
-    rm -rf `find $(distdir)/Projects -name .svn`
+	rm -rf `find $(distdir)/Projects -name .svn`
