@@ -136,6 +136,20 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
         try {
             this._signatureAlgorithm.initVerify((PublicKey) publicKey);
         } catch (InvalidKeyException ex) {
+            // reinstantiate Signature object to work around bug in JDK
+            // see: http://bugs.sun.com/view_bug.do?bug_id=4953555
+            Signature sig = this._signatureAlgorithm;
+            try {
+                this._signatureAlgorithm = Signature.getInstance
+                    (_signatureAlgorithm.getAlgorithm());
+            } catch (Exception e) {
+                // this shouldn't occur, but if it does, restore previous
+                // Signature
+                if (log.isDebugEnabled()) {
+                    log.debug("Exception when reinstantiating Signature:" + e);
+                }
+                this._signatureAlgorithm = sig;
+            }
             throw new XMLSignatureException("empty", ex);
         }
     }
@@ -226,7 +240,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
      * @inheritDoc
      */
     protected void engineUpdate(byte buf[], int offset, int len)
-           throws XMLSignatureException {
+        throws XMLSignatureException {
         try {
             this._signatureAlgorithm.update(buf, offset, len);
         } catch (SignatureException ex) {

@@ -145,7 +145,20 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       try {
          this._macAlgorithm.init(secretKey);
       } catch (InvalidKeyException ex) {
-         throw new XMLSignatureException("empty", ex);
+            // reinstantiate Mac object to work around bug in JDK
+            // see: http://bugs.sun.com/view_bug.do?bug_id=4953555
+            Mac mac = this._macAlgorithm;
+            try {
+                this._macAlgorithm = Mac.getInstance
+                    (_macAlgorithm.getAlgorithm());
+            } catch (Exception e) {
+                // this shouldn't occur, but if it does, restore previous Mac
+                if (log.isDebugEnabled()) {
+                    log.debug("Exception when reinstantiating Mac:" + e);
+                }
+                this._macAlgorithm = mac;
+            }
+            throw new XMLSignatureException("empty", ex);
       }
    }
 

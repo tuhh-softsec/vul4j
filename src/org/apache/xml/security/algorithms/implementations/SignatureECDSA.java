@@ -227,7 +227,21 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
       try {
          this._signatureAlgorithm.initVerify((PublicKey) publicKey);
       } catch (InvalidKeyException ex) {
-         throw new XMLSignatureException("empty", ex);
+            // reinstantiate Signature object to work around bug in JDK
+            // see: http://bugs.sun.com/view_bug.do?bug_id=4953555
+            Signature sig = this._signatureAlgorithm;
+            try {
+                this._signatureAlgorithm = Signature.getInstance
+                    (_signatureAlgorithm.getAlgorithm());
+            } catch (Exception e) {
+                // this shouldn't occur, but if it does, restore previous
+                // Signature
+                if (log.isDebugEnabled()) {
+                    log.debug("Exception when reinstantiating Signature:" + e);
+                }
+                this._signatureAlgorithm = sig;
+            }
+            throw new XMLSignatureException("empty", ex);
       }
    }
 
