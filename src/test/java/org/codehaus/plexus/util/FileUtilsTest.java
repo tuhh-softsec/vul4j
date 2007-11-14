@@ -1047,4 +1047,31 @@ public final class FileUtilsTest
         // This should not fail
         assertTrue( theFile.length() > 0 );
     }    
+
+    public void testExtensions()
+        throws Exception
+    {
+
+        String[][] values = {
+            { "fry.frozen", "frozen" },
+            { "fry", "" },
+            { "fry.", "" },
+            { "/turanga/leela/meets.fry", "fry" },
+            { "/3000/turanga.leela.fry/zoidberg.helps", "helps" },
+            { "/3000/turanga.leela.fry/zoidberg.", "" },
+            { "/3000/turanga.leela.fry/zoidberg", "" },
+            { "/3000/leela.fry.bender/", "" },
+            { "/3000/leela.fry.bdner/.", "" },
+            { "/3000/leela.fry.bdner/foo.bar.txt", "txt" } };
+
+        for ( int i = 0; i < values.length; i++ )
+        {
+            String fileName = values[i][0].replace( '/', File.separatorChar );
+            String ext = values[i][1];
+            String computed = FileUtils.extension( fileName );
+            assertEquals( "case [" + i + "]:" + fileName + " -> " + ext + ", computed : " + computed, ext, computed );
+        }
+
+    }
+
 }

@@ -242,7 +242,20 @@ public class FileUtils
      */
     public static String extension( String filename )
     {
-        int lastDot = filename.lastIndexOf( '.' );
+        int lastSep = filename.lastIndexOf( File.separatorChar );
+        int lastDot;
+        if ( lastSep < 0 )
+        {
+            lastDot = filename.lastIndexOf( '.' );
+        }
+        else
+        {
+            lastDot = filename.substring( lastSep + 1 ).lastIndexOf( '.' );
+            if ( lastDot >= 0 )
+            {
+                lastDot += lastSep + 1;
+            }
+        }
 
         if ( lastDot >= 0 )
         {
