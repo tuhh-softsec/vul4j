@@ -583,7 +583,8 @@ unsigned int XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer(
 	}
 	else if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIRSA_OAEP_MGFP1)) {
 
-		if (!strEquals(encryptionMethod->getDigestMethod(), DSIGConstants::s_unicodeStrURISHA1)) {
+	    const XMLCh* digmeth = encryptionMethod->getDigestMethod();
+		if (digmeth && *digmeth && !strEquals(digmeth, DSIGConstants::s_unicodeStrURISHA1)) {
 			throw XSECException(XSECException::CipherError, 
 				"XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer - Currently only SHA-1 is supported for OAEP");
 		}
