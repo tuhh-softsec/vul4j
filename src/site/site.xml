@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project name="Digester">
+  <bannerRight>
+    <name>Commons Digester</name>
+    <src>/images/logo.png</src>
+    <href>/index.html</href>
+  </bannerRight>
+
+  <body>
+
+    <menu name="Digester">
+      <item name="Overview"             href="/index.html"/>
+      <item name="Mailing Lists"        href="/mail-lists.html"/>
+      <item name="Issue Tracking"       href="/issue-tracking.html"/>
+      <item name="Source Repository"    href="/source-repository.html"/>
+      <item name="Javadoc (SVN latest)" href="apidocs/index.html"/>
+    </menu>
+
+    <!--
+      - Note that the links in these menu options require manual installation of the
+      - appropriate dirs on the website; maven won't set this up.
+      -->
+    <menu name="Release 1.8 (Current)">
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.8/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
+      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.8/docs/api"/>
+      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.8/RELEASE-NOTES.txt"/>
+    </menu>
+    <menu name="Release 1.7">
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.7/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
+      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.7/docs/api"/>
+      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.7/RELEASE-NOTES.txt"/>
+    </menu>
+    <menu name="Release 1.6">
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.6/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
+      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.6/docs/api"/>
+      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.6/RELEASE-NOTES.txt"/>
+    </menu>
+
+  </body>
+
+</project>

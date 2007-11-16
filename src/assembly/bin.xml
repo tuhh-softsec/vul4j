@@ -15,13 +15,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-
-<!--
-TODO:
- 1. Make source and binary distros unpack in separate directories
-    (*-src for source distro is conventional in our distros)
--->
-
 <assembly>
   <id></id>
   <formats>
@@ -34,7 +27,7 @@ TODO:
       <includes>
         <include>LICENSE*</include>
         <include>NOTICE*</include>
-        <include>pom.xml</include>
+        <include>RELEASE-NOTES.txt</include>
       </includes>
     </fileSet>
     <fileSet>
