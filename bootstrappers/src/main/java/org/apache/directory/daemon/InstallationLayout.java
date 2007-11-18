@@ -343,7 +343,7 @@ public class InstallationLayout
             {
                 try
                 {
-                    dependentJars[ii] = deps[ii].toURL();
+                    dependentJars[ii] = deps[ii].toURI().toURL();
                 }
                 catch ( MalformedURLException e )
                 {
@@ -368,7 +368,7 @@ public class InstallationLayout
             {
                 try
                 {
-                    extensionJars[ii] = extensions[ii].toURL();
+                    extensionJars[ii] = extensions[ii].toURI().toURL();
                 }
                 catch ( MalformedURLException e )
                 {
