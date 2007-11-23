@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="webassembletool" default="build" basedir=".">
+	<target name="build">
+		<copy todir="bin/master/WEB-INF/classes">
+			<fileset dir="classes" />
+		</copy>
+		<copy todir="bin/master/WEB-INF/lib">
+			<fileset dir="lib" />
+		</copy>
+		<copy todir="bin/master/WEB-INF" file="tld/webassembletool.tld" />
+		<copy todir="bin/provider/WEB-INF/classes">
+			<fileset dir="classes" />
+		</copy>
+		<copy todir="bin/provider/WEB-INF/lib">
+			<fileset dir="lib" />
+		</copy>
+		<copy todir="bin/provider/WEB-INF" file="tld/webassembletool.tld" />
+		<copy todir="bin">
+			<fileset dir="test" />
+		</copy>
+	</target>
+	<target name="javadoc">
+		<delete>
+			<fileset file="javadoc" />
+		</delete>
+		<javadoc destdir="javadoc" sourcepath="src" charset="ISO-8859-1" />
+	</target>
+	<target name="release" depends="build">
+		<delete>
+			<fileset file="bin/webassembletool.jar" />
+		</delete>
+		<copy todir="bin">
+			<fileset dir="lib" />
+		</copy>
+		<jar destfile="bin/webassembletool.jar" basedir="classes" includes="net/">
+			<metainf file="tld/webassembletool.tld" />
+		</jar>
+	</target>
+</project>
