@@ -86,10 +86,22 @@ public abstract class CommandLineUtils
     public static int executeCommandLine( Commandline cl, StreamConsumer systemOut, StreamConsumer systemErr )
         throws CommandLineException
     {
-        return executeCommandLine( cl, null, systemOut, systemErr );
+        return executeCommandLine( cl, null, systemOut, systemErr, 0 );
+    }
+
+    public static int executeCommandLine( Commandline cl, StreamConsumer systemOut, StreamConsumer systemErr, int timeoutInSeconds )
+        throws CommandLineException
+    {
+        return executeCommandLine( cl, null, systemOut, systemErr, timeoutInSeconds );
     }
 
     public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut, StreamConsumer systemErr )
+        throws CommandLineException
+    {
+        return executeCommandLine( cl, systemIn, systemOut, systemErr, 0 );
+    }
+
+    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut, StreamConsumer systemErr, int timeoutInSeconds )
         throws CommandLineException
     {
         if ( cl == null )
@@ -125,7 +137,26 @@ public abstract class CommandLineUtils
 
         try
         {
-            int returnValue = p.waitFor();
+            int returnValue;
+            if ( timeoutInSeconds <= 0 )
+            {
+                returnValue = p.waitFor();
+            }
+            else
+            {
+                long now = System.currentTimeMillis();
+                long timeoutInMillis = 1000L * (long) timeoutInSeconds;
+                long finish = now + timeoutInMillis;
+                while ( isAlive( p ) && System.currentTimeMillis() < finish )
+                {
+                    Thread.sleep( 10 );
+                }
+                if ( isAlive( p ) )
+                {
+                    throw new InterruptedException( "Process timeout out after " + timeoutInSeconds + " seconds" );
+                }
+                returnValue = p.exitValue();
+            }
 
             if ( inputFeeder != null )
             {
@@ -278,6 +309,16 @@ public abstract class CommandLineUtils
     public static boolean isAlive( long pid )
     {
         return ( processes.get( new Long( pid ) ) != null );
+    }
+    
+    public static boolean isAlive( Process p ) {
+        try
+        {
+            p.exitValue();
+            return false;
+        } catch (IllegalThreadStateException e) {
+            return true;
+        }
     }
 
     public static String[] translateCommandline( String toProcess )
