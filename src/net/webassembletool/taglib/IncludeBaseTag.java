@@ -2,14 +2,11 @@ package net.webassembletool.taglib;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import net.webassembletool.Context;
 import net.webassembletool.Driver;
-
 
 /**
  * Generates an HTML "base" tag pointing to a page inside the provider
@@ -21,11 +18,11 @@ import net.webassembletool.Driver;
  */
 public class IncludeBaseTag extends TagSupport {
 	private String page;
+	private String provider;
 	public int doStartTag() throws JspException {
-		Context.retrieveFromSession((HttpServletRequest) pageContext.getRequest());
 		JspWriter out = pageContext.getOut();
 		try {
-			out.write("<base href=\"" + Driver.getInstance().getBaseURL() + page + "\" />");
+			out.write("<base href=\"" + Driver.getInstance(provider).getBaseURL() + page + "\" />");
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
@@ -36,5 +33,11 @@ public class IncludeBaseTag extends TagSupport {
 	}
 	public void setPage(String page) {
 		this.page = page;
+	}
+	String getProvider() {
+		return provider;
+	}
+	void setProvider(String provider) {
+		this.provider = provider;
 	}
 }

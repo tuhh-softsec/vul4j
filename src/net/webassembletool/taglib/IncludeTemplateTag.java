@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import net.webassembletool.Context;
 import net.webassembletool.Driver;
-
 
 /**
  * Retrieves a template from the provider application and inserts it into the
@@ -23,12 +20,12 @@ import net.webassembletool.Driver;
 public class IncludeTemplateTag extends BodyTagSupport {
 	private String name = null;
 	private String page = null;
+	private String provider;
 	private Map<String, String> params = new HashMap<String, String>();
 	Properties prop = null;
 	public int doEndTag() throws JspException {
-		Context.retrieveFromSession((HttpServletRequest) pageContext.getRequest());
 		try {
-			Driver.getInstance().renderTemplate(page, name, pageContext.getOut(), params);
+			Driver.getInstance(provider).renderTemplate(page, name, pageContext, params);
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
@@ -54,5 +51,11 @@ public class IncludeTemplateTag extends BodyTagSupport {
 	}
 	public void setParams(Map<String, String> params) {
 		this.params = params;
+	}
+	String getProvider() {
+		return provider;
+	}
+	void setProvider(String provider) {
+		this.provider = provider;
 	}
 }

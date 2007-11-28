@@ -20,6 +20,11 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>provider</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>includeBase</name>
@@ -28,6 +33,11 @@
 		<attribute>
 			<name>page</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>provider</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -44,6 +54,11 @@
 		</attribute>
 		<attribute>
 			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>provider</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

@@ -35,5 +35,8 @@
 		<jar destfile="bin/webassembletool.jar" basedir="classes" includes="net/">
 			<metainf file="tld/webassembletool.tld" />
 		</jar>
+		<zip destfile="bin/webassembletool.zip">
+			<fileset dir="." includes="doc/, lib/, bin/webassembletool.jar, javadoc/, test/"/>
+		</zip>
 	</target>
 </project>

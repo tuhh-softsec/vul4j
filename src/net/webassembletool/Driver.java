@@ -2,6 +2,7 @@ package net.webassembletool;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.PageContext;
 
 import net.webassembletool.ouput.FileOutput;
 import net.webassembletool.ouput.MemoryOutput;
@@ -44,8 +47,12 @@ public class Driver {
 	// properties
 	// TODO remplacer les manipulations de String par des StringBuilder pour
 	// améliorer les performances
+	// TODO revoir la gestion du last-modified
+	// TODO gérer le cas ou il n'y a pas d'application distante
+	// TODO pouvoir désactiver le cache
 	private final static Log log = LogFactory.getLog(Driver.class);
-	private static Driver driver;
+	private static HashMap<String, Driver> instances;
+	private boolean useCache = true;
 	private int cacheRefreshDelay = 0;
 	private int cacheMaxFileSize = 0;
 	private int timeout = 1000;
@@ -54,7 +61,35 @@ public class Driver {
 	private boolean putInCache = false;
 	private GeneralCacheAdministrator cache = new GeneralCacheAdministrator();
 	private HttpClient httpClient;
+	@SuppressWarnings("unused")
 	private Driver() {
+		// Not to be used
+	}
+	public Driver(Properties props) {
+		// Remote application settings
+		baseURL = props.getProperty("remoteUrlBase");
+		if (baseURL != null) {
+			MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+			int maxConnectionsPerHost = 20;
+			if (props.getProperty("maxConnectionsPerHost") != null)
+				maxConnectionsPerHost = Integer.parseInt(props.getProperty("maxConnectionsPerHost"));
+			connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnectionsPerHost);
+			httpClient = new HttpClient(connectionManager);
+			if (props.getProperty("timeout") != null) {
+				timeout = Integer.parseInt(props.getProperty("timeout"));
+				httpClient.getParams().setSoTimeout(timeout);
+				httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(timeout);
+			}
+		}
+		// Cache settings
+		if (props.getProperty("cacheRefreshDelay") != null)
+			cacheRefreshDelay = Integer.parseInt(props.getProperty("cacheRefreshDelay"));
+		if (props.getProperty("cacheMaxFileSize") != null)
+			cacheMaxFileSize = Integer.parseInt(props.getProperty("cacheMaxFileSize"));
+		// Local file system settings
+		localBase = props.getProperty("localBase");
+		if (props.getProperty("putInCache") != null)
+			putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
 	}
 	/**
 	 * Retrieves the default instance of this class that is configured according
@@ -62,36 +97,55 @@ public class Driver {
 	 * 
 	 * @return the default instance
 	 */
-	public synchronized static Driver getInstance() {
-		if (driver == null) {
-			driver = new Driver();
-			Properties props = new Properties();
-			try {
-				props.load(Driver.class.getResourceAsStream("driver.properties"));
-			} catch (IOException e) {
-				throw new ExceptionInInitializerError(e);
-			}
-			MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-			int maxConnectionsPerHost = 20;
-			if (props.getProperty("maxConnectionsPerHost") != null)
-				maxConnectionsPerHost = Integer.parseInt(props.getProperty("maxConnectionsPerHost"));
-			connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnectionsPerHost);
-			driver.httpClient = new HttpClient(connectionManager);
-			driver.baseURL = props.getProperty("remoteUrlBase");
-			if (props.getProperty("cacheRefreshDelay") != null)
-				driver.cacheRefreshDelay = Integer.parseInt(props.getProperty("cacheRefreshDelay"));
-			if (props.getProperty("cacheMaxFileSize") != null)
-				driver.cacheMaxFileSize = Integer.parseInt(props.getProperty("cacheMaxFileSize"));
-			if (props.getProperty("timeout") != null) {
-				driver.timeout = Integer.parseInt(props.getProperty("timeout"));
-				driver.httpClient.getParams().setSoTimeout(driver.timeout);
-				driver.httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(driver.timeout);
-			}
-			driver.localBase = props.getProperty("localBase");
-			if (props.getProperty("putInCache") != null)
-				driver.putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
+	public static Driver getInstance() {
+		return getInstance("default");
+	}
+	/**
+	 * Retrieves the default instance of this class that is configured according
+	 * to the properties file (driver.properties)
+	 * 
+	 * @return the default instance
+	 */
+	public synchronized static Driver getInstance(String instanceName) {
+		if (instanceName == null)
+			instanceName = "default";
+		if (instances == null) {
+			init();
 		}
-		return driver;
+		return instances.get(instanceName);
+	}
+	private final static void init() {
+		instances = new HashMap<String, Driver>();
+		Properties props = new Properties();
+		try {
+			props.load(Driver.class.getResourceAsStream("driver.properties"));
+		} catch (IOException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+		HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
+		for (Iterator<String> iterator = props.stringPropertyNames().iterator(); iterator.hasNext();) {
+			String propertyName = iterator.next();
+			String prefix;
+			String name;
+			if (propertyName.indexOf(".") < 0) {
+				prefix = "default";
+				name = propertyName;
+			} else {
+				prefix = propertyName.substring(0, propertyName.lastIndexOf("."));
+				name = propertyName.substring(propertyName.lastIndexOf(".") + 1);
+			}
+			Properties driverProperties = driversProps.get(prefix);
+			if (driverProperties == null) {
+				driverProperties = new Properties();
+				driversProps.put(prefix, driverProperties);
+			}
+			driverProperties.put(name, props.getProperty(propertyName));
+		}
+		for (Iterator<String> iterator = driversProps.keySet().iterator(); iterator.hasNext();) {
+			String name = iterator.next();
+			Properties driverProperties = driversProps.get(name);
+			instances.put(name, new Driver(driverProperties));
+		}
 	}
 	/**
 	 * Retrieves a block from the provider application and writes it to a
@@ -100,8 +154,8 @@ public class Driver {
 	 * eg: a block name "myblock" should be delimited with
 	 * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
 	 */
-	public void renderBlock(String page, String name, Writer writer) throws IOException {
-		String content = getResourceAsString(page);
+	public void renderBlock(String page, String name, Writer writer, Context context) throws IOException {
+		String content = getResourceAsString(page, context);
 		String beginString = "<!--$beginblock$" + name + "$-->";
 		String endString = "<!--$endblock$" + name + "$-->";
 		int begin = content.indexOf(beginString);
@@ -129,7 +183,7 @@ public class Driver {
 	 */
 	public void renderResource(String relUrl, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
-			renderResource(relUrl, new ResponseOutput(request, response));
+			renderResource(relUrl, new ResponseOutput(request, response), getContext(request));
 		} catch (ResourceNotFoundException e) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Page not found: " + relUrl);
 		}
@@ -146,8 +200,8 @@ public class Driver {
 	 * @throws IOException
 	 * @throws ResourceNotFoundException
 	 */
-	private void renderResource(String relUrl, Output output) throws IOException, ResourceNotFoundException {
-		String httpUrl = getUrlForHttpResource(relUrl);
+	private void renderResource(String relUrl, Output output, Context context) throws IOException, ResourceNotFoundException {
+		String httpUrl = getUrlForHttpResource(relUrl, context);
 		String fileUrl = getUrlForFileResource(relUrl);
 		MultipleOutput multipleOutput = new MultipleOutput();
 		multipleOutput.addOutput(output);
@@ -223,14 +277,13 @@ public class Driver {
 			url = url.substring(0, index);
 		return url;
 	}
-	private String getUrlForHttpResource(String relUrl) {
+	private String getUrlForHttpResource(String relUrl, Context context) {
 		String url;
 		if (baseURL != null && relUrl != null && baseURL.endsWith("/") && relUrl.startsWith("/")) {
 			url = baseURL.substring(0, baseURL.length() - 1) + relUrl;
 		} else {
 			url = baseURL + relUrl;
 		}
-		Context context = Context.getCurrent(false);
 		if (context != null) {
 			url += "?user=";
 			String user = context.getUser();
@@ -254,8 +307,8 @@ public class Driver {
 	 * eg: parameter named "myparam" should be delimited by comments
 	 * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
 	 */
-	public void renderTemplate(String page, String name, Writer writer, Map<String, String> params) throws IOException {
-		String content = getResourceAsString(page);
+	public void renderTemplate(String page, String name, Writer writer, Context context, Map<String, String> params) throws IOException {
+		String content = getResourceAsString(page, context);
 		if (content == null)
 			content = "";
 		if (name != null) {
@@ -304,10 +357,10 @@ public class Driver {
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	private String getResourceAsString(String relUrl) throws HttpException, IOException {
+	private String getResourceAsString(String relUrl, Context context) throws HttpException, IOException {
 		StringOutput stringOutput = new StringOutput();
 		try {
-			renderResource(relUrl, stringOutput);
+			renderResource(relUrl, stringOutput, context);
 			return stringOutput.toString();
 		} catch (ResourceNotFoundException e) {
 			log.error("Page not found: " + relUrl);
@@ -322,5 +375,31 @@ public class Driver {
 	 */
 	public String getBaseURL() {
 		return baseURL;
+	}
+	private final String getContextKey() {
+		return Context.class.getName() + "#" + this.hashCode();
+	}
+	public final Context getContext(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if (session != null)
+			return (Context) session.getAttribute(getContextKey());
+		return null;
+	}
+	public final Context getContext(PageContext pageContext) {
+		return getContext((HttpServletRequest) pageContext.getRequest());
+	}
+	public final void setContext(Context context, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.setAttribute(getContextKey(), context);
+	}
+	public final void setContext(Context context, PageContext pageContext, String provider) {
+		HttpSession session = ((HttpServletRequest) pageContext.getRequest()).getSession();
+		session.setAttribute(getContextKey(), context);
+	}
+	public void renderBlock(String page, String name, PageContext pageContext) throws IOException {
+		renderBlock(page, name, pageContext.getOut(), getContext(pageContext));
+	}
+	public void renderTemplate(String page, String name, PageContext pageContext, Map<String, String> params) throws IOException {
+		renderTemplate(page, name, pageContext.getOut(), getContext(pageContext), params);
 	}
 }
