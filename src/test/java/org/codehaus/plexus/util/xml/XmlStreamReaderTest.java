@@ -2,6 +2,8 @@ package org.codehaus.plexus.util.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
 
 import org.codehaus.plexus.util.IOUtil;
 
@@ -25,6 +27,12 @@ public class XmlStreamReaderTest
         TEXT_LATIN7 + ", " +
         TEXT_LATIN15 + ", " +
         TEXT_EUC_JP;
+    /** see http://unicode.org/faq/utf_bom.html#BOM */
+    private static final byte[] BOM_UTF8 = { (byte)0xEF, (byte)0xBB, (byte)0xBF };
+    private static final byte[] BOM_UTF16BE = { (byte)0xFE, (byte)0xFF };
+    private static final byte[] BOM_UTF16LE = { (byte)0xFF, (byte)0xFE };
+    private static final byte[] BOM_UTF32BE = { (byte)0x00, (byte)0x00, (byte)0xFF, (byte)0xFE };
+    private static final byte[] BOM_UTF32LE = { (byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00 };
 
     private static String createXmlContent( String text, String encoding )
     {
@@ -36,22 +44,52 @@ public class XmlStreamReaderTest
         String xml = xmlDecl + "\n<text>" + text + "</text>";
         return xml;
     }
-    
+
     private static void checkXmlContent( String xml, String encoding )
     throws IOException
     {
+        checkXmlContent( xml, encoding, null );
+    }
+
+    private static void checkXmlContent( String xml, String encoding, byte[] bom )
+    throws IOException
+    {
         byte[] xmlContent = xml.getBytes( encoding );
-        XmlStreamReader reader = new XmlStreamReader( new ByteArrayInputStream( xmlContent ) );
+        InputStream in = new ByteArrayInputStream( xmlContent );
+
+        if ( bom != null )
+        {
+            in = new SequenceInputStream( new ByteArrayInputStream( bom ), in );
+        }
+
+        XmlStreamReader reader = new XmlStreamReader( in );
         String result = IOUtil.toString( reader );
         assertEquals( xml, result );
+    }
+
+    private static void checkXmlStreamReader( String text, String encoding, String effectiveEncoding )
+    throws IOException
+    {
+        checkXmlStreamReader( text, encoding, effectiveEncoding, null );
     }
 
     private static void checkXmlStreamReader( String text, String encoding )
     throws IOException
     {
+        checkXmlStreamReader( text, encoding, encoding, null );
+    }
+
+    private static void checkXmlStreamReader( String text, String encoding, byte[] bom  )
+    throws IOException
+    {
+        checkXmlStreamReader( text, encoding, encoding, bom );
+    }
+
+    private static void checkXmlStreamReader( String text, String encoding, String effectiveEncoding, byte[] bom )
+    throws IOException
+    {
         String xml = createXmlContent( text, encoding );
-        String effectiveEncoding = ( encoding == null ) ? "UTF-8" : encoding;
-        checkXmlContent( xml, effectiveEncoding );
+        checkXmlContent( xml, effectiveEncoding, bom );
     }
 
     public void testNoXmlHeader()
@@ -59,24 +97,29 @@ public class XmlStreamReaderTest
     {
         String xml = "<text>text with no XML header</text>";
         checkXmlContent( xml, "UTF-8" );
+        checkXmlContent( xml, "UTF-8", BOM_UTF8 );
     }
 
     public void testDefaultEncoding()
     throws IOException
     {
-        checkXmlStreamReader( TEXT_UNICODE, null );
+        checkXmlStreamReader( TEXT_UNICODE, null, "UTF-8" );
+        checkXmlStreamReader( TEXT_UNICODE, null, "UTF-8", BOM_UTF8 );
     }
 
     public void testUTF8Encoding()
     throws IOException
     {
         checkXmlStreamReader( TEXT_UNICODE, "UTF-8" );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-8", BOM_UTF8 );
     }
 
     public void testUTF16Encoding()
     throws IOException
     {
         checkXmlStreamReader( TEXT_UNICODE, "UTF-16" );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-16", "UTF-16LE", BOM_UTF16LE );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-16", "UTF-16BE", BOM_UTF16BE );
     }
 
     public void testUTF16BEEncoding()
