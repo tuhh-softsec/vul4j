@@ -254,6 +254,34 @@ public class CommandlineTest
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
 
+        /**
+     * Test the command line generated for the bash shell
+     * @throws Exception
+     */
+    public void testGetShellCommandLineBash_WithWorkingDirectory()
+        throws Exception
+    {
+        Commandline cmd = new Commandline( new BourneShell() );
+        cmd.setExecutable( "/bin/echo" );
+        cmd.addArguments( new String[] { "hello world" } );
+        File root = File.listRoots()[0];
+        File workingDirectory = new File( root, "path with spaces" );
+        cmd.setWorkingDirectory( workingDirectory );
+
+        String[] shellCommandline = cmd.getShellCommandline();
+
+        assertEquals( "Command line size", 3, shellCommandline.length );
+
+        assertEquals( "/bin/sh", shellCommandline[0] );
+        assertEquals( "-c", shellCommandline[1] );
+        String expectedShellCmd = "cd " + root.getAbsolutePath() + "path\\ with\\ spaces && /bin/echo \"hello world\"";
+        if ( Os.isFamily( "windows" ) )
+        {
+            expectedShellCmd = "cd " + root.getAbsolutePath() + "path\\ with\\ spaces && \\bin\\echo \"hello world\"";
+        }
+        assertEquals( expectedShellCmd, shellCommandline[2] );
+    }
+
     /**
      * Test the command line generated for the bash shell
      * @throws Exception
@@ -338,7 +366,7 @@ public class CommandlineTest
     public void testQuotedPath()
         throws Exception
     {
-        File dir = new File( System.getProperty( "basedir" ), "target/quotedpath'test" );
+        File dir = new File( System.getProperty( "basedir" ), "target/quoted path'test" );
 
         dir.mkdirs();
 

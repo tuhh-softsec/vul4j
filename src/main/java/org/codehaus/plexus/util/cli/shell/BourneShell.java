@@ -106,6 +106,10 @@ public class BourneShell
      */
     private static String handleQuote( String path )
     {
+    	if ( path.indexOf( " " ) > -1 )
+        {
+            path = StringUtils.replace( path, " ", "\\ " );
+        }
         if ( path.indexOf( "\'" ) > -1 )
         {
             return StringUtils.replace( path, "\'", "\\'" );
