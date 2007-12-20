@@ -2290,34 +2290,28 @@ public class XMLCipher {
 			XMLEncryptionException {
             EncryptedData result = null;
 
-			NodeList dataElements = element.getElementsByTagNameNS(
-                    EncryptionConstants.EncryptionSpecNS,
-                    EncryptionConstants._TAG_CIPHERDATA);
+	    NodeList dataElements = element.getElementsByTagNameNS(
+                EncryptionConstants.EncryptionSpecNS,
+                EncryptionConstants._TAG_CIPHERDATA);
 
-			// Need to get the last CipherData found, as earlier ones will
-			// be for elements in the KeyInfo lists
+	    // Need to get the last CipherData found, as earlier ones will
+	    // be for elements in the KeyInfo lists
 
             Element dataElement =
-				(Element) dataElements.item(dataElements.getLength() - 1);
+		(Element) dataElements.item(dataElements.getLength() - 1);
 
             CipherData data = newCipherData(dataElement);
 
             result = newEncryptedData(data);
 
-            try {
-                result.setId(element.getAttributeNS(
-                    null, EncryptionConstants._ATT_ID));
-                result.setType(new URI(
-                    element.getAttributeNS(
-                        null, EncryptionConstants._ATT_TYPE)).toString());
-                result.setMimeType(element.getAttributeNS(
-                    null, EncryptionConstants._ATT_MIMETYPE));
-                result.setEncoding(new URI(
-                    element.getAttributeNS(
-                        null, Constants._ATT_ENCODING)).toString());
-            } catch (URI.MalformedURIException mfue) {
-                // do nothing
-            }
+            result.setId(element.getAttributeNS(
+                null, EncryptionConstants._ATT_ID));
+            result.setType(
+                element.getAttributeNS(null, EncryptionConstants._ATT_TYPE));
+            result.setMimeType(element.getAttributeNS(
+                null, EncryptionConstants._ATT_MIMETYPE));
+            result.setEncoding(
+                element.getAttributeNS(null, Constants._ATT_ENCODING));
 
             Element encryptionMethodElement =
                 (Element) element.getElementsByTagNameNS(
@@ -2329,18 +2323,18 @@ public class XMLCipher {
             }
 
             // BFL 16/7/03 - simple implementation
-			// TODO: Work out how to handle relative URI
+	    // TODO: Work out how to handle relative URI
 
             Element keyInfoElement =
                 (Element) element.getElementsByTagNameNS(
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
-				try {
-					result.setKeyInfo(new KeyInfo(keyInfoElement, null));
-				} catch (XMLSecurityException xse) {
-					throw new XMLEncryptionException("Error loading Key Info", 
-													 xse);
-				}
+		try {
+		    result.setKeyInfo(new KeyInfo(keyInfoElement, null));
+		} catch (XMLSecurityException xse) {
+		    throw new XMLEncryptionException("Error loading Key Info", 
+						     xse);
+		}
             }
 
             // TODO: Implement
@@ -2390,31 +2384,25 @@ public class XMLCipher {
         EncryptedKey newEncryptedKey(Element element) throws
                 XMLEncryptionException {
             EncryptedKey result = null;
-			NodeList dataElements = element.getElementsByTagNameNS(
-                    EncryptionConstants.EncryptionSpecNS,
-                    EncryptionConstants._TAG_CIPHERDATA);
+	    NodeList dataElements = element.getElementsByTagNameNS(
+                EncryptionConstants.EncryptionSpecNS,
+                EncryptionConstants._TAG_CIPHERDATA);
             Element dataElement =
-				(Element) dataElements.item(dataElements.getLength() - 1);
+		(Element) dataElements.item(dataElements.getLength() - 1);
 
             CipherData data = newCipherData(dataElement);
             result = newEncryptedKey(data);
 
-            try {
-                result.setId(element.getAttributeNS(
-                    null, EncryptionConstants._ATT_ID));
-                result.setType(new URI(
-                    element.getAttributeNS(
-                        null, EncryptionConstants._ATT_TYPE)).toString());
-                result.setMimeType(element.getAttributeNS(
-                    null, EncryptionConstants._ATT_MIMETYPE));
-                result.setEncoding(new URI(
-                    element.getAttributeNS(
-                        null, Constants._ATT_ENCODING)).toString());
-                result.setRecipient(element.getAttributeNS(
-                    null, EncryptionConstants._ATT_RECIPIENT));
-            } catch (URI.MalformedURIException mfue) {
-                // do nothing
-            }
+            result.setId(element.getAttributeNS(
+                null, EncryptionConstants._ATT_ID));
+            result.setType(
+                element.getAttributeNS(null, EncryptionConstants._ATT_TYPE));
+            result.setMimeType(element.getAttributeNS(
+                null, EncryptionConstants._ATT_MIMETYPE));
+            result.setEncoding(
+                element.getAttributeNS(null, Constants._ATT_ENCODING));
+            result.setRecipient(element.getAttributeNS(
+                null, EncryptionConstants._ATT_RECIPIENT));
 
             Element encryptionMethodElement =
                 (Element) element.getElementsByTagNameNS(
@@ -2429,12 +2417,12 @@ public class XMLCipher {
                 (Element) element.getElementsByTagNameNS(
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
-				try {
-					result.setKeyInfo(new KeyInfo(keyInfoElement, null));
-				} catch (XMLSecurityException xse) {
-					throw new XMLEncryptionException("Error loading Key Info", 
-													 xse);
-				}
+		try {
+		    result.setKeyInfo(new KeyInfo(keyInfoElement, null));
+		} catch (XMLSecurityException xse) {
+		    throw new XMLEncryptionException
+			("Error loading Key Info", xse);
+		}
             }
 
             // TODO: Implement
@@ -2460,7 +2448,8 @@ public class XMLCipher {
                     EncryptionConstants.EncryptionSpecNS,
                     EncryptionConstants._TAG_CARRIEDKEYNAME).item(0);
             if (null != carriedNameElement) {
-                result.setCarriedName(carriedNameElement.getFirstChild().getNodeValue());
+                result.setCarriedName
+		    (carriedNameElement.getFirstChild().getNodeValue());
             }
 
             return (result);
@@ -2559,13 +2548,8 @@ public class XMLCipher {
         EncryptionProperty newEncryptionProperty(Element element) {
             EncryptionProperty result = newEncryptionProperty();
 
-            try {
-                result.setTarget(new URI(
-                    element.getAttributeNS(
-                        null, EncryptionConstants._ATT_TARGET)).toString());
-            } catch (URI.MalformedURIException mfue) {
-                // do nothing
-            }
+            result.setTarget(
+                element.getAttributeNS(null, EncryptionConstants._ATT_TARGET));
             result.setId(element.getAttributeNS(
                 null, EncryptionConstants._ATT_ID));
             // TODO: Make this lot work...
@@ -3345,13 +3329,17 @@ public class XMLCipher {
              * @param type
              */
             public void setType(String type) {
-                URI tmpType = null;
-                try {
-                    tmpType = new URI(type);
-                } catch (URI.MalformedURIException mfue) {
-                    // complain
-                }
-                this.type = tmpType.toString();
+		if (type == null || type.length() == 0) {
+		    this.type = null;
+		} else {
+                    URI tmpType = null;
+                    try {
+                        tmpType = new URI(type);
+                    } catch (URI.MalformedURIException mfue) {
+                        // complain
+                    }
+                    this.type = tmpType.toString();
+		}
             }
             /**
              * 
@@ -3379,13 +3367,17 @@ public class XMLCipher {
              * @param encoding
              */
             public void setEncoding(String encoding) {
-                URI tmpEncoding = null;
-                try {
-                    tmpEncoding = new URI(encoding);
-                } catch (URI.MalformedURIException mfue) {
-                    // complain
-                }
-                this.encoding = tmpEncoding.toString();
+		if (encoding == null || encoding.length() == 0) {
+		    this.encoding = null;
+		} else {
+                    URI tmpEncoding = null;
+                    try {
+                        tmpEncoding = new URI(encoding);
+                    } catch (URI.MalformedURIException mfue) {
+                        // complain
+                    }
+                    this.encoding = tmpEncoding.toString();
+		}
             }
             /**
              * 
@@ -3628,13 +3620,24 @@ public class XMLCipher {
             }
             /** @inheritDoc */
             public void setTarget(String target) {
-                URI tmpTarget = null;
-                try {
-                    tmpTarget = new URI(target);
-                } catch (URI.MalformedURIException mfue) {
-                    // complain
-                }
-                this.target = tmpTarget.toString();
+		if (target == null || target.length() == 0) {
+		    this.target = null;
+		} else if (target.startsWith("#")) {
+		    /*
+		     * This is a same document URI reference. Do not parse,
+		     * because org.apache.xml.utils.URI considers this an
+		     * illegal URI because it has no scheme.
+		     */
+		    this.target = target;
+		} else {
+                    URI tmpTarget = null;
+                    try {
+                        tmpTarget = new URI(target);
+                    } catch (URI.MalformedURIException mfue) {
+                        // complain
+                    }
+                    this.target = tmpTarget.toString();
+		}
             }
             /** @inheritDoc */
             public String getId() {
