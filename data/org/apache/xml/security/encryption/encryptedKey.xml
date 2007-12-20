@@ -1,0 +1,27 @@
+<root><xenc:EncryptedKey xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Id="KEK" Recipient="demo">
+<xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5">
+</xenc:EncryptionMethod>
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:KeyName>demo</ds:KeyName>
+</ds:KeyInfo>
+<xenc:CipherData><xenc:CipherValue>a+CJUHCF1q4bSFa5dL6oxpcHzsi2Y00dIAPB3c+BIGvVLVueWgAS77sAseSfmsbX4irNCUkSIU+h
+BYc3WHyLzPQkfv//VQe8BaU6tZFn5zOkIUB5v3SQiGS4sFVZb9cMAoEbCG7moFtUpOOC4P/xdfjU
+qApAO6xJ2zUtxDCz7Ks=</xenc:CipherValue></xenc:CipherData>
+<xenc:ReferenceList><xenc:DataReference URI="#ED"></xenc:DataReference></xenc:ReferenceList>
+<xenc:CarriedKeyName>datakey</xenc:CarriedKeyName>
+</xenc:EncryptedKey>
+<xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Id="ED" Type="http://www.w3.org/2001/04/xmlenc#Element">
+<xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc">
+</xenc:EncryptionMethod><ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:KeyName>datakey</ds:KeyName>
+<ds:RetrievalMethod Type="http://www.w3.org/2001/04/xmlenc#EncryptedKey" URI="#KEK"></ds:RetrievalMethod>
+</ds:KeyInfo><xenc:CipherData><xenc:CipherValue>UCmOEtPl5W+GsjW+Sxsgq7d3TIVR4VO5irpgjStXfyea6SujwKPcwPquj+d1Fsh5T8LRx0rzQfFe
+gEqhZc8jtvYE2ZsjTGeTH4eQoqZI6MXSpOvrlmsj88bvRrQw81CjaCu4eYtI+hvSVWXUATxSmkm8
+/hJze1AqzuJECHlRcHrqPgrLGoyWcr/hgqOQJAqPLfJUPR00U6JPxOoz0YVf+lENcovekYB6SWPK
+KoEWmUQn9ICK4Mie1oyhd1BOM6dWMUf2TWAWwCSHFqMqANSsJiaGDJBOTUXmOeoyk5Nnt1GhWFnd
+61ByWUc0mW/5FtQRt+KQTJ0qGIFsLSdzP5cF06BrEwACCYv/4ovVCMtcNVOjhA6wMlH5CwN+ytDn
+GZy+wiujRPvmfFUY7ETgNYjG1toei05ltphFm3YIXbnYpWX5Y8f7K6WxL51jAyvF4jU0omX5kFSB
+ELKC1c6Lb1VaHPcAp3afM0FuxRUXwg5G7hcOguJpHSg9jxyGVCQ4wmA4JKX8BM9IoTa5WvJ2bY5v
+DPf155R1ljMXAwfPZZcC2iF/YcTGhtbQfgUFofxVEwHjAArepx28SDCW5+X1ib2R4hU8SL3O8GQQ
+WUFiFpINuLInTPDBs8hJqZoBaGdH6SNZlPgVj9g6OLENp0R8fZmKO+QJ+LqaPA1wtwJ+1WV//M8=</xenc:CipherValue></xenc:CipherData>
+</xenc:EncryptedData></root>
