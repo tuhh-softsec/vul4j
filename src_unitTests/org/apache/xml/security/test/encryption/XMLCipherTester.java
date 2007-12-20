@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2007 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -62,7 +62,7 @@ import org.w3c.dom.Node;
  */
 public class XMLCipherTester extends TestCase {
 
-	/** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(XMLCipherTester.class.getName());
     
@@ -70,18 +70,17 @@ public class XMLCipherTester extends TestCase {
     private String elementName;
     private String elementIndex;
     private XMLCipher cipher;
-
-	private boolean haveISOPadding;
-	private boolean haveKeyWraps;
-
-	private String tstBase64EncodedString;
+    private String basedir;
+    private boolean haveISOPadding;
+    private boolean haveKeyWraps;
+    private String tstBase64EncodedString;
 
     public XMLCipherTester(String test) {
        super(test);
     }
 
     protected void setUp() {
-        String basedir = System.getProperty("basedir",".");
+        basedir = System.getProperty("basedir",".");
         documentName = System.getProperty("org.apache.xml.enc.test.doc",
             basedir + "/build.xml");
         elementName = System.getProperty("org.apache.xml.enc.test.elem",
@@ -709,23 +708,49 @@ public class XMLCipherTester extends TestCase {
             (d, null, new ByteArrayInputStream(serialized));
     }
 
-	private String toString (Node n)
-		throws Exception {
+    public void testEncryptedKeyWithRecipient() throws Exception {
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		Canonicalizer c14n = Canonicalizer.getInstance
-			(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+	String filename = 
+	    "data/org/apache/xml/security/encryption/encryptedKey.xml";
+        if (basedir != null && !"".equals(basedir)) {
+            filename = basedir + "/" + filename;
+        }
+        File f = new File(filename);
+        
+        DocumentBuilderFactory builderFactory = 
+	    DocumentBuilderFactory.newInstance();
+        builderFactory.setNamespaceAware (true);
+        DocumentBuilder builder = builderFactory.newDocumentBuilder();
+        Document document = builder.parse(f); 
+        
+        XMLCipher keyCipher = XMLCipher.getInstance();
+        keyCipher.init(XMLCipher.UNWRAP_MODE, null);
+        
+        NodeList ekList = document.getElementsByTagNameNS
+	    (EncryptionConstants.EncryptionSpecNS, 
+	     EncryptionConstants._TAG_ENCRYPTEDKEY);
+        for (int i = 0; i < ekList.getLength(); i++) {
+            EncryptedKey ek = keyCipher.loadEncryptedKey
+		(document, (Element) ekList.item(i));
+	    assertNotNull(ek.getRecipient());
+        }
+    }
 
-		byte[] serBytes = c14n.canonicalizeSubtree(n);
-		baos.write(serBytes);
-		baos.close();
+    private String toString (Node n) throws Exception {
 
-		return baos.toString("UTF-8");
+	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	Canonicalizer c14n = Canonicalizer.getInstance
+	    (Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
 
-	}
+	byte[] serBytes = c14n.canonicalizeSubtree(n);
+	baos.write(serBytes);
+	baos.close();
+
+	return baos.toString("UTF-8");
+
+    }
 		
-   static {
-      org.apache.xml.security.Init.init();
-   }
-
+    static {
+	org.apache.xml.security.Init.init();
+    }
 }
