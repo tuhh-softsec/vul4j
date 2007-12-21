@@ -27,14 +27,15 @@ import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.spec.SignatureMethodParameterSpec;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -115,7 +116,10 @@ public final class DOMRSASignatureMethod extends DOMSignatureMethod {
 	if (signature == null) {
 	    try {
                 // FIXME: do other hashes besides sha-1
-                signature = Signature.getInstance("SHA1withRSA");
+                Provider p = (Provider) context.getProperty
+                    ("org.jcp.xml.dsig.internal.dom.SignatureProvider");
+                signature = (p == null) ? Signature.getInstance("SHA1withRSA")
+		    : Signature.getInstance("SHA1withRSA", p);
 	    } catch (NoSuchAlgorithmException nsae) {
 		throw new SignatureException("SHA1withRSA Signature not found");
 	    }
@@ -142,7 +146,10 @@ public final class DOMRSASignatureMethod extends DOMSignatureMethod {
 	if (signature == null) {
 	    try {
                 // FIXME: do other hashes besides sha-1
-                signature = Signature.getInstance("SHA1withRSA");
+                Provider p = (Provider) context.getProperty
+                    ("org.jcp.xml.dsig.internal.dom.SignatureProvider");
+                signature = (p == null) ? Signature.getInstance("SHA1withRSA")
+		    : Signature.getInstance("SHA1withRSA", p);
 	    } catch (NoSuchAlgorithmException nsae) {
 		throw new InvalidKeyException("SHA1withRSA Signature not found");
 	    }

@@ -27,12 +27,13 @@ import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.spec.SignatureMethodParameterSpec;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.NoSuchAlgorithmException;
-import java.security.InvalidAlgorithmParameterException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
@@ -113,7 +114,10 @@ public final class DOMDSASignatureMethod extends DOMSignatureMethod {
 	}
 	if (signature == null) {
 	    try {
-                signature = Signature.getInstance("SHA1withDSA");
+		Provider p = (Provider) context.getProperty
+		    ("org.jcp.xml.dsig.internal.dom.SignatureProvider");
+                signature = (p == null) ? Signature.getInstance("SHA1withDSA") 
+		    : Signature.getInstance("SHA1withDSA", p);
 	    } catch (NoSuchAlgorithmException nsae) {
 		throw new SignatureException("SHA1withDSA Signature not found");
 	    }
@@ -147,7 +151,10 @@ public final class DOMDSASignatureMethod extends DOMSignatureMethod {
         }
 	if (signature == null) {
 	    try {
-                signature = Signature.getInstance("SHA1withDSA");
+		Provider p = (Provider) context.getProperty
+		    ("org.jcp.xml.dsig.internal.dom.SignatureProvider");
+                signature = (p == null) ? Signature.getInstance("SHA1withDSA") 
+		    : Signature.getInstance("SHA1withDSA", p);
 	    } catch (NoSuchAlgorithmException nsae) {
 		throw new InvalidKeyException("SHA1withDSA Signature not found");
 	    }
