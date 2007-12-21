@@ -195,6 +195,37 @@ public class XMLSignatureTest extends TestCase {
 	assertTrue(status);
     }
 
+    public void testsignWithProvider() throws Exception {
+	XMLSignature sig;
+	SignedInfo si;
+	KeyInfo ki = null;
+	XMLSignContext signContext;
+	Provider p = new TestProvider();
+	for (int i = SIGN_KEYS.length-2; i>=0 ; i--) {
+	    si = createSignedInfo(SIG_METHODS[i]);
+	    if (VALIDATE_KEYS[i] instanceof PublicKey) {
+		ki = kifac.newKeyInfo(Collections.singletonList
+		    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[i])));
+	    } else {
+		ki = kifac.newKeyInfo(Collections.singletonList
+		    (kifac.newKeyName("testuser")));
+	    }
+	    sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
+	    Document doc = TestUtils.newDocument();
+	    signContext = new DOMSignContext(SIGN_KEYS[i], doc);
+	    signContext.setProperty
+		("org.jcp.xml.dsig.internal.dom.SignatureProvider", p);
+	    try {
+	        sig.sign(signContext);
+	        fail("Should have failed because TestProvider does not " +
+		     "support " + SIGN_KEYS[i].getAlgorithm());
+	    } catch (Exception e) {
+		assertTrue(e.getMessage(), 
+		    e.getCause() instanceof InvalidKeyException);
+	    }
+	}
+    }
+
     private SignedInfo createSignedInfo(SignatureMethod sm) throws Exception {
 	// set up the building blocks
 	CanonicalizationMethod cm = fac.newCanonicalizationMethod
@@ -204,5 +235,11 @@ public class XMLSignatureTest extends TestCase {
 	List refs = Collections.singletonList(fac.newReference
 	    ("http://www.w3.org/Signature/2002/04/xml-stylesheet.b64", dm));
         return fac.newSignedInfo(cm, sm, refs);
+    }
+
+    static class TestProvider extends Provider {
+	TestProvider() {
+	    super("TestProvider", 0, "TestProvider");
+	}
     }
 }
