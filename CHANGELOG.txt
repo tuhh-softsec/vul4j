@@ -1,5 +1,7 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 43056: Library does not allow specify provider for private key 
+	operations. Thanks to Alon Bar-Lev.
     Fixed bug 44102: XMLCipher loadEncryptedKey error. Thanks to Butler.
     Fixed bug 43239: "No installed provider supports this key" when checking a 
 	RSA signature against a DSA key before RSA key. Thanks to Matthias
