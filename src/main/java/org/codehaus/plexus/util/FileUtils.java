@@ -1163,7 +1163,7 @@ public class FileUtils
         }
 
         // deal with absolute files
-        if ( filenm.startsWith( File.separator ) || ( Os.isFamily( "windows" ) && filenm.indexOf( ":" ) > 0 ) )
+        if ( filenm.startsWith( File.separator ) || ( Os.isFamily( Os.FAMILY_WINDOWS ) && filenm.indexOf( ":" ) > 0 ) )
         {
             File file = new File( filenm );
 
@@ -1267,7 +1267,7 @@ public class FileUtils
 
         if ( !file.delete() )
         {
-            if ( System.getProperty( "os.name" ).toLowerCase().indexOf( "windows" ) > -1 )
+            if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
             {
                 file = file.getCanonicalFile();
                 System.gc();

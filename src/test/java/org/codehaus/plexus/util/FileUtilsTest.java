@@ -999,7 +999,7 @@ public final class FileUtilsTest
     public void testDeleteLongPathOnWindows()
         throws Exception
     {
-        if ( System.getProperty( "os.name" ).toLowerCase().indexOf( "windows" ) == -1 )
+        if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             return;
         }

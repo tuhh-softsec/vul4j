@@ -72,6 +72,7 @@ import org.codehaus.plexus.util.cli.shell.BourneShell;
 import org.codehaus.plexus.util.cli.shell.CmdShell;
 import org.codehaus.plexus.util.cli.shell.CommandShell;
 import org.codehaus.plexus.util.cli.shell.Shell;
+import org.codehaus.plexus.util.Os;
 
 /**
  * <p/>
@@ -104,8 +105,10 @@ import org.codehaus.plexus.util.cli.shell.Shell;
 public class Commandline
     implements Cloneable
 {
+    // TODO: should be deprecated/deleted, use plexus.util.Os instead
     protected static final String OS_NAME = "os.name";
 
+    // TODO: should be deprecated/deleted, use plexus.util.Os instead
     protected static final String WINDOWS = "Windows";
 
     protected Vector arguments = new Vector();
@@ -264,12 +267,10 @@ public class Commandline
      */
     private void setDefaultShell()
     {
-        String os = System.getProperty( OS_NAME );
-
         //If this is windows set the shell to command.com or cmd.exe with correct arguments.
-        if ( os.indexOf( WINDOWS ) > -1 )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
-            if ( os.indexOf( "95" ) > -1 || os.indexOf( "98" ) > -1 || os.indexOf( "Me" ) > -1 )
+            if ( Os.isFamily( Os.FAMILY_WIN9X ) )
             {
                 setShell( new CommandShell() );
             }

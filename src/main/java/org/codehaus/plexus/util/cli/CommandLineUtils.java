@@ -36,6 +36,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.codehaus.plexus.util.Os;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
  * @version $Id$
@@ -230,12 +232,10 @@ public abstract class CommandLineUtils
 
         Runtime r = Runtime.getRuntime();
 
-        String os = System.getProperty( "os.name" ).toLowerCase();
-
         //If this is windows set the shell to command.com or cmd.exe with correct arguments.
-        if ( os.indexOf( "windows" ) != -1 )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
-            if ( os.indexOf( "95" ) != -1 || os.indexOf( "98" ) != -1 || os.indexOf( "Me" ) != -1 )
+            if ( Os.isFamily( Os.FAMILY_WIN9X ) )
             {
                 p = r.exec( "command.com /c set" );
             }
