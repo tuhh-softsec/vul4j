@@ -76,6 +76,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
+import org.codehaus.plexus.util.io.FileInputStreamFacade;
+import org.codehaus.plexus.util.io.InputStreamFacade;
+import org.codehaus.plexus.util.io.URLInputStreamFacade;
+
 /**
  * This class provides basic facilities for manipulating files and file paths.
  * <p/>
@@ -930,32 +934,7 @@ public class FileUtils
             return;
         }
 
-        //does destinations directory exist ?
-        if ( destination.getParentFile() != null && !destination.getParentFile().exists() )
-        {
-            destination.getParentFile().mkdirs();
-        }
-
-        //make sure we can write to destination
-        if ( destination.exists() && !destination.canWrite() )
-        {
-            final String message = "Unable to open file " + destination + " for writing.";
-            throw new IOException( message );
-        }
-
-        FileInputStream input = null;
-        FileOutputStream output = null;
-        try
-        {
-            input = new FileInputStream( source );
-            output = new FileOutputStream( destination );
-            IOUtil.copy( input, output );
-        }
-        finally
-        {
-            IOUtil.close( input );
-            IOUtil.close( output );
-        }
+        copyStreamToFile( new FileInputStreamFacade( source ), destination);
 
         if ( source.length() != destination.length() )
         {
@@ -1008,6 +987,28 @@ public class FileUtils
     public static void copyURLToFile( final URL source, final File destination )
         throws IOException
     {
+        copyStreamToFile( new URLInputStreamFacade( source ) , destination);
+    }
+
+    /**
+     * Copies bytes from the {@link InputStream} <code>source</code> to a file <code>destination</code>.
+     * The directories up to <code>destination</code> will be created if they don't already exist.
+     * <code>destination</code> will be overwritten if it already exists.
+     *
+     * @param source      An {@link InputStream} to copy bytes from. This stream is
+     *                    guaranteed to be closed.
+     * @param destination A non-directory <code>File</code> to write bytes to (possibly
+     *                    overwriting).
+     * @throws IOException if
+     *                     <ul>
+     *                     <li><code>source</code> URL cannot be opened</li>
+     *                     <li><code>destination</code> cannot be written to</li>
+     *                     <li>an IO error occurs during copying</li>
+     *                     </ul>
+     */
+    public static void copyStreamToFile( final InputStreamFacade source, final File destination )
+        throws IOException
+    {
         //does destination directory exist ?
         if ( destination.getParentFile() != null && !destination.getParentFile().exists() )
         {
@@ -1025,7 +1026,7 @@ public class FileUtils
         FileOutputStream output = null;
         try
         {
-            input = source.openStream();
+            input = source.getInputStream();
             output = new FileOutputStream( destination );
             IOUtil.copy( input, output );
         }
