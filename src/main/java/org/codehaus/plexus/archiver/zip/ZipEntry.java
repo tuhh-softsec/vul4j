@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.util.Vector;
 import java.util.zip.ZipException;
 
+import org.codehaus.plexus.archiver.ArchiveFile;
+
 /**
  * Extension that adds better handling of extra fields and provides
  * access to the internal and external file attributes.
@@ -31,7 +33,7 @@ import java.util.zip.ZipException;
  */
 public class ZipEntry
     extends java.util.zip.ZipEntry
-    implements Cloneable
+    implements Cloneable, ArchiveFile.Entry
 {
 
     private static final int PLATFORM_UNIX = 3;
@@ -534,4 +536,8 @@ public class ZipEntry
         }
     }
 
+    public long getLastModificationTime()
+    {
+        return getTime();
+    }
 }

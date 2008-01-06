@@ -20,13 +20,13 @@ package org.codehaus.plexus.archiver;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.codehaus.plexus.archiver.util.FilterSupport;
-import org.codehaus.plexus.components.io.fileselectors.FileInfo;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
@@ -212,7 +212,7 @@ public abstract class AbstractUnArchiver
         return fileSelectors;
     }
 
-    protected boolean isSelected( String fileName, FileInfo fileInfo )
+    protected boolean isSelected( String fileName, PlexusIoResource fileInfo )
             throws ArchiverException
     {
         if ( fileSelectors != null )

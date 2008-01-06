@@ -17,24 +17,26 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.bzip2.CBZip2OutputStream;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
+import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.StringUtils;
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -216,12 +218,8 @@ public class TarArchiver
     {
         for ( Iterator i = list.iterator(); i.hasNext(); )
         {
-            File fileToAdd = ( (ArchiveEntry) i.next() ).getFile();
-
-            if ( file.equals( fileToAdd ) )
-            {
-                return true;
-            }
+            PlexusIoResource resourceToAdd = ( (ArchiveEntry) i.next() ).getResource();
+            return ResourceUtils.isSame( resourceToAdd, file );
         }
         return false;
     }
@@ -237,7 +235,7 @@ public class TarArchiver
     protected void tarFile( ArchiveEntry entry, TarOutputStream tOut, String vPath )
         throws ArchiverException, IOException
     {
-        FileInputStream fIn = null;
+        InputStream fIn = null;
 
         // don't add "" to the archive
         if ( vPath.length() <= 0 )
@@ -245,7 +243,7 @@ public class TarArchiver
             return;
         }
 
-        if ( entry.getFile().isDirectory() && !vPath.endsWith( "/" ) )
+        if ( entry.getResource().isDirectory() && !vPath.endsWith( "/" ) )
         {
             vPath += "/";
         }
@@ -289,11 +287,13 @@ public class TarArchiver
             }
 
             TarEntry te = new TarEntry( vPath );
-            te.setModTime( entry.getFile().lastModified() );
+            long teLastModified = entry.getResource().getLastModified();
+            te.setModTime( teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis() : teLastModified );
 
-            if ( !entry.getFile().isDirectory() )
+            if ( !entry.getResource().isDirectory() )
             {
-                te.setSize( entry.getFile().length() );
+                final long size = entry.getResource().getSize();
+                te.setSize( size == PlexusIoResource.UNKNOWN_RESOURCE_SIZE ? 0 : size );
                 te.setMode( entry.getMode() );
             }
             else
@@ -307,9 +307,9 @@ public class TarArchiver
 
             tOut.putNextEntry( te );
 
-            if ( !entry.getFile().isDirectory() )
+            if ( !entry.getResource().isDirectory() )
             {
-                fIn = new FileInputStream( entry.getFile() );
+                fIn = entry.getInputStream();
 
                 byte[] buffer = new byte[8 * 1024];
                 int count = 0;

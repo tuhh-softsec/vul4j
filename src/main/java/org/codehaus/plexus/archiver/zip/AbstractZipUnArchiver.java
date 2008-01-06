@@ -22,6 +22,7 @@ import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.components.io.fileselectors.FileInfo;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
 
@@ -67,24 +69,15 @@ public abstract class AbstractZipUnArchiver
         this.encoding = encoding;
     }
 
-    private static class ZipEntryFileInfo implements FileInfo
+    private static class ZipEntryFileInfo implements PlexusIoResource
     {
         private final ZipFile zipFile;
-        private ZipEntry zipEntry;
+        private final ZipEntry zipEntry;
 
-        ZipEntryFileInfo( ZipFile zipFile )
+        ZipEntryFileInfo( ZipFile zipFile, ZipEntry zipEntry )
         {
             this.zipFile = zipFile;
-        }
-
-        void setZipEntry( ZipEntry zipEntry )
-        {
             this.zipEntry = zipEntry;
-        }
-
-        public InputStream getContents() throws IOException
-        {
-            return zipFile.getInputStream( zipEntry );
         }
 
         public String getName()
@@ -101,6 +94,35 @@ public abstract class AbstractZipUnArchiver
         {
             return !zipEntry.isDirectory();
         }
+
+        public InputStream getContents()
+            throws IOException
+        {
+            return zipFile.getInputStream( zipEntry );
+        }
+
+        public long getLastModified()
+        {
+            final long l = zipEntry.getTime();
+            return l == 0 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l;
+        }
+
+        public long getSize()
+        {
+            final long l = zipEntry.getSize();
+            return l == -1 ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : l;
+        }
+
+        public URL getURL()
+            throws IOException
+        {
+            return null;
+        }
+
+        public boolean isExisting()
+        {
+            return true;
+        }
     }
 
     protected void execute()
@@ -111,12 +133,11 @@ public abstract class AbstractZipUnArchiver
         try
         {
             zf = new ZipFile( getSourceFile(), encoding );
-            ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zf );
             Enumeration e = zf.getEntries();
             while ( e.hasMoreElements() )
             {
                 ZipEntry ze = (ZipEntry) e.nextElement();
-                fileInfo.setZipEntry( ze );
+                ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zf, ze );
                 if ( !isSelected( ze.getName(), fileInfo ) )
                 {
                     continue;
@@ -251,14 +272,13 @@ public abstract class AbstractZipUnArchiver
         try
         {
             zipFile = new ZipFile( getSourceFile(), encoding );
-            ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zipFile );
 
             Enumeration e = zipFile.getEntries();
 
             while ( e.hasMoreElements() )
             {
                 ZipEntry ze = (ZipEntry) e.nextElement();
-                fileInfo.setZipEntry( ze );
+                ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zipFile, ze );
                 if ( !isSelected( ze.getName(), fileInfo ) )
                 {
                     continue;

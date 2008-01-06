@@ -22,6 +22,7 @@ import java.io.File;
 
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 
 /**
  * @author dantran
@@ -42,4 +43,10 @@ public interface ArchiverManager
 
     UnArchiver getUnArchiver( File file )
         throws NoSuchArchiverException;    
+
+    PlexusIoResourceCollection getResourceCollection( File file )
+        throws NoSuchArchiverException;
+
+    PlexusIoResourceCollection getResourceCollection( String unArchiverName )
+        throws NoSuchArchiverException;
 }

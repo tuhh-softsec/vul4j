@@ -24,12 +24,19 @@ package org.codehaus.plexus.archiver.tar;
  * SOFTWARE.
  */
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnixStat;
-
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import org.codehaus.plexus.archiver.bzip2.BZip2Compressor;
+import org.codehaus.plexus.archiver.gzip.GZipCompressor;
+import org.codehaus.plexus.archiver.util.Compressor;
+import org.codehaus.plexus.archiver.zip.ArchiveFileComparator;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author Emmanuel Venisse
@@ -87,5 +94,112 @@ public class TarArchiverTest
             }
         }
 
+    }
+
+    private class TarHandler
+    {
+        File createTarFile()
+            throws Exception
+        {
+            final File srcDir = new File("src");
+            final File tarFile = new File( "target/output/src.tar" );
+            TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+            tarArchiver.setDestFile( tarFile );
+            tarArchiver.addDirectory( srcDir, null, FileUtils.getDefaultExcludes() );
+            FileUtils.removePath( tarFile.getPath() );
+            tarArchiver.createArchive();
+            return tarFile;
+        }
+
+        File createTarfile2( File tarFile )
+            throws Exception
+        {
+            final File tarFile2 = new File( "target/output/src2.tar" );
+            TarArchiver tarArchiver2 = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+            tarArchiver2.setDestFile( tarFile2 );
+            tarArchiver2.addArchivedFileSet( tarFile, "prfx/" );
+            FileUtils.removePath( tarFile2.getPath() );
+            tarArchiver2.createArchive();
+            return tarFile2;
+        }
+
+        TarFile newTarFile( File tarFile )
+        {
+            return new TarFile( tarFile );
+        }
+    }
+
+    private class GZipTarHandler extends TarHandler
+    {
+
+        File createTarFile()
+            throws Exception
+        {
+            File file = super.createTarFile();
+            File compressedFile = new File( file.getPath() + ".gz" );
+            Compressor compressor = new GZipCompressor();
+            compressor.setSource( new PlexusIoFileResource( file ) );
+            compressor.setDestFile( compressedFile );
+            compressor.compress();
+            compressor.close();
+            return compressedFile;
+        }
+
+        TarFile newTarFile( File tarFile )
+        {
+            return new GZipTarFile( tarFile );
+        }
+    }
+
+    private class BZip2TarHandler extends TarHandler
+    {
+
+        File createTarFile()
+            throws Exception
+        {
+            File file = super.createTarFile();
+            File compressedFile = new File( file.getPath() + ".bz2" );
+            Compressor compressor = new BZip2Compressor();
+            compressor.setSource( new PlexusIoFileResource( file ) );
+            compressor.setDestFile( compressedFile );
+            compressor.compress();
+            compressor.close();
+            return compressedFile;
+        }
+
+        TarFile newTarFile( File tarFile )
+        {
+            return new BZip2TarFile( tarFile );
+        }
+    }
+
+    public void testUncompressedResourceCollection()
+        throws Exception
+    {
+        testCreateResourceCollection( new TarHandler() );
+    }
+
+    public void testGzipCompressedResourceCollection()
+        throws Exception
+    {
+        testCreateResourceCollection( new GZipTarHandler() );
+    }
+
+    public void testBzip2CompressedResourceCollection()
+        throws Exception
+    {
+        testCreateResourceCollection( new BZip2TarHandler() );
+    }
+
+    private void testCreateResourceCollection( TarHandler tarHandler )
+        throws Exception
+    {
+        final File tarFile = tarHandler.createTarFile();
+        final File tarFile2 = tarHandler.createTarfile2( tarFile );
+        final TarFile cmp1 = tarHandler.newTarFile( tarFile );
+        final TarFile cmp2 = new TarFile( tarFile2 );
+        ArchiveFileComparator.assertEquals( cmp1, cmp2, "prfx/" );
+        cmp1.close();
+        cmp2.close();
     }
 }

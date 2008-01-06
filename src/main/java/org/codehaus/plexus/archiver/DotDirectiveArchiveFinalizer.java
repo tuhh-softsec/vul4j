@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.Reader;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  * An @{link ArchiveFinalizer} that process dot files with archiver directives

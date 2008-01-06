@@ -17,6 +17,19 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -25,8 +38,14 @@ import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.components.io.filemappers.PrefixFileMapper;
 import org.codehaus.plexus.components.io.fileselectors.FileInfo;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoProxyResourceCollection;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -71,7 +90,7 @@ public abstract class AbstractArchiver
 
     private File destFile;
 
-    private Map filesMap = new LinkedHashMap();
+    private Map resourceMap = new LinkedHashMap();
 
     private Map dirsMap = new LinkedHashMap();
 
@@ -91,8 +110,6 @@ public abstract class AbstractArchiver
 
     // contextualized.
     private ArchiverManager archiverManager;
-
-    private Set explodedArchiveDirs = new HashSet();
 
     public void setDefaultFileMode( int mode )
     {
@@ -183,8 +200,7 @@ public abstract class AbstractArchiver
         scanner.setBasedir( basedir );
         scanner.scan();
 
-        String prefix = fileSet.getPrefix() == null ? "" : fileSet.getPrefix();
-        ArchiverFileInfo fileInfo = new ArchiverFileInfo();
+        String prefix = fileSet.getPrefix();
         FileSelector[] fileSelectors = fileSet.getFileSelectors();
         if ( fileSet.isIncludingEmptyDirectories() )
         {
@@ -195,14 +211,13 @@ public abstract class AbstractArchiver
                 String name = dirs[i];
                 String sourceDir = name.replace( '\\', '/' );
                 File dir = new File( basedir, sourceDir );
-                fileInfo.setFile( dir );
-                fileInfo.setName( name );
-                if ( isSelected( fileSelectors, fileInfo ) )
+                final PlexusIoFileResource res = new PlexusIoFileResource( dir );
+                if ( isSelected( fileSelectors, res ) )
                 {
-                    String targetDir = prefix + sourceDir;
+                    String targetDir = PrefixFileMapper.getMappedFileName( prefix, sourceDir );
 
                     getDirs().put( targetDir,
-                                   ArchiveEntry.createDirectoryEntry( targetDir, dir,
+                                   ArchiveEntry.createDirectoryEntry( targetDir, res,
                                                                       getDefaultDirectoryMode() ) );
                 }
             }
@@ -215,17 +230,16 @@ public abstract class AbstractArchiver
             String file = files[i];
             String sourceFile = file.replace( '\\', '/' );
             File source = new File( basedir, sourceFile );
-            fileInfo.setName( file );
-            fileInfo.setFile( source );
-            if ( isSelected( fileSelectors, fileInfo ) )
+            final PlexusIoFileResource res = new PlexusIoFileResource( source, sourceFile );
+            if ( isSelected( fileSelectors, res ) )
             {
-                String targetFile = prefix + sourceFile;
-                addFile( source, targetFile );
+                String targetFile = PrefixFileMapper.getMappedFileName( prefix, sourceFile );
+                addResource( res, targetFile, getDefaultFileMode() );
             }
         }
     }
 
-    private boolean isSelected( FileSelector[] fileSelectors, FileInfo fileInfo )
+    private boolean isSelected( FileSelector[] fileSelectors, PlexusIoResource fileInfo )
         throws ArchiverException
     {
         if ( fileSelectors != null )
@@ -292,6 +306,23 @@ public abstract class AbstractArchiver
         addFile( inputFile, destFileName, getDefaultFileMode() );
     }
 
+    public void addResource( PlexusIoResource resource, String destFileName, int permissions )
+        throws ArchiverException
+    {
+        if ( ! resource.isExisting() )
+        {
+            throw new ArchiverException( resource.getName() + " not found." );
+        }
+        if ( resource.isFile() )
+        {
+            resourceMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, resource, permissions ) );
+        }
+        else
+        {
+            getDirs().put( destFileName, ArchiveEntry.createDirectoryEntry( destFileName, resource, permissions ) );
+        }
+    }
+    
     public void addFile( File inputFile, String destFileName, int permissions )
         throws ArchiverException
     {
@@ -313,12 +344,12 @@ public abstract class AbstractArchiver
 
                 if ( include( fileStream, destFileName ) )
                 {
-                    filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+                    resourceMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
                 }
             }
             else
             {
-                filesMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+                resourceMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
             }
         }
         catch ( IOException e )
@@ -343,14 +374,14 @@ public abstract class AbstractArchiver
     {
         if ( !includeEmptyDirs )
         {
-            return filesMap;
+            return resourceMap;
         }
 
         Map resources = new LinkedHashMap();
 
         resources.putAll( getDirs() );
 
-        resources.putAll( filesMap );
+        resources.putAll( resourceMap );
 
         return resources;
     }
@@ -392,93 +423,70 @@ public abstract class AbstractArchiver
         return dirsMap;
     }
 
-    public void addArchivedFileSet( final ArchivedFileSet fileSet )
+    protected PlexusIoResourceCollection asResourceCollection( ArchivedFileSet fileSet )
         throws ArchiverException
     {
         File archiveFile = fileSet.getArchive();
-        UnArchiver unArchiver;
+
+        final PlexusIoResourceCollection resources;
         try
         {
-            unArchiver = archiverManager.getUnArchiver( archiveFile );
-
-            if ( unArchiver instanceof FilterEnabled )
-            {
-                ( (FilterEnabled) unArchiver ).setArchiveFilters( Collections.EMPTY_LIST );
-            }
+            resources = archiverManager.getResourceCollection( archiveFile );
         }
         catch ( NoSuchArchiverException e )
         {
-            throw new ArchiverException( "Error adding archived file-set. UnArchiver not found for: " + archiveFile, e );
+            throw new ArchiverException( "Error adding archived file-set. PlexusIoResourceCollection not found for: " + archiveFile, e );
         }
 
-        final File tempDir = FileUtils.createTempFile( "archived-file-set.", ".tmp", null );
-        explodedArchiveDirs.add( tempDir );
+        if ( resources instanceof PlexusIoArchivedResourceCollection )
+        {
+            ( (PlexusIoArchivedResourceCollection) resources ).setFile( fileSet.getArchive() );
+        }
+        else
+        {
+            throw new ArchiverException( "Expected "
+                                         + PlexusIoArchivedResourceCollection.class.getName()
+                                         + ", got " + resources.getClass().getName() );
+        }
 
-        // FIXME: It's not a good idea to litter the temp dir with these file-set directories...
-        // However, the IDEs cannot accommodate shutdown hooks, so I'm taking this out.
-//        Runtime.getRuntime().addShutdownHook( new Thread( new Runnable(){
-//
-//            public void run()
-//            {
-//                try
-//                {
-//                    FileUtils.deleteDirectory( tempDir );
-//                }
-//                catch ( IOException e )
-//                {
-//                    getLogger().debug( "Error deleting temp directory: " + tempDir, e );
-//                }
-//            }
-//
-//        } ) );
+        final PlexusIoProxyResourceCollection proxy = new PlexusIoProxyResourceCollection();
+        proxy.setSrc( resources );
+        proxy.setExcludes( fileSet.getExcludes() );
+        proxy.setIncludes( fileSet.getIncludes() );
+        proxy.setIncludingEmptyDirectories( fileSet.isIncludingEmptyDirectories() );
+        proxy.setCaseSensitive( fileSet.isCaseSensitive() );
+        proxy.setPrefix( fileSet.getPrefix() );
+        proxy.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
+        proxy.setFileSelectors( fileSet.getFileSelectors() );
+        return proxy;
+    }
 
-        tempDir.mkdirs();
-
-        unArchiver.setSourceFile( archiveFile );
-        unArchiver.setDestDirectory( tempDir );
-        unArchiver.extract();
-
-        addFileSet( new FileSet(){
-            public File getDirectory()
+    /**
+     * Adds a resource collection to the archive.
+     */
+    public void addResources( PlexusIoResourceCollection collection )
+        throws ArchiverException
+    {
+        try
+        {
+            for (final Iterator iter = collection.getResources();  iter.hasNext();  )
             {
-                return tempDir;
+                final PlexusIoResource res = (PlexusIoResource) iter.next();
+                final int permissions = res.isFile() ? getDefaultFileMode() : getDefaultDirectoryMode();
+                addResource( res, collection.getName( res ), permissions );
             }
-
-            public String[] getExcludes()
-            {
-                return fileSet.getExcludes();
-            }
-
-            public FileSelector[] getFileSelectors()
-            {
-                return fileSet.getFileSelectors();
-            }
-
-            public String[] getIncludes()
-            {
-                return fileSet.getIncludes();
-            }
-
-            public String getPrefix()
-            {
-                return fileSet.getPrefix();
-            }
-
-            public boolean isCaseSensitive()
-            {
-                return fileSet.isCaseSensitive();
-            }
-
-            public boolean isIncludingEmptyDirectories()
-            {
-                return fileSet.isIncludingEmptyDirectories();
-            }
-
-            public boolean isUsingDefaultExcludes()
-            {
-                return fileSet.isUsingDefaultExcludes();
-            }
-        } );
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( e.getMessage(), e );
+        }
+    }
+    
+    public void addArchivedFileSet( final ArchivedFileSet fileSet )
+        throws ArchiverException
+    {
+        final PlexusIoResourceCollection resourceCollection = asResourceCollection( fileSet );
+        addResources( resourceCollection );
     }
 
     /**
@@ -597,16 +605,16 @@ public abstract class AbstractArchiver
         for ( Iterator iter = archiveEntries.values().iterator(); iter.hasNext(); )
         {
             ArchiveEntry entry = (ArchiveEntry) iter.next();
-            long l = entry.getFile().lastModified();
-            if ( l == 0 )
+            long l = entry.getResource().getLastModified();
+            if ( l == PlexusIoResource.UNKNOWN_MODIFICATION_DATE )
             {
                 // Don't know what to do. Safe thing is to assume not up2date.
-                getLogger().debug( "isUp2date: false (Input file " + entry.getFile().getPath() + " not found.)" );
+                getLogger().debug( "isUp2date: false (Input file " + entry.getResource().getName() + " not found.)" );
                 return false;
             }
             if ( l > destTimestamp )
             {
-                getLogger().debug( "isUp2date: false (Input file " + entry.getFile().getPath() + " is newer.)" );
+                getLogger().debug( "isUp2date: false (Input file " + entry.getResource().getName() + " is newer.)" );
                 return false;
             }
         }
@@ -691,8 +699,6 @@ public abstract class AbstractArchiver
         }
         finally
         {
-            cleanUpInternal();
-
             cleanUp();
         }
     }
@@ -724,26 +730,6 @@ public abstract class AbstractArchiver
     protected void validate()
         throws ArchiverException, IOException
     {
-    }
-
-    private void cleanUpInternal()
-    {
-        for ( Iterator it = explodedArchiveDirs.iterator(); it.hasNext(); )
-        {
-            File dir = (File) it.next();
-
-            if ( dir.exists() )
-            {
-                try
-                {
-                    FileUtils.forceDelete( dir );
-                }
-                catch ( IOException e )
-                {
-                    getLogger().debug( "Failed to delete exploded-archive temp directory: " + dir, e );
-                }
-            }
-        }
     }
 
     protected abstract String getArchiveType();

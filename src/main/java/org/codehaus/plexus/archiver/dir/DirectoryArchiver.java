@@ -16,16 +16,18 @@ package org.codehaus.plexus.archiver.dir;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.AbstractArchiver;
-import org.codehaus.plexus.archiver.ArchiveEntry;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
-import org.codehaus.plexus.util.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.codehaus.plexus.archiver.AbstractArchiver;
+import org.codehaus.plexus.archiver.ArchiveEntry;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
+import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 /**
  * A plexus archiver implementation that stores the files to archive in a
@@ -69,7 +71,7 @@ public class DirectoryArchiver
         {
             String fileName = (String) iter.next();
             ArchiveEntry fileToAdd = (ArchiveEntry) getFiles().get( fileName );
-            if ( destDirectory.equals( fileToAdd.getFile() ) )
+            if ( ResourceUtils.isSame( fileToAdd.getResource(), destDirectory ) )
             {
                 throw new ArchiverException( "The destination directory cannot include itself." );
             }
@@ -113,18 +115,20 @@ public class DirectoryArchiver
             return;
         }
 
-        File inFile = entry.getFile();
+        PlexusIoResource in = entry.getResource();
         File outFile = new File( vPath );
-
-        if ( outFile.exists() && outFile.lastModified() >= inFile.lastModified() )
+        
+        final long inLastModified = in.getLastModified();
+        long outLastModified = outFile.lastModified();
+        if ( ResourceUtils.isUptodate( inLastModified, outLastModified ) )
         {
-            //already up to date...
             return;
         }
+        
+        outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE
+                                 ? System.currentTimeMillis() : inLastModified );
 
-        outFile.setLastModified( inFile.lastModified() );
-
-        if ( ! inFile.isDirectory() )
+        if ( ! in.isDirectory() )
         {
             if ( ! outFile.getParentFile().exists() )
             {
@@ -135,7 +139,7 @@ public class DirectoryArchiver
                     throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
                 }
             }
-            FileUtils.copyFile( inFile, outFile );
+            ResourceUtils.copyFile( in, outFile );
             ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger() );
         }
         else
@@ -147,7 +151,7 @@ public class DirectoryArchiver
                     //should we just delete the file and replace it with a directory?
                     //throw an exception, let the user delete the file manually.
                     throw new ArchiverException(
-                        "Expected directory and found file at copy destination of " + inFile + " to " + outFile );
+                        "Expected directory and found file at copy destination of " + in.getName() + " to " + outFile );
                 }
             }
             else if ( ! outFile.mkdirs() )

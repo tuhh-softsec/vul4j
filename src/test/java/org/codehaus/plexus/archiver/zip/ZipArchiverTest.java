@@ -24,15 +24,15 @@ package org.codehaus.plexus.archiver.zip;
  * SOFTWARE.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.util.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Enumeration;
 
 /**
  * @author Emmanuel Venisse
@@ -174,4 +174,30 @@ public class ZipArchiverTest
         assertTrue( f.exists() );
         assertEquals(l2, l3);
 	}
+
+
+    public void testCreateResourceCollection()
+        throws Exception
+    {
+        final File srcDir = new File("src");
+        final File zipFile = new File( "target/output/src.zip" );
+        ZipArchiver zipArchiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        zipArchiver.setDestFile( zipFile );
+        zipArchiver.addDirectory( srcDir, null, FileUtils.getDefaultExcludes() );
+        FileUtils.removePath( zipFile.getPath() );
+        zipArchiver.createArchive();
+
+        final File zipFile2 = new File( "target/output/src2.zip" );
+        ZipArchiver zipArchiver2 = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        zipArchiver2.setDestFile( zipFile2 );
+        zipArchiver2.addArchivedFileSet( zipFile, "prfx/" );
+        FileUtils.removePath( zipFile2.getPath() );
+        zipArchiver2.createArchive();
+
+        final ZipFile cmp1 = new ZipFile( zipFile );
+        final ZipFile cmp2 = new ZipFile( zipFile2 );
+        ArchiveFileComparator.assertEquals( cmp1, cmp2, "prfx/" );
+        cmp1.close();
+        cmp2.close();
+    }
 }

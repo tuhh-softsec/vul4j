@@ -18,6 +18,11 @@ package org.codehaus.plexus.archiver;
  */
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 /**
  * @version $Revision: 1502 $ $Date$
@@ -30,9 +35,9 @@ public class ArchiveEntry
 
     public static final int DIRECTORY = 2;
 
-    private String name;
+    private PlexusIoResource resource;
 
-    private File file;
+    private String name;
 
     private int type;
 
@@ -44,10 +49,10 @@ public class ArchiveEntry
      * @param type     FILE or DIRECTORY
      * @param mode     octal unix style permissions
      */
-    private ArchiveEntry( String name, File original, int type, int mode )
+    private ArchiveEntry( String name, PlexusIoResource resource, int type, int mode )
     {
         this.name = name;
-        this.file = original;
+        this.resource = resource;
         this.type = type;
         this.mode = ( mode & UnixStat.PERM_MASK ) |
                     ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
@@ -63,12 +68,27 @@ public class ArchiveEntry
 
     /**
      * @return The original file that will be stored in the archive.
+     * @deprecated As of 1.0-alpha-10, file entries are no longer backed
+     *   by files, but by instances of {@link PlexusIoResource}.
+     *   Consequently, you should use {@link #getInputStream()}-
      */
     public File getFile()
     {
-        return file;
+        if ( resource instanceof PlexusIoFileResource )
+        {
+            return ((PlexusIoFileResource) resource).getFile();
+        }
+        return null;
     }
 
+    /**
+     * @return The resource contents.
+     */
+    public InputStream getInputStream() throws IOException
+    {
+        return resource.getContents();
+    }
+    
     /**
      * TODO: support for SYMLINK?
      *
@@ -87,6 +107,16 @@ public class ArchiveEntry
         return mode;
     }
 
+    public static ArchiveEntry createFileEntry( String target, PlexusIoResource resource, int permissions )
+        throws ArchiverException
+    {
+        if ( resource.isDirectory() )
+        {
+            throw new ArchiverException( "Not a file: " + resource.getName() );
+        }
+        return new ArchiveEntry( target, resource, FILE, permissions );
+    }
+
     public static ArchiveEntry createFileEntry( String target, File file, int permissions )
         throws ArchiverException
     {
@@ -94,36 +124,31 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Not a file: " + file );
         }
-        else
-        {
-            return new ArchiveEntry( target, file, FILE, permissions );
-        }
+        final PlexusIoFileResource res =  new PlexusIoFileResource( file );
+        return new ArchiveEntry( target, res, FILE, permissions );
     }
 
-    public static ArchiveEntry createDirectoryEntry( String target, File file, int permissions )
+    public static ArchiveEntry createDirectoryEntry( String target, PlexusIoResource resource, int permissions )
+        throws ArchiverException
+    {
+        if ( ! resource.isDirectory() )
+        {
+            throw new ArchiverException( "Not a directory: " + resource.getName() );
+        }
+        return new ArchiveEntry( target, resource, DIRECTORY, permissions );
+    }
+
+    public static ArchiveEntry createDirectoryEntry( String target, final File file, int permissions )
         throws ArchiverException
     {
         if ( ! file.isDirectory() )
         {
             throw new ArchiverException( "Not a directory: " + file );
         }
-        else
-        {
-            return new ArchiveEntry( target, file, DIRECTORY, permissions );
-        }
+        final PlexusIoFileResource res = new PlexusIoFileResource( file );
+        return new ArchiveEntry( target, res, DIRECTORY, permissions );
     }
 
-    /**
-     * Creates the correct ArchiveEntry instance for either a FILE or a
-     * DIRECTORY.
-     *
-     * @param target
-     * @param file
-     * @param filePerm
-     * @param dirPerm
-     * @return The created entry
-     * @throws ArchiverException when file is neither a directory nor a file.
-     */
     public static ArchiveEntry createEntry( String target, File file, int filePerm, int dirPerm )
         throws ArchiverException
     {
@@ -139,5 +164,10 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Neither a file nor a directory: " + file );
         }
+    }
+
+    public PlexusIoResource getResource()
+    {
+        return resource;
     }
 }

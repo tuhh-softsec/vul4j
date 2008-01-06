@@ -30,6 +30,8 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
 
+import org.codehaus.plexus.archiver.ArchiveFile;
+
 /**
  * Replacement for <code>java.util.ZipFile</code>.
  * <p/>
@@ -59,7 +61,7 @@ import java.util.zip.ZipException;
  * @version $Revision$ $Date$
  *          from org.apache.ant.tools.zip.ZipFile v1.13
  */
-public class ZipFile
+public class ZipFile implements ArchiveFile
 {
 
     /**
@@ -191,6 +193,12 @@ public class ZipFile
     public ZipEntry getEntry( String name )
     {
         return (ZipEntry) nameMap.get( name );
+    }
+
+    public InputStream getInputStream( ArchiveFile.Entry entry )
+        throws IOException
+    {
+        return getInputStream( (ZipEntry) entry );
     }
 
     /**

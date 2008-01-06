@@ -41,7 +41,7 @@ public class GZipCompressor
         try
         {
             zOut = new GZIPOutputStream( new FileOutputStream( getDestFile() ) );
-            compressFile( getSourceFile(), zOut );
+            compress( getSource(), zOut );
         }
         catch ( IOException ioe )
         {

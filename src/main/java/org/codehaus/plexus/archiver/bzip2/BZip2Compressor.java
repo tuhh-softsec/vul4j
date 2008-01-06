@@ -45,7 +45,7 @@ public class BZip2Compressor
             bos.write( 'B' );
             bos.write( 'Z' );
             zOut = new CBZip2OutputStream( bos );
-            compressFile( getSourceFile(), zOut );
+            compress( getSource(), zOut );
         }
         catch ( IOException ioe )
         {

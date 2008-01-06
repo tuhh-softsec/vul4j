@@ -25,6 +25,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
@@ -54,35 +55,42 @@ public class DefaultArchiverManager
     public Archiver getArchiver( String archiverName )
         throws NoSuchArchiverException
     {
-        Archiver archiver;
         try
         {
-            archiver = (Archiver) container.lookup( Archiver.ROLE, archiverName );
+            return (Archiver) container.lookup( Archiver.ROLE, archiverName );
         }
         catch ( ComponentLookupException e )
         {
             throw new NoSuchArchiverException( archiverName );
         }
-
-        return archiver;
     }
 
     public UnArchiver getUnArchiver( String unArchiverName )
         throws NoSuchArchiverException
     {
-        UnArchiver archiver;
         try
         {
-            archiver = (UnArchiver) container.lookup( UnArchiver.ROLE, unArchiverName );
+            return (UnArchiver) container.lookup( UnArchiver.ROLE, unArchiverName );
         }
         catch ( ComponentLookupException e )
         {
             throw new NoSuchArchiverException( unArchiverName );
         }
-
-        return archiver;
     }
-    
+
+    public PlexusIoResourceCollection getResourceCollection( String resourceCollectionName )
+        throws NoSuchArchiverException
+    {
+        try
+        {
+            return (PlexusIoResourceCollection) container.lookup( PlexusIoResourceCollection.ROLE, resourceCollectionName );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new NoSuchArchiverException( resourceCollectionName );
+        }
+    }    
+
     private static String getFileExtention ( File file )
     {
         String path = file.getAbsolutePath();
@@ -112,5 +120,11 @@ public class DefaultArchiverManager
         throws NoSuchArchiverException
     {        
         return getUnArchiver( getFileExtention( file ) );
-    }    
+    }
+
+    public PlexusIoResourceCollection getResourceCollection( File file )
+        throws NoSuchArchiverException
+    {
+        return getResourceCollection( getFileExtention( file ) );
+    }
 }

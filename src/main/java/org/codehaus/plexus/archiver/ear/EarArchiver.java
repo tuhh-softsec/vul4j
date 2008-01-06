@@ -20,6 +20,7 @@ package org.codehaus.plexus.archiver.ear;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
+import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
 
 import java.io.File;
@@ -106,7 +107,7 @@ public class EarArchiver
         if ( vPath.equalsIgnoreCase( "META-INF/application.xml" ) )
         {
             if ( deploymentDescriptor == null
-                 || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
+                 || !ResourceUtils.isCanonicalizedSame( entry.getResource(), deploymentDescriptor )
                  || descriptorAdded )
             {
                 getLogger().warn( "Warning: selected " + archiveType

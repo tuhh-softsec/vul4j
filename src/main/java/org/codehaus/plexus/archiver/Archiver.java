@@ -21,6 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
+
 /**
  * @version $Revision$ $Date$
  */
@@ -95,7 +98,21 @@ public interface Archiver
      */
     void addArchivedFileSet( ArchivedFileSet fileSet )
         throws ArchiverException;
-    
+
+    /**
+     * Adds the given resource collection to the archive.
+     * @since 1.0-alpha-10
+     */
+    void addResource( PlexusIoResource resource, String destFileName, int permissions )
+        throws ArchiverException;
+
+    /**
+     * Adds the given resource collection to the archive.
+     * @since 1.0-alpha-10
+     */
+    void addResources( PlexusIoResourceCollection resources )
+        throws ArchiverException;
+
     File getDestFile();
 
     void setDestFile( File destFile );

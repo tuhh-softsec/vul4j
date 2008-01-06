@@ -26,6 +26,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.Locale;
 
+import org.codehaus.plexus.archiver.ArchiveFile;
+
 /**
  * This class represents an entry in a Tar archive. It consists
  * of the entry's header, as well as the entry's File. Entries
@@ -78,7 +80,7 @@ import java.util.Locale;
  */
 
 public class TarEntry
-    implements TarConstants
+    implements TarConstants, ArchiveFile.Entry
 {
     /**
      * The entry's name.
@@ -744,5 +746,10 @@ public class TarEntry
         this.devMajor = (int) TarUtils.parseOctal( header, offset, DEVLEN );
         offset += DEVLEN;
         this.devMinor = (int) TarUtils.parseOctal( header, offset, DEVLEN );
+    }
+
+    public long getLastModificationTime()
+    {
+        return modTime == 0 ? -1 : (modTime * MILLIS_PER_SECOND);
     }
 }

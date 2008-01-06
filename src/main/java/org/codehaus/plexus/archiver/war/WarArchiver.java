@@ -20,6 +20,7 @@ package org.codehaus.plexus.archiver.war;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
+import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
 
 import java.io.File;
@@ -164,7 +165,7 @@ public class WarArchiver
         {
             if ( descriptorAdded || ( ignoreWebxml
                  && ( deploymentDescriptor == null
-                     || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() ) ) ) ) 
+                     || !ResourceUtils.isCanonicalizedSame( entry.getResource(), deploymentDescriptor ) ) ) )
             {
                 getLogger().warn( "Warning: selected " + archiveType
                                   + " files include a WEB-INF/web.xml which will be ignored "

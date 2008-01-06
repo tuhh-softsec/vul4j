@@ -17,14 +17,16 @@ package org.codehaus.plexus.archiver.util;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @version $Revision$ $Date$
@@ -34,8 +36,8 @@ public abstract class Compressor
 {
     private File destFile;
 
-    private File sourceFile;
-
+    private PlexusIoResource source;
+    
     /**
      * the required destination file.
      *
@@ -52,18 +54,42 @@ public abstract class Compressor
     }
 
     /**
+     * The resource to compress; required.
+     */
+    public void setSource( PlexusIoResource source )
+    {
+        this.source = source;
+    }
+
+    /**
+     * The resource to compress; required.
+     */
+    public PlexusIoResource getSource()
+    {
+        return source;
+    }
+
+    /**
      * the file to compress; required.
-     *
-     * @param srcFile
+     * @deprecated Use {@link #getSource()}.
      */
     public void setSourceFile( File srcFile )
     {
-        this.sourceFile = srcFile;
+        final PlexusIoFileResource res = new PlexusIoFileResource( srcFile );
+        setSource( res );
     }
 
+    /**
+     * @deprecated Use {@link #getSource()}.
+     */
     public File getSourceFile()
     {
-        return sourceFile;
+        final PlexusIoResource res = getSource();
+        if ( res instanceof PlexusIoFileResource )
+        {
+            return ((PlexusIoFileResource) res).getFile();
+        }
+        return null;
     }
 
     /**
@@ -85,12 +111,12 @@ public abstract class Compressor
                                          + "represent a directory!" );
         }
 
-        if ( sourceFile == null )
+        if ( source == null )
         {
             throw new ArchiverException( "Source file attribute is required" );
         }
 
-        if ( sourceFile.isDirectory() )
+        if ( source.isDirectory() )
         {
             throw new ArchiverException( "Source file attribute must not "
                                          + "represent a directory!" );
@@ -109,20 +135,25 @@ public abstract class Compressor
 
         try
         {
-            if ( !sourceFile.exists() )
+            if ( !source.isExisting() )
             {
 //                getLogger().info( "Nothing to do: " + sourceFile.getAbsolutePath()
 //                    + " doesn't exist." );
             }
-            else if ( destFile.lastModified() < sourceFile.lastModified() )
-            {
-//                getLogger().info( "Building: " + destFile.getAbsolutePath() );
-                compress();
-            }
             else
             {
-//                getLogger().info( "Nothing to do: " + destFile.getAbsolutePath()
-//                    + " is up to date." );
+                final long l = source.getLastModified();
+                if ( l == PlexusIoResource.UNKNOWN_MODIFICATION_DATE
+                                ||  destFile.lastModified() == 0
+                                ||  destFile.lastModified() < l )
+                {
+                    compress();
+                }
+                else
+                {
+//                    getLogger().info( "Nothing to do: " + destFile.getAbsolutePath()
+//                        + " is up to date." );
+                }
             }
         }
         finally
@@ -153,15 +184,29 @@ public abstract class Compressor
 
     /**
      * compress a file to an output stream
-     *
-     * @param file
-     * @param zOut
-     * @throws IOException
+     * @deprecated Use {@link #compress(PlexusIoResource, OutputStream)}.
      */
     protected void compressFile( File file, OutputStream zOut )
         throws IOException
     {
         FileInputStream fIn = new FileInputStream( file );
+        try
+        {
+            compressFile( fIn, zOut );
+        }
+        finally
+        {
+            fIn.close();
+        }
+    }
+
+    /**
+     * compress a resource to an output stream
+     */
+    protected void compress( PlexusIoResource resource, OutputStream zOut )
+        throws IOException
+    {
+        InputStream fIn = resource.getContents();
         try
         {
             compressFile( fIn, zOut );

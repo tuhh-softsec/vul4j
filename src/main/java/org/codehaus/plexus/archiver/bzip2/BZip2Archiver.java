@@ -44,7 +44,7 @@ public class BZip2Archiver
             throw new ArchiverException( "There is more than one file in input." );
         }
         ArchiveEntry entry = (ArchiveEntry) getFiles().values().toArray()[ 0 ];
-        compressor.setSourceFile( entry.getFile() );
+        compressor.setSource( entry.getResource() );
         compressor.setDestFile( getDestFile() );
         compressor.compress();
     }

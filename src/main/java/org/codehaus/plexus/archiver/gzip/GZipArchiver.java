@@ -45,7 +45,7 @@ public class GZipArchiver
         }
         
         ArchiveEntry entry = (ArchiveEntry) getFiles().values().toArray()[ 0 ];
-        compressor.setSourceFile( entry.getFile() );
+        compressor.setSource( entry.getResource() );
         compressor.setDestFile( getDestFile() );
         compressor.compress();
     }

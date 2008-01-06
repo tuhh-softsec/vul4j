@@ -24,9 +24,19 @@ package org.codehaus.plexus.archiver.gzip;
  * SOFTWARE.
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
+
 
 /**
  * @author Emmanuel Venisse
@@ -48,5 +58,33 @@ public class GZipArchiverTest
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
         archiver.setDestFile( getTestFile( "target/output/archive.gzip" ) );
         archiver.createArchive();
+    }
+
+    public void testCreateResourceCollection()
+        throws Exception
+    {
+        final File pomFile = new File("pom.xml");
+        final File gzFile = new File( "target/output/pom.xml.gz" );
+        GZipArchiver gzipArchiver = (GZipArchiver) lookup( Archiver.ROLE, "gzip" );
+        gzipArchiver.setDestFile( gzFile );
+        gzipArchiver.addFile( pomFile, "pom.xml" );
+        FileUtils.removePath( gzFile.getPath() );
+        gzipArchiver.createArchive();
+
+        final File zipFile = new File( "target/output/pom.zip" );
+        ZipArchiver zipArchiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        zipArchiver.setDestFile( zipFile );
+        zipArchiver.addArchivedFileSet( gzFile, "prfx/" );
+        FileUtils.removePath( zipFile.getPath() );
+        zipArchiver.createArchive();
+
+        final ZipFile juZipFile = new ZipFile( zipFile );
+        final ZipEntry zipEntry = juZipFile.getEntry( "prfx/target/output/pom.xml" );
+        final InputStream archivePom = juZipFile.getInputStream( zipEntry );
+        final InputStream pom = new FileInputStream( pomFile );
+        assertTrue( Arrays.equals( IOUtil.toByteArray( pom ), IOUtil.toByteArray( archivePom ) ) );
+        archivePom.close();
+        pom.close();
+        juZipFile.close();
     }
 }

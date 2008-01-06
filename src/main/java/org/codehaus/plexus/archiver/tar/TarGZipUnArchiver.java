@@ -17,11 +17,7 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.gzip.GZipUnArchiver;
-
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Extract files in tar with gzip compression

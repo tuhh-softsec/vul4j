@@ -17,16 +17,9 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.AbstractArchiver;
-import org.codehaus.plexus.archiver.ArchiveEntry;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.UnixStat;
-import org.codehaus.plexus.util.FileUtils;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +31,15 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.CRC32;
+
+import org.codehaus.plexus.archiver.AbstractArchiver;
+import org.codehaus.plexus.archiver.ArchiveEntry;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.UnixStat;
+import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @version $Revision$ $Date$
@@ -392,7 +394,8 @@ public abstract class AbstractZipArchiver
                 if ( ( zipEntry = zipFile.getEntry( fileName ) ) != null )
                 {
                     ArchiveEntry currentEntry = (ArchiveEntry) getFiles().get( fileName );
-                    if ( zipEntry.getTime() < currentEntry.getFile().lastModified() )
+                    long zipTime = zipEntry.getTime();
+                    if ( zipTime == -1  ||  !ResourceUtils.isUptodate( currentEntry.getResource(), zipTime ) )
                     {
                         result.put( fileName, getFiles().get( fileName ) );
                     }
@@ -425,20 +428,20 @@ public abstract class AbstractZipArchiver
                 continue;
             }
 
-            if ( entry.getFile().isDirectory() && !name.endsWith( "/" ) )
+            if ( entry.getResource().isDirectory() && !name.endsWith( "/" ) )
             {
                 name = name + "/";
             }
 
             addParentDirs( base, name, zOut, "" );
 
-            if ( entry.getFile().isFile() )
+            if ( entry.getResource().isFile() )
             {
                 zipFile( entry, zOut, name );
             }
             else
             {
-                zipDir( entry.getFile(), zOut, name, entry.getMode() );
+                zipDir( entry.getResource(), zOut, name, entry.getMode() );
             }
         }
     }
@@ -481,7 +484,8 @@ public abstract class AbstractZipArchiver
                 {
                     f = new File( dir );
                 }
-                zipDir( f, zOut, prefix + dir, getDefaultDirectoryMode() );
+                final PlexusIoFileResource res = new PlexusIoFileResource( f );
+                zipDir( res, zOut, prefix + dir, getDefaultDirectoryMode() );
             }
         }
     }
@@ -613,16 +617,17 @@ public abstract class AbstractZipArchiver
     protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath )
         throws IOException, ArchiverException
     {
-        if ( entry.equals( getDestFile() ) )
+        if ( ResourceUtils.isSame( entry.getResource(), getDestFile() ) )
         {
             throw new ArchiverException( "A zip file cannot include itself" );
         }
 
-        FileInputStream fIn = new FileInputStream( entry.getFile() );
+        InputStream fIn = entry.getInputStream();
         try
         {
             // ZIPs store time with a granularity of 2 seconds, round up
-            zipFile( fIn, zOut, vPath, entry.getFile().lastModified() + ( roundUp ? 1999 : 0 ), null, entry.getMode() );
+            final long lastModified = entry.getResource().getLastModified() + ( roundUp ? 1999 : 0 );
+            zipFile( fIn, zOut, vPath, lastModified, null, entry.getMode() );
         }
         finally
         {
@@ -633,7 +638,7 @@ public abstract class AbstractZipArchiver
     /**
      *
      */
-    protected void zipDir( File dir, ZipOutputStream zOut, String vPath, int mode )
+    protected void zipDir( PlexusIoResource dir, ZipOutputStream zOut, String vPath, int mode )
         throws IOException
     {
         if ( addedDirs.get( vPath ) != null )
@@ -650,10 +655,11 @@ public abstract class AbstractZipArchiver
         {
             ZipEntry ze = new ZipEntry( vPath );
 
-            if ( dir != null && dir.exists() )
+            if ( dir != null && dir.isExisting() )
             {
                 // ZIPs store time with a granularity of 2 seconds, round up
-                ze.setTime( dir.lastModified() + ( roundUp ? 1999 : 0 ) );
+                final long lastModified = dir.getLastModified() + ( roundUp ? 1999 : 0 );
+                ze.setTime( lastModified );
             }
             else
             {

@@ -17,14 +17,15 @@ package org.codehaus.plexus.archiver.bzip2;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.AbstractUnArchiver;
-import org.codehaus.plexus.archiver.ArchiverException;
-
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.File;
+import java.io.InputStream;
+
+import org.codehaus.plexus.archiver.AbstractUnArchiver;
+import org.codehaus.plexus.archiver.ArchiverException;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -59,17 +60,11 @@ public class BZip2UnArchiver
                 out = new FileOutputStream( getDestFile() );
                 fis = new FileInputStream( getSourceFile() );
                 bis = new BufferedInputStream( fis );
-                int b = bis.read();
-                if ( b != 'B' )
+                zIn = getBZip2InputStream( bis );
+                if ( zIn == null )
                 {
                     throw new ArchiverException( getSourceFile().getAbsolutePath() + " is an invalid bz2 file." );
                 }
-                b = bis.read();
-                if ( b != 'Z' )
-                {
-                    throw new ArchiverException( getSourceFile().getAbsolutePath() + " is an invalid bz2 file." );
-                }
-                zIn = new CBZip2InputStream( bis );
                 byte[] buffer = new byte[8 * 1024];
                 int count = 0;
                 do
@@ -132,6 +127,22 @@ public class BZip2UnArchiver
                 }
             }
         }
+    }
+
+    public static CBZip2InputStream getBZip2InputStream( InputStream bis )
+        throws IOException
+    {
+        int b = bis.read();
+        if ( b != 'B' )
+        {
+            return null;
+        }
+        b = bis.read();
+        if ( b != 'Z' )
+        {
+            return null;
+        }
+        return new CBZip2InputStream( bis );
     }
 
     protected void execute( String path, File outputDirectory )
