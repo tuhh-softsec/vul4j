@@ -31,6 +31,7 @@ import java.util.zip.GZIPOutputStream;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.bzip2.CBZip2OutputStream;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
@@ -152,10 +153,9 @@ public class TarArchiver
     	{
     		return;
     	}
-        
-        Map archiveEntries = getFiles();
 
-        if ( archiveEntries == null || archiveEntries.size() == 0 )
+    	ResourceIterator iter = getResources();
+        if ( !iter.hasNext() )
         {
             throw new ArchiverException( "You must set at least one file." );
         }
@@ -173,12 +173,6 @@ public class TarArchiver
         if ( tarFile.exists() && !tarFile.canWrite() )
         {
             throw new ArchiverException( tarFile + " is read-only." );
-        }
-
-        // Check if we don't add tar file in inself
-        if ( containsFile( tarFile, archiveEntries.values() ) )
-        {
-            throw new ArchiverException( "A tar file cannot include itself." );
         }
 
         getLogger().info( "Building tar : " + tarFile.getAbsolutePath() );
@@ -201,27 +195,19 @@ public class TarArchiver
         }
 
         longWarningGiven = false;
-        for ( Iterator iter = archiveEntries.keySet().iterator(); iter.hasNext(); )
+        while ( iter.hasNext() )
         {
-            String fileName = (String) iter.next();
+            ArchiveEntry entry = iter.next();
+            // Check if we don't add tar file in inself
+            if ( ResourceUtils.isSame( entry.getResource(), tarFile ) )
+            {
+                throw new ArchiverException( "A tar file cannot include itself." );
+            }
+            String fileName = entry.getName();
             String name = StringUtils.replace( fileName, File.separatorChar, '/' );
-
-            ArchiveEntry entry = (ArchiveEntry) archiveEntries.get( fileName );
 
             tarFile( entry, tOut, name );
         }
-    }
-
-    // TODO: use Collection.contains; need to create suitable compare
-    // method in ArchiveEntry.
-    private static boolean containsFile( File file, Collection list )
-    {
-        for ( Iterator i = list.iterator(); i.hasNext(); )
-        {
-            PlexusIoResource resourceToAdd = ( (ArchiveEntry) i.next() ).getResource();
-            return ResourceUtils.isSame( resourceToAdd, file );
-        }
-        return false;
     }
 
     /**
@@ -604,6 +590,7 @@ public class TarArchiver
 
     protected void cleanUp()
     {
+        super.cleanUp();
         tOut = null;
     }
 

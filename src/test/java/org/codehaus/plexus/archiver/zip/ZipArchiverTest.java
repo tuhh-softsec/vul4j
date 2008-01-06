@@ -160,12 +160,14 @@ public class ZipArchiverTest
         long l1 = f.lastModified();
         assertTrue( f.exists() );
 
+        archiver = newArchiver( "archive2.zip" );
         waitUntilNewTimestamp( archiver.getDestFile(), l1 );
         createArchive( archiver );
         long l2 = f.lastModified();
         assertTrue( f.exists() );
         assertTrue( l2 > l1 );
 
+        archiver = newArchiver( "archive2.zip" );
         assertTrue( archiver.isSupportingForced() );
         archiver.setForced( false );
         assertFalse( archiver.isForced() );

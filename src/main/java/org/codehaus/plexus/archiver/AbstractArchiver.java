@@ -21,14 +21,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.NoSuchElementException;
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
@@ -39,7 +38,6 @@ import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.components.io.filemappers.PrefixFileMapper;
-import org.codehaus.plexus.components.io.fileselectors.FileInfo;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
@@ -53,21 +51,8 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * @version $Id$
@@ -90,9 +75,17 @@ public abstract class AbstractArchiver
 
     private File destFile;
 
-    private Map resourceMap = new LinkedHashMap();
-
-    private Map dirsMap = new LinkedHashMap();
+    /**
+     * A list of the following objects:
+     * <ul>
+     *   <li>Instances of {@link ArchiveEntry}, which are passed back by
+     *     {@link #getResources()} without modifications.</li>
+     *   <li>Instances of {@link PlexusIoResourceCollection}, which
+     *     are converted into an {@link Iterator} over instances of
+     *     {@link ArchiveEntry} by {@link #getResources()}.
+     * </ul>
+     */
+    private List resources = new ArrayList();
 
     private int defaultFileMode = DEFAULT_FILE_MODE;
 
@@ -216,8 +209,7 @@ public abstract class AbstractArchiver
                 {
                     String targetDir = PrefixFileMapper.getMappedFileName( prefix, sourceDir );
 
-                    getDirs().put( targetDir,
-                                   ArchiveEntry.createDirectoryEntry( targetDir, res,
+                    resources.add( ArchiveEntry.createDirectoryEntry( targetDir, res,
                                                                       getDefaultDirectoryMode() ) );
                 }
             }
@@ -264,63 +256,48 @@ public abstract class AbstractArchiver
         return true;
     }
 
-    private static class ArchiverFileInfo implements FileInfo
-    {
-        private String name;
-        private File file;
-
-        void setFile( File file )
-        {
-            this.file = file;
-        }
-
-        void setName( String name )
-        {
-            this.name = name;
-        }
-
-        public InputStream getContents() throws IOException
-        {
-            return new FileInputStream( file );
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        public boolean isDirectory()
-        {
-            return file.isDirectory();
-        }
-
-        public boolean isFile()
-        {
-            return file.isFile();
-        }
-    }
-
     public void addFile( File inputFile, String destFileName )
         throws ArchiverException
     {
         addFile( inputFile, destFileName, getDefaultFileMode() );
     }
 
-    public void addResource( PlexusIoResource resource, String destFileName, int permissions )
+    protected ArchiveEntry asArchiveEntry( PlexusIoResource resource, String destFileName, int permissions )
         throws ArchiverException
     {
-        if ( ! resource.isExisting() )
+        if ( !resource.isExisting() )
         {
             throw new ArchiverException( resource.getName() + " not found." );
         }
         if ( resource.isFile() )
         {
-            resourceMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, resource, permissions ) );
+            return ArchiveEntry.createFileEntry( destFileName, resource, permissions );
         }
         else
         {
-            getDirs().put( destFileName, ArchiveEntry.createDirectoryEntry( destFileName, resource, permissions ) );
+            return ArchiveEntry.createDirectoryEntry( destFileName, resource, permissions );
         }
+    }
+
+    protected ArchiveEntry asArchiveEntry( PlexusIoResourceCollection collection, PlexusIoResource resource )
+        throws ArchiverException
+    {
+        try
+        {
+            final String destFileName = collection.getName( resource );
+            final int permissions = resource.isFile() ? getDefaultFileMode() : getDefaultDirectoryMode();
+            return asArchiveEntry( resource, destFileName, permissions );
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( e.getMessage(), e );
+        }
+    }
+    
+    public void addResource( PlexusIoResource resource, String destFileName, int permissions )
+        throws ArchiverException
+    {
+        resources.add( asArchiveEntry( resource, destFileName, permissions ) );
     }
     
     public void addFile( File inputFile, String destFileName, int permissions )
@@ -344,12 +321,12 @@ public abstract class AbstractArchiver
 
                 if ( include( fileStream, destFileName ) )
                 {
-                    resourceMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+                    resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
                 }
             }
             else
             {
-                resourceMap.put( destFileName, ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+                resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
             }
         }
         catch ( IOException e )
@@ -366,24 +343,103 @@ public abstract class AbstractArchiver
         }
     }
 
-    // TODO: convert this to Collection?
-    // Only con is that some archivers change the filename
-    // to contain just forward slashes; they could update
-    // the Name of the ArchiveEntry..?
+    public ResourceIterator getResources()
+        throws ArchiverException
+    {
+        return new ResourceIterator()
+        {
+            private final Iterator archiveEntryIter = resources.iterator();
+            private boolean currentArchiveEntryValid;
+            private PlexusIoResourceCollection plexusIoResourceCollection;
+            private Iterator plexusIoResourceIter;
+            private ArchiveEntry archiveEntry;
+
+            public boolean hasNext() throws ArchiverException
+            {
+                if (!currentArchiveEntryValid)
+                {
+                    if ( plexusIoResourceIter == null )
+                    {
+                        if ( archiveEntryIter.hasNext() )
+                        {
+                            Object o = archiveEntryIter.next();
+                            if ( o instanceof ArchiveEntry )
+                            {
+                                archiveEntry = (ArchiveEntry) o;
+                            }
+                            else if ( o instanceof PlexusIoResourceCollection )
+                            {
+                                plexusIoResourceCollection = (PlexusIoResourceCollection) o;
+                                try
+                                {
+                                    plexusIoResourceIter = plexusIoResourceCollection.getResources();
+                                }
+                                catch ( IOException e )
+                                {
+                                    throw new ArchiverException( e.getMessage(), e );
+                                }
+                                return hasNext();
+                            }
+                            else
+                            {
+                                throw new IllegalStateException( "Invalid object type: "
+                                                                 + o.getClass().getName() );
+                            }
+                        }
+                        else
+                        {
+                            archiveEntry = null;
+                        }
+                    }
+                    else
+                    {
+                        if ( plexusIoResourceIter.hasNext() )
+                        {
+                            PlexusIoResource resource = (PlexusIoResource) plexusIoResourceIter.next();
+                            archiveEntry = asArchiveEntry( plexusIoResourceCollection, resource );
+                        }
+                        else
+                        {
+                            plexusIoResourceIter = null;
+                            return hasNext();
+                        }
+                    }
+                    currentArchiveEntryValid = true;
+                }
+                return archiveEntry != null;
+            }
+
+            public ArchiveEntry next() throws ArchiverException
+            {
+                if ( !hasNext() )
+                {
+                    throw new NoSuchElementException();
+                }
+                currentArchiveEntryValid = false;
+                return archiveEntry;
+            }
+        };
+    }
+
     public Map getFiles()
     {
-        if ( !includeEmptyDirs )
+        try
         {
-            return resourceMap;
+            final Map map = new HashMap();
+            for ( ResourceIterator iter = getResources();  iter.hasNext();  )
+            {
+                ArchiveEntry entry = (ArchiveEntry) iter.next();
+                if ( includeEmptyDirs  ||  entry.getType() == ArchiveEntry.FILE )
+                {
+                    map.put( entry.getName(), entry );
+                }
+            }
+            return map;
         }
-
-        Map resources = new LinkedHashMap();
-
-        resources.putAll( getDirs() );
-
-        resources.putAll( resourceMap );
-
-        return resources;
+        catch ( ArchiverException e )
+        {
+            throw new UndeclaredThrowableException( e );
+        }
     }
 
     public File getDestFile()
@@ -420,7 +476,23 @@ public abstract class AbstractArchiver
 
     public Map getDirs()
     {
-        return dirsMap;
+        try
+        {
+            final Map map = new HashMap();
+            for ( ResourceIterator iter = getResources();  iter.hasNext();  )
+            {
+                ArchiveEntry entry = (ArchiveEntry) iter.next();
+                if ( entry.getType() == ArchiveEntry.DIRECTORY )
+                {
+                    map.put( entry.getName(), entry );
+                }
+            }
+            return map;
+        }
+        catch ( ArchiverException e )
+        {
+            throw new UndeclaredThrowableException( e );
+        }
     }
 
     protected PlexusIoResourceCollection asResourceCollection( ArchivedFileSet fileSet )
@@ -467,19 +539,7 @@ public abstract class AbstractArchiver
     public void addResources( PlexusIoResourceCollection collection )
         throws ArchiverException
     {
-        try
-        {
-            for (final Iterator iter = collection.getResources();  iter.hasNext();  )
-            {
-                final PlexusIoResource res = (PlexusIoResource) iter.next();
-                final int permissions = res.isFile() ? getDefaultFileMode() : getDefaultDirectoryMode();
-                addResource( res, collection.getName( res ), permissions );
-            }
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException( e.getMessage(), e );
-        }
+        resources.add( collection );
     }
     
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
@@ -586,6 +646,7 @@ public abstract class AbstractArchiver
     }
 
     protected boolean isUptodate()
+        throws ArchiverException
     {
         File zipFile = getDestFile();
         long destTimestamp = zipFile.lastModified();
@@ -595,14 +656,14 @@ public abstract class AbstractArchiver
             return false; // File doesn't yet exist
         }
 
-        Map archiveEntries = getFiles();
-        if ( ( archiveEntries == null ) || archiveEntries.isEmpty() )
+        ResourceIterator iter = getResources();
+        if ( !iter.hasNext() )
         {
             getLogger().debug( "isUp2date: false (No input files.)" );
             return false; // No timestamp to compare
         }
 
-        for ( Iterator iter = archiveEntries.values().iterator(); iter.hasNext(); )
+        while ( iter.hasNext() )
         {
             ArchiveEntry entry = (ArchiveEntry) iter.next();
             long l = entry.getResource().getLastModified();
@@ -624,6 +685,7 @@ public abstract class AbstractArchiver
     }
 
     protected boolean checkForced()
+        throws ArchiverException
     {
         if ( !isForced() && isSupportingForced() && isUptodate() )
         {
@@ -737,7 +799,10 @@ public abstract class AbstractArchiver
     protected abstract void close()
         throws IOException;
 
-    protected abstract void cleanUp();
+    protected void cleanUp()
+    {
+        resources.clear();
+    }
 
     protected abstract void execute()
         throws ArchiverException, IOException;

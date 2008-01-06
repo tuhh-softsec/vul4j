@@ -19,6 +19,7 @@ package org.codehaus.plexus.archiver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
@@ -131,6 +132,19 @@ public interface Archiver
 
     void setDotFileDirectory( File dotFileDirectory );
 
+    /**
+     * Returns an iterator over instances of {@link ArchiveEntry},
+     * which have previously been added by calls to
+     * {@link #addResources(PlexusIoResourceCollection)},
+     *  {@link #addResource(PlexusIoResource, String, int)},
+     *  {@link #addFileSet(FileSet)}, etc.
+     * @since 1.0-alpha-10
+     */
+    ResourceIterator getResources() throws ArchiverException;
+    
+    /**
+     * @deprecated Use {@link #getResources()}
+     */
     Map getFiles();
 
     /**

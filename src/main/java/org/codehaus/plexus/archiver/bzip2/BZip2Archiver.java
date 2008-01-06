@@ -17,11 +17,12 @@ package org.codehaus.plexus.archiver.bzip2;
  *  limitations under the License.
  */
 
+import java.io.IOException;
+
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
-
-import java.io.IOException;
+import org.codehaus.plexus.archiver.ResourceIterator;
 
 /**
  * @version $Revision$ $Date$
@@ -38,12 +39,13 @@ public class BZip2Archiver
     	{
     		return;
     	}
-        
-        if ( getFiles().size() > 1 )
-        {
+
+    	ResourceIterator iter = getResources();
+    	ArchiveEntry entry = iter.next();
+    	if ( iter.hasNext() )
+    	{
             throw new ArchiverException( "There is more than one file in input." );
         }
-        ArchiveEntry entry = (ArchiveEntry) getFiles().values().toArray()[ 0 ];
         compressor.setSource( entry.getResource() );
         compressor.setDestFile( getDestFile() );
         compressor.compress();
@@ -52,10 +54,6 @@ public class BZip2Archiver
 	public boolean isSupportingForced() {
 		return true;
 	}
-
-    protected void cleanUp()
-    {
-    }
 
     protected void close()
     {

@@ -18,16 +18,15 @@ package org.codehaus.plexus.archiver.dir;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
-import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+
 
 /**
  * A plexus archiver implementation that stores the files to archive in a
@@ -46,8 +45,8 @@ public class DirectoryArchiver
     {
         //Most of this method was copied from org.codehaus.plexus.archiver.tar.TarArchiver
         //and modified to store files in a directory, not a tar archive.
-        Map listFiles = getFiles();
-        if ( listFiles == null || listFiles.size() == 0 )
+        ResourceIterator iter = getResources();
+        if ( !iter.hasNext() )
         {
             throw new ArchiverException( "You must set at least one file." );
         }
@@ -66,25 +65,19 @@ public class DirectoryArchiver
             throw new ArchiverException( destDirectory + " is not writable." );
         }
 
-        // Check if we don't add directory file in itself
-        for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
-        {
-            String fileName = (String) iter.next();
-            ArchiveEntry fileToAdd = (ArchiveEntry) getFiles().get( fileName );
-            if ( ResourceUtils.isSame( fileToAdd.getResource(), destDirectory ) )
-            {
-                throw new ArchiverException( "The destination directory cannot include itself." );
-            }
-        }
-
-        getLogger().info( "Copying " + listFiles.size() + " files to " + destDirectory.getAbsolutePath() );
+        getLogger().info( "Copying files to " + destDirectory.getAbsolutePath() );
 
         try
         {
-            for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
+            while( iter.hasNext() )
             {
-                String fileName = (String) iter.next();
-                ArchiveEntry f = (ArchiveEntry) getFiles().get( fileName );
+                ArchiveEntry f = iter.next();
+                // Check if we don't add directory file in itself
+                if ( ResourceUtils.isSame( f.getResource(), destDirectory ) )
+                {
+                    throw new ArchiverException( "The destination directory cannot include itself." );
+                }
+                String fileName = f.getName();
                 String destDir = destDirectory.getCanonicalPath();
                 fileName = destDir + File.separator + fileName;
                 copyFile( f, fileName );
@@ -164,9 +157,8 @@ public class DirectoryArchiver
 
     protected void cleanUp()
     {
+        super.cleanUp();
         setIncludeEmptyDirs( false );
-        getDirs().clear();
-        getFiles().clear();
         setIncludeEmptyDirs( true );
     }
 

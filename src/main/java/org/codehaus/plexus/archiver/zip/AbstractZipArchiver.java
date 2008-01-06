@@ -24,10 +24,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.CRC32;
@@ -35,6 +39,7 @@ import java.util.zip.CRC32;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
@@ -255,9 +260,8 @@ public abstract class AbstractZipArchiver
     private void createArchiveMain()
         throws ArchiverException, IOException
     {
-        Map archiveEntries = getFiles();
-
-        if ( ( archiveEntries == null || archiveEntries.size() == 0 ) && !hasVirtualFiles() )
+        ResourceIterator iter = getResources();
+        if ( !iter.hasNext() && !hasVirtualFiles() )
         {
             throw new ArchiverException( "You must set at least one file." );
         }
@@ -336,12 +340,7 @@ public abstract class AbstractZipArchiver
         initZipOutputStream( zOut );
 
         // Add the new files to the archive.
-        addResources( getResourcesToAdd( zipFile ), zOut );
-
-        if ( doUpdate )
-        {
-            addResources( getResourcesToUpdate( zipFile ), zOut );
-        }
+        addResources( iter, zOut );
 
         // If we've been successful on an update, delete the
         // temporary file
@@ -355,55 +354,36 @@ public abstract class AbstractZipArchiver
         success = true;
     }
 
-    protected Map getResourcesToAdd( File file )
+    protected Map getZipEntryNames( File file )
         throws IOException
     {
-        if ( !file.exists() || !doUpdate )
+        if ( !file.exists()  ||  !doUpdate )
         {
-            return getFiles();
+            return Collections.EMPTY_MAP;
         }
-
-        ZipFile zipFile = new ZipFile( file );
-
-        Map result = new HashMap();
-
-        for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
+        final Map entries = new HashMap();
+        final ZipFile zipFile = new ZipFile( file );
+        for ( Enumeration en = zipFile.getEntries();  en.hasMoreElements();  )
         {
-            String fileName = (String) iter.next();
-            if ( zipFile.getEntry( fileName ) == null )
-            {
-                result.put( fileName, getFiles().get( fileName ) );
-            }
+            ZipEntry ze = (ZipEntry) en.nextElement();
+            entries.put( ze.getName(), new Long( ze.getLastModificationTime() ) );
         }
-        return result;
+        return entries;
     }
 
-    protected Map getResourcesToUpdate( File file )
-        throws IOException
+    protected boolean isFileAdded( ArchiveEntry entry, Map entries )
     {
-        Map result = new HashMap();
+        return !entries.containsKey( entry.getName() );
+    }
 
-        if ( file.exists() && doUpdate )
+    protected boolean isFileUpdated( ArchiveEntry entry, Map entries )
+    {
+        Long l = (Long) entries.get( entry.getName() );
+        if ( l == null )
         {
-            ZipFile zipFile = new ZipFile( file );
-            for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
-            {
-                String fileName = (String) iter.next();
-                ZipEntry zipEntry;
-
-                if ( ( zipEntry = zipFile.getEntry( fileName ) ) != null )
-                {
-                    ArchiveEntry currentEntry = (ArchiveEntry) getFiles().get( fileName );
-                    long zipTime = zipEntry.getTime();
-                    if ( zipTime == -1  ||  !ResourceUtils.isUptodate( currentEntry.getResource(), zipTime ) )
-                    {
-                        result.put( fileName, getFiles().get( fileName ) );
-                    }
-                }
-            }
+            return false;
         }
-
-        return result;
+        return l.longValue() == -1  ||  !ResourceUtils.isUptodate( entry.getResource(), l.longValue() );
     }
 
     /**
@@ -412,15 +392,15 @@ public abstract class AbstractZipArchiver
      * @param resources the resources to add
      * @param zOut      the stream to write to
      */
-    protected final void addResources( Map resources, ZipOutputStream zOut )
+    protected final void addResources( ResourceIterator resources, ZipOutputStream zOut )
         throws IOException, ArchiverException
     {
         File base = null;
 
-        for ( Iterator iter = resources.keySet().iterator(); iter.hasNext(); )
+        while ( resources.hasNext() )
         {
-            String name = (String) iter.next();
-            ArchiveEntry entry = (ArchiveEntry) resources.get( name );
+            ArchiveEntry entry = resources.next();
+            String name = entry.getName();
             name = name.replace( File.separatorChar, '/' );
             
             if ( "".equals( name ) )
@@ -738,6 +718,7 @@ public abstract class AbstractZipArchiver
      */
     protected void cleanUp()
     {
+        super.cleanUp();
         addedDirs.clear();
         addedFiles.removeAllElements();
         entries.clear();

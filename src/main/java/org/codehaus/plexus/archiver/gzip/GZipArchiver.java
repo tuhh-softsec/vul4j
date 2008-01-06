@@ -20,6 +20,7 @@ package org.codehaus.plexus.archiver.gzip;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.ResourceIterator;
 
 import java.io.IOException;
 
@@ -38,13 +39,13 @@ public class GZipArchiver
     	{
     		return;
     	}
-        
-        if ( getFiles().size() > 1 )
+    	
+    	ResourceIterator iter = getResources();
+    	ArchiveEntry entry = iter.next();
+        if ( iter.hasNext() )
         {
             throw new ArchiverException( "There is more than one file in input." );
         }
-        
-        ArchiveEntry entry = (ArchiveEntry) getFiles().values().toArray()[ 0 ];
         compressor.setSource( entry.getResource() );
         compressor.setDestFile( getDestFile() );
         compressor.compress();
@@ -53,10 +54,6 @@ public class GZipArchiver
 	public boolean isSupportingForced() {
 		return true;
 	}
-
-    protected void cleanUp()
-    {
-    }
 
     protected void close()
     {
