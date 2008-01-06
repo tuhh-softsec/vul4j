@@ -656,26 +656,45 @@ public abstract class AbstractArchiver
             return false; // File doesn't yet exist
         }
 
-        ResourceIterator iter = getResources();
-        if ( !iter.hasNext() )
+        Iterator it = resources.iterator();
+        if ( !it.hasNext() )
         {
             getLogger().debug( "isUp2date: false (No input files.)" );
             return false; // No timestamp to compare
         }
 
-        while ( iter.hasNext() )
+        while ( it.hasNext() )
         {
-            ArchiveEntry entry = (ArchiveEntry) iter.next();
-            long l = entry.getResource().getLastModified();
+            Object o = it.next();
+            final long l;
+            if ( o instanceof ArchiveEntry )
+            {
+                l = ( (ArchiveEntry) o ).getResource().getLastModified();
+            }
+            else if ( o instanceof PlexusIoResourceCollection )
+            {
+                try
+                {
+                    l = ( (PlexusIoResourceCollection) o ).getLastModified();
+                }
+                catch ( IOException e )
+                {
+                    throw new ArchiverException( e.getMessage(), e );
+                }
+            }
+            else
+            {
+                throw new IllegalStateException( "Invalid object type: " + o.getClass().getName() );
+            }
             if ( l == PlexusIoResource.UNKNOWN_MODIFICATION_DATE )
             {
                 // Don't know what to do. Safe thing is to assume not up2date.
-                getLogger().debug( "isUp2date: false (Input file " + entry.getResource().getName() + " not found.)" );
+                getLogger().debug( "isUp2date: false (Resource with unknown modification date found.)" );
                 return false;
             }
             if ( l > destTimestamp )
             {
-                getLogger().debug( "isUp2date: false (Input file " + entry.getResource().getName() + " is newer.)" );
+                getLogger().debug( "isUp2date: false (Resource with newer modification date found.)" );
                 return false;
             }
         }
