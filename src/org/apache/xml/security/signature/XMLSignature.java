@@ -323,7 +323,7 @@ private Element signatureValueElement;
     */
    public void setId(String Id) {
 
-      if ((this._state == MODE_SIGN) && (Id != null)) {
+      if ( (Id != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -374,7 +374,6 @@ private Element signatureValueElement;
    private void setSignatureValueElement(byte[] bytes)
    {
 
-      if (this._state == MODE_SIGN) {
     	 while (signatureValueElement.hasChildNodes()) {
         	 signatureValueElement.removeChild(signatureValueElement.getFirstChild());
          }
@@ -392,7 +391,6 @@ private Element signatureValueElement;
          if (base64codedValue.length() > 76) {
 	    XMLUtils.addReturnToElement(signatureValueElement);
          }
-      }
    }
 
    /**
@@ -406,7 +404,7 @@ private Element signatureValueElement;
    public KeyInfo getKeyInfo() {
 
       // check to see if we are signing and if we have to create a keyinfo
-      if ((this._state == MODE_SIGN) && (this._keyInfo == null)) {
+      if ( (this._keyInfo == null)) {
 
          // create the KeyInfo
          this._keyInfo = new KeyInfo(this._doc);
@@ -445,17 +443,17 @@ private Element signatureValueElement;
    public void appendObject(ObjectContainer object)
            throws XMLSignatureException {
 
-      try {
-         if (this._state != MODE_SIGN) {
-            throw new XMLSignatureException(
-               "signature.operationOnlyBeforeSign");
-         }
+      //try {
+         //if (this._state != MODE_SIGN) {
+           // throw new XMLSignatureException(
+             //  "signature.operationOnlyBeforeSign");
+         //}
 
          this._constructionElement.appendChild(object.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      } catch (XMLSecurityException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
+      //} catch (XMLSecurityException ex) {
+        // throw new XMLSignatureException("empty", ex);
+      //}
    }
 
    /**
@@ -501,7 +499,7 @@ private Element signatureValueElement;
       }
 
       try {
-         if (this._state == MODE_SIGN) {
+        // if (this._state == MODE_SIGN) {
             //Create a SignatureAlgorithm object
         	SignedInfo si = this.getSignedInfo();
             SignatureAlgorithm sa = si.getSignatureAlgorithm();               
@@ -523,7 +521,7 @@ private Element signatureValueElement;
 
             // set them on the SignateValue element
             this.setSignatureValueElement(jcebytes);
-         }
+         //}
       } catch (CanonicalizationException ex) {
          throw new XMLSignatureException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {

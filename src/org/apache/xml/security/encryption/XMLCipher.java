@@ -3722,8 +3722,7 @@ public class XMLCipher {
 			      }
 
 			      this._doc = doc;
-			      this._state = ElementProxy.MODE_CREATE;
-				  this._constructionElement =  createElementForFamilyLocal(this._doc,
+			      this._constructionElement =  createElementForFamilyLocal(this._doc,
 			    		  this.getBaseNamespace(), this.getBaseLocalName()); 
 			}
 			/**

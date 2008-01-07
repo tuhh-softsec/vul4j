@@ -1,5 +1,9 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Small refactor for ElementProxy to get rid of the state, it was an old 
+        vestige that where taking space and obfuscating the code.
+    Fixed bug 40897: String comparisons using '==' causes validation errors 
+        with some parsers. Thanks Vishal Mahajan
     Fixed bug 43056: Library does not allow specify provider for private key 
 	operations. Thanks to Alon Bar-Lev.
     Fixed bug 44102: XMLCipher loadEncryptedKey error. Thanks to Butler.

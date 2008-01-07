@@ -76,7 +76,7 @@ public class SignatureProperty extends SignatureElementProxy {
     */
    public void setId(String Id) {
 
-      if ((this._state == MODE_SIGN) && (Id != null)) {
+      if ((Id != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -98,7 +98,7 @@ public class SignatureProperty extends SignatureElementProxy {
     */
    public void setTarget(String Target) {
 
-      if ((this._state == MODE_SIGN) && (Target != null)) {
+      if ((Target != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_TARGET, Target);
       }
    }

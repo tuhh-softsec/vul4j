@@ -64,7 +64,7 @@ public class ObjectContainer extends SignatureElementProxy {
     */
    public void setId(String Id) {
 
-      if ((this._state == MODE_SIGN) && (Id != null)) {
+      if ((Id != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -86,7 +86,7 @@ public class ObjectContainer extends SignatureElementProxy {
     */
    public void setMimeType(String MimeType) {
 
-      if ((this._state == MODE_SIGN) && (MimeType != null)) {
+      if ( (MimeType != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_MIMETYPE,
                                                 MimeType);
       }
@@ -108,7 +108,7 @@ public class ObjectContainer extends SignatureElementProxy {
     */
    public void setEncoding(String Encoding) {
 
-      if ((this._state == MODE_SIGN) && (Encoding != null)) {
+      if ((Encoding != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ENCODING,
                                                 Encoding);
       }
@@ -133,9 +133,7 @@ public class ObjectContainer extends SignatureElementProxy {
 
       Node result = null;
 
-      if (this._state == MODE_SIGN) {
-         result = this._constructionElement.appendChild(node);
-      }
+      result = this._constructionElement.appendChild(node);
 
       return result;
    }

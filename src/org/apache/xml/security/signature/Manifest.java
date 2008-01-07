@@ -137,8 +137,6 @@ public class Manifest extends SignatureElementProxy {
            String BaseURI, String referenceURI, Transforms transforms, String digestURI, String ReferenceId, String ReferenceType)
               throws XMLSignatureException {
 
-      if (this._state == MODE_SIGN) {
-
          // the this._doc is handed implicitly by the this.getOwnerDocument()
          Reference ref = new Reference(this._doc, BaseURI, referenceURI, this,
                                        transforms, digestURI);
@@ -157,7 +155,6 @@ public class Manifest extends SignatureElementProxy {
          // add the Element of the Reference object to the Manifest/SignedInfo
          this._constructionElement.appendChild(ref.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**
@@ -171,7 +168,6 @@ public class Manifest extends SignatureElementProxy {
    public void generateDigestValues()
            throws XMLSignatureException, ReferenceNotInitializedException {
 
-      if (this._state == MODE_SIGN) {
          for (int i = 0; i < this.getLength(); i++) {
 
             // update the cached Reference object, the Element content is automatically updated
@@ -179,7 +175,6 @@ public class Manifest extends SignatureElementProxy {
 
             currentRef.generateDigestValue();
          }
-      }
    }
 
    /**
@@ -201,11 +196,6 @@ public class Manifest extends SignatureElementProxy {
     */
    public Reference item(int i) throws XMLSecurityException {
 
-      if (this._state == MODE_SIGN) {
-
-         // we already have real objects
-         return (Reference) this._references.get(i);
-      } 
          if (this._references.get(i) == null) {
 
             // not yet constructed, so _we_ have to            
@@ -225,7 +215,7 @@ public class Manifest extends SignatureElementProxy {
     */
    public void setId(String Id) {
 
-      if ((this._state == MODE_SIGN) && (Id != null)) {
+      if (Id != null) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }

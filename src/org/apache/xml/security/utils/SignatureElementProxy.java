@@ -43,12 +43,8 @@ public abstract class SignatureElementProxy extends ElementProxy {
 	      }
 
 	      this._doc = doc;
-	      this._state = ElementProxy.MODE_CREATE;
 	      this._constructionElement =  XMLUtils.createElementInSignatureSpace(this._doc,
 	    		   this.getBaseLocalName());
-      //super(doc);
-      //this._constructionElement.setAttributeNS(Constants.NamespaceSpecNS,"xmlns:ds",
-        //          Constants.SignatureSpecNS);
    }
 
    /**

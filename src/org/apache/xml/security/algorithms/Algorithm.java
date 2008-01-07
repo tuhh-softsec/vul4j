@@ -71,7 +71,7 @@ public abstract class Algorithm extends SignatureElementProxy {
     */
    protected void setAlgorithmURI(String algorithmURI) {
 
-      if ((this._state == MODE_CREATE) && (algorithmURI != null)) {
+      if ( (algorithmURI != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                                 algorithmURI);
       }

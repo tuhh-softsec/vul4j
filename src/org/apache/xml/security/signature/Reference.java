@@ -233,7 +233,7 @@ private Element digestValueElement;
     */
    public void setURI(String URI) {
 
-      if ((this._state == MODE_SIGN) && (URI != null)) {
+      if ( URI != null) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_URI,
                                                   URI);
       }
@@ -255,7 +255,7 @@ private Element digestValueElement;
     */
    public void setId(String Id) {
 
-      if ((this._state == MODE_SIGN) && (Id != null)) {
+      if ( Id != null ) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -277,7 +277,7 @@ private Element digestValueElement;
     */
    public void setType(String Type) {
 
-      if ((this._state == MODE_SIGN) && (Type != null)) {
+      if (Type != null) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_TYPE,
                                                   Type);
       }
@@ -334,9 +334,6 @@ private Element digestValueElement;
     */
    private void setDigestValueElement(byte[] digestValue)
    {
-
-      if (this._state == MODE_SIGN) {
-
          Node n=digestValueElement.getFirstChild();
          while (n!=null) {
                digestValueElement.removeChild(n);
@@ -347,7 +344,6 @@ private Element digestValueElement;
          Text t = this._doc.createTextNode(base64codedValue);
 
          digestValueElement.appendChild(t);
-      }
    }
 
    /**
@@ -358,11 +354,7 @@ private Element digestValueElement;
     */
    public void generateDigestValue()
            throws XMLSignatureException, ReferenceNotInitializedException {
-
-      if (this._state == MODE_SIGN) {
-
-         this.setDigestValueElement(this.calculateDigest());
-      }
+      this.setDigestValueElement(this.calculateDigest());
    }
 
    /**

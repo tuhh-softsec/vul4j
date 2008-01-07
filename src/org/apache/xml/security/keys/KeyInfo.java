@@ -131,7 +131,7 @@ public class KeyInfo extends SignatureElementProxy {
     */
    public void setId(String Id) {
 
-      if ((this._state == MODE_SIGN) && (Id != null)) {
+      if ((Id != null)) {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -162,10 +162,8 @@ public class KeyInfo extends SignatureElementProxy {
     */
    public void add(KeyName keyname) {
 
-      if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(keyname.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**
@@ -219,11 +217,8 @@ public class KeyInfo extends SignatureElementProxy {
     * @param keyvalue
     */
    public void add(KeyValue keyvalue) {
-
-      if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(keyvalue.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**
@@ -241,11 +236,8 @@ public class KeyInfo extends SignatureElementProxy {
     * @param mgmtdata
     */
    public void add(MgmtData mgmtdata) {
-
-      if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(mgmtdata.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**
@@ -254,11 +246,8 @@ public class KeyInfo extends SignatureElementProxy {
     * @param pgpdata
     */
    public void add(PGPData pgpdata) {
-
-      if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(pgpdata.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**
@@ -279,11 +268,8 @@ public class KeyInfo extends SignatureElementProxy {
     * @param retrievalmethod
     */
    public void add(RetrievalMethod retrievalmethod) {
-
-      if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(retrievalmethod.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**
@@ -292,11 +278,8 @@ public class KeyInfo extends SignatureElementProxy {
     * @param spkidata
     */
    public void add(SPKIData spkidata) {
-
-      if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(spkidata.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**
@@ -305,14 +288,11 @@ public class KeyInfo extends SignatureElementProxy {
     * @param x509data
     */
    public void add(X509Data x509data) {
-
-      if (this._state == MODE_SIGN) {
     	  if (x509Datas==null)
     		  x509Datas=new ArrayList();
     	  x509Datas.add(x509data);
          this._constructionElement.appendChild(x509data.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
 	/**
@@ -324,15 +304,11 @@ public class KeyInfo extends SignatureElementProxy {
 
 	public void add(EncryptedKey encryptedKey) 
 		throws XMLEncryptionException {
-
-		if (this._state == MODE_SIGN) {
 			if (encryptedKeys==null)
 				encryptedKeys=new ArrayList();
 			encryptedKeys.add(encryptedKey);
 			XMLCipher cipher = XMLCipher.getInstance();
 			this._constructionElement.appendChild(cipher.martial(encryptedKey));
-		}
-
 	}
 
    /**
@@ -341,11 +317,8 @@ public class KeyInfo extends SignatureElementProxy {
     * @param element
     */
    public void addUnknownElement(Element element) {
-
-      if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(element);
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
    }
 
    /**

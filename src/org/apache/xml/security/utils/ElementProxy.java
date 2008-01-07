@@ -42,27 +42,7 @@ public abstract class ElementProxy {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(ElementProxy.class.getName());
-   //J-
-    /** The element has been created by the code **/
-   public static final int MODE_CREATE  = 0;
-   /** The element has been readed from a DOM tree by the code **/
-   public static final int MODE_PROCESS = 1;
-   /** The element isn't known if it is readen or created **/
-   public static final int MODE_UNKNOWN = 2;
-
-   /** The element is going to be signed **/
-   public static final int MODE_SIGN    = MODE_CREATE;
-   /** The element is going to be verified **/
-   public static final int MODE_VERIFY  = MODE_PROCESS;
-
-   /** The element is going to be encrypted **/
-   public static final int MODE_ENCRYPT = MODE_CREATE;
-   /** The element is going to be decrypted **/
-   public static final int MODE_DECRYPT = MODE_PROCESS;
-
-   protected int _state = MODE_UNKNOWN;
-   //J+
-
+   
    /**
     * Returns the namespace of the Elements of the sub-class.
     *
@@ -104,7 +84,6 @@ public abstract class ElementProxy {
       }
 
       this._doc = doc;
-      this._state = ElementProxy.MODE_CREATE;
       this._constructionElement = createElementForFamilyLocal(this._doc,
     		  this.getBaseNamespace(), this.getBaseLocalName());      
    }       
@@ -194,7 +173,6 @@ public abstract class ElementProxy {
       }
         
       this._doc = element.getOwnerDocument();
-      this._state = ElementProxy.MODE_PROCESS;
       this._constructionElement = element;
       this._baseURI = BaseURI;
    }
@@ -218,7 +196,6 @@ public abstract class ElementProxy {
       }
 
       this._doc = element.getOwnerDocument();
-      this._state = ElementProxy.MODE_PROCESS;
       this._constructionElement = element;
       this._baseURI = BaseURI;
 
@@ -267,26 +244,19 @@ public abstract class ElementProxy {
    public String getBaseURI() {
       return this._baseURI;
    }
+   
+   static ElementChecker checker = new ElementCheckerImpl.InternedNsChecker();
 
    /**
     * Method guaranteeThatElementInCorrectSpace
     *
     * @throws XMLSecurityException
     */
-   public void guaranteeThatElementInCorrectSpace()
+   void guaranteeThatElementInCorrectSpace()
            throws XMLSecurityException {
-
-      String localnameSHOULDBE = this.getBaseLocalName();
-      String namespaceSHOULDBE = this.getBaseNamespace();
+	  
+	  checker.guaranteeThatElementInCorrectSpace(this,this._constructionElement);
       
-      String localnameIS = this._constructionElement.getLocalName();
-      String namespaceIS = this._constructionElement.getNamespaceURI();
-      if ((namespaceSHOULDBE!=namespaceIS) ||
-       !localnameSHOULDBE.equals(localnameIS) ) {      
-         Object exArgs[] = { namespaceIS +":"+ localnameIS, 
-           namespaceSHOULDBE +":"+ localnameSHOULDBE};
-         throw new XMLSecurityException("xml.WrongElement", exArgs);
-      }
    }
 
    /**
