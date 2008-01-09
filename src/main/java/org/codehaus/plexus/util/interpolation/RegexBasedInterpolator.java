@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
  * 
  * @version $Id$
  */
-public class RegexBasedInterpolator
+public class RegexBasedInterpolator 
+    implements Interpolator
 {
 
     private List valueSources;
