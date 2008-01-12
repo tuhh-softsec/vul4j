@@ -177,4 +177,23 @@ public class XmlStreamReaderTest
             // expected failure, since the encoding does not contain some characters
         }
     }
+
+    public void testEncodingAttribute()
+    throws IOException
+    {
+        String xml = "<?xml version='1.0' encoding='US-ASCII'?><element attr-encoding='attribute value'/>";
+        checkXmlContent( xml, "US-ASCII" );
+
+        xml = "<?xml version='1.0' encoding  =  'US-ASCII'  ?><element attr-encoding='attribute value'/>";
+        checkXmlContent( xml, "US-ASCII" );
+
+        xml = "<?xml version='1.0'?><element attr-encoding='attribute value'/>";
+        checkXmlContent( xml, "UTF-8" );
+
+        xml = "<?xml\nversion='1.0'\nencoding\n=\n'US-ASCII'\n?>\n<element attr-encoding='attribute value'/>";
+        checkXmlContent( xml, "US-ASCII" );
+
+        xml = "<?xml\nversion='1.0'\n?>\n<element attr-encoding='attribute value'/>";
+        checkXmlContent( xml, "UTF-8" );
+    }
 }
