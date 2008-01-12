@@ -182,19 +182,22 @@ public class XmlStreamReaderTest
     public void testEncodingAttribute()
     throws IOException
     {
-        String xml = "<?xml version='1.0' encoding='US-ASCII'?><element attr-encoding='attribute value'/>";
+        String xml = "<?xml version='1.0' encoding='US-ASCII'?><element encoding='attribute value'/>";
         checkXmlContent( xml, "US-ASCII" );
 
-        xml = "<?xml version='1.0' encoding  =  'US-ASCII'  ?><element attr-encoding='attribute value'/>";
+        xml = "<?xml version='1.0' encoding  =  'US-ASCII'  ?><element encoding='attribute value'/>";
         checkXmlContent( xml, "US-ASCII" );
 
-        xml = "<?xml version='1.0'?><element attr-encoding='attribute value'/>";
+        xml = "<?xml version='1.0'?><element encoding='attribute value'/>";
         checkXmlContent( xml, "UTF-8" );
 
-        xml = "<?xml\nversion='1.0'\nencoding\n=\n'US-ASCII'\n?>\n<element attr-encoding='attribute value'/>";
+        xml = "<?xml\nversion='1.0'\nencoding\n=\n'US-ASCII'\n?>\n<element encoding='attribute value'/>";
         checkXmlContent( xml, "US-ASCII" );
 
-        xml = "<?xml\nversion='1.0'\n?>\n<element attr-encoding='attribute value'/>";
+        xml = "<?xml\nversion='1.0'\n?>\n<element encoding='attribute value'/>";
+        checkXmlContent( xml, "UTF-8" );
+
+        xml = "<element encoding='attribute value'/>";
         checkXmlContent( xml, "UTF-8" );
     }
 }

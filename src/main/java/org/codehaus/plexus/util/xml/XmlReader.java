@@ -692,7 +692,7 @@ public class XmlReader extends Reader
     }
 
     static final Pattern ENCODING_PATTERN =
-        Pattern.compile( "<\\?xml[^?]*encoding[\\s]*=[\\s]*((?:\".[^\"]*\")|(?:'.[^']*'))", Pattern.MULTILINE );
+        Pattern.compile( "<\\?xml.*encoding[\\s]*=[\\s]*((?:\".[^\"]*\")|(?:'.[^']*'))", Pattern.MULTILINE );
 
     // returns the encoding declared in the <?xml encoding=...?>, NULL if none
     private static String getXmlProlog( BufferedInputStream is, String guessedEnc ) throws IOException
@@ -730,7 +730,7 @@ public class XmlReader extends Reader
             if ( bytesRead > 0 )
             {
                 is.reset();
-                BufferedReader bReader = new BufferedReader( new StringReader( xmlProlog ) );
+                BufferedReader bReader = new BufferedReader( new StringReader( xmlProlog.substring( 0, firstGT + 1 ) ) );
                 StringBuffer prolog = new StringBuffer();
                 String line = bReader.readLine();
                 while ( line != null )
