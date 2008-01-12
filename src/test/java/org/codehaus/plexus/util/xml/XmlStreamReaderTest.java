@@ -63,6 +63,7 @@ public class XmlStreamReaderTest
         }
 
         XmlStreamReader reader = new XmlStreamReader( in );
+        assertEquals( encoding, reader.getEncoding() );
         String result = IOUtil.toString( reader );
         assertEquals( xml, result );
     }
@@ -117,7 +118,7 @@ public class XmlStreamReaderTest
     public void testUTF16Encoding()
     throws IOException
     {
-        checkXmlStreamReader( TEXT_UNICODE, "UTF-16" );
+        checkXmlStreamReader( TEXT_UNICODE, "UTF-16", "UTF-16BE", null );
         checkXmlStreamReader( TEXT_UNICODE, "UTF-16", "UTF-16LE", BOM_UTF16LE );
         checkXmlStreamReader( TEXT_UNICODE, "UTF-16", "UTF-16BE", BOM_UTF16BE );
     }
