@@ -32,6 +32,7 @@ import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.ObjectContainer;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.signature.XMLSignature;
@@ -183,7 +184,7 @@ public class CreateSignatureTest extends TestCase {
 
     void doVerify(String signedXML) throws Exception {
         org.w3c.dom.Document doc = db.parse(new ByteArrayInputStream(signedXML.getBytes()));
-        Element nscontext = XMLUtils.createDSctx(doc, "ds",Constants.SignatureSpecNS);
+        Element nscontext = TestUtils.createDSctx(doc, "ds",Constants.SignatureSpecNS);
         Element sigElement = (Element) XPathAPI.selectSingleNode(doc,"//ds:Signature[1]", nscontext);
         XMLSignature signature = new XMLSignature(sigElement, "");
         KeyInfo ki = signature.getKeyInfo();

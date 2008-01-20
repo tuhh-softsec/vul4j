@@ -32,10 +32,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 
 public class TransformXSLTTest extends TestCase {
@@ -95,7 +95,7 @@ public class TransformXSLTTest extends TestCase {
         Document doc1 = getDocument(file1);
         Document doc2 = getDocument(file2);
 
-        Element nscontext = XMLUtils.createDSctx
+        Element nscontext = TestUtils.createDSctx
 	    (doc1, "dsig", Constants.SignatureSpecNS);
         Node transformEl = XPathAPI.selectSingleNode
 	    (doc1, "//dsig:Transform[1]", nscontext);

@@ -57,13 +57,12 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
 
 	  boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
 		                              Constants._TAG_KEYVALUE);
-	  boolean isRSAKeyValue = XMLUtils.elementIsInSignatureSpace(element,
-		                                 Constants._TAG_RSAKEYVALUE);
 	  Element rsaKeyElement=null;
 	  if (isKeyValue) {                  
 		   rsaKeyElement = XMLUtils.selectDsNode(element.getFirstChild(),
 		                    Constants._TAG_RSAKEYVALUE, 0);
-	  } else if (isRSAKeyValue) {
+	  } else if (XMLUtils.elementIsInSignatureSpace(element,
+              Constants._TAG_RSAKEYVALUE)) {
          // this trick is needed to allow the RetrievalMethodResolver to eat a
          // ds:RSAKeyValue directly (without KeyValue)
          rsaKeyElement = element;		  

@@ -44,6 +44,7 @@ import junit.framework.TestSuite;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.test.resource.TestVectorResolver;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IgnoreAllErrorHandler;
@@ -647,7 +648,7 @@ public class Canonicalizer20010315Test extends TestCase {
 
       Document doc = db.parse(resolver.resolveEntity(null, fileIn));
       //J-
-      Element nscontext = XMLUtils.createDSctx(doc, "ietf", "http://www.ietf.org");
+      Element nscontext = TestUtils.createDSctx(doc, "ietf", "http://www.ietf.org");
 
       String xpath = "(//. | //@* | //namespace::*)"
          + "[ "

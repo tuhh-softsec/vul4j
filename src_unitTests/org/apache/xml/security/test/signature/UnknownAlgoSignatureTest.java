@@ -41,8 +41,8 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -152,7 +152,7 @@ public class UnknownAlgoSignatureTest extends TestCase {
             file = new File(SIGNATURE_SOURCE_PATH, fileName);
 	}
         Document doc = getDocument(file);
-        Element nscontext = XMLUtils.createDSctx(doc, "ds",
+        Element nscontext = TestUtils.createDSctx(doc, "ds",
                 Constants.SignatureSpecNS);
         Element signatureEl = (Element) XPathAPI.selectSingleNode(doc,
                 "//ds:Signature[1]", nscontext);

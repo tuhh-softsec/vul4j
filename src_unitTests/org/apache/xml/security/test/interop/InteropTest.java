@@ -27,9 +27,9 @@ import junit.framework.TestCase;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
@@ -81,7 +81,7 @@ public class InteropTest extends TestCase {
       File f = new File(filename);
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
-      Element nscontext = XMLUtils.createDSctx(doc, "ds",
+      Element nscontext = TestUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
       Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
                               "//ds:Signature[1]", nscontext);
@@ -113,7 +113,7 @@ public class InteropTest extends TestCase {
       File f = new File(filename);
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.parse(f);
-      Element nscontext = XMLUtils.createDSctx(doc, "ds",
+      Element nscontext = TestUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
       Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
                               "//ds:Signature[1]", nscontext);

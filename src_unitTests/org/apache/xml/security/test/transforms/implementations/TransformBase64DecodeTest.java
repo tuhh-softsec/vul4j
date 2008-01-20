@@ -34,6 +34,7 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.transforms.InvalidTransformException;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
@@ -232,7 +233,7 @@ public class TransformBase64DecodeTest extends TestCase {
 
       Document doc = db.parse(new ByteArrayInputStream(input.getBytes()));
       //XMLUtils.circumventBug2650(doc);
-      Element nscontext = XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+      Element nscontext = TestUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
       Node base64Node = XPathAPI.selectSingleNode(doc, "//ds:Base64", nscontext);
       XMLSignatureInput xmlinput = new XMLSignatureInput(base64Node);

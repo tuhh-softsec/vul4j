@@ -53,13 +53,11 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
 	    Element dsaKeyElement=null;
 	    boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
 	                              Constants._TAG_KEYVALUE);
-	    boolean isDSAKeyValue = XMLUtils.elementIsInSignatureSpace(element,
-	                                 Constants._TAG_DSAKEYVALUE);
-
 	    if (isKeyValue) {         	     
 	        dsaKeyElement =
 	          	XMLUtils.selectDsNode(element.getFirstChild(),Constants._TAG_DSAKEYVALUE,0);                    
-       } else if (isDSAKeyValue) {
+       } else if (XMLUtils.elementIsInSignatureSpace(element,
+               Constants._TAG_DSAKEYVALUE)) {
 	         // this trick is needed to allow the RetrievalMethodResolver to eat a
 	         // ds:DSAKeyValue directly (without KeyValue)
 	         dsaKeyElement = element;

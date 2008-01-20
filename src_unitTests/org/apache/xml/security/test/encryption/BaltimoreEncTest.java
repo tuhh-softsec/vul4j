@@ -45,8 +45,8 @@ import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.utils.JavaUtils;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -210,7 +210,7 @@ public class BaltimoreEncTest extends TestCase {
 		throws javax.xml.transform.TransformerException {
 
 		Element nscontext =
-			XMLUtils.createDSctx(doc, "x",
+			TestUtils.createDSctx(doc, "x",
                               "urn:example:po");
 		Node ccnumElt = 
 			XPathAPI.selectSingleNode(doc, "//x:Number/text()", nscontext);
