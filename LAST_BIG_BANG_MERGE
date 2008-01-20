@@ -7,5 +7,5 @@ number:
 Sun Jan 20 10:36:53 EST 2008
 ----------------------------
 svn merge -r 604351:613581 https://svn.apache.org/repos/asf/directory/daemon/branches/bigbang .
-Committed revision 
+NOTHING CHANGED ...
 
