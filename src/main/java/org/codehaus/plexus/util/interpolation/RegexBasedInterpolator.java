@@ -16,11 +16,22 @@ public class RegexBasedInterpolator
     implements Interpolator
 {
 
+    private String startRegex;
+    
+    private String endRegex;
+    
     private List valueSources;
 
     public RegexBasedInterpolator()
     {
         valueSources = new ArrayList();
+    }
+    
+    public RegexBasedInterpolator (String startRegex, String endRegex)
+    {
+        this();
+        this.startRegex = startRegex;
+        this.endRegex = endRegex;
     }
 
     public RegexBasedInterpolator( List valueSources )
@@ -42,7 +53,15 @@ public class RegexBasedInterpolator
     {
         String result = input;
 
-        Pattern expressionPattern = Pattern.compile( "\\$\\{(" + thisPrefixPattern + ")?([^}]+)\\}" );
+        Pattern expressionPattern = null;
+        if (startRegex != null || endRegex != null)
+        {
+            expressionPattern = Pattern.compile( startRegex + thisPrefixPattern + endRegex );
+        }
+        else
+        {
+            expressionPattern = Pattern.compile( "\\$\\{(" + thisPrefixPattern + ")?([^}]+)\\}" );
+        }
         Matcher matcher = expressionPattern.matcher( result );
 
         while ( matcher.find() )

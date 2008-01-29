@@ -50,4 +50,18 @@ public class RegexBasedInterpolatorTest
         assertFalse( "this is a ${HOME}".equals( result ) );
     }
 
+    public void testUseAlternateRegex()
+        throws Exception
+    {
+        RegexBasedInterpolator rbi = new RegexBasedInterpolator("\\@\\{(", ")?([^}]+)\\}@");
+        
+        Map context = new HashMap();
+        context.put( "var", "testVar" );
+        
+        rbi.addValueSource( new MapBasedValueSource( context ) );
+        
+        String result = rbi.interpolate( "this is a @{this.var}@", "this" );
+        
+        assertEquals( "this is a testVar", result );
+    }
 }
