@@ -45,6 +45,7 @@ public class FilteredRequest extends HttpServletRequestWrapper {
     /**
      * Returns the locale defined as parameter "locale" if present
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Enumeration<Locale> getLocales() {
 	String localeString = getParameter("locale");

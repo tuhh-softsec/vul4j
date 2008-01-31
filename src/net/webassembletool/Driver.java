@@ -113,7 +113,11 @@ public class Driver {
      * Retrieves the default instance of this class that is configured according
      * to the properties file (driver.properties)
      * 
-     * @return the default instance
+     * @param instanceName
+     *                The name of the instance (corresponding to the prefix in
+     *                the driver.properties file)
+     * 
+     * @return the named instance
      */
     public synchronized static Driver getInstance(String instanceName) {
 	if (instanceName == null)
@@ -168,6 +172,12 @@ public class Driver {
      * comments.<br />
      * eg: a block name "myblock" should be delimited with
      * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
+     * 
+     * @param page
+     * @param name
+     * @param writer
+     * @param context
+     * @throws IOException
      */
     public void renderBlock(String page, String name, Writer writer,
 	    Context context) throws IOException {
@@ -209,18 +219,6 @@ public class Driver {
 	}
     }
 
-    /**
-     * Returns a resource from the provider application and writes it to the
-     * output.
-     * 
-     * @throws ResourceNotFoundException
-     * @param relUrl
-     *                the relative URL to the resource
-     * @param output
-     *                the output
-     * @throws IOException
-     * @throws ResourceNotFoundException
-     */
     private void renderResource(String relUrl, Output output, Context context)
 	    throws IOException, ResourceNotFoundException {
 	String httpUrl = getUrlForHttpResource(relUrl, context);
@@ -338,6 +336,13 @@ public class Driver {
      * Inside the template, the parameters can be defined by comments.<br />
      * eg: parameter named "myparam" should be delimited by comments
      * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
+     * 
+     * @param page
+     * @param name
+     * @param writer
+     * @param context
+     * @param params
+     * @throws IOException
      */
     public void renderTemplate(String page, String name, Writer writer,
 	    Context context, Map<String, String> params) throws IOException {

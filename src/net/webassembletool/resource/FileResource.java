@@ -38,14 +38,13 @@ public class FileResource implements Resource {
 	Properties headers = new Properties();
 	headers.load(headersInputStream);
 	headersInputStream.close();
-	for (Iterator iterator = headers.entrySet().iterator(); iterator
-		.hasNext();) {
-	    Entry<String, String> header = (Entry<String, String>) iterator
-		    .next();
+	for (Iterator<Entry<Object, Object>> iterator = headers.entrySet()
+		.iterator(); iterator.hasNext();) {
+	    Entry<Object, Object> header = iterator.next();
 	    if (header.getKey().equals("Charset"))
-		output.setCharset(header.getValue());
+		output.setCharset(header.getValue().toString());
 	    else
-		output.addHeader(header.getKey(), header.getValue());
+		output.addHeader(header.getKey().toString(), header.getValue().toString());
 	}
 	InputStream inputStream = new FileInputStream(file);
 	try {
