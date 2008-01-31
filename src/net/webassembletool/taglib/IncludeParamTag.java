@@ -11,19 +11,22 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  */
 public class IncludeParamTag extends BodyTagSupport {
-	private String name;
-	public int doEndTag() throws JspException {
-		if (getBodyContent() != null) {
-			String bodyString = getBodyContent().getString();
-			IncludeTemplateTag templateTag = (IncludeTemplateTag) getParent();
-			templateTag.getParams().put(name, bodyString);
-		}
-		return EVAL_PAGE;
+    private String name;
+
+    public int doEndTag() throws JspException {
+	if (getBodyContent() != null) {
+	    String bodyString = getBodyContent().getString();
+	    IncludeTemplateTag templateTag = (IncludeTemplateTag) getParent();
+	    templateTag.getParams().put(name, bodyString);
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+	return EVAL_PAGE;
+    }
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
 }

@@ -18,14 +18,18 @@ import javax.servlet.http.HttpServletRequest;
  * @author François-Xavier Bonnet
  */
 public class ConnectorFilter implements Filter {
-	public void destroy() {
-		// Nothing to do
-	}
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		FilteredRequest filteredRequest = new FilteredRequest((HttpServletRequest) request);
-		filterChain.doFilter(filteredRequest, response);
-	}
-	public void init(FilterConfig arg0) throws ServletException {
-		// Nothing to do
-	}
+    public void destroy() {
+	// Nothing to do
+    }
+
+    public void doFilter(ServletRequest request, ServletResponse response,
+	    FilterChain filterChain) throws IOException, ServletException {
+	FilteredRequest filteredRequest = new FilteredRequest(
+		(HttpServletRequest) request);
+	filterChain.doFilter(filteredRequest, response);
+    }
+
+    public void init(FilterConfig arg0) throws ServletException {
+	// Nothing to do
+    }
 }

@@ -7,7 +7,7 @@ package net.webassembletool.resource;
  * 
  */
 public class ResourceNotFoundException extends Exception {
-	public ResourceNotFoundException(String relUrl) {
-		super("Resource not found: " + relUrl);
-	}
+    public ResourceNotFoundException(String relUrl) {
+	super("Resource not found: " + relUrl);
+    }
 }

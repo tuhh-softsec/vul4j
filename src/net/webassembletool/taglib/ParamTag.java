@@ -14,29 +14,33 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  */
 public class ParamTag extends BodyTagSupport {
-	private String name;
-	public String getName() {
-		return name;
+    private String name;
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    @Override
+    public int doEndTag() throws JspException {
+	try {
+	    pageContext.getOut().print("<!--$endparam$" + name + "$-->");
+	} catch (IOException e) {
+	    throw new JspException(e);
 	}
-	public void setName(String name) {
-		this.name = name;
+	return EVAL_PAGE;
+    }
+
+    @Override
+    public int doStartTag() throws JspException {
+	try {
+	    pageContext.getOut().print("<!--$beginparam$" + name + "$-->");
+	} catch (IOException e) {
+	    throw new JspException(e);
 	}
-	@Override
-	public int doEndTag() throws JspException {
-		try {
-			pageContext.getOut().print("<!--$endparam$" + name + "$-->");
-		} catch (IOException e) {
-			throw new JspException(e);
-		}
-		return EVAL_PAGE;
-	}
-	@Override
-	public int doStartTag() throws JspException {
-		try {
-			pageContext.getOut().print("<!--$beginparam$" + name + "$-->");
-		} catch (IOException e) {
-			throw new JspException(e);
-		}
-		return EVAL_BODY_INCLUDE;
-	}
+	return EVAL_BODY_INCLUDE;
+    }
 }

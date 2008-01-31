@@ -12,21 +12,26 @@ import java.util.Locale;
  * 
  */
 public class Context {
-	private String user;
-	private Locale locale;
-	public Context() {
-		// Nothing to do
-	}
-	public Locale getLocale() {
-		return locale;
-	}
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-	public String getUser() {
-		return user;
-	}
-	public void setUser(String user) {
-		this.user = user;
-	}
+    private String user;
+    private Locale locale;
+
+    public Context() {
+	// Nothing to do
+    }
+
+    public Locale getLocale() {
+	return locale;
+    }
+
+    public void setLocale(Locale locale) {
+	this.locale = locale;
+    }
+
+    public String getUser() {
+	return user;
+    }
+
+    public void setUser(String user) {
+	this.user = user;
+    }
 }

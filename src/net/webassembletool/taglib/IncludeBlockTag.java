@@ -15,34 +15,41 @@ import net.webassembletool.Driver;
  * 
  */
 public class IncludeBlockTag extends BodyTagSupport {
-	private String name;
-	private String page;
-	private String provider;
-	public String getName() {
-		return name;
+    private String name;
+    private String page;
+    private String provider;
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    @Override
+    public int doEndTag() throws JspException {
+	try {
+	    Driver.getInstance(provider).renderBlock(page, name, pageContext);
+	} catch (IOException e) {
+	    throw new JspException(e);
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	@Override
-	public int doEndTag() throws JspException {
-		try {
-			Driver.getInstance(provider).renderBlock(page, name, pageContext);
-		} catch (IOException e) {
-			throw new JspException(e);
-		}
-		return EVAL_PAGE;
-	}
-	public String getPage() {
-		return page;
-	}
-	public void setPage(String page) {
-		this.page = page;
-	}
-	String getProvider() {
-		return provider;
-	}
-	void setProvider(String provider) {
-		this.provider = provider;
-	}
+	return EVAL_PAGE;
+    }
+
+    public String getPage() {
+	return page;
+    }
+
+    public void setPage(String page) {
+	this.page = page;
+    }
+
+    String getProvider() {
+	return provider;
+    }
+
+    void setProvider(String provider) {
+	this.provider = provider;
+    }
 }

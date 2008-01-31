@@ -15,16 +15,19 @@ import javax.servlet.http.HttpServletResponse;
  * 
  */
 public class ProxyServlet extends HttpServlet {
-	private String provider;
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String relUrl = request.getServletPath();
-		if (request.getPathInfo() != null)
-			relUrl += request.getPathInfo();
-		Driver.getInstance(provider).renderResource(relUrl, request, response);
-	}
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		provider = config.getInitParameter("provider");
-	}
+    private String provider;
+
+    @Override
+    protected void doGet(HttpServletRequest request,
+	    HttpServletResponse response) throws ServletException, IOException {
+	String relUrl = request.getServletPath();
+	if (request.getPathInfo() != null)
+	    relUrl += request.getPathInfo();
+	Driver.getInstance(provider).renderResource(relUrl, request, response);
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+	provider = config.getInitParameter("provider");
+    }
 }
