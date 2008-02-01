@@ -22,6 +22,7 @@ import java.io.File;
 
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
@@ -67,7 +68,7 @@ public class VerifyCollectableSignature {
 
          org.w3c.dom.Document doc =
             db.parse(new java.io.FileInputStream(signatureFile));
-         Element nscontext = XMLUtils.createDSctx(doc, "ds",
+         Element nscontext = TestUtils.createDSctx(doc, "ds",
                                                   Constants.SignatureSpecNS);
          NodeList signatureElems = XPathAPI.selectNodeList(doc,
                                       "//ds:Signature", nscontext);

@@ -20,6 +20,7 @@ package org.apache.xml.security.samples.transforms;
 
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
@@ -77,7 +78,7 @@ public class SampleTransformXPathHereFunc {
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc =
          db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
-      Element nscontext = XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+      Element nscontext = TestUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
       Element transformsElem = (Element) XPathAPI.selectSingleNode(
          doc,

@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 
 public class UtfHelperTest extends TestCase {
 	public void testBug40156() {
-		String s="äöü";
+		String s="Ã¤Ã¶Ã¼";
 		byte a[]=UtfHelpper.getStringInUtf8(s);
 		try {
 			byte correct[]=s.getBytes("UTF8");

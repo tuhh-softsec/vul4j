@@ -25,6 +25,7 @@ import java.security.PublicKey;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.keys.storage.implementations.CertsInFilesystemDirectoryResolver;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
@@ -91,7 +92,7 @@ public class RetrievePublicKeys {
             javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
             org.w3c.dom.Document doc =
                db.parse(new java.io.FileInputStream(filename));
-            Element nscontext = XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+            Element nscontext = TestUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
             Element kiElement = (Element) XPathAPI.selectSingleNode(doc,
                                    "//ds:KeyInfo[1]", nscontext);

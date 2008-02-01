@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
@@ -146,7 +147,7 @@ public class VerifyMerlinsExamplesSixteen {
 
       org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
 
-      Element nscontext = XMLUtils.createDSctx(doc, "ds",
+      Element nscontext = TestUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
       Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
                               "//ds:Signature[1]", nscontext);

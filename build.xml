@@ -139,6 +139,7 @@
     <path id="id.classpath.samples" >
         <path refid="id.classpath" />
         <pathelement location="${dir.build.bin}" />
+    	<pathelement location="${dir.build.test}" />    	
         <pathelement location="${dir.build.samples}" />
         <pathelement location="${lib.xmlsec}" />
         <pathelement location="${lib.xmlsec.samples}" />

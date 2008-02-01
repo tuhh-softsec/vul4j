@@ -20,6 +20,7 @@ package org.apache.xml.security.samples;
 
 
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
@@ -105,7 +106,7 @@ public class ResolverUsageHTTP {
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc =
          db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
-      Element context = XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+      Element context = TestUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
       Element dsElem = (Element) XPathAPI.selectSingleNode(doc,
                           "//ds:Signature[1]", context);
