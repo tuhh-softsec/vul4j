@@ -11,7 +11,7 @@ import java.io.File;
 
 public final class ArchiveEntryUtils
 {
-    
+
     private ArchiveEntryUtils()
     {
     }
@@ -36,7 +36,13 @@ public final class ArchiveEntryUtils
 
             commandline.createArgument().setValue( m );
 
-            commandline.createArgument().setValue( file.getAbsolutePath() );
+            String path = file.getAbsolutePath();
+
+            commandline.createArgument().setValue( "\'" + path + "\'" );
+
+            // commenting this debug statement, since it can produce VERY verbose output...
+            // this method is called often during archive creation.
+//            logger.debug( "Executing:\n\n" + commandline.toString() + "\n\n" );
 
             CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
 

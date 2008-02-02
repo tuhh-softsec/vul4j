@@ -347,6 +347,9 @@ public class JarArchiver
 
     protected boolean hasVirtualFiles()
     {
+        getLogger().debug( "\n\n\nChecking for jar manifest virtual files...\n\n\n" );
+        System.out.flush();
+
         return ( configuredManifest != null ) || ( manifest != null ) || ( manifestFile != null ) || super.hasVirtualFiles();
     }
 
