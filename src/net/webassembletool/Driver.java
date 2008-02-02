@@ -42,14 +42,9 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
  * @author François-Xavier Bonnet
  * 
  */
-public class Driver {
-    // TODO remplacer les headers par une classe spéciale qui wrape un
-    // properties
-    // TODO remplacer les manipulations de String par des StringBuilder pour
-    // améliorer les performances
+public final class Driver {
     // TODO revoir la gestion du last-modified
     // TODO gérer le cas ou il n'y a pas d'application distante
-    // TODO pouvoir désactiver le cache
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
     private boolean useCache = true;
@@ -105,7 +100,7 @@ public class Driver {
      * 
      * @return the default instance
      */
-    public static Driver getInstance() {
+    public final static Driver getInstance() {
 	return getInstance("default");
     }
 
@@ -119,23 +114,23 @@ public class Driver {
      * 
      * @return the named instance
      */
-    public synchronized static Driver getInstance(String instanceName) {
+    public synchronized final static Driver getInstance(String instanceName) {
 	if (instanceName == null)
 	    instanceName = "default";
 	if (instances == null) {
-	    init();
+	    configure();
 	}
 	return instances.get(instanceName);
     }
 
-    private final static void init() {
+    /**
+     * Loads all the instances according to the properties parameter
+     * 
+     * @param props
+     *                properties to use for configuration
+     */
+    public final static void configure(Properties props) {
 	instances = new HashMap<String, Driver>();
-	Properties props = new Properties();
-	try {
-	    props.load(Driver.class.getResourceAsStream("driver.properties"));
-	} catch (IOException e) {
-	    throw new ExceptionInInitializerError(e);
-	}
 	HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
 	for (Iterator<String> iterator = props.stringPropertyNames().iterator(); iterator
 		.hasNext();) {
@@ -164,6 +159,20 @@ public class Driver {
 	    Properties driverProperties = driversProps.get(name);
 	    instances.put(name, new Driver(driverProperties));
 	}
+
+    }
+
+    /**
+     * Loads all the instances according to default configuration file
+     */
+    public final static void configure() {
+	Properties props = new Properties();
+	try {
+	    props.load(Driver.class.getResourceAsStream("driver.properties"));
+	} catch (IOException e) {
+	    throw new ExceptionInInitializerError(e);
+	}
+	configure(props);
     }
 
     /**
@@ -179,7 +188,7 @@ public class Driver {
      * @param context
      * @throws IOException
      */
-    public void renderBlock(String page, String name, Writer writer,
+    public final void renderBlock(String page, String name, Writer writer,
 	    Context context) throws IOException {
 	String content = getResourceAsString(page, context);
 	String beginString = "<!--$beginblock$" + name + "$-->";
@@ -187,13 +196,11 @@ public class Driver {
 	int begin = content.indexOf(beginString);
 	int end = content.indexOf(endString);
 	if (begin == -1 || end == -1) {
-	    content = "";
 	    log.warn("Block not found: page=" + page + " block=" + name);
 	} else {
-	    content = content.substring(begin + beginString.length(), end);
 	    log.debug("Serving block: page=" + page + " block=" + name);
+	    writer.write(content, begin, end - begin);
 	}
-	writer.write(content);
     }
 
     /**
@@ -208,7 +215,7 @@ public class Driver {
      *                the response
      * @throws IOException
      */
-    public void renderResource(String relUrl, HttpServletRequest request,
+    public final void renderResource(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response) throws IOException {
 	try {
 	    renderResource(relUrl, new ResponseOutput(request, response),
@@ -219,18 +226,20 @@ public class Driver {
 	}
     }
 
-    private void renderResource(String relUrl, Output output, Context context)
-	    throws IOException, ResourceNotFoundException {
+    private final void renderResource(String relUrl, Output output,
+	    Context context) throws IOException, ResourceNotFoundException {
 	String httpUrl = getUrlForHttpResource(relUrl, context);
 	String fileUrl = getUrlForFileResource(relUrl);
 	MultipleOutput multipleOutput = new MultipleOutput();
 	multipleOutput.addOutput(output);
 	MemoryResource cachedResource = null;
 	try {
-	    // on charge la resource depuis le cache, même périmée
-	    cachedResource = (MemoryResource) cache.getFromCache(httpUrl);
-	    cachedResource = (MemoryResource) cache.getFromCache(httpUrl,
-		    cacheRefreshDelay);
+	    if (useCache) {
+		// Load the resource from cache even if not up to date
+		cachedResource = (MemoryResource) cache.getFromCache(httpUrl);
+		cachedResource = (MemoryResource) cache.getFromCache(httpUrl,
+			cacheRefreshDelay);
+	    }
 	    if (cachedResource == null)
 		throw new NeedsRefreshException(null);
 	    cachedResource.render(multipleOutput);
@@ -240,8 +249,10 @@ public class Driver {
 		MemoryOutput memoryOutput = null;
 		HttpResource httpResource = getResourceFromHttp(httpUrl);
 		if (httpResource != null) {
-		    memoryOutput = new MemoryOutput(cacheMaxFileSize);
-		    multipleOutput.addOutput(memoryOutput);
+		    if (useCache) {
+			memoryOutput = new MemoryOutput(cacheMaxFileSize);
+			multipleOutput.addOutput(memoryOutput);
+		    }
 		    if (putInCache)
 			multipleOutput.addOutput(new FileOutput(fileUrl));
 		    httpResource.render(multipleOutput);
@@ -251,8 +262,10 @@ public class Driver {
 		    FileResource fileResource = getResourceFromLocal(fileUrl);
 		    if (fileResource == null)
 			throw new ResourceNotFoundException(relUrl);
-		    memoryOutput = new MemoryOutput(cacheMaxFileSize);
-		    multipleOutput.addOutput(memoryOutput);
+		    if (useCache) {
+			memoryOutput = new MemoryOutput(cacheMaxFileSize);
+			multipleOutput.addOutput(memoryOutput);
+		    }
 		    fileResource.render(multipleOutput);
 		}
 		if (memoryOutput != null) {
@@ -263,14 +276,14 @@ public class Driver {
 	    } finally {
 		// The resource was not found in cache so osCache has locked
 		// this key. We have to remove the lock.
-		if (!cacheUpdated)
+		if (useCache && !cacheUpdated)
 		    cache.cancelUpdate(httpUrl);
 	    }
 	}
     }
 
-    private HttpResource getResourceFromHttp(String url) throws HttpException,
-	    IOException {
+    private final HttpResource getResourceFromHttp(String url)
+	    throws HttpException, IOException {
 	HttpResource httpResource = new HttpResource(httpClient, url);
 	if (httpResource.exists())
 	    return httpResource;
@@ -280,7 +293,7 @@ public class Driver {
 	}
     }
 
-    private FileResource getResourceFromLocal(String relUrl) {
+    private final FileResource getResourceFromLocal(String relUrl) {
 	FileResource fileResource = new FileResource(relUrl);
 	if (fileResource.exists())
 	    return fileResource;
@@ -290,7 +303,7 @@ public class Driver {
 	}
     }
 
-    private String getUrlForFileResource(String relUrl) {
+    private final String getUrlForFileResource(String relUrl) {
 	String url = null;
 	if (localBase != null && relUrl != null
 		&& (localBase.endsWith("/") || localBase.endsWith("\\"))
@@ -305,7 +318,7 @@ public class Driver {
 	return url;
     }
 
-    private String getUrlForHttpResource(String relUrl, Context context) {
+    private final String getUrlForHttpResource(String relUrl, Context context) {
 	String url;
 	if (baseURL != null && relUrl != null && baseURL.endsWith("/")
 		&& relUrl.startsWith("/")) {
@@ -344,50 +357,50 @@ public class Driver {
      * @param params
      * @throws IOException
      */
-    public void renderTemplate(String page, String name, Writer writer,
+    public final void renderTemplate(String page, String name, Writer writer,
 	    Context context, Map<String, String> params) throws IOException {
 	String content = getResourceAsString(page, context);
-	if (content == null)
-	    content = "";
-	if (name != null) {
-	    String beginString = "<!--$begintemplate$" + name + "$-->";
-	    String endString = "<!--$endtemplate$" + name + "$-->";
-	    int begin = content.indexOf(beginString);
-	    int end = content.indexOf(endString);
-	    if (begin == -1 || end == -1) {
-		content = "";
-		log.warn("Template not found: page=" + page + " template="
-			+ name);
-	    } else {
-		content = content.substring(begin + beginString.length(), end);
-		log.debug("Serving template: page=" + page + " template="
-			+ name);
-	    }
-	}
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
-	if ("".equals(content)) {
-	    while (it.hasNext()) {
-		Map.Entry<String, String> pairs = it.next();
-		String value = pairs.getValue();
-		sb = sb.append(value);
+	if (content != null) {
+	    if (name != null) {
+		String beginString = "<!--$begintemplate$" + name + "$-->";
+		String endString = "<!--$endtemplate$" + name + "$-->";
+		int begin = content.indexOf(beginString);
+		int end = content.indexOf(endString);
+		if (begin == -1 || end == -1) {
+		    log.warn("Template not found: page=" + page + " template="
+			    + name);
+		} else {
+		    log.debug("Serving template: page=" + page + " template="
+			    + name);
+		    sb.append(content, begin + beginString.length(), end);
+		}
+	    } else {
+		log.debug("Serving template: page=" + page);
+		sb.append(content);
 	    }
-	} else {
-	    sb.append(content);
 	    while (it.hasNext()) {
 		Map.Entry<String, String> pairs = it.next();
 		String key = pairs.getKey();
 		String value = pairs.getValue();
 		String beginString = "<!--$beginparam$" + key + "$-->";
 		String endString = "<!--$endparam$" + key + "$-->";
-		int begin = sb.toString().indexOf(beginString);
-		int end = sb.toString().indexOf(endString);
+		int begin = sb.indexOf(beginString);
+		int end = sb.indexOf(endString);
 		if (!(begin == -1 || end == -1)) {
 		    sb = sb.replace(begin + beginString.length(), end, value);
 		}
 	    }
+
+	} else {
+	    while (it.hasNext()) {
+		Map.Entry<String, String> pairs = it.next();
+		String value = pairs.getValue();
+		sb = sb.append(value);
+	    }
 	}
-	writer.write(sb.toString());
+	writer.append(sb);
     }
 
     /**
@@ -398,7 +411,7 @@ public class Driver {
      * @throws IOException
      * @throws HttpException
      */
-    private String getResourceAsString(String relUrl, Context context)
+    private final String getResourceAsString(String relUrl, Context context)
 	    throws HttpException, IOException {
 	StringOutput stringOutput = new StringOutput();
 	try {
@@ -416,7 +429,7 @@ public class Driver {
      * 
      * @return the base URL as a String
      */
-    public String getBaseURL() {
+    public final String getBaseURL() {
 	return baseURL;
     }
 
@@ -447,12 +460,12 @@ public class Driver {
 	session.setAttribute(getContextKey(), context);
     }
 
-    public void renderBlock(String page, String name, PageContext pageContext)
-	    throws IOException {
+    public final void renderBlock(String page, String name,
+	    PageContext pageContext) throws IOException {
 	renderBlock(page, name, pageContext.getOut(), getContext(pageContext));
     }
 
-    public void renderTemplate(String page, String name,
+    public final void renderTemplate(String page, String name,
 	    PageContext pageContext, Map<String, String> params)
 	    throws IOException {
 	renderTemplate(page, name, pageContext.getOut(),
