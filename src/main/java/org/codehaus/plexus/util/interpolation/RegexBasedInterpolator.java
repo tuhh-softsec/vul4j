@@ -27,6 +27,11 @@ public class RegexBasedInterpolator
         valueSources = new ArrayList();
     }
     
+    /**
+     * @param startRegex start of the regular expression to use
+     * @param endRegex end of the regular expression to use
+     * @since 1.5
+     */
     public RegexBasedInterpolator (String startRegex, String endRegex)
     {
         this();
