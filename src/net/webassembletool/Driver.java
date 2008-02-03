@@ -2,6 +2,7 @@ package net.webassembletool;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -132,9 +133,9 @@ public final class Driver {
     public final static void configure(Properties props) {
 	instances = new HashMap<String, Driver>();
 	HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
-	for (Iterator<String> iterator = props.stringPropertyNames().iterator(); iterator
-		.hasNext();) {
-	    String propertyName = iterator.next();
+	for (Enumeration enumeration = props.propertyNames(); enumeration
+		.hasMoreElements();) {
+	    String propertyName = (String) enumeration.nextElement();
 	    String prefix;
 	    String name;
 	    if (propertyName.indexOf(".") < 0) {
