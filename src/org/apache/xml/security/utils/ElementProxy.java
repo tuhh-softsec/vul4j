@@ -400,27 +400,23 @@ public abstract class ElementProxy {
    /**
     * Method getBytesFromTextChild
     *
-    * @return The base64 bytes from the first text child of this element
+    * @return The base64 bytes from the text children of this element
     * @throws XMLSecurityException
     */
    public byte[] getBytesFromTextChild() throws XMLSecurityException {
-      
-         Text t = (Text)this._constructionElement.getFirstChild();
-                                                   
-
-         return Base64.decode(t.getData());
+      return Base64.decode
+         (XMLUtils.getFullTextChildrenFromElement(this._constructionElement));
    }
 
    /**
     * Method getTextFromTextChild
     *
-    * @return the Text obtained concatening all the the text nodes of this element
+    * @return the Text obtained by concatenating all the text nodes of this 
+    *    element
     */
    public String getTextFromTextChild() {
       return XMLUtils.getFullTextChildrenFromElement(this._constructionElement);
    }
-
-  
 
    /**
     * Method length
