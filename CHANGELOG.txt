@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 44205: XMLX509Certificate.getX509Certificate() results in certificate parsing error. Thanks to Vishal Mahajan.
     Fixed Bug 44177: when using xslt transformation there is problem with xalan newline. Thanks to Matej Spiller.
     Small refactor for ElementProxy to get rid of the state, it was an old 
         vestige that where taking space and obfuscating the code.
