@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2005 The Apache Software Foundation.
+ * Copyright  1999-2008 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -146,6 +147,10 @@ public class CreateSignatureTest extends TestCase {
         doVerify(doSign());
     }
 
+    public void testTwo() throws Exception {
+	doSignWithCert();
+    }
+
     String doSign() throws Exception {
         PrivateKey privateKey = kp.getPrivate();
         org.w3c.dom.Document doc = db.newDocument();
@@ -182,6 +187,54 @@ public class CreateSignatureTest extends TestCase {
         return new String(bos.toByteArray());
     }
 
+    String doSignWithCert() throws Exception {
+	KeyStore ks = KeyStore.getInstance("JKS");
+	FileInputStream fis = null;
+        if (BASEDIR != null && !"".equals(BASEDIR)) {
+            fis = new FileInputStream(BASEDIR + SEP + 
+		  "data/test.jks");
+	} else {
+            fis = new FileInputStream("data/test.jks");
+	}
+        ks.load(fis, "changeit".toCharArray());
+        PrivateKey privateKey = (PrivateKey) ks.getKey("mullan",
+                                 "changeit".toCharArray());
+        org.w3c.dom.Document doc = db.newDocument();
+        X509Certificate signingCert = (X509Certificate) ks.getCertificate("mullan");
+        doc.appendChild(doc.createComment(" Comment before "));
+        Element root = doc.createElementNS("",
+                "RootElement");
+
+        doc.appendChild(root);
+        root.appendChild(doc.createTextNode("Some simple text\n"));
+
+        Element canonElem = XMLUtils.createElementInSignatureSpace(doc,
+                Constants._TAG_CANONICALIZATIONMETHOD);
+        canonElem.setAttributeNS(null, Constants._ATT_ALGORITHM,
+                Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+
+        SignatureAlgorithm signatureAlgorithm = new SignatureAlgorithm(doc,
+                XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        XMLSignature sig = new XMLSignature(doc, null, signatureAlgorithm
+                .getElement(), canonElem);
+
+        root.appendChild(sig.getElement());
+        doc.appendChild(doc.createComment(" Comment after "));
+        Transforms transforms = new Transforms(doc);
+        transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+        transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+        sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
+
+        sig.addKeyInfo(signingCert);
+        sig.sign(privateKey);
+	X509Certificate cert = sig.getKeyInfo().getX509Certificate();
+	sig.checkSignatureValue(cert.getPublicKey());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        XMLUtils.outputDOMc14nWithComments(doc, bos);
+        return new String(bos.toByteArray());
+    }
+
     void doVerify(String signedXML) throws Exception {
         org.w3c.dom.Document doc = db.parse(new ByteArrayInputStream(signedXML.getBytes()));
         Element nscontext = TestUtils.createDSctx(doc, "ds",Constants.SignatureSpecNS);
@@ -199,5 +252,4 @@ public class CreateSignatureTest extends TestCase {
         }
         assertTrue(signature.checkSignatureValue(pk) );
     }
-
 }
