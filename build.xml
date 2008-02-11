@@ -342,7 +342,7 @@
 
 	<!-- samples -->
 	<target name="build.samples"
-			depends="build.src, build.test"
+			depends="build.src"
 			unless="is.bin.dist">
 		<javac srcdir="${dir.src.samples}"
 			   destdir="${dir.build.samples}"
