@@ -26,7 +26,7 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.test.TestUtils;
+import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
@@ -95,7 +95,7 @@ public class TestSignature {
                db.parse(new java.io.FileInputStream(filename));
 
             //create a namespace context for use in the XPath expression below
-            Element nscontext = TestUtils.createDSctx(doc, "ds",
+            Element nscontext = SampleUtils.createDSctx(doc, "ds",
                                                      Constants.SignatureSpecNS);
 
             //retrieve the signature Element from the document

@@ -25,7 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.test.TestUtils;
+import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
@@ -89,7 +89,7 @@ public class CanonSubTree {
       Canonicalizer c14n =
          Canonicalizer
             .getInstance("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
-      Element nscontext = TestUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+      Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
       Node signedInfo = XPathAPI.selectSingleNode(doc, "//ds:SignedInfo",
                                                   nscontext);

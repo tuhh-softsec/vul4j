@@ -25,7 +25,7 @@ import java.io.FileNotFoundException;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.test.TestUtils;
+import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
@@ -162,7 +162,7 @@ public class VerifyMerlinsExamplesFifteen {
 
       org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
 
-      Element nscontext = TestUtils.createDSctx(doc, "ds",
+      Element nscontext = SampleUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
       Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
                               "//ds:Signature[1]", nscontext);
