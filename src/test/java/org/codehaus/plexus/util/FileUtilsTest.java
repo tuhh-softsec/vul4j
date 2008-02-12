@@ -584,7 +584,13 @@ public final class FileUtilsTest
     public void testGetExtension()
     {
         final String[][] tests =
-            {{"filename.ext", "ext"}, {"README", ""}, {"domain.dot.com", "com"}, {"image.jpeg", "jpeg"}};
+            {{"filename.ext", "ext"}
+            , {"README", ""}
+            , {"domain.dot.com", "com"}
+            , {"image.jpeg", "jpeg"}
+            , {"folder" + File.separator + "image.jpeg", "jpeg"}
+            , {"folder" + File.separator + "README", ""}};
+
         for ( int i = 0; i < tests.length; i++ )
         {
             assertEquals( tests[i][1], FileUtils.getExtension( tests[i][0] ) );
@@ -592,12 +598,19 @@ public final class FileUtilsTest
         }
     }
 
-    /* TODO: Reenable this test */
-    public void DISABLED__testGetExtensionWithPaths()
+    public void testGetExtensionWithPaths()
     {
-        final String[][] testsWithPaths = {{"/tmp/foo/filename.ext", "ext"}, {"C:\\temp\\foo\\filename.ext", "ext"},
-            {"/tmp/foo.bar/filename.ext", "ext"}, {"C:\\temp\\foo.bar\\filename.ext", "ext"},
-            {"/tmp/foo.bar/README", ""}, {"C:\\temp\\foo.bar\\README", ""}, {"../filename.ext", "ext"}};
+        // Since the utilities are based on the separator for the platform
+        // running the test, ensure we are using the right separator
+        final String sep = File.separator;
+        final String[][] testsWithPaths = {
+                { sep + "tmp" + sep + "foo" + sep + "filename.ext", "ext"}
+                , {"C:" + sep + "temp" + sep + "foo" + sep + "filename.ext", "ext"}
+                , {"" + sep + "tmp" + sep + "foo.bar" + sep + "filename.ext", "ext"}
+                , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "filename.ext", "ext"}
+                , {"" + sep + "tmp" + sep + "foo.bar" + sep + "README", ""}
+                , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "README", ""}
+                , {".." + sep + "filename.ext", "ext"}, {"blabla", ""}};
         for ( int i = 0; i < testsWithPaths.length; i++ )
         {
             assertEquals( testsWithPaths[i][1], FileUtils.getExtension( testsWithPaths[i][0] ) );
@@ -618,12 +631,26 @@ public final class FileUtilsTest
     }
 
     /* TODO: Reenable this test */
-    public void DISABLED__testRemoveExtensionWithPaths()
+    public void testRemoveExtensionWithPaths()
     {
-        final String[][] testsWithPaths = {{"/tmp/foo/filename.ext", "filename"},
-            {"C:\\temp\\foo\\filename.ext", "filename"}, {"/tmp/foo.bar/filename.ext", "filename"},
-            {"C:\\temp\\foo.bar\\filename.ext", "filename"}, {"/tmp/foo.bar/README", "README"},
-            {"C:\\temp\\foo.bar\\README", "README"}, {"../filename.ext", "filename"}};
+        // Since the utilities are based on the separator for the platform
+        // running the test, ensure we are using the right separator
+        final String sep = File.separator;
+        final String[][] testsWithPaths =
+        {{sep + "tmp" + sep + "foo" + sep + "filename.ext"
+            , sep + "tmp" + sep + "foo" + sep + "filename"}
+        , {"C:" + sep + "temp" + sep + "foo" + sep + "filename.ext"
+            , "C:" + sep + "temp" + sep + "foo" + sep + "filename"}
+        , {sep + "tmp" + sep + "foo.bar" + sep + "filename.ext"
+            , sep + "tmp" + sep + "foo.bar" + sep + "filename"}
+        , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "filename.ext"
+            , "C:" + sep + "temp" + sep + "foo.bar" + sep + "filename"}
+        , {sep + "tmp" + sep + "foo.bar" + sep + "README"
+            , sep + "tmp" + sep + "foo.bar" + sep + "README"}
+        , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "README"
+            , "C:" + sep + "temp" + sep + "foo.bar" + sep + "README"}
+        , {".." + sep + "filename.ext"
+            , ".." + sep + "filename"}};
 
         for ( int i = 0; i < testsWithPaths.length; i++ )
         {
@@ -1031,7 +1058,7 @@ public final class FileUtilsTest
             throw new Exception( "Unable to delete the file :" + f1.getAbsolutePath() );
         }
     }
-    
+
     //Test for bug PLXUTILS-10
     public void testCopyFileOnSameFile()
         throws IOException

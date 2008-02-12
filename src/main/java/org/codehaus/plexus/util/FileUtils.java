@@ -246,6 +246,7 @@ public class FileUtils
      */
     public static String extension( String filename )
     {
+        // Ensure the last dot is after the last file separator
         int lastSep = filename.lastIndexOf( File.separatorChar );
         int lastDot;
         if ( lastSep < 0 )
@@ -261,7 +262,9 @@ public class FileUtils
             }
         }
 
-        if ( lastDot >= 0 )
+        
+
+        if ( lastDot >= 0 && lastDot > lastSep)
         {
             return filename.substring( lastDot + 1 );
         }
@@ -700,14 +703,15 @@ public class FileUtils
      */
     public static String removeExtension( final String filename )
     {
-        final int index = filename.lastIndexOf( '.' );
+        String ext = extension(filename);
 
-        if ( -1 == index )
+        if ( "".equals(ext) )
         {
             return filename;
         }
         else
         {
+            final int index = filename.lastIndexOf( ext ) - 1;
             return filename.substring( 0, index );
         }
     }
@@ -726,16 +730,7 @@ public class FileUtils
      */
     public static String getExtension( final String filename )
     {
-        final int index = filename.lastIndexOf( '.' );
-
-        if ( -1 == index )
-        {
-            return "";
-        }
-        else
-        {
-            return filename.substring( index + 1 );
-        }
+        return extension(filename);
     }
 
     /**
