@@ -1,5 +1,8 @@
 package org.codehaus.plexus.util;
 
+import java.io.File;
+import java.util.StringTokenizer;
+
 /* ====================================================================
  *   Copyright 2001-2004 The Apache Software Foundation.
  *
@@ -23,6 +26,7 @@ package org.codehaus.plexus.util;
  *
  * @author <a href="mailto:pete-apache-dev@kazmier.com">Pete Kazmier</a>
  * @author <a href="mailto:vmassol@apache.org">Vincent Massol</a>
+ * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
  */
 public class PathTool
@@ -38,6 +42,15 @@ public class PathTool
      * link in a web page (again mimicking Anakia's behavior).
      * <p/>
      * This method is thread-safe.
+     * <br/>
+     * <pre>
+     * PathTool.getRelativePath( null, null )                                   = ""
+     * PathTool.getRelativePath( null, "/usr/local/java/bin" )                  = ""
+     * PathTool.getRelativePath( "/usr/local/", null )                          = ""
+     * PathTool.getRelativePath( "/usr/local/", "/usr/local/java/bin" )         = ".."
+     * PathTool.getRelativePath( "/usr/local/", "/usr/local/java/bin/java.sh" ) = "../.."
+     * PathTool.getRelativePath( "/usr/local/java/bin/java.sh", "/usr/local/" ) = ""
+     * </pre>
      *
      * @param basedir The base directory.
      * @param filename The filename that is relative to the base
@@ -98,6 +111,7 @@ public class PathTool
      * @return The relative path of the filename. This value is not
      * terminated with a forward slash.  A zero-length string is
      * returned if: <code>filename</code> is null or zero-length.
+     * @see #getRelativeFilePath(String, String)
      */
     public static final String getRelativePath( String filename )
     {
@@ -132,6 +146,13 @@ public class PathTool
      * current directory that is currently being processed.
      * <p/>
      * This method is thread-safe.
+     * <br/>
+     * <pre>
+     * PathTool.getDirectoryComponent( null )                                   = ""
+     * PathTool.getDirectoryComponent( "/usr/local/java/bin" )                  = "/usr/local/java"
+     * PathTool.getDirectoryComponent( "/usr/local/java/bin/" )                 = "/usr/local/java/bin"
+     * PathTool.getDirectoryComponent( "/usr/local/java/bin/java.sh" )          = "/usr/local/java/bin"
+     * </pre>
      *
      * @param filename The filename to be parsed.
      * @return The directory portion of the <code>filename</code>.  If
@@ -152,11 +173,187 @@ public class PathTool
         {
             return ".";
         }
-        else
-        {
-            return directory;
-        }
+
+        return directory;
     }
+
+    /**
+     * Calculates the appropriate link given the preferred link and the relativePath of the document.
+     * <br/>
+     * <pre>
+     * PathTool.calculateLink( "/index.html", "../.." )                                        = "../../index.html"
+     * PathTool.calculateLink( "http://plexus.codehaus.org/plexus-utils/index.html", "../.." ) = "http://plexus.codehaus.org/plexus-utils/index.html"
+     * PathTool.calculateLink( "/usr/local/java/bin/java.sh", "../.." )                        = "../../usr/local/java/bin/java.sh"
+     * PathTool.calculateLink( "../index.html", "/usr/local/java/bin" )                        = "/usr/local/java/bin/../index.html"
+     * PathTool.calculateLink( "../index.html", "http://plexus.codehaus.org/plexus-utils" )    = "http://plexus.codehaus.org/plexus-utils/../index.html"
+     * </pre>
+     *
+     * @param link
+     * @param relativePath
+     * @return String
+     */
+    public static final String calculateLink(String link, String relativePath)
+    {
+        //This must be some historical feature
+        if (link.startsWith("/site/"))
+        {
+            return link.substring(5);
+        }
+
+        //Allows absolute links in nav-bars etc
+        if (link.startsWith("/absolute/"))
+        {
+            return link.substring(10);
+        }
+
+        // This traps urls like http://
+        if (link.indexOf(":") >= 0)
+        {
+            return link;
+        }
+
+        //If relativepath is current directory, just pass the link through
+        if (relativePath.equals("."))
+        {
+            if (link.startsWith("/"))
+            {
+                return link.substring(1);
+            }
+
+            return link;
+        }
+
+        //If we don't do this, you can end up with ..//bob.html rather than ../bob.html
+        if (relativePath.endsWith("/") && link.startsWith("/"))
+        {
+            return relativePath + "." + link.substring(1);
+        }
+
+        if (relativePath.endsWith("/") || link.startsWith("/"))
+        {
+            return relativePath + link;
+        }
+
+        return relativePath + "/" + link;
+    }
+
+    /**
+     * This method can calculate the relative path between two pathes on a web site.
+     * <br/>
+     * <pre>
+     * PathTool.getRelativeWebPath( null, null )                                          = ""
+     * PathTool.getRelativeWebPath( null, "http://plexus.codehaus.org/" )                 = ""
+     * PathTool.getRelativeWebPath( "http://plexus.codehaus.org/", null )                 = ""
+     * PathTool.getRelativeWebPath( "http://plexus.codehaus.org/",
+     *                      "http://plexus.codehaus.org/plexus-utils/index.html" )        = "plexus-utils/index.html"
+     * PathTool.getRelativeWebPath( "http://plexus.codehaus.org/plexus-utils/index.html",
+     *                      "http://plexus.codehaus.org/"                                 = "../../"
+     * </pre>
+     *
+     * @param oldPath
+     * @param newPath
+     * @return a relative web path from <code>oldPath</code>.
+     */
+    public static final String getRelativeWebPath( final String oldPath, final String newPath )
+    {
+        if ( StringUtils.isEmpty( oldPath ) || StringUtils.isEmpty( newPath ) )
+        {
+            return "";
+        }
+
+        String resultPath = buildRelativePath( newPath, oldPath, '/' );
+
+        if ( newPath.endsWith( "/" ) && !resultPath.endsWith( "/" ) )
+        {
+            return resultPath + "/";
+        }
+
+        return resultPath;
+    }
+
+    /**
+     * This method can calculate the relative path between two pathes on a file system.
+     * <br/>
+     * <pre>
+     * PathTool.getRelativeFilePath( null, null )                                   = ""
+     * PathTool.getRelativeFilePath( null, "/usr/local/java/bin" )                  = ""
+     * PathTool.getRelativeFilePath( "/usr/local", null )                           = ""
+     * PathTool.getRelativeFilePath( "/usr/local", "/usr/local/java/bin" )          = "java/bin"
+     * PathTool.getRelativeFilePath( "/usr/local", "/usr/local/java/bin/" )         = "java/bin"
+     * PathTool.getRelativeFilePath( "/usr/local/java/bin", "/usr/local/" )         = "../.."
+     * PathTool.getRelativeFilePath( "/usr/local/", "/usr/local/java/bin/java.sh" ) = "java/bin/java.sh"
+     * PathTool.getRelativeFilePath( "/usr/local/java/bin/java.sh", "/usr/local/" ) = "../../.."
+     * PathTool.getRelativeFilePath( "/usr/local/", "/bin" )                        = "../../bin"
+     * PathTool.getRelativeFilePath( "/bin", "/usr/local/" )                        = "../usr/local"
+     * </pre>
+     * Note: On Windows based system, the <code>/</code> character should be replaced by <code>\</code> character.
+     *
+     * @param oldPath
+     * @param newPath
+     * @return a relative file path from <code>oldPath</code>.
+     */
+    public static final String getRelativeFilePath( final String oldPath, final String newPath )
+    {
+        if ( StringUtils.isEmpty( oldPath ) || StringUtils.isEmpty( newPath ) )
+        {
+            return "";
+        }
+
+        // normalise the path delimiters
+        String fromPath = new File( oldPath ).getPath();
+        String toPath = new File( newPath ).getPath();
+
+        // strip any leading slashes if its a windows path
+        if ( toPath.matches( "^\\[a-zA-Z]:" ) )
+        {
+            toPath = toPath.substring( 1 );
+        }
+        if ( fromPath.matches( "^\\[a-zA-Z]:" ) )
+        {
+            fromPath = fromPath.substring( 1 );
+        }
+
+        // lowercase windows drive letters.
+        if ( fromPath.startsWith( ":", 1 ) )
+        {
+            fromPath = fromPath.substring( 0, 1 ).toLowerCase() + fromPath.substring( 1 );
+        }
+        if ( toPath.startsWith( ":", 1 ) )
+        {
+            toPath = toPath.substring( 0, 1 ).toLowerCase() + toPath.substring( 1 );
+        }
+
+        // check for the presence of windows drives. No relative way of
+        // traversing from one to the other.
+        if ( ( toPath.startsWith( ":", 1 ) && fromPath.startsWith( ":", 1 ) )
+                        && ( !toPath.substring( 0, 1 ).equals( fromPath.substring( 0, 1 ) ) ) )
+        {
+            // they both have drive path element but they dont match, no
+            // relative path
+            return null;
+        }
+
+        if ( ( toPath.startsWith( ":", 1 ) && !fromPath.startsWith( ":", 1 ) )
+                        || ( !toPath.startsWith( ":", 1 ) && fromPath.startsWith( ":", 1 ) ) )
+        {
+            // one has a drive path element and the other doesnt, no relative
+            // path.
+            return null;
+        }
+
+        String resultPath = buildRelativePath( toPath, fromPath, File.separatorChar );
+
+        if ( newPath.endsWith( File.separator ) && !resultPath.endsWith( File.separator ) )
+        {
+            return resultPath + File.separator;
+        }
+
+        return resultPath;
+    }
+
+    // ----------------------------------------------------------------------
+    // Private methods
+    // ----------------------------------------------------------------------
 
     /**
      * Determines the relative path of a filename.  For each separator
@@ -177,7 +374,7 @@ public class PathTool
             return "";
         }
 
-        
+
         /*
          * Count the slashes in the relative filename, but exclude the
          * leading slash.  If the path has no slashes, then the filename
@@ -243,57 +440,77 @@ public class PathTool
         return path;
     }
 
-    /**
-     * Calculates the appropriate link given the preferred link and the relativePath of the document
-     * @param link
-     * @param relativePath
-     * @return String
-     */
-    public static final String calculateLink(String link, String relativePath)
+    private static final String buildRelativePath( String toPath,  String fromPath, final char separatorChar )
     {
-        //This must be some historical feature
-        if (link.startsWith("/site/"))
-        {
-            return link.substring(5);
-        }
+        // use tokeniser to traverse paths and for lazy checking
+        StringTokenizer toTokeniser = new StringTokenizer( toPath, String.valueOf( separatorChar ) );
+        StringTokenizer fromTokeniser = new StringTokenizer( fromPath, String.valueOf( separatorChar ) );
 
-        //Allows absolute links in nav-bars etc
-        if (link.startsWith("/absolute/"))
-        {
-            return link.substring(10);
-        }
+        int count = 0;
 
-        // This traps urls like http://
-        if (link.indexOf(":") >= 0)
+        // walk along the to path looking for divergence from the from path
+        while ( toTokeniser.hasMoreTokens() && fromTokeniser.hasMoreTokens() )
         {
-            return link;
-        }
-
-        //If relativepath is current directory, just pass the link through
-        if (relativePath.equals("."))
-        {
-            if (link.startsWith("/"))
+            if ( separatorChar == '\\' )
             {
-                return link.substring(1);
+                if ( !fromTokeniser.nextToken().equalsIgnoreCase( toTokeniser.nextToken() ) )
+                {
+                    break;
+                }
             }
             else
             {
-                return link;
+                if ( !fromTokeniser.nextToken().equals( toTokeniser.nextToken() ) )
+                {
+                    break;
+                }
+            }
+
+            count++;
+        }
+
+        // reinitialise the tokenisers to count positions to retrieve the
+        // gobbled token
+
+        toTokeniser = new StringTokenizer( toPath, String.valueOf( separatorChar ) );
+        fromTokeniser = new StringTokenizer( fromPath, String.valueOf( separatorChar ) );
+
+        while ( count-- > 0 )
+        {
+            fromTokeniser.nextToken();
+            toTokeniser.nextToken();
+        }
+
+        String relativePath = "";
+
+        // add back refs for the rest of from location.
+        while ( fromTokeniser.hasMoreTokens() )
+        {
+            fromTokeniser.nextToken();
+
+            relativePath += "..";
+
+            if ( fromTokeniser.hasMoreTokens() )
+            {
+                relativePath += separatorChar;
             }
         }
 
-        //If we don't do this, you can end up with ..//bob.html rather than ../bob.html
-        if (relativePath.endsWith("/") && link.startsWith("/"))
+        if ( relativePath.length() != 0 && toTokeniser.hasMoreTokens() )
         {
-            return relativePath + "." + link.substring(1);
+            relativePath += separatorChar;
         }
 
-        if (relativePath.endsWith("/") || link.startsWith("/"))
+        // add fwd fills for whatevers left of newPath.
+        while ( toTokeniser.hasMoreTokens() )
         {
-            return relativePath + link;
-        }
+            relativePath += toTokeniser.nextToken();
 
-        return relativePath + "/" + link;
+            if ( toTokeniser.hasMoreTokens() )
+            {
+                relativePath += separatorChar;
+            }
+        }
+        return relativePath;
     }
-
 }
