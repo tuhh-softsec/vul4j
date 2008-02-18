@@ -111,13 +111,13 @@ public class PathToolTest
             assertEquals( PathTool.getRelativeFilePath( null, "/usr/local/java/bin" ), "" );
             assertEquals( PathTool.getRelativeFilePath( "/usr/local", null ), "" );
             assertEquals( PathTool.getRelativeFilePath( "/usr/local", "/usr/local/java/bin" ), "java/bin" );
-            assertEquals( PathTool.getRelativeFilePath( "/usr/local", "/usr/local/java/bin/" ), "java/bin" );
-            assertEquals( PathTool.getRelativeFilePath( "/usr/local/java/bin", "/usr/local/" ), "../.." );
+            assertEquals( PathTool.getRelativeFilePath( "/usr/local", "/usr/local/java/bin/" ), "java/bin/" );
+            assertEquals( PathTool.getRelativeFilePath( "/usr/local/java/bin", "/usr/local/" ), "../../" );
             assertEquals( PathTool.getRelativeFilePath( "/usr/local/", "/usr/local/java/bin/java.sh" ),
                           "java/bin/java.sh" );
-            assertEquals( PathTool.getRelativeFilePath( "/usr/local/java/bin/java.sh", "/usr/local/" ), "../../.." );
+            assertEquals( PathTool.getRelativeFilePath( "/usr/local/java/bin/java.sh", "/usr/local/" ), "../../../" );
             assertEquals( PathTool.getRelativeFilePath( "/usr/local/", "/bin" ), "../../bin" );
-            assertEquals( PathTool.getRelativeFilePath( "/bin", "/usr/local/" ), "../usr/local" );
+            assertEquals( PathTool.getRelativeFilePath( "/bin", "/usr/local" ), "../usr/local" );
         }
     }
 }
