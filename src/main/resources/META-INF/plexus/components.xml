@@ -152,6 +152,7 @@
     <component>
       <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
       <implementation>org.codehaus.plexus.archiver.manager.DefaultArchiverManager</implementation>
+      <role-hint>default</role-hint>
     </component>
 
     <!--
