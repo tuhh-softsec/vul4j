@@ -24,6 +24,9 @@ package org.codehaus.plexus.util.cli;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,8 +38,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.codehaus.plexus.util.Os;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
@@ -147,9 +148,9 @@ public abstract class CommandLineUtils
             else
             {
                 long now = System.currentTimeMillis();
-                long timeoutInMillis = 1000L * (long) timeoutInSeconds;
+                long timeoutInMillis = 1000L * timeoutInSeconds;
                 long finish = now + timeoutInMillis;
-                while ( isAlive( p ) && System.currentTimeMillis() < finish )
+                while ( isAlive( p ) && ( System.currentTimeMillis() < finish ) )
                 {
                     Thread.sleep( 10 );
                 }
@@ -310,7 +311,7 @@ public abstract class CommandLineUtils
     {
         return ( processes.get( new Long( pid ) ) != null );
     }
-    
+
     public static boolean isAlive( Process p ) {
         try
         {
@@ -324,7 +325,7 @@ public abstract class CommandLineUtils
     public static String[] translateCommandline( String toProcess )
         throws Exception
     {
-        if ( toProcess == null || toProcess.length() == 0 )
+        if ( ( toProcess == null ) || ( toProcess.length() == 0 ) )
         {
             return new String[0];
         }
@@ -394,7 +395,7 @@ public abstract class CommandLineUtils
             v.addElement( current.toString() );
         }
 
-        if ( state == inQuote || state == inDoubleQuote )
+        if ( ( state == inQuote ) || ( state == inDoubleQuote ) )
         {
             throw new CommandLineException( "unbalanced quotes in " + toProcess );
         }
@@ -412,6 +413,10 @@ public abstract class CommandLineUtils
      *
      * @throws CommandLineException if the argument contains both, single
      *                              and double quotes.
+     *
+     * @deprecated Use {@link StringUtils#quoteAndEscape(String, char, char[], char[], char, boolean)},
+     * {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
+     * {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
     public static String quote( String argument )
         throws CommandLineException
@@ -427,6 +432,10 @@ public abstract class CommandLineUtils
      *
      * @throws CommandLineException if the argument contains both, single
      *                              and double quotes.
+     *
+     * @deprecated Use {@link StringUtils#quoteAndEscape(String, char, char[], char[], char, boolean)},
+     * {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
+     * {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
     public static String quote( String argument, boolean wrapExistingQuotes )
         throws CommandLineException
@@ -434,6 +443,11 @@ public abstract class CommandLineUtils
         return quote( argument, false, false, wrapExistingQuotes );
     }
 
+    /**
+     * @deprecated Use {@link StringUtils#quoteAndEscape(String, char, char[], char[], char, boolean)},
+     * {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
+     * {@link StringUtils#quoteAndEscape(String, char)} instead.
+     */
     public static String quote( String argument, boolean escapeSingleQuotes, boolean escapeDoubleQuotes,
                                 boolean wrapExistingQuotes )
         throws CommandLineException
@@ -475,7 +489,7 @@ public abstract class CommandLineUtils
             }
             else
             {
-                return '\"' + argument + '\"'; 
+                return '\"' + argument + '\"';
             }
         }
 
@@ -485,7 +499,7 @@ public abstract class CommandLineUtils
     public static String toString( String[] line )
     {
         // empty path return empty string
-        if ( line == null || line.length == 0 )
+        if ( ( line == null ) || ( line.length == 0 ) )
         {
             return "";
         }
@@ -500,7 +514,7 @@ public abstract class CommandLineUtils
             }
             try
             {
-                result.append( quote( line[i] ) );
+                result.append( StringUtils.quoteAndEscape( line[i], '\"' ) );
             }
             catch ( Exception e )
             {

@@ -16,8 +16,7 @@ package org.codehaus.plexus.util.cli.shell;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class Shell
 
     private String executable;
 
-    private File workingDir;
+    private String workingDir;
 
     private boolean quotedExecutableEnabled = true;
 
@@ -60,6 +59,8 @@ public class Shell
     private boolean doubleQuotedExecutableEscaped = false;
 
     private boolean singleQuotedExecutableEscaped = false;
+
+    private char quoteDelimiter = '\"';
 
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
@@ -100,7 +101,7 @@ public class Shell
      */
     public String[] getShellArgs()
     {
-        if ( shellArgs == null || shellArgs.isEmpty() )
+        if ( ( shellArgs == null ) || shellArgs.isEmpty() )
         {
             return null;
         }
@@ -122,51 +123,65 @@ public class Shell
         return getRawCommandLine( executable, arguments );
     }
 
-    private List getRawCommandLine( String executable, String[] arguments )
+    protected List getRawCommandLine( String executable, String[] arguments )
     {
         List commandLine = new ArrayList();
-        try
+        StringBuffer sb = new StringBuffer();
+
+        if ( executable != null )
         {
-            StringBuffer sb = new StringBuffer();
-
-            if ( executable != null )
+            if ( isQuotedExecutableEnabled() )
             {
-                if ( isQuotedExecutableEnabled() )
-                {
-                    sb.append( CommandLineUtils.quote( executable, isSingleQuotedExecutableEscaped(),
-                                                       isDoubleQuotedExecutableEscaped(), false ) );
-                }
-                else
-                {
-                    sb.append( executable );
-                }
+                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
+
+                sb.append( StringUtils.quoteAndEscape( executable, getQuoteDelimiter(), escapeChars, '\\', false ) );
             }
-            for ( int i = 0; i < arguments.length; i++ )
+            else
             {
-                if ( sb.length() > 0 )
-                {
-                    sb.append( " " );
-                }
-
-                if ( isQuotedArgumentsEnabled() )
-                {
-                    sb.append( CommandLineUtils.quote( arguments[i], isSingleQuotedArgumentEscaped(),
-                                                       isDoubleQuotedArgumentEscaped(), false ) );
-                }
-                else
-                {
-                    sb.append( arguments[i] );
-                }
+                sb.append( executable );
+            }
+        }
+        for ( int i = 0; i < arguments.length; i++ )
+        {
+            if ( sb.length() > 0 )
+            {
+                sb.append( " " );
             }
 
-            commandLine.add( sb.toString() );
+            if ( isQuotedArgumentsEnabled() )
+            {
+                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
+
+                sb.append( StringUtils.quoteAndEscape( arguments[i], getQuoteDelimiter(), escapeChars, '\\', false ) );
+            }
+            else
+            {
+                sb.append( arguments[i] );
+            }
         }
-        catch ( CommandLineException e )
-        {
-            throw new RuntimeException( e.getMessage() );
-        }
+
+        commandLine.add( sb.toString() );
 
         return commandLine;
+    }
+
+    protected char[] getEscapeChars( boolean includeSingleQuote, boolean includeDoubleQuote )
+    {
+        StringBuffer buf = new StringBuffer( 2 );
+        if ( includeSingleQuote )
+        {
+            buf.append( '\'' );
+        }
+
+        if ( includeDoubleQuote )
+        {
+            buf.append( '\"' );
+        }
+
+        char[] result = new char[buf.length()];
+        buf.getChars( 0, buf.length(), result, 0 );
+
+        return result;
     }
 
     protected boolean isDoubleQuotedArgumentEscaped()
@@ -187,6 +202,16 @@ public class Shell
     protected boolean isSingleQuotedExecutableEscaped()
     {
         return singleQuotedExecutableEscaped;
+    }
+
+    protected void setQuoteDelimiter( char quoteDelimiter )
+    {
+        this.quoteDelimiter = quoteDelimiter;
+    }
+
+    protected char getQuoteDelimiter()
+    {
+        return quoteDelimiter;
     }
 
     /**
@@ -225,7 +250,7 @@ public class Shell
 
     public void addShellArg( String arg )
     {
-        this.shellArgs.add( arg );
+        shellArgs.add( arg );
     }
 
     public void setQuotedArgumentsEnabled( boolean quotedArgumentsEnabled )
@@ -253,7 +278,7 @@ public class Shell
      */
     public void setExecutable( String executable )
     {
-        if ( executable == null || executable.length() == 0 )
+        if ( ( executable == null ) || ( executable.length() == 0 ) )
         {
             return;
         }
@@ -272,7 +297,7 @@ public class Shell
     {
         if ( path != null )
         {
-            workingDir = new File( path );
+            workingDir = path;
         }
     }
 
@@ -281,10 +306,18 @@ public class Shell
      */
     public void setWorkingDirectory( File workingDir )
     {
-        this.workingDir = workingDir;
+        if ( workingDir != null )
+        {
+            this.workingDir = workingDir.getAbsolutePath();
+        }
     }
 
     public File getWorkingDirectory()
+    {
+        return workingDir == null ? null : new File( workingDir );
+    }
+
+    public String getWorkingDirectoryAsString()
     {
         return workingDir;
     }

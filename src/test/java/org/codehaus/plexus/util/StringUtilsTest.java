@@ -1,8 +1,8 @@
 package org.codehaus.plexus.util;
 
-import junit.framework.TestCase;
-
 import java.util.Locale;
+
+import junit.framework.TestCase;
 
 /**
  * Test string utils.
@@ -56,6 +56,79 @@ public class StringUtilsTest
         assertEquals( "Id", StringUtils.removeAndHump( "id", "-" ) );
         assertEquals( "SomeId", StringUtils.removeAndHump( "some-id", "-" ) );
         Locale.setDefault( l );
+    }
+
+    public void testQuote_EscapeEmbeddedSingleQuotes()
+    {
+        String src = "This \'is a\' test";
+        String check = "\'This \\\'is a\\\' test\'";
+
+        char[] escaped = { '\'', '\"' };
+        String result = StringUtils.quoteAndEscape( src, '\'', escaped, '\\', false );
+
+        assertEquals( check, result );
+    }
+
+    public void testQuote_EscapeEmbeddedDoubleQuotesAndSpaces()
+    {
+        String src = "This \"is a\" test";
+        String check = "\'This\\ \\\"is\\ a\\\"\\ test\'";
+
+        char[] escaped = { '\'', '\"', ' ' };
+        String result = StringUtils.quoteAndEscape( src, '\'', escaped, '\\', false );
+
+        assertEquals( check, result );
+    }
+
+    public void testQuote_DontQuoteIfUnneeded()
+    {
+        String src = "ThisIsATest";
+
+        char[] escaped = { '\'', '\"' };
+        String result = StringUtils.quoteAndEscape( src, '\'', escaped, '\\', false );
+
+        assertEquals( src, result );
+    }
+
+    public void testQuote_WrapWithSingleQuotes()
+    {
+        String src = "This is a test";
+        String check = "\'This is a test\'";
+
+        char[] escaped = { '\'', '\"' };
+        String result = StringUtils.quoteAndEscape( src, '\'', escaped, '\\', false );
+
+        assertEquals( check, result );
+    }
+
+    public void testQuote_PreserveExistingQuotes()
+    {
+        String src = "\'This is a test\'";
+
+        char[] escaped = { '\'', '\"' };
+        String result = StringUtils.quoteAndEscape( src, '\'', escaped, '\\', false );
+
+        assertEquals( src, result );
+    }
+
+    public void testQuote_WrapExistingQuotesWhenForceIsTrue()
+    {
+        String src = "\'This is a test\'";
+        String check = "\'\\\'This is a test\\\'\'";
+
+        char[] escaped = { '\'', '\"' };
+        String result = StringUtils.quoteAndEscape( src, '\'', escaped, '\\', true );
+
+        assertEquals( check, result );
+    }
+
+    public void testQuote_ShortVersion_SingleQuotesPreserved()
+    {
+        String src = "\'This is a test\'";
+
+        String result = StringUtils.quoteAndEscape( src, '\'' );
+
+        assertEquals( src, result );
     }
 
 }

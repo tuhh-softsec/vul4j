@@ -21,6 +21,13 @@ package org.codehaus.plexus.util.cli;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.cli.shell.BourneShell;
+import org.codehaus.plexus.util.cli.shell.CmdShell;
+import org.codehaus.plexus.util.cli.shell.Shell;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
@@ -29,12 +36,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import junit.framework.TestCase;
-
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.cli.shell.BourneShell;
-import org.codehaus.plexus.util.cli.shell.CmdShell;
-import org.codehaus.plexus.util.cli.shell.Shell;
 
 public class CommandlineTest
     extends TestCase
@@ -74,7 +75,7 @@ public class CommandlineTest
             cmd.createArgument().setValue( "." );
 
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
-            assertEquals( "\"cd .\"", cmd.toString() );
+            assertEquals( "cd .", cmd.toString() );
         }
         catch ( Exception e )
         {
@@ -90,7 +91,7 @@ public class CommandlineTest
             cmd.setWorkingDirectory( baseDir );
 
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
-            assertEquals( "\"cd .\"", cmd.toString() );
+            assertEquals( "cd .", cmd.toString() );
         }
         catch ( Exception e )
         {
@@ -142,7 +143,7 @@ public class CommandlineTest
             cmd.createArgument().setLine( "Hello" );
 
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
-            assertEquals( "\"echo Hello\"", cmd.toString() );
+            assertEquals( "echo Hello", cmd.toString() );
         }
         catch ( Exception e )
         {
@@ -160,7 +161,7 @@ public class CommandlineTest
             cmd.createArgument( true ).setValue( "cd" );
 
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
-            assertEquals( "\"cd .\"", cmd.toString() );
+            assertEquals( "cd .", cmd.toString() );
         }
         catch ( Exception e )
         {
@@ -184,7 +185,7 @@ public class CommandlineTest
             }
 
             // NOTE: cmd.toString() uses CommandLineUtils.toString( String[] ), which *quotes* the result.
-            assertEquals( "\"more " + fileName + "\"", cmd.toString() );
+            assertEquals( "more " + fileName, cmd.toString() );
         }
         catch ( Exception e )
         {
@@ -246,7 +247,7 @@ public class CommandlineTest
 
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
-        String expectedShellCmd = "/bin/echo \"hello world\"";
+        String expectedShellCmd = "/bin/echo \'hello world\'";
         if ( Os.isFamily( "windows" ) )
         {
             expectedShellCmd = "\\bin\\echo \"hello world\"";
@@ -274,7 +275,7 @@ public class CommandlineTest
 
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
-        String expectedShellCmd = "cd " + root.getAbsolutePath() + "path\\ with\\ spaces && /bin/echo \"hello world\"";
+        String expectedShellCmd = "cd \"" + root.getAbsolutePath() + "path with spaces\" && /bin/echo \'hello world\'";
         if ( Os.isFamily( "windows" ) )
         {
             expectedShellCmd = "cd " + root.getAbsolutePath() + "path\\ with\\ spaces && \\bin\\echo \"hello world\"";
@@ -406,13 +407,13 @@ public class CommandlineTest
 
         try
         {
+            System.out.println( "Command line is: " + StringUtils.join( cmd.getShellCommandline(), " " ) );
+
             int exitCode = CommandLineUtils.executeCommandLine( cmd, new DefaultConsumer(), err );
 
             if ( exitCode != 0 )
             {
                 StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - " + err.getOutput() );
-                msg.append( '\n' );
-                msg.append( "Command line was:" + Commandline.toString( cmd.getCommandline() ) );
                 throw new Exception( msg.toString() );
             }
         }

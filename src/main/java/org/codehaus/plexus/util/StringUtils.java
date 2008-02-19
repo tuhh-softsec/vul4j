@@ -53,6 +53,7 @@
  */
 package org.codehaus.plexus.util;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -156,7 +157,7 @@ public class StringUtils
      */
     public static boolean isNotEmpty( String str )
     {
-        return ( str != null && str.length() > 0 );
+        return ( ( str != null ) && ( str.length() > 0 ) );
     }
 
     /**
@@ -168,7 +169,7 @@ public class StringUtils
      */
     public static boolean isEmpty( String str )
     {
-        return ( str == null || str.trim().length() == 0 );
+        return ( ( str == null ) || ( str.trim().length() == 0 ) );
     }
 
     // Equals and IndexOf
@@ -445,7 +446,7 @@ public class StringUtils
     public static String mid( String str, int pos, int len )
     {
         if ( ( pos < 0 ) ||
-            ( str != null && pos > str.length() ) )
+            ( ( str != null ) && ( pos > str.length() ) ) )
         {
             throw new StringIndexOutOfBoundsException( "String index " + pos + " is out of bounds" );
         }
@@ -525,7 +526,7 @@ public class StringUtils
         }
 
         int listSize = tok.countTokens();
-        if ( max > 0 && listSize > max )
+        if ( ( max > 0 ) && ( listSize > max ) )
         {
             listSize = max;
         }
@@ -536,7 +537,7 @@ public class StringUtils
         int lastTokenEnd = 0;
         while ( tok.hasMoreTokens() )
         {
-            if ( max > 0 && i == listSize - 1 )
+            if ( ( max > 0 ) && ( i == listSize - 1 ) )
             {
                 // In the situation where we hit the max yet have
                 // tokens left over in our input, the last list
@@ -734,7 +735,7 @@ public class StringUtils
      */
     public static String replace( String text, String repl, String with, int max )
     {
-        if ( text == null || repl == null || with == null || repl.length() == 0 )
+        if ( ( text == null ) || ( repl == null ) || ( with == null ) || ( repl.length() == 0 ) )
         {
             return text;
         }
@@ -1991,19 +1992,33 @@ public class StringUtils
     public static String abbreviate( String s, int offset, int maxWidth )
     {
         if ( maxWidth < 4 )
+        {
             throw new IllegalArgumentException( "Minimum abbreviation width is 4" );
+        }
         if ( s.length() <= maxWidth )
+        {
             return s;
+        }
         if ( offset > s.length() )
+        {
             offset = s.length();
+        }
         if ( ( s.length() - offset ) < ( maxWidth - 3 ) )
+        {
             offset = s.length() - ( maxWidth - 3 );
+        }
         if ( offset <= 4 )
+        {
             return s.substring( 0, maxWidth - 3 ) + "...";
+        }
         if ( maxWidth < 7 )
+        {
             throw new IllegalArgumentException( "Minimum abbreviation width with offset is 7" );
+        }
         if ( ( offset + ( maxWidth - 3 ) ) < s.length() )
+        {
             return "..." + abbreviate( s.substring( offset ), maxWidth - 3 );
+        }
         return "..." + s.substring( s.length() - ( maxWidth - 3 ) );
     }
 
@@ -2023,7 +2038,9 @@ public class StringUtils
     {
         int at = differenceAt( s1, s2 );
         if ( at == -1 )
+        {
             return "";
+        }
         return s2.substring( at );
     }
 
@@ -2038,14 +2055,14 @@ public class StringUtils
     public static int differenceAt( String s1, String s2 )
     {
         int i;
-        for ( i = 0; i < s1.length() && i < s2.length(); ++i )
+        for ( i = 0; ( i < s1.length() ) && ( i < s2.length() ); ++i )
         {
             if ( s1.charAt( i ) != s2.charAt( i ) )
             {
                 break;
             }
         }
-        if ( i < s2.length() || i < s1.length() )
+        if ( ( i < s2.length() ) || ( i < s1.length() ) )
         {
             return i;
         }
@@ -2123,7 +2140,7 @@ public class StringUtils
 
         for ( int i = 0; i < view.length(); i++ )
         {
-            if ( i != 0 && Character.isUpperCase( view.charAt( i ) ) )
+            if ( ( i != 0 ) && Character.isUpperCase( view.charAt( i ) ) )
             {
                 sb.append( '-' );
             }
@@ -2132,5 +2149,92 @@ public class StringUtils
         }
 
         return sb.toString().trim().toLowerCase();
+    }
+
+    public static String quoteAndEscape( String source,
+                                char quoteChar )
+    {
+        return quoteAndEscape( source, quoteChar, new char[]{ quoteChar }, new char[]{ ' ' }, '\\', false );
+    }
+
+    public static String quoteAndEscape( String source,
+                                char quoteChar,
+                                final char[] escapedChars,
+                                char escapeChar,
+                                boolean force )
+    {
+        return quoteAndEscape( source, quoteChar, escapedChars, new char[]{ ' ' }, escapeChar, force );
+    }
+
+    public static String quoteAndEscape( String source,
+                                char quoteChar,
+                                final char[] escapedChars,
+                                final char[] whitespaceChars,
+                                char escapeChar,
+                                boolean force )
+    {
+        if ( !force && source.startsWith( Character.toString( quoteChar ) )
+             && source.endsWith( Character.toString( quoteChar ) ) )
+        {
+            return source;
+        }
+
+        String escaped = escape( source, escapedChars, escapeChar );
+
+        boolean quote = false;
+        if ( force )
+        {
+            quote = true;
+        }
+        else if ( !escaped.equals( source ) )
+        {
+            quote = true;
+        }
+        else
+        {
+            for ( int i = 0; i < whitespaceChars.length; i++ )
+            {
+                if ( escaped.indexOf( whitespaceChars[i] ) > -1 )
+                {
+                    quote = true;
+                    break;
+                }
+            }
+        }
+
+        if ( quote )
+        {
+            return quoteChar + escaped + quoteChar;
+        }
+        else
+        {
+            return escaped;
+        }
+    }
+
+    public static String escape( String source, final char[] escapedChars, char escapeChar )
+    {
+        char[] eqc = new char[ escapedChars.length ];
+        System.arraycopy( escapedChars, 0, eqc, 0, escapedChars.length );
+        Arrays.sort( eqc );
+
+        StringBuffer buffer = new StringBuffer( source.length() );
+
+        int escapeCount = 0;
+        for ( int i = 0; i < source.length(); i++ )
+        {
+            final char c = source.charAt( i );
+            int result = Arrays.binarySearch( eqc, c );
+
+            if ( result > -1 )
+            {
+                buffer.append( escapeChar );
+                escapeCount++;
+            }
+
+            buffer.append( c );
+        }
+
+        return buffer.toString();
     }
 }

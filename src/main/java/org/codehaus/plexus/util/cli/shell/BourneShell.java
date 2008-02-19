@@ -15,11 +15,10 @@ package org.codehaus.plexus.util.cli.shell;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.io.File;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author Jason van Zyl
@@ -36,9 +35,10 @@ public class BourneShell
     public BourneShell( boolean isLoginShell )
     {
         setShellCommand( "/bin/sh" );
+        setQuoteDelimiter( '\'' );
         setSingleQuotedArgumentEscaped( true );
-        setSingleQuotedExecutableEscaped( true );
-        setQuotedExecutableEnabled( false );
+        setSingleQuotedExecutableEscaped( false );
+        setQuotedExecutableEnabled( true );
 
         if ( isLoginShell )
         {
@@ -51,7 +51,7 @@ public class BourneShell
         List shellArgs = new ArrayList();
         List existingShellArgs = super.getShellArgsList();
 
-        if ( existingShellArgs != null && !existingShellArgs.isEmpty() )
+        if ( ( existingShellArgs != null ) && !existingShellArgs.isEmpty() )
         {
             shellArgs.addAll( existingShellArgs );
         }
@@ -69,7 +69,7 @@ public class BourneShell
            shellArgs = new String[0];
         }
 
-        if ( shellArgs.length > 0 && !shellArgs[shellArgs.length-1].equals( "-c" ) )
+        if ( ( shellArgs.length > 0 ) && !shellArgs[shellArgs.length-1].equals( "-c" ) )
         {
             String[] newArgs = new String[shellArgs.length + 1];
 
@@ -82,48 +82,54 @@ public class BourneShell
         return shellArgs;
     }
 
-    public String getExecutable()
+    protected List getRawCommandLine( String executable, String[] arguments )
     {
-        File wd = getWorkingDirectory();
+        List commandLine = new ArrayList();
+        StringBuffer sb = new StringBuffer();
 
-        if ( wd != null )
+        if ( executable != null )
         {
-            String path = getWorkingDirectory().getAbsolutePath();
-            String exe = super.getExecutable();
-            return "cd " + handleQuote( path ) + " && " + handleQuote( exe );
-        }
-        else
-        {
-            return super.getExecutable();
-        }
-    }
+            String path = getWorkingDirectoryAsString();
 
-    /**
-     * Convenience method to handle single or double quote in a path
-     *
-     * @param path
-     * @return corrected path
-     */
-    private static String handleQuote( String path )
-    {
-    	if ( path.indexOf( " " ) > -1 )
-        {
-            path = StringUtils.replace( path, " ", "\\ " );
+            if ( path != null )
+            {
+                sb.append( "cd " );
+                sb.append( StringUtils.quoteAndEscape( path, '\"' ) );
+                sb.append( " && " );
+            }
+
+            if ( isQuotedExecutableEnabled() )
+            {
+                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
+
+                sb.append( StringUtils.quoteAndEscape( executable, '\"', escapeChars, '\\', false ) );
+            }
+            else
+            {
+                sb.append( executable );
+            }
         }
-        if ( path.indexOf( "\'" ) > -1 )
+        for ( int i = 0; i < arguments.length; i++ )
         {
-            return StringUtils.replace( path, "\'", "\\'" );
-        }
-        if ( path.indexOf( "'" ) > -1 )
-        {
-            return StringUtils.replace( path, "'", "\\'" );
-        }
-        if ( path.indexOf( "\"" ) > -1 )
-        {
-            return StringUtils.replace( path, "\"", "\\\"" );
+            if ( sb.length() > 0 )
+            {
+                sb.append( " " );
+            }
+
+            if ( isQuotedArgumentsEnabled() )
+            {
+                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
+
+                sb.append( StringUtils.quoteAndEscape( arguments[i], getQuoteDelimiter(), escapeChars, '\\', false ) );
+            }
+            else
+            {
+                sb.append( arguments[i] );
+            }
         }
 
+        commandLine.add( sb.toString() );
 
-        return path;
+        return commandLine;
     }
 }

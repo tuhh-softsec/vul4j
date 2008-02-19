@@ -39,11 +39,15 @@ public class CmdShell
     }
 
     /**
+     * <p>
      * Specific implementation that quotes all the command line.
-     *
+     * </p>
+     * <p>
      * Workaround for http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6468220
-     *
+     * </p>
+     * <p>
      * From cmd.exe /? output:
+     * </p>
      *
      * <pre>
      *      If /C or /K is specified, then the remainder of the command line after
@@ -68,8 +72,10 @@ public class CmdShell
      *      any text after the last quote character.
      * </pre>
      *
+     *<p>
      * Always quoting the entire command line, regardless of these conditions
      * appears to make Windows processes invoke successfully.
+     * </p>
      */
     public List getCommandLine( String executable, String[] arguments )
     {
