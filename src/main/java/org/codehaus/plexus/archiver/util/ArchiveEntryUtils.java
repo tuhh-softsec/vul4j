@@ -38,7 +38,7 @@ public final class ArchiveEntryUtils
 
             String path = file.getAbsolutePath();
 
-            commandline.createArgument().setValue( "\'" + path + "\'" );
+            commandline.createArgument().setValue( path );
 
             // commenting this debug statement, since it can produce VERY verbose output...
             // this method is called often during archive creation.
