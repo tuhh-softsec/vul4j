@@ -2158,6 +2158,13 @@ public class StringUtils
     }
 
     public static String quoteAndEscape( String source,
+                                         char quoteChar,
+                                         char[] quotingTriggers )
+    {
+        return quoteAndEscape( source, quoteChar, new char[]{ quoteChar }, quotingTriggers, '\\', false );
+    }
+
+    public static String quoteAndEscape( String source,
                                 char quoteChar,
                                 final char[] escapedChars,
                                 char escapeChar,
@@ -2169,7 +2176,7 @@ public class StringUtils
     public static String quoteAndEscape( String source,
                                 char quoteChar,
                                 final char[] escapedChars,
-                                final char[] whitespaceChars,
+                                final char[] quotingTriggers,
                                 char escapeChar,
                                 boolean force )
     {
@@ -2192,9 +2199,9 @@ public class StringUtils
         }
         else
         {
-            for ( int i = 0; i < whitespaceChars.length; i++ )
+            for ( int i = 0; i < quotingTriggers.length; i++ )
             {
-                if ( escaped.indexOf( whitespaceChars[i] ) > -1 )
+                if ( escaped.indexOf( quotingTriggers[i] ) > -1 )
                 {
                     quote = true;
                     break;

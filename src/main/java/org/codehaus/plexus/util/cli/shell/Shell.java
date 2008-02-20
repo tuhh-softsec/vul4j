@@ -40,6 +40,8 @@ import java.util.List;
 public class Shell
     implements Cloneable
 {
+    private static final char[] DEFAULT_QUOTING_TRIGGER_CHARS = { ' ' };
+
     private String shellCommand;
 
     private List shellArgs = new ArrayList();
@@ -60,7 +62,9 @@ public class Shell
 
     private boolean singleQuotedExecutableEscaped = false;
 
-    private char quoteDelimiter = '\"';
+    private char argQuoteDelimiter = '\"';
+
+    private char exeQuoteDelimiter = '\"';
 
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
@@ -130,11 +134,17 @@ public class Shell
 
         if ( executable != null )
         {
+            String preamble = getExecutionPreamble();
+            if ( preamble != null )
+            {
+                sb.append( preamble );
+            }
+
             if ( isQuotedExecutableEnabled() )
             {
                 char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
 
-                sb.append( StringUtils.quoteAndEscape( executable, getQuoteDelimiter(), escapeChars, '\\', false ) );
+                sb.append( StringUtils.quoteAndEscape( executable, getExecutableQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), '\\', false ) );
             }
             else
             {
@@ -152,7 +162,7 @@ public class Shell
             {
                 char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
 
-                sb.append( StringUtils.quoteAndEscape( arguments[i], getQuoteDelimiter(), escapeChars, '\\', false ) );
+                sb.append( StringUtils.quoteAndEscape( arguments[i], getArgumentQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), '\\', false ) );
             }
             else
             {
@@ -163,6 +173,16 @@ public class Shell
         commandLine.add( sb.toString() );
 
         return commandLine;
+    }
+
+    protected char[] getQuotingTriggerChars()
+    {
+        return DEFAULT_QUOTING_TRIGGER_CHARS;
+    }
+
+    protected String getExecutionPreamble()
+    {
+        return null;
     }
 
     protected char[] getEscapeChars( boolean includeSingleQuote, boolean includeDoubleQuote )
@@ -204,14 +224,24 @@ public class Shell
         return singleQuotedExecutableEscaped;
     }
 
-    protected void setQuoteDelimiter( char quoteDelimiter )
+    protected void setArgumentQuoteDelimiter( char argQuoteDelimiter )
     {
-        this.quoteDelimiter = quoteDelimiter;
+        this.argQuoteDelimiter = argQuoteDelimiter;
     }
 
-    protected char getQuoteDelimiter()
+    protected char getArgumentQuoteDelimiter()
     {
-        return quoteDelimiter;
+        return argQuoteDelimiter;
+    }
+
+    protected void setExecutableQuoteDelimiter( char exeQuoteDelimiter )
+    {
+        this.exeQuoteDelimiter = exeQuoteDelimiter;
+    }
+
+    protected char getExecutableQuoteDelimiter()
+    {
+        return exeQuoteDelimiter;
     }
 
     /**

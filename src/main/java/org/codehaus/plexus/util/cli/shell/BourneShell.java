@@ -27,6 +27,8 @@ import java.util.List;
 public class BourneShell
     extends Shell
 {
+    private static final char[] BASH_QUOTING_TRIGGER_CHARS = { ' ', '$' };
+
     public BourneShell()
     {
         this( false );
@@ -35,7 +37,8 @@ public class BourneShell
     public BourneShell( boolean isLoginShell )
     {
         setShellCommand( "/bin/sh" );
-        setQuoteDelimiter( '\'' );
+        setArgumentQuoteDelimiter( '\'' );
+        setExecutableQuoteDelimiter( '\"' );
         setSingleQuotedArgumentEscaped( true );
         setSingleQuotedExecutableEscaped( false );
         setQuotedExecutableEnabled( true );
@@ -82,54 +85,25 @@ public class BourneShell
         return shellArgs;
     }
 
-    protected List getRawCommandLine( String executable, String[] arguments )
+    protected String getExecutionPreamble()
     {
-        List commandLine = new ArrayList();
+        if ( getWorkingDirectoryAsString() == null )
+        {
+            return null;
+        }
+
         StringBuffer sb = new StringBuffer();
 
-        if ( executable != null )
-        {
-            String path = getWorkingDirectoryAsString();
+        sb.append( "cd " );
+        sb.append( StringUtils.quoteAndEscape( getWorkingDirectoryAsString(), '\"' ) );
+        sb.append( " && " );
 
-            if ( path != null )
-            {
-                sb.append( "cd " );
-                sb.append( StringUtils.quoteAndEscape( path, '\"' ) );
-                sb.append( " && " );
-            }
-
-            if ( isQuotedExecutableEnabled() )
-            {
-                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
-
-                sb.append( StringUtils.quoteAndEscape( executable, '\"', escapeChars, '\\', false ) );
-            }
-            else
-            {
-                sb.append( executable );
-            }
-        }
-        for ( int i = 0; i < arguments.length; i++ )
-        {
-            if ( sb.length() > 0 )
-            {
-                sb.append( " " );
-            }
-
-            if ( isQuotedArgumentsEnabled() )
-            {
-                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
-
-                sb.append( StringUtils.quoteAndEscape( arguments[i], getQuoteDelimiter(), escapeChars, '\\', false ) );
-            }
-            else
-            {
-                sb.append( arguments[i] );
-            }
-        }
-
-        commandLine.add( sb.toString() );
-
-        return commandLine;
+        return sb.toString();
     }
+
+    protected char[] getQuotingTriggerChars()
+    {
+        return BASH_QUOTING_TRIGGER_CHARS;
+    }
+
 }
