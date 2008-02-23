@@ -10,6 +10,10 @@
   <name>Plexus Common Utilities</name>
   <version>1.5.2-SNAPSHOT</version>
   <url>http://plexus.codehaus.org/plexus-utils</url>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://jira.codehaus.org/browse/PLXUTILS</url>
+  </issueManagement>
   <build>
     <plugins>
       <plugin>
