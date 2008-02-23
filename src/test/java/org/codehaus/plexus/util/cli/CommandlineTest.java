@@ -259,7 +259,7 @@ public class CommandlineTest
         String expectedShellCmd = "/bin/echo \'hello world\'";
         if ( Os.isFamily( "windows" ) )
         {
-            expectedShellCmd = "\\bin\\echo \"hello world\"";
+            expectedShellCmd = "\\bin\\echo \'hello world\'";
         }
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
@@ -290,8 +290,8 @@ public class CommandlineTest
                                   + "path with spaces\" && /bin/echo \'hello world\'";
         if ( Os.isFamily( "windows" ) )
         {
-            expectedShellCmd = "cd " + root.getAbsolutePath()
-                               + "path\\ with\\ spaces && \\bin\\echo \"hello world\"";
+            expectedShellCmd = "cd \"" + root.getAbsolutePath()
+                               + "path with spaces\" && \\bin\\echo \'hello world\'";
         }
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
@@ -467,9 +467,13 @@ public class CommandlineTest
         }
 
         Commandline cmd = new Commandline();
-        cmd.getShell().setShellCommand( "/bin/sh" );
+        //cmd.getShell().setShellCommand( "/bin/sh" );
         cmd.getShell().setQuotedArgumentsEnabled( true );
         cmd.setExecutable( "cat" );
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
+        {
+            cmd.setExecutable( "dir" );
+        }
         cmd.setWorkingDirectory( dir );
         cmd.createArg().setLine( "test$1.txt" );
 
