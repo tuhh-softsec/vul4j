@@ -467,7 +467,7 @@ public class CommandlineTest
         }
 
         Commandline cmd = new Commandline();
-        cmd.getShell().setShellCommand( "/bin/bash" );
+        cmd.getShell().setShellCommand( "/bin/sh" );
         cmd.getShell().setQuotedArgumentsEnabled( true );
         cmd.setExecutable( "cat" );
         cmd.setWorkingDirectory( dir );
