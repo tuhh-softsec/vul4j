@@ -48,6 +48,10 @@ import org.w3c.dom.NodeList;
 
 public abstract class ApacheCanonicalizer extends TransformService {
 
+    static {
+	org.apache.xml.security.Init.init();
+    }
+
     private static Logger log = Logger.getLogger("org.jcp.xml.dsig.internal.dom");
     protected Canonicalizer apacheCanonicalizer;
     private Transform apacheTransform;

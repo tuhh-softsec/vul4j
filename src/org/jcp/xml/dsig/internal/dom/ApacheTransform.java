@@ -49,6 +49,10 @@ import javax.xml.crypto.dsig.spec.TransformParameterSpec;
  */
 public abstract class ApacheTransform extends TransformService {
 
+    static {
+        org.apache.xml.security.Init.init();
+    }
+
     private static Logger log = Logger.getLogger("org.jcp.xml.dsig.internal.dom");
     private Transform apacheTransform;
     protected Document ownerDoc;

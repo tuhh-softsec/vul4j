@@ -80,6 +80,22 @@ public final class XMLDSigRI extends Provider {
 		CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS + 
 		" MechanismType", "DOM");
 
+	// Inclusive C14N 1.1
+	map.put((String)"TransformService." + 
+		"http://www.w3.org/2006/12/xml-c14n11",
+		"org.jcp.xml.dsig.internal.dom.DOMCanonicalXMLC14N11Method");
+	map.put((String)"TransformService." + 
+		"http://www.w3.org/2006/12/xml-c14n11" +
+		" MechanismType", "DOM");
+
+	// InclusiveWithComments C14N 1.1 
+	map.put((String)"TransformService." + 
+		"http://www.w3.org/2006/12/xml-c14n11#WithComments",
+		"org.jcp.xml.dsig.internal.dom.DOMCanonicalXMLC14N11Method");
+	map.put((String)"TransformService." + 
+		"http://www.w3.org/2006/12/xml-c14n11#WithComments" +
+		" MechanismType", "DOM");
+
 	// Exclusive C14N
 	map.put((String) "TransformService." + CanonicalizationMethod.EXCLUSIVE,
 		"org.jcp.xml.dsig.internal.dom.DOMExcC14NMethod");

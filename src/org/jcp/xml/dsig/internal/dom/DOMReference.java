@@ -416,6 +416,16 @@ public final class DOMReference extends DOMStructure
 	try {
 	    if (data != null) {
 	        XMLSignatureInput xi;
+	        // explicitly use C14N 1.1 when generating signature
+	        Boolean c14n11 = (Boolean)
+            	    context.getProperty("org.apache.xml.security.useC14N11");
+	        String c14nalg = null;
+	        if (context instanceof XMLSignContext && c14n11 != null 
+		    && c14n11.booleanValue() == true) {
+		    c14nalg = "http://www.w3.org/2006/12/xml-c14n11";
+	        } else {
+		    c14nalg = CanonicalizationMethod.INCLUSIVE;
+	        }
 	        if (data instanceof ApacheData) {
 	            xi = ((ApacheData) data).getXMLSignatureInput();
 	        } else if (data instanceof OctetStreamData) {
@@ -424,11 +434,10 @@ public final class DOMReference extends DOMStructure
 	        } else if (data instanceof NodeSetData) {
 		    TransformService spi = null;
 		    try {
-		        spi = TransformService.getInstance
-		            (CanonicalizationMethod.INCLUSIVE, "DOM");
+		        spi = TransformService.getInstance(c14nalg, "DOM");
 		    } catch (NoSuchAlgorithmException nsae) {
 		        spi = TransformService.getInstance
-		            (CanonicalizationMethod.INCLUSIVE, "DOM", provider);
+		            (c14nalg, "DOM", provider);
 		    }
                     data = spi.transform(data, context);
 	            xi = new XMLSignatureInput
@@ -436,7 +445,20 @@ public final class DOMReference extends DOMStructure
 	        } else {
 	            throw new XMLSignatureException("unrecognized Data type");
 	        }
-	        xi.updateOutputStream(os);
+	        if (context instanceof XMLSignContext && c14n11 != null 
+		    && c14n11.booleanValue() == true && !xi.isOctetStream()) {
+	            Element transformsElem = 
+		        DOMUtils.getFirstChildElement(refElem);
+	            Element transformElem = DOMUtils.createElement
+		        (refElem.getOwnerDocument(), "Transform", 
+		         XMLSignature.XMLNS, 
+			 DOMUtils.getSignaturePrefix(context));
+	            DOMUtils.setAttribute(transformElem, "Algorithm", c14nalg);
+	            transformsElem.appendChild(transformElem);
+	            xi.updateOutputStream(os, true);
+		} else {
+	            xi.updateOutputStream(os);
+		}
 	    }
 	    os.flush();
 	    if (cache != null && cache.booleanValue() == true) {
