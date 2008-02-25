@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Interop report C14N 1.1</title>
+  <link rel="stylesheet" href="http://www.w3.org/StyleSheets/base.css"
+  type="text/css" />
+  <link rel="stylesheet" href="http://www.w3.org/StyleSheets/public.css"
+  type="text/css" />
+  <link rel="stylesheet" href="../../report.css" type="text/css" />
+</head>
+
+<body>
+<a href="http://www.w3.org/"><img alt="W3C Logo"
+src="http://www.w3.org/Icons/w3c_home" /></a> 
+
+<h1>Implementation report C14N 1.1</h1>
+<dl>
+  <dt>Author</dt>
+    <dd>Thomas Roessler &lt;tlr@w3.org&gt;</dd>
+  <dt>Last Modified</dt>
+    <dd>$Date: 2008/01/22 16:33:45 $ by $Author: roessler $</dd>
+</dl>
+
+<h2>Overview</h2>
+
+<div>
+<p>This implementation report is intended to demonstrate fulfillment of the
+Candidate Recommendation Exit Criteria for Canonical XML 1.1:</p>
+
+<blockquote>
+  <ul>
+    <li>Test documents must have been developed with a range of usages of
+      attributes in the XML namespace, and correct and compatible results
+      shown for these tests by at least two implementations.</li>
+    <li>A minimum of three months of the CR period must have elapsed.</li>
+  </ul>
+
+  <p>-- <a href="http://www.w3.org/TR/xml-c14n11/">Canonical XML 1.1, W3C
+  Candidate Recommendation 21 June 2007</a></p>
+</blockquote>
+
+<p>Canonical XML 1.1 differs from Canonical XML 1.0 in the handling of
+attributes in the <code>xml</code> namespace when document subsets are
+canonicalized. All tests were performed within the context of implementations
+of the XML Signature specification (see <a
+href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#TestCases-XMLDSig-C14n11">detailed
+description of test case setup</a>), using an XPath transform to identify the
+signed document subset, and Canonical XML 1.1 to canonicalize it.</p>
+
+<p>Testing was organized and performed by the members of the XML Security
+Specifications Maintenance Working Group. Five implementations participated
+in the testing. All five implementations submitted identical canonicalization
+results for all test cases.</p>
+
+<h2>Test Cases</h2>
+
+<p>The test cases covered the following <code>xml</code> namespace
+attributes:</p>
+<ul>
+  <li><p><code>xml:lang</code> and <tt>xml:space</tt> are "simple inheritable
+    attributes" in the sense of <a
+    href="http://www.w3.org/XML/Group/2007/12/PR-xml-c14n11-20071211/Overview.html#DocSubsets">section
+    2.4, Canonical XML 1.1</a>. They are covered by the test cases xmllang-1
+    to xmllang-4 and xmlspace-1 to xmlspace-4. See <a
+    href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#XMLLANG">detailed
+    description of xml:lang test cases</a>; <a
+    href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#XMLSPACE">detailed
+    description of xml:space test cases</a>.</p>
+  </li>
+  <li><p><code>xml:id</code> is never copied to a different element. This
+    attribute is covered by the test cases xmlid-1 and xmlid-2. See <a
+    href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#XMLID">detailed
+    description of xml:id test cases</a>.</p>
+  </li>
+  <li><p><code>xml:base</code> requires a relatively complicated fix-up
+    algorithm. While there was general agreement on the desired results of
+    that algorithm, its specification was refined during the Candidate
+    Recommendation phase to improve specification clarity and address edge
+    cases. This refinement process happened in close coordination with the
+    participants in the interoperability testing.</p>
+    <p>The relevant test cases are: xmlbase-cc14n11spec-102,
+    xmlbase-c14n11spec2-102, xmlbase-c14n11spec3-103, xmlbase-prop-1 to
+    xmlbase-prop-7. These test cases are specifically intended to exercise
+    those edge cases that were discovered during the Candidate Recommendation
+    phase.</p>
+    <p>See <a
+    href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#XMLID">detailed
+    description of xml:base test cases</a>.</p>
+  </li>
+</ul>
+
+<h2>Participating Implementations</h2>
+<dl>
+  <dt><strong>IBM XML Digital Signature Package</strong> (IBM)</dt>
+    <dd><p>The XML Digital Signature package is bundled into IBM JREs that
+      ship with IBM products or are downloaded for IBM systems. The XML
+      Digital Signature package bundled into all IBM JREs at the Java 6.0
+      level or higher, and by special arrangement at earlier levels. It is a
+      separate security provider, so would either need to be in the provider
+      list in jre/lib/security/java.security or added programmatically at
+      runtime. The C14N11 capability is currently (11 January, 2008) a
+      technology preview that is not yet generally available.</p>
+    </dd>
+  <dt><strong>Sun Java XML Digital Signature API and Implementation</strong> (Sun)</dt>
+    <dd><p>Sun's XML Digital Signature implementation is an implementation of
+      the standard JSR 105 API (Java XML Digital Signature API) and is
+      included in Sun's JDK 6 and Application Server products. The C14N 1.1
+      implementation is not yet generally available but is targeted for
+      future releases. </p>
+    </dd>
+    <dt><strong>Oracle XML Digital Signature package</strong> (Oracle)</dt>
+    <dd>
+      <p>The XML Digital Signature package is part of Oracle Security Developer Tools which is part of
+      Oracle's Fusion Middleware platform. The upcoming AS11R1 release of Fusion Middleware includes
+      full support for C14N version 1.1 in addition to XML Signature, XML Encryption, XML Key
+      Management, SAML and Web Services Security technologies. The XML Digital Signature
+      functionality can be accessed using the industry standard JSR 105 APIs (by using the Oracle
+      provider) or through the current OSDT XML Security APIs.</p>
+    </dd>
+    <dt><strong>upcxslib xml signature package</strong> (Universitat Politecnica de Catalunya)</dt>
+    <dd><p>
+      The upcxslib xml signature package runs on Java 1.4.2 or higher. It uses Sun's security
+      provider within the JRE for basic cryptographic tasks. CN14N 1.1 is not generally available at
+      present, but its incorporation is targeted for a near future.</p>
+    </dd>
+    <dt><strong>IAIK XML Security Toolkit (XSECT)</strong> (Graz University of Technology)</dt>
+    <dd><p>
+      The IAIK <a href="http://jce.iaik.tugraz.at/sic/products/xml_security/xsect">XML Security Toolkit (XSECT)</a> is the successor of the IAIK XML Signature Library
+      (IXSIL). XSECT 1.12 or higher is scheduled to ship in Q2/2008 and will contain the C14N 1.1
+      implementation. C14N 1.1 will be enabled in the default mode for signature creation and may be
+      turned off by a configuration flag allowing for maximum flexibility. XSECT 1.12 will support
+      all Java^(TM) versions since JDK 1.3.1 or higher.
+      </p>
+    </dd>
+</dl>
+</div>
+
+<h2>Test results</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>SUN</th>
+      <th>IAIK</th>
+      <th>IBM</th>
+      <th>ORCL</th>
+      <th>UPC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-c14n11spec-102">xmlbase-c14n11spec-102</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec-102-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec-102-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec-102-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec-102-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec-102-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-c14n11spec2-102">xmlbase-c14n11spec2-102</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec2-102-SUN.xml">PASS</a></td>
+      <td class="pass"><a
+      href="xmlbase-c14n11spec2-102-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec2-102-IBM.xml">PASS</a></td>
+      <td class="pass"><a
+      href="xmlbase-c14n11spec2-102-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec2-102-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-c14n11spec3-103">xmlbase-c14n11spec3-103</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec3-103-SUN.xml">PASS</a></td>
+      <td class="pass"><a
+      href="xmlbase-c14n11spec3-103-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec3-103-IBM.xml">PASS</a></td>
+      <td class="pass"><a
+      href="xmlbase-c14n11spec3-103-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-c14n11spec3-103-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-prop-1">xmlbase-prop-1</a></td>
+      <td class="pass"><a href="xmlbase-prop-1-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-1-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-1-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-1-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-1-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-prop-2">xmlbase-prop-2</a></td>
+      <td class="pass"><a href="xmlbase-prop-2-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-2-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-2-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-2-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-2-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-prop-3">xmlbase-prop-3</a></td>
+      <td class="pass"><a href="xmlbase-prop-3-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-3-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-3-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-3-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-3-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-prop-4">xmlbase-prop-4</a></td>
+      <td class="pass"><a href="xmlbase-prop-4-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-4-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-4-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-4-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-4-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-prop-5">xmlbase-prop-5</a></td>
+      <td class="pass"><a href="xmlbase-prop-5-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-5-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-5-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-5-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-5-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-prop-6">xmlbase-prop-6</a></td>
+      <td class="pass"><a href="xmlbase-prop-6-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-6-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-6-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-6-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-6-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlbase-prop-7">xmlbase-prop-7</a></td>
+      <td class="pass"><a href="xmlbase-prop-7-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-7-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-7-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-7-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlbase-prop-7-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlid-1">xmlid-1</a></td>
+      <td class="pass"><a href="xmlid-1-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-1-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-1-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-1-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-1-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlid-2">xmlid-2</a></td>
+      <td class="pass"><a href="xmlid-2-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-2-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-2-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-2-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlid-2-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmllang-1">xmllang-1</a></td>
+      <td class="pass"><a href="xmllang-1-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-1-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-1-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-1-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-1-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmllang-2">xmllang-2</a></td>
+      <td class="pass"><a href="xmllang-2-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-2-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-2-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-2-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-2-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmllang-3">xmllang-3</a></td>
+      <td class="pass"><a href="xmllang-3-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-3-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-3-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-3-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-3-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmllang-4">xmllang-4</a></td>
+      <td class="pass"><a href="xmllang-4-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-4-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-4-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-4-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmllang-4-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlspace-1">xmlspace-1</a></td>
+      <td class="pass"><a href="xmlspace-1-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-1-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-1-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-1-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-1-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlspace-2">xmlspace-2</a></td>
+      <td class="pass"><a href="xmlspace-2-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-2-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-2-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-2-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-2-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlspace-3">xmlspace-3</a></td>
+      <td class="pass"><a href="xmlspace-3-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-3-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-3-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-3-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-3-UPC.xml">PASS</a></td>
+    </tr>
+    <tr>
+      <td class="tc"><a
+        href="../../xmlsig-interop-doc/testcases.html#c14n11xmlspace-4">xmlspace-4</a></td>
+      <td class="pass"><a href="xmlspace-4-SUN.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-4-IAIK.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-4-IBM.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-4-ORCL.xml">PASS</a></td>
+      <td class="pass"><a href="xmlspace-4-UPC.xml">PASS</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Differences</h2>
+
+<p>None observed.</p>
+</body>
+</html>

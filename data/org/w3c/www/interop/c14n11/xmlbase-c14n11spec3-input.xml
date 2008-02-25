@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a xml:base="foo/bar">
+ <b xml:base="..">
+  <c xml:base="..">
+   <d xml:base="x">
+   </d>
+  </c>
+ </b>
+</a>

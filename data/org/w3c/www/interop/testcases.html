@@ -1,0 +1,3754 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html lang="" xmlns="http://www.w3.org/1999/xhtml" xml:lang="">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Solaris (vers 19 September 2007), see www.w3.org" />
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=ISO-8859-1" />
+  <meta content="text/html; charset=ISO-8859-1" http-equiv=
+  "Content-Type" />
+
+  <title>Test Cases for C14N 1.1 and XMLDSig
+  Interoperability</title>
+  <style type="text/css">
+/*<![CDATA[*/
+  code           { font-family: monospace; }
+
+  div.constraint,
+  div.issue,
+  div.note,
+  div.notice     { margin-left: 2em; }
+
+
+  li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+  /*]]>*/
+  </style>
+  <link type="text/css" rel="stylesheet" href=
+  "http://www.w3.org/StyleSheets/TR/base.css" />
+</head>
+
+<body>
+  <div class="head">
+    <p><a href="http://www.w3.org/"><img width="72" height="48"
+    alt="W3C" src="http://www.w3.org/Icons/w3c_home" /></a></p>
+
+    <h1>Test Cases for C14N 1.1 and XMLDSig Interoperability</h1>
+
+    <h2>08 January 2008</h2>
+
+    <dl>
+      <dt>This version:</dt>
+
+      <dt>Latest version:</dt>
+
+      <dt>Previous versions:</dt>
+
+      <dt>Authors:</dt>
+
+      <dd>Juan Carlos Cruellas, UPC <a href=
+      "mailto:cruellas@ac.upc.es">&lt;cruellas@ac.upc.es&gt;</a></dd>
+
+      <dd>Konrad Lanz, A-SIT <a href=
+      "mailto:Konrad.Lanz@iaik.tugraz.at">&lt;Konrad.Lanz@iaik.tugraz.at&gt;</a></dd>
+
+      <dd>Sean Mullan, Sun Microsystems <a href=
+      "mailto:Sean.Mullan@Sun.COM">&lt;Sean.Mullan@Sun.COM&gt;</a></dd>
+
+      <dt>Editors:</dt>
+
+      <dd>Juan Carlos Cruellas, UPC <a href=
+      "mailto:cruellas@ac.upc.es">&lt;cruellas@ac.upc.es&gt;</a></dd>
+
+      <dd>Konrad Lanz, A-SIT <a href=
+      "mailto:Konrad.Lanz@iaik.tugraz.at">&lt;Konrad.Lanz@iaik.tugraz.at&gt;</a></dd>
+
+      <dd>Sean Mullan, Sun Microsystems <a href=
+      "mailto:Sean.Mullan@Sun.COM">&lt;Sean.Mullan@Sun.COM&gt;</a></dd>
+
+      <dt>Contributors:</dt>
+
+      <dd>Pratik Datta, Oracle <a href=
+      "mailto:pratik.datta@oracle.com">&lt;pratik.datta@oracle.com&gt;</a></dd>
+
+      <dd>Frederick Hirsch, Nokia <a href=
+      "mailto:frederick.hirsch@nokia.com">&lt;frederick.hirsch@nokia.com&gt;</a></dd>
+
+      <dd>Bruce Rich, IBM <a href=
+      "mailto:brich@us.ibm.com">&lt;brich@us.ibm.com&gt;</a></dd>
+
+      <dd>Thomas Roessler, W3C <a href=
+      "mailto:tlr@w3.org">&lt;tlr@w3.org&gt;</a></dd>
+    </dl>
+
+    <p class="copyright">Copyright © 2008 <a href=
+    "http://www.w3.org/"><abbr title=
+    "World Wide Web Consortium">W3C</abbr></a> , All Rights
+    Reserved.</p>
+  </div>
+  <hr />
+
+  <div>
+    <h2><a name="abstract" id="abstract">Abstract</a></h2>
+
+    <p>This document defines interoperability test cases for
+    Canonical XML 1.1 <a href="#XML-C14N1.1">[XML-C14N1.1]</a> and
+    XML Signature Syntax and Processing, Second Edition <a href=
+    "#XMLDSIG2">[XMLDSIG2]</a>. The changes tested include C14N11
+    handling of attributes in the XML namespace, including xml:id
+    and xml:base, appropriate C14N11 nodeset to octet stream
+    transform processing, modifications to RFC 3986 dot segment
+    processing for C14N11, and RFC 4514 string encoding of
+    Distinguished Names. The tests include standalone C14N11 tests
+    as well as tests integrated with XML signature generation and
+    validation. This document also includes earlier test cases used
+    in XML Signature <a href="#XMLDSIG">[XMLDSIG]</a> for
+    regression testing.</p>
+  </div>
+
+  <div>
+    <h2><a name="status" id="status">Status of this
+    Document</a></h2>
+
+    <p>This document is a working document of the <a href=
+    "http://www.w3.org">World Wide Web Consortium</a> XML Security
+    Specifications Maintenance Working Group. For further details
+    of the activity of this group, please see the <a href=
+    "http://www.w3.org/2007/xmlsec/">XML Security Specifications
+    Maintenance Working Group.</a></p>
+  </div>
+
+  <div class="toc">
+    <h2><a name="contents" id="contents">Table of Contents</a></h2>
+
+    <p class="toc">1 <a href="#Introduction">Introduction</a><br />
+        1.1 <a href="#Introduction-TestCaseNotation">Test Case
+    Notation</a><br />
+        1.2 <a href="#Introduction.RecommendationRefs">Codes for
+    Recommendation References (Rec, SubRec)</a><br />
+        1.3 <a href="#Introduction.IssuesCodes">Codes for Issues
+    (SpecificIssue) and Sub-Issues (SpecificSubIssue)</a><br />
+    2 <a href="#TestCases-Spec">Test Cases specification</a><br />
+        2.1 <a href="#TestCases-Legacy">Legacy XMLDSig Working
+    Group Test Cases</a><br />
+        2.2 <a href="#TestCases-C14n11">Test Cases for
+    Canonicalization 1.1</a><br />
+            2.2.1 <a href="#XMLLANG">Test Cases for xml:lang
+    attribute</a><br />
+            2.2.2 <a href="#XMLSPACE">Test Cases for xml:space
+    attribute</a><br />
+            2.2.3 <a href="#XMLID">Test Cases for xml:id
+    attribute</a><br />
+            2.2.4 <a href="#XMLBASE">Test Cases for xml:base
+    attribute</a><br />
+                2.2.4.1 <a href="#XMLBASE_PROPAGATION">Test Cases
+    for checking xml:base attribute propagation</a><br />
+                2.2.4.2 <a href="#XMLBASE_C14N11SPEC">Test Cases
+    for checking XML-C14N1.1 specification tests</a><br />
+            2.2.5 <a href="#XMLBASE_APPENDIXA">Test Cases for
+    checking examples in the XML-C14N1.1 Appendix</a><br />
+        2.3 <a href="#TestCases-XMLDSig">Test Cases for
+    XMLDSig</a><br />
+            2.3.1 <a href="#TestCases-XMLDSig-C14n11">Test Cases
+    for C14N 1.1 in XMLDSig</a><br />
+            2.3.2 <a href="#TestCases-DefaultCan">Test Cases on
+    nodeset to octet-stream conversion by C14n 1.1 explicitly
+    reflected in the chain of transforms</a><br />
+            2.3.3 <a href="#TestCases-SchemaBasedXPointers">Test
+    Cases on schema based XPointers and canonicalization</a><br />
+            2.3.4 <a href="#TestCases-DistinguishedName">Test Cases
+    on String encoding of Distinguished Names</a><br />
+                2.3.4.1 <a href=
+    "#TestCases-DistinguishedName-RFC2253-RFC4514">Test Cases on
+    differences identified in RFC 2253 and RFC 4514</a><br />
+                2.3.4.2 <a href=
+    "#TestCases-DistinguishedName-RFC4514">Test Cases for RFC
+    4514</a><br />
+    3 <a href="#References">References</a><br /></p>
+  </div>
+  <hr />
+
+  <div class="body">
+    <div class="div1">
+      <h2><a name="Introduction" id="Introduction"></a>1
+      Introduction</h2>
+
+      <p>The test cases include standalone C14N 1.1 tests and test
+      cases involving XML signature generation and validation. XML
+      signatures are generated according to the details specified
+      in this document.</p>
+
+      <p>All the test cases are positive (signatures that are
+      valid).</p>
+
+      <p>Applications should validate these signatures and check
+      that they are valid.</p>
+
+      <div class="div2">
+        <h3><a name="Introduction-TestCaseNotation" id=
+        "Introduction-TestCaseNotation"></a>1.1 Test Case
+        Notation</h3>
+
+        <p>This section summarizes the notation used for
+        identification of test cases.</p>
+
+        <p>A test case identifier matches the following pattern,
+        and the syntax for describing the pattern is borrowed from
+        <a href=
+        "http://www.w3.org/TR/xmldsig-core/#sec-Overview">section
+        2.0</a> of <a href="#XMLDSIG">[XMLDSIG]</a> (where "?"
+        denotes zero or one occurrence; "+" denotes one or more
+        occurrences; "*" denotes zero or more occurrences) and "|"
+        denotes a choice.</p>
+
+        <table summary="Example" width="100%" bgcolor="#99FFFF"
+        border="1" cellpadding="5" class="eg">
+          <tr>
+            <td>
+              <pre>
+  Rec/(SubRec/)?(SpecificIssue-(SpecificSubIssue-)?)+TestNumber
+</pre>
+            </td>
+          </tr>
+        </table>
+
+        <p>The <code>Rec</code> part identifies the source
+        recommendation for the test case.</p>
+
+        <p>The <code>SubRec</code> part identifies a recommendation
+        that is tested in the context of <code>Rec</code>.</p>
+
+        <p>The <code>SpecificIssue</code> part identifies the issue
+        to be tested by the test case. The optional
+        <code>SpecificSubIssue</code> part further refines the
+        issue to be tested.</p>
+
+        <p>The <code>TestNumber</code> part numbers the test case.
+        It must be an integer number or an integer number followed
+        by a lowercase letter.</p>
+
+        <p>The next section identifies codes used throughout this
+        document.</p>
+      </div>
+
+      <div class="div2">
+        <h3><a name="Introduction.RecommendationRefs" id=
+        "Introduction.RecommendationRefs"></a>1.2 Codes for
+        Recommendation References (<code>Rec</code>,
+        <code>SubRec</code>)</h3>
+
+        <p>The following codes are used for identifying the source
+        recommendations for the test cases:</p>
+
+        <ul>
+          <li>
+            <p><code>c14n11</code> identifies the standalone
+            <a href="#XML-C14N1.1">[XML-C14N1.1]</a> test
+            cases.</p>
+          </li>
+
+          <li>
+            <p><code>xmldsig</code> identifies the <a href=
+            "#XMLDSIG2">[XMLDSIG2]</a> test cases.</p>
+
+            <ul>
+              <li>
+                <p><code>c14n11</code> identifies the test cases
+                that test <code>c14n11</code> with
+                <code>xmldsig</code>.</p>
+              </li>
+
+              <li>
+                <p><code>dname</code> identifies the test cases
+                that test <a href="#RFC-4514">[RFC-4514]</a> versus
+                <a href="#RFC-2253">[RFC-2253]</a> with
+                <code>xmldsig</code>.</p>
+              </li>
+
+              <li>
+                <p><code>xpointer</code> identifies the test cases
+                that test <a href=
+                "#XPointer-Framework">[XPointer-Framework]</a>,
+                <a href="#XPointer-Element">[XPointer-Element]</a>
+                and <a href=
+                "#XPointer-xpointer">[XPointer-xpointer]</a> with
+                <code>xmldsig</code>.</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <p id="directory-structure">This structure is reflected in
+        the directories <a href="../c14n11/">c14n11/</a>, <a href=
+        "../xmldsig/">xmldsig/</a>, <a href=
+        "../xmldsig/c14n11/">xmldsig/c14n11/</a>, <a href=
+        "../xmldsig/dname/">xmldsig/dname/</a> and <a href=
+        "../xmldsig/xpointer/">xmldsig/xpointer/</a>.</p>
+      </div>
+
+      <div class="div2">
+        <h3><a name="Introduction.IssuesCodes" id=
+        "Introduction.IssuesCodes"></a>1.3 Codes for Issues
+        (<code>SpecificIssue</code>) and Sub-Issues
+        (<code>SpecificSubIssue</code>)</h3>
+
+        <p>The following codes are used for identifying the issues
+        and sub-issues for the test cases:</p>
+
+        <ul>
+          <li>
+            <p><code>defCan</code> identifies the test cases that
+            test the <a href="#XMLDSIG2">[XMLDSIG2]</a> implicit
+            and explicit rules managing the final canonicalization
+            that precedes the digest computation..</p>
+          </li>
+
+          <li>
+            <p><code>xmllang</code> identifies the test cases that
+            test the C14N11 handling of the <code>xml:lang</code>
+            attribute.</p>
+          </li>
+
+          <li>
+            <p><code>xmlspace</code> identifies the test cases that
+            test the C14N11 handling of the <code>xml:space</code>
+            attribute.</p>
+          </li>
+
+          <li>
+            <p><code>xmlid</code> identifies the test cases that
+            test the C14N11 handling of the <code>xml:id</code>
+            attribute.</p>
+          </li>
+
+          <li>
+            <p><code>xmlbase</code> identifies the test cases that
+            test the C14N11 handling of the <code>xml:base</code>
+            attribute.</p>
+
+            <p>The following sub-issues are associated with this
+            issue:</p>
+
+            <ul>
+              <li>
+                <p><code>prop</code> identifies the test cases that
+                test the C14N11 propagation of the
+                <code>xml:base</code> attribute through the node
+                tree.</p>
+              </li>
+
+              <li>
+                <p><code>annexA</code> identifies the test cases
+                that test the C14N11 Remove Dot Segments examples
+                listed in Appendix A of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a>.</p>
+              </li>
+
+              <li>
+                <p><code>c14n11spec</code> identifies the test
+                cases that test the examples in the <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> specification.</p>
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            <p><code>dnString</code> identifies the test cases that
+            test the string encoding of Distinguished Names.</p>
+          </li>
+
+          <li>
+            <p><code>diffRFCs</code> identifies the test cases that
+            test the differences between <a href=
+            "#RFC-2253">[RFC-2253]</a> and <a href=
+            "#RFC-4514">[RFC-4514]</a>.</p>
+          </li>
+
+          <li>
+            <p><code>xpointer</code> identifies the test cases that
+            test the handling of XPointer Reference URIs as
+            specified in <a href="#XMLDSIG2">[XMLDSIG2]</a></p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="div1">
+      <h2><a name="TestCases-Spec" id="TestCases-Spec"></a>2 Test
+      Cases specification</h2>
+
+      <p>The following sub-sections describe each of the test cases
+      and are grouped by Recommendation and Issue.</p>
+
+      <div class="div2">
+        <h3><a name="TestCases-Legacy" id=
+        "TestCases-Legacy"></a>2.1 Legacy XMLDSig Working Group
+        Test Cases</h3>
+
+        <p>The IETF/W3C XML-DSig Working Group produced an
+        interoperability test matrix that can be found at <a href=
+        "#XMLDSIG-interop">[XMLDSIG-interop]</a>.</p>
+      </div>
+
+      <div class="div2">
+        <h3><a name="TestCases-C14n11" id=
+        "TestCases-C14n11"></a>2.2 Test Cases for Canonicalization
+        1.1</h3>
+
+        <p>The set of test cases in this section are designed to
+        test the C14N11 handling of attributes in the xml
+        namespace. The input for each of these test cases is an XML
+        document and an XPath document subset expression. Two
+        different sets of tests are included based on the test
+        cases in this section.</p>
+
+        <ul>
+          <li>
+            <p>Standalone tests: no XML signature generation or
+            validation is required. The XPath document subset
+            expression is applied to the input document. These
+            tests are used to check that the implementation for
+            <a href="#XML-C14N1.1">[XML-C14N1.1]</a> behaves
+            correctly.</p>
+          </li>
+
+          <li>
+            <p>Integrated tests with XML signatures: In these set
+            of tests, an XML signature is generated based on the
+            input document and a corresponding XPath Filtering
+            Transform as indicated in the tables. For these set of
+            tests, the following rules apply:</p>
+
+            <ul>
+              <li>
+                <p>The XML Signature is generated using the
+                HMAC-SHA1 SignatureMethod algorithm and a secret
+                key with the value:
+                <code>"secret".getBytes("ASCII")</code>.</p>
+              </li>
+
+              <li>
+                <p>The <code>Transforms</code> element contains a
+                sequence of two transforms:</p>
+
+                <ul>
+                  <li>
+                    <p>An XPath Filtering Transform that contains
+                    an XPath expression that depends on the test
+                    case.</p>
+                  </li>
+
+                  <li>
+                    <p>A Canonical XML 1.1 Transform.</p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="div3">
+          <h4><a name="XMLLANG" id="XMLLANG"></a>2.2.1 Test Cases
+          for <code>xml:lang</code> attribute</h4>
+
+          <p>The set of test cases in this section test the C14N11
+          handling of <code>xml:lang</code> attributes.</p>
+
+          <p>Below is the <a href=
+          "../c14n11/xmllang-input.xml">input document</a> for the
+          test cases in this section:</p>
+
+          <table summary="Example" width="100%" bgcolor="#99FFFF"
+          border="1" cellpadding="5" class="eg">
+            <tr>
+              <td>
+                <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;ietf:c14n11Xmllang xmlns:ietf="http://www.ietf.org" 
+  xmlns:w3c="http://www.w3.org"&gt;
+     &lt;ietf:e1 xml:lang="EN"&gt;
+        &lt;ietf:e11&gt;
+           &lt;ietf:e111 /&gt;
+        &lt;/ietf:e11&gt;
+        &lt;ietf:e12 at="2"&gt;
+           &lt;ietf:e121 /&gt;
+        &lt;/ietf:e12&gt;
+     &lt;/ietf:e1&gt;
+     &lt;ietf:e2 &gt;
+        &lt;ietf:e21 /&gt;
+     &lt;/ietf:e2&gt;
+  &lt;/ietf:c14n11Xmllang&gt;
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <div class="note">
+            <p class="prefix"><b>Note:</b></p>
+
+            <p>Document subset expressions for document subsets
+            computation are defined as in <a href=
+            "#XML-C14N1.1">[XML-C14N1.1]</a>.</p>
+          </div>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmllang-1">
+                Test case c14n11/xmllang-1</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">To-Be-Signed (TBS
+                henceforth) data object with ONLY a
+                <code>xml:lang</code> attribute in a certain
+                element <code>e</code> whose content includes other
+                elements. The <code>ds:Transform</code> contains a
+                XPath expression whose result is a node set that
+                includes element <code>e</code>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:lang
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-1.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*)[ancestor-or-self::ietf:e1]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-1.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" xml:lang="EN"&gt;
+        &lt;ietf:e11&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;
+        &lt;ietf:e12 at="2"&gt;
+           &lt;ietf:e121&gt;&lt;/ietf:e121&gt;
+        &lt;/ietf:e12&gt;
+     &lt;/ietf:e1&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmllang-2">
+                Test case c14n11/xmllang-2</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS data object with
+                ONLY a <code>xml:lang</code> attribute in a certain
+                element <code>e</code> whose content includes other
+                elements. The <code>ds:Transform</code> contains a
+                XPath expression whose result is a node set that
+                DOES NOT include neither element <code>e</code> nor
+                any of its children elements.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:lang
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-2.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*)[ancestor-or-self::ietf:e2]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-2.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e2 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+        &lt;ietf:e21&gt;&lt;/ietf:e21&gt;
+     &lt;/ietf:e2&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmllang-3">
+                Test case c14n11/xmllang-3</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS with ONLY a
+                <code>xml:lang</code> attribute in a certain
+                element <code>e</code> whose content includes a
+                sequence of one element. The
+                <code>ds:Transform</code> contains a XPath
+                expression whose result is a node set that DOES NOT
+                include element <code>e</code> but includes one
+                child element.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:lang
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-3.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*)[ancestor-or-self::ietf:e11]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-3.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e11 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" xml:lang="EN"&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmllang-4">
+                Test case c14n11/xmllang-4</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS with ONLY a
+                <code>xml:lang</code> attribute in a certain
+                element <code>e</code> whose content includes a
+                sequence of more than one element (these children
+                may in turn contain children elements). The
+                <code>ds:Transform</code> contains a XPath
+                expression whose result is a node set that DOES NOT
+                include element <code>e</code> but includes more
+                than one of its children elements.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:lang
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-4.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*)[ancestor-or-self::ietf:e11 or
+                ancestor-or-self::ietf:e12]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmllang-4.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e11 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" xml:lang="EN"&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;\
++ &lt;ietf:e12 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" at="2" xml:lang="EN"&gt;
+           &lt;ietf:e121&gt;&lt;/ietf:e121&gt;
+        &lt;/ietf:e12&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="div3">
+          <h4><a name="XMLSPACE" id="XMLSPACE"></a>2.2.2 Test Cases
+          for <code>xml:space</code> attribute</h4>
+
+          <p>The set of test cases in this section test the C14N11
+          handling of <code>xml:space</code> attributes.</p>
+
+          <p>Below is the <a href=
+          "../c14n11/xmlspace-input.xml">input document</a> for the
+          test cases in this section:</p>
+
+          <table summary="Example" width="100%" bgcolor="#99FFFF"
+          border="1" cellpadding="5" class="eg">
+            <tr>
+              <td>
+                <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;ietf:c14n11XmlSpaceDoc1 xmlns:ietf="http://www.ietf.org" 
+  xmlns:w3c="http://www.w3.org"&gt;
+     &lt;ietf:e1 xml:space="true"&gt;
+        &lt;ietf:e11&gt;
+           &lt;ietf:e111 /&gt;
+        &lt;/ietf:e11&gt;
+        &lt;ietf:e12 at="2"&gt;
+           &lt;ietf:e121 /&gt;
+        &lt;/ietf:e12&gt;
+     &lt;/ietf:e1&gt;
+     &lt;ietf:e2 &gt;
+        &lt;ietf:e21 /&gt;
+     &lt;/ietf:e2&gt;
+  &lt;/ietf:c14n11XmlSpaceDoc1&gt;
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmlspace-1">
+                Test case c14n11/xmlspace-1</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS data object with
+                ONLY a <code>xml:space</code> attribute in a
+                certain element <code>e</code> whose content
+                includes other elements. The
+                <code>ds:Transform</code> contains a XPath
+                expression whose result is a node set that includes
+                element <code>e</code>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:space
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-1.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*) [ancestor-or-self::ietf:e1]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-1.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" xml:space="true"&gt;
+        &lt;ietf:e11&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;
+        &lt;ietf:e12 at="2"&gt;
+           &lt;ietf:e121&gt;&lt;/ietf:e121&gt;
+        &lt;/ietf:e12&gt;
+     &lt;/ietf:e1&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmlspace-2">
+                Test case c14n11/xmlspace-2</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS data object with
+                ONLY a <code>xml:space</code> attribute in a
+                certain element <code>e</code> whose content
+                includes other elements. The
+                <code>ds:Transform</code> contains a XPath
+                expression whose result is a node set that DOES NOT
+                include neither element <code>e</code> nor any of
+                its children elements.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:space
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-2.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*) [ancestor-or-self::ietf:e2]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-2.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e2 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+        &lt;ietf:e21&gt;&lt;/ietf:e21&gt;
+     &lt;/ietf:e2&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmlspace-3">
+                Test case c14n11/xmlspace-3</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS with ONLY a
+                <code>xml:space</code> attribute in a certain
+                element <code>e</code> whose content includes a
+                sequence of one element. The
+                <code>ds:Transform</code> contains a XPath
+                expression whose result is a node set that DOES NOT
+                include element <code>e</code> but includes its
+                child element.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:space
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-3.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*) [ancestor-or-self::ietf:e11]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-3.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e11 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" xml:space="true"&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmlspace-4">
+                Test case c14n11/xmlspace-4</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS with ONLY a
+                <code>xml:space</code> attribute in a certain
+                element <code>e</code> whose content includes a
+                sequence of more than one element (these children
+                may in turn contain children elements). The
+                <code>ds:Transform</code> contains a XPath
+                expression whose result is a node set that DOES NOT
+                include element <code>e</code> but includes more
+                than one of its children elements.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:space
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-4.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*) [ancestor-or-self::ietf:e11 or
+                ancestor-or-self::ietf:e12]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlspace-4.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e11 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" xml:space="true"&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;\
++ &lt;ietf:e12 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" at="2" xml:space="true"&gt;
+           &lt;ietf:e121&gt;&lt;/ietf:e121&gt;
+        &lt;/ietf:e12&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="div3">
+          <h4><a name="XMLID" id="XMLID"></a>2.2.3 Test Cases for
+          <code>xml:id</code> attribute</h4>
+
+          <p>The set of test cases in this section test the C14N11
+          handling of <code>xml:id</code> attributes.</p>
+
+          <p>Below is the <a href="../c14n11/xmlid-input.xml">input
+          document</a> for all the test cases in this section:</p>
+
+          <table summary="Example" width="100%" bgcolor="#99FFFF"
+          border="1" cellpadding="5" class="eg">
+            <tr>
+              <td>
+                <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;ietf:c14n11XmlIdDoc1 xmlns:ietf="http://www.ietf.org" 
+  xmlns:w3c="http://www.w3.org"&gt;
+     &lt;ietf:e1 xml:id="IdInterop"&gt;
+        &lt;ietf:e11&gt;
+           &lt;ietf:e111 /&gt;
+        &lt;/ietf:e11&gt;
+        &lt;ietf:e12 at="2"&gt;
+           &lt;ietf:e121 /&gt;
+        &lt;/ietf:e12&gt;
+     &lt;/ietf:e1&gt;
+     &lt;ietf:e2 &gt;
+        &lt;ietf:e21 /&gt;
+     &lt;/ietf:e2&gt;  
+  &lt;/ietf:c14n11XmlIdDoc1&gt;
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmlid-1">Test
+                case c14n11/xmlid-1</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS with ONLY a
+                <code>xml:id</code> attribute in a certain element
+                <code>e</code> whose content includes other
+                elements. The <code>ds:Transform</code> contains a
+                XPath expression whose result is a node set that
+                includes element <code>e</code>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:id
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlid-1.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*) [ancestor-or-self::ietf:e1]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlid-1.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" xml:id="IdInterop"&gt;
+        &lt;ietf:e11&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;
+        &lt;ietf:e12 at="2"&gt;
+           &lt;ietf:e121&gt;&lt;/ietf:e121&gt;
+        &lt;/ietf:e12&gt;
+     &lt;/ietf:e1&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="c14n11xmlid-2">Test
+                case c14n11/xmlid-2</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">TBS with ONLY a
+                <code>xml:id</code> attribute in a certain element
+                <code>e</code> whose content includes other
+                elements. The <code>ds:Transform</code> contains a
+                XPath expression whose result is a node set that
+                DOES NOT include the element <code>e</code> but
+                some of the children of the element
+                <code>e</code>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations of <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a> handle xml:id
+                attributes as defined in <a href=
+                "#XML-C14N1.1">[XML-C14N1.1]</a></td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlid-2.xpath">Document subset
+                expression</a></th>
+
+                <td rowspan="1" colspan="1">(//. | //@* |
+                //namespace::*) [ancestor-or-self::ietf:e11 or
+                ancestor-or-self::ietf:e12]</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/xmlid-2.output">Output</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;ietf:e11 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+           &lt;ietf:e111&gt;&lt;/ietf:e111&gt;
+        &lt;/ietf:e11&gt;\
++ &lt;ietf:e12 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org" at="2"&gt;
+           &lt;ietf:e121&gt;&lt;/ietf:e121&gt;
+        &lt;/ietf:e12&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="div3">
+          <h4><a name="XMLBASE" id="XMLBASE"></a>2.2.4 Test Cases
+          for <code>xml:base</code> attribute</h4>
+
+          <p>The set of test cases in this section test the C14N11
+          handling of <code>xml:base</code> attributes.</p>
+
+          <p>Three sets of test cases have been defined:</p>
+
+          <ul>
+            <li>
+              <p>Tests that check if the implementation correctly
+              propagates the <code>xml:base</code> attributes
+              through the node tree.</p>
+            </li>
+
+            <li>
+              <p>Tests that check if the implementation correctly
+              processes the examples involving xml:base propagation
+              in the <a href="#XML-C14N1.1">[XML-C14N1.1]</a>
+              specification.</p>
+            </li>
+
+            <li>
+              <p>Tests that check if the implementation correctly
+              processes the examples in the Appendix of <a href=
+              "#XML-C14N1.1">[XML-C14N1.1]</a></p>
+            </li>
+          </ul>
+
+          <div class="div4">
+            <h5><a name="XMLBASE_PROPAGATION" id=
+            "XMLBASE_PROPAGATION"></a>2.2.4.1 Test Cases for
+            checking <code>xml:base</code> attribute
+            propagation</h5>
+
+            <p>This section defines test cases that test how
+            implementations propagate <code>xml:base</code>
+            attributes through the tree when the result of the
+            filtering is a document subset.</p>
+
+            <p>Below is the <a href=
+            "../c14n11/xmlbase-prop-input.xml">input document</a>
+            for the test cases in this section:</p>
+
+            <table summary="Example" width="100%" bgcolor="#99FFFF"
+            border="1" cellpadding="5" class="eg">
+              <tr>
+                <td>
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;ietf:c14n11XmlBaseDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase0/"&gt;
+    &lt;ietf:e1 xml:base="/xmlbase1/"&gt;
+      &lt;ietf:e11 xml:base="/xmlbase11/"&gt;
+        &lt;ietf:e111 xml:base="/xmlbase111/"/&gt;
+      &lt;/ietf:e11&gt;
+      &lt;ietf:e12 at="2"&gt;
+        &lt;ietf:e121 xml:base="/xmlbase121/"/&gt;
+      &lt;/ietf:e12&gt;
+    &lt;/ietf:e1&gt;
+    &lt;ietf:e2&gt;
+      &lt;ietf:e21 xml:base="/xmlbase21/"/&gt;
+    &lt;/ietf:e2&gt;
+    &lt;ietf:e3&gt;
+      &lt;ietf:e31 at="3"/&gt;
+    &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlBaseDoc1&gt;
+</pre>
+                </td>
+              </tr>
+            </table>
+
+            <p>The document's root element
+            <code>ietf:c14n11XmlBaseDoc1</code> defines an
+            <code>xml:base</code> attribute. This element contains
+            three children elements.</p>
+
+            <p>The first element <code>ietf:e1</code> has another
+            <code>xml:base</code> attribute. All the
+            <code>ietf:e1</code>'s descendant elements have a
+            <code>xml:base</code> attribute. Transforms that select
+            subsets of <code>ietf:e1</code>'s descendants will test
+            how each level in the tree of elements incorporates its
+            corresponding part to the value of the final
+            <code>xml:base</code>.</p>
+
+            <p>The second element <code>ietf:e2</code> does not
+            have a <code>xml:base</code> attribute, but its child
+            element, <code>ietf:e21</code> has a
+            <code>xml:base</code> attribute. Transforms that select
+            <code>ietf:e21</code> will test how it takes the value
+            of <code>xml:base</code> from an ancestor different
+            than its parent.</p>
+
+            <p>As for the third element, neither it nor any of its
+            descendants have a <code>xml:base</code> attribute.
+            Transforms that select <code>ietf:e3</code> or any of
+            its descendants will test how they inherit the
+            <code>xml:base</code> attribute from the root element
+            without any further processing.</p>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-prop-1">Test case
+                  c14n11/xmlbase-prop-1</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The document shown
+                  above. The <code>ds:Transform</code> contains a
+                  XPath expression whose result is a node set that
+                  includes element
+                  <code>ietf:c14n11XmlBaseDoc1</code> and the child
+                  <code>ietf:e1</code> and its descendant.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations of <a href=
+                  "#XML-C14N1.1">[XML-C14N1.1]</a> work properly
+                  when the <code>xml:base</code> origin appears in
+                  the output document subset and also children with
+                  <code>xml:base</code>, which do not require
+                  further processing, are also present.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-1.xpath">Document subset
+                  expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*)
+                  [ancestor-or-self::ietf:c14n11XmlBaseDoc1 and
+                  not(ancestor-or-self::ietf:e2)]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-1.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;ietf:c14n11XmlBaseDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase0/"&gt;
+    &lt;ietf:e1 xml:base="/xmlbase1/"&gt;
+      &lt;ietf:e11 xml:base="/xmlbase11/"&gt;
+        &lt;ietf:e111 xml:base="/xmlbase111/"&gt;&lt;/ietf:e111&gt;
+      &lt;/ietf:e11&gt;
+      &lt;ietf:e12 at="2"&gt;
+        &lt;ietf:e121 xml:base="/xmlbase121/"&gt;&lt;/ietf:e121&gt;
+      &lt;/ietf:e12&gt;
+    &lt;/ietf:e1&gt;
+    
+    &lt;ietf:e3&gt;
+      &lt;ietf:e31 at="3"&gt;&lt;/ietf:e31&gt;
+    &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlBaseDoc1&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-prop-2">Test case
+                  c14n11/xmlbase-prop-2</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The document shown
+                  above. The <code>ds:Transform</code> contains a
+                  XPath expression whose result is a node set that
+                  includes element <code>ietf:e1</code> and its
+                  descendant but not
+                  <code>ietf:c14n11XmlBaseDoc1</code>.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations of <a href=
+                  "#XML-C14N1.1">[XML-C14N1.1]</a> properly build
+                  the <code>xml:base</code> at the first level
+                  (<code>ietf:e1</code>).</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-2.xpath">Document subset
+                  expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*) [ancestor-or-self::ietf:e1]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-2.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;ietf:e1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase1/"&gt;
+      &lt;ietf:e11 xml:base="/xmlbase11/"&gt;
+        &lt;ietf:e111 xml:base="/xmlbase111/"&gt;&lt;/ietf:e111&gt;
+      &lt;/ietf:e11&gt;
+      &lt;ietf:e12 at="2"&gt;
+        &lt;ietf:e121 xml:base="/xmlbase121/"&gt;&lt;/ietf:e121&gt;
+      &lt;/ietf:e12&gt;
+    &lt;/ietf:e1&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-prop-3">Test case
+                  c14n11/xmlbase-prop-3</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The document shown
+                  above. The <code>ds:Transform</code> contains a
+                  XPath expression whose result is a node set that
+                  includes element <code>ietf:e11</code> and its
+                  descendant. Elements
+                  <code>ietf:c14n11XmlBaseDoc1</code> and
+                  <code>ietf:e1</code> do not appear.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations of <a href=
+                  "#XML-C14N1.1">[XML-C14N1.1]</a> properly build
+                  the <code>xml:base</code> if one of intermediate
+                  the levels (<code>ietf:e1</code>) are absent from
+                  the document subset.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-3.xpath">Document subset
+                  expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*) [ancestor-or-self::ietf:e11]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-3.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;ietf:e11 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase11/"&gt;
+        &lt;ietf:e111 xml:base="/xmlbase111/"&gt;&lt;/ietf:e111&gt;
+      &lt;/ietf:e11&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-prop-4">Test case
+                  c14n11/xmlbase-prop-4</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The document shown
+                  above. The <code>ds:Transform</code> contains a
+                  XPath expression whose result is a node set that
+                  includes element <code>ietf:e111</code> and its
+                  descendant. Elements
+                  <code>ietf:c14n11XmlBaseDoc1</code>,
+                  <code>ietf:e11</code> and <code>ietf:e1</code> do
+                  not appear.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations of <a href=
+                  "#XML-C14N1.1">[XML-C14N1.1]</a> properly build
+                  the <code>xml:base</code> if several intermediate
+                  levels (<code>ietf:e1</code> and
+                  <code>ietf:e11</code>) are absent from the
+                  document subset.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-4.xpath">Document subset
+                  expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*)
+                  [ancestor-or-self::ietf:e111]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-4.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;ietf:e111 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase111/"&gt;&lt;/ietf:e111&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-prop-5">Test case
+                  c14n11/xmlbase-prop-5</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The document shown
+                  above. The <code>ds:Transform</code> contains a
+                  XPath expression whose result is a node set that
+                  includes element <code>ietf:e2</code> and its
+                  descendant. Elements
+                  <code>ietf:c14n11XmlBaseDoc1</code>,
+                  <code>ietf:e1</code> and its descendant, and
+                  <code>ietf:e3</code> and its descendant do not
+                  appear.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations of <a href=
+                  "#XML-C14N1.1">[XML-C14N1.1]</a> properly build
+                  the <code>xml:base</code> if one intermediate
+                  level (<code>ietf:e2</code>) without any
+                  <code>xml:base</code> attribute is absent from
+                  the document subset.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-5.xpath">Document subset
+                  expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*) [ancestor-or-self::ietf:e21]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-5.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;ietf:e21 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase21/"&gt;&lt;/ietf:e21&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-prop-6">Test case
+                  c14n11/xmlbase-prop-6</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The document shown
+                  above. The <code>ds:Transform</code> contains a
+                  XPath expression whose result is a node set that
+                  includes element <code>ietf:e3</code> and its
+                  descendant. Elements
+                  <code>ietf:c14n11XmlBaseDoc1</code>,
+                  <code>ietf:e1</code> and its descendant, and
+                  <code>ietf:e2</code> and its descendant do not
+                  appear.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations of <a href=
+                  "#XML-C14N1.1">[XML-C14N1.1]</a> properly build
+                  the <code>xml:base</code> in one element that
+                  originally had no <code>xml:base</code>
+                  attribute.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-6.xpath">Document subset
+                  expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*) [ancestor-or-self::ietf:e3]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-6.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;ietf:e3 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase0/"&gt;
+      &lt;ietf:e31 at="3"&gt;&lt;/ietf:e31&gt;
+    &lt;/ietf:e3&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-prop-7">Test case
+                  c14n11/xmlbase-prop-7</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The document shown
+                  above. The <code>ds:Transform</code> contains a
+                  XPath expression whose result is a node set that
+                  includes elements
+                  <code>ietf:c14n11XmlBaseDoc1</code> and
+                  <code>ietf:e3</code> and its descendant. Elements
+                  <code>ietf:e1</code> and its descendant, and
+                  <code>ietf:e2</code> and its descendant do not
+                  appear.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations of <a href=
+                  "#XML-C14N1.1">[XML-C14N1.1]</a> do not pass the
+                  <code>xml:base</code> to another element when it
+                  is not necessary.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-7.xpath">Document subset
+                  expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*)
+                  [ancestor-or-self::ietf:c14n11XmlBaseDoc1 and
+                  not(ancestor-or-self::ietf:e1 or
+                  ancestor-or-self::ietf:e2)]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-prop-7.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;ietf:c14n11XmlBaseDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"\
++  xml:base="http://xmlbase.example.org/xmlbase0/"&gt;
+    
+    
+    &lt;ietf:e3&gt;
+      &lt;ietf:e31 at="3"&gt;&lt;/ietf:e31&gt;
+    &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlBaseDoc1&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="div4">
+            <h5><a name="XMLBASE_C14N11SPEC" id=
+            "XMLBASE_C14N11SPEC"></a>2.2.4.2 Test Cases for
+            checking XML-C14N1.1 specification tests</h5>
+
+            <p>This section defines test cases that are based on
+            the examples in the C14N11 specification that propagate
+            <code>xml:base</code> attributes through the tree when
+            the result of the filtering is a document subset.</p>
+
+            <p>Below is the <a href=
+            "../c14n11/xmlbase-c14n11spec-input.xml">input
+            document</a> from section 3.8 of <a href=
+            "#XML-C14N1.1">[XML-C14N1.1]</a> for the test case
+            c14n11/xmlbase-c14n11spec-102 below:</p>
+
+            <table summary="Example" width="100%" bgcolor="#99FFFF"
+            border="1" cellpadding="5" class="eg">
+              <tr>
+                <td>
+                  <pre>
+  &lt;!DOCTYPE doc [
+  &lt;!ATTLIST e2 xml:space (default|preserve) 'preserve'&gt;
+  &lt;!ATTLIST e3 id ID #IMPLIED&gt;
+  ]&gt;
+  &lt;doc xmlns="http://www.ietf.org" xmlns:w3c="http://www.w3.org"\
++  xml:base="http://www.example.com/something/else"&gt;
+     &lt;e1&gt;
+        &lt;e2 xmlns="" xml:id="abc" xml:base="../bar/"&gt;
+           &lt;e3 id="E3" xml:base="foo"/&gt;
+        &lt;/e2&gt;
+     &lt;/e1&gt;
+  &lt;/doc&gt;
+                
+</pre>
+                </td>
+              </tr>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-c14n11spec-102">Test case
+                  c14n11/xmlbase-c14n11spec-102</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input document
+                  shown above.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that correct
+                  xml:base fixup is performed.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-c14n11spec-102.xpath">Document
+                  subset expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*)[self::ietf:e1 or (parent::ietf:e1
+                  and not(self::text() or self::e2)) or
+                  count(id("E3")|ancestor-or-self::node()) =
+                  count(ancestor-or-self::node())]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-c14n11spec-102.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;e1 xmlns="http://www.ietf.org" xmlns:w3c="http://www.w3.org"\
++  xml:base="http://www.example.com/something/else"&gt;\
++ &lt;e3 xmlns="" id="E3" xml:base="../bar/foo" xml:space="preserve"&gt;\
++ &lt;/e3&gt;&lt;/e1&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>Below is the <a href=
+            "../c14n11/xmlbase-c14n11spec2-input.xml">input
+            document</a> similar to the example from section 3.8 of
+            <a href="#XML-C14N1.1">[XML-C14N1.1]</a> for the test
+            case c14n11/xmlbase-c14n11spec-102 below. The main
+            difference is that the value of the xml:base attribute
+            of the e2 element is "bar/" instead of "../bar".</p>
+
+            <table summary="Example" width="100%" bgcolor="#99FFFF"
+            border="1" cellpadding="5" class="eg">
+              <tr>
+                <td>
+                  <pre>
+  &lt;!DOCTYPE doc [
+  &lt;!ATTLIST e2 xml:space (default|preserve) 'preserve'&gt;
+  &lt;!ATTLIST e3 id ID #IMPLIED&gt;
+  ]&gt;
+  &lt;doc xmlns="http://www.ietf.org" xmlns:w3c="http://www.w3.org"\
++  xml:base="something/else"&gt;
+     &lt;e1&gt;
+        &lt;e2 xmlns="" xml:id="abc" xml:base="bar/"&gt;
+           &lt;e3 id="E3" xml:base="foo"/&gt;
+        &lt;/e2&gt;
+     &lt;/e1&gt;
+  &lt;/doc&gt;
+                
+</pre>
+                </td>
+              </tr>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-c14n11spec2-102">Test case
+                  c14n11/xmlbase-c14n11spec2-102</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input document
+                  shown above.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that correct
+                  xml:base fixup is performed.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-c14n11spec2-102.xpath">Document
+                  subset expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*)[self::ietf:e1 or (parent::ietf:e1
+                  and not(self::text() or self::e2)) or
+                  count(id("E3")|ancestor-or-self::node()) =
+                  count(ancestor-or-self::node())]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-c14n11spec2-102.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;e1 xmlns="http://www.ietf.org" xmlns:w3c="http://www.w3.org"\
++  xml:base="something/else"&gt;\
++ &lt;e3 xmlns="" id="E3" xml:base="bar/foo" xml:space="preserve"&gt;\
++ &lt;/e3&gt;&lt;/e1&gt;
+                        
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>Below is the <a href=
+            "../c14n11/xmlbase-c14n11spec3-input.xml">input
+            document</a> from section 2.4 of <a href=
+            "#XML-C14N1.1">[XML-C14N1.1]</a> for the test case
+            c14n11/xmlbase-c14n11spec-103 below.</p>
+
+            <table summary="Example" width="100%" bgcolor="#99FFFF"
+            border="1" cellpadding="5" class="eg">
+              <tr>
+                <td>
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;a xml:base="foo/bar"&gt;
+   &lt;b xml:base=".."&gt;
+    &lt;c xml:base=".."&gt;
+     &lt;d xml:base="x"&gt;
+     &lt;/d&gt;
+    &lt;/c&gt;
+   &lt;/b&gt;
+  &lt;/a&gt;
+                
+</pre>
+                </td>
+              </tr>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "c14n11xmlbase-c14n11spec3-103">Test case
+                  c14n11/xmlbase-c14n11spec3-103</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input document
+                  shown above.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that correct
+                  xml:base fixup is performed. This test
+                  illustrates the modification of the "Remove Dot
+                  Segments" algorithm.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-c14n11spec3-103.xpath">Document
+                  subset expression</a></th>
+
+                  <td rowspan="1" colspan="1">(//. | //@* |
+                  //namespace::*) [self::a or
+                  ancestor-or-self::d]</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../c14n11/xmlbase-c14n11spec3-103.output">Output</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;a xml:base="foo/bar"&gt;&lt;d xml:base="../../x"&gt;
+     &lt;/d&gt;&lt;/a&gt;
+                        
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="div3">
+          <h4><a name="XMLBASE_APPENDIXA" id=
+          "XMLBASE_APPENDIXA"></a>2.2.5 Test Cases for checking
+          examples in the XML-C14N1.1 Appendix</h4>
+
+          <p>This section defines test cases for checking if
+          implementations are compliant with <a href=
+          "#XML-C14N1.1">[XML-C14N1.1]</a>, specifically the
+          normative rules in the <a href=
+          "http://www.w3.org/TR/2008/PR-xml-c14n11-20080129/#DocSubsets">
+          Document Subsets</a> section. Informative examples are
+          given in <a href=
+          "http://www.w3.org/TR/2008/PR-xml-c14n11-20080129/#appendix">
+          the Appendix</a> of C14N11.</p>
+
+          <p>Each test case in this section specifies an input
+          string, representing a URI that must be processed
+          according to the modified Remove Dot Segments algorithm
+          described in Section 2.4 (Document Subsets) of <a href=
+          "#XML-C14N1.1">[XML-C14N1.1]</a>.</p>
+
+          <p>Each test case appears in a row of the table shown
+          below. The first column identifies the input URI that has
+          to be processed. The second column shows the
+          corresponding output.</p>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id=
+                "c14n11xmlbase-annexa">Test case
+                c14n11/xmlbase-annexa</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/appendixa/inputs.txt">inputs.txt</a></th>
+
+                <th rowspan="1" colspan="1"><a href=
+                "../c14n11/appendixa/outputs.txt">outputs.txt</a></th>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
+                  <pre>
+  no/.././/pseudo-netpath/seg/file.ext
+  no/..//.///pseudo-netpath/seg/file.ext
+  yes/no//..//.///pseudo-netpath/seg/file.ext
+  no/../yes
+  no/../yes/
+  no/../yes/no/..
+  ../../no/../..
+  no/../..
+  no/..
+  no/../
+  /a/b/c/./../../g
+  mid/content=5/../6
+  ../../..
+  no/../../
+  ..yes/..no/..no/..no/../../../..yes
+  ..yes/..no/..no/..no/../../../..yes/
+  ../..
+  ../../../
+  .
+  ./
+  ./.
+  //no/..
+  ../../no/..
+  ../../no/../
+  yes/no/../
+  yes/no/no/../..
+  yes/no/no/no/../../..
+  yes/no/../yes/no/no/../..
+  yes/no/no/no/../../../yes
+  yes/no/no/no/../../../yes/
+  /no/../
+  /yes/no/../
+  /yes/no/no/../..
+  /yes/no/no/no/../../..
+  ../../..no/..
+  ../../..no/../
+  ..yes/..no/../
+  ..yes/..no/..no/../..
+  ..yes/...no/..no/..no/../../..
+  ..yes/..no/../..yes/..no/..no/../..
+  /..no/../
+  /..yes/..no/../
+  /..yes/..no/..no/../..
+  /..yes/..no/..no/..no/../../..
+  /
+  /.
+  /./
+  /./.
+  /././
+  /..
+  /../..
+  /../../..
+  /../../..
+  //..
+  //..//..
+  //..//..//..
+  /./..
+  /./.././..
+  /./.././.././..
+  .
+  ./
+  ./.
+  ..
+  ../
+</pre>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  pseudo-netpath/seg/file.ext
+  pseudo-netpath/seg/file.ext
+  yes/pseudo-netpath/seg/file.ext
+  yes
+  yes/
+  yes/
+  ../../../
+  ../
+  /a/g
+  mid/6
+  ../../../
+  ../
+  ..yes/..yes
+  ..yes/..yes/
+  ../../
+  ../../../
+  /
+  ../../
+  ../../
+  yes/
+  yes/
+  yes/
+  yes/yes/
+  yes/yes
+  yes/yes/
+  /
+  /yes/
+  /yes/
+  /yes/
+  ../../
+  ../../
+  ..yes/
+  ..yes/
+  ..yes/
+  ..yes/..yes/
+  /
+  /..yes/
+  /..yes/
+  /..yes/
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  /
+  ../
+  ../
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="div2">
+        <h3><a name="TestCases-XMLDSig" id=
+        "TestCases-XMLDSig"></a>2.3 Test Cases for XMLDSig</h3>
+
+        <div class="div3">
+          <h4><a name="TestCases-XMLDSig-C14n11" id=
+          "TestCases-XMLDSig-C14n11"></a>2.3.1 Test Cases for C14N
+          1.1 in XMLDSig</h4>
+
+          <p>The test cases in section <a href=
+          "#TestCases-C14n11"><b>2.2 Test Cases for
+          Canonicalization 1.1</b></a> are performed in the context
+          of XMLDSig as well. Here it should be noted that this is
+          performed in a different location (i.e. <a href=
+          "../xmldsig/c14n11/">xmldsig/c14n11/</a>) and the
+          XPath-Filter expression in the
+          <code>ds:Transform/ds:XPath</code> should be equal to the
+          filter step of the XPath expressions in section <a href=
+          "#TestCases-C14n11"><b>2.2 Test Cases for
+          Canonicalization 1.1</b></a> (cf. <a href=
+          "http://lists.w3.org/Archives/Public/public-xmlsec-maintwg/2007Sep/0017.html">
+          explanation</a>). The test cases are specified by an
+          "unsigned" <code>ds:Signature</code> (without
+          <code>ds:DigestValue</code> and
+          <code>ds:SignatureValue</code>) in files in <a href=
+          "../xmldsig/c14n11/">xmldsig/c14n11/</a> having the
+          postfix <code>...-template.xml</code>.</p>
+        </div>
+
+        <div class="div3">
+          <h4><a name="TestCases-DefaultCan" id=
+          "TestCases-DefaultCan"></a>2.3.2 Test Cases on nodeset to
+          octet-stream conversion by C14n 1.1 explicitly reflected
+          in the chain of transforms</h4>
+
+          <p>The set of test cases in this section test the
+          <a href="http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/#sec-ReferenceGeneration">
+          Reference Generation</a> steps of <a href=
+          "#XMLDSIG2">[XMLDSIG2]</a> and its rules that manage the
+          contents of the <code>Transforms</code> element when
+          nodeset to octet-stream conversions are to be performed
+          by canonicalization.</p>
+
+          <p>General rules for these test cases:</p>
+
+          <ul>
+            <li>
+              <p>Test cases contain a <code>ds:Transforms</code>
+              element with one child, containing a XPath filter
+              that depends on the test case.</p>
+            </li>
+          </ul>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigdefCan-1">
+                Test case xmldsig/defCan-1</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The same <a href=
+                "../xmldsig/c14n11/xml-base-input.xml">input
+                document</a> as in section <a href=
+                "#XMLBASE"><b>2.2.4 Test Cases for xml:base
+                attribute</b></a>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations and APIs of <a href=
+                "#XMLDSIG2">[XMLDSIG2]</a> honor the recommendation
+                to use <a href="#XML-C14N1.1">[XML-C14N1.1]</a> in
+                section 3.1.1 "Reference Generation" of <a href=
+                "#XMLDSIG2">[XMLDSIG2]</a> and make its use
+                explicit as a <code>ds:Transform</code>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/defCan-1-template.xml">Template</a></th>
+
+                <td rowspan="1" colspan="1">This <a href=
+                "../xmldsig/defCan-1-template.xml">template</a> can
+                be used to instruct some API to create a signature
+                with a chain of transforms that would require
+                implicit transformations from a node set to an
+                octet stream. It is expected that c14n11 is
+                inserted at the relevant places.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/defCan-1-signature.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="c14n11/xml-base-input.xml"&gt;&lt;Transforms&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116"&gt;\
++ &lt;XPath xmlns:ietf="http://www.ietf.org"&gt;\
++ ancestor-or-self::ietf:c14n11XmlBaseDoc1 and\
++  not(ancestor-or-self::ietf:e2)&lt;/XPath&gt;&lt;/Transform&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;t7d2cL8Ink8A5i3cS9/bu9MBBU8=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;LR4s+Nxoq3VZO1NiCLoiovfCpK4=&lt;/SignatureValue&gt;\
++ &lt;/Signature&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigdefCan-2">
+                Test case xmldsig/defCan-2</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The same <a href=
+                "../xmldsig/c14n11/xml-base-input.xml">input
+                document</a> as in section <a href=
+                "#XMLBASE"><b>2.2.4 Test Cases for xml:base
+                attribute</b></a>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations and APIs of <a href=
+                "#XMLDSIG2">[XMLDSIG2]</a> honor the recommendation
+                to use <a href="#XML-C14N1.1">[XML-C14N1.1]</a> in
+                section 3.1.1 "Reference Generation" of <a href=
+                "#XMLDSIG2">[XMLDSIG2]</a> and make it's use
+                explicit as a <code>ds:Transform</code>. It is
+                expected that c14n11 is inserted at the relevant
+                places.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/defCan-2-template.xml">Template</a></th>
+
+                <td rowspan="1" colspan="1">This <a href=
+                "../xmldsig/defCan-2-template.xml">template</a> can
+                be used to instruct some API to create a signature
+                with a chain of transforms that would require
+                implicit transformations from a node set to an
+                octet stream. The focus in this test case is to
+                assure that c14n11 is inserted before transforms
+                requiring an octet stream as input and also at the
+                end of the chain of transforms if necessary because
+                the last transform resulted in a node set.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/defCan-2-signature.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="c14n11/xml-base-input.xml"&gt;&lt;Transforms&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116"&gt;\
++ &lt;XPath xmlns:ietf="http://www.ietf.org"&gt;\
++ ancestor-or-self::ietf:e21&lt;/XPath&gt;&lt;/Transform&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"&gt;\
++ &lt;xsl:stylesheet version="1.0"\
++  xmlns="http://www.w3.org/1999/XSL/Transform"\
++  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;\
++ &lt;xsl:template match="@*|node()"&gt;&lt;xsl:copy&gt;\
++ &lt;xsl:apply-templates select="@*|node()"/&gt;&lt;/xsl:copy&gt;\
++ &lt;/xsl:template&gt;&lt;/xsl:stylesheet&gt;&lt;/Transform&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116"&gt;\
++ &lt;XPath xmlns:ietf="http://www.ietf.org"&gt;1&lt;/XPath&gt;\
++ &lt;/Transform&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;fL7Igzs0LL7lKHJzAJIKYCphYBo=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;bKQLywY51VZwjutUX/CUMsVs6RE=&lt;/SignatureValue&gt;\
++ &lt;/Signature&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigdefCan-3">
+                Test case xmldsig/defCan-3</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The same <a href=
+                "../xmldsig/c14n11/xml-base-input.xml">input
+                document</a> as in section <a href=
+                "#XMLBASE"><b>2.2.4 Test Cases for xml:base
+                attribute</b></a>.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations and APIs of <a href=
+                "#XMLDSIG2">[XMLDSIG2]</a> honor the recommendation
+                to use <a href="#XML-C14N1.1">[XML-C14N1.1]</a> in
+                section 3.1.1 "Reference Generation" of <a href=
+                "#XMLDSIG2">[XMLDSIG2]</a> and make it's use
+                explicit as a <code>ds:Transform</code>. It is
+                expected that c14n11 is inserted at the relevant
+                places. The focus in this test case is to assure
+                that c14n11 is inserted before transforms requiring
+                an octet stream as input but not inserted at the
+                end of the chain of transforms, which is not
+                necessary because the last transform resulted in an
+                octet stream.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/defCan-3-template.xml">Template</a></th>
+
+                <td rowspan="1" colspan="1">This <a href=
+                "../xmldsig/defCan-3-template.xml">template</a> can
+                be used to instruct some API to create a signature
+                with a chain of transforms that would require
+                implicit transformations from a node set to an
+                octet stream.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/defCan-3-signature.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="c14n11/xml-base-input.xml"&gt;&lt;Transforms&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116"&gt;\
++ &lt;XPath xmlns:ietf="http://www.ietf.org"&gt;\
++ ancestor-or-self::ietf:e21&lt;/XPath&gt;&lt;/Transform&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"&gt;\
++ &lt;xsl:stylesheet version="1.0"\
++  xmlns="http://www.w3.org/1999/XSL/Transform"\
++  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;\
++ &lt;xsl:template match="@*|node()"&gt;&lt;xsl:copy&gt;\
++ &lt;xsl:apply-templates select="@*|node()"/&gt;&lt;/xsl:copy&gt;\
++ &lt;/xsl:template&gt;&lt;/xsl:stylesheet&gt;&lt;/Transform&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116"&gt;\
++ &lt;XPath xmlns:ietf="http://www.ietf.org"&gt;1&lt;/XPath&gt;\
++ &lt;/Transform&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"&gt;\
++ &lt;xsl:stylesheet version="1.0"\
++  xmlns="http://www.w3.org/1999/XSL/Transform"\
++  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;\
++ &lt;xsl:template match="@*|node()"&gt;&lt;xsl:copy&gt;\
++ &lt;xsl:apply-templates select="@*|node()"/&gt;&lt;/xsl:copy&gt;\
++ &lt;/xsl:template&gt;&lt;/xsl:stylesheet&gt;&lt;/Transform&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;hqabUu4fEZp7GK5JRyFC26W5JBk=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;9+wp0W9xwL5X3kSttxABZ7p/kU0=&lt;/SignatureValue&gt;\
++ &lt;/Signature&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="div3">
+          <h4><a name="TestCases-SchemaBasedXPointers" id=
+          "TestCases-SchemaBasedXPointers"></a>2.3.3 Test Cases on
+          schema based XPointers and canonicalization</h4>
+
+          <p>This section defines test cases that test if
+          implementations behave correctly when processing both
+          schema-based xpointers and short-name xpointers with
+          regards to comments present in the to be signed xml data
+          object.</p>
+
+          <p>The following rules apply to the test cases in this
+          section:</p>
+
+          <ul>
+            <li>
+              <p>As the model processing is defined in <a href=
+              "#XMLDSIG2">[XMLDSIG2]</a>, the test cases are based
+              on XML signatures. For each test case, an XML
+              signature will be generated and validated. The
+              signatures will be enveloped signatures when the
+              <code>URI</code> attribute is referencing the root
+              element and enveloping when the <code>URI</code>
+              attribute is referencing an element using its Id
+              attribute.</p>
+            </li>
+
+            <li>
+              <p>The input for the test cases is the to be signed
+              xml data object shown below and the
+              <code>ds:Reference</code>'s <code>URI</code>
+              attribute value (a schema-based xpointer or a
+              short-name pointer).</p>
+            </li>
+
+            <li>
+              <p>The <code>ds:Reference</code> for enveloped
+              signatures will eventually contain two
+              <code>Transform</code> elements, namely; the
+              enveloped signature transform and the conversion from
+              node set data to octet stream (canonical XML
+              1.1).</p>
+            </li>
+          </ul>
+
+          <p>Below is the input document for the test cases in this
+          section:</p>
+
+          <table summary="Example" width="100%" bgcolor="#99FFFF"
+          border="1" cellpadding="5" class="eg">
+            <tr>
+              <td>
+                <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"  &gt;
+                  \
++ &lt;!-- This is a xml document for checking behaviour of tools with\
++  regards to  comments when using scheme-based xpointers in the\
++  ds:Reference's URI attribute --&gt;
+          &lt;ietf:e1 xml:id="e1ID"&gt;
+                  &lt;!-- This is a comment for ietf:e1 element --&gt;
+                  &lt;ietf:e11 &gt;
+                  &lt;!-- This is a comment for ietf:e11 element --&gt;
+                          &lt;ietf:e111 /&gt;
+                  &lt;/ietf:e11&gt;
+                  &lt;ietf:e12 at="2"&gt;
+                  &lt;!-- This is a comment for ietf:e12 element --&gt;
+                          &lt;ietf:e121 /&gt;
+                  &lt;/ietf:e12&gt;
+          &lt;/ietf:e1&gt;
+          &lt;ietf:e2 xml:id="e2ID"&gt;
+                  &lt;!-- This is a comment for ietf:e2 element --&gt;
+                  &lt;ietf:e21 /&gt;
+          &lt;/ietf:e2&gt;
+          &lt;ietf:e3 xml:id="e3ID"&gt;
+                  &lt;ietf:e31 at="3"/&gt;
+          &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlPointerDoc1&gt;
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigxpointer-1">
+                Test case xmldsig/xpointer-1</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The signature is an
+                enveloped signature. It appears as the last child
+                of the root element. The document enveloping the
+                signature is the one shown at the beginning of this
+                section. The value of the <code>URI</code>
+                attribute is "#xpointer(/)" (find it <a href=
+                "../xmldsig/xpointer/xpointer-1.pointervalue">here</a>).</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations, following the rules stated in the
+                <a href="#XMLDSIG2">[XMLDSIG2]</a> model,
+                dereference the URI getting the root element and
+                its descendant, and that comments are preserved
+                before proceeding with the computation of
+                digest.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/xpointer/xpointer-1-SUN.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;\
++ &lt;ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+                  \
++ &lt;!-- This is a xml document for checking behaviour of tools with\
++  regards to  comments when using scheme-based xpointers in the\
++  ds:Reference's URI attribute --&gt;
+          &lt;ietf:e1 xml:id="e1ID"&gt;
+                  &lt;!-- This is a comment for ietf:e1 element --&gt;
+                  &lt;ietf:e11&gt;
+                  &lt;!-- This is a comment for ietf:e11 element --&gt;
+                          &lt;ietf:e111/&gt;
+                  &lt;/ietf:e11&gt;
+                  &lt;ietf:e12 at="2"&gt;
+                  &lt;!-- This is a comment for ietf:e12 element --&gt;
+                          &lt;ietf:e121/&gt;
+                  &lt;/ietf:e12&gt;
+          &lt;/ietf:e1&gt;
+          &lt;ietf:e2 xml:id="e2ID"&gt;
+                  &lt;!-- This is a comment for ietf:e2 element --&gt;
+                  &lt;ietf:e21/&gt;
+          &lt;/ietf:e2&gt;
+          &lt;ietf:e3 xml:id="e3ID"&gt;
+                  &lt;ietf:e31 at="3"/&gt;
+          &lt;/ietf:e3&gt;
+  &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="#xpointer(/)"&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;/IZyGLL72rXhisXRkB617TxJrL8=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;E4gxKwllVjvvlUQFe9p/ssO7Yxw=&lt;/SignatureValue&gt;\
++ &lt;/Signature&gt;&lt;/ietf:c14n11XmlPointerDoc1&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigxpointer-2">
+                Test case xmldsig/xpointer-2</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The signature is an
+                enveloping signature. The enveloped document is the
+                one shown at the beginning of this section. The
+                value of the <code>URI</code> attribute is
+                "#xpointer(id('e1ID'))" (find it <a href=
+                "../xmldsig/xpointer/xpointer-2.pointervalue">here</a>).</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations, following the rules stated in the
+                <a href="#XMLDSIG2">[XMLDSIG2]</a> model,
+                dereference the URI getting an element identified
+                by its id attribute as well as its descendant, and
+                that comments are preserved before proceeding with
+                the computation of digest.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/xpointer/xpointer-2-SUN.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="#xpointer(id('e1ID'))"&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;XhSsDpWTt+ti0kcU9XYpleRDHfQ=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;brEpICVA4lg7eQwz7i/rlBmYXiU=&lt;/SignatureValue&gt;\
++ &lt;Object&gt;\
++ &lt;ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+                  \
++ &lt;!-- This is a xml document for checking behaviour of tools with\
++  regards to  comments when using scheme-based xpointers in the\
++  ds:Reference's URI attribute --&gt;
+          &lt;ietf:e1 xml:id="e1ID"&gt;
+                  &lt;!-- This is a comment for ietf:e1 element --&gt;
+                  &lt;ietf:e11&gt;
+                  &lt;!-- This is a comment for ietf:e11 element --&gt;
+                          &lt;ietf:e111/&gt;
+                  &lt;/ietf:e11&gt;
+                  &lt;ietf:e12 at="2"&gt;
+                  &lt;!-- This is a comment for ietf:e12 element --&gt;
+                          &lt;ietf:e121/&gt;
+                  &lt;/ietf:e12&gt;
+          &lt;/ietf:e1&gt;
+          &lt;ietf:e2 xml:id="e2ID"&gt;
+                  &lt;!-- This is a comment for ietf:e2 element --&gt;
+                  &lt;ietf:e21/&gt;
+          &lt;/ietf:e2&gt;
+          &lt;ietf:e3 xml:id="e3ID"&gt;
+                  &lt;ietf:e31 at="3"/&gt;
+          &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlPointerDoc1&gt;&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigxpointer-3">
+                Test case xmldsig/xpointer-3</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The signature is an
+                enveloped signature. It appears as the last child
+                of the root element. The document enveloping the
+                signature is the one shown at the beginning of this
+                section. The value of the <code>URI</code>
+                attribute is "".</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations, following the rules stated in the
+                <a href="#XMLDSIG2">[XMLDSIG2]</a> model,
+                dereference the URI getting the root element and
+                its descendant, and that comments are not preserved
+                before proceeding with the computation of
+                digest.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/xpointer/xpointer-3-SUN.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;\
++ &lt;ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+                  \
++ &lt;!-- This is a xml document for checking behaviour of tools with\
++  regards to  comments when using scheme-based xpointers in the\
++  ds:Reference's URI attribute --&gt;
+          &lt;ietf:e1 xml:id="e1ID"&gt;
+                  &lt;!-- This is a comment for ietf:e1 element --&gt;
+                  &lt;ietf:e11&gt;
+                  &lt;!-- This is a comment for ietf:e11 element --&gt;
+                          &lt;ietf:e111/&gt;
+                  &lt;/ietf:e11&gt;
+                  &lt;ietf:e12 at="2"&gt;
+                  &lt;!-- This is a comment for ietf:e12 element --&gt;
+                          &lt;ietf:e121/&gt;
+                  &lt;/ietf:e12&gt;
+          &lt;/ietf:e1&gt;
+          &lt;ietf:e2 xml:id="e2ID"&gt;
+                  &lt;!-- This is a comment for ietf:e2 element --&gt;
+                  &lt;ietf:e21/&gt;
+          &lt;/ietf:e2&gt;
+          &lt;ietf:e3 xml:id="e3ID"&gt;
+                  &lt;ietf:e31 at="3"/&gt;
+          &lt;/ietf:e3&gt;
+  &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI=""&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;gaV5r7qC3Ve/t641+d3ykN8JFSc=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;gS1QKSwAH/6eE3OFi/L9O0oKKig=&lt;/SignatureValue&gt;\
++ &lt;/Signature&gt;&lt;/ietf:c14n11XmlPointerDoc1&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigxpointer-4">
+                Test case xmldsig/xpointer-4</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The signature is an
+                enveloping signature. The enveloped document is the
+                one shown at the beginning of this section. The
+                value of the <code>URI</code> attribute is "#e1ID"
+                (find it <a href=
+                "../xmldsig/xpointer/xpointer-4.pointervalue">here</a>).</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check that
+                implementations, following the rules stated in the
+                <a href="#XMLDSIG2">[XMLDSIG2]</a> model,
+                dereference the URI getting an element identified
+                by its id attribute as well as its descendant, and
+                that comments are not preserved before proceeding
+                with the computation of digest.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/xpointer/xpointer-4-SUN.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="#e1ID"&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;3K+K4MbR2EW7l/ry59XockKqt4g=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;dgyjONUs9rBjW7PH25seGqcMNZY=&lt;/SignatureValue&gt;\
++ &lt;Object&gt;\
++ &lt;ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+                  \
++ &lt;!-- This is a xml document for checking behaviour of tools with\
++  regards to  comments when using scheme-based xpointers in the\
++  ds:Reference's URI attribute --&gt;
+          &lt;ietf:e1 xml:id="e1ID"&gt;
+                  &lt;!-- This is a comment for ietf:e1 element --&gt;
+                  &lt;ietf:e11&gt;
+                  &lt;!-- This is a comment for ietf:e11 element --&gt;
+                          &lt;ietf:e111/&gt;
+                  &lt;/ietf:e11&gt;
+                  &lt;ietf:e12 at="2"&gt;
+                  &lt;!-- This is a comment for ietf:e12 element --&gt;
+                          &lt;ietf:e121/&gt;
+                  &lt;/ietf:e12&gt;
+          &lt;/ietf:e1&gt;
+          &lt;ietf:e2 xml:id="e2ID"&gt;
+                  &lt;!-- This is a comment for ietf:e2 element --&gt;
+                  &lt;ietf:e21/&gt;
+          &lt;/ietf:e2&gt;
+          &lt;ietf:e3 xml:id="e3ID"&gt;
+                  &lt;ietf:e31 at="3"/&gt;
+          &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlPointerDoc1&gt;&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigxpointer-5">
+                Test case xmldsig/xpointer-5</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The signature is an
+                enveloping signature and signs three elements from
+                the document. The enveloped document is the one
+                shown at the beginning of this section. There are
+                three <code>ds:Reference</code> elements. For the
+                first one the value of the <code>URI</code>
+                attribute is "#xpointer(id('e1ID'))" (find it
+                <a href=
+                "../xmldsig/xpointer/xpointer-5-firsturi.pointervalue">
+                here</a>). For the second, it is
+                "#xpointer(id('e2ID'))" (find it <a href=
+                "../xmldsig/xpointer/xpointer-5-seconduri.pointervalue">
+                here</a>). For the third one, it is
+                "#xpointer(id('e3ID'))" (find it <a href=
+                "../xmldsig/xpointer/xpointer-5-thirduri.pointervalue">
+                here</a>).</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check implementation's
+                behaviour when processing several elements (with
+                and without comments) referenced by its Id
+                attribute using a schema-based xpointer.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/xpointer/xpointer-5-SUN.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="#xpointer(id('e1ID'))"&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;XhSsDpWTt+ti0kcU9XYpleRDHfQ=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;Reference URI="#xpointer(id('e2ID'))"&gt;\
++ &lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;abyA1j4yzf1IgQLWwDwKuU9l8Ik=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;Reference URI="#xpointer(id('e3ID'))"&gt;\
++ &lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;RUUBiUeFf8uRqTlpCyutkXDqnJ4=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;sG+0pHk9TB6v7jES9RZUIVKMFos=&lt;/SignatureValue&gt;\
++ &lt;Object&gt;\
++ &lt;ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+                  \
++ &lt;!-- This is a xml document for checking behaviour of tools with\
++  regards to  comments when using scheme-based xpointers in the\
++  ds:Reference's URI attribute --&gt;
+          &lt;ietf:e1 xml:id="e1ID"&gt;
+                  &lt;!-- This is a comment for ietf:e1 element --&gt;
+                  &lt;ietf:e11&gt;
+                  &lt;!-- This is a comment for ietf:e11 element --&gt;
+                          &lt;ietf:e111/&gt;
+                  &lt;/ietf:e11&gt;
+                  &lt;ietf:e12 at="2"&gt;
+                  &lt;!-- This is a comment for ietf:e12 element --&gt;
+                          &lt;ietf:e121/&gt;
+                  &lt;/ietf:e12&gt;
+          &lt;/ietf:e1&gt;
+          &lt;ietf:e2 xml:id="e2ID"&gt;
+                  &lt;!-- This is a comment for ietf:e2 element --&gt;
+                  &lt;ietf:e21/&gt;
+          &lt;/ietf:e2&gt;
+          &lt;ietf:e3 xml:id="e3ID"&gt;
+                  &lt;ietf:e31 at="3"/&gt;
+          &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlPointerDoc1&gt;&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table border="1">
+            <tbody>
+              <tr>
+                <th rowspan="1" colspan="2" id="xmldsigxpointer-6">
+                Test case xmldsig/xpointer-6</th>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Input details</th>
+
+                <td rowspan="1" colspan="1">The signature is an
+                enveloping signature and signs two elements from
+                the document. The enveloped document is the one
+                shown at the beginning of this section. There are
+                three <code>ds:Reference</code> elements. For the
+                first one the value of the <code>URI</code>
+                attribute is "#e1ID" (find it <a href=
+                "../xmldsig/xpointer/xpointer-6-firsturi.pointervalue">
+                here</a>). For the second, it is "#e2ID" (find it
+                <a href=
+                "../xmldsig/xpointer/xpointer-6-seconduri.pointervalue">
+                here</a>). For the third one, it is "#e3ID" (find
+                it <a href=
+                "../xmldsig/xpointer/xpointer-6-thirduri.pointervalue">
+                here</a>).</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1">Rationale</th>
+
+                <td rowspan="1" colspan="1">Check implementation's
+                behaviour when processing several elements (with
+                and without comments) referenced by its Id
+                attribute using a short-name xpointer.</td>
+              </tr>
+
+              <tr>
+                <th rowspan="1" colspan="1"><a href=
+                "../xmldsig/xpointer/xpointer-6-SUN.xml">Signature</a></th>
+
+                <td rowspan="1" colspan="1">
+                  <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/&gt;\
++ &lt;Reference URI="#e1ID"&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;3K+K4MbR2EW7l/ry59XockKqt4g=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;Reference URI="#e2ID"&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;hnKFjGFr/jwLCCTckZpaclOwe28=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;Reference URI="#e3ID"&gt;&lt;Transforms&gt;\
++ &lt;Transform\
++  Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"/&gt;\
++ &lt;/Transforms&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;RUUBiUeFf8uRqTlpCyutkXDqnJ4=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;XzEJQ+whhHUYlqiCEt8XFxC8wpk=&lt;/SignatureValue&gt;\
++ &lt;Object&gt;\
++ &lt;ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org"\
++  xmlns:w3c="http://www.w3.org"&gt;
+                  \
++ &lt;!-- This is a xml document for checking behaviour of tools with\
++  regards to  comments when using scheme-based xpointers in the\
++  ds:Reference's URI attribute --&gt;
+          &lt;ietf:e1 xml:id="e1ID"&gt;
+                  &lt;!-- This is a comment for ietf:e1 element --&gt;
+                  &lt;ietf:e11&gt;
+                  &lt;!-- This is a comment for ietf:e11 element --&gt;
+                          &lt;ietf:e111/&gt;
+                  &lt;/ietf:e11&gt;
+                  &lt;ietf:e12 at="2"&gt;
+                  &lt;!-- This is a comment for ietf:e12 element --&gt;
+                          &lt;ietf:e121/&gt;
+                  &lt;/ietf:e12&gt;
+          &lt;/ietf:e1&gt;
+          &lt;ietf:e2 xml:id="e2ID"&gt;
+                  &lt;!-- This is a comment for ietf:e2 element --&gt;
+                  &lt;ietf:e21/&gt;
+          &lt;/ietf:e2&gt;
+          &lt;ietf:e3 xml:id="e3ID"&gt;
+                  &lt;ietf:e31 at="3"/&gt;
+          &lt;/ietf:e3&gt;
+  &lt;/ietf:c14n11XmlPointerDoc1&gt;&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="div3">
+          <h4><a name="TestCases-DistinguishedName" id=
+          "TestCases-DistinguishedName"></a>2.3.4 Test Cases on
+          String encoding of Distinguished Names</h4>
+
+          <div class="div4">
+            <h5><a name=
+            "TestCases-DistinguishedName-RFC2253-RFC4514" id=
+            "TestCases-DistinguishedName-RFC2253-RFC4514"></a>2.3.4.1
+            Test Cases on differences identified in RFC 2253 and
+            RFC 4514</h5>
+
+            <p>This Working group has identified a number of
+            differences between <a href="#RFC-4514">[RFC-4514]</a>
+            and <a href="#RFC-2253">[RFC-2253]</a>. They are
+            described in this <a href=
+            "http://lists.w3.org/Archives/Public/public-xmlsec-maintwg/2007Jul/0024.html">
+            e-mail</a> within the XML Security Specifications
+            Maintenance Working Group e-mail list archive. This
+            section contains test cases designed for checking that
+            applications can parse and generate RFC 4514
+            Distinguished Names with these differences.</p>
+
+            <p>The following rules apply for the test cases defined
+            in this section:</p>
+
+            <ul>
+              <li>
+                <p>The input to each test case is an XML Signature.
+                Each signature contains an X509SubjectName or
+                X509IssuerSerial element with an RFC 4514
+                Distinguished Name.</p>
+              </li>
+
+              <li>
+                <p>To resolve the key, the application must find a
+                certificate containing a matching issuer/serial or
+                subject DN from the certificates that are contained
+                in the "certs" directory.</p>
+              </li>
+
+              <li>
+                <p>Signature generation is also required. A PKCS#12
+                KeyStore containing the private keys used to
+                generate the signatures is in the file
+                "certs/keystore.p12". The keystore password is
+                "secret". The key entry name is the same as the
+                corresponding certificate file name (without the
+                ".crt" part).</p>
+              </li>
+            </ul>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamediffRFCs-1">Test case
+                  xmldsig/dname/diffRFCs-1</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input is an XML
+                  Signature containing an X509SubjectName in RFC
+                  4514 format. The DN contains at least one
+                  Relative Distinguished Name whose attribute type
+                  keyword is encoded with one alphabetic character,
+                  and another Relative Distinguished Name whose
+                  attribute type keyword is encoded with two
+                  characters.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check processing of
+                  attribute type keywords by tools implementing
+                  <a href="#RFC-4514">[RFC-4514]</a>.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">CN=John,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/diffRFCs-1-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ DOz4KhJHOvhzPiKjxl0WVsrXPuZ9XQtdDvKN0KuLQGIzXkljfkFEQA==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=John,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamediffRFCs-2">Test case
+                  xmldsig/dname/diffRFCs-2</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input is an XML
+                  Signature containing an X509SubjectName in RFC
+                  4514 format. The DN contains at least a Relative
+                  Distinguished Name containing space characters.
+                  <a href="#RFC-2253">[RFC-2253]</a> does not allow
+                  escaping, whereas <a href=
+                  "#RFC-4514">[RFC-4514]</a> requires space
+                  characters to be escaped.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check escaping of
+                  space characters by tools implementing <a href=
+                  "#RFC-4514">[RFC-4514]</a>.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">CN=\ Spacey\
+                  ,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/diffRFCs-2-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ V18nxls1pqn4IyA/GNosGfqLHEE6INnyuV9TmHlYt/sYsaagHCH9Xw==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=\ Spacey\ ,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamediffRFCs-3">Test case
+                  xmldsig/dname/diffRFCs-3</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input is an XML
+                  Signature containing an X509SubjectName in RFC
+                  4514 format. The DN contains at least a Relative
+                  Distinguished Name containing null characters.
+                  <a href="#RFC-2253">[RFC-2253]</a> does not allow
+                  escaping, whereas <a href=
+                  "#RFC-4514">[RFC-4514]</a> requires space
+                  characters to be escaped.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check escaping of
+                  null characters by tools implementing <a href=
+                  "#RFC-4514">[RFC-4514]</a>.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">CN=\00,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/diffRFCs-3-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ N6jHpYnYpggrfADJkvZfggCaUq9dzU9M3EQ+27wA8f92nWwmrlyUQQ==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=\00,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamediffRFCs-4">Test case
+                  xmldsig/dname/diffRFCs-4</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input is an XML
+                  Signature containing an X509SubjectName in RFC
+                  4514 format. The DN contains at least a Relative
+                  Distinguished Name containing a non-leading
+                  number sign character that is not escaped.
+                  <a href="#RFC-2253">[RFC-2253]</a> requires
+                  escaping of non-leading number sign characters,
+                  whereas <a href="#RFC-4514">[RFC-4514]</a> does
+                  not.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check processing of
+                  non-leading number sign characters that are not
+                  escaped by tools implementing <a href=
+                  "#RFC-4514">[RFC-4514]</a>.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">CN=Num#ber,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/diffRFCs-4-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ QN8dVUz4674CG7tnHJ+VSDFKbttZ3Ywa5rizoYS2EGUD8/33RFlZJA==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=Num#ber,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamediffRFCs-5">Test case
+                  xmldsig/dname/diffRFCs-5</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">The input is an XML
+                  Signature containing an X509SubjectName in RFC
+                  4514 format. The DN contains at least a Relative
+                  Distinguished Name containing an equals sign
+                  character that is not escaped. <a href=
+                  "#RFC-2253">[RFC-2253]</a> requires escaping of
+                  equals sign characters, whereas <a href=
+                  "#RFC-4514">[RFC-4514]</a> does not.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check processing of
+                  equals sign characters that are not escaped by
+                  tools implementing <a href=
+                  "#RFC-4514">[RFC-4514]</a>.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">CN=Eq=uals,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/diffRFCs-5-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ TEFSu5hmr8r5JU78U9MgS0mdZIZOXUjORTRzDFaBWh9DhFjPjxxW4w==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=Eq=uals,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="div4">
+            <h5><a name="TestCases-DistinguishedName-RFC4514" id=
+            "TestCases-DistinguishedName-RFC4514"></a>2.3.4.2 Test
+            Cases for RFC 4514</h5>
+
+            <p>The set of test cases in this section are designed
+            to test the representation of Distinguished Names as
+            Strings as specified by <a href=
+            "#RFC-4514">[RFC-4514]</a>.</p>
+
+            <p>The same rules defined in section 3.3.4.1 apply to
+            the test cases in this section.</p>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamednString-4">Test case
+                  xmldsig/dname/dnString-4</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">
+                    The DistinguishedName has the following
+                    restrictions:
+
+                    <ul>
+                      <li>
+                        <p>All the RelativeDistinguishedNames
+                        attribute types have a short name
+                        (descriptor) tabulated in <a href=
+                        "#RFC-4514">[RFC-4514]</a>.</p>
+                      </li>
+
+                      <li>
+                        <p>Some RelativeDistinguishedNames
+                        attribute value have one or more trailing
+                        space characters (U+0020). The escaping
+                        mechanism will be '\20'.</p>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations correctly manage escaping of
+                  trailing space characters.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">
+                  CN=Trailing\20\20,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/dnString-4-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ ONd8OoOnv9OThyiTPkneEcsdgVt65w6AgUAxidekHeKmjyQxnYEdWA==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=Trailing\20\20,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamednString-6">Test case
+                  xmldsig/dname/dnString-6</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">
+                    The DistinguishedName has the following
+                    restrictions:
+
+                    <ul>
+                      <li>
+                        <p>All the RelativeDistinguishedNames
+                        attribute types have a short name
+                        (descriptor) tabulated in <a href=
+                        "#RFC-4514">[RFC-4514]</a>.</p>
+                      </li>
+
+                      <li>
+                        <p>Some RelativeDistinguishedNames
+                        attribute value have one or more escaped
+                        ASCII control characters (U+1d). The
+                        escaping mechanism will be a backslash
+                        followed of a by a two digit hex number
+                        showing its Unicode point number.</p>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations correctly manage escaping of an
+                  ASCII control character that is neither the first
+                  nor the final character of the group.</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">
+                  CN=Con\09trol,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/dnString-6-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ V34pKGIfKacwJtTEShfSXx4M2dhSOTqZVCIL6nO66lm+JTQ//wCKaA==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=Con\09trol,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table border="1">
+              <tbody>
+                <tr>
+                  <th rowspan="1" colspan="2" id=
+                  "xmldsigdnamednString-8">Test case
+                  xmldsig/dname/dnString-8</th>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Input details</th>
+
+                  <td rowspan="1" colspan="1">
+                    The DistinguishedName has the following
+                    restrictions:
+
+                    <ul>
+                      <li>
+                        <p>All the RelativeDistinguishedNames
+                        attribute types have a short name
+                        (descriptor) tabulated in <a href=
+                        "#RFC-4514">[RFC-4514]</a>.</p>
+                      </li>
+
+                      <li>
+                        <p>Some RelativeDistinguishedNames
+                        attribute value contain one or more special
+                        characters in the following group: '+',
+                        ',', ';', and '\.'</p>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1">Rationale</th>
+
+                  <td rowspan="1" colspan="1">Check that
+                  implementations correctly manage escaping of all
+                  the special characters (except '"', 'lt;' and
+                  '&gt;')..</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "#RFC-4514">[RFC-4514]</a> DN</th>
+
+                  <td rowspan="1" colspan="1">
+                  CN=E\+s\,c\;aped,C=US</td>
+                </tr>
+
+                <tr>
+                  <th rowspan="1" colspan="1"><a href=
+                  "../xmldsig/dname/dnString-8-SUN.xml">Signature</a></th>
+
+                  <td rowspan="1" colspan="1">
+                    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\
++ &lt;Signature xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;\
++ &lt;SignedInfo&gt;\
++ &lt;CanonicalizationMethod\
++  Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/&gt;\
++ &lt;SignatureMethod\
++  Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;\
++ &lt;Reference URI="#object"&gt;\
++ &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;\
++ &lt;DigestValue&gt;nxGVxTzX3uQVeaZ7vtWMLc+V6CE=&lt;/DigestValue&gt;\
++ &lt;/Reference&gt;&lt;/SignedInfo&gt;\
++ &lt;SignatureValue&gt;\
++ L2r+QCiO0qOPgDYybThQEbP7A8Iq8AomDGBXgQqe4mkuLMnroTxnGA==&lt;/SignatureValue&gt;\
++ &lt;KeyInfo&gt;&lt;X509Data&gt;\
++ &lt;X509SubjectName&gt;CN=E\+s\,c\;aped,C=US&lt;/X509SubjectName&gt;\
++ &lt;/X509Data&gt;&lt;/KeyInfo&gt;\
++ &lt;Object Id="object"&gt;Approved&lt;/Object&gt;&lt;/Signature&gt;
+</pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="div1">
+      <h2><a name="References" id="References"></a>3
+      References</h2>
+
+      <dl>
+        <dt class="label"><a name="RFC-2253" id="RFC-2253"></a>RFC
+        2253</dt>
+
+        <dd>RFC 2253: Lightweight Directory Access Protocol (v3):
+        UTF-8 String Representation of Distinguished Names. M.
+        Wahl, S. Kille, T. Howes. Ed. December 1997. <a href=
+        "http://www.ietf.org/rfc/rfc2253txt">http://www.ietf.org/rfc/rfc2253txt</a></dd>
+
+        <dt class="label"><a name="RFC-4514" id="RFC-4514"></a>RFC
+        4514</dt>
+
+        <dd>RFC 4514: Lightweight Directory Access Protocol (LDAP):
+        String Representation of Distinguished Names. K. Zeilenga,
+        Ed. June 2006. <a href=
+        "http://www.ietf.org/rfc/rfc4514.txt">http://www.ietf.org/rfc/rfc4514.txt</a></dd>
+
+        <dt class="label"><a name="XML-C14N1.1" id=
+        "XML-C14N1.1"></a>XML-C14N1.1</dt>
+
+        <dd>Canonical XML. Version 1.1. W3C Proposed
+        Recommendation. John Boyer, Glenn Marcy. January 2008.
+        <a href=
+        "http://www.w3.org/TR/2008/PR-xml-c14n11-20080129/">http://www.w3.org/TR/2008/PR-xml-c14n11-20080129/</a></dd>
+
+        <dt class="label"><a name="XMLDSIG" id=
+        "XMLDSIG"></a>XMLDSIG</dt>
+
+        <dd>XML-Signature Syntax and Processing. W3C
+        Recommendation. Donald Eastlake, Joseph Reagle, David Solo.
+        February 2002. <a href=
+        "http://www.w3.org/TR/xmldsig-core/">http://www.w3.org/TR/xmldsig-core/</a></dd>
+
+        <dt class="label"><a name="XMLDSIG-interop" id=
+        "XMLDSIG-interop"></a>XMLDSIG-interop</dt>
+
+        <dd>XML-Signature Interoperability. Joseph Reagle. April
+        2001. <a href=
+        "http://www.w3.org/Signature/2001/04/05-xmldsig-interop.html">
+        http://www.w3.org/Signature/2001/04/05-xmldsig-interop.html</a></dd>
+
+        <dt class="label"><a name="XMLDSIG2" id=
+        "XMLDSIG2"></a>XMLDSIG2</dt>
+
+        <dd>XML-Signature Syntax and Processing (Second Edition).
+        Editor's Draft. Donald Eastlake, Joseph Reagle, David Solo,
+        Frederick Hirsch, Thomas Roessler. January 2008. <a href=
+        "http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/">http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/</a></dd>
+
+        <dt class="label"><a name="XPointer-Element" id=
+        "XPointer-Element"></a>XPointer-Element</dt>
+
+        <dd>XPointer element() Scheme. W3C Recommendation. P.
+        Grosso, E. Maler, J. Marsh, N. Walsh. March 2003. <a href=
+        "http://www.w3.org/TR/2003/REC-xptr-element-20030325">http://www.w3.org/TR/2003/REC-xptr-element-20030325</a></dd>
+
+        <dt class="label"><a name="XPointer-Framework" id=
+        "XPointer-Framework"></a>XPointer-Framework</dt>
+
+        <dd>XPointer Framework. W3C Recommendation. P. Grosso, E.
+        Maler, J. Marsh, N. Walsh. March 2003. <a href=
+        "http://www.w3.org/TR/2003/REC-xptr-framework-20030325/">http://www.w3.org/TR/2003/REC-xptr-framework-20030325/</a></dd>
+
+        <dt class="label"><a name="XPointer-xpointer" id=
+        "XPointer-xpointer"></a>XPointer-xpointer</dt>
+
+        <dd>XPointer xpointer() Scheme. W3C Working Draft. S.
+        DeRose, E. Maler, R. Daniel. December 2002. <a href=
+        "http://www.w3.org/TR/2002/WD-xptr-xpointer-20021219/">http://www.w3.org/TR/2002/WD-xptr-xpointer-20021219/</a></dd>
+      </dl>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+------------------------------ NodeSetData -------------------------------
+Node 1 : [ietf:e12: null]
+Node 2 : at="2"
+Node 3 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 4 : xmlns:ietf="http://www.ietf.org"
+Node 5 : xmlns:w3c="http://www.w3.org"
+Node 6 : [#text: 
+		]
+Node 7 : [#comment:  This is a comment for ietf:e12 element ]
+Node 8 : [#text: 
+			]
+Node 9 : [ietf:e121: null]
+Node 10 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 11 : xmlns:ietf="http://www.ietf.org"
+Node 12 : xmlns:w3c="http://www.w3.org"
+Node 13 : [#text: 
+		]
+Node 14 : [ietf:e31: null]
+Node 15 : at="3"
+Node 16 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 17 : xmlns:ietf="http://www.ietf.org"
+Node 18 : xmlns:w3c="http://www.w3.org"
+--------------------------------------------------------------------------

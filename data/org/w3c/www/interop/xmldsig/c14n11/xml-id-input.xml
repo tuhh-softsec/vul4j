@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ietf:c14n11XmlIdDoc1 xmlns:ietf="http://www.ietf.org" 
+xmlns:w3c="http://www.w3.org">
+   <ietf:e1 xml:id="IdInterop">
+      <ietf:e11>
+         <ietf:e111 />
+      </ietf:e11>
+      <ietf:e12 at="2">
+         <ietf:e121 />
+      </ietf:e12>
+   </ietf:e1>
+   <ietf:e2 >
+      <ietf:e21 />
+   </ietf:e2>  
+</ietf:c14n11XmlIdDoc1>
