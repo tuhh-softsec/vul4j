@@ -306,7 +306,7 @@ public class XMLSignatureInput implements Cloneable {
     /**
      * Determines if the object has been set up with a Node set
      *
-     * @return true is the object has been set up with a Node set
+     * @return true if the object has been set up with a Node set
      */
     public boolean isNodeSet() {
         return (( (this._inputOctetStreamProxy == null)
@@ -316,7 +316,7 @@ public class XMLSignatureInput implements Cloneable {
     /**
      * Determines if the object has been set up with an Element
      *
-     * @return true is the object has been set up with a Node set
+     * @return true if the object has been set up with a Node set
      */
     public boolean isElement() {
 	return ((this._inputOctetStreamProxy==null)&& (this._subNode!=null)
@@ -326,11 +326,22 @@ public class XMLSignatureInput implements Cloneable {
     /**
      * Determines if the object has been set up with an octet stream
      *
-     * @return true is the object has been set up with an octet stream
+     * @return true if the object has been set up with an octet stream
      */
     public boolean isOctetStream() {
         return ( ((this._inputOctetStreamProxy != null) || bytes!=null)
               && ((this._inputNodeSet == null) && _subNode ==null));
+    }
+
+    /**
+     * Determines if {@link #setOutputStream} has been called with a 
+     * non-null OutputStream.
+     *
+     * @return true if {@link #setOutputStream} has been called with a 
+     * non-null OutputStream
+     */
+    public boolean isOutputStreamSet() {
+	return outputStream != null;
     }
    
     /**

@@ -98,6 +98,20 @@ import org.w3c.dom.Text;
  */
 public class Reference extends SignatureElementProxy {
 
+   /**
+    * Look up useC14N11 system property. If true, an explicit C14N11 transform
+    * will be added if necessary when generating the signature. See section
+    * 3.1.1 of http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/ for more info.
+    */
+   private static boolean useC14N11 = false;
+   static {
+      try {
+         useC14N11 = Boolean.getBoolean("org.apache.xml.security.useC14N11");
+      } catch (Exception e) {
+         // ignore exceptions
+      }
+   }
+
    /** Field CacheSignedNodes */
    public final static boolean CacheSignedNodes = false;
 
@@ -354,7 +368,7 @@ private Element digestValueElement;
     */
    public void generateDigestValue()
            throws XMLSignatureException, ReferenceNotInitializedException {
-      this.setDigestValueElement(this.calculateDigest());
+      this.setDigestValueElement(this.calculateDigest(false));
    }
 
    /**
@@ -662,13 +676,14 @@ private Element digestValueElement;
 
 
    /**
-    * Method resolverResult
+    * Method calculateDigest
     *
+    * @param validating true if validating the reference
     * @return reference Calculate the digest of this reference.
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
     */
-   private byte[] calculateDigest()
+   private byte[] calculateDigest(boolean validating)
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
@@ -679,7 +694,20 @@ private Element digestValueElement;
          DigesterOutputStream diOs=new DigesterOutputStream(mda);
          OutputStream os=new UnsyncBufferedOutputStream(diOs);
          XMLSignatureInput output=this.dereferenceURIandPerformTransforms(os);         
-         output.updateOutputStream(os);
+	 // if signing and c14n11 property == true explicitly add
+	 // C14N11 transform if needed
+	 if (this.useC14N11 && !validating &&
+	     !output.isOutputStreamSet() && !output.isOctetStream()) {
+	     if (transforms == null) {
+		 transforms = new Transforms(this._doc);
+                 this._constructionElement.insertBefore
+		     (transforms.getElement(), digestMethodElem);
+	     }
+	     transforms.addTransform(Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);
+             output.updateOutputStream(os, true);
+	 } else {
+             output.updateOutputStream(os);
+	 }
          os.flush();
          //this.getReferencedBytes(diOs);
          //mda.update(data);
@@ -689,7 +717,7 @@ private Element digestValueElement;
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (IOException ex) {
       	 throw new ReferenceNotInitializedException("empty", ex);
-	}
+      }
    }
 
    /**
@@ -697,7 +725,7 @@ private Element digestValueElement;
     *
     * @return the digest value.
     * @throws Base64DecodingException if Reference contains no proper base64 encoded data.
-	* @throws XMLSecurityException if the Reference does not contain a DigestValue element
+    * @throws XMLSecurityException if the Reference does not contain a DigestValue element
     */
    public byte[] getDigestValue() throws Base64DecodingException, XMLSecurityException {
       if (digestValueElement == null) {
@@ -724,7 +752,7 @@ private Element digestValueElement;
            throws ReferenceNotInitializedException, XMLSecurityException {
 
       byte[] elemDig = this.getDigestValue();
-      byte[] calcDig = this.calculateDigest();
+      byte[] calcDig = this.calculateDigest(true);
       boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
 
       if (!equal) {
