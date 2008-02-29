@@ -61,13 +61,28 @@ import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 public final class DOMReference extends DOMStructure 
     implements Reference, DOMURIReference {
 
+   /**
+    * Look up useC14N11 system property. If true, an explicit C14N11 transform
+    * will be added if necessary when generating the signature. See section
+    * 3.1.1 of http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/ for more info.
+    *
+    * If true, overrides the same property if set in the XMLSignContext.
+    */
+    private static boolean useC14N11 = false;
+    static {
+	try {
+            useC14N11 = Boolean.getBoolean("org.apache.xml.security.useC14N11");
+        } catch (Exception e) {
+            // ignore exceptions
+       }
+    }
+
     private static Logger log = Logger.getLogger("org.jcp.xml.dsig.internal.dom");
 
     private final DigestMethod digestMethod;
     private final String id;
-    private final List appliedTransforms;
     private final List transforms;
-    private final List allTransforms;
+    private List allTransforms;
     private final Data appliedTransformData;
     private Attr here;
     private final String uri;
@@ -116,9 +131,8 @@ public final class DOMReference extends DOMStructure
 	if (dm == null) {
 	    throw new NullPointerException("DigestMethod must be non-null");
 	}
-        if (appliedTransforms == null || appliedTransforms.isEmpty()) {
-            this.appliedTransforms = Collections.EMPTY_LIST;
-        } else {
+	this.allTransforms = new ArrayList();
+        if (appliedTransforms != null) {
             List transformsCopy = new ArrayList(appliedTransforms);
             for (int i = 0, size = transformsCopy.size(); i < size; i++) {
                 if (!(transformsCopy.get(i) instanceof Transform)) {
@@ -126,11 +140,10 @@ public final class DOMReference extends DOMStructure
                         ("appliedTransforms["+i+"] is not a valid type");
                 }
             }
-            this.appliedTransforms = 
-		Collections.unmodifiableList(transformsCopy);
+            this.allTransforms = transformsCopy;
         }
-        if (transforms == null || transforms.isEmpty()) {
-            this.transforms = Collections.EMPTY_LIST;
+        if (transforms == null) {
+	    this.transforms = Collections.emptyList();
         } else {
             List transformsCopy = new ArrayList(transforms);
             for (int i = 0, size = transformsCopy.size(); i < size; i++) {
@@ -139,11 +152,9 @@ public final class DOMReference extends DOMStructure
                         ("transforms["+i+"] is not a valid type");
                 }
             }
-            this.transforms = Collections.unmodifiableList(transformsCopy);
+	    this.transforms = transformsCopy;
+	    this.allTransforms.addAll(transformsCopy);
         }
-	List all = new ArrayList(this.appliedTransforms);
-	all.addAll(this.transforms);
-	this.allTransforms = Collections.unmodifiableList(all);
 	this.digestMethod = dm;
 	this.uri = uri;
         if ((uri != null) && (!uri.equals(""))) {
@@ -202,13 +213,7 @@ public final class DOMReference extends DOMStructure
         this.type = DOMUtils.getAttributeValue(refElem, "Type");
 	this.here = refElem.getAttributeNodeNS(null, "URI");
 	this.refElem = refElem;
-
-        if (transforms.isEmpty()) {
-            this.transforms = Collections.EMPTY_LIST;
-        } else {
-            this.transforms = Collections.unmodifiableList(transforms);
-        }
-	this.appliedTransforms = Collections.EMPTY_LIST;
+	this.transforms = transforms;
 	this.allTransforms = transforms;
 	this.appliedTransformData = null;
 	this.provider = provider;
@@ -231,7 +236,7 @@ public final class DOMReference extends DOMStructure
     }
 
     public List getTransforms() {
-	return allTransforms;
+	return Collections.unmodifiableList(allTransforms);
     }
 
     public byte[] getDigestValue() {
@@ -259,17 +264,13 @@ public final class DOMReference extends DOMStructure
         DOMUtils.setAttribute(refElem, "Type", type);
 
 	// create and append Transforms element
-	if (!transforms.isEmpty() || !appliedTransforms.isEmpty()) {
+	if (!allTransforms.isEmpty()) {
             Element transformsElem = DOMUtils.createElement
 		(ownerDoc, "Transforms", XMLSignature.XMLNS, dsPrefix);
 	    refElem.appendChild(transformsElem);
-	    for (int i = 0, size = appliedTransforms.size(); i < size; i++) {
+	    for (int i = 0, size = allTransforms.size(); i < size; i++) {
 	        DOMStructure transform = 
-		    (DOMStructure) appliedTransforms.get(i);
-	        transform.marshal(transformsElem, dsPrefix, context);
-	    }
-	    for (int i = 0, size = transforms.size(); i < size; i++) {
-	        DOMStructure transform = (DOMStructure) transforms.get(i);
+		    (DOMStructure) allTransforms.get(i);
 	        transform.marshal(transformsElem, dsPrefix, context);
 	    }
 	}
@@ -417,15 +418,21 @@ public final class DOMReference extends DOMStructure
 	    if (data != null) {
 	        XMLSignatureInput xi;
 	        // explicitly use C14N 1.1 when generating signature
-	        Boolean c14n11 = (Boolean)
-            	    context.getProperty("org.apache.xml.security.useC14N11");
-	        String c14nalg = null;
-	        if (context instanceof XMLSignContext && c14n11 != null 
-		    && c14n11.booleanValue() == true) {
-		    c14nalg = "http://www.w3.org/2006/12/xml-c14n11";
-	        } else {
-		    c14nalg = CanonicalizationMethod.INCLUSIVE;
-	        }
+		// first check system property, then context property
+		boolean c14n11 = useC14N11;
+		String c14nalg = CanonicalizationMethod.INCLUSIVE;
+	        if (context instanceof XMLSignContext) {
+		    if (!c14n11) {
+	                Boolean prop = (Boolean) context.getProperty
+			    ("org.apache.xml.security.useC14N11");
+		        c14n11 = (prop != null && prop.booleanValue() == true);
+			if (c14n11) {
+		            c14nalg = "http://www.w3.org/2006/12/xml-c14n11";
+			}
+		    } else {
+		        c14nalg = "http://www.w3.org/2006/12/xml-c14n11";
+		    }
+		}
 	        if (data instanceof ApacheData) {
 	            xi = ((ApacheData) data).getXMLSignatureInput();
 	        } else if (data instanceof OctetStreamData) {
@@ -445,16 +452,23 @@ public final class DOMReference extends DOMStructure
 	        } else {
 	            throw new XMLSignatureException("unrecognized Data type");
 	        }
-	        if (context instanceof XMLSignContext && c14n11 != null 
-		    && c14n11.booleanValue() == true && !xi.isOctetStream()) {
-	            Element transformsElem = 
-		        DOMUtils.getFirstChildElement(refElem);
-	            Element transformElem = DOMUtils.createElement
-		        (refElem.getOwnerDocument(), "Transform", 
-		         XMLSignature.XMLNS, 
-			 DOMUtils.getSignaturePrefix(context));
-	            DOMUtils.setAttribute(transformElem, "Algorithm", c14nalg);
-	            transformsElem.appendChild(transformElem);
+	        if (context instanceof XMLSignContext && c14n11
+		    && !xi.isOctetStream() && !xi.isOutputStreamSet()) {
+		    DOMTransform t = new DOMTransform
+			(TransformService.getInstance(c14nalg, "DOM"));
+		    Element transformsElem = null;
+		    String dsPrefix = DOMUtils.getSignaturePrefix(context);
+		    if (allTransforms.isEmpty()) {
+            		transformsElem = DOMUtils.createElement(
+			    refElem.getOwnerDocument(), 
+			    "Transforms", XMLSignature.XMLNS, dsPrefix);
+	    		refElem.insertBefore(transformsElem, 
+			    DOMUtils.getFirstChildElement(refElem));
+		    } else {
+	            	transformsElem = DOMUtils.getFirstChildElement(refElem);
+		    }
+        	    t.marshal(transformsElem, dsPrefix, (DOMCryptoContext) context);
+		    allTransforms.add(t);
 	            xi.updateOutputStream(os, true);
 		} else {
 	            xi.updateOutputStream(os);
@@ -494,7 +508,7 @@ public final class DOMReference extends DOMStructure
 	    Arrays.equals(digestValue, oref.getDigestValue());
 
 	return (digestMethod.equals(oref.getDigestMethod()) && idsEqual &&
-	    urisEqual && typesEqual && transforms.equals(oref.getTransforms()));
+	    urisEqual && typesEqual && allTransforms.equals(oref.getTransforms()));
     }
 
     public int hashCode() {
