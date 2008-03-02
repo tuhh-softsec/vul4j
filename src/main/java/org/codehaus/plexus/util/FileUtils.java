@@ -1936,51 +1936,7 @@ public class FileUtils
     public static void copyFile( File from, File to, String encoding, FilterWrapper[] wrappers )
         throws IOException
     {
-        if ( wrappers != null && wrappers.length > 0 )
-        {
-            // buffer so it isn't reading a byte at a time!
-            Reader fileReader = null;
-            Writer fileWriter = null;
-            try
-            {
-                if ( encoding == null || encoding.length() < 1 )
-                {
-                    fileReader = new BufferedReader( new FileReader( from ) );
-                    fileWriter = new FileWriter( to );
-                }
-                else
-                {
-                    FileInputStream instream = new FileInputStream( from );
-
-                    FileOutputStream outstream = new FileOutputStream( to );
-
-                    fileReader = new BufferedReader( new InputStreamReader( instream, encoding ) );
-
-                    fileWriter = new OutputStreamWriter( outstream, encoding );
-                }
-
-                Reader reader = fileReader;
-                for ( int i = 0; i < wrappers.length; i++ )
-                {
-                    FilterWrapper wrapper = wrappers[i];
-                    reader = wrapper.getReader( reader );
-                }
-
-                IOUtil.copy( reader, fileWriter );
-            }
-            finally
-            {
-                IOUtil.close( fileReader );
-                IOUtil.close( fileWriter );
-            }
-        }
-        else
-        {
-            if ( to.lastModified() < from.lastModified() )
-            {
-                copyFile( from, to );
-            }
-        }
+        copyFile( from, to, encoding, wrappers, false );
     }
 
     public static abstract class FilterWrapper
