@@ -888,6 +888,73 @@ public final class FileUtilsTest
         compareFile.delete();
     }
 
+    public void testFilteredWithoutFilterAndOlderFile()
+    throws Exception
+    {
+        String content = "This is a test.";
+        File sourceFile = new File( getTestDirectory(), "source.txt" );
+        OutputStream contentStream = new FileOutputStream( sourceFile );
+        contentStream.write( content.getBytes() );
+        contentStream.flush();
+
+        File destFile = new File( getTestDirectory(), "target.txt" );
+        if ( destFile.exists() )
+        {
+            destFile.delete();
+        }
+        FileUtils.copyFile( sourceFile, destFile, null, null );
+        assertEqualContent( content.getBytes(), destFile );
+        
+        String newercontent = "oldercontent";
+        File olderFile = new File( getTestDirectory(), "oldersource.txt" );
+        
+        OutputStream olderContentStream = new FileOutputStream( olderFile );
+        olderContentStream.write( newercontent.getBytes() );
+        olderContentStream.flush();
+        
+        // very old file ;-)
+        olderFile.setLastModified( 1 );
+        destFile = new File( getTestDirectory(), "target.txt" );
+        FileUtils.copyFile( olderFile, destFile, null, null );
+        String destFileContent = IOUtil.toString( new FileInputStream (destFile) );
+        assertEquals( content, destFileContent );
+        
+    }
+    
+    
+    public void testFilteredWithoutFilterAndOlderFileAndOverwrite()
+    throws Exception
+    {
+        String content = "This is a test.";
+        File sourceFile = new File( getTestDirectory(), "source.txt" );
+        OutputStream contentStream = new FileOutputStream( sourceFile );
+        contentStream.write( content.getBytes() );
+        contentStream.flush();
+
+        File destFile = new File( getTestDirectory(), "target.txt" );
+        if ( destFile.exists() )
+        {
+            destFile.delete();
+        }
+        FileUtils.copyFile( sourceFile, destFile, null, null );
+        assertEqualContent( content.getBytes(), destFile );
+        
+        String newercontent = "oldercontent";
+        File olderFile = new File( getTestDirectory(), "oldersource.txt" );
+        
+        OutputStream olderContentStream = new FileOutputStream( olderFile );
+        olderContentStream.write( newercontent.getBytes() );
+        olderContentStream.flush();
+        
+        // very old file ;-)
+        olderFile.setLastModified( 1 );
+        destFile = new File( getTestDirectory(), "target.txt" );
+        FileUtils.copyFile( olderFile, destFile, null, null, true );
+        String destFileContent = IOUtil.toString( new FileInputStream (destFile) );
+        assertEquals( newercontent, destFileContent );
+        
+    }    
+    
     /**
      * TEST FAILS ON WINDOWS.
      *

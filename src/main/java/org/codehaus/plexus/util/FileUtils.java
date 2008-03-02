@@ -1989,6 +1989,67 @@ public class FileUtils
     }
 
     /**
+     * <b>If wrappers is null or empty, the file will be copy only if to.lastModified() < from.lastModified()</b>
+     * @param from the file to copy
+     * @param to the destination file
+     * @param encoding the file output encoding (only if wrappers is not empty) 
+     * @param wrappers array of {@link FilterWrapper}
+     * @param overwrite if true and f wrappers is null or empty, the file will be copy 
+     *        enven if to.lastModified() < from.lastModified()
+     * @throws IOException if an IO error occurs during copying or filtering
+     * @since 1.5.2
+     */
+    public static void copyFile( File from, File to, String encoding, FilterWrapper[] wrappers, boolean overwrite )
+        throws IOException
+    {
+        if ( wrappers != null && wrappers.length > 0 )
+        {
+            // buffer so it isn't reading a byte at a time!
+            Reader fileReader = null;
+            Writer fileWriter = null;
+            try
+            {
+                if ( encoding == null || encoding.length() < 1 )
+                {
+                    fileReader = new BufferedReader( new FileReader( from ) );
+                    fileWriter = new FileWriter( to );
+                }
+                else
+                {
+                    FileInputStream instream = new FileInputStream( from );
+
+                    FileOutputStream outstream = new FileOutputStream( to );
+
+                    fileReader = new BufferedReader( new InputStreamReader( instream, encoding ) );
+
+                    fileWriter = new OutputStreamWriter( outstream, encoding );
+                }
+
+                Reader reader = fileReader;
+                for ( int i = 0; i < wrappers.length; i++ )
+                {
+                    FilterWrapper wrapper = wrappers[i];
+                    reader = wrapper.getReader( reader );
+                }
+
+                IOUtil.copy( reader, fileWriter );
+            }
+            finally
+            {
+                IOUtil.close( fileReader );
+                IOUtil.close( fileWriter );
+            }
+        }
+        else
+        {
+            if ( to.lastModified() < from.lastModified() || overwrite )
+            {
+                copyFile( from, to );
+            }
+        }
+    }    
+    
+    /**
      * Note: the file content is read with platform encoding
      * @return a List containing every every line not starting with # and not empty
      */
