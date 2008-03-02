@@ -29,9 +29,10 @@
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
-    <version>7</version>
+    <version>8</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
+  <packaging>bundle</packaging>
   <groupId>commons-digester</groupId>
   <artifactId>commons-digester</artifactId>
   <name>Commons Digester</name>
@@ -172,6 +173,14 @@
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</developerConnection>
     <url>http://svn.apache.org/viewvc/commons/proper/digester/trunk</url>
   </scm>
+
+  <properties>
+    <commons.componentid>digester</commons.componentid>
+    <commons.release.version>1.8</commons.release.version>
+    <commons.binary.suffix></commons.binary.suffix>
+    <commons.jira.id>DIGESTER</commons.jira.id>
+    <commons.jira.pid>12310471</commons.jira.pid>
+  </properties> 
 
   <build>
     <sourceDirectory>src/java</sourceDirectory>
