@@ -1925,6 +1925,14 @@ public class FileUtils
         return result;
     }
 
+    /**
+     * <b>If wrappers is null or empty, the file will be copy only if to.lastModified() < from.lastModified()</b>
+     * @param from the file to copy
+     * @param to the destination file
+     * @param encoding the file output encoding (only if wrappers is not empty) 
+     * @param wrappers array of {@link FilterWrapper}
+     * @throws IOException if an IO error occurs during copying or filtering
+     */
     public static void copyFile( File from, File to, String encoding, FilterWrapper[] wrappers )
         throws IOException
     {
