@@ -33,8 +33,10 @@ public class ClassLoaderTest extends TestCase {
         URL[] urls = new URL[2];
         urls[0] = file0.toURL();
         urls[1] = file1.toURL();
-        URLClassLoader uc1 = new URLClassLoader(urls, null);
-        URLClassLoader uc2 = new URLClassLoader(urls, null);
+        URLClassLoader uc1 = new URLClassLoader
+	    (urls, Thread.currentThread().getContextClassLoader());
+        URLClassLoader uc2 = new URLClassLoader
+	    (urls, Thread.currentThread().getContextClassLoader());
 
         Class c1 = uc1.loadClass("javax.xml.crypto.test.dsig.Driver");
         Class c2 = uc2.loadClass("javax.xml.crypto.test.dsig.Driver");
@@ -55,7 +57,8 @@ public class ClassLoaderTest extends TestCase {
         urls[0] = file0.toURL();
         urls[1] = file1.toURL();
 
-        URLClassLoader uc1 = new URLClassLoader(urls, null);
+        URLClassLoader uc1 = new URLClassLoader
+	    (urls, Thread.currentThread().getContextClassLoader());
         //load security provider using current class loader
         final Provider provider = new XMLDSigRI();
         AccessController.doPrivileged(new java.security.PrivilegedAction() {
@@ -97,8 +100,10 @@ public class ClassLoaderTest extends TestCase {
         URL[] urls = new URL[2];
         urls[0] = file0.toURL();
         urls[1] = file1.toURL();
-        URLClassLoader uc1 = new URLClassLoader(urls, null);
-        URLClassLoader uc2 = new URLClassLoader(urls, null);
+        URLClassLoader uc1 = new URLClassLoader
+	    (urls, Thread.currentThread().getContextClassLoader());
+        URLClassLoader uc2 = new URLClassLoader
+	    (urls, Thread.currentThread().getContextClassLoader());
 
         Class c1 = uc1.loadClass("javax.xml.crypto.test.dsig.AppA");
         Class c2 = uc2.loadClass("javax.xml.crypto.test.dsig.AppB");
