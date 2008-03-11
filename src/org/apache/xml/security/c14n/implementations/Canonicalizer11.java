@@ -522,12 +522,12 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
         // components then replace occurrences of "//" in the input buffer
         // with "/" until no more occurrences of "//" are in the input buffer.
         String input = path;
-        while (input.contains("//")) {
+        while (input.indexOf("//") > -1) {
             input = input.replaceAll("//", "/");
         }
 
         // Initialize the output buffer with the empty string.
-        StringBuilder output = new StringBuilder();
+        StringBuffer output = new StringBuffer();
 
         // If the input buffer starts with a root slash "/" then move this
         // character to the output buffer.
@@ -586,7 +586,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                 } else {
                     int index = output.lastIndexOf("/");
                     if (index == -1) {
-                        output = new StringBuilder();
+                        output = new StringBuffer();
                         if (input.charAt(0) == '/') {
                             input = input.substring(1);
                         }
@@ -607,7 +607,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                 } else {
                     int index = output.lastIndexOf("/");
                     if (index == -1) {
-                        output = new StringBuilder();
+                        output = new StringBuffer();
                         if (input.charAt(0) == '/') {
                             input = input.substring(1);
                         }

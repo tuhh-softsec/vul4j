@@ -143,7 +143,7 @@ public final class DOMReference extends DOMStructure
             this.allTransforms = transformsCopy;
         }
         if (transforms == null) {
-	    this.transforms = Collections.emptyList();
+	    this.transforms = Collections.EMPTY_LIST;
         } else {
             List transformsCopy = new ArrayList(transforms);
             for (int i = 0, size = transformsCopy.size(); i < size; i++) {
