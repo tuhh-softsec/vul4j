@@ -154,7 +154,13 @@ public class RFC2253Parser {
          return str;
       } 
       String attrType = normalizeAT(str.substring(0, i));
-      String attrValue = normalizeV(str.substring(i + 1));
+      // only normalize if value is a String
+      String attrValue = null;
+      if (attrType.charAt(0) >= '0' && attrType.charAt(0) <= '9') {
+          attrValue = str.substring(i + 1);
+      } else {
+          attrValue = normalizeV(str.substring(i + 1));
+      }
 
       return attrType + "=" + attrValue;
       
