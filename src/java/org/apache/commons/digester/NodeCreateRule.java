@@ -150,12 +150,56 @@ public class NodeCreateRule extends Rule {
          */
         protected Node top = null;
 
+        /**
+         * The text content of the current top DOM node.
+         */
+        protected StringBuffer topText = new StringBuffer();
+
+
+        // --------------------------------------------- Helper Methods
+
+        /**
+         * Appends a {@link org.w3c.dom.Text Text} node to the current node
+         * if the content reported by the parser is not purely whitespace.
+         */
+        private void addTextIfPresent() throws SAXException {
+        	if (topText.length() > 0) {
+        		String str = topText.toString();
+        		topText.setLength(0);
+
+        		if (str.trim().length() > 0) {
+                    // The contained text is not *pure* whitespace, so create
+                    // a text node to hold it. Note that the "untrimmed" text
+                    // is stored in the node.
+                    try {
+                        top.appendChild(doc.createTextNode(str));
+                    } catch (DOMException e) {
+                        throw new SAXException(e.getMessage());
+                    }
+                }
+            }
+        }
 
         // --------------------------------------------- ContentHandler Methods
 
 
         /**
-         * Appends a {@link org.w3c.dom.Text Text} node to the current node.
+         * Handle notification about text embedded within the current node.
+         * <p>
+         * An xml parser calls this when text is found. We need to ensure that this
+         * text gets attached to the new Node we are creating - except in the case
+         * where the only text in the node is whitespace.
+         * <p>
+         * There is a catch, however. According to the sax specification, a parser
+         * does not need to pass all of the text content of a node in one go; it can
+         * make multiple calls passing part of the data on each call. In particular,
+         * when the body of an element includes xml entity-references, at least some
+         * parsers make a separate call to this method to pass just the entity content.
+         * <p>
+         * In this method, we therefore just append the provided text to a
+         * "current text" buffer. When the element end is found, or a child element
+         * is found then we can check whether we have all-whitespace. See method
+         * addTextIfPresent. 
          * 
          * @param ch the characters from the XML document
          * @param start the start position in the array
@@ -165,15 +209,7 @@ public class NodeCreateRule extends Rule {
         public void characters(char[] ch, int start, int length)
             throws SAXException {
 
-            try {
-                String str = new String(ch, start, length);
-                if (str.trim().length() > 0) { 
-                    top.appendChild(doc.createTextNode(str));
-                }
-            } catch (DOMException e) {
-                throw new SAXException(e.getMessage());
-            }
-
+        	topText.append(ch, start, length);
         }
 
 
@@ -189,6 +225,8 @@ public class NodeCreateRule extends Rule {
                                String qName)
             throws SAXException {
             
+            addTextIfPresent();
+
             try {
                 if (depth == 0) {
                     getDigester().setCustomContentHandler(oldContentHandler);
@@ -240,6 +278,8 @@ public class NodeCreateRule extends Rule {
         public void startElement(String namespaceURI, String localName,
                                  String qName, Attributes atts)
             throws SAXException {
+
+            addTextIfPresent();
 
             try {
                 Node previousTop = top;

@@ -463,6 +463,28 @@ public class NodeCreateRuleTestCase extends TestCase {
 
     }
 
+    /**
+     * This unit test checks that text nodes are correctly created when
+     * xml entities are used. In particular, this usually causes the xml
+     * parser to make multiple invocations of the characters(..) sax
+     * callback, rather than just one.
+     */
+    public void testEntityText() throws Exception {
+        String TEST_XML2 =
+            "<?xml version='1.0'?><root><alpha>&#65; &#65;</alpha></root>";
+
+        digester.addRule("root/alpha", new NodeCreateRule());
+        Object result = digester.parse(new StringReader(TEST_XML2));
+
+        assertNotNull(result);
+        assertTrue(result instanceof Element);
+        Element element = (Element)result;
+        assertEquals("alpha", element.getNodeName());
+        assertNull(((Element)element).getLocalName());
+        assertNull(((Element)element).getNamespaceURI());
+        assertEquals(1, element.getChildNodes().getLength());
+        assertEquals("A A", element.getFirstChild().getNodeValue());
+    }
     // ------------------------------------------------ Utility Support Methods
 
 
