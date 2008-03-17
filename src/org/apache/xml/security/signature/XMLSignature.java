@@ -365,33 +365,28 @@ private Element signatureValueElement;
       }
    }
 
-   /**
-    * Base64 encodes and sets the bytes as the content of the SignatureValue
-    * Node.
-    *
-    * @param bytes bytes to be used by SignatureValue before Base64 encoding
-    */
-   private void setSignatureValueElement(byte[] bytes)
-   {
+    /**
+     * Base64 encodes and sets the bytes as the content of the SignatureValue
+     * Node.
+     *
+     * @param bytes bytes to be used by SignatureValue before Base64 encoding
+     */
+    private void setSignatureValueElement(byte[] bytes) {
 
-    	 while (signatureValueElement.hasChildNodes()) {
-        	 signatureValueElement.removeChild(signatureValueElement.getFirstChild());
-         }
+        while (signatureValueElement.hasChildNodes()) {
+            signatureValueElement.removeChild
+		(signatureValueElement.getFirstChild());
+        }
 
-         String base64codedValue = Base64.encode(bytes);
+        String base64codedValue = Base64.encode(bytes);
 
-         if (base64codedValue.length() > 76) {
-	    XMLUtils.addReturnToElement(signatureValueElement);
-         }
+        if (base64codedValue.length() > 76 && !XMLUtils.ignoreLineBreaks()) {
+	    base64codedValue = "\n" + base64codedValue + "\n";
+        }
 
-         Text t = this._doc.createTextNode(base64codedValue);
-
-         signatureValueElement.appendChild(t);
-
-         if (base64codedValue.length() > 76) {
-	    XMLUtils.addReturnToElement(signatureValueElement);
-         }
-   }
+        Text t = this._doc.createTextNode(base64codedValue);
+        signatureValueElement.appendChild(t);
+    }
 
    /**
     * Returns the KeyInfo child. If we are in signing mode and the KeyInfo

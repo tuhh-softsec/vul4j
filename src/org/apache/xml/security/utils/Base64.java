@@ -271,7 +271,7 @@ public class Base64 {
     * @return the <code>String<code> with encoded data
     */
    public static final String encode(byte[] binaryData) {
-      return XMLUtils.ignoreLineBreaks 
+      return XMLUtils.ignoreLineBreaks()
          ? encode(binaryData, Integer.MAX_VALUE) 
 	 : encode(binaryData, BASE64DEFAULTLENGTH);
    }

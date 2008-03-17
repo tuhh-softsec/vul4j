@@ -47,7 +47,7 @@ import org.w3c.dom.Text;
  */
 public class XMLUtils {
 
-   static boolean ignoreLineBreaks = false;
+   private static boolean ignoreLineBreaks = false;
    static {
       try {
          ignoreLineBreaks = Boolean.getBoolean
@@ -665,4 +665,8 @@ public class XMLUtils {
          }
       }
    }
+
+    public static boolean ignoreLineBreaks() {
+        return ignoreLineBreaks;
+    }
 }
