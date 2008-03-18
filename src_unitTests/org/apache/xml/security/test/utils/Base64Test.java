@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.XMLUtils;
 
 
 /**
@@ -132,7 +133,12 @@ public class Base64Test extends TestCase {
 		throws java.io.UnsupportedEncodingException, Exception {
 
 		String inputData = "The quick brown fox jumps over the lazy dog and some extra text that will cause a line wrap";
-		String expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy\nYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
+		String expectedResult = null;
+		if (XMLUtils.ignoreLineBreaks()) {
+		    expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRyYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
+		} else {
+		    expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy\nYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
+		}
 		String result = Base64.encode(inputData.getBytes("UTF-8"));
 		assertEquals("Result of encoding", result, expectedResult);
 
