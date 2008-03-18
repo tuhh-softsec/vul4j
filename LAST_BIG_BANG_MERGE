@@ -9,3 +9,7 @@ Sun Jan 20 10:36:53 EST 2008
 svn merge -r 604351:613581 https://svn.apache.org/repos/asf/directory/daemon/branches/bigbang .
 NOTHING CHANGED ...
 
+Tue Mar 18 00:47:53 EDT 2008
+----------------------------
+svn merge -r 613581:638212 https://svn.apache.org/repos/asf/directory/daemon/branches/bigbang .
+

@@ -60,7 +60,7 @@ import org.codehaus.plexus.util.Os;
  * @version $Rev$
  */
 public class ServiceInstallersMojo extends AbstractMojo
-{ 
+{
     static final String BOOTSTRAPPER_ARTIFACT_ID = "daemon-bootstrappers";
     static final String BOOTSTRAPPER_GROUP_ID = "org.apache.directory.daemon";
     static final String LOGGER_ARTIFACT_ID = "slf4j-api";
@@ -213,7 +213,7 @@ public class ServiceInstallersMojo extends AbstractMojo
         setBootstrapArtifacts();
 
         // generate installers for all targets
-        for ( Target target:allTargets )
+        for ( Target target : allTargets )
         {
             // create the installation image first
             CreateImageCommand imgCmd = new CreateImageCommand( this, target );
@@ -272,9 +272,10 @@ public class ServiceInstallersMojo extends AbstractMojo
         {
             return;
         }
-        
-        list = Arrays.asList( array );
+
+        list.addAll( Arrays.asList( array ) );
     }
+
 
     private void setDefaults() throws MojoFailureException
     {
@@ -346,10 +347,11 @@ public class ServiceInstallersMojo extends AbstractMojo
         if ( application.getAuthors() == null )
         {
             List<String> authors = new ArrayList<String>();
-            @SuppressWarnings(value={"unchecked"})
+            @SuppressWarnings(value =
+                { "unchecked" })
             List<Developer> developers = project.getDevelopers();
-            
-            for ( Developer developer:developers )
+
+            for ( Developer developer : developers )
             {
                 if ( developer.getEmail() != null )
                 {
@@ -389,7 +391,7 @@ public class ServiceInstallersMojo extends AbstractMojo
             application.setLicense( new File( "LICENSE" ) );
         }
 
-        for ( Target target:allTargets )
+        for ( Target target : allTargets )
         {
             if ( target.getApplication() == null )
             {
@@ -442,7 +444,7 @@ public class ServiceInstallersMojo extends AbstractMojo
     private void setupSourcesAndDocs() throws MojoFailureException
     {
         File generatedDocs = null;
-        
+
         if ( svnBaseUrl != null )
         {
             exportedSources = new File( outputDirectory, "src" );
@@ -463,7 +465,7 @@ public class ServiceInstallersMojo extends AbstractMojo
     {
         Artifact artifact = null;
         Iterator artifacts = project.getDependencyArtifacts().iterator();
-        
+
         while ( artifacts.hasNext() )
         {
             artifact = ( Artifact ) artifacts.next();
@@ -515,7 +517,7 @@ public class ServiceInstallersMojo extends AbstractMojo
         getLog().info( "----------------------------- allTargets -----------------------------" );
 
         boolean isFirst = true;
-        
+
         if ( allTargets != null )
         {
             if ( isFirst )
@@ -526,21 +528,17 @@ public class ServiceInstallersMojo extends AbstractMojo
             {
                 getLog().info( "" );
             }
-            
-            for ( Target target:allTargets )
+
+            for ( Target target : allTargets )
             {
                 getLog().info( "id: " + target.getId() );
                 getLog().info( "osName: " + target.getOsName() );
                 getLog().info( "osArch: " + target.getOsArch() );
                 getLog().info( "osVersion: " + target.getOsVersion() );
                 getLog().info( "daemonFramework: " + target.getDaemonFramework() );
-                getLog().info(
-                    "loggerConfigurationFile: " + target.getLoggerConfigurationFile() );
-                getLog().info(
-                    "bootstrapperConfigurationFiles: "
-                        + target.getBootstrapperConfigurationFile() );
-                getLog().info(
-                    "serverConfigurationFil: " + target.getServerConfigurationFile() );
+                getLog().info( "loggerConfigurationFile: " + target.getLoggerConfigurationFile() );
+                getLog().info( "bootstrapperConfigurationFiles: " + target.getBootstrapperConfigurationFile() );
+                getLog().info( "serverConfigurationFil: " + target.getServerConfigurationFile() );
             }
         }
 

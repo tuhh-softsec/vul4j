@@ -31,12 +31,14 @@
     A plugin that builds installers using bootstrappers and commons-daemon procrun and jsvc
   </description>
 
+<!-- 
   <distributionManagement>
     <site>
       <id>apache.websites</id>
       <url>scp://minotaur.apache.org/www/directory.apache.org/newsite/subprojects/daemon/</url>
     </site>
   </distributionManagement>
+-->
 
   <dependencies>
     <dependency>
