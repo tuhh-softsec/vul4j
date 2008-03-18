@@ -33,6 +33,7 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
+import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 
 import java.io.*;
@@ -236,9 +237,22 @@ public final class DOMXMLSignature extends DOMStructure
 	    throw new NullPointerException("validateContext is null");
 	}
 
+        if (!(vc instanceof DOMValidateContext)) {
+            throw new ClassCastException
+                ("validateContext must be of type DOMValidateContext");
+        }
+
 	if (validated) {
 	    return validationStatus;
 	}
+
+        // validate the signature
+        boolean sigValidity = sv.validate(vc);
+        if (!sigValidity) {
+            validationStatus = false;
+            validated = true;
+            return validationStatus;
+        }
 
         // validate all References
         List refs = this.si.getReferences();
@@ -256,14 +270,6 @@ public final class DOMXMLSignature extends DOMStructure
 	    if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, "Couldn't validate the References");
 	    }
-	    validationStatus = false;
-	    validated = true;
-	    return validationStatus;
-        }
-
-	// validate the signature
-	boolean sigValidity = sv.validate(vc);
-	if (!sigValidity) {
 	    validationStatus = false;
 	    validated = true;
 	    return validationStatus;

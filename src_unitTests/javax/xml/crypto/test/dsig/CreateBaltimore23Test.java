@@ -539,7 +539,6 @@ public class CreateBaltimore23Test extends TestCase {
 	    System.err.println("line:" + spe.getLineNumber());
 	    System.err.println("xml:" + sw.toString());
 	}
-	System.out.println("doc is:" + sw.toString());
 	Element sigElement = SignatureValidator.getSignatureElement(doc);
 	if (sigElement == null) {
             throw new Exception("Couldn't find signature Element");
@@ -602,6 +601,13 @@ public class CreateBaltimore23Test extends TestCase {
 	DOMSignContext dsc = new DOMSignContext(signingKey, doc);
 
 	sig.sign(dsc);
+
+/**
+	System.out.println("doc is:");
+	StringWriter sw = new StringWriter();
+        dumpDocument(doc, sw);
+	System.out.println(sw.toString());
+**/
 
 	DOMValidateContext dvc = new DOMValidateContext
 	    (ks, doc.getDocumentElement());

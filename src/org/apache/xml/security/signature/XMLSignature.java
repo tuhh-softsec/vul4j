@@ -594,10 +594,6 @@ private Element signatureValueElement;
       // References inside a Manifest.
       try {
          SignedInfo si=this.getSignedInfo();
-         if (!si.verify(this._followManifestsDuringValidation)) {
-            return false;
-         }
-
          //create a SignatureAlgorithms from the SignatureMethod inside
          //SignedInfo. This is used to validate the signature.
          SignatureAlgorithm sa =si.getSignatureAlgorithm();               
@@ -614,20 +610,21 @@ private Element signatureValueElement;
          OutputStream bos=new UnsyncBufferedOutputStream(so);
          si.signInOctectStream(bos);
          try {
-			bos.close();
-		} catch (IOException e) {
-			//Imposible
-		}
-         
+		bos.close();
+	 } catch (IOException e) {
+		//Imposible
+	 }
+
          //retrieve the byte[] from the stored signature
          byte sigBytes[] = this.getSignatureValue();
 
-
          //Have SignatureAlgorithm sign the input bytes and compare them to the
          //bytes that were stored in the signature.
-         boolean verify = sa.verify(sigBytes);
+         if (!sa.verify(sigBytes)) {
+	    return false;
+	 }
 
-         return verify;
+         return si.verify(this._followManifestsDuringValidation);
       } catch (XMLSecurityException ex) {
          throw new XMLSignatureException("empty", ex);
       } 

@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2008 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -135,7 +135,7 @@ public class UnknownAlgoSignatureTest extends TestCase {
             SAXException, IOException, TransformerException,
             XMLSecurityException {
         try {
-            assertTrue(checkSignature("signature-bad-transform-algo.xml"));
+            assertTrue(checkReferences("signature-bad-transform-algo.xml"));
             fail("Exception not caught");
         } catch (XMLSignatureException e) {
             // succeed
@@ -143,6 +143,20 @@ public class UnknownAlgoSignatureTest extends TestCase {
     }
 
     protected boolean checkSignature(String fileName)
+            throws ParserConfigurationException, SAXException, IOException,
+            TransformerException, XMLSecurityException {
+	XMLSignature signature = unmarshalXMLSignature(fileName);
+        return signature.checkSignatureValue(publicKey);
+    }
+
+    protected boolean checkReferences(String fileName)
+            throws ParserConfigurationException, SAXException, IOException,
+            TransformerException, XMLSecurityException {
+	XMLSignature signature = unmarshalXMLSignature(fileName);
+        return signature.getSignedInfo().verify(false);
+    }
+
+    private XMLSignature unmarshalXMLSignature(String fileName)
             throws ParserConfigurationException, SAXException, IOException,
             TransformerException, XMLSecurityException {
 	File file = null;
@@ -158,7 +172,7 @@ public class UnknownAlgoSignatureTest extends TestCase {
                 "//ds:Signature[1]", nscontext);
         XMLSignature signature = new XMLSignature(signatureEl, file.toURL()
                 .toString());
-        return signature.checkSignatureValue(publicKey);
+	return signature;
     }
 
     public static Document getDocument(File file)

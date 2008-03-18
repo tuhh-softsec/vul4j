@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2008 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,12 @@ import org.w3c.dom.NodeList;
 import junit.framework.*;
 
 import javax.xml.crypto.test.KeySelectors;
+import javax.xml.crypto.Data;
+import javax.xml.crypto.URIDereferencer;
+import javax.xml.crypto.URIReference;
+import javax.xml.crypto.URIReferenceException;
+import javax.xml.crypto.XMLCryptoContext;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
 /**
@@ -72,6 +78,35 @@ public class ValidateSignatureTest extends TestCase {
 	boolean coreValidity = validator.validate(file, 
 	    new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
 	assertTrue("Signature failed core validation", coreValidity);
+    }
+
+    /**
+     * This test checks that the signature is verified before the references.
+     */
+    public void test_invalid_signature() throws Exception {
+        InvalidURIDereferencer ud = new InvalidURIDereferencer();
+
+        boolean coreValidity = validator.validate("invalid-signature.xml", 
+	    new KeySelectors.KeyValueKeySelector(), ud);
+	assertFalse("Invalid signature should fail!", coreValidity);
+	assertTrue("References validated before signature", ud.dereferenced);
+    }
+
+    /**
+     * Set flag if called.
+     */
+    static class InvalidURIDereferencer implements URIDereferencer {
+        boolean dereferenced = false;
+        private URIDereferencer ud =
+            XMLSignatureFactory.getInstance().getURIDereferencer();
+
+        public Data dereference(final URIReference ref, XMLCryptoContext ctx)
+        throws URIReferenceException {
+            dereferenced = true;
+
+            // fallback
+            return ud.dereference(ref, ctx);
+        }
     }
     
     public static void main(String[] args) throws Exception {

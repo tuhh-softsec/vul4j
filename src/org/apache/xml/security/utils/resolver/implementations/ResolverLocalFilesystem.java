@@ -118,7 +118,8 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
       String uriNodeValue = uri.getNodeValue();
 
-      if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#')) {
+      if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#') ||
+	  uriNodeValue.startsWith("http:")) {
          return false;
       }
 

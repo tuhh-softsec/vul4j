@@ -23,6 +23,7 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 import org.apache.xml.security.test.encryption.BaltimoreEncTest;
+import org.apache.xml.security.test.encryption.EncryptContentTest;
 import org.apache.xml.security.test.encryption.XMLCipherTester;
 
 
@@ -42,6 +43,7 @@ public class EncryptionTest extends TestCase {
         TestSuite suite = new TestSuite("DOM XML Encryption Tests");
         suite.addTest(new TestSuite(XMLCipherTester.class));
         suite.addTest(new TestSuite(BaltimoreEncTest.class));
+        suite.addTest(new TestSuite(EncryptContentTest.class));
         return (suite);
     }
 
