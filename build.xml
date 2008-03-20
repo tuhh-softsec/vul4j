@@ -456,6 +456,7 @@
             <sysproperty key="proxyHost" value="${proxy.host}"/>
 	    <sysproperty key="proxyPort" value="${proxy.port}"/>
 	    <sysproperty key="java.util.logging.config.file" value="${basedir}/logging.properties"/>
+            <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
             <classpath refid="id.classpath.test"/>
 	    <formatter type="xml"/>
 	    <!-- Also put output to screen -->
