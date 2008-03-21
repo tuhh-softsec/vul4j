@@ -67,7 +67,7 @@ public class CreateMerlinsExampleSixteen {
     * @throws Exception
     */
    public static void main(String unused[]) throws Exception {
-      Constants.setSignatureSpecNSprefix("");
+      Constants.setSignatureSpecNSprefix("ds");
       //J-
       String keystoreType = "JKS";
       String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";

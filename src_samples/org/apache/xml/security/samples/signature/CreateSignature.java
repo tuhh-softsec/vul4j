@@ -50,7 +50,7 @@ public class CreateSignature {
     * @throws Exception
     */
    public static void main(String unused[]) throws Exception {
-      Constants.setSignatureSpecNSprefix("");
+      Constants.setSignatureSpecNSprefix("ds");
 
       //J-
       //All the parameters for the keystore
