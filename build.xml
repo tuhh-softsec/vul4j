@@ -16,14 +16,12 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="4"/>
-    <property name="product.version.level" value="1"/>
-    <property name="product.Version" 
-			  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
+    <property name="product.version.level" value="2beta1"/>
     <property name="product.version" 
-			  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
+	  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product_version" 
-			  value="${product.version.major}_${product.version.minor}_${product.version.level}"/>
-    <property name="year" value="2000-2005"/>
+	  value="${product.version.major}_${product.version.minor}_${product.version.level}"/>
+    <property name="year" value="2000-2008"/>
     <property name="copyright" 
 			  value="Copyright © ${year} Apache XML Project. All Rights Reserved."/>
 
@@ -63,26 +61,26 @@
     <property name="lib.xalan.3"        value="${dir.libs}/xml-apis.jar" />
     <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl.jar" />
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
-    <property name="lib.junit"			value="${dir.libs}/junit-3.8.1.jar" />
-    <property name="lib.clover"			value="${dir.libs}/clover.jar" />
+    <property name="lib.junit"		value="${dir.libs}/junit-3.8.1.jar" />
+    <property name="lib.clover"		value="${dir.libs}/clover.jar" />
 
-	<!-- XML Security libraries (for bin distribution) -->
-	<property name="lib.xmlsec"         value="${dir.libs}/xmlsec.jar" />
-	<property name="lib.xmlsec.samples" value="${dir.libs}/xmlsecSamples.jar"/>
-	<property name="lib.xmlsec.tests"   value="${dir.libs}/xmlsecTests.jar" />
+    <!-- XML Security libraries (for bin distribution) -->
+    <property name="lib.xmlsec"         value="${dir.libs}/xmlsec.jar" />
+    <property name="lib.xmlsec.samples" value="${dir.libs}/xmlsecSamples.jar"/>
+    <property name="lib.xmlsec.tests"   value="${dir.libs}/xmlsecTests.jar" />
 
-	<!-- JAR properties -->
-	<property name="jar.library"        value="${dir.build}/xmlsec-${product.version}.jar" />
-	<property name="jar.samples"        value="${dir.build}/xmlsecSamples-${product.version}.jar" />
-	<property name="jar.tests"          value="${dir.build}/xmlsecTests-${product.version}.jar" />
-	<property name="jar.manifest"       value="${dir.manifest}/MANIFEST.MF"/>
+    <!-- JAR properties -->
+    <property name="jar.library"        value="${dir.build}/xmlsec-${product.version}.jar" />
+    <property name="jar.samples"        value="${dir.build}/xmlsecSamples-${product.version}.jar" />
+    <property name="jar.tests"          value="${dir.build}/xmlsecTests-${product.version}.jar" />
+    <property name="jar.manifest"       value="${dir.manifest}/MANIFEST.MF"/>
     
 
     <!-- build variable properties -->
 
 
-	<!-- T A S K D E F S -->
-	<taskdef resource="clovertasks"/>
+    <!-- T A S K D E F S -->
+    <taskdef resource="clovertasks"/>
 	
 	
 
@@ -147,7 +145,7 @@
     </path>
 
 
-	<!-- P A T T E R N S E T S -->
+    <!-- P A T T E R N S E T S -->
     <patternset id="id.patternset.distFiles">
 		<include name="build.xml"/>
 		<include name="INSTALL"/>
@@ -189,18 +187,18 @@
 
     <!-- T A R G E T S -->
 
-	<!-- Welcome screen -->
+    <!-- Welcome screen -->
 
-	<target name="init">
-		<echo message=""/>
-		<echo message="-------------------------------------------------------------------"/>
-		<echo message="--------- ${product.Name} v${product.Version} [${year}] -----------"/>
-		<echo message="-------------------------------------------------------------------"/>
-		<echo message="Building with ${ant.version}"/>
-		<echo message="Java ${java.version} located at ${java.home} "/>
-		<echo message="-------------------------------------------------------------------"/>
-		<echo message=""/>
-	</target>
+    <target name="init">
+	<echo message=""/>
+	<echo message="-------------------------------------------------------------------"/>
+	<echo message="--------- ${product.Name} v${product.version} [${year}] -----------"/>
+	<echo message="-------------------------------------------------------------------"/>
+	<echo message="Building with ${ant.version}"/>
+	<echo message="Java ${java.version} located at ${java.home} "/>
+	<echo message="-------------------------------------------------------------------"/>
+	<echo message=""/>
+    </target>
 
     <!-- environment targets -->
     <!-- set up -->
@@ -222,22 +220,22 @@
     </target >
     
     <target depends="init" name="env.rm.files" >
-		<delete file="signature.xml"/>
-		<delete file="axisSignature.xml"/>
-		<delete file="encryptedInfo.xml"/>
-		<delete file="decryptedInfo.xml"/>
-		<delete file="kek"/>
-		<delete>
-			<fileset dir="." includes="merlin16*.html,merlins*.xml" />
-		</delete>
+	<delete file="signature.xml"/>
+	<delete file="axisSignature.xml"/>
+	<delete file="encryptedInfo.xml"/>
+	<delete file="decryptedInfo.xml"/>
+	<delete file="kek"/>
+	<delete>
+		<fileset dir="." includes="merlin16*.html,merlins*.xml" />
+	</delete>
     </target >
 
     <target depends="init" name="with.clover" >
     	<clover-setup initstring="clover-db/coverage.db" >
     		<fileset dir="${dir.src}" >
-		  		<include name="**/*.java" />
-		  		<exclude name="**/*Exception.java" />
-			</fileset >
+	  		<include name="**/*.java" />
+	  		<exclude name="**/*Exception.java" />
+		</fileset >
      	</clover-setup >
     </target >
 
@@ -263,48 +261,47 @@
 		<property name="has.jce.provider" value="true"/>
     </target >
 
-	<target name="do.check.forrest">
-		<property environment="env"/>
-		<condition property="has.forrest">
-			<or>
-				<available filepath="${env.PATH}" file="forrest" />
-				<available filepath="${env.PATH}" file="forrest.bat" />
-			</or>
-		</condition>
-	</target>
+    <target name="do.check.forrest">
+	<property environment="env"/>
+	<condition property="has.forrest">
+		<or>
+			<available filepath="${env.PATH}" file="forrest" />
+			<available filepath="${env.PATH}" file="forrest.bat" />
+		</or>
+	</condition>
+    </target>
 
-	<target name="do.check.bindist">
-		<condition property="is.bin.dist">
-			<and>
-				<available file="${lib.xmlsec}" />
-				<available file="${lib.xmlsec.samples}" />
-				<available file="${lib.xmlsec.tests}" />
-				<not>
-					<available type="dir" file="src" />
-				</not>
-			</and>
-		</condition>
-	</target>
+    <target name="do.check.bindist">
+	<condition property="is.bin.dist">
+		<and>
+			<available file="${lib.xmlsec}" />
+			<available file="${lib.xmlsec.samples}" />
+			<available file="${lib.xmlsec.tests}" />
+			<not>
+				<available type="dir" file="src" />
+			</not>
+		</and>
+	</condition>
+    </target>
 
 
     <!-- B U I L D  T A R G E T S -->
-	<!-- Forrest new -->
-	<property environment="env"/>
-	<property name="forrest.home" value="${env.FORREST_HOME}"/>
-	<property name="project.home" value="${dir.docs}"/>	
-	<!-- 'site' is a target imported from forrest.build.xml -->
-	<import file="${env.FORREST_HOME}/forrest.build.xml" optional="true"/>
-	<target name="raul-forrest"  if="env.FORREST_HOME">			    	    	    
-			
-			<antcall target="site"></antcall>
-			<echo>something here</echo>
-	</target>
-	<!-- source -->
+    <!-- Forrest new -->
+    <property environment="env"/>
+    <property name="forrest.home" value="${env.FORREST_HOME}"/>
+    <property name="project.home" value="${dir.docs}"/>	
+    <!-- 'site' is a target imported from forrest.build.xml -->
+    <import file="${env.FORREST_HOME}/forrest.build.xml" optional="true"/>
+    <target name="raul-forrest"  if="env.FORREST_HOME">
+	<antcall target="site"></antcall>
+	<echo>something here</echo>
+    </target>
+    <!-- source -->
     <target name="build.src"
             depends="do.check.libs,do.build.src,env.mk.dirs,do.check.bindist"
 			unless="is.bin.dist"
             if="has.jce.provider" >
-        <javac target="1.1" source="1.2" srcdir="${dir.src}"
+        <javac target="1.4" source="1.4" srcdir="${dir.src}"
                destdir="${dir.build.bin}"
                debug="${build.compile.debug}">
             <classpath refid="id.classpath" />
@@ -325,7 +322,7 @@
     <!-- tests -->
     <target name="build.test"
     		depends="build.src"
-			unless="is.bin.dist">
+		unless="is.bin.dist">
     	<javac srcdir="${dir.src.test}"
                destdir="${dir.build.test}"
                debug="${build.compile.debug}">
@@ -340,16 +337,16 @@
     	</copy>
     </target>
 
-	<!-- samples -->
-	<target name="build.samples"
-			depends="build.src"
-			unless="is.bin.dist">
-		<javac srcdir="${dir.src.samples}"
-			   destdir="${dir.build.samples}"
-			   debug="${build.compile.debug}">
-			<classpath refid="id.classpath.samples"/>
-		</javac>
-	</target>
+    <!-- samples -->
+    <target name="build.samples"
+		depends="build.src"
+		unless="is.bin.dist">
+	<javac srcdir="${dir.src.samples}"
+		destdir="${dir.build.samples}"
+		debug="${build.compile.debug}">
+		<classpath refid="id.classpath.samples"/>
+	</javac>
+    </target>
 
 
 
@@ -399,12 +396,12 @@
 	            <fileset dir="${dir.src.test}">
 	                <include name="**/*Test*.java"/>
 	                <include name="org/apache/xml/security/test/c14n/implementations/ExclusiveC14NInterop.java"/>
-	                <exclude name="org/apache/xml/security/test/*Test*.java"/>
+	                <exclude name="org/apache/xml/security/test/TestUtils.java"/>
 	                <exclude name="org/apache/xml/security/test/interop/InteropTest.java"/>
 	                <exclude name="**/TestVectorResolver.java"/>
 	                <exclude name="**/IBMTest.java"/>
 	                <exclude name="javax/xml/crypto/test/dsig/TestUtils.java"/>
-                    <exclude name="javax/xml/crypto/test/dsig/InteropC14nTest.java"/>
+                        <exclude name="javax/xml/crypto/test/dsig/InteropC14nTest.java"/>
 	             </fileset>
 	        </batchtest>
 	        <test if="ibm.available" name="org.apache.xml.security.test.interop.IBMTest" todir="${dir.build.junit.xml}"/>
@@ -417,31 +414,6 @@
 	    </junitreport>
 	    <fail if="build.test.failed" message="Unit Tests Failed"/>
 	</target>
-
-	
-	<!-- Test exclusive c14n -->
-    <target name="test_exc_c14n"
-    		depends="build.test"
-    		description="Runs exclusive c14n interop (Y1, Y2, Y3, Y4)">
-       	<java classname="org.apache.xml.security.test.c14n.implementations.ExclusiveC14NInterop" 
-			  failonerror="true" 
-			  fork="yes" 
-			  taskname="junit">
-          	<classpath refid="id.classpath.test"/>
-       	</java>
-    </target>
-
-	<!-- Test XML Encryption -->
-    <target name="test_xenc"
-    		depends="build.test"
-    		description="Runs encryption interop and unit tests">
-		<java classname="org.apache.xml.security.test.EncryptionTest" 
-			  failonerror="true" 
-			  fork="yes" 
-			  taskname="junit">
-			<classpath refid="id.classpath.test"/>
-		</java>
-    </target>
 
     <!-- Test JSR 105/XML DSig API -->
     <target name="test_jsr105" depends="build.test"
@@ -478,289 +450,278 @@
     </target>
     
     <!-- Run all the tests -->
-	<target name="all-tests" depends="test,test_jsr105,test_xenc,test_exc_c14n"
+    <target name="all-tests" depends="test,test_jsr105"
 	    description="Runs all the test targets">
-	</target>
+    </target>
 	
     <!-- XML Encryption Samples -->
     <target name="encrypt"
-			depends="build.samples"
-			description="encrypts xml data">
-		<delete file="encryptedInfo.xml"/>
-		<delete file="kek"/>
-		<java classname="org.apache.xml.security.samples.encryption.Encrypter" 
-			  failonerror="true" 
-			  fork="yes" 
-			  taskname="Encrypter">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-	</target>
+	    depends="build.samples"
+	    description="encrypts xml data">
+	<delete file="encryptedInfo.xml"/>
+	<delete file="kek"/>
+	<java classname="org.apache.xml.security.samples.encryption.Encrypter" 
+		  failonerror="true" 
+		  fork="yes" 
+		  taskname="Encrypter">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 
-	<target name="decrypt"
-			depends="build.samples" 
-			description="decrypts xml data">
-		<delete file="decryptedInfo.xml"/>
-		<java classname="org.apache.xml.security.samples.encryption.Decrypter" 
-			  failonerror="true" 
-			  fork="yes" 
-			  taskname="Decrypter">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-	</target>
+    <target name="decrypt"
+	    depends="build.samples" 
+	    description="decrypts xml data">
+	<delete file="decryptedInfo.xml"/>
+	<java classname="org.apache.xml.security.samples.encryption.Decrypter" 
+		  failonerror="true" 
+		  fork="yes" 
+		  taskname="Decrypter">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 
-	<target name="encryptAndDecrypt"
-			depends="encrypt, decrypt" 
-			description="encrypts and decrypts an element's contents" />
+    <target name="encryptAndDecrypt"
+	    depends="encrypt, decrypt" 
+	    description="encrypts and decrypts an element's contents" />
 
+    <!-- Signature Samples -->
 
-	<!-- Signature Samples -->
+    <target name="sign"
+	    depends="build.samples" 
+	    description="creates a signature" >
+	<delete file="signature.xml"/>
+	<java classname="org.apache.xml.security.samples.signature.CreateSignature" 
+		  failonerror="true" 
+		  fork="yes" 
+		  taskname="CreateSignature">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 
-	<target name="sample.generate-keys">
-		<genkey alias="test2" keyalg="DSA" keypass="xmlsecurity" keystore="data/keystoreAnt.jks" storepass="xmlsecurity" validity="2005">
-			<dname>
-				<param name="CN" value="Christian Geuer-Pollmann"/>
-				<param name="OU" value="FB12NUE"/>
-				<param name="O" value="University of Siegen"/>
-				<param name="C" value="DE"/>
-			</dname>
-		</genkey>
-	</target>
-
-	<target name="sign"
-			depends="build.samples" 
-			description="creates a signature" >
-		<delete file="signature.xml"/>
-		<java classname="org.apache.xml.security.samples.signature.CreateSignature" 
-			  failonerror="true" 
-			  fork="yes" 
-			  taskname="CreateSignature">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-	</target>
-
-	<target name="verify" 
-			depends="build.samples" 
-			description="verifies a signature">
-		<java classname="org.apache.xml.security.samples.signature.VerifySignature" 
-			  failonerror="true" 
-			  fork="yes" 
-			  taskname="VerifySignature">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-	</target>
+    <target name="verify" 
+	    depends="build.samples" 
+	    description="verifies a signature">
+	<java classname="org.apache.xml.security.samples.signature.VerifySignature" 
+		  failonerror="true" 
+		  fork="yes" 
+		  taskname="VerifySignature">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 	
-	<target name="signAndVerify"
-			depends="sign, verify" 
-			description="creates and verifies a signature" />
+    <target name="signAndVerify"
+	    depends="sign, verify" 
+	    description="creates and verifies a signature" />
 
-	<!-- Axis Signature Samples -->
+    <!-- Axis Signature Samples -->
 
+    <target name="axis-sign"
+	    depends="build.samples" 
+	    description="axis sign sample">
+	<echo message="Running org.apache.xml.security.samples.AxisSigner"/>
+	<java classname="org.apache.xml.security.samples.AxisSigner" 
+		  failonerror="true" fork="yes" taskname="SignAxis">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 
-	<target name="axis-sign"
-			depends="build.samples" 
-			description="axis sign sample">
-		<echo message="Running org.apache.xml.security.samples.AxisSigner"/>
-		<java classname="org.apache.xml.security.samples.AxisSigner" 
-			  failonerror="true" fork="yes" taskname="SignAxis">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-	</target>
+    <target name="axis-verify"
+	    depends="build.samples" 
+	    description="axis verify sample">
+	<echo message="Running org.apache.xml.security.samples.AxisVerifier"/>
+	<java classname="org.apache.xml.security.samples.AxisVerifier" 
+		  failonerror="true" 
+		  fork="yes" 
+		  taskname="VerifyAxis">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 
-	<target name="axis-verify"
-			depends="build.samples" 
-			description="axis verify sample">
-		<echo message="Running org.apache.xml.security.samples.AxisVerifier"/>
-		<java classname="org.apache.xml.security.samples.AxisVerifier" 
-			  failonerror="true" 
-			  fork="yes" 
-			  taskname="VerifyAxis">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-	</target>
+    <target depends="axis-sign, axis-verify" name="AxisSignAndVerify"/>
 
-	<target depends="axis-sign, axis-verify" name="AxisSignAndVerify"/>
+    <!-- Mega Samples -->
+    <target name="mega-sample" 
+	    depends="build.samples">
+	<echo message="Now I&apos;ll try to verify merlins example fifteen-HMAC"/>
+	<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesFifteen" 
+		  fork="yes">
+		<classpath refid="id.classpath.samples"/>
+	</java>
 
-	<!-- Mega Samples -->
-	<target name="mega-sample" 
-			depends="build.samples">
-		<echo message="Now I&apos;ll try to verify merlins example fifteen-HMAC"/>
-		<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesFifteen" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
+	<echo message=""/>
+	<echo message="Now I&apos;ll try to verify merlins example sixteen"/>
+	<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesSixteen" 
+		  fork="yes">
+                <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
+		<classpath refid="id.classpath.samples"/>
+	</java>
 
-		<echo message=""/>
-		<echo message="Now I&apos;ll try to verify merlins example sixteen"/>
-		<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesSixteen" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
+	<echo message=""/>
+	<echo message="Now I&apos;ll try to verify merlins example twenty three"/>
+	<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesTwentyThree" 
+		  fork="yes">
+                <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
+		<classpath refid="id.classpath.samples"/>
+	</java>
 
-		<echo message=""/>
-		<echo message="Now I&apos;ll try to verify merlins example twenty three"/>
-		<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesTwentyThree" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-
-		<echo message=""/>
-		<echo message="Now I&apos;ll create a signature in signature.xml and verify it"/>
-		<java classname="org.apache.xml.security.samples.signature.CreateSignature" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-		<java classname="org.apache.xml.security.samples.signature.VerifySignature" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
+	<echo message=""/>
+	<echo message="Now I&apos;ll create a signature in signature.xml and verify it"/>
+	<java classname="org.apache.xml.security.samples.signature.CreateSignature" 
+		  fork="yes">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+	<java classname="org.apache.xml.security.samples.signature.VerifySignature" 
+		  fork="yes">
+		<classpath refid="id.classpath.samples"/>
+	</java>
 		
-		<echo message=""/>
-		<echo message="Now I&apos;ll create a signature like merlin-16 but without XSLT"/>
-		<java classname="org.apache.xml.security.samples.signature.CreateMerlinsExampleSixteen" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
+	<echo message=""/>
+	<echo message="Now I&apos;ll create a signature like merlin-16 but without XSLT"/>
+	<java classname="org.apache.xml.security.samples.signature.CreateMerlinsExampleSixteen" 
+		  fork="yes">
+		<classpath refid="id.classpath.samples"/>
+	</java>
 
-		<echo message=""/>
-		<echo message="Please look into log.txt, merlinsSixteenRecreated.xml and signature.xml"/>
+	<echo message=""/>
+	<echo message="Please look into log.txt, merlinsSixteenRecreated.xml and signature.xml"/>
 
 
-		<echo message=""/>
-		<echo message="Now I&apos;ll create a signature like merlin-23 but without XSLT"/>
-		<java classname="org.apache.xml.security.samples.signature.CreateMerlinsExampleTwentyThree" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
+	<echo message=""/>
+	<echo message="Now I&apos;ll create a signature like merlin-23 but without XSLT"/>
+	<java classname="org.apache.xml.security.samples.signature.CreateMerlinsExampleTwentyThree" 
+		  fork="yes">
+		<classpath refid="id.classpath.samples"/>
+	</java>
 
-		<echo message=""/>
-		<echo message="Please look into log.txt, merlinsTwentyThreeRecreated.xml and signature.xml"/>
-	</target>
+	<echo message=""/>
+	<echo message="Please look into log.txt, merlinsTwentyThreeRecreated.xml and signature.xml"/>
+    </target>
 
-	<target name="createEnvelope" 
-			depends="build.samples">
-		<java classname="org.apache.xml.security.samples.signature.CreateEnvelopingSignature" 
-			  fork="yes">
-			<classpath refid="id.classpath.samples"/>
-		</java>
-	</target>
+    <target name="createEnvelope" 
+	    depends="build.samples">
+	<java classname="org.apache.xml.security.samples.signature.CreateEnvelopingSignature" 
+		  fork="yes">
+		<classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 
-	<!-- JSR 105 Samples -->
-	<target name="jsr105-samples" 
-		depends="build.samples">
-	    <echo message="Generating a detached signature"/>
-	    <java classname="javax.xml.crypto.dsig.samples.GenDetached"
-	          fork="yes">
-	        <classpath refid="id.classpath.samples"/>
-	        <sysproperty key="proxyHost" value="${proxy.host}"/>
-	        <sysproperty key="proxyPort" value="${proxy.port}"/>
-	    </java>
-	    <echo message="Generating an enveloped signature"/>
-	    <java classname="javax.xml.crypto.dsig.samples.GenEnveloped"
-	          fork="yes">
-		<arg value="${dir.src.samples}/javax/xml/crypto/dsig/samples/envelope.xml"/>
-	        <classpath refid="id.classpath.samples"/>
-	    </java>
-	    <echo message="Generating an enveloping signature"/>
-	    <java classname="javax.xml.crypto.dsig.samples.GenEnveloping"
-	          fork="yes">
-	        <classpath refid="id.classpath.samples"/>
-	    </java>
-	    <echo message="Validating a signature"/>
-	    <java classname="javax.xml.crypto.dsig.samples.Validate"
-	          fork="yes">
-		<arg value="${dir.src.samples}/javax/xml/crypto/dsig/samples/envelopedSignature.xml"/>
-	        <classpath refid="id.classpath.samples"/>
-	    </java>
-	</target>
+    <!-- JSR 105 Samples -->
+    <target name="jsr105-samples" 
+	    depends="build.samples">
+        <echo message="Generating a detached signature"/>
+        <java classname="javax.xml.crypto.dsig.samples.GenDetached"
+	    fork="yes">
+	    <classpath refid="id.classpath.samples"/>
+	    <sysproperty key="proxyHost" value="${proxy.host}"/>
+	    <sysproperty key="proxyPort" value="${proxy.port}"/>
+	</java>
+	<echo message="Generating an enveloped signature"/>
+	<java classname="javax.xml.crypto.dsig.samples.GenEnveloped"
+	    fork="yes">
+	    <arg value="${dir.src.samples}/javax/xml/crypto/dsig/samples/envelope.xml"/>
+	    <classpath refid="id.classpath.samples"/>
+	</java>
+	<echo message="Generating an enveloping signature"/>
+	<java classname="javax.xml.crypto.dsig.samples.GenEnveloping"
+	    fork="yes">
+	    <classpath refid="id.classpath.samples"/>
+	</java>
+	<echo message="Validating a signature"/>
+	<java classname="javax.xml.crypto.dsig.samples.Validate"
+	    fork="yes">
+	    <arg value="${dir.src.samples}/javax/xml/crypto/dsig/samples/envelopedSignature.xml"/>
+	    <classpath refid="id.classpath.samples"/>
+	</java>
+    </target>
 	
-	<!-- D I S T R I B U T I O N  T A R G E T S -->
+    <!-- D I S T R I B U T I O N  T A R G E T S -->
     <!-- distribution targets -->
 
     <target name="build.dist"       
-		depends="build.srcdist,build.bindist" />
+	    depends="build.srcdist,build.bindist" />
 
-	<target name="build.srcdist" 
-			depends="clean"
-		description="Creates the source distribution" >
+    <target name="build.srcdist" 
+	    depends="clean"
+	description="Creates the source distribution" >
 		
-		<mkdir dir="${dir.build.srcdist}"/>
+	<mkdir dir="${dir.build.srcdist}"/>
 
-		<copy todir="${dir.build.srcdist}">
-			<fileset dir=".">
-				<patternset refid="id.patternset.distFiles"/>
-				<patternset refid="id.patternset.srcFiles"/>
-				<patternset refid="id.patternset.srcUnitTestsFiles"/>
-				<patternset refid="id.patternset.srcSamplesFiles"/>
-				<patternset refid="id.patternset.dataFiles"/>
+	<copy todir="${dir.build.srcdist}">
+		<fileset dir=".">
+			<patternset refid="id.patternset.distFiles"/>
+			<patternset refid="id.patternset.srcFiles"/>
+			<patternset refid="id.patternset.srcUnitTestsFiles"/>
+			<patternset refid="id.patternset.srcSamplesFiles"/>
+			<patternset refid="id.patternset.dataFiles"/>
 				
-				<include name="ant/**/*"/>
-				<exclude name="**/CVS/**"/>
-			</fileset>
-		</copy>
+			<include name="ant/**/*"/>
+			<exclude name="**/CVS/**"/>
+		</fileset>
+	</copy>
 
-		<mkdir description="create an empty libs dir"
-			dir="${dir.build.srcdist}/libs"/>
+	<mkdir description="create an empty libs dir"
+	       dir="${dir.build.srcdist}/libs"/>
 		
-		<zip basedir="${dir.build.dist}/src" 
-			zipfile="${dir.build}/${product.name}-src-${product_version}.zip"/>
-	</target>
+	<zip basedir="${dir.build.dist}/src" 
+	     zipfile="${dir.build}/${product.name}-src-${product_version}.zip"/>
+    </target>
 
-	<target name="build.bindist"
-		depends="clean,build.src,build.jar,build.docs,build.xdocs" 
-		description="Creates the binary distribution">
+    <target name="build.bindist"
+	    depends="clean,build.src,build.jar,build.docs,build.xdocs" 
+	    description="Creates the binary distribution">
 
-		<mkdir dir="${dir.build.bindist}"/>
+	<mkdir dir="${dir.build.bindist}"/>
 
-		<copy todir="${dir.build.bindist}">
-			<fileset dir=".">
-				<patternset refid="id.patternset.distFiles"/>
-				<patternset refid="id.patternset.dataFiles"/>
-				<patternset refid="id.patternset.srcUnitTestsFiles"/>
-				<patternset refid="id.patternset.srcSamplesFiles"/>
+	<copy todir="${dir.build.bindist}">
+		<fileset dir=".">
+			<patternset refid="id.patternset.distFiles"/>
+			<patternset refid="id.patternset.dataFiles"/>
+			<patternset refid="id.patternset.srcUnitTestsFiles"/>
+			<patternset refid="id.patternset.srcSamplesFiles"/>
 				
-				<include name="ant/**/*"/>
-				<exclude name="**/CVS/**"/>
-			</fileset>
-		</copy>
+			<include name="ant/**/*"/>
+			<exclude name="**/CVS/**"/>
+		</fileset>
+	</copy>
 
-		<mkdir dir="${dir.build.bindist}/libs"/>
+	<mkdir dir="${dir.build.bindist}/libs"/>
 
-		<copy file="${lib.xerces.1}" 
-			todir="${dir.build.bindist}/libs"/>
-		<copy file="${lib.xalan.1}" 
-			todir="${dir.build.bindist}/libs"/>
-		<copy file="${lib.xalan.2}" 
-			todir="${dir.build.bindist}/libs"/>
-		<copy file="${lib.logging}" 
-			todir="${dir.build.bindist}/libs"/>
-		<copy file="${lib.logging.api}" 
-			todir="${dir.build.bindist}/libs"/>
-		
-		<copy description="copy xmlsec JAR" 
-			file="${jar.library}" 
-			todir="${dir.build.bindist}/libs"/>
-		<copy description="copy xmlsec sample JAR" 
-			file="${jar.samples}" 
-			todir="${dir.build.bindist}/libs"/>
-		<copy description="copy xmlsec test JAR" 
-			file="${jar.tests}" 
-			todir="${dir.build.bindist}/libs"/>
+	<copy file="${lib.xerces.1}" 
+	      todir="${dir.build.bindist}/libs"/>
+	<copy file="${lib.xalan.1}" 
+	      todir="${dir.build.bindist}/libs"/>
+	<copy file="${lib.xalan.2}" 
+	      todir="${dir.build.bindist}/libs"/>
+	<copy file="${lib.logging}" 
+	      todir="${dir.build.bindist}/libs"/>
+	<copy file="${lib.logging.api}" 
+	      todir="${dir.build.bindist}/libs"/>
+	
+	<copy description="copy xmlsec JAR" 
+	      file="${jar.library}" 
+	      todir="${dir.build.bindist}/libs"/>
+	<copy description="copy xmlsec sample JAR" 
+	      file="${jar.samples}" 
+	      todir="${dir.build.bindist}/libs"/>
+	<copy description="copy xmlsec test JAR" 
+	      file="${jar.tests}" 
+	      todir="${dir.build.bindist}/libs"/>
 
-		<mkdir dir="${dir.build.bindist}/doc"/>
-		<copy todir="${dir.build.bindist}/doc">
-			<fileset dir="${dir.docs}/build/site"/>
-		</copy>
-		<mkdir dir="${dir.build.bindist}/doc/Java/api" />
-		<copy todir="${dir.build.bindist}/doc/Java/api">
-			<fileset dir="${dir.build.docs.html}/javadoc"/>
-		</copy>
+	<mkdir dir="${dir.build.bindist}/doc"/>
+	<copy todir="${dir.build.bindist}/doc">
+		<fileset dir="${dir.docs}/build/site"/>
+	</copy>
+	<mkdir dir="${dir.build.bindist}/doc/Java/api" />
+	<copy todir="${dir.build.bindist}/doc/Java/api">
+		<fileset dir="${dir.build.docs.html}/javadoc"/>
+	</copy>
 
-		<zip basedir="${dir.build.dist}/bin" 
-			zipfile="${dir.build}/${product.name}-bin-${product_version}.zip"/>
-	</target>
+	<zip basedir="${dir.build.dist}/bin" 
+	     zipfile="${dir.build}/${product.name}-bin-${product_version}.zip"/>
+    </target>
 
 	
-	<!-- M I S C E L A N E O U S  T A R G E T S -->
+    <!-- M I S C E L A N E O U S  T A R G E T S -->
 
     <!-- documentation -->
     <target name="build.docs">
@@ -776,30 +737,30 @@
     	</javadoc>
     </target>
 
-	<target name="build.xdocs"
-			depends="do.check.forrest"
-			if="has.forrest">
-		<!-- Call Forrest externally -->
-		<exec executable="forrest"
-			  os="Linux SunOS"
-			  dir="${dir.docs}" />
-		<exec executable="forrest.bat"
-			  os="Windows"
-			  dir="${dir.docs}" />
+    <target name="build.xdocs"
+            depends="do.check.forrest"
+	    if="has.forrest">
+	<!-- Call Forrest externally -->
+	<exec executable="forrest"
+	      os="Linux SunOS"
+	      dir="${dir.docs}" />
+	<exec executable="forrest.bat"
+	      os="Windows"
+	      dir="${dir.docs}" />
     </target>
     
-	<target name="clover.report.html" depends="with.clover">
-		<clover-report>
+    <target name="clover.report.html" depends="with.clover">
+	<clover-report>
       		<current outfile="${dir.build.coverage}"
       				 title="Apache XML-Security coverage">
       			<fileset dir="${dir.src}">
-			  		<include name="**/*.java"/>
-			  		<exclude name="**/*Exception.java" />
-				</fileset>
+		  		<include name="**/*.java"/>
+		  		<exclude name="**/*Exception.java" />
+			</fileset>
          		<format type="html"/> 
       		</current>	 
-   		</clover-report>
-	</target>
+   	</clover-report>
+    </target>
 
     <!-- jars -->
     <target name="manifest">
@@ -811,7 +772,7 @@
 		<attribute name="Implementation-Title"
                            value="${product.Name}"/>
 		<attribute name="Implementation-Version"
-                           value="${product.Version} ${TODAY}"/>
+                           value="${product.version} ${TODAY}"/>
 		<attribute name="Implementation-Vendor"
                            value="Apache Software Foundation"/>
             </section>
@@ -853,14 +814,6 @@
 	     manifest="${jar.manifest}"/>
     </target>
 
-<!--
-    <target name="build.jar"
-            depends="env.mk.dirs" >
-        <jar destfile="${dir.build.dist}/xml-security.jar"
-             basedir="${dir.build.bin}" >
-        </jar >
-    </target >
--->
     <!-- archive targets -->
     <target name="build.arch"
             depends="env.mk.dirs" >
@@ -876,8 +829,8 @@
     <target name="jar"              depends="build.jar" />
     <target name="dist"             depends="build.dist" />
     <target name="clean"            depends="env.rm.dirs,env.rm.files"/>
-    <target name="gump"				depends="clean, docs, jar, test"/>
-    <target name="clover"			depends="clean, with.clover, test, clover.report.html" />
+    <target name="gump"		    depends="clean, docs, jar, test"/>
+    <target name="clover"	    depends="clean, with.clover, test, clover.report.html" />
 
     <!-- maintenance targets -->
 
@@ -917,27 +870,27 @@
         <echo message="clover		- generates clover coverage reports" />
     </target >
 
-	<target depends="init" name="help.samples" >
-		<echo message=""/>
-		<echo message="------------- Signature Samples ----------------"/>
-		<echo message=""/>
-		<echo message="generate-keys      - generates new keys to be used by other"/>
-		<echo message="                     examples"/>
-		<echo message="sign               - runs CreateSignature sample"/>
-		<echo message="verify             - runs signature verification sample"/>
-		<echo message="signAndVerify      - runs sign and then verify"/>
-		<echo message="axis-sign          - runs axis signing sample"/>
-		<echo message="axis-verify        - runs axis verification sample"/>
-		<echo message="AxisSignAndVerify  - runs axis sign and verify"/>
-		<echo message="createEnvelope     - runs enveloping signature sample"/>
-		<echo message="mega-sample        - runs all big signature samples"/>
-		<echo message=""/>
-		<echo message="------------- Encryption Samples ----------------"/>
-		<echo message=""/>
-		<echo message="encrypt            - run encryption sample" />
-		<echo message="decrypt            - run decryption sample" />
-		<echo message="encryptAndDecrypt  - run encryption sample" />
-	</target>
+    <target depends="init" name="help.samples" >
+	<echo message=""/>
+	<echo message="------------- Signature Samples ----------------"/>
+	<echo message=""/>
+	<echo message="generate-keys      - generates new keys to be used by other"/>
+	<echo message="                     examples"/>
+	<echo message="sign               - runs CreateSignature sample"/>
+	<echo message="verify             - runs signature verification sample"/>
+	<echo message="signAndVerify      - runs sign and then verify"/>
+	<echo message="axis-sign          - runs axis signing sample"/>
+	<echo message="axis-verify        - runs axis verification sample"/>
+	<echo message="AxisSignAndVerify  - runs axis sign and verify"/>
+	<echo message="createEnvelope     - runs enveloping signature sample"/>
+	<echo message="mega-sample        - runs all big signature samples"/>
+	<echo message=""/>
+	<echo message="------------- Encryption Samples ----------------"/>
+	<echo message=""/>
+	<echo message="encrypt            - run encryption sample" />
+	<echo message="decrypt            - run decryption sample" />
+	<echo message="encryptAndDecrypt  - run encryption sample" />
+    </target>
 		
     <target depends="init" name="help.config" >
         <echo message="1.  to configure the provider setings," />
