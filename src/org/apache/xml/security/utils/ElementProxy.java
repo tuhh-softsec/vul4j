@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2008 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -290,7 +290,9 @@ public abstract class ElementProxy {
          Element e = Base64.encodeToElement(this._doc, localname, bytes);
 
          this._constructionElement.appendChild(e);
-	 XMLUtils.addReturnToElement(this._constructionElement);
+         if (!XMLUtils.ignoreLineBreaks()) {
+            this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         }
       }
    }
 
@@ -318,11 +320,10 @@ public abstract class ElementProxy {
    public void addBase64Text(byte[] bytes) {
 
       if (bytes != null) {
-	 XMLUtils.addReturnToElement(this._constructionElement);
-         Text t = this._doc.createTextNode(Base64.encode(bytes));
-
+         Text t = XMLUtils.ignoreLineBreaks() 
+             ? this._doc.createTextNode(Base64.encode(bytes))
+             : this._doc.createTextNode("\n" + Base64.encode(bytes) + "\n");
          this._constructionElement.appendChild(t);
-	 XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 

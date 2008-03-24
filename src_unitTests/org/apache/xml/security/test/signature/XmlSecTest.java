@@ -16,10 +16,13 @@
  */
 package org.apache.xml.security.test.signature;
 
+import java.io.FileInputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,6 +57,12 @@ public class XmlSecTest extends TestCase {
             (XmlSecTest.class.getName());
 
     public void testCheckXmlSignatureSoftwareStack() throws Exception {
+	checkXmlSignatureSoftwareStack(false);
+    }
+    public void testCheckXmlSignatureSoftwareStackWithCert() throws Exception {
+	checkXmlSignatureSoftwareStack(true);
+    }
+    private void checkXmlSignatureSoftwareStack(boolean cert) throws Exception {
 	Init.init();
 	DocumentBuilderFactory documentBuilderFactory = 
 	    DocumentBuilderFactory.newInstance();
@@ -74,12 +83,27 @@ public class XmlSecTest extends TestCase {
 	childElement.appendChild(testDocument.createTextNode("hello world"));
 	rootElement.appendChild(childElement);
 
-	KeyPair keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
-	PublicKey publicKey = keyPair.getPublic();
-	PrivateKey privateKey = keyPair.getPrivate();
+	PrivateKey privateKey = null;
+	PublicKey publicKey = null;
+	X509Certificate signingCert = null;
+	if (cert) {
+            // get key & self-signed certificate from keystore
+            String fs = System.getProperty("file.separator");
+            FileInputStream fis = new FileInputStream
+                (System.getProperty("basedir") + fs + "data" + fs + "test.jks");
+            KeyStore ks = KeyStore.getInstance("JKS");
+            ks.load(fis, "changeit".toCharArray());
+            signingCert = (X509Certificate) ks.getCertificate("mullan");
+	    publicKey = signingCert.getPublicKey();
+            privateKey = (PrivateKey) ks.getKey("mullan", "changeit".toCharArray());
+	} else {
+	    KeyPair keyPair = KeyPairGenerator.getInstance("DSA").generateKeyPair();
+	    publicKey = keyPair.getPublic();
+	    privateKey = keyPair.getPrivate();
+	}
 
 	XMLSignature signature = new XMLSignature(testDocument, "",
-				XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256,
+				XMLSignature.ALGO_ID_SIGNATURE_DSA,
 				Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
 	Element signatureElement = signature.getElement();
@@ -95,7 +119,11 @@ public class XmlSecTest extends TestCase {
 	signature.addDocument("", transforms,
 				MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1);
 
-	signature.addKeyInfo(publicKey);
+	if (cert) {
+	    signature.addKeyInfo(signingCert);
+	} else {
+	    signature.addKeyInfo(publicKey);
+	}
 
 	Element nsElement = testDocument.createElementNS(null, "nsElement");
 	nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
@@ -117,4 +145,3 @@ public class XmlSecTest extends TestCase {
 	assertTrue(signResult);
     }
 }
-
