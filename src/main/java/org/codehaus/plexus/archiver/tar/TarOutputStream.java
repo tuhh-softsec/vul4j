@@ -120,11 +120,12 @@ public class TarOutputStream
 
     /**
      * Ends the TAR archive without closing the underlying OutputStream.
-     * The result is that the EOF record of nulls is written.
+     * The result is that two EOF record of nulls are written.
      */
     public void finish()
         throws IOException
     {
+        this.writeEOFRecord();
         this.writeEOFRecord();
     }
 
