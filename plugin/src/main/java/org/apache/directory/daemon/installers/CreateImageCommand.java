@@ -49,8 +49,8 @@ public class CreateImageCommand extends MojoCommand
         this.target = target;
         initializeFiltering();
     }
-    
-    
+
+
     public Properties getFilterProperties()
     {
         return filterProperties;
@@ -118,8 +118,8 @@ public class CreateImageCommand extends MojoCommand
         {
             try
             {
-                MojoHelperUtils.copyAsciiFile( mymojo, filterProperties,
-                    getClass().getResourceAsStream( "LICENSE" ), licenseTarget, false );
+                MojoHelperUtils.copyAsciiFile( mymojo, filterProperties, getClass().getResourceAsStream( "LICENSE" ),
+                    licenseTarget, false );
             }
             catch ( IOException e )
             {
@@ -167,17 +167,17 @@ public class CreateImageCommand extends MojoCommand
         }
 
         // copy over the REQUIRED logger artifact
-/*
-        try
-        {
-            FileUtils.copyFile( mymojo.getLogger().getFile(), layout.getLogger() );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoFailureException( "Failed to copy logger.jar " + mymojo.getLogger().getFile()
-                + " into position " + layout.getLogger() );
-        }
-*/
+        /*
+                try
+                {
+                    FileUtils.copyFile( mymojo.getLogger().getFile(), layout.getLogger() );
+                }
+                catch ( IOException e )
+                {
+                    throw new MojoFailureException( "Failed to copy logger.jar " + mymojo.getLogger().getFile()
+                        + " into position " + layout.getLogger() );
+                }
+        */
 
         // copy over the REQUIRED daemon.jar file 
         try
@@ -216,7 +216,7 @@ public class CreateImageCommand extends MojoCommand
             catch ( IOException e )
             {
                 log.error( "Failed to copy logger configuration file " + target.getLoggerConfigurationFile()
-                        + " into position " + layout.getLoggerConfigurationFile(), e );
+                    + " into position " + layout.getLoggerConfigurationFile(), e );
             }
         }
 
@@ -230,7 +230,7 @@ public class CreateImageCommand extends MojoCommand
             catch ( IOException e )
             {
                 log.error( "Failed to copy server configuration file " + target.getServerConfigurationFile()
-                        + " into position " + layout.getConfigurationFile(), e );
+                    + " into position " + layout.getConfigurationFile(), e );
             }
         }
 
@@ -238,78 +238,151 @@ public class CreateImageCommand extends MojoCommand
         // Copy Wrapper Files
         // -------------------------------------------------------------------
 
-        if ( target.getOsName().equals( "linux" ) && target.getOsArch().equals( "i386" ) && target.getDaemonFramework().equals("tanuki"))
+        // TODO I really wonder if wrapper bin, lib for macosx and solaris don't need to be
+        // copied in case if os?
+        if ( target.getDaemonFramework().equalsIgnoreCase( "tanuki" ) )
         {
-            try
+            if ( target.getOsName().equalsIgnoreCase( "linux" ) )
             {
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/bin/wrapper-linux-x86-32" ),
-                        new File( layout.getBinDirectory(), target.getApplication().getName() ) );
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/lib/libwrapper-linux-x86-32.so" ),
-                        new File( layout.getLibDirectory(), "libwrapper.so" ) );
+                if ( target.getOsArch().equals( "i386" ) )
+                {
+                    try
+                    {
+                        MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream(
+                            "wrapper/bin/wrapper-linux-x86-32" ), new File( layout.getBinDirectory(), target
+                            .getApplication().getName() ) );
+                        MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream(
+                            "wrapper/lib/libwrapper-linux-x86-32.so" ), new File( layout.getLibDirectory(),
+                            "libwrapper.so" ) );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new MojoFailureException( "Failed to copy Tanuki binary files to lib and bin directories" );
+                    }
+                }
+                else
+                {
+                    if ( target.getOsArch().equals( "x86_64" ) )
+                    {
+                        try
+                        {
+                            MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream(
+                                "wrapper/bin/wrapper-linux-x86-64" ), new File( layout.getBinDirectory(), target
+                                .getApplication().getName() ) );
+                            MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream(
+                                "wrapper/lib/libwrapper-linux-x86-64.so" ), new File( layout.getLibDirectory(),
+                                "libwrapper.so" ) );
+                        }
+                        catch ( IOException e )
+                        {
+                            throw new MojoFailureException(
+                                "Failed to copy Tanuki binary files to lib and bin directories" );
+                        }
+                    }
+                    else
+                    {
+                        throw new MojoFailureException( "OsName='linux' supports only OsArc='[i386|x86_64]'" );
+                    }
+                }
             }
-            catch ( IOException e )
+            else
             {
-                throw new MojoFailureException( "Failed to copy Tanuki binary files to lib and bin directories");
+                if ( target.getOsFamily().equalsIgnoreCase( "windows" ) )
+                {
+                    try
+                    {
+                        MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream(
+                            "wrapper/bin/wrapper-windows-x86-32.exe" ), new File( layout.getBinDirectory(), target
+                            .getApplication().getName() ) );
+                        MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream(
+                            "wrapper/lib/wrapper-windows-x86-32.dll" ), new File( layout.getLibDirectory(),
+                            "libwrapper.so" ) );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new MojoFailureException( "Failed to copy Tanuki binary files to lib and bin directories" );
+                    }
+                }
+                else
+                {
+                    throw new MojoFailureException(
+                        "Not supported for configured daemon framework. OsName=" + target.getOsName() + " OsFamily=" + target.getOsFamily());
+                }
             }
         }
-
-
-        if ( target.getOsName().equals( "linux" ) && target.getOsArch().equals( "x86_64" ) && target.getDaemonFramework().equals("tanuki"))
+        else
         {
-            try
+            // now copy over the jsvc executable renaming it to the mymojo.getApplicationName() 
+            if ( target.getOsName().equalsIgnoreCase( "sunos" ) )
             {
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/bin/wrapper-linux-x86-64" ),
-                        new File( layout.getBinDirectory(), target.getApplication().getName() ) );
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "wrapper/lib/libwrapper-linux-x86-64.so" ),
-                        new File( layout.getLibDirectory(), "libwrapper.so" ) );
+                if ( target.getOsArch().equalsIgnoreCase( "sparc" ) )
+                {
+                    File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
+                    try
+                    {
+                        MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_solaris_sparc" ),
+                            executable );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new MojoFailureException( "Failed to copy jsvc executable file "
+                            + getClass().getResource( "jsvc_solaris_sparc" ) + " into position "
+                            + executable.getAbsolutePath() );
+                    }
+                }
+                else
+                {
+                    if ( target.getOsArch().equals( "i386" ) )
+                    {
+                        File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
+                        try
+                        {
+                            MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_solaris_i386" ),
+                                executable );
+                        }
+                        catch ( IOException e )
+                        {
+                            throw new MojoFailureException( "Failed to copy jsvc executable file "
+                                + getClass().getResource( "jsvc_solaris_i386" ) + " into position "
+                                + executable.getAbsolutePath() );
+                        }
+                    }
+                    else
+                    {
+                        throw new MojoFailureException( "OsName='sunos' supports only OsArc='[sparc|i386]'" );
+                    }
+                }
             }
-            catch ( IOException e )
+            else
             {
-                throw new MojoFailureException( "Failed to copy Tanuki binary files to lib and bin directories");
-            }
-        }
-
-        // now copy over the jsvc executable renaming it to the mymojo.getApplicationName() 
-        if ( target.getOsName().equals( "sunos" ) && target.getOsArch().equals( "sparc" ) )
-        {
-            File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
-            try
-            {
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_solaris_sparc" ), executable );
-            }
-            catch ( IOException e )
-            {
-                throw new MojoFailureException( "Failed to copy jsvc executable file "
-                    + getClass().getResource( "jsvc_solaris_sparc" ) + " into position " + executable.getAbsolutePath() );
-            }
-        }
-
-        if ( target.getOsName().equals( "sunos" ) && target.getOsArch().equals( "i386" ) )
-        {
-            File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
-            try
-            {
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_solaris_i386" ), executable );
-            }
-            catch ( IOException e )
-            {
-                throw new MojoFailureException( "Failed to copy jsvc executable file "
-                    + getClass().getResource( "jsvc_solaris_i386" ) + " into position " + executable.getAbsolutePath() );
-            }
-        }
-
-        // now copy over the jsvc executable renaming it to the mymojo.getApplicationName() 
-        if ( target.getOsName().equals( "macosx" ) && target.getOsArch().equals( "ppc" ) )
-        {
-            File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
-            try
-            {
-                MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_macosx_ppc" ), executable );
-            }
-            catch ( IOException e )
-            {
-                throw new MojoFailureException( "Failed to copy jsvc executable file "
-                    + getClass().getResource( "jsvc_macosx_ppc" ) + " into position " + executable.getAbsolutePath() );
+                // now copy over the jsvc executable renaming it to the mymojo.getApplicationName()
+                if ( target.getOsName().equalsIgnoreCase( "macosx" ) )
+                {
+                    if ( target.getOsArch().equalsIgnoreCase( "ppc" ) )
+                    {
+                        File executable = new File( layout.getBinDirectory(), target.getApplication().getName() );
+                        try
+                        {
+                            MojoHelperUtils.copyBinaryFile( getClass().getResourceAsStream( "jsvc_macosx_ppc" ),
+                                executable );
+                        }
+                        catch ( IOException e )
+                        {
+                            throw new MojoFailureException( "Failed to copy jsvc executable file "
+                                + getClass().getResource( "jsvc_macosx_ppc" ) + " into position "
+                                + executable.getAbsolutePath() );
+                        }
+                    }
+                    else
+                    {
+                        throw new MojoFailureException( "OsName='macosx' supports only OsArch='[ppc]'" );
+                    }
+                }
+                else
+                {
+                    throw new MojoFailureException( "OsName='" + target.getOsName()
+                        + "' is not supported for build process." );
+                }
             }
         }
 
@@ -360,10 +433,10 @@ public class CreateImageCommand extends MojoCommand
             catch ( IOException e )
             {
                 log.error( "Failed to notice file " + noticeFile.getAbsolutePath() + " into position "
-                        + noticeFileTarget.getAbsolutePath(), e );
+                    + noticeFileTarget.getAbsolutePath(), e );
             }
         }
-        
+
         processPackagedFiles( target, mymojo.getPackagedFiles() );
     }
 }

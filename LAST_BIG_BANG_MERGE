@@ -14,3 +14,6 @@ Tue Mar 18 00:47:53 EDT 2008
 svn merge -r 613581:638212 https://svn.apache.org/repos/asf/directory/daemon/branches/bigbang .
 Committed revision 638214.
 
+Fri Mar 28 22:56:07 EDT 2008
+----------------------------
+svn merge -r 638212:642492 https://svn.apache.org/repos/asf/directory/daemon/branches/bigbang .

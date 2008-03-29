@@ -112,7 +112,7 @@ public class RpmInstallerCommand extends MojoCommand
 
         if ( target.getRpmTopDir() == null )
         {
-            target.setRpmTopDir( new File( System.getProperty( "user.home" ) + "/rpmbuild" ) );
+            target.setRpmTopDir( new File( "target/rpmbuild" ) );
         }
 
         if ( !target.getRpmTopDir().exists() )
@@ -233,8 +233,8 @@ public class RpmInstallerCommand extends MojoCommand
         String[] cmd = new String[]
             { rpmBuilder.getAbsolutePath(), "-ba", "--define", "_topdir " + target.getRpmTopDir().getAbsolutePath(), rpmConfigurationFile.getAbsolutePath() };
         MojoHelperUtils.exec( cmd, target.getLayout().getBaseDirectory().getParentFile(), target.isDoSudo() );
-        String rpmName = target.getApplication().getName() + "-" + version + "-0.i386.rpm";
-        File srcFile = new File( System.getProperty("user.home") + "/rpmbuild/RPMS/i386", rpmName );
+        String rpmName = target.getApplication().getName() + "-" + version + "-0." + target.getOsArch() + ".rpm";
+        File srcFile = new File( target.getRpmTopDir(), "RPMS/" + target.getOsArch() + "/" + rpmName );
         File dstFile = null;
 
         if ( target.getFinalName() == null )
@@ -630,7 +630,7 @@ public class RpmInstallerCommand extends MojoCommand
 
         String[] cmd = new String[]
             { "tar", "-zcvf",
-                System.getProperty("user.home") + "/rpmbuild/SOURCES/" + target.getApplication().getName() + "-" + version + ".tar.gz",
+            target.getRpmTopDir().getAbsolutePath() + "/SOURCES/" + target.getApplication().getName() + "-" + version + ".tar.gz",
                 sourcesDir.getAbsolutePath() };
 
         MojoHelperUtils.exec( cmd, target.getLayout().getBaseDirectory().getParentFile(), target.isDoSudo() );
