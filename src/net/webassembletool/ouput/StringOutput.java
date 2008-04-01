@@ -44,8 +44,7 @@ public class StringOutput implements Output {
 	try {
 	    return byteArrayOutputStream.toString(charset);
 	} catch (UnsupportedEncodingException e) {
-	    log.fatal("Encoding not supported", e);
-	    return null;
+	    throw new OutputException("Encoding not supported: " + charset, e);
 	}
     }
 }

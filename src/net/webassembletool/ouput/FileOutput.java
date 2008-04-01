@@ -33,11 +33,15 @@ public class FileOutput implements Output {
 
     public void close() {
 	try {
-	    fileOutputStream.close();
+	    // In case the file could not be written, fileOutputStream might be
+	    // null
+	    if (fileOutputStream != null)
+		fileOutputStream.close();
 	    fileOutputStream = null;
 	    file = null;
 	} catch (IOException e) {
-	    log.fatal("Could not close file: " + file.toURI(), e);
+	    throw new OutputException("Could not close file: " + file.toURI(),
+		    e);
 	}
 	FileOutputStream headersFileOutputStream;
 	try {
@@ -45,7 +49,8 @@ public class FileOutput implements Output {
 	    headers.store(headersFileOutputStream, "Headers");
 	    headersFileOutputStream.close();
 	} catch (IOException e) {
-	    log.fatal("Could write to file: " + headerFile.toURI(), e);
+	    throw new OutputException("Could write to file: "
+		    + headerFile.toURI(), e);
 	}
 	headersFileOutputStream = null;
     }
@@ -58,7 +63,8 @@ public class FileOutput implements Output {
 	    }
 	    fileOutputStream = new FileOutputStream(file);
 	} catch (IOException e) {
-	    log.fatal("Could not create file: " + file.toURI(), e);
+	    throw new OutputException("Could not create file: " + file.toURI(),
+		    e);
 	}
     }
 
