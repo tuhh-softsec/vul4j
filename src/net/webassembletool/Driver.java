@@ -44,8 +44,7 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
  * 
  */
 public final class Driver {
-    // TODO revoir la gestion du last-modified
-    // TODO gérer le cas ou il n'y a pas d'application distante
+    // TODO improve last-modified management
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
     private boolean useCache = true;
@@ -121,7 +120,12 @@ public final class Driver {
 	if (instances == null) {
 	    configure();
 	}
-	return instances.get(instanceName);
+	Driver instance = instances.get(instanceName);
+	if (instance == null)
+	    throw new ConfigurationException(
+		    "No configuration properties found for factory : "
+			    + instanceName);
+	return instance;
     }
 
     /**
@@ -248,7 +252,9 @@ public final class Driver {
 	    boolean cacheUpdated = false;
 	    try {
 		MemoryOutput memoryOutput = null;
-		HttpResource httpResource = getResourceFromHttp(httpUrl);
+		HttpResource httpResource = null;
+		if (baseURL != null)
+		    httpResource = getResourceFromHttp(httpUrl);
 		if (httpResource != null) {
 		    if (useCache) {
 			memoryOutput = new MemoryOutput(cacheMaxFileSize);
