@@ -88,7 +88,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>org/apache/commons/collections/TestAllPackages.java</include>
+              <include>org/apache/commons/functor/TestAll.java</include>
             </includes>
         </configuration>
       </plugin>
