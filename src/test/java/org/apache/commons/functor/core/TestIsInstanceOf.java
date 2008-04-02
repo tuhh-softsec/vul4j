@@ -65,7 +65,7 @@ public class TestIsInstanceOf extends BaseFunctorTest {
         assertTrue(!p.test(null));
         assertTrue(!p.test("foo"));
         assertTrue(p.test(new Integer(3)));
-        assertTrue(p.test((Object)(new Integer(3))));
+        assertTrue(p.test(new Integer(3)));
         assertTrue(p.test((new Long(3L))));
     }
     

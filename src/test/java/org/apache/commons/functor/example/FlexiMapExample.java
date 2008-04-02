@@ -404,7 +404,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * throwing a NullPointerException when the value is null,
                      */      
-                    (UnaryFunction)throwNPE,
+                    throwNPE,
                     /*
                      * and passing through all non-null values.
                      */      
@@ -470,7 +470,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * or throw a ClassCastException.
                      */      
-					(UnaryFunction)throwCCE
+					throwCCE
 				)
 			),
 			null
