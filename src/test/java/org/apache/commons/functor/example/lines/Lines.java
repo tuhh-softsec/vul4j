@@ -74,10 +74,17 @@ public class Lines extends BaseGenerator {
     private BufferedReader in = null;
     
     private class TunneledException extends RuntimeException {
-        TunneledException(Exception e) {
-            super(e.toString());
-            exception = e;
-        }        
         private Exception exception = null;
+        TunneledException(Exception exception) {
+            super(exception.toString());
+            this.exception = exception;
+        }
+        //this is an override if compiled against Java >= 1.4, but just another method on 1.3
+        /**
+         * Get the cause of this TunneledException
+         */
+        public Throwable getCause() {
+            return exception;
+        }
     }
 }
