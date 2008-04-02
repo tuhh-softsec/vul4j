@@ -41,7 +41,7 @@
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/commons/sandbox/functor/trunk/</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/functor/trunk/</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/commons/sandbox/functor/trunk/</url>
+    <url>http://svn.apache.org/viewvc/commons/sandbox/functor/trunk/</url>
   </scm>
 
   <developers>
