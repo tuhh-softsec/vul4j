@@ -72,6 +72,11 @@
     </dependency>
   </dependencies>
 
+  <properties>
+    <commons.componentid>functor</commons.componentid>
+    <commons.jira.componentid>12312256</commons.jira.componentid>
+  </properties>
+
   <build>
     <testResources>
       <testResource>
