@@ -25,22 +25,7 @@
 
   <property file="build.properties"/>                       <!-- Component local   -->
   <property file="../build.properties"/>                    <!-- Commons (sandbox) local     -->
-  <property file="../../jakarta-commons/build.properties"/> <!-- Commons local     -->
   <property file="${user.home}/build.properties"/>          <!-- User local        -->
-
-
-<!-- ========== External Dependencies ===================================== -->
-
-
-  <!-- The directories corresponding to your necessary dependencies -->
-  <property name="junit.home"              value="/usr/local/junit3.7"/>
-
-
-<!-- ========== Derived Values ============================================ -->
-
-
-  <!-- The locations of necessary jar files -->
-  <property name="junit.jar"               value="${junit.home}/junit.jar"/>
 
 
 <!-- ========== Component Declarations ==================================== -->
@@ -56,22 +41,22 @@
   <property name="component.title"         value="Functor - Function Objects for Java"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.0-dev"/>
+  <property name="component.version"       value="1.0-SNAPSHOT"/>
 
   <!-- The base directory for compilation targets -->
-  <property name="build.home"              value="target"/>
+  <property name="build.home"              location="target"/>
 
   <!-- The base directory for component configuration files -->
-  <property name="conf.home"               value="src/conf"/>
+  <property name="conf.home"               location="src/conf"/>
 
   <!-- The base directory for distribution targets -->
-  <property name="dist.home"               value="dist"/>
+  <property name="dist.home"               location="dist"/>
 
   <!-- The base directory for component sources -->
-  <property name="source.home"             value="src/main/java"/>
+  <property name="source.home"             location="src/main/java"/>
 
   <!-- The base directory for unit test sources -->
-  <property name="test.home"               value="src/test/java"/>
+  <property name="test.home"               location="src/test/java"/>
 
 
 <!-- ========== Compiler Defaults ========================================= -->
@@ -89,7 +74,6 @@
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
     <pathelement location="${build.home}/classes"/>
-    <pathelement location="${junit.jar}"/>
   </path>
 
   <path id="javadoc.classpath">
@@ -105,16 +89,12 @@
     <pathelement location="${build.home}/classes"/>
     <pathelement location="${build.home}/test-classes"/>
     <pathelement location="${test.home}"/>
-    <pathelement location="${junit.jar}"/>
   </path>
 
-  <!-- Should all tests fail if one does? -->
-  <property name="test.failonerror"        value="true"/>
+  <property name="test.entry"             value="org.apache.commons.functor.TestAll"/>
 
-  <!-- The test runner to execute -->
-  <property name="test.runner"             value="junit.textui.TestRunner"/>
-
-  <property name="test.entry"              value="org.apache.commons.functor.TestAll"/>
+  <property name="junit.fork"             value="true" />
+  <property name="junit.forkmode"         value="once" />
 
 <!-- ========== Executable Targets ======================================== -->
 
@@ -132,6 +112,7 @@
     <mkdir dir="${build.home}/classes"/>
     <mkdir dir="${build.home}/conf"/>
     <mkdir dir="${build.home}/test-classes"/>
+    <mkdir dir="${build.home}/junit-reports/xml"/>
   </target>
 
 
@@ -153,7 +134,7 @@
   </target>
 
 
-  <target name="compile.tests" depends="compile"
+  <target name="compile-tests" depends="compile"
    description="Compile unit test cases">
     <javac srcdir="${test.home}"
            destdir="${build.home}/test-classes"
@@ -177,9 +158,7 @@
     <mkdir dir="${dist.home}/docs/api"/>
     <javadoc destdir="${dist.home}/docs/api"
              sourcepath="${source.home}"
-             packagenames="org.apache.commons.*"
              author="false"
-             private="true"
              version="true"
              doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
              windowtitle="${component.title} (Version ${component.version})"
@@ -203,12 +182,30 @@
 
 <!-- ========== Unit Test Targets ========================================= -->
 
+  <target name="run-tests" depends="compile-tests">
+      <delete>
+          <fileset dir="${build.home}/junit-reports/xml"/>
+      </delete>
+      <junit printsummary="withOutAndErr" showoutput="true"
+             fork="${junit.fork}" forkmode="${junit.forkmode}" failureproperty="tests.failed">
+          <formatter type="xml" />
+          <formatter type="plain" />
+          <test name="${test.entry}" todir="${build.home}/junit-reports/xml" />
+          <classpath refid="test.classpath" />
+      </junit>
+  </target>
 
-  <target name="test" depends="compile.tests">
-    <java classname="${test.runner}" fork="yes" failonerror="${test.failonerror}">
-      <arg value="${test.entry}"/>
-      <classpath refid="test.classpath"/>
-    </java>
+
+  <target name="run-reports">
+      <junitreport todir="${build.home}/junit-reports">
+          <fileset dir="${build.home}/junit-reports/xml" includes="TEST-*.xml" />
+          <report format="frames" todir="${build.home}/junit-reports" />
+      </junitreport>
+  </target>
+
+
+  <target name="test" description="Run tests" depends="run-tests,run-reports">
+      <fail if="tests.failed">Tests failed</fail>
   </target>
 
 <!-- ========== Gump Targets ============================================== -->
