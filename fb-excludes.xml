@@ -1,0 +1,15 @@
+<FindBugsFilter>
+     <!-- 
+      Exclude classes which include fields based on non-serializable interfaces,
+      as their implementations are (generally) supposed to be serializable.
+      -->
+	 <Match classregex="org\.apache\.commons\.functor\.adapter\..*">
+	 	<BugCode name="Se"/>
+	 </Match>
+	 <Match classregex="org\.apache\.commons\.functor\.core\.composite\..*">
+	 	<BugCode name="Se"/>
+	 </Match>
+	 <Match classregex="org\.apache\.commons\.functor\.core\.comparator\.IsWithinRange">
+	 	<BugCode name="Se"/>
+	 </Match>
+</FindBugsFilter>
