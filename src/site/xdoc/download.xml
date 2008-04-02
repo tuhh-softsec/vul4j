@@ -25,10 +25,6 @@
     <section name="Snapshots">
       <p>
          Functor has not yet had an official binary release.
-         Daily builds and source snapshots are available however.
-         See 
-         <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/">http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/</a>
-         for binary and source snapshot links.
       </p>
 <!--         
          Daily, <a href="http://jakarta.apache.org/gump">Gump</a>-generated builds 

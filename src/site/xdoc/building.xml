@@ -25,14 +25,12 @@
   <body>
     <section name="Building Functor">
       <p>
-         To build Commons Functor from scratch, you must first obtain the source, either
+         To build Commons Functor from scratch, you must first obtain the source,
          from 
-         <a href="./cvs-usage.html">the SVN server</a>
-         or from
-         <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/">a source snapshot</a>.
+         <a href="source-repository.html">the SVN server</a>.
       </p>
       <p>
-         Commons Functor can be built using <a href="http://jakarta.apache.org/turbine/maven/">Maven</a>
+         Commons Functor can be built using <a href="http://maven.apache.org/">Maven</a>
          or <a href="http://ant.apache.org/">Ant</a>.  
          <!--
          The <a href="http://jakarta.apache.org/gump">Gump</a>
