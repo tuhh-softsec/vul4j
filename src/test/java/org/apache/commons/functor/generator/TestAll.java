@@ -32,7 +32,6 @@ public class TestAll extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTest(TestBaseGenerator.suite());
-        suite.addTest(TestBaseTransformer.suite());
         suite.addTest(TestIteratorToGeneratorAdapter.suite());
         suite.addTest(org.apache.commons.functor.generator.util.TestAll.suite());
         return suite;

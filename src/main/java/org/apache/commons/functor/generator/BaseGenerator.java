@@ -125,8 +125,8 @@ public abstract class BaseGenerator implements Generator {
     }
 
     /**
-     * {@link Transformer Transforms} this generator using the passed in
-     * transformer. An example transformer might turn the contents of the
+     * Transforms this generator using the passed in
+     * UnaryFunction. An example function might turn the contents of the
      * generator into a {@link Collection} of elements.
      */
     public final Object to(UnaryFunction transformer) {
