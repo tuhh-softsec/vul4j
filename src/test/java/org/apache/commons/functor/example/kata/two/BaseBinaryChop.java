@@ -51,7 +51,7 @@ public abstract class BaseBinaryChop implements BinaryChop {
         return compare(list,index,obj) == 0;
     }
     
-    protected static Integer NEGATIVE_ONE = new Integer(-1);
+    protected static final Integer NEGATIVE_ONE = new Integer(-1);
     
     public abstract int find(Object seeking, List in);
 } 
