@@ -75,7 +75,7 @@
   <build>
     <testResources>
       <testResource>
-        <directory>src/test</directory>
+        <directory>src/test/java/</directory>
         <filtering>false</filtering>
         <includes>
           <include>**/*.txt</include>
