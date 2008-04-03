@@ -83,11 +83,11 @@
 
 <!-- ========== Test Execution Defaults =================================== -->
 
-  <available property="dom.available" classname="w3c.dom.Node" />
+  <available property="jre.dom.available" classname="java.lang.CharSequence" />
 
   <fileset id="xmlLibs" dir="${ant.home}/lib">
-    <include name="xml-apis.jar" unless="dom.available" />
-    <include name="xercesImpl.jar" unless="dom.available" />
+    <include name="xml-apis.jar" unless="jre.dom.available" />
+    <include name="xercesImpl.jar" unless="jre.dom.available" />
   </fileset>
 
   <!-- Construct unit test classpath -->
@@ -98,14 +98,8 @@
     <fileset refid="xmlLibs" />
   </path>
 
-  <echo>test.classpath=${toString:test.classpath}</echo>
-
-  <condition property="junitReport" value="true">
-    <and>
-      <isset property="dom.available" />
-      <available classname="org.apache.xalan.processor.TransformerFactoryImpl"/>
-    </and>
-  </condition>
+  <available property="xalan.available"
+             classname="org.apache.xalan.processor.TransformerFactoryImpl"/>
 
   <property name="test.entry"             value="org.apache.commons.functor.TestAll"/>
 
@@ -212,7 +206,7 @@
   </target>
 
 
-  <target name="run-reports" if="junitReport">
+  <target name="run-reports" if="xalan.available">
       <junitreport todir="${build.home}/junit-reports">
           <fileset dir="${build.home}/junit-reports/xml" includes="TEST-*.xml" />
           <report format="frames" todir="${build.home}/junit-reports" />
