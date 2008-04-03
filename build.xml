@@ -83,13 +83,29 @@
 
 <!-- ========== Test Execution Defaults =================================== -->
 
+  <available property="dom.available" classname="w3c.dom.Node" />
+
+  <fileset id="xmlLibs" dir="${ant.home}/lib">
+    <include name="xml-apis.jar" unless="dom.available" />
+    <include name="xercesImpl.jar" unless="dom.available" />
+  </fileset>
 
   <!-- Construct unit test classpath -->
   <path id="test.classpath">
     <pathelement location="${build.home}/classes"/>
     <pathelement location="${build.home}/test-classes"/>
     <pathelement location="${test.home}"/>
+    <fileset refid="xmlLibs" />
   </path>
+
+  <echo>test.classpath=${toString:test.classpath}</echo>
+
+  <condition property="junitReport" value="true">
+    <and>
+      <isset property="dom.available" />
+      <available classname="org.apache.xalan.processor.TransformerFactoryImpl"/>
+    </and>
+  </condition>
 
   <property name="test.entry"             value="org.apache.commons.functor.TestAll"/>
 
@@ -196,7 +212,7 @@
   </target>
 
 
-  <target name="run-reports">
+  <target name="run-reports" if="junitReport">
       <junitreport todir="${build.home}/junit-reports">
           <fileset dir="${build.home}/junit-reports/xml" includes="TEST-*.xml" />
           <report format="frames" todir="${build.home}/junit-reports" />
