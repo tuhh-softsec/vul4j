@@ -34,7 +34,7 @@ final class ComparableComparator implements Comparator, Serializable {
      * @see java.util.Comparator#compare(Object, Object)
      */
     public int compare(Object o1, Object o2) {
-        return ((Comparable)o1).compareTo(o2);
+        return ((Comparable) o1).compareTo(o2);
     }
 
     /**

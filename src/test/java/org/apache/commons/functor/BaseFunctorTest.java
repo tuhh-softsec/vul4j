@@ -63,7 +63,7 @@ public abstract class BaseFunctorTest extends TestCase {
         assertTrue(! obj.equals(null) ); // should be able to compare to null
 
         Object obj2 = makeFunctor();
-        if(obj.equals(obj2)) {
+        if (obj.equals(obj2)) {
             assertEquals("equals implies hash equals",obj.hashCode(),obj2.hashCode());
             assertEquals("equals must be symmetric",obj2,obj);
         } else {
@@ -73,7 +73,7 @@ public abstract class BaseFunctorTest extends TestCase {
 
     public final void testSerializeDeserializeThenCompare() throws Exception {
         Object obj = makeFunctor();
-        if(obj instanceof Serializable) {
+        if (obj instanceof Serializable) {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(buffer);
             out.writeObject(obj);

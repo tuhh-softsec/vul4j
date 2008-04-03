@@ -48,8 +48,8 @@ public final class Max implements BinaryFunction, Serializable {
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof Max) {
-            return equals((Max)that);
+        if (that instanceof Max) {
+            return equals((Max) that);
         } else {
             return false;
         }

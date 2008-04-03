@@ -59,9 +59,9 @@ public class TestFilteredIterator extends BaseFunctorTest {
         super.setUp();
         list = new ArrayList();
         evens = new ArrayList();
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             list.add(new Integer(i));
-            if(i%2 == 0) {
+            if (i%2 == 0) {
                 evens.add(new Integer(i));
             }
         }
@@ -177,7 +177,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
             testing.next();
             testing.remove();
         }
-        for(Iterator iter = list.iterator(); iter.hasNext();) {
+        for (Iterator iter = list.iterator(); iter.hasNext();) {
             assertTrue(! isEven.test(iter.next()) );
         }
     }
@@ -193,7 +193,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
 
     public void testRemoveWithoutHasNext() {
         Iterator testing = new FilteredIterator(list.iterator(),Constant.truePredicate());
-        for(int i=0,m = list.size();i<m;i++) {
+        for (int i=0,m = list.size();i<m;i++) {
             testing.next();
             testing.remove();
         }
@@ -237,7 +237,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
     private List evens = null;
     private UnaryPredicate isEven = new UnaryPredicate() {
         public boolean test(Object obj) {
-            return ((Number)obj).intValue() % 2 == 0;
+            return ((Number) obj).intValue() % 2 == 0;
         }
     };
 

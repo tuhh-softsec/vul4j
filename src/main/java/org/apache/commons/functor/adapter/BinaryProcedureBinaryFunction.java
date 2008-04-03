@@ -49,8 +49,8 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinaryProcedureBinaryFunction) {
-            return equals((BinaryProcedureBinaryFunction)that);
+        if (that instanceof BinaryProcedureBinaryFunction) {
+            return equals((BinaryProcedureBinaryFunction) that);
         } else {
             return false;
         }
@@ -62,7 +62,7 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
 
     public int hashCode() {
         int hash = "BinaryProcedureBinaryFunction".hashCode();
-        if(null != procedure) {
+        if (null != procedure) {
             hash ^= procedure.hashCode();
         }
         return hash;

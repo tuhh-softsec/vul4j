@@ -67,8 +67,8 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof IsGreaterThan) {
-            return equals((IsGreaterThan)that);
+        if (that instanceof IsGreaterThan) {
+            return equals((IsGreaterThan) that);
         } else {
             return false;
         }

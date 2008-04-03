@@ -66,14 +66,14 @@ public class UnarySequence implements UnaryProcedure, Serializable {
     // predicate interface
     // ------------------------------------------------------------------------
     public void run(Object obj) {
-        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((UnaryProcedure)iter.previous()).run(obj);
+        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            ((UnaryProcedure) iter.previous()).run(obj);
         }
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnarySequence) {
-            return equals((UnarySequence)that);
+        if (that instanceof UnarySequence) {
+            return equals((UnarySequence) that);
         } else {
             return false;
         }

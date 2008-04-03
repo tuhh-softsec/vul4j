@@ -45,11 +45,11 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
     //---------------------------------------------------------------
 
     public boolean test(Object obj, Object col) {
-        if(col instanceof Collection) {
-            return testCollection(obj,(Collection)col);
-        } else if(null != col && col.getClass().isArray()) {
+        if (col instanceof Collection) {
+            return testCollection(obj,(Collection) col);
+        } else if (null != col && col.getClass().isArray()) {
             return testArray(obj,col);
-        } else if(null == col) {
+        } else if (null == col) {
             throw new NullPointerException("Right side argument must not be null.");
         } else {
             throw new IllegalArgumentException("Expected Collection or Array, found " + col.getClass());
@@ -73,13 +73,13 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
     }
 
     private boolean testArray(Object obj, Object array) {
-        for(int i=0,m=Array.getLength(array);i<m;i++) {
+        for (int i=0,m=Array.getLength(array);i<m;i++) {
             Object value = Array.get(array,i);
-            if(null == obj) {
-                if(null == value) {
+            if (null == obj) {
+                if (null == value) {
                     return true;
                 }
-            } else if(obj.equals(value)) {
+            } else if (obj.equals(value)) {
                 return true;
             }
         }
@@ -95,11 +95,11 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
     }
 
     public static UnaryPredicate instance(Object obj) {
-        if(null == obj) {
+        if (null == obj) {
             throw new NullPointerException("Argument must not be null");
-        } else if(obj instanceof Collection) {
+        } else if (obj instanceof Collection) {
             return new RightBoundPredicate(instance(),obj);
-        } else if(obj.getClass().isArray()) {
+        } else if (obj.getClass().isArray()) {
             return new RightBoundPredicate(instance(),obj);
         } else {
             throw new IllegalArgumentException("Expected Collection or Array, found " + obj.getClass());

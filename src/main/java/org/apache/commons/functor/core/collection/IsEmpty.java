@@ -38,15 +38,15 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
     // ------------------------------------------------------------------------
 
     public boolean test(Object obj) {
-        if(obj instanceof Collection) {
-            return testCollection((Collection)obj);
-        } else if(obj instanceof Map) {
-            return testMap((Map)obj);
-        } else if(obj instanceof String) {
-            return testString((String)obj);
-        } else if(null != obj && obj.getClass().isArray()) {
+        if (obj instanceof Collection) {
+            return testCollection((Collection) obj);
+        } else if (obj instanceof Map) {
+            return testMap((Map) obj);
+        } else if (obj instanceof String) {
+            return testString((String) obj);
+        } else if (null != obj && obj.getClass().isArray()) {
             return testArray(obj);
-        } else if(null == obj){
+        } else if (null == obj){
             throw new NullPointerException("Argument must not be null");
         } else {
             throw new IllegalArgumentException("Expected Collection, Map, String or Array, found " + obj.getClass());

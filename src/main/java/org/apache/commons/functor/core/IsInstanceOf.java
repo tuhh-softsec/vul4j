@@ -45,8 +45,8 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof IsInstanceOf) {
-            return equals((IsInstanceOf)that);
+        if (that instanceof IsInstanceOf) {
+            return equals((IsInstanceOf) that);
         } else {
             return false;
         }
@@ -58,7 +58,7 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
 
     public int hashCode() {
         int hash = "IsInstanceOf".hashCode();
-        if(null != klass) {
+        if (null != klass) {
             hash ^= klass.hashCode();
         }
         return hash;

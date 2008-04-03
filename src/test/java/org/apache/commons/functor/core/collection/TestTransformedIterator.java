@@ -59,7 +59,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
         super.setUp();
         list = new ArrayList();
         negatives = new ArrayList();
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             list.add(new Integer(i));
             negatives.add(new Integer(i*-1));
         }
@@ -155,7 +155,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
 
     public void testRemoveWithoutHasNext() {
         Iterator testing = new TransformedIterator(list.iterator(),negate);
-        for(int i=0,m = list.size();i<m;i++) {
+        for (int i=0,m = list.size();i<m;i++) {
             testing.next();
             testing.remove();
         }
@@ -199,7 +199,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     private List negatives = null;
     private UnaryFunction negate = new UnaryFunction() {
         public Object evaluate(Object obj) {
-            return new Integer(((Number)obj).intValue() * -1);
+            return new Integer(((Number) obj).intValue() * -1);
         }
     };
 

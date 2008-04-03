@@ -66,8 +66,8 @@ public final class UnaryOr extends BaseUnaryPredicateList {
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object a) {
-        for(Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
-            if(((UnaryPredicate)iter.next()).test(a)) {
+        for (Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
+            if (((UnaryPredicate) iter.next()).test(a)) {
                 return true;
             }
         }
@@ -75,8 +75,8 @@ public final class UnaryOr extends BaseUnaryPredicateList {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryOr) {
-            return equals((UnaryOr)that);
+        if (that instanceof UnaryOr) {
+            return equals((UnaryOr) that);
         } else {
             return false;
         }

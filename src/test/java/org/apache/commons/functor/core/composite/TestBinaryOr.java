@@ -68,14 +68,14 @@ public class TestBinaryOr extends BaseFunctorTest {
 
         BinaryOr p = new BinaryOr(new Constant(true));
         assertTrue(p.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.or(new Constant(i%2==0));
             assertTrue(p.test("xyzzy",new Integer(3)));
         }
 
         BinaryOr q = new BinaryOr(new Constant(true));
         assertTrue(q.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.or(new Constant(i%2==0));
             assertTrue(q.test("xyzzy",new Integer(3)));
         }
@@ -92,14 +92,14 @@ public class TestBinaryOr extends BaseFunctorTest {
 
         BinaryOr p = new BinaryOr(new Constant(false));
         assertTrue(!p.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.or(new Constant(false));
             assertTrue(!p.test("xyzzy",new Integer(3)));
         }
 
         BinaryOr q = new BinaryOr(new Constant(false));
         assertTrue(!q.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.or(new Constant(false));
             assertTrue(!q.test("xyzzy",new Integer(3)));
         }
@@ -112,7 +112,7 @@ public class TestBinaryOr extends BaseFunctorTest {
         BinaryPredicate p = new Constant(true);
         BinaryOr q = new BinaryOr(p,p);
         assertTrue(q.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.or(p);
             assertTrue(q.test("xyzzy",new Integer(3)));
         }
@@ -128,7 +128,7 @@ public class TestBinaryOr extends BaseFunctorTest {
         BinaryAnd r = new BinaryAnd();
         assertObjectsAreNotEqual(p,r);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             p.or(Constant.truePredicate());
             assertObjectsAreNotEqual(p,q);
             q.or(Constant.truePredicate());

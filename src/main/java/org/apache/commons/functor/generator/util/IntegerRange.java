@@ -46,7 +46,7 @@ public final class IntegerRange extends BaseGenerator {
     }
 
     public IntegerRange(int from, int to, int step) {
-        if(from != to && signOf(step) != signOf(to-from)) {
+        if (from != to && signOf(step) != signOf(to-from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
         } else {
             this.from = from;
@@ -59,12 +59,12 @@ public final class IntegerRange extends BaseGenerator {
     //---------------------------------------------------------------
 
     public void run(UnaryProcedure proc) {
-        if(signOf(step) == -1) {
-            for(int i=from; i > to; i += step) {
+        if (signOf(step) == -1) {
+            for (int i=from; i > to; i += step) {
                 proc.run(new Integer(i));
             }
         } else {
-            for(int i=from; i < to; i += step) {
+            for (int i=from; i < to; i += step) {
                 proc.run(new Integer(i));
             }
         }
@@ -75,8 +75,8 @@ public final class IntegerRange extends BaseGenerator {
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof IntegerRange) {
-            IntegerRange that = (IntegerRange)obj;
+        if (obj instanceof IntegerRange) {
+            IntegerRange that = (IntegerRange) obj;
             return this.from == that.from && this.to == that.to && this.step == that.step;
         } else {
             return false;
@@ -98,9 +98,9 @@ public final class IntegerRange extends BaseGenerator {
     //---------------------------------------------------------------
 
     private static int signOf(int value) {
-        if(value < 0) {
+        if (value < 0) {
             return -1;
-        } else if(value > 0) {
+        } else if (value > 0) {
             return 1;
         } else {
             return 0;
@@ -108,7 +108,7 @@ public final class IntegerRange extends BaseGenerator {
     }
 
     private static int defaultStep(int from, int to) {
-        if(from > to) {
+        if (from > to) {
             return -1;
         } else {
             return 1;

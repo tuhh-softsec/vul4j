@@ -59,8 +59,8 @@ public final class ConditionalFunction implements Function, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConditionalFunction) {
-            return equals((ConditionalFunction)that);
+        if (that instanceof ConditionalFunction) {
+            return equals((ConditionalFunction) that);
         } else {
             return false;
         }
@@ -75,15 +75,15 @@ public final class ConditionalFunction implements Function, Serializable {
 
     public int hashCode() {
         int hash = "ConditionalFunction".hashCode();
-        if(null != ifPred) {
+        if (null != ifPred) {
             hash <<= 4;
             hash ^= ifPred.hashCode();
         }
-        if(null != thenFunc) {
+        if (null != thenFunc) {
             hash <<= 4;
             hash ^= thenFunc.hashCode();
         }
-        if(null != elseFunc) {
+        if (null != elseFunc) {
             hash <<= 4;
             hash ^= elseFunc.hashCode();
         }

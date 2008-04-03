@@ -53,8 +53,8 @@ public final class BoundProcedure implements Procedure, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BoundProcedure) {
-            return equals((BoundProcedure)that);
+        if (that instanceof BoundProcedure) {
+            return equals((BoundProcedure) that);
         } else {
             return false;
         }
@@ -70,11 +70,11 @@ public final class BoundProcedure implements Procedure, Serializable {
 
     public int hashCode() {
         int hash = "BoundProcedure".hashCode();
-        if(null != procedure) {
+        if (null != procedure) {
             hash <<= 2;
             hash ^= procedure.hashCode();
         }
-        if(null != param) {
+        if (null != param) {
             hash <<= 2;
             hash ^= param.hashCode();
         }

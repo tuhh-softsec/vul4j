@@ -77,15 +77,15 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
     // ------------------------------------------------------------------------
     public Object evaluate(Object obj) {
         Object result = obj;
-        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            result = ((UnaryFunction)iter.previous()).evaluate(result);
+        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            result = ((UnaryFunction) iter.previous()).evaluate(result);
         }
         return result;
     }
 
     public boolean equals(Object that) {
-        if(that instanceof CompositeUnaryFunction) {
-            return equals((CompositeUnaryFunction)that);
+        if (that instanceof CompositeUnaryFunction) {
+            return equals((CompositeUnaryFunction) that);
         } else {
             return false;
         }

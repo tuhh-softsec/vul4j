@@ -49,14 +49,14 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
     // constructor
     // ------------------------------------------------------------------------
     public CompositeUnaryProcedure(UnaryProcedure p) {
-        if(null == p) { throw new NullPointerException(); }
+        if (null == p) { throw new NullPointerException(); }
         this.procedure = p;
         this.function = new CompositeUnaryFunction();
     }
 
     public CompositeUnaryProcedure(UnaryProcedure p, UnaryFunction f) {
-        if(null == p) { throw new NullPointerException(); }
-        if(null == f) { throw new NullPointerException(); }
+        if (null == p) { throw new NullPointerException(); }
+        if (null == f) { throw new NullPointerException(); }
         this.procedure = p;
         this.function = new CompositeUnaryFunction(f);
     }
@@ -75,8 +75,8 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
     }
 
     public boolean equals(Object that) {
-        if(that instanceof CompositeUnaryProcedure) {
-            return equals((CompositeUnaryProcedure)that);
+        if (that instanceof CompositeUnaryProcedure) {
+            return equals((CompositeUnaryProcedure) that);
         } else {
             return false;
         }

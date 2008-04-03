@@ -49,14 +49,14 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
     // constructor
     // ------------------------------------------------------------------------
     public CompositeUnaryPredicate(UnaryPredicate p) {
-        if(null == p) { throw new NullPointerException(); }
+        if (null == p) { throw new NullPointerException(); }
         this.predicate = p;
         this.function = new CompositeUnaryFunction();
     }
 
     public CompositeUnaryPredicate(UnaryPredicate p, UnaryFunction f) {
-        if(null == p) { throw new NullPointerException(); }
-        if(null == f) { throw new NullPointerException(); }
+        if (null == p) { throw new NullPointerException(); }
+        if (null == f) { throw new NullPointerException(); }
         this.predicate = p;
         this.function = new CompositeUnaryFunction(f);
     }
@@ -75,8 +75,8 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
     }
 
     public boolean equals(Object that) {
-        if(that instanceof CompositeUnaryPredicate) {
-            return equals((CompositeUnaryPredicate)that);
+        if (that instanceof CompositeUnaryPredicate) {
+            return equals((CompositeUnaryPredicate) that);
         } else {
             return false;
         }

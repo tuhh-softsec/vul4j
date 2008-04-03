@@ -24,7 +24,7 @@ import org.apache.commons.functor.BinaryFunction;
  */
 public class Sum implements BinaryFunction {
     public Object evaluate(Object left, Object right) {
-        return new Integer( ((Number)left).intValue() + ((Number)right).intValue() );
+        return new Integer( ((Number) left).intValue() + ((Number) right).intValue() );
     }
 
 

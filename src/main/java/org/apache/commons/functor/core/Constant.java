@@ -68,7 +68,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
     }
 
     public boolean test() {
-        return ((Boolean)evaluate()).booleanValue();
+        return ((Boolean) evaluate()).booleanValue();
     }
 
     public boolean test(Object obj) {
@@ -80,8 +80,8 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
     }
 
     public boolean equals(Object that) {
-        if(that instanceof Constant) {
-            return equals((Constant)that);
+        if (that instanceof Constant) {
+            return equals((Constant) that);
         } else {
             return false;
         }
@@ -93,7 +93,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
 
     public int hashCode() {
         int hash = "Constant".hashCode();
-        if(null != value) {
+        if (null != value) {
             hash ^= value.hashCode();
         }
         return hash;

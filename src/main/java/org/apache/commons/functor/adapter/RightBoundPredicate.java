@@ -53,8 +53,8 @@ public final class RightBoundPredicate implements UnaryPredicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof RightBoundPredicate) {
-            return equals((RightBoundPredicate)that);
+        if (that instanceof RightBoundPredicate) {
+            return equals((RightBoundPredicate) that);
         } else {
             return false;
         }
@@ -70,11 +70,11 @@ public final class RightBoundPredicate implements UnaryPredicate, Serializable {
 
     public int hashCode() {
         int hash = "RightBoundPredicate".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash <<= 2;
             hash ^= predicate.hashCode();
         }
-        if(null != param) {
+        if (null != param) {
             hash <<= 2;
             hash ^= param.hashCode();
         }

@@ -66,8 +66,8 @@ public final class Or extends BasePredicateList {
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test() {
-        for(Iterator iter = getPredicateIterator(); iter.hasNext();) {
-            if(((Predicate)iter.next()).test()) {
+        for (Iterator iter = getPredicateIterator(); iter.hasNext();) {
+            if (((Predicate) iter.next()).test()) {
                 return true;
             }
         }
@@ -75,8 +75,8 @@ public final class Or extends BasePredicateList {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof Or) {
-            return equals((Or)that);
+        if (that instanceof Or) {
+            return equals((Or) that);
         } else {
             return false;
         }

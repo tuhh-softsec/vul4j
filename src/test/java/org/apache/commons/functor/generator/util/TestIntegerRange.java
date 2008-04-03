@@ -52,7 +52,7 @@ public class TestIntegerRange extends BaseFunctorTest {
         // generates a collection of Integers from 0 (inclusive) to 10 (exclusive)
         {
             List list = (List)(new IntegerRange(0,10).to(new ArrayList()));
-            for(int i=0;i<10;i++) {
+            for (int i=0;i<10;i++) {
                 assertEquals(new Integer(i),list.get(i));
             }
         }
@@ -60,7 +60,7 @@ public class TestIntegerRange extends BaseFunctorTest {
         // generates a collection of Integers from 10 (inclusive) to 0 (exclusive)
         {
             List list = (List)(new IntegerRange(10,0).to(new ArrayList()));
-            for(int i=10;i>0;i--) {
+            for (int i=10;i>0;i--) {
                 assertEquals(new Integer(i),list.get(10-i));
             }
         }

@@ -29,7 +29,7 @@ import java.util.List;
 public abstract class BaseBinaryChop implements BinaryChop {
     public int find(int seeking, int[] in) {
         Object[] In = new Object[in.length];
-        for(int i=0;i<in.length;i++) {
+        for (int i=0;i<in.length;i++) {
             In[i] = new Integer(in[i]);
         }
         return find(new Integer(seeking), In);
@@ -40,7 +40,7 @@ public abstract class BaseBinaryChop implements BinaryChop {
     }
 
     protected static int compare(List list, int index, Object obj) {
-        return ((Comparable)list.get(index)).compareTo(obj);
+        return ((Comparable) list.get(index)).compareTo(obj);
     }
 
     protected static boolean greaterThan(List list, int index, Object obj) {

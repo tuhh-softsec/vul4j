@@ -54,8 +54,8 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryPredicateUnaryFunction) {
-            return equals((UnaryPredicateUnaryFunction)that);
+        if (that instanceof UnaryPredicateUnaryFunction) {
+            return equals((UnaryPredicateUnaryFunction) that);
         } else {
             return false;
         }
@@ -67,7 +67,7 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
 
     public int hashCode() {
         int hash = "UnaryPredicateUnaryFunction".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

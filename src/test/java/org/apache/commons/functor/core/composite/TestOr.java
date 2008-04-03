@@ -68,14 +68,14 @@ public class TestOr extends BaseFunctorTest {
 
         Or p = new Or(new Constant(true));
         assertTrue(p.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.or(new Constant(i%2==0));
             assertTrue(p.test());
         }
 
         Or q = new Or(new Constant(true));
         assertTrue(q.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.or(new Constant(i%2==0));
             assertTrue(q.test());
         }
@@ -92,14 +92,14 @@ public class TestOr extends BaseFunctorTest {
 
         Or p = new Or(new Constant(false));
         assertTrue(!p.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.or(new Constant(false));
             assertTrue(!p.test());
         }
 
         Or q = new Or(new Constant(false));
         assertTrue(!q.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.or(new Constant(false));
             assertTrue(!q.test());
         }
@@ -112,7 +112,7 @@ public class TestOr extends BaseFunctorTest {
         Predicate p = new Constant(true);
         Or q = new Or(p,p);
         assertTrue(q.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.or(p);
             assertTrue(q.test());
         }
@@ -128,7 +128,7 @@ public class TestOr extends BaseFunctorTest {
         And r = new And();
         assertObjectsAreNotEqual(p,r);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             p.or(Constant.truePredicate());
             assertObjectsAreNotEqual(p,q);
             q.or(Constant.truePredicate());

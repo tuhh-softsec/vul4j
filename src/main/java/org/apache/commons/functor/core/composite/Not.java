@@ -50,8 +50,8 @@ public final class Not implements Predicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof Not) {
-            return equals((Not)that);
+        if (that instanceof Not) {
+            return equals((Not) that);
         } else {
             return false;
         }
@@ -63,7 +63,7 @@ public final class Not implements Predicate, Serializable {
 
     public int hashCode() {
         int hash = "Not".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

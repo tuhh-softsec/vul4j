@@ -53,8 +53,8 @@ public final class BoundFunction implements Function, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BoundFunction) {
-            return equals((BoundFunction)that);
+        if (that instanceof BoundFunction) {
+            return equals((BoundFunction) that);
         } else {
             return false;
         }
@@ -70,11 +70,11 @@ public final class BoundFunction implements Function, Serializable {
 
     public int hashCode() {
         int hash = "BoundFunction".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash <<= 2;
             hash ^= function.hashCode();
         }
-        if(null != param) {
+        if (null != param) {
             hash <<= 2;
             hash ^= param.hashCode();
         }

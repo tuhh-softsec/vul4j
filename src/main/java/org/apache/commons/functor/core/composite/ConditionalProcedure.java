@@ -28,7 +28,7 @@ import org.apache.commons.functor.Procedure;
  * Given a {@link Predicate predicate}
  * <i>p</i> and {@link Procedure procedures}
  * <i>q</i> and <i>r</i>, {@link #run runs}
- * <code>if(p.test()) { q.run(); } else { r.run(); }</code>.
+ * <code>if (p.test()) { q.run(); } else { r.run(); }</code>.
  * <p>
  * Note that although this class implements
  * {@link Serializable}, a given instance will
@@ -54,7 +54,7 @@ public final class ConditionalProcedure implements Procedure, Serializable {
     // predicate interface
     // ------------------------------------------------------------------------
     public void run() {
-        if(ifPred.test()) {
+        if (ifPred.test()) {
             thenProc.run();
         } else {
             elseProc.run();
@@ -62,8 +62,8 @@ public final class ConditionalProcedure implements Procedure, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConditionalProcedure) {
-            return equals((ConditionalProcedure)that);
+        if (that instanceof ConditionalProcedure) {
+            return equals((ConditionalProcedure) that);
         } else {
             return false;
         }
@@ -78,15 +78,15 @@ public final class ConditionalProcedure implements Procedure, Serializable {
 
     public int hashCode() {
         int hash = "ConditionalProcedure".hashCode();
-        if(null != ifPred) {
+        if (null != ifPred) {
             hash <<= 4;
             hash ^= ifPred.hashCode();
         }
-        if(null != thenProc) {
+        if (null != thenProc) {
             hash <<= 4;
             hash ^= thenProc.hashCode();
         }
-        if(null != elseProc) {
+        if (null != elseProc) {
             hash <<= 4;
             hash ^= elseProc.hashCode();
         }

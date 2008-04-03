@@ -64,13 +64,13 @@ public class TestAlgorithms extends TestCase {
         doubled = new ArrayList();
         listWithDuplicates = new ArrayList();
         sum = 0;
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             list.add(new Integer(i));
             doubled.add(new Integer(i*2));
             listWithDuplicates.add(new Integer(i));
             listWithDuplicates.add(new Integer(i));
             sum += i;
-            if(i%2 == 0) {
+            if (i%2 == 0) {
                 evens.add(new Integer(i));
             }
         }
@@ -98,7 +98,7 @@ public class TestAlgorithms extends TestCase {
         Set set = new HashSet();
         assertSame(set,Algorithms.collect(list.iterator(),set));
         assertEquals(list.size(),set.size());
-        for(Iterator iter = list.iterator(); iter.hasNext(); ) {
+        for (Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
         }
     }
@@ -107,7 +107,7 @@ public class TestAlgorithms extends TestCase {
         Set set = new HashSet();
         assertSame(set,Algorithms.collect(listWithDuplicates.iterator(),set));
         assertTrue(listWithDuplicates.size() > set.size());
-        for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
+        for (Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
         }
     }
@@ -172,7 +172,7 @@ public class TestAlgorithms extends TestCase {
             list.listIterator(),
             new UnaryFunction() {
                 public Object evaluate(Object obj) {
-                    return new Integer(((Number)obj).intValue()*2);
+                    return new Integer(((Number) obj).intValue()*2);
                 }
             }
         );
@@ -203,7 +203,7 @@ public class TestAlgorithms extends TestCase {
         Set set = new HashSet();
         assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(list.iterator(),Identity.instance())).to(set));
         assertEquals(list.size(),set.size());
-        for(Iterator iter = list.iterator(); iter.hasNext(); ) {
+        for (Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
         }
     }
@@ -212,7 +212,7 @@ public class TestAlgorithms extends TestCase {
         Set set = new HashSet();
         assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(listWithDuplicates.iterator(),Identity.instance())).to(set));
         assertTrue(listWithDuplicates.size() > set.size());
-        for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
+        for (Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
         }
     }
@@ -228,7 +228,7 @@ public class TestAlgorithms extends TestCase {
             new Integer(0),
             new BinaryFunction() {
                 public Object evaluate(Object a, Object b) {
-                    return new Integer(((Number)a).intValue() + ((Number)b).intValue());
+                    return new Integer(((Number) a).intValue() + ((Number) b).intValue());
                 }
             });
         assertEquals(new Integer(sum),result);
@@ -240,7 +240,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testDoUntil() {
-        for(int i=0;i<3;i++){
+        for (int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.dountil(counter,new Offset(i));
             assertEquals(i+1,counter.count);
@@ -248,7 +248,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testDoWhile() {
-        for(int i=0;i<3;i++){
+        for (int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.dowhile(counter,new Limit(i));
             assertEquals(i+1,counter.count);
@@ -256,7 +256,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testUntilDo() {
-        for(int i=0;i<3;i++){
+        for (int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.untildo(new Offset(i),counter);
             assertEquals(i,counter.count);
@@ -264,7 +264,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testWhileDo() {
-        for(int i=0;i<3;i++){
+        for (int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.whiledo(new Limit(i),counter);
             assertEquals(i,counter.count);
@@ -275,7 +275,7 @@ public class TestAlgorithms extends TestCase {
 
         // this version will return a function. since it is not the same type
         // as RecFunc recursion will end.
-        Function func = (Function)Algorithms.recurse(new RecFunc(0, true));
+        Function func = (Function) Algorithms.recurse(new RecFunc(0, true));
         assertEquals(new Integer(5), func.evaluate());
     }
 
@@ -316,12 +316,12 @@ public class TestAlgorithms extends TestCase {
     private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(23));
     private UnaryPredicate isEven = new UnaryPredicate() {
         public boolean test(Object obj) {
-            return ((Number)obj).intValue() % 2 == 0;
+            return ((Number) obj).intValue() % 2 == 0;
         }
     };
     private UnaryPredicate isOdd = new UnaryPredicate() {
         public boolean test(Object obj) {
-            return ((Number)obj).intValue() % 2 != 0;
+            return ((Number) obj).intValue() % 2 != 0;
         }
     };
 
@@ -337,14 +337,14 @@ public class TestAlgorithms extends TestCase {
 
     static class Summer implements UnaryProcedure {
         public void run(Object that) {
-            sum += ((Number)that).intValue();
+            sum += ((Number) that).intValue();
         }
         public int sum = 0;
     }
 
     static class Doubler implements UnaryFunction {
         public Object evaluate(Object obj) {
-            return new Integer(2*((Number)obj).intValue());
+            return new Integer(2*((Number) obj).intValue());
         }
     }
 }

@@ -67,8 +67,8 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof IsLessThanOrEqual) {
-            return equals((IsLessThanOrEqual)that);
+        if (that instanceof IsLessThanOrEqual) {
+            return equals((IsLessThanOrEqual) that);
         } else {
             return false;
         }

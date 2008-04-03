@@ -234,7 +234,7 @@ public class SupermarketPricingExample extends TestCase {
        }
 
        public Object evaluate(Object obj) {
-           return evaluate((Number)obj);
+           return evaluate((Number) obj);
        }
 
        public Object evaluate(Number num) {

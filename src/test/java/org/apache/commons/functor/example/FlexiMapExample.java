@@ -487,10 +487,10 @@ public class FlexiMapExample extends TestCase {
 			new BinaryFunction() {
 				public Object evaluate(Object oldval, Object newval) {
 					List list = null;
-					if(null == oldval) {
+					if (null == oldval) {
 						list = new ArrayList();
 					} else {
-						list = (List)oldval;
+						list = (List) oldval;
 					}
 					list.add(newval);
 					return list;
@@ -512,10 +512,10 @@ public class FlexiMapExample extends TestCase {
 			new BinaryFunction() {
 				public Object evaluate(Object oldval, Object newval) {
 					StringBuffer buf = null;
-					if(null == oldval) {
+					if (null == oldval) {
 						buf = new StringBuffer();
 					} else {
-						buf = (StringBuffer)oldval;
+						buf = (StringBuffer) oldval;
 						buf.append(", ");
 					}
 					buf.append(newval);
@@ -528,10 +528,10 @@ public class FlexiMapExample extends TestCase {
              */
 			new BinaryFunction() {
 				public Object evaluate(Object key, Object val) {
-					if(null == val) {
+					if (null == val) {
 						return null;
 					} else {
-						return ((StringBuffer)val).toString();
+						return ((StringBuffer) val).toString();
 					}
 				}
 			}

@@ -54,8 +54,8 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinaryPredicateBinaryFunction) {
-            return equals((BinaryPredicateBinaryFunction)that);
+        if (that instanceof BinaryPredicateBinaryFunction) {
+            return equals((BinaryPredicateBinaryFunction) that);
         } else {
             return false;
         }
@@ -67,7 +67,7 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
 
     public int hashCode() {
         int hash = "BinaryPredicateBinaryFunction".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

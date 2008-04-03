@@ -50,8 +50,8 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryNot) {
-            return equals((UnaryNot)that);
+        if (that instanceof UnaryNot) {
+            return equals((UnaryNot) that);
         } else {
             return false;
         }
@@ -63,7 +63,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
 
     public int hashCode() {
         int hash = "UnaryNot".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

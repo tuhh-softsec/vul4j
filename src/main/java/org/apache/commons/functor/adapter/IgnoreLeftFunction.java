@@ -48,8 +48,8 @@ public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof IgnoreLeftFunction) {
-            return equals((IgnoreLeftFunction)that);
+        if (that instanceof IgnoreLeftFunction) {
+            return equals((IgnoreLeftFunction) that);
         } else {
             return false;
         }
@@ -61,7 +61,7 @@ public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
 
     public int hashCode() {
         int hash = "IgnoreLeftFunction".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

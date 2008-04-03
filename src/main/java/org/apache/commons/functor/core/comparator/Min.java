@@ -48,8 +48,8 @@ public final class Min implements BinaryFunction, Serializable {
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof Min) {
-            return equals((Min)that);
+        if (that instanceof Min) {
+            return equals((Min) that);
         } else {
             return false;
         }

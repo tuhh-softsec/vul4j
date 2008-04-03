@@ -55,8 +55,8 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryCompositeBinaryFunction) {
-            return equals((UnaryCompositeBinaryFunction)that);
+        if (that instanceof UnaryCompositeBinaryFunction) {
+            return equals((UnaryCompositeBinaryFunction) that);
         } else {
             return false;
         }
@@ -71,15 +71,15 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
 
     public int hashCode() {
         int hash = "UnaryCompositeBinaryFunction".hashCode();
-        if(null != binary) {
+        if (null != binary) {
             hash <<= 4;
             hash ^= binary.hashCode();
         }
-        if(null != leftUnary) {
+        if (null != leftUnary) {
             hash <<= 4;
             hash ^= leftUnary.hashCode();
         }
-        if(null != rightUnary) {
+        if (null != rightUnary) {
             hash <<= 4;
             hash ^= rightUnary.hashCode();
         }

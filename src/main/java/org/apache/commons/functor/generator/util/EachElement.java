@@ -34,7 +34,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 public final class EachElement {
     public static final Generator from(Collection collection) {
-        if(null == collection) {
+        if (null == collection) {
             return null;
         } else {
             return EachElement.from(collection.iterator());
@@ -42,7 +42,7 @@ public final class EachElement {
     }
 
     public static final Generator from(Map map) {
-        if(null == map) {
+        if (null == map) {
             return null;
         } else {
             return EachElement.from(map.entrySet().iterator());
@@ -50,7 +50,7 @@ public final class EachElement {
     }
 
     public static final Generator from(Object[] array) {
-        if(null == array) {
+        if (null == array) {
             return null;
         } else {
             return EachElement.from(Arrays.asList(array).iterator());
@@ -58,7 +58,7 @@ public final class EachElement {
     }
 
     public static final Generator from(Iterator iter) {
-        if(null == iter) {
+        if (null == iter) {
             return null;
         } else {
             return new IteratorToGeneratorAdapter(iter);

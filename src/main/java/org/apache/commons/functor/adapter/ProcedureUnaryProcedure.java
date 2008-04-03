@@ -48,8 +48,8 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ProcedureUnaryProcedure) {
-            return equals((ProcedureUnaryProcedure)that);
+        if (that instanceof ProcedureUnaryProcedure) {
+            return equals((ProcedureUnaryProcedure) that);
         } else {
             return false;
         }
@@ -61,7 +61,7 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
 
     public int hashCode() {
         int hash = "ProcedureUnaryProcedure".hashCode();
-        if(null != procedure) {
+        if (null != procedure) {
             hash ^= procedure.hashCode();
         }
         return hash;

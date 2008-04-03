@@ -34,7 +34,7 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
     //-----------------------------------------------------
 
     public IteratorToGeneratorAdapter(Iterator iter) {
-        if(null == iter) {
+        if (null == iter) {
             throw new NullPointerException();
         } else {
             this.iter = iter;
@@ -52,8 +52,8 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof IteratorToGeneratorAdapter) {
-            IteratorToGeneratorAdapter that = (IteratorToGeneratorAdapter)obj;
+        if (obj instanceof IteratorToGeneratorAdapter) {
+            IteratorToGeneratorAdapter that = (IteratorToGeneratorAdapter) obj;
             return this.iter.equals(that.iter);
         } else {
             return false;

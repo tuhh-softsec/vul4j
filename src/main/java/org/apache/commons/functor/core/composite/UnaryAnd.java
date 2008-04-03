@@ -66,8 +66,8 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object obj) {
-        for(Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
-            if(!((UnaryPredicate)iter.next()).test(obj)) {
+        for (Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
+            if (!((UnaryPredicate) iter.next()).test(obj)) {
                 return false;
             }
         }
@@ -75,8 +75,8 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryAnd) {
-            return equals((UnaryAnd)that);
+        if (that instanceof UnaryAnd) {
+            return equals((UnaryAnd) that);
         } else {
             return false;
         }

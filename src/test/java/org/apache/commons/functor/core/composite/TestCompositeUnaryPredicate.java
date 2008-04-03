@@ -91,7 +91,7 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
     public void testOf() throws Exception {
         CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
         assertTrue(f.test(null));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             f.of(new Constant(false));
             assertEquals(true,f.test(null));
         }
@@ -103,7 +103,7 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
         CompositeUnaryPredicate g = new CompositeUnaryPredicate(new Constant(true));
         assertObjectsAreEqual(f,g);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             f.of(new Constant("x"));
             assertObjectsAreNotEqual(f,g);
             g.of(new Constant("x"));

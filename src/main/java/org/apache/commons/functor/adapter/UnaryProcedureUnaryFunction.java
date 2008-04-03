@@ -49,8 +49,8 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryProcedureUnaryFunction) {
-            return equals((UnaryProcedureUnaryFunction)that);
+        if (that instanceof UnaryProcedureUnaryFunction) {
+            return equals((UnaryProcedureUnaryFunction) that);
         } else {
             return false;
         }
@@ -62,7 +62,7 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
 
     public int hashCode() {
         int hash = "UnaryProcedureUnaryFunction".hashCode();
-        if(null != procedure) {
+        if (null != procedure) {
             hash ^= procedure.hashCode();
         }
         return hash;

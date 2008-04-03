@@ -66,14 +66,14 @@ public class Sequence implements Procedure, Serializable {
     // predicate interface
     // ------------------------------------------------------------------------
     public void run() {
-        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((Procedure)iter.previous()).run();
+        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            ((Procedure) iter.previous()).run();
         }
     }
 
     public boolean equals(Object that) {
-        if(that instanceof Sequence) {
-            return equals((Sequence)that);
+        if (that instanceof Sequence) {
+            return equals((Sequence) that);
         } else {
             return false;
         }

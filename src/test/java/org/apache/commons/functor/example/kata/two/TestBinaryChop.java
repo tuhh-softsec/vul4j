@@ -160,7 +160,7 @@ public class TestBinaryChop extends TestCase {
                 int low = 0;
                 while (high - low > 1) {
                     int mid = (high + low) / 2;
-                    if(greaterThan(list,mid,seeking)) {
+                    if (greaterThan(list,mid,seeking)) {
                         high = mid;
                     } else {
                         low = mid;
@@ -239,7 +239,7 @@ public class TestBinaryChop extends TestCase {
      * Procedure BODY = new Procedure() {
      *   public void run() {
      *     int mid = (high + low) / 2;
-     *     if(greaterThan(list,mid,seeking)) {
+     *     if (greaterThan(list,mid,seeking)) {
      *       high = mid;
      *     } else {
      *       low = mid;
@@ -292,7 +292,7 @@ public class TestBinaryChop extends TestCase {
                     /** Our loop body. */
                     public void run() {
                         int mid = (high + low) / 2;
-                        if(greaterThan(list,mid,seeking)) {
+                        if (greaterThan(list,mid,seeking)) {
                             high = mid;
                         } else {
                             low = mid;
@@ -312,7 +312,7 @@ public class TestBinaryChop extends TestCase {
 
                 };
                 Algorithms.untildo(loop,loop);
-                return ((Number)loop.evaluate()).intValue();
+                return ((Number) loop.evaluate()).intValue();
             }
         });
     }
@@ -374,7 +374,7 @@ public class TestBinaryChop extends TestCase {
             loop(new Procedure() {
                 public void run() {
                     int mid = (high + low) / 2;
-                    if(BaseBinaryChop.greaterThan(list,mid,seeking)) {
+                    if (BaseBinaryChop.greaterThan(list,mid,seeking)) {
                         high = mid;
                     } else {
                         low = mid;
@@ -414,9 +414,9 @@ public class TestBinaryChop extends TestCase {
             }
 
             private int find(Object seeking, List list, int low, int high) {
-                if(high - low > 1) {
+                if (high - low > 1) {
                     int mid = (high + low) / 2;
-                    if(greaterThan(list,mid,seeking)) {
+                    if (greaterThan(list,mid,seeking)) {
                         return find(seeking,list,low,mid);
                     } else {
                         return find(seeking,list,mid,high);
@@ -443,11 +443,11 @@ public class TestBinaryChop extends TestCase {
     public void testTailRecursive() {
         chopTest(new BaseBinaryChop() {
             public int find(final Object seeking, final List list) {
-                return ((Number)Algorithms.recurse(new Function() {
+                return ((Number) Algorithms.recurse(new Function() {
                     public Object evaluate() {
-                        if(high - low > 1) {
+                        if (high - low > 1) {
                             int mid = (high + low) / 2;
-                            if(greaterThan(list,mid,seeking)) {
+                            if (greaterThan(list,mid,seeking)) {
                                 high = mid;
                             } else {
                                 low = mid;
@@ -492,13 +492,13 @@ public class TestBinaryChop extends TestCase {
             }
 
             private int find(Object seeking, List list, int offset) {
-                if(list.isEmpty()) {
+                if (list.isEmpty()) {
                     return -1;
-                } if(list.size() == 1) {
+                } if (list.size() == 1) {
                     return (equals(list,0,seeking) ? offset : -1);
                 } else {
                     int mid = list.size() / 2;
-                    if(greaterThan(list,mid,seeking)) {
+                    if (greaterThan(list,mid,seeking)) {
                         return find(seeking,list.subList(0,mid),offset);
                     } else {
                         return find(seeking,list.subList(mid,list.size()),offset+mid);
@@ -517,17 +517,17 @@ public class TestBinaryChop extends TestCase {
     public void testTailRecursive2() {
         chopTest(new BaseBinaryChop() {
             public int find(final Object seeking, final List list) {
-                return ((Number)Algorithms.recurse(new Function() {
+                return ((Number) Algorithms.recurse(new Function() {
                     public Object evaluate() {
-                        if(sublist.isEmpty()) {
+                        if (sublist.isEmpty()) {
                             return BaseBinaryChop.NEGATIVE_ONE;
-                        } if(sublist.size() == 1) {
+                        } if (sublist.size() == 1) {
                             return (BaseBinaryChop.equals(sublist,0,seeking) ?
                                 new Integer(offset) :
                                 BaseBinaryChop.NEGATIVE_ONE);
                         } else {
                             int mid = sublist.size() / 2;
-                            if(greaterThan(sublist,mid,seeking)) {
+                            if (greaterThan(sublist,mid,seeking)) {
                                 sublist = sublist.subList(0,mid);
                             } else {
                                 sublist = sublist.subList(mid,sublist.size());

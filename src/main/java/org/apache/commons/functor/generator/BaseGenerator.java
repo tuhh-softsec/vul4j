@@ -135,11 +135,11 @@ public abstract class BaseGenerator implements Generator {
 
     /** Same as to(new CollectionTransformer(collection)). */
     public final Collection to(Collection collection) {
-        return (Collection)to(new CollectionTransformer(collection));
+        return (Collection) to(new CollectionTransformer(collection));
     }
 
     /** Same as to(new CollectionTransformer()). */
     public final Collection toCollection() {
-        return (Collection)to(new CollectionTransformer());
+        return (Collection) to(new CollectionTransformer());
     }
 }

@@ -63,7 +63,7 @@ public class EiffelStyleLoop implements Procedure {
             public boolean test() {
                 boolean result = true;
                 Comparable next = (Comparable)(function.evaluate());
-                if(null != last) {
+                if (null != last) {
                     result = last.compareTo(next) > 0;
                 }
                 last = next;
@@ -104,7 +104,7 @@ public class EiffelStyleLoop implements Procedure {
     }
 
     private void assertTrue(boolean value) {
-        if(!value) {
+        if (!value) {
             throw new IllegalStateException("Assertion failed");
         }
     }

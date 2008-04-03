@@ -46,7 +46,7 @@ public final class LongRange extends BaseGenerator {
     }
 
     public LongRange(long from, long to, long step) {
-        if(from != to && signOf(step) != signOf(to-from)) {
+        if (from != to && signOf(step) != signOf(to-from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
         } else {
             this.from = from;
@@ -59,12 +59,12 @@ public final class LongRange extends BaseGenerator {
     //---------------------------------------------------------------
 
     public void run(UnaryProcedure proc) {
-        if(signOf(step) == -1L) {
-            for(long i=from; i > to; i += step) {
+        if (signOf(step) == -1L) {
+            for (long i=from; i > to; i += step) {
                 proc.run(new Long(i));
             }
         } else {
-            for(long i=from; i < to; i += step) {
+            for (long i=from; i < to; i += step) {
                 proc.run(new Long(i));
             }
         }
@@ -75,8 +75,8 @@ public final class LongRange extends BaseGenerator {
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof LongRange) {
-            LongRange that = (LongRange)obj;
+        if (obj instanceof LongRange) {
+            LongRange that = (LongRange) obj;
             return this.from == that.from && this.to == that.to && this.step == that.step;
         } else {
             return false;
@@ -98,9 +98,9 @@ public final class LongRange extends BaseGenerator {
     //---------------------------------------------------------------
 
     private static long signOf(long value) {
-        if(value < 0) {
+        if (value < 0) {
             return -1;
-        } else if(value > 0) {
+        } else if (value > 0) {
             return 1;
         } else {
             return 0;
@@ -108,7 +108,7 @@ public final class LongRange extends BaseGenerator {
     }
 
     private static long defaultStep(long from, long to) {
-        if(from > to) {
+        if (from > to) {
             return -1L;
         } else {
             return 1L;

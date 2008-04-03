@@ -53,8 +53,8 @@ public final class BoundPredicate implements Predicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BoundPredicate) {
-            return equals((BoundPredicate)that);
+        if (that instanceof BoundPredicate) {
+            return equals((BoundPredicate) that);
         } else {
             return false;
         }
@@ -70,11 +70,11 @@ public final class BoundPredicate implements Predicate, Serializable {
 
     public int hashCode() {
         int hash = "BoundPredicate".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash <<= 2;
             hash ^= predicate.hashCode();
         }
-        if(null != param) {
+        if (null != param) {
             hash <<= 2;
             hash ^= param.hashCode();
         }

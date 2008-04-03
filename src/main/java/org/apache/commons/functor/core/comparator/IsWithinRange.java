@@ -70,7 +70,7 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
      * Test if the passed in object is within the specified range.
      */
     public boolean test(Object o) {
-        Comparable c = (Comparable)o;
+        Comparable c = (Comparable) o;
         return c.compareTo(min) >= 0 && c.compareTo(max) <= 0;
     }
 

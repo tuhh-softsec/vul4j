@@ -31,7 +31,7 @@ public final class FilteredIterator implements Iterator {
     // ------------------------------------------------------------------------
 
     public FilteredIterator(Iterator iterator, UnaryPredicate predicate) {
-        if(null == iterator || null == predicate) {
+        if (null == iterator || null == predicate) {
             throw new NullPointerException();
         } else {
             this.predicate = predicate;
@@ -46,7 +46,7 @@ public final class FilteredIterator implements Iterator {
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
-        if(nextSet) {
+        if (nextSet) {
             return true;
         } else {
             return setNext();
@@ -57,7 +57,7 @@ public final class FilteredIterator implements Iterator {
      * @see java.util.Iterator#next()
      */
     public Object next() {
-        if(hasNext()) {
+        if (hasNext()) {
             return returnNext();
         } else {
             throw new NoSuchElementException();
@@ -68,7 +68,7 @@ public final class FilteredIterator implements Iterator {
      * @see java.util.Iterator#remove()
      */
     public void remove() {
-        if(canRemove) {
+        if (canRemove) {
             canRemove = false;
             iterator.remove();
         } else {
@@ -78,8 +78,8 @@ public final class FilteredIterator implements Iterator {
 
 
     public boolean equals(Object obj) {
-        if(obj instanceof FilteredIterator) {
-            FilteredIterator that = (FilteredIterator)obj;
+        if (obj instanceof FilteredIterator) {
+            FilteredIterator that = (FilteredIterator) obj;
             return predicate.equals(that.predicate) && iterator.equals(that.iterator);
         } else {
             return false;
@@ -113,7 +113,7 @@ public final class FilteredIterator implements Iterator {
         while(iterator.hasNext()) {
             canRemove = false;
             Object obj = iterator.next();
-            if(predicate.test(obj)) {
+            if (predicate.test(obj)) {
                 next = obj;
                 nextSet = true;
                 return true;

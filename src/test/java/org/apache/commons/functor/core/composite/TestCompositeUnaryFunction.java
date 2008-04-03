@@ -76,11 +76,11 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
     public void testOf() throws Exception {
         CompositeUnaryFunction f = new CompositeUnaryFunction();
         assertNull(f.evaluate(null));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             f.of(new UnaryFunction() {
                     public Object evaluate(Object obj) {
-                        if(obj instanceof Integer) {
-                            return new Integer((((Integer)obj).intValue())+1);
+                        if (obj instanceof Integer) {
+                            return new Integer((((Integer) obj).intValue())+1);
                         } else {
                             return new Integer(1);
                         }
@@ -96,7 +96,7 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
         CompositeUnaryFunction g = new CompositeUnaryFunction();
         assertObjectsAreEqual(f,g);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             f.of(new Constant("x"));
             assertObjectsAreNotEqual(f,g);
             g.of(new Constant("x"));

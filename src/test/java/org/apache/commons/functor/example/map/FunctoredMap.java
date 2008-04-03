@@ -122,7 +122,7 @@ public class FunctoredMap implements Map {
 
     protected static final BinaryFunction DEFAULT_ON_PUT = new BinaryFunction() {
         public Object evaluate(Object a, Object b) {
-            Map map = (Map)a;
+            Map map = (Map) a;
             Object key = Array.get(b,0);
             Object value = Array.get(b,1);
             return map.put(key,value);
@@ -133,7 +133,7 @@ public class FunctoredMap implements Map {
 
     protected static final BinaryFunction DEFAULT_ON_GET = new BinaryFunction() {
         public Object evaluate(Object map, Object key) {
-            return ((Map)map).get(key);
+            return ((Map) map).get(key);
         }
     };
 
@@ -141,8 +141,8 @@ public class FunctoredMap implements Map {
 
     protected static final BinaryProcedure DEFAULT_ON_PUT_ALL = new BinaryProcedure() {
         public void run(Object a, Object b) {
-            Map dest = (Map)a;
-            Map src = (Map)b;
+            Map dest = (Map) a;
+            Map src = (Map) b;
             dest.putAll(src);
         }
     };
@@ -151,7 +151,7 @@ public class FunctoredMap implements Map {
 
     protected static final BinaryFunction DEFAULT_ON_REMOVE = new BinaryFunction() {
         public Object evaluate(Object a, Object key) {
-            Map map = (Map)a;
+            Map map = (Map) a;
             return map.remove(key);
         }
     };
@@ -160,7 +160,7 @@ public class FunctoredMap implements Map {
 
     protected static final UnaryProcedure DEFAULT_ON_CLEAR = new UnaryProcedure() {
         public void run(Object map) {
-            ((Map)map).clear();
+            ((Map) map).clear();
         }
     };
 

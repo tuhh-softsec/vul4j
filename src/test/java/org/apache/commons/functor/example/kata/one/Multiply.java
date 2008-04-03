@@ -26,7 +26,7 @@ import org.apache.commons.functor.adapter.LeftBoundFunction;
  */
 public class Multiply implements BinaryFunction {
     public Object evaluate(Object left, Object right) {
-        return evaluate((Number)left,(Number)right);
+        return evaluate((Number) left,(Number) right);
     }
 
     public Object evaluate(Number left, Number right) {

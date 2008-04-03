@@ -25,7 +25,7 @@ import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
  */
 public class ToMoney implements UnaryFunction {
     public Object evaluate(Object cents) {
-        return evaluate((Number)cents);
+        return evaluate((Number) cents);
     }
 
     public Object evaluate(Number cents) {

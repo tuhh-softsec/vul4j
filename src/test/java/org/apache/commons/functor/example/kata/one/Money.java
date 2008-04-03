@@ -30,8 +30,8 @@ public class Money {
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof Money) {
-            Money that = (Money)obj;
+        if (obj instanceof Money) {
+            Money that = (Money) obj;
             return getValueAsCents() == that.getValueAsCents();
         } else {
             return false;

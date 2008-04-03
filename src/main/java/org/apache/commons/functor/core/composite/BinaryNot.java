@@ -50,8 +50,8 @@ public final class BinaryNot implements BinaryPredicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinaryNot) {
-            return equals((BinaryNot)that);
+        if (that instanceof BinaryNot) {
+            return equals((BinaryNot) that);
         } else {
             return false;
         }
@@ -63,7 +63,7 @@ public final class BinaryNot implements BinaryPredicate, Serializable {
 
     public int hashCode() {
         int hash = "BinaryNot".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

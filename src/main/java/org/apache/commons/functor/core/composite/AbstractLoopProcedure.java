@@ -38,7 +38,7 @@ public abstract class AbstractLoopProcedure implements Procedure, Serializable {
 
 	public boolean equals(Object object) {
 		if (object instanceof AbstractLoopProcedure) {
-			AbstractLoopProcedure that = (AbstractLoopProcedure)object;
+			AbstractLoopProcedure that = (AbstractLoopProcedure) object;
 			return (null == getCondition() ? null == that.getCondition() : getCondition().equals(that.getCondition())) &&
 				(null == getAction() ? null == that.getAction() : getAction().equals(that.getAction()));
 		} else {
@@ -55,11 +55,11 @@ public abstract class AbstractLoopProcedure implements Procedure, Serializable {
 	}
 	protected int hashCode(int hash) {
 		hash <<= 4;
-		if(null != getAction()) {
+		if (null != getAction()) {
 			hash ^= getAction().hashCode();
 		}
 		hash <<= 4;
-		if(null != getCondition()) {
+		if (null != getCondition()) {
 			hash ^= getCondition().hashCode();
 		}
 		return hash;

@@ -48,8 +48,8 @@ public final class ComparatorFunction implements BinaryFunction, Serializable {
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof ComparatorFunction) {
-            return equals((ComparatorFunction)that);
+        if (that instanceof ComparatorFunction) {
+            return equals((ComparatorFunction) that);
         } else {
             return false;
         }

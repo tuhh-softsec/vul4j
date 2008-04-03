@@ -28,7 +28,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * Given a {@link UnaryPredicate predicate}
  * <i>p</i> and {@link UnaryProcedure procedures}
  * <i>q</i> and <i>r</i>, {@link #run runs}
- * <code>if(p.test(x)) { q.run(x); } else { r.run(x); }</code>.
+ * <code>if (p.test(x)) { q.run(x); } else { r.run(x); }</code>.
  * <p>
  * Note that although this class implements
  * {@link Serializable}, a given instance will
@@ -54,7 +54,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
     // predicate interface
     // ------------------------------------------------------------------------
     public void run(Object obj) {
-        if(ifPred.test(obj)) {
+        if (ifPred.test(obj)) {
             thenProc.run(obj);
         } else {
             elseProc.run(obj);
@@ -62,8 +62,8 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConditionalUnaryProcedure) {
-            return equals((ConditionalUnaryProcedure)that);
+        if (that instanceof ConditionalUnaryProcedure) {
+            return equals((ConditionalUnaryProcedure) that);
         } else {
             return false;
         }
@@ -78,15 +78,15 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
 
     public int hashCode() {
         int hash = "ConditionalUnaryProcedure".hashCode();
-        if(null != ifPred) {
+        if (null != ifPred) {
             hash <<= 4;
             hash ^= ifPred.hashCode();
         }
-        if(null != thenProc) {
+        if (null != thenProc) {
             hash <<= 4;
             hash ^= thenProc.hashCode();
         }
-        if(null != elseProc) {
+        if (null != elseProc) {
             hash <<= 4;
             hash ^= elseProc.hashCode();
         }

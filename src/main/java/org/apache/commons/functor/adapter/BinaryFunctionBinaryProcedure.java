@@ -56,8 +56,8 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinaryFunctionBinaryProcedure) {
-            return equals((BinaryFunctionBinaryProcedure)that);
+        if (that instanceof BinaryFunctionBinaryProcedure) {
+            return equals((BinaryFunctionBinaryProcedure) that);
         } else {
             return false;
         }
@@ -69,7 +69,7 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
 
     public int hashCode() {
         int hash = "BinaryFunctionBinaryProcedure".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

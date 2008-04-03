@@ -97,12 +97,12 @@ public class TestUnarySequence extends BaseFunctorTest {
         List list = new ArrayList();
         UnarySequence seq = new UnarySequence();
         seq.run(null);
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             RunCounter counter = new RunCounter();
             seq.then(counter);
             list.add(counter);
             seq.run("xyzzy");
-            for(int j=0;j<list.size();j++) {
+            for (int j=0;j<list.size();j++) {
                 assertEquals(list.size()-j,(((RunCounter)(list.get(j))).count));
             }
         }
@@ -114,7 +114,7 @@ public class TestUnarySequence extends BaseFunctorTest {
         UnarySequence q = new UnarySequence();
         assertObjectsAreEqual(p,q);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             p.then(new NoOp());
             assertObjectsAreNotEqual(p,q);
             q.then(new NoOp());

@@ -47,7 +47,7 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
     }
 
     public boolean test(Object obj) {
-        return test((Boolean)obj);
+        return test((Boolean) obj);
     }
 
     public boolean test(Boolean bool) {

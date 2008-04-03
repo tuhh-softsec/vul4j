@@ -66,8 +66,8 @@ public final class BinaryOr extends BaseBinaryPredicateList {
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object a, Object b) {
-        for(Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
-            if(((BinaryPredicate)iter.next()).test(a,b)) {
+        for (Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
+            if (((BinaryPredicate) iter.next()).test(a,b)) {
                 return true;
             }
         }
@@ -75,8 +75,8 @@ public final class BinaryOr extends BaseBinaryPredicateList {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinaryOr) {
-            return equals((BinaryOr)that);
+        if (that instanceof BinaryOr) {
+            return equals((BinaryOr) that);
         } else {
             return false;
         }

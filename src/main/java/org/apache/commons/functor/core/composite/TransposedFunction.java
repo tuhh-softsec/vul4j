@@ -54,8 +54,8 @@ public class TransposedFunction implements BinaryFunction, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof TransposedFunction) {
-            return equals((TransposedFunction)that);
+        if (that instanceof TransposedFunction) {
+            return equals((TransposedFunction) that);
         } else {
             return false;
         }
@@ -67,7 +67,7 @@ public class TransposedFunction implements BinaryFunction, Serializable {
 
     public int hashCode() {
         int hash = "TransposedFunction".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

@@ -48,7 +48,7 @@ public final class LeftIdentity implements BinaryPredicate, BinaryFunction, Seri
     }
 
     public boolean test(Object left, Object right) {
-        return test((Boolean)left);
+        return test((Boolean) left);
     }
 
     private boolean test(Boolean bool) {

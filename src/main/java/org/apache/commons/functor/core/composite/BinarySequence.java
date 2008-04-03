@@ -67,14 +67,14 @@ public class BinarySequence implements BinaryProcedure, Serializable {
     // predicate interface
     // ------------------------------------------------------------------------
     public void run(Object left, Object right) {
-        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((BinaryProcedure)iter.previous()).run(left,right);
+        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            ((BinaryProcedure) iter.previous()).run(left,right);
         }
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinarySequence) {
-            return equals((BinarySequence)that);
+        if (that instanceof BinarySequence) {
+            return equals((BinarySequence) that);
         } else {
             return false;
         }

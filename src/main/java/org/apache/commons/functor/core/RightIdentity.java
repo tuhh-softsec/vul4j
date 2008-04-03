@@ -48,7 +48,7 @@ public final class RightIdentity implements BinaryPredicate, BinaryFunction, Ser
     }
 
     public boolean test(Object left, Object right) {
-        return test((Boolean)right);
+        return test((Boolean) right);
     }
 
     private boolean test(Boolean bool) {

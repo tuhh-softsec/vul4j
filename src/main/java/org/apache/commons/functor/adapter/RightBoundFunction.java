@@ -53,8 +53,8 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof RightBoundFunction) {
-            return equals((RightBoundFunction)that);
+        if (that instanceof RightBoundFunction) {
+            return equals((RightBoundFunction) that);
         } else {
             return false;
         }
@@ -70,11 +70,11 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
 
     public int hashCode() {
         int hash = "RightBoundFunction".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash <<= 2;
             hash ^= function.hashCode();
         }
-        if(null != param) {
+        if (null != param) {
             hash <<= 2;
             hash ^= param.hashCode();
         }

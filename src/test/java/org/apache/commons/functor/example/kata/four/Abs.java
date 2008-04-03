@@ -27,7 +27,7 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class Abs implements UnaryFunction {
     public Object evaluate(Object obj) {
-        return evaluate((Number)obj);
+        return evaluate((Number) obj);
     }
 
     public Object evaluate(Number num) {

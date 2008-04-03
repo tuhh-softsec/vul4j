@@ -34,7 +34,7 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate {
 
     public Offset(int count) {
-        if(count < 0) {
+        if (count < 0) {
             throw new IllegalArgumentException("Argument must be a non-negative integer.");
         }
         this.min = count;
@@ -42,7 +42,7 @@ public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate 
 
     public boolean test() {
         // stop incremeting when we've hit max, so we don't loop around
-        if(current < min) {
+        if (current < min) {
             current++;
             return false;
         } else {

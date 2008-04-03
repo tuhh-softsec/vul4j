@@ -48,8 +48,8 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
     }
 
     public boolean equals(Object that) {
-        if(that instanceof FunctionUnaryFunction) {
-            return equals((FunctionUnaryFunction)that);
+        if (that instanceof FunctionUnaryFunction) {
+            return equals((FunctionUnaryFunction) that);
         } else {
             return false;
         }
@@ -61,7 +61,7 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
 
     public int hashCode() {
         int hash = "FunctionUnaryFunction".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

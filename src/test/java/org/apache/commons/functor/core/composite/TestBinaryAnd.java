@@ -69,14 +69,14 @@ public class TestBinaryAnd extends BaseFunctorTest {
 
         BinaryAnd p = new BinaryAnd(new Constant(true));
         assertTrue(p.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.and(new Constant(true));
             assertTrue(p.test("xyzzy",new Integer(3)));
         }
 
         BinaryAnd q = new BinaryAnd(new Constant(true));
         assertTrue(q.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.and(new Constant(true));
             assertTrue(q.test("xyzzy",new Integer(3)));
         }
@@ -92,14 +92,14 @@ public class TestBinaryAnd extends BaseFunctorTest {
 
         BinaryAnd p = new BinaryAnd(new Constant(false));
         assertTrue(!p.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.and(new Constant(false));
             assertTrue(!p.test("xyzzy",new Integer(3)));
         }
 
         BinaryAnd q = new BinaryAnd(new Constant(true));
         assertTrue(q.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.and(new Constant(true));
             assertTrue(q.test("xyzzy",new Integer(3)));
         }
@@ -112,7 +112,7 @@ public class TestBinaryAnd extends BaseFunctorTest {
         BinaryPredicate p = new Constant(true);
         BinaryAnd q = new BinaryAnd(p,p);
         assertTrue(q.test("xyzzy",new Integer(3)));
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.and(p);
             assertTrue(q.test("xyzzy",new Integer(3)));
         }
@@ -126,7 +126,7 @@ public class TestBinaryAnd extends BaseFunctorTest {
         BinaryOr r = new BinaryOr();
         assertObjectsAreNotEqual(p,r);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             p.and(Constant.truePredicate());
             assertObjectsAreNotEqual(p,q);
             q.and(Constant.truePredicate());

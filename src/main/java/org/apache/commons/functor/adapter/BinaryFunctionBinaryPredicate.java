@@ -60,8 +60,8 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinaryFunctionBinaryPredicate) {
-            return equals((BinaryFunctionBinaryPredicate)that);
+        if (that instanceof BinaryFunctionBinaryPredicate) {
+            return equals((BinaryFunctionBinaryPredicate) that);
         } else {
             return false;
         }
@@ -73,7 +73,7 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
 
     public int hashCode() {
         int hash = "BinaryFunctionBinaryPredicate".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

@@ -53,8 +53,8 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
     }
 
     public boolean equals(Object that) {
-        if(that instanceof BinaryCompositeBinaryFunction) {
-            return equals((BinaryCompositeBinaryFunction)that);
+        if (that instanceof BinaryCompositeBinaryFunction) {
+            return equals((BinaryCompositeBinaryFunction) that);
         } else {
             return false;
         }
@@ -69,15 +69,15 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
 
     public int hashCode() {
         int hash = "BinaryCompositeBinaryFunction".hashCode();
-        if(null != binary) {
+        if (null != binary) {
             hash <<= 4;
             hash ^= binary.hashCode();
         }
-        if(null != leftBinary) {
+        if (null != leftBinary) {
             hash <<= 4;
             hash ^= leftBinary.hashCode();
         }
-        if(null != rightBinary) {
+        if (null != rightBinary) {
             hash <<= 4;
             hash ^= rightBinary.hashCode();
         }

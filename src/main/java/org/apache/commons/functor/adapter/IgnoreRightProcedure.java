@@ -48,8 +48,8 @@ public final class IgnoreRightProcedure implements BinaryProcedure, Serializable
     }
 
     public boolean equals(Object that) {
-        if(that instanceof IgnoreRightProcedure) {
-            return equals((IgnoreRightProcedure)that);
+        if (that instanceof IgnoreRightProcedure) {
+            return equals((IgnoreRightProcedure) that);
         } else {
             return false;
         }
@@ -61,7 +61,7 @@ public final class IgnoreRightProcedure implements BinaryProcedure, Serializable
 
     public int hashCode() {
         int hash = "IgnoreRightProcedure".hashCode();
-        if(null != procedure) {
+        if (null != procedure) {
             hash ^= procedure.hashCode();
         }
         return hash;

@@ -58,8 +58,8 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConditionalBinaryPredicate) {
-            return equals((ConditionalBinaryPredicate)that);
+        if (that instanceof ConditionalBinaryPredicate) {
+            return equals((ConditionalBinaryPredicate) that);
         } else {
             return false;
         }
@@ -74,15 +74,15 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
 
     public int hashCode() {
         int hash = "ConditionalBinaryPredicate".hashCode();
-        if(null != ifPred) {
+        if (null != ifPred) {
             hash <<= 4;
             hash ^= ifPred.hashCode();
         }
-        if(null != thenPred) {
+        if (null != thenPred) {
             hash <<= 4;
             hash ^= thenPred.hashCode();
         }
-        if(null != elsePred) {
+        if (null != elsePred) {
             hash <<= 4;
             hash ^= elsePred.hashCode();
         }

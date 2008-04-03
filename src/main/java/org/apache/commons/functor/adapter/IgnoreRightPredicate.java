@@ -48,8 +48,8 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
     }
 
     public boolean equals(Object that) {
-        if(that instanceof IgnoreRightPredicate) {
-            return equals((IgnoreRightPredicate)that);
+        if (that instanceof IgnoreRightPredicate) {
+            return equals((IgnoreRightPredicate) that);
         } else {
             return false;
         }
@@ -61,7 +61,7 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
 
     public int hashCode() {
         int hash = "IgnoreRightPredicate".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

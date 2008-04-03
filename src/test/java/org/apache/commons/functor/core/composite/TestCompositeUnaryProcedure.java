@@ -96,7 +96,7 @@ public class TestCompositeUnaryProcedure extends BaseFunctorTest {
         CompositeUnaryProcedure g = new CompositeUnaryProcedure(new NoOp());
         assertObjectsAreEqual(f,g);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             f.of(new Constant("x"));
             assertObjectsAreNotEqual(f,g);
             g.of(new Constant("x"));

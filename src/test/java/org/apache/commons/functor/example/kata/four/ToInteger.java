@@ -30,13 +30,13 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class ToInteger implements UnaryFunction {
     public Object evaluate(Object obj) {
-        return evaluate((String)obj);
+        return evaluate((String) obj);
     }
 
     public Object evaluate(String str) {
         StringBuffer buf = new StringBuffer();
-        for(int i=0;i<str.length();i++) {
-            if(Character.isDigit(str.charAt(i))) {
+        for (int i=0;i<str.length();i++) {
+            if (Character.isDigit(str.charAt(i))) {
                 buf.append(str.charAt(i));
             } else {
                 break;

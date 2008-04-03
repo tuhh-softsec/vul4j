@@ -30,7 +30,7 @@ public final class TransformedIterator implements Iterator {
     // ------------------------------------------------------------------------
 
     public TransformedIterator(Iterator iterator, UnaryFunction function) {
-        if(null == iterator || null == function) {
+        if (null == iterator || null == function) {
             throw new NullPointerException();
         } else {
             this.function = function;
@@ -63,8 +63,8 @@ public final class TransformedIterator implements Iterator {
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof TransformedIterator) {
-            TransformedIterator that = (TransformedIterator)obj;
+        if (obj instanceof TransformedIterator) {
+            TransformedIterator that = (TransformedIterator) obj;
             return function.equals(that.function) && iterator.equals(that.iterator);
         } else {
             return false;

@@ -90,10 +90,10 @@ public class TestEachElement extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testFromNull() {
-        assertNull(EachElement.from((Collection)null));
-        assertNull(EachElement.from((Map)null));
-        assertNull(EachElement.from((Iterator)null));
-        assertNull(EachElement.from((Object[])null));
+        assertNull(EachElement.from((Collection) null));
+        assertNull(EachElement.from((Map) null));
+        assertNull(EachElement.from((Iterator) null));
+        assertNull(EachElement.from((Object[]) null));
     }
 
 

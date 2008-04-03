@@ -59,8 +59,8 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConditionalBinaryFunction) {
-            return equals((ConditionalBinaryFunction)that);
+        if (that instanceof ConditionalBinaryFunction) {
+            return equals((ConditionalBinaryFunction) that);
         } else {
             return false;
         }
@@ -75,15 +75,15 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
 
     public int hashCode() {
         int hash = "ConditionalBinaryFunction".hashCode();
-        if(null != ifPred) {
+        if (null != ifPred) {
             hash <<= 4;
             hash ^= ifPred.hashCode();
         }
-        if(null != thenFunc) {
+        if (null != thenFunc) {
             hash <<= 4;
             hash ^= thenFunc.hashCode();
         }
-        if(null != elseFunc) {
+        if (null != elseFunc) {
             hash <<= 4;
             hash ^= elseFunc.hashCode();
         }

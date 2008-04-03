@@ -30,8 +30,8 @@ public class LazyMap extends FunctoredMap {
         super(map);
         setOnGet(new BinaryFunction() {
             public Object evaluate(Object m, Object key) {
-                Map map = (Map)m;
-                if(map.containsKey(key)) {
+                Map map = (Map) m;
+                if (map.containsKey(key)) {
                     return map.get(key);
                 } else {
                     Object value = factory.evaluate(key);

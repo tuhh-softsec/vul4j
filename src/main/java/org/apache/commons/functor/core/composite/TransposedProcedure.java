@@ -54,8 +54,8 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof TransposedProcedure) {
-            return equals((TransposedProcedure)that);
+        if (that instanceof TransposedProcedure) {
+            return equals((TransposedProcedure) that);
         } else {
             return false;
         }
@@ -67,7 +67,7 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
 
     public int hashCode() {
         int hash = "TransposedProcedure".hashCode();
-        if(null != procedure) {
+        if (null != procedure) {
             hash ^= procedure.hashCode();
         }
         return hash;

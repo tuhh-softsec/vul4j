@@ -54,8 +54,8 @@ public final class FunctionPredicate implements Predicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof FunctionPredicate) {
-            return equals((FunctionPredicate)that);
+        if (that instanceof FunctionPredicate) {
+            return equals((FunctionPredicate) that);
         } else {
             return false;
         }
@@ -67,7 +67,7 @@ public final class FunctionPredicate implements Predicate, Serializable {
 
     public int hashCode() {
         int hash = "FunctionPredicate".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

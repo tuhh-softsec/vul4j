@@ -60,8 +60,8 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryFunctionUnaryPredicate) {
-            return equals((UnaryFunctionUnaryPredicate)that);
+        if (that instanceof UnaryFunctionUnaryPredicate) {
+            return equals((UnaryFunctionUnaryPredicate) that);
         } else {
             return false;
         }
@@ -73,7 +73,7 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
 
     public int hashCode() {
         int hash = "UnaryFunctionUnaryPredicate".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

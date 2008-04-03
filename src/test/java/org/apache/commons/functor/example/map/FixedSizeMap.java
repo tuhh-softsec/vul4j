@@ -34,10 +34,10 @@ public class FixedSizeMap extends FunctoredMap {
         super(map);
         setOnPut(new BinaryFunction() {
             public Object evaluate(Object a, Object b) {
-                Map map = (Map)a;
+                Map map = (Map) a;
                 Object key = Array.get(b,0);
                 Object value = Array.get(b,1);
-                if(map.containsKey(key)) {
+                if (map.containsKey(key)) {
                     return map.put(key,value);
                 } else {
                     throw new IllegalArgumentException();
@@ -47,10 +47,10 @@ public class FixedSizeMap extends FunctoredMap {
 
         setOnPutAll(new BinaryProcedure() {
             public void run(Object a, Object b) {
-                Map dest = (Map)a;
-                Map src = (Map)b;
+                Map dest = (Map) a;
+                Map src = (Map) b;
 
-                if(Algorithms.contains(src.keySet().iterator(),UnaryNot.not(new ContainsKey(dest)))) {
+                if (Algorithms.contains(src.keySet().iterator(),UnaryNot.not(new ContainsKey(dest)))) {
                     throw new IllegalArgumentException();
                 } else {
                     dest.putAll(src);

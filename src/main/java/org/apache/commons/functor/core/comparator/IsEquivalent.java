@@ -70,8 +70,8 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof IsEquivalent) {
-            return equals((IsEquivalent)that);
+        if (that instanceof IsEquivalent) {
+            return equals((IsEquivalent) that);
         } else {
             return false;
         }

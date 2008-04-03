@@ -39,8 +39,8 @@ public class Lines extends BaseGenerator {
     }
 
     public Lines(Reader reader) {
-        if(reader instanceof BufferedReader) {
-            in = (BufferedReader)reader;
+        if (reader instanceof BufferedReader) {
+            in = (BufferedReader) reader;
         } else {
             in = new BufferedReader(reader);
         }
@@ -48,7 +48,7 @@ public class Lines extends BaseGenerator {
     
     public void run(UnaryProcedure proc) {
         try {
-            for(String line = in.readLine(); line != null; line = in.readLine()) {
+            for (String line = in.readLine(); line != null; line = in.readLine()) {
                 proc.run(line);
             }
         } catch(RuntimeException e) {

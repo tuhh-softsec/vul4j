@@ -79,13 +79,13 @@ public class TestBaseGenerator extends TestCase {
         doubled = new ArrayList();
         listWithDuplicates = new ArrayList();
         sum = 0;
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             list.add(new Integer(i));
             doubled.add(new Integer(i*2));
             listWithDuplicates.add(new Integer(i));
             listWithDuplicates.add(new Integer(i));
             sum += i;
-            if(i%2 == 0) {
+            if (i%2 == 0) {
                 evens.add(new Integer(i));
             }
         }
@@ -137,7 +137,7 @@ public class TestBaseGenerator extends TestCase {
                 assertSame(simpleGenerator, wrapped);
                 wrapped.run(new UnaryProcedure() {
                     public void run(Object obj) {
-                        proc.run(new Integer(((Integer)obj).intValue() + 1));
+                        proc.run(new Integer(((Integer) obj).intValue() + 1));
                     }
                 });
             }
@@ -173,7 +173,7 @@ public class TestBaseGenerator extends TestCase {
         Generator gen = new IntegerRange(1,5);
         UnaryFunction dbl = new UnaryFunction() {
             public Object evaluate(Object obj) {
-                return new Integer(2*((Number)obj).intValue());
+                return new Integer(2*((Number) obj).intValue());
             }
         };
         Summer summer = new Summer();
@@ -238,7 +238,7 @@ public class TestBaseGenerator extends TestCase {
             new Integer(0),
             new BinaryFunction() {
                 public Object evaluate(Object a, Object b) {
-                    return new Integer(((Number)a).intValue() + ((Number)b).intValue());
+                    return new Integer(((Number) a).intValue() + ((Number) b).intValue());
                 }
             });
         assertEquals(new Integer(sum),result);
@@ -250,11 +250,11 @@ public class TestBaseGenerator extends TestCase {
     }
 
     public void testTo() {
-        Collection col = (Collection)simpleGenerator.to(new CollectionTransformer());
+        Collection col = (Collection) simpleGenerator.to(new CollectionTransformer());
         assertEquals("[0, 1, 2, 3, 4]", col.toString());
 
         Collection fillThis = new LinkedList();
-        col = (Collection)simpleGenerator.to(new CollectionTransformer(fillThis));
+        col = (Collection) simpleGenerator.to(new CollectionTransformer(fillThis));
         assertSame(fillThis, col);
         assertEquals("[0, 1, 2, 3, 4]", col.toString());
 
@@ -279,12 +279,12 @@ public class TestBaseGenerator extends TestCase {
     private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(23));
     private UnaryPredicate isEven = new UnaryPredicate() {
         public boolean test(Object obj) {
-            return ((Number)obj).intValue() % 2 == 0;
+            return ((Number) obj).intValue() % 2 == 0;
         }
     };
     private UnaryPredicate isOdd = new UnaryPredicate() {
         public boolean test(Object obj) {
-            return ((Number)obj).intValue() % 2 != 0;
+            return ((Number) obj).intValue() % 2 != 0;
         }
     };
 
@@ -293,7 +293,7 @@ public class TestBaseGenerator extends TestCase {
 
     static class Summer implements UnaryProcedure {
         public void run(Object that) {
-            sum += ((Number)that).intValue();
+            sum += ((Number) that).intValue();
         }
         public int sum = 0;
     }

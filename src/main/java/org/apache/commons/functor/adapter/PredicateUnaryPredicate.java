@@ -48,8 +48,8 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
     }
 
     public boolean equals(Object that) {
-        if(that instanceof PredicateUnaryPredicate) {
-            return equals((PredicateUnaryPredicate)that);
+        if (that instanceof PredicateUnaryPredicate) {
+            return equals((PredicateUnaryPredicate) that);
         } else {
             return false;
         }
@@ -61,7 +61,7 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
 
     public int hashCode() {
         int hash = "PredicateUnaryPredicate".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

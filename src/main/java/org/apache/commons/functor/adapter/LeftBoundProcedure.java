@@ -53,8 +53,8 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof LeftBoundProcedure) {
-            return equals((LeftBoundProcedure)that);
+        if (that instanceof LeftBoundProcedure) {
+            return equals((LeftBoundProcedure) that);
         } else {
             return false;
         }
@@ -70,11 +70,11 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
 
     public int hashCode() {
         int hash = "LeftBoundProcedure".hashCode();
-        if(null != procedure) {
+        if (null != procedure) {
             hash <<= 2;
             hash ^= procedure.hashCode();
         }
-        if(null != param) {
+        if (null != param) {
             hash <<= 2;
             hash ^= param.hashCode();
         }

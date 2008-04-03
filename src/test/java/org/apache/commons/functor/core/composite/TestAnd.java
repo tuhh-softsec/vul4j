@@ -69,14 +69,14 @@ public class TestAnd extends BaseFunctorTest {
 
         And p = new And(new Constant(true));
         assertTrue(p.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.and(new Constant(true));
             assertTrue(p.test());
         }
 
         And q = new And(new Constant(true));
         assertTrue(q.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.and(new Constant(true));
             assertTrue(q.test());
         }
@@ -92,14 +92,14 @@ public class TestAnd extends BaseFunctorTest {
 
         And p = new And(new Constant(false));
         assertTrue(!p.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             p.and(new Constant(false));
             assertTrue(!p.test());
         }
 
         And q = new And(new Constant(true));
         assertTrue(q.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.and(new Constant(true));
             assertTrue(q.test());
         }
@@ -112,7 +112,7 @@ public class TestAnd extends BaseFunctorTest {
         Predicate p = new Constant(true);
         And q = new And(p,p);
         assertTrue(q.test());
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             q.and(p);
             assertTrue(q.test());
         }
@@ -124,7 +124,7 @@ public class TestAnd extends BaseFunctorTest {
         And q = new And();
         assertObjectsAreEqual(p,q);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             p.and(Constant.truePredicate());
             assertObjectsAreNotEqual(p,q);
             q.and(Constant.truePredicate());

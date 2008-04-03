@@ -25,7 +25,7 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class BinaryFunctionUnaryFunction implements UnaryFunction {
     public BinaryFunctionUnaryFunction(BinaryFunction f) {
-        if(null == f) {
+        if (null == f) {
             throw new NullPointerException();
         } else {
             this.function = f;

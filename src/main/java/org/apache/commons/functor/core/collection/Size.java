@@ -36,13 +36,13 @@ public final class Size implements UnaryFunction, Serializable {
     public Size() { }
 
     public Object evaluate(Object obj) {
-        if(obj instanceof Collection) {
-            return evaluate((Collection)obj);
-        } else if(obj instanceof String) {
-            return evaluate((String)obj);
-        } else if(null != obj && obj.getClass().isArray()) {
+        if (obj instanceof Collection) {
+            return evaluate((Collection) obj);
+        } else if (obj instanceof String) {
+            return evaluate((String) obj);
+        } else if (null != obj && obj.getClass().isArray()) {
             return evaluateArray(obj);
-        } else if(null == obj){
+        } else if (null == obj){
             throw new NullPointerException("Argument must not be null");
         } else {
             throw new ClassCastException("Expected Collection, String or Array, found " + obj);

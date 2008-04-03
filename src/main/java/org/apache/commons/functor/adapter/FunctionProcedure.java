@@ -56,8 +56,8 @@ public final class FunctionProcedure implements Procedure, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof FunctionProcedure) {
-            return equals((FunctionProcedure)that);
+        if (that instanceof FunctionProcedure) {
+            return equals((FunctionProcedure) that);
         } else {
             return false;
         }
@@ -69,7 +69,7 @@ public final class FunctionProcedure implements Procedure, Serializable {
 
     public int hashCode() {
         int hash = "FunctionProcedure".hashCode();
-        if(null != function) {
+        if (null != function) {
             hash ^= function.hashCode();
         }
         return hash;

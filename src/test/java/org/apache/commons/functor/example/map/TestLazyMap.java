@@ -68,7 +68,7 @@ public class TestLazyMap extends TestCase {
     // tests
 
     public void test() {
-        for(Iterator iter = expectedMap.keySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = expectedMap.keySet().iterator(); iter.hasNext();) {
             Object key = iter.next();
             assertFalse(baseMap.containsKey(key));
             assertFalse(lazyMap.containsKey(key));
@@ -80,7 +80,7 @@ public class TestLazyMap extends TestCase {
         assertEquals(expectedMap,lazyMap);
         assertEquals(expectedMap,baseMap);
         baseMap.clear();
-        for(Iterator iter = expectedMap.keySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = expectedMap.keySet().iterator(); iter.hasNext();) {
             Object key = iter.next();
             assertFalse(baseMap.containsKey(key));
             assertFalse(lazyMap.containsKey(key));

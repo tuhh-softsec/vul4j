@@ -126,7 +126,7 @@ public class QuicksortExample extends TestCase {
 
     public void testSortSingleValueList() {
         List list = new ArrayList();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             list.add("element");
         }
         List sorted = quicksort(list);
@@ -147,7 +147,7 @@ public class QuicksortExample extends TestCase {
  */
     public void testSortSorted() {
         List list = new ArrayList();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             list.add(new Integer(i));
         }
 
@@ -170,7 +170,7 @@ public class QuicksortExample extends TestCase {
     public void testSortReversed() {
         List expected = new ArrayList();
         List tosort = new ArrayList();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             /*
              * The "expected" list contains the integers in order.
              */
@@ -189,7 +189,7 @@ public class QuicksortExample extends TestCase {
  */
     public void testSortShuffled() {
         List expected = new ArrayList();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             expected.add(new Integer(i));
         }
         List tosort = new ArrayList(expected);
@@ -207,7 +207,7 @@ public class QuicksortExample extends TestCase {
          * populate a list with random integers
          */
         List tosort = new ArrayList();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             tosort.add(new Integer(random.nextInt(10)));
         }
         /*
@@ -244,13 +244,13 @@ public class QuicksortExample extends TestCase {
         /*
          * Repeat this COUNT times:
          */
-        for(int i = 0; i < COUNT; i++) {
+        for (int i = 0; i < COUNT; i++) {
             /*
              * Create a List of size SIZE, and
              * populate it with random integers:
              */
             List tosort = new ArrayList(SIZE);
-            for(int j = 0; j < SIZE; j++) {
+            for (int j = 0; j < SIZE; j++) {
                 tosort.add(new Integer(random.nextInt(SIZE)));
             }
 
@@ -283,7 +283,7 @@ public class QuicksortExample extends TestCase {
          */
 
         /*
-        double avgmillis = ((double)elapsed) / ((double)COUNT);
+        double avgmillis = ((double) elapsed) / ((double) COUNT);
 
         System.out.println();
         System.out.println(
@@ -356,7 +356,7 @@ public class QuicksortExample extends TestCase {
                  * sorted list we're generating.
                  */
                 result.addAll(
-                    (List)quicksort.evaluate(
+                    (List) quicksort.evaluate(
                         lesserTail.evaluate(
                             head.evaluate(list),
                             tail.evaluate(list))));
@@ -370,7 +370,7 @@ public class QuicksortExample extends TestCase {
                  * sorted list we're generating.
                  */
                 result.addAll(
-                    (List)quicksort.evaluate(
+                    (List) quicksort.evaluate(
                         greaterTail.evaluate(
                             head.evaluate(list),
                             tail.evaluate(list))));
@@ -395,9 +395,9 @@ public class QuicksortExample extends TestCase {
         public abstract Object evaluate(List list);
 
         public Object evaluate(Object obj) {
-            if(obj instanceof List) {
-                return evaluate((List)obj);
-            } else if(null == obj) {
+            if (obj instanceof List) {
+                return evaluate((List) obj);
+            } else if (null == obj) {
                 throw new NullPointerException("The argument must not be null.");
             } else {
                 throw new ClassCastException(
@@ -416,11 +416,11 @@ public class QuicksortExample extends TestCase {
         public abstract Object evaluate(Object head, List tail);
 
         public Object evaluate(Object left, Object right) {
-            if(left != null && right instanceof List) {
-                return evaluate(left, (List)right);
-            } else if(null == left) {
+            if (left != null && right instanceof List) {
+                return evaluate(left, (List) right);
+            } else if (null == left) {
                 throw new NullPointerException("The left argument must not be null.");
-            } else if(null == right) {
+            } else if (null == right) {
                 throw new NullPointerException("The right argument must not be null.");
             } else {
                 throw new ClassCastException(
@@ -463,7 +463,7 @@ public class QuicksortExample extends TestCase {
         public Object evaluate(Object head, List tail) {
             return Algorithms.collect(Algorithms.select(
                 tail.iterator(),
-                IsLessThan.instance((Comparable)head)));
+                IsLessThan.instance((Comparable) head)));
         }
     };
 
@@ -476,7 +476,7 @@ public class QuicksortExample extends TestCase {
         public Object evaluate(Object head, List tail) {
             return Algorithms.collect(Algorithms.select(
                 tail.iterator(),
-                IsGreaterThanOrEqual.instance((Comparable)head)));
+                IsGreaterThanOrEqual.instance((Comparable) head)));
         }
     };
 
@@ -530,14 +530,14 @@ public class QuicksortExample extends TestCase {
 
     public void testLesserTail() {
         List list = new ArrayList();
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             list.add(new Integer(i));
         }
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             Integer val = new Integer(i);
-            List lesser = (List)lesserTail.evaluate(val,list);
+            List lesser = (List) lesserTail.evaluate(val,list);
             assertEquals(i,lesser.size());
-            for(int j=0;j<i;j++) {
+            for (int j=0;j<i;j++) {
                 assertEquals(new Integer(j),lesser.get(j));
             }
         }
@@ -545,14 +545,14 @@ public class QuicksortExample extends TestCase {
 
     public void testGreaterTail() {
         List list = new ArrayList();
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             list.add(new Integer(i));
         }
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             Integer val = new Integer(i);
-            List greater = (List)greaterTail.evaluate(val,list);
+            List greater = (List) greaterTail.evaluate(val,list);
             assertEquals(10-i,greater.size());
-            for(int j=i;j<10;j++) {
+            for (int j=i;j<10;j++) {
                 assertEquals(new Integer(j),greater.get(j-i));
             }
         }

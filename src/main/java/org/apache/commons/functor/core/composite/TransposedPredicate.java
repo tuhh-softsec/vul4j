@@ -54,8 +54,8 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof TransposedPredicate) {
-            return equals((TransposedPredicate)that);
+        if (that instanceof TransposedPredicate) {
+            return equals((TransposedPredicate) that);
         } else {
             return false;
         }
@@ -67,7 +67,7 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
 
     public int hashCode() {
         int hash = "TransposedPredicate".hashCode();
-        if(null != predicate) {
+        if (null != predicate) {
             hash ^= predicate.hashCode();
         }
         return hash;

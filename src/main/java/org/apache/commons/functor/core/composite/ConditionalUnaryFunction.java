@@ -59,8 +59,8 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConditionalUnaryFunction) {
-            return equals((ConditionalUnaryFunction)that);
+        if (that instanceof ConditionalUnaryFunction) {
+            return equals((ConditionalUnaryFunction) that);
         } else {
             return false;
         }
@@ -75,15 +75,15 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
 
     public int hashCode() {
         int hash = "ConditionalUnaryFunction".hashCode();
-        if(null != ifPred) {
+        if (null != ifPred) {
             hash <<= 4;
             hash ^= ifPred.hashCode();
         }
-        if(null != thenFunc) {
+        if (null != thenFunc) {
             hash <<= 4;
             hash ^= thenFunc.hashCode();
         }
-        if(null != elseFunc) {
+        if (null != elseFunc) {
             hash <<= 4;
             hash ^= elseFunc.hashCode();
         }

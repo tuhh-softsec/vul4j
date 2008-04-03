@@ -51,7 +51,7 @@ public class CollectionTransformer implements UnaryFunction {
 	// instance methods
 	//---------------------------------------------------
 	public Object evaluate(Object obj) {
-		return evaluate((Generator)obj);
+		return evaluate((Generator) obj);
 	}
 
     public Object evaluate(Generator generator) {

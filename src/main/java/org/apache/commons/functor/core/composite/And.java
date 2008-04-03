@@ -66,8 +66,8 @@ public final class And extends BasePredicateList {
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test() {
-        for(Iterator iter = getPredicateIterator(); iter.hasNext();) {
-            if(!((Predicate)iter.next()).test()) {
+        for (Iterator iter = getPredicateIterator(); iter.hasNext();) {
+            if (!((Predicate) iter.next()).test()) {
                 return false;
             }
         }
@@ -75,8 +75,8 @@ public final class And extends BasePredicateList {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof And) {
-            return equals((And)that);
+        if (that instanceof And) {
+            return equals((And) that);
         } else {
             return false;
         }

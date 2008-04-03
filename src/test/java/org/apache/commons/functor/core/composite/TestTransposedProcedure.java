@@ -94,7 +94,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
 
     static class LeftNotNullCounter implements BinaryProcedure {
         public void run(Object a, Object b) {
-            if(null != a) {
+            if (null != a) {
                 count++;
             }
         }

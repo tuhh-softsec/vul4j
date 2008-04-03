@@ -97,12 +97,12 @@ public class TestBinarySequence extends BaseFunctorTest {
         List list = new ArrayList();
         BinarySequence seq = new BinarySequence();
         seq.run(null,null);
-        for(int i=0;i<10;i++) {
+        for (int i=0;i<10;i++) {
             RunCounter counter = new RunCounter();
             seq.then(counter);
             list.add(counter);
             seq.run("xyzzy","xyzzy");
-            for(int j=0;j<list.size();j++) {
+            for (int j=0;j<list.size();j++) {
                 assertEquals(list.size()-j,(((RunCounter)(list.get(j))).count));
             }
         }
@@ -114,7 +114,7 @@ public class TestBinarySequence extends BaseFunctorTest {
         BinarySequence q = new BinarySequence();
         assertObjectsAreEqual(p,q);
 
-        for(int i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             p.then(new NoOp());
             assertObjectsAreNotEqual(p,q);
             q.then(new NoOp());

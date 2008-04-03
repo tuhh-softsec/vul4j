@@ -28,7 +28,7 @@ import org.apache.commons.functor.BinaryProcedure;
  * Given a {@link BinaryPredicate predicate}
  * <i>p</i> and {@link BinaryProcedure procedures}
  * <i>q</i> and <i>r</i>, {@link #run runs}
- * <code>if(p.test(x,y)) { q.run(x,y); } else { r.run(x,y); }</code>.
+ * <code>if (p.test(x,y)) { q.run(x,y); } else { r.run(x,y); }</code>.
  * <p>
  * Note that although this class implements
  * {@link Serializable}, a given instance will
@@ -54,7 +54,7 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
     // predicate interface
     // ------------------------------------------------------------------------
     public void run(Object left, Object right) {
-        if(ifPred.test(left,right)) {
+        if (ifPred.test(left,right)) {
             thenProc.run(left,right);
         } else {
             elseProc.run(left,right);
@@ -62,8 +62,8 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConditionalBinaryProcedure) {
-            return equals((ConditionalBinaryProcedure)that);
+        if (that instanceof ConditionalBinaryProcedure) {
+            return equals((ConditionalBinaryProcedure) that);
         } else {
             return false;
         }
@@ -78,15 +78,15 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
 
     public int hashCode() {
         int hash = "ConditionalBinaryProcedure".hashCode();
-        if(null != ifPred) {
+        if (null != ifPred) {
             hash <<= 4;
             hash ^= ifPred.hashCode();
         }
-        if(null != thenProc) {
+        if (null != thenProc) {
             hash <<= 4;
             hash ^= thenProc.hashCode();
         }
-        if(null != elseProc) {
+        if (null != elseProc) {
             hash <<= 4;
             hash ^= elseProc.hashCode();
         }

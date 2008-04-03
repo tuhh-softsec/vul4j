@@ -45,11 +45,11 @@ public class PredicatedMap extends FunctoredMap {
 
         setOnPutAll(new BinaryProcedure() {
             public void run(Object d, Object s) {
-                Map dest = (Map)d;
-                Map src = (Map)s;
-                for(Iterator iter = src.entrySet().iterator(); iter.hasNext(); ) {
-                    Map.Entry pair = (Map.Entry)iter.next();
-                    if(keyPredicate.test(pair.getKey()) &&
+                Map dest = (Map) d;
+                Map src = (Map) s;
+                for (Iterator iter = src.entrySet().iterator(); iter.hasNext(); ) {
+                    Map.Entry pair = (Map.Entry) iter.next();
+                    if (keyPredicate.test(pair.getKey()) &&
                         valuePredicate.test(pair.getValue())) {
                         dest.put(pair.getKey(),pair.getValue());
                     }

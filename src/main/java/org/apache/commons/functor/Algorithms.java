@@ -94,7 +94,7 @@ public final class Algorithms {
      */
     public static void retain(Iterator iter, UnaryPredicate pred) {
         while(iter.hasNext()) {
-            if(!(pred.test(iter.next()))) {
+            if (!(pred.test(iter.next()))) {
                 iter.remove();
             }
         }
@@ -110,7 +110,7 @@ public final class Algorithms {
      */
     public static void remove(Iterator iter, UnaryPredicate pred) {
         while(iter.hasNext()) {
-            if(pred.test(iter.next())) {
+            if (pred.test(iter.next())) {
                 iter.remove();
             }
         }
@@ -187,7 +187,7 @@ public final class Algorithms {
     public static final Object detect(final Generator gen, final UnaryPredicate pred) {
         FindWithinGenerator finder = new FindWithinGenerator(gen,pred);
         gen.run(finder);
-        if(finder.wasFound()) {
+        if (finder.wasFound()) {
             return finder.getFoundObject();
         } else {
             throw new NoSuchElementException("No element matching " + pred + " was found.");
@@ -354,8 +354,8 @@ public final class Algorithms {
         // when the function doesn't return another function of the same type.
         while(true) {
             result = function.evaluate();
-            if(recursiveFunctionClass.isInstance(result)) {
-                function = (Function)result;
+            if (recursiveFunctionClass.isInstance(result)) {
+                function = (Function) result;
                 continue;
             } else {
                 break;
@@ -377,7 +377,7 @@ public final class Algorithms {
         }
 
         public void run(Object obj) {
-            if(predicate.test(obj)) {
+            if (predicate.test(obj)) {
                 found = true;
                 foundObject = obj;
                 generator.stop();

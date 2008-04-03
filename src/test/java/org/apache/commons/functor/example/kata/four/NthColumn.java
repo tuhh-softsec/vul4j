@@ -33,8 +33,8 @@ public final class NthColumn implements UnaryFunction {
     }
 
     public Object evaluate(Object obj) {
-        StringTokenizer toker = new StringTokenizer((String)obj);
-        for(int count = 0; count < n && toker.hasMoreTokens();count++) {
+        StringTokenizer toker = new StringTokenizer((String) obj);
+        for (int count = 0; count < n && toker.hasMoreTokens();count++) {
             toker.nextToken();
         }
         return toker.hasMoreTokens() ? toker.nextToken() : null;
