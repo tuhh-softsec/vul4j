@@ -49,11 +49,11 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
     }
 
     public BinaryAnd(BinaryPredicate p, BinaryPredicate q) {
-        super(p,q);
+        super(p, q);
     }
 
     public BinaryAnd(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
-        super(p,q,r);
+        super(p, q, r);
     }
 
     // modifiers

@@ -35,6 +35,16 @@ import org.apache.commons.functor.BinaryPredicate;
  */
 public final class RightIdentity implements BinaryPredicate, BinaryFunction, Serializable {
 
+    // static methods
+    // ------------------------------------------------------------------------
+    public static RightIdentity instance() {
+        return INSTANCE;
+    }
+
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final RightIdentity INSTANCE = new RightIdentity();
+
     // constructor
     // ------------------------------------------------------------------------
     public RightIdentity() {
@@ -67,13 +77,4 @@ public final class RightIdentity implements BinaryPredicate, BinaryFunction, Ser
         return "RightIdentity";
     }
 
-    // static methods
-    // ------------------------------------------------------------------------
-    public static RightIdentity instance() {
-        return INSTANCE;
-    }
-
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final RightIdentity INSTANCE = new RightIdentity();
 }

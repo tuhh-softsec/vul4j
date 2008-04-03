@@ -34,6 +34,27 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @author Rodney Waldhoff
  */
 public final class IsLessThan implements BinaryPredicate, Serializable {
+    private static final IsLessThan COMPARABLE_INSTANCE = new IsLessThan();
+
+    /**
+     * Get a basic IsLessThan instance.
+     * @return IsLessThan
+     */
+    public static final IsLessThan instance() {
+        return COMPARABLE_INSTANCE;
+    }
+
+    /**
+     * Get an IsLessThan UnaryPredicate.
+     * @param right the right side object of the comparison.
+     * @return UnaryPredicate
+     */
+    public static final UnaryPredicate instance(Comparable right) {
+        return RightBoundPredicate.bind(instance(),right);
+    }
+
+    private Comparator comparator = null;
+
     /**
      * Construct a <code>IsLessThan</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
@@ -60,11 +81,11 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
      * {@link Comparator Comparator}.
      */
     public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) < 0;
+        return comparator.compare(left, right) < 0;
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         if (that instanceof IsLessThan) {
@@ -75,7 +96,9 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see #equals(Object)
+     * Learn whether a given IsLessThan is equal to this.
+     * @param that IsLessThan to test
+     * @return boolean
      */
     public boolean equals(IsLessThan that) {
         return null != that &&
@@ -83,7 +106,7 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         int hash = "IsLessThan".hashCode();
@@ -93,20 +116,10 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "IsLessThan<" + comparator + ">";
     }
 
-    public static final IsLessThan instance() {
-        return COMPARABLE_INSTANCE;
-    }
-
-    public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(),right);
-    }
-
-    private Comparator comparator = null;
-    private static final IsLessThan COMPARABLE_INSTANCE = new IsLessThan();
 }

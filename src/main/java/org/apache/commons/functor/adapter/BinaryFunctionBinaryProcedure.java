@@ -38,46 +38,6 @@ import org.apache.commons.functor.BinaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Serializable {
-    /**
-     * Create an {@link BinaryProcedure BinaryProcedure} wrapping
-     * the given {@link BinaryFunction BinaryFunction}.
-     * @param function the {@link BinaryFunction BinaryFunction} to wrap
-     */
-    public BinaryFunctionBinaryProcedure(BinaryFunction function) {
-        this.function = function;
-    }
-
-    /**
-     * {@link BinaryFunction#evaluate Evaluate} my function, but
-     * ignore its returned value.
-     */
-    public void run(Object left, Object right) {
-        function.evaluate(left,right);
-    }
-
-    public boolean equals(Object that) {
-        if (that instanceof BinaryFunctionBinaryProcedure) {
-            return equals((BinaryFunctionBinaryProcedure) that);
-        } else {
-            return false;
-        }
-    }
-
-    public boolean equals(BinaryFunctionBinaryProcedure that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
-    }
-
-    public int hashCode() {
-        int hash = "BinaryFunctionBinaryProcedure".hashCode();
-        if (null != function) {
-            hash ^= function.hashCode();
-        }
-        return hash;
-    }
-
-    public String toString() {
-        return "BinaryFunctionBinaryProcedure<" + function + ">";
-    }
 
     /**
      * Adapt the given, possibly-<code>null</code>,
@@ -98,4 +58,61 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
 
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
     private BinaryFunction function = null;
+
+    /**
+     * Create an {@link BinaryProcedure BinaryProcedure} wrapping
+     * the given {@link BinaryFunction BinaryFunction}.
+     * @param function the {@link BinaryFunction BinaryFunction} to wrap
+     */
+    public BinaryFunctionBinaryProcedure(BinaryFunction function) {
+        this.function = function;
+    }
+
+    /**
+     * {@link BinaryFunction#evaluate Evaluate} my function, but
+     * ignore its returned value.
+     */
+    public void run(Object left, Object right) {
+        function.evaluate(left, right);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object that) {
+        if (that instanceof BinaryFunctionBinaryProcedure) {
+            return equals((BinaryFunctionBinaryProcedure) that);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Learn whether a given BinaryFunctionBinaryPredicate is equal to this.
+     * @param that BinaryFunctionBinaryPredicate to compare
+     * @return boolean
+     */
+    public boolean equals(BinaryFunctionBinaryProcedure that) {
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        int hash = "BinaryFunctionBinaryProcedure".hashCode();
+        if (null != function) {
+            hash ^= function.hashCode();
+        }
+        return hash;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "BinaryFunctionBinaryProcedure<" + function + ">";
+    }
+
 }

@@ -29,6 +29,18 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class IsEmpty implements UnaryPredicate, Serializable {
 
+    // class variables
+    // ------------------------------------------------------------------------
+    
+    private static final IsEmpty INSTANCE = new IsEmpty();
+    
+    // class methods
+    // ------------------------------------------------------------------------
+    
+    public static final IsEmpty instance() {
+        return INSTANCE;
+    }
+    
     // constructor
     // ------------------------------------------------------------------------
 
@@ -46,7 +58,7 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
             return testString((String) obj);
         } else if (null != obj && obj.getClass().isArray()) {
             return testArray(obj);
-        } else if (null == obj){
+        } else if (null == obj) {
             throw new NullPointerException("Argument must not be null");
         } else {
             throw new IllegalArgumentException("Expected Collection, Map, String or Array, found " + obj.getClass());
@@ -89,17 +101,5 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
     private boolean testArray(Object array) {
         return 0 == Array.getLength(array);
     }
-
-    // class methods
-    // ------------------------------------------------------------------------
-
-    public static final IsEmpty instance() {
-        return INSTANCE;
-    }
-
-    // class variables
-    // ------------------------------------------------------------------------
-
-    private static final IsEmpty INSTANCE = new IsEmpty();
 
 }

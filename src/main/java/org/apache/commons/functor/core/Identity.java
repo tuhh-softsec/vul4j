@@ -35,39 +35,13 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class Identity implements UnaryFunction, UnaryPredicate, Serializable {
 
-    // constructor
-    // ------------------------------------------------------------------------
-    public Identity() {
-    }
-
-    // function interface
-    // ------------------------------------------------------------------------
-    public Object evaluate(Object obj) {
-        return obj;
-    }
-
-    public boolean test(Object obj) {
-        return test((Boolean) obj);
-    }
-
-    public boolean test(Boolean bool) {
-        return bool.booleanValue();
-    }
-
-    public boolean equals(Object that) {
-        return (that instanceof Identity);
-    }
-
-    public int hashCode() {
-        return "Identity".hashCode();
-    }
-
-    public String toString() {
-        return "Identity";
-    }
-
     // static methods
     // ------------------------------------------------------------------------
+
+    /**
+     * Get an Identity instance.
+     * @return Identity
+     */
     public static Identity instance() {
         return INSTANCE;
     }
@@ -75,4 +49,61 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
     // static attributes
     // ------------------------------------------------------------------------
     private static final Identity INSTANCE = new Identity();
+
+    // constructor
+    // ------------------------------------------------------------------------
+
+    /**
+     * Create a new Identity.
+     */
+    public Identity() {
+    }
+
+    // function interface
+    // ------------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(Object obj) {
+        return obj;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean test(Object obj) {
+        return test((Boolean) obj);
+    }
+
+    /**
+     * 
+     * @param bool
+     * @return
+     */
+    public boolean test(Boolean bool) {
+        return bool.booleanValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object that) {
+        return (that instanceof Identity);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        return "Identity".hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "Identity";
+    }
+
 }

@@ -40,24 +40,47 @@ public final class And extends BasePredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new And.
+     */
     public And() {
         super();
     }
 
+    /**
+     * Create a new And.
+     * @param p
+     */
     public And(Predicate p) {
         super(p);
     }
 
+    /**
+     * Create a new And.
+     * @param p
+     * @param q
+     */
     public And(Predicate p, Predicate q) {
-        super(p,q);
+        super(p, q);
     }
 
+    /**
+     * Create a new And.
+     * @param p
+     * @param q
+     * @param r
+     */
     public And(Predicate p, Predicate q, Predicate r) {
-        super(p,q,r);
+        super(p, q, r);
     }
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * 
+     * @param p
+     * @return
+     */
     public And and(Predicate p) {
         super.addPredicate(p);
         return this;
@@ -65,6 +88,9 @@ public final class And extends BasePredicateList {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
         for (Iterator iter = getPredicateIterator(); iter.hasNext();) {
             if (!((Predicate) iter.next()).test()) {
@@ -74,6 +100,9 @@ public final class And extends BasePredicateList {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof And) {
             return equals((And) that);
@@ -82,14 +111,25 @@ public final class And extends BasePredicateList {
         }
     }
 
+    /**
+     * Learn whether a given And is equal to this.
+     * @param that the And to test
+     * @return boolean
+     */
     public boolean equals(And that) {
         return getPredicateListEquals(that);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "And".hashCode() ^ getPredicateListHashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "And<" + getPredicateListToString() + ">";
     }

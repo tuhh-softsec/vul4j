@@ -35,6 +35,16 @@ import org.apache.commons.functor.Predicate;
  * @author Rodney Waldhoff
  */
 public final class Not implements Predicate, Serializable {
+    
+    // static
+    // ------------------------------------------------------------------------
+    public static Predicate not(Predicate that) {
+        return null == that ? null : new Not(that);
+    }
+    
+    // attributes
+    // ------------------------------------------------------------------------
+    private Predicate predicate = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -72,14 +82,4 @@ public final class Not implements Predicate, Serializable {
     public String toString() {
         return "Not<" + predicate + ">";
     }
-
-    // static
-    // ------------------------------------------------------------------------
-    public static Predicate not(Predicate that) {
-        return null == that ? null : new Not(that);
-    }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private Predicate predicate = null;
 }

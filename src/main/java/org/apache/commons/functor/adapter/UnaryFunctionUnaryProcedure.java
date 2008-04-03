@@ -38,46 +38,6 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serializable {
-    /**
-     * Create an {@link UnaryProcedure UnaryProcedure} wrapping
-     * the given {@link UnaryFunction UnaryFunction}.
-     * @param function the {@link UnaryFunction UnaryFunction} to wrap
-     */
-    public UnaryFunctionUnaryProcedure(UnaryFunction function) {
-        this.function = function;
-    }
-
-    /**
-     * {@link UnaryFunction#evaluate Evaluate} my function, but
-     * ignore its returned value.
-     */
-    public void run(Object obj) {
-        function.evaluate(obj);
-    }
-
-    public boolean equals(Object that) {
-        if (that instanceof UnaryFunctionUnaryProcedure) {
-            return equals((UnaryFunctionUnaryProcedure) that);
-        } else {
-            return false;
-        }
-    }
-
-    public boolean equals(UnaryFunctionUnaryProcedure that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
-    }
-
-    public int hashCode() {
-        int hash = "UnaryFunctionUnaryProcedure".hashCode();
-        if (null != function) {
-            hash ^= function.hashCode();
-        }
-        return hash;
-    }
-
-    public String toString() {
-        return "UnaryFunctionUnaryProcedure<" + function + ">";
-    }
 
     /**
      * Adapt the given, possibly-<code>null</code>,
@@ -98,4 +58,61 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
 
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
     private UnaryFunction function = null;
+
+    /**
+     * Create an {@link UnaryProcedure UnaryProcedure} wrapping
+     * the given {@link UnaryFunction UnaryFunction}.
+     * @param function the {@link UnaryFunction UnaryFunction} to wrap
+     */
+    public UnaryFunctionUnaryProcedure(UnaryFunction function) {
+        this.function = function;
+    }
+
+    /**
+     * {@link UnaryFunction#evaluate Evaluate} my function, but
+     * ignore its returned value.
+     */
+    public void run(Object obj) {
+        function.evaluate(obj);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object that) {
+        if (that instanceof UnaryFunctionUnaryProcedure) {
+            return equals((UnaryFunctionUnaryProcedure) that);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Learn whether a specified UnaryFunctionUnaryPredicate is equal to this.
+     * @param that the UnaryFunctionUnaryPredicate to test
+     * @return boolean
+     */
+    public boolean equals(UnaryFunctionUnaryProcedure that) {
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        int hash = "UnaryFunctionUnaryProcedure".hashCode();
+        if (null != function) {
+            hash ^= function.hashCode();
+        }
+        return hash;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "UnaryFunctionUnaryProcedure<" + function + ">";
+    }
+
 }

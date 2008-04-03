@@ -39,6 +39,13 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable {
+    public static IgnoreLeftPredicate adapt(UnaryPredicate predicate) {
+        return null == predicate ? null : new IgnoreLeftPredicate(predicate);
+    }
+
+    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
+    private UnaryPredicate predicate = null;
+
     public IgnoreLeftPredicate(UnaryPredicate predicate) {
         this.predicate = predicate;
     }
@@ -56,7 +63,8 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
     }
 
     public boolean equals(IgnoreLeftPredicate that) {
-        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return that == this
+                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
 
     public int hashCode() {
@@ -71,10 +79,4 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
         return "IgnoreLeftPredicate<" + predicate + ">";
     }
 
-    public static IgnoreLeftPredicate adapt(UnaryPredicate predicate) {
-        return null == predicate ? null : new IgnoreLeftPredicate(predicate);
-    }
-
-    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
 }

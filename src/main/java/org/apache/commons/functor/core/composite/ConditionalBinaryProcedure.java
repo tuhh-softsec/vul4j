@@ -42,25 +42,44 @@ import org.apache.commons.functor.BinaryProcedure;
  */
 public final class ConditionalBinaryProcedure implements BinaryProcedure, Serializable {
 
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryPredicate ifPred = null;
+    private BinaryProcedure thenProc = null;
+    private BinaryProcedure elseProc = null;
+
     // constructor
     // ------------------------------------------------------------------------
 
+    /**
+     * Create a new ConditionalBinaryProcedure.
+     * @param ifPred
+     * @param thenPred
+     * @param elsePred
+     */
     public ConditionalBinaryProcedure(BinaryPredicate ifPred, BinaryProcedure thenPred, BinaryProcedure elsePred) {
         this.ifPred = ifPred;
         this.thenProc = thenPred;
         this.elseProc = elsePred;
     }
-
+    
     // predicate interface
     // ------------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object left, Object right) {
-        if (ifPred.test(left,right)) {
-            thenProc.run(left,right);
+        if (ifPred.test(left, right)) {
+            thenProc.run(left, right);
         } else {
-            elseProc.run(left,right);
+            elseProc.run(left, right);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalBinaryProcedure) {
             return equals((ConditionalBinaryProcedure) that);
@@ -69,13 +88,21 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
         }
     }
 
+    /**
+     * Learn whether a given ConditionalBinaryProcedure is equal to this.
+     * @param that compared object
+     * @return boolean
+     */
     public boolean equals(ConditionalBinaryProcedure that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc)) &&
-                (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc))
+                && (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalBinaryProcedure".hashCode();
         if (null != ifPred) {
@@ -93,13 +120,10 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalBinaryProcedure<" + ifPred + "?" + thenProc + ":" + elseProc + ">";
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryPredicate ifPred = null;
-    private BinaryProcedure thenProc = null;
-    private BinaryProcedure elseProc = null;
 }

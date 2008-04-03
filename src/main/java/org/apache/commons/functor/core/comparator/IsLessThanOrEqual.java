@@ -34,6 +34,10 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @author Rodney Waldhoff
  */
 public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
+    private static final IsLessThanOrEqual COMPARABLE_INSTANCE = new IsLessThanOrEqual();
+    
+    private Comparator comparator = null;
+
     /**
      * Construct a <code>IsLessThanOrEqual</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
@@ -60,7 +64,7 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      * {@link Comparator Comparator}.
      */
     public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) <= 0;
+        return comparator.compare(left, right) <= 0;
     }
 
     /**
@@ -78,8 +82,7 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      * @see #equals(Object)
      */
     public boolean equals(IsLessThanOrEqual that) {
-        return null != that &&
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+        return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
     /**
@@ -104,9 +107,6 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
     }
 
     public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(),right);
+        return RightBoundPredicate.bind(instance(), right);
     }
-
-    private Comparator comparator = null;
-    private static final IsLessThanOrEqual COMPARABLE_INSTANCE = new IsLessThanOrEqual();
 }

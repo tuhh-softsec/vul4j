@@ -32,33 +32,78 @@ public final class Conditional {
 
     // constructor - for beanish apis
     // ------------------------------------------------------------------------
+
+    /**
+     * Create a new Conditional.
+     */
     public Conditional() { }
 
     // ------------------------------------------------------------------------
 
+    /**
+     * Create a conditional procedure.
+     * @param q
+     * @param r
+     * @param s
+     * @return UnaryProcedure
+     */
     public static final UnaryProcedure procedure(UnaryPredicate q, UnaryProcedure r, UnaryProcedure s) {
-        return new ConditionalUnaryProcedure(q,r,s);
+        return new ConditionalUnaryProcedure(q, r, s);
     }
 
+    /**
+     * 
+     * @param q
+     * @param r
+     * @param s
+     * @return UnaryFunction
+     */
     public static final UnaryFunction function(UnaryPredicate q, UnaryFunction r, UnaryFunction s) {
-        return new ConditionalUnaryFunction(q,r,s);
+        return new ConditionalUnaryFunction(q, r, s);
     }
 
+    /**
+     * 
+     * @param q
+     * @param r
+     * @param s
+     * @return UnaryPredicate
+     */
     public static final UnaryPredicate predicate(UnaryPredicate q, UnaryPredicate r, UnaryPredicate s) {
-        return new ConditionalUnaryPredicate(q,r,s);
+        return new ConditionalUnaryPredicate(q, r, s);
     }
 
+    /**
+     * 
+     * @param q
+     * @param r
+     * @param s
+     * @return BinaryProcedure
+     */
     public static final BinaryProcedure procedure(BinaryPredicate q, BinaryProcedure r, BinaryProcedure s) {
-        return new ConditionalBinaryProcedure(q,r,s);
+        return new ConditionalBinaryProcedure(q, r, s);
     }
 
+    /**
+     * 
+     * @param q
+     * @param r
+     * @param s
+     * @return BinaryFunction
+     */
     public static final BinaryFunction function(BinaryPredicate q, BinaryFunction r, BinaryFunction s) {
-        return new ConditionalBinaryFunction(q,r,s);
+        return new ConditionalBinaryFunction(q, r, s);
     }
 
+    /**
+     * 
+     * @param q
+     * @param r
+     * @param s
+     * @return BinaryPredicate
+     */
     public static final BinaryPredicate predicate(BinaryPredicate q, BinaryPredicate r, BinaryPredicate s) {
-        return new ConditionalBinaryPredicate(q,r,s);
+        return new ConditionalBinaryPredicate(q, r, s);
     }
-
 
 }

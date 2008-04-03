@@ -29,23 +29,32 @@ import org.apache.commons.functor.BinaryFunction;
  * @author Rodney Waldhoff
  */
 public final class ComparatorFunction implements BinaryFunction, Serializable {
+    private Comparator comparator = null;
+
+    /**
+     * Create a new ComparatorFunction.
+     */
     public ComparatorFunction() {
         this(null);
     }
 
+    /**
+     * Create a new ComparatorFunction.
+     * @param comparator
+     */
     public ComparatorFunction(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
 
     /**
-     * @see org.apache.commons.functor.BinaryFunction#evaluate(Object, Object)
+     * {@inheritDoc}
      */
     public Object evaluate(Object left, Object right) {
-        return new Integer(comparator.compare(left,right));
+        return new Integer(comparator.compare(left, right));
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         if (that instanceof ComparatorFunction) {
@@ -56,25 +65,26 @@ public final class ComparatorFunction implements BinaryFunction, Serializable {
     }
 
     /**
-     * @see #equals(Object)
+     * Learn whether a specified ComparatorFunction is equal to this.
+     * @param that the ComparatorFunction to test
+     * @return boolean
      */
     public boolean equals(ComparatorFunction that) {
         return null != that && comparator.equals(that.comparator);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         return "ComparatorFunction".hashCode() ^ comparator.hashCode();
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "ComparatorFunction<" + comparator + ">";
     }
 
-    private Comparator comparator = null;
 }

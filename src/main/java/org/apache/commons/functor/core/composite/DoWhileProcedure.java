@@ -37,17 +37,27 @@ import org.apache.commons.functor.Procedure;
  * @author Rodney Waldhoff
  */
 public class DoWhileProcedure extends AbstractLoopProcedure {
+    /**
+     * Create a new DoWhileProcedure.
+     * @param action
+     * @param condition
+     */
     public DoWhileProcedure(Procedure action, Predicate condition) {
         super(condition, action);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run() {
         do {
             getAction().run();
-        } while(getCondition().test());
+        } while (getCondition().test());
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object object) {
         if (object instanceof DoWhileProcedure) {
         	return super.equals(object);
@@ -56,11 +66,17 @@ public class DoWhileProcedure extends AbstractLoopProcedure {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
     	return super.hashCode("DoWhileProcedure".hashCode());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
-        return "DoWhileProcedure<do("+getAction()+") while("+getCondition()+")>";
+        return "DoWhileProcedure<do(" + getAction() + ") while(" + getCondition() + ")>";
     }
 }

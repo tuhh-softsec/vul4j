@@ -38,21 +38,43 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
+    
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new BaseUnaryPredicateList.
+     */
     protected BaseUnaryPredicateList() {
     }
 
+    /**
+     * Create a new BaseUnaryPredicateList.
+     * @param p
+     */
     protected BaseUnaryPredicateList(UnaryPredicate p) {
         addUnaryPredicate(p);
     }
 
+    /**
+     * Create a new BaseUnaryPredicateList.
+     * @param p
+     * @param q
+     */
     protected BaseUnaryPredicateList(UnaryPredicate p, UnaryPredicate q) {
         addUnaryPredicate(p);
         addUnaryPredicate(q);
     }
 
+    /**
+     * Create a new BaseUnaryPredicateList.
+     * @param p
+     * @param q
+     * @param r
+     */
     protected BaseUnaryPredicateList(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
         addUnaryPredicate(p);
         addUnaryPredicate(q);
@@ -61,38 +83,69 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
 
     // abstract
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public abstract boolean equals(Object that);
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract int hashCode();
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract String toString();
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract boolean test(Object obj);
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Add a UnaryPredicate to the list
+     * @param p UnaryPredicate to add
+     */
     protected void addUnaryPredicate(UnaryPredicate p) {
         list.add(p);
     }
 
     // protected
     // ------------------------------------------------------------------------
-
+    /**
+     * Get an Iterator over the contained UnaryPredicates.
+     * @return Iterator
+     */
     protected Iterator getUnaryPredicateIterator() {
         return list.iterator();
     }
 
+    /**
+     * Learn whether another BaseUnaryPredicateList has content equal to this
+     * @param that the BaseUnaryPredicateList to test
+     * @return boolean
+     */
     protected boolean getUnaryPredicateListEquals(BaseUnaryPredicateList that) {
         return (null != that && this.list.equals(that.list));
     }
 
+    /**
+     * Get a hashCode for the list.
+     * @return int
+     */
     protected int getUnaryPredicateListHashCode() {
         return list.hashCode();
     }
 
+    /**
+     * Get a toString for the list.
+     * @return String
+     */
     protected String getUnaryPredicateListToString() {
         return String.valueOf(list);
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
 }

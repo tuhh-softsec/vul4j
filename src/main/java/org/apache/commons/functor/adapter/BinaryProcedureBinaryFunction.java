@@ -39,12 +39,16 @@ import org.apache.commons.functor.BinaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class BinaryProcedureBinaryFunction implements BinaryFunction, Serializable {
+    
+    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
+    private BinaryProcedure procedure = null;
+
     public BinaryProcedureBinaryFunction(BinaryProcedure procedure) {
         this.procedure = procedure;
     }
 
     public Object evaluate(Object left, Object right) {
-        procedure.run(left,right);
+        procedure.run(left, right);
         return null;
     }
 
@@ -57,7 +61,8 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
     }
 
     public boolean equals(BinaryProcedureBinaryFunction that) {
-        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return that == this
+                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
     public int hashCode() {
@@ -88,7 +93,4 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
     public static BinaryProcedureBinaryFunction adapt(BinaryProcedure procedure) {
         return null == procedure ? null : new BinaryProcedureBinaryFunction(procedure);
     }
-
-    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure procedure = null;
 }

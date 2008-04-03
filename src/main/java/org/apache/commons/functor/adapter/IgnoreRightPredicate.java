@@ -39,14 +39,35 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class IgnoreRightPredicate implements BinaryPredicate, Serializable {
+    /**
+     * @param predicate
+     * @return
+     */
+    public static IgnoreRightPredicate adapt(UnaryPredicate predicate) {
+        return null == predicate ? null : new IgnoreRightPredicate(predicate);
+    }
+
+    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
+    private UnaryPredicate predicate = null;
+
+    /**
+     * Create a new IgnoreRightPredicate.
+     * @param predicate
+     */
     public IgnoreRightPredicate(UnaryPredicate predicate) {
         this.predicate = predicate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return predicate.test(left);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof IgnoreRightPredicate) {
             return equals((IgnoreRightPredicate) that);
@@ -55,10 +76,19 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
         }
     }
 
+    /**
+     * Learn whether a given IgnoreRightPredicate is equal to this.
+     * @param that IgnoreRightPredicate to test
+     * @return boolean
+     */
     public boolean equals(IgnoreRightPredicate that) {
-        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return that == this
+                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IgnoreRightPredicate".hashCode();
         if (null != predicate) {
@@ -67,14 +97,11 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IgnoreRightPredicate<" + predicate + ">";
     }
 
-    public static IgnoreRightPredicate adapt(UnaryPredicate predicate) {
-        return null == predicate ? null : new IgnoreRightPredicate(predicate);
-    }
-
-    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
 }

@@ -40,52 +40,6 @@ import org.apache.commons.functor.UnaryProcedure;
  */
 public final class BoundProcedure implements Procedure, Serializable {
     /**
-     * @param procedure the procedure to adapt
-     * @param arg the constant argument to use
-     */
-    public BoundProcedure(UnaryProcedure procedure, Object arg) {
-        this.procedure = procedure;
-        this.param = arg;
-    }
-
-    public void run() {
-        procedure.run(param);
-    }
-
-    public boolean equals(Object that) {
-        if (that instanceof BoundProcedure) {
-            return equals((BoundProcedure) that);
-        } else {
-            return false;
-        }
-    }
-
-    public boolean equals(BoundProcedure that) {
-        return that == this || (
-                (null != that) &&
-                (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
-
-    }
-
-    public int hashCode() {
-        int hash = "BoundProcedure".hashCode();
-        if (null != procedure) {
-            hash <<= 2;
-            hash ^= procedure.hashCode();
-        }
-        if (null != param) {
-            hash <<= 2;
-            hash ^= param.hashCode();
-        }
-        return hash;
-    }
-
-    public String toString() {
-        return "BoundProcedure<" + procedure + "(" + param + ")>";
-    }
-
-    /**
      * Adapt the given, possibly-<code>null</code>,
      * {@link UnaryProcedure UnaryProcedure} to the
      * {@link Procedure Procedure} interface by binding
@@ -109,4 +63,67 @@ public final class BoundProcedure implements Procedure, Serializable {
     private UnaryProcedure procedure = null;
     /** The parameter to pass to that procedure. */
     private Object param = null;
+
+    /**
+     * Create a new BoundProcedure.
+     * @param procedure the procedure to adapt
+     * @param arg the constant argument to use
+     */
+    public BoundProcedure(UnaryProcedure procedure, Object arg) {
+        this.procedure = procedure;
+        this.param = arg;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void run() {
+        procedure.run(param);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object that) {
+        if (that instanceof BoundProcedure) {
+            return equals((BoundProcedure) that);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Learn whether a given BoundProcedure is equal to this.
+     * @param that the BoundProcedure to test
+     * @return boolean
+     */
+    public boolean equals(BoundProcedure that) {
+        return that == this || ((null != that)
+                && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
+                && (null == param ? null == that.param : param.equals(that.param)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        int hash = "BoundProcedure".hashCode();
+        if (null != procedure) {
+            hash <<= 2;
+            hash ^= procedure.hashCode();
+        }
+        if (null != param) {
+            hash <<= 2;
+            hash ^= param.hashCode();
+        }
+        return hash;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "BoundProcedure<" + procedure + "(" + param + ")>";
+    }
+
 }
