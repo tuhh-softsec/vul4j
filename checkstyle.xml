@@ -39,5 +39,30 @@ limitations under the License.
     <module name="JavadocMethod">
       <property name="allowUndeclaredRTE" value="true"/>
     </module>
- </module>
+
+    <!-- Checks for whitespace                               -->
+    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="EmptyForIteratorPad"/>
+    <module name="NoWhitespaceAfter">
+      <!-- not ARRAY_INIT -->
+      <property name="tokens" value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS" />
+    </module>
+
+    <module name="NoWhitespaceBefore"/>
+    <module name="OperatorWrap"/>
+    <module name="TabCharacter"/>
+    <module name="WhitespaceAfter"/>
+    <module name="WhitespaceAround"/>
+
+    <module name="GenericIllegalRegexp">
+      <property name="format" value="\s+$"/>
+      <property name="message" value="Line has trailing spaces."/>
+    </module>
+    <module name="UpperEll"/>
+
+    <module name="DeclarationOrder" />
+    <module name="ModifierOrder" />
+
+  </module>
+
 </module>
