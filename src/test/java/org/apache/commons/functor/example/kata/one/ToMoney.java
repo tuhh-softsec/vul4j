@@ -31,7 +31,7 @@ public class ToMoney implements UnaryFunction {
     public Object evaluate(Number cents) {
         return new Money(cents.intValue());
     }
-    
+
     public static ToMoney instance() {
         return INSTANCE;
     }

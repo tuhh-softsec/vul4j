@@ -24,11 +24,11 @@ import org.apache.commons.functor.Predicate;
  * {@link #test Tests} to the logical inverse
  * of some other predicate.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -42,7 +42,7 @@ public final class Not implements Predicate, Serializable {
     public Not(Predicate p) {
         this.predicate = p;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test() {
@@ -56,11 +56,11 @@ public final class Not implements Predicate, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(Not that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
-    
+
     public int hashCode() {
         int hash = "Not".hashCode();
         if(null != predicate) {
@@ -68,7 +68,7 @@ public final class Not implements Predicate, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "Not<" + predicate + ">";
     }
@@ -78,7 +78,7 @@ public final class Not implements Predicate, Serializable {
     public static Predicate not(Predicate that) {
         return null == that ? null : new Not(that);
     }
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private Predicate predicate = null;

@@ -65,7 +65,7 @@ class MockLoopProcedure extends AbstractLoopProcedure {
 	public MockLoopProcedure(Predicate condition, Procedure action) {
 		super(condition,action);
 	}
-		
+
 	public void run() {
 	}
 }

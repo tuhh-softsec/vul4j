@@ -33,6 +33,6 @@ public class WordCount implements UnaryFunction {
     public static WordCount instance() {
         return INSTANCE;
     }
-    
+
     private static final WordCount INSTANCE = new WordCount();
 }

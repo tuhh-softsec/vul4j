@@ -44,12 +44,12 @@ public class FixedSizeMap extends FunctoredMap {
                 }
             }
         });
-        
+
         setOnPutAll(new BinaryProcedure() {
             public void run(Object a, Object b) {
                 Map dest = (Map)a;
                 Map src = (Map)b;
-                
+
                 if(Algorithms.contains(src.keySet().iterator(),UnaryNot.not(new ContainsKey(dest)))) {
                     throw new IllegalArgumentException();
                 } else {
@@ -57,7 +57,7 @@ public class FixedSizeMap extends FunctoredMap {
                 }
             }
         });
-        
+
         setOnRemove(new BinaryProcedureBinaryFunction(new Throw(new UnsupportedOperationException())));
         setOnClear(new Throw(new UnsupportedOperationException()));
     }

@@ -61,13 +61,13 @@ public class TestProcedureFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         Function f = new ProcedureFunction(new NoOp());
         assertNull(f.evaluate());
     }
-    
+
     public void testEquals() throws Exception {
         Function f = new ProcedureFunction(new NoOp());
         assertEquals(f,f);

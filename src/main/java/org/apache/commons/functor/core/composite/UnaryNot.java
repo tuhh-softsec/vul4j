@@ -24,11 +24,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * {@link #test Tests} to the logical inverse
  * of some other predicate.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -42,7 +42,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
     public UnaryNot(UnaryPredicate p) {
         this.predicate = p;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object obj) {
@@ -56,11 +56,11 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(UnaryNot that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
-    
+
     public int hashCode() {
         int hash = "UnaryNot".hashCode();
         if(null != predicate) {
@@ -68,7 +68,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "UnaryNot<" + predicate + ">";
     }
@@ -78,7 +78,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
     public static UnaryPredicate not(UnaryPredicate that) {
         return null == that ? null : new UnaryNot(that);
     }
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private UnaryPredicate predicate = null;

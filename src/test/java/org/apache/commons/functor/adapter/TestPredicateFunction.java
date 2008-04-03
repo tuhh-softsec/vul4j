@@ -59,13 +59,13 @@ public class TestPredicateFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
         Function f = new PredicateFunction(new Constant(true));
         assertEquals(Boolean.TRUE,f.evaluate());
     }
-    
+
     public void testTestWhenFalse() throws Exception {
         Function f = new PredicateFunction(new Constant(false));
         assertEquals(Boolean.FALSE,f.evaluate());

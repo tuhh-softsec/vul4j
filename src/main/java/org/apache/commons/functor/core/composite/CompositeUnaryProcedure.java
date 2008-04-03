@@ -22,23 +22,23 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * A {@link UnaryProcedure UnaryProcedure} 
- * representing the composition of 
+ * A {@link UnaryProcedure UnaryProcedure}
+ * representing the composition of
  * {@link UnaryFunction UnaryFunctions},
  * "chaining" the output of one to the input
- * of another.  For example, 
+ * of another.  For example,
  * <pre>new CompositeUnaryProcedure(p).of(f)</code>
- * {@link #run runs} to 
+ * {@link #run runs} to
  * <code>p.run(f.evaluate(obj))</code>, and
  * <pre>new CompositeUnaryProcedure(p).of(f).of(g)</pre>
- * {@link #run runs}  
+ * {@link #run runs}
  * <code>p.run(f.evaluate(g.evaluate(obj)))</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -62,16 +62,16 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
     }
 
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public CompositeUnaryProcedure of(UnaryFunction f) {
         function.of(f);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public void run(Object obj) {
-        procedure.run(function.evaluate(obj)); 
+        procedure.run(function.evaluate(obj));
     }
 
     public boolean equals(Object that) {
@@ -81,11 +81,11 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
             return false;
         }
     }
-    
+
     public boolean equals(CompositeUnaryProcedure that) {
         return null != that && procedure.equals(that.procedure) && function.equals(that.function);
     }
-    
+
     public int hashCode() {
         int hash = "CompositeUnaryProcedure".hashCode();
         hash <<= 2;
@@ -94,11 +94,11 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
         hash ^= function.hashCode();
         return hash;
     }
-    
+
     public String toString() {
         return "CompositeUnaryProcedure<" + procedure + ";" + function + ">";
     }
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private CompositeUnaryFunction function = null;

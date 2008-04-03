@@ -22,18 +22,18 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * Adapts a 
- * {@link UnaryPredicate UnaryPredicate} 
- * to the 
+ * Adapts a
+ * {@link UnaryPredicate UnaryPredicate}
+ * to the
  * {@link UnaryFunction UnaryFunction} interface.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying predicate is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -41,17 +41,17 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
     public UnaryPredicateUnaryFunction(UnaryPredicate predicate) {
         this.predicate = predicate;
     }
- 
+
     /**
      * Returns <code>Boolean.TRUE</code> (<code>Boolean.FALSE</code>)
-     * when the {@link UnaryPredicate#test test} method of my underlying 
+     * when the {@link UnaryPredicate#test test} method of my underlying
      * predicate returns <code>true</code> (<code>false</code>).
-     * 
+     *
      * @return a non-<code>null</code> <code>Boolean</code> instance
      */
     public Object evaluate(Object obj) {
         return predicate.test(obj) ? Boolean.TRUE : Boolean.FALSE;
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof UnaryPredicateUnaryFunction) {
@@ -60,11 +60,11 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
             return false;
         }
     }
-        
+
     public boolean equals(UnaryPredicateUnaryFunction that) {
         return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
-    
+
     public int hashCode() {
         int hash = "UnaryPredicateUnaryFunction".hashCode();
         if(null != predicate) {
@@ -72,7 +72,7 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
         }
         return hash;
     }
-    
+
     public String toString() {
         return "UnaryPredicateUnaryFunction<" + predicate + ">";
     }

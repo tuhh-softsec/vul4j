@@ -50,7 +50,7 @@ public class TestComparableComparator extends TestCase {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testCompareIntegers() {
         assertTrue(ComparableComparator.instance().compare(new Integer(Integer.MIN_VALUE),new Integer(Integer.MIN_VALUE)) == 0);
         assertTrue(ComparableComparator.instance().compare(new Integer(-1),new Integer(-1)) == 0);

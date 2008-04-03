@@ -31,9 +31,9 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        
+
         suite.addTest(TestComparableComparator.suite());
-        suite.addTest(TestComparatorFunction.suite());        
+        suite.addTest(TestComparatorFunction.suite());
         suite.addTest(TestIsLessThan.suite());
         suite.addTest(TestIsLessThanOrEqual.suite());
         suite.addTest(TestIsEquivalent.suite());
@@ -43,7 +43,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestIsWithinRange.suite());
         suite.addTest(TestMax.suite());
         suite.addTest(TestMin.suite());
-            
+
         return suite;
     }
 }

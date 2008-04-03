@@ -61,18 +61,18 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         // empty composite acts like identity function
         assertEquals("xyzzy",(new CompositeUnaryFunction()).evaluate("xyzzy"));
         assertNull(null,(new CompositeUnaryFunction()).evaluate(null));
 
         assertEquals(new Integer(4),(new CompositeUnaryFunction(new Constant(new Integer(4)))).evaluate(null));
-        
+
         assertEquals(new Integer(4),(new CompositeUnaryFunction(new Constant(new Integer(4)),new Constant(new Integer(3)))).evaluate("xyzzy"));
         assertEquals(new Integer(3),(new CompositeUnaryFunction(new Constant(new Integer(3)),new Constant(new Integer(4)))).evaluate("xyzzy"));
     }
-    
+
     public void testOf() throws Exception {
         CompositeUnaryFunction f = new CompositeUnaryFunction();
         assertNull(f.evaluate(null));
@@ -81,7 +81,7 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
                     public Object evaluate(Object obj) {
                         if(obj instanceof Integer) {
                             return new Integer((((Integer)obj).intValue())+1);
-                        } else { 
+                        } else {
                             return new Integer(1);
                         }
                     }
@@ -89,7 +89,7 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
             assertEquals(new Integer(i+1),f.evaluate(null));
         }
     }
-    
+
     public void testEquals() throws Exception {
         CompositeUnaryFunction f = new CompositeUnaryFunction();
         assertEquals(f,f);
@@ -102,11 +102,11 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
             g.of(new Constant("x"));
             assertObjectsAreEqual(f,g);
             f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
-            assertObjectsAreNotEqual(f,g);            
+            assertObjectsAreNotEqual(f,g);
             g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
-            assertObjectsAreEqual(f,g);            
+            assertObjectsAreEqual(f,g);
         }
-                
+
         assertObjectsAreNotEqual(f,new Constant("y"));
     }
 

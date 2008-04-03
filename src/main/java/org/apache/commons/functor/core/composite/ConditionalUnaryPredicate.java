@@ -21,20 +21,20 @@ import java.io.Serializable;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * A {@link UnaryPredicate UnaryPredicate} 
- * similiar to Java's "ternary" 
+ * A {@link UnaryPredicate UnaryPredicate}
+ * similiar to Java's "ternary"
  * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given three {@link UnaryPredicate predicate}
  * <i>p</i>, <i>q</i>, <i>r</i>,
  * {@link #test tests}
- * to 
+ * to
  * <code>p.test(x) ? q.test(x) : r.test(x)</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -50,7 +50,7 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
         this.thenPred = thenPred;
         this.elsePred = elsePred;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object obj) {
@@ -64,31 +64,31 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
             return false;
         }
     }
-    
+
     public boolean equals(ConditionalUnaryPredicate that) {
-        return null != that && 
+        return null != that &&
                 (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
                 (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred)) &&
                 (null == elsePred ? null == that.elsePred : elsePred.equals(that.elsePred));
     }
-    
+
     public int hashCode() {
         int hash = "ConditionalUnaryPredicate".hashCode();
         if(null != ifPred) {
             hash <<= 4;
-            hash ^= ifPred.hashCode();            
+            hash ^= ifPred.hashCode();
         }
         if(null != thenPred) {
             hash <<= 4;
-            hash ^= thenPred.hashCode();            
+            hash ^= thenPred.hashCode();
         }
         if(null != elsePred) {
             hash <<= 4;
-            hash ^= elsePred.hashCode();            
+            hash ^= elsePred.hashCode();
         }
         return hash;
     }
-    
+
     public String toString() {
         return "ConditionalUnaryPredicate<" + ifPred + "?" + thenPred + ":" + elsePred + ">";
     }

@@ -62,7 +62,7 @@ public class TestConditionalBinaryPredicate extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         {
             ConditionalBinaryPredicate p = new ConditionalBinaryPredicate(
@@ -79,7 +79,7 @@ public class TestConditionalBinaryPredicate extends BaseFunctorTest {
             assertTrue(!p.test(null,null));
         }
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalBinaryPredicate p = new ConditionalBinaryPredicate(
             new Constant(true),

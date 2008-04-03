@@ -60,64 +60,64 @@ public class TestOr extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTrue() throws Exception {
         assertTrue((new Or(new Constant(true))).test());
         assertTrue((new Or(new Constant(false),new Constant(true))).test());
         assertTrue((new Or(new Constant(false),new Constant(false),new Constant(true))).test());
-        
+
         Or p = new Or(new Constant(true));
-        assertTrue(p.test());        
+        assertTrue(p.test());
         for(int i=0;i<10;i++) {
             p.or(new Constant(i%2==0));
-            assertTrue(p.test());        
+            assertTrue(p.test());
         }
-        
+
         Or q = new Or(new Constant(true));
-        assertTrue(q.test());        
+        assertTrue(q.test());
         for(int i=0;i<10;i++) {
             q.or(new Constant(i%2==0));
-            assertTrue(q.test());        
+            assertTrue(q.test());
         }
-        
+
         Or r = new Or(p,q);
-        assertTrue(r.test());        
+        assertTrue(r.test());
     }
-    
+
     public void testFalse() throws Exception {
         assertTrue(!(new Or()).test());
         assertTrue(!(new Or(new Constant(false))).test());
         assertTrue(!(new Or(new Constant(false),new Constant(false))).test());
         assertTrue(!(new Or(new Constant(false),new Constant(false),new Constant(false))).test());
-        
+
         Or p = new Or(new Constant(false));
-        assertTrue(!p.test());        
+        assertTrue(!p.test());
         for(int i=0;i<10;i++) {
             p.or(new Constant(false));
-            assertTrue(!p.test());        
+            assertTrue(!p.test());
         }
-        
+
         Or q = new Or(new Constant(false));
-        assertTrue(!q.test());        
+        assertTrue(!q.test());
         for(int i=0;i<10;i++) {
             q.or(new Constant(false));
-            assertTrue(!q.test());        
+            assertTrue(!q.test());
         }
-        
+
         Or r = new Or(p,q);
-        assertTrue(!r.test());        
+        assertTrue(!r.test());
     }
-        
+
     public void testDuplicateAdd() throws Exception {
         Predicate p = new Constant(true);
         Or q = new Or(p,p);
         assertTrue(q.test());
         for(int i=0;i<10;i++) {
             q.or(p);
-            assertTrue(q.test());        
+            assertTrue(q.test());
         }
     }
-        
+
     public void testEquals() throws Exception {
         Or p = new Or();
         assertEquals(p,p);
@@ -127,7 +127,7 @@ public class TestOr extends BaseFunctorTest {
 
         And r = new And();
         assertObjectsAreNotEqual(p,r);
-        
+
         for(int i=0;i<3;i++) {
             p.or(Constant.truePredicate());
             assertObjectsAreNotEqual(p,q);
@@ -137,13 +137,13 @@ public class TestOr extends BaseFunctorTest {
             assertObjectsAreNotEqual(p,r);
 
             p.or(new Or(Constant.truePredicate(),Constant.falsePredicate()));
-            assertObjectsAreNotEqual(p,q);            
+            assertObjectsAreNotEqual(p,q);
             q.or(new Or(Constant.truePredicate(),Constant.falsePredicate()));
-            assertObjectsAreEqual(p,q);            
+            assertObjectsAreEqual(p,q);
             r.and(new Or(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreNotEqual(p,r);
         }
-        
+
         assertObjectsAreNotEqual(p,Constant.truePredicate());
     }
 

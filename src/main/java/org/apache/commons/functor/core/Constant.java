@@ -31,11 +31,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * {@link #test Tests} to a constant value, assuming
  * a boolean of Boolean value is supplied.
  *
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * constant <code>Object</code> is.  Attempts to serialize
- * an instance whose value is not 
+ * an instance whose value is not
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -52,7 +52,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
     public Constant(Object value) {
         this.value = value;
     }
- 
+
     // function interface
     // ------------------------------------------------------------------------
     public Object evaluate() {
@@ -86,11 +86,11 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
             return false;
         }
     }
-    
+
     public boolean equals(Constant that) {
         return (null != that && (null == this.value ? null == that.value : this.value.equals(that.value)));
     }
-    
+
     public int hashCode() {
         int hash = "Constant".hashCode();
         if(null != value) {
@@ -98,19 +98,19 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
         }
         return hash;
     }
-    
+
     public String toString() {
         return "Constant<" + String.valueOf(value) + ">";
     }
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private Object value;
 
     // static methods
     // ------------------------------------------------------------------------
-    
-    /** 
+
+    /**
      * Get a <code>Constant</code> that always
      * returns <code>true</code>
      * @return a <code>Constant</code> that always
@@ -120,7 +120,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
         return TRUE_PREDICATE;
     }
 
-    /** 
+    /**
      * Get a <code>Constant</code> that always
      * returns <code>false</code>
      * @return a <code>Constant</code> that always
@@ -129,8 +129,8 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
     public static Constant falsePredicate() {
         return FALSE_PREDICATE;
     }
-    
-    /** 
+
+    /**
      * Get a <code>Constant</code> that always
      * returns <i>value</i>
      * @param value the constant value
@@ -144,7 +144,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
     public static Constant instance(Object value) {
         return new Constant(value);
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final Constant TRUE_PREDICATE = new Constant(true);

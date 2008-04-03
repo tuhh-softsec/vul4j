@@ -23,17 +23,17 @@ import org.apache.commons.functor.Predicate;
 
 /**
  * Adapts a
- * {@link Predicate Predicate} 
- * to the 
+ * {@link Predicate Predicate}
+ * to the
  * {@link Function Function} interface.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying predicate is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -41,17 +41,17 @@ public final class PredicateFunction implements Function, Serializable {
     public PredicateFunction(Predicate predicate) {
         this.predicate = predicate;
     }
- 
+
     /**
      * Returns <code>Boolean.TRUE</code> (<code>Boolean.FALSE</code>)
-     * when the {@link Predicate#test test} method of my underlying 
+     * when the {@link Predicate#test test} method of my underlying
      * predicate returns <code>true</code> (<code>false</code>).
-     * 
+     *
      * @return a non-<code>null</code> <code>Boolean</code> instance
      */
     public Object evaluate() {
         return predicate.test() ? Boolean.TRUE : Boolean.FALSE;
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof PredicateFunction) {
@@ -60,11 +60,11 @@ public final class PredicateFunction implements Function, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(PredicateFunction that) {
         return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
-    
+
     public int hashCode() {
         int hash = "PredicateFunction".hashCode();
         if(null != predicate) {
@@ -72,7 +72,7 @@ public final class PredicateFunction implements Function, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "PredicateFunction<" + predicate + ">";
     }

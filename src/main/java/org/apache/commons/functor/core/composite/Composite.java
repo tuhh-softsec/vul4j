@@ -32,18 +32,18 @@ public final class Composite {
     // constructor - for beanish apis
     // ------------------------------------------------------------------------
     public Composite() { }
- 
+
     // ------------------------------------------------------------------------
 
-    public static final CompositeUnaryProcedure procedure(UnaryProcedure p, UnaryFunction f) {        
+    public static final CompositeUnaryProcedure procedure(UnaryProcedure p, UnaryFunction f) {
         return new CompositeUnaryProcedure(p,f);
     }
 
-    public static final CompositeUnaryPredicate predicate(UnaryPredicate p, UnaryFunction f) {        
+    public static final CompositeUnaryPredicate predicate(UnaryPredicate p, UnaryFunction f) {
         return new CompositeUnaryPredicate(p,f);
     }
 
-    public static final BinaryPredicate predicate(BinaryPredicate p, UnaryFunction f, UnaryFunction g) {        
+    public static final BinaryPredicate predicate(BinaryPredicate p, UnaryFunction f, UnaryFunction g) {
         return new UnaryCompositeBinaryPredicate(p,f,g);
     }
 

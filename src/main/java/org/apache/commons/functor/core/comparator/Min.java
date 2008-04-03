@@ -24,7 +24,7 @@ import org.apache.commons.functor.BinaryFunction;
 /**
  * Adapts a {@link Comparator Comparator} to the
  * {@link BinaryFunction} interface.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -36,12 +36,12 @@ public final class Min implements BinaryFunction, Serializable {
     public Min(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
-    
+
     /**
      * @see org.apache.commons.functor.BinaryFunction#evaluate(Object, Object)
      */
     public Object evaluate(Object left, Object right) {
-        return (comparator.compare(left,right) <= 0) ? left : right; 
+        return (comparator.compare(left,right) <= 0) ? left : right;
     }
 
     /**
@@ -79,7 +79,7 @@ public final class Min implements BinaryFunction, Serializable {
     public static Min instance() {
         return INSTANCE;
     }
-    
+
     private Comparator comparator = null;
     private static final Min INSTANCE = new Min();
 }

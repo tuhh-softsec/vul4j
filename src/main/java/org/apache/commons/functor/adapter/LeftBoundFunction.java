@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryFunction;
 
 /**
  * Adapts a
- * {@link BinaryFunction BinaryFunction} 
- * to the 
- * {@link UnaryFunction UnaryFunction} interface 
+ * {@link BinaryFunction BinaryFunction}
+ * to the
+ * {@link UnaryFunction UnaryFunction} interface
  * using a constant left-side argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying objects are.  Attempts to serialize
- * an instance whose delegates are not 
+ * an instance whose delegates are not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -47,10 +47,10 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
         this.function = function;
         this.param = arg;
     }
- 
+
     public Object evaluate(Object obj) {
         return function.evaluate(param,obj);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof LeftBoundFunction) {
@@ -59,15 +59,15 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(LeftBoundFunction that) {
-        return that == this || ( 
-                (null != that) && 
+        return that == this || (
+                (null != that) &&
                 (null == function ? null == that.function : function.equals(that.function)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
-                
+
     }
-    
+
     public int hashCode() {
         int hash = "LeftBoundFunction".hashCode();
         if(null != function) {
@@ -80,7 +80,7 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "LeftBoundFunction<" + function + "(" + param + ",?)>";
     }

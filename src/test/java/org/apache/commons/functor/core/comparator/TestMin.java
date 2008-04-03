@@ -42,19 +42,19 @@ public class TestMin extends BaseFunctorTest {
 
     // Framework
     // ------------------------------------------------------------------------
-    
+
     protected Object makeFunctor() {
         return new Min();
     }
 
-    private Integer MIN = new Integer(Integer.MIN_VALUE); 
-    private Integer MINUS_TWO = new Integer(-2); 
-    private Integer ZERO = new Integer(0); 
-    private Integer ONE = new Integer(1); 
-    private Integer MAX = new Integer(Integer.MAX_VALUE); 
+    private Integer MIN = new Integer(Integer.MIN_VALUE);
+    private Integer MINUS_TWO = new Integer(-2);
+    private Integer ZERO = new Integer(0);
+    private Integer ONE = new Integer(1);
+    private Integer MAX = new Integer(Integer.MAX_VALUE);
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() {
         Min f = new Min();
         assertEquals(ONE,f.evaluate(ONE,ONE));

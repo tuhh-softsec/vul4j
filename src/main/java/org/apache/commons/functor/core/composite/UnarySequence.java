@@ -24,17 +24,17 @@ import java.util.ListIterator;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * A {@link UnaryProcedure UnaryProcedure} 
- * that {@link UnaryProcedure#run runs} an ordered 
+ * A {@link UnaryProcedure UnaryProcedure}
+ * that {@link UnaryProcedure#run runs} an ordered
  * sequence of {@link UnaryProcedure UnaryProcedures}.
  * When the sequence is empty, this procedure is does
  * nothing.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -57,15 +57,15 @@ public class UnarySequence implements UnaryProcedure, Serializable {
     }
 
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public UnarySequence then(UnaryProcedure p) {
         list.add(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
-    public void run(Object obj) {        
+    public void run(Object obj) {
         for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
             ((UnaryProcedure)iter.previous()).run(obj);
         }
@@ -78,22 +78,22 @@ public class UnarySequence implements UnaryProcedure, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(UnarySequence that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
-    
+
     public int hashCode() {
         // by construction, list is never null
         return "UnarySequence".hashCode() ^ list.hashCode();
     }
-    
+
     public String toString() {
         return "UnarySequence<" + list + ">";
     }
-    
-    
+
+
     // attributes
     // ------------------------------------------------------------------------
     private List list = new ArrayList();

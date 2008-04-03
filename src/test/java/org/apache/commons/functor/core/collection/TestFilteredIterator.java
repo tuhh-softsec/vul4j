@@ -48,7 +48,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
 
     public Object makeFunctor() {
         List list = new ArrayList();
-        list.add("xyzzy");        
+        list.add("xyzzy");
         return FilteredIterator.filter(list.iterator(),Constant.truePredicate());
     }
 
@@ -75,7 +75,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testSomePass() {
         Iterator expected = evens.iterator();
         Iterator testing = new FilteredIterator(list.iterator(),isEven);
@@ -148,7 +148,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testRemoveBeforeNext() {
         Iterator testing = new FilteredIterator(list.iterator(),isEven);
         try {
@@ -158,7 +158,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testRemoveAfterNext() {
         Iterator testing = new FilteredIterator(list.iterator(),isEven);
         testing.next();
@@ -170,7 +170,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testRemoveSome() {
         Iterator testing = new FilteredIterator(list.iterator(),isEven);
         while(testing.hasNext()) {
@@ -199,11 +199,11 @@ public class TestFilteredIterator extends BaseFunctorTest {
         }
         assertTrue(list.isEmpty());
     }
-    
+
     public void testFilterWithNullIteratorReturnsNull() {
         assertNull(FilteredIterator.filter(null,Constant.truePredicate()));
     }
-    
+
     public void testFilterWithNullPredicateReturnsIdentity() {
         Iterator iter = list.iterator();
         assertSame(iter,FilteredIterator.filter(iter,null));
@@ -229,16 +229,16 @@ public class TestFilteredIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
 
     // Attributes
     // ------------------------------------------------------------------------
-    private List list = null;    
+    private List list = null;
     private List evens = null;
-    private UnaryPredicate isEven = new UnaryPredicate() { 
+    private UnaryPredicate isEven = new UnaryPredicate() {
         public boolean test(Object obj) {
             return ((Number)obj).intValue() % 2 == 0;
         }
     };
-    
+
 }

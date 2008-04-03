@@ -24,13 +24,13 @@ import org.apache.commons.functor.BinaryFunction;
  */
 public class Sum implements BinaryFunction {
     public Object evaluate(Object left, Object right) {
-        return new Integer( ((Number)left).intValue() + ((Number)right).intValue() ); 
+        return new Integer( ((Number)left).intValue() + ((Number)right).intValue() );
     }
-    
-    
+
+
     public static final Sum instance() {
         return INSTANCE;
     }
-    
+
     private static final Sum INSTANCE = new Sum();
 }

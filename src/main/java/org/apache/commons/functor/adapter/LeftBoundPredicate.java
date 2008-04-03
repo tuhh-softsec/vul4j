@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * Adapts a
- * {@link BinaryPredicate BinaryPredicate} 
- * to the 
- * {@link UnaryPredicate UnaryPredicate} interface 
+ * {@link BinaryPredicate BinaryPredicate}
+ * to the
+ * {@link UnaryPredicate UnaryPredicate} interface
  * using a constant left-side argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying objects are.  Attempts to serialize
- * an instance whose delegates are not 
+ * an instance whose delegates are not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -47,10 +47,10 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
         this.predicate = predicate;
         this.param = arg;
     }
- 
+
     public boolean test(Object obj) {
         return predicate.test(param,obj);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof LeftBoundPredicate) {
@@ -59,15 +59,15 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(LeftBoundPredicate that) {
-        return that == this || ( 
-                (null != that) && 
+        return that == this || (
+                (null != that) &&
                 (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
-                
+
     }
-    
+
     public int hashCode() {
         int hash = "LeftBoundPredicate".hashCode();
         if(null != predicate) {
@@ -80,7 +80,7 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "LeftBoundPredicate<" + predicate + "(" + param + ",?)>";
     }

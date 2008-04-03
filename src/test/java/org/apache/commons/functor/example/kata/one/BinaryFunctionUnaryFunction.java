@@ -31,7 +31,7 @@ public final class BinaryFunctionUnaryFunction implements UnaryFunction {
             this.function = f;
         }
     }
-    
+
     public Object evaluate(Object obj) {
         return function.evaluate(obj,obj);
     }
@@ -39,7 +39,7 @@ public final class BinaryFunctionUnaryFunction implements UnaryFunction {
     public static UnaryFunction adapt(BinaryFunction f) {
         return null == f ? null : new BinaryFunctionUnaryFunction(f);
     }
-    
+
     private BinaryFunction function;
 
 }

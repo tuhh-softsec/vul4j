@@ -86,20 +86,20 @@ public class TestIntegerRange extends BaseFunctorTest {
             new IntegerRange(0, 1, 0);
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
-            // expected 
-        }  
+            // expected
+        }
         try {
             new IntegerRange(0, 1, -1);
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
-            // expected 
-        }  
+            // expected
+        }
         try {
             new IntegerRange(0, -1, 1);
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
-            // expected 
-        }  
+            // expected
+        }
     }
 
     public void testObjectConstructor() {

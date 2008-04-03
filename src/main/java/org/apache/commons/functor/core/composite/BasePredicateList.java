@@ -27,11 +27,11 @@ import org.apache.commons.functor.Predicate;
  * Abstract base class for {@link Predicate Predicates}
  * composed of a list of {@link Predicate Predicates}.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -58,39 +58,39 @@ abstract class BasePredicateList implements Predicate, Serializable {
         addPredicate(q);
         addPredicate(r);
     }
-    
+
     // abstract
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public abstract boolean equals(Object that);
     public abstract int hashCode();
     public abstract String toString();
     public abstract boolean test();
 
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     protected void addPredicate(Predicate p) {
         list.add(p);
     }
- 
+
     // protected
     // ------------------------------------------------------------------------
 
     protected Iterator getPredicateIterator() {
         return list.iterator();
     }
-    
+
     protected boolean getPredicateListEquals(BasePredicateList that) {
         return (null != that && this.list.equals(that.list));
     }
-    
+
     protected int getPredicateListHashCode() {
         return list.hashCode();
     }
-    
+
     protected String getPredicateListToString() {
         return String.valueOf(list);
     }
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private List list = new ArrayList();

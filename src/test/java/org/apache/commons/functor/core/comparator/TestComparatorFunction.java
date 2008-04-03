@@ -42,14 +42,14 @@ public class TestComparatorFunction extends BaseFunctorTest {
 
     // Framework
     // ------------------------------------------------------------------------
-    
+
     protected Object makeFunctor() {
         return new ComparatorFunction(new ComparableComparator());
     }
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() {
         ComparatorFunction f = new ComparatorFunction();
 
@@ -64,13 +64,13 @@ public class TestComparatorFunction extends BaseFunctorTest {
         assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(0)))).intValue() > 0);
         assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(-1)))).intValue() > 0);
         assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(Integer.MIN_VALUE)))).intValue() > 0);
-        
+
         assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(Integer.MAX_VALUE)))).intValue() < 0);
         assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(1)))).intValue() < 0);
         assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(0)))).intValue() == 0);
         assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(-1)))).intValue() > 0);
         assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(Integer.MIN_VALUE)))).intValue() > 0);
-        
+
         assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(Integer.MAX_VALUE)))).intValue() < 0);
         assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(1)))).intValue() < 0);
         assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(0)))).intValue() < 0);

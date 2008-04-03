@@ -60,14 +60,14 @@ public class TestRightBoundPredicate extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
         UnaryPredicate f = new RightBoundPredicate(new BinaryFunctionBinaryPredicate(new LeftIdentity()),"foo");
         assertEquals(true,f.test(Boolean.TRUE));
         assertEquals(false,f.test(Boolean.FALSE));
     }
-    
+
     public void testEquals() throws Exception {
         UnaryPredicate f = new RightBoundPredicate(new Constant(true),"xyzzy");
         assertEquals(f,f);

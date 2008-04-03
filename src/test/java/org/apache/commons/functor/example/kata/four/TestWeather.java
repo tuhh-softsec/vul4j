@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 /**
  * See http://pragprog.com/pragdave/Practices/Kata/KataFour.rdoc,v
  * for more information on this Kata.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -41,7 +41,7 @@ public class TestWeather extends TestCase {
 		// line with the minimal difference between the second and third columns.
         assertEquals(
             "14",
-            DataMunger.process(getClass().getResourceAsStream("weather.txt"),0,1,2));            
+            DataMunger.process(getClass().getResourceAsStream("weather.txt"),0,1,2));
     }
 
 }

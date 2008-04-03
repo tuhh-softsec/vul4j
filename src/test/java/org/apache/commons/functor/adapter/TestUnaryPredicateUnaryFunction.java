@@ -59,13 +59,13 @@ public class TestUnaryPredicateUnaryFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
         UnaryFunction f = new UnaryPredicateUnaryFunction(new Constant(true));
         assertEquals(Boolean.TRUE,f.evaluate(null));
     }
-    
+
     public void testTestWhenFalse() throws Exception {
         UnaryFunction f = new UnaryPredicateUnaryFunction(new Constant(false));
         assertEquals(Boolean.FALSE,f.evaluate(null));

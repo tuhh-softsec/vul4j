@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 /**
  * See http://pragprog.com/pragdave/Practices/Kata/KataFour.rdoc,v
  * for more information on this Kata.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -35,13 +35,13 @@ public class TestSoccer extends TestCase {
     public static Test suite() {
         return new TestSuite(TestSoccer.class);
     }
-    
+
     public void testProcess() {
     	// for our soccer example, we want to select the second column of the
     	// line with the minimal difference between the seventh and ninth columns.
         assertEquals(
             "Aston_Villa",
-            DataMunger.process(getClass().getResourceAsStream("soccer.txt"),1,6,8));            
+            DataMunger.process(getClass().getResourceAsStream("soccer.txt"),1,6,8));
     }
 
 }

@@ -58,7 +58,7 @@ public class TestIsEquivalent extends BaseComparisonPredicateTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         IsEquivalent p = new IsEquivalent();
         assertTrue(!p.test(new Integer(2),new Integer(4)));
@@ -67,12 +67,12 @@ public class TestIsEquivalent extends BaseComparisonPredicateTest {
         assertTrue(!p.test(new Integer(5),new Integer(4)));
         assertTrue(!p.test(new Integer(6),new Integer(4)));
     }
-    
+
     public void testInstance() {
         assertTrue(IsEquivalent.instance("Xyzzy").test("Xyzzy"));
         assertTrue(!IsEquivalent.instance("Xyzzy").test("z"));
     }
-    
+
     public void testEquals() throws Exception {
         IsEquivalent p = new IsEquivalent();
         assertEquals(p,p);
@@ -84,5 +84,5 @@ public class TestIsEquivalent extends BaseComparisonPredicateTest {
         assertSame(IsEquivalent.instance(),IsEquivalent.instance());
         assertObjectsAreNotEqual(p,new Constant(false));
     }
-    
+
 }

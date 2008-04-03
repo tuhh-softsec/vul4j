@@ -21,11 +21,11 @@ import java.io.Serializable;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its argument 
- * {@link Class#isInstance is an instance} 
+ * {@link #test Tests}
+ * <code>true</code> iff its argument
+ * {@link Class#isInstance is an instance}
  * of some specified {@link Class Class}.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -36,7 +36,7 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
     public IsInstanceOf(Class klass) {
         this.klass = klass;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
 
@@ -51,11 +51,11 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(IsInstanceOf that) {
         return (null != that && (null == this.klass ? null == that.klass : this.klass.equals(that.klass)));
     }
-    
+
     public int hashCode() {
         int hash = "IsInstanceOf".hashCode();
         if(null != klass) {
@@ -63,11 +63,11 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "IsInstanceOf<" + klass + ">";
     }
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private Class klass;

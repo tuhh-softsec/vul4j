@@ -60,13 +60,13 @@ public class TestProcedureUnaryProcedure extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         UnaryProcedure p = new ProcedureUnaryProcedure(new FunctionProcedure(new Constant(null)));
         p.run(Boolean.TRUE);
     }
-    
+
     public void testEquals() throws Exception {
         UnaryProcedure p = new ProcedureUnaryProcedure(new NoOp());
         assertEquals(p,p);

@@ -45,7 +45,7 @@ public abstract class BaseComparisonPredicateTest extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public final void testTestNull() throws Exception {
         BinaryPredicate p = (BinaryPredicate)(makeFunctor());
         try {
@@ -67,7 +67,7 @@ public abstract class BaseComparisonPredicateTest extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public final void testTestNonComparable() throws Exception {
         BinaryPredicate p = (BinaryPredicate)(makeFunctor());
         try {
@@ -89,5 +89,5 @@ public abstract class BaseComparisonPredicateTest extends BaseFunctorTest {
             // expected
         }
     }
-        
+
 }

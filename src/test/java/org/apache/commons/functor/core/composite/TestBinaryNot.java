@@ -60,14 +60,14 @@ public class TestBinaryNot extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         BinaryPredicate truePred = new BinaryNot(new Constant(false));
         assertTrue(truePred.test(null,null));
         assertTrue(truePred.test("xyzzy","abcde"));
         assertTrue(truePred.test("xyzzy",new Integer(3)));
     }
-    
+
     public void testEquals() throws Exception {
         BinaryNot p = new BinaryNot(Constant.truePredicate());
         assertEquals(p,p);

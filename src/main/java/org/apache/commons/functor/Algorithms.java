@@ -36,9 +36,9 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 /**
  * Utility methods and algorithms for applying functors to {@link Generator}s
  * and {@link Iterator}s.
- * {@link Generator}s also many of these utility methods as instance methods. 
- * The {@link #select select} and {@link #reject reject} methods 
- * return new Generators. This becomes useful for constructing nested expressions. 
+ * {@link Generator}s also many of these utility methods as instance methods.
+ * The {@link #select select} and {@link #reject reject} methods
+ * return new Generators. This becomes useful for constructing nested expressions.
  * For example:
  *
  * <pre>
@@ -57,24 +57,24 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 public final class Algorithms {
 
     /** Public constructor for bean-ish APIs */
-    public Algorithms() {        
+    public Algorithms() {
     }
 
     public static Collection collect(Iterator iter) {
         return collect(iter,new ArrayList());
     }
-    
+
     public static Collection collect(Iterator iter, Collection col) {
         while(iter.hasNext()) {
             col.add(iter.next());
         }
         return col;
     }
-    
+
     /**
      * {@link ListIterator#set Set} each element of the
      * given {@link ListIterator ListIterator} to
-     * the result of applying the 
+     * the result of applying the
      * given {@link UnaryFunction UnaryFunction} to
      * its original value.
      */
@@ -86,10 +86,10 @@ public final class Algorithms {
 
     /**
      * {@link Iterator#remove Remove} from the
-     * given {@link Iterator Iterator} all elements 
+     * given {@link Iterator Iterator} all elements
      * that fail to match the
      * given {@link UnaryPredicate UnaryPredicate}.
-     * 
+     *
      * @see #remove(Iterator,UnaryPredicate)
      */
     public static void retain(Iterator iter, UnaryPredicate pred) {
@@ -102,10 +102,10 @@ public final class Algorithms {
 
     /**
      * {@link Iterator#remove Renmove} from the
-     * given {@link Iterator Iterator} all elements 
+     * given {@link Iterator Iterator} all elements
      * that match the
      * given {@link UnaryPredicate UnaryPredicate}.
-     * 
+     *
      * @see #retain(Iterator,UnaryPredicate)
      */
     public static void remove(Iterator iter, UnaryPredicate pred) {
@@ -113,9 +113,9 @@ public final class Algorithms {
             if(pred.test(iter.next())) {
                 iter.remove();
             }
-        }        
+        }
     }
-    
+
     /**
      * Returns an {@link Iterator} that will apply the given {@link UnaryFunction} to each
      * element when accessed.
@@ -140,9 +140,9 @@ public final class Algorithms {
             }
         };
     }
-    
+
     /**
-     * Equivalent to 
+     * Equivalent to
      * <code>{@link #contains(Generator,UnaryPredicate) contains}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred)</code>.
      */
     public static final boolean contains(Iterator iter, UnaryPredicate pred) {
@@ -325,7 +325,7 @@ public final class Algorithms {
     }
 
     /**
-     * Equivalent to 
+     * Equivalent to
      * <code>{@link #reject(Iterator,UnaryPredicate) reject}(iter,pred)</code>.
      */
     public static final Iterator until(final Iterator iter, final UnaryPredicate pred) {
@@ -333,7 +333,7 @@ public final class Algorithms {
     }
 
     /**
-     * Equivalent to 
+     * Equivalent to
      * <code>{@link #reject(Generator,UnaryPredicate) reject}(gen,pred)</code>.
      */
     public static final Generator until(final Generator gen, final UnaryPredicate pred) {
@@ -364,10 +364,10 @@ public final class Algorithms {
 
         return result;
     }
-    
+
     // inner classes
     //---------------------------------------------------------------
-    
+
     private static class FindWithinGenerator implements UnaryProcedure {
         FindWithinGenerator(Generator gen, UnaryPredicate pred) {
             this.generator = gen;
@@ -383,15 +383,15 @@ public final class Algorithms {
                 generator.stop();
             }
         }
-        
+
         boolean wasFound() {
             return found;
         }
-        
+
         Object getFoundObject() {
             return foundObject;
         }
-        
+
         private UnaryPredicate predicate = null;
         private boolean found = false;
         private Object foundObject = null;
@@ -403,17 +403,17 @@ public final class Algorithms {
             this.seed = seed;
             this.function = function;
         }
-        
+
         public void run(Object obj) {
             seed = function.evaluate(seed,obj);
         }
-        
+
         Object getResult() {
             return seed;
         }
-        
+
         private Object seed = null;
         private BinaryFunction function = null;
     }
-    
+
 }

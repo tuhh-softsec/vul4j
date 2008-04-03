@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryProcedure;
 
 /**
  * Adapts a
- * {@link UnaryProcedure UnaryProcedure} 
- * to the 
- * {@link Procedure Procedure} interface 
+ * {@link UnaryProcedure UnaryProcedure}
+ * to the
+ * {@link Procedure Procedure} interface
  * using a constant unary argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying objects are.  Attempts to serialize
- * an instance whose delegates are not 
+ * an instance whose delegates are not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -47,10 +47,10 @@ public final class BoundProcedure implements Procedure, Serializable {
         this.procedure = procedure;
         this.param = arg;
     }
- 
+
     public void run() {
         procedure.run(param);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof BoundProcedure) {
@@ -59,15 +59,15 @@ public final class BoundProcedure implements Procedure, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(BoundProcedure that) {
-        return that == this || ( 
-                (null != that) && 
+        return that == this || (
+                (null != that) &&
                 (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
-                
+
     }
-    
+
     public int hashCode() {
         int hash = "BoundProcedure".hashCode();
         if(null != procedure) {
@@ -80,21 +80,21 @@ public final class BoundProcedure implements Procedure, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "BoundProcedure<" + procedure + "(" + param + ")>";
     }
 
     /**
-     * Adapt the given, possibly-<code>null</code>, 
+     * Adapt the given, possibly-<code>null</code>,
      * {@link UnaryProcedure UnaryProcedure} to the
      * {@link Procedure Procedure} interface by binding
      * the specified <code>Object</code> as a constant
      * argument.
      * When the given <code>UnaryProcedure</code> is <code>null</code>,
      * returns <code>null</code>.
-     * 
-     * @param procedure the possibly-<code>null</code> 
+     *
+     * @param procedure the possibly-<code>null</code>
      *        {@link UnaryProcedure UnaryProcedure} to adapt
      * @param arg the object to bind as a constant argument
      * @return a <code>BoundProcedure</code> wrapping the given

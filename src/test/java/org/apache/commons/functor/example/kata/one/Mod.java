@@ -32,7 +32,7 @@ public class Mod implements BinaryFunction {
     public Object evaluate(Number left, Number right) {
         return new Integer(left.intValue() % right.intValue());
     }
-    
+
     public static Mod instance() {
         return INSTANCE;
     }
@@ -40,6 +40,6 @@ public class Mod implements BinaryFunction {
     public static UnaryFunction by(int factor) {
         return new RightBoundFunction(instance(),new Integer(factor));
     }
-    
+
     private static Mod INSTANCE = new Mod();
 }

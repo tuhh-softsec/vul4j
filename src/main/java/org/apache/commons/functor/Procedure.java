@@ -19,16 +19,16 @@ package org.apache.commons.functor;
 /**
  * A functor that takes no arguments and returns no value.
  * <p>
- * Note that this functor implements the 
+ * Note that this functor implements the
  * {@link Runnable Runnable}
  * interface, making all <code>Procedure</code>s
  * immediately usable in a number of contexts (Swing, Jelly, etc.).
  * </p>
  * <p>
- * Implementors are encouraged but not required to make their functors 
+ * Implementors are encouraged but not required to make their functors
  * {@link java.io.Serializable Serializable}.
  * </p>
- * 
+ *
  * @since 1.0
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
@@ -36,13 +36,13 @@ package org.apache.commons.functor;
 public interface Procedure extends Runnable {
     /** Execute this procedure. */
     void run();
-    
+
     /**
      * Returns a human readable description of this functor.
      * Implementators are strongly encouraged but not
      * strictly required to override the default {@link Object}
      * implementation of this method.
-     * 
+     *
      * @return a human readable description of this functor
      */
     String toString();
@@ -53,14 +53,14 @@ public interface Procedure extends Runnable {
      * Implementators are strongly encouraged but not
      * strictly required to override the default {@link Object}
      * implementation of this method.
-     * 
+     *
      * @see #equals
      * @return a hash code for this functor
      */
     int hashCode();
 
     /**
-     * Indicates whether some other object is &quot;equal to&quot; 
+     * Indicates whether some other object is &quot;equal to&quot;
      * this functor.  This method must adhere to
      * general {@link Object#equals Object.equals} contract.
      * Additionally, this method can return
@@ -68,7 +68,7 @@ public interface Procedure extends Runnable {
      * the same functor interface and is known to produce the same
      * results and/or side-effects for the same arguments (if any).
      * <p>
-     * While implementators are strongly encouraged to override 
+     * While implementators are strongly encouraged to override
      * the default Object implementation of this method,
      * note that the default Object implementation
      * does in fact adhere to the functor <code>equals</code> contract.
@@ -77,7 +77,7 @@ public interface Procedure extends Runnable {
      * @see #hashCode
      * @return <code>true</code> iff the given object implements
      *         this functor interface, and is known to produce the same
-     *         results and/or side-effects for the same arguments 
+     *         results and/or side-effects for the same arguments
      *         (if any).
      */
     boolean equals(Object that);

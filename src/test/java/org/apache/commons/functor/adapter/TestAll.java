@@ -31,11 +31,11 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        
+
         suite.addTest(TestFunctionProcedure.suite());
         suite.addTest(TestUnaryFunctionUnaryProcedure.suite());
         suite.addTest(TestBinaryFunctionBinaryProcedure.suite());
-        
+
         suite.addTest(TestProcedureFunction.suite());
         suite.addTest(TestUnaryProcedureUnaryFunction.suite());
         suite.addTest(TestBinaryProcedureBinaryFunction.suite());
@@ -51,19 +51,19 @@ public class TestAll extends TestCase {
         suite.addTest(TestFunctionUnaryFunction.suite());
         suite.addTest(TestIgnoreRightFunction.suite());
         suite.addTest(TestIgnoreLeftFunction.suite());
-        
+
         suite.addTest(TestPredicateUnaryPredicate.suite());
         suite.addTest(TestIgnoreRightPredicate.suite());
         suite.addTest(TestIgnoreLeftPredicate.suite());
-        
+
         suite.addTest(TestProcedureUnaryProcedure.suite());
         suite.addTest(TestIgnoreRightProcedure.suite());
         suite.addTest(TestIgnoreLeftProcedure.suite());
-        
+
         suite.addTest(TestBoundFunction.suite());
         suite.addTest(TestLeftBoundFunction.suite());
         suite.addTest(TestRightBoundFunction.suite());
-        
+
         suite.addTest(TestBoundPredicate.suite());
         suite.addTest(TestLeftBoundPredicate.suite());
         suite.addTest(TestRightBoundPredicate.suite());
@@ -71,7 +71,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestBoundProcedure.suite());
         suite.addTest(TestLeftBoundProcedure.suite());
         suite.addTest(TestRightBoundProcedure.suite());
-        
+
         return suite;
     }
 }

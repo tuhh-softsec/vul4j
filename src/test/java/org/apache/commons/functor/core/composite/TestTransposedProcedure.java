@@ -60,7 +60,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         LeftNotNullCounter counter = new LeftNotNullCounter();
         BinaryProcedure p = new TransposedProcedure(counter);
@@ -70,7 +70,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
         p.run("not null",null);
         assertEquals(1,counter.count);
     }
-        
+
     public void testEquals() throws Exception {
         BinaryProcedure p = new TransposedProcedure(NoOp.instance());
         assertEquals(p,p);
@@ -91,14 +91,14 @@ public class TestTransposedProcedure extends BaseFunctorTest {
 
     // Classes
     // ------------------------------------------------------------------------
-    
-    static class LeftNotNullCounter implements BinaryProcedure {        
+
+    static class LeftNotNullCounter implements BinaryProcedure {
         public void run(Object a, Object b) {
             if(null != a) {
-                count++;    
+                count++;
             }
-        }        
+        }
         public int count = 0;
     }
-    
+
 }

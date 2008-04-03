@@ -60,14 +60,14 @@ public class TestIgnoreLeftPredicate extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         BinaryPredicate p = new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
         assertTrue(p.test(null,Boolean.TRUE));
         assertTrue(!p.test(null,Boolean.FALSE));
     }
-    
+
     public void testEquals() throws Exception {
         BinaryPredicate p = new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
         assertEquals(p,p);

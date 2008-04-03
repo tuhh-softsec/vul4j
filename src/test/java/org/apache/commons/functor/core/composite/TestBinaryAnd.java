@@ -60,64 +60,64 @@ public class TestBinaryAnd extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTrue() throws Exception {
         assertTrue((new BinaryAnd()).test("xyzzy",new Integer(3)));
         assertTrue((new BinaryAnd(new Constant(true))).test("xyzzy",new Integer(3)));
         assertTrue((new BinaryAnd(new Constant(true),new Constant(true))).test("xyzzy",new Integer(3)));
         assertTrue((new BinaryAnd(new Constant(true),new Constant(true),new Constant(true))).test("xyzzy",new Integer(3)));
-        
+
         BinaryAnd p = new BinaryAnd(new Constant(true));
-        assertTrue(p.test("xyzzy",new Integer(3)));        
+        assertTrue(p.test("xyzzy",new Integer(3)));
         for(int i=0;i<10;i++) {
             p.and(new Constant(true));
-            assertTrue(p.test("xyzzy",new Integer(3)));        
+            assertTrue(p.test("xyzzy",new Integer(3)));
         }
-        
+
         BinaryAnd q = new BinaryAnd(new Constant(true));
-        assertTrue(q.test("xyzzy",new Integer(3)));        
+        assertTrue(q.test("xyzzy",new Integer(3)));
         for(int i=0;i<10;i++) {
             q.and(new Constant(true));
-            assertTrue(q.test("xyzzy",new Integer(3)));        
+            assertTrue(q.test("xyzzy",new Integer(3)));
         }
-        
+
         BinaryAnd r = new BinaryAnd(p,q);
-        assertTrue(r.test("xyzzy",new Integer(3)));        
+        assertTrue(r.test("xyzzy",new Integer(3)));
     }
-    
+
     public void testFalse() throws Exception {
         assertTrue(!(new BinaryAnd(new Constant(false))).test("xyzzy",new Integer(3)));
         assertTrue(!(new BinaryAnd(new Constant(true),new Constant(false))).test("xyzzy",new Integer(3)));
         assertTrue(!(new BinaryAnd(new Constant(true),new Constant(true),new Constant(false))).test("xyzzy",new Integer(3)));
-        
+
         BinaryAnd p = new BinaryAnd(new Constant(false));
-        assertTrue(!p.test("xyzzy",new Integer(3)));        
+        assertTrue(!p.test("xyzzy",new Integer(3)));
         for(int i=0;i<10;i++) {
             p.and(new Constant(false));
-            assertTrue(!p.test("xyzzy",new Integer(3)));        
+            assertTrue(!p.test("xyzzy",new Integer(3)));
         }
-        
+
         BinaryAnd q = new BinaryAnd(new Constant(true));
-        assertTrue(q.test("xyzzy",new Integer(3)));        
+        assertTrue(q.test("xyzzy",new Integer(3)));
         for(int i=0;i<10;i++) {
             q.and(new Constant(true));
-            assertTrue(q.test("xyzzy",new Integer(3)));        
+            assertTrue(q.test("xyzzy",new Integer(3)));
         }
-        
+
         BinaryAnd r = new BinaryAnd(p,q);
-        assertTrue(!r.test("xyzzy",new Integer(3)));        
+        assertTrue(!r.test("xyzzy",new Integer(3)));
     }
-        
+
     public void testDuplicateAdd() throws Exception {
         BinaryPredicate p = new Constant(true);
         BinaryAnd q = new BinaryAnd(p,p);
         assertTrue(q.test("xyzzy",new Integer(3)));
         for(int i=0;i<10;i++) {
             q.and(p);
-            assertTrue(q.test("xyzzy",new Integer(3)));        
+            assertTrue(q.test("xyzzy",new Integer(3)));
         }
     }
-        
+
     public void testEquals() throws Exception {
         BinaryAnd p = new BinaryAnd();
         assertEquals(p,p);
@@ -132,11 +132,11 @@ public class TestBinaryAnd extends BaseFunctorTest {
             q.and(Constant.truePredicate());
             assertObjectsAreEqual(p,q);
             p.and(new BinaryAnd(Constant.truePredicate(),Constant.falsePredicate()));
-            assertObjectsAreNotEqual(p,q);            
+            assertObjectsAreNotEqual(p,q);
             q.and(new BinaryAnd(Constant.truePredicate(),Constant.falsePredicate()));
-            assertObjectsAreEqual(p,q);            
+            assertObjectsAreEqual(p,q);
         }
-        
+
         assertObjectsAreNotEqual(p,Constant.truePredicate());
     }
 

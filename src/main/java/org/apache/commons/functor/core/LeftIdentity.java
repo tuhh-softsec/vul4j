@@ -23,23 +23,23 @@ import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * {@link #evaluate Evaluates} to its first argument.
- * 
+ *
  * {@link #test Tests} to the <code>boolean</code>
  * value of the <code>Boolean</code>-valued first
- * argument. The {@link #test test} method 
- * throws an exception if the parameter isn't a 
+ * argument. The {@link #test test} method
+ * throws an exception if the parameter isn't a
  * non-<code>null</code> <code>Boolean</code>.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class LeftIdentity implements BinaryPredicate, BinaryFunction, Serializable {
-    
+
     // constructor
     // ------------------------------------------------------------------------
     public LeftIdentity() {
     }
- 
+
     // functor interface
     // ------------------------------------------------------------------------
 
@@ -58,21 +58,21 @@ public final class LeftIdentity implements BinaryPredicate, BinaryFunction, Seri
     public boolean equals(Object that) {
         return (that instanceof LeftIdentity);
     }
-    
+
     public int hashCode() {
         return "LeftIdentity".hashCode();
     }
-    
+
     public String toString() {
         return "LeftIdentity";
     }
-    
+
     // static methods
     // ------------------------------------------------------------------------
     public static LeftIdentity instance() {
         return INSTANCE;
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final LeftIdentity INSTANCE = new LeftIdentity();

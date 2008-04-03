@@ -25,14 +25,14 @@ import org.apache.commons.functor.UnaryFunction;
  * A {@link BinaryPredicate BinaryPredicate} composed of
  * one binary predicate, <i>p</i>, and two unary
  * functions, <i>f</i> and <i>g</i>,
- * evaluating the ordered parameters <i>x</i>, <i>y</i> 
+ * evaluating the ordered parameters <i>x</i>, <i>y</i>
  * to <code><i>p</i>(<i>f</i>(<i>x</i>),<i>g</i>(<i>y</i>))</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -45,7 +45,7 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
     public UnaryCompositeBinaryPredicate(BinaryPredicate f, UnaryFunction g, UnaryFunction h) {
         binary = f;
         leftUnary = g;
-        rightUnary = h;        
+        rightUnary = h;
     }
 
     // function interface
@@ -61,35 +61,35 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
             return false;
         }
     }
-    
+
     public boolean equals(UnaryCompositeBinaryPredicate that) {
         return (null != that) &&
             (null == binary ? null == that.binary : binary.equals(that.binary)) &&
             (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary)) &&
             (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
     }
-    
+
     public int hashCode() {
         int hash = "UnaryCompositeBinaryPredicate".hashCode();
         if(null != binary) {
             hash <<= 4;
-            hash ^= binary.hashCode();            
+            hash ^= binary.hashCode();
         }
         if(null != leftUnary) {
             hash <<= 4;
-            hash ^= leftUnary.hashCode();            
+            hash ^= leftUnary.hashCode();
         }
         if(null != rightUnary) {
             hash <<= 4;
-            hash ^= rightUnary.hashCode();            
+            hash ^= rightUnary.hashCode();
         }
         return hash;
     }
-    
+
     public String toString() {
         return "UnaryCompositeBinaryPredicate<" + binary + ";" + leftUnary + ";" + rightUnary + ">";
     }
-        
+
     // attributes
     // ------------------------------------------------------------------------
     private BinaryPredicate binary = null;

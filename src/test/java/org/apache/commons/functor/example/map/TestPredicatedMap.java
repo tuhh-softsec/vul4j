@@ -39,7 +39,7 @@ public class TestPredicatedMap extends TestCase {
     public static Test suite() {
         return new TestSuite(TestPredicatedMap.class);
     }
-    
+
     private Map baseMap = null;
     private Map predicatedMap = null;
     public void setUp() throws Exception {
@@ -47,7 +47,7 @@ public class TestPredicatedMap extends TestCase {
         baseMap = new HashMap();
         predicatedMap = new PredicatedMap(baseMap,new IsInstanceOf(String.class),new IsInstanceOf(Integer.class));
     }
-    
+
     public void tearDown() throws Exception {
         super.tearDown();
         baseMap = null;
@@ -55,14 +55,14 @@ public class TestPredicatedMap extends TestCase {
     }
 
     // tests
-    
+
     public void testCanPutMatchingPair() {
         predicatedMap.put("xyzzy", new Integer(17));
     }
     public void testCantPutInvalidValue() {
         try {
             predicatedMap.put("xyzzy", "xyzzy");
-            fail("Expected IllegalArgumentException");            
+            fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
             // expected
         }
@@ -71,7 +71,7 @@ public class TestPredicatedMap extends TestCase {
     public void testCantPutInvalidKey() {
         try {
             predicatedMap.put(new Long(1), new Integer(3));
-            fail("Expected IllegalArgumentException");            
+            fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
             // expected
         }
@@ -83,13 +83,13 @@ public class TestPredicatedMap extends TestCase {
         map.put("two", "rejected");
         map.put(new Integer(17), "xyzzy");
         map.put(new Integer(7), new Integer(3));
-        
+
         predicatedMap.putAll(map);
         assertEquals(new Integer(17), predicatedMap.get("one"));
         assertFalse(predicatedMap.containsKey("two"));
-/*        
+/*
         assertFalse(predicatedMap.containsKey(new Integer(17)));
         assertFalse(predicatedMap.containsKey(new Integer(7)));
-*/        
+*/
     }
 }

@@ -40,20 +40,20 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * ----------------------------------------------------------------------------
  */
 
-/* 
+/*
  * Here's an example of the Quicksort sorting algorithm, implemented using
  * Commons Functor.
- * 
- * See http://commons.apache.org/sandbox/functor/examples.html 
+ *
+ * See http://commons.apache.org/sandbox/functor/examples.html
  * for additional examples.
  */
 
 /**
- * An example of implementing the quicksort sorting algorithm 
+ * An example of implementing the quicksort sorting algorithm
  * using commons-functor.
- * <p> 
+ * <p>
  * See the extensive in line comments for details.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -82,13 +82,13 @@ public class QuicksortExample extends TestCase {
 /*
  * In "test first" style, let's start with the some functional descriptions
  * of what'd we'd like our Quicksort to do, expressed as unit tests.
- * 
+ *
  * In our tests, we'll use a "quicksort" method which takes a List and
  * returns a (new) sorted List.  We'll define that method a bit later.
  *
- * 
+ *
  * First, let's get some trivial cases out of the way.
- * 
+ *
  * Sorting an empty List should produce an empty list:
  */
 
@@ -110,12 +110,12 @@ public class QuicksortExample extends TestCase {
         List sorted = quicksort(list);
 
         assertTrue(
-            "The quicksort() method should return a distinct list.", 
+            "The quicksort() method should return a distinct list.",
             list != sorted);
 
         assertEquals(
-            "Sorting a single-element list should produce an equivalent list", 
-            list, 
+            "Sorting a single-element list should produce an equivalent list",
+            list,
             sorted);
     }
 
@@ -132,7 +132,7 @@ public class QuicksortExample extends TestCase {
         List sorted = quicksort(list);
 
         assertTrue(
-            "The quicksort() method should return a distinct list.", 
+            "The quicksort() method should return a distinct list.",
             list != sorted);
 
         assertEquals(list, sorted);
@@ -140,9 +140,9 @@ public class QuicksortExample extends TestCase {
 
 /*
  * So far so good.
- * 
+ *
  * Next, let's take some slightly more complicated cases.
- * 
+ *
  * Sorting an already sorted list:
  */
     public void testSortSorted() {
@@ -154,17 +154,17 @@ public class QuicksortExample extends TestCase {
         List sorted = quicksort(list);
 
         assertTrue(
-            "The quicksort() method should return a distinct list.", 
+            "The quicksort() method should return a distinct list.",
             list != sorted);
 
         assertEquals(
-            "Sorting an already sorted list should produce an equivalent list", 
-            list, 
+            "Sorting an already sorted list should produce an equivalent list",
+            list,
             sorted);
     }
 
 /*
- * Sorting a reverse-order list (finally, a test case that requires something 
+ * Sorting a reverse-order list (finally, a test case that requires something
  * more than an identity function):
  */
     public void testSortReversed() {
@@ -221,9 +221,9 @@ public class QuicksortExample extends TestCase {
     }
 
 /*
- * Finally, while this quicksort implementation is intended to 
+ * Finally, while this quicksort implementation is intended to
  * illustrate the use of Commons Functor, not for performance,
- * let's output some timings just to demonstrate that the 
+ * let's output some timings just to demonstrate that the
  * performance is adequate.
  */
 
@@ -312,19 +312,19 @@ public class QuicksortExample extends TestCase {
  * Our quicksort method will invoke a UnaryFunction named
  * quicksort:
  */
- 
+
     public List quicksort(List list) {
         return (List)(quicksort.evaluate(list));
     }
 
 /*
  * The quicksort sorting algorithm can be summarized as follows:
- * 
+ *
  * Given a list of elements to be sorted:
- * 
+ *
  * A) If the list is empty, consider it already sorted.
- * 
- * B) If the list is non-empty, we can sort it by first splitting it into 
+ *
+ * B) If the list is non-empty, we can sort it by first splitting it into
  *   three lists:
  *     1) one list containing only the first element in the list (the "head")
  *     2) one (possibly empty) list containing every element in the remaining
@@ -343,14 +343,14 @@ public class QuicksortExample extends TestCase {
     private UnaryFunction quicksort = new ConditionalUnaryFunction(
         /* if the list is empty... */
         IsEmpty.instance(),
-        /* ...then return an empty list... */     
-        new Constant(Collections.EMPTY_LIST), 
+        /* ...then return an empty list... */
+        new Constant(Collections.EMPTY_LIST),
         /* ...else, apply the following function... */
-        new ListFunction() {                                   
+        new ListFunction() {
             public Object evaluate(List list) {
                 /* Create a list to contain the results. */
                 List result = new ArrayList(list.size());
-                /* 
+                /*
                  * Recursively apply quicksort the the elements in the
                  * tail less than the head, adding the result to the
                  * sorted list we're generating.
@@ -358,13 +358,13 @@ public class QuicksortExample extends TestCase {
                 result.addAll(
                     (List)quicksort.evaluate(
                         lesserTail.evaluate(
-                            head.evaluate(list), 
+                            head.evaluate(list),
                             tail.evaluate(list))));
-                /* 
+                /*
                  * Add the head to the sorted list we're generating.
                  */
                 result.add(head.evaluate(list));
-                /* 
+                /*
                  * Recursively apply quicksort the the elements in the
                  * tail greater than the head, adding the result to the
                  * sorted list we're generating.
@@ -372,9 +372,9 @@ public class QuicksortExample extends TestCase {
                 result.addAll(
                     (List)quicksort.evaluate(
                         greaterTail.evaluate(
-                            head.evaluate(list), 
+                            head.evaluate(list),
                             tail.evaluate(list))));
-                /* 
+                /*
                  * And return the generated list.
                  */
                 return result;
@@ -382,12 +382,12 @@ public class QuicksortExample extends TestCase {
     });
 
 /*
- * Now let's look at the building blocks we need to flesh out that 
+ * Now let's look at the building blocks we need to flesh out that
  * function.
- * 
+ *
  * First, let's save ourselves some casting and error handling by
  * definining some functor sub-types.
- * 
+ *
  * Let ListFunction be a UnaryFunction that operates on Lists:
  */
 
@@ -401,17 +401,17 @@ public class QuicksortExample extends TestCase {
                 throw new NullPointerException("The argument must not be null.");
             } else {
                 throw new ClassCastException(
-                    "The argument must be a List, found " + 
+                    "The argument must be a List, found " +
                     obj.getClass().getName());
             }
         }
     }
 
 /*
- * Let ObjectListFunction be a BinaryFunction that operates on 
+ * Let ObjectListFunction be a BinaryFunction that operates on
  * an Object, List pair:
  */
- 
+
     public abstract class ObjectListFunction implements BinaryFunction {
         public abstract Object evaluate(Object head, List tail);
 
@@ -424,15 +424,15 @@ public class QuicksortExample extends TestCase {
                 throw new NullPointerException("The right argument must not be null.");
             } else {
                 throw new ClassCastException(
-                    "The right argument must be a List, found " + 
+                    "The right argument must be a List, found " +
                     right.getClass().getName());
             }
         }
     }
 
-/* 
+/*
  * Now for the implementations.
- * 
+ *
  * Given a List, we need to be able to break it into its head:
  */
 
@@ -442,21 +442,21 @@ public class QuicksortExample extends TestCase {
         }
     };
 
-/* 
+/*
  * and its tail:
  */
     private UnaryFunction tail = new ListFunction() {
         public Object evaluate(List list) {
-            return list.size() < 2 ? 
-                Collections.EMPTY_LIST : 
+            return list.size() < 2 ?
+                Collections.EMPTY_LIST :
                 list.subList(1, list.size());
         }
     };
 
-/* 
+/*
  * Given a List in head/tail form, we should be able to find
  * the list of elements in the tail less than the head.
- * We can simply apply the select algorithm here, using 
+ * We can simply apply the select algorithm here, using
  * a predicate identifying elements less than the head.
  */
     private BinaryFunction lesserTail = new ObjectListFunction() {
@@ -467,9 +467,9 @@ public class QuicksortExample extends TestCase {
         }
     };
 
-/* 
- * We must also be able to find the List of elements in 
- * the tail greater than (or equal to) the head. This 
+/*
+ * We must also be able to find the List of elements in
+ * the tail greater than (or equal to) the head. This
  * is similar to the lesserTail approach.
  */
     private BinaryFunction greaterTail = new ObjectListFunction() {
@@ -484,7 +484,7 @@ public class QuicksortExample extends TestCase {
  * Note that each of these smaller functors is readily testable
  * in isolation:
  */
- 
+
     public void testHeadFunction() {
         List list = new ArrayList();
         try {
@@ -493,38 +493,38 @@ public class QuicksortExample extends TestCase {
         } catch(IndexOutOfBoundsException e) {
             // expected
         }
-        
+
         list.add("First");
         assertEquals("First",head.evaluate(list));
 
         list.add("Second");
         assertEquals("First",head.evaluate(list));
-        
+
     }
-    
+
     public void testTailFunction() {
         List list = new ArrayList();
         {
             List result = (List)(tail.evaluate(list));
-            assertTrue("Tail of an empty list is empty.",result.isEmpty()); 
+            assertTrue("Tail of an empty list is empty.",result.isEmpty());
         }
         list.add("First");
         {
             List result = (List)(tail.evaluate(list));
-            assertTrue("Tail of a one element list is empty.",result.isEmpty()); 
+            assertTrue("Tail of a one element list is empty.",result.isEmpty());
         }
         list.add("Second");
         {
             List result = (List)(tail.evaluate(list));
             assertEquals("Tail of a two element list has one element.",1,result.size());
-            assertEquals("Second",result.get(0)); 
+            assertEquals("Second",result.get(0));
         }
         list.add("Third");
         {
             List result = (List)(tail.evaluate(list));
             assertEquals("Tail of a three element list has two elements.",2,result.size());
-            assertEquals("Second",result.get(0)); 
-            assertEquals("Third",result.get(1)); 
+            assertEquals("Second",result.get(0));
+            assertEquals("Third",result.get(1));
         }
     }
 

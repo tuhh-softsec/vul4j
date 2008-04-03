@@ -46,20 +46,20 @@ public class TestConditional extends TestCase {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testHasNoArgConstructor() throws Exception {
         assertNotNull(new Conditional());
     }
 
     public void testUnaryMethods() {
-        assertNotNull(Conditional.procedure(IsNull.instance(),NoOp.instance(),NoOp.instance()));   
-        assertNotNull(Conditional.function(IsNull.instance(),Identity.instance(),Identity.instance()));   
-        assertNotNull(Conditional.predicate(IsNull.instance(),Constant.truePredicate(),Constant.truePredicate()));   
+        assertNotNull(Conditional.procedure(IsNull.instance(),NoOp.instance(),NoOp.instance()));
+        assertNotNull(Conditional.function(IsNull.instance(),Identity.instance(),Identity.instance()));
+        assertNotNull(Conditional.predicate(IsNull.instance(),Constant.truePredicate(),Constant.truePredicate()));
     }
 
     public void testBinaryMethods() {
-        assertNotNull(Conditional.procedure(IsGreaterThan.instance(),NoOp.instance(),NoOp.instance()));   
-        assertNotNull(Conditional.function(IsGreaterThan.instance(),Max.instance(),Max.instance()));   
-        assertNotNull(Conditional.predicate(IsGreaterThan.instance(),Constant.truePredicate(),Constant.truePredicate()));   
+        assertNotNull(Conditional.procedure(IsGreaterThan.instance(),NoOp.instance(),NoOp.instance()));
+        assertNotNull(Conditional.function(IsGreaterThan.instance(),Max.instance(),Max.instance()));
+        assertNotNull(Conditional.predicate(IsGreaterThan.instance(),Constant.truePredicate(),Constant.truePredicate()));
     }
 }

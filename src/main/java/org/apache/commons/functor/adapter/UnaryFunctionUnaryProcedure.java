@@ -27,13 +27,13 @@ import org.apache.commons.functor.UnaryProcedure;
  * interface by ignoring the value returned
  * by the function.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying function is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -46,14 +46,14 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
     public UnaryFunctionUnaryProcedure(UnaryFunction function) {
         this.function = function;
     }
- 
+
     /**
-     * {@link UnaryFunction#evaluate Evaluate} my function, but 
+     * {@link UnaryFunction#evaluate Evaluate} my function, but
      * ignore its returned value.
      */
     public void run(Object obj) {
         function.evaluate(obj);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof UnaryFunctionUnaryProcedure) {
@@ -62,11 +62,11 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
             return false;
         }
     }
-    
+
     public boolean equals(UnaryFunctionUnaryProcedure that) {
         return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
-    
+
     public int hashCode() {
         int hash = "UnaryFunctionUnaryProcedure".hashCode();
         if(null != function) {
@@ -74,19 +74,19 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
         }
         return hash;
     }
-    
+
     public String toString() {
         return "UnaryFunctionUnaryProcedure<" + function + ">";
     }
-    
+
     /**
-     * Adapt the given, possibly-<code>null</code>, 
+     * Adapt the given, possibly-<code>null</code>,
      * {@link UnaryFunction UnaryFunction} to the
      * {@link UnaryProcedure UnaryProcedure} interface.
      * When the given <code>UnaryFunction</code> is <code>null</code>,
      * returns <code>null</code>.
-     * 
-     * @param function the possibly-<code>null</code> 
+     *
+     * @param function the possibly-<code>null</code>
      *        {@link UnaryFunction UnaryFunction} to adapt
      * @return a {@link UnaryProcedure UnaryProcedure} wrapping the given
      *         {@link UnaryFunction UnaryFunction}, or <code>null</code>

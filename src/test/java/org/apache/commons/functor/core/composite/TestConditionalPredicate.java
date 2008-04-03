@@ -62,7 +62,7 @@ public class TestConditionalPredicate extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         {
             ConditionalPredicate p = new ConditionalPredicate(
@@ -79,7 +79,7 @@ public class TestConditionalPredicate extends BaseFunctorTest {
             assertTrue(!p.test());
         }
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalPredicate p = new ConditionalPredicate(
             new Constant(true),

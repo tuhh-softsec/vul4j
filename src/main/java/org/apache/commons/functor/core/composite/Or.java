@@ -26,11 +26,11 @@ import org.apache.commons.functor.Predicate;
  * Note that by this definition, the "or" of
  * an empty collection of predicates tests <code>false</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link java.io.Serializable Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -55,14 +55,14 @@ public final class Or extends BasePredicateList {
     public Or(Predicate p, Predicate q, Predicate r) {
         super(p,q,r);
     }
-    
+
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public Or or(Predicate p) {
         super.addPredicate(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test() {
@@ -81,17 +81,17 @@ public final class Or extends BasePredicateList {
             return false;
         }
     }
-    
+
     public boolean equals(Or that) {
         return getPredicateListEquals(that);
     }
-    
+
     public int hashCode() {
         return "Or".hashCode() ^ getPredicateListHashCode();
     }
-    
+
     public String toString() {
         return "Or<" + getPredicateListToString() + ">";
     }
-    
+
 }

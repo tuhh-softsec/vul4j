@@ -59,13 +59,13 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         UnaryPredicate p = new PredicateUnaryPredicate(new Constant(true));
         assertTrue(p.test(null));
     }
-    
+
     public void testEquals() throws Exception {
         UnaryPredicate p = new PredicateUnaryPredicate(new Constant(true));
         assertEquals(p,p);

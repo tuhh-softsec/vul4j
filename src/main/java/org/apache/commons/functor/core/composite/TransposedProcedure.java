@@ -22,18 +22,18 @@ import org.apache.commons.functor.BinaryProcedure;
 
 /**
  * Transposes (swaps) the arguments to some other
- * {@link BinaryProcedure procedure}.  
+ * {@link BinaryProcedure procedure}.
  * For example, given a procedure <i>p</i>
  * and the ordered pair of arguments <i>a</i>,
  * <i>b</i>.
- * {@link #run runs}  
+ * {@link #run runs}
  * <code>p.run(b,a)</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -49,7 +49,7 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
 
     // functor interface
     // ------------------------------------------------------------------------
-    public void run(Object left, Object right) {        
+    public void run(Object left, Object right) {
         procedure.run(right,left);
     }
 
@@ -60,11 +60,11 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(TransposedProcedure that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
-    
+
     public int hashCode() {
         int hash = "TransposedProcedure".hashCode();
         if(null != procedure) {
@@ -72,17 +72,17 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "TransposedProcedure<" + procedure + ">";
     }
-        
+
     // static
     // ------------------------------------------------------------------------
     public static TransposedProcedure transpose(BinaryProcedure p) {
         return null == p ? null : new TransposedProcedure(p);
     }
-        
+
     // attributes
     // ------------------------------------------------------------------------
     private BinaryProcedure procedure = null;

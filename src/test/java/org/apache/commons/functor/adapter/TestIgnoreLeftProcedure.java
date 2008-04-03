@@ -60,13 +60,13 @@ public class TestIgnoreLeftProcedure extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         BinaryProcedure p = new IgnoreLeftProcedure(new UnaryFunctionUnaryProcedure(new Identity()));
         p.run(null,Boolean.TRUE);
     }
-    
+
     public void testEquals() throws Exception {
         BinaryProcedure p = new IgnoreLeftProcedure(new NoOp());
         assertEquals(p,p);

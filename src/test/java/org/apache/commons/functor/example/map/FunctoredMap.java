@@ -95,9 +95,9 @@ public class FunctoredMap implements Map {
     public boolean containsValue(Object value) {
         return map.containsValue(value);
     }
-    
+
     // protected
-    
+
     protected void setOnClear(UnaryProcedure procedure) {
         onclear = procedure;
     }
@@ -119,7 +119,7 @@ public class FunctoredMap implements Map {
     }
 
     // attributes
-    
+
     protected static final BinaryFunction DEFAULT_ON_PUT = new BinaryFunction() {
         public Object evaluate(Object a, Object b) {
             Map map = (Map)a;
@@ -128,7 +128,7 @@ public class FunctoredMap implements Map {
             return map.put(key,value);
         }
     };
-    
+
     private BinaryFunction onput = DEFAULT_ON_PUT;
 
     protected static final BinaryFunction DEFAULT_ON_GET = new BinaryFunction() {
@@ -136,9 +136,9 @@ public class FunctoredMap implements Map {
             return ((Map)map).get(key);
         }
     };
-    
+
     private BinaryFunction onget = DEFAULT_ON_GET;
-    
+
     protected static final BinaryProcedure DEFAULT_ON_PUT_ALL = new BinaryProcedure() {
         public void run(Object a, Object b) {
             Map dest = (Map)a;
@@ -147,8 +147,8 @@ public class FunctoredMap implements Map {
         }
     };
 
-    private BinaryProcedure onputall = DEFAULT_ON_PUT_ALL;    
-    
+    private BinaryProcedure onputall = DEFAULT_ON_PUT_ALL;
+
     protected static final BinaryFunction DEFAULT_ON_REMOVE = new BinaryFunction() {
         public Object evaluate(Object a, Object key) {
             Map map = (Map)a;
@@ -165,20 +165,20 @@ public class FunctoredMap implements Map {
     };
 
     private UnaryProcedure onclear = DEFAULT_ON_CLEAR;
-    
+
     private Map map = null;
 
     // inner classes
-    
+
     protected static class ContainsKey implements UnaryPredicate {
         ContainsKey(Map map) {
             this.map = map;
         }
-        
+
         public boolean test(Object obj) {
             return map.containsKey(obj);
         }
-        
+
         private Map map = null;
     }
 
@@ -204,7 +204,7 @@ public class FunctoredMap implements Map {
         public void run(Object a, Object b) {
             run();
         }
-        
+
         private Class klass = null;
     }
 }

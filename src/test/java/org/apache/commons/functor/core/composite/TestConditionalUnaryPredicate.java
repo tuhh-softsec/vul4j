@@ -63,7 +63,7 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
             new Identity(),
@@ -72,7 +72,7 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
         assertTrue(p.test(Boolean.TRUE));
         assertTrue(!p.test(Boolean.FALSE));
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
             new Identity(),

@@ -69,7 +69,7 @@ public class TestIsEmpty extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         assertTrue(IsEmpty.instance().test(Collections.EMPTY_LIST));
         assertTrue(IsEmpty.instance().test(Collections.EMPTY_SET));
@@ -95,7 +95,7 @@ public class TestIsEmpty extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testTestNonCollection() throws Exception {
         try {
             IsEmpty.instance().test(new Integer(3));
@@ -104,7 +104,7 @@ public class TestIsEmpty extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testTestArray() throws Exception {
         assertTrue(! IsEmpty.instance().test(new int[10]));
         assertTrue(! IsEmpty.instance().test(new Object[10]));

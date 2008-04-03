@@ -43,7 +43,7 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
 
     // instance methods
     //---------------------------------------------------------------
-    
+
     public boolean test(Object obj, Object col) {
         if(col instanceof Collection) {
             return testCollection(obj,(Collection)col);
@@ -55,7 +55,7 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
             throw new IllegalArgumentException("Expected Collection or Array, found " + col.getClass());
         }
     }
-    
+
     public boolean equals(Object obj) {
         return (obj instanceof IsElementOf);
     }
@@ -74,7 +74,7 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
 
     private boolean testArray(Object obj, Object array) {
         for(int i=0,m=Array.getLength(array);i<m;i++) {
-            Object value = Array.get(array,i);            
+            Object value = Array.get(array,i);
             if(null == obj) {
                 if(null == value) {
                     return true;
@@ -89,11 +89,11 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
 
     // class methods
     //---------------------------------------------------------------
-    
+
     public static IsElementOf instance() {
         return INSTANCE;
     }
-    
+
     public static UnaryPredicate instance(Object obj) {
         if(null == obj) {
             throw new NullPointerException("Argument must not be null");
@@ -105,10 +105,10 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
             throw new IllegalArgumentException("Expected Collection or Array, found " + obj.getClass());
         }
     }
-    
+
     // class variables
     //---------------------------------------------------------------
-    
+
     private static IsElementOf INSTANCE = new IsElementOf();
 
 }

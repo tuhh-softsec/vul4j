@@ -21,12 +21,12 @@ import java.io.Serializable;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its arguments are 
- * not {@link Object#equals equal} or both 
+ * {@link #test Tests}
+ * <code>true</code> iff its arguments are
+ * not {@link Object#equals equal} or both
  * <code>null</code>.
  * <p>
- * This relation is symmetric but irreflexive 
+ * This relation is symmetric but irreflexive
  * and not transitive.
  * </p>
  * @version $Revision$ $Date$
@@ -38,7 +38,7 @@ public final class IsNotEqual implements BinaryPredicate, Serializable {
     // ------------------------------------------------------------------------
     public IsNotEqual() {
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
 
@@ -49,21 +49,21 @@ public final class IsNotEqual implements BinaryPredicate, Serializable {
     public boolean equals(Object that) {
         return that instanceof IsNotEqual;
     }
-    
+
     public int hashCode() {
         return "IsNotEqual".hashCode();
     }
-    
+
     public String toString() {
         return "IsNotEqual";
     }
-        
+
     // static methods
     // ------------------------------------------------------------------------
     public static IsNotEqual instance() {
         return INSTANCE;
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final IsNotEqual INSTANCE = new IsNotEqual();

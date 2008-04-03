@@ -37,10 +37,10 @@ public class TestFixedSizeMap extends TestCase {
     public static Test suite() {
         return new TestSuite(TestFixedSizeMap.class);
     }
-    
+
     private Map baseMap = null;
     private Map fixedMap = null;
-    
+
     public void setUp() throws Exception {
         super.setUp();
         baseMap = new HashMap();
@@ -49,10 +49,10 @@ public class TestFixedSizeMap extends TestCase {
         baseMap.put(new Integer(3),"three");
         baseMap.put(new Integer(4),"four");
         baseMap.put(new Integer(5),"five");
-        
+
         fixedMap = new FixedSizeMap(baseMap);
     }
-    
+
     public void tearDown() throws Exception {
         super.tearDown();
         baseMap = null;
@@ -60,7 +60,7 @@ public class TestFixedSizeMap extends TestCase {
     }
 
     // tests
-    
+
     public void testCantPutNewPair() {
         try {
             fixedMap.put("xyzzy","xyzzy");
@@ -75,15 +75,15 @@ public class TestFixedSizeMap extends TestCase {
         map.put(new Integer(1),"uno");
         map.put("xyzzy","xyzzy");
         map.put(new Integer(2),"dos");
-        
+
         try {
             fixedMap.putAll(map);
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
             // expected
         }
-        
-        assertEquals("one",fixedMap.get(new Integer(1)));        
+
+        assertEquals("one",fixedMap.get(new Integer(1)));
         assertEquals("two",fixedMap.get(new Integer(2)));
     }
 
@@ -104,10 +104,10 @@ public class TestFixedSizeMap extends TestCase {
             // expected
         }
     }
-        
+
     public void testCanAssociateNewValueWithOldKey() {
         fixedMap.put(new Integer(1),"uno");
-        assertEquals("uno",fixedMap.get(new Integer(1)));        
+        assertEquals("uno",fixedMap.get(new Integer(1)));
         assertEquals("two",fixedMap.get(new Integer(2)));
         assertEquals("three",fixedMap.get(new Integer(3)));
     }
@@ -118,8 +118,8 @@ public class TestFixedSizeMap extends TestCase {
         map.put(new Integer(2),"dos");
 
         fixedMap.putAll(map);
-        
-        assertEquals("uno",fixedMap.get(new Integer(1)));        
+
+        assertEquals("uno",fixedMap.get(new Integer(1)));
         assertEquals("dos",fixedMap.get(new Integer(2)));
         assertEquals("three",fixedMap.get(new Integer(3)));
     }

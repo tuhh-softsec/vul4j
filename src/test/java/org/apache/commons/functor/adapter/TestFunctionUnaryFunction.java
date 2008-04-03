@@ -59,14 +59,14 @@ public class TestFunctionUnaryFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         UnaryFunction f = new FunctionUnaryFunction(new Constant("xyzzy"));
         assertEquals("xyzzy",f.evaluate(null));
         assertEquals("xyzzy",f.evaluate("abc"));
     }
-    
+
     public void testEquals() throws Exception {
         UnaryFunction f = new FunctionUnaryFunction(new Constant("xyzzy"));
         assertEquals(f,f);

@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryFunction;
 
 /**
  * Adapts a
- * {@link Function Function} 
- * to the 
- * {@link UnaryFunction UnaryFunction} interface 
+ * {@link Function Function}
+ * to the
+ * {@link UnaryFunction UnaryFunction} interface
  * by ignoring the unary argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -42,10 +42,10 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
     public FunctionUnaryFunction(Function function) {
         this.function = function;
     }
- 
+
     public Object evaluate(Object obj) {
         return function.evaluate();
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof FunctionUnaryFunction) {
@@ -54,11 +54,11 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
             return false;
         }
     }
-        
+
     public boolean equals(FunctionUnaryFunction that) {
         return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
-    
+
     public int hashCode() {
         int hash = "FunctionUnaryFunction".hashCode();
         if(null != function) {
@@ -66,7 +66,7 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
         }
         return hash;
     }
-    
+
     public String toString() {
         return "FunctionUnaryFunction<" + function + ">";
     }

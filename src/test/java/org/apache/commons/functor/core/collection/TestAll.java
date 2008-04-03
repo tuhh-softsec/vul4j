@@ -31,13 +31,13 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        
+
         suite.addTest(TestFilteredIterator.suite());
         suite.addTest(TestTransformedIterator.suite());
         suite.addTest(TestIsEmpty.suite());
         suite.addTest(TestIsElementOf.suite());
         suite.addTest(TestSize.suite());
-        
+
         return suite;
     }
 }

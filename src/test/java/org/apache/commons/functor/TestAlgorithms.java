@@ -92,7 +92,7 @@ public class TestAlgorithms extends TestCase {
         assertNotNull(result);
         assertEquals(list.size(),result.size());
         assertEquals(list,result);
-    }    
+    }
 
     public void testCollect2() {
         Set set = new HashSet();
@@ -101,7 +101,7 @@ public class TestAlgorithms extends TestCase {
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
         }
-    }    
+    }
 
     public void testCollect3() {
         Set set = new HashSet();
@@ -110,7 +110,7 @@ public class TestAlgorithms extends TestCase {
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
         }
-    }    
+    }
 
     public void testDetect() {
         assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree));
@@ -120,42 +120,42 @@ public class TestAlgorithms extends TestCase {
         } catch(NoSuchElementException e) {
             // expected
         }
-    }    
+    }
 
     public void testDetectIfNone() {
         assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree,"Xyzzy"));
         assertEquals("Xyzzy",Algorithms.detect(list.iterator(),equalsTwentyThree,"Xyzzy"));
-    }    
+    }
 
     public void testForEach() {
         Summer summer = new Summer();
         Algorithms.foreach(list.iterator(),summer);
         assertEquals(sum,summer.sum);
-    }    
+    }
 
     public void testSelect1() {
         Collection result = Algorithms.collect(Algorithms.select(list.iterator(),isEven));
         assertNotNull(result);
         assertEquals(evens,result);
-    }    
+    }
 
     public void testSelect2() {
         ArrayList result = new ArrayList();
         assertSame(result,Algorithms.collect(Algorithms.select(list.iterator(),isEven),result));
         assertEquals(evens,result);
-    }    
+    }
 
     public void testReject1() {
         Collection result = Algorithms.collect(Algorithms.reject(list.iterator(),isOdd));
         assertNotNull(result);
         assertEquals(evens,result);
-    }    
+    }
 
     public void testReject2() {
         ArrayList result = new ArrayList();
         assertSame(result,Algorithms.collect(Algorithms.reject(list.iterator(),isOdd),result));
         assertEquals(evens,result);
-    }    
+    }
 
     public void testRetain() {
         Algorithms.retain(list.iterator(),isEven);
@@ -187,9 +187,9 @@ public class TestAlgorithms extends TestCase {
     public void testApplyToGenerator() {
         Generator gen = new IntegerRange(1,5);
         Summer summer = new Summer();
-                
+
         Algorithms.apply(gen,new Doubler()).run(summer);
-        
+
         assertEquals(2*(1+2+3+4),summer.sum);
     }
 
@@ -239,35 +239,35 @@ public class TestAlgorithms extends TestCase {
         assertEquals("[0, 1]", col.toString());
     }
 
-    public void testDoUntil() {        
+    public void testDoUntil() {
         for(int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.dountil(counter,new Offset(i));
-            assertEquals(i+1,counter.count);        
+            assertEquals(i+1,counter.count);
         }
     }
-    
-    public void testDoWhile() {        
+
+    public void testDoWhile() {
         for(int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.dowhile(counter,new Limit(i));
-            assertEquals(i+1,counter.count);        
+            assertEquals(i+1,counter.count);
         }
     }
-    
-    public void testUntilDo() {        
+
+    public void testUntilDo() {
         for(int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.untildo(new Offset(i),counter);
-            assertEquals(i,counter.count);        
+            assertEquals(i,counter.count);
         }
     }
-    
-    public void testWhileDo() {        
+
+    public void testWhileDo() {
         for(int i=0;i<3;i++){
             Counter counter = new Counter();
             Algorithms.whiledo(new Limit(i),counter);
-            assertEquals(i,counter.count);        
+            assertEquals(i,counter.count);
         }
     }
     public void testRecurse() {
@@ -334,14 +334,14 @@ public class TestAlgorithms extends TestCase {
         }
         public int count = 0;
     }
-    
+
     static class Summer implements UnaryProcedure {
         public void run(Object that) {
             sum += ((Number)that).intValue();
         }
         public int sum = 0;
     }
-    
+
     static class Doubler implements UnaryFunction {
         public Object evaluate(Object obj) {
             return new Integer(2*((Number)obj).intValue());

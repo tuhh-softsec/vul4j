@@ -61,7 +61,7 @@ public class TestBinaryFunctionBinaryProcedure extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
         class EvaluateCounter implements BinaryFunction {

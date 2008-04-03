@@ -22,18 +22,18 @@ import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * Transposes (swaps) the arguments to some other
- * {@link BinaryPredicate predicate}.  
+ * {@link BinaryPredicate predicate}.
  * For example, given a predicate <i>p</i>
  * and the ordered pair of arguments <i>a</i>,
  * <i>b</i>.
- * {@link #test tests}  
+ * {@link #test tests}
  * <code>p.test(b,a)</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -49,7 +49,7 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
 
     // functor interface
     // ------------------------------------------------------------------------
-    public boolean test(Object left, Object right) {        
+    public boolean test(Object left, Object right) {
         return predicate.test(right,left);
     }
 
@@ -60,11 +60,11 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(TransposedPredicate that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
-    
+
     public int hashCode() {
         int hash = "TransposedPredicate".hashCode();
         if(null != predicate) {
@@ -72,17 +72,17 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "TransposedPredicate<" + predicate + ">";
     }
-        
+
     // static
     // ------------------------------------------------------------------------
     public static TransposedPredicate transpose(BinaryPredicate p) {
         return null == p ? null : new TransposedPredicate(p);
     }
-        
+
     // attributes
     // ------------------------------------------------------------------------
     private BinaryPredicate predicate = null;

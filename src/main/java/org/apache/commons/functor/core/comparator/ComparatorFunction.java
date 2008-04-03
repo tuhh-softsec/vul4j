@@ -24,7 +24,7 @@ import org.apache.commons.functor.BinaryFunction;
 /**
  * Adapts a {@link Comparator Comparator} to the
  * {@link BinaryFunction} interface.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -36,7 +36,7 @@ public final class ComparatorFunction implements BinaryFunction, Serializable {
     public ComparatorFunction(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
-    
+
     /**
      * @see org.apache.commons.functor.BinaryFunction#evaluate(Object, Object)
      */

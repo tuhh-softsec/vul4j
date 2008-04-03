@@ -26,11 +26,11 @@ import org.apache.commons.functor.BinaryPredicate;
  * Note that by this definition, the "or" of
  * an empty collection of predicates tests <code>false</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link java.io.Serializable Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -55,14 +55,14 @@ public final class BinaryOr extends BaseBinaryPredicateList {
     public BinaryOr(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
         super(p,q,r);
     }
-    
+
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public BinaryOr or(BinaryPredicate p) {
         super.addBinaryPredicate(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object a, Object b) {
@@ -81,17 +81,17 @@ public final class BinaryOr extends BaseBinaryPredicateList {
             return false;
         }
     }
-    
+
     public boolean equals(BinaryOr that) {
         return getBinaryPredicateListEquals(that);
     }
-    
+
     public int hashCode() {
         return "BinaryOr".hashCode() ^ getBinaryPredicateListHashCode();
     }
-    
+
     public String toString() {
         return "BinaryOr<" + getBinaryPredicateListToString() + ">";
     }
-    
+
 }

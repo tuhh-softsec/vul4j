@@ -36,8 +36,8 @@ public class PredicatedMap extends FunctoredMap {
         setOnPut(new ConditionalBinaryFunction(
             new BinaryPredicate() {
                 public boolean test(Object a, Object b) {
-                    return keyPredicate.test(Array.get(b,0)) && 
-                        valuePredicate.test(Array.get(b,1)); 
+                    return keyPredicate.test(Array.get(b,0)) &&
+                        valuePredicate.test(Array.get(b,1));
                 }
             },
             DEFAULT_ON_PUT,
@@ -49,7 +49,7 @@ public class PredicatedMap extends FunctoredMap {
                 Map src = (Map)s;
                 for(Iterator iter = src.entrySet().iterator(); iter.hasNext(); ) {
                     Map.Entry pair = (Map.Entry)iter.next();
-                    if(keyPredicate.test(pair.getKey()) && 
+                    if(keyPredicate.test(pair.getKey()) &&
                         valuePredicate.test(pair.getValue())) {
                         dest.put(pair.getKey(),pair.getValue());
                     }

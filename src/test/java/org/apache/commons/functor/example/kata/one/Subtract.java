@@ -32,7 +32,7 @@ public class Subtract implements BinaryFunction {
     public Object evaluate(Number left, Number right) {
         return new Integer(left.intValue() - right.intValue());
     }
-    
+
     public static Subtract instance() {
         return INSTANCE;
     }
@@ -40,6 +40,6 @@ public class Subtract implements BinaryFunction {
     public static UnaryFunction from(int factor) {
         return new LeftBoundFunction(instance(),new Integer(factor));
     }
-    
+
     private static Subtract INSTANCE = new Subtract();
 }

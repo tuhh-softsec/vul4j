@@ -29,7 +29,7 @@ public final class FilteredIterator implements Iterator {
 
     // constructor
     // ------------------------------------------------------------------------
-    
+
     public FilteredIterator(Iterator iterator, UnaryPredicate predicate) {
         if(null == iterator || null == predicate) {
             throw new NullPointerException();
@@ -38,10 +38,10 @@ public final class FilteredIterator implements Iterator {
             this.iterator = iterator;
         }
     }
-    
+
     // iterator methods
     // ------------------------------------------------------------------------
-    
+
     /**
      * @see java.util.Iterator#hasNext()
      */
@@ -57,7 +57,7 @@ public final class FilteredIterator implements Iterator {
      * @see java.util.Iterator#next()
      */
     public Object next() {
-        if(hasNext()) {            
+        if(hasNext()) {
             return returnNext();
         } else {
             throw new NoSuchElementException();
@@ -75,12 +75,12 @@ public final class FilteredIterator implements Iterator {
             throw new IllegalStateException();
         }
     }
-    
+
 
     public boolean equals(Object obj) {
         if(obj instanceof FilteredIterator) {
             FilteredIterator that = (FilteredIterator)obj;
-            return predicate.equals(that.predicate) && iterator.equals(that.iterator);  
+            return predicate.equals(that.predicate) && iterator.equals(that.iterator);
         } else {
             return false;
         }
@@ -98,17 +98,17 @@ public final class FilteredIterator implements Iterator {
     public String toString() {
         return "FilteredIterator<" + iterator + "," + predicate + ">";
     }
-    
+
     // class methods
     // ------------------------------------------------------------------------
-    
+
     public static Iterator filter(Iterator iter, UnaryPredicate pred) {
         return null == pred ? iter : (null == iter ? null : new FilteredIterator(iter,pred));
     }
- 
+
     // private
     // ------------------------------------------------------------------------
-    
+
     private boolean setNext() {
         while(iterator.hasNext()) {
             canRemove = false;
@@ -123,7 +123,7 @@ public final class FilteredIterator implements Iterator {
         nextSet = false;
         return false;
     }
- 
+
     private Object returnNext() {
         Object temp = next;
         canRemove = true;
@@ -131,15 +131,15 @@ public final class FilteredIterator implements Iterator {
         nextSet = false;
         return temp;
     }
- 
+
     // attributes
     // ------------------------------------------------------------------------
-    
+
     private UnaryPredicate predicate = null;
     private Iterator iterator = null;
     private Object next = null;
     private boolean nextSet = false;
     private boolean canRemove = false;
-    
+
 
 }

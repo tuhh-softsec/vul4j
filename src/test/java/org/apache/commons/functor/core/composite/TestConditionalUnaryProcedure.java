@@ -65,7 +65,7 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testRun() throws Exception {
         RunCounter left = new RunCounter();
         RunCounter right = new RunCounter();
@@ -85,7 +85,7 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
         assertEquals(2,left.count);
         assertEquals(1,right.count);
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
             new Identity(),
@@ -116,11 +116,11 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
 
     // Classes
     // ------------------------------------------------------------------------
-    
-    static class RunCounter implements UnaryProcedure {        
+
+    static class RunCounter implements UnaryProcedure {
         public void run(Object obj) {
-            count++;    
-        }        
+            count++;
+        }
         public int count = 0;
     }
 }

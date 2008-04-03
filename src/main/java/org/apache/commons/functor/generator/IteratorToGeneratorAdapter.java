@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 /**
  * Adapts an {@link Iterator} to the {@link Generator} interface.
- * 
+ *
  * @since 1.0
  * @version $Revision$ $Date$
  * @author Jason Horman (jason@jhorman.org)
@@ -47,7 +47,7 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
     public void run(UnaryProcedure proc) {
         while(iter.hasNext()) {
             proc.run(iter.next());
-            if (isStopped()) { break; } 
+            if (isStopped()) { break; }
         }
     }
 
@@ -59,14 +59,14 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
             return false;
         }
     }
-    
+
     public int hashCode() {
         int hash = "IteratorToGeneratorAdapater".hashCode();
         hash <<= 2;
         hash ^= iter.hashCode();
-        return hash; 
+        return hash;
     }
-    
+
     public String toString() {
         return "IteratorToGeneratorAdapter<" + iter + ">";
     }
@@ -78,7 +78,7 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
     public static IteratorToGeneratorAdapter adapt(Iterator iter) {
         return null == iter ? null : new IteratorToGeneratorAdapter(iter);
     }
-    
+
     // instance variables
     //-----------------------------------------------------
 

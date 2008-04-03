@@ -46,7 +46,7 @@ public class TestLeftIdentity extends BaseFunctorTest {
     protected Object makeFunctor() {
         return new LeftIdentity();
     }
-    
+
     // Lifecycle
     // ------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ public class TestLeftIdentity extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         BinaryFunction f = new LeftIdentity();
         assertNull(f.evaluate(null,null));
@@ -72,7 +72,7 @@ public class TestLeftIdentity extends BaseFunctorTest {
         assertSame(obj,f.evaluate(obj,null));
         assertSame(obj,f.evaluate(obj,obj));
     }
-    
+
     public void testTest() throws Exception {
         BinaryPredicate p = new LeftIdentity();
         assertTrue(p.test(Boolean.TRUE,null));
@@ -90,7 +90,7 @@ public class TestLeftIdentity extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testEquals() throws Exception {
         BinaryFunction f = new LeftIdentity();
         assertEquals(f,f);
@@ -100,7 +100,7 @@ public class TestLeftIdentity extends BaseFunctorTest {
         assertObjectsAreNotEqual(f,new Constant("abcde"));
         assertObjectsAreNotEqual(f,new Constant(true));
     }
-    
+
     public void testConstant() throws Exception {
         assertEquals(LeftIdentity.instance(),LeftIdentity.instance());
         assertSame(LeftIdentity.instance(),LeftIdentity.instance());

@@ -66,7 +66,7 @@ public class TestSize extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         assertEquals(new Integer(0),Size.instance().evaluate(Collections.EMPTY_LIST));
         assertEquals(new Integer(0),Size.instance().evaluate(Collections.EMPTY_SET));
@@ -74,18 +74,18 @@ public class TestSize extends BaseFunctorTest {
             List list = new ArrayList();
             assertEquals(new Integer(0),Size.instance().evaluate(list));
             for(int i=0;i<2;i++) {
-                assertEquals(new Integer(i),Size.instance().evaluate(list));                
+                assertEquals(new Integer(i),Size.instance().evaluate(list));
                 list.add(new Integer(i));
-                assertEquals(new Integer(i+1),Size.instance().evaluate(list));                
+                assertEquals(new Integer(i+1),Size.instance().evaluate(list));
             }
         }
         {
             Set set = new HashSet();
             assertEquals(new Integer(0),Size.instance().evaluate(set));
             for(int i=0;i<2;i++) {
-                assertEquals(new Integer(i),Size.instance().evaluate(set));                
+                assertEquals(new Integer(i),Size.instance().evaluate(set));
                 set.add(new Integer(i));
-                assertEquals(new Integer(i+1),Size.instance().evaluate(set));                
+                assertEquals(new Integer(i+1),Size.instance().evaluate(set));
             }
         }
     }
@@ -98,7 +98,7 @@ public class TestSize extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testEvaluateNonCollection() throws Exception {
         try {
             Size.instance().evaluate(new Integer(3));
@@ -107,7 +107,7 @@ public class TestSize extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testEvaluateArray() throws Exception {
         assertEquals(new Integer(10),Size.instance().evaluate(new int[10]));
         assertEquals(new Integer(7),Size.instance().evaluate(new String[7]));

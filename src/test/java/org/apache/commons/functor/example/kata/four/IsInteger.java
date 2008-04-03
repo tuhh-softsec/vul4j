@@ -21,7 +21,7 @@ import org.apache.commons.functor.UnaryPredicate;
 /**
  * Tests to true iff the input object can be converted to
  * an Integer by {@link ToInteger}.
- *  
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -34,10 +34,10 @@ public final class IsInteger implements UnaryPredicate {
             return false;
         }
     }
-    
+
     public static final IsInteger instance() {
         return INSTANCE;
     }
-    
+
     private static final IsInteger INSTANCE = new IsInteger();
 }

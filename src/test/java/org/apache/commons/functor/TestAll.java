@@ -34,13 +34,13 @@ public class TestAll extends TestCase {
 
         // functor package
         suite.addTest(TestAlgorithms.suite());
-        
+
         // sub-packages
         suite.addTest(org.apache.commons.functor.adapter.TestAll.suite());
         suite.addTest(org.apache.commons.functor.core.TestAll.suite());
         suite.addTest(org.apache.commons.functor.generator.TestAll.suite());
         suite.addTest(org.apache.commons.functor.example.TestAll.suite());
-        
+
         return suite;
     }
 }

@@ -22,19 +22,19 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * A {@link UnaryProcedure UnaryProcedure} 
- * similiar to Java's "ternary" 
+ * A {@link UnaryProcedure UnaryProcedure}
+ * similiar to Java's "ternary"
  * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given a {@link UnaryPredicate predicate}
  * <i>p</i> and {@link UnaryProcedure procedures}
  * <i>q</i> and <i>r</i>, {@link #run runs}
  * <code>if(p.test(x)) { q.run(x); } else { r.run(x); }</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -50,7 +50,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
         this.thenProc = thenPred;
         this.elseProc = elsePred;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
     public void run(Object obj) {
@@ -68,31 +68,31 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
             return false;
         }
     }
-    
+
     public boolean equals(ConditionalUnaryProcedure that) {
-        return null != that && 
+        return null != that &&
                 (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
                 (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc)) &&
                 (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
     }
-    
+
     public int hashCode() {
         int hash = "ConditionalUnaryProcedure".hashCode();
         if(null != ifPred) {
             hash <<= 4;
-            hash ^= ifPred.hashCode();            
+            hash ^= ifPred.hashCode();
         }
         if(null != thenProc) {
             hash <<= 4;
-            hash ^= thenProc.hashCode();            
+            hash ^= thenProc.hashCode();
         }
         if(null != elseProc) {
             hash <<= 4;
-            hash ^= elseProc.hashCode();            
+            hash ^= elseProc.hashCode();
         }
         return hash;
     }
-    
+
     public String toString() {
         return "ConditionalUnaryProcedure<" + ifPred + "?" + thenProc + ":" + elseProc + ">";
     }

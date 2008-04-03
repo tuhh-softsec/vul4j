@@ -27,13 +27,13 @@ import org.apache.commons.functor.Procedure;
  * interface by ignoring the value returned
  * by the function.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying function is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -46,14 +46,14 @@ public final class FunctionProcedure implements Procedure, Serializable {
     public FunctionProcedure(Function function) {
         this.function = function;
     }
- 
+
     /**
-     * {@link Function#evaluate Evaluate} my function, 
+     * {@link Function#evaluate Evaluate} my function,
      * but ignore its returned value.
      */
     public void run() {
         function.evaluate();
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof FunctionProcedure) {
@@ -62,11 +62,11 @@ public final class FunctionProcedure implements Procedure, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(FunctionProcedure that) {
         return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
-    
+
     public int hashCode() {
         int hash = "FunctionProcedure".hashCode();
         if(null != function) {
@@ -74,18 +74,18 @@ public final class FunctionProcedure implements Procedure, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "FunctionProcedure<" + function + ">";
     }
     /**
-     * Adapt the given, possibly-<code>null</code>, 
+     * Adapt the given, possibly-<code>null</code>,
      * {@link Function Function} to the
      * {@link Procedure Procedure} interface.
      * When the given <code>Function</code> is <code>null</code>,
      * returns <code>null</code>.
-     * 
-     * @param function the possibly-<code>null</code> 
+     *
+     * @param function the possibly-<code>null</code>
      *        {@link Function Function} to adapt
      * @return a {@link Procedure Procedure} wrapping the given
      *         {@link Function Function}, or <code>null</code>

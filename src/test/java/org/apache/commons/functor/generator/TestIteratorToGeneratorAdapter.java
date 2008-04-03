@@ -48,12 +48,12 @@ public class TestIteratorToGeneratorAdapter extends BaseFunctorTest {
         list.add("1");
         return new IteratorToGeneratorAdapter(list.iterator());
     }
-    
+
     // Lifecycle
     // ------------------------------------------------------------------------
-    
+
     private List list = null;
-    
+
     public void setUp() throws Exception {
         super.setUp();
         list = new ArrayList();
@@ -85,7 +85,7 @@ public class TestIteratorToGeneratorAdapter extends BaseFunctorTest {
         list2.addAll(gen.toCollection());
         assertEquals(list,list2);
     }
-    
+
     public void testConstructNull() {
         try {
             new IteratorToGeneratorAdapter(null);

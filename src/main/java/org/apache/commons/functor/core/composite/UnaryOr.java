@@ -26,11 +26,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * Note that by this definition, the "or" of
  * an empty collection of predicates tests <code>false</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link java.io.Serializable Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -55,14 +55,14 @@ public final class UnaryOr extends BaseUnaryPredicateList {
     public UnaryOr(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
         super(p,q,r);
     }
-    
+
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public UnaryOr or(UnaryPredicate p) {
         super.addUnaryPredicate(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object a) {
@@ -81,17 +81,17 @@ public final class UnaryOr extends BaseUnaryPredicateList {
             return false;
         }
     }
-    
+
     public boolean equals(UnaryOr that) {
         return getUnaryPredicateListEquals(that);
     }
-    
+
     public int hashCode() {
         return "UnaryOr".hashCode() ^ getUnaryPredicateListHashCode();
     }
-    
+
     public String toString() {
         return "UnaryOr<" + getUnaryPredicateListToString() + ">";
     }
-    
+
 }

@@ -59,13 +59,13 @@ public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
         BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE));
         assertTrue(p.test(null,null));
     }
-    
+
     public void testTestWhenFalse() throws Exception {
         BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(Boolean.FALSE));
         assertTrue(!p.test(null,null));
@@ -80,7 +80,7 @@ public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testTestWhenNonBoolean() throws Exception {
         BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(new Integer(2)));
         try {
@@ -90,7 +90,7 @@ public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testEquals() throws Exception {
         BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE));
         assertEquals(p,p);

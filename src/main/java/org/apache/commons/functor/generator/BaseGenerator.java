@@ -1,12 +1,12 @@
 /*
  * Copyright 2003-2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -62,7 +62,7 @@ public abstract class BaseGenerator implements Generator {
 
     /** Stop the generator. Will stop the wrapped generator if one was set. */
     public void stop() {
-        if (wrappedGenerator != null) { wrappedGenerator.stop(); } 
+        if (wrappedGenerator != null) { wrappedGenerator.stop(); }
         stopped = true;
     }
 
@@ -78,7 +78,7 @@ public abstract class BaseGenerator implements Generator {
     public final Generator apply(UnaryFunction func) {
         return Algorithms.apply(this,func);
     }
-    
+
     /** See {@link Algorithms#contains}. */
     public final boolean contains(UnaryPredicate pred) {
         return Algorithms.contains(this, pred);

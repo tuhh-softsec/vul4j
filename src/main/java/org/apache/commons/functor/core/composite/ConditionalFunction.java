@@ -22,20 +22,20 @@ import org.apache.commons.functor.Function;
 import org.apache.commons.functor.Predicate;
 
 /**
- * A {@link Function Function} 
- * similiar to Java's "ternary" 
+ * A {@link Function Function}
+ * similiar to Java's "ternary"
  * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given a {@link Predicate predicate}
  * <i>p</i> and {@link Function functions}
  * <i>f</i> and <i>g</i>, {@link #evaluate evalautes}
- * to 
+ * to
  * <code>p.test() ? f.evaluate() : g.evaluate()</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -51,7 +51,7 @@ public final class ConditionalFunction implements Function, Serializable {
         this.thenFunc = thenPred;
         this.elseFunc = elsePred;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
     public Object evaluate() {
@@ -65,31 +65,31 @@ public final class ConditionalFunction implements Function, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(ConditionalFunction that) {
-        return null != that && 
+        return null != that &&
                 (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
                 (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc)) &&
                 (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
     }
-    
+
     public int hashCode() {
         int hash = "ConditionalFunction".hashCode();
         if(null != ifPred) {
             hash <<= 4;
-            hash ^= ifPred.hashCode();            
+            hash ^= ifPred.hashCode();
         }
         if(null != thenFunc) {
             hash <<= 4;
-            hash ^= thenFunc.hashCode();            
+            hash ^= thenFunc.hashCode();
         }
         if(null != elseFunc) {
             hash <<= 4;
-            hash ^= elseFunc.hashCode();            
+            hash ^= elseFunc.hashCode();
         }
         return hash;
     }
-    
+
     public String toString() {
         return "ConditionalFunction<" + ifPred + "?" + thenFunc + ":" + elseFunc + ">";
     }

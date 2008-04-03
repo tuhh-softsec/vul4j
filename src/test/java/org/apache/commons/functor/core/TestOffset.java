@@ -47,7 +47,7 @@ public class TestOffset extends BaseFunctorTest {
     protected Object makeFunctor() {
         return new Offset(3);
     }
-    
+
     // Lifecycle
     // ------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ public class TestOffset extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testTestNilary() throws Exception {
         Predicate p = new Offset(3);
         assertTrue(!p.test());
@@ -85,7 +85,7 @@ public class TestOffset extends BaseFunctorTest {
         assertTrue(!p.test(null));
         assertTrue(p.test(null));
     }
-        
+
     public void testTestBinary() throws Exception {
         BinaryPredicate p = new Offset(3);
         assertTrue(!p.test(null,null));

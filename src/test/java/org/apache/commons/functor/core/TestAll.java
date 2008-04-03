@@ -31,7 +31,7 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        
+
         suite.addTest(TestNoOp.suite());
         suite.addTest(TestConstant.suite());
         suite.addTest(TestIdentity.suite());
@@ -50,7 +50,7 @@ public class TestAll extends TestCase {
         suite.addTest(org.apache.commons.functor.core.composite.TestAll.suite());
         suite.addTest(org.apache.commons.functor.core.collection.TestAll.suite());
         suite.addTest(org.apache.commons.functor.core.comparator.TestAll.suite());
-        
+
         return suite;
     }
 }

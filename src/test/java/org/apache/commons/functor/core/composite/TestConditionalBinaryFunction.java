@@ -63,7 +63,7 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         ConditionalBinaryFunction f = new ConditionalBinaryFunction(
             new LeftIdentity(),
@@ -72,7 +72,7 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
         assertEquals("left",f.evaluate(Boolean.TRUE,null));
         assertEquals("right",f.evaluate(Boolean.FALSE,null));
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalBinaryFunction f = new ConditionalBinaryFunction(
             new LeftIdentity(),

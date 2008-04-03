@@ -45,7 +45,7 @@ public class TestIsInstanceOf extends BaseFunctorTest {
     protected Object makeFunctor() {
         return new IsInstanceOf(String.class);
     }
-    
+
     // Lifecycle
     // ------------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ public class TestIsInstanceOf extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         UnaryPredicate p = new IsInstanceOf(Number.class);
         assertTrue(!p.test(null));
@@ -68,7 +68,7 @@ public class TestIsInstanceOf extends BaseFunctorTest {
         assertTrue(p.test(new Integer(3)));
         assertTrue(p.test((new Long(3L))));
     }
-    
+
     public void testInstanceOfNull() throws Exception {
         UnaryPredicate p = new IsInstanceOf(null);
         try {
@@ -78,7 +78,7 @@ public class TestIsInstanceOf extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testEquals() throws Exception {
         UnaryPredicate p = new IsInstanceOf(Object.class);
         assertEquals(p,p);

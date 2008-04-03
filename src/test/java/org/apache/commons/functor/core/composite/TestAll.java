@@ -39,7 +39,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestOr.suite());
         suite.addTest(TestUnaryOr.suite());
         suite.addTest(TestBinaryOr.suite());
-        
+
         suite.addTest(TestNot.suite());
         suite.addTest(TestUnaryNot.suite());
         suite.addTest(TestBinaryNot.suite());
@@ -49,7 +49,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestBinarySequence.suite());
 
         suite.addTest(TestComposite.suite());
-        
+
         suite.addTest(TestCompositeUnaryFunction.suite());
         suite.addTest(TestCompositeUnaryPredicate.suite());
         suite.addTest(TestCompositeUnaryProcedure.suite());
@@ -74,11 +74,11 @@ public class TestAll extends TestCase {
         suite.addTest(TestConditionalProcedure.suite());
         suite.addTest(TestConditionalUnaryProcedure.suite());
         suite.addTest(TestConditionalBinaryProcedure.suite());
-        
+
 		suite.addTest(TestAbstractLoopProcedure.suite());
 		suite.addTest(TestWhileDoProcedure.suite());
 		suite.addTest(TestDoWhileProcedure.suite());
-        
+
         return suite;
     }
 }

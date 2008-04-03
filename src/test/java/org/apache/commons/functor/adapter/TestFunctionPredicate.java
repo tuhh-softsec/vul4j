@@ -59,13 +59,13 @@ public class TestFunctionPredicate extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
         Predicate p = new FunctionPredicate(new Constant(Boolean.TRUE));
         assertTrue(p.test());
     }
-    
+
     public void testTestWhenFalse() throws Exception {
         Predicate p = new FunctionPredicate(new Constant(Boolean.FALSE));
         assertTrue(!p.test());
@@ -80,7 +80,7 @@ public class TestFunctionPredicate extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testTestWhenNonBoolean() throws Exception {
         Predicate p = new FunctionPredicate(new Constant(new Integer(2)));
         try {
@@ -90,7 +90,7 @@ public class TestFunctionPredicate extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testEquals() throws Exception {
         Predicate p = new FunctionPredicate(new Constant(Boolean.TRUE));
         assertEquals(p,p);

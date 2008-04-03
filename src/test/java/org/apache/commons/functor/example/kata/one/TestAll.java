@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 /**
  * See http://pragprog.com/pragdave/Practices/Kata/KataOne.rdoc,v
  * for more information on this Kata.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */

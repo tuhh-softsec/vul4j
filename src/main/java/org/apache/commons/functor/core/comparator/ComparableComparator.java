@@ -20,23 +20,23 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * See Commons-Collections for a public version 
+ * See Commons-Collections for a public version
  * of this class.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 final class ComparableComparator implements Comparator, Serializable {
     public ComparableComparator() {
     }
- 
+
     /**
      * @see java.util.Comparator#compare(Object, Object)
      */
     public int compare(Object o1, Object o2) {
         return ((Comparable)o1).compareTo(o2);
     }
-    
+
     /**
      * @see java.lang.Object#equals(Object)
      */
@@ -57,11 +57,11 @@ final class ComparableComparator implements Comparator, Serializable {
     public String toString() {
         return" ComparableComparator";
     }
-    
+
     public static final ComparableComparator instance() {
         return INSTANCE;
     }
-    
+
     public static final ComparableComparator INSTANCE = new ComparableComparator();
 
 }

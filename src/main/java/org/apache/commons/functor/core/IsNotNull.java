@@ -21,10 +21,10 @@ import java.io.Serializable;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>false</code> iff its argument 
+ * {@link #test Tests}
+ * <code>false</code> iff its argument
  * is <code>null</code>.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -34,7 +34,7 @@ public final class IsNotNull implements UnaryPredicate, Serializable {
     // ------------------------------------------------------------------------
     public IsNotNull() {
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
 
@@ -45,21 +45,21 @@ public final class IsNotNull implements UnaryPredicate, Serializable {
     public boolean equals(Object that) {
         return that instanceof IsNotNull;
     }
-    
+
     public int hashCode() {
         return "IsNotNull".hashCode();
     }
-    
+
     public String toString() {
         return "IsNotNull";
     }
-        
+
     // static methods
     // ------------------------------------------------------------------------
     public static IsNotNull instance() {
         return INSTANCE;
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final IsNotNull INSTANCE = new IsNotNull();

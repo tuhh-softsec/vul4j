@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryProcedure;
 
 /**
  * Adapts a
- * {@link BinaryProcedure BinaryProcedure} 
- * to the 
- * {@link UnaryProcedure UnaryProcedure} interface 
+ * {@link BinaryProcedure BinaryProcedure}
+ * to the
+ * {@link UnaryProcedure UnaryProcedure} interface
  * using a constant left-side argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying objects are.  Attempts to serialize
- * an instance whose delegates are not 
+ * an instance whose delegates are not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -47,10 +47,10 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
         this.procedure = procedure;
         this.param = arg;
     }
- 
+
     public void run(Object obj) {
         procedure.run(param,obj);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof LeftBoundProcedure) {
@@ -59,15 +59,15 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(LeftBoundProcedure that) {
-        return that == this || ( 
-                (null != that) && 
+        return that == this || (
+                (null != that) &&
                 (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
-                
+
     }
-    
+
     public int hashCode() {
         int hash = "LeftBoundProcedure".hashCode();
         if(null != procedure) {
@@ -80,7 +80,7 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "LeftBoundProcedure<" + procedure + "(" + param + ",?)>";
     }

@@ -31,12 +31,12 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    
+
     public IsEmpty() { }
 
     // instance methods
     // ------------------------------------------------------------------------
-    
+
     public boolean test(Object obj) {
         if(obj instanceof Collection) {
             return testCollection((Collection)obj);
@@ -50,7 +50,7 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
             throw new NullPointerException("Argument must not be null");
         } else {
             throw new IllegalArgumentException("Expected Collection, Map, String or Array, found " + obj.getClass());
-        } 
+        }
     }
 
     /**
@@ -77,29 +77,29 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
     private boolean testCollection(Collection col) {
         return col.isEmpty();
     }
-    
+
     private boolean testMap(Map map) {
         return map.isEmpty();
     }
-    
+
     private boolean testString(String str) {
         return 0 == str.length();
     }
-    
+
     private boolean testArray(Object array) {
         return 0 == Array.getLength(array);
     }
 
     // class methods
     // ------------------------------------------------------------------------
-    
+
     public static final IsEmpty instance() {
         return INSTANCE;
     }
-    
+
     // class variables
     // ------------------------------------------------------------------------
-    
+
     private static final IsEmpty INSTANCE = new IsEmpty();
 
 }

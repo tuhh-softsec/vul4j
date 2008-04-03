@@ -27,18 +27,18 @@ import org.apache.commons.functor.core.NoOp;
  * <pre>
  * new EiffelStyleLoop()
  *   .from(new Procedure() { public void run() {} }) // init code
- *   .invariant(new Predicate() { public boolean test() {} }) // invariants 
- *   .variant(new Procedure() { public Object evaluate() {} }) // diminishing comparable value 
+ *   .invariant(new Predicate() { public boolean test() {} }) // invariants
+ *   .variant(new Procedure() { public Object evaluate() {} }) // diminishing comparable value
  *   // or
- *   // .variant(new Predicate() { public boolean test() {} }) // more invariants 
+ *   // .variant(new Predicate() { public boolean test() {} }) // more invariants
  *   .until(new Predicate() { public boolean test() {} }) // terminating condition
  *   .loop(new Procedure() { public void run() {} }) // the acutal loop
  *   .run();
  * </pre>
- * 
+ *
  * Note that <tt>new EiffelStyleLoop().run()</tt> executes just fine.
  * You only need to set the parts of the loop you want to use.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -67,12 +67,12 @@ public class EiffelStyleLoop implements Procedure {
                     result = last.compareTo(next) > 0;
                 }
                 last = next;
-                return result;                
+                return result;
             }
             private Comparable last = null;
         });
     }
-    
+
     public EiffelStyleLoop until(Predicate predicate) {
         until = predicate;
         return this;
@@ -87,32 +87,32 @@ public class EiffelStyleLoop implements Procedure {
         from.run();
         assertTrue(invariant.test());
         while(! until.test() ) {
-            loop.run();                
+            loop.run();
             assertTrue(variant.test());
             assertTrue(invariant.test());
         }
-        
-        // Note that: 
+
+        // Note that:
         //   assertTrue(until.test());
         // holds here, but isn't necessary since that's
         // the only way we could get out of the loop
 
-        // Also note that: 
+        // Also note that:
         //   assertTrue(invariant.test());
         // holds here, but was the last thing called
         // before until.test()
     }
-    
+
     private void assertTrue(boolean value) {
         if(!value) {
             throw new IllegalStateException("Assertion failed");
         }
     }
-    
+
     private Procedure from = NoOp.instance();
     private Predicate invariant = Constant.truePredicate();
     private Predicate variant = Constant.truePredicate();
     private Predicate until = Constant.falsePredicate();
-    private Procedure loop = NoOp.instance();        
+    private Procedure loop = NoOp.instance();
 
 }

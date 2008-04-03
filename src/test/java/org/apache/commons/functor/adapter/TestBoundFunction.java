@@ -60,13 +60,13 @@ public class TestBoundFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         Function f = new BoundFunction(new Identity(),"xyzzy");
         assertEquals("xyzzy",f.evaluate());
     }
-    
+
     public void testEquals() throws Exception {
         Function f = new BoundFunction(new Identity(),"xyzzy");
         assertEquals(f,f);

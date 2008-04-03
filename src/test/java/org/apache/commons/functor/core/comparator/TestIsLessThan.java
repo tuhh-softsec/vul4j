@@ -58,7 +58,7 @@ public class TestIsLessThan extends BaseComparisonPredicateTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         IsLessThan p = new IsLessThan();
         assertTrue(p.test(new Integer(2),new Integer(4)));
@@ -67,12 +67,12 @@ public class TestIsLessThan extends BaseComparisonPredicateTest {
         assertTrue(!p.test(new Integer(5),new Integer(4)));
         assertTrue(!p.test(new Integer(6),new Integer(4)));
     }
-    
+
     public void testInstance() {
         assertTrue(! IsLessThan.instance(new Integer(7)).test(new Integer(8)));
         assertTrue(IsLessThan.instance(new Integer(7)).test(new Integer(6)));
     }
-    
+
     public void testEquals() throws Exception {
         IsLessThan p = new IsLessThan();
         assertEquals(p,p);
@@ -84,5 +84,5 @@ public class TestIsLessThan extends BaseComparisonPredicateTest {
         assertSame(IsLessThan.instance(),IsLessThan.instance());
         assertObjectsAreNotEqual(p,new Constant(false));
     }
-    
+
 }

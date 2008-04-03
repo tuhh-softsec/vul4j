@@ -21,17 +21,17 @@ import java.io.Serializable;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its arguments are 
- * {@link Object#equals equal} or both 
+ * {@link #test Tests}
+ * <code>true</code> iff its arguments are
+ * {@link Object#equals equal} or both
  * <code>null</code>.
  * <p>
- * This relation is 
- * an equivalence relation on 
- * the set of objects that adhere to the 
+ * This relation is
+ * an equivalence relation on
+ * the set of objects that adhere to the
  * <code>Object.equals</code> contract.
  * </p>
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -41,7 +41,7 @@ public final class IsEqual implements BinaryPredicate, Serializable {
     // ------------------------------------------------------------------------
     public IsEqual() {
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
 
@@ -52,21 +52,21 @@ public final class IsEqual implements BinaryPredicate, Serializable {
     public boolean equals(Object that) {
         return that instanceof IsEqual;
     }
-    
+
     public int hashCode() {
         return "IsEqual".hashCode();
     }
-    
+
     public String toString() {
         return "IsEqual";
     }
-        
+
     // static methods
     // ------------------------------------------------------------------------
     public static IsEqual instance() {
         return INSTANCE;
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final IsEqual INSTANCE = new IsEqual();

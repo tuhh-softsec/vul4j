@@ -58,7 +58,7 @@ public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         IsGreaterThanOrEqual p = new IsGreaterThanOrEqual();
         assertTrue(!p.test(new Integer(2),new Integer(4)));
@@ -67,7 +67,7 @@ public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
         assertTrue(p.test(new Integer(5),new Integer(4)));
         assertTrue(p.test(new Integer(6),new Integer(4)));
     }
-    
+
     public void testInstance() {
         assertTrue(IsGreaterThanOrEqual.instance(new Integer(7)).test(new Integer(8)));
         assertTrue(! IsGreaterThanOrEqual.instance(new Integer(7)).test(new Integer(6)));
@@ -84,5 +84,5 @@ public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
         assertSame(IsGreaterThanOrEqual.instance(),IsGreaterThanOrEqual.instance());
         assertObjectsAreNotEqual(p,new Constant(false));
     }
-    
+
 }

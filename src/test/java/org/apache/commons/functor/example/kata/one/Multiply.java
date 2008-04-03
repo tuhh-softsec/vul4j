@@ -32,7 +32,7 @@ public class Multiply implements BinaryFunction {
     public Object evaluate(Number left, Number right) {
         return new Integer(left.intValue() * right.intValue());
     }
-    
+
     public static Multiply instance() {
         return INSTANCE;
     }
@@ -40,6 +40,6 @@ public class Multiply implements BinaryFunction {
     public static UnaryFunction by(int factor) {
         return new LeftBoundFunction(instance(),new Integer(factor));
     }
-    
+
     private static Multiply INSTANCE = new Multiply();
 }

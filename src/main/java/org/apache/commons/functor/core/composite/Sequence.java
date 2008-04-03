@@ -24,17 +24,17 @@ import java.util.ListIterator;
 import org.apache.commons.functor.Procedure;
 
 /**
- * A {@link Procedure Procedure} 
- * that {@link Procedure#run runs} an ordered 
+ * A {@link Procedure Procedure}
+ * that {@link Procedure#run runs} an ordered
  * sequence of {@link Procedure Procedures}.
  * When the sequence is empty, this procedure is does
  * nothing.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -57,15 +57,15 @@ public class Sequence implements Procedure, Serializable {
     }
 
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public Sequence then(Procedure p) {
         list.add(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
-    public void run() {        
+    public void run() {
         for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
             ((Procedure)iter.previous()).run();
         }
@@ -78,22 +78,22 @@ public class Sequence implements Procedure, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(Sequence that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
-    
+
     public int hashCode() {
         // by construction, list is never null
         return "Sequence".hashCode() ^ list.hashCode();
     }
-    
+
     public String toString() {
         return "Sequence<" + list + ">";
     }
-    
-    
+
+
     // attributes
     // ------------------------------------------------------------------------
     private List list = new ArrayList();

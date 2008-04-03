@@ -24,20 +24,20 @@ import java.util.ListIterator;
 import org.apache.commons.functor.BinaryProcedure;
 
 /**
- * A {@link BinaryProcedure BinaryProcedure} 
- * that {@link BinaryProcedure#run runs} an ordered 
+ * A {@link BinaryProcedure BinaryProcedure}
+ * that {@link BinaryProcedure#run runs} an ordered
  * sequence of {@link BinaryProcedure BinaryProcedures}.
  * When the sequence is empty, this procedure is does
  * nothing.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -58,15 +58,15 @@ public class BinarySequence implements BinaryProcedure, Serializable {
     }
 
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public BinarySequence then(BinaryProcedure p) {
         list.add(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
-    public void run(Object left, Object right) {        
+    public void run(Object left, Object right) {
         for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
             ((BinaryProcedure)iter.previous()).run(left,right);
         }
@@ -79,22 +79,22 @@ public class BinarySequence implements BinaryProcedure, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(BinarySequence that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
-    
+
     public int hashCode() {
         // by construction, list is never null
         return "BinarySequence".hashCode() ^ list.hashCode();
     }
-    
+
     public String toString() {
         return "BinarySequence<" + list + ">";
     }
-    
-    
+
+
     // attributes
     // ------------------------------------------------------------------------
     private List list = new ArrayList();

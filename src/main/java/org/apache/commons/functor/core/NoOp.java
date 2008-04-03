@@ -27,7 +27,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * <p>
  * Note that this class implements {@link Procedure},
  * {@link UnaryProcedure}, and {@link BinaryProcedure}.
- * </p>   
+ * </p>
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -37,7 +37,7 @@ public final class NoOp implements Procedure, UnaryProcedure, BinaryProcedure, S
     // ------------------------------------------------------------------------
     public NoOp() {
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public void run() {
@@ -52,15 +52,15 @@ public final class NoOp implements Procedure, UnaryProcedure, BinaryProcedure, S
     public boolean equals(Object that) {
         return (that instanceof NoOp);
     }
-        
+
     public int hashCode() {
         return "NoOp".hashCode();
     }
-    
+
     public String toString() {
         return "NoOp";
     }
-    
+
     // static methods
     // ------------------------------------------------------------------------
     public static NoOp instance() {

@@ -26,11 +26,11 @@ import org.apache.commons.functor.BinaryPredicate;
  * Note that by this definition, the "and" of
  * an empty collection of predicates tests <code>true</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link java.io.Serializable Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -55,14 +55,14 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
     public BinaryAnd(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
         super(p,q,r);
     }
-    
+
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public BinaryAnd and(BinaryPredicate p) {
         super.addBinaryPredicate(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object a, Object b) {
@@ -81,17 +81,17 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
             return false;
         }
     }
-    
+
     public boolean equals(BinaryAnd that) {
         return getBinaryPredicateListEquals(that);
     }
-    
+
     public int hashCode() {
         return "BinaryAnd".hashCode() ^ getBinaryPredicateListHashCode();
     }
-    
+
     public String toString() {
         return "BinaryAnd<" + getBinaryPredicateListToString() + ">";
     }
-    
+
 }

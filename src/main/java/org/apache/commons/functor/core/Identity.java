@@ -23,13 +23,13 @@ import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * {@link #evaluate Evaluates} to its input argument.
- * 
+ *
  * {@link #test Tests} to the <code>boolean</code>
  * value of the <code>Boolean</code>-valued parameter.
- * The {@link #test} method throws an exception if 
- * the parameter isn't a non-<code>null</code> 
+ * The {@link #test} method throws an exception if
+ * the parameter isn't a non-<code>null</code>
  * <code>Boolean</code>.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -39,7 +39,7 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
     // ------------------------------------------------------------------------
     public Identity() {
     }
- 
+
     // function interface
     // ------------------------------------------------------------------------
     public Object evaluate(Object obj) {
@@ -57,21 +57,21 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
     public boolean equals(Object that) {
         return (that instanceof Identity);
     }
-    
+
     public int hashCode() {
         return "Identity".hashCode();
     }
-    
+
     public String toString() {
         return "Identity";
     }
-    
+
     // static methods
     // ------------------------------------------------------------------------
     public static Identity instance() {
         return INSTANCE;
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final Identity INSTANCE = new Identity();

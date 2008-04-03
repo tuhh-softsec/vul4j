@@ -24,27 +24,27 @@ import java.util.ListIterator;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
- * A {@link UnaryFunction UnaryFunction} 
- * representing the composition of 
+ * A {@link UnaryFunction UnaryFunction}
+ * representing the composition of
  * {@link UnaryFunction UnaryFunctions},
  * "chaining" the output of one to the input
- * of another.  For example, 
+ * of another.  For example,
  * <pre>new CompositeUnaryFunction(f).of(g)</code>
- * {@link #evaluate evaluates} to 
+ * {@link #evaluate evaluates} to
  * <code>f.evaluate(g.evaluate(obj))</code>, and
  * <pre>new CompositeUnaryFunction(f).of(g).of(h)</pre>
- * {@link #evaluate evaluates} to 
+ * {@link #evaluate evaluates} to
  * <code>f.evaluate(g.evaluate(h.evaluate(obj)))</code>.
  * <p>
- * When the collection is empty, this function is 
+ * When the collection is empty, this function is
  * an identity function.
  * </p>
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -67,15 +67,15 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
     }
 
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public CompositeUnaryFunction of(UnaryFunction f) {
         list.add(f);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
-    public Object evaluate(Object obj) {        
+    public Object evaluate(Object obj) {
         Object result = obj;
         for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
             result = ((UnaryFunction)iter.previous()).evaluate(result);
@@ -90,22 +90,22 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
             return false;
         }
     }
-    
+
     public boolean equals(CompositeUnaryFunction that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
-    
+
     public int hashCode() {
         // by construction, list is never null
         return "CompositeUnaryFunction".hashCode() ^ list.hashCode();
     }
-    
+
     public String toString() {
         return "CompositeUnaryFunction<" + list + ">";
     }
-    
-    
+
+
     // attributes
     // ------------------------------------------------------------------------
     private List list = new ArrayList();

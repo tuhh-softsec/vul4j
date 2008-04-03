@@ -36,9 +36,9 @@ import org.apache.commons.functor.example.lines.Lines;
 
 /**
  * The real workhorse of this Kata excercise.
- * 
+ *
  * DataMunger wires together various functors and exposes them
- * as static utility methhods. 
+ * as static utility methhods.
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -49,7 +49,7 @@ public class DataMunger {
     }
 
 	/**
-	 * Processes each line of the given Reader, returning the <i>selected</i> column for the 
+	 * Processes each line of the given Reader, returning the <i>selected</i> column for the
 	 * line where the absolute difference between the integer value of <i>col1</i> and <i>col2</i>
 	 * is least.  Note that lines that don't begin with an Integer are ignored.
 	 */
@@ -57,20 +57,20 @@ public class DataMunger {
         return NthColumn.instance(selected).evaluate(
             Algorithms.inject(
                 Lines.from(file).where(
-                    Composite.predicate(IsInteger.instance(),NthColumn.instance(0))),                    
+                    Composite.predicate(IsInteger.instance(),NthColumn.instance(0))),
                 null,
-                lesserSpread(col1,col2)));            
+                lesserSpread(col1,col2)));
     }
-    
 
-    /** 
+
+    /**
      * A BinaryFunction that will calcuate the absolute
-     * difference between col1 and col2 in the given 
+     * difference between col1 and col2 in the given
      * String arguments, and return the argument
      * whose difference is smallest.
      */
     private static final BinaryFunction lesserSpread(final int col1, final int col2) {
-        return new ConditionalBinaryFunction(            
+        return new ConditionalBinaryFunction(
             IsNull.left(),                                 // if left is null
             RightIdentity.instance(),                      //   return right
             Conditional.function(                          //   else return the parameter with the least spread
@@ -79,13 +79,13 @@ public class DataMunger {
                     absSpread(col1,col2),
                     absSpread(col1,col2)),
                 LeftIdentity.instance(),                   //       return left
-                RightIdentity.instance()                   //       else return right 
+                RightIdentity.instance()                   //       else return right
             )
         );
     }
 
 	/**
-	 * A UnaryFunction that returns the absolute value of the difference 
+	 * A UnaryFunction that returns the absolute value of the difference
 	 * between the Integers stored in the <i>col1</i> and <i>col2</i>th
 	 * whitespace delimited columns of the input line (a String).
 	 */

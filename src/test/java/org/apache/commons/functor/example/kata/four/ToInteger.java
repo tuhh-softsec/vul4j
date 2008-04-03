@@ -19,12 +19,12 @@ package org.apache.commons.functor.example.kata.four;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
- * Converts a String value to an Integer, throwing 
+ * Converts a String value to an Integer, throwing
  * an exception if no such conversion can be made.
- * 
+ *
  * Trailing, non-{@link Character#isDigit digit} characters
  * are ignored.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -48,10 +48,10 @@ public final class ToInteger implements UnaryFunction {
             throw new NumberFormatException(str);
         }
     }
-    
+
     public static final ToInteger instance() {
         return INSTANCE;
     }
-    
+
     private static final ToInteger INSTANCE = new ToInteger();
 }

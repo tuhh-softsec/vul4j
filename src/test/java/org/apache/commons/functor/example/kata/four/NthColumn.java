@@ -23,7 +23,7 @@ import org.apache.commons.functor.UnaryFunction;
 /**
  * Evaluates the input String to extrace the nth whitespace
  * delmited column.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -31,7 +31,7 @@ public final class NthColumn implements UnaryFunction {
     public NthColumn(int n) {
         this.n = n;
     }
-    
+
     public Object evaluate(Object obj) {
         StringTokenizer toker = new StringTokenizer((String)obj);
         for(int count = 0; count < n && toker.hasMoreTokens();count++) {

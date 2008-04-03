@@ -26,11 +26,11 @@ import org.apache.commons.functor.Predicate;
  * Note that by this definition, the "and" of
  * an empty collection of predicates tests <code>true</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link java.io.Serializable Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -55,14 +55,14 @@ public final class And extends BasePredicateList {
     public And(Predicate p, Predicate q, Predicate r) {
         super(p,q,r);
     }
-    
+
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public And and(Predicate p) {
         super.addPredicate(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test() {
@@ -81,17 +81,17 @@ public final class And extends BasePredicateList {
             return false;
         }
     }
-    
+
     public boolean equals(And that) {
         return getPredicateListEquals(that);
     }
-    
+
     public int hashCode() {
         return "And".hashCode() ^ getPredicateListHashCode();
     }
-    
+
     public String toString() {
         return "And<" + getPredicateListToString() + ">";
     }
-    
+
 }

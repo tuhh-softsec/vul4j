@@ -19,29 +19,29 @@ package org.apache.commons.functor;
 /**
  * A functor that takes two arguments and has no return value.
  * <p>
- * Implementors are encouraged but not required to make their functors 
+ * Implementors are encouraged but not required to make their functors
  * {@link java.io.Serializable Serializable}.
  * </p>
- * 
+ *
  * @since 1.0
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public interface BinaryProcedure {
-    /** 
-     * Execute this procedure. 
-     * 
+    /**
+     * Execute this procedure.
+     *
      * @param left the first element of the ordered pair of arguments
      * @param right the second element of the ordered pair of arguments
      */
     void run(Object left, Object right);
-    
+
     /**
      * Returns a human readable description of this functor.
      * Implementators are strongly encouraged but not
      * strictly required to override the default {@link Object}
      * implementation of this method.
-     * 
+     *
      * @return a human readable description of this functor
      */
     String toString();
@@ -52,14 +52,14 @@ public interface BinaryProcedure {
      * Implementators are strongly encouraged but not
      * strictly required to override the default {@link Object}
      * implementation of this method.
-     * 
+     *
      * @see #equals
      * @return a hash code for this functor
      */
     int hashCode();
 
     /**
-     * Indicates whether some other object is &quot;equal to&quot; 
+     * Indicates whether some other object is &quot;equal to&quot;
      * this functor.  This method must adhere to
      * general {@link Object#equals Object.equals} contract.
      * Additionally, this method can return
@@ -67,7 +67,7 @@ public interface BinaryProcedure {
      * the same functor interface and is known to produce the same
      * results and/or side-effects for the same arguments (if any).
      * <p>
-     * While implementators are strongly encouraged to override 
+     * While implementators are strongly encouraged to override
      * the default Object implementation of this method,
      * note that the default Object implementation
      * does in fact adhere to the functor <code>equals</code> contract.
@@ -76,7 +76,7 @@ public interface BinaryProcedure {
      * @see #hashCode
      * @return <code>true</code> iff the given object implements
      *         this functor interface, and is known to produce the same
-     *         results and/or side-effects for the same arguments 
+     *         results and/or side-effects for the same arguments
      *         (if any).
      */
     boolean equals(Object that);

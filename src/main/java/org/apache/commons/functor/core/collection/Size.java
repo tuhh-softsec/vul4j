@@ -32,9 +32,9 @@ public final class Size implements UnaryFunction, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    
+
     public Size() { }
-    
+
     public Object evaluate(Object obj) {
         if(obj instanceof Collection) {
             return evaluate((Collection)obj);
@@ -46,7 +46,7 @@ public final class Size implements UnaryFunction, Serializable {
             throw new NullPointerException("Argument must not be null");
         } else {
             throw new ClassCastException("Expected Collection, String or Array, found " + obj);
-        } 
+        }
     }
 
     /**
@@ -77,15 +77,15 @@ public final class Size implements UnaryFunction, Serializable {
     private Object evaluate(Collection col) {
         return new Integer(col.size());
     }
-    
+
     private Object evaluate(String str) {
         return new Integer(str.length());
     }
-    
+
     private Object evaluateArray(Object array) {
         return new Integer(Array.getLength(array));
     }
-    
+
     private static final Size INSTANCE = new Size();
-    
+
 }

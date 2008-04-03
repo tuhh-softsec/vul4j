@@ -65,7 +65,7 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testRun() throws Exception {
         RunCounter left = new RunCounter();
         RunCounter right = new RunCounter();
@@ -85,7 +85,7 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
         assertEquals(2,left.count);
         assertEquals(1,right.count);
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalBinaryProcedure p = new ConditionalBinaryProcedure(
             new LeftIdentity(),
@@ -116,11 +116,11 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
 
     // Classes
     // ------------------------------------------------------------------------
-    
-    static class RunCounter implements BinaryProcedure {        
+
+    static class RunCounter implements BinaryProcedure {
         public void run(Object left, Object right) {
-            count++;    
-        }        
+            count++;
+        }
         public int count = 0;
     }
 }

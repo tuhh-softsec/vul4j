@@ -26,11 +26,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * Note that by this definition, the "and" of
  * an empty collection of predicates tests <code>true</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link java.io.Serializable Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -55,14 +55,14 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
     public UnaryAnd(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
         super(p,q,r);
     }
-    
+
     // modifiers
-    // ------------------------------------------------------------------------ 
+    // ------------------------------------------------------------------------
     public UnaryAnd and(UnaryPredicate p) {
         super.addUnaryPredicate(p);
         return this;
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test(Object obj) {
@@ -81,17 +81,17 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
             return false;
         }
     }
-    
+
     public boolean equals(UnaryAnd that) {
         return getUnaryPredicateListEquals(that);
     }
-    
+
     public int hashCode() {
         return "UnaryAnd".hashCode() ^ getUnaryPredicateListHashCode();
     }
-    
+
     public String toString() {
         return "UnaryAnd<" + getUnaryPredicateListToString() + ">";
     }
-    
+
 }

@@ -23,23 +23,23 @@ import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * {@link #evaluate Evaluates} to its second argument.
- * 
+ *
  * {@link #test Tests} to the <code>boolean</code>
  * value of the <code>Boolean</code>-valued second
- * argument. The {@link #test test} method 
- * throws an exception if the parameter isn't a 
+ * argument. The {@link #test test} method
+ * throws an exception if the parameter isn't a
  * non-<code>null</code> <code>Boolean</code>.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class RightIdentity implements BinaryPredicate, BinaryFunction, Serializable {
-    
+
     // constructor
     // ------------------------------------------------------------------------
     public RightIdentity() {
     }
- 
+
     // functor interface
     // ------------------------------------------------------------------------
 
@@ -58,21 +58,21 @@ public final class RightIdentity implements BinaryPredicate, BinaryFunction, Ser
     public boolean equals(Object that) {
         return (that instanceof RightIdentity);
     }
-    
+
     public int hashCode() {
         return "RightIdentity".hashCode();
     }
-    
+
     public String toString() {
         return "RightIdentity";
     }
-    
+
     // static methods
     // ------------------------------------------------------------------------
     public static RightIdentity instance() {
         return INSTANCE;
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final RightIdentity INSTANCE = new RightIdentity();

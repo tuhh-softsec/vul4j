@@ -23,7 +23,7 @@ import org.apache.commons.functor.UnaryPredicate;
 /**
  * A predicate that returns <code>false</code>
  * the first <i>n</i> times it is invoked, and
- * <code>true</code> thereafter. 
+ * <code>true</code> thereafter.
  *
  * @since 1.0
  * @version $Revision$ $Date$
@@ -34,7 +34,7 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate {
 
     public Offset(int count) {
-        if(count < 0) { 
+        if(count < 0) {
             throw new IllegalArgumentException("Argument must be a non-negative integer.");
         }
         this.min = count;
@@ -51,11 +51,11 @@ public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate 
     }
 
     public boolean test(Object obj) {
-        return test();        
+        return test();
     }
 
     public boolean test(Object a, Object b) {
-        return test();        
+        return test();
     }
 
     public String toString() {

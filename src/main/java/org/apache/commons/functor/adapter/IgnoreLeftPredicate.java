@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * Adapts a
- * {@link UnaryPredicate UnaryPredicate} 
- * to the 
- * {@link BinaryPredicate BinaryPredicate} interface 
+ * {@link UnaryPredicate UnaryPredicate}
+ * to the
+ * {@link BinaryPredicate BinaryPredicate} interface
  * by ignoring the first binary argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -42,10 +42,10 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
     public IgnoreLeftPredicate(UnaryPredicate predicate) {
         this.predicate = predicate;
     }
- 
+
     public boolean test(Object left, Object right) {
         return predicate.test(right);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof IgnoreLeftPredicate) {
@@ -54,11 +54,11 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
             return false;
         }
     }
-        
+
     public boolean equals(IgnoreLeftPredicate that) {
         return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
-    
+
     public int hashCode() {
         int hash = "IgnoreLeftPredicate".hashCode();
         if(null != predicate) {
@@ -66,7 +66,7 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
         }
         return hash;
     }
-    
+
     public String toString() {
         return "IgnoreLeftPredicate<" + predicate + ">";
     }

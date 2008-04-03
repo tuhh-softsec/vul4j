@@ -177,9 +177,9 @@ public class TestBaseGenerator extends TestCase {
             }
         };
         Summer summer = new Summer();
-                
+
         gen.apply(dbl).run(summer);
-        
+
         assertEquals(2*(1+2+3+4),summer.sum);
     }
 

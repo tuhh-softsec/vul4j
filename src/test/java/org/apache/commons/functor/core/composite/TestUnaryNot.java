@@ -60,14 +60,14 @@ public class TestUnaryNot extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         UnaryPredicate truePred = new UnaryNot(new Constant(false));
         assertTrue(truePred.test(null));
         assertTrue(truePred.test("xyzzy"));
         assertTrue(truePred.test(new Integer(3)));
     }
-    
+
     public void testEquals() throws Exception {
         UnaryNot p = new UnaryNot(Constant.truePredicate());
         assertEquals(p,p);

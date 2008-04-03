@@ -61,11 +61,11 @@ public class TestCompositeUnaryProcedure extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testRun() throws Exception {
         new CompositeUnaryProcedure(new NoOp(),new Identity()).run(null);
     }
-    
+
     public void testNullNotAllowed() throws Exception {
         try {
             new CompositeUnaryProcedure(null);
@@ -89,7 +89,7 @@ public class TestCompositeUnaryProcedure extends BaseFunctorTest {
     public void testOf() throws Exception {
         new CompositeUnaryProcedure(new NoOp()).of(new Identity()).run(null);
     }
-    
+
     public void testEquals() throws Exception {
         CompositeUnaryProcedure f = new CompositeUnaryProcedure(new NoOp());
         assertEquals(f,f);
@@ -102,11 +102,11 @@ public class TestCompositeUnaryProcedure extends BaseFunctorTest {
             g.of(new Constant("x"));
             assertObjectsAreEqual(f,g);
             f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
-            assertObjectsAreNotEqual(f,g);            
+            assertObjectsAreNotEqual(f,g);
             g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
-            assertObjectsAreEqual(f,g);            
+            assertObjectsAreEqual(f,g);
         }
-                
+
         assertObjectsAreNotEqual(f,new Constant(false));
     }
 

@@ -23,18 +23,18 @@ import org.apache.commons.functor.Procedure;
 
 /**
  * Adapts a
- * {@link Procedure Procedure} 
- * to the 
+ * {@link Procedure Procedure}
+ * to the
  * {@link Function Function} interface
  * by always returning <code>null</code>.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying procedure is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -42,11 +42,11 @@ public final class ProcedureFunction implements Function, Serializable {
     public ProcedureFunction(Procedure procedure) {
         this.procedure = procedure;
     }
- 
+
     public Object evaluate() {
         procedure.run();
         return null;
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof ProcedureFunction) {
@@ -55,11 +55,11 @@ public final class ProcedureFunction implements Function, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(ProcedureFunction that) {
         return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
-    
+
     public int hashCode() {
         int hash = "ProcedureFunction".hashCode();
         if(null != procedure) {
@@ -67,7 +67,7 @@ public final class ProcedureFunction implements Function, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "ProcedureFunction<" + procedure + ">";
     }

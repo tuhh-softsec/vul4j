@@ -21,15 +21,15 @@ import org.apache.commons.functor.Procedure;
 
 
 /**
- * A {@link Procedure} implementation of a while loop. Given a {@link Predicate} 
+ * A {@link Procedure} implementation of a while loop. Given a {@link Predicate}
  * <i>c</i> and an {@link Procedure} <i>p</i>, {@link #run runs}
  * <code>do { p.run(); } while(c.test())</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link java.io.Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$

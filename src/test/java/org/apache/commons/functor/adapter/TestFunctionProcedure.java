@@ -61,7 +61,7 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
         class EvaluateCounter implements Function {

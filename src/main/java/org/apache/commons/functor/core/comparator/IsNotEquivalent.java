@@ -29,12 +29,12 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * right argument under the specified {@link Comparator}.
  * When no (or a <code>null</code> <code>Comparator</code> is specified,
  * a {@link Comparable Comparable} <code>Comparator</code> is used.
- * 
+ *
  * @see org.apache.commons.functor.core.IsEqual
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
- * 
+ *
  */
 public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     /**
@@ -48,7 +48,7 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     /**
      * Construct a <code>IsNotEquivalent</code> {@link BinaryPredicate predicate}
      * for the given {@link Comparator Comparator}.
-     * 
+     *
      * @param comparator the {@link Comparator Comparator}, when <code>null</code>,
      *        a <code>Comparator</code> for {@link Comparable Comparable}s will
      *        be used.
@@ -56,9 +56,9 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     public IsNotEquivalent(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
-    
+
     /**
-     * Return <code>true</code> iff the <i>left</i> parameter is 
+     * Return <code>true</code> iff the <i>left</i> parameter is
      * not equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
      */
@@ -81,7 +81,7 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
      * @see #equals(Object)
      */
     public boolean equals(IsNotEquivalent that) {
-        return null != that && 
+        return null != that &&
             null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
@@ -109,7 +109,7 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     public static final UnaryPredicate instance(Comparable right) {
         return RightBoundPredicate.bind(instance(),right);
     }
-    
+
     private Comparator comparator = null;
     private static final IsNotEquivalent COMPARABLE_INSTANCE = new IsNotEquivalent();
 }

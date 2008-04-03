@@ -59,13 +59,13 @@ public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
         UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(Boolean.TRUE));
         assertTrue(p.test(null));
     }
-    
+
     public void testTestWhenFalse() throws Exception {
         UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(Boolean.FALSE));
         assertTrue(!p.test(null));
@@ -80,7 +80,7 @@ public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testTestWhenNonBoolean() throws Exception {
         UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(new Integer(2)));
         try {
@@ -90,7 +90,7 @@ public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testEquals() throws Exception {
         UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(Boolean.TRUE));
         assertEquals(p,p);

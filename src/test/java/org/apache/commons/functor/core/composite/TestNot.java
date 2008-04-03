@@ -60,12 +60,12 @@ public class TestNot extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
         Predicate truePred = new Not(new Constant(false));
         assertTrue(truePred.test());
     }
-    
+
     public void testEquals() throws Exception {
         Not p = new Not(Constant.truePredicate());
         assertEquals(p,p);

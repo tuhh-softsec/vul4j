@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryProcedure;
 
 /**
  * Adapts a
- * {@link UnaryProcedure UnaryProcedure} 
- * to the 
+ * {@link UnaryProcedure UnaryProcedure}
+ * to the
  * {@link UnaryFunction UnaryFunction} interface
  * by always returning <code>null</code>.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying procedure is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -42,11 +42,11 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
     public UnaryProcedureUnaryFunction(UnaryProcedure procedure) {
         this.procedure = procedure;
     }
- 
+
     public Object evaluate(Object obj) {
         procedure.run(obj);
         return null;
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof UnaryProcedureUnaryFunction) {
@@ -55,11 +55,11 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
             return false;
         }
     }
-        
+
     public boolean equals(UnaryProcedureUnaryFunction that) {
         return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
-    
+
     public int hashCode() {
         int hash = "UnaryProcedureUnaryFunction".hashCode();
         if(null != procedure) {
@@ -67,7 +67,7 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
         }
         return hash;
     }
-    
+
     public String toString() {
         return "UnaryProcedureUnaryFunction<" + procedure + ">";
     }

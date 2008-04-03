@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryFunction;
 
 /**
  * Adapts a
- * {@link UnaryFunction UnaryFunction} 
- * to the 
- * {@link Function Function} interface 
+ * {@link UnaryFunction UnaryFunction}
+ * to the
+ * {@link Function Function} interface
  * using a constant unary argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying objects are.  Attempts to serialize
- * an instance whose delegates are not 
+ * an instance whose delegates are not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -47,10 +47,10 @@ public final class BoundFunction implements Function, Serializable {
         this.function = function;
         this.param = arg;
     }
- 
+
     public Object evaluate() {
         return function.evaluate(param);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof BoundFunction) {
@@ -59,15 +59,15 @@ public final class BoundFunction implements Function, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(BoundFunction that) {
-        return that == this || ( 
-                (null != that) && 
+        return that == this || (
+                (null != that) &&
                 (null == function ? null == that.function : function.equals(that.function)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
-                
+
     }
-    
+
     public int hashCode() {
         int hash = "BoundFunction".hashCode();
         if(null != function) {
@@ -80,21 +80,21 @@ public final class BoundFunction implements Function, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "BoundFunction<" + function + "(" + param + ")>";
     }
 
     /**
-     * Adapt the given, possibly-<code>null</code>, 
+     * Adapt the given, possibly-<code>null</code>,
      * {@link UnaryFunction UnaryFunction} to the
      * {@link Function Function} interface by binding
      * the specified <code>Object</code> as a constant
      * argument.
      * When the given <code>UnaryFunction</code> is <code>null</code>,
      * returns <code>null</code>.
-     * 
-     * @param function the possibly-<code>null</code> 
+     *
+     * @param function the possibly-<code>null</code>
      *        {@link UnaryFunction UnaryFunction} to adapt
      * @param arg the object to bind as a constant argument
      * @return a <code>BoundFunction</code> wrapping the given

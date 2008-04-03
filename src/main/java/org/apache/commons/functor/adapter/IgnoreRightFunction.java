@@ -23,18 +23,18 @@ import org.apache.commons.functor.UnaryFunction;
 
 /**
  * Adapts a
- * {@link UnaryFunction UnaryFunction} 
- * to the 
- * {@link BinaryFunction BinaryFunction} interface 
+ * {@link UnaryFunction UnaryFunction}
+ * to the
+ * {@link BinaryFunction BinaryFunction} interface
  * by ignoring the second binary argument.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -42,10 +42,10 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
     public IgnoreRightFunction(UnaryFunction function) {
         this.function = function;
     }
- 
+
     public Object evaluate(Object left, Object right) {
         return function.evaluate(left);
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof IgnoreRightFunction) {
@@ -54,11 +54,11 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(IgnoreRightFunction that) {
         return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
-    
+
     public int hashCode() {
         int hash = "IgnoreRightFunction".hashCode();
         if(null != function) {
@@ -66,7 +66,7 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "IgnoreRightFunction<" + function + ">";
     }

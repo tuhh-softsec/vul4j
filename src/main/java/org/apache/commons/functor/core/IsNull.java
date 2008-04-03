@@ -24,10 +24,10 @@ import org.apache.commons.functor.adapter.IgnoreLeftPredicate;
 import org.apache.commons.functor.adapter.IgnoreRightPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its argument 
+ * {@link #test Tests}
+ * <code>true</code> iff its argument
  * is <code>null</code>.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -37,7 +37,7 @@ public final class IsNull implements UnaryPredicate, Serializable {
     // ------------------------------------------------------------------------
     public IsNull() {
     }
- 
+
     // predicate interface
     // ------------------------------------------------------------------------
 
@@ -48,21 +48,21 @@ public final class IsNull implements UnaryPredicate, Serializable {
     public boolean equals(Object that) {
         return that instanceof IsNull;
     }
-    
+
     public int hashCode() {
         return "IsNull".hashCode();
     }
-    
+
     public String toString() {
         return "IsNull";
     }
-        
+
     // static methods
     // ------------------------------------------------------------------------
     public static IsNull instance() {
         return INSTANCE;
     }
-    
+
     public static BinaryPredicate left() {
         return LEFT;
     }
@@ -70,7 +70,7 @@ public final class IsNull implements UnaryPredicate, Serializable {
     public static BinaryPredicate right() {
         return RIGHT;
     }
-    
+
     // static attributes
     // ------------------------------------------------------------------------
     private static final IsNull INSTANCE = new IsNull();

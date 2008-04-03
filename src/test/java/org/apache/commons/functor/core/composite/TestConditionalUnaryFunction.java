@@ -63,7 +63,7 @@ public class TestConditionalUnaryFunction extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         ConditionalUnaryFunction f = new ConditionalUnaryFunction(
             new Identity(),
@@ -72,7 +72,7 @@ public class TestConditionalUnaryFunction extends BaseFunctorTest {
         assertEquals("left",f.evaluate(Boolean.TRUE));
         assertEquals("right",f.evaluate(Boolean.FALSE));
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalUnaryFunction f = new ConditionalUnaryFunction(
             new Identity(),

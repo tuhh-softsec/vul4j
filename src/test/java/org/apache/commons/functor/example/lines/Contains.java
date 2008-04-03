@@ -27,7 +27,7 @@ public class Contains implements UnaryPredicate {
     public Contains(String str) {
         this.str = str;
     }
-    
+
     public boolean test(Object obj) {
         return null != obj && obj.toString().indexOf(str) != -1;
     }

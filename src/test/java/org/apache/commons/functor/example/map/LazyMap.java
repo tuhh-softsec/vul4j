@@ -34,7 +34,7 @@ public class LazyMap extends FunctoredMap {
                 if(map.containsKey(key)) {
                     return map.get(key);
                 } else {
-                    Object value = factory.evaluate(key);                    
+                    Object value = factory.evaluate(key);
                     map.put(key,value);
                     return value;
                 }

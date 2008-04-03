@@ -60,7 +60,7 @@ public class TestIgnoreRightFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         BinaryFunction f = new IgnoreRightFunction(new Identity());
@@ -69,7 +69,7 @@ public class TestIgnoreRightFunction extends BaseFunctorTest {
         assertEquals("xyzzy",f.evaluate("xyzzy",null));
         assertEquals("xyzzy",f.evaluate("xyzzy","abc"));
     }
-    
+
     public void testEquals() throws Exception {
         BinaryFunction f = new IgnoreRightFunction(new Constant("xyzzy"));
         assertEquals(f,f);

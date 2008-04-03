@@ -29,25 +29,25 @@ import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 /**
- * Dave Thomas's Kata One asks us to think about how one might 
- * implement pricing rules:  
- * 
- * "Some things in supermarkets have simple prices: this can of 
- * beans costs $0.65. Other things have more complex prices. 
+ * Dave Thomas's Kata One asks us to think about how one might
+ * implement pricing rules:
+ *
+ * "Some things in supermarkets have simple prices: this can of
+ * beans costs $0.65. Other things have more complex prices.
  * For example:
  *
  * o three for a dollar (so what?s the price if I buy 4, or 5?)
  *
  * o $1.99/pound (so what does 4 ounces cost?)
- * 
+ *
  * o buy two, get one free (so does the third item have a price?)"
- * 
+ *
  * Functors provide one approach to this sort of problem, and in
  * this example we'll demonstrate some simple cases.
- *  
+ *
  * See http://pragprog.com/pragdave/Practices/Kata/KataOne.rdoc,v
  * for more information on this Kata.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -59,27 +59,27 @@ public class SupermarketPricingExample extends TestCase {
     public static Test suite() {
         return new TestSuite(SupermarketPricingExample.class);
     }
-    
+
     public void setUp() throws Exception {
         super.setUp();
     }
-    
+
     public void tearDown() throws Exception {
         super.tearDown();
     }
-    
+
     // tests
     //----------------------------------------------------------
-    
+
     /*
      * The simplest form of pricing is simply a constant
      * rate.  In Dave's example, a can of beans costs $0.65,
      * and n cans of beans cost n*0.65.
-     * 
+     *
      * This pricing rule simply multiplies the quantity by
      * a constant, e.g.:
      *   ToMoney.from(Multiply.by(65))
-     * 
+     *
      * This case is so common, we may want to introduce a
      * special Product constructor to wrap up create the
      * functors for us.
@@ -87,7 +87,7 @@ public class SupermarketPricingExample extends TestCase {
     public void testConstantPricePerUnit() throws Exception {
         {
             Product beans = new Product(
-                "Can of Beans", 
+                "Can of Beans",
                 "SKU-0001",
                 ToMoney.from(Multiply.by(65)));
 
@@ -99,7 +99,7 @@ public class SupermarketPricingExample extends TestCase {
         // or, using the speical constructor:
         {
             Product beans = new Product(
-                "Can of Beans", 
+                "Can of Beans",
                 "SKU-0001",
                 65);
 
@@ -111,29 +111,29 @@ public class SupermarketPricingExample extends TestCase {
     }
 
     /*
-     * A slighly more complicated example is a bulk 
+     * A slighly more complicated example is a bulk
      * discount.  For example, bananas may be
      * $0.33 cents each, or 4 for a dollar ($1.00).
-     * 
+     *
      * This rule is underspecified by itself, there are
      * at least two ways to interpret this pricing rule:
-     * 
-     * a) the cost is $0.33 cents for 3 or fewer, $0.25 
+     *
+     * a) the cost is $0.33 cents for 3 or fewer, $0.25
      *    for 4 or more
-     * 
+     *
      * or
-     *  
+     *
      * b) the cost is $1.00 for every group of 4, $0.33
      *    each for anything left over
-     * 
-     * although I think in practice, "4 for a dollar" 
+     *
+     * although I think in practice, "4 for a dollar"
      * usually means the former and not the latter.
      *
      * We can implement either:
-     */    
+     */
     public void testFourForADollar_A() throws Exception {
         Product banana = new Product(
-            "Banana", 
+            "Banana",
             "SKU-0002",
             ToMoney.from(
                 new ConditionalUnaryFunction(
@@ -155,7 +155,7 @@ public class SupermarketPricingExample extends TestCase {
 
     public void testFourForADollar_B() throws Exception {
         Product banana = new Product(
-            "Banana", 
+            "Banana",
             "SKU-0002",
             ToMoney.from(
                 new BinaryFunctionUnaryFunction(
@@ -182,18 +182,18 @@ public class SupermarketPricingExample extends TestCase {
 
 
     /*
-     * Another interesting pricing rule is 
-     * something like "buy 2, get 1 free". 
-     * 
+     * Another interesting pricing rule is
+     * something like "buy 2, get 1 free".
+     *
      * This may be implemented using a formula
      * like:
      *   costPerUnit * (quantity - quantity / 2)
-     *  
+     *
      * For example...
-     */    
+     */
     public void testBuyTwoGetOneFree_1() throws Exception {
         Product apple = new Product(
-            "Apple", 
+            "Apple",
             "SKU-0003",
             ToMoney.from(
                 new CompositeUnaryFunction(
@@ -206,8 +206,8 @@ public class SupermarketPricingExample extends TestCase {
 
         assertEquals(new Money(0*40),apple.getPrice(0));
         assertEquals(new Money(1*40),apple.getPrice(1));
-        assertEquals(new Money(2*40),apple.getPrice(2));       
-        assertEquals(new Money(2*40),apple.getPrice(3)); 
+        assertEquals(new Money(2*40),apple.getPrice(2));
+        assertEquals(new Money(2*40),apple.getPrice(3));
         assertEquals(new Money(3*40),apple.getPrice(4));
         assertEquals(new Money(4*40),apple.getPrice(5));
         assertEquals(new Money(4*40),apple.getPrice(6));
@@ -219,12 +219,12 @@ public class SupermarketPricingExample extends TestCase {
 
     /*
      * ...but our pricing rule is starting to get ugly,
-     * and we haven't even considered things 
-     * something like "buy 3, get 2 free", etc. 
-     * 
+     * and we haven't even considered things
+     * something like "buy 3, get 2 free", etc.
+     *
      * Perhaps a special UnaryFunction instance is in
      * order:
-     */    
+     */
 
     class BuyNGetMFree implements UnaryFunction {
        public BuyNGetMFree(int n, int m, int costPerUnit) {
@@ -232,41 +232,41 @@ public class SupermarketPricingExample extends TestCase {
            this.m = m;
            this.costPerUnit = costPerUnit;
        }
-        
+
        public Object evaluate(Object obj) {
            return evaluate((Number)obj);
        }
-                    
+
        public Object evaluate(Number num) {
            int quantity = num.intValue();
            int cost = 0;
-           
+
            while(quantity >= n) {
                // buy n
                cost += n * costPerUnit;
                quantity -= n;
-               // get m (or fewer) free 
-               quantity -= Math.min(quantity,m);                                  
+               // get m (or fewer) free
+               quantity -= Math.min(quantity,m);
            }
            // buy less than n
            cost += quantity * costPerUnit;
-           
+
            return new Integer(cost);
        }
-        
-       private int n, m, costPerUnit;        
+
+       private int n, m, costPerUnit;
    }
 
     public void testBuyTwoGetOneFree_2() throws Exception {
         Product apple = new Product(
-            "Apple", 
+            "Apple",
             "SKU-0003",
             ToMoney.from(new BuyNGetMFree(2,1,40)));
-            
+
         assertEquals(new Money(0*40),apple.getPrice(0));
         assertEquals(new Money(1*40),apple.getPrice(1));
-        assertEquals(new Money(2*40),apple.getPrice(2));       
-        assertEquals(new Money(2*40),apple.getPrice(3)); 
+        assertEquals(new Money(2*40),apple.getPrice(2));
+        assertEquals(new Money(2*40),apple.getPrice(3));
         assertEquals(new Money(3*40),apple.getPrice(4));
         assertEquals(new Money(4*40),apple.getPrice(5));
         assertEquals(new Money(4*40),apple.getPrice(6));
@@ -278,14 +278,14 @@ public class SupermarketPricingExample extends TestCase {
 
    public void testBuyThreeGetTwoFree() throws Exception {
         Product apple = new Product(
-            "Apple", 
+            "Apple",
             "SKU-0003",
             ToMoney.from(new BuyNGetMFree(3,2,40)));
-            
+
         assertEquals(new Money(0*40),apple.getPrice(0));
         assertEquals(new Money(1*40),apple.getPrice(1));
-        assertEquals(new Money(2*40),apple.getPrice(2));       
-        assertEquals(new Money(3*40),apple.getPrice(3)); 
+        assertEquals(new Money(2*40),apple.getPrice(2));
+        assertEquals(new Money(3*40),apple.getPrice(3));
         assertEquals(new Money(3*40),apple.getPrice(4));
         assertEquals(new Money(3*40),apple.getPrice(5));
         assertEquals(new Money(4*40),apple.getPrice(6));
@@ -298,14 +298,14 @@ public class SupermarketPricingExample extends TestCase {
 
     public void testBuyTwoGetFiveFree() throws Exception {
          Product apple = new Product(
-             "Apple", 
+             "Apple",
              "SKU-0003",
              ToMoney.from(new BuyNGetMFree(2,5,40)));
-            
+
          assertEquals(new Money(0*40),apple.getPrice(0));
          assertEquals(new Money(1*40),apple.getPrice(1));
-         assertEquals(new Money(2*40),apple.getPrice(2));       
-         assertEquals(new Money(2*40),apple.getPrice(3)); 
+         assertEquals(new Money(2*40),apple.getPrice(2));
+         assertEquals(new Money(2*40),apple.getPrice(3));
          assertEquals(new Money(2*40),apple.getPrice(4));
          assertEquals(new Money(2*40),apple.getPrice(5));
          assertEquals(new Money(2*40),apple.getPrice(6));

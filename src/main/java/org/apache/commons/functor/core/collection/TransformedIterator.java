@@ -28,7 +28,7 @@ public final class TransformedIterator implements Iterator {
 
     // constructor
     // ------------------------------------------------------------------------
-    
+
     public TransformedIterator(Iterator iterator, UnaryFunction function) {
         if(null == iterator || null == function) {
             throw new NullPointerException();
@@ -37,10 +37,10 @@ public final class TransformedIterator implements Iterator {
             this.iterator = iterator;
         }
     }
-    
+
     // iterator methods
     // ------------------------------------------------------------------------
-    
+
     /**
      * @see java.util.Iterator#hasNext()
      */
@@ -65,7 +65,7 @@ public final class TransformedIterator implements Iterator {
     public boolean equals(Object obj) {
         if(obj instanceof TransformedIterator) {
             TransformedIterator that = (TransformedIterator)obj;
-            return function.equals(that.function) && iterator.equals(that.iterator);  
+            return function.equals(that.function) && iterator.equals(that.iterator);
         } else {
             return false;
         }
@@ -83,20 +83,20 @@ public final class TransformedIterator implements Iterator {
     public String toString() {
         return "TransformedIterator<" + iterator + "," + function + ">";
     }
-    
+
     // class methods
     // ------------------------------------------------------------------------
-    
+
     public static Iterator transform(Iterator iter, UnaryFunction func) {
         return null == func ? iter : (null == iter ? null : new TransformedIterator(iter,func));
     }
- 
- 
+
+
     // attributes
     // ------------------------------------------------------------------------
-    
+
     private UnaryFunction function = null;
     private Iterator iterator = null;
-    
+
 
 }

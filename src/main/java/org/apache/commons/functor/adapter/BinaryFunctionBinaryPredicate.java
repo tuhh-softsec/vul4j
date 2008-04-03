@@ -27,11 +27,11 @@ import org.apache.commons.functor.BinaryPredicate;
  * to the {@link BinaryPredicate BinaryPredicate}
  * interface.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -46,18 +46,18 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
     public BinaryFunctionBinaryPredicate(BinaryFunction function) {
         this.function = function;
     }
- 
+
     /**
      * Returns the <code>boolean</code> value of the non-<code>null</code>
      * <code>Boolean</code> returned by the {@link BinaryFunction#evaluate evaluate}
      * method of my underlying function.
-     * 
+     *
      * @throws NullPointerException if my underlying function returns <code>null</code>
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
     public boolean test(Object left, Object right) {
         return ((Boolean)(function.evaluate(left,right))).booleanValue();
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof BinaryFunctionBinaryPredicate) {
@@ -66,11 +66,11 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
             return false;
         }
     }
-    
+
     public boolean equals(BinaryFunctionBinaryPredicate that) {
         return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
-    
+
     public int hashCode() {
         int hash = "BinaryFunctionBinaryPredicate".hashCode();
         if(null != function) {
@@ -78,19 +78,19 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
         }
         return hash;
     }
-    
+
     public String toString() {
         return "BinaryFunctionBinaryPredicate<" + function + ">";
     }
-    
+
     /**
-     * Adapt the given, possibly-<code>null</code>, 
+     * Adapt the given, possibly-<code>null</code>,
      * {@link BinaryFunction BinaryFunction} to the
      * {@link BinaryPredicate BinaryPredicate} interface.
      * When the given <code>BinaryFunction</code> is <code>null</code>,
      * returns <code>null</code>.
-     * 
-     * @param function the possibly-<code>null</code> 
+     *
+     * @param function the possibly-<code>null</code>
      *        {@link BinaryFunction BinaryFunction} to adapt
      * @return a <code>BinaryFunctionBinaryPredicate</code> wrapping the given
      *         {@link BinaryFunction BinaryFunction}, or <code>null</code>

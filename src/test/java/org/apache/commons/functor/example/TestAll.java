@@ -38,7 +38,7 @@ public class TestAll extends TestCase {
         suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
         suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
         suite.addTest(org.apache.commons.functor.example.kata.TestAll.suite());
-        
+
         return suite;
     }
 }

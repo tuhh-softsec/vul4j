@@ -32,7 +32,7 @@ public class Add implements BinaryFunction {
     public Object evaluate(Number left, Number right) {
         return new Integer(left.intValue() + right.intValue());
     }
-    
+
     public static Add instance() {
         return INSTANCE;
     }
@@ -40,6 +40,6 @@ public class Add implements BinaryFunction {
     public static UnaryFunction to(int factor) {
         return new LeftBoundFunction(instance(),new Integer(factor));
     }
-    
+
     private static Add INSTANCE = new Add();
 }

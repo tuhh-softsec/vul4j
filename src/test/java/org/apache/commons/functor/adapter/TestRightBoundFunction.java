@@ -61,13 +61,13 @@ public class TestRightBoundFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         UnaryFunction f = new RightBoundFunction(new LeftIdentity(),"foo");
         assertEquals("xyzzy",f.evaluate("xyzzy"));
     }
-    
+
     public void testEquals() throws Exception {
         UnaryFunction f = new RightBoundFunction(new LeftIdentity(),"xyzzy");
         assertEquals(f,f);

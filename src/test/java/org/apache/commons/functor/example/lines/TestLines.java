@@ -42,34 +42,34 @@ public class TestLines extends TestCase {
     public static Test suite() {
         return new TestSuite(TestLines.class);
     }
-    
+
     private Reader reader = null;
-    
+
     public void setUp() throws Exception {
         super.setUp();
-        reader = new StringReader(DOCUMENT);        
+        reader = new StringReader(DOCUMENT);
     }
-    
+
     public void tearDown() throws Exception {
         super.tearDown();
         reader = null;
     }
-    
+
     public void testCountCharacters() throws Exception {
         Object result = Lines
             .from(reader)
                 .apply(Size.instance())
                     .inject(new Integer(0),Sum.instance());
-                    
+
         assertEquals("Expected 990 characters",new Integer(990),result);
-    }                    
+    }
 
     public void testCountWords() throws Exception {
         Object result = Lines
             .from(reader)
                 .apply(WordCount.instance())
                     .inject(new Integer(0),Sum.instance());
-                    
+
         assertEquals("Expected 157 words",new Integer(157),result);
     }
 
@@ -78,7 +78,7 @@ public class TestLines extends TestCase {
         Lines
             .from(reader)
                 .foreach(ProcedureUnaryProcedure.adapt(count));
-                                   
+
         assertEquals("Expected 16 lines",16,count.getCount());
     }
 
@@ -88,7 +88,7 @@ public class TestLines extends TestCase {
                 .reject(new StartsWith("#"))
                     .apply(WordCount.instance())
                         .inject(new Integer(0),Sum.instance());
-                    
+
         assertEquals("Expected 90 words",new Integer(90),result);
     }
 
@@ -98,12 +98,12 @@ public class TestLines extends TestCase {
             .from(reader)
                 .select(new StartsWith("#"))
                     .foreach(ProcedureUnaryProcedure.adapt(count));
-                                   
+
         assertEquals("Expected 6 lines",6,count.getCount());
     }
 
     public void testFindMatchingLines() throws Exception {
-        Collection matches = 
+        Collection matches =
             Lines
                 .from(reader)
                     .select(new Contains("lo"))
@@ -112,7 +112,7 @@ public class TestLines extends TestCase {
     }
 
     public void testFindMatchingFromTail() throws Exception {
-        Collection matches = 
+        Collection matches =
             Lines
                 .from(reader)
                     .select(new Offset(8))
@@ -120,9 +120,9 @@ public class TestLines extends TestCase {
                             .toCollection();
         assertEquals("Expected 2 lines",2,matches.size());
     }
-    
-    
-    private static final String DOCUMENT = 
+
+
+    private static final String DOCUMENT =
         "# Lorem ipsum dolor sit amet, consectetuer adipiscing elit. \n" +
         "# Aliquam erat volutpat. Donec nec eros. Etiam eget tortor eu \n" +
         "tortor rutrum cursus. Pellentesque ornare pretium risus. Nulla \n" +

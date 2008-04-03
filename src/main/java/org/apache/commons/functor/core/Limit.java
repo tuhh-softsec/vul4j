@@ -22,7 +22,7 @@ import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * A predicate that returns <code>true</code>
- * the first <i>n</i> times it is invoked. 
+ * the first <i>n</i> times it is invoked.
  *
  * @since 1.0
  * @version $Revision$ $Date$
@@ -33,7 +33,7 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
 
     public Limit(int count) {
-        if(count < 0) { 
+        if(count < 0) {
             throw new IllegalArgumentException("Argument must be a non-negative integer.");
         }
         this.max = count;
@@ -50,11 +50,11 @@ public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
     }
 
     public boolean test(Object obj) {
-        return test();        
+        return test();
     }
 
     public boolean test(Object a, Object b) {
-        return test();        
+        return test();
     }
 
     public String toString() {

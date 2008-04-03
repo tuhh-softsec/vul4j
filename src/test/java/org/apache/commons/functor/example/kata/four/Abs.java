@@ -21,7 +21,7 @@ import org.apache.commons.functor.UnaryFunction;
 /**
  * Evaluates to the absolute Integer value of the Number-valued
  * input parameter.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -37,6 +37,6 @@ public final class Abs implements UnaryFunction {
     public static final Abs instance() {
         return INSTANCE;
     }
-    
+
     private static final Abs INSTANCE = new Abs();
 }

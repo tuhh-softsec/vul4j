@@ -24,7 +24,7 @@ public class Money {
     public Money(int cents) {
         this.cents = cents;
     }
-    
+
     public int getValueAsCents() {
         return cents;
     }
@@ -41,11 +41,10 @@ public class Money {
     public int hashCode() {
         return getValueAsCents();
     }
-    
+
     public String toString() {
         return getValueAsCents() + " cents";
     }
 
     private int cents;
 }
- 

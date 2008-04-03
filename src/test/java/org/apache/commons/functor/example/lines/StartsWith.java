@@ -27,7 +27,7 @@ public class StartsWith implements UnaryPredicate {
     public StartsWith(String prefix) {
         this.prefix = prefix;
     }
-    
+
     public boolean test(Object obj) {
         return null != obj && obj.toString().startsWith(prefix);
     }

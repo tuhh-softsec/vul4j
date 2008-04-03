@@ -62,13 +62,13 @@ public class TestTransposedPredicate extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         BinaryPredicate p = new TransposedPredicate(BinaryFunctionBinaryPredicate.adapt(new LeftIdentity()));
         assertEquals(true,p.test(Boolean.FALSE,Boolean.TRUE));
         assertEquals(false,p.test(Boolean.TRUE,Boolean.FALSE));
     }
-        
+
     public void testEquals() throws Exception {
         BinaryPredicate p = new TransposedPredicate(Constant.truePredicate());
         assertEquals(p,p);

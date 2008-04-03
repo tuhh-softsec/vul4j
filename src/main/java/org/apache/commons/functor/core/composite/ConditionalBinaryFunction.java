@@ -22,20 +22,20 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * A {@link BinaryFunction BinaryFunction} 
- * similiar to Java's "ternary" 
+ * A {@link BinaryFunction BinaryFunction}
+ * similiar to Java's "ternary"
  * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given a {@link BinaryPredicate predicate}
  * <i>p</i> and {@link BinaryFunction functions}
  * <i>f</i> and <i>g</i>, {@link #evaluate evalautes}
- * to 
+ * to
  * <code>p.test(x,y) ? f.evaluate(x,y) : g.evaluate(x,y)</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -51,7 +51,7 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
         this.thenFunc = thenPred;
         this.elseFunc = elsePred;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
     public Object evaluate(Object left, Object right) {
@@ -65,31 +65,31 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
             return false;
         }
     }
-    
+
     public boolean equals(ConditionalBinaryFunction that) {
-        return null != that && 
+        return null != that &&
                 (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
                 (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc)) &&
                 (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
     }
-    
+
     public int hashCode() {
         int hash = "ConditionalBinaryFunction".hashCode();
         if(null != ifPred) {
             hash <<= 4;
-            hash ^= ifPred.hashCode();            
+            hash ^= ifPred.hashCode();
         }
         if(null != thenFunc) {
             hash <<= 4;
-            hash ^= thenFunc.hashCode();            
+            hash ^= thenFunc.hashCode();
         }
         if(null != elseFunc) {
             hash <<= 4;
-            hash ^= elseFunc.hashCode();            
+            hash ^= elseFunc.hashCode();
         }
         return hash;
     }
-    
+
     public String toString() {
         return "ConditionalBinaryFunction<" + ifPred + "?" + thenFunc + ":" + elseFunc + ">";
     }

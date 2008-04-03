@@ -63,7 +63,7 @@ public class TestUnarySequence extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testRunZero() throws Exception {
         UnarySequence seq = new UnarySequence();
         seq.run(null);
@@ -92,11 +92,11 @@ public class TestUnarySequence extends BaseFunctorTest {
         assertEquals(2,counter[0].count);
         assertEquals(2,counter[1].count);
     }
-    
+
     public void testThen() throws Exception {
         List list = new ArrayList();
         UnarySequence seq = new UnarySequence();
-        seq.run(null);        
+        seq.run(null);
         for(int i=0;i<10;i++) {
             RunCounter counter = new RunCounter();
             seq.then(counter);
@@ -107,7 +107,7 @@ public class TestUnarySequence extends BaseFunctorTest {
             }
         }
     }
-    
+
     public void testEquals() throws Exception {
         UnarySequence p = new UnarySequence();
         assertEquals(p,p);
@@ -120,21 +120,21 @@ public class TestUnarySequence extends BaseFunctorTest {
             q.then(new NoOp());
             assertObjectsAreEqual(p,q);
             p.then(new UnarySequence(new NoOp(),new NoOp()));
-            assertObjectsAreNotEqual(p,q);            
+            assertObjectsAreNotEqual(p,q);
             q.then(new UnarySequence(new NoOp(),new NoOp()));
-            assertObjectsAreEqual(p,q);            
+            assertObjectsAreEqual(p,q);
         }
-                
+
         assertObjectsAreNotEqual(p,new NoOp());
     }
 
     // Classes
     // ------------------------------------------------------------------------
-    
-    static class RunCounter implements UnaryProcedure {        
+
+    static class RunCounter implements UnaryProcedure {
         public void run(Object that) {
-            count++;    
-        }        
+            count++;
+        }
         public int count = 0;
     }
 }

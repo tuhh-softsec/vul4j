@@ -26,10 +26,10 @@ public class Count implements Procedure {
     public void run() {
         count++;
     }
-    
+
     public int getCount() {
         return count;
     }
-    
+
     private int count = 0;
 }

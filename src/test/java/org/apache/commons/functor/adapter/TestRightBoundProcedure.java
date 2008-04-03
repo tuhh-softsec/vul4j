@@ -60,14 +60,14 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
         UnaryProcedure p = new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentity()),"foo");
         p.run(Boolean.TRUE);
         p.run(Boolean.FALSE);
     }
-    
+
     public void testEquals() throws Exception {
         UnaryProcedure f = new RightBoundProcedure(new NoOp(),"xyzzy");
         assertEquals(f,f);

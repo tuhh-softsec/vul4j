@@ -60,13 +60,13 @@ public class TestBoundProcedure extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
         Procedure p = new BoundProcedure(new UnaryFunctionUnaryProcedure(new Identity()),Boolean.TRUE);
         p.run();
     }
-    
+
     public void testEquals() throws Exception {
         Procedure f = new BoundProcedure(new NoOp(),"xyzzy");
         assertEquals(f,f);

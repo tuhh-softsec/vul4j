@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -38,7 +38,7 @@ public abstract class BaseBinaryChop implements BinaryChop {
     public int find(Object seeking, Object[] in) {
         return find(seeking, Arrays.asList(in));
     }
-    
+
     protected static int compare(List list, int index, Object obj) {
         return ((Comparable)list.get(index)).compareTo(obj);
     }
@@ -50,8 +50,8 @@ public abstract class BaseBinaryChop implements BinaryChop {
     protected static boolean equals(List list, int index, Object obj) {
         return compare(list,index,obj) == 0;
     }
-    
+
     protected static final Integer NEGATIVE_ONE = new Integer(-1);
-    
+
     public abstract int find(Object seeking, List in);
-} 
+}

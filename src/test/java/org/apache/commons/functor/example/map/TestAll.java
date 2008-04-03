@@ -35,7 +35,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestPredicatedMap.suite());
         suite.addTest(TestFixedSizeMap.suite());
         suite.addTest(TestLazyMap.suite());
-        
+
         return suite;
     }
 }

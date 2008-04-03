@@ -22,19 +22,19 @@ import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.BinaryProcedure;
 
 /**
- * A {@link BinaryProcedure BinaryProcedure} 
- * similiar to Java's "ternary" 
+ * A {@link BinaryProcedure BinaryProcedure}
+ * similiar to Java's "ternary"
  * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given a {@link BinaryPredicate predicate}
  * <i>p</i> and {@link BinaryProcedure procedures}
  * <i>q</i> and <i>r</i>, {@link #run runs}
  * <code>if(p.test(x,y)) { q.run(x,y); } else { r.run(x,y); }</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -50,7 +50,7 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
         this.thenProc = thenPred;
         this.elseProc = elsePred;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
     public void run(Object left, Object right) {
@@ -68,31 +68,31 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
             return false;
         }
     }
-    
+
     public boolean equals(ConditionalBinaryProcedure that) {
-        return null != that && 
+        return null != that &&
                 (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
                 (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc)) &&
                 (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
     }
-    
+
     public int hashCode() {
         int hash = "ConditionalBinaryProcedure".hashCode();
         if(null != ifPred) {
             hash <<= 4;
-            hash ^= ifPred.hashCode();            
+            hash ^= ifPred.hashCode();
         }
         if(null != thenProc) {
             hash <<= 4;
-            hash ^= thenProc.hashCode();            
+            hash ^= thenProc.hashCode();
         }
         if(null != elseProc) {
             hash <<= 4;
-            hash ^= elseProc.hashCode();            
+            hash ^= elseProc.hashCode();
         }
         return hash;
     }
-    
+
     public String toString() {
         return "ConditionalBinaryProcedure<" + ifPred + "?" + thenProc + ":" + elseProc + ">";
     }

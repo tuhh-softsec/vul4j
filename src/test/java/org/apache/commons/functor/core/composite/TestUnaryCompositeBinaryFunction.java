@@ -66,7 +66,7 @@ public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-   
+
     public void testEvaluate() throws Exception {
         BinaryFunction f = new UnaryCompositeBinaryFunction(
             new RightIdentity(),
@@ -76,7 +76,7 @@ public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
         assertNull("right",f.evaluate("left",null));
         assertEquals("right",f.evaluate(null,"right"));
     }
-    
+
     public void testEquals() throws Exception {
         BinaryFunction f = new UnaryCompositeBinaryFunction(
             new LeftIdentity(),

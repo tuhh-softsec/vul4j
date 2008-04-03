@@ -63,7 +63,7 @@ public class TestBinarySequence extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testRunZero() throws Exception {
         BinarySequence seq = new BinarySequence();
         seq.run(null,null);
@@ -92,11 +92,11 @@ public class TestBinarySequence extends BaseFunctorTest {
         assertEquals(2,counter[0].count);
         assertEquals(2,counter[1].count);
     }
-    
+
     public void testThen() throws Exception {
         List list = new ArrayList();
         BinarySequence seq = new BinarySequence();
-        seq.run(null,null);        
+        seq.run(null,null);
         for(int i=0;i<10;i++) {
             RunCounter counter = new RunCounter();
             seq.then(counter);
@@ -107,7 +107,7 @@ public class TestBinarySequence extends BaseFunctorTest {
             }
         }
     }
-    
+
     public void testEquals() throws Exception {
         BinarySequence p = new BinarySequence();
         assertEquals(p,p);
@@ -120,21 +120,21 @@ public class TestBinarySequence extends BaseFunctorTest {
             q.then(new NoOp());
             assertObjectsAreEqual(p,q);
             p.then(new BinarySequence(new NoOp(),new NoOp()));
-            assertObjectsAreNotEqual(p,q);            
+            assertObjectsAreNotEqual(p,q);
             q.then(new BinarySequence(new NoOp(),new NoOp()));
-            assertObjectsAreEqual(p,q);            
+            assertObjectsAreEqual(p,q);
         }
-                
+
         assertObjectsAreNotEqual(p,new NoOp());
     }
 
     // Classes
     // ------------------------------------------------------------------------
-    
-    static class RunCounter implements BinaryProcedure {        
+
+    static class RunCounter implements BinaryProcedure {
         public void run(Object a, Object b) {
-            count++;    
-        }        
+            count++;
+        }
         public int count = 0;
     }
 }

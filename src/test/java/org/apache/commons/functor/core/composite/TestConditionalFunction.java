@@ -62,7 +62,7 @@ public class TestConditionalFunction extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         {
             ConditionalFunction f = new ConditionalFunction(
@@ -79,7 +79,7 @@ public class TestConditionalFunction extends BaseFunctorTest {
             assertEquals("right",f.evaluate());
         }
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalFunction f = new ConditionalFunction(
             new Constant(true),

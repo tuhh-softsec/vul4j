@@ -66,7 +66,7 @@ public class TestUnaryCompositeBinaryPredicate extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-   
+
     public void testEvaluate() throws Exception {
         BinaryPredicate f = new UnaryCompositeBinaryPredicate(
             new RightIdentity(),
@@ -75,7 +75,7 @@ public class TestUnaryCompositeBinaryPredicate extends BaseFunctorTest {
         assertEquals(true,f.test(Boolean.TRUE,Boolean.TRUE));
         assertEquals(true,f.test(null,Boolean.TRUE));
     }
-    
+
     public void testEquals() throws Exception {
         BinaryPredicate f = new UnaryCompositeBinaryPredicate(
             new LeftIdentity(),

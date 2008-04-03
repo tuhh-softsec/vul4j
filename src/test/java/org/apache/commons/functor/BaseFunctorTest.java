@@ -50,18 +50,18 @@ public abstract class BaseFunctorTest extends TestCase {
 
     // Framework
     // ------------------------------------------------------------------------
-    
+
     protected abstract Object makeFunctor() throws Exception;
-   
+
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public final void testObjectEquals() throws Exception {
         Object obj = makeFunctor();
         assertEquals("equals must be reflexive",obj,obj);
         assertEquals("hashCode must be reflexive",obj.hashCode(),obj.hashCode());
         assertTrue(! obj.equals(null) ); // should be able to compare to null
-        
+
         Object obj2 = makeFunctor();
         if(obj.equals(obj2)) {
             assertEquals("equals implies hash equals",obj.hashCode(),obj2.hashCode());
@@ -78,7 +78,7 @@ public abstract class BaseFunctorTest extends TestCase {
             ObjectOutputStream out = new ObjectOutputStream(buffer);
             out.writeObject(obj);
             out.close();
-            
+
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(buffer.toByteArray()));
             Object dest = in.readObject();
             in.close();
@@ -100,17 +100,17 @@ public abstract class BaseFunctorTest extends TestCase {
     public static void assertObjectsAreEqual(Object a, Object b) {
         assertEquals(a,b);
         assertEquals(b,a);
-        assertEquals(a.hashCode(),b.hashCode()); 
+        assertEquals(a.hashCode(),b.hashCode());
         assertEquals(a.toString(),b.toString()); // not strictly required
     }
-    
+
     public static void assertObjectsAreNotEqual(Object a, Object b) {
         assertTrue(!a.equals(b));
         assertTrue(!b.equals(a));
         assertTrue(a.hashCode() != b.hashCode()); // not strictly required
         assertTrue(!a.toString().equals(b.toString())); // not strictly required
     }
-    
+
     // private utils
     // ------------------------------------------------------------------------
     private String objectToString(Object obj) {

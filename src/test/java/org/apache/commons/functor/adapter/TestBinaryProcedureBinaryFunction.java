@@ -61,13 +61,13 @@ public class TestBinaryProcedureBinaryFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
         BinaryFunction f = new BinaryProcedureBinaryFunction(new NoOp());
         assertNull(f.evaluate(null,null));
     }
-    
+
     public void testEquals() throws Exception {
         BinaryFunction f = new BinaryProcedureBinaryFunction(new NoOp());
         assertEquals(f,f);

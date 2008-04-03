@@ -23,16 +23,16 @@ import org.apache.commons.functor.Predicate;
 
 /**
  * Adapts a <code>Boolean</code>-valued
- * {@link Function Function} to the 
+ * {@link Function Function} to the
  * {@link Predicate Predicate} interface.
  * <p/>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
  * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * an instance whose delegate is not
  * <code>Serializable</code> will result in an exception.
- * 
+ *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -40,18 +40,18 @@ public final class FunctionPredicate implements Predicate, Serializable {
     public FunctionPredicate(Function function) {
         this.function = function;
     }
- 
+
     /**
      * Returns the <code>boolean</code> value of the non-<code>null</code>
      * <code>Boolean</code> returned by the {@link Function#evaluate evaluate}
      * method of my underlying function.
-     * 
+     *
      * @throws NullPointerException if my underlying function returns <code>null</code>
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
     public boolean test() {
         return ((Boolean)(function.evaluate())).booleanValue();
-    }   
+    }
 
     public boolean equals(Object that) {
         if(that instanceof FunctionPredicate) {
@@ -60,11 +60,11 @@ public final class FunctionPredicate implements Predicate, Serializable {
             return false;
         }
     }
-        
+
     public boolean equals(FunctionPredicate that) {
         return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
-    
+
     public int hashCode() {
         int hash = "FunctionPredicate".hashCode();
         if(null != function) {
@@ -72,7 +72,7 @@ public final class FunctionPredicate implements Predicate, Serializable {
         }
         return hash;
     }
-    
+
     public String toString() {
         return "FunctionPredicate<" + function + ">";
     }

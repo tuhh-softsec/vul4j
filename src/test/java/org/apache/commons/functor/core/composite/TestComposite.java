@@ -44,20 +44,20 @@ public class TestComposite extends TestCase {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testHasNoArgConstructor() throws Exception {
         assertNotNull(new Composite());
     }
 
     public void testUnaryMethods() {
-        assertNotNull(Composite.procedure(NoOp.instance(),Identity.instance()));   
-        assertNotNull(Composite.predicate(Identity.instance(),Identity.instance()));   
-        assertNotNull(Composite.function(Identity.instance(),Identity.instance()));   
+        assertNotNull(Composite.procedure(NoOp.instance(),Identity.instance()));
+        assertNotNull(Composite.predicate(Identity.instance(),Identity.instance()));
+        assertNotNull(Composite.function(Identity.instance(),Identity.instance()));
     }
 
     public void testBinaryMethods() {
-        assertNotNull(Composite.function(LeftIdentity.instance(),LeftIdentity.instance(),LeftIdentity.instance()));   
-        assertNotNull(Composite.predicate(IsGreaterThan.instance(),Identity.instance(),Identity.instance()));   
-        assertNotNull(Composite.function(LeftIdentity.instance(),Identity.instance(),Identity.instance()));   
+        assertNotNull(Composite.function(LeftIdentity.instance(),LeftIdentity.instance(),LeftIdentity.instance()));
+        assertNotNull(Composite.predicate(IsGreaterThan.instance(),Identity.instance(),Identity.instance()));
+        assertNotNull(Composite.function(LeftIdentity.instance(),Identity.instance(),Identity.instance()));
     }
 }

@@ -33,30 +33,30 @@ public final class Conditional {
     // constructor - for beanish apis
     // ------------------------------------------------------------------------
     public Conditional() { }
- 
+
     // ------------------------------------------------------------------------
 
-    public static final UnaryProcedure procedure(UnaryPredicate q, UnaryProcedure r, UnaryProcedure s) {        
+    public static final UnaryProcedure procedure(UnaryPredicate q, UnaryProcedure r, UnaryProcedure s) {
         return new ConditionalUnaryProcedure(q,r,s);
     }
 
-    public static final UnaryFunction function(UnaryPredicate q, UnaryFunction r, UnaryFunction s) {        
+    public static final UnaryFunction function(UnaryPredicate q, UnaryFunction r, UnaryFunction s) {
         return new ConditionalUnaryFunction(q,r,s);
     }
 
-    public static final UnaryPredicate predicate(UnaryPredicate q, UnaryPredicate r, UnaryPredicate s) {        
+    public static final UnaryPredicate predicate(UnaryPredicate q, UnaryPredicate r, UnaryPredicate s) {
         return new ConditionalUnaryPredicate(q,r,s);
     }
 
-    public static final BinaryProcedure procedure(BinaryPredicate q, BinaryProcedure r, BinaryProcedure s) {        
+    public static final BinaryProcedure procedure(BinaryPredicate q, BinaryProcedure r, BinaryProcedure s) {
         return new ConditionalBinaryProcedure(q,r,s);
     }
 
-    public static final BinaryFunction function(BinaryPredicate q, BinaryFunction r, BinaryFunction s) {        
+    public static final BinaryFunction function(BinaryPredicate q, BinaryFunction r, BinaryFunction s) {
         return new ConditionalBinaryFunction(q,r,s);
     }
 
-    public static final BinaryPredicate predicate(BinaryPredicate q, BinaryPredicate r, BinaryPredicate s) {        
+    public static final BinaryPredicate predicate(BinaryPredicate q, BinaryPredicate r, BinaryPredicate s) {
         return new ConditionalBinaryPredicate(q,r,s);
     }
 

@@ -40,11 +40,11 @@ public class TestLazyMap extends TestCase {
     public static Test suite() {
         return new TestSuite(TestLazyMap.class);
     }
-    
+
     private Map baseMap = null;
     private Map lazyMap = null;
     private Map expectedMap = null;
-    
+
     public void setUp() throws Exception {
         super.setUp();
         expectedMap = new HashMap();
@@ -54,10 +54,10 @@ public class TestLazyMap extends TestCase {
         expectedMap.put("four", new Integer(4));
         expectedMap.put("five", new Integer(4));
 
-        baseMap = new HashMap();        
+        baseMap = new HashMap();
         lazyMap = new LazyMap(baseMap,Size.instance());
     }
-    
+
     public void tearDown() throws Exception {
         super.tearDown();
         baseMap = null;
@@ -66,7 +66,7 @@ public class TestLazyMap extends TestCase {
     }
 
     // tests
-    
+
     public void test() {
         for(Iterator iter = expectedMap.keySet().iterator(); iter.hasNext();) {
             Object key = iter.next();

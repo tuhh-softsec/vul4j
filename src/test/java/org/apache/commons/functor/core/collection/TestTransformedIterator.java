@@ -45,10 +45,10 @@ public class TestTransformedIterator extends BaseFunctorTest {
     public static Test suite() {
         return new TestSuite(TestTransformedIterator.class);
     }
-    
+
     public Object makeFunctor() {
         List list = new ArrayList();
-        list.add("xyzzy");        
+        list.add("xyzzy");
         return TransformedIterator.transform(list.iterator(),Identity.instance());
     }
 
@@ -73,7 +73,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testBasicTransform() {
         Iterator expected = negatives.iterator();
         Iterator testing = new TransformedIterator(list.iterator(),negate);
@@ -121,7 +121,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testRemoveBeforeNext() {
         Iterator testing = new TransformedIterator(list.iterator(),negate);
         try {
@@ -131,7 +131,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testRemoveAfterNext() {
         Iterator testing = new TransformedIterator(list.iterator(),negate);
         testing.next();
@@ -143,7 +143,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
     public void testRemoveAll() {
         Iterator testing = new TransformedIterator(list.iterator(),negate);
         while(testing.hasNext()) {
@@ -161,11 +161,11 @@ public class TestTransformedIterator extends BaseFunctorTest {
         }
         assertTrue(list.isEmpty());
     }
-    
+
     public void testTransformWithNullIteratorReturnsNull() {
         assertNull(TransformedIterator.transform(null,negate));
     }
-    
+
     public void testTransformWithNullPredicateReturnsIdentity() {
         Iterator iter = list.iterator();
         assertSame(iter,TransformedIterator.transform(iter,null));
@@ -191,16 +191,16 @@ public class TestTransformedIterator extends BaseFunctorTest {
             // expected
         }
     }
-    
+
 
     // Attributes
     // ------------------------------------------------------------------------
-    private List list = null;    
+    private List list = null;
     private List negatives = null;
-    private UnaryFunction negate = new UnaryFunction() { 
+    private UnaryFunction negate = new UnaryFunction() {
         public Object evaluate(Object obj) {
             return new Integer(((Number)obj).intValue() * -1);
         }
     };
-    
+
 }

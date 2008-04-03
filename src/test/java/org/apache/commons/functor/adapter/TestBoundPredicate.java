@@ -60,7 +60,7 @@ public class TestBoundPredicate extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
         {
@@ -72,7 +72,7 @@ public class TestBoundPredicate extends BaseFunctorTest {
             assertEquals(false,p.test());
         }
     }
-    
+
     public void testEquals() throws Exception {
         Predicate f = new BoundPredicate(new Constant(true),"xyzzy");
         assertEquals(f,f);

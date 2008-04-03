@@ -63,7 +63,7 @@ public class TestSequence extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testRunZero() throws Exception {
         Sequence seq = new Sequence();
         seq.run();
@@ -86,11 +86,11 @@ public class TestSequence extends BaseFunctorTest {
         assertEquals(1,counter[0].count);
         assertEquals(1,counter[1].count);
     }
-    
+
     public void testThen() throws Exception {
         List list = new ArrayList();
         Sequence seq = new Sequence();
-        seq.run();        
+        seq.run();
         for(int i=0;i<10;i++) {
             RunCounter counter = new RunCounter();
             seq.then(counter);
@@ -101,7 +101,7 @@ public class TestSequence extends BaseFunctorTest {
             }
         }
     }
-    
+
     public void testEquals() throws Exception {
         Sequence p = new Sequence();
         assertEquals(p,p);
@@ -114,21 +114,21 @@ public class TestSequence extends BaseFunctorTest {
             q.then(new NoOp());
             assertObjectsAreEqual(p,q);
             p.then(new Sequence(new NoOp(),new NoOp()));
-            assertObjectsAreNotEqual(p,q);            
+            assertObjectsAreNotEqual(p,q);
             q.then(new Sequence(new NoOp(),new NoOp()));
-            assertObjectsAreEqual(p,q);            
+            assertObjectsAreEqual(p,q);
         }
-                
+
         assertObjectsAreNotEqual(p,new NoOp());
     }
 
     // Classes
     // ------------------------------------------------------------------------
-    
-    static class RunCounter implements Procedure {        
+
+    static class RunCounter implements Procedure {
         public void run() {
-            count++;    
-        }        
+            count++;
+        }
         public int count = 0;
     }
 }

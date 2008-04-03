@@ -62,13 +62,13 @@ public class TestTransposedFunction extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         BinaryFunction f = new TransposedFunction(new LeftIdentity());
         assertEquals("xyzzy",f.evaluate(null,"xyzzy"));
         assertNull(f.evaluate("xyzzy",null));
     }
-        
+
     public void testEquals() throws Exception {
         BinaryFunction f = new TransposedFunction(new LeftIdentity());
         assertEquals(f,f);

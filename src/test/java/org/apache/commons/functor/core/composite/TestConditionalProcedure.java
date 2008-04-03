@@ -64,7 +64,7 @@ public class TestConditionalProcedure extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testRun() throws Exception {
         {
             RunCounter left = new RunCounter();
@@ -105,7 +105,7 @@ public class TestConditionalProcedure extends BaseFunctorTest {
             assertEquals(3,right.count);
         }
     }
-    
+
     public void testEquals() throws Exception {
         ConditionalProcedure p = new ConditionalProcedure(
             new Constant(false),
@@ -136,11 +136,11 @@ public class TestConditionalProcedure extends BaseFunctorTest {
 
     // Classes
     // ------------------------------------------------------------------------
-    
-    static class RunCounter implements Procedure {        
+
+    static class RunCounter implements Procedure {
         public void run() {
-            count++;    
-        }        
+            count++;
+        }
         public int count = 0;
     }
 }

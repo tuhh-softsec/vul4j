@@ -58,7 +58,7 @@ public class TestConstant extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testEvaluate() throws Exception {
         Constant f = new Constant("xyzzy");
         assertEquals("xyzzy",f.evaluate());
@@ -68,7 +68,7 @@ public class TestConstant extends BaseFunctorTest {
         assertEquals("xyzzy",f.evaluate("foo"));
         assertEquals("xyzzy",f.evaluate("foo",new Integer(2)));
     }
-    
+
     public void testEvaluateConstantNull() throws Exception {
         Constant f = new Constant(null);
         assertNull(f.evaluate());
@@ -89,7 +89,7 @@ public class TestConstant extends BaseFunctorTest {
         assertTrue(truePred.test("foo"));
         assertTrue(truePred.test("foo",new Integer(2)));
     }
-    
+
     public void testConstantFalse() throws Exception {
         Constant falsePred = new Constant(false);
         assertTrue(!falsePred.test());
@@ -100,7 +100,7 @@ public class TestConstant extends BaseFunctorTest {
         assertTrue(!falsePred.test("foo"));
         assertTrue(!falsePred.test("foo",new Integer(2)));
     }
-        
+
     public void testEquals() throws Exception {
         Constant f = new Constant("xyzzy");
         assertEquals(f,f);
@@ -109,7 +109,7 @@ public class TestConstant extends BaseFunctorTest {
         assertObjectsAreNotEqual(f,new Constant("abcde"));
         assertObjectsAreNotEqual(f,new Constant(null));
     }
-    
+
     public void testConstants() throws Exception {
         assertEquals(Constant.predicate(true),Constant.instance(Boolean.TRUE));
 
@@ -125,6 +125,6 @@ public class TestConstant extends BaseFunctorTest {
         assertEquals(Constant.predicate(false),Constant.falsePredicate());
         assertSame(Constant.predicate(false),Constant.falsePredicate());
     }
-    
-    
+
+
 }

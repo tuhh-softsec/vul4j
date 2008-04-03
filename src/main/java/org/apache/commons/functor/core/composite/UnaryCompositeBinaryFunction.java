@@ -25,14 +25,14 @@ import org.apache.commons.functor.UnaryFunction;
  * A {@link BinaryFunction BinaryFunction} composed of
  * one binary function, <i>f</i>, and two unary
  * functions, <i>g</i> and <i>h</i>,
- * evaluating the ordered parameters <i>x</i>, <i>y</i> 
+ * evaluating the ordered parameters <i>x</i>, <i>y</i>
  * to <code><i>f</i>(<i>g</i>(<i>x</i>),<i>h</i>(<i>y</i>))</code>.
  * <p>
- * Note that although this class implements 
+ * Note that although this class implements
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * an instance whose delegates are not all
  * <code>Serializable</code> will result in an exception.
  * </p>
  * @version $Revision$ $Date$
@@ -45,7 +45,7 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
     public UnaryCompositeBinaryFunction(BinaryFunction f, UnaryFunction g, UnaryFunction h) {
         binary = f;
         leftUnary = g;
-        rightUnary = h;        
+        rightUnary = h;
     }
 
     // function interface
@@ -61,35 +61,35 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
             return false;
         }
     }
-    
+
     public boolean equals(UnaryCompositeBinaryFunction that) {
         return (null != that) &&
             (null == binary ? null == that.binary : binary.equals(that.binary)) &&
             (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary)) &&
             (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
     }
-    
+
     public int hashCode() {
         int hash = "UnaryCompositeBinaryFunction".hashCode();
         if(null != binary) {
             hash <<= 4;
-            hash ^= binary.hashCode();            
+            hash ^= binary.hashCode();
         }
         if(null != leftUnary) {
             hash <<= 4;
-            hash ^= leftUnary.hashCode();            
+            hash ^= leftUnary.hashCode();
         }
         if(null != rightUnary) {
             hash <<= 4;
-            hash ^= rightUnary.hashCode();            
+            hash ^= rightUnary.hashCode();
         }
         return hash;
     }
-    
+
     public String toString() {
         return "UnaryCompositeBinaryFunction<" + binary + ";" + leftUnary + ";" + rightUnary + ">";
     }
-        
+
     // attributes
     // ------------------------------------------------------------------------
     private BinaryFunction binary = null;

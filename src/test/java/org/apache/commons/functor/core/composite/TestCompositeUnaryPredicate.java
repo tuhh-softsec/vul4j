@@ -60,9 +60,9 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
+
     public void testTest() throws Exception {
-        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true))).test(null));        
+        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true))).test(null));
         assertEquals(true,(new CompositeUnaryPredicate(new Constant(true),new Constant(new Integer(3)))).test("xyzzy"));
         assertEquals(false,(new CompositeUnaryPredicate(new Constant(false),new Constant(new Integer(4)))).test("xyzzy"));
     }
@@ -87,7 +87,7 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
             // expected
         }
     }
-        
+
     public void testOf() throws Exception {
         CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
         assertTrue(f.test(null));
@@ -96,7 +96,7 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
             assertEquals(true,f.test(null));
         }
     }
-    
+
     public void testEquals() throws Exception {
         CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
         assertEquals(f,f);
@@ -109,11 +109,11 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
             g.of(new Constant("x"));
             assertObjectsAreEqual(f,g);
             f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
-            assertObjectsAreNotEqual(f,g);            
+            assertObjectsAreNotEqual(f,g);
             g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
-            assertObjectsAreEqual(f,g);            
+            assertObjectsAreEqual(f,g);
         }
-                
+
         assertObjectsAreNotEqual(f,new Constant(false));
     }
 

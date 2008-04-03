@@ -60,19 +60,19 @@ public class TestLeftBoundProcedure extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
         UnaryProcedure p = new LeftBoundProcedure(new BinaryFunctionBinaryProcedure(new RightIdentity()),"foo");
         p.run(Boolean.TRUE);
         p.run(Boolean.FALSE);
     }
-    
+
     public void testEquals() throws Exception {
         UnaryProcedure f = new LeftBoundProcedure(new NoOp(),"xyzzy");
         assertEquals(f,f);
         assertObjectsAreEqual(f,new LeftBoundProcedure(new NoOp(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new NoOp());        
+        assertObjectsAreNotEqual(f,new NoOp());
         assertObjectsAreNotEqual(f,new LeftBoundProcedure(new BinaryFunctionBinaryProcedure(new RightIdentity()),"xyzzy"));
         assertObjectsAreNotEqual(f,new LeftBoundProcedure(new NoOp(),"foo"));
         assertObjectsAreNotEqual(f,new LeftBoundProcedure(null,"xyzzy"));
