@@ -39,20 +39,42 @@ import org.apache.commons.functor.BinaryPredicate;
  */
 abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable {
 
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
+
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new BaseBinaryPredicateList.
+     */
     protected BaseBinaryPredicateList() {
     }
 
+    /**
+     * Create a new BaseBinaryPredicateList.
+     * @param p BinaryPredicate to add
+     */
     protected BaseBinaryPredicateList(BinaryPredicate p) {
         addBinaryPredicate(p);
     }
 
+    /**
+     * Create a new BaseBinaryPredicateList.
+     * @param p BinaryPredicate to add
+     * @param q BinaryPredicate to add
+     */
     protected BaseBinaryPredicateList(BinaryPredicate p, BinaryPredicate q) {
         addBinaryPredicate(p);
         addBinaryPredicate(q);
     }
 
+    /**
+     * Create a new BaseBinaryPredicateList.
+     * @param p BinaryPredicate to add
+     * @param q BinaryPredicate to add
+     * @param r BinaryPredicate to add
+     */
     protected BaseBinaryPredicateList(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
         addBinaryPredicate(p);
         addBinaryPredicate(q);
@@ -61,38 +83,69 @@ abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable 
 
     // abstract
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public abstract boolean equals(Object that);
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract int hashCode();
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract String toString();
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract boolean test(Object left, Object right);
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Add a BinaryPredicate to the list
+     * @param p BinaryPredicate to add
+     */
     protected void addBinaryPredicate(BinaryPredicate p) {
         list.add(p);
     }
 
     // protected
     // ------------------------------------------------------------------------
-
+    /**
+     * Get an Iterator over the list contents.
+     * @return Iterator
+     */
     protected Iterator getBinaryPredicateIterator() {
         return list.iterator();
     }
 
+    /**
+     * Learn whether another list is equal to this one.
+     * @param that BaseBinaryPredicateList to test
+     * @return boolean
+     */
     protected boolean getBinaryPredicateListEquals(BaseBinaryPredicateList that) {
         return (null != that && this.list.equals(that.list));
     }
 
+    /**
+     * Get a hashCode for the list.
+     * @return int
+     */
     protected int getBinaryPredicateListHashCode() {
         return list.hashCode();
     }
 
+    /**
+     * Get a toString for the list.
+     * @return String
+     */
     protected String getBinaryPredicateListToString() {
         return String.valueOf(list);
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
 }

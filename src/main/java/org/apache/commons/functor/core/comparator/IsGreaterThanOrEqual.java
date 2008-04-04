@@ -34,6 +34,10 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @author Rodney Waldhoff
  */
 public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable {
+    private static final IsGreaterThanOrEqual COMPARABLE_INSTANCE = new IsGreaterThanOrEqual();
+
+    private Comparator comparator = null;
+
     /**
      * Construct a <code>IsGreaterThanOrEqual</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
@@ -58,13 +62,14 @@ public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable
      * Return <code>true</code> iff the <i>left</i> parameter is
      * greater than or equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
+     * {@inheritDoc}
      */
     public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) >= 0;
+        return comparator.compare(left, right) >= 0;
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         if (that instanceof IsGreaterThanOrEqual) {
@@ -75,15 +80,16 @@ public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable
     }
 
     /**
-     * @see #equals(Object)
+     * Learn whether another IsGreaterThanOrEqual is equal to this.
+     * @param that IsGreaterThanOrEqual to test
+     * @return boolean
      */
     public boolean equals(IsGreaterThanOrEqual that) {
-        return null != that &&
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+        return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         int hash = "IsGreaterThanOrEqual".hashCode();
@@ -93,20 +99,27 @@ public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "IsGreaterThanOrEqual<" + comparator + ">";
     }
 
+    /**
+     * Get a basic IsGreaterThanOrEqual instance.
+     * @return IsGreaterThanOrEqual
+     */
     public static final IsGreaterThanOrEqual instance() {
         return COMPARABLE_INSTANCE;
     }
 
+    /**
+     * Get an IsGreaterThanOrEqual UnaryPredicate.
+     * @param right the right side object of the IsGreaterThanOrEqual comparison
+     * @return UnaryPredicate
+     */
     public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(),right);
+        return RightBoundPredicate.bind(instance(), right);
     }
 
-    private Comparator comparator = null;
-    private static final IsGreaterThanOrEqual COMPARABLE_INSTANCE = new IsGreaterThanOrEqual();
 }

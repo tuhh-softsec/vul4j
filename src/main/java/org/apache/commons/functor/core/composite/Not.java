@@ -35,30 +35,33 @@ import org.apache.commons.functor.Predicate;
  * @author Rodney Waldhoff
  */
 public final class Not implements Predicate, Serializable {
-    
-    // static
-    // ------------------------------------------------------------------------
-    public static Predicate not(Predicate that) {
-        return null == that ? null : new Not(that);
-    }
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private Predicate predicate = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new Not.
+     * @param p Predicate to negate
+     */
     public Not(Predicate p) {
         this.predicate = p;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
         return !(predicate.test());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof Not) {
             return equals((Not) that);
@@ -67,10 +70,18 @@ public final class Not implements Predicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another Not is equal to this.
+     * @param that the Not to test
+     * @return boolean
+     */
     public boolean equals(Not that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "Not".hashCode();
         if (null != predicate) {
@@ -79,7 +90,21 @@ public final class Not implements Predicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "Not<" + predicate + ">";
+    }
+
+    // static
+    // ------------------------------------------------------------------------
+    /**
+     * Get a Not instance for <code>that</code>.
+     * @param that Predicate to negate
+     * @return Not
+     */
+    public static Predicate not(Predicate that) {
+        return null == that ? null : new Not(that);
     }
 }

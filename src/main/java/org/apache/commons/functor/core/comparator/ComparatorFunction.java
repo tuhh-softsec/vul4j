@@ -40,7 +40,7 @@ public final class ComparatorFunction implements BinaryFunction, Serializable {
 
     /**
      * Create a new ComparatorFunction.
-     * @param comparator
+     * @param comparator to wrap
      */
     public ComparatorFunction(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.instance() : comparator;

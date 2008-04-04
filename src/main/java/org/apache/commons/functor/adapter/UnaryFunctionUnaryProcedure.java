@@ -39,23 +39,6 @@ import org.apache.commons.functor.UnaryProcedure;
  */
 public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serializable {
 
-    /**
-     * Adapt the given, possibly-<code>null</code>,
-     * {@link UnaryFunction UnaryFunction} to the
-     * {@link UnaryProcedure UnaryProcedure} interface.
-     * When the given <code>UnaryFunction</code> is <code>null</code>,
-     * returns <code>null</code>.
-     *
-     * @param function the possibly-<code>null</code>
-     *        {@link UnaryFunction UnaryFunction} to adapt
-     * @return a {@link UnaryProcedure UnaryProcedure} wrapping the given
-     *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
-     *         if the given <code>UnaryFunction</code> is <code>null</code>
-     */
-    public static UnaryFunctionUnaryProcedure adapt(UnaryFunction function) {
-        return null == function ? null : new UnaryFunctionUnaryProcedure(function);
-    }
-
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
     private UnaryFunction function = null;
 
@@ -71,6 +54,7 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
     /**
      * {@link UnaryFunction#evaluate Evaluate} my function, but
      * ignore its returned value.
+     * {@inheritDoc}
      */
     public void run(Object obj) {
         function.evaluate(obj);
@@ -113,6 +97,23 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
      */
     public String toString() {
         return "UnaryFunctionUnaryProcedure<" + function + ">";
+    }
+
+    /**
+     * Adapt the given, possibly-<code>null</code>,
+     * {@link UnaryFunction UnaryFunction} to the
+     * {@link UnaryProcedure UnaryProcedure} interface.
+     * When the given <code>UnaryFunction</code> is <code>null</code>,
+     * returns <code>null</code>.
+     *
+     * @param function the possibly-<code>null</code>
+     *        {@link UnaryFunction UnaryFunction} to adapt
+     * @return a {@link UnaryProcedure UnaryProcedure} wrapping the given
+     *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
+     *         if the given <code>UnaryFunction</code> is <code>null</code>
+     */
+    public static UnaryFunctionUnaryProcedure adapt(UnaryFunction function) {
+        return null == function ? null : new UnaryFunctionUnaryProcedure(function);
     }
 
 }

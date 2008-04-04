@@ -39,20 +39,12 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class IgnoreRightPredicate implements BinaryPredicate, Serializable {
-    /**
-     * @param predicate
-     * @return
-     */
-    public static IgnoreRightPredicate adapt(UnaryPredicate predicate) {
-        return null == predicate ? null : new IgnoreRightPredicate(predicate);
-    }
-
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
     private UnaryPredicate predicate = null;
 
     /**
      * Create a new IgnoreRightPredicate.
-     * @param predicate
+     * @param predicate left
      */
     public IgnoreRightPredicate(UnaryPredicate predicate) {
         this.predicate = predicate;
@@ -102,6 +94,15 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
      */
     public String toString() {
         return "IgnoreRightPredicate<" + predicate + ">";
+    }
+
+    /**
+     * Adapt a UnaryPredicate as an IgnoreRightPredicate
+     * @param predicate to adapt
+     * @return IgnoreRightPredicate
+     */
+    public static IgnoreRightPredicate adapt(UnaryPredicate predicate) {
+        return null == predicate ? null : new IgnoreRightPredicate(predicate);
     }
 
 }

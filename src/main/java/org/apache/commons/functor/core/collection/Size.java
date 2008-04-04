@@ -30,11 +30,18 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class Size implements UnaryFunction, Serializable {
 
+    private static final Size INSTANCE = new Size();
+
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new Size.
+     */
     public Size() { }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
         if (obj instanceof Collection) {
             return evaluate((Collection) obj);
@@ -42,7 +49,7 @@ public final class Size implements UnaryFunction, Serializable {
             return evaluate((String) obj);
         } else if (null != obj && obj.getClass().isArray()) {
             return evaluateArray(obj);
-        } else if (null == obj){
+        } else if (null == obj) {
             throw new NullPointerException("Argument must not be null");
         } else {
             throw new ClassCastException("Expected Collection, String or Array, found " + obj);
@@ -50,42 +57,59 @@ public final class Size implements UnaryFunction, Serializable {
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         return that instanceof Size;
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         return "Size".hashCode();
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "Size()";
     }
 
+    /**
+     * Get a Size instance.
+     * @return Size
+     */
     public static final Size instance() {
         return INSTANCE;
     }
 
+    /**
+     * Evaluate a Collection.
+     * @param col to evaluate
+     * @return Integer
+     */
     private Object evaluate(Collection col) {
         return new Integer(col.size());
     }
 
+    /**
+     * Evaluate a String.
+     * @param str to evaluate
+     * @return Integer
+     */
     private Object evaluate(String str) {
         return new Integer(str.length());
     }
 
+    /**
+     * Evaluate an array.
+     * @param array to evaluate
+     * @return Integer
+     */
     private Object evaluateArray(Object array) {
         return new Integer(Array.getLength(array));
     }
-
-    private static final Size INSTANCE = new Size();
 
 }

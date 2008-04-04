@@ -39,7 +39,13 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class RightBoundPredicate implements UnaryPredicate, Serializable {
+    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
+    private BinaryPredicate predicate = null;
+    /** The parameter to pass to that predicate. */
+    private Object param = null;
+
     /**
+     * Create a new RightBoundPredicate.
      * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
@@ -48,10 +54,16 @@ public final class RightBoundPredicate implements UnaryPredicate, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return predicate.test(obj,param);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof RightBoundPredicate) {
             return equals((RightBoundPredicate) that);
@@ -60,14 +72,20 @@ public final class RightBoundPredicate implements UnaryPredicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another RightBoundPredicate is equal to this.
+     * @param that RightBoundPredicate to test
+     * @return boolean
+     */
     public boolean equals(RightBoundPredicate that) {
-        return that == this || (
-                (null != that) &&
-                (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
-
+        return that == this || ((null != that)
+                && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
+                && (null == param ? null == that.param : param.equals(that.param)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "RightBoundPredicate".hashCode();
         if (null != predicate) {
@@ -81,16 +99,21 @@ public final class RightBoundPredicate implements UnaryPredicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "RightBoundPredicate<" + predicate + "(?," + param + ")>";
     }
 
+    /**
+     * Adapt a BinaryPredicate as a UnaryPredicate.
+     * @param predicate to adapt
+     * @param arg right side
+     * @return RightBoundPredicate
+     */
     public static RightBoundPredicate bind(BinaryPredicate predicate, Object arg) {
-        return null == predicate ? null : new RightBoundPredicate(predicate,arg);
+        return null == predicate ? null : new RightBoundPredicate(predicate, arg);
     }
 
-    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate predicate = null;
-    /** The parameter to pass to that predicate. */
-    private Object param = null;
 }

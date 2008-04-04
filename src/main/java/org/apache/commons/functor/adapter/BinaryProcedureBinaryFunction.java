@@ -39,19 +39,28 @@ import org.apache.commons.functor.BinaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class BinaryProcedureBinaryFunction implements BinaryFunction, Serializable {
-    
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
     private BinaryProcedure procedure = null;
 
+    /**
+     * Create a new BinaryProcedureBinaryFunction.
+     * @param procedure to adapt as a BinaryFunction
+     */
     public BinaryProcedureBinaryFunction(BinaryProcedure procedure) {
         this.procedure = procedure;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         procedure.run(left, right);
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinaryProcedureBinaryFunction) {
             return equals((BinaryProcedureBinaryFunction) that);
@@ -60,11 +69,19 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
         }
     }
 
+    /**
+     * Learn whether another BinaryProcedureBinaryFunction is equal to this.
+     * @param that the BinaryProcedureBinaryFunction to test
+     * @return boolean
+     */
     public boolean equals(BinaryProcedureBinaryFunction that) {
         return that == this
                 || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "BinaryProcedureBinaryFunction".hashCode();
         if (null != procedure) {
@@ -73,6 +90,9 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinaryProcedureBinaryFunction<" + procedure + ">";
     }
@@ -93,4 +113,5 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
     public static BinaryProcedureBinaryFunction adapt(BinaryProcedure procedure) {
         return null == procedure ? null : new BinaryProcedureBinaryFunction(procedure);
     }
+
 }

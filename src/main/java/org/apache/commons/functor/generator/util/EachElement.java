@@ -25,14 +25,18 @@ import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /**
- * Generator for each element of a collection.
+ * Generator factory for each element of a "collection".
  *
  * @since 1.0
  * @version $Revision$ $Date$
  * @author  Jason Horman (jason@jhorman.org)
  */
-
 public final class EachElement {
+    /**
+     * Get a Generator for each element of a Collection.
+     * @param collection to iterate
+     * @return Generator
+     */
     public static final Generator from(Collection collection) {
         if (null == collection) {
             return null;
@@ -41,6 +45,11 @@ public final class EachElement {
         }
     }
 
+    /**
+     * Get a Generator for each entry of a Map.
+     * @param map to iterate
+     * @return Generator
+     */
     public static final Generator from(Map map) {
         if (null == map) {
             return null;
@@ -49,6 +58,11 @@ public final class EachElement {
         }
     }
 
+    /**
+     * Get a Generator for each element of an Object[]. 
+     * @param array to iterate
+     * @return Generator
+     */
     public static final Generator from(Object[] array) {
         if (null == array) {
             return null;
@@ -57,6 +71,11 @@ public final class EachElement {
         }
     }
 
+    /**
+     * Get a Generator for each element of an Iterator. 
+     * @param iter to iterate
+     * @return Generator
+     */
     public static final Generator from(Iterator iter) {
         if (null == iter) {
             return null;

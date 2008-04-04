@@ -41,10 +41,20 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private UnaryPredicate ifPred = null;
+    private UnaryPredicate thenPred = null;
+    private UnaryPredicate elsePred = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new ConditionalUnaryPredicate.
+     * @param ifPred if
+     * @param thenPred then
+     * @param elsePred else
+     */
     public ConditionalUnaryPredicate(UnaryPredicate ifPred, UnaryPredicate thenPred, UnaryPredicate elsePred) {
         this.ifPred = ifPred;
         this.thenPred = thenPred;
@@ -53,10 +63,16 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return ifPred.test(obj) ? thenPred.test(obj) : elsePred.test(obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalUnaryPredicate) {
             return equals((ConditionalUnaryPredicate) that);
@@ -65,13 +81,21 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
         }
     }
 
+    /**
+     * Learn whether another ConditionalUnaryPredicate is equal to this.
+     * @param that ConditionalUnaryPredicate to test
+     * @return boolean
+     */
     public boolean equals(ConditionalUnaryPredicate that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred)) &&
-                (null == elsePred ? null == that.elsePred : elsePred.equals(that.elsePred));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred))
+                && (null == elsePred ? null == that.elsePred : elsePred.equals(that.elsePred));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalUnaryPredicate".hashCode();
         if (null != ifPred) {
@@ -89,13 +113,11 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalUnaryPredicate<" + ifPred + "?" + thenPred + ":" + elsePred + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private UnaryPredicate ifPred = null;
-    private UnaryPredicate thenPred = null;
-    private UnaryPredicate elsePred = null;
 }

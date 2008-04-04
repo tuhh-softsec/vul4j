@@ -53,16 +53,16 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
 
     /**
      * Create a new ConditionalBinaryProcedure.
-     * @param ifPred
-     * @param thenPred
-     * @param elsePred
+     * @param ifPred to evaluate
+     * @param thenPred if <code>ifPred</code> yields <code>true</code>
+     * @param elsePred if <code>ifPred</code> yields <code>false</code>
      */
     public ConditionalBinaryProcedure(BinaryPredicate ifPred, BinaryProcedure thenPred, BinaryProcedure elsePred) {
         this.ifPred = ifPred;
         this.thenProc = thenPred;
         this.elseProc = elsePred;
     }
-    
+
     // predicate interface
     // ------------------------------------------------------------------------
 

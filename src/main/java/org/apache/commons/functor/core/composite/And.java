@@ -49,7 +49,7 @@ public final class And extends BasePredicateList {
 
     /**
      * Create a new And.
-     * @param p
+     * @param p Predicate to add
      */
     public And(Predicate p) {
         super(p);
@@ -57,8 +57,8 @@ public final class And extends BasePredicateList {
 
     /**
      * Create a new And.
-     * @param p
-     * @param q
+     * @param p Predicate to add
+     * @param q Predicate to add
      */
     public And(Predicate p, Predicate q) {
         super(p, q);
@@ -66,9 +66,9 @@ public final class And extends BasePredicateList {
 
     /**
      * Create a new And.
-     * @param p
-     * @param q
-     * @param r
+     * @param p Predicate to add
+     * @param q Predicate to add
+     * @param r Predicate to add
      */
     public And(Predicate p, Predicate q, Predicate r) {
         super(p, q, r);
@@ -77,9 +77,9 @@ public final class And extends BasePredicateList {
     // modifiers
     // ------------------------------------------------------------------------
     /**
-     * 
-     * @param p
-     * @return
+     * Add a Predicate.
+     * @param p Predicate to add
+     * @return this
      */
     public And and(Predicate p) {
         super.addPredicate(p);

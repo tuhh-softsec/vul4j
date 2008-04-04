@@ -35,20 +35,32 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class BinaryNot implements BinaryPredicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryPredicate predicate = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new BinaryNot.
+     * @param p BinaryPredicate to negate
+     */
     public BinaryNot(BinaryPredicate p) {
         this.predicate = p;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
-        return !(predicate.test(left,right));
+        return !(predicate.test(left, right));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinaryNot) {
             return equals((BinaryNot) that);
@@ -57,10 +69,18 @@ public final class BinaryNot implements BinaryPredicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another BinaryNot is equal to this.
+     * @param that BinaryNot to test
+     * @return boolean
+     */
     public boolean equals(BinaryNot that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "BinaryNot".hashCode();
         if (null != predicate) {
@@ -69,17 +89,22 @@ public final class BinaryNot implements BinaryPredicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinaryNot<" + predicate + ">";
     }
 
     // static
     // ------------------------------------------------------------------------
+    /**
+     * Negate a BinaryPredicate.
+     * @param that BinaryPredicate to negate
+     * @return BinaryPredicate
+     */
     public static BinaryPredicate not(BinaryPredicate that) {
         return null == that ? null : new BinaryNot(that);
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryPredicate predicate = null;
 }

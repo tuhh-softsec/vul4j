@@ -35,46 +35,72 @@ import org.apache.commons.functor.BinaryPredicate;
  */
 public final class RightIdentity implements BinaryPredicate, BinaryFunction, Serializable {
 
-    // static methods
-    // ------------------------------------------------------------------------
-    public static RightIdentity instance() {
-        return INSTANCE;
-    }
-
     // static attributes
     // ------------------------------------------------------------------------
     private static final RightIdentity INSTANCE = new RightIdentity();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new RightIdentity.
+     */
     public RightIdentity() {
     }
 
     // functor interface
     // ------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         return right;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return test((Boolean) right);
     }
 
+    /**
+     * Test a Boolean.
+     * @param bool to test
+     * @return boolean
+     */
     private boolean test(Boolean bool) {
         return bool.booleanValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         return (that instanceof RightIdentity);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "RightIdentity".hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "RightIdentity";
+    }
+
+    // static methods
+    // ------------------------------------------------------------------------
+    /**
+     * Get a RightIdentity instance.
+     * @return RightIdentity
+     */
+    public static RightIdentity instance() {
+        return INSTANCE;
     }
 
 }

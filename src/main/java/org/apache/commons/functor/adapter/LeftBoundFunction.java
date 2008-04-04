@@ -39,7 +39,13 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public final class LeftBoundFunction implements UnaryFunction, Serializable {
+    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
+    private BinaryFunction function = null;
+    /** The parameter to pass to that function. */
+    private Object param = null;
+
     /**
+     * Create a new LeftBoundFunction.
      * @param function the function to adapt
      * @param arg the constant argument to use
      */
@@ -48,10 +54,16 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
-        return function.evaluate(param,obj);
+        return function.evaluate(param, obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof LeftBoundFunction) {
             return equals((LeftBoundFunction) that);
@@ -60,14 +72,20 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
         }
     }
 
+    /**
+     * Learn whether another LeftBoundFunction is equal to this.
+     * @param that LeftBoundFunction to test
+     * @return boolean
+     */
     public boolean equals(LeftBoundFunction that) {
-        return that == this || (
-                (null != that) &&
-                (null == function ? null == that.function : function.equals(that.function)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
-
+        return that == this || ((null != that)
+                && (null == function ? null == that.function : function.equals(that.function))
+                && (null == param ? null == that.param : param.equals(that.param)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "LeftBoundFunction".hashCode();
         if (null != function) {
@@ -81,16 +99,21 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "LeftBoundFunction<" + function + "(" + param + ",?)>";
     }
 
+    /**
+     * Adapt a BinaryFunction as a UnaryFunction.
+     * @param function to adapt
+     * @param arg left side argument
+     * @return LeftBoundFunction
+     */
     public static LeftBoundFunction bind(BinaryFunction function, Object arg) {
-        return null == function ? null : new LeftBoundFunction(function,arg);
+        return null == function ? null : new LeftBoundFunction(function, arg);
     }
 
-    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction function = null;
-    /** The parameter to pass to that function. */
-    private Object param = null;
 }

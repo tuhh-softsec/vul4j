@@ -41,44 +41,84 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class Constant implements Function, UnaryFunction, BinaryFunction, Predicate, UnaryPredicate, BinaryPredicate, Serializable {
+public final class Constant implements Function, UnaryFunction, BinaryFunction, Predicate, UnaryPredicate,
+        BinaryPredicate, Serializable {
+
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final Constant TRUE_PREDICATE = new Constant(true);
+    private static final Constant FALSE_PREDICATE = new Constant(false);
+
+    // attributes
+    // ------------------------------------------------------------------------
+    private Object value;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new Constant.
+     * @param value boolean
+     */
     public Constant(boolean value) {
+        //TODO use Boolean.TRUE and Boolean.FALSE
         this(new Boolean(value));
     }
 
+    /**
+     * Create a new Constant.
+     * @param value Object
+     */
     public Constant(Object value) {
         this.value = value;
     }
 
     // function interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate() {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
         return evaluate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         return evaluate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
         return ((Boolean) evaluate()).booleanValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof Constant) {
             return equals((Constant) that);
@@ -87,10 +127,18 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
         }
     }
 
+    /**
+     * Learn whether another Constant is equal to this.
+     * @param that Constant to test
+     * @return boolean
+     */
     public boolean equals(Constant that) {
         return (null != that && (null == this.value ? null == that.value : this.value.equals(that.value)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "Constant".hashCode();
         if (null != value) {
@@ -99,13 +147,12 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "Constant<" + String.valueOf(value) + ">";
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private Object value;
 
     // static methods
     // ------------------------------------------------------------------------
@@ -141,12 +188,13 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
         return value ? TRUE_PREDICATE : FALSE_PREDICATE;
     }
 
+    /**
+     * Get a Constant instance for the specified value.
+     * @param value Object
+     * @return Constant
+     */
     public static Constant instance(Object value) {
         return new Constant(value);
     }
 
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final Constant TRUE_PREDICATE = new Constant(true);
-    private static final Constant FALSE_PREDICATE = new Constant(false);
 }

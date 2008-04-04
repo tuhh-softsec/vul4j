@@ -36,23 +36,6 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
 public final class IsLessThan implements BinaryPredicate, Serializable {
     private static final IsLessThan COMPARABLE_INSTANCE = new IsLessThan();
 
-    /**
-     * Get a basic IsLessThan instance.
-     * @return IsLessThan
-     */
-    public static final IsLessThan instance() {
-        return COMPARABLE_INSTANCE;
-    }
-
-    /**
-     * Get an IsLessThan UnaryPredicate.
-     * @param right the right side object of the comparison.
-     * @return UnaryPredicate
-     */
-    public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(),right);
-    }
-
     private Comparator comparator = null;
 
     /**
@@ -79,6 +62,7 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
      * Return <code>true</code> iff the <i>left</i> parameter is
      * less than the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
+     * {@inheritDoc}
      */
     public boolean test(Object left, Object right) {
         return comparator.compare(left, right) < 0;
@@ -101,8 +85,7 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
      * @return boolean
      */
     public boolean equals(IsLessThan that) {
-        return null != that &&
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+        return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
     /**
@@ -120,6 +103,23 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
      */
     public String toString() {
         return "IsLessThan<" + comparator + ">";
+    }
+
+    /**
+     * Get a basic IsLessThan instance.
+     * @return IsLessThan
+     */
+    public static final IsLessThan instance() {
+        return COMPARABLE_INSTANCE;
+    }
+
+    /**
+     * Get an IsLessThan UnaryPredicate.
+     * @param right the right side object of the comparison.
+     * @return UnaryPredicate
+     */
+    public static final UnaryPredicate instance(Comparable right) {
+        return RightBoundPredicate.bind(instance(), right);
     }
 
 }

@@ -31,24 +31,21 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
 
     // class variables
     // ------------------------------------------------------------------------
-    
+
     private static final IsEmpty INSTANCE = new IsEmpty();
-    
-    // class methods
-    // ------------------------------------------------------------------------
-    
-    public static final IsEmpty instance() {
-        return INSTANCE;
-    }
-    
+
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new IsEmpty.
+     */
     public IsEmpty() { }
 
     // instance methods
     // ------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         if (obj instanceof Collection) {
             return testCollection((Collection) obj);
@@ -66,40 +63,70 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         return that instanceof IsEmpty;
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         return "IsEmpty".hashCode();
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "IsEmpty()";
     }
 
+    /**
+     * Test a collection.
+     * @param col to test
+     * @return boolean
+     */
     private boolean testCollection(Collection col) {
         return col.isEmpty();
     }
 
+    /**
+     * Test a map.
+     * @param map to test
+     * @return boolean
+     */
     private boolean testMap(Map map) {
         return map.isEmpty();
     }
 
+    /**
+     * Test a string.
+     * @param str to test
+     * @return boolean
+     */
     private boolean testString(String str) {
         return 0 == str.length();
     }
 
+    /**
+     * Test an array.
+     * @param array to test
+     * @return boolean
+     */
     private boolean testArray(Object array) {
         return 0 == Array.getLength(array);
+    }
+
+    // static
+    // ------------------------------------------------------------------------
+    /**
+     * Get an IsEmpty instance.
+     * @return IsEmpty
+     */
+    public static final IsEmpty instance() {
+        return INSTANCE;
     }
 
 }

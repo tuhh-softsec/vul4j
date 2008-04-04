@@ -37,6 +37,10 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  *
  */
 public final class IsEquivalent implements BinaryPredicate, Serializable {
+    private static final IsEquivalent COMPARABLE_INSTANCE = new IsEquivalent();
+
+    private Comparator comparator = null;
+
     /**
      * Construct an <code>IsEquivalent</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
@@ -61,13 +65,14 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * Return <code>true</code> iff the <i>left</i> parameter is
      * equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
+     * {@inheritDoc}
      */
     public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) == 0;
+        return comparator.compare(left, right) == 0;
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         if (that instanceof IsEquivalent) {
@@ -78,15 +83,16 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see #equals(Object)
+     * Learn whether a given IsEquivalent is equal to this.
+     * @param that IsEquivalent to test
+     * @return boolean
      */
     public boolean equals(IsEquivalent that) {
-        return null != that &&
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+        return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         int hash = "IsEquivalent".hashCode();
@@ -96,20 +102,27 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "IsEquivalent<" + comparator + ">";
     }
 
+    /**
+     * Get a basic IsEquivalent instance.
+     * @return IsEquivalent
+     */
     public static final IsEquivalent instance() {
         return COMPARABLE_INSTANCE;
     }
 
+    /**
+     * Get an IsEquivalent instance that always compares to <code>arg</code>.
+     * @param right argument
+     * @return UnaryPredicate
+     */
     public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(),right);
+        return RightBoundPredicate.bind(instance(), right);
     }
 
-    private Comparator comparator = null;
-    private static final IsEquivalent COMPARABLE_INSTANCE = new IsEquivalent();
 }

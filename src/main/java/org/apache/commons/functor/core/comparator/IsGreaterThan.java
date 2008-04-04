@@ -36,23 +36,6 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
 public final class IsGreaterThan implements BinaryPredicate, Serializable {
     private static final IsGreaterThan COMPARABLE_INSTANCE = new IsGreaterThan();
 
-    /**
-     * Get a basic IsGreaterThan instance.
-     * @return IsGreaterThan
-     */
-    public static final IsGreaterThan instance() {
-        return COMPARABLE_INSTANCE;
-    }
-
-    /**
-     * Get an IsGreaterThan UnaryPredicate
-     * @param right the right side object of the IsGreaterThan comparison
-     * @return UnaryPredicate
-     */
-    public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(),right);
-    }
-
     private Comparator comparator = null;
 
     /**
@@ -79,6 +62,7 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      * Return <code>true</code> iff the <i>left</i> parameter is
      * greater than the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
+     * {@inheritDoc}
      */
     public boolean test(Object left, Object right) {
         return comparator.compare(left, right) > 0;
@@ -119,6 +103,23 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      */
     public String toString() {
         return "IsGreaterThan<" + comparator + ">";
+    }
+
+    /**
+     * Get a basic IsGreaterThan instance.
+     * @return IsGreaterThan
+     */
+    public static final IsGreaterThan instance() {
+        return COMPARABLE_INSTANCE;
+    }
+
+    /**
+     * Get an IsGreaterThan UnaryPredicate.
+     * @param right the right side object of the IsGreaterThan comparison
+     * @return UnaryPredicate
+     */
+    public static final UnaryPredicate instance(Comparable right) {
+        return RightBoundPredicate.bind(instance(), right);
     }
 
 }

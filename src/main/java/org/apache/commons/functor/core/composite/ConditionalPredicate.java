@@ -41,10 +41,20 @@ import org.apache.commons.functor.Predicate;
  * @author Rodney Waldhoff
  */
 public final class ConditionalPredicate implements Predicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private Predicate ifPred = null;
+    private Predicate thenPred = null;
+    private Predicate elsePred = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new ConditionalPredicate.
+     * @param ifPred if
+     * @param thenPred then
+     * @param elsePred else
+     */
     public ConditionalPredicate(Predicate ifPred, Predicate thenPred, Predicate elsePred) {
         this.ifPred = ifPred;
         this.thenPred = thenPred;
@@ -53,10 +63,16 @@ public final class ConditionalPredicate implements Predicate, Serializable {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
         return ifPred.test() ? thenPred.test() : elsePred.test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalPredicate) {
             return equals((ConditionalPredicate) that);
@@ -65,13 +81,21 @@ public final class ConditionalPredicate implements Predicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another ConditionalPredicate is equal to this.
+     * @param that ConditionalPredicate to test
+     * @return boolean
+     */
     public boolean equals(ConditionalPredicate that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred)) &&
-                (null == elsePred ? null == that.elsePred : elsePred.equals(that.elsePred));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred))
+                && (null == elsePred ? null == that.elsePred : elsePred.equals(that.elsePred));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalPredicate".hashCode();
         if (null != ifPred) {
@@ -89,13 +113,11 @@ public final class ConditionalPredicate implements Predicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalPredicate<" + ifPred + "?" + thenPred + ":" + elsePred + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private Predicate ifPred = null;
-    private Predicate thenPred = null;
-    private Predicate elsePred = null;
 }

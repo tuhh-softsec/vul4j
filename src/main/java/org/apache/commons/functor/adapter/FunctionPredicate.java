@@ -37,6 +37,14 @@ import org.apache.commons.functor.Predicate;
  * @author Rodney Waldhoff
  */
 public final class FunctionPredicate implements Predicate, Serializable {
+
+    /** The {@link Function Function} I'm wrapping. */
+    private Function function = null;
+
+    /**
+     * Create a new FunctionPredicate.
+     * @param function to adapt
+     */
     public FunctionPredicate(Function function) {
         this.function = function;
     }
@@ -45,14 +53,17 @@ public final class FunctionPredicate implements Predicate, Serializable {
      * Returns the <code>boolean</code> value of the non-<code>null</code>
      * <code>Boolean</code> returned by the {@link Function#evaluate evaluate}
      * method of my underlying function.
-     *
+     * {@inheritDoc}
      * @throws NullPointerException if my underlying function returns <code>null</code>
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
     public boolean test() {
-        return ((Boolean)(function.evaluate())).booleanValue();
+        return ((Boolean) (function.evaluate())).booleanValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof FunctionPredicate) {
             return equals((FunctionPredicate) that);
@@ -61,10 +72,19 @@ public final class FunctionPredicate implements Predicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another FunctionPredicate is equal to this.
+     * @param that FunctionPredicate to test
+     * @return boolean
+     */
     public boolean equals(FunctionPredicate that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "FunctionPredicate".hashCode();
         if (null != function) {
@@ -73,14 +93,19 @@ public final class FunctionPredicate implements Predicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "FunctionPredicate<" + function + ">";
     }
 
+    /**
+     * Adapt a Function as a Predicate.
+     * @param function to adapt
+     * @return FunctionPredicate
+     */
     public static FunctionPredicate adapt(Function function) {
         return null == function ? null : new FunctionPredicate(function);
     }
-
-    /** The {@link Function Function} I'm wrapping. */
-    private Function function = null;
 }

@@ -39,26 +39,6 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class BoundProcedure implements Procedure, Serializable {
-    /**
-     * Adapt the given, possibly-<code>null</code>,
-     * {@link UnaryProcedure UnaryProcedure} to the
-     * {@link Procedure Procedure} interface by binding
-     * the specified <code>Object</code> as a constant
-     * argument.
-     * When the given <code>UnaryProcedure</code> is <code>null</code>,
-     * returns <code>null</code>.
-     *
-     * @param procedure the possibly-<code>null</code>
-     *        {@link UnaryProcedure UnaryProcedure} to adapt
-     * @param arg the object to bind as a constant argument
-     * @return a <code>BoundProcedure</code> wrapping the given
-     *         {@link UnaryProcedure UnaryProcedure}, or <code>null</code>
-     *         if the given <code>UnaryProcedure</code> is <code>null</code>
-     */
-    public static BoundProcedure bind(UnaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new BoundProcedure(procedure,arg);
-    }
-
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
     private UnaryProcedure procedure = null;
     /** The parameter to pass to that procedure. */
@@ -124,6 +104,26 @@ public final class BoundProcedure implements Procedure, Serializable {
      */
     public String toString() {
         return "BoundProcedure<" + procedure + "(" + param + ")>";
+    }
+
+    /**
+     * Adapt the given, possibly-<code>null</code>,
+     * {@link UnaryProcedure UnaryProcedure} to the
+     * {@link Procedure Procedure} interface by binding
+     * the specified <code>Object</code> as a constant
+     * argument.
+     * When the given <code>UnaryProcedure</code> is <code>null</code>,
+     * returns <code>null</code>.
+     *
+     * @param procedure the possibly-<code>null</code>
+     *        {@link UnaryProcedure UnaryProcedure} to adapt
+     * @param arg the object to bind as a constant argument
+     * @return a <code>BoundProcedure</code> wrapping the given
+     *         {@link UnaryProcedure UnaryProcedure}, or <code>null</code>
+     *         if the given <code>UnaryProcedure</code> is <code>null</code>
+     */
+    public static BoundProcedure bind(UnaryProcedure procedure, Object arg) {
+        return null == procedure ? null : new BoundProcedure(procedure, arg);
     }
 
 }

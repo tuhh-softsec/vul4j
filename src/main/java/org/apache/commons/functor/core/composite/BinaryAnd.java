@@ -40,24 +40,47 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new BinaryAnd.
+     */
     public BinaryAnd() {
         super();
     }
 
+    /**
+     * Create a new BinaryAnd.
+     * @param p BinaryPredicate to add
+     */
     public BinaryAnd(BinaryPredicate p) {
         super(p);
     }
 
+    /**
+     * Create a new BinaryAnd.
+     * @param p BinaryPredicate to add
+     * @param q BinaryPredicate to add
+     */
     public BinaryAnd(BinaryPredicate p, BinaryPredicate q) {
         super(p, q);
     }
 
+    /**
+     * Create a new BinaryAnd.
+     * @param p BinaryPredicate to add
+     * @param q BinaryPredicate to add
+     * @param r BinaryPredicate to add
+     */
     public BinaryAnd(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
         super(p, q, r);
     }
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * And in a BinaryPredicate.
+     * @param p BinaryPredicate to add
+     * @return this
+     */
     public BinaryAnd and(BinaryPredicate p) {
         super.addBinaryPredicate(p);
         return this;
@@ -65,6 +88,9 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object a, Object b) {
         for (Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
             if (!((BinaryPredicate) iter.next()).test(a, b)) {
@@ -74,6 +100,9 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinaryAnd) {
             return equals((BinaryAnd) that);
@@ -82,14 +111,25 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
         }
     }
 
+    /**
+     * Learn whether another BinaryAnd is equal to this.
+     * @param that the BinaryAnd to test
+     * @return boolean
+     */
     public boolean equals(BinaryAnd that) {
         return getBinaryPredicateListEquals(that);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "BinaryAnd".hashCode() ^ getBinaryPredicateListHashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinaryAnd<" + getBinaryPredicateListToString() + ">";
     }

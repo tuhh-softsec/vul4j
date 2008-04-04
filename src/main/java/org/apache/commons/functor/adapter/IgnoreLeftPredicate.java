@@ -39,21 +39,27 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable {
-    public static IgnoreLeftPredicate adapt(UnaryPredicate predicate) {
-        return null == predicate ? null : new IgnoreLeftPredicate(predicate);
-    }
-
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
     private UnaryPredicate predicate = null;
 
+    /**
+     * Create a new IgnoreLeftPredicate.
+     * @param predicate the right predicate
+     */
     public IgnoreLeftPredicate(UnaryPredicate predicate) {
         this.predicate = predicate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return predicate.test(right);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof IgnoreLeftPredicate) {
             return equals((IgnoreLeftPredicate) that);
@@ -62,11 +68,19 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
         }
     }
 
+    /**
+     * Learn whether another IgnoreLeftPredicate is equal to this.
+     * @param that the IgnoreLeftPredicate to test
+     * @return boolean
+     */
     public boolean equals(IgnoreLeftPredicate that) {
         return that == this
                 || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IgnoreLeftPredicate".hashCode();
         if (null != predicate) {
@@ -75,8 +89,21 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IgnoreLeftPredicate<" + predicate + ">";
     }
 
+    /**
+     * Adapt a UnaryPredicate to an IgnoreLeftPredicate.
+     * @param predicate to adapt
+     * @return IgnoreLeftPredicate
+     */
+    public static IgnoreLeftPredicate adapt(UnaryPredicate predicate) {
+        return null == predicate ? null : new IgnoreLeftPredicate(predicate);
+    }
+
+    //TODO add static adapt(UnaryPredicate) method
 }

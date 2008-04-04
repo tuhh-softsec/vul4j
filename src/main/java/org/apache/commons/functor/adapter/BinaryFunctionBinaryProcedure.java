@@ -39,23 +39,6 @@ import org.apache.commons.functor.BinaryProcedure;
  */
 public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Serializable {
 
-    /**
-     * Adapt the given, possibly-<code>null</code>,
-     * {@link BinaryFunction BinaryFunction} to the
-     * {@link BinaryProcedure BinaryProcedure} interface.
-     * When the given <code>BinaryFunction</code> is <code>null</code>,
-     * returns <code>null</code>.
-     *
-     * @param function the possibly-<code>null</code>
-     *        {@link BinaryFunction BinaryFunction} to adapt
-     * @return a <code>BinaryFunctionBinaryProcedure</code> wrapping the given
-     *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
-     *         if the given <code>BinaryFunction</code> is <code>null</code>
-     */
-    public static BinaryFunctionBinaryProcedure adapt(BinaryFunction function) {
-        return null == function ? null : new BinaryFunctionBinaryProcedure(function);
-    }
-
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
     private BinaryFunction function = null;
 
@@ -71,6 +54,7 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
     /**
      * {@link BinaryFunction#evaluate Evaluate} my function, but
      * ignore its returned value.
+     * {@inheritDoc}
      */
     public void run(Object left, Object right) {
         function.evaluate(left, right);
@@ -113,6 +97,23 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
      */
     public String toString() {
         return "BinaryFunctionBinaryProcedure<" + function + ">";
+    }
+
+    /**
+     * Adapt the given, possibly-<code>null</code>,
+     * {@link BinaryFunction BinaryFunction} to the
+     * {@link BinaryProcedure BinaryProcedure} interface.
+     * When the given <code>BinaryFunction</code> is <code>null</code>,
+     * returns <code>null</code>.
+     *
+     * @param function the possibly-<code>null</code>
+     *        {@link BinaryFunction BinaryFunction} to adapt
+     * @return a <code>BinaryFunctionBinaryProcedure</code> wrapping the given
+     *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
+     *         if the given <code>BinaryFunction</code> is <code>null</code>
+     */
+    public static BinaryFunctionBinaryProcedure adapt(BinaryFunction function) {
+        return null == function ? null : new BinaryFunctionBinaryProcedure(function);
     }
 
 }

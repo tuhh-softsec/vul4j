@@ -35,17 +35,6 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class Identity implements UnaryFunction, UnaryPredicate, Serializable {
 
-    // static methods
-    // ------------------------------------------------------------------------
-
-    /**
-     * Get an Identity instance.
-     * @return Identity
-     */
-    public static Identity instance() {
-        return INSTANCE;
-    }
-
     // static attributes
     // ------------------------------------------------------------------------
     private static final Identity INSTANCE = new Identity();
@@ -77,9 +66,9 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
     }
 
     /**
-     * 
-     * @param bool
-     * @return
+     * Test a Boolean object by returning its <code>booleanValue</code>.
+     * @param bool Boolean
+     * @return boolean
      */
     public boolean test(Boolean bool) {
         return bool.booleanValue();
@@ -104,6 +93,17 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
      */
     public String toString() {
         return "Identity";
+    }
+
+    // static methods
+    // ------------------------------------------------------------------------
+
+    /**
+     * Get an Identity instance.
+     * @return Identity
+     */
+    public static Identity instance() {
+        return INSTANCE;
     }
 
 }

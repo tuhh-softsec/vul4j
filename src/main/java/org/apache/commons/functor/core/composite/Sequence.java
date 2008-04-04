@@ -42,15 +42,31 @@ import org.apache.commons.functor.Procedure;
  */
 public class Sequence implements Procedure, Serializable {
 
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
+
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new Sequence.
+     */
     public Sequence() {
     }
 
+    /**
+     * Create a new Sequence.
+     * @param p Procedure to add
+     */
     public Sequence(Procedure p) {
         then(p);
     }
 
+    /**
+     * Create a new Sequence.
+     * @param p Procedure to add
+     * @param q Procedure to add
+     */
     public Sequence(Procedure p, Procedure q) {
         then(p);
         then(q);
@@ -58,6 +74,11 @@ public class Sequence implements Procedure, Serializable {
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Fluently add a Procedure.
+     * @param p Procedure to add
+     * @return this
+     */
     public Sequence then(Procedure p) {
         list.add(p);
         return this;
@@ -65,12 +86,18 @@ public class Sequence implements Procedure, Serializable {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run() {
         for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
             ((Procedure) iter.previous()).run();
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof Sequence) {
             return equals((Sequence) that);
@@ -79,23 +106,29 @@ public class Sequence implements Procedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether a given Sequence is equal to this.
+     * @param that Sequence to test
+     * @return boolean
+     */
     public boolean equals(Sequence that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         // by construction, list is never null
         return "Sequence".hashCode() ^ list.hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "Sequence<" + list + ">";
     }
-
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
 }

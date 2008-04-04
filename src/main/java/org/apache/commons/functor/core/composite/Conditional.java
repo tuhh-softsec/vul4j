@@ -42,9 +42,9 @@ public final class Conditional {
 
     /**
      * Create a conditional procedure.
-     * @param q
-     * @param r
-     * @param s
+     * @param q if
+     * @param r then
+     * @param s else
      * @return UnaryProcedure
      */
     public static final UnaryProcedure procedure(UnaryPredicate q, UnaryProcedure r, UnaryProcedure s) {
@@ -52,10 +52,10 @@ public final class Conditional {
     }
 
     /**
-     * 
-     * @param q
-     * @param r
-     * @param s
+     * Create a conditional function.
+     * @param q if
+     * @param r then
+     * @param s else
      * @return UnaryFunction
      */
     public static final UnaryFunction function(UnaryPredicate q, UnaryFunction r, UnaryFunction s) {
@@ -63,10 +63,10 @@ public final class Conditional {
     }
 
     /**
-     * 
-     * @param q
-     * @param r
-     * @param s
+     * Create a conditional predicate.
+     * @param q if
+     * @param r then
+     * @param s else
      * @return UnaryPredicate
      */
     public static final UnaryPredicate predicate(UnaryPredicate q, UnaryPredicate r, UnaryPredicate s) {
@@ -74,10 +74,10 @@ public final class Conditional {
     }
 
     /**
-     * 
-     * @param q
-     * @param r
-     * @param s
+     * Create a conditional binary procedure.
+     * @param q if
+     * @param r then
+     * @param s else
      * @return BinaryProcedure
      */
     public static final BinaryProcedure procedure(BinaryPredicate q, BinaryProcedure r, BinaryProcedure s) {
@@ -85,10 +85,10 @@ public final class Conditional {
     }
 
     /**
-     * 
-     * @param q
-     * @param r
-     * @param s
+     * Create a conditional binary function.
+     * @param q if
+     * @param r then
+     * @param s else
      * @return BinaryFunction
      */
     public static final BinaryFunction function(BinaryPredicate q, BinaryFunction r, BinaryFunction s) {
@@ -96,10 +96,10 @@ public final class Conditional {
     }
 
     /**
-     * 
-     * @param q
-     * @param r
-     * @param s
+     * Create a conditional binary predicate.
+     * @param q if
+     * @param r then
+     * @param s else
      * @return BinaryPredicate
      */
     public static final BinaryPredicate predicate(BinaryPredicate q, BinaryPredicate r, BinaryPredicate s) {

@@ -39,15 +39,28 @@ import org.apache.commons.functor.Procedure;
  * @author Rodney Waldhoff
  */
 public final class ProcedureFunction implements Function, Serializable {
+    /** The {@link Procedure Procedure} I'm wrapping. */
+    private Procedure procedure = null;
+
+    /**
+     * Create a new ProcedureFunction.
+     * @param procedure to adapt
+     */
     public ProcedureFunction(Procedure procedure) {
         this.procedure = procedure;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate() {
         procedure.run();
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ProcedureFunction) {
             return equals((ProcedureFunction) that);
@@ -56,10 +69,19 @@ public final class ProcedureFunction implements Function, Serializable {
         }
     }
 
+    /**
+     * Learn whether another ProcedureFunction is equal to this.
+     * @param that ProcedureFunction to test
+     * @return boolean
+     */
     public boolean equals(ProcedureFunction that) {
-        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return that == this
+                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ProcedureFunction".hashCode();
         if (null != procedure) {
@@ -68,14 +90,20 @@ public final class ProcedureFunction implements Function, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ProcedureFunction<" + procedure + ">";
     }
 
+    /**
+     * Adapt a Procedure as a Function.
+     * @param procedure to adapt
+     * @return ProcedureFunction
+     */
     public static ProcedureFunction adapt(Procedure procedure) {
         return null == procedure ? null : new ProcedureFunction(procedure);
     }
 
-    /** The {@link Procedure Procedure} I'm wrapping. */
-    private Procedure procedure = null;
 }

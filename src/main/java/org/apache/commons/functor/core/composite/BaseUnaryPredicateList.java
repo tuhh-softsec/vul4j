@@ -38,7 +38,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
-    
+
     // attributes
     // ------------------------------------------------------------------------
     private List list = new ArrayList();
@@ -53,7 +53,7 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
 
     /**
      * Create a new BaseUnaryPredicateList.
-     * @param p
+     * @param p single Predicate to add
      */
     protected BaseUnaryPredicateList(UnaryPredicate p) {
         addUnaryPredicate(p);
@@ -61,8 +61,8 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
 
     /**
      * Create a new BaseUnaryPredicateList.
-     * @param p
-     * @param q
+     * @param p Predicate to add
+     * @param q Predicate to add
      */
     protected BaseUnaryPredicateList(UnaryPredicate p, UnaryPredicate q) {
         addUnaryPredicate(p);
@@ -71,9 +71,9 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
 
     /**
      * Create a new BaseUnaryPredicateList.
-     * @param p
-     * @param q
-     * @param r
+     * @param p Predicate to add
+     * @param q Predicate to add
+     * @param r Predicate to add
      */
     protected BaseUnaryPredicateList(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
         addUnaryPredicate(p);

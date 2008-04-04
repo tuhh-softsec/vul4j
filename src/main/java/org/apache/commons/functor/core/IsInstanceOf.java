@@ -31,19 +31,32 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class IsInstanceOf implements UnaryPredicate, Serializable {
 
+    // attributes
+    // ------------------------------------------------------------------------
+    private Class klass;
+
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new IsInstanceOf.
+     * @param klass
+     */
     public IsInstanceOf(Class klass) {
         this.klass = klass;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return klass.isInstance(obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof IsInstanceOf) {
             return equals((IsInstanceOf) that);
@@ -52,10 +65,18 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another IsInstanceOf is equal to this.
+     * @param that IsInstanceOf to test
+     * @return boolean
+     */
     public boolean equals(IsInstanceOf that) {
         return (null != that && (null == this.klass ? null == that.klass : this.klass.equals(that.klass)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IsInstanceOf".hashCode();
         if (null != klass) {
@@ -64,12 +85,11 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IsInstanceOf<" + klass + ">";
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private Class klass;
 
 }

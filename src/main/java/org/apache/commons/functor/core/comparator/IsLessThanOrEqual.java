@@ -35,7 +35,7 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  */
 public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
     private static final IsLessThanOrEqual COMPARABLE_INSTANCE = new IsLessThanOrEqual();
-    
+
     private Comparator comparator = null;
 
     /**
@@ -59,6 +59,7 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
     }
 
     /**
+     * {@inheritDoc}
      * Return <code>true</code> iff the <i>left</i> parameter is
      * less than or equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
@@ -68,7 +69,7 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         if (that instanceof IsLessThanOrEqual) {
@@ -79,14 +80,16 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see #equals(Object)
+     * Learn whether another IsLessThanOrEqual is equal to this.
+     * @param that the IsLessThanOrEqual to test.
+     * @return boolean
      */
     public boolean equals(IsLessThanOrEqual that) {
         return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         int hash = "IsLessThanOrEqual".hashCode();
@@ -96,17 +99,27 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "IsLessThanOrEqual<" + comparator + ">";
     }
 
+    /**
+     * Get a basic IsLessThanOrEqual instance.
+     * @return IsLessThanOrEqual
+     */
     public static final IsLessThanOrEqual instance() {
         return COMPARABLE_INSTANCE;
     }
 
+    /**
+     * Get an IsLessThanOrEqual UnaryPredicate.
+     * @param right the right side object of the comparison.
+     * @return UnaryPredicate
+     */
     public static final UnaryPredicate instance(Comparable right) {
         return RightBoundPredicate.bind(instance(), right);
     }
+
 }

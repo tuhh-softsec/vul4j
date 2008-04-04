@@ -42,23 +42,41 @@ import org.apache.commons.functor.BinaryProcedure;
  * @author Rodney Waldhoff
  */
 public class BinarySequence implements BinaryProcedure, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new BinarySequence.
+     */
     public BinarySequence() {
     }
 
+    /**
+     * Create a new BinarySequence.
+     * @param p BinaryProcedure to add
+     */
     public BinarySequence(BinaryProcedure p) {
         then(p);
     }
 
+    /**
+     * Create a new BinarySequence.
+     * @param p BinaryProcedure to add
+     * @param q BinaryProcedure to add
+     */
     public BinarySequence(BinaryProcedure p, BinaryProcedure q) {
         then(p);
         then(q);
     }
 
-    // modifiers
-    // ------------------------------------------------------------------------
+    /**
+     * Fluently add a BinaryProcedure.
+     * @param p BinaryProcedure to add
+     * @return this
+     */
     public BinarySequence then(BinaryProcedure p) {
         list.add(p);
         return this;
@@ -66,12 +84,18 @@ public class BinarySequence implements BinaryProcedure, Serializable {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object left, Object right) {
         for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((BinaryProcedure) iter.previous()).run(left,right);
+            ((BinaryProcedure) iter.previous()).run(left, right);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinarySequence) {
             return equals((BinarySequence) that);
@@ -80,23 +104,29 @@ public class BinarySequence implements BinaryProcedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether another BinarySequence is equal to this.
+     * @param that BinarySequence to test
+     * @return boolean
+     */
     public boolean equals(BinarySequence that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         // by construction, list is never null
         return "BinarySequence".hashCode() ^ list.hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinarySequence<" + list + ">";
     }
-
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
 }
