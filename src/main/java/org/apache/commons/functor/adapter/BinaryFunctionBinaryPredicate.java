@@ -38,6 +38,9 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Serializable {
+    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
+    private BinaryFunction function = null;
+
     /**
      * Create an {@link BinaryPredicate BinaryPredicate} wrapping
      * the given {@link BinaryFunction BinaryFunction}.
@@ -48,6 +51,7 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
     }
 
     /**
+     * {@inheritDoc}
      * Returns the <code>boolean</code> value of the non-<code>null</code>
      * <code>Boolean</code> returned by the {@link BinaryFunction#evaluate evaluate}
      * method of my underlying function.
@@ -56,9 +60,12 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
     public boolean test(Object left, Object right) {
-        return ((Boolean)(function.evaluate(left,right))).booleanValue();
+        return ((Boolean) (function.evaluate(left, right))).booleanValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinaryFunctionBinaryPredicate) {
             return equals((BinaryFunctionBinaryPredicate) that);
@@ -67,10 +74,18 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
         }
     }
 
+    /**
+     * @param that
+     * @return
+     */
     public boolean equals(BinaryFunctionBinaryPredicate that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "BinaryFunctionBinaryPredicate".hashCode();
         if (null != function) {
@@ -79,6 +94,9 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinaryFunctionBinaryPredicate<" + function + ">";
     }
@@ -100,6 +118,4 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
         return null == function ? null : new BinaryFunctionBinaryPredicate(function);
     }
 
-    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction function = null;
 }

@@ -29,24 +29,51 @@ import org.apache.commons.functor.generator.BaseGenerator;
  * @author Rodney Waldhoff
  */
 public final class IntegerRange extends BaseGenerator {
+    // attributes
+    //---------------------------------------------------------------
+
+    private int from;
+    private int to;
+    private int step;
 
     // constructors
     //---------------------------------------------------------------
-
+    /**
+     * Create a new IntegerRange.
+     * @param from start
+     * @param to end
+     */
     public IntegerRange(Number from, Number to) {
-        this(from.intValue(),to.intValue());
+        this(from.intValue(), to.intValue());
     }
 
+    /**
+     * Create a new IntegerRange.
+     * @param from start
+     * @param to end
+     * @param step increment
+     */
     public IntegerRange(Number from, Number to, Number step) {
-        this(from.intValue(),to.intValue(),step.intValue());
+        this(from.intValue(), to.intValue(), step.intValue());
     }
 
+    /**
+     * Create a new IntegerRange.
+     * @param from start
+     * @param to end
+     */
     public IntegerRange(int from, int to) {
-        this(from,to,defaultStep(from,to));
+        this(from, to, defaultStep(from, to));
     }
 
+    /**
+     * Create a new IntegerRange.
+     * @param from start
+     * @param to end
+     * @param step increment
+     */
     public IntegerRange(int from, int to, int step) {
-        if (from != to && signOf(step) != signOf(to-from)) {
+        if (from != to && signOf(step) != signOf(to - from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
         } else {
             this.from = from;
@@ -57,23 +84,31 @@ public final class IntegerRange extends BaseGenerator {
 
     // methods
     //---------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public void run(UnaryProcedure proc) {
         if (signOf(step) == -1) {
-            for (int i=from; i > to; i += step) {
+            for (int i = from; i > to; i += step) {
                 proc.run(new Integer(i));
             }
         } else {
-            for (int i=from; i < to; i += step) {
+            for (int i = from; i < to; i += step) {
                 proc.run(new Integer(i));
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IntegerRange<" + from + "," + to + "," + step + ">";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (obj instanceof IntegerRange) {
             IntegerRange that = (IntegerRange) obj;
@@ -83,6 +118,9 @@ public final class IntegerRange extends BaseGenerator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IntegerRange".hashCode();
         hash <<= 2;
@@ -96,7 +134,11 @@ public final class IntegerRange extends BaseGenerator {
 
     // private methods
     //---------------------------------------------------------------
-
+    /**
+     * Get <code>value/|value|</code> (0 when value == 0). 
+     * @param value to test
+     * @return int
+     */
     private static int signOf(int value) {
         if (value < 0) {
             return -1;
@@ -107,6 +149,12 @@ public final class IntegerRange extends BaseGenerator {
         }
     }
 
+    /**
+     * Calculate default step to get from <code>from</code> to <code>to</code>.
+     * @param from start
+     * @param to end
+     * @return int
+     */
     private static int defaultStep(int from, int to) {
         if (from > to) {
             return -1;
@@ -114,13 +162,5 @@ public final class IntegerRange extends BaseGenerator {
             return 1;
         }
     }
-
-    // attributes
-    //---------------------------------------------------------------
-
-    private int from;
-    private int to;
-    private int step;
-
 
 }

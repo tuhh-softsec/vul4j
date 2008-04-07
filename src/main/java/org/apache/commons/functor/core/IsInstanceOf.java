@@ -39,7 +39,7 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
     // ------------------------------------------------------------------------
     /**
      * Create a new IsInstanceOf.
-     * @param klass
+     * @param klass Class of which a tested object must be an instance.
      */
     public IsInstanceOf(Class klass) {
         this.klass = klass;

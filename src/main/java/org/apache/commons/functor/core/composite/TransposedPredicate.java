@@ -40,19 +40,32 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public class TransposedPredicate implements BinaryPredicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryPredicate predicate = null;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new TransposedPredicate.
+     * @param p the BinaryPredicate to transpose
+     */
     public TransposedPredicate(BinaryPredicate p) {
         predicate = p;
     }
 
     // functor interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
-        return predicate.test(right,left);
+        return predicate.test(right, left);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof TransposedPredicate) {
             return equals((TransposedPredicate) that);
@@ -61,10 +74,18 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another TransposedPredicate is equal to this.
+     * @param that the TransposedPredicate to test
+     * @return boolean
+     */
     public boolean equals(TransposedPredicate that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "TransposedPredicate".hashCode();
         if (null != predicate) {
@@ -73,18 +94,22 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "TransposedPredicate<" + predicate + ">";
     }
 
     // static
     // ------------------------------------------------------------------------
+    /**
+     * Return the transposition of <code>p</code>.
+     * @param p BinaryPredicate to transpose
+     * @return TransposedPredicate
+     */
     public static TransposedPredicate transpose(BinaryPredicate p) {
         return null == p ? null : new TransposedPredicate(p);
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryPredicate predicate = null;
 
 }

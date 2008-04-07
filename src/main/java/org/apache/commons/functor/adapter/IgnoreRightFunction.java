@@ -39,14 +39,27 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public final class IgnoreRightFunction implements BinaryFunction, Serializable {
+    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+    private UnaryFunction function = null;
+
+    /**
+     * Create a new IgnoreRightFunction.
+     * @param function UnaryFunction to wrap
+     */
     public IgnoreRightFunction(UnaryFunction function) {
         this.function = function;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         return function.evaluate(left);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof IgnoreRightFunction) {
             return equals((IgnoreRightFunction) that);
@@ -55,10 +68,19 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
         }
     }
 
+    /**
+     * Learn whether another IgnoreRightFunction is equal to this.
+     * @param that IgnoreRightFunction to test
+     * @return boolean
+     */
     public boolean equals(IgnoreRightFunction that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IgnoreRightFunction".hashCode();
         if (null != function) {
@@ -67,14 +89,20 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IgnoreRightFunction<" + function + ">";
     }
 
+    /**
+     * Adapt a UnaryFunction to the BinaryFunction interface.
+     * @param function UnaryFunction to adapt
+     * @return IgnoreRightFunction BinaryFunction
+     */
     public static BinaryFunction adapt(UnaryFunction function) {
         return null == function ? null : new IgnoreRightFunction(function);
     }
 
-    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
 }

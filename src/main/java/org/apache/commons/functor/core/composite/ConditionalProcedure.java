@@ -41,18 +41,31 @@ import org.apache.commons.functor.Procedure;
  * @author Rodney Waldhoff
  */
 public final class ConditionalProcedure implements Procedure, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private Predicate ifPred = null;
+    private Procedure thenProc = null;
+    private Procedure elseProc = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
-    public ConditionalProcedure(Predicate ifPred, Procedure thenPred, Procedure elsePred) {
+    /**
+     * Create a new ConditionalProcedure.
+     * @param ifPred if
+     * @param thenProc then
+     * @param elseProc else
+     */
+    public ConditionalProcedure(Predicate ifPred, Procedure thenProc, Procedure elseProc) {
         this.ifPred = ifPred;
-        this.thenProc = thenPred;
-        this.elseProc = elsePred;
+        this.thenProc = thenProc;
+        this.elseProc = elseProc;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run() {
         if (ifPred.test()) {
             thenProc.run();
@@ -61,6 +74,9 @@ public final class ConditionalProcedure implements Procedure, Serializable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalProcedure) {
             return equals((ConditionalProcedure) that);
@@ -69,13 +85,21 @@ public final class ConditionalProcedure implements Procedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether another ConditionalProcecure is equal to this.
+     * @param that the ConditionalProcedure to test
+     * @return boolean
+     */
     public boolean equals(ConditionalProcedure that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc)) &&
-                (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc))
+                && (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalProcedure".hashCode();
         if (null != ifPred) {
@@ -93,13 +117,11 @@ public final class ConditionalProcedure implements Procedure, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalProcedure<" + ifPred + "?" + thenProc + ":" + elseProc + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private Predicate ifPred = null;
-    private Procedure thenProc = null;
-    private Procedure elseProc = null;
 }

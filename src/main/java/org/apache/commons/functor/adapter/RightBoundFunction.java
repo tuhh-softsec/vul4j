@@ -39,6 +39,11 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public final class RightBoundFunction implements UnaryFunction, Serializable {
+    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
+    private BinaryFunction function = null;
+    /** The parameter to pass to that function. */
+    private Object param = null;
+
     /**
      * @param function the function to adapt
      * @param arg the constant argument to use
@@ -48,10 +53,16 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
-        return function.evaluate(obj,param);
+        return function.evaluate(obj, param);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof RightBoundFunction) {
             return equals((RightBoundFunction) that);
@@ -60,14 +71,20 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
         }
     }
 
+    /**
+     * Learn whether another RightBoundFunction is equal to this.
+     * @param that RightBoundFunction to test
+     * @return boolean
+     */
     public boolean equals(RightBoundFunction that) {
-        return that == this || (
-                (null != that) &&
-                (null == function ? null == that.function : function.equals(that.function)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
-
+        return that == this || ((null != that)
+                && (null == function ? null == that.function : function.equals(that.function))
+                && (null == param ? null == that.param : param.equals(that.param)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "RightBoundFunction".hashCode();
         if (null != function) {
@@ -81,16 +98,21 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "RightBoundFunction<" + function + "(?," + param + ")>";
     }
 
+    /**
+     * Adapt a BinaryFunction to the UnaryFunction interface.
+     * @param function BinaryFunction to adapt
+     * @param arg Object that will always be used for the right side of the BinaryFunction delegate.
+     * @return RightBoundFunction
+     */
     public static RightBoundFunction bind(BinaryFunction function, Object arg) {
         return null == function ? null : new RightBoundFunction(function,arg);
     }
 
-    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction function = null;
-    /** The parameter to pass to that function. */
-    private Object param = null;
 }

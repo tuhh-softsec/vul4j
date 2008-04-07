@@ -41,10 +41,20 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class ConditionalBinaryPredicate implements BinaryPredicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryPredicate ifPred = null;
+    private BinaryPredicate thenPred = null;
+    private BinaryPredicate elsePred = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new ConditionalBinaryPredicate.
+     * @param ifPred if
+     * @param thenPred then
+     * @param elsePred else
+     */
     public ConditionalBinaryPredicate(BinaryPredicate ifPred, BinaryPredicate thenPred, BinaryPredicate elsePred) {
         this.ifPred = ifPred;
         this.thenPred = thenPred;
@@ -53,10 +63,16 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return ifPred.test(left,right) ? thenPred.test(left,right) : elsePred.test(left,right);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalBinaryPredicate) {
             return equals((ConditionalBinaryPredicate) that);
@@ -65,13 +81,21 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
         }
     }
 
+    /**
+     * Learn whether another ConditionalBinaryPredicate is equal to this.
+     * @param that ConditionalBinaryPredicate to test
+     * @return boolean
+     */
     public boolean equals(ConditionalBinaryPredicate that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred)) &&
-                (null == elsePred ? null == that.elsePred : elsePred.equals(that.elsePred));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred))
+                && (null == elsePred ? null == that.elsePred : elsePred.equals(that.elsePred));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalBinaryPredicate".hashCode();
         if (null != ifPred) {
@@ -89,13 +113,11 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalBinaryPredicate<" + ifPred + "?" + thenPred + ":" + elsePred + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryPredicate ifPred = null;
-    private BinaryPredicate thenPred = null;
-    private BinaryPredicate elsePred = null;
 }

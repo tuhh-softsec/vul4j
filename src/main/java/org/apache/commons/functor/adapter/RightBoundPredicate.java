@@ -58,7 +58,7 @@ public final class RightBoundPredicate implements UnaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean test(Object obj) {
-        return predicate.test(obj,param);
+        return predicate.test(obj, param);
     }
 
     /**

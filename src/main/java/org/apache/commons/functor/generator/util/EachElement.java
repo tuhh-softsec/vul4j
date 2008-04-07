@@ -59,7 +59,7 @@ public final class EachElement {
     }
 
     /**
-     * Get a Generator for each element of an Object[]. 
+     * Get a Generator for each element of an Object[].
      * @param array to iterate
      * @return Generator
      */
@@ -72,7 +72,7 @@ public final class EachElement {
     }
 
     /**
-     * Get a Generator for each element of an Iterator. 
+     * Get a Generator for each element of an Iterator.
      * @param iter to iterate
      * @return Generator
      */
