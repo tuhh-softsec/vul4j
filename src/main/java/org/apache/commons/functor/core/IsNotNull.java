@@ -29,39 +29,56 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class IsNotNull implements UnaryPredicate, Serializable {
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final IsNotNull INSTANCE = new IsNotNull();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new IsNotNull.
+     */
     public IsNotNull() {
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return (null != obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         return that instanceof IsNotNull;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "IsNotNull".hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IsNotNull";
     }
 
     // static methods
     // ------------------------------------------------------------------------
+    /**
+     * Get an IsNotNull instance.
+     * @return IsNotNull
+     */
     public static IsNotNull instance() {
         return INSTANCE;
     }
-
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final IsNotNull INSTANCE = new IsNotNull();
 
 }

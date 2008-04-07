@@ -39,14 +39,27 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class IgnoreLeftProcedure implements BinaryProcedure, Serializable {
+    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
+    private UnaryProcedure procedure = null;
+
+    /**
+     * Create a new IgnoreLeftProcedure.
+     * @param procedure to adapt
+     */
     public IgnoreLeftProcedure(UnaryProcedure procedure) {
         this.procedure = procedure;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object left, Object right) {
         procedure.run(left);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof IgnoreLeftProcedure) {
             return equals((IgnoreLeftProcedure) that);
@@ -55,10 +68,18 @@ public final class IgnoreLeftProcedure implements BinaryProcedure, Serializable 
         }
     }
 
+    /**
+     * Learn whether another IgnoreLeftProcedure is equal to this.
+     * @param that IgnoreLeftProcedure to test
+     * @return boolean
+     */
     public boolean equals(IgnoreLeftProcedure that) {
         return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IgnoreLeftProcedure".hashCode();
         if (null != procedure) {
@@ -67,14 +88,20 @@ public final class IgnoreLeftProcedure implements BinaryProcedure, Serializable 
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IgnoreLeftProcedure<" + procedure + ">";
     }
 
+    /**
+     * Adapt a UnaryProcedure to the BinaryProcedure interface.
+     * @param procedure to adapt
+     * @return IgnoreLeftProcedure
+     */
     public static IgnoreLeftProcedure adapt(UnaryProcedure procedure) {
         return null == procedure ? null : new IgnoreLeftProcedure(procedure);
     }
 
-    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure procedure = null;
 }

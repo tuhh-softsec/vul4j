@@ -39,7 +39,14 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
+
+    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
+    private BinaryPredicate predicate = null;
+    /** The parameter to pass to that predicate. */
+    private Object param = null;
+
     /**
+     * Create a new LeftBoundPredicate.
      * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
@@ -48,10 +55,16 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
-        return predicate.test(param,obj);
+        return predicate.test(param, obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof LeftBoundPredicate) {
             return equals((LeftBoundPredicate) that);
@@ -60,14 +73,20 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another LeftBoundPredicate is equal to this.
+     * @param that LeftBoundPredicate to test
+     * @return boolean
+     */
     public boolean equals(LeftBoundPredicate that) {
-        return that == this || (
-                (null != that) &&
-                (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
-
+        return that == this || ((null != that)
+                && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
+                && (null == param ? null == that.param : param.equals(that.param)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "LeftBoundPredicate".hashCode();
         if (null != predicate) {
@@ -81,16 +100,20 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "LeftBoundPredicate<" + predicate + "(" + param + ",?)>";
     }
 
+    /**
+     * Adapt a BinaryPredicate to the UnaryPredicate interface.
+     * @param predicate to adapt
+     * @param arg Object argument to always send as the left operand to the wrapped function 
+     * @return LeftBoundPredicate
+     */
     public static LeftBoundPredicate bind(BinaryPredicate predicate, Object arg) {
-        return null == predicate ? null : new LeftBoundPredicate(predicate,arg);
+        return null == predicate ? null : new LeftBoundPredicate(predicate, arg);
     }
-
-    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate predicate = null;
-    /** The parameter to pass to that predicate. */
-    private Object param = null;
 }

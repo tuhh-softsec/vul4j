@@ -52,15 +52,31 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public class CompositeUnaryFunction implements UnaryFunction, Serializable {
 
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
+
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new CompositeUnaryFunction.
+     */
     public CompositeUnaryFunction() {
     }
 
+    /**
+     * Create a new CompositeUnaryFunction.
+     * @param f UnaryFunction to add
+     */
     public CompositeUnaryFunction(UnaryFunction f) {
         of(f);
     }
 
+    /**
+     * Create a new CompositeUnaryFunction.
+     * @param f UnaryFunction to add
+     * @param g UnaryFunction to add
+     */
     public CompositeUnaryFunction(UnaryFunction f, UnaryFunction g) {
         of(f);
         of(g);
@@ -68,13 +84,19 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Fluently add a UnaryFunction.
+     * @param f UnaryFunction to add
+     * @return this
+     */
     public CompositeUnaryFunction of(UnaryFunction f) {
         list.add(f);
         return this;
     }
 
-    // predicate interface
-    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
         Object result = obj;
         for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
@@ -83,6 +105,9 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof CompositeUnaryFunction) {
             return equals((CompositeUnaryFunction) that);
@@ -91,23 +116,29 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
         }
     }
 
+    /**
+     * Learn whether another CompositeUnaryFunction is equal to this.
+     * @param that CompositeUnaryFunction to test
+     * @return boolean
+     */
     public boolean equals(CompositeUnaryFunction that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         // by construction, list is never null
         return "CompositeUnaryFunction".hashCode() ^ list.hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "CompositeUnaryFunction<" + list + ">";
     }
-
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
 }

@@ -21,7 +21,6 @@ import org.apache.commons.functor.Procedure;
 
 import java.io.Serializable;
 
-
 /**
  * Abstract base class for {@link WhileDoProcedure} and {@link DoWhileProcedure}
  * used to implement loop procedures.
@@ -31,50 +30,77 @@ import java.io.Serializable;
  * @author Rodney Waldhoff
  */
 public abstract class AbstractLoopProcedure implements Procedure, Serializable {
+    private Predicate condition;
+    private Procedure action;
+
+    /**
+     * Create a new AbstractLoopProcedure.
+     * @param condition while true, repeat
+     * @param action loop body
+     */
     protected AbstractLoopProcedure(Predicate condition, Procedure action) {
-        this.condition=condition;
-        this.action=action;
+        this.condition = condition;
+        this.action = action;
     }
 
-	public boolean equals(Object object) {
-		if (object instanceof AbstractLoopProcedure) {
-			AbstractLoopProcedure that = (AbstractLoopProcedure) object;
-			return (null == getCondition() ? null == that.getCondition() : getCondition().equals(that.getCondition())) &&
-				(null == getAction() ? null == that.getAction() : getAction().equals(that.getAction()));
-		} else {
-			return false;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object object) {
+        if (object instanceof AbstractLoopProcedure) {
+            AbstractLoopProcedure that = (AbstractLoopProcedure) object;
+            return (null == getCondition() ? null == that.getCondition() : getCondition().equals(that.getCondition()))
+                    && (null == getAction() ? null == that.getAction() : getAction().equals(that.getAction()));
+        } else {
+            return false;
+        }
+    }
 
-	public int hashCode() {
-		return hashCode("AbstractLoopProcedure".hashCode());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        return hashCode("AbstractLoopProcedure".hashCode());
+    }
 
-	public String toString() {
-		return getClass().getName() + "<" + getCondition() + "," + getAction() + ">";
-	}
-	protected int hashCode(int hash) {
-		hash <<= 4;
-		if (null != getAction()) {
-			hash ^= getAction().hashCode();
-		}
-		hash <<= 4;
-		if (null != getCondition()) {
-			hash ^= getCondition().hashCode();
-		}
-		return hash;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return getClass().getName() + "<" + getCondition() + "," + getAction() + ">";
+    }
 
+    /**
+     * Create a hashCode by manipulating an input hashCode and factoring in instance state.
+     * @param hash incoming hashCode
+     * @return int
+     */
+    protected int hashCode(int hash) {
+        hash <<= 4;
+        if (null != getAction()) {
+            hash ^= getAction().hashCode();
+        }
+        hash <<= 4;
+        if (null != getCondition()) {
+            hash ^= getCondition().hashCode();
+        }
+        return hash;
+    }
 
-	protected Predicate getCondition() {
-		return condition;
-	}
+    /**
+     * Get the condition.
+     * @return Predicate
+     */
+    protected Predicate getCondition() {
+        return condition;
+    }
 
-	protected Procedure getAction() {
-		return action;
-	}
-
-	private Predicate condition;
-	private Procedure action;
+    /**
+     * Get the action.
+     * @return Procedure
+     */
+    protected Procedure getAction() {
+        return action;
+    }
 
 }

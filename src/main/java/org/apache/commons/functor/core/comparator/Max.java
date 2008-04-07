@@ -29,23 +29,33 @@ import org.apache.commons.functor.BinaryFunction;
  * @author Rodney Waldhoff
  */
 public final class Max implements BinaryFunction, Serializable {
+    private Comparator comparator = null;
+    private static final Max INSTANCE = new Max();
+
+    /**
+     * Create a new Max.
+     */
     public Max() {
         this(null);
     }
 
+    /**
+     * Create a new Max.
+     * @param comparator Comparator to use
+     */
     public Max(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
 
     /**
-     * @see org.apache.commons.functor.BinaryFunction#evaluate(Object, Object)
+     * {@inheritDoc}
      */
     public Object evaluate(Object left, Object right) {
         return (comparator.compare(left,right) >= 0) ? left : right;
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         if (that instanceof Max) {
@@ -56,30 +66,34 @@ public final class Max implements BinaryFunction, Serializable {
     }
 
     /**
-     * @see #equals(Object)
+     * Learn whether another Max is equal to this.
+     * @param that Max to test
+     * @return boolean
      */
     public boolean equals(Max that) {
         return null != that && comparator.equals(that.comparator);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         return "Max".hashCode() ^ comparator.hashCode();
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "Max<" + comparator + ">";
     }
 
+    /**
+     * Get a Max instance.
+     * @return Max
+     */
     public static Max instance() {
         return INSTANCE;
     }
 
-    private Comparator comparator = null;
-    private static final Max INSTANCE = new Max();
 }

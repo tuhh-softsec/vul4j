@@ -40,24 +40,47 @@ public final class BinaryOr extends BaseBinaryPredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new BinaryOr.
+     */
     public BinaryOr() {
         super();
     }
 
+    /**
+     * Create a new BinaryOr.
+     * @param p BinaryPredicate to add
+     */
     public BinaryOr(BinaryPredicate p) {
         super(p);
     }
 
+    /**
+     * Create a new BinaryOr.
+     * @param p BinaryPredicate to add
+     * @param q BinaryPredicate to add
+     */
     public BinaryOr(BinaryPredicate p, BinaryPredicate q) {
-        super(p,q);
+        super(p, q);
     }
 
+    /**
+     * Create a new BinaryOr.
+     * @param p BinaryPredicate to add
+     * @param q BinaryPredicate to add
+     * @param r BinaryPredicate to add
+     */
     public BinaryOr(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
-        super(p,q,r);
+        super(p, q, r);
     }
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Fluently add a BinaryPredicate.
+     * @param p BinaryPredicate to add
+     * @return this
+     */
     public BinaryOr or(BinaryPredicate p) {
         super.addBinaryPredicate(p);
         return this;
@@ -65,6 +88,9 @@ public final class BinaryOr extends BaseBinaryPredicateList {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object a, Object b) {
         for (Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
             if (((BinaryPredicate) iter.next()).test(a,b)) {
@@ -74,6 +100,9 @@ public final class BinaryOr extends BaseBinaryPredicateList {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinaryOr) {
             return equals((BinaryOr) that);
@@ -82,14 +111,25 @@ public final class BinaryOr extends BaseBinaryPredicateList {
         }
     }
 
+    /**
+     * Learn whether another BinaryOr is equal to this.
+     * @param that BinaryOr to test
+     * @return boolean
+     */
     public boolean equals(BinaryOr that) {
         return getBinaryPredicateListEquals(that);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "BinaryOr".hashCode() ^ getBinaryPredicateListHashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinaryOr<" + getBinaryPredicateListToString() + ">";
     }

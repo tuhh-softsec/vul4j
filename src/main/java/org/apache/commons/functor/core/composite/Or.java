@@ -40,24 +40,45 @@ public final class Or extends BasePredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new Or.
+     */
     public Or() {
         super();
     }
 
+    /**
+     * Create a new Or.
+     * @param p Predicate to add
+     */
     public Or(Predicate p) {
         super(p);
     }
 
+    /**
+     * Create a new Or.
+     * @param p Predicate to add
+     * @param q Predicate to add
+     */
     public Or(Predicate p, Predicate q) {
-        super(p,q);
+        super(p, q);
     }
 
+    /**
+     * Create a new Or.
+     * @param p Predicate to add
+     * @param q Predicate to add
+     * @param r Predicate to add
+     */
     public Or(Predicate p, Predicate q, Predicate r) {
-        super(p,q,r);
+        super(p, q, r);
     }
 
-    // modifiers
-    // ------------------------------------------------------------------------
+    /**
+     * Fluently add a Predicate.
+     * @param p Predicate to add
+     * @return this
+     */
     public Or or(Predicate p) {
         super.addPredicate(p);
         return this;
@@ -65,6 +86,9 @@ public final class Or extends BasePredicateList {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
         for (Iterator iter = getPredicateIterator(); iter.hasNext();) {
             if (((Predicate) iter.next()).test()) {
@@ -74,6 +98,9 @@ public final class Or extends BasePredicateList {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof Or) {
             return equals((Or) that);
@@ -82,14 +109,25 @@ public final class Or extends BasePredicateList {
         }
     }
 
+    /**
+     * Learn whether another Or is equal to this.
+     * @param that Or to test
+     * @return boolean
+     */
     public boolean equals(Or that) {
         return getPredicateListEquals(that);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "Or".hashCode() ^ getPredicateListHashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "Or<" + getPredicateListToString() + ">";
     }

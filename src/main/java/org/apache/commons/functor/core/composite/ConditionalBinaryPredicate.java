@@ -67,7 +67,7 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
      * {@inheritDoc}
      */
     public boolean test(Object left, Object right) {
-        return ifPred.test(left,right) ? thenPred.test(left,right) : elsePred.test(left,right);
+        return ifPred.test(left, right) ? thenPred.test(left, right) : elsePred.test(left, right);
     }
 
     /**

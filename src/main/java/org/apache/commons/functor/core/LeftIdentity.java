@@ -34,46 +34,72 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class LeftIdentity implements BinaryPredicate, BinaryFunction, Serializable {
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final LeftIdentity INSTANCE = new LeftIdentity();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new LeftIdentity.
+     */
     public LeftIdentity() {
     }
 
     // functor interface
     // ------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         return left;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return test((Boolean) left);
     }
 
+    /**
+     * Test a Boolean
+     * @param bool to test
+     * @return boolean
+     */
     private boolean test(Boolean bool) {
         return bool.booleanValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         return (that instanceof LeftIdentity);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "LeftIdentity".hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "LeftIdentity";
     }
 
     // static methods
     // ------------------------------------------------------------------------
+    /**
+     * Get a LeftIdentity instance.
+     * @return LeftIdentity
+     */
     public static LeftIdentity instance() {
         return INSTANCE;
     }
 
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final LeftIdentity INSTANCE = new LeftIdentity();
 }

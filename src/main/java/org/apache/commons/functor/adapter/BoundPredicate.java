@@ -39,7 +39,13 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class BoundPredicate implements Predicate, Serializable {
+    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
+    private UnaryPredicate predicate = null;
+    /** The parameter to pass to that predicate. */
+    private Object param = null;
+
     /**
+     * Create a new BoundPredicate.
      * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
@@ -48,10 +54,16 @@ public final class BoundPredicate implements Predicate, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
         return predicate.test(param);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BoundPredicate) {
             return equals((BoundPredicate) that);
@@ -60,14 +72,21 @@ public final class BoundPredicate implements Predicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another BoundPredicate is equal to this.
+     * @param that BoundPredicate to test
+     * @return boolean
+     */
     public boolean equals(BoundPredicate that) {
-        return that == this || (
-                (null != that) &&
-                (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
+        return that == this || ((null != that)
+                && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
+                && (null == param ? null == that.param : param.equals(that.param)));
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "BoundPredicate".hashCode();
         if (null != predicate) {
@@ -81,6 +100,9 @@ public final class BoundPredicate implements Predicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BoundPredicate<" + predicate + "(" + param + ")>";
     }
@@ -102,11 +124,7 @@ public final class BoundPredicate implements Predicate, Serializable {
      *         if the given <code>UnaryPredicate</code> is <code>null</code>
      */
     public static BoundPredicate bind(UnaryPredicate predicate, Object arg) {
-        return null == predicate ? null : new BoundPredicate(predicate,arg);
+        return null == predicate ? null : new BoundPredicate(predicate, arg);
     }
 
-    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
-    /** The parameter to pass to that predicate. */
-    private Object param = null;
 }

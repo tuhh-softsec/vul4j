@@ -40,19 +40,32 @@ import org.apache.commons.functor.BinaryFunction;
  * @author Rodney Waldhoff
  */
 public class TransposedFunction implements BinaryFunction, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryFunction function = null;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new TransposedFunction.
+     * @param f BinaryFunction to transpose.
+     */
     public TransposedFunction(BinaryFunction f) {
         function = f;
     }
 
     // functor interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
-        return function.evaluate(right,left);
+        return function.evaluate(right, left);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof TransposedFunction) {
             return equals((TransposedFunction) that);
@@ -61,10 +74,18 @@ public class TransposedFunction implements BinaryFunction, Serializable {
         }
     }
 
+    /**
+     * Learn whether another TransposedFunction is equal to this.
+     * @param that TransposedFunction to test
+     * @return boolean
+     */
     public boolean equals(TransposedFunction that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "TransposedFunction".hashCode();
         if (null != function) {
@@ -73,18 +94,22 @@ public class TransposedFunction implements BinaryFunction, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "TransposedFunction<" + function + ">";
     }
 
     // static
     // ------------------------------------------------------------------------
+    /**
+     * Transpose a BinaryFunction.
+     * @param f BinaryFunction to transpose
+     * @return TransposedFunction
+     */
     public static TransposedFunction transpose(BinaryFunction f) {
         return null == f ? null : new TransposedFunction(f);
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryFunction function = null;
 
 }

@@ -39,7 +39,13 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public final class BoundFunction implements Function, Serializable {
+    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+    private UnaryFunction function = null;
+    /** The parameter to pass to that function. */
+    private Object param = null;
+
     /**
+     * Create a new BoundFunction.
      * @param function the function to adapt
      * @param arg the constant argument to use
      */
@@ -48,10 +54,16 @@ public final class BoundFunction implements Function, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate() {
         return function.evaluate(param);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BoundFunction) {
             return equals((BoundFunction) that);
@@ -60,14 +72,21 @@ public final class BoundFunction implements Function, Serializable {
         }
     }
 
+    /**
+     * Learn whether another BoundFunction is equal to this.
+     * @param that BoundFunction to test
+     * @return boolean
+     */
     public boolean equals(BoundFunction that) {
-        return that == this || (
-                (null != that) &&
-                (null == function ? null == that.function : function.equals(that.function)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
+        return that == this || ((null != that)
+                && (null == function ? null == that.function : function.equals(that.function))
+                && (null == param ? null == that.param : param.equals(that.param)));
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "BoundFunction".hashCode();
         if (null != function) {
@@ -81,6 +100,9 @@ public final class BoundFunction implements Function, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BoundFunction<" + function + "(" + param + ")>";
     }
@@ -102,11 +124,7 @@ public final class BoundFunction implements Function, Serializable {
      *         if the given <code>UnaryFunction</code> is <code>null</code>
      */
     public static BoundFunction bind(UnaryFunction function, Object arg) {
-        return null == function ? null : new BoundFunction(function,arg);
+        return null == function ? null : new BoundFunction(function, arg);
     }
 
-    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
-    /** The parameter to pass to that function. */
-    private Object param = null;
 }

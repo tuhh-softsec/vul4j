@@ -50,12 +50,11 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
     private CompositeUnaryFunction function = null;
     private UnaryPredicate predicate = null;
 
-    //TODO have somebody who understands this class better write the missing javadoc!
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new CompositeUnaryPredicate.
-     * @param p
+     * @param p UnaryPredicate against which the composite functions' output will be tested
      */
     public CompositeUnaryPredicate(UnaryPredicate p) {
         if (null == p) { throw new NullPointerException(); }
@@ -65,8 +64,8 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
 
     /**
      * Create a new CompositeUnaryPredicate.
-     * @param p
-     * @param f
+     * @param p UnaryPredicate against which the composite functions' output will be tested
+     * @param f UnaryFunction single UnaryFunction to apply
      */
     public CompositeUnaryPredicate(UnaryPredicate p, UnaryFunction f) {
         if (null == p) { throw new NullPointerException(); }
@@ -78,9 +77,9 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
     // modifiers
     // ------------------------------------------------------------------------
     /**
-     * 
-     * @param f
-     * @return
+     * Fluently add a UnaryFunction to the chain.
+     * @param f UnaryFunction to add
+     * @return this
      */
     public CompositeUnaryPredicate of(UnaryFunction f) {
         function.of(f);

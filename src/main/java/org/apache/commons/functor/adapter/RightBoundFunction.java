@@ -112,7 +112,7 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
      * @return RightBoundFunction
      */
     public static RightBoundFunction bind(BinaryFunction function, Object arg) {
-        return null == function ? null : new RightBoundFunction(function,arg);
+        return null == function ? null : new RightBoundFunction(function, arg);
     }
 
 }

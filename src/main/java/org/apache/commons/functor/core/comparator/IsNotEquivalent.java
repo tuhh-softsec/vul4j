@@ -37,6 +37,9 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  *
  */
 public final class IsNotEquivalent implements BinaryPredicate, Serializable {
+    private static final IsNotEquivalent COMPARABLE_INSTANCE = new IsNotEquivalent();
+
+    private Comparator comparator = null;
     /**
      * Construct a <code>IsNotEquivalent</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
@@ -58,16 +61,17 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     }
 
     /**
+     * {@inheritDoc}
      * Return <code>true</code> iff the <i>left</i> parameter is
      * not equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
      */
     public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) != 0;
+        return comparator.compare(left, right) != 0;
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object that) {
         if (that instanceof IsNotEquivalent) {
@@ -78,15 +82,16 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see #equals(Object)
+     * Learn whether another IsNotEquivalent is equal to this.
+     * @param that IsNotEquivalent to test
+     * @return boolean
      */
     public boolean equals(IsNotEquivalent that) {
-        return null != that &&
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+        return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         int hash = "IsNotEquivalent".hashCode();
@@ -96,20 +101,27 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return "IsNotEquivalent<" + comparator + ">";
     }
 
+    /**
+     * Get an IsNotEquivalent instance.
+     * @return IsNotEquivalent
+     */
     public static final IsNotEquivalent instance() {
         return COMPARABLE_INSTANCE;
     }
 
+    /**
+     * Get an IsNotEquivalent UnaryPredicate.
+     * @param right Comparable against which UnaryPredicate arguments will be compared.
+     * @return UnaryPredicate
+     */
     public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(),right);
+        return RightBoundPredicate.bind(instance(), right);
     }
 
-    private Comparator comparator = null;
-    private static final IsNotEquivalent COMPARABLE_INSTANCE = new IsNotEquivalent();
 }

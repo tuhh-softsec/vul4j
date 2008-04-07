@@ -26,10 +26,22 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class FilteredIterator implements Iterator {
+    // attributes
+    // ------------------------------------------------------------------------
+
+    private UnaryPredicate predicate = null;
+    private Iterator iterator = null;
+    private Object next = null;
+    private boolean nextSet = false;
+    private boolean canRemove = false;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new FilteredIterator.
+     * @param iterator to filter
+     * @param predicate to apply
+     */
     public FilteredIterator(Iterator iterator, UnaryPredicate predicate) {
         if (null == iterator || null == predicate) {
             throw new NullPointerException();
@@ -43,6 +55,7 @@ public final class FilteredIterator implements Iterator {
     // ------------------------------------------------------------------------
 
     /**
+     * {@inheritDoc}
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
@@ -54,6 +67,7 @@ public final class FilteredIterator implements Iterator {
     }
 
     /**
+     * {@inheritDoc}
      * @see java.util.Iterator#next()
      */
     public Object next() {
@@ -65,6 +79,7 @@ public final class FilteredIterator implements Iterator {
     }
 
     /**
+     * {@inheritDoc}
      * @see java.util.Iterator#remove()
      */
     public void remove() {
@@ -76,7 +91,9 @@ public final class FilteredIterator implements Iterator {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (obj instanceof FilteredIterator) {
             FilteredIterator that = (FilteredIterator) obj;
@@ -86,6 +103,9 @@ public final class FilteredIterator implements Iterator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "FilteredIterator".hashCode();
         hash <<= 2;
@@ -95,27 +115,38 @@ public final class FilteredIterator implements Iterator {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "FilteredIterator<" + iterator + "," + predicate + ">";
     }
 
-    // class methods
+    // static methods
     // ------------------------------------------------------------------------
-
+    /**
+     * Get a filtered Iterator instance applying <code>pred</code> to <code>iter</code>.
+     * @param iter to filter
+     * @param pred to apply
+     * @return Iterator
+     */
     public static Iterator filter(Iterator iter, UnaryPredicate pred) {
-        return null == pred ? iter : (null == iter ? null : new FilteredIterator(iter,pred));
+        return null == pred ? iter : (null == iter ? null : new FilteredIterator(iter, pred));
     }
 
     // private
     // ------------------------------------------------------------------------
-
+    /**
+     * Set next element.
+     * @return whether the current iterator position is valid
+     */
     private boolean setNext() {
         while(iterator.hasNext()) {
             canRemove = false;
             Object obj = iterator.next();
             if (predicate.test(obj)) {
-                next = obj;
                 nextSet = true;
+                next = obj;
                 return true;
             }
         }
@@ -124,6 +155,10 @@ public final class FilteredIterator implements Iterator {
         return false;
     }
 
+    /**
+     * Get the next element.
+     * @return next element.
+     */
     private Object returnNext() {
         Object temp = next;
         canRemove = true;
@@ -131,15 +166,5 @@ public final class FilteredIterator implements Iterator {
         nextSet = false;
         return temp;
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-
-    private UnaryPredicate predicate = null;
-    private Iterator iterator = null;
-    private Object next = null;
-    private boolean nextSet = false;
-    private boolean canRemove = false;
-
 
 }

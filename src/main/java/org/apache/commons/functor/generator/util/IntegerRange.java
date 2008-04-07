@@ -133,7 +133,7 @@ public final class IntegerRange extends BaseGenerator {
     // private methods
     //---------------------------------------------------------------
     /**
-     * Get <code>value/|value|</code> (0 when value == 0). 
+     * Get <code>value/|value|</code> (0 when value == 0).
      * @param value to test
      * @return int
      */

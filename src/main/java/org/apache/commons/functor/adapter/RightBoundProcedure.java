@@ -39,7 +39,13 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class RightBoundProcedure implements UnaryProcedure, Serializable {
+    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
+    private BinaryProcedure procedure = null;
+    /** The parameter to pass to that procedure. */
+    private Object param = null;
+
     /**
+     * Create a new RightBoundProcedure.
      * @param procedure the procedure to adapt
      * @param arg the constant argument to use
      */
@@ -48,10 +54,16 @@ public final class RightBoundProcedure implements UnaryProcedure, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object obj) {
         procedure.run(obj,param);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof RightBoundProcedure) {
             return equals((RightBoundProcedure) that);
@@ -60,14 +72,20 @@ public final class RightBoundProcedure implements UnaryProcedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether another RightBoundProcedure is equal to this.
+     * @param that RightBoundProcedure to test
+     * @return boolean
+     */
     public boolean equals(RightBoundProcedure that) {
-        return that == this || (
-                (null != that) &&
-                (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
-
+        return that == this || ((null != that)
+                && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
+                && (null == param ? null == that.param : param.equals(that.param)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "RightBoundProcedure".hashCode();
         if (null != procedure) {
@@ -81,16 +99,21 @@ public final class RightBoundProcedure implements UnaryProcedure, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "RightBoundProcedure<" + procedure + "(?," + param + ")>";
     }
 
+    /**
+     * Get a UnaryProcedure from <code>procedure</code>.
+     * @param procedure to adapt
+     * @param arg right side argument
+     * @return RightBoundProcedure
+     */
     public static RightBoundProcedure bind(BinaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new RightBoundProcedure(procedure,arg);
+        return null == procedure ? null : new RightBoundProcedure(procedure, arg);
     }
 
-    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure procedure = null;
-    /** The parameter to pass to that procedure. */
-    private Object param = null;
 }

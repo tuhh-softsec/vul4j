@@ -38,11 +38,19 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class BinaryPredicateBinaryFunction implements BinaryFunction, Serializable {
+    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
+    private BinaryPredicate predicate = null;
+
+    /**
+     * Create a new BinaryPredicateBinaryFunction.
+     * @param predicate to adapt
+     */
     public BinaryPredicateBinaryFunction(BinaryPredicate predicate) {
         this.predicate = predicate;
     }
 
     /**
+     * {@inheritDoc}
      * Returns <code>Boolean.TRUE</code> (<code>Boolean.FALSE</code>)
      * when the {@link BinaryPredicate#test test} method of my underlying
      * predicate returns <code>true</code> (<code>false</code>).
@@ -50,9 +58,12 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
      * @return a non-<code>null</code> <code>Boolean</code> instance
      */
     public Object evaluate(Object left, Object right) {
-        return predicate.test(left,right) ? Boolean.TRUE : Boolean.FALSE;
+        return predicate.test(left, right) ? Boolean.TRUE : Boolean.FALSE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinaryPredicateBinaryFunction) {
             return equals((BinaryPredicateBinaryFunction) that);
@@ -61,10 +72,19 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
         }
     }
 
+    /**
+     * Learn whether another BinaryPredicateBinaryFunction is equal to this.
+     * @param that BinaryPredicateBinaryFunction to test
+     * @return boolean
+     */
     public boolean equals(BinaryPredicateBinaryFunction that) {
-        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return that == this
+                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "BinaryPredicateBinaryFunction".hashCode();
         if (null != predicate) {
@@ -73,10 +93,12 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinaryPredicateBinaryFunction<" + predicate + ">";
     }
-
 
     /**
      * Adapt the given, possibly-<code>null</code>,
@@ -95,6 +117,4 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
         return null == predicate ? null : new BinaryPredicateBinaryFunction(predicate);
     }
 
-    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate predicate = null;
 }

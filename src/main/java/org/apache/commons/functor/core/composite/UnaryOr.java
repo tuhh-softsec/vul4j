@@ -40,24 +40,47 @@ public final class UnaryOr extends BaseUnaryPredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new UnaryOr.
+     */
     public UnaryOr() {
         super();
     }
 
+    /**
+     * Create a new UnaryOr.
+     * @param p Predicate to add
+     */
     public UnaryOr(UnaryPredicate p) {
         super(p);
     }
 
+    /**
+     * Create a new UnaryOr.
+     * @param p Predicate to add
+     * @param q Predicate to add
+     */
     public UnaryOr(UnaryPredicate p, UnaryPredicate q) {
         super(p,q);
     }
 
+    /**
+     * Create a new UnaryOr.
+     * @param p Predicate to add
+     * @param q Predicate to add
+     * @param r Predicate to add
+     */
     public UnaryOr(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
         super(p,q,r);
     }
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Fluently add a Predicate.
+     * @param p Predicate to add
+     * @return this
+     */
     public UnaryOr or(UnaryPredicate p) {
         super.addUnaryPredicate(p);
         return this;
@@ -65,6 +88,9 @@ public final class UnaryOr extends BaseUnaryPredicateList {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object a) {
         for (Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
             if (((UnaryPredicate) iter.next()).test(a)) {
@@ -74,6 +100,9 @@ public final class UnaryOr extends BaseUnaryPredicateList {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryOr) {
             return equals((UnaryOr) that);
@@ -82,14 +111,25 @@ public final class UnaryOr extends BaseUnaryPredicateList {
         }
     }
 
+    /**
+     * Learn whether another UnaryOr is equal to this.
+     * @param that UnaryOr to test
+     * @return boolean
+     */
     public boolean equals(UnaryOr that) {
         return getUnaryPredicateListEquals(that);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "UnaryOr".hashCode() ^ getUnaryPredicateListHashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryOr<" + getUnaryPredicateListToString() + ">";
     }

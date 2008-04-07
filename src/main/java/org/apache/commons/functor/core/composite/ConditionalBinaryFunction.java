@@ -42,22 +42,38 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class ConditionalBinaryFunction implements BinaryFunction, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryPredicate ifPred = null;
+    private BinaryFunction thenFunc = null;
+    private BinaryFunction elseFunc = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
-    public ConditionalBinaryFunction(BinaryPredicate ifPred, BinaryFunction thenPred, BinaryFunction elsePred) {
+    /**
+     * Create a new ConditionalBinaryFunction.
+     * @param ifPred if
+     * @param thenFunc then
+     * @param elseFunc else
+     */
+    public ConditionalBinaryFunction(BinaryPredicate ifPred, BinaryFunction thenFunc, BinaryFunction elseFunc) {
         this.ifPred = ifPred;
-        this.thenFunc = thenPred;
-        this.elseFunc = elsePred;
+        this.thenFunc = thenFunc;
+        this.elseFunc = elseFunc;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         return ifPred.test(left,right) ? thenFunc.evaluate(left,right) : elseFunc.evaluate(left,right);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalBinaryFunction) {
             return equals((ConditionalBinaryFunction) that);
@@ -66,13 +82,21 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
         }
     }
 
+    /**
+     * Learn whether another ConditionalBinaryFunction is equal to this.
+     * @param that ConditionalBinaryFunction to test
+     * @return boolean
+     */
     public boolean equals(ConditionalBinaryFunction that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc)) &&
-                (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc))
+                && (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalBinaryFunction".hashCode();
         if (null != ifPred) {
@@ -90,13 +114,11 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalBinaryFunction<" + ifPred + "?" + thenFunc + ":" + elseFunc + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryPredicate ifPred = null;
-    private BinaryFunction thenFunc = null;
-    private BinaryFunction elseFunc = null;
 }

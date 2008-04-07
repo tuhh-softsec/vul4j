@@ -38,11 +38,19 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class UnaryPredicateUnaryFunction implements UnaryFunction, Serializable {
+    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
+    private UnaryPredicate predicate = null;
+
+    /**
+     * Create a new UnaryPredicateUnaryFunction.
+     * @param predicate to adapt
+     */
     public UnaryPredicateUnaryFunction(UnaryPredicate predicate) {
         this.predicate = predicate;
     }
 
     /**
+     * {@inheritDoc}
      * Returns <code>Boolean.TRUE</code> (<code>Boolean.FALSE</code>)
      * when the {@link UnaryPredicate#test test} method of my underlying
      * predicate returns <code>true</code> (<code>false</code>).
@@ -53,6 +61,9 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
         return predicate.test(obj) ? Boolean.TRUE : Boolean.FALSE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryPredicateUnaryFunction) {
             return equals((UnaryPredicateUnaryFunction) that);
@@ -61,10 +72,19 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
         }
     }
 
+    /**
+     * Learn whether another UnaryPredicateUnaryFunction is equal to this.
+     * @param that UnaryPredicateUnaryFunction to test
+     * @return boolean
+     */
     public boolean equals(UnaryPredicateUnaryFunction that) {
-        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return that == this
+                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "UnaryPredicateUnaryFunction".hashCode();
         if (null != predicate) {
@@ -73,14 +93,20 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryPredicateUnaryFunction<" + predicate + ">";
     }
 
+    /**
+     * Adapt a UnaryPredicate to the UnaryFunction interface.
+     * @param predicate to adapt
+     * @return UnaryPredicateUnaryFunction
+     */
     public static UnaryPredicateUnaryFunction adapt(UnaryPredicate predicate) {
         return null == predicate ? null : new UnaryPredicateUnaryFunction(predicate);
     }
 
-    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
 }

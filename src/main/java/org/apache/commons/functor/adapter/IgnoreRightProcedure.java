@@ -39,14 +39,27 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class IgnoreRightProcedure implements BinaryProcedure, Serializable {
+    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
+    private UnaryProcedure procedure = null;
+
+    /**
+     * Create a new IgnoreRightProcedure.
+     * @param procedure UnaryProcedure to adapt
+     */
     public IgnoreRightProcedure(UnaryProcedure procedure) {
         this.procedure = procedure;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object left, Object right) {
         procedure.run(left);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof IgnoreRightProcedure) {
             return equals((IgnoreRightProcedure) that);
@@ -55,10 +68,19 @@ public final class IgnoreRightProcedure implements BinaryProcedure, Serializable
         }
     }
 
+    /**
+     * Learn whether another IgnoreRightProcedure is equal to this.
+     * @param that IgnoreRightProcedure to test
+     * @return boolean
+     */
     public boolean equals(IgnoreRightProcedure that) {
-        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return that == this
+                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IgnoreRightProcedure".hashCode();
         if (null != procedure) {
@@ -67,14 +89,20 @@ public final class IgnoreRightProcedure implements BinaryProcedure, Serializable
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IgnoreRightProcedure<" + procedure + ">";
     }
 
+    /**
+     * Adapt a UnaryProcedure to the BinaryProcedure interface.
+     * @param procedure UnaryProcedure to adapt
+     * @return IgnoreRightProcedure
+     */
     public static IgnoreRightProcedure adapt(UnaryProcedure procedure) {
         return null == procedure ? null : new IgnoreRightProcedure(procedure);
     }
 
-    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure procedure = null;
 }

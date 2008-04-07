@@ -41,18 +41,31 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private UnaryPredicate ifPred = null;
+    private UnaryProcedure thenProc = null;
+    private UnaryProcedure elseProc = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
-    public ConditionalUnaryProcedure(UnaryPredicate ifPred, UnaryProcedure thenPred, UnaryProcedure elsePred) {
+    /**
+     * Create a new ConditionalUnaryProcedure.
+     * @param ifPred if
+     * @param thenProc then
+     * @param elseProc else
+     */
+    public ConditionalUnaryProcedure(UnaryPredicate ifPred, UnaryProcedure thenProc, UnaryProcedure elseProc) {
         this.ifPred = ifPred;
-        this.thenProc = thenPred;
-        this.elseProc = elsePred;
+        this.thenProc = thenProc;
+        this.elseProc = elseProc;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object obj) {
         if (ifPred.test(obj)) {
             thenProc.run(obj);
@@ -61,6 +74,9 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalUnaryProcedure) {
             return equals((ConditionalUnaryProcedure) that);
@@ -69,13 +85,21 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
         }
     }
 
+    /**
+     * Learn whether another ConditionalUnaryProcedure is equal to this. 
+     * @param that ConditionalUnaryProcedure to test
+     * @return boolean
+     */
     public boolean equals(ConditionalUnaryProcedure that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc)) &&
-                (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc))
+                && (null == elseProc ? null == that.elseProc : elseProc.equals(that.elseProc));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalUnaryProcedure".hashCode();
         if (null != ifPred) {
@@ -93,13 +117,11 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalUnaryProcedure<" + ifPred + "?" + thenProc + ":" + elseProc + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private UnaryPredicate ifPred = null;
-    private UnaryProcedure thenProc = null;
-    private UnaryProcedure elseProc = null;
 }

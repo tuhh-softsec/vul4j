@@ -29,8 +29,9 @@ import org.apache.commons.functor.BinaryFunction;
  * @author Rodney Waldhoff
  */
 public final class Min implements BinaryFunction, Serializable {
-    private Comparator comparator = null;
     private static final Min INSTANCE = new Min();
+
+    private Comparator comparator = null;
 
     /**
      * Create a new Min.

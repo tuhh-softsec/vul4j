@@ -40,19 +40,32 @@ import org.apache.commons.functor.BinaryProcedure;
  * @author Rodney Waldhoff
  */
 public class TransposedProcedure implements BinaryProcedure, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryProcedure procedure = null;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new TransposedProcedure.
+     * @param p BinaryProcedure to transpose
+     */
     public TransposedProcedure(BinaryProcedure p) {
         procedure = p;
     }
 
     // functor interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object left, Object right) {
         procedure.run(right,left);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof TransposedProcedure) {
             return equals((TransposedProcedure) that);
@@ -61,10 +74,18 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether another TransposedProcedure is equal to this.
+     * @param that TransposedPredicate to test
+     * @return boolean
+     */
     public boolean equals(TransposedProcedure that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "TransposedProcedure".hashCode();
         if (null != procedure) {
@@ -73,18 +94,22 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "TransposedProcedure<" + procedure + ">";
     }
 
     // static
     // ------------------------------------------------------------------------
+    /**
+     * Transpose a BinaryProcedure.
+     * @param p to transpose
+     * @return TransposedProcedure
+     */
     public static TransposedProcedure transpose(BinaryProcedure p) {
         return null == p ? null : new TransposedProcedure(p);
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryProcedure procedure = null;
 
 }

@@ -26,7 +26,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * {@link Procedure Procedure}
  * to the
  * {@link UnaryProcedure UnaryProcedure} interface
- * by ignoring the second binary argument.
+ * by ignoring the arguments.
  * <p/>
  * Note that although this class implements
  * {@link Serializable}, a given instance will
@@ -39,14 +39,27 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializable {
+    /** The {@link Procedure Procedure} I'm wrapping. */
+    private Procedure procedure = null;
+
+    /**
+     * Create a new ProcedureUnaryProcedure.
+     * @param procedure to adapt
+     */
     public ProcedureUnaryProcedure(Procedure procedure) {
         this.procedure = procedure;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object obj) {
         procedure.run();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ProcedureUnaryProcedure) {
             return equals((ProcedureUnaryProcedure) that);
@@ -55,10 +68,19 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
         }
     }
 
+    /**
+     * Learn whether another ProcedureUnaryProcedure is equal to this.
+     * @param that ProcedureUnaryProcedure to test
+     * @return boolean
+     */
     public boolean equals(ProcedureUnaryProcedure that) {
-        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return that == this
+                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ProcedureUnaryProcedure".hashCode();
         if (null != procedure) {
@@ -67,14 +89,20 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ProcedureUnaryProcedure<" + procedure + ">";
     }
 
+    /**
+     * Adapt a Procedure to the UnaryProcedure interface.
+     * @param procedure to adapt
+     * @return ProcedureUnaryProcedure
+     */
     public static ProcedureUnaryProcedure adapt(Procedure procedure) {
         return null == procedure ? null : new ProcedureUnaryProcedure(procedure);
     }
 
-    /** The {@link Procedure Procedure} I'm wrapping. */
-    private Procedure procedure = null;
 }

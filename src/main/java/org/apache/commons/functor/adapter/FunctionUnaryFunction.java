@@ -39,14 +39,27 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public final class FunctionUnaryFunction implements UnaryFunction, Serializable {
+    /** The {@link Function Function} I'm wrapping. */
+    private Function function = null;
+
+    /**
+     * Create a new FunctionUnaryFunction.
+     * @param function to adapt
+     */
     public FunctionUnaryFunction(Function function) {
         this.function = function;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
         return function.evaluate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof FunctionUnaryFunction) {
             return equals((FunctionUnaryFunction) that);
@@ -55,10 +68,19 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
         }
     }
 
+    /**
+     * Learn whether another FunctionUnaryFunction is equal to this.
+     * @param that FunctionUnaryFunction to test
+     * @return boolean
+     */
     public boolean equals(FunctionUnaryFunction that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "FunctionUnaryFunction".hashCode();
         if (null != function) {
@@ -67,14 +89,20 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "FunctionUnaryFunction<" + function + ">";
     }
 
+    /**
+     * Adapt a Function to the UnaryFunction interface.
+     * @param function to adapt
+     * @return FunctionUnaryFunction
+     */
     public static FunctionUnaryFunction adapt(Function function) {
         return null == function ? null : new FunctionUnaryFunction(function);
     }
 
-    /** The {@link Function Function} I'm wrapping. */
-    private Function function = null;
 }

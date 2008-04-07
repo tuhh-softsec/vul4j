@@ -75,8 +75,9 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
     }
 
     /**
-     * @param that
-     * @return
+     * Learn whether another BinaryFunctionBinaryPredicate is equal to this.
+     * @param that BinaryFunctionBinaryPredicate to test
+     * @return boolean
      */
     public boolean equals(BinaryFunctionBinaryPredicate that) {
         return that == this

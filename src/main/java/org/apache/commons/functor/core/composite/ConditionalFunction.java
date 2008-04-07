@@ -42,22 +42,38 @@ import org.apache.commons.functor.Predicate;
  * @author Rodney Waldhoff
  */
 public final class ConditionalFunction implements Function, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private Predicate ifPred = null;
+    private Function thenFunc = null;
+    private Function elseFunc = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
-    public ConditionalFunction(Predicate ifPred, Function thenPred, Function elsePred) {
+    /**
+     * Create a new ConditionalFunction.
+     * @param ifPred if
+     * @param thenFunc then
+     * @param elseFunc else
+     */
+    public ConditionalFunction(Predicate ifPred, Function thenFunc, Function elseFunc) {
         this.ifPred = ifPred;
-        this.thenFunc = thenPred;
-        this.elseFunc = elsePred;
+        this.thenFunc = thenFunc;
+        this.elseFunc = elseFunc;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate() {
         return ifPred.test() ? thenFunc.evaluate() : elseFunc.evaluate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalFunction) {
             return equals((ConditionalFunction) that);
@@ -66,13 +82,21 @@ public final class ConditionalFunction implements Function, Serializable {
         }
     }
 
+    /**
+     * Learn whether another ConditionalFunction is equal to this.
+     * @param that ConditionalFunction to test
+     * @return boolean
+     */
     public boolean equals(ConditionalFunction that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc)) &&
-                (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc))
+                && (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalFunction".hashCode();
         if (null != ifPred) {
@@ -90,13 +114,11 @@ public final class ConditionalFunction implements Function, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalFunction<" + ifPred + "?" + thenFunc + ":" + elseFunc + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private Predicate ifPred = null;
-    private Function thenFunc = null;
-    private Function elseFunc = null;
 }

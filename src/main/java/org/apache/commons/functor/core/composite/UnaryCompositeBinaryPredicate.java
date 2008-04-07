@@ -39,9 +39,20 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryPredicate binary = null;
+    private UnaryFunction leftUnary = null;
+    private UnaryFunction rightUnary = null;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new UnaryCompositeBinaryPredicate.
+     * @param f BinaryPredicate to test <i>output(</i><code>f</code><i>), output(</i><code>g</code><i>)</i>
+     * @param g left UnaryFunction
+     * @param h right UnaryFunction
+     */
     public UnaryCompositeBinaryPredicate(BinaryPredicate f, UnaryFunction g, UnaryFunction h) {
         binary = f;
         leftUnary = g;
@@ -50,10 +61,16 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
 
     // function interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return binary.test(leftUnary.evaluate(left), rightUnary.evaluate(right));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryCompositeBinaryPredicate) {
             return equals((UnaryCompositeBinaryPredicate) that);
@@ -62,13 +79,21 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
         }
     }
 
+    /**
+     * Learn whether another UnaryCompositeBinaryPredicate is equal to this.
+     * @param that UnaryCompositeBinaryPredicate to test
+     * @return boolean
+     */
     public boolean equals(UnaryCompositeBinaryPredicate that) {
-        return (null != that) &&
-            (null == binary ? null == that.binary : binary.equals(that.binary)) &&
-            (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary)) &&
-            (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
+        return (null != that)
+                && (null == binary ? null == that.binary : binary.equals(that.binary))
+                && (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary))
+                && (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "UnaryCompositeBinaryPredicate".hashCode();
         if (null != binary) {
@@ -86,14 +111,11 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryCompositeBinaryPredicate<" + binary + ";" + leftUnary + ";" + rightUnary + ">";
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryPredicate binary = null;
-    private UnaryFunction leftUnary = null;
-    private UnaryFunction rightUnary = null;
 
 }

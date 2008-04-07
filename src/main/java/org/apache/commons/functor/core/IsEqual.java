@@ -36,39 +36,56 @@ import org.apache.commons.functor.BinaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class IsEqual implements BinaryPredicate, Serializable {
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final IsEqual INSTANCE = new IsEqual();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new IsEqual.
+     */
     public IsEqual() {
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object left, Object right) {
         return (null == left ? null == right : left.equals(right));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         return that instanceof IsEqual;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "IsEqual".hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IsEqual";
     }
 
     // static methods
     // ------------------------------------------------------------------------
+    /**
+     * Get an IsEqual instance.
+     * @return IsEqual
+     */
     public static IsEqual instance() {
         return INSTANCE;
     }
-
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final IsEqual INSTANCE = new IsEqual();
 
 }

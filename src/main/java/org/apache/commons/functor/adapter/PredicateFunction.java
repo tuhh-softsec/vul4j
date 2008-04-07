@@ -38,11 +38,19 @@ import org.apache.commons.functor.Predicate;
  * @author Rodney Waldhoff
  */
 public final class PredicateFunction implements Function, Serializable {
+    /** The {@link Predicate Predicate} I'm wrapping. */
+    private Predicate predicate = null;
+
+    /**
+     * Create a new PredicateFunction.
+     * @param predicate to adapt
+     */
     public PredicateFunction(Predicate predicate) {
         this.predicate = predicate;
     }
 
     /**
+     * {@inheritDoc}
      * Returns <code>Boolean.TRUE</code> (<code>Boolean.FALSE</code>)
      * when the {@link Predicate#test test} method of my underlying
      * predicate returns <code>true</code> (<code>false</code>).
@@ -53,6 +61,9 @@ public final class PredicateFunction implements Function, Serializable {
         return predicate.test() ? Boolean.TRUE : Boolean.FALSE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof PredicateFunction) {
             return equals((PredicateFunction) that);
@@ -61,10 +72,19 @@ public final class PredicateFunction implements Function, Serializable {
         }
     }
 
+    /**
+     * Learn whether another PredicateFunction is equal to this.
+     * @param that PredicateFunction to test
+     * @return boolean
+     */
     public boolean equals(PredicateFunction that) {
-        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return that == this
+                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "PredicateFunction".hashCode();
         if (null != predicate) {
@@ -73,14 +93,20 @@ public final class PredicateFunction implements Function, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "PredicateFunction<" + predicate + ">";
     }
 
+    /**
+     * Adapt a Predicate to the Function interface.
+     * @param predicate to adapt
+     * @return PredicateFunction
+     */
     public static PredicateFunction adapt(Predicate predicate) {
         return null == predicate ? null : new PredicateFunction(predicate);
     }
 
-    /** The {@link Predicate Predicate} I'm wrapping. */
-    private Predicate predicate = null;
 }

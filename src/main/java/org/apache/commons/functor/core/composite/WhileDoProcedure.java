@@ -37,17 +37,26 @@ import org.apache.commons.functor.Procedure;
  * @author Rodney Waldhoff
  */
 public class WhileDoProcedure extends AbstractLoopProcedure {
+    /**
+     * Create a new WhileDoProcedure.
+     * @param condition while
+     * @param action to do
+     */
     public WhileDoProcedure(Predicate condition, Procedure action) {
         super(condition, action);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public void run() {
         while(getCondition().test())
             getAction().run();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object object) {
         if (object instanceof WhileDoProcedure) {
         	return super.equals(object);
@@ -56,13 +65,17 @@ public class WhileDoProcedure extends AbstractLoopProcedure {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
     	return super.hashCode("WhileDoProcedure".hashCode());
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
-        return "WhileDoProcedure<while("+getCondition()+") do("+getAction()+")>";
+        return "WhileDoProcedure<while(" + getCondition() + ") do(" + getAction() + ")>";
     }
 }

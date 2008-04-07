@@ -42,10 +42,20 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class ConditionalUnaryFunction implements UnaryFunction, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private UnaryPredicate ifPred = null;
+    private UnaryFunction thenFunc = null;
+    private UnaryFunction elseFunc = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new ConditionalUnaryFunction.
+     * @param ifPred if
+     * @param thenPred then
+     * @param elsePred else
+     */
     public ConditionalUnaryFunction(UnaryPredicate ifPred, UnaryFunction thenPred, UnaryFunction elsePred) {
         this.ifPred = ifPred;
         this.thenFunc = thenPred;
@@ -54,10 +64,16 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
         return ifPred.test(obj) ? thenFunc.evaluate(obj) : elseFunc.evaluate(obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof ConditionalUnaryFunction) {
             return equals((ConditionalUnaryFunction) that);
@@ -66,13 +82,21 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
         }
     }
 
+    /**
+     * Learn whether another ConditionalUnaryFunction is equal to this.
+     * @param that ConditionalUnaryFunction to test
+     * @return boolean
+     */
     public boolean equals(ConditionalUnaryFunction that) {
-        return null != that &&
-                (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred)) &&
-                (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc)) &&
-                (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
+        return null != that
+                && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
+                && (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc))
+                && (null == elseFunc ? null == that.elseFunc : elseFunc.equals(that.elseFunc));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "ConditionalUnaryFunction".hashCode();
         if (null != ifPred) {
@@ -90,13 +114,11 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "ConditionalUnaryFunction<" + ifPred + "?" + thenFunc + ":" + elseFunc + ">";
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private UnaryPredicate ifPred = null;
-    private UnaryFunction thenFunc = null;
-    private UnaryFunction elseFunc = null;
 }

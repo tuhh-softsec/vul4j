@@ -32,42 +32,67 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class NoOp implements Procedure, UnaryProcedure, BinaryProcedure, Serializable {
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final NoOp INSTANCE = new NoOp();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new NoOp.
+     */
     public NoOp() {
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object obj) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object left, Object right) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         return (that instanceof NoOp);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "NoOp".hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "NoOp";
     }
 
     // static methods
     // ------------------------------------------------------------------------
+    /**
+     * Get a NoOp instance.
+     * @return NoOp
+     */
     public static NoOp instance() {
         return INSTANCE;
     }
 
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final NoOp INSTANCE = new NoOp();
 }

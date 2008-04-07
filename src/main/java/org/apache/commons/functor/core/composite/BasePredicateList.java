@@ -38,21 +38,42 @@ import org.apache.commons.functor.Predicate;
  * @author Rodney Waldhoff
  */
 abstract class BasePredicateList implements Predicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new BasePredicateList.
+     */
     protected BasePredicateList() {
     }
 
+    /**
+     * Create a new BasePredicateList.
+     * @param p Predicate to add
+     */
     protected BasePredicateList(Predicate p) {
         addPredicate(p);
     }
 
+    /**
+     * Create a new BasePredicateList.
+     * @param p Predicate to add
+     * @param q Predicate to add
+     */
     protected BasePredicateList(Predicate p, Predicate q) {
         addPredicate(p);
         addPredicate(q);
     }
 
+    /**
+     * Create a new BasePredicateList.
+     * @param p Predicate to add
+     * @param q Predicate to add
+     * @param r Predicate to add
+     */
     protected BasePredicateList(Predicate p, Predicate q, Predicate r) {
         addPredicate(p);
         addPredicate(q);
@@ -61,38 +82,69 @@ abstract class BasePredicateList implements Predicate, Serializable {
 
     // abstract
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public abstract boolean equals(Object that);
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract int hashCode();
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract String toString();
+
+    /**
+     * {@inheritDoc}
+     */
     public abstract boolean test();
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Add a Predicate to the list.
+     * @param p Predicate to add
+     */
     protected void addPredicate(Predicate p) {
         list.add(p);
     }
 
     // protected
     // ------------------------------------------------------------------------
-
+    /**
+     * Get an Iterator over the contents of the list.
+     * @return Iterator<Predicate>
+     */
     protected Iterator getPredicateIterator() {
         return list.iterator();
     }
 
+    /**
+     * Learn whether the list of another BasePredicateList is equal to my list.
+     * @param that BasePredicateList to test
+     * @return boolean
+     */
     protected boolean getPredicateListEquals(BasePredicateList that) {
         return (null != that && this.list.equals(that.list));
     }
 
+    /**
+     * Get a hashCode for my list.
+     * @return int
+     */
     protected int getPredicateListHashCode() {
         return list.hashCode();
     }
 
+    /**
+     * Get a toString for my list.
+     * @return String
+     */
     protected String getPredicateListToString() {
         return String.valueOf(list);
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
 }

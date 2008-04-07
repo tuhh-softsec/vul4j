@@ -37,9 +37,20 @@ import org.apache.commons.functor.BinaryFunction;
  * @author Rodney Waldhoff
  */
 public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryFunction binary = null;
+    private BinaryFunction leftBinary = null;
+    private BinaryFunction rightBinary = null;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new BinaryCompositeBinaryFunction.
+     * @param f function
+     * @param g function
+     * @param h function
+     */
     public BinaryCompositeBinaryFunction(BinaryFunction f, BinaryFunction g, BinaryFunction h) {
         binary = f;
         leftBinary = g;
@@ -48,10 +59,16 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
 
     // function interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
-        return binary.evaluate(leftBinary.evaluate(left,right), rightBinary.evaluate(left,right));
+        return binary.evaluate(leftBinary.evaluate(left, right), rightBinary.evaluate(left, right));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof BinaryCompositeBinaryFunction) {
             return equals((BinaryCompositeBinaryFunction) that);
@@ -60,13 +77,21 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
         }
     }
 
+    /**
+     * Learn whether another BinaryCompositeBinaryFunction is equal to this.
+     * @param that BinaryCompositeBinaryFunction to test
+     * @return boolean
+     */
     public boolean equals(BinaryCompositeBinaryFunction that) {
-        return (null != that) &&
-            (null == binary ? null == that.binary : binary.equals(that.binary)) &&
-            (null == leftBinary ? null == that.leftBinary : leftBinary.equals(that.leftBinary)) &&
-            (null == rightBinary ? null == that.rightBinary : rightBinary.equals(that.rightBinary));
+        return (null != that)
+                && (null == binary ? null == that.binary : binary.equals(that.binary))
+                && (null == leftBinary ? null == that.leftBinary : leftBinary.equals(that.leftBinary))
+                && (null == rightBinary ? null == that.rightBinary : rightBinary.equals(that.rightBinary));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "BinaryCompositeBinaryFunction".hashCode();
         if (null != binary) {
@@ -84,14 +109,11 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "BinaryCompositeBinaryFunction<" + binary + ";" + leftBinary + ";" + rightBinary + ">";
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryFunction binary = null;
-    private BinaryFunction leftBinary = null;
-    private BinaryFunction rightBinary = null;
 
 }

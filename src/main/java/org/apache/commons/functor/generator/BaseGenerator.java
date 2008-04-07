@@ -31,11 +31,13 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * @version $Revision$ $Date$
  * @author  Jason Horman (jason@jhorman.org)
  */
-
 public abstract class BaseGenerator implements Generator {
 
     /** A generator can wrap another generator. */
     private Generator wrappedGenerator = null;
+
+    /** Set to true when the generator is {@link #stop stopped}. */
+    private boolean stopped = false;
 
     /** Create a new generator. */
     public BaseGenerator() {
@@ -45,84 +47,125 @@ public abstract class BaseGenerator implements Generator {
      * A generator can wrap another generator. When wrapping generators you
      * should use probably this constructor since doing so will cause the
      * {@link #stop} method to stop the wrapped generator as well.
+     * @param generator Generator to wrap
      */
     public BaseGenerator(Generator generator) {
         this.wrappedGenerator = generator;
     }
 
-    /** Get the generator that is being wrapped. */
+    /**
+     * Get the generator that is being wrapped.
+     * @return Generator
+     */
     protected Generator getWrappedGenerator() {
         return wrappedGenerator;
     }
 
-    /** Generators must implement this method. */
+    /**
+     * {@inheritDoc}
+     * Generators must implement this method.
+     */
     public abstract void run(UnaryProcedure proc);
 
-    /** Stop the generator. Will stop the wrapped generator if one was set. */
+    /**
+     * {@inheritDoc}
+     * Stop the generator. Will stop the wrapped generator if one was set.
+     */
     public void stop() {
         if (wrappedGenerator != null) { wrappedGenerator.stop(); }
         stopped = true;
     }
 
-    /** Check if the generator is stopped. */
+    /**
+     * {@inheritDoc}
+     * Check if the generator is stopped.
+     */
     public boolean isStopped() {
         return stopped;
     }
 
-    /** Set to true when the generator is {@link #stop stopped}. */
-    private boolean stopped = false;
-
-    /*** See {@link Algorithms#apply}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#apply}.
+     */
     public final Generator apply(UnaryFunction func) {
         return Algorithms.apply(this,func);
     }
 
-    /** See {@link Algorithms#contains}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#contains}.
+     */
     public final boolean contains(UnaryPredicate pred) {
         return Algorithms.contains(this, pred);
     }
 
-    /** See {@link Algorithms#detect}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#detect}.
+     */
     public final Object detect(UnaryPredicate pred) {
         return Algorithms.detect(this, pred);
     }
 
-    /** See {@link Algorithms#detect}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#detect}.
+     */
     public final Object detect(UnaryPredicate pred, Object ifNone) {
         return Algorithms.detect(this, pred, ifNone);
     }
 
-    /** Synonym for run. */
+    /**
+     * {@inheritDoc}
+     * Synonym for run.
+     */
     public final void foreach(UnaryProcedure proc) {
         Algorithms.foreach(this, proc);
     }
 
-    /** See {@link Algorithms#inject}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#inject}.
+     */
     public final Object inject(Object seed, BinaryFunction func) {
         return Algorithms.inject(this, seed, func);
     }
 
-    /** See {@link Algorithms#reject}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#reject}.
+     */
     public final Generator reject(UnaryPredicate pred) {
         return Algorithms.reject(this, pred);
     }
 
-    /** See {@link Algorithms#select}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#select}.
+     */
     public final Generator select(UnaryPredicate pred) {
         return Algorithms.select(this, pred);
     }
 
-    /** See {@link Algorithms#select}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#select}.
+     */
     public final Generator where(UnaryPredicate pred) {
         return Algorithms.select(this, pred);
     }
 
-    /** See {@link Algorithms#until}. */
+    /**
+     * {@inheritDoc}
+     * See {@link Algorithms#until}.
+     */
     public final Generator until(UnaryPredicate pred) {
         return Algorithms.until(this, pred);
     }
 
     /**
+     * {@inheritDoc}
      * Transforms this generator using the passed in
      * UnaryFunction. An example function might turn the contents of the
      * generator into a {@link Collection} of elements.
@@ -131,12 +174,18 @@ public abstract class BaseGenerator implements Generator {
         return transformer.evaluate(this);
     }
 
-    /** Same as to(new CollectionTransformer(collection)). */
+    /**
+     * {@inheritDoc}
+     * Same as to(new CollectionTransformer(collection)).
+     */
     public final Collection to(Collection collection) {
         return (Collection) to(new CollectionTransformer(collection));
     }
 
-    /** Same as to(new CollectionTransformer()). */
+    /**
+     * {@inheritDoc}
+     * Same as to(new CollectionTransformer()).
+     */
     public final Collection toCollection() {
         return (Collection) to(new CollectionTransformer());
     }

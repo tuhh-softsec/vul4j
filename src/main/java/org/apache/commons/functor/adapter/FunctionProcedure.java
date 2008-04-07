@@ -38,6 +38,9 @@ import org.apache.commons.functor.Procedure;
  * @author Rodney Waldhoff
  */
 public final class FunctionProcedure implements Procedure, Serializable {
+    /** The {@link Function Function} I'm wrapping. */
+    private Function function = null;
+
     /**
      * Create an {@link Procedure Procedure} wrapping
      * the given {@link Function Function}.
@@ -48,6 +51,7 @@ public final class FunctionProcedure implements Procedure, Serializable {
     }
 
     /**
+     * {@inheritDoc}
      * {@link Function#evaluate Evaluate} my function,
      * but ignore its returned value.
      */
@@ -55,6 +59,9 @@ public final class FunctionProcedure implements Procedure, Serializable {
         function.evaluate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof FunctionProcedure) {
             return equals((FunctionProcedure) that);
@@ -63,10 +70,19 @@ public final class FunctionProcedure implements Procedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether another FunctionProcedure is equal to this.
+     * @param that FunctionProcedure to test
+     * @return boolean
+     */
     public boolean equals(FunctionProcedure that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "FunctionProcedure".hashCode();
         if (null != function) {
@@ -75,9 +91,13 @@ public final class FunctionProcedure implements Procedure, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "FunctionProcedure<" + function + ">";
     }
+
     /**
      * Adapt the given, possibly-<code>null</code>,
      * {@link Function Function} to the
@@ -95,6 +115,4 @@ public final class FunctionProcedure implements Procedure, Serializable {
         return null == function ? null : new FunctionProcedure(function);
     }
 
-    /** The {@link Function Function} I'm wrapping. */
-    private Function function = null;
 }

@@ -27,41 +27,49 @@ import java.util.Comparator;
  * @author Rodney Waldhoff
  */
 final class ComparableComparator implements Comparator, Serializable {
+    /** Singleton */
+    public static final ComparableComparator INSTANCE = new ComparableComparator();
+
+    /**
+     * Create a new ComparableComparator.
+     */
     public ComparableComparator() {
     }
 
     /**
-     * @see java.util.Comparator#compare(Object, Object)
+     * {@inheritDoc}
      */
     public int compare(Object o1, Object o2) {
         return ((Comparable) o1).compareTo(o2);
     }
 
     /**
-     * @see java.lang.Object#equals(Object)
+     * {@inheritDoc}
      */
     public boolean equals(Object obj) {
         return (obj instanceof ComparableComparator);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
      */
     public int hashCode() {
         return toString().hashCode();
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     public String toString() {
         return" ComparableComparator";
     }
 
+    /**
+     * Get a ComparableComparator instance.
+     * @return ComparableComparator
+     */
     public static final ComparableComparator instance() {
         return INSTANCE;
     }
-
-    public static final ComparableComparator INSTANCE = new ComparableComparator();
 
 }

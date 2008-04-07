@@ -39,7 +39,13 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
+    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
+    private BinaryProcedure procedure = null;
+    /** The parameter to pass to that procedure. */
+    private Object param = null;
+
     /**
+     * Create a new LeftBoundProcedure.
      * @param procedure the procedure to adapt
      * @param arg the constant argument to use
      */
@@ -48,10 +54,16 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
         this.param = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object obj) {
-        procedure.run(param,obj);
+        procedure.run(param, obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof LeftBoundProcedure) {
             return equals((LeftBoundProcedure) that);
@@ -60,14 +72,21 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether another LeftBoundProcedure is equal to this.
+     * @param that LeftBoundProcedure to test
+     * @return boolean
+     */
     public boolean equals(LeftBoundProcedure that) {
-        return that == this || (
-                (null != that) &&
-                (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
-                (null == param ? null == that.param : param.equals(that.param)) );
+        return that == this || ((null != that)
+                && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
+                && (null == param ? null == that.param : param.equals(that.param)));
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "LeftBoundProcedure".hashCode();
         if (null != procedure) {
@@ -81,16 +100,21 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "LeftBoundProcedure<" + procedure + "(" + param + ",?)>";
     }
 
+    /**
+     * Get a UnaryProcedure from <code>procedure</code>.
+     * @param procedure to adapt
+     * @param arg left side argument
+     * @return LeftBoundProcedure
+     */
     public static LeftBoundProcedure bind(BinaryProcedure procedure, Object arg) {
         return null == procedure ? null : new LeftBoundProcedure(procedure,arg);
     }
 
-    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure procedure = null;
-    /** The parameter to pass to that procedure. */
-    private Object param = null;
 }

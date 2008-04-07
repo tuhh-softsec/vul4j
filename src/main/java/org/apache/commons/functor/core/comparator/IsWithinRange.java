@@ -46,8 +46,10 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
      ***************************************************/
 
     /**
-     * Constructor the object by passing in the range that will
+     * Create a new IsWithinRange by passing in the range that will
      * be used in the {@link #test}.
+     * @param min Comparable
+     * @param max Comparable
      */
     public IsWithinRange(Comparable min, Comparable max) {
         if (min == null || max == null) {
@@ -67,6 +69,7 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
      ***************************************************/
 
     /**
+     * {@inheritDoc}
      * Test if the passed in object is within the specified range.
      */
     public boolean test(Object o) {
@@ -74,19 +77,36 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
         return c.compareTo(min) >= 0 && c.compareTo(max) <= 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof IsWithinRange)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof IsWithinRange)) {
+            return false;
+        }
         final IsWithinRange isWithinRange = (IsWithinRange) o;
-        if (!max.equals(isWithinRange.max)) return false;
-        if (!min.equals(isWithinRange.min)) return false;
+        if (!max.equals(isWithinRange.max)) {
+            return false;
+        }
+        if (!min.equals(isWithinRange.min)) {
+            return false;
+        }
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return 29 * min.hashCode() + max.hashCode() + nameHashCode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IsBetween(" + min + ", " + max + ")";
     }

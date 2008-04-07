@@ -17,7 +17,6 @@ package org.apache.commons.functor.generator.util;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.generator.BaseGenerator;
 
-
 /**
  * A generator for the range <i>from</i> (inclusive) to <i>to</i> (exclusive).
  *
@@ -27,22 +26,49 @@ import org.apache.commons.functor.generator.BaseGenerator;
  * @author Rodney Waldhoff
  */
 public final class LongRange extends BaseGenerator {
+    // attributes
+    //---------------------------------------------------------------
+
+    private long from;
+    private long to;
+    private long step;
 
     // constructors
     //---------------------------------------------------------------
-
+    /**
+     * Create a new LongRange.
+     * @param from start
+     * @param to end
+     */
     public LongRange(Number from, Number to) {
-        this(from.longValue(),to.longValue());
+        this(from.longValue(), to.longValue());
     }
 
+    /**
+     * Create a new LongRange.
+     * @param from start
+     * @param to end
+     * @param step increment
+     */
     public LongRange(Number from, Number to, Number step) {
-        this(from.longValue(),to.longValue(),step.longValue());
+        this(from.longValue(), to.longValue(), step.longValue());
     }
 
+    /**
+     * Create a new LongRange.
+     * @param from start
+     * @param to end
+     */
     public LongRange(long from, long to) {
-        this(from,to,defaultStep(from,to));
+        this(from, to, defaultStep(from, to));
     }
 
+    /**
+     * Create a new LongRange.
+     * @param from start
+     * @param to end
+     * @param step increment
+     */
     public LongRange(long from, long to, long step) {
         if (from != to && signOf(step) != signOf(to-from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
@@ -55,23 +81,31 @@ public final class LongRange extends BaseGenerator {
 
     // methods
     //---------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public void run(UnaryProcedure proc) {
         if (signOf(step) == -1L) {
-            for (long i=from; i > to; i += step) {
+            for (long i = from; i > to; i += step) {
                 proc.run(new Long(i));
             }
         } else {
-            for (long i=from; i < to; i += step) {
+            for (long i = from; i < to; i += step) {
                 proc.run(new Long(i));
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "LongRange<" + from + "," + to + "," + step + ">";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (obj instanceof LongRange) {
             LongRange that = (LongRange) obj;
@@ -81,6 +115,9 @@ public final class LongRange extends BaseGenerator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "LongRange".hashCode();
         hash <<= 2;
@@ -94,17 +131,27 @@ public final class LongRange extends BaseGenerator {
 
     // private methods
     //---------------------------------------------------------------
-
+    /**
+     * Get <code>value/|value|</code> (0L when value == 0L).
+     * @param value to test
+     * @return long
+     */
     private static long signOf(long value) {
-        if (value < 0) {
-            return -1;
-        } else if (value > 0) {
-            return 1;
+        if (value < 0L) {
+            return -1L;
+        } else if (value > 0L) {
+            return 1L;
         } else {
-            return 0;
+            return 0L;
         }
     }
 
+    /**
+     * Calculate default step to get from <code>from</code> to <code>to</code>.
+     * @param from start
+     * @param to end
+     * @return long
+     */
     private static long defaultStep(long from, long to) {
         if (from > to) {
             return -1L;
@@ -112,13 +159,5 @@ public final class LongRange extends BaseGenerator {
             return 1L;
         }
     }
-
-    // attributes
-    //---------------------------------------------------------------
-
-    private long from;
-    private long to;
-    private long step;
-
 
 }

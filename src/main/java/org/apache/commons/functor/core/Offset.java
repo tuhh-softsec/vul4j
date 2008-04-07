@@ -32,7 +32,15 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 
 public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate {
+    // instance variables
+    //---------------------------------------------------------------
+    private int min;
+    private int current = 0;
 
+    /**
+     * Create a new Offset.
+     * @param count offset
+     */
     public Offset(int count) {
         if (count < 0) {
             throw new IllegalArgumentException("Argument must be a non-negative integer.");
@@ -40,8 +48,11 @@ public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate 
         this.min = count;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
-        // stop incremeting when we've hit max, so we don't loop around
+        // stop incrementing when we've hit max, so we don't loop around
         if (current < min) {
             current++;
             return false;
@@ -50,20 +61,25 @@ public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object a, Object b) {
         return test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "Offset<" + min + ">";
     }
-    // instance variables
-    //---------------------------------------------------------------
-    private int min;
-    private int current = 0;
 
 }

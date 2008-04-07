@@ -26,9 +26,19 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class TransformedIterator implements Iterator {
 
-    // constructor
+    // attributes
     // ------------------------------------------------------------------------
 
+    private UnaryFunction function = null;
+    private Iterator iterator = null;
+
+    // constructor
+    // ------------------------------------------------------------------------
+    /**
+     * Create a new TransformedIterator.
+     * @param iterator Iterator to decorate
+     * @param function to apply
+     */
     public TransformedIterator(Iterator iterator, UnaryFunction function) {
         if (null == iterator || null == function) {
             throw new NullPointerException();
@@ -42,6 +52,7 @@ public final class TransformedIterator implements Iterator {
     // ------------------------------------------------------------------------
 
     /**
+     * {@inheritDoc}
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
@@ -49,6 +60,7 @@ public final class TransformedIterator implements Iterator {
     }
 
     /**
+     * {@inheritDoc}
      * @see java.util.Iterator#next()
      */
     public Object next() {
@@ -56,12 +68,16 @@ public final class TransformedIterator implements Iterator {
     }
 
     /**
+     * {@inheritDoc}
      * @see java.util.Iterator#remove()
      */
     public void remove() {
         iterator.remove();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (obj instanceof TransformedIterator) {
             TransformedIterator that = (TransformedIterator) obj;
@@ -71,6 +87,9 @@ public final class TransformedIterator implements Iterator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "TransformedIterator".hashCode();
         hash <<= 2;
@@ -80,23 +99,24 @@ public final class TransformedIterator implements Iterator {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "TransformedIterator<" + iterator + "," + function + ">";
     }
 
     // class methods
     // ------------------------------------------------------------------------
-
+    /**
+     * Get a TransformedIterator instance.
+     * @param iter to decorate
+     * @param func transforming function
+     * @return Iterator
+     */
+    //TODO is this the best name for this method?
     public static Iterator transform(Iterator iter, UnaryFunction func) {
         return null == func ? iter : (null == iter ? null : new TransformedIterator(iter,func));
     }
-
-
-    // attributes
-    // ------------------------------------------------------------------------
-
-    private UnaryFunction function = null;
-    private Iterator iterator = null;
-
 
 }

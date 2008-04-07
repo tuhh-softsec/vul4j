@@ -40,24 +40,47 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new UnaryAnd.
+     */
     public UnaryAnd() {
         super();
     }
 
+    /**
+     * Create a new UnaryAnd.
+     * @param p UnaryPredicate to add
+     */
     public UnaryAnd(UnaryPredicate p) {
         super(p);
     }
 
+    /**
+     * Create a new UnaryAnd.
+     * @param p UnaryPredicate to add
+     * @param q UnaryPredicate to add
+     */
     public UnaryAnd(UnaryPredicate p, UnaryPredicate q) {
         super(p,q);
     }
 
+    /**
+     * Create a new UnaryAnd.
+     * @param p UnaryPredicate to add
+     * @param q UnaryPredicate to add
+     * @param r UnaryPredicate to add
+     */
     public UnaryAnd(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
         super(p,q,r);
     }
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Fluently add a UnaryPredicate.
+     * @param p UnaryPredicate to add
+     * @return this
+     */
     public UnaryAnd and(UnaryPredicate p) {
         super.addUnaryPredicate(p);
         return this;
@@ -65,6 +88,9 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         for (Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
             if (!((UnaryPredicate) iter.next()).test(obj)) {
@@ -74,6 +100,9 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryAnd) {
             return equals((UnaryAnd) that);
@@ -82,14 +111,25 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
         }
     }
 
+    /**
+     * Learn whether another UnaryAnd is equal to this.
+     * @param that UnaryAnd to test
+     * @return boolean
+     */
     public boolean equals(UnaryAnd that) {
         return getUnaryPredicateListEquals(that);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "UnaryAnd".hashCode() ^ getUnaryPredicateListHashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryAnd<" + getUnaryPredicateListToString() + ">";
     }
