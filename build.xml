@@ -166,13 +166,17 @@
     <mkdir dir="${dist.home}"/>
     <mkdir dir="${dist.home}/docs"/>
     <mkdir dir="${dist.home}/docs/api"/>
+    <tstamp>
+        <format property="current.year" pattern="yyyy"/>
+    </tstamp>
     <javadoc destdir="${dist.home}/docs/api"
              sourcepath="${source.home}"
+             packagenames="org.apache.commons.*"
              author="false"
              version="true"
              doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
              windowtitle="${component.title} (Version ${component.version})"
-             bottom="Copyright (c) 2003 - Apache Software Foundation. Generated ${TODAY}.">
+             bottom="Copyright (c) 2003-${current.year} The Apache Software Foundation.">
       <classpath refid="javadoc.classpath"/>
     </javadoc>
   </target>
@@ -180,13 +184,23 @@
 
   <target name="dist" depends="test,javadoc" description="Create binary distribution">
     <mkdir dir="${dist.home}"/>
-    <copy file="LICENSE.txt" 
-          todir="${dist.home}"/>
+    <copy file="LICENSE.txt" todir="${dist.home}"/>
+    <copy file="NOTICE.txt"  todir="${dist.home}"/>
     <mkdir dir="${build.home}/classes/META-INF"/>
-    <copy file="LICENSE.txt" 
-          tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
-    <jar jarfile="${dist.home}/commons-${component.name}.jar"
-         basedir="${build.home}/classes"/>
+    <copy file="LICENSE.txt" tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <copy file="NOTICE.txt"  tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
+    <jar jarfile="${dist.home}/commons-${component.name}-${component.version}.jar"
+         basedir="${build.home}/classes">
+        <manifest>
+            <attribute name="Specification-Title" value="Commons Functor"/>
+            <attribute name="Specification-Version" value="${component.version}"/>
+            <attribute name="Specification-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Title" value="Commons Functor"/>
+            <attribute name="Implementation-Version" value="${component.version}"/> 
+            <attribute name="Implementation-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Vendor-Id" value="org.apache"/>
+        </manifest>
+    </jar>
   </target>
 
 
