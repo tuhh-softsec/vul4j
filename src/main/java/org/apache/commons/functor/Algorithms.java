@@ -453,14 +453,26 @@ public final class Algorithms {
      * @return final result
      */
     public static final Object recurse(Function function) {
+        return recurse(function, function == null ? null : function.getClass());
+    }
+
+    /**
+     * Tail recursion for {@link Function functions}. If the {@link Function}
+     * returns another function of type <code>functionType</code>, that function
+     * is executed. Functions are executed until a non function value or a
+     * function of a different type is returned.
+     * @param function initial Function
+     * @param functionType as long as result is an instance, keep processing.
+     * @return final result
+     */
+    public static final Object recurse(Function function, Class functionType) {
         Object result = null;
-        Class recursiveFunctionClass = function.getClass();
 
         // if the function returns another function, execute it. stop executing
         // when the function doesn't return another function of the same type.
         while (true) {
             result = function.evaluate();
-            if (recursiveFunctionClass.isInstance(result)) {
+            if (functionType.isInstance(result)) {
                 function = (Function) result;
                 continue;
             } else {
