@@ -116,7 +116,6 @@
         <version>2.1</version>
         <configuration>
           <configLocation>${basedir}/checkstyle.xml</configLocation>
-          <excludes>**/parser/*</excludes>
         </configuration>
       </plugin>
     </plugins>
