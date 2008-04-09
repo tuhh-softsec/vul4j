@@ -40,10 +40,9 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
      */
     public IteratorToGeneratorAdapter(Iterator iter) {
         if (null == iter) {
-            throw new NullPointerException();
-        } else {
-            this.iter = iter;
+            throw new IllegalArgumentException("Iterator argument was null");
         }
+        this.iter = iter;
     }
 
     // instance methods

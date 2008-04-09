@@ -90,7 +90,7 @@ public class TestIteratorToGeneratorAdapter extends BaseFunctorTest {
         try {
             new IteratorToGeneratorAdapter(null);
             fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }
