@@ -105,11 +105,10 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
     private boolean testArray(Object obj, Object array) {
         for (int i = 0, m = Array.getLength(array); i < m; i++) {
             Object value = Array.get(array, i);
-            if (null == obj) {
-                if (null == value) {
-                    return true;
-                }
-            } else if (obj.equals(value)) {
+            if (obj == value) {
+                return true;
+            }
+            if (obj != null && obj.equals(value)) {
                 return true;
             }
         }
