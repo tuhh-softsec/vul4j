@@ -89,7 +89,7 @@ public abstract class BaseGenerator implements Generator {
      * See {@link Algorithms#apply}.
      */
     public final Generator apply(UnaryFunction func) {
-        return Algorithms.apply(this,func);
+        return Algorithms.apply(this, func);
     }
 
     /**

@@ -85,8 +85,8 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
     // modifiers
     // ------------------------------------------------------------------------
     /**
-     * Fluently add a UnaryFunction.
-     * @param f UnaryFunction to add
+     * Fluently prepend a UnaryFunction to the chain.
+     * @param f UnaryFunction to prepend
      * @return this
      */
     public CompositeUnaryFunction of(UnaryFunction f) {

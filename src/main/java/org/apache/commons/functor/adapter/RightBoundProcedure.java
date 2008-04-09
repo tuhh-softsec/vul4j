@@ -58,7 +58,7 @@ public final class RightBoundProcedure implements UnaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public void run(Object obj) {
-        procedure.run(obj,param);
+        procedure.run(obj, param);
     }
 
     /**

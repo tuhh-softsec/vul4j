@@ -61,7 +61,7 @@ final class ComparableComparator implements Comparator, Serializable {
      * {@inheritDoc}
      */
     public String toString() {
-        return" ComparableComparator";
+        return "ComparableComparator";
     }
 
     /**

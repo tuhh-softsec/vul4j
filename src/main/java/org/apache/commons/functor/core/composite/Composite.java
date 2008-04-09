@@ -28,8 +28,6 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class Composite {
-    //TODO discuss method signatures
-
     // constructor - for beanish apis
     // ------------------------------------------------------------------------
     /**

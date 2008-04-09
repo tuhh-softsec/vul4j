@@ -60,7 +60,7 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public void run(Object left, Object right) {
-        procedure.run(right,left);
+        procedure.run(right, left);
     }
 
     /**

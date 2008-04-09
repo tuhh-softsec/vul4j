@@ -42,15 +42,31 @@ import org.apache.commons.functor.UnaryProcedure;
  */
 public class UnarySequence implements UnaryProcedure, Serializable {
 
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
+
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new UnarySequence.
+     */
     public UnarySequence() {
     }
 
+    /**
+     * Create a new UnarySequence.
+     * @param p UnaryProcedure to add
+     */
     public UnarySequence(UnaryProcedure p) {
         then(p);
     }
 
+    /**
+     * Create a new UnarySequence.
+     * @param p UnaryProcedure to add
+     * @param q UnaryProcedure to add
+     */
     public UnarySequence(UnaryProcedure p, UnaryProcedure q) {
         then(p);
         then(q);
@@ -58,6 +74,11 @@ public class UnarySequence implements UnaryProcedure, Serializable {
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Fluently add a UnaryProcedure to the sequence.
+     * @param p UnaryProcedure to add
+     * @return this
+     */
     public UnarySequence then(UnaryProcedure p) {
         list.add(p);
         return this;
@@ -65,12 +86,18 @@ public class UnarySequence implements UnaryProcedure, Serializable {
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object obj) {
         for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
             ((UnaryProcedure) iter.previous()).run(obj);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnarySequence) {
             return equals((UnarySequence) that);
@@ -79,23 +106,29 @@ public class UnarySequence implements UnaryProcedure, Serializable {
         }
     }
 
+    /**
+     * Learn whether another UnarySequence is equal to this.
+     * @param that UnarySequence to test
+     * @return boolean
+     */
     public boolean equals(UnarySequence that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         // by construction, list is never null
         return "UnarySequence".hashCode() ^ list.hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnarySequence<" + list + ">";
     }
-
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
 }

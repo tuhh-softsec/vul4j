@@ -110,7 +110,7 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
     /**
      * Adapt a BinaryPredicate to the UnaryPredicate interface.
      * @param predicate to adapt
-     * @param arg Object argument to always send as the left operand to the wrapped function 
+     * @param arg Object argument to always send as the left operand to the wrapped function
      * @return LeftBoundPredicate
      */
     public static LeftBoundPredicate bind(BinaryPredicate predicate, Object arg) {

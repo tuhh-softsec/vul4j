@@ -77,8 +77,8 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
     // modifiers
     // ------------------------------------------------------------------------
     /**
-     * Fluently add a UnaryFunction to the chain.
-     * @param f UnaryFunction to add
+     * Fluently prepend a UnaryFunction to the chain.
+     * @param f UnaryFunction to prepend
      * @return this
      */
     public CompositeUnaryPredicate of(UnaryFunction f) {

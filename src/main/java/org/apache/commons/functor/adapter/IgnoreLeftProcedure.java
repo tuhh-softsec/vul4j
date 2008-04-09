@@ -74,7 +74,8 @@ public final class IgnoreLeftProcedure implements BinaryProcedure, Serializable 
      * @return boolean
      */
     public boolean equals(IgnoreLeftProcedure that) {
-        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return that == this
+                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
     /**

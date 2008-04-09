@@ -31,7 +31,15 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 
 public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
+    // instance variables
+    //---------------------------------------------------------------
+    private int max;
+    private int current = 0;
 
+    /**
+     * Create a new Limit.
+     * @param count limit
+     */
     public Limit(int count) {
         if (count < 0) {
             throw new IllegalArgumentException("Argument must be a non-negative integer.");
@@ -39,8 +47,11 @@ public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
         this.max = count;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test() {
-        // stop incremeting when we've hit max, so we don't loop around
+        // stop incrementing when we've hit max, so we don't loop around
         if (current < max) {
             current++;
             return true;
@@ -49,20 +60,25 @@ public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object a, Object b) {
         return test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "Limit<" + max + ">";
     }
-    // instance variables
-    //---------------------------------------------------------------
-    private int max;
-    private int current = 0;
 
 }

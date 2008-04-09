@@ -93,7 +93,7 @@ public final class BinaryOr extends BaseBinaryPredicateList {
      */
     public boolean test(Object a, Object b) {
         for (Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
-            if (((BinaryPredicate) iter.next()).test(a,b)) {
+            if (((BinaryPredicate) iter.next()).test(a, b)) {
                 return true;
             }
         }

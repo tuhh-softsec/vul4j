@@ -86,7 +86,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
     }
 
     /**
-     * Learn whether another ConditionalUnaryProcedure is equal to this. 
+     * Learn whether another ConditionalUnaryProcedure is equal to this.
      * @param that ConditionalUnaryProcedure to test
      * @return boolean
      */

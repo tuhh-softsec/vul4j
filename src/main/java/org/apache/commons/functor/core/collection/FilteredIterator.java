@@ -22,6 +22,8 @@ import java.util.NoSuchElementException;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
+ * Iterator that filters another Iterator by only passing through those elements
+ * that are matched by a specified UnaryPredicate.
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -141,7 +143,7 @@ public final class FilteredIterator implements Iterator {
      * @return whether the current iterator position is valid
      */
     private boolean setNext() {
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             canRemove = false;
             Object obj = iterator.next();
             if (predicate.test(obj)) {

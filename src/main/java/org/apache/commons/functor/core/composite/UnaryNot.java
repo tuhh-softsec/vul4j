@@ -35,20 +35,32 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class UnaryNot implements UnaryPredicate, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private UnaryPredicate predicate = null;
 
     // constructor
     // ------------------------------------------------------------------------
-
+    /**
+     * Create a new UnaryNot.
+     * @param p UnaryPredicate to negate
+     */
     public UnaryNot(UnaryPredicate p) {
         this.predicate = p;
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return !(predicate.test(obj));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryNot) {
             return equals((UnaryNot) that);
@@ -57,10 +69,18 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
         }
     }
 
+    /**
+     * Learn whether another UnaryNot is equal to this.
+     * @param that UnaryNot to test
+     * @return boolean
+     */
     public boolean equals(UnaryNot that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "UnaryNot".hashCode();
         if (null != predicate) {
@@ -69,17 +89,22 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryNot<" + predicate + ">";
     }
 
     // static
     // ------------------------------------------------------------------------
-    public static UnaryPredicate not(UnaryPredicate that) {
-        return null == that ? null : new UnaryNot(that);
+    /**
+     * Invert a UnaryPredicate.
+     * @param pred UnaryPredicate to invert
+     * @return UnaryPredicate
+     */
+    public static UnaryPredicate not(UnaryPredicate pred) {
+        return null == pred ? null : new UnaryNot(pred);
     }
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private UnaryPredicate predicate = null;
 }

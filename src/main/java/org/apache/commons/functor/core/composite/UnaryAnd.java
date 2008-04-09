@@ -61,7 +61,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * @param q UnaryPredicate to add
      */
     public UnaryAnd(UnaryPredicate p, UnaryPredicate q) {
-        super(p,q);
+        super(p, q);
     }
 
     /**
@@ -71,7 +71,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * @param r UnaryPredicate to add
      */
     public UnaryAnd(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
-        super(p,q,r);
+        super(p, q, r);
     }
 
     // modifiers

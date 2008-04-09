@@ -38,6 +38,9 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serializable {
+    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+    private UnaryFunction function = null;
+
     /**
      * Create an {@link UnaryPredicate UnaryPredicate} wrapping
      * the given {@link UnaryFunction UnaryFunction}.
@@ -48,6 +51,7 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
     }
 
     /**
+     * {@inheritDoc}
      * Returns the <code>boolean</code> value of the non-<code>null</code>
      * <code>Boolean</code> returned by the {@link UnaryFunction#evaluate evaluate}
      * method of my underlying function.
@@ -56,9 +60,12 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
     public boolean test(Object obj) {
-        return ((Boolean)(function.evaluate(obj))).booleanValue();
+        return ((Boolean) (function.evaluate(obj))).booleanValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryFunctionUnaryPredicate) {
             return equals((UnaryFunctionUnaryPredicate) that);
@@ -67,10 +74,19 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
         }
     }
 
+    /**
+     * Learn whether another UnaryFunctionUnaryPredicate is equal to this.
+     * @param that UnaryFunctionUnaryPredicate to test
+     * @return boolean
+     */
     public boolean equals(UnaryFunctionUnaryPredicate that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "UnaryFunctionUnaryPredicate".hashCode();
         if (null != function) {
@@ -79,6 +95,9 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryFunctionUnaryPredicate<" + function + ">";
     }
@@ -100,6 +119,4 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
         return null == function ? null : new UnaryFunctionUnaryPredicate(function);
     }
 
-    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
 }

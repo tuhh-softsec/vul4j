@@ -61,7 +61,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * @param q Predicate to add
      */
     public UnaryOr(UnaryPredicate p, UnaryPredicate q) {
-        super(p,q);
+        super(p, q);
     }
 
     /**
@@ -71,7 +71,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * @param r Predicate to add
      */
     public UnaryOr(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
-        super(p,q,r);
+        super(p, q, r);
     }
 
     // modifiers

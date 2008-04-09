@@ -70,7 +70,7 @@ public final class LongRange extends BaseGenerator {
      * @param step increment
      */
     public LongRange(long from, long to, long step) {
-        if (from != to && signOf(step) != signOf(to-from)) {
+        if (from != to && signOf(step) != signOf(to - from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
         } else {
             this.from = from;

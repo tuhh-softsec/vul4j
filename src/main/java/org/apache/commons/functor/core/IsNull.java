@@ -32,49 +32,74 @@ import org.apache.commons.functor.adapter.IgnoreRightPredicate;
  * @author Rodney Waldhoff
  */
 public final class IsNull implements UnaryPredicate, Serializable {
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final IsNull INSTANCE = new IsNull();
+    private static final BinaryPredicate LEFT = IgnoreRightPredicate.adapt(instance());
+    private static final BinaryPredicate RIGHT = IgnoreLeftPredicate.adapt(instance());
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new IsNull.
+     */
     public IsNull() {
     }
 
     // predicate interface
     // ------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return (null == obj);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         return that instanceof IsNull;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "IsNull".hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IsNull";
     }
 
     // static methods
     // ------------------------------------------------------------------------
+    /**
+     * Get an IsNull instance.
+     * @return IsNull
+     */
     public static IsNull instance() {
         return INSTANCE;
     }
 
+    /**
+     * Get a BinaryPredicate that matches if the left argument is null.
+     * @return BinaryPredicate
+     */
     public static BinaryPredicate left() {
         return LEFT;
     }
 
+    /**
+     * Get a BinaryPredicate that matches if the right argument is null.
+     * @return BinaryPredicate
+     */
     public static BinaryPredicate right() {
         return RIGHT;
     }
-
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final IsNull INSTANCE = new IsNull();
-    private static final BinaryPredicate LEFT = IgnoreRightPredicate.adapt(instance());
-    private static final BinaryPredicate RIGHT = IgnoreLeftPredicate.adapt(instance());
 
 }

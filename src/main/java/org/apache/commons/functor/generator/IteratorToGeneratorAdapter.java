@@ -27,10 +27,17 @@ import java.util.Iterator;
  * @author Rodney Waldhoff
  */
 public final class IteratorToGeneratorAdapter extends BaseGenerator {
+    // instance variables
+    //-----------------------------------------------------
+
+    private Iterator iter = null;
 
     // constructors
     //-----------------------------------------------------
-
+    /**
+     * Create a new IteratorToGeneratorAdapter.
+     * @param iter Iterator to adapt
+     */
     public IteratorToGeneratorAdapter(Iterator iter) {
         if (null == iter) {
             throw new NullPointerException();
@@ -41,14 +48,21 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
 
     // instance methods
     //-----------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public void run(UnaryProcedure proc) {
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             proc.run(iter.next());
-            if (isStopped()) { break; }
+            if (isStopped()) {
+                break;
+            }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (obj instanceof IteratorToGeneratorAdapter) {
             IteratorToGeneratorAdapter that = (IteratorToGeneratorAdapter) obj;
@@ -58,6 +72,9 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IteratorToGeneratorAdapater".hashCode();
         hash <<= 2;
@@ -65,20 +82,22 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IteratorToGeneratorAdapter<" + iter + ">";
     }
 
-
-    // class methods
+    // static methods
     //-----------------------------------------------------
-
+    /**
+     * Adapt an Iterator to the Generator interface.
+     * @param iter to adapt
+     * @return IteratorToGeneratorAdapter
+     */
     public static IteratorToGeneratorAdapter adapt(Iterator iter) {
         return null == iter ? null : new IteratorToGeneratorAdapter(iter);
     }
 
-    // instance variables
-    //-----------------------------------------------------
-
-    private Iterator iter = null;
 }

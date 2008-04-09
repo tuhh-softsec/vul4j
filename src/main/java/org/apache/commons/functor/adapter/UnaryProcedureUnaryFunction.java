@@ -39,15 +39,28 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class UnaryProcedureUnaryFunction implements UnaryFunction, Serializable {
+    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
+    private UnaryProcedure procedure = null;
+
+    /**
+     * Create a new UnaryProcedureUnaryFunction.
+     * @param procedure to adapt
+     */
     public UnaryProcedureUnaryFunction(UnaryProcedure procedure) {
         this.procedure = procedure;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object obj) {
         procedure.run(obj);
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryProcedureUnaryFunction) {
             return equals((UnaryProcedureUnaryFunction) that);
@@ -56,10 +69,19 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
         }
     }
 
+    /**
+     * Learn whether a given UnaryProcedureUnaryFunction is equal to this.
+     * @param that UnaryProcedureUnaryFunction to test
+     * @return boolean
+     */
     public boolean equals(UnaryProcedureUnaryFunction that) {
-        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return that == this
+                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "UnaryProcedureUnaryFunction".hashCode();
         if (null != procedure) {
@@ -68,14 +90,20 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryProcedureUnaryFunction<" + procedure + ">";
     }
 
+    /**
+     * Adapt a UnaryProcedure to the UnaryFunction interface.
+     * @param procedure to adapt
+     * @return UnaryProcedureUnaryFunction
+     */
     public static UnaryProcedureUnaryFunction adapt(UnaryProcedure procedure) {
         return null == procedure ? null : new UnaryProcedureUnaryFunction(procedure);
     }
 
-    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure procedure = null;
 }

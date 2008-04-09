@@ -39,14 +39,27 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 public final class PredicateUnaryPredicate implements UnaryPredicate, Serializable {
+    /** The {@link Predicate Predicate} I'm wrapping. */
+    private Predicate predicate = null;
+
+    /**
+     * Create a new PredicateUnaryPredicate.
+     * @param predicate to adapt
+     */
     public PredicateUnaryPredicate(Predicate predicate) {
         this.predicate = predicate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj) {
         return predicate.test();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof PredicateUnaryPredicate) {
             return equals((PredicateUnaryPredicate) that);
@@ -55,10 +68,19 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
         }
     }
 
+    /**
+     * Learn whether a given PredicateUnaryPredicate is equal to this.
+     * @param that PredicateUnaryPredicate to test
+     * @return boolean
+     */
     public boolean equals(PredicateUnaryPredicate that) {
-        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return that == this
+                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "PredicateUnaryPredicate".hashCode();
         if (null != predicate) {
@@ -67,14 +89,20 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "PredicateUnaryPredicate<" + predicate + ">";
     }
 
+    /**
+     * Adapt a Predicate to the UnaryPredicate interface.
+     * @param predicate to adapt
+     * @return PredicateUnaryPredicate
+     */
     public static PredicateUnaryPredicate adapt(Predicate predicate) {
         return null == predicate ? null : new PredicateUnaryPredicate(predicate);
     }
 
-    /** The {@link Predicate Predicate} I'm wrapping. */
-    private Predicate predicate = null;
 }

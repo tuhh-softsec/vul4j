@@ -21,6 +21,7 @@ import java.util.Iterator;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
+ * Iterator that transforms another Iterator by applying a UnaryFunction to each returned element.
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -114,9 +115,8 @@ public final class TransformedIterator implements Iterator {
      * @param func transforming function
      * @return Iterator
      */
-    //TODO is this the best name for this method?
     public static Iterator transform(Iterator iter, UnaryFunction func) {
-        return null == func ? iter : (null == iter ? null : new TransformedIterator(iter,func));
+        return null == func ? iter : (null == iter ? null : new TransformedIterator(iter, func));
     }
 
 }

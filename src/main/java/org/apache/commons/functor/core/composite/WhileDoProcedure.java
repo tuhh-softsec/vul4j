@@ -50,8 +50,9 @@ public class WhileDoProcedure extends AbstractLoopProcedure {
      * {@inheritDoc}
      */
     public void run() {
-        while(getCondition().test())
+        while (getCondition().test()) {
             getAction().run();
+        }
     }
 
     /**
@@ -59,9 +60,9 @@ public class WhileDoProcedure extends AbstractLoopProcedure {
      */
     public boolean equals(Object object) {
         if (object instanceof WhileDoProcedure) {
-        	return super.equals(object);
+            return super.equals(object);
         } else {
-			return false;
+            return false;
         }
     }
 
@@ -69,7 +70,7 @@ public class WhileDoProcedure extends AbstractLoopProcedure {
      * {@inheritDoc}
      */
     public int hashCode() {
-    	return super.hashCode("WhileDoProcedure".hashCode());
+        return super.hashCode("WhileDoProcedure".hashCode());
     }
 
     /**

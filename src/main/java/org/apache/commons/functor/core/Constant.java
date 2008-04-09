@@ -60,7 +60,6 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @param value boolean
      */
     public Constant(boolean value) {
-        //TODO use Boolean.TRUE and Boolean.FALSE
         this(new Boolean(value));
     }
 

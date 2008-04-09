@@ -35,20 +35,29 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @author  Rodney Waldhoff
  */
 public final class IsElementOf implements BinaryPredicate, Serializable {
+    // static members
+    //---------------------------------------------------------------
+
+    private static IsElementOf INSTANCE = new IsElementOf();
 
     // constructors
     //---------------------------------------------------------------
+    /**
+     * Create a new IsElementOf.
+     */
     public IsElementOf() {
     }
 
     // instance methods
     //---------------------------------------------------------------
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean test(Object obj, Object col) {
         if (col instanceof Collection) {
-            return testCollection(obj,(Collection) col);
+            return testCollection(obj, (Collection) col);
         } else if (null != col && col.getClass().isArray()) {
-            return testArray(obj,col);
+            return testArray(obj, col);
         } else if (null == col) {
             throw new NullPointerException("Right side argument must not be null.");
         } else {
@@ -56,25 +65,46 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         return (obj instanceof IsElementOf);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return "IsElementOf".hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IsElementOf";
     }
 
+    /**
+     * Test a collection.
+     * @param obj to find
+     * @param col to search
+     * @return boolean
+     */
     private boolean testCollection(Object obj, Collection col) {
         return col.contains(obj);
     }
 
+    /**
+     * Test an array.
+     * @param obj to find
+     * @param array to search
+     * @return boolean
+     */
     private boolean testArray(Object obj, Object array) {
-        for (int i=0,m=Array.getLength(array);i<m;i++) {
-            Object value = Array.get(array,i);
+        for (int i = 0, m = Array.getLength(array); i < m; i++) {
+            Object value = Array.get(array, i);
             if (null == obj) {
                 if (null == value) {
                     return true;
@@ -86,29 +116,31 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
         return false;
     }
 
-
-    // class methods
+    // static methods
     //---------------------------------------------------------------
-
+    /**
+     * Get an IsElementOf instance.
+     * @return IsElementOf
+     */
     public static IsElementOf instance() {
         return INSTANCE;
     }
 
+    /**
+     * Get an IsElementOf(collection|array) UnaryPredicate.
+     * @param obj collection/array to search
+     * @return UnaryPredicate
+     */
     public static UnaryPredicate instance(Object obj) {
         if (null == obj) {
             throw new NullPointerException("Argument must not be null");
         } else if (obj instanceof Collection) {
-            return new RightBoundPredicate(instance(),obj);
+            return new RightBoundPredicate(instance(), obj);
         } else if (obj.getClass().isArray()) {
-            return new RightBoundPredicate(instance(),obj);
+            return new RightBoundPredicate(instance(), obj);
         } else {
             throw new IllegalArgumentException("Expected Collection or Array, found " + obj.getClass());
         }
     }
-
-    // class variables
-    //---------------------------------------------------------------
-
-    private static IsElementOf INSTANCE = new IsElementOf();
 
 }

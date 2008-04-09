@@ -39,9 +39,20 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryFunction binary = null;
+    private UnaryFunction leftUnary = null;
+    private UnaryFunction rightUnary = null;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new UnaryCompositeBinaryFunction.
+     * @param f BinaryFunction to receive <code>(output(g), output(h))</code>
+     * @param g left UnaryFunction
+     * @param h right UnaryFunction
+     */
     public UnaryCompositeBinaryFunction(BinaryFunction f, UnaryFunction g, UnaryFunction h) {
         binary = f;
         leftUnary = g;
@@ -50,10 +61,16 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
 
     // function interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         return binary.evaluate(leftUnary.evaluate(left), rightUnary.evaluate(right));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof UnaryCompositeBinaryFunction) {
             return equals((UnaryCompositeBinaryFunction) that);
@@ -62,13 +79,21 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
         }
     }
 
+    /**
+     * Learn whether a given UnaryCompositeBinaryFunction is equal to this.
+     * @param that UnaryCompositeBinaryFunction to test
+     * @return boolean
+     */
     public boolean equals(UnaryCompositeBinaryFunction that) {
-        return (null != that) &&
-            (null == binary ? null == that.binary : binary.equals(that.binary)) &&
-            (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary)) &&
-            (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
+        return (null != that)
+                && (null == binary ? null == that.binary : binary.equals(that.binary))
+                && (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary))
+                && (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "UnaryCompositeBinaryFunction".hashCode();
         if (null != binary) {
@@ -86,14 +111,11 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "UnaryCompositeBinaryFunction<" + binary + ";" + leftUnary + ";" + rightUnary + ">";
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryFunction binary = null;
-    private UnaryFunction leftUnary = null;
-    private UnaryFunction rightUnary = null;
 
 }

@@ -114,7 +114,7 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
      * @return LeftBoundProcedure
      */
     public static LeftBoundProcedure bind(BinaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new LeftBoundProcedure(procedure,arg);
+        return null == procedure ? null : new LeftBoundProcedure(procedure, arg);
     }
 
 }

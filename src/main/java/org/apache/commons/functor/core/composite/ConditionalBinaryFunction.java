@@ -68,7 +68,7 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
      * {@inheritDoc}
      */
     public Object evaluate(Object left, Object right) {
-        return ifPred.test(left,right) ? thenFunc.evaluate(left,right) : elseFunc.evaluate(left,right);
+        return ifPred.test(left, right) ? thenFunc.evaluate(left, right) : elseFunc.evaluate(left, right);
     }
 
     /**

@@ -39,14 +39,27 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
+    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+    private UnaryFunction function = null;
+
+    /**
+     * Create a new IgnoreLeftFunction.
+     * @param function UnaryFunction for right argument
+     */
     public IgnoreLeftFunction(UnaryFunction function) {
         this.function = function;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object evaluate(Object left, Object right) {
         return function.evaluate(right);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof IgnoreLeftFunction) {
             return equals((IgnoreLeftFunction) that);
@@ -55,10 +68,19 @@ public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
         }
     }
 
+    /**
+     * Learn whether another IgnoreLeftFunction is equal to this.
+     * @param that IgnoreLeftFunction to test
+     * @return boolean
+     */
     public boolean equals(IgnoreLeftFunction that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return that == this
+                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "IgnoreLeftFunction".hashCode();
         if (null != function) {
@@ -67,14 +89,20 @@ public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "IgnoreLeftFunction<" + function + ">";
     }
 
+    /**
+     * Adapt a UnaryFunction to the BinaryFunction interface.
+     * @param function to adapt
+     * @return BinaryFunction
+     */
     public static BinaryFunction adapt(UnaryFunction function) {
         return null == function ? null : new IgnoreLeftFunction(function);
     }
 
-    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
 }

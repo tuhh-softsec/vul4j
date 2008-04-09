@@ -45,24 +45,48 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Rodney Waldhoff
  */
 public final class CompositeUnaryProcedure implements UnaryProcedure, Serializable {
+    // attributes
+    // ------------------------------------------------------------------------
+    private CompositeUnaryFunction function = null;
+    private UnaryProcedure procedure = null;
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new CompositeUnaryProcedure.
+     * @param p final UnaryProcedure to run
+     */
     public CompositeUnaryProcedure(UnaryProcedure p) {
-        if (null == p) { throw new NullPointerException(); }
+        if (null == p) {
+            throw new NullPointerException();
+        }
         this.procedure = p;
         this.function = new CompositeUnaryFunction();
     }
 
+    /**
+     * Create a new CompositeUnaryProcedure.
+     * @param p final UnaryProcedure to run
+     * @param f UnaryFunction to chain into <code>p</code>
+     */
     public CompositeUnaryProcedure(UnaryProcedure p, UnaryFunction f) {
-        if (null == p) { throw new NullPointerException(); }
-        if (null == f) { throw new NullPointerException(); }
+        if (null == p) {
+            throw new NullPointerException();
+        }
+        if (null == f) {
+            throw new NullPointerException();
+        }
         this.procedure = p;
         this.function = new CompositeUnaryFunction(f);
     }
 
     // modifiers
     // ------------------------------------------------------------------------
+    /**
+     * Fluently prepend a transformation to the chain.
+     * @param f UnaryFunction to prepend
+     * @return this
+     */
     public CompositeUnaryProcedure of(UnaryFunction f) {
         function.of(f);
         return this;
@@ -70,10 +94,16 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
 
     // predicate interface
     // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
     public void run(Object obj) {
         procedure.run(function.evaluate(obj));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object that) {
         if (that instanceof CompositeUnaryProcedure) {
             return equals((CompositeUnaryProcedure) that);
@@ -82,10 +112,18 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
         }
     }
 
+    /**
+     * Learn whether another CompositeUnaryProcedure is equal to this.
+     * @param that CompositeUnaryProcedure to test
+     * @return boolean
+     */
     public boolean equals(CompositeUnaryProcedure that) {
         return null != that && procedure.equals(that.procedure) && function.equals(that.function);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         int hash = "CompositeUnaryProcedure".hashCode();
         hash <<= 2;
@@ -95,13 +133,11 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
         return hash;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "CompositeUnaryProcedure<" + procedure + ";" + function + ">";
     }
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private CompositeUnaryFunction function = null;
-    private UnaryProcedure procedure = null;
 
 }

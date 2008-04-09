@@ -105,5 +105,4 @@ public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable 
         return null == predicate ? null : new IgnoreLeftPredicate(predicate);
     }
 
-    //TODO add static adapt(UnaryPredicate) method
 }

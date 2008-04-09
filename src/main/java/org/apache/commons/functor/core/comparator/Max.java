@@ -29,8 +29,9 @@ import org.apache.commons.functor.BinaryFunction;
  * @author Rodney Waldhoff
  */
 public final class Max implements BinaryFunction, Serializable {
-    private Comparator comparator = null;
     private static final Max INSTANCE = new Max();
+
+    private Comparator comparator = null;
 
     /**
      * Create a new Max.
@@ -51,7 +52,7 @@ public final class Max implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public Object evaluate(Object left, Object right) {
-        return (comparator.compare(left,right) >= 0) ? left : right;
+        return (comparator.compare(left, right) >= 0) ? left : right;
     }
 
     /**

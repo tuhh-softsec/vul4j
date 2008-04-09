@@ -29,6 +29,8 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 
 public class IsWithinRange implements UnaryPredicate, Serializable {
+    /** Hashcode of the name of this Predicate. */
+    private static final int nameHashCode = "IsWithinRange".hashCode();
 
     /***************************************************
      *  Instance variables
@@ -38,8 +40,6 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
     private Comparable min = null;
     /** The maximum value of the range. */
     private Comparable max = null;
-    /** Hashcode of the name of this Predicate. */
-    private static final int nameHashCode = "IsWithinRange".hashCode();
 
     /***************************************************
      *  Constructors
