@@ -39,9 +39,9 @@ public final class Composite {
      * Create a composite UnaryProcedure.
      * @param p UnaryProcedure to execute against output of <code>f</code>
      * @param f UnaryFunction to apply
-     * @return CompositeUnaryProcedure
+     * @return UnaryProcedure
      */
-    public static final CompositeUnaryProcedure procedure(UnaryProcedure p, UnaryFunction f) {
+    public static final UnaryProcedure procedure(UnaryProcedure p, UnaryFunction f) {
         return new CompositeUnaryProcedure(p, f);
     }
 
@@ -49,9 +49,9 @@ public final class Composite {
      * Create a composite UnaryPredicate.
      * @param p UnaryPredicate to test the output of <code>f</code>
      * @param f UnaryFunction to apply
-     * @return CompositeUnaryPredicate
+     * @return UnaryPredicate
      */
-    public static final CompositeUnaryPredicate predicate(UnaryPredicate p, UnaryFunction f) {
+    public static final UnaryPredicate predicate(UnaryPredicate p, UnaryFunction f) {
         return new CompositeUnaryPredicate(p, f);
     }
 
@@ -70,9 +70,9 @@ public final class Composite {
      * Create a composite UnaryFunction.
      * @param f UnaryFunction to apply to the output of <code>g</code>
      * @param g UnaryFunction to apply first
-     * @return CompositeUnaryFunction
+     * @return UnaryFunction
      */
-    public static final CompositeUnaryFunction function(UnaryFunction f, UnaryFunction g) {
+    public static final UnaryFunction function(UnaryFunction f, UnaryFunction g) {
         return new CompositeUnaryFunction(f, g);
     }
 
