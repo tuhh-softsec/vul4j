@@ -64,12 +64,14 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
      * {@inheritDoc}
      */
     public boolean equals(Object obj) {
-        if (obj instanceof IteratorToGeneratorAdapter) {
-            IteratorToGeneratorAdapter that = (IteratorToGeneratorAdapter) obj;
-            return this.iter.equals(that.iter);
-        } else {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof IteratorToGeneratorAdapter == false) {
             return false;
         }
+        IteratorToGeneratorAdapter that = (IteratorToGeneratorAdapter) obj;
+        return this.iter.equals(that.iter);
     }
 
     /**
