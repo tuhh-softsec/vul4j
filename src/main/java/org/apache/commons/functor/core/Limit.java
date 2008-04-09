@@ -50,7 +50,7 @@ public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
     /**
      * {@inheritDoc}
      */
-    public boolean test() {
+    public synchronized boolean test() {
         // stop incrementing when we've hit max, so we don't loop around
         if (current < max) {
             current++;
