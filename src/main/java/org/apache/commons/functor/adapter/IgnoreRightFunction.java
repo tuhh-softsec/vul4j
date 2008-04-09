@@ -94,9 +94,9 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
     /**
      * Adapt a UnaryFunction to the BinaryFunction interface.
      * @param function UnaryFunction to adapt
-     * @return IgnoreRightFunction BinaryFunction
+     * @return IgnoreRightFunction
      */
-    public static BinaryFunction adapt(UnaryFunction function) {
+    public static IgnoreRightFunction adapt(UnaryFunction function) {
         return null == function ? null : new IgnoreRightFunction(function);
     }
 
