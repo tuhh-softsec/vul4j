@@ -45,12 +45,14 @@ public final class FilteredIterator implements Iterator {
      * @param predicate to apply
      */
     public FilteredIterator(Iterator iterator, UnaryPredicate predicate) {
-        if (null == iterator || null == predicate) {
-            throw new NullPointerException();
-        } else {
-            this.predicate = predicate;
-            this.iterator = iterator;
+        if (null == iterator) {
+            throw new IllegalArgumentException("iterator argument was null");
         }
+        if (null == predicate) {
+            throw new IllegalArgumentException("filtering predicate argument was null");
+        }
+        this.predicate = predicate;
+        this.iterator = iterator;
     }
 
     // iterator methods

@@ -213,19 +213,19 @@ public class TestFilteredIterator extends BaseFunctorTest {
         try {
             new FilteredIterator(null,null);
             fail("ExpectedNullPointerException");
-        } catch(NullPointerException e) {
+        } catch(IllegalArgumentException e) {
             // expected
         }
         try {
             new FilteredIterator(null,Constant.truePredicate());
             fail("ExpectedNullPointerException");
-        } catch(NullPointerException e) {
+        } catch(IllegalArgumentException e) {
             // expected
         }
         try {
             new FilteredIterator(list.iterator(),null);
             fail("ExpectedNullPointerException");
-        } catch(NullPointerException e) {
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }
