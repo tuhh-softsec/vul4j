@@ -97,12 +97,14 @@ public final class FilteredIterator implements Iterator {
      * {@inheritDoc}
      */
     public boolean equals(Object obj) {
-        if (obj instanceof FilteredIterator) {
-            FilteredIterator that = (FilteredIterator) obj;
-            return predicate.equals(that.predicate) && iterator.equals(that.iterator);
-        } else {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof FilteredIterator == false) {
             return false;
         }
+        FilteredIterator that = (FilteredIterator) obj;
+        return predicate.equals(that.predicate) && iterator.equals(that.iterator);
     }
 
     /**
