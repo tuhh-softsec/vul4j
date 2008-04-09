@@ -61,11 +61,7 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof PredicateUnaryPredicate) {
-            return equals((PredicateUnaryPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof PredicateUnaryPredicate && equals((PredicateUnaryPredicate) that));
     }
 
     /**
@@ -74,8 +70,7 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
      * @return boolean
      */
     public boolean equals(PredicateUnaryPredicate that) {
-        return that == this
-                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
     /**

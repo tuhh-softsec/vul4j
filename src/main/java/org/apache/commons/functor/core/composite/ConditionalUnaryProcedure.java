@@ -78,11 +78,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalUnaryProcedure) {
-            return equals((ConditionalUnaryProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalUnaryProcedure && equals((ConditionalUnaryProcedure) that));
     }
 
     /**

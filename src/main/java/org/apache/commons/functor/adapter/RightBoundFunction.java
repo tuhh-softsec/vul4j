@@ -64,11 +64,7 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof RightBoundFunction) {
-            return equals((RightBoundFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof RightBoundFunction && equals((RightBoundFunction) that));
     }
 
     /**
@@ -77,9 +73,9 @@ public final class RightBoundFunction implements UnaryFunction, Serializable {
      * @return boolean
      */
     public boolean equals(RightBoundFunction that) {
-        return that == this || ((null != that)
+        return null != that
                 && (null == function ? null == that.function : function.equals(that.function))
-                && (null == param ? null == that.param : param.equals(that.param)));
+                && (null == param ? null == that.param : param.equals(that.param));
     }
 
     /**

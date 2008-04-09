@@ -62,11 +62,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof UnaryNot) {
-            return equals((UnaryNot) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof UnaryNot && equals((UnaryNot) that));
     }
 
     /**

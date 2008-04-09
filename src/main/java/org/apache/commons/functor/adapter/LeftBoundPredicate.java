@@ -66,11 +66,7 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof LeftBoundPredicate) {
-            return equals((LeftBoundPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof LeftBoundPredicate && equals((LeftBoundPredicate) that));
     }
 
     /**
@@ -79,9 +75,9 @@ public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
      * @return boolean
      */
     public boolean equals(LeftBoundPredicate that) {
-        return that == this || ((null != that)
+        return null != that
                 && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
-                && (null == param ? null == that.param : param.equals(that.param)));
+                && (null == param ? null == that.param : param.equals(that.param));
     }
 
     /**

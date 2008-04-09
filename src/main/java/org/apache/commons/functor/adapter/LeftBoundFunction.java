@@ -65,11 +65,7 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof LeftBoundFunction) {
-            return equals((LeftBoundFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof LeftBoundFunction && equals((LeftBoundFunction) that));
     }
 
     /**
@@ -78,9 +74,9 @@ public final class LeftBoundFunction implements UnaryFunction, Serializable {
      * @return boolean
      */
     public boolean equals(LeftBoundFunction that) {
-        return that == this || ((null != that)
+        return null != that
                 && (null == function ? null == that.function : function.equals(that.function))
-                && (null == param ? null == that.param : param.equals(that.param)));
+                && (null == param ? null == that.param : param.equals(that.param));
     }
 
     /**

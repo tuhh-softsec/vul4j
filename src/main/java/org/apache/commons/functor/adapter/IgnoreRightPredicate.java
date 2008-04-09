@@ -61,11 +61,7 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof IgnoreRightPredicate) {
-            return equals((IgnoreRightPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof IgnoreRightPredicate && equals((IgnoreRightPredicate) that));
     }
 
     /**
@@ -74,8 +70,7 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
      * @return boolean
      */
     public boolean equals(IgnoreRightPredicate that) {
-        return that == this
-                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
     /**

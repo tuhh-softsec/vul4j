@@ -78,11 +78,7 @@ public final class ConditionalProcedure implements Procedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalProcedure) {
-            return equals((ConditionalProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalProcedure && equals((ConditionalProcedure) that));
     }
 
     /**

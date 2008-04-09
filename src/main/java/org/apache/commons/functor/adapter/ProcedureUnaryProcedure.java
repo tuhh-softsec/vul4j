@@ -61,11 +61,7 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ProcedureUnaryProcedure) {
-            return equals((ProcedureUnaryProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ProcedureUnaryProcedure && equals((ProcedureUnaryProcedure) that));
     }
 
     /**
@@ -74,8 +70,7 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
      * @return boolean
      */
     public boolean equals(ProcedureUnaryProcedure that) {
-        return that == this
-                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
     /**

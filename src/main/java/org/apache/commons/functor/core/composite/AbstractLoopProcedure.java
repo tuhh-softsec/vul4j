@@ -47,13 +47,15 @@ public abstract class AbstractLoopProcedure implements Procedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object object) {
-        if (object instanceof AbstractLoopProcedure) {
-            AbstractLoopProcedure that = (AbstractLoopProcedure) object;
-            return (null == getCondition() ? null == that.getCondition() : getCondition().equals(that.getCondition()))
-                    && (null == getAction() ? null == that.getAction() : getAction().equals(that.getAction()));
-        } else {
+        if (object == this) {
+            return true;
+        }
+        if (object instanceof AbstractLoopProcedure == false) {
             return false;
         }
+        AbstractLoopProcedure that = (AbstractLoopProcedure) object;
+        return (null == getCondition() ? null == that.getCondition() : getCondition().equals(that.getCondition()))
+                && (null == getAction() ? null == that.getAction() : getAction().equals(that.getAction()));
     }
 
     /**

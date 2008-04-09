@@ -119,11 +119,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof Constant) {
-            return equals((Constant) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof Constant && equals((Constant) that));
     }
 
     /**

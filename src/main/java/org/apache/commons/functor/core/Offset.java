@@ -82,4 +82,5 @@ public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate 
         return "Offset<" + min + ">";
     }
 
+    //default == equals/hashCode due to statefulness
 }

@@ -64,11 +64,8 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinaryFunctionBinaryProcedure) {
-            return equals((BinaryFunctionBinaryProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof BinaryFunctionBinaryProcedure && equals((BinaryFunctionBinaryProcedure) that));
     }
 
     /**
@@ -77,8 +74,7 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
      * @return boolean
      */
     public boolean equals(BinaryFunctionBinaryProcedure that) {
-        return that == this
-                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
     /**

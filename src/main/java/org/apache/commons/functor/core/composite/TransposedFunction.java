@@ -67,11 +67,7 @@ public class TransposedFunction implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof TransposedFunction) {
-            return equals((TransposedFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof TransposedFunction && equals((TransposedFunction) that));
     }
 
     /**

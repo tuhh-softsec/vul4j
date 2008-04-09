@@ -97,11 +97,7 @@ public class BinarySequence implements BinaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinarySequence) {
-            return equals((BinarySequence) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof BinarySequence && equals((BinarySequence) that));
     }
 
     /**

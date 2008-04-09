@@ -99,11 +99,7 @@ public class UnarySequence implements UnaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof UnarySequence) {
-            return equals((UnarySequence) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof UnarySequence && equals((UnarySequence) that));
     }
 
     /**

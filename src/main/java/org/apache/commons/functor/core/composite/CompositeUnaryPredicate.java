@@ -99,11 +99,7 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof CompositeUnaryPredicate) {
-            return equals((CompositeUnaryPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof CompositeUnaryPredicate && equals((CompositeUnaryPredicate) that));
     }
 
     /**

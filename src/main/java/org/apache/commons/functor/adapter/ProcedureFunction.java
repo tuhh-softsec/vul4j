@@ -62,11 +62,7 @@ public final class ProcedureFunction implements Function, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ProcedureFunction) {
-            return equals((ProcedureFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ProcedureFunction && equals((ProcedureFunction) that));
     }
 
     /**
@@ -75,8 +71,7 @@ public final class ProcedureFunction implements Function, Serializable {
      * @return boolean
      */
     public boolean equals(ProcedureFunction that) {
-        return that == this
-                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
     /**

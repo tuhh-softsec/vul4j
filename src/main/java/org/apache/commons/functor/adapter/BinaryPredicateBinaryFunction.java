@@ -65,11 +65,8 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinaryPredicateBinaryFunction) {
-            return equals((BinaryPredicateBinaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof BinaryPredicateBinaryFunction && equals((BinaryPredicateBinaryFunction) that));
     }
 
     /**
@@ -78,8 +75,7 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
      * @return boolean
      */
     public boolean equals(BinaryPredicateBinaryFunction that) {
-        return that == this
-                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
     /**

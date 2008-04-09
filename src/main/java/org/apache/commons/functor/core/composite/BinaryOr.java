@@ -104,11 +104,7 @@ public final class BinaryOr extends BaseBinaryPredicateList {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinaryOr) {
-            return equals((BinaryOr) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof BinaryOr && equals((BinaryOr) that));
     }
 
     /**

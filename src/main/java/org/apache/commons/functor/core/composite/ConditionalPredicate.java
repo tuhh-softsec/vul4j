@@ -74,11 +74,7 @@ public final class ConditionalPredicate implements Predicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalPredicate) {
-            return equals((ConditionalPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalPredicate && equals((ConditionalPredicate) that));
     }
 
     /**

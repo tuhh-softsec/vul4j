@@ -75,11 +75,7 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalBinaryFunction) {
-            return equals((ConditionalBinaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalBinaryFunction && equals((ConditionalBinaryFunction) that));
     }
 
     /**

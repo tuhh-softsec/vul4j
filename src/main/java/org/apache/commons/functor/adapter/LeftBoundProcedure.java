@@ -65,11 +65,7 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof LeftBoundProcedure) {
-            return equals((LeftBoundProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof LeftBoundProcedure && equals((LeftBoundProcedure) that));
     }
 
     /**
@@ -78,9 +74,9 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
      * @return boolean
      */
     public boolean equals(LeftBoundProcedure that) {
-        return that == this || ((null != that)
+        return null != that
                 && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
-                && (null == param ? null == that.param : param.equals(that.param)));
+                && (null == param ? null == that.param : param.equals(that.param));
 
     }
 

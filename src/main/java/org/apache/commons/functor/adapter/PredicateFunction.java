@@ -65,11 +65,7 @@ public final class PredicateFunction implements Function, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof PredicateFunction) {
-            return equals((PredicateFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof PredicateFunction && equals((PredicateFunction) that));
     }
 
     /**
@@ -78,8 +74,7 @@ public final class PredicateFunction implements Function, Serializable {
      * @return boolean
      */
     public boolean equals(PredicateFunction that) {
-        return that == this
-                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
     /**

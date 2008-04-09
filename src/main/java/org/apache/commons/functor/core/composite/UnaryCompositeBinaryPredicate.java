@@ -72,11 +72,8 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof UnaryCompositeBinaryPredicate) {
-            return equals((UnaryCompositeBinaryPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof UnaryCompositeBinaryPredicate && equals((UnaryCompositeBinaryPredicate) that));
     }
 
     /**

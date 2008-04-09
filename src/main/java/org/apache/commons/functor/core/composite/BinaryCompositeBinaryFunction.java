@@ -70,11 +70,8 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinaryCompositeBinaryFunction) {
-            return equals((BinaryCompositeBinaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof BinaryCompositeBinaryFunction && equals((BinaryCompositeBinaryFunction) that));
     }
 
     /**

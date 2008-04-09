@@ -75,11 +75,7 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof IsEquivalent) {
-            return equals((IsEquivalent) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof IsEquivalent && equals((IsEquivalent) that));
     }
 
     /**

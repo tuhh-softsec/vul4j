@@ -105,11 +105,7 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof CompositeUnaryProcedure) {
-            return equals((CompositeUnaryProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof CompositeUnaryProcedure && equals((CompositeUnaryProcedure) that));
     }
 
     /**

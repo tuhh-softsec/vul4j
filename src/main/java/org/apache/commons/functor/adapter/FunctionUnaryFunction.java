@@ -61,11 +61,7 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof FunctionUnaryFunction) {
-            return equals((FunctionUnaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof FunctionUnaryFunction && equals((FunctionUnaryFunction) that));
     }
 
     /**
@@ -74,8 +70,7 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
      * @return boolean
      */
     public boolean equals(FunctionUnaryFunction that) {
-        return that == this
-                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
     /**

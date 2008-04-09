@@ -58,11 +58,7 @@ public final class IsInstanceOf implements UnaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof IsInstanceOf) {
-            return equals((IsInstanceOf) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof IsInstanceOf && equals((IsInstanceOf) that));
     }
 
     /**

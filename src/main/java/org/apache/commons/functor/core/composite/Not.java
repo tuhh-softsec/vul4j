@@ -63,11 +63,7 @@ public final class Not implements Predicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof Not) {
-            return equals((Not) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof Not && equals((Not) that));
     }
 
     /**

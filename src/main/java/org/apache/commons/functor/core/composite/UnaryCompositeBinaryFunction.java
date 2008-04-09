@@ -72,11 +72,8 @@ public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializabl
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof UnaryCompositeBinaryFunction) {
-            return equals((UnaryCompositeBinaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof UnaryCompositeBinaryFunction && equals((UnaryCompositeBinaryFunction) that));
     }
 
     /**

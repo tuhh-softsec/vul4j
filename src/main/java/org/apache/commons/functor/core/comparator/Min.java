@@ -59,11 +59,7 @@ public final class Min implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof Min) {
-            return equals((Min) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof Min && equals((Min) that));
     }
 
     /**

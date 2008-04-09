@@ -58,24 +58,6 @@ public class WhileDoProcedure extends AbstractLoopProcedure {
     /**
      * {@inheritDoc}
      */
-    public boolean equals(Object object) {
-        if (object instanceof WhileDoProcedure) {
-            return super.equals(object);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int hashCode() {
-        return super.hashCode("WhileDoProcedure".hashCode());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String toString() {
         return "WhileDoProcedure<while(" + getCondition() + ") do(" + getAction() + ")>";
     }

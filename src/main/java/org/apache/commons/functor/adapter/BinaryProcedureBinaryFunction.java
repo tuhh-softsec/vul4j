@@ -62,11 +62,8 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinaryProcedureBinaryFunction) {
-            return equals((BinaryProcedureBinaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof BinaryProcedureBinaryFunction && equals((BinaryProcedureBinaryFunction) that));
     }
 
     /**
@@ -75,8 +72,7 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
      * @return boolean
      */
     public boolean equals(BinaryProcedureBinaryFunction that) {
-        return that == this
-                || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
+        return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
     /**

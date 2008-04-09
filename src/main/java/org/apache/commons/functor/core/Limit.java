@@ -81,4 +81,5 @@ public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
         return "Limit<" + max + ">";
     }
 
+    //default == equals/hashCode due to statefulness
 }

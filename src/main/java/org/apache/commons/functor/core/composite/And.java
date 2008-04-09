@@ -104,11 +104,7 @@ public final class And extends BasePredicateList {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof And) {
-            return equals((And) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof And && equals((And) that));
     }
 
     /**

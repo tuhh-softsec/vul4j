@@ -107,12 +107,14 @@ public final class LongRange extends BaseGenerator {
      * {@inheritDoc}
      */
     public boolean equals(Object obj) {
-        if (obj instanceof LongRange) {
-            LongRange that = (LongRange) obj;
-            return this.from == that.from && this.to == that.to && this.step == that.step;
-        } else {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof LongRange == false) {
             return false;
         }
+        LongRange that = (LongRange) obj;
+        return this.from == that.from && this.to == that.to && this.step == that.step;
     }
 
     /**

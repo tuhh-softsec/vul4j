@@ -67,11 +67,7 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof TransposedPredicate) {
-            return equals((TransposedPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof TransposedPredicate && equals((TransposedPredicate) that));
     }
 
     /**

@@ -88,13 +88,7 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
             return false;
         }
         final IsWithinRange isWithinRange = (IsWithinRange) o;
-        if (!max.equals(isWithinRange.max)) {
-            return false;
-        }
-        if (!min.equals(isWithinRange.min)) {
-            return false;
-        }
-        return true;
+        return max.equals(isWithinRange.max) && min.equals(isWithinRange.min);
     }
 
     /**

@@ -74,11 +74,7 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalUnaryPredicate) {
-            return equals((ConditionalUnaryPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalUnaryPredicate && equals((ConditionalUnaryPredicate) that));
     }
 
     /**

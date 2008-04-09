@@ -74,11 +74,8 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalBinaryPredicate) {
-            return equals((ConditionalBinaryPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof ConditionalBinaryPredicate && equals((ConditionalBinaryPredicate) that));
     }
 
     /**

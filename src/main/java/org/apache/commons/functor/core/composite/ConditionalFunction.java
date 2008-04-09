@@ -75,11 +75,7 @@ public final class ConditionalFunction implements Function, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalFunction) {
-            return equals((ConditionalFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalFunction && equals((ConditionalFunction) that));
     }
 
     /**

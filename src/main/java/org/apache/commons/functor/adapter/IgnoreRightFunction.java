@@ -61,11 +61,7 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof IgnoreRightFunction) {
-            return equals((IgnoreRightFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof IgnoreRightFunction && equals((IgnoreRightFunction) that));
     }
 
     /**
@@ -74,8 +70,7 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
      * @return boolean
      */
     public boolean equals(IgnoreRightFunction that) {
-        return that == this
-                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
     /**

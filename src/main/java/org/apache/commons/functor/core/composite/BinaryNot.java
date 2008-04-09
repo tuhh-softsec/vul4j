@@ -62,11 +62,7 @@ public final class BinaryNot implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinaryNot) {
-            return equals((BinaryNot) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof BinaryNot && equals((BinaryNot) that));
     }
 
     /**

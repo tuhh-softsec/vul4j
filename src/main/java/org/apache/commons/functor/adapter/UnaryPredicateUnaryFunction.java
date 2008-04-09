@@ -65,11 +65,8 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof UnaryPredicateUnaryFunction) {
-            return equals((UnaryPredicateUnaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this
+        || (that instanceof UnaryPredicateUnaryFunction && equals((UnaryPredicateUnaryFunction) that));
     }
 
     /**
@@ -78,8 +75,7 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
      * @return boolean
      */
     public boolean equals(UnaryPredicateUnaryFunction that) {
-        return that == this
-                || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
     /**

@@ -108,12 +108,14 @@ public final class IntegerRange extends BaseGenerator {
      * {@inheritDoc}
      */
     public boolean equals(Object obj) {
-        if (obj instanceof IntegerRange) {
-            IntegerRange that = (IntegerRange) obj;
-            return this.from == that.from && this.to == that.to && this.step == that.step;
-        } else {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof IntegerRange == false) {
             return false;
         }
+        IntegerRange that = (IntegerRange) obj;
+        return this.from == that.from && this.to == that.to && this.step == that.step;
     }
 
     /**

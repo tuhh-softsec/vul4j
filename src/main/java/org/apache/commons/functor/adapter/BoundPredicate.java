@@ -65,11 +65,7 @@ public final class BoundPredicate implements Predicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BoundPredicate) {
-            return equals((BoundPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof BoundPredicate && equals((BoundPredicate) that));
     }
 
     /**
@@ -78,9 +74,9 @@ public final class BoundPredicate implements Predicate, Serializable {
      * @return boolean
      */
     public boolean equals(BoundPredicate that) {
-        return that == this || ((null != that)
+        return null != that
                 && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
-                && (null == param ? null == that.param : param.equals(that.param)));
+                && (null == param ? null == that.param : param.equals(that.param));
 
     }
 

@@ -65,11 +65,7 @@ public final class RightBoundProcedure implements UnaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof RightBoundProcedure) {
-            return equals((RightBoundProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof RightBoundProcedure && equals((RightBoundProcedure) that));
     }
 
     /**
@@ -78,9 +74,9 @@ public final class RightBoundProcedure implements UnaryProcedure, Serializable {
      * @return boolean
      */
     public boolean equals(RightBoundProcedure that) {
-        return that == this || ((null != that)
+        return null != that
                 && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
-                && (null == param ? null == that.param : param.equals(that.param)));
+                && (null == param ? null == that.param : param.equals(that.param));
     }
 
     /**

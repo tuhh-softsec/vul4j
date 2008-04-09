@@ -67,11 +67,8 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BinaryFunctionBinaryPredicate) {
-            return equals((BinaryFunctionBinaryPredicate) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof BinaryFunctionBinaryPredicate && equals((BinaryFunctionBinaryPredicate) that));
     }
 
     /**
@@ -80,8 +77,7 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      * @return boolean
      */
     public boolean equals(BinaryFunctionBinaryPredicate that) {
-        return that == this
-                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
     /**

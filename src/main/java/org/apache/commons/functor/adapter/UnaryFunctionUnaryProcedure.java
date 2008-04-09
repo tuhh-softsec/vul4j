@@ -64,11 +64,8 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof UnaryFunctionUnaryProcedure) {
-            return equals((UnaryFunctionUnaryProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this
+                || (that instanceof UnaryFunctionUnaryProcedure && equals((UnaryFunctionUnaryProcedure) that));
     }
 
     /**
@@ -77,8 +74,7 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
      * @return boolean
      */
     public boolean equals(UnaryFunctionUnaryProcedure that) {
-        return that == this
-                || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+        return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
     /**

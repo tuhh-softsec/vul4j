@@ -81,11 +81,7 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalBinaryProcedure) {
-            return equals((ConditionalBinaryProcedure) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalBinaryProcedure && equals((ConditionalBinaryProcedure) that));
     }
 
     /**

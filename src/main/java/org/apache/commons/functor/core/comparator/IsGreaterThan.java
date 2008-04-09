@@ -72,11 +72,7 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof IsGreaterThan) {
-            return equals((IsGreaterThan) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof IsGreaterThan && equals((IsGreaterThan) that));
     }
 
     /**

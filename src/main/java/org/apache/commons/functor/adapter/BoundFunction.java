@@ -65,11 +65,7 @@ public final class BoundFunction implements Function, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof BoundFunction) {
-            return equals((BoundFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof BoundFunction && equals((BoundFunction) that));
     }
 
     /**
@@ -78,9 +74,9 @@ public final class BoundFunction implements Function, Serializable {
      * @return boolean
      */
     public boolean equals(BoundFunction that) {
-        return that == this || ((null != that)
+        return null != that
                 && (null == function ? null == that.function : function.equals(that.function))
-                && (null == param ? null == that.param : param.equals(that.param)));
+                && (null == param ? null == that.param : param.equals(that.param));
 
     }
 

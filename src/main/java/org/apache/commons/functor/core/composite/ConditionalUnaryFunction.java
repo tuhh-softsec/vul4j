@@ -75,11 +75,7 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof ConditionalUnaryFunction) {
-            return equals((ConditionalUnaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof ConditionalUnaryFunction && equals((ConditionalUnaryFunction) that));
     }
 
     /**

@@ -109,11 +109,7 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof CompositeUnaryFunction) {
-            return equals((CompositeUnaryFunction) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof CompositeUnaryFunction && equals((CompositeUnaryFunction) that));
     }
 
     /**

@@ -102,11 +102,7 @@ public final class Or extends BasePredicateList {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        if (that instanceof Or) {
-            return equals((Or) that);
-        } else {
-            return false;
-        }
+        return that == this || (that instanceof Or && equals((Or) that));
     }
 
     /**
