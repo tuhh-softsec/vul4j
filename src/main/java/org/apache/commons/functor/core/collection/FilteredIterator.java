@@ -46,10 +46,10 @@ public final class FilteredIterator implements Iterator {
      */
     public FilteredIterator(Iterator iterator, UnaryPredicate predicate) {
         if (null == iterator) {
-            throw new IllegalArgumentException("iterator argument was null");
+            throw new IllegalArgumentException("Iterator argument was null");
         }
         if (null == predicate) {
-            throw new IllegalArgumentException("filtering predicate argument was null");
+            throw new IllegalArgumentException("filtering UnaryPredicate argument was null");
         }
         this.predicate = predicate;
         this.iterator = iterator;
