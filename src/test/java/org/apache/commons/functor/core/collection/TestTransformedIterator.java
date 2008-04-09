@@ -175,19 +175,19 @@ public class TestTransformedIterator extends BaseFunctorTest {
         try {
             new TransformedIterator(null,null);
             fail("ExpectedNullPointerException");
-        } catch(NullPointerException e) {
+        } catch(IllegalArgumentException e) {
             // expected
         }
         try {
             new TransformedIterator(null,negate);
             fail("ExpectedNullPointerException");
-        } catch(NullPointerException e) {
+        } catch(IllegalArgumentException e) {
             // expected
         }
         try {
             new TransformedIterator(list.iterator(),null);
             fail("ExpectedNullPointerException");
-        } catch(NullPointerException e) {
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }

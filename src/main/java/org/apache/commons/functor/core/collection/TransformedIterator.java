@@ -41,12 +41,14 @@ public final class TransformedIterator implements Iterator {
      * @param function to apply
      */
     public TransformedIterator(Iterator iterator, UnaryFunction function) {
-        if (null == iterator || null == function) {
-            throw new NullPointerException();
-        } else {
-            this.function = function;
-            this.iterator = iterator;
+        if (null == iterator) {
+            throw new IllegalArgumentException("Iterator argument was null");
         }
+        if (null == function) {
+            throw new IllegalArgumentException("filtering UnaryFunction argument was null");
+        }
+        this.function = function;
+        this.iterator = iterator;
     }
 
     // iterator methods
