@@ -80,12 +80,14 @@ public final class TransformedIterator implements Iterator {
      * {@inheritDoc}
      */
     public boolean equals(Object obj) {
-        if (obj instanceof TransformedIterator) {
-            TransformedIterator that = (TransformedIterator) obj;
-            return function.equals(that.function) && iterator.equals(that.iterator);
-        } else {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof TransformedIterator == false) {
             return false;
         }
+        TransformedIterator that = (TransformedIterator) obj;
+        return function.equals(that.function) && iterator.equals(that.iterator);
     }
 
     /**
