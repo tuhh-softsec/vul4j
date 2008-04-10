@@ -18,6 +18,7 @@ package org.apache.commons.functor.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -225,6 +226,7 @@ public class TestBaseGenerator extends TestCase {
 
     public void testReject1() {
         assertEquals(evens,EachElement.from(list).reject(isOdd).toCollection());
+        assertEquals(Collections.EMPTY_LIST, EachElement.from(list).reject(isOdd).reject(isEven).toCollection());
     }
 
     public void testReject2() {
