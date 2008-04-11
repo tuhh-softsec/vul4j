@@ -658,13 +658,23 @@ public class FileUtils
      */
     public static File toFile( final URL url )
     {
-        if ( url.getProtocol().equals( "file" ) == false )
+        if ( url == null || !url.getProtocol().equalsIgnoreCase( "file" ) )
         {
             return null;
         }
         else
         {
-            final String filename = url.getFile().replace( '/', File.separatorChar );
+            String filename = url.getFile().replace( '/', File.separatorChar );
+            int pos = -1;
+            while ( ( pos = filename.indexOf( '%', pos + 1 ) ) >= 0 )
+            {
+                if ( pos + 2 < filename.length() )
+                {
+                    String hexStr = filename.substring( pos + 1, pos + 3 );
+                    char ch = (char) Integer.parseInt( hexStr, 16 );
+                    filename = filename.substring( 0, pos ) + ch + filename.substring( pos + 3 );
+                }
+            }
             return new File( filename );
         }
     }

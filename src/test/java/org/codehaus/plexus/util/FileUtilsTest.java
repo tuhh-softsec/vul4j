@@ -106,6 +106,30 @@ public final class FileUtilsTest
         FileUtils.waitFor( "", 2 );
     }
 
+    public void testToFile()
+        throws Exception
+    {
+        URL url = getClass().getResource( "/test.txt" );
+        url = new URL( url.toString() + "/name%20%23%2520%3F%7B%7D%5B%5D%3C%3E.txt" );
+        File file = FileUtils.toFile( url );
+        assertEquals( "name #%20?{}[]<>.txt", file.getName() );
+    }
+
+    public void testToFileBadProtocol()
+        throws Exception
+    {
+        URL url = new URL( "http://maven.apache.org/" );
+        File file = FileUtils.toFile( url );
+        assertNull( file );
+    }
+
+    public void testToFileNull()
+        throws Exception
+    {
+        File file = FileUtils.toFile( null );
+        assertNull( file );
+    }
+
     // Hacked to sanity by Trygve
     public void testToURLs()
         throws Exception
