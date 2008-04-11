@@ -17,7 +17,7 @@
 package org.apache.commons.functor;
 
 /**
- * A functor that takes one argument and returns a <code>boolean</code> value.
+ * Marker interface for unary (single-argument) functors.
  * <p>
  * Implementors are encouraged but not required to make their functors
  * {@link java.io.Serializable Serializable}.
@@ -25,14 +25,6 @@ package org.apache.commons.functor;
  *
  * @since 1.0
  * @version $Revision$ $Date$
- * @author Rodney Waldhoff
  */
-public interface UnaryPredicate extends UnaryFunctor {
-    /**
-     * Evaluate this predicate.
-     *
-     * @param obj the object to test
-     * @return the result of this test
-     */
-    boolean test(Object obj);
+public interface UnaryFunctor extends Functor {
 }

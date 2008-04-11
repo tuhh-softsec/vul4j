@@ -27,55 +27,10 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface UnaryProcedure {
+public interface UnaryProcedure extends UnaryFunctor {
     /**
      * Execute this procedure.
      * @param obj a parameter to this execution
      */
     void run(Object obj);
-
-    /**
-     * Returns a human readable description of this functor.
-     * Implementators are strongly encouraged but not
-     * strictly required to override the default {@link Object}
-     * implementation of this method.
-     *
-     * @return a human readable description of this functor
-     */
-    String toString();
-
-    /**
-     * Returns a hash code for this functor adhering to the
-     * general {@link Object#hashCode Object.hashCode} contract.
-     * Implementators are strongly encouraged but not
-     * strictly required to override the default {@link Object}
-     * implementation of this method.
-     *
-     * @see #equals
-     * @return a hash code for this functor
-     */
-    int hashCode();
-
-    /**
-     * Indicates whether some other object is &quot;equal to&quot;
-     * this functor.  This method must adhere to
-     * general {@link Object#equals Object.equals} contract.
-     * Additionally, this method can return
-     * <tt>true</tt> <i>only</i> if the specified Object implements
-     * the same functor interface and is known to produce the same
-     * results and/or side-effects for the same arguments (if any).
-     * <p>
-     * While implementators are strongly encouraged to override
-     * the default Object implementation of this method,
-     * note that the default Object implementation
-     * does in fact adhere to the functor <code>equals</code> contract.
-     * </p>
-     * @param that the object to compare this functor to
-     * @see #hashCode
-     * @return <code>true</code> iff the given object implements
-     *         this functor interface, and is known to produce the same
-     *         results and/or side-effects for the same arguments
-     *         (if any).
-     */
-    boolean equals(Object that);
 }
