@@ -221,7 +221,7 @@ public class XMLSignatureTest extends TestCase {
 		     "support " + SIGN_KEYS[i].getAlgorithm());
 	    } catch (Exception e) {
 		assertTrue(e.getMessage(), 
-		    e.getCause() instanceof InvalidKeyException);
+		    e.getCause() instanceof NoSuchAlgorithmException);
 	    }
 	}
     }

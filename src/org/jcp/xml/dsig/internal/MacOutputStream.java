@@ -17,20 +17,20 @@
 package org.jcp.xml.dsig.internal;
 
 import java.io.ByteArrayOutputStream;
+import javax.crypto.Mac;
 
 /**
- * Derived from Apache sources and changed to use HmacSHA1 objects
- * objects instead of org.apache.xml.security.algorithms.SignatureAlgorithm
- * objects.
+ * Derived from Apache sources and changed to use Mac objects instead of 
+ * org.apache.xml.security.algorithms.SignatureAlgorithm objects.
  *
  * @author raul
  * @author Sean Mullan
  *
  */
 public class MacOutputStream extends ByteArrayOutputStream {
-    private final HmacSHA1 mac;
+    private final Mac mac;
 
-    public MacOutputStream(HmacSHA1 mac) {
+    public MacOutputStream(Mac mac) {
         this.mac = mac;
     }
 

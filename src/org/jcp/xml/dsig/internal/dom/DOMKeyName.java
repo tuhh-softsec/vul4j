@@ -88,8 +88,7 @@ public final class DOMKeyName extends DOMStructure implements KeyName {
     }
 
     public int hashCode() {
-//	uncomment when JDK 1.4 is required
-//	assert false : "hashCode not designed";
+	assert false : "hashCode not designed";
 	return 44;
     }
 }

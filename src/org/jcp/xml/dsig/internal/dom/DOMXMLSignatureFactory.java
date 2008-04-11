@@ -187,11 +187,13 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 	    throw new NullPointerException();
 	}
         if (algorithm.equals(DigestMethod.SHA1)) {
-            return DOMSHADigestMethod.SHA1(params);
+            return new DOMDigestMethod.SHA1(params);
         } else if (algorithm.equals(DigestMethod.SHA256)) {
-            return DOMSHADigestMethod.SHA256(params);
+            return new DOMDigestMethod.SHA256(params);
+        } else if (algorithm.equals(DOMDigestMethod.SHA384)) {
+            return new DOMDigestMethod.SHA384(params);
         } else if (algorithm.equals(DigestMethod.SHA512)) {
-            return DOMSHADigestMethod.SHA512(params);
+            return new DOMDigestMethod.SHA512(params);
 	} else {
 	    throw new NoSuchAlgorithmException("unsupported algorithm");
 	}
@@ -203,15 +205,27 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 	if (algorithm == null) {
 	    throw new NullPointerException();
 	}
-	if (algorithm.equals(SignatureMethod.HMAC_SHA1)) {
-            return new DOMHMACSignatureMethod(params);
-        } else if (algorithm.equals(SignatureMethod.RSA_SHA1)) {
-            return new DOMRSASignatureMethod(params);
+        if (algorithm.equals(SignatureMethod.RSA_SHA1)) {
+            return new DOMSignatureMethod.SHA1withRSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.RSA_SHA256)) {
+            return new DOMSignatureMethod.SHA256withRSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.RSA_SHA384)) {
+            return new DOMSignatureMethod.SHA384withRSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.RSA_SHA512)) {
+            return new DOMSignatureMethod.SHA512withRSA(params);
         } else if (algorithm.equals(SignatureMethod.DSA_SHA1)) {
-            return new DOMDSASignatureMethod(params);
-	} else {
-	    throw new NoSuchAlgorithmException("unsupported algorithm");
-	}
+            return new DOMSignatureMethod.SHA1withDSA(params);
+        } else if (algorithm.equals(SignatureMethod.HMAC_SHA1)) {
+            return new DOMHMACSignatureMethod.SHA1(params);
+        } else if (algorithm.equals(DOMSignatureMethod.HMAC_SHA256)) {
+            return new DOMHMACSignatureMethod.SHA256(params);
+        } else if (algorithm.equals(DOMSignatureMethod.HMAC_SHA384)) {
+            return new DOMHMACSignatureMethod.SHA384(params);
+        } else if (algorithm.equals(DOMSignatureMethod.HMAC_SHA512)) {
+            return new DOMHMACSignatureMethod.SHA512(params);
+        } else {
+            throw new NoSuchAlgorithmException("unsupported algorithm");
+        }
     }
 
     public Transform newTransform(String algorithm,

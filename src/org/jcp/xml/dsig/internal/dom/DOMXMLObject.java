@@ -184,8 +184,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
     }
 
     public int hashCode() {
-	// uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
+	assert false : "hashCode not designed";
 	return 53;
     }
 

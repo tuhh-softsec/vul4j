@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in ...
+    Fixed bug 44810: Add support for more XMLDSig algorithms listed in RFC 4051
     Fixed bug 44629: Switch order of XML Signature validation steps
     Fixed bug 44617: Regression when processing XPath transform
     Fixed bug 44586: XMLX509IssuerSerial.getIssuerName incorrectly escapes '#' in hex values

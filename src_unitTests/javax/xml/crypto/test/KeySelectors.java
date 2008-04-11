@@ -79,7 +79,7 @@ public class KeySelectors {
 		    }
 		    
 		    public byte[] getEncoded() {
-			return bytes;
+			return (byte[]) bytes.clone();
 		    }
 		};
 	}

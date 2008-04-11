@@ -165,8 +165,7 @@ public class DOMTransform extends DOMStructure implements Transform {
     }
 
     public int hashCode() {
-	// uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
+	assert false : "hashCode not designed";
 	return 58;
     }
 

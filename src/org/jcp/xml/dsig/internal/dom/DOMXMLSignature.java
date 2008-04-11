@@ -426,8 +426,7 @@ public final class DOMXMLSignature extends DOMStructure
     }
 
     public int hashCode() {
-	// uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
+	assert false : "hashCode not designed";
 	return 54;
     }
 

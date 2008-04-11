@@ -280,8 +280,7 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
     }
 
     public int hashCode() {
-	// uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
+	assert false : "hashCode not designed";
 	return 56;
     }
 }
