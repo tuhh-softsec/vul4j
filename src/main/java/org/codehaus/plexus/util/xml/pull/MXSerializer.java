@@ -391,6 +391,9 @@ public class MXSerializer implements XmlSerializer {
             //          }
         }
         out.write("?>");
+        if(writeLineSepartor) {
+            out.write(lineSeparator);
+        }
     }
     
     public void endDocument() throws IOException
@@ -398,6 +401,9 @@ public class MXSerializer implements XmlSerializer {
         // close all unclosed tag;
         while(depth > 0) {
             endTag(elNamespace[ depth ], elName[ depth ]);
+        }
+        if(writeLineSepartor) {
+            out.write(lineSeparator);
         }
         //assert depth == 0;
         //assert startTagIncomplete == false;
@@ -1108,4 +1114,5 @@ public class MXSerializer implements XmlSerializer {
     }
     
 }
+
 
