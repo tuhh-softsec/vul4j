@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+# Emptying some directories
+for instance_dir in `find /var/lib/apacheds-${app.version} -maxdepth 1 -mindepth 1 -type d`; do
+  # Get instance and use it to shutdown
+  instance=$(echo $instance_dir | sed -e 's/.*apacheds.*\///g')
+  echo Shutting down ApacheDS instance $instance
+  /etc/init.d/apacheds-${app.version}-$instance stop
+
+  # Remove init script links
+  update-rc.d -f apacheds-${app.version}-$instance remove
+
+  # Backup old instance folders before deleting them
+  timestamp=$(date '+%Y%m%d_%H%M%S')
+  parent_dir=/var/lib
+  tarball=$parent_dir/apacheds-${app.version}-$instance"_"$timestamp.tgz
+  echo Backing up old $instance instance data to $tarball
+  tar -zcf $tarball $instance_dir
+  rm -rf $instance_dir/partitions/*
+  rm -rf $instance_dir/log/*
+done
+ 
+rm -rf /opt/apacheds-${app.version}/bin/wrapper.log
+
+

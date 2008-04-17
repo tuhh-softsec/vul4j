@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.directory.daemon</groupId>
     <artifactId>daemon-parent</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.4-SNAPSHOT</version>
   </parent>
   <artifactId>daemon-bootstrappers</artifactId>
   <name>Apache Directory Daemon Bootstrappers</name>

@@ -139,7 +139,7 @@ public class MojoHelperUtils
         mymojo.getLog().info( "    Including artifacts: " );
         mymojo.getLog().info( "    -------------------" );
         Iterator artifacts = mymojo.getProject().getRuntimeArtifacts().iterator();
-        
+
         while ( artifacts.hasNext() )
         {
             artifact = ( Artifact ) artifacts.next();
@@ -237,6 +237,34 @@ public class MojoHelperUtils
         {
             throw new MojoFailureException( "Execution of '" + cmdString + "' resulted in a non-zero exit value: "
                 + task.getExitValue() );
+        }
+    }
+
+
+    /**
+     * Recursively copy files from the given source to the given destination.
+     *
+     * @param src
+     *      the source
+     * @param dest
+     *      the destination
+     * @throws IOException
+     *      If an error occurs when copying a file
+     */
+    public static void copyFiles( File src, File dest ) throws IOException
+    {
+        if ( src.isDirectory() )
+        {
+            dest.mkdirs();
+
+            for ( File file : src.listFiles() )
+            {
+                copyFiles( file, new File( dest, file.getName() ) );
+            }
+        }
+        else
+        {
+            FileUtils.copyFile( src, dest );
         }
     }
 }

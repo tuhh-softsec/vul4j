@@ -28,15 +28,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.directory.daemon.installers.bin.BinInstallerCommand;
+import org.apache.directory.daemon.installers.bin.BinTarget;
+import org.apache.directory.daemon.installers.deb.DebInstallerCommand;
+import org.apache.directory.daemon.installers.deb.DebTarget;
 import org.apache.directory.daemon.installers.inno.InnoInstallerCommand;
 import org.apache.directory.daemon.installers.inno.InnoTarget;
 import org.apache.directory.daemon.installers.izpack.IzPackInstallerCommand;
 import org.apache.directory.daemon.installers.izpack.IzPackTarget;
+import org.apache.directory.daemon.installers.nsis.NsisInstallerCommand;
+import org.apache.directory.daemon.installers.nsis.NsisTarget;
+import org.apache.directory.daemon.installers.pkg.PkgInstallerCommand;
+import org.apache.directory.daemon.installers.pkg.PkgTarget;
 import org.apache.directory.daemon.installers.rpm.RpmInstallerCommand;
 import org.apache.directory.daemon.installers.rpm.RpmTarget;
-import org.apache.directory.daemon.installers.nsis.NsisTarget;
-import org.apache.directory.daemon.installers.nsis.NsisInstallerCommand;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.MailingList;
@@ -118,6 +123,11 @@ public class ServiceInstallersMojo extends AbstractMojo
      * @parameter
      */
     private DebTarget[] debTargets;
+    
+    /**
+     * @parameter
+     */
+    private BinTarget[] binTargets;
 
     /**
      * @parameter 
@@ -250,6 +260,27 @@ public class ServiceInstallersMojo extends AbstractMojo
                 rpmCmd = new RpmInstallerCommand( this, ( RpmTarget ) target );
                 rpmCmd.execute();
             }
+            
+            if ( target instanceof PkgTarget )
+            {
+                PkgInstallerCommand pkgCmd = null;
+                pkgCmd = new PkgInstallerCommand( this, ( PkgTarget ) target );
+                pkgCmd.execute();
+            }
+            
+            if ( target instanceof DebTarget )
+            {
+                DebInstallerCommand debCmd = null;
+                debCmd = new DebInstallerCommand( this, ( DebTarget ) target );
+                debCmd.execute();
+            }
+            
+            if ( target instanceof BinTarget )
+            {
+                BinInstallerCommand binCmd = null;
+                binCmd = new BinInstallerCommand( this, ( BinTarget ) target );
+                binCmd.execute();
+            }
         }
     }
 
@@ -263,6 +294,7 @@ public class ServiceInstallersMojo extends AbstractMojo
         addAll( allTargets, rpmTargets );
         addAll( allTargets, debTargets );
         addAll( allTargets, pkgTargets );
+        addAll( allTargets, binTargets );
     }
 
 
@@ -538,7 +570,7 @@ public class ServiceInstallersMojo extends AbstractMojo
                 getLog().info( "daemonFramework: " + target.getDaemonFramework() );
                 getLog().info( "loggerConfigurationFile: " + target.getLoggerConfigurationFile() );
                 getLog().info( "bootstrapperConfigurationFiles: " + target.getBootstrapperConfigurationFile() );
-                getLog().info( "serverConfigurationFil: " + target.getServerConfigurationFile() );
+                getLog().info( "serverConfigurationFile: " + target.getServerConfigurationFile() );
             }
         }
 

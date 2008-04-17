@@ -138,7 +138,10 @@ public class RpmInstallerCommand extends MojoCommand
         // because the compiler may be installed in different places and is specific
         if ( !target.getRpmBuilder().exists() )
         {
-            throw new MojoFailureException( "Cannot find rpmbuild: " + target.getRpmBuilder() );
+            log.warn( "Cannot find rpmbuild utility at this location: " + target.getRpmBuilder() );
+            log.warn( "The build will continue, but please check the location of your rpmbuild " );
+            log.warn( "utility." );
+            return;
         }
         else
         {
