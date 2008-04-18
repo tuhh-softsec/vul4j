@@ -21,6 +21,9 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
+ * The Generator interface defines a number of useful actions applying UnaryFunctors
+ * to each in a series of argument Objects.
+ *
  * @version $Revision$ $Date$
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
