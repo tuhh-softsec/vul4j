@@ -981,23 +981,17 @@ public final class FileUtilsTest
         
     }    
     
-    /**
-     * TEST FAILS ON WINDOWS.
-     *
-     * Failing to specify an encoding means the default platform encoding, which
-     * varies from machine to machine.  There is no guarantee that what this
-     * creates is usable.
-     *
-     * This test should be deleted.
-     *
-     * @throws IOException
-     */
-    public void disabledTestFileRead() throws IOException
+    public void testFileRead() throws IOException
     {
         File testFile = new File( getTestDirectory(), "testFileRead.txt" );
         String testFileName = testFile.getAbsolutePath();
-        // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
-        String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
+        /*
+         * NOTE: The method under test uses the JVM's default encoding which by its nature varies from machine to
+         * machine. As a consequence, we cannot know in advance which characters are supported by the effective encoding
+         * of the test runner. Therefore this test must be restricted to ASCII characters which are reasonably safe to
+         * survive the roundtrip test.
+         */
+        String testString = "Only US-ASCII characters here, see comment above!";
         Writer writer = null;
         try
         {
