@@ -24,6 +24,7 @@ package org.codehaus.plexus.util;
  * SOFTWARE.
  */
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -874,6 +875,7 @@ public final class FileUtilsTest
         }
         catch ( IOException e )
         {
+            // expected
         }
     }
 
@@ -1135,7 +1137,7 @@ public final class FileUtilsTest
 
         File f = new File( a1, path.toString() + "test.txt" );
 
-        InputStream is = new StringInputStream( "Blabla" );
+        InputStream is = new ByteArrayInputStream( "Blabla".getBytes( "UTF-8" ) );
         OutputStream os = new FileOutputStream( f.getCanonicalFile() );
         IOUtil.copy( is, os );
         IOUtil.close( is );
