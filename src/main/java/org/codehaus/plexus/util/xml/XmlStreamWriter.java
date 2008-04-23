@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
  * Character stream that handles (or at least attemtps to) all the necessary Voodo to figure out the charset encoding of
  * the XML document written to the stream.
  * @author <a href="mailto:hboutemy@codehaus.org">Herve Boutemy</a>
- * @version $Id: $
+ * @version $Id$
  * @since 1.4.4
  */
 public class XmlStreamWriter
@@ -111,7 +112,7 @@ extends Writer
                     Matcher m = ENCODING_PATTERN.matcher( xmlProlog.substring( 0, xmlPrologEnd ) );
                     if ( m.find() )
                     {
-                        encoding = m.group( 1 ).toUpperCase();
+                        encoding = m.group( 1 ).toUpperCase( Locale.ENGLISH );
                         encoding = encoding.substring( 1, encoding.length() - 1 );
                     }
                     else

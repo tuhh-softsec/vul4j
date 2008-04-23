@@ -316,11 +316,11 @@ public class PathTool
         // lowercase windows drive letters.
         if ( fromPath.startsWith( ":", 1 ) )
         {
-            fromPath = fromPath.substring( 0, 1 ).toLowerCase() + fromPath.substring( 1 );
+            fromPath = Character.toLowerCase( fromPath.charAt( 0 ) ) + fromPath.substring( 1 );
         }
         if ( toPath.startsWith( ":", 1 ) )
         {
-            toPath = toPath.substring( 0, 1 ).toLowerCase() + toPath.substring( 1 );
+            toPath = Character.toLowerCase( toPath.charAt( 0 ) ) + toPath.substring( 1 );
         }
 
         // check for the presence of windows drives. No relative way of
@@ -435,7 +435,7 @@ public class PathTool
         }
         if (path.length() >= 2 && path.charAt(1) == ':')
         {
-            path = path.substring(0, 1).toUpperCase() + path.substring(1);
+            path = Character.toUpperCase( path.charAt( 0 ) ) + path.substring( 1 );
         }
         return path;
     }

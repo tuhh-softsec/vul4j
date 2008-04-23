@@ -444,17 +444,9 @@ public final class SelectorUtils
             for ( int i = 0; i <= patIdxEnd; i++ )
             {
                 ch = patArr[i];
-                if ( ch != '?' )
+                if ( ch != '?' && !equals( ch, strArr[i], isCaseSensitive ) )
                 {
-                    if ( isCaseSensitive && ch != strArr[i] )
-                    {
-                        return false;// Character mismatch
-                    }
-                    if ( !isCaseSensitive && Character.toUpperCase( ch ) !=
-                        Character.toUpperCase( strArr[i] ) )
-                    {
-                        return false; // Character mismatch
-                    }
+                    return false; // Character mismatch
                 }
             }
             return true; // String matches against pattern
@@ -468,17 +460,9 @@ public final class SelectorUtils
         // Process characters before first star
         while ( ( ch = patArr[patIdxStart] ) != '*' && strIdxStart <= strIdxEnd )
         {
-            if ( ch != '?' )
+            if ( ch != '?' && !equals( ch, strArr[strIdxStart], isCaseSensitive ) )
             {
-                if ( isCaseSensitive && ch != strArr[strIdxStart] )
-                {
-                    return false;// Character mismatch
-                }
-                if ( !isCaseSensitive && Character.toUpperCase( ch ) !=
-                    Character.toUpperCase( strArr[strIdxStart] ) )
-                {
-                    return false;// Character mismatch
-                }
+                return false; // Character mismatch
             }
             patIdxStart++;
             strIdxStart++;
@@ -500,17 +484,9 @@ public final class SelectorUtils
         // Process characters after last star
         while ( ( ch = patArr[patIdxEnd] ) != '*' && strIdxStart <= strIdxEnd )
         {
-            if ( ch != '?' )
+            if ( ch != '?' && !equals( ch, strArr[strIdxEnd], isCaseSensitive ) )
             {
-                if ( isCaseSensitive && ch != strArr[strIdxEnd] )
-                {
-                    return false;// Character mismatch
-                }
-                if ( !isCaseSensitive && Character.toUpperCase( ch ) !=
-                    Character.toUpperCase( strArr[strIdxEnd] ) )
-                {
-                    return false;// Character mismatch
-                }
+                return false; // Character mismatch
             }
             patIdxEnd--;
             strIdxEnd--;
@@ -559,17 +535,9 @@ public final class SelectorUtils
                 for ( int j = 0; j < patLength; j++ )
                 {
                     ch = patArr[patIdxStart + j + 1];
-                    if ( ch != '?' )
+                    if ( ch != '?' && !equals( ch, strArr[strIdxStart + i + j], isCaseSensitive ) )
                     {
-                        if ( isCaseSensitive && ch != strArr[strIdxStart + i + j] )
-                        {
-                            continue strLoop;
-                        }
-                        if ( !isCaseSensitive && Character.toUpperCase( ch ) !=
-                            Character.toUpperCase( strArr[strIdxStart + i + j] ) )
-                        {
-                            continue strLoop;
-                        }
+                        continue strLoop;
                     }
                 }
 
@@ -596,6 +564,27 @@ public final class SelectorUtils
             }
         }
         return true;
+    }
+
+    /**
+     * Tests whether two characters are equal.
+     */
+    private static boolean equals( char c1, char c2, boolean isCaseSensitive )
+    {
+        if ( c1 == c2 )
+        {
+            return true;
+        }
+        if ( !isCaseSensitive )
+        {
+            // NOTE: Try both upper case and lower case as done by String.equalsIgnoreCase()
+            if ( Character.toUpperCase( c1 ) == Character.toUpperCase( c2 ) ||
+                Character.toLowerCase( c1 ) == Character.toLowerCase( c2 ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

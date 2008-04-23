@@ -55,6 +55,7 @@ package org.codehaus.plexus.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -2208,7 +2209,7 @@ public class StringUtils
             sb.append( view.charAt( i ) );
         }
 
-        return sb.toString().trim().toLowerCase();
+        return sb.toString().trim().toLowerCase( Locale.ENGLISH );
     }
 
     public static String quoteAndEscape( String source,

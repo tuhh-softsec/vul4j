@@ -350,7 +350,7 @@ public class Os
                 }
                 else
                 {
-                    isFamily = OS_NAME.indexOf( family.toLowerCase() ) > -1;
+                    isFamily = OS_NAME.indexOf( family.toLowerCase( Locale.US ) ) > -1;
                 }
             }
             if ( name != null )

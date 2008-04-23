@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -267,7 +268,7 @@ public abstract class CommandLineUtils
 
                 if ( !caseSensitive )
                 {
-                    lastKey = lastKey.toUpperCase();
+                    lastKey = lastKey.toUpperCase( Locale.ENGLISH );
                 }
 
                 lastVal = line.substring( idx + 1 );

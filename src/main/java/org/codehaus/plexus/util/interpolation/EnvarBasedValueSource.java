@@ -19,6 +19,7 @@ package org.codehaus.plexus.util.interpolation;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -67,7 +68,7 @@ public class EnvarBasedValueSource
         
         if ( !caseSensitive )
         {
-            expr = expr.toUpperCase();
+            expr = expr.toUpperCase( Locale.ENGLISH );
         }
         
         return envars.getProperty( expr );
