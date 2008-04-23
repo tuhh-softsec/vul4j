@@ -13,6 +13,45 @@ import junit.framework.TestCase;
 public class StringUtilsTest
     extends TestCase
 {
+
+    public void testIsEmpty()
+    {
+        assertEquals( true, StringUtils.isEmpty( null ) );
+        assertEquals( true, StringUtils.isEmpty( "" ) );
+        /* TODO: Some day in the future, make this pass (PLXUTILS-73)
+        assertEquals( false, StringUtils.isEmpty( " " ) );
+        //*/
+        assertEquals( false, StringUtils.isEmpty( "foo" ) );
+        assertEquals( false, StringUtils.isEmpty( "  foo  " ) );
+    }
+
+    public void testIsNotEmpty()
+    {
+        assertEquals( false, StringUtils.isNotEmpty( null ) );
+        assertEquals( false, StringUtils.isNotEmpty( "" ) );
+        assertEquals( true, StringUtils.isNotEmpty( " " ) );
+        assertEquals( true, StringUtils.isNotEmpty( "foo" ) );
+        assertEquals( true, StringUtils.isNotEmpty( "  foo  " ) );
+    }
+
+    public void testIsBlank()
+    {
+        assertEquals( true, StringUtils.isBlank( null ) );
+        assertEquals( true, StringUtils.isBlank( "" ) );
+        assertEquals( true, StringUtils.isBlank( " \t\r\n" ) );
+        assertEquals( false, StringUtils.isBlank( "foo" ) );
+        assertEquals( false, StringUtils.isBlank( "  foo  " ) );
+    }
+
+    public void testIsNotBlank()
+    {
+        assertEquals( false, StringUtils.isNotBlank( null ) );
+        assertEquals( false, StringUtils.isNotBlank( "" ) );
+        assertEquals( false, StringUtils.isNotBlank( " \t\r\n" ) );
+        assertEquals( true, StringUtils.isNotBlank( "foo" ) );
+        assertEquals( true, StringUtils.isNotBlank( "  foo  " ) );
+    }
+
     public void testCapitalizeFirstLetter()
     {
         assertEquals( "Id", StringUtils.capitalizeFirstLetter( "id" ) );

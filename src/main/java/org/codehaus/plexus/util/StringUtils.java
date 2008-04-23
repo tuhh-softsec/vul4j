@@ -163,6 +163,10 @@ public class StringUtils
     /**
      * <p>Checks if a (trimmed) String is <code>null</code> or empty.</p>
      *
+     * <p><strong>Note:</strong> In future releases, this method will no longer trim the input string such that it works
+     * complementary to {@link #isNotEmpty(String)}. Code that wants to test for whitespace-only strings should be
+     * migrated to use {@link #isBlank(String)} instead.</p>
+     *
      * @param str the String to check
      * @return <code>true</code> if the String is <code>null</code>, or
      *  length zero once trimmed
@@ -170,6 +174,62 @@ public class StringUtils
     public static boolean isEmpty( String str )
     {
         return ( ( str == null ) || ( str.trim().length() == 0 ) );
+    }
+
+    /**
+     * <p>
+     * Checks if a String is whitespace, empty ("") or null.
+     * </p>
+     * 
+     * <pre>
+     * StringUtils.isBlank(null)      = true
+     * StringUtils.isBlank("")        = true
+     * StringUtils.isBlank(" ")       = true
+     * StringUtils.isBlank("bob")     = false
+     * StringUtils.isBlank("  bob  ") = false
+     * </pre>
+     * 
+     * @param str the String to check, may be null
+     * @return <code>true</code> if the String is null, empty or whitespace
+     * @since 1.5.2
+     */
+    public static boolean isBlank( String str )
+    {
+        int strLen;
+        if ( str == null || ( strLen = str.length() ) == 0 )
+        {
+            return true;
+        }
+        for ( int i = 0; i < strLen; i++ )
+        {
+            if ( !Character.isWhitespace( str.charAt( i ) ) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>
+     * Checks if a String is not empty (""), not null and not whitespace only.
+     * </p>
+     * 
+     * <pre>
+     * StringUtils.isNotBlank(null)      = false
+     * StringUtils.isNotBlank("")        = false
+     * StringUtils.isNotBlank(" ")       = false
+     * StringUtils.isNotBlank("bob")     = true
+     * StringUtils.isNotBlank("  bob  ") = true
+     * </pre>
+     * 
+     * @param str the String to check, may be null
+     * @return <code>true</code> if the String is not empty and not null and not whitespace
+     * @since 1.5.2
+     */
+    public static boolean isNotBlank( String str )
+    {
+        return !StringUtils.isBlank( str );
     }
 
     // Equals and IndexOf
