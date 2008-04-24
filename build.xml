@@ -240,26 +240,6 @@
     </target >
 
     <!-- check targets -->
-    <target depends="init" name="do.check.libs.jce" >
-        <condition property="has.jce.provider" >
-            <available file="${lib.jce}" />
-        </condition >
-    </target >
-
-    <target name="do.check.libs"
-            depends="do.check.libs.jce"
-            unless="has.jce.provider" >
-        <setproxy proxyhost="${proxy.host}"
-                  proxyport="${proxy.port}" />
-        <get src="${jce.provider.source}/${jce.provider.jar}"
-             dest="${lib.jce}"
-             verbose="true" />
-        <checksum file="${lib.jce}"
-                  algorithm="${checksum.algorithm}"
-                  property="${checksum.value}"
-                  verifyproperty="jce.checksum.ok" />
-		<property name="has.jce.provider" value="true"/>
-    </target >
 
     <target name="do.check.forrest">
 	<property environment="env"/>
@@ -298,9 +278,8 @@
     </target>
     <!-- source -->
     <target name="build.src"
-            depends="do.check.libs,do.build.src,env.mk.dirs,do.check.bindist"
-			unless="is.bin.dist"
-            if="has.jce.provider" >
+            depends="do.build.src,env.mk.dirs,do.check.bindist"
+			unless="is.bin.dist">
         <javac target="1.4" source="1.4" srcdir="${dir.src}"
                destdir="${dir.build.bin}"
                debug="${build.compile.debug}">
