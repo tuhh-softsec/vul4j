@@ -1,4 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
+New in ...
+    Fixed bug 44863: Improved logging in signature handling. Thanks to Wally Dennis.
 New in v1.4.2beta2
     Fixed bug 44810: Add support for more XMLDSig algorithms listed in RFC 4051
     Fixed bug 44617: Regression when processing XPath transform (additional fix)

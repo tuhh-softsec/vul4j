@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2008 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,32 +27,44 @@ import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 public class DigesterOutputStream extends ByteArrayOutputStream {
     final static byte none[]="error".getBytes();
     final MessageDigestAlgorithm mda;
-	/**
-	 * @param mda
-	 */
-	public DigesterOutputStream(MessageDigestAlgorithm mda) {
+    static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog
+        (DigesterOutputStream.class.getName());
+
+    /**
+     * @param mda
+     */
+    public DigesterOutputStream(MessageDigestAlgorithm mda) {
         this.mda=mda;		
-	}
+    }
 
     /** @inheritDoc */ 
-	public byte[] toByteArray() {
-		return none;
-	}
-    
-	/** @inheritDoc */
-	public void write(byte[] arg0) {
-		mda.update(arg0);
-	}
+    public byte[] toByteArray() {
+	return none;
+    }
     
     /** @inheritDoc */
-	public void write(int arg0) {
-		mda.update((byte)arg0);
-	}
+    public void write(byte[] arg0) {
+	write(arg0, 0, arg0.length);
+    }
     
     /** @inheritDoc */
-	public void write(byte[] arg0, int arg1, int arg2) {
-		mda.update(arg0, arg1, arg2);
-	}
+    public void write(int arg0) {
+	mda.update((byte)arg0);
+    }
+    
+    /** @inheritDoc */
+    public void write(byte[] arg0, int arg1, int arg2) {
+        if (log.isDebugEnabled()) {
+            log.debug("Pre-digested input:");
+            StringBuffer sb = new StringBuffer(arg2);
+            for (int i=arg1; i<(arg1+arg2); i++) {
+                sb.append((char) arg0[i]);
+            }
+            log.debug(sb.toString());
+        }
+	mda.update(arg0, arg1, arg2);
+    }
     
     /**
      * @return the digest value 

@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2008 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,6 +28,10 @@ import org.apache.xml.security.signature.XMLSignatureException;
 public class SignerOutputStream extends ByteArrayOutputStream {
     final static byte none[]="error".getBytes();
     final SignatureAlgorithm sa;
+    static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog
+        (SignerOutputStream.class.getName());
+
     /**
      * @param sa
      */
@@ -43,10 +47,10 @@ public class SignerOutputStream extends ByteArrayOutputStream {
     /** @inheritDoc */
     public void write(byte[] arg0)  {
         try {
-			sa.update(arg0);
-		} catch (XMLSignatureException e) {
+	    sa.update(arg0);
+	} catch (XMLSignatureException e) {
             throw new RuntimeException(""+e);
-		}
+	}
     }
     
     /** @inheritDoc */
@@ -60,12 +64,18 @@ public class SignerOutputStream extends ByteArrayOutputStream {
     
     /** @inheritDoc */
     public void write(byte[] arg0, int arg1, int arg2) {
+        if (log.isDebugEnabled()) {
+            log.debug("Canonicalized SignedInfo:");
+            StringBuffer sb = new StringBuffer(arg2);
+            for (int i=arg1; i<(arg1+arg2); i++) {
+                sb.append((char) arg0[i]);
+            }
+            log.debug(sb.toString());
+        }
         try {
             sa.update(arg0,arg1,arg2);
         } catch (XMLSignatureException e) {
             throw new RuntimeException(""+e);
         }
     }
-    
-
 }

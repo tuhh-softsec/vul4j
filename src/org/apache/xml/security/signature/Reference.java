@@ -757,6 +757,8 @@ private Element digestValueElement;
 
       if (!equal) {
          log.warn("Verification failed for URI \"" + this.getURI() + "\"");
+         log.warn("Expected Digest: " + Base64.encode(elemDig));
+         log.warn("Actual Digest: " + Base64.encode(calcDig));
       } else {
          log.info("Verification successful for URI \"" + this.getURI() + "\"");
       }

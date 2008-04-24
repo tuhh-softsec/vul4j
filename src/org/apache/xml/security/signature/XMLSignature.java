@@ -621,6 +621,7 @@ private Element signatureValueElement;
          //Have SignatureAlgorithm sign the input bytes and compare them to the
          //bytes that were stored in the signature.
          if (!sa.verify(sigBytes)) {
+            log.warn("Signature verification failed.");
 	    return false;
 	 }
 
