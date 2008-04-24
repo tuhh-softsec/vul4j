@@ -1,6 +1,8 @@
 package net.webassembletool;
 
-import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * User context that can be used in the master application to define the user id
@@ -12,26 +14,43 @@ import java.util.Locale;
  * 
  */
 public class Context {
-    private String user;
-    private Locale locale;
+    private final static String USER_PARAM_KEY = "user";
+    private final static String LOCALE_PARAM_KEY = "locale";
+    private Map<String, String> parameterMap = new TreeMap<String, String>();
 
     public Context() {
 	// Nothing to do
     }
 
-    public Locale getLocale() {
-	return locale;
+    public Map<String, String> getParameterMap() {
+	return parameterMap;
     }
 
-    public void setLocale(Locale locale) {
-	this.locale = locale;
+    public Set<String> getParameterNames() {
+	return parameterMap.keySet();
+    }
+
+    public String getLocale() {
+	return parameterMap.get(LOCALE_PARAM_KEY);
+    }
+
+    public void setLocale(String locale) {
+	parameterMap.put(LOCALE_PARAM_KEY, locale);
     }
 
     public String getUser() {
-	return user;
+	return (String) parameterMap.get(LOCALE_PARAM_KEY);
     }
 
     public void setUser(String user) {
-	this.user = user;
+	parameterMap.put(USER_PARAM_KEY, user);
+    }
+
+    public Object getParameter(String key) {
+	return parameterMap.get(key);
+    }
+
+    public void setParameter(String key, String value) {
+	parameterMap.put(key, value);
     }
 }
