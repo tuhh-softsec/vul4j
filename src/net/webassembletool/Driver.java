@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -234,7 +233,7 @@ public final class Driver {
     private final void renderResource(String relUrl, Output output,
 	    Context context) throws IOException, ResourceNotFoundException {
 	String httpUrl = getUrlForHttpResource(relUrl, context);
-	String fileUrl = getUrlForFileResource(relUrl);
+	String fileUrl = getUrlForFileResource(relUrl, context);
 	MultipleOutput multipleOutput = new MultipleOutput();
 	multipleOutput.addOutput(output);
 	MemoryResource cachedResource = null;
@@ -310,40 +309,57 @@ public final class Driver {
 	}
     }
 
-    private final String getUrlForFileResource(String relUrl) {
-	String url = null;
+    private final String getUrlForFileResource(String relUrl, Context context) {
+	StringBuilder url = new StringBuilder("");
 	if (localBase != null && relUrl != null
 		&& (localBase.endsWith("/") || localBase.endsWith("\\"))
 		&& relUrl.startsWith("/")) {
-	    url = localBase.substring(0, localBase.length() - 1) + relUrl;
+	    url.append(localBase.substring(0, localBase.length() - 1)).append(
+		    relUrl);
 	} else {
-	    url = localBase + relUrl;
+	    url.append(localBase).append(relUrl);
 	}
-	int index = url.indexOf('?');
-	if (index > -1)
-	    url = url.substring(0, index);
-	return url;
+
+	int index = url.indexOf("?");
+	if (index > -1) {
+	    url = new StringBuilder(url.substring(0, index));
+	}
+	if (context != null) {
+	    // Append queryString hashcode to supply different cache filenames
+	    addContextToQueryString(url, context, true);
+	}
+	return url.toString();
     }
 
     private final String getUrlForHttpResource(String relUrl, Context context) {
-	String url;
+	StringBuilder url = new StringBuilder();
 	if (baseURL != null && relUrl != null && baseURL.endsWith("/")
 		&& relUrl.startsWith("/")) {
-	    url = baseURL.substring(0, baseURL.length() - 1) + relUrl;
+	    url.append(baseURL.substring(0, baseURL.length() - 1)).append(
+		    relUrl);
 	} else {
-	    url = baseURL + relUrl;
+	    url.append(baseURL).append(relUrl);
 	}
+
 	if (context != null) {
-	    url += "?user=";
-	    String user = context.getUser();
-	    Locale locale = context.getLocale();
-	    if (user != null)
-		url += user;
-	    url += "&locale=";
-	    if (locale != null)
-		url += locale;
+	    addContextToQueryString(url, context, false);
 	}
-	return url;
+	return url.toString();
+    }
+
+    private final void addContextToQueryString(StringBuilder url,
+	    Context context, boolean isFile) {
+	StringBuilder queryString = new StringBuilder("");
+	for (Map.Entry<String, String> temp : context.getParameterMap()
+		.entrySet()) {
+	    queryString.append(temp.getKey()).append("=").append(
+		    temp.getValue()).append("&");
+	}
+	if (isFile)
+	    url.append("_").append(queryString.toString().hashCode());
+	else
+	    url.append("?").append(
+		    queryString.substring(0, queryString.length() - 1));
     }
 
     /**
