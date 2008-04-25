@@ -18,9 +18,7 @@ public class StringUtilsTest
     {
         assertEquals( true, StringUtils.isEmpty( null ) );
         assertEquals( true, StringUtils.isEmpty( "" ) );
-        /* TODO: Some day in the future, make this pass (PLXUTILS-73)
-        assertEquals( false, StringUtils.isEmpty( " " ) );
-        //*/
+        assertEquals( true, StringUtils.isEmpty( " " ) );
         assertEquals( false, StringUtils.isEmpty( "foo" ) );
         assertEquals( false, StringUtils.isEmpty( "  foo  " ) );
     }
