@@ -11,7 +11,7 @@
   <module name="TreeWalker">
     <!-- Verify that EVERY source file has the appropriate license -->
     <module name="Header">
-      <property name="headerFile" value="file-header.txt"/>
+      <property name="headerFile" value="${basedir}/LICENSE-header.txt"/>
       <property name="ignoreLines" value="1,3"/>
     </module>
 
