@@ -126,7 +126,7 @@ limitations under the License.
         patches. So that everyone can be productive, it is important to know which
         method is appropriate for a certain situation and how to go about it without
         confusion. This section explains when to use the <code>developer</code>
-        <link href="site:mail-lists">mailing list</link> the bug database. 
+        <link href="site:mail-lists">mailing list</link> or the bug database. 
       </p>
       <p> 
 	Research your topic thoroughly before beginning to discuss a new
@@ -181,7 +181,7 @@ limitations under the License.
           descriptive title. 
 	</li>
         <li>
-	  Start new threads with new Subject for new topics, rather than
+	  Start new threads with a new Subject for new topics, rather than
           reusing the previous Subject line. 
 	</li>
         <li>

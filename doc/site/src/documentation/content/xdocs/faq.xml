@@ -62,8 +62,7 @@ limitations under the License.
       </question>
       <answer>
 	<p>
-	  The best place to start is <link href="ext:w3c/xmldsig"> &xmldsig; </link>. Links on XML
-	  security in general can be found on <link href="ext:christ-page">&christpage; </link>.
+	  The best place to start is <link href="ext:w3c/xmldsig"> &xmldsig; </link>. 
 	</p>
       </answer>
     </faq>
@@ -73,8 +72,7 @@ limitations under the License.
       </question>
       <answer>
 	<p>
-	  The best place to start is <link href="ext:w3c/xmlenc">&xmlenc;</link>. Links on XML
-	  security in general can be found on <link href="ext:christ-page">&christpage;</link>.
+	  The best place to start is <link href="ext:w3c/xmlenc">&xmlenc;</link>.
 	</p>
       </answer>
     </faq>

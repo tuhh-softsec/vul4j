@@ -196,7 +196,10 @@ limitations under the License.
       </p>
       <ol>
         <li>A Java library, which includes a mature Digital Signature 
-          implementation.  Encryption is currently under development.</li>
+          and Encryption implementation. It also includes the standard JSR
+	  105 (Java XML Digital Signature) API. Applications can use the 
+	  standard JSR 105 API or the Apache XML Security API to create
+	  and validate XML Signatures.</li>
         <li>A C++ library is also now available.  Functionality is currently
 		  more basic than that provided by the Java library.</li>
       </ol>
