@@ -65,6 +65,9 @@ import java.io.StringReader;
  * characters not in ISO Latin 1, as a simple char->byte mapping is assumed.
  *
  * @author <a href="mailto:umagesh@codehaus.org">Magesh Umasankar</a>
+ * @deprecated As of version 1.5.2 this class should no longer be used because it does not properly handle character
+ *             encoding. Instead, wrap the output from {@link String#getBytes(String)} into a
+ *             {@link java.io.ByteArrayInputStream}.
  */
 public class StringInputStream
     extends InputStream
@@ -143,4 +146,5 @@ public class StringInputStream
         return in.markSupported();
     }
 }
+
 
