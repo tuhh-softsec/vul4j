@@ -1,6 +1,7 @@
 package net.webassembletool;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -56,6 +57,11 @@ public final class Driver {
     private GeneralCacheAdministrator cache = new GeneralCacheAdministrator();
     private HttpClient httpClient;
 
+    static {
+	// Load default settings
+	configure();
+    }
+
     @SuppressWarnings("unused")
     private Driver() {
 	// Not to be used
@@ -75,7 +81,11 @@ public final class Driver {
 	    httpClient = new HttpClient(connectionManager);
 	    if (props.getProperty("timeout") != null) {
 		timeout = Integer.parseInt(props.getProperty("timeout"));
-		httpClient.getParams().setSoTimeout(timeout);
+		httpClient.getParams().setSoTimeout(
+			timeout);
+		//httpClient.getHttpConnectionManager().getParams().setSoTimeout(
+		//	timeout);
+
 		httpClient.getHttpConnectionManager().getParams()
 			.setConnectionTimeout(timeout);
 	    }
@@ -91,6 +101,8 @@ public final class Driver {
 	localBase = props.getProperty("localBase");
 	if (props.getProperty("putInCache") != null)
 	    putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
+	if (props.getProperty("useCache") != null)
+	    useCache = Boolean.parseBoolean(props.getProperty("useCache"));
     }
 
     /**
@@ -113,12 +125,12 @@ public final class Driver {
      * 
      * @return the named instance
      */
-    public synchronized final static Driver getInstance(String instanceName) {
+    public final static Driver getInstance(String instanceName) {
+	if (instances == null)
+	    throw new ConfigurationException(
+		    "Driver has not been configured and driver.properties file was not found");
 	if (instanceName == null)
 	    instanceName = "default";
-	if (instances == null) {
-	    configure();
-	}
 	Driver instance = instances.get(instanceName);
 	if (instance == null)
 	    throw new ConfigurationException(
@@ -170,13 +182,17 @@ public final class Driver {
      * Loads all the instances according to default configuration file
      */
     public final static void configure() {
-	Properties props = new Properties();
 	try {
-	    props.load(Driver.class.getResourceAsStream("driver.properties"));
+	    InputStream inputStream = Driver.class
+		    .getResourceAsStream("driver.properties");
+	    if (inputStream != null) {
+		Properties props = new Properties();
+		props.load(inputStream);
+		configure(props);
+	    }
 	} catch (IOException e) {
-	    throw new ExceptionInInitializerError(e);
+	    throw new ConfigurationException(e);
 	}
-	configure(props);
     }
 
     /**
@@ -237,6 +253,8 @@ public final class Driver {
 	MultipleOutput multipleOutput = new MultipleOutput();
 	multipleOutput.addOutput(output);
 	MemoryResource cachedResource = null;
+	HttpResource httpResource = null;
+	FileResource fileResource = null;
 	try {
 	    if (useCache) {
 		// Load the resource from cache even if not up to date
@@ -251,7 +269,6 @@ public final class Driver {
 	    boolean cacheUpdated = false;
 	    try {
 		MemoryOutput memoryOutput = null;
-		HttpResource httpResource = null;
 		if (baseURL != null)
 		    httpResource = getResourceFromHttp(httpUrl);
 		if (httpResource != null) {
@@ -265,7 +282,7 @@ public final class Driver {
 		} else if (cachedResource != null) {
 		    cachedResource.render(multipleOutput);
 		} else {
-		    FileResource fileResource = getResourceFromLocal(fileUrl);
+		    fileResource = getResourceFromLocal(fileUrl);
 		    if (fileResource == null)
 			throw new ResourceNotFoundException(relUrl);
 		    if (useCache) {
@@ -278,6 +295,12 @@ public final class Driver {
 		    cachedResource = memoryOutput.toResource();
 		    cache.putInCache(httpUrl, cachedResource);
 		    cacheUpdated = true;
+		    if (cachedResource != null)
+			cachedResource.release();
+		    if (httpResource != null)
+			httpResource.release();
+		    if (fileResource != null)
+			fileResource.release();
 		}
 	    } finally {
 		// The resource was not found in cache so osCache has locked
