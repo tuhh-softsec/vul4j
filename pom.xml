@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -17,41 +16,61 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
--->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.directory.project</groupId>
     <artifactId>project</artifactId>
     <version>10</version>
   </parent>
-  <groupId>org.apache.directory.daemon</groupId>
-  <artifactId>daemon-parent</artifactId>
-  <name>Apache Directory Daemon</name>
+  <groupId>org.apache.directory.shared</groupId>
+  <artifactId>shared-parent</artifactId>
+  <name>Apache Directory Shared</name>
   <packaging>pom</packaging>
-  <!-- note that this skipped a RC in being bumped up -->
-  <version>1.1.5-SNAPSHOT</version>
-  <description>
-    Reusable framework for daemon applications based on Commons Daemon
-    Jsvc and Procrun. A small installation layout pattern combined with
-    some utility classes allows applications to be come UNIX daemons or
-    Windows NT services. Reusable bootstrappers along with an installer
-    plugin allow for the rapid creation of standalone daemon applications.
-  </description>
+  <version>0.9.12-SNAPSHOT</version>
+
+  <properties>
+    <projectName>ApacheDS-Shared</projectName>
+    <!--<siteId>apacheds-shared</siteId>-->
+  </properties>
+  
+  <distributionManagement>
+    <site>
+      <id>apache.directory.shared</id>
+      <!--<url>${staging.siteURL}/${siteId}/${version}</url>-->
+      <url>scpexe://vm094.oxylos.org/var/www/html/projects/shared/</url>
+    </site>
+  </distributionManagement>
 
   <issueManagement>
     <system>JIRA</system>
-    <url>http://issues.apache.org/jira/browse/DIR</url>
+    <url>http://issues.apache.org/jira/browse/DIRSHARED</url>
   </issueManagement>
 
   <modules>
-    <module>bootstrappers</module>
-    <module>plugin</module>
+    <module>asn1</module>
+    <module>ldap</module>
+    <module>ldap-jndi</module>
+    <module>ldap-constants</module>
+    <module>asn1-codec</module>
+    <module>convert</module>
+    <module>bouncycastle-reduced</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.3</version>
+      </dependency>
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -65,9 +84,9 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-daemon</groupId>
-        <artifactId>commons-daemon</artifactId>
-        <version>1.0.1</version>
+        <groupId>antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <version>2.7.7</version>
       </dependency>
 
       <dependency>
@@ -77,27 +96,25 @@
       </dependency>
 
       <dependency>
-        <groupId>tanukisoft</groupId>
-        <artifactId>wrapper</artifactId>
-        <version>3.2.3</version>
+        <groupId>org.apache.mina</groupId>
+        <artifactId>mina-core</artifactId>
+        <version>1.1.6</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
+    <!-- common logging interface -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
+    <!-- logging implementation used for unit tests -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-daemon</groupId>
-      <artifactId>commons-daemon</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -105,37 +122,43 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>tanukisoft</groupId>
-      <artifactId>wrapper</artifactId>
-    </dependency>
-
   </dependencies>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/daemon/branches/bigbang</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/daemon/branches/bigbang</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/project/releases/8/daemon-parent</url>
-  </scm>
-
-  <distributionManagement>
-    <site>
-      <id>apache.directory.daemon</id>
-      <url>scpexe://vm094.oxylos.org/var/www/html/projects/daemon/</url>
-    </site>
-  </distributionManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antlr-plugin</artifactId>
+          <version>2.0-beta-1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
   <reporting>
     <excludeDefaults>true</excludeDefaults>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
+      <!--
+        <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>changelog-maven-plugin</artifactId>
+        <reportSets>
+        <reportSet>
+        <id>dual-report</id>
         <configuration>
-          <aggregate>true</aggregate>
+        <type>range</type>
+        <range>30</range>
         </configuration>
-      </plugin>
+        <reports>
+        <report>changelog</report>
+        <report>file-activity</report>
+        <report>dev-activity</report>
+        </reports>
+        </reportSet>
+        </reportSets>
+        </plugin>
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
@@ -172,6 +195,13 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>1.1.1</version>
@@ -204,6 +234,12 @@
     </plugins>
   </reporting>
 
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/branches/bigbang</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/branches/bigbang</developerConnection>
+    <url>http://svn.apache.org/viewvc/directory/project/branches/bigbang/shared-parent</url>
+  </scm>
+
   <repositories>
     <repository>
       <id>apache.directory.snapshot.repo</id>
@@ -214,6 +250,5 @@
       </releases>
     </repository>
   </repositories>
-  
-</project>
 
+</project>
