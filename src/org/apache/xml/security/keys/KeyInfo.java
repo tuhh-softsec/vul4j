@@ -21,6 +21,7 @@ package org.apache.xml.security.keys;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.crypto.SecretKey;
@@ -94,9 +95,11 @@ public class KeyInfo extends SignatureElementProxy {
     List x509Datas=null;
     List encryptedKeys=null;
     
-    static List nullList=new ArrayList();
+    static final List nullList;
     static {
-    	nullList.add(null);
+    	List list = new ArrayList();
+        list.add(null);
+        nullList = Collections.unmodifiableList(list);
     }
 
    /**
@@ -120,7 +123,7 @@ public class KeyInfo extends SignatureElementProxy {
     */
    public KeyInfo(Element element, String BaseURI) throws XMLSecurityException {
       super(element, BaseURI);
-      _storageResolvers.add(null);
+     // _storageResolvers.add(null);
 
    }
 
