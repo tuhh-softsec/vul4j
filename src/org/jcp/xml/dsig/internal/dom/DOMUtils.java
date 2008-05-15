@@ -72,7 +72,8 @@ public class DOMUtils {
      */
     public static Element createElement(Document doc, String tag, String nsURI,
 	String prefix) {
-        String qName = prefix == null ? tag : prefix + ":" + tag;
+        String qName = (prefix == null || prefix.length() == 0)
+		       ? tag : prefix + ":" + tag;
         return doc.createElementNS(nsURI, qName);
     }
 

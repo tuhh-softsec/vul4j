@@ -199,7 +199,7 @@ private Element signatureValueElement;
 
       String xmlnsDsPrefix = 
          getDefaultPrefixBindings(Constants.SignatureSpecNS);
-      if (xmlnsDsPrefix == null || xmlnsDsPrefix.length() == 0) {
+      if (xmlnsDsPrefix == null) {
          this._constructionElement.setAttributeNS
 	    (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
       } else {
@@ -240,7 +240,7 @@ private Element signatureValueElement;
 
       String xmlnsDsPrefix = 
          getDefaultPrefixBindings(Constants.SignatureSpecNS);
-      if (xmlnsDsPrefix == null || xmlnsDsPrefix.length() == 0) {
+      if (xmlnsDsPrefix == null) {
          this._constructionElement.setAttributeNS
 	    (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
       } else {

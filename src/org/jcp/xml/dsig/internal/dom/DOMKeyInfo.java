@@ -138,7 +138,7 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
         Element kiElem = DOMUtils.createElement
             (DOMUtils.getOwnerDocument(pNode), "KeyInfo",
              XMLSignature.XMLNS, dsPrefix);
-        if (dsPrefix == null) {
+        if (dsPrefix == null || dsPrefix.length() == 0) {
             kiElem.setAttributeNS
                 ("http://www.w3.org/2000/xmlns/", "xmlns", XMLSignature.XMLNS);
         } else {

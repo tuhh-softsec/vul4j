@@ -151,6 +151,18 @@ public class CreateSignatureTest extends TestCase {
 	doSignWithCert();
     }
 
+    public void testWithNSPrefixDisabled() throws Exception {
+	String prefix = Constants.getSignatureSpecNSprefix();
+	try {
+            Constants.setSignatureSpecNSprefix("");
+            doSign();
+            Constants.setSignatureSpecNSprefix(prefix);
+	} catch (Exception e) {
+            Constants.setSignatureSpecNSprefix(prefix);
+	    throw e;
+	}
+    }
+
     String doSign() throws Exception {
         PrivateKey privateKey = kp.getPrivate();
         org.w3c.dom.Document doc = db.newDocument();

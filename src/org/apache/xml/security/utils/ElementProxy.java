@@ -492,49 +492,47 @@ public abstract class ElementProxy {
    static HashMap _prefixMappings = new HashMap();
    static HashMap _prefixMappingsBindings = new HashMap();
 
-   /**
-    * Method setDefaultPrefix
-    *
-    * @param namespace
-    * @param prefix
-    * @throws XMLSecurityException
-    */
-   public static void setDefaultPrefix(String namespace, String prefix)
-           throws XMLSecurityException {
+    /**
+     * Method setDefaultPrefix
+     *
+     * @param namespace
+     * @param prefix
+     * @throws XMLSecurityException
+     */
+    public static void setDefaultPrefix(String namespace, String prefix)
+        throws XMLSecurityException {
     
-   	if (ElementProxy._prefixMappings.containsValue(prefix)) {
+	if (ElementProxy._prefixMappings.containsValue(prefix)) {
         
-   		Object storedNamespace=ElementProxy._prefixMappings.get(namespace);
-         if (!storedNamespace.equals(prefix)) {
+	    Object storedNamespace=ElementProxy._prefixMappings.get(namespace);
+            if (!storedNamespace.equals(prefix)) {
          	Object exArgs[] = { prefix, namespace, storedNamespace };
 
          	throw new XMLSecurityException("prefix.AlreadyAssigned", exArgs);
-         }
-    }
+            }
+        }
    	if (Constants.SignatureSpecNS.equals(namespace)) {
-   		XMLUtils.dsPrefix=prefix;
-   		XMLUtils.xmlnsDsPrefix="xmlns:"+prefix;
+   	    XMLUtils.dsPrefix=prefix;
    	}
-      ElementProxy._prefixMappings.put(namespace, prefix.intern());
-      ElementProxy._prefixMappingsBindings.put(namespace, ("xmlns:"+prefix).intern());
+        ElementProxy._prefixMappings.put(namespace, prefix.intern());
+	if (prefix.length() == 0) {
+            ElementProxy._prefixMappingsBindings.put(namespace, "xmlns");
+	} else {
+            ElementProxy._prefixMappingsBindings.put(namespace, ("xmlns:"+prefix).intern());
+	}
    }
 
-   /**
-    * Method getDefaultPrefix
-    *
-    * @param namespace
-    * @return the default prefix bind to this element.
-    */
-   public static String getDefaultPrefix(String namespace) {
+    /**
+     * Method getDefaultPrefix
+     *
+     * @param namespace
+     * @return the default prefix bind to this element.
+     */
+    public static String getDefaultPrefix(String namespace) {
+        return (String) ElementProxy._prefixMappings.get(namespace);
+    }
 
-      String prefix = (String) ElementProxy._prefixMappings.get(namespace);
-
-      return prefix;
-   }
-   public static  String getDefaultPrefixBindings(String namespace) {
-
-	      String prefix = (String) ElementProxy._prefixMappingsBindings.get(namespace);
-
-	      return prefix;
-	   }
+    public static String getDefaultPrefixBindings(String namespace) {
+	return (String) ElementProxy._prefixMappingsBindings.get(namespace);
+    }
 }

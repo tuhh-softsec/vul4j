@@ -197,9 +197,7 @@ public final class DOMXMLSignature extends DOMStructure
             (ownerDoc, "Signature", XMLSignature.XMLNS, dsPrefix);
 
         // append xmlns attribute
-        //XXX I think this is supposed to be automatically inserted when
-        //XXX serializing a DOM2 tree, but doesn't seem to work with JAXP/Xalan
-        if (dsPrefix == null) {
+        if (dsPrefix == null || dsPrefix.length() == 0) {
             sigElem.setAttributeNS
 		("http://www.w3.org/2000/xmlns/", "xmlns", XMLSignature.XMLNS);
         } else {

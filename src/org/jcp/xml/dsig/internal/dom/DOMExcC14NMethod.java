@@ -99,7 +99,7 @@ public final class DOMExcC14NMethod extends ApacheCanonicalizer {
         Element excElem = DOMUtils.createElement
 	    (ownerDoc, "InclusiveNamespaces", 
 	     CanonicalizationMethod.EXCLUSIVE, prefix);
-	if (prefix == null) {
+	if (prefix == null || prefix.length() == 0) {
 	    excElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns",
 	        CanonicalizationMethod.EXCLUSIVE);
 	} else {

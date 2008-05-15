@@ -27,6 +27,7 @@ import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
+import javax.xml.transform.*;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -226,6 +227,22 @@ public class XMLSignatureTest extends TestCase {
 	}
     }
 
+    public void testSignWithEmptyNSPrefix() throws Exception {
+	SignedInfo si = createSignedInfo(SIG_METHODS[1]);
+	KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
+		    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[1])));
+	XMLSignature sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
+	Document doc = TestUtils.newDocument();
+	XMLSignContext signContext = new DOMSignContext(SIGN_KEYS[1], doc);
+	signContext.putNamespacePrefix(XMLSignature.XMLNS, "");
+        sig.sign(signContext);
+/*
+	StringWriter sw = new StringWriter();
+	dumpDocument(doc, sw);
+	System.out.println(sw);
+*/
+    }
+
     private SignedInfo createSignedInfo(SignatureMethod sm) throws Exception {
 	// set up the building blocks
 	CanonicalizationMethod cm = fac.newCanonicalizationMethod
@@ -241,5 +258,12 @@ public class XMLSignatureTest extends TestCase {
 	TestProvider() {
 	    super("TestProvider", 0, "TestProvider");
 	}
+    }
+
+    private void dumpDocument(Document doc, Writer w) throws Exception {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+//      trans.setOutputProperty(OutputKeys.INDENT, "yes");
+        trans.transform(new DOMSource(doc), new StreamResult(w));
     }
 }
