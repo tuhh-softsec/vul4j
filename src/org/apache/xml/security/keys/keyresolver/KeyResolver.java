@@ -123,9 +123,11 @@ public class KeyResolver {
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
 
-      for (int i = 0; i < KeyResolver._resolverVector.size(); i++) {
+	  // use the old vector to not be hit by updates
+	  List resolverVector = KeyResolver._resolverVector;
+      for (int i = 0; i < resolverVector.size(); i++) {
 		  KeyResolver resolver=
-            (KeyResolver) KeyResolver._resolverVector.get(i);
+            (KeyResolver) resolverVector.get(i);
 
 		  if (resolver==null) {
             Object exArgs[] = {
@@ -165,10 +167,11 @@ public class KeyResolver {
    public static final PublicKey getPublicKey(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-
-      for (int i = 0; i < KeyResolver._resolverVector.size(); i++) {
+	  
+	  List resolverVector = KeyResolver._resolverVector;
+      for (int i = 0; i < resolverVector.size(); i++) {
 		  KeyResolver resolver=
-            (KeyResolver) KeyResolver._resolverVector.get(i);
+            (KeyResolver) resolverVector.get(i);
 
 		  if (resolver==null) {
             Object exArgs[] = {
@@ -186,7 +189,7 @@ public class KeyResolver {
          if (cert!=null) {
         	 if (i!=0) {
             	 //update resolver.        		 
-        		 List resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
+        		 resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
 		  		 Object ob=resolverVector.remove(i);
 		  		 resolverVector.add(0,ob);
    		 		 _resolverVector=resolverVector;
