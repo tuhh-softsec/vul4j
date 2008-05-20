@@ -33,6 +33,7 @@ import org.apache.commons.functor.core.collection.IsEmpty;
 import org.apache.commons.functor.core.comparator.IsGreaterThanOrEqual;
 import org.apache.commons.functor.core.comparator.IsLessThan;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
+import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /*
  * ----------------------------------------------------------------------------
@@ -461,9 +462,9 @@ public class QuicksortExample extends TestCase {
  */
     private BinaryFunction lesserTail = new ObjectListFunction() {
         public Object evaluate(Object head, List tail) {
-            return Algorithms.collect(Algorithms.select(
-                tail.iterator(),
-                IsLessThan.instance((Comparable) head)));
+            return Algorithms.select(
+                    IteratorToGeneratorAdapter.adapt(tail.iterator()),
+                IsLessThan.instance((Comparable) head)).toCollection();
         }
     };
 
@@ -474,9 +475,9 @@ public class QuicksortExample extends TestCase {
  */
     private BinaryFunction greaterTail = new ObjectListFunction() {
         public Object evaluate(Object head, List tail) {
-            return Algorithms.collect(Algorithms.select(
-                tail.iterator(),
-                IsGreaterThanOrEqual.instance((Comparable) head)));
+            return Algorithms.select(
+                    IteratorToGeneratorAdapter.adapt(tail.iterator()),
+                IsGreaterThanOrEqual.instance((Comparable) head)).toCollection();
         }
     };
 

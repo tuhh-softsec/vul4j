@@ -24,6 +24,7 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.adapter.BinaryProcedureBinaryFunction;
 import org.apache.commons.functor.core.composite.UnaryNot;
+import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /**
  * @version $Revision$ $Date$
@@ -50,7 +51,7 @@ public class FixedSizeMap extends FunctoredMap {
                 Map dest = (Map) a;
                 Map src = (Map) b;
 
-                if (Algorithms.contains(src.keySet().iterator(),UnaryNot.not(new ContainsKey(dest)))) {
+                if (Algorithms.contains(IteratorToGeneratorAdapter.adapt(src.keySet().iterator()),UnaryNot.not(new ContainsKey(dest)))) {
                     throw new IllegalArgumentException();
                 } else {
                     dest.putAll(src);
