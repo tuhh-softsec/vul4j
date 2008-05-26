@@ -22,6 +22,7 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.crypto.SecretKey;
@@ -723,12 +724,13 @@ public class KeyInfo extends SignatureElementProxy {
    PublicKey getPublicKeyFromStaticResolvers() throws KeyResolverException {
 	  int length=KeyResolver.length();
 	  int storageLength=this._storageResolvers.size();
+	  Iterator it= KeyResolver.iterator();
       for (int i = 0; i < length; i++) {
-         KeyResolverSpi keyResolver = KeyResolver.item(i);
+         KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
          Node currentChild=this._constructionElement.getFirstChild();
          String uri= this.getBaseURI();
          while (currentChild!=null)      {       
-            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {               
+            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {          	  
                   for (int k = 0; k < storageLength; k++) {
                      StorageResolver storage =
                         (StorageResolver) this._storageResolvers.get(k);
@@ -739,7 +741,7 @@ public class KeyInfo extends SignatureElementProxy {
                                                         storage);
 
                      if (pk != null) {
-                    	 KeyResolver.hit(i);
+                    	 KeyResolver.hit(it);
                          return pk;
                      }                     
                   }                              
@@ -838,12 +840,13 @@ public class KeyInfo extends SignatureElementProxy {
                 + KeyResolver.length() + " resolvers");
       String uri=this.getBaseURI();
       int length= KeyResolver.length();
-      int storageLength=this._storageResolvers.size();            
+      int storageLength=this._storageResolvers.size();   
+      Iterator it = KeyResolver.iterator();
       for (int i = 0; i <length; i++) {
-         KeyResolverSpi keyResolver = KeyResolver.item(i);
+         KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
          X509Certificate cert= applyCurrentResolver(uri, storageLength, keyResolver);
          if (cert!=null) {
-        	 KeyResolver.hit(i);
+        	 KeyResolver.hit(it);
         	 return cert;
          }
       }
@@ -937,8 +940,9 @@ public class KeyInfo extends SignatureElementProxy {
    SecretKey getSecretKeyFromStaticResolvers() throws KeyResolverException {
 	  final int length=KeyResolver.length();
 	  int storageLength=this._storageResolvers.size();
+	  Iterator it = KeyResolver.iterator();
       for (int i = 0; i < length; i++) {
-         KeyResolverSpi keyResolver = KeyResolver.item(i);
+         KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
 
          Node currentChild=this._constructionElement.getFirstChild();
          String uri=this.getBaseURI();

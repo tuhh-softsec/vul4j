@@ -22,6 +22,7 @@ package org.apache.xml.security.keys.keyresolver;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.crypto.SecretKey;
@@ -81,27 +82,12 @@ public class KeyResolver {
       return KeyResolver._resolverVector.size();
    }
 
-   /**
-    * Method item
-    *
-    * @param i
-    * @return the number i resolver registerd
-    * @throws KeyResolverException
-    */
-   public static KeyResolverSpi item(int i) throws KeyResolverException {
-
-	   KeyResolver resolver = (KeyResolver) KeyResolver._resolverVector.get(i);
-      if (resolver==null) {
-         throw new KeyResolverException("utils.resolver.noClass");
-      }
-
-      return resolver._resolverSpi;
-   }
-   
-   public static void hit(int i) {
-	   if (i!=0) {
+   public static void hit(Iterator hintI) {
+	   ResolverIterator hint = (ResolverIterator) hintI;
+	   int i = hint.i;
+	   if (i!=1 && hint.res ==_resolverVector) {
 		   List resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
-  		Object ob=resolverVector.remove(i);
+  		Object ob=resolverVector.remove(i-1);
   		resolverVector.add(0,ob);
   		 _resolverVector=resolverVector; 
   	 } else {
@@ -187,8 +173,8 @@ public class KeyResolver {
 
          PublicKey cert=resolver.resolvePublicKey(element, BaseURI, storage);
          if (cert!=null) {
-        	 if (i!=0) {
-            	 //update resolver.        		 
+        	 if (i!=0 && resolverVector==_resolverVector) {
+        		 //update resolver.        		 
         		 resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
 		  		 Object ob=resolverVector.remove(i);
 		  		 resolverVector.add(0,ob);
@@ -331,5 +317,38 @@ public class KeyResolver {
     */
    public String resolverClassName() {
       return this._resolverSpi.getClass().getName();
+   }
+
+   static class ResolverIterator implements Iterator {
+	   List res;
+		Iterator it;
+		int i;
+	   public ResolverIterator(List list) {
+		res = list;
+		it = res.iterator();
+	}
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return it.hasNext();
+		}
+
+		public Object next() {
+			i++;
+			KeyResolver resolver = (KeyResolver) it.next();
+		      if (resolver==null) {
+		         throw new RuntimeException("utils.resolver.noClass");
+		      }
+
+		      return resolver._resolverSpi;
+		}
+
+		public void remove() {
+			// TODO Auto-generated method stub
+			
+		}
+	
+	};
+	public static Iterator iterator() {
+		return new ResolverIterator(_resolverVector);
    }
 }
