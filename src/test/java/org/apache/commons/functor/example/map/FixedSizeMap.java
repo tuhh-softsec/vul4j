@@ -19,10 +19,10 @@ package org.apache.commons.functor.example.map;
 import java.lang.reflect.Array;
 import java.util.Map;
 
-import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.adapter.BinaryProcedureBinaryFunction;
+import org.apache.commons.functor.core.algorithm.GeneratorContains;
 import org.apache.commons.functor.core.composite.UnaryNot;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
@@ -51,7 +51,7 @@ public class FixedSizeMap extends FunctoredMap {
                 Map dest = (Map) a;
                 Map src = (Map) b;
 
-                if (Algorithms.contains(IteratorToGeneratorAdapter.adapt(src.keySet().iterator()),UnaryNot.not(new ContainsKey(dest)))) {
+                if (GeneratorContains.instance().test(IteratorToGeneratorAdapter.adapt(src.keySet().iterator()),UnaryNot.not(new ContainsKey(dest)))) {
                     throw new IllegalArgumentException();
                 } else {
                     dest.putAll(src);

@@ -20,12 +20,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentity;
+import org.apache.commons.functor.core.algorithm.FoldLeft;
 import org.apache.commons.functor.core.comparator.IsLessThan;
 import org.apache.commons.functor.core.composite.Composite;
 import org.apache.commons.functor.core.composite.Conditional;
@@ -33,6 +33,7 @@ import org.apache.commons.functor.core.composite.ConditionalBinaryFunction;
 import org.apache.commons.functor.example.kata.one.BinaryFunctionUnaryFunction;
 import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
+import org.apache.commons.functor.generator.FilteredGenerator;
 
 /**
  * The real workhorse of this Kata excercise.
@@ -55,16 +56,12 @@ public class DataMunger {
 	 */
     public static final Object process(final Reader file, final int selected, final int col1, final int col2) {
         return NthColumn.instance(selected).evaluate(
-            Algorithms.inject(
-                Lines.from(file).where(
-                    Composite.predicate(IsInteger.instance(),NthColumn.instance(0))),
-                null,
-                lesserSpread(col1,col2)));
+                new FoldLeft(lesserSpread(col1, col2)).evaluate(new FilteredGenerator(Lines.from(file),
+                    Composite.predicate(IsInteger.instance(),NthColumn.instance(0)))));
     }
 
-
     /**
-     * A BinaryFunction that will calcuate the absolute
+     * A BinaryFunction that will calculate the absolute
      * difference between col1 and col2 in the given
      * String arguments, and return the argument
      * whose difference is smallest.

@@ -18,25 +18,18 @@ package org.apache.commons.functor.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
 import org.apache.commons.functor.core.IsEqual;
-import org.apache.commons.functor.core.Offset;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
-import org.apache.commons.functor.generator.util.EachElement;
-import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
  * Tests the Base Generator class.
@@ -169,87 +162,6 @@ public class TestBaseGenerator extends TestCase {
 
     // Tests
     // ------------------------------------------------------------------------
-
-    public void testApply() {
-        Generator gen = new IntegerRange(1,5);
-        UnaryFunction dbl = new UnaryFunction() {
-            public Object evaluate(Object obj) {
-                return new Integer(2*((Number) obj).intValue());
-            }
-        };
-        Summer summer = new Summer();
-
-        gen.apply(dbl).run(summer);
-
-        assertEquals(2*(1+2+3+4),summer.sum);
-    }
-
-    public void testContains() {
-        assertTrue(EachElement.from(list).contains(equalsThree));
-        assertTrue(!EachElement.from(list).contains(equalsTwentyThree));
-    }
-
-    public void testDetect() {
-        assertEquals(new Integer(3),EachElement.from(list).detect(equalsThree));
-        try {
-            EachElement.from(list).detect(equalsTwentyThree);
-            fail("Expected NoSuchElementException");
-        } catch(NoSuchElementException e) {
-            // expected
-        }
-    }
-
-    public void testDetectIfNone() {
-        assertEquals(new Integer(3),EachElement.from(list).detect(equalsThree,"Xyzzy"));
-        assertEquals("Xyzzy",EachElement.from(list).detect(equalsTwentyThree,"Xyzzy"));
-    }
-
-    public void testForEach() {
-        Summer summer = new Summer();
-        EachElement.from(list).foreach(summer);
-        assertEquals(sum,summer.sum);
-    }
-
-    public void testWhere() {
-        assertEquals(evens,EachElement.from(list).where(isEven).toCollection());
-    }
-
-    public void testSelect1() {
-        assertEquals(evens,EachElement.from(list).select(isEven).toCollection());
-    }
-
-    public void testSelect2() {
-        ArrayList result = new ArrayList();
-        assertSame(result,EachElement.from(list).select(isEven).to(result));
-        assertEquals(evens,result);
-    }
-
-    public void testReject1() {
-        assertEquals(evens,EachElement.from(list).reject(isOdd).toCollection());
-        assertEquals(Collections.EMPTY_LIST, EachElement.from(list).reject(isOdd).reject(isEven).toCollection());
-    }
-
-    public void testReject2() {
-        ArrayList result = new ArrayList();
-        assertSame(result,EachElement.from(list).reject(isOdd).to(result));
-        assertEquals(evens,result);
-    }
-
-    public void testInject() {
-        Object result = EachElement.from(list).inject(
-            new Integer(0),
-            new BinaryFunction() {
-                public Object evaluate(Object a, Object b) {
-                    return new Integer(((Number) a).intValue() + ((Number) b).intValue());
-                }
-            });
-        assertEquals(new Integer(sum),result);
-    }
-
-    public void testLimit() {
-        Collection col = simpleGenerator.until(new Offset(2)).toCollection();
-        assertEquals("[0, 1]", col.toString());
-    }
 
     public void testTo() {
         Collection col = (Collection) simpleGenerator.to(new CollectionTransformer());

@@ -27,7 +27,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.core.Limit;
 import org.apache.commons.functor.core.Offset;
+import org.apache.commons.functor.generator.GenerateUntil;
+import org.apache.commons.functor.generator.GenerateWhile;
+import org.apache.commons.functor.generator.UntilGenerate;
+import org.apache.commons.functor.generator.WhileGenerate;
 
 /**
  * @author Jason Horman (jason@jhorman.org)
@@ -129,9 +134,10 @@ public class TestEachElement extends BaseFunctorTest {
     }
 
     public void testWithStop() {
-        Collection col = EachElement.from(list).until(new Offset(3)).toCollection();
-        assertEquals("[0, 1, 2]", col.toString());
-
+        assertEquals("[0, 1, 2]", new UntilGenerate(new Offset(3), EachElement.from(list)).toCollection().toString());
+        assertEquals("[0, 1, 2, 3]", new GenerateUntil(EachElement.from(list), new Offset(3)).toCollection().toString());
+        assertEquals("[0, 1, 2]", new WhileGenerate(new Limit(3), EachElement.from(list)).toCollection().toString());
+        assertEquals("[0, 1, 2, 3]", new GenerateWhile(EachElement.from(list), new Limit(3)).toCollection().toString());
     }
 
     public void testWithIterator() {

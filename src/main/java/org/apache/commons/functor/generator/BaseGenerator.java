@@ -16,10 +16,7 @@ package org.apache.commons.functor.generator;
 
 import java.util.Collection;
 
-import org.apache.commons.functor.Algorithms;
-import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
 
@@ -82,86 +79,6 @@ public abstract class BaseGenerator implements Generator {
      */
     public boolean isStopped() {
         return stopped;
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#apply}.
-     */
-    public final Generator apply(UnaryFunction func) {
-        return Algorithms.apply(this, func);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#contains}.
-     */
-    public final boolean contains(UnaryPredicate pred) {
-        return Algorithms.contains(this, pred);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#detect}.
-     */
-    public final Object detect(UnaryPredicate pred) {
-        return Algorithms.detect(this, pred);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#detect}.
-     */
-    public final Object detect(UnaryPredicate pred, Object ifNone) {
-        return Algorithms.detect(this, pred, ifNone);
-    }
-
-    /**
-     * {@inheritDoc}
-     * Synonym for run.
-     */
-    public final void foreach(UnaryProcedure proc) {
-        Algorithms.foreach(this, proc);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#inject}.
-     */
-    public final Object inject(Object seed, BinaryFunction func) {
-        return Algorithms.inject(this, seed, func);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#reject}.
-     */
-    public final Generator reject(UnaryPredicate pred) {
-        return Algorithms.reject(this, pred);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#select}.
-     */
-    public final Generator select(UnaryPredicate pred) {
-        return Algorithms.select(this, pred);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#select}.
-     */
-    public final Generator where(UnaryPredicate pred) {
-        return Algorithms.select(this, pred);
-    }
-
-    /**
-     * {@inheritDoc}
-     * See {@link Algorithms#until}.
-     */
-    public final Generator until(UnaryPredicate pred) {
-        return Algorithms.until(this, pred);
     }
 
     /**

@@ -23,10 +23,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.Function;
 import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.core.algorithm.RecursiveEvaluation;
+import org.apache.commons.functor.core.algorithm.UntilDo;
 import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
@@ -311,7 +312,7 @@ public class TestBinaryChop extends TestCase {
                     }
 
                 };
-                Algorithms.untildo(loop,loop);
+                new UntilDo(loop, loop).run();
                 return ((Number) loop.evaluate()).intValue();
             }
         });
@@ -443,7 +444,7 @@ public class TestBinaryChop extends TestCase {
     public void testTailRecursive() {
         chopTest(new BaseBinaryChop() {
             public int find(final Object seeking, final List list) {
-                return ((Number) Algorithms.recurse(new Function() {
+                return ((Number) new RecursiveEvaluation(new Function() {
                     public Object evaluate() {
                         if (high - low > 1) {
                             int mid = (high + low) / 2;
@@ -463,7 +464,7 @@ public class TestBinaryChop extends TestCase {
                     }
                     int high = list.size();
                     int low = 0;
-                })).intValue();
+                }).evaluate()).intValue();
             }
         });
     }
@@ -517,7 +518,7 @@ public class TestBinaryChop extends TestCase {
     public void testTailRecursive2() {
         chopTest(new BaseBinaryChop() {
             public int find(final Object seeking, final List list) {
-                return ((Number) Algorithms.recurse(new Function() {
+                return ((Number) new RecursiveEvaluation(new Function() {
                     public Object evaluate() {
                         if (sublist.isEmpty()) {
                             return BaseBinaryChop.NEGATIVE_ONE;
@@ -538,7 +539,7 @@ public class TestBinaryChop extends TestCase {
                     }
                     int offset = 0;
                     List sublist = list;
-                })).intValue();
+                }).evaluate()).intValue();
             }
         });
     }
