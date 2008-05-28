@@ -1,10 +1,9 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
-New in ...
+New in v1.4.2rc1
     Fixed bug 44999: DOMException is thrown at XMLSignature creation. Thanks to Giedrius Noreikis.
     Fixed bug 44863: Improved logging in signature handling. Thanks to Wally Dennis.
     Fixed bug 44956: Concurrent creation of a XMLSignature instance produces an ArrayIndexOutOfBoundsException. Thanks to Giedrius Noreikis
     Fixed bug 44991: Concurrent invocation of KeyInfo.getX509Certificate() occasionally fails. Thanks to Giedrius Noreikis
-    
     
 New in v1.4.2beta2
     Fixed bug 44810: Add support for more XMLDSig algorithms listed in RFC 4051
