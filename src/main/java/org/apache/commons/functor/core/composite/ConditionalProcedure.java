@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
  * A {@link Procedure Procedure}
@@ -49,6 +50,15 @@ public final class ConditionalProcedure implements Procedure, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new ConditionalProcedure.
+     * @param ifPred if
+     * @param thenProc then
+     */
+    public ConditionalProcedure(Predicate ifPred, Procedure thenProc) {
+        this(ifPred, thenProc, NoOp.instance());
+    }
+
     /**
      * Create a new ConditionalProcedure.
      * @param ifPred if

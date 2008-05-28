@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
  * A {@link UnaryProcedure UnaryProcedure}
@@ -49,6 +50,15 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
 
     // constructor
     // ------------------------------------------------------------------------
+    /**
+     * Create a new ConditionalUnaryProcedure.
+     * @param ifPred if
+     * @param thenProc then
+     */
+    public ConditionalUnaryProcedure(UnaryPredicate ifPred, UnaryProcedure thenProc) {
+    	this(ifPred, thenProc, NoOp.instance());
+	}
+
     /**
      * Create a new ConditionalUnaryProcedure.
      * @param ifPred if

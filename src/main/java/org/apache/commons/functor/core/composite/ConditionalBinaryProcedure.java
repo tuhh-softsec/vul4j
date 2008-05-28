@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.BinaryProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
  * A {@link BinaryProcedure BinaryProcedure}
@@ -54,13 +55,22 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
     /**
      * Create a new ConditionalBinaryProcedure.
      * @param ifPred to evaluate
-     * @param thenPred if <code>ifPred</code> yields <code>true</code>
-     * @param elsePred if <code>ifPred</code> yields <code>false</code>
+     * @param thenProc if <code>ifPred</code> yields <code>true</code>
      */
-    public ConditionalBinaryProcedure(BinaryPredicate ifPred, BinaryProcedure thenPred, BinaryProcedure elsePred) {
+    public ConditionalBinaryProcedure(BinaryPredicate ifPred, BinaryProcedure thenProc) {
+        this(ifPred, thenProc, NoOp.instance());
+    }
+    
+    /**
+     * Create a new ConditionalBinaryProcedure.
+     * @param ifPred to evaluate
+     * @param thenProc if <code>ifPred</code> yields <code>true</code>
+     * @param elseProc if <code>ifPred</code> yields <code>false</code>
+     */
+    public ConditionalBinaryProcedure(BinaryPredicate ifPred, BinaryProcedure thenProc, BinaryProcedure elseProc) {
         this.ifPred = ifPred;
-        this.thenProc = thenPred;
-        this.elseProc = elsePred;
+        this.thenProc = thenProc;
+        this.elseProc = elseProc;
     }
 
     // predicate interface
