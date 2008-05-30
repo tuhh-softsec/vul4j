@@ -62,11 +62,6 @@ public final class Driver {
 	configure();
     }
 
-    @SuppressWarnings("unused")
-    private Driver() {
-	// Not to be used
-    }
-
     public Driver(Properties props) {
 	// Remote application settings
 	baseURL = props.getProperty("remoteUrlBase");
@@ -81,10 +76,9 @@ public final class Driver {
 	    httpClient = new HttpClient(connectionManager);
 	    if (props.getProperty("timeout") != null) {
 		timeout = Integer.parseInt(props.getProperty("timeout"));
-		httpClient.getParams().setSoTimeout(
-			timeout);
-		//httpClient.getHttpConnectionManager().getParams().setSoTimeout(
-		//	timeout);
+		httpClient.getParams().setSoTimeout(timeout);
+		// httpClient.getHttpConnectionManager().getParams().setSoTimeout(
+		// timeout);
 
 		httpClient.getHttpConnectionManager().getParams()
 			.setConnectionTimeout(timeout);
@@ -148,7 +142,7 @@ public final class Driver {
     public final static void configure(Properties props) {
 	instances = new HashMap<String, Driver>();
 	HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
-	for (Enumeration enumeration = props.propertyNames(); enumeration
+	for (Enumeration<?> enumeration = props.propertyNames(); enumeration
 		.hasMoreElements();) {
 	    String propertyName = (String) enumeration.nextElement();
 	    String prefix;
