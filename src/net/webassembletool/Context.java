@@ -39,7 +39,7 @@ public class Context {
     }
 
     public String getUser() {
-	return (String) parameterMap.get(LOCALE_PARAM_KEY);
+	return parameterMap.get(LOCALE_PARAM_KEY);
     }
 
     public void setUser(String user) {
