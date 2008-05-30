@@ -5,9 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Output implementation that saves the file and headers into two distinct
  * files.
@@ -16,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class FileOutput implements Output {
-    private final static Log log = LogFactory.getLog(FileOutput.class);
     private File file;
     private File headerFile;
     private FileOutputStream fileOutputStream;

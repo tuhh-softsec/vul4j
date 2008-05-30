@@ -4,9 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Output implementation that writes to a String.<br />
  * StringOutput should be used only for text responses such as HTML and not for
@@ -16,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class StringOutput implements Output {
-    private final static Log log = LogFactory.getLog(StringOutput.class);
     private String charset = "ISO-8859-1";
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
