@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="webassembletool" default="build" basedir=".">
+	<loadproperties srcfile="build.properties" />
 	<target name="build">
 		<copy todir="bin/master/WEB-INF/classes">
 			<fileset dir="classes" />
@@ -21,22 +22,22 @@
 	</target>
 	<target name="javadoc">
 		<delete>
-			<fileset file="javadoc" />
+			<fileset file="bin/javadoc" />
 		</delete>
-		<javadoc destdir="javadoc" sourcepath="src" charset="ISO-8859-1" />
+		<javadoc destdir="bin/javadoc" sourcepath="src" charset="ISO-8859-1" />
 	</target>
 	<target name="release" depends="build">
 		<delete>
-			<fileset file="bin/webassembletool.jar" />
+			<fileset file="bin/webassembletool*.jar" />
 		</delete>
 		<copy todir="bin">
 			<fileset dir="lib" />
 		</copy>
-		<jar destfile="bin/webassembletool.jar" basedir="classes" includes="net/">
+		<jar destfile="bin/webassembletool_${current.version}.jar" basedir="classes" includes="net/">
 			<metainf file="tld/webassembletool.tld" />
 		</jar>
-		<zip destfile="bin/webassembletool.zip">
-			<fileset dir="." includes="doc/, lib/, bin/webassembletool.jar, javadoc/, test/, src/"/>
+		<zip destfile="bin/webassembletool_${current.version}.zip">
+			<fileset dir="." includes="doc/, lib/, bin/webassembletool_${current.version}.jar, bin/javadoc/, test/, src/" />
 		</zip>
 	</target>
 </project>
