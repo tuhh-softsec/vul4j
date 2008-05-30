@@ -63,8 +63,9 @@ public class FilteredRequest extends HttpServletRequestWrapper {
 		    return locale;
 		}
 	    };
-	} else
+	} else {
 	    return super.getLocales();
+	}
     }
 
     @Override
