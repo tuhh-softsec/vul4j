@@ -300,7 +300,12 @@ public final class Driver {
 		// The resource was not found in cache so osCache has locked
 		// this key. We have to remove the lock.
 		if (useCache && !cacheUpdated)
-		    cache.cancelUpdate(httpUrl);
+		    if (cachedResource != null)
+			// Re-put the cached entry in the cache so that we will
+			// not try to reload it until new expiration delay
+			cache.putInCache(httpUrl, cachedResource);
+		    else
+			cache.cancelUpdate(httpUrl);
 	    }
 	}
     }
