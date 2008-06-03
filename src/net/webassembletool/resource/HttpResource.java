@@ -2,9 +2,11 @@ package net.webassembletool.resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 
 import net.webassembletool.ouput.Output;
 
+import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -28,12 +30,15 @@ public class HttpResource implements Resource {
 	try {
 	    httpClient.executeMethod(getMethod);
 	    exists = (getMethod.getStatusCode() == 200);
+	} catch (ConnectTimeoutException e) {
+	    log.warn("Connect timeout retrieving URL: " + url);
+	} catch (SocketTimeoutException e) {
+	    log.warn("Socket timeout retrieving URL: " + url);
 	} catch (HttpException e) {
 	    log.error("Error retrieving URL: " + url, e);
 	} catch (IOException e) {
 	    log.error("Error retrieving URL: " + url, e);
-	}
-    }
+	}    }
 
     public void render(Output output) throws IOException {
 	try {
