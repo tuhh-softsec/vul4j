@@ -141,6 +141,14 @@ public class FileUtils
 
     public static String FS = System.getProperty( "file.separator" );
 
+    /**
+     * Non-valid Characters for naming files, folders under Windows: <code>":", "*", "?", "\"", "<", ">", "|"</code>
+     *
+     * @see <a href="http://support.microsoft.com/?scid=kb%3Ben-us%3B177506&x=12&y=13">
+     * http://support.microsoft.com/?scid=kb%3Ben-us%3B177506&x=12&y=13</a>
+     */
+    private static final String[] INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME = { ":", "*", "?", "\"", "<", ">", "|" };
+
     public static String[] getDefaultExcludes()
     {
         return DirectoryScanner.DEFAULTEXCLUDES;
@@ -262,7 +270,7 @@ public class FileUtils
             }
         }
 
-        
+
 
         if ( lastDot >= 0 && lastDot > lastSep)
         {
@@ -595,10 +603,25 @@ public class FileUtils
 
     /**
      * Simple way to make a directory
+     *
+     * @param dir the directory to create
+     * @throws IllegalArgumentException if the dir contains illegal Windows characters under Windows OS.
+     * @see #INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME
      */
     public static void mkdir( String dir )
     {
         File file = new File( dir );
+
+        if ( Os.isFamily( "windows" ) )
+        {
+            if ( !isValidWindowsFileName( file ) )
+            {
+                throw new IllegalArgumentException( "The file (" + dir
+                    + ") cannot contain any of the following characters: \n"
+                    + StringUtils.join( INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME, " " ) );
+            }
+        }
+
         if ( !file.exists() )
         {
             file.mkdirs();
@@ -1372,12 +1395,27 @@ public class FileUtils
 
 
     /**
-     * Make a directory. If there already exists a file with specified name or
-     * the directory is unable to be created then an exception is thrown.
+     * Make a directory.
+     *
+     * @param file not null
+     * @throws IOException If there already exists a file with specified name or
+     * the directory is unable to be created
+     * @throws IllegalArgumentException if the file contains illegal Windows characters under Windows OS.
+     * @see #INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME
      */
     public static void forceMkdir( final File file )
         throws IOException
     {
+        if ( Os.isFamily( "windows" ) )
+        {
+            if ( !isValidWindowsFileName( file ) )
+            {
+                throw new IllegalArgumentException( "The file (" + file.getAbsolutePath()
+                    + ") cannot contain any of the following characters: \n"
+                    + StringUtils.join( INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME, " " ) );
+            }
+        }
+
         if ( file.exists() )
         {
             if ( file.isFile() )
@@ -1939,7 +1977,7 @@ public class FileUtils
      * <b>If wrappers is null or empty, the file will be copy only if to.lastModified() < from.lastModified()</b>
      * @param from the file to copy
      * @param to the destination file
-     * @param encoding the file output encoding (only if wrappers is not empty) 
+     * @param encoding the file output encoding (only if wrappers is not empty)
      * @param wrappers array of {@link FilterWrapper}
      * @throws IOException if an IO error occurs during copying or filtering
      */
@@ -1958,9 +1996,9 @@ public class FileUtils
      * <b>If wrappers is null or empty, the file will be copy only if to.lastModified() < from.lastModified()</b>
      * @param from the file to copy
      * @param to the destination file
-     * @param encoding the file output encoding (only if wrappers is not empty) 
+     * @param encoding the file output encoding (only if wrappers is not empty)
      * @param wrappers array of {@link FilterWrapper}
-     * @param overwrite if true and f wrappers is null or empty, the file will be copy 
+     * @param overwrite if true and f wrappers is null or empty, the file will be copy
      *        enven if to.lastModified() < from.lastModified()
      * @throws IOException if an IO error occurs during copying or filtering
      * @since 1.5.2
@@ -2013,8 +2051,8 @@ public class FileUtils
                 copyFile( from, to );
             }
         }
-    }    
-    
+    }
+
     /**
      * Note: the file content is read with platform encoding
      * @return a List containing every every line not starting with # and not empty
@@ -2045,5 +2083,33 @@ public class FileUtils
         }
 
         return lines;
+    }
+
+    /**
+     * For Windows OS, check if the file name contains any of the following characters:
+     * <code>":", "*", "?", "\"", "<", ">", "|"</code>
+     *
+     * @param f not null file
+     * @return <code>false</code> if the file path contains any of forbidden Windows characters,
+     * <code>true</code> if the Os is not Windows or if the file path respect the Windows constraints.
+     * @see #INVALID_CHARACTERS_FOR_WINDOWS_FILE
+     * @since 1.5.2
+     */
+    public static boolean isValidWindowsFileName( File f )
+    {
+        if ( Os.isFamily( "windows" ) )
+        {
+            if ( StringUtils.indexOfAny( f.getName(), INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME ) != -1 )
+            {
+                return false;
+            }
+
+            if ( f.getParentFile()!= null)
+            {
+                return isValidWindowsFileName( f.getParentFile() );
+            }
+        }
+
+        return true;
     }
 }

@@ -176,6 +176,21 @@ public final class FileUtilsTest
         final File dir = new File( getTestDirectory(), "testdir" );
         FileUtils.mkdir( dir.getAbsolutePath() );
         dir.deleteOnExit();
+
+        if ( Os.isFamily( "windows" ) )
+        {
+            try
+            {
+                File winFile = new File( getTestDirectory(), "bla*bla" );
+                winFile.deleteOnExit();
+                FileUtils.mkdir( winFile.getAbsolutePath() );
+                assertTrue( false );
+            }
+            catch ( IllegalArgumentException e)
+            {
+                assertTrue( true );
+            }
+        }
     }
 
     // contentEquals
@@ -290,6 +305,21 @@ public final class FileUtilsTest
         // Tests with non-existent directory
         FileUtils.forceMkdir( testFile );
         assertTrue( "Directory was not created.", testFile.exists() );
+
+        if ( Os.isFamily( "windows" ) )
+        {
+            try
+            {
+                File winFile = new File( getTestDirectory(), "bla*bla" );
+                winFile.deleteOnExit();
+                FileUtils.forceMkdir( winFile );
+                assertTrue( false );
+            }
+            catch ( IllegalArgumentException e)
+            {
+                assertTrue( true );
+            }
+        }
     }
 
     // sizeOfDirectory
@@ -930,24 +960,24 @@ public final class FileUtilsTest
         }
         FileUtils.copyFile( sourceFile, destFile, null, null );
         assertEqualContent( content.getBytes(), destFile );
-        
+
         String newercontent = "oldercontent";
         File olderFile = new File( getTestDirectory(), "oldersource.txt" );
-        
+
         OutputStream olderContentStream = new FileOutputStream( olderFile );
         olderContentStream.write( newercontent.getBytes() );
         olderContentStream.flush();
-        
+
         // very old file ;-)
         olderFile.setLastModified( 1 );
         destFile = new File( getTestDirectory(), "target.txt" );
         FileUtils.copyFile( olderFile, destFile, null, null );
         String destFileContent = IOUtil.toString( new FileInputStream (destFile) );
         assertEquals( content, destFileContent );
-        
+
     }
-    
-    
+
+
     public void testFilteredWithoutFilterAndOlderFileAndOverwrite()
     throws Exception
     {
@@ -964,23 +994,23 @@ public final class FileUtilsTest
         }
         FileUtils.copyFile( sourceFile, destFile, null, null );
         assertEqualContent( content.getBytes(), destFile );
-        
+
         String newercontent = "oldercontent";
         File olderFile = new File( getTestDirectory(), "oldersource.txt" );
-        
+
         OutputStream olderContentStream = new FileOutputStream( olderFile );
         olderContentStream.write( newercontent.getBytes() );
         olderContentStream.flush();
-        
+
         // very old file ;-)
         olderFile.setLastModified( 1 );
         destFile = new File( getTestDirectory(), "target.txt" );
         FileUtils.copyFile( olderFile, destFile, null, null, true );
         String destFileContent = IOUtil.toString( new FileInputStream (destFile) );
         assertEquals( newercontent, destFileContent );
-        
-    }    
-    
+
+    }
+
     public void testFileRead() throws IOException
     {
         File testFile = new File( getTestDirectory(), "testFileRead.txt" );
@@ -1160,7 +1190,7 @@ public final class FileUtilsTest
 
         // This should not fail
         assertTrue( theFile.length() > 0 );
-    }    
+    }
 
     public void testExtensions()
         throws Exception
@@ -1185,7 +1215,30 @@ public final class FileUtilsTest
             String computed = FileUtils.extension( fileName );
             assertEquals( "case [" + i + "]:" + fileName + " -> " + ext + ", computed : " + computed, ext, computed );
         }
-
     }
 
+    public void testIsValidWindowsFileName()
+        throws Exception
+    {
+        File f = new File( "c:\test" );
+        assertTrue( FileUtils.isValidWindowsFileName( f ) );
+
+        if ( Os.isFamily( "windows" ) )
+        {
+            f = new File( "c:\test\bla:bla" );
+            assertFalse( FileUtils.isValidWindowsFileName( f ) );
+            f = new File( "c:\test\bla*bla" );
+            assertFalse( FileUtils.isValidWindowsFileName( f ) );
+            f = new File( "c:\test\bla\"bla" );
+            assertFalse( FileUtils.isValidWindowsFileName( f ) );
+            f = new File( "c:\test\bla<bla" );
+            assertFalse( FileUtils.isValidWindowsFileName( f ) );
+            f = new File( "c:\test\bla>bla" );
+            assertFalse( FileUtils.isValidWindowsFileName( f ) );
+            f = new File( "c:\test\bla|bla" );
+            assertFalse( FileUtils.isValidWindowsFileName( f ) );
+            f = new File( "c:\test\bla*bla" );
+            assertFalse( FileUtils.isValidWindowsFileName( f ) );
+        }
+    }
 }
