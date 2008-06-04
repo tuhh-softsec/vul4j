@@ -30,6 +30,7 @@ import org.codehaus.plexus.util.cli.shell.Shell;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -438,6 +439,85 @@ public class CommandlineTest
             {
                 StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - "
                                                      + err.getOutput() );
+                throw new Exception( msg.toString() );
+            }
+        }
+        catch ( CommandLineException e )
+        {
+            throw new Exception( "Unable to execute command: " + e.getMessage(), e );
+        }
+    }
+
+    /**
+     * Test an executable with a quote in its path and no space
+     *
+     * @throws Exception
+     */
+    public void testOnlyQuotedPath()
+        throws Exception
+    {
+        File javaHome = new File( System.getProperty( "java.home" ) );
+        File java;
+        if ( Os.isFamily( "windows" ) )
+        {
+            java = new File( javaHome, "/bin/java.exe" );
+        }
+        else
+        {
+            java = new File( javaHome, "/bin/java" );
+        }
+
+        if ( !java.exists() )
+        {
+            throw new IOException( java.getAbsolutePath() + " doesn't exist" );
+        }
+
+        File dir = new File( System.getProperty( "basedir" ), "target/quotedpath\'test" );
+        dir.mkdirs();
+
+        // Create a script file
+        File bat;
+        if ( Os.isFamily( "windows" ) )
+        {
+            bat = new File( dir, "echo.bat" );
+        }
+        else
+        {
+            bat = new File( dir, "echo" );
+        }
+
+        Writer w = new FileWriter( bat );
+        try
+        {
+            IOUtil.copy( java.getAbsolutePath() + " -version", w );
+        }
+        finally
+        {
+            IOUtil.close( w );
+        }
+
+        // Change permission
+        if ( !Os.isFamily( "windows" ) )
+        {
+            Runtime.getRuntime().exec( new String[] { "chmod", "a+x", bat.getAbsolutePath() } );
+            Thread.sleep( 10 );
+        }
+
+        Commandline cmd = new Commandline();
+        cmd.setExecutable( bat.getAbsolutePath() );
+        cmd.setWorkingDirectory( dir );
+
+        CommandLineUtils.StringStreamConsumer err = new CommandLineUtils.StringStreamConsumer();
+
+        try
+        {
+            System.out.println( "Command line is: " + StringUtils.join( cmd.getShellCommandline(), " " ) );
+
+            int exitCode = CommandLineUtils.executeCommandLine( cmd, new DefaultConsumer(), err );
+
+            if ( exitCode != 0 )
+            {
+                StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - " + err.getOutput() );
                 throw new Exception( msg.toString() );
             }
         }

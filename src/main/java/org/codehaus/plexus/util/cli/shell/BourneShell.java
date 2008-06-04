@@ -15,6 +15,7 @@ package org.codehaus.plexus.util.cli.shell;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
@@ -47,6 +48,23 @@ public class BourneShell
         {
             addShellArg( "-l" );
         }
+    }
+
+    /** {@inheritDoc} */
+    public String getExecutable()
+    {
+        if ( Os.isFamily( "windows" ) )
+        {
+            return super.getExecutable();
+        }
+
+        if ( ( super.getExecutable() != null ) && ( super.getExecutable().indexOf( " " ) == -1 ) &&
+            ( super.getExecutable().indexOf( "'" ) != -1 ) )
+        {
+            return  StringUtils.replace( super.getExecutable(), "'", "\\\'"  );
+        }
+
+        return super.getExecutable();
     }
 
     public List getShellArgsList()
@@ -92,10 +110,15 @@ public class BourneShell
             return null;
         }
 
+        String dir = getWorkingDirectoryAsString();
         StringBuffer sb = new StringBuffer();
-
         sb.append( "cd " );
-        sb.append( StringUtils.quoteAndEscape( getWorkingDirectoryAsString(), '\"' ) );
+        if ( dir != null && dir.indexOf( " " ) == -1 && dir.indexOf( "'" ) != -1 )
+        {
+            dir = StringUtils.replace( dir, "'", "\\\'"  );
+        }
+
+        sb.append( StringUtils.quoteAndEscape( dir, '\"' ) );
         sb.append( " && " );
 
         return sb.toString();
@@ -105,5 +128,4 @@ public class BourneShell
     {
         return BASH_QUOTING_TRIGGER_CHARS;
     }
-
 }

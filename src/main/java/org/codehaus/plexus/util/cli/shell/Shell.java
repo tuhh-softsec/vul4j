@@ -144,11 +144,11 @@ public class Shell
             {
                 char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
 
-                sb.append( StringUtils.quoteAndEscape( executable, getExecutableQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), '\\', false ) );
+                sb.append( StringUtils.quoteAndEscape( getExecutable(), getExecutableQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), '\\', false ) );
             }
             else
             {
-                sb.append( executable );
+                sb.append( getExecutable() );
             }
         }
         for ( int i = 0; i < arguments.length; i++ )
