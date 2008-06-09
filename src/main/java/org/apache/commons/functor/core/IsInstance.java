@@ -18,7 +18,9 @@ package org.apache.commons.functor.core;
 
 import java.io.Serializable;
 
+import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.RightBoundPredicate;
 
 /**
  * {@link #test Tests}
@@ -29,63 +31,59 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsInstanceOf implements UnaryPredicate, Serializable {
-
-    // attributes
-    // ------------------------------------------------------------------------
-    private Class klass;
-
-    // constructor
-    // ------------------------------------------------------------------------
+public final class IsInstance<T> implements BinaryPredicate<T, Class<?>>, Serializable {
     /**
-     * Create a new IsInstanceOf.
-     * @param klass Class of which a tested object must be an instance.
+     * Basic IsInstanceOf instance.
      */
-    public IsInstanceOf(Class klass) {
-        this.klass = klass;
-    }
+    public static final IsInstance<Object> INSTANCE = IsInstance.<Object>instance();
 
     // predicate interface
     // ------------------------------------------------------------------------
+
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj) {
-        return klass.isInstance(obj);
+    public boolean test(T left, Class<?> right) {
+        return right.isInstance(left);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IsInstanceOf && equals((IsInstanceOf) that));
-    }
-
-    /**
-     * Learn whether another IsInstanceOf is equal to this.
-     * @param that IsInstanceOf to test
-     * @return boolean
-     */
-    public boolean equals(IsInstanceOf that) {
-        return (null != that && (null == this.klass ? null == that.klass : this.klass.equals(that.klass)));
+        return that instanceof IsInstance;
     }
 
     /**
      * {@inheritDoc}
      */
     public int hashCode() {
-        int hash = "IsInstanceOf".hashCode();
-        if (null != klass) {
-            hash ^= klass.hashCode();
-        }
-        return hash;
+        return ("IsInstance".hashCode() << 4) | 37;
     }
 
     /**
      * {@inheritDoc}
      */
     public String toString() {
-        return "IsInstanceOf<" + klass + ">";
+        return "IsInstance";
     }
 
+    /**
+     * Get an IsInstance instance.
+     * @param <T>
+     * @return IsInstance<T>
+     */
+    public static <T> IsInstance<T> instance() {
+        return new IsInstance<T>();
+    }
+
+    /**
+     * Get an IsInstanceOf UnaryPredicate. 
+     * @param <T>
+     * @param clazz bound right-side argument
+     * @return UnaryPredicate<T>
+     */
+    public static <T> UnaryPredicate<T> of(Class<?> clazz) {
+        return RightBoundPredicate.bind(new IsInstance<T>(), clazz);
+    }
 }
