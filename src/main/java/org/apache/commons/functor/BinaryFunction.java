@@ -26,13 +26,13 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface BinaryFunction extends BinaryFunctor {
+public interface BinaryFunction<L, R, T> extends BinaryFunctor<L, R> {
     /**
      * Evaluate this function.
      *
-     * @param left the first element of the ordered pair of arguments
-     * @param right the second element of the ordered pair of arguments
-     * @return the result of this function for the given arguments
+     * @param left the L element of the ordered pair of arguments
+     * @param right the R element of the ordered pair of arguments
+     * @return the T result of this function for the given arguments
      */
-    Object evaluate(Object left, Object right);
+    T evaluate(L left, R right);
 }

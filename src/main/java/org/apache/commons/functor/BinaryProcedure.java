@@ -27,12 +27,12 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface BinaryProcedure extends BinaryFunctor {
+public interface BinaryProcedure<L, R> extends BinaryFunctor<L, R> {
     /**
      * Execute this procedure.
      *
-     * @param left the first element of the ordered pair of arguments
-     * @param right the second element of the ordered pair of arguments
+     * @param left the L element of the ordered pair of arguments
+     * @param right the R element of the ordered pair of arguments
      */
-    void run(Object left, Object right);
+    void run(L left, R right);
 }

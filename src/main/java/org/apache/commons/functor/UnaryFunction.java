@@ -27,12 +27,12 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface UnaryFunction extends UnaryFunctor {
+public interface UnaryFunction<A, T> extends UnaryFunctor<A> {
     /**
      * Evaluate this function.
      *
-     * @param obj the object to evaluate
-     * @return the result of this evaluation
+     * @param obj the A object to evaluate
+     * @return the T result of this evaluation
      */
-    Object evaluate(Object obj);
+    T evaluate(A obj);
 }

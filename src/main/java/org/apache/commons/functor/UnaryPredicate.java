@@ -27,12 +27,12 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface UnaryPredicate extends UnaryFunctor {
+public interface UnaryPredicate<A> extends UnaryFunctor<A> {
     /**
      * Evaluate this predicate.
      *
-     * @param obj the object to test
+     * @param obj the A object to test
      * @return the result of this test
      */
-    boolean test(Object obj);
+    boolean test(A obj);
 }

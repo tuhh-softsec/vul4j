@@ -27,10 +27,10 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface UnaryProcedure extends UnaryFunctor {
+public interface UnaryProcedure<A> extends UnaryFunctor<A> {
     /**
      * Execute this procedure.
-     * @param obj a parameter to this execution
+     * @param obj an A parameter to this execution
      */
-    void run(Object obj);
+    void run(A obj);
 }

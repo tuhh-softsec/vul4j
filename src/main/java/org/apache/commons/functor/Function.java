@@ -27,10 +27,10 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface Function extends NullaryFunctor {
+public interface Function<T> extends NullaryFunctor {
     /**
      * Evaluate this function.
-     * @return the result of this evaluation
+     * @return the T result of this evaluation
      */
-    Object evaluate();
+    T evaluate();
 }

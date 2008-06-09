@@ -26,5 +26,5 @@ package org.apache.commons.functor;
  * @since 1.0
  * @version $Revision$ $Date$
  */
-public interface UnaryFunctor extends Functor {
+public interface UnaryFunctor<A> extends Functor {
 }

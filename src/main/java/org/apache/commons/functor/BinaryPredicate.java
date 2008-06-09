@@ -27,13 +27,13 @@ package org.apache.commons.functor;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public interface BinaryPredicate extends BinaryFunctor {
+public interface BinaryPredicate<L, R> extends BinaryFunctor<L, R> {
     /**
      * Evaluate this predicate.
      *
-     * @param left the first element of the ordered pair of arguments
-     * @param right the second element of the ordered pair of arguments
+     * @param left the L element of the ordered pair of arguments
+     * @param right the R element of the ordered pair of arguments
      * @return the result of this test for the given arguments
      */
-    boolean test(Object left, Object right);
+    boolean test(L left, R right);
 }
