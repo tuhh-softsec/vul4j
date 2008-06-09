@@ -2988,6 +2988,7 @@ public class Digester extends DefaultHandler {
                 ; // Fall through so we get them all
             }
         }
+        inputSources.clear();
 
     }
 
