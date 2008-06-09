@@ -38,18 +38,18 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BoundProcedure implements Procedure, Serializable {
+public final class BoundProcedure<A> implements Procedure, Serializable {
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure procedure = null;
+    private UnaryProcedure<? super A> procedure;
     /** The parameter to pass to that procedure. */
-    private Object param = null;
+    private A param;
 
     /**
      * Create a new BoundProcedure.
      * @param procedure the procedure to adapt
      * @param arg the constant argument to use
      */
-    public BoundProcedure(UnaryProcedure procedure, Object arg) {
+    public BoundProcedure(UnaryProcedure<? super A> procedure, A arg) {
         this.procedure = procedure;
         this.param = arg;
     }
@@ -65,7 +65,7 @@ public final class BoundProcedure implements Procedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BoundProcedure && equals((BoundProcedure) that));
+        return that == this || (that instanceof BoundProcedure && equals((BoundProcedure<?>) that));
     }
 
     /**
@@ -73,7 +73,7 @@ public final class BoundProcedure implements Procedure, Serializable {
      * @param that the BoundProcedure to test
      * @return boolean
      */
-    public boolean equals(BoundProcedure that) {
+    public boolean equals(BoundProcedure<?> that) {
         return null != that
                 && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -118,8 +118,8 @@ public final class BoundProcedure implements Procedure, Serializable {
      *         {@link UnaryProcedure UnaryProcedure}, or <code>null</code>
      *         if the given <code>UnaryProcedure</code> is <code>null</code>
      */
-    public static BoundProcedure bind(UnaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new BoundProcedure(procedure, arg);
+    public static <A> BoundProcedure<A> bind(UnaryProcedure<? super A> procedure, A arg) {
+        return null == procedure ? null : new BoundProcedure<A>(procedure, arg);
     }
 
 }

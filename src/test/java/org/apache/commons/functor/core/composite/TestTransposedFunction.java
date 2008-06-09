@@ -46,7 +46,7 @@ public class TestTransposedFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedFunction(new LeftIdentity());
+        return new TransposedFunction<Object, Object, Object>(LeftIdentity.FUNCTION);
     }
 
     // Lifecycle
@@ -64,18 +64,17 @@ public class TestTransposedFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryFunction f = new TransposedFunction(new LeftIdentity());
+        BinaryFunction<Object, Object, Object> f = new TransposedFunction<Object, Object, Object>(LeftIdentity.FUNCTION);
         assertEquals("xyzzy",f.evaluate(null,"xyzzy"));
         assertNull(f.evaluate("xyzzy",null));
     }
 
     public void testEquals() throws Exception {
-        BinaryFunction f = new TransposedFunction(new LeftIdentity());
+        BinaryFunction<Object, Object, Object> f = new TransposedFunction<Object, Object, Object>(LeftIdentity.FUNCTION);
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new TransposedFunction(new LeftIdentity()));
-        assertObjectsAreNotEqual(f,new TransposedFunction(new RightIdentity()));
-        assertObjectsAreNotEqual(f,new TransposedFunction(null));
-        assertObjectsAreNotEqual(f,new Constant("y"));
+        assertObjectsAreEqual(f,new TransposedFunction<Object, Object, Object>(LeftIdentity.FUNCTION));
+        assertObjectsAreNotEqual(f,new TransposedFunction<Object, Object, Object>(RightIdentity.FUNCTION));
+        assertObjectsAreNotEqual(f,Constant.of("y"));
     }
 
     public void testTransposeNull() throws Exception {
@@ -83,6 +82,6 @@ public class TestTransposedFunction extends BaseFunctorTest {
     }
 
     public void testTranspose() throws Exception {
-        assertNotNull(TransposedFunction.transpose(new Constant("x")));
+        assertNotNull(TransposedFunction.transpose(Constant.of("x")));
     }
 }

@@ -36,18 +36,11 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @author Rodney Waldhoff
  *
  */
-public final class IsEquivalent implements BinaryPredicate, Serializable {
-    private static final IsEquivalent COMPARABLE_INSTANCE = new IsEquivalent();
+public final class IsEquivalent<T> implements BinaryPredicate<T, T>, Serializable {
+    private static final IsEquivalent<Comparable<?>> COMPARABLE_INSTANCE = new IsEquivalent<Comparable<?>>(
+            ComparableComparator.instance());
 
-    private Comparator comparator = null;
-
-    /**
-     * Construct an <code>IsEquivalent</code> {@link BinaryPredicate predicate}
-     * for {@link Comparable Comparable}s.
-     */
-    public IsEquivalent() {
-        this(null);
-    }
+    private Comparator<? super T> comparator;
 
     /**
      * Construct an <code>IsEquivalent</code> {@link BinaryPredicate predicate}
@@ -57,8 +50,11 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      *        a <code>Comparator</code> for {@link Comparable Comparable}s will
      *        be used.
      */
-    public IsEquivalent(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
+    public IsEquivalent(Comparator<? super T> comparator) {
+        if (comparator == null) {
+            throw new IllegalArgumentException("Comparator must not be null");
+        }
+        this.comparator = comparator;
     }
 
     /**
@@ -67,7 +63,7 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * {@link Comparator Comparator}.
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
+    public boolean test(T left, T right) {
         return comparator.compare(left, right) == 0;
     }
 
@@ -75,7 +71,7 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IsEquivalent && equals((IsEquivalent) that));
+        return that == this || (that instanceof IsEquivalent && equals((IsEquivalent<?>) that));
     }
 
     /**
@@ -83,7 +79,7 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * @param that IsEquivalent to test
      * @return boolean
      */
-    public boolean equals(IsEquivalent that) {
+    public boolean equals(IsEquivalent<?> that) {
         return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
@@ -108,7 +104,7 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * Get a basic IsEquivalent instance.
      * @return IsEquivalent
      */
-    public static final IsEquivalent instance() {
+    public static final IsEquivalent<Comparable<?>> instance() {
         return COMPARABLE_INSTANCE;
     }
 
@@ -117,7 +113,7 @@ public final class IsEquivalent implements BinaryPredicate, Serializable {
      * @param right argument
      * @return UnaryPredicate
      */
-    public static final UnaryPredicate instance(Comparable right) {
+    public static final UnaryPredicate<Comparable<?>> instance(Comparable<?> right) {
         return RightBoundPredicate.bind(instance(), right);
     }
 

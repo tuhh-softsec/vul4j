@@ -18,7 +18,10 @@ package org.apache.commons.functor.core;
 
 import java.io.Serializable;
 
+import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.IgnoreLeftPredicate;
+import org.apache.commons.functor.adapter.IgnoreRightPredicate;
 
 /**
  * {@link #test Tests}
@@ -28,10 +31,23 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsNotNull implements UnaryPredicate, Serializable {
+public final class IsNotNull<T> implements UnaryPredicate<T>, Serializable {
     // static attributes
     // ------------------------------------------------------------------------
-    private static final IsNotNull INSTANCE = new IsNotNull();
+    /**
+     * Basic IsNotNull instance.
+     */
+    public static final IsNotNull<Object> INSTANCE = IsNotNull.<Object>instance();
+
+    /**
+     * Left-handed BinaryPredicate.
+     */
+    public static final BinaryPredicate<Object, Object> LEFT = IsNotNull.<Object>left();
+
+    /**
+     * Right-handed BinaryPredicate.
+     */
+    public static final BinaryPredicate<Object, Object> RIGHT = IsNotNull.<Object>right();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -77,8 +93,24 @@ public final class IsNotNull implements UnaryPredicate, Serializable {
      * Get an IsNotNull instance.
      * @return IsNotNull
      */
-    public static IsNotNull instance() {
-        return INSTANCE;
+    public static <T> IsNotNull<T> instance() {
+        return new IsNotNull<T>();
+    }
+
+    /**
+     * Get a BinaryPredicate that matches if the left argument is not null.
+     * @return BinaryPredicate<A, Object>
+     */
+    public static <A> BinaryPredicate<A, Object> left() {
+        return IgnoreRightPredicate.adapt(new IsNotNull<A>());
+    }
+
+    /**
+     * Get a BinaryPredicate that matches if the right argument is null.
+     * @return BinaryPredicate<Object, A>
+     */
+    public static <A> BinaryPredicate<Object, A> right() {
+        return IgnoreLeftPredicate.adapt(new IsNotNull<A>());
     }
 
 }

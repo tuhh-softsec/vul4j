@@ -78,10 +78,8 @@ public class TestIsGreaterThan extends BaseComparisonPredicateTest {
         assertEquals(p,p);
 
         assertObjectsAreEqual(p,new IsGreaterThan());
-        assertObjectsAreEqual(p,new IsGreaterThan(null));
         assertObjectsAreEqual(p,new IsGreaterThan(new ComparableComparator()));
         assertObjectsAreEqual(p,IsGreaterThan.instance());
-        assertSame(IsGreaterThan.instance(),IsGreaterThan.instance());
         assertObjectsAreNotEqual(p,new Constant(false));
     }
 

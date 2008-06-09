@@ -56,8 +56,8 @@ public class TestComposite extends TestCase {
     }
 
     public void testBinaryMethods() {
-        assertNotNull(Composite.function(LeftIdentity.instance(),LeftIdentity.instance(),LeftIdentity.instance()));
-        assertNotNull(Composite.predicate(IsGreaterThan.instance(),Identity.instance(),Identity.instance()));
-        assertNotNull(Composite.function(LeftIdentity.instance(),Identity.instance(),Identity.instance()));
+        assertNotNull(Composite.function(LeftIdentity.function(),LeftIdentity.function(),LeftIdentity.function()));
+        assertNotNull(Composite.predicate(IsGreaterThan.instance(),new Identity<Comparable<?>>(),new Identity<Comparable<?>>()));
+        assertNotNull(Composite.function(LeftIdentity.function(),Identity.instance(),Identity.instance()));
     }
 }

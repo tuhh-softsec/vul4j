@@ -36,6 +36,7 @@ import org.apache.commons.functor.core.composite.UnaryNot;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestIsEmpty extends BaseFunctorTest {
 
     // Conventional
@@ -90,8 +91,8 @@ public class TestIsEmpty extends BaseFunctorTest {
     public void testTestNull() throws Exception {
         try {
             IsEmpty.instance().test(null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }

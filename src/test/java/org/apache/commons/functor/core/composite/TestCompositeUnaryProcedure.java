@@ -45,7 +45,7 @@ public class TestCompositeUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new CompositeUnaryProcedure(new NoOp(),new Constant(true));
+        return Composite.procedure(NoOp.instance(), Constant.TRUE);
     }
 
     // Lifecycle
@@ -63,51 +63,45 @@ public class TestCompositeUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        new CompositeUnaryProcedure(new NoOp(),new Identity()).run(null);
+        Composite.procedure(NoOp.instance(), Identity.instance()).run(null);
     }
 
     public void testNullNotAllowed() throws Exception {
         try {
             new CompositeUnaryProcedure(null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
         try {
-            new CompositeUnaryProcedure(null,null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
-        }
-        try {
-            new CompositeUnaryProcedure(NoOp.instance(),null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+            new CompositeUnaryProcedure<Object>(NoOp.instance()).of(null);
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }
     public void testOf() throws Exception {
-        new CompositeUnaryProcedure(new NoOp()).of(new Identity()).run(null);
+        Composite.procedure(NoOp.instance()).of(Identity.instance()).run(null);
     }
 
     public void testEquals() throws Exception {
-        CompositeUnaryProcedure f = new CompositeUnaryProcedure(new NoOp());
+        CompositeUnaryProcedure<Object> f = Composite.procedure(NoOp.instance());
         assertEquals(f,f);
-        CompositeUnaryProcedure g = new CompositeUnaryProcedure(new NoOp());
+        CompositeUnaryProcedure<Object> g = Composite.procedure(NoOp.instance());
         assertObjectsAreEqual(f,g);
 
         for (int i=0;i<3;i++) {
-            f.of(new Constant("x"));
+            f = f.of(Constant.of("x"));
             assertObjectsAreNotEqual(f,g);
-            g.of(new Constant("x"));
+            g = g.of(Constant.of("x"));
             assertObjectsAreEqual(f,g);
-            f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            f = f.of(Constant.of("y")).of(Constant.of("z"));
             assertObjectsAreNotEqual(f,g);
-            g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            g = g.of(Constant.of("y")).of(Constant.of("z"));
             assertObjectsAreEqual(f,g);
         }
 
-        assertObjectsAreNotEqual(f,new Constant(false));
+        assertObjectsAreNotEqual(f,Constant.FALSE);
     }
 
 }

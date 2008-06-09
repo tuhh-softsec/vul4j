@@ -63,7 +63,7 @@ public class TestIgnoreLeftFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryFunction f = new IgnoreLeftFunction(new Identity());
+        BinaryFunction<String, String, String> f = new IgnoreLeftFunction<String, String, String>(new Identity<String>());
         assertNull(f.evaluate(null,null));
         assertNull(f.evaluate("xyzzy",null));
         assertEquals("xyzzy",f.evaluate(null,"xyzzy"));
@@ -71,14 +71,12 @@ public class TestIgnoreLeftFunction extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        BinaryFunction f = new IgnoreLeftFunction(new Constant("xyzzy"));
+        BinaryFunction<Object, Object, String> f = new IgnoreLeftFunction<Object, Object, String>(Constant.of("xyzzy"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new IgnoreLeftFunction(new Constant("xyzzy")));
-        assertObjectsAreNotEqual(f,new Constant("x"));
-        assertObjectsAreNotEqual(f,new IgnoreLeftFunction(new Constant(null)));
-        assertObjectsAreNotEqual(f,new Constant(null));
-        assertObjectsAreNotEqual(f,new IgnoreLeftFunction(null));
-        assertObjectsAreEqual(new IgnoreLeftFunction(null),new IgnoreLeftFunction(null));
+        assertObjectsAreEqual(f,new IgnoreLeftFunction<Object, Object, String>(Constant.of("xyzzy")));
+        assertObjectsAreNotEqual(f,Constant.of("x"));
+        assertObjectsAreNotEqual(f,new IgnoreLeftFunction<Object, Object, String>(Constant.<String>of(null)));
+        assertObjectsAreNotEqual(f,Constant.of(null));
     }
 
     public void testAdaptNull() throws Exception {
@@ -86,6 +84,6 @@ public class TestIgnoreLeftFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(IgnoreLeftFunction.adapt(new Constant("xyzzy")));
+        assertNotNull(IgnoreLeftFunction.adapt(Constant.of("xyzzy")));
     }
 }

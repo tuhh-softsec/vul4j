@@ -21,7 +21,6 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.core.Constant;
-import org.apache.commons.functor.core.Identity;
 
 /**
  * @version $Revision$ $Date$
@@ -44,7 +43,7 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new CompositeUnaryPredicate(new Identity(),new Constant(true));
+        return Composite.predicate(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,59 +61,53 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true))).test(null));
-        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true),new Constant(new Integer(3)))).test("xyzzy"));
-        assertEquals(false,(new CompositeUnaryPredicate(new Constant(false),new Constant(new Integer(4)))).test("xyzzy"));
+        assertTrue(Composite.predicate(Constant.TRUE).test(null));
+        assertTrue(Composite.predicate(Constant.TRUE, Constant.of(3)).test("xyzzy"));
+        assertFalse(Composite.predicate(Constant.FALSE, Constant.of(4)).test("xyzzy"));
     }
 
     public void testNullNotAllowed() throws Exception {
         try {
             new CompositeUnaryPredicate(null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
         try {
-            new CompositeUnaryPredicate(null,null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
-        }
-        try {
-            new CompositeUnaryPredicate(Constant.truePredicate(),null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+            Composite.function(Constant.TRUE, null);
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }
 
     public void testOf() throws Exception {
-        CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
+        CompositeUnaryPredicate<Object> f = new CompositeUnaryPredicate<Object>(Constant.TRUE);
         assertTrue(f.test(null));
         for (int i=0;i<10;i++) {
-            f.of(new Constant(false));
-            assertEquals(true,f.test(null));
+            f = f.of(Constant.FALSE);
+            assertTrue(f.test(null));
         }
     }
 
     public void testEquals() throws Exception {
-        CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
+        CompositeUnaryPredicate<Object> f = new CompositeUnaryPredicate<Object>(Constant.TRUE);
         assertEquals(f,f);
-        CompositeUnaryPredicate g = new CompositeUnaryPredicate(new Constant(true));
+        CompositeUnaryPredicate<Object> g = new CompositeUnaryPredicate<Object>(Constant.TRUE);
         assertObjectsAreEqual(f,g);
 
         for (int i=0;i<3;i++) {
-            f.of(new Constant("x"));
+            f = f.of(Constant.of("x"));
             assertObjectsAreNotEqual(f,g);
-            g.of(new Constant("x"));
+            g = g.of(Constant.of("x"));
             assertObjectsAreEqual(f,g);
-            f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            f = f.of(Constant.of("y")).of(Constant.of("z"));
             assertObjectsAreNotEqual(f,g);
-            g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            g = g.of(Constant.of("y")).of(Constant.of("z"));
             assertObjectsAreEqual(f,g);
         }
 
-        assertObjectsAreNotEqual(f,new Constant(false));
+        assertObjectsAreNotEqual(f,Constant.FALSE);
     }
 
 }

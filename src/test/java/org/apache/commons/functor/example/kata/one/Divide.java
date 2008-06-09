@@ -16,7 +16,6 @@
  */
 package org.apache.commons.functor.example.kata.one;
 
-import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.adapter.RightBoundFunction;
 
@@ -24,12 +23,9 @@ import org.apache.commons.functor.adapter.RightBoundFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class Divide implements BinaryFunction {
-    public Object evaluate(Object left, Object right) {
-        return evaluate((Number) left,(Number) right);
-    }
+public class Divide extends ArithmeticOperation {
 
-    public Object evaluate(Number left, Number right) {
+    public Number evaluate(Number left, Number right) {
         return new Integer(left.intValue() / right.intValue());
     }
 
@@ -37,8 +33,8 @@ public class Divide implements BinaryFunction {
         return INSTANCE;
     }
 
-    public static UnaryFunction by(int factor) {
-        return new RightBoundFunction(instance(),new Integer(factor));
+    public static UnaryFunction<Number, Number> by(int factor) {
+        return RightBoundFunction.bind(INSTANCE, factor);
     }
 
     private static Divide INSTANCE = new Divide();

@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.adapter.RightBoundFunction;
 
 /**
  * Adapts a {@link Comparator Comparator} to the
@@ -28,30 +30,37 @@ import org.apache.commons.functor.BinaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class Min implements BinaryFunction, Serializable {
-    private static final Min INSTANCE = new Min();
+public final class Min<T> implements BinaryFunction<T, T, T>, Serializable {
+    /**
+     * Basic Min instance.
+     */
+    public static final Min<Comparable<?>> INSTANCE = Min.<Comparable<?>>instance();
 
-    private Comparator comparator = null;
+    private Comparator<T> comparator = null;
 
     /**
      * Create a new Min.
      */
+    @SuppressWarnings("unchecked")
     public Min() {
-        this(null);
+        this(ComparableComparator.instance());
     }
 
     /**
      * Create a new Min.
      * @param comparator to use
      */
-    public Min(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
+    public Min(Comparator<T> comparator) {
+        if (comparator == null) {
+            throw new IllegalArgumentException("Comparator argument must not be null");
+        }
+        this.comparator = comparator;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(T left, T right) {
         return (comparator.compare(left, right) <= 0) ? left : right;
     }
 
@@ -59,7 +68,7 @@ public final class Min implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof Min && equals((Min) that));
+        return that == this || (that instanceof Min && equals((Min<?>) that));
     }
 
     /**
@@ -67,7 +76,7 @@ public final class Min implements BinaryFunction, Serializable {
      * @param that Min to test
      * @return boolean
      */
-    public boolean equals(Min that) {
+    public boolean equals(Min<?> that) {
         return null != that && comparator.equals(that.comparator);
     }
 
@@ -89,8 +98,17 @@ public final class Min implements BinaryFunction, Serializable {
      * Get a basic Min instance.
      * @return Min
      */
-    public static Min instance() {
-        return INSTANCE;
+    public static <T extends Comparable<?>> Min<T> instance() {
+        return new Min<T>();
+    }
+
+    /**
+     * Get a Min UnaryFunction.
+     * @param right the right side argument of the Min function
+     * @return UnaryFunction<T, T>
+     */
+    public static final <T extends Comparable<?>> UnaryFunction<T, T> instance(T right) {
+        return RightBoundFunction.bind(new Min<T>(), right);
     }
 
 }

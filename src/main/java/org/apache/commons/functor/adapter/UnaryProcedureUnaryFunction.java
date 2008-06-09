@@ -38,22 +38,22 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class UnaryProcedureUnaryFunction implements UnaryFunction, Serializable {
+public final class UnaryProcedureUnaryFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure procedure = null;
+    private UnaryProcedure<? super A> procedure;
 
     /**
      * Create a new UnaryProcedureUnaryFunction.
      * @param procedure to adapt
      */
-    public UnaryProcedureUnaryFunction(UnaryProcedure procedure) {
+    public UnaryProcedureUnaryFunction(UnaryProcedure<? super A> procedure) {
         this.procedure = procedure;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object obj) {
+    public T evaluate(A obj) {
         procedure.run(obj);
         return null;
     }
@@ -63,7 +63,7 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof UnaryProcedureUnaryFunction && equals((UnaryProcedureUnaryFunction) that));
+                || (that instanceof UnaryProcedureUnaryFunction && equals((UnaryProcedureUnaryFunction<?, ?>) that));
     }
 
     /**
@@ -71,7 +71,7 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
      * @param that UnaryProcedureUnaryFunction to test
      * @return boolean
      */
-    public boolean equals(UnaryProcedureUnaryFunction that) {
+    public boolean equals(UnaryProcedureUnaryFunction<?, ?> that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
@@ -98,8 +98,8 @@ public final class UnaryProcedureUnaryFunction implements UnaryFunction, Seriali
      * @param procedure to adapt
      * @return UnaryProcedureUnaryFunction
      */
-    public static UnaryProcedureUnaryFunction adapt(UnaryProcedure procedure) {
-        return null == procedure ? null : new UnaryProcedureUnaryFunction(procedure);
+    public static <A, T> UnaryProcedureUnaryFunction<A, T> adapt(UnaryProcedure<? super A> procedure) {
+        return null == procedure ? null : new UnaryProcedureUnaryFunction<A, T>(procedure);
     }
 
 }

@@ -27,39 +27,43 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsEmpty implements UnaryPredicate, Serializable {
+public final class IsEmpty<A> implements UnaryPredicate<A>, Serializable {
 
     // class variables
     // ------------------------------------------------------------------------
 
-    private static final IsEmpty INSTANCE = new IsEmpty();
+    private static final IsEmpty<Object> INSTANCE = new IsEmpty<Object>();
 
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new IsEmpty.
      */
-    public IsEmpty() { }
+    public IsEmpty() {
+    }
 
     // instance methods
     // ------------------------------------------------------------------------
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj) {
+    public boolean test(A obj) {
         if (obj instanceof Collection) {
-            return testCollection((Collection) obj);
-        } else if (obj instanceof Map) {
-            return testMap((Map) obj);
-        } else if (obj instanceof String) {
-            return testString((String) obj);
-        } else if (null != obj && obj.getClass().isArray()) {
-            return testArray(obj);
-        } else if (null == obj) {
-            throw new NullPointerException("Argument must not be null");
-        } else {
-            throw new IllegalArgumentException("Expected Collection, Map, String or Array, found " + obj.getClass());
+            return testCollection((Collection<?>) obj);
         }
+        if (obj instanceof Map) {
+            return testMap((Map<?, ?>) obj);
+        }
+        if (obj instanceof String) {
+            return testString((String) obj);
+        }
+        if (null != obj && obj.getClass().isArray()) {
+            return testArray(obj);
+        }
+        if (null == obj) {
+            throw new IllegalArgumentException("Argument must not be null");
+        }
+        throw new IllegalArgumentException("Expected Collection, Map, String or Array, found " + obj.getClass());
     }
 
     /**
@@ -88,7 +92,7 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
      * @param col to test
      * @return boolean
      */
-    private boolean testCollection(Collection col) {
+    private boolean testCollection(Collection<?> col) {
         return col.isEmpty();
     }
 
@@ -97,7 +101,7 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
      * @param map to test
      * @return boolean
      */
-    private boolean testMap(Map map) {
+    private boolean testMap(Map<?, ?> map) {
         return map.isEmpty();
     }
 
@@ -125,7 +129,7 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
      * Get an IsEmpty instance.
      * @return IsEmpty
      */
-    public static final IsEmpty instance() {
+    public static final IsEmpty<Object> instance() {
         return INSTANCE;
     }
 

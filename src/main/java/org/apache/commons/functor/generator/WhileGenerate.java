@@ -25,15 +25,15 @@ import org.apache.commons.functor.UnaryProcedure;
  *
  * @version $Revision$ $Date$
  */
-public class WhileGenerate extends BaseGenerator {
-    private UnaryPredicate test;
+public class WhileGenerate<E> extends BaseGenerator<E> {
+    private UnaryPredicate<? super E> test;
 
     /**
      * Create a new WhileGenerate.
      * @param test {@link UnaryPredicate}
      * @param wrapped {@link Generator}
      */
-    public WhileGenerate(UnaryPredicate test, Generator wrapped) {
+    public WhileGenerate(UnaryPredicate<? super E> test, Generator<? extends E> wrapped) {
         super(wrapped);
         if (wrapped == null) {
             throw new IllegalArgumentException("Generator argument was null");
@@ -47,9 +47,9 @@ public class WhileGenerate extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(final UnaryProcedure proc) {
-        getWrappedGenerator().run(new UnaryProcedure() {
-            public void run(Object obj) {
+    public void run(final UnaryProcedure<? super E> proc) {
+        getWrappedGenerator().run(new UnaryProcedure<E>() {
+            public void run(E obj) {
                 if (!test.test(obj)) {
                     getWrappedGenerator().stop();
                 } else {
@@ -62,6 +62,14 @@ public class WhileGenerate extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
+    @Override
+    protected Generator<? extends E> getWrappedGenerator() {
+        return (Generator<? extends E>) super.getWrappedGenerator();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -69,7 +77,7 @@ public class WhileGenerate extends BaseGenerator {
         if (obj instanceof WhileGenerate == false) {
             return false;
         }
-        WhileGenerate other = (WhileGenerate) obj;
+        WhileGenerate<?> other = (WhileGenerate<?>) obj;
         return other.getWrappedGenerator().equals(getWrappedGenerator()) && other.test.equals(test);
     }
 
@@ -79,7 +87,7 @@ public class WhileGenerate extends BaseGenerator {
     public int hashCode() {
         int result = "WhileGenerate".hashCode();
         result <<= 2;
-        Generator gen = getWrappedGenerator();
+        Generator<?> gen = getWrappedGenerator();
         result ^= gen == null ? 0 : gen.hashCode();
         result <<= 2;
         result ^= test == null ? 0 : test.hashCode();

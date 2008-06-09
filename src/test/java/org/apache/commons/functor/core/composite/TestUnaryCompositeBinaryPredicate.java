@@ -47,10 +47,10 @@ public class TestUnaryCompositeBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryCompositeBinaryPredicate(
-            new RightIdentity(),
-            new Constant(Boolean.FALSE),
-            new Identity());
+        return new UnaryCompositeBinaryPredicate<Boolean, Boolean>(
+                RightIdentity.PREDICATE,
+                Constant.FALSE,
+                new Identity<Boolean>());
     }
 
     // Lifecycle
@@ -68,36 +68,32 @@ public class TestUnaryCompositeBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryPredicate f = new UnaryCompositeBinaryPredicate(
-            new RightIdentity(),
-            new Constant(Boolean.FALSE),
-            new Identity());
+        BinaryPredicate<Boolean, Boolean> f = new UnaryCompositeBinaryPredicate<Boolean, Boolean>(
+                RightIdentity.PREDICATE,
+                Constant.FALSE,
+                new Identity<Boolean>());
         assertEquals(true,f.test(Boolean.TRUE,Boolean.TRUE));
         assertEquals(true,f.test(null,Boolean.TRUE));
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate f = new UnaryCompositeBinaryPredicate(
-            new LeftIdentity(),
-            new Constant(true),
-            new Constant(false));
+        BinaryPredicate<Boolean, Boolean> f = new UnaryCompositeBinaryPredicate<Boolean, Boolean>(
+                LeftIdentity.PREDICATE,
+                Constant.TRUE,
+                Constant.FALSE);
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new UnaryCompositeBinaryPredicate(
-            new LeftIdentity(),
-            new Constant(true),
-            new Constant(false)));
-        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate(
-            new RightIdentity(),
-            new Constant(true),
-            new Constant(false)));
-        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate(
-            new LeftIdentity(),
-            new Identity(),
-            new Constant(true)));
-        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate(null,null,null));
-        assertObjectsAreEqual(
-            new UnaryCompositeBinaryPredicate(null,null,null),
-            new UnaryCompositeBinaryPredicate(null,null,null));
+        assertObjectsAreEqual(f,new UnaryCompositeBinaryPredicate<Boolean, Boolean>(
+                LeftIdentity.PREDICATE,
+                Constant.TRUE,
+                Constant.FALSE));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate<Boolean, Boolean>(
+                RightIdentity.PREDICATE,
+                Constant.TRUE,
+                Constant.FALSE));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate<Boolean, Boolean>(
+                LeftIdentity.PREDICATE,
+                new Identity<Boolean>(),
+                Constant.TRUE));
     }
 
 }

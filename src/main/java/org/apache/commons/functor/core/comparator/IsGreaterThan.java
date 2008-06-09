@@ -33,17 +33,21 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsGreaterThan implements BinaryPredicate, Serializable {
-    private static final IsGreaterThan COMPARABLE_INSTANCE = new IsGreaterThan();
+public final class IsGreaterThan<T> implements BinaryPredicate<T, T>, Serializable {
+    /**
+     * Basic IsGreaterThan instance.
+     */
+    public static final IsGreaterThan<Comparable<?>> INSTANCE = IsGreaterThan.<Comparable<?>>instance();
 
-    private Comparator comparator = null;
+    private Comparator<? super T> comparator = null;
 
     /**
      * Construct a <code>IsGreaterThan</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
      */
+    @SuppressWarnings("unchecked")
     public IsGreaterThan() {
-        this(null);
+        this(ComparableComparator.INSTANCE);
     }
 
     /**
@@ -54,8 +58,11 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      *        a <code>Comparator</code> for {@link Comparable Comparable}s will
      *        be used.
      */
-    public IsGreaterThan(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
+    public IsGreaterThan(Comparator<? super T> comparator) {
+        if (comparator == null) {
+            throw new IllegalArgumentException("Comparator argument must not be null");
+        }
+        this.comparator = comparator;
     }
 
     /**
@@ -64,7 +71,7 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      * {@link Comparator Comparator}.
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
+    public boolean test(T left, T right) {
         return comparator.compare(left, right) > 0;
     }
 
@@ -72,7 +79,7 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IsGreaterThan && equals((IsGreaterThan) that));
+        return that == this || (that instanceof IsGreaterThan && equals((IsGreaterThan<?>) that));
     }
 
     /**
@@ -80,7 +87,7 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
      * @param that the IsGreaterThan to test
      * @return boolean
      */
-    public boolean equals(IsGreaterThan that) {
+    public boolean equals(IsGreaterThan<?> that) {
         return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
@@ -102,20 +109,21 @@ public final class IsGreaterThan implements BinaryPredicate, Serializable {
     }
 
     /**
-     * Get a basic IsGreaterThan instance.
-     * @return IsGreaterThan
+     * Get a typed IsGreaterThan instance.
+     * @param <T>
+     * @return IsGreaterThan<T>
      */
-    public static final IsGreaterThan instance() {
-        return COMPARABLE_INSTANCE;
+    public static final <T extends Comparable<?>> IsGreaterThan<T> instance() {
+        return new IsGreaterThan<T>();
     }
 
     /**
      * Get an IsGreaterThan UnaryPredicate.
      * @param right the right side object of the IsGreaterThan comparison
-     * @return UnaryPredicate
+     * @return UnaryPredicate<T>
      */
-    public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(), right);
+    public static final <T extends Comparable<?>> UnaryPredicate<T> instance(T right) {
+        return RightBoundPredicate.bind(new IsGreaterThan<T>(), right);
     }
 
 }

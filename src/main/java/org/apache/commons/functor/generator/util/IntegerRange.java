@@ -26,7 +26,7 @@ import org.apache.commons.functor.generator.BaseGenerator;
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public final class IntegerRange extends BaseGenerator {
+public final class IntegerRange extends BaseGenerator<Integer> {
     // attributes
     //---------------------------------------------------------------
 
@@ -73,11 +73,10 @@ public final class IntegerRange extends BaseGenerator {
     public IntegerRange(int from, int to, int step) {
         if (from != to && signOf(step) != signOf(to - from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
-        } else {
-            this.from = from;
-            this.to = to;
-            this.step = step;
         }
+        this.from = from;
+        this.to = to;
+        this.step = step;
     }
 
     // methods
@@ -85,14 +84,14 @@ public final class IntegerRange extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(UnaryProcedure proc) {
+    public void run(UnaryProcedure<? super Integer> proc) {
         if (signOf(step) == -1) {
             for (int i = from; i > to; i += step) {
-                proc.run(new Integer(i));
+                proc.run(i);
             }
         } else {
             for (int i = from; i < to; i += step) {
-                proc.run(new Integer(i));
+                proc.run(i);
             }
         }
     }
@@ -140,13 +139,7 @@ public final class IntegerRange extends BaseGenerator {
      * @return int
      */
     private static int signOf(int value) {
-        if (value < 0) {
-            return -1;
-        } else if (value > 0) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return value < 0 ? -1 : value > 0 ? 1 : 0;
     }
 
     /**
@@ -156,11 +149,7 @@ public final class IntegerRange extends BaseGenerator {
      * @return int
      */
     private static int defaultStep(int from, int to) {
-        if (from > to) {
-            return -1;
-        } else {
-            return 1;
-        }
+        return from > to ? -1 : 1;
     }
 
 }

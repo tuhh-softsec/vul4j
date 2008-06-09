@@ -39,10 +39,10 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class TransposedPredicate implements BinaryPredicate, Serializable {
+public class TransposedPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate predicate = null;
+    private BinaryPredicate<? super R, ? super L> predicate = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -50,7 +50,10 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
      * Create a new TransposedPredicate.
      * @param p the BinaryPredicate to transpose
      */
-    public TransposedPredicate(BinaryPredicate p) {
+    public TransposedPredicate(BinaryPredicate<? super R, ? super L> p) {
+        if (p == null) {
+            throw new IllegalArgumentException("BinaryPredicate argument must not be null");
+        }
         predicate = p;
     }
 
@@ -59,7 +62,7 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
+    public boolean test(L left, R right) {
         return predicate.test(right, left);
     }
 
@@ -67,7 +70,7 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof TransposedPredicate && equals((TransposedPredicate) that));
+        return that == this || (that instanceof TransposedPredicate && equals((TransposedPredicate<?, ?>) that));
     }
 
     /**
@@ -75,7 +78,7 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
      * @param that the TransposedPredicate to test
      * @return boolean
      */
-    public boolean equals(TransposedPredicate that) {
+    public boolean equals(TransposedPredicate<?, ?> that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
@@ -104,8 +107,8 @@ public class TransposedPredicate implements BinaryPredicate, Serializable {
      * @param p BinaryPredicate to transpose
      * @return TransposedPredicate
      */
-    public static TransposedPredicate transpose(BinaryPredicate p) {
-        return null == p ? null : new TransposedPredicate(p);
+    public static <L, R> TransposedPredicate<R, L> transpose(BinaryPredicate<? super L, ? super R> p) {
+        return null == p ? null : new TransposedPredicate<R, L>(p);
     }
 
 }

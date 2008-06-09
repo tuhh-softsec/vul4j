@@ -38,22 +38,22 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IgnoreRightPredicate implements BinaryPredicate, Serializable {
+public final class IgnoreRightPredicate<A> implements BinaryPredicate<A, Object>, Serializable {
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
+    private UnaryPredicate<? super A> predicate;
 
     /**
      * Create a new IgnoreRightPredicate.
      * @param predicate left
      */
-    public IgnoreRightPredicate(UnaryPredicate predicate) {
+    public IgnoreRightPredicate(UnaryPredicate<? super A> predicate) {
         this.predicate = predicate;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
+    public boolean test(A left, Object right) {
         return predicate.test(left);
     }
 
@@ -61,7 +61,7 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreRightPredicate && equals((IgnoreRightPredicate) that));
+        return that == this || (that instanceof IgnoreRightPredicate && equals((IgnoreRightPredicate<?>) that));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
      * @param that IgnoreRightPredicate to test
      * @return boolean
      */
-    public boolean equals(IgnoreRightPredicate that) {
+    public boolean equals(IgnoreRightPredicate<?> that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
@@ -96,8 +96,8 @@ public final class IgnoreRightPredicate implements BinaryPredicate, Serializable
      * @param predicate to adapt
      * @return IgnoreRightPredicate
      */
-    public static IgnoreRightPredicate adapt(UnaryPredicate predicate) {
-        return null == predicate ? null : new IgnoreRightPredicate(predicate);
+    public static <A> IgnoreRightPredicate<A> adapt(UnaryPredicate<? super A> predicate) {
+        return null == predicate ? null : new IgnoreRightPredicate<A>(predicate);
     }
 
 }

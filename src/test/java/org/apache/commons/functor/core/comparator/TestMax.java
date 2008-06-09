@@ -44,7 +44,7 @@ public class TestMax extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new Max();
+        return Max.instance();
     }
 
     private Integer MIN = new Integer(Integer.MIN_VALUE);
@@ -56,7 +56,7 @@ public class TestMax extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() {
-        Max f = new Max();
+        Max f = Max.instance();
         assertEquals(ONE,f.evaluate(ONE,ONE));
         assertEquals(ONE,f.evaluate(ZERO,ONE));
         assertEquals(ONE,f.evaluate(ONE,ZERO));
@@ -66,11 +66,9 @@ public class TestMax extends BaseFunctorTest {
     }
 
     public void testEquals() {
-        Max f = new Max();
+        Max f = Max.instance();
         assertObjectsAreEqual(f,f);
         assertObjectsAreEqual(f,Max.instance());
-        assertObjectsAreEqual(f,new Max(null));
-        assertObjectsAreEqual(new Max(null),new Max(null));
         assertObjectsAreEqual(f,new Max(new ComparableComparator()));
         assertObjectsAreNotEqual(f,new Max(Collections.reverseOrder()));
     }

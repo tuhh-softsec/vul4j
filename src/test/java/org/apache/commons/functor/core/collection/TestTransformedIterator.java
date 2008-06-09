@@ -33,6 +33,7 @@ import org.apache.commons.functor.core.Identity;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestTransformedIterator extends BaseFunctorTest {
 
     // Conventional
@@ -168,7 +169,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
 
     public void testTransformWithNullPredicateReturnsIdentity() {
         Iterator iter = list.iterator();
-        assertSame(iter,TransformedIterator.transform(iter,null));
+        assertSame(iter,TransformedIterator.maybeTransform(iter,null));
     }
 
     public void testConstructorProhibitsNull() {

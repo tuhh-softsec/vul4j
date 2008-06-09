@@ -44,7 +44,7 @@ public class Sequence implements Procedure, Serializable {
 
     // attributes
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
+    private List<Procedure> list = new ArrayList<Procedure>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -90,8 +90,8 @@ public class Sequence implements Procedure, Serializable {
      * {@inheritDoc}
      */
     public void run() {
-        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((Procedure) iter.previous()).run();
+        for (ListIterator<Procedure> iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            iter.previous().run();
         }
     }
 

@@ -29,7 +29,7 @@ import org.apache.commons.functor.generator.BaseGenerator;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class Lines extends BaseGenerator {
+public class Lines extends BaseGenerator<String> {
     public static Lines from(Reader reader) {
         return new Lines(reader);
     }
@@ -46,7 +46,7 @@ public class Lines extends BaseGenerator {
         }
     }
     
-    public void run(UnaryProcedure proc) {
+    public void run(UnaryProcedure<? super String> proc) {
         try {
             for (String line = in.readLine(); line != null; line = in.readLine()) {
                 proc.run(line);

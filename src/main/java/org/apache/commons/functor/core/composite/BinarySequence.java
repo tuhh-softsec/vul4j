@@ -41,10 +41,10 @@ import org.apache.commons.functor.BinaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class BinarySequence implements BinaryProcedure, Serializable {
+public class BinarySequence<L, R> implements BinaryProcedure<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
+    private List<BinaryProcedure<? super L, ? super R>> list = new ArrayList<BinaryProcedure<? super L, ? super R>>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public class BinarySequence implements BinaryProcedure, Serializable {
      * Create a new BinarySequence.
      * @param p BinaryProcedure to add
      */
-    public BinarySequence(BinaryProcedure p) {
+    public BinarySequence(BinaryProcedure<? super L, ? super R> p) {
         then(p);
     }
 
@@ -67,7 +67,7 @@ public class BinarySequence implements BinaryProcedure, Serializable {
      * @param p BinaryProcedure to add
      * @param q BinaryProcedure to add
      */
-    public BinarySequence(BinaryProcedure p, BinaryProcedure q) {
+    public BinarySequence(BinaryProcedure<? super L, ? super R> p, BinaryProcedure<? super L, ? super R> q) {
         then(p);
         then(q);
     }
@@ -77,7 +77,7 @@ public class BinarySequence implements BinaryProcedure, Serializable {
      * @param p BinaryProcedure to add
      * @return this
      */
-    public BinarySequence then(BinaryProcedure p) {
+    public BinarySequence<L, R> then(BinaryProcedure<? super L, ? super R> p) {
         list.add(p);
         return this;
     }
@@ -87,9 +87,9 @@ public class BinarySequence implements BinaryProcedure, Serializable {
     /**
      * {@inheritDoc}
      */
-    public void run(Object left, Object right) {
-        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((BinaryProcedure) iter.previous()).run(left, right);
+    public void run(L left, R right) {
+        for (ListIterator<BinaryProcedure<? super L, ? super R>> iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            iter.previous().run(left, right);
         }
     }
 
@@ -97,7 +97,7 @@ public class BinarySequence implements BinaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BinarySequence && equals((BinarySequence) that));
+        return that == this || (that instanceof BinarySequence && equals((BinarySequence<?, ?>) that));
     }
 
     /**
@@ -105,7 +105,7 @@ public class BinarySequence implements BinaryProcedure, Serializable {
      * @param that BinarySequence to test
      * @return boolean
      */
-    public boolean equals(BinarySequence that) {
+    public boolean equals(BinarySequence<?, ?> that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }

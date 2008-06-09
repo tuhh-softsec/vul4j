@@ -30,6 +30,7 @@ import org.apache.commons.functor.core.Constant;
  * @author Rodney Waldhoff
  * @author Jason Horman
  */
+@SuppressWarnings("unchecked")
 public class TestIsElementOf extends BaseFunctorTest {
 
     // Conventional
@@ -111,8 +112,8 @@ public class TestIsElementOf extends BaseFunctorTest {
     public void testTestNull() {
         try {
             IsElementOf.instance().test(new Integer(5),null);
-            fail("expected NullPointerException");
-        } catch (NullPointerException e) {
+            fail("expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
             // expected
         }
     }

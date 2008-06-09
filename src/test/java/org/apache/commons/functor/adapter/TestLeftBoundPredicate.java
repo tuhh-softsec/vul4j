@@ -63,7 +63,7 @@ public class TestLeftBoundPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        UnaryPredicate p = new LeftBoundPredicate(new BinaryFunctionBinaryPredicate(new RightIdentity()),"foo");
+        UnaryPredicate p = new LeftBoundPredicate(new BinaryFunctionBinaryPredicate(RightIdentity.FUNCTION),"foo");
         assertEquals(true,p.test(Boolean.TRUE));
         assertEquals(false,p.test(Boolean.FALSE));
     }

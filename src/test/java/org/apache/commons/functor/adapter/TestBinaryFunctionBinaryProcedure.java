@@ -46,7 +46,7 @@ public class TestBinaryFunctionBinaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryFunctionBinaryProcedure(new Constant("K"));
+        return new BinaryFunctionBinaryProcedure<Object, Object>(Constant.of("K"));
     }
 
     // Lifecycle
@@ -64,12 +64,12 @@ public class TestBinaryFunctionBinaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        class EvaluateCounter implements BinaryFunction {
+        class EvaluateCounter implements BinaryFunction<Object, Object, Integer> {
             int count = 0;
-            public Object evaluate(Object a, Object b) { return new Integer(count++); }
+            public Integer evaluate(Object a, Object b) { return new Integer(count++); }
         }
         EvaluateCounter counter = new EvaluateCounter();
-        BinaryProcedure p = new BinaryFunctionBinaryProcedure(counter);
+        BinaryProcedure<Object, Object> p = new BinaryFunctionBinaryProcedure<Object, Object>(counter);
         assertEquals(0,counter.count);
         p.run(null,null);
         assertEquals(1,counter.count);
@@ -78,13 +78,11 @@ public class TestBinaryFunctionBinaryProcedure extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        BinaryProcedure p = new BinaryFunctionBinaryProcedure(new Constant("K"));
+        BinaryProcedure<Object, Object> p = new BinaryFunctionBinaryProcedure<Object, Object>(Constant.of("K"));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryFunctionBinaryProcedure(new Constant("K")));
+        assertObjectsAreEqual(p,new BinaryFunctionBinaryProcedure<Object, Object>(Constant.of("K")));
         assertObjectsAreNotEqual(p,new NoOp());
-        assertObjectsAreNotEqual(p,new BinaryFunctionBinaryProcedure(null));
-        assertObjectsAreNotEqual(p,new BinaryFunctionBinaryProcedure(new Constant("J")));
-        assertObjectsAreEqual(new BinaryFunctionBinaryProcedure(null),new BinaryFunctionBinaryProcedure(null));
+        assertObjectsAreNotEqual(p,new BinaryFunctionBinaryProcedure<Object, Object>(Constant.of("J")));
     }
 
     public void testAdaptNull() throws Exception {
@@ -92,6 +90,6 @@ public class TestBinaryFunctionBinaryProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BinaryFunctionBinaryProcedure.adapt(new Constant("K")));
+        assertNotNull(BinaryFunctionBinaryProcedure.adapt(Constant.of("K")));
     }
 }

@@ -29,29 +29,32 @@ import org.apache.commons.functor.generator.Generator;
  *
  * @version $Revision$ $Date$
  */
-public final class FindWithinGenerator implements BinaryFunction, Serializable {
-    private static final FindWithinGenerator INSTANCE = new FindWithinGenerator();
+public final class FindWithinGenerator<E> implements BinaryFunction<Generator<E>, UnaryPredicate<E>, E>, Serializable {
+    /**
+     * Basic instance.
+     */
+    public static final FindWithinGenerator<Object> INSTANCE = new FindWithinGenerator<Object>();
 
     /**
      * Helper procedure.
      */
-    private class FindProcedure implements UnaryProcedure {
-        private Object found;
+    private static class FindProcedure<T> implements UnaryProcedure<T> {
+        private T found;
         private boolean wasFound;
-        private UnaryPredicate pred;
+        private UnaryPredicate<T> pred;
 
         /**
          * Create a new FindProcedure.
          * @pred test
          */
-        public FindProcedure(UnaryPredicate pred) {
+        public FindProcedure(UnaryPredicate<T> pred) {
             this.pred = pred;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void run(Object obj) {
+        public void run(T obj) {
             if (!wasFound && pred.test(obj)) {
                 wasFound = true;
                 found = obj;
@@ -60,7 +63,7 @@ public final class FindWithinGenerator implements BinaryFunction, Serializable {
     }
 
     private boolean useIfNone;
-    private Object ifNone;
+    private E ifNone;
 
     /**
      * Create a new FindWithinGenerator.
@@ -73,7 +76,7 @@ public final class FindWithinGenerator implements BinaryFunction, Serializable {
      * Create a new FindWithinGenerator.
      * @param ifNone object to return if the Generator contains no matches.
      */
-    public FindWithinGenerator(Object ifNone) {
+    public FindWithinGenerator(E ifNone) {
         this();
         this.ifNone = ifNone;
         useIfNone = true;
@@ -84,15 +87,14 @@ public final class FindWithinGenerator implements BinaryFunction, Serializable {
      * @param left Generator
      * @param right UnaryPredicate
      */
-    public Object evaluate(Object left, Object right) {
-        UnaryPredicate pred = (UnaryPredicate) right;
-        FindProcedure findProcedure = new FindProcedure(pred);
-        ((Generator) left).run(findProcedure);
+    public E evaluate(Generator<E> left, UnaryPredicate<E> right) {
+        FindProcedure<E> findProcedure = new FindProcedure<E>(right);
+        left.run(findProcedure);
         if (!findProcedure.wasFound) {
             if (useIfNone) {
                 return ifNone;
             }
-            throw new NoSuchElementException("No element matching " + pred + " was found.");
+            throw new NoSuchElementException("No element matching " + right + " was found.");
         }
         return findProcedure.found;
     }
@@ -107,7 +109,7 @@ public final class FindWithinGenerator implements BinaryFunction, Serializable {
         if (obj instanceof FindWithinGenerator == false) {
             return false;
         }
-        FindWithinGenerator other = (FindWithinGenerator) obj;
+        FindWithinGenerator<?> other = (FindWithinGenerator<?>) obj;
         return other.useIfNone == useIfNone && !useIfNone
                 || (other.ifNone == this.ifNone || other.ifNone != null && other.ifNone.equals(this.ifNone));
     }
@@ -128,7 +130,7 @@ public final class FindWithinGenerator implements BinaryFunction, Serializable {
      * Get a static {@link FindWithinGenerator} instance.
      * @return {@link FindWithinGenerator}
      */
-    public static FindWithinGenerator instance() {
+    public static FindWithinGenerator<Object> instance() {
         return INSTANCE;
     }
 }

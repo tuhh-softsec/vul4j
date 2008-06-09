@@ -25,7 +25,7 @@ import org.apache.commons.functor.generator.BaseGenerator;
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public final class LongRange extends BaseGenerator {
+public final class LongRange extends BaseGenerator<Long> {
     // attributes
     //---------------------------------------------------------------
 
@@ -72,11 +72,10 @@ public final class LongRange extends BaseGenerator {
     public LongRange(long from, long to, long step) {
         if (from != to && signOf(step) != signOf(to - from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
-        } else {
-            this.from = from;
-            this.to = to;
-            this.step = step;
         }
+        this.from = from;
+        this.to = to;
+        this.step = step;
     }
 
     // methods
@@ -84,14 +83,14 @@ public final class LongRange extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(UnaryProcedure proc) {
+    public void run(UnaryProcedure<? super Long> proc) {
         if (signOf(step) == -1L) {
             for (long i = from; i > to; i += step) {
-                proc.run(new Long(i));
+                proc.run(i);
             }
         } else {
             for (long i = from; i < to; i += step) {
-                proc.run(new Long(i));
+                proc.run(i);
             }
         }
     }
@@ -139,13 +138,7 @@ public final class LongRange extends BaseGenerator {
      * @return long
      */
     private static long signOf(long value) {
-        if (value < 0L) {
-            return -1L;
-        } else if (value > 0L) {
-            return 1L;
-        } else {
-            return 0L;
-        }
+        return value < 0L ? -1L : value > 0L ? 1L : 0L;
     }
 
     /**
@@ -155,11 +148,7 @@ public final class LongRange extends BaseGenerator {
      * @return long
      */
     private static long defaultStep(long from, long to) {
-        if (from > to) {
-            return -1L;
-        } else {
-            return 1L;
-        }
+        return from > to ? -1L : 1L;
     }
 
 }

@@ -22,6 +22,7 @@ import java.io.Reader;
 
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.adapter.BinaryFunctionUnaryFunction;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentity;
@@ -30,7 +31,6 @@ import org.apache.commons.functor.core.comparator.IsLessThan;
 import org.apache.commons.functor.core.composite.Composite;
 import org.apache.commons.functor.core.composite.Conditional;
 import org.apache.commons.functor.core.composite.ConditionalBinaryFunction;
-import org.apache.commons.functor.example.kata.one.BinaryFunctionUnaryFunction;
 import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
 import org.apache.commons.functor.generator.FilteredGenerator;
@@ -56,7 +56,7 @@ public class DataMunger {
 	 */
     public static final Object process(final Reader file, final int selected, final int col1, final int col2) {
         return NthColumn.instance(selected).evaluate(
-                new FoldLeft(lesserSpread(col1, col2)).evaluate(new FilteredGenerator(Lines.from(file),
+                new FoldLeft<String>(lesserSpread(col1, col2)).evaluate(new FilteredGenerator<String>(Lines.from(file),
                     Composite.predicate(IsInteger.instance(),NthColumn.instance(0)))));
     }
 
@@ -66,17 +66,17 @@ public class DataMunger {
      * String arguments, and return the argument
      * whose difference is smallest.
      */
-    private static final BinaryFunction lesserSpread(final int col1, final int col2) {
-        return new ConditionalBinaryFunction(
-            IsNull.left(),                                 // if left is null
-            RightIdentity.instance(),                      //   return right
+    private static final BinaryFunction<String, String, String> lesserSpread(final int col1, final int col2) {
+        return new ConditionalBinaryFunction<String, String, String>(
+            IsNull.<String>left(),                                 // if left is null
+            RightIdentity.<String, String>function(),                      //   return right
             Conditional.function(                          //   else return the parameter with the least spread
                 Composite.predicate(                       //     if left is less than right
                     IsLessThan.instance(),
                     absSpread(col1,col2),
                     absSpread(col1,col2)),
-                LeftIdentity.instance(),                   //       return left
-                RightIdentity.instance()                   //       else return right
+                LeftIdentity.<String, String>function(),                   //       return left
+                RightIdentity.<String, String>function()                   //       else return right
             )
         );
     }
@@ -86,10 +86,10 @@ public class DataMunger {
 	 * between the Integers stored in the <i>col1</i> and <i>col2</i>th
 	 * whitespace delimited columns of the input line (a String).
 	 */
-    private static UnaryFunction absSpread(final int col1, final int col2) {
+    private static UnaryFunction<String, Integer> absSpread(final int col1, final int col2) {
         return Composite.function(
             Abs.instance(),
-            new BinaryFunctionUnaryFunction(
+            new BinaryFunctionUnaryFunction<String, Number>(
                 Composite.function(
                     Subtract.instance(),
                     Composite.function(ToInteger.instance(),NthColumn.instance(col1)),

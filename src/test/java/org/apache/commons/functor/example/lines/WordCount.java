@@ -24,10 +24,9 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class WordCount implements UnaryFunction {
-    public Object evaluate(Object obj) {
-        StringTokenizer toker = new StringTokenizer((String) obj);
-        return new Integer(toker.countTokens());
+public class WordCount implements UnaryFunction<String, Integer> {
+    public Integer evaluate(String obj) {
+        return new StringTokenizer(obj).countTokens();
     }
 
     public static WordCount instance() {

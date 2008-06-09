@@ -33,6 +33,7 @@ import org.apache.commons.functor.core.Constant;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestSize extends BaseFunctorTest {
 
     // Conventional
@@ -93,8 +94,8 @@ public class TestSize extends BaseFunctorTest {
     public void testEvaluateNull() throws Exception {
         try {
             Size.instance().evaluate(null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }
@@ -102,8 +103,8 @@ public class TestSize extends BaseFunctorTest {
     public void testEvaluateNonCollection() throws Exception {
         try {
             Size.instance().evaluate(new Integer(3));
-            fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }

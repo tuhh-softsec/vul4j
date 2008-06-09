@@ -17,9 +17,6 @@
 package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.commons.functor.UnaryFunction;
 
@@ -49,67 +46,114 @@ import org.apache.commons.functor.UnaryFunction;
  * </p>
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
+ * @author Matt Benson
  */
-public class CompositeUnaryFunction implements UnaryFunction, Serializable {
+public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serializable {
 
-    // attributes
-    // ------------------------------------------------------------------------
-    private List list = new ArrayList();
-
-    // constructor
-    // ------------------------------------------------------------------------
     /**
-     * Create a new CompositeUnaryFunction.
+     * Encapsulates a double function evaluation.
+     * @param <A> argument type
+     * @param <X> intermediate type
+     * @param <T> return type
      */
-    public CompositeUnaryFunction() {
+    private class Helper<X> implements UnaryFunction<A, T>, Serializable {
+        private UnaryFunction<? super X, ? extends T> following;
+        private UnaryFunction<? super A, ? extends X> preceding;
+
+        /**
+         * Create a new Helper.
+         * @param following UnaryFunction<X, Y>
+         * @param preceding UnaryFunction<Y, Z>
+         */
+        public Helper(UnaryFunction<? super X, ? extends T> following, UnaryFunction<? super A, ? extends X> preceding) {
+            this.following = following;
+            this.preceding = preceding;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public T evaluate(A obj) {
+            return following.evaluate(preceding.evaluate(obj));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this || obj instanceof Helper && equals((Helper<?>) obj);
+        }
+
+        private boolean equals(Helper<?> helper) {
+            return helper.following.equals(following) && helper.preceding.equals(preceding);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+            int result = "CompositeUnaryFunction$Helper".hashCode();
+            result <<= 2;
+            result |= following.hashCode();
+            result <<= 2;
+            result |= preceding.hashCode();
+            return result;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String toString() {
+            // TODO Auto-generated method stub
+            return following.toString() + " of " + preceding.toString();
+        }
     }
 
-    /**
-     * Create a new CompositeUnaryFunction.
-     * @param f UnaryFunction to add
-     */
-    public CompositeUnaryFunction(UnaryFunction f) {
-        of(f);
-    }
+    private UnaryFunction<? super A, ? extends T> function;
 
     /**
      * Create a new CompositeUnaryFunction.
-     * @param f UnaryFunction to add
-     * @param g UnaryFunction to add
+     * @param function UnaryFunction to call
      */
-    public CompositeUnaryFunction(UnaryFunction f, UnaryFunction g) {
-        of(f);
-        of(g);
+    public CompositeUnaryFunction(UnaryFunction<? super A, ? extends T> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("function must not be null");
+        }
+        this.function = function;
     }
 
-    // modifiers
-    // ------------------------------------------------------------------------
-    /**
-     * Fluently prepend a UnaryFunction to the chain.
-     * @param f UnaryFunction to prepend
-     * @return this
-     */
-    public CompositeUnaryFunction of(UnaryFunction f) {
-        list.add(f);
-        return this;
+    private <X> CompositeUnaryFunction(UnaryFunction<? super X, ? extends T> following, UnaryFunction<? super A, ? extends X> preceding) {
+        this.function = new Helper<X>(following, preceding);
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object obj) {
-        Object result = obj;
-        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            result = ((UnaryFunction) iter.previous()).evaluate(result);
+    public T evaluate(A obj) {
+        return function.evaluate(obj);
+    }
+
+    /**
+     * Fluently obtain a CompositeUnaryFunction that is "this function" applied to the specified preceding function.
+     * @param <P> argument type of the resulting function.
+     * @param preceding UnaryFunction
+     * @return CompositeUnaryFunction<P, T>
+     */
+    public <P> CompositeUnaryFunction<P, T> of(UnaryFunction<? super P, ? extends A> preceding) {
+        if (preceding == null) {
+            throw new IllegalArgumentException("preceding function was null");
         }
-        return result;
+        return new CompositeUnaryFunction<P, T>(function, preceding);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof CompositeUnaryFunction && equals((CompositeUnaryFunction) that));
+        return that == this || (that instanceof CompositeUnaryFunction && equals((CompositeUnaryFunction<?, ?>) that));
     }
 
     /**
@@ -117,9 +161,9 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
      * @param that CompositeUnaryFunction to test
      * @return boolean
      */
-    public boolean equals(CompositeUnaryFunction that) {
+    public boolean equals(CompositeUnaryFunction<?, ?> that) {
         // by construction, list is never null
-        return null != that && list.equals(that.list);
+        return null != that && function.equals(that.function);
     }
 
     /**
@@ -127,14 +171,14 @@ public class CompositeUnaryFunction implements UnaryFunction, Serializable {
      */
     public int hashCode() {
         // by construction, list is never null
-        return "CompositeUnaryFunction".hashCode() ^ list.hashCode();
+        return ("CompositeUnaryFunction".hashCode() << 4) ^ function.hashCode();
     }
 
     /**
      * {@inheritDoc}
      */
     public String toString() {
-        return "CompositeUnaryFunction<" + list + ">";
+        return "CompositeUnaryFunction<" + function + ">";
     }
 
 }

@@ -28,7 +28,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author  Jason Horman (jason@jhorman.org)
  */
 
-public class IsWithinRange implements UnaryPredicate, Serializable {
+public class IsWithinRange<A extends Comparable<A>> implements UnaryPredicate<A>, Serializable {
     /** Hashcode of the name of this Predicate. */
     private static final int nameHashCode = "IsWithinRange".hashCode();
 
@@ -37,9 +37,9 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
      ***************************************************/
 
     /** The minimum value of the range. */
-    private Comparable min = null;
+    private A min = null;
     /** The maximum value of the range. */
-    private Comparable max = null;
+    private A max = null;
 
     /***************************************************
      *  Constructors
@@ -51,15 +51,13 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
      * @param min Comparable
      * @param max Comparable
      */
-    public IsWithinRange(Comparable min, Comparable max) {
+    public IsWithinRange(A min, A max) {
         if (min == null || max == null) {
             throw new IllegalArgumentException("min and max must not be null");
         }
-
         if (min.compareTo(max) > 0) {
             throw new IllegalArgumentException("min must be <= max");
         }
-
         this.min = min;
         this.max = max;
     }
@@ -72,9 +70,8 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
      * {@inheritDoc}
      * Test if the passed in object is within the specified range.
      */
-    public boolean test(Object o) {
-        Comparable c = (Comparable) o;
-        return c.compareTo(min) >= 0 && c.compareTo(max) <= 0;
+    public boolean test(A o) {
+        return o.compareTo(min) >= 0 && o.compareTo(max) <= 0;
     }
 
     /**
@@ -87,7 +84,7 @@ public class IsWithinRange implements UnaryPredicate, Serializable {
         if (!(o instanceof IsWithinRange)) {
             return false;
         }
-        final IsWithinRange isWithinRange = (IsWithinRange) o;
+        final IsWithinRange<?> isWithinRange = (IsWithinRange<?>) o;
         return max.equals(isWithinRange.max) && min.equals(isWithinRange.min);
     }
 

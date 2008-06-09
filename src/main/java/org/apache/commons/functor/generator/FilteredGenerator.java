@@ -26,15 +26,15 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryProcedure;
  *
  * @version $Revision$ $Date$
  */
-public class FilteredGenerator extends BaseGenerator {
-    private UnaryPredicate pred;
+public class FilteredGenerator<E> extends BaseGenerator<E> {
+    private UnaryPredicate<? super E> pred;
 
     /**
      * Create a new FilteredGenerator.
      * @param wrapped Generator to wrap
      * @param pred filtering UnaryPredicate
      */
-    public FilteredGenerator(Generator wrapped, UnaryPredicate pred) {
+    public FilteredGenerator(Generator<? extends E> wrapped, UnaryPredicate<? super E> pred) {
         super(wrapped);
         if (wrapped == null) {
             throw new IllegalArgumentException("Generator argument was null");
@@ -48,8 +48,16 @@ public class FilteredGenerator extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(UnaryProcedure proc) {
-        getWrappedGenerator().run(new ConditionalUnaryProcedure(pred, proc));
+    public void run(UnaryProcedure<? super E> proc) {
+        getWrappedGenerator().run(new ConditionalUnaryProcedure<E>(pred, proc));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Generator<? extends E> getWrappedGenerator() {
+        return (Generator<? extends E>) super.getWrappedGenerator();
     }
 
     /**
@@ -62,7 +70,7 @@ public class FilteredGenerator extends BaseGenerator {
         if (obj instanceof FilteredGenerator == false) {
             return false;
         }
-        FilteredGenerator other = (FilteredGenerator) obj;
+        FilteredGenerator<?> other = (FilteredGenerator<?>) obj;
         return other.getWrappedGenerator().equals(getWrappedGenerator()) && other.pred.equals(pred);
     }
 
@@ -72,7 +80,7 @@ public class FilteredGenerator extends BaseGenerator {
     public int hashCode() {
         int result = "FilteredGenerator".hashCode();
         result <<= 2;
-        Generator gen = getWrappedGenerator();
+        Generator<?> gen = getWrappedGenerator();
         result ^= gen == null ? 0 : gen.hashCode();
         result <<= 2;
         result ^= pred == null ? 0 : pred.hashCode();

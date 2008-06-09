@@ -24,15 +24,15 @@ import org.apache.commons.functor.UnaryProcedure;
  *
  * @version $Revision$ $Date$
  */
-public class TransformedGenerator extends BaseGenerator {
-    private UnaryFunction func;
+public class TransformedGenerator<I, E> extends BaseGenerator<E> {
+    private UnaryFunction<? super I, ? extends E> func;
 
     /**
      * Create a new TransformedGenerator.
      * @param wrapped Generator to transform
      * @param func UnaryFunction to apply to each element
      */
-    public TransformedGenerator(Generator wrapped, UnaryFunction func) {
+    public TransformedGenerator(Generator<? extends I> wrapped, UnaryFunction<? super I, ? extends E> func) {
         super(wrapped);
         if (wrapped == null) {
             throw new IllegalArgumentException("Generator argument was null");
@@ -46,12 +46,21 @@ public class TransformedGenerator extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(final UnaryProcedure proc) {
-        getWrappedGenerator().run(new UnaryProcedure() {
-            public void run(Object obj) {
+    public void run(final UnaryProcedure<? super E> proc) {
+        getWrappedGenerator().run(new UnaryProcedure<I>() {
+            public void run(I obj) {
                 proc.run(func.evaluate(obj));
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Generator<? extends I> getWrappedGenerator() {
+        return (Generator<? extends I>) super.getWrappedGenerator();
     }
 
     /**
@@ -64,7 +73,7 @@ public class TransformedGenerator extends BaseGenerator {
         if (obj instanceof TransformedGenerator == false) {
             return false;
         }
-        TransformedGenerator other = (TransformedGenerator) obj;
+        TransformedGenerator<?, ?> other = (TransformedGenerator<?, ?>) obj;
         return other.getWrappedGenerator().equals(getWrappedGenerator()) && other.func == func;
     }
 

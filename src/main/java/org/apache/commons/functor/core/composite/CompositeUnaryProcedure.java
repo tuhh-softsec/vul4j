@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.adapter.UnaryProcedureUnaryFunction;
 
 /**
  * A {@link UnaryProcedure UnaryProcedure}
@@ -44,52 +45,37 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class CompositeUnaryProcedure implements UnaryProcedure, Serializable {
+public final class CompositeUnaryProcedure<A> implements UnaryProcedure<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private CompositeUnaryFunction function = null;
-    private UnaryProcedure procedure = null;
+    private CompositeUnaryFunction<? super A, Object> function = null;
 
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new CompositeUnaryProcedure.
-     * @param p final UnaryProcedure to run
+     * @param procedure final UnaryProcedure to run
      */
-    public CompositeUnaryProcedure(UnaryProcedure p) {
-        if (null == p) {
-            throw new NullPointerException();
+    public CompositeUnaryProcedure(UnaryProcedure<? super A> procedure) {
+        if (null == procedure) {
+            throw new IllegalArgumentException("procedure must not be null");
         }
-        this.procedure = p;
-        this.function = new CompositeUnaryFunction();
+        this.function = new CompositeUnaryFunction<A, Object>(new UnaryProcedureUnaryFunction<A, Object>(procedure));
     }
 
-    /**
-     * Create a new CompositeUnaryProcedure.
-     * @param p final UnaryProcedure to run
-     * @param f UnaryFunction to chain into <code>p</code>
-     */
-    public CompositeUnaryProcedure(UnaryProcedure p, UnaryFunction f) {
-        if (null == p) {
-            throw new NullPointerException();
-        }
-        if (null == f) {
-            throw new NullPointerException();
-        }
-        this.procedure = p;
-        this.function = new CompositeUnaryFunction(f);
+    private CompositeUnaryProcedure(CompositeUnaryFunction<? super A, Object> function) {
+        this.function = function;
     }
 
     // modifiers
     // ------------------------------------------------------------------------
     /**
-     * Fluently prepend a transformation to the chain.
-     * @param f UnaryFunction to prepend
-     * @return this
+     * Fluently obtain a CompositeUnaryProcedure that runs our procedure against the result of the preceding function.
+     * @param preceding UnaryFunction
+     * @return CompositeUnaryProcedure<P>
      */
-    public CompositeUnaryProcedure of(UnaryFunction f) {
-        function.of(f);
-        return this;
+    public <T> CompositeUnaryProcedure<T> of(UnaryFunction<? super T, ? extends A> preceding) {
+        return new CompositeUnaryProcedure<T>(function.of(preceding));
     }
 
     // predicate interface
@@ -97,15 +83,15 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
     /**
      * {@inheritDoc}
      */
-    public void run(Object obj) {
-        procedure.run(function.evaluate(obj));
+    public void run(A obj) {
+        function.evaluate(obj);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof CompositeUnaryProcedure && equals((CompositeUnaryProcedure) that));
+        return that == this || (that instanceof CompositeUnaryProcedure && equals((CompositeUnaryProcedure<?>) that));
     }
 
     /**
@@ -113,8 +99,8 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
      * @param that CompositeUnaryProcedure to test
      * @return boolean
      */
-    public boolean equals(CompositeUnaryProcedure that) {
-        return null != that && procedure.equals(that.procedure) && function.equals(that.function);
+    public boolean equals(CompositeUnaryProcedure<?> that) {
+        return null != that && function.equals(that.function);
     }
 
     /**
@@ -122,8 +108,6 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
      */
     public int hashCode() {
         int hash = "CompositeUnaryProcedure".hashCode();
-        hash <<= 2;
-        hash ^= procedure.hashCode();
         hash <<= 2;
         hash ^= function.hashCode();
         return hash;
@@ -133,7 +117,7 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
      * {@inheritDoc}
      */
     public String toString() {
-        return "CompositeUnaryProcedure<" + procedure + ";" + function + ">";
+        return "CompositeUnaryProcedure<" + function + ">";
     }
 
 }

@@ -39,14 +39,14 @@ import org.apache.commons.functor.Procedure;
  */
 public final class FunctionProcedure implements Procedure, Serializable {
     /** The {@link Function Function} I'm wrapping. */
-    private Function function = null;
+    private Function<?> function;
 
     /**
      * Create an {@link Procedure Procedure} wrapping
      * the given {@link Function Function}.
      * @param function the {@link Function Function} to wrap
      */
-    public FunctionProcedure(Function function) {
+    public FunctionProcedure(Function<?> function) {
         this.function = function;
     }
 
@@ -106,7 +106,7 @@ public final class FunctionProcedure implements Procedure, Serializable {
      *         {@link Function Function}, or <code>null</code>
      *         if the given <code>Function</code> is <code>null</code>
      */
-    public static FunctionProcedure adapt(Function function) {
+    public static FunctionProcedure adapt(Function<?> function) {
         return null == function ? null : new FunctionProcedure(function);
     }
 

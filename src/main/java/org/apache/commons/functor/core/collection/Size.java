@@ -28,9 +28,9 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class Size implements UnaryFunction, Serializable {
+public final class Size<A> implements UnaryFunction<A, Integer>, Serializable {
 
-    private static final Size INSTANCE = new Size();
+    private static final Size<Object> INSTANCE = new Size<Object>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -42,18 +42,20 @@ public final class Size implements UnaryFunction, Serializable {
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object obj) {
+    public Integer evaluate(Object obj) {
         if (obj instanceof Collection) {
-            return evaluate((Collection) obj);
-        } else if (obj instanceof String) {
-            return evaluate((String) obj);
-        } else if (null != obj && obj.getClass().isArray()) {
-            return evaluateArray(obj);
-        } else if (null == obj) {
-            throw new NullPointerException("Argument must not be null");
-        } else {
-            throw new ClassCastException("Expected Collection, String or Array, found " + obj);
+            return evaluate((Collection<?>) obj);
         }
+        if (obj instanceof String) {
+            return evaluate((String) obj);
+        }
+        if (null != obj && obj.getClass().isArray()) {
+            return evaluateArray(obj);
+        }
+        if (null == obj) {
+            throw new IllegalArgumentException("Argument must not be null");
+        }
+        throw new IllegalArgumentException("Expected Collection, String or Array, found " + obj);
     }
 
     /**
@@ -81,7 +83,7 @@ public final class Size implements UnaryFunction, Serializable {
      * Get a Size instance.
      * @return Size
      */
-    public static final Size instance() {
+    public static final Size<Object> instance() {
         return INSTANCE;
     }
 
@@ -90,8 +92,8 @@ public final class Size implements UnaryFunction, Serializable {
      * @param col to evaluate
      * @return Integer
      */
-    private Object evaluate(Collection col) {
-        return new Integer(col.size());
+    private int evaluate(Collection<?> col) {
+        return col.size();
     }
 
     /**
@@ -99,8 +101,8 @@ public final class Size implements UnaryFunction, Serializable {
      * @param str to evaluate
      * @return Integer
      */
-    private Object evaluate(String str) {
-        return new Integer(str.length());
+    private int evaluate(String str) {
+        return str.length();
     }
 
     /**
@@ -108,8 +110,8 @@ public final class Size implements UnaryFunction, Serializable {
      * @param array to evaluate
      * @return Integer
      */
-    private Object evaluateArray(Object array) {
-        return new Integer(Array.getLength(array));
+    private int evaluateArray(Object array) {
+        return Array.getLength(array);
     }
 
 }

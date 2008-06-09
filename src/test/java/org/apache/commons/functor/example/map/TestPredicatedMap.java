@@ -23,7 +23,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.core.IsInstanceOf;
+import org.apache.commons.functor.core.IsInstance;
 
 
 /**
@@ -45,7 +45,7 @@ public class TestPredicatedMap extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         baseMap = new HashMap();
-        predicatedMap = new PredicatedMap(baseMap,new IsInstanceOf(String.class),new IsInstanceOf(Integer.class));
+        predicatedMap = new PredicatedMap(baseMap,IsInstance.of(String.class),IsInstance.of(Integer.class));
     }
 
     public void tearDown() throws Exception {

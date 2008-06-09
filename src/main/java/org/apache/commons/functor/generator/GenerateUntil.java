@@ -25,15 +25,15 @@ import org.apache.commons.functor.UnaryProcedure;
  *
  * @version $Revision$ $Date$
  */
-public class GenerateUntil extends BaseGenerator {
-    private UnaryPredicate test;
+public class GenerateUntil<E> extends BaseGenerator<E> {
+    private UnaryPredicate<? super E> test;
 
     /**
      * Create a new GenerateUntil.
      * @param wrapped {@link Generator}
      * @param test {@link UnaryPredicate}
      */
-    public GenerateUntil(Generator wrapped, UnaryPredicate test) {
+    public GenerateUntil(Generator<? extends E> wrapped, UnaryPredicate<? super E> test) {
         super(wrapped);
         if (wrapped == null) {
             throw new IllegalArgumentException("Generator argument was null");
@@ -47,15 +47,23 @@ public class GenerateUntil extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(final UnaryProcedure proc) {
-        getWrappedGenerator().run(new UnaryProcedure() {
-            public void run(Object obj) {
+    public void run(final UnaryProcedure<? super E> proc) {
+        getWrappedGenerator().run(new UnaryProcedure<E>() {
+            public void run(E obj) {
                 proc.run(obj);
                 if (test.test(obj)) {
                     getWrappedGenerator().stop();
                 }
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Generator<? extends E> getWrappedGenerator() {
+        return (Generator<? extends E>) super.getWrappedGenerator();
     }
 
     /**
@@ -68,7 +76,7 @@ public class GenerateUntil extends BaseGenerator {
         if (obj instanceof GenerateUntil == false) {
             return false;
         }
-        GenerateUntil other = (GenerateUntil) obj;
+        GenerateUntil<?> other = (GenerateUntil<?>) obj;
         return other.getWrappedGenerator().equals(getWrappedGenerator()) && other.test.equals(test);
     }
 
@@ -78,7 +86,7 @@ public class GenerateUntil extends BaseGenerator {
     public int hashCode() {
         int result = "GenerateUntil".hashCode();
         result <<= 2;
-        Generator gen = getWrappedGenerator();
+        Generator<?> gen = getWrappedGenerator();
         result ^= gen == null ? 0 : gen.hashCode();
         result <<= 2;
         result ^= test == null ? 0 : test.hashCode();

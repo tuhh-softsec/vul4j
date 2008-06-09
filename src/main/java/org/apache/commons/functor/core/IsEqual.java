@@ -19,6 +19,8 @@ package org.apache.commons.functor.core;
 import java.io.Serializable;
 
 import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.RightBoundPredicate;
 
 /**
  * {@link #test Tests}
@@ -35,10 +37,13 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsEqual implements BinaryPredicate, Serializable {
+public final class IsEqual<L, R> implements BinaryPredicate<L, R>, Serializable {
     // static attributes
     // ------------------------------------------------------------------------
-    private static final IsEqual INSTANCE = new IsEqual();
+    /**
+     * Basic IsEqual<Object, Object> instance.
+     */
+    public static final IsEqual<Object, Object> INSTANCE = IsEqual.<Object, Object>instance();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -53,8 +58,8 @@ public final class IsEqual implements BinaryPredicate, Serializable {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
-        return (null == left ? null == right : left.equals(right));
+    public boolean test(L left, R right) {
+        return left == right || left != null && left.equals(right); 
     }
 
     /**
@@ -84,8 +89,18 @@ public final class IsEqual implements BinaryPredicate, Serializable {
      * Get an IsEqual instance.
      * @return IsEqual
      */
-    public static IsEqual instance() {
-        return INSTANCE;
+    public static <L, R> IsEqual<L, R> instance() {
+        return new IsEqual<L, R>();
     }
 
+    /**
+     * Get an IsEqual UnaryPredicate.
+     * @param <L>
+     * @param <R>
+     * @param object bound comparison object
+     * @return UnaryPredicate<L>
+     */
+    public static <L, R> UnaryPredicate<L> to(R object) {
+        return new RightBoundPredicate<L, R>(new IsEqual<L, R>(), object);
+    }
 }

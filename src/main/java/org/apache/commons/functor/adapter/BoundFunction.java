@@ -38,18 +38,18 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BoundFunction implements Function, Serializable {
+public final class BoundFunction<A, T> implements Function<T>, Serializable {
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
+    private UnaryFunction<? super A, ? extends T> function;
     /** The parameter to pass to that function. */
-    private Object param = null;
+    private A param = null;
 
     /**
      * Create a new BoundFunction.
      * @param function the function to adapt
      * @param arg the constant argument to use
      */
-    public BoundFunction(UnaryFunction function, Object arg) {
+    public BoundFunction(UnaryFunction<? super A, ? extends T> function, A arg) {
         this.function = function;
         this.param = arg;
     }
@@ -57,7 +57,7 @@ public final class BoundFunction implements Function, Serializable {
     /**
      * {@inheritDoc}
      */
-    public Object evaluate() {
+    public T evaluate() {
         return function.evaluate(param);
     }
 
@@ -65,7 +65,7 @@ public final class BoundFunction implements Function, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BoundFunction && equals((BoundFunction) that));
+        return that == this || (that instanceof BoundFunction && equals((BoundFunction<?, ?>) that));
     }
 
     /**
@@ -73,7 +73,7 @@ public final class BoundFunction implements Function, Serializable {
      * @param that BoundFunction to test
      * @return boolean
      */
-    public boolean equals(BoundFunction that) {
+    public boolean equals(BoundFunction<?, ?> that) {
         return null != that
                 && (null == function ? null == that.function : function.equals(that.function))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -119,8 +119,8 @@ public final class BoundFunction implements Function, Serializable {
      *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
      *         if the given <code>UnaryFunction</code> is <code>null</code>
      */
-    public static BoundFunction bind(UnaryFunction function, Object arg) {
-        return null == function ? null : new BoundFunction(function, arg);
+    public static <A, T> BoundFunction<A, T> bind(UnaryFunction<? super A, ? extends T> function, A arg) {
+        return null == function ? null : new BoundFunction<A, T>(function, arg);
     }
 
 }

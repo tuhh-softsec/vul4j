@@ -37,15 +37,15 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class UnaryPredicateUnaryFunction implements UnaryFunction, Serializable {
+public final class UnaryPredicateUnaryFunction<A> implements UnaryFunction<A, Boolean>, Serializable {
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
+    private UnaryPredicate<? super A> predicate;
 
     /**
      * Create a new UnaryPredicateUnaryFunction.
      * @param predicate to adapt
      */
-    public UnaryPredicateUnaryFunction(UnaryPredicate predicate) {
+    public UnaryPredicateUnaryFunction(UnaryPredicate<? super A> predicate) {
         this.predicate = predicate;
     }
 
@@ -57,8 +57,8 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
      *
      * @return a non-<code>null</code> <code>Boolean</code> instance
      */
-    public Object evaluate(Object obj) {
-        return predicate.test(obj) ? Boolean.TRUE : Boolean.FALSE;
+    public Boolean evaluate(A obj) {
+        return predicate.test(obj);
     }
 
     /**
@@ -66,7 +66,7 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
      */
     public boolean equals(Object that) {
         return that == this
-        || (that instanceof UnaryPredicateUnaryFunction && equals((UnaryPredicateUnaryFunction) that));
+                || (that instanceof UnaryPredicateUnaryFunction && equals((UnaryPredicateUnaryFunction<?>) that));
     }
 
     /**
@@ -74,7 +74,7 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
      * @param that UnaryPredicateUnaryFunction to test
      * @return boolean
      */
-    public boolean equals(UnaryPredicateUnaryFunction that) {
+    public boolean equals(UnaryPredicateUnaryFunction<?> that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
@@ -101,8 +101,8 @@ public final class UnaryPredicateUnaryFunction implements UnaryFunction, Seriali
      * @param predicate to adapt
      * @return UnaryPredicateUnaryFunction
      */
-    public static UnaryPredicateUnaryFunction adapt(UnaryPredicate predicate) {
-        return null == predicate ? null : new UnaryPredicateUnaryFunction(predicate);
+    public static <A> UnaryPredicateUnaryFunction<A> adapt(UnaryPredicate<? super A> predicate) {
+        return null == predicate ? null : new UnaryPredicateUnaryFunction<A>(predicate);
     }
 
 }

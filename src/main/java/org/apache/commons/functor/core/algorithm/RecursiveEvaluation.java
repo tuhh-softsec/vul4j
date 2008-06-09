@@ -26,16 +26,16 @@ import org.apache.commons.functor.Function;
  * is executed. Functions are executed until a non function value or a
  * function of a type other than that expected is returned.
  */
-public class RecursiveEvaluation implements Function, Serializable {
-    private Function function;
-    private Class functionType;
+public class RecursiveEvaluation implements Function<Object>, Serializable {
+    private Function<?> function;
+    private Class<?> functionType;
 
     /**
      * Create a new RecursiveEvaluation. Recursion will continue while the
      * returned value is of the same runtime class as <code>function</code>.
      * @param function initial, potentially recursive Function
      */
-    public RecursiveEvaluation(Function function) {
+    public RecursiveEvaluation(Function<?> function) {
         this(function, getClass(function));
     }
 
@@ -44,7 +44,7 @@ public class RecursiveEvaluation implements Function, Serializable {
      * @param function initial, potentially recursive Function
      * @param functionType as long as result is an instance, keep processing.
      */
-    public RecursiveEvaluation(Function function, Class functionType) {
+    public RecursiveEvaluation(Function<?> function, Class<?> functionType) {
         if (function == null) {
             throw new IllegalArgumentException("Function argument was null");
         }
@@ -65,7 +65,7 @@ public class RecursiveEvaluation implements Function, Serializable {
         while (true) {
             result = function.evaluate();
             if (functionType.isInstance(result)) {
-                function = (Function) result;
+                function = (Function<?>) result;
                 continue;
             } else {
                 break;
@@ -99,7 +99,7 @@ public class RecursiveEvaluation implements Function, Serializable {
      * @param o Object to check
      * @return Class found
      */
-    private static Class getClass(Object o) {
-        return o == null ? null : o.getClass();
+    private static <T> Class<?> getClass(Function<?> f) {
+        return f == null ? null : f.getClass();
     }
 }

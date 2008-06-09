@@ -40,7 +40,7 @@ import org.apache.commons.functor.Predicate;
 abstract class BasePredicateList implements Predicate, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
+    private List<Predicate> list = new ArrayList<Predicate>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -97,11 +97,6 @@ abstract class BasePredicateList implements Predicate, Serializable {
      */
     public abstract String toString();
 
-    /**
-     * {@inheritDoc}
-     */
-    public abstract boolean test();
-
     // modifiers
     // ------------------------------------------------------------------------
     /**
@@ -118,7 +113,7 @@ abstract class BasePredicateList implements Predicate, Serializable {
      * Get an Iterator over the contents of the list.
      * @return Iterator<Predicate>
      */
-    protected Iterator getPredicateIterator() {
+    protected Iterator<Predicate> getPredicateIterator() {
         return list.iterator();
     }
 

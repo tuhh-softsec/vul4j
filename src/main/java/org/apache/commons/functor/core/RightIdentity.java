@@ -16,28 +16,32 @@
  */
 package org.apache.commons.functor.core;
 
-import java.io.Serializable;
-
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.adapter.BinaryFunctionBinaryPredicate;
+import org.apache.commons.functor.adapter.IgnoreLeftFunction;
 
 /**
- * {@link #evaluate Evaluates} to its second argument.
- *
- * {@link #test Tests} to the <code>boolean</code>
- * value of the <code>Boolean</code>-valued second
- * argument. The {@link #test test} method
- * throws an exception if the parameter isn't a
- * non-<code>null</code> <code>Boolean</code>.
+ * Holder class for a right-identity <code>BinaryFunction</code> (evaluates to the right argument) and a right-identity
+ * <code>BinaryPredicate</code> (tests whether right <code>Boolean</code> argument equals <code>Boolean.TRUE</code>).
  *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
+ * @author Matt Benson
  */
-public final class RightIdentity implements BinaryPredicate, BinaryFunction, Serializable {
+public final class RightIdentity {
 
     // static attributes
     // ------------------------------------------------------------------------
-    private static final RightIdentity INSTANCE = new RightIdentity();
+    /**
+     * Right-identity function.
+     */
+    public static final BinaryFunction<Object, Object, Object> FUNCTION = RightIdentity.<Object, Object>function();
+
+    /**
+     * Right-identity predicate.
+     */
+    public static final BinaryPredicate<Object, Boolean> PREDICATE = BinaryFunctionBinaryPredicate.adapt(IgnoreLeftFunction.adapt(new Identity<Boolean>()));
 
     // constructor
     // ------------------------------------------------------------------------
@@ -47,60 +51,25 @@ public final class RightIdentity implements BinaryPredicate, BinaryFunction, Ser
     public RightIdentity() {
     }
 
-    // functor interface
-    // ------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public Object evaluate(Object left, Object right) {
-        return right;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean test(Object left, Object right) {
-        return test((Boolean) right);
-    }
-
-    /**
-     * Test a Boolean.
-     * @param bool to test
-     * @return boolean
-     */
-    private boolean test(Boolean bool) {
-        return bool.booleanValue();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean equals(Object that) {
-        return (that instanceof RightIdentity);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int hashCode() {
-        return "RightIdentity".hashCode();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "RightIdentity";
-    }
-
     // static methods
     // ------------------------------------------------------------------------
+
     /**
-     * Get a RightIdentity instance.
-     * @return RightIdentity
+     * Get a typed right-identity BinaryFunction.
+     * @param <L>
+     * @param <R>
+     * @return BinaryFunction<L, R, R>
      */
-    public static RightIdentity instance() {
-        return INSTANCE;
+    public static <L, R> BinaryFunction<L, R, R> function() {
+        return IgnoreLeftFunction.adapt(new Identity<R>());
     }
 
+    /**
+     * Get a typed right-identity BinaryPredicate. 
+     * @param <L>
+     * @return BinaryPredicate<L, Boolean>
+     */
+    public static <L> BinaryPredicate<L, Boolean> predicate() {
+        return BinaryFunctionBinaryPredicate.adapt(IgnoreLeftFunction.<L, Boolean, Boolean>adapt(new Identity<Boolean>()));
+    }
 }

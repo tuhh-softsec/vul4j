@@ -37,16 +37,16 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Serializable {
+public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction function = null;
+    private BinaryFunction<? super L, ? super R, Boolean> function;
 
     /**
      * Create an {@link BinaryPredicate BinaryPredicate} wrapping
      * the given {@link BinaryFunction BinaryFunction}.
      * @param function the {@link BinaryFunction BinaryFunction} to wrap
      */
-    public BinaryFunctionBinaryPredicate(BinaryFunction function) {
+    public BinaryFunctionBinaryPredicate(BinaryFunction<? super L, ? super R, Boolean> function) {
         this.function = function;
     }
 
@@ -59,8 +59,8 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      * @throws NullPointerException if my underlying function returns <code>null</code>
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
-    public boolean test(Object left, Object right) {
-        return ((Boolean) (function.evaluate(left, right))).booleanValue();
+    public boolean test(L left, R right) {
+        return function.evaluate(left, right);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryFunctionBinaryPredicate && equals((BinaryFunctionBinaryPredicate) that));
+                || (that instanceof BinaryFunctionBinaryPredicate && equals((BinaryFunctionBinaryPredicate<?, ?>) that));
     }
 
     /**
@@ -76,7 +76,7 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      * @param that BinaryFunctionBinaryPredicate to test
      * @return boolean
      */
-    public boolean equals(BinaryFunctionBinaryPredicate that) {
+    public boolean equals(BinaryFunctionBinaryPredicate<?, ?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -111,8 +111,9 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
      *         if the given <code>BinaryFunction</code> is <code>null</code>
      */
-    public static BinaryFunctionBinaryPredicate adapt(BinaryFunction function) {
-        return null == function ? null : new BinaryFunctionBinaryPredicate(function);
+    public static <L, R, T> BinaryFunctionBinaryPredicate<L, R> adapt(
+            BinaryFunction<? super L, ? super R, Boolean> function) {
+        return null == function ? null : new BinaryFunctionBinaryPredicate<L, R>(function);
     }
 
 }

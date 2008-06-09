@@ -36,7 +36,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class UnaryOr extends BaseUnaryPredicateList {
+public final class UnaryOr<A> extends BaseUnaryPredicateList<A> {
 
     // constructor
     // ------------------------------------------------------------------------
@@ -51,7 +51,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * Create a new UnaryOr.
      * @param p Predicate to add
      */
-    public UnaryOr(UnaryPredicate p) {
+    public UnaryOr(UnaryPredicate<? super A> p) {
         super(p);
     }
 
@@ -60,7 +60,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * @param p Predicate to add
      * @param q Predicate to add
      */
-    public UnaryOr(UnaryPredicate p, UnaryPredicate q) {
+    public UnaryOr(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q) {
         super(p, q);
     }
 
@@ -70,7 +70,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * @param q Predicate to add
      * @param r Predicate to add
      */
-    public UnaryOr(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
+    public UnaryOr(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q, UnaryPredicate<? super A> r) {
         super(p, q, r);
     }
 
@@ -81,7 +81,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * @param p Predicate to add
      * @return this
      */
-    public UnaryOr or(UnaryPredicate p) {
+    public UnaryOr<A> or(UnaryPredicate<? super A> p) {
         super.addUnaryPredicate(p);
         return this;
     }
@@ -91,9 +91,9 @@ public final class UnaryOr extends BaseUnaryPredicateList {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object a) {
-        for (Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
-            if (((UnaryPredicate) iter.next()).test(a)) {
+    public boolean test(A a) {
+        for (Iterator<UnaryPredicate<? super A>> iter = getUnaryPredicateIterator(); iter.hasNext();) {
+            if (iter.next().test(a)) {
                 return true;
             }
         }
@@ -104,7 +104,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof UnaryOr && equals((UnaryOr) that));
+        return that == this || (that instanceof UnaryOr && equals((UnaryOr<?>) that));
     }
 
     /**
@@ -112,7 +112,7 @@ public final class UnaryOr extends BaseUnaryPredicateList {
      * @param that UnaryOr to test
      * @return boolean
      */
-    public boolean equals(UnaryOr that) {
+    public boolean equals(UnaryOr<?> that) {
         return getUnaryPredicateListEquals(that);
     }
 

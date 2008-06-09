@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
@@ -31,16 +32,18 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  */
 public final class EachElement {
     /**
+     * Create a new EachElement for bean-dependent APIs.
+     */
+    public EachElement() {
+    }
+
+    /**
      * Get a Generator for each element of a Collection.
      * @param collection to iterate
-     * @return Generator
+     * @return Generator<E>
      */
-    public static final Generator from(Collection collection) {
-        if (null == collection) {
-            return null;
-        } else {
-            return EachElement.from(collection.iterator());
-        }
+    public static final <E> Generator<E> from(Collection<? extends E> collection) {
+        return collection == null ? null : EachElement.from(collection.iterator());
     }
 
     /**
@@ -48,12 +51,11 @@ public final class EachElement {
      * @param map to iterate
      * @return Generator
      */
-    public static final Generator from(Map map) {
-        if (null == map) {
+    public static final <K, V> Generator<Map.Entry<K, V>> from(Map<? extends K, ? extends V> map) {
+        if (map == null) {
             return null;
-        } else {
-            return EachElement.from(map.entrySet().iterator());
         }
+        return map == null ? null : EachElement.from(((Map<K, V>) map).entrySet().iterator());
     }
 
     /**
@@ -61,12 +63,8 @@ public final class EachElement {
      * @param array to iterate
      * @return Generator
      */
-    public static final Generator from(Object[] array) {
-        if (null == array) {
-            return null;
-        } else {
-            return EachElement.from(Arrays.asList(array).iterator());
-        }
+    public static final <E> Generator<E> from(E[] array) {
+        return array == null ? null : EachElement.from(Arrays.asList(array).iterator());
     }
 
     /**
@@ -74,11 +72,7 @@ public final class EachElement {
      * @param iter to iterate
      * @return Generator
      */
-    public static final Generator from(Iterator iter) {
-        if (null == iter) {
-            return null;
-        } else {
-            return new IteratorToGeneratorAdapter(iter);
-        }
+    public static final <E> Generator<E> from(Iterator<? extends E> iter) {
+        return iter == null ? null : new IteratorToGeneratorAdapter<E>(iter);
     }
 }

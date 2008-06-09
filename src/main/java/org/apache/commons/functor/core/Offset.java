@@ -31,11 +31,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 
-public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate {
+public final class Offset implements Predicate, UnaryPredicate<Object>, BinaryPredicate<Object, Object> {
     // instance variables
     //---------------------------------------------------------------
     private int min;
-    private int current = 0;
+    private int current;
 
     /**
      * Create a new Offset.
@@ -56,9 +56,8 @@ public final class Offset implements Predicate, UnaryPredicate, BinaryPredicate 
         if (current < min) {
             current++;
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**

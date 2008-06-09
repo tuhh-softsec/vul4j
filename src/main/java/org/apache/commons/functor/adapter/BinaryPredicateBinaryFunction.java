@@ -37,15 +37,15 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BinaryPredicateBinaryFunction implements BinaryFunction, Serializable {
+public final class BinaryPredicateBinaryFunction<L, R> implements BinaryFunction<L, R, Boolean>, Serializable {
     /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate predicate = null;
+    private BinaryPredicate<? super L, ? super R> predicate;
 
     /**
      * Create a new BinaryPredicateBinaryFunction.
      * @param predicate to adapt
      */
-    public BinaryPredicateBinaryFunction(BinaryPredicate predicate) {
+    public BinaryPredicateBinaryFunction(BinaryPredicate<? super L, ? super R> predicate) {
         this.predicate = predicate;
     }
 
@@ -57,7 +57,7 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
      *
      * @return a non-<code>null</code> <code>Boolean</code> instance
      */
-    public Object evaluate(Object left, Object right) {
+    public Boolean evaluate(L left, R right) {
         return predicate.test(left, right) ? Boolean.TRUE : Boolean.FALSE;
     }
 
@@ -66,7 +66,7 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryPredicateBinaryFunction && equals((BinaryPredicateBinaryFunction) that));
+                || (that instanceof BinaryPredicateBinaryFunction && equals((BinaryPredicateBinaryFunction<?, ?>) that));
     }
 
     /**
@@ -74,7 +74,7 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
      * @param that BinaryPredicateBinaryFunction to test
      * @return boolean
      */
-    public boolean equals(BinaryPredicateBinaryFunction that) {
+    public boolean equals(BinaryPredicateBinaryFunction<?, ?> that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
@@ -109,8 +109,8 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
      *         {@link BinaryPredicate BinaryPredicate}, or <code>null</code>
      *         if the given <code>BinaryPredicate</code> is <code>null</code>
      */
-    public static BinaryPredicateBinaryFunction adapt(BinaryPredicate predicate) {
-        return null == predicate ? null : new BinaryPredicateBinaryFunction(predicate);
+    public static <L, R> BinaryPredicateBinaryFunction<L, R> adapt(BinaryPredicate<? super L, ? super R> predicate) {
+        return null == predicate ? null : new BinaryPredicateBinaryFunction<L, R>(predicate);
     }
 
 }

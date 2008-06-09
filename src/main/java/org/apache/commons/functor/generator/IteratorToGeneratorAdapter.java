@@ -26,11 +26,11 @@ import java.util.Iterator;
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public final class IteratorToGeneratorAdapter extends BaseGenerator {
+public final class IteratorToGeneratorAdapter<E> extends BaseGenerator<E> {
     // instance variables
     //-----------------------------------------------------
 
-    private Iterator iter = null;
+    private Iterator<? extends E> iter = null;
 
     // constructors
     //-----------------------------------------------------
@@ -38,7 +38,7 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
      * Create a new IteratorToGeneratorAdapter.
      * @param iter Iterator to adapt
      */
-    public IteratorToGeneratorAdapter(Iterator iter) {
+    public IteratorToGeneratorAdapter(Iterator<? extends E> iter) {
         if (null == iter) {
             throw new IllegalArgumentException("Iterator argument was null");
         }
@@ -50,7 +50,7 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(UnaryProcedure proc) {
+    public void run(UnaryProcedure<? super E> proc) {
         while (iter.hasNext()) {
             proc.run(iter.next());
             if (isStopped()) {
@@ -69,7 +69,7 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
         if (obj instanceof IteratorToGeneratorAdapter == false) {
             return false;
         }
-        IteratorToGeneratorAdapter that = (IteratorToGeneratorAdapter) obj;
+        IteratorToGeneratorAdapter<?> that = (IteratorToGeneratorAdapter<?>) obj;
         return this.iter.equals(that.iter);
     }
 
@@ -97,8 +97,8 @@ public final class IteratorToGeneratorAdapter extends BaseGenerator {
      * @param iter to adapt
      * @return IteratorToGeneratorAdapter
      */
-    public static IteratorToGeneratorAdapter adapt(Iterator iter) {
-        return null == iter ? null : new IteratorToGeneratorAdapter(iter);
+    public static <E> IteratorToGeneratorAdapter<E> adapt(Iterator<? extends E> iter) {
+        return null == iter ? null : new IteratorToGeneratorAdapter<E>(iter);
     }
 
 }

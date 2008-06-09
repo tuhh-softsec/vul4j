@@ -22,11 +22,10 @@ import org.apache.commons.functor.BinaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class Sum implements BinaryFunction {
-    public Object evaluate(Object left, Object right) {
-        return new Integer( ((Number) left).intValue() + ((Number) right).intValue() );
+public class Sum implements BinaryFunction<Number, Number, Integer> {
+    public Integer evaluate(Number left, Number right) {
+        return left.intValue() + right.intValue();
     }
-
 
     public static final Sum instance() {
         return INSTANCE;

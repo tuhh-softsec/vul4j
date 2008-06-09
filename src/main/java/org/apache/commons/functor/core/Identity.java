@@ -33,11 +33,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class Identity implements UnaryFunction, UnaryPredicate, Serializable {
+public final class Identity<T> implements UnaryFunction<T, T>, UnaryPredicate<T>, Serializable {
 
     // static attributes
     // ------------------------------------------------------------------------
-    private static final Identity INSTANCE = new Identity();
+    public static final Identity<Object> INSTANCE = new Identity<Object>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -54,7 +54,7 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object obj) {
+    public T evaluate(T obj) {
         return obj;
     }
 
@@ -102,8 +102,8 @@ public final class Identity implements UnaryFunction, UnaryPredicate, Serializab
      * Get an Identity instance.
      * @return Identity
      */
-    public static Identity instance() {
-        return INSTANCE;
+    public static <T> Identity<T> instance() {
+        return new Identity<T>();
     }
 
 }

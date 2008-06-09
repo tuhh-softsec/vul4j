@@ -35,7 +35,7 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * Tests the Base Generator class.
  * @author Jason Horman (jason@jhorman.org)
  */
-
+@SuppressWarnings("unchecked")
 public class TestBaseGenerator extends TestCase {
 
     private Generator simpleGenerator = null;

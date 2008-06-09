@@ -64,19 +64,19 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryPredicate p = new TransposedPredicate(BinaryFunctionBinaryPredicate.adapt(new LeftIdentity()));
+        BinaryPredicate<Boolean, Boolean> p = new TransposedPredicate<Boolean, Boolean>(BinaryFunctionBinaryPredicate
+                .adapt(LeftIdentity.<Boolean, Boolean> function()));
         assertEquals(true,p.test(Boolean.FALSE,Boolean.TRUE));
         assertEquals(false,p.test(Boolean.TRUE,Boolean.FALSE));
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate p = new TransposedPredicate(Constant.truePredicate());
+        BinaryPredicate<Object, Object> p = new TransposedPredicate<Object, Object>(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new TransposedPredicate(Constant.truePredicate()));
-        assertObjectsAreEqual(p,TransposedPredicate.transpose(Constant.truePredicate()));
-        assertObjectsAreNotEqual(p,new TransposedPredicate(Constant.falsePredicate()));
-        assertObjectsAreNotEqual(p,new TransposedPredicate(null));
-        assertObjectsAreNotEqual(p,new Constant(true));
+        assertObjectsAreEqual(p,new TransposedPredicate<Object, Object>(Constant.TRUE));
+        assertObjectsAreEqual(p,TransposedPredicate.transpose(Constant.TRUE));
+        assertObjectsAreNotEqual(p,new TransposedPredicate<Object, Object>(Constant.FALSE));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
     public void testTransposeNull() throws Exception {

@@ -23,12 +23,12 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class Contains implements UnaryPredicate {
+public class Contains<T> implements UnaryPredicate<T> {
     public Contains(String str) {
         this.str = str;
     }
 
-    public boolean test(Object obj) {
+    public boolean test(T obj) {
         return null != obj && obj.toString().indexOf(str) != -1;
     }
 

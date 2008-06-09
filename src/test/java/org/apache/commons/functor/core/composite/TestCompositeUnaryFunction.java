@@ -22,7 +22,6 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.core.Constant;
-import org.apache.commons.functor.core.Identity;
 
 /**
  * @version $Revision$ $Date$
@@ -45,7 +44,7 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new CompositeUnaryFunction(new Identity(),new Constant(new Integer(3)));
+        return Composite.function(Constant.of(3));
     }
 
     // Lifecycle
@@ -63,51 +62,45 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        // empty composite acts like identity function
-        assertEquals("xyzzy",(new CompositeUnaryFunction()).evaluate("xyzzy"));
-        assertNull(null,(new CompositeUnaryFunction()).evaluate(null));
 
-        assertEquals(new Integer(4),(new CompositeUnaryFunction(new Constant(new Integer(4)))).evaluate(null));
+        assertEquals(new Integer(4),(new CompositeUnaryFunction<Object, Integer>(Constant.of(4))).evaluate(null));
 
-        assertEquals(new Integer(4),(new CompositeUnaryFunction(new Constant(new Integer(4)),new Constant(new Integer(3)))).evaluate("xyzzy"));
-        assertEquals(new Integer(3),(new CompositeUnaryFunction(new Constant(new Integer(3)),new Constant(new Integer(4)))).evaluate("xyzzy"));
+        assertEquals(new Integer(4),(Composite.function(Constant.of(4)).of(Constant.of(3)).evaluate("xyzzy")));
+        assertEquals(new Integer(3),(new CompositeUnaryFunction<Object, Integer>(Constant.of(3)).of(Constant.of(4)).evaluate("xyzzy")));
     }
 
     public void testOf() throws Exception {
-        CompositeUnaryFunction f = new CompositeUnaryFunction();
-        assertNull(f.evaluate(null));
-        for (int i=0;i<10;i++) {
-            f.of(new UnaryFunction() {
-                    public Object evaluate(Object obj) {
-                        if (obj instanceof Integer) {
-                            return new Integer((((Integer) obj).intValue())+1);
-                        } else {
-                            return new Integer(1);
-                        }
-                    }
-                });
-            assertEquals(new Integer(i+1),f.evaluate(null));
+        UnaryFunction<Object, Integer> uf = new UnaryFunction<Object, Integer>() {
+            public Integer evaluate(Object obj) {
+                if (obj instanceof Integer) {
+                    return (((Integer) obj).intValue()) + 1;
+                } else {
+                    return 1;
+                }
+            }
+        };
+        CompositeUnaryFunction<Object, Integer> f = null;
+        for (int i = 0; i < 10; i++) {
+            f = f == null ? new CompositeUnaryFunction<Object, Integer>(uf) : f.of(uf);
+            assertEquals(Integer.valueOf(i+1),f.evaluate(null));
         }
     }
 
     public void testEquals() throws Exception {
-        CompositeUnaryFunction f = new CompositeUnaryFunction();
+        CompositeUnaryFunction<Object, String> f = new CompositeUnaryFunction<Object, String>(Constant.of("x"));
         assertEquals(f,f);
-        CompositeUnaryFunction g = new CompositeUnaryFunction();
+        
+        CompositeUnaryFunction<Object, String> g = new CompositeUnaryFunction<Object, String>(Constant.of("x"));
         assertObjectsAreEqual(f,g);
 
         for (int i=0;i<3;i++) {
-            f.of(new Constant("x"));
+            f = f.of(Constant.of("y")).of(Constant.of("z"));
             assertObjectsAreNotEqual(f,g);
-            g.of(new Constant("x"));
-            assertObjectsAreEqual(f,g);
-            f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
-            assertObjectsAreNotEqual(f,g);
-            g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            g = g.of(Constant.of("y")).of(Constant.of("z"));
             assertObjectsAreEqual(f,g);
         }
 
-        assertObjectsAreNotEqual(f,new Constant("y"));
+        assertObjectsAreNotEqual(f, Constant.of("y"));
     }
 
 }

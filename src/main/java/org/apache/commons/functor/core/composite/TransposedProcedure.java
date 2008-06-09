@@ -39,10 +39,10 @@ import org.apache.commons.functor.BinaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class TransposedProcedure implements BinaryProcedure, Serializable {
+public class TransposedProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryProcedure procedure = null;
+    private BinaryProcedure<? super R, ? super L> procedure = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -50,7 +50,7 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
      * Create a new TransposedProcedure.
      * @param p BinaryProcedure to transpose
      */
-    public TransposedProcedure(BinaryProcedure p) {
+    public TransposedProcedure(BinaryProcedure<? super R, ? super L> p) {
         procedure = p;
     }
 
@@ -59,7 +59,7 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
     /**
      * {@inheritDoc}
      */
-    public void run(Object left, Object right) {
+    public void run(L left, R right) {
         procedure.run(right, left);
     }
 
@@ -67,7 +67,7 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof TransposedProcedure && equals((TransposedProcedure) that));
+        return that == this || (that instanceof TransposedProcedure && equals((TransposedProcedure<?, ?>) that));
     }
 
     /**
@@ -75,7 +75,7 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
      * @param that TransposedPredicate to test
      * @return boolean
      */
-    public boolean equals(TransposedProcedure that) {
+    public boolean equals(TransposedProcedure<?, ?> that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
@@ -104,8 +104,8 @@ public class TransposedProcedure implements BinaryProcedure, Serializable {
      * @param p to transpose
      * @return TransposedProcedure
      */
-    public static TransposedProcedure transpose(BinaryProcedure p) {
-        return null == p ? null : new TransposedProcedure(p);
+    public static <L, R> TransposedProcedure<R, L> transpose(BinaryProcedure<? super L, ? super R> p) {
+        return null == p ? null : new TransposedProcedure<R, L>(p);
     }
 
 }

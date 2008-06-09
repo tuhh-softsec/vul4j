@@ -38,22 +38,25 @@ import org.apache.commons.functor.BinaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BinaryProcedureBinaryFunction implements BinaryFunction, Serializable {
+public final class BinaryProcedureBinaryFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure procedure = null;
+    private BinaryProcedure<? super L, ? super R> procedure;
 
     /**
      * Create a new BinaryProcedureBinaryFunction.
      * @param procedure to adapt as a BinaryFunction
      */
-    public BinaryProcedureBinaryFunction(BinaryProcedure procedure) {
+    public BinaryProcedureBinaryFunction(BinaryProcedure<? super L, ? super R> procedure) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("BinaryProcedure argument was null");
+        }
         this.procedure = procedure;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(L left, R right) {
         procedure.run(left, right);
         return null;
     }
@@ -63,7 +66,7 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryProcedureBinaryFunction && equals((BinaryProcedureBinaryFunction) that));
+                || (that instanceof BinaryProcedureBinaryFunction && equals((BinaryProcedureBinaryFunction<?, ?, ?>) that));
     }
 
     /**
@@ -71,7 +74,7 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
      * @param that the BinaryProcedureBinaryFunction to test
      * @return boolean
      */
-    public boolean equals(BinaryProcedureBinaryFunction that) {
+    public boolean equals(BinaryProcedureBinaryFunction<?, ?, ?> that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
@@ -106,8 +109,8 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
      *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
      *         if the given <code>BinaryFunction</code> is <code>null</code>
      */
-    public static BinaryProcedureBinaryFunction adapt(BinaryProcedure procedure) {
-        return null == procedure ? null : new BinaryProcedureBinaryFunction(procedure);
+    public static <L, R, T> BinaryProcedureBinaryFunction<L, R, T> adapt(BinaryProcedure<? super L, ? super R> procedure) {
+        return null == procedure ? null : new BinaryProcedureBinaryFunction<L, R, T>(procedure);
     }
 
 }

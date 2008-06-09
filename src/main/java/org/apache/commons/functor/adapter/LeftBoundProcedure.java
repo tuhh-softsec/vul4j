@@ -38,18 +38,18 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
+public final class LeftBoundProcedure<L, R> implements UnaryProcedure<R>, Serializable {
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure procedure = null;
+    private BinaryProcedure<? super L, ? super R> procedure;
     /** The parameter to pass to that procedure. */
-    private Object param = null;
+    private L param;
 
     /**
      * Create a new LeftBoundProcedure.
      * @param procedure the procedure to adapt
      * @param arg the constant argument to use
      */
-    public LeftBoundProcedure(BinaryProcedure procedure, Object arg) {
+    public LeftBoundProcedure(BinaryProcedure<? super L, ? super R> procedure, L arg) {
         this.procedure = procedure;
         this.param = arg;
     }
@@ -57,7 +57,7 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
     /**
      * {@inheritDoc}
      */
-    public void run(Object obj) {
+    public void run(R obj) {
         procedure.run(param, obj);
     }
 
@@ -65,7 +65,7 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof LeftBoundProcedure && equals((LeftBoundProcedure) that));
+        return that == this || (that instanceof LeftBoundProcedure && equals((LeftBoundProcedure<?, ?>) that));
     }
 
     /**
@@ -73,7 +73,7 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
      * @param that LeftBoundProcedure to test
      * @return boolean
      */
-    public boolean equals(LeftBoundProcedure that) {
+    public boolean equals(LeftBoundProcedure<?, ?> that) {
         return null != that
                 && (null == procedure ? null == that.procedure : procedure.equals(that.procedure))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -109,8 +109,8 @@ public final class LeftBoundProcedure implements UnaryProcedure, Serializable {
      * @param arg left side argument
      * @return LeftBoundProcedure
      */
-    public static LeftBoundProcedure bind(BinaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new LeftBoundProcedure(procedure, arg);
+    public static <L, R> LeftBoundProcedure<L, R> bind(BinaryProcedure<? super L, ? super R> procedure, L arg) {
+        return null == procedure ? null : new LeftBoundProcedure<L, R>(procedure, arg);
     }
 
 }

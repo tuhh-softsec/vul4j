@@ -36,25 +36,56 @@ import org.apache.commons.functor.BinaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializable {
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryFunction binary = null;
-    private BinaryFunction leftBinary = null;
-    private BinaryFunction rightBinary = null;
+public class BinaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
+
+    /**
+     * Type-remembering Helper
+     *
+     * @param <G>
+     * @param <H>
+     */
+    private class Helper<G, H> implements BinaryFunction<L, R, T>, Serializable {
+        private BinaryFunction<? super G, ? super H, ? extends T> f;
+        private BinaryFunction<? super L, ? super R, ? extends G> g;
+        private BinaryFunction<? super L, ? super R, ? extends H> h;
+
+        /**
+         * Create a new Helper.
+         * @param f final BinaryFunction to evaluate
+         * @param g left preceding BinaryFunction
+         * @param h right preceding BinaryFunction
+         */
+        public Helper(BinaryFunction<? super G, ? super H, ? extends T> f,
+                BinaryFunction<? super L, ? super R, ? extends G> g, BinaryFunction<? super L, ? super R, ? extends H> h) {
+            this.f = f;
+            this.g = g;
+            this.h = h;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public T evaluate(L left, R right) {
+            return f.evaluate(g.evaluate(left, right), h.evaluate(left, right));
+        }
+    }
+
+    private Helper<?, ?> helper;
 
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new BinaryCompositeBinaryFunction.
-     * @param f function
-     * @param g function
-     * @param h function
+     * @param f final BinaryFunction to evaluate
+     * @param g left preceding BinaryFunction
+     * @param h right preceding BinaryFunction
      */
-    public BinaryCompositeBinaryFunction(BinaryFunction f, BinaryFunction g, BinaryFunction h) {
-        binary = f;
-        leftBinary = g;
-        rightBinary = h;
+    public <G, H> BinaryCompositeBinaryFunction(BinaryFunction<? super G, ? super H, ? extends T> f,
+            BinaryFunction<? super L, ? super R, ? extends G> g, BinaryFunction<? super L, ? super R, ? extends H> h) {
+        if (f == null || g == null || h == null) {
+            throw new IllegalArgumentException("BinaryFunction arguments may not be null");
+        }
+        this.helper = new Helper<G, H>(f, g, h);
     }
 
     // function interface
@@ -62,8 +93,8 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
-        return binary.evaluate(leftBinary.evaluate(left, right), rightBinary.evaluate(left, right));
+    public T evaluate(L left, R right) {
+        return helper.evaluate(left, right);
     }
 
     /**
@@ -71,7 +102,7 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryCompositeBinaryFunction && equals((BinaryCompositeBinaryFunction) that));
+                || (that instanceof BinaryCompositeBinaryFunction && equals((BinaryCompositeBinaryFunction<?, ?, ?>) that));
     }
 
     /**
@@ -79,11 +110,11 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
      * @param that BinaryCompositeBinaryFunction to test
      * @return boolean
      */
-    public boolean equals(BinaryCompositeBinaryFunction that) {
-        return (null != that)
-                && (null == binary ? null == that.binary : binary.equals(that.binary))
-                && (null == leftBinary ? null == that.leftBinary : leftBinary.equals(that.leftBinary))
-                && (null == rightBinary ? null == that.rightBinary : rightBinary.equals(that.rightBinary));
+    public boolean equals(BinaryCompositeBinaryFunction<?, ?, ?> that) {
+        return null != that
+                && helper.f.equals(that.helper.f)
+                && helper.g.equals(that.helper.g)
+                && helper.h.equals(that.helper.h);
     }
 
     /**
@@ -91,18 +122,12 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
      */
     public int hashCode() {
         int hash = "BinaryCompositeBinaryFunction".hashCode();
-        if (null != binary) {
             hash <<= 4;
-            hash ^= binary.hashCode();
-        }
-        if (null != leftBinary) {
+            hash ^= helper.f.hashCode();
             hash <<= 4;
-            hash ^= leftBinary.hashCode();
-        }
-        if (null != rightBinary) {
+            hash ^= helper.g.hashCode();
             hash <<= 4;
-            hash ^= rightBinary.hashCode();
-        }
+            hash ^= helper.h.hashCode();
         return hash;
     }
 
@@ -110,7 +135,7 @@ public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializab
      * {@inheritDoc}
      */
     public String toString() {
-        return "BinaryCompositeBinaryFunction<" + binary + ";" + leftBinary + ";" + rightBinary + ">";
+        return "BinaryCompositeBinaryFunction<" + helper.f + ";" + helper.g + ";" + helper.h + ">";
     }
 
 }

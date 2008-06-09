@@ -28,31 +28,34 @@ import org.apache.commons.functor.generator.Generator;
  *
  * @version $Revision$ $Date$
  */
-public final class IndexOfInGenerator implements BinaryFunction, Serializable {
-    private static final IndexOfInGenerator INSTANCE = new IndexOfInGenerator();
+public final class IndexOfInGenerator<T> implements BinaryFunction<Generator<? extends T>, UnaryPredicate<? super T>, Number>, Serializable {
+    private static final IndexOfInGenerator<Object> INSTANCE = new IndexOfInGenerator<Object>();
 
     /**
      * Helper procedure.
      */
-    private class IndexProcedure implements UnaryProcedure {
-        private int index = -1;
-        private int current = 0;
-        private UnaryPredicate pred;
+    private class IndexProcedure implements UnaryProcedure<T> {
+        private Generator<? extends T> generator;
+        private long index = -1L;
+        private long current = 0L;
+        private UnaryPredicate<? super T> pred;
 
         /**
          * Create a new IndexProcedure.
          * @pred test
          */
-        public IndexProcedure(UnaryPredicate pred) {
+        IndexProcedure(Generator<? extends T> generator, UnaryPredicate<? super T> pred) {
+            this.generator = generator;
             this.pred = pred;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void run(Object obj) {
+        public void run(T obj) {
             if (index < 0 && pred.test(obj)) {
                 index = current;
+                generator.stop();
             }
             current++;
         }
@@ -63,10 +66,10 @@ public final class IndexOfInGenerator implements BinaryFunction, Serializable {
      * @param left Generator
      * @param right UnaryPredicate
      */
-    public Object evaluate(Object left, Object right) {
-        IndexProcedure findProcedure = new IndexProcedure((UnaryPredicate) right);
-        ((Generator) left).run(findProcedure);
-        return new Integer(findProcedure.index);
+    public Number evaluate(Generator<? extends T> left, UnaryPredicate<? super T> right) {
+        IndexProcedure findProcedure = new IndexProcedure(left, right); 
+        left.run(findProcedure);
+        return findProcedure.index;
     }
 
     /**
@@ -87,7 +90,7 @@ public final class IndexOfInGenerator implements BinaryFunction, Serializable {
      * Get a static {@link IndexOfInGenerator} instance.
      * @return {@link IndexOfInGenerator}
      */
-    public static IndexOfInGenerator instance() {
+    public static IndexOfInGenerator<Object> instance() {
         return INSTANCE;
     }
 }

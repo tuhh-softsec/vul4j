@@ -40,12 +40,12 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ConditionalBinaryPredicate implements BinaryPredicate, Serializable {
+public final class ConditionalBinaryPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate ifPred = null;
-    private BinaryPredicate thenPred = null;
-    private BinaryPredicate elsePred = null;
+    private BinaryPredicate<? super L, ? super R> ifPred = null;
+    private BinaryPredicate<? super L, ? super R> thenPred = null;
+    private BinaryPredicate<? super L, ? super R> elsePred = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -55,7 +55,8 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
      * @param thenPred then
      * @param elsePred else
      */
-    public ConditionalBinaryPredicate(BinaryPredicate ifPred, BinaryPredicate thenPred, BinaryPredicate elsePred) {
+    public ConditionalBinaryPredicate(BinaryPredicate<? super L, ? super R> ifPred,
+            BinaryPredicate<? super L, ? super R> thenPred, BinaryPredicate<? super L, ? super R> elsePred) {
         this.ifPred = ifPred;
         this.thenPred = thenPred;
         this.elsePred = elsePred;
@@ -66,7 +67,7 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
+    public boolean test(L left, R right) {
         return ifPred.test(left, right) ? thenPred.test(left, right) : elsePred.test(left, right);
     }
 
@@ -75,7 +76,7 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof ConditionalBinaryPredicate && equals((ConditionalBinaryPredicate) that));
+                || (that instanceof ConditionalBinaryPredicate && equals((ConditionalBinaryPredicate<?, ?>) that));
     }
 
     /**
@@ -83,7 +84,7 @@ public final class ConditionalBinaryPredicate implements BinaryPredicate, Serial
      * @param that ConditionalBinaryPredicate to test
      * @return boolean
      */
-    public boolean equals(ConditionalBinaryPredicate that) {
+    public boolean equals(ConditionalBinaryPredicate<?, ?> that) {
         return null != that
                 && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
                 && (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred))

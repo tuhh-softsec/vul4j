@@ -17,7 +17,6 @@ package org.apache.commons.functor.generator;
 import java.util.Collection;
 
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
 
 /**
@@ -28,10 +27,10 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * @version $Revision$ $Date$
  * @author  Jason Horman (jason@jhorman.org)
  */
-public abstract class BaseGenerator implements Generator {
+public abstract class BaseGenerator<E> implements Generator<E> {
 
     /** A generator can wrap another generator. */
-    private Generator wrappedGenerator = null;
+    private Generator<?> wrappedGenerator = null;
 
     /** Set to true when the generator is {@link #stop stopped}. */
     private boolean stopped = false;
@@ -46,7 +45,7 @@ public abstract class BaseGenerator implements Generator {
      * {@link #stop} method to stop the wrapped generator as well.
      * @param generator Generator to wrap
      */
-    public BaseGenerator(Generator generator) {
+    public BaseGenerator(Generator<?> generator) {
         this.wrappedGenerator = generator;
     }
 
@@ -54,22 +53,18 @@ public abstract class BaseGenerator implements Generator {
      * Get the generator that is being wrapped.
      * @return Generator
      */
-    protected Generator getWrappedGenerator() {
+    protected Generator<?> getWrappedGenerator() {
         return wrappedGenerator;
     }
-
-    /**
-     * {@inheritDoc}
-     * Generators must implement this method.
-     */
-    public abstract void run(UnaryProcedure proc);
 
     /**
      * {@inheritDoc}
      * Stop the generator. Will stop the wrapped generator if one was set.
      */
     public void stop() {
-        if (wrappedGenerator != null) { wrappedGenerator.stop(); }
+        if (wrappedGenerator != null) {
+            wrappedGenerator.stop();
+        }
         stopped = true;
     }
 
@@ -87,7 +82,7 @@ public abstract class BaseGenerator implements Generator {
      * UnaryFunction. An example function might turn the contents of the
      * generator into a {@link Collection} of elements.
      */
-    public final Object to(UnaryFunction transformer) {
+    public final <T> T to(UnaryFunction<Generator<? extends E>, ? extends T> transformer) {
         return transformer.evaluate(this);
     }
 
@@ -95,15 +90,15 @@ public abstract class BaseGenerator implements Generator {
      * {@inheritDoc}
      * Same as to(new CollectionTransformer(collection)).
      */
-    public final Collection to(Collection collection) {
-        return (Collection) to(new CollectionTransformer(collection));
+    public final Collection<? super E> to(Collection<? super E> collection) {
+        return to(new CollectionTransformer<E>(collection));
     }
 
     /**
      * {@inheritDoc}
      * Same as to(new CollectionTransformer()).
      */
-    public final Collection toCollection() {
-        return (Collection) to(new CollectionTransformer());
+    public final Collection<E> toCollection() {
+        return (Collection<E>) to(new CollectionTransformer<E>());
     }
 }

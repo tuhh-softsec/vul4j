@@ -28,7 +28,7 @@ public class Product {
         this(name,sku,ToMoney.from(Multiply.by(cost)));
     }
 
-    public Product(String name, String sku, UnaryFunction price) {
+    public Product(String name, String sku, UnaryFunction<? super Integer, Money> price) {
         this.name = name;
         this.sku = sku;
         this.priceFunction = price;
@@ -38,7 +38,7 @@ public class Product {
         return name;
     }
 
-    public UnaryFunction getPriceFunction() {
+    public UnaryFunction<? super Integer, Money> getPriceFunction() {
         return priceFunction;
     }
 
@@ -50,7 +50,7 @@ public class Product {
         name = string;
     }
 
-    public void setPriceFunction(UnaryFunction function) {
+    public void setPriceFunction(UnaryFunction<? super Integer, Money> function) {
         priceFunction = function;
     }
 
@@ -59,10 +59,10 @@ public class Product {
     }
 
     public Money getPrice(int quantity) {
-        return (Money)(priceFunction.evaluate(new Integer(quantity)));
+        return priceFunction.evaluate(quantity);
     }
 
     private String name;
     private String sku;
-    private UnaryFunction priceFunction;
+    private UnaryFunction<? super Integer, Money> priceFunction;
 }

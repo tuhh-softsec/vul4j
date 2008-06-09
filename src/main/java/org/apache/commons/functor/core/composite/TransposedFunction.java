@@ -39,10 +39,10 @@ import org.apache.commons.functor.BinaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class TransposedFunction implements BinaryFunction, Serializable {
+public class TransposedFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryFunction function = null;
+    private BinaryFunction<? super R, ? super L, ? extends T> function = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -50,7 +50,10 @@ public class TransposedFunction implements BinaryFunction, Serializable {
      * Create a new TransposedFunction.
      * @param f BinaryFunction to transpose.
      */
-    public TransposedFunction(BinaryFunction f) {
+    public TransposedFunction(BinaryFunction<? super R, ? super L, ? extends T> f) {
+        if (f == null) {
+            throw new IllegalArgumentException("BinaryFunction argument was null");
+        }
         function = f;
     }
 
@@ -59,7 +62,7 @@ public class TransposedFunction implements BinaryFunction, Serializable {
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(L left, R right) {
         return function.evaluate(right, left);
     }
 
@@ -67,7 +70,7 @@ public class TransposedFunction implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof TransposedFunction && equals((TransposedFunction) that));
+        return that == this || (that instanceof TransposedFunction && equals((TransposedFunction<?, ?, ?>) that));
     }
 
     /**
@@ -75,7 +78,7 @@ public class TransposedFunction implements BinaryFunction, Serializable {
      * @param that TransposedFunction to test
      * @return boolean
      */
-    public boolean equals(TransposedFunction that) {
+    public boolean equals(TransposedFunction<?, ?, ?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -104,8 +107,8 @@ public class TransposedFunction implements BinaryFunction, Serializable {
      * @param f BinaryFunction to transpose
      * @return TransposedFunction
      */
-    public static TransposedFunction transpose(BinaryFunction f) {
-        return null == f ? null : new TransposedFunction(f);
+    public static <L, R, T> TransposedFunction<R, L, T> transpose(BinaryFunction<? super L, ? super R, ? extends T> f) {
+        return null == f ? null : new TransposedFunction<R, L, T>(f);
     }
 
 }

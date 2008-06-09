@@ -41,12 +41,12 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ConditionalUnaryFunction implements UnaryFunction, Serializable {
+public final class ConditionalUnaryFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate ifPred = null;
-    private UnaryFunction thenFunc = null;
-    private UnaryFunction elseFunc = null;
+    private UnaryPredicate<? super A> ifPred;
+    private UnaryFunction<? super A, ? extends T> thenFunc;
+    private UnaryFunction<? super A, ? extends T> elseFunc;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -56,7 +56,8 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
      * @param thenPred then
      * @param elsePred else
      */
-    public ConditionalUnaryFunction(UnaryPredicate ifPred, UnaryFunction thenPred, UnaryFunction elsePred) {
+    public ConditionalUnaryFunction(UnaryPredicate<? super A> ifPred, UnaryFunction<? super A, ? extends T> thenPred,
+            UnaryFunction<? super A, ? extends T> elsePred) {
         this.ifPred = ifPred;
         this.thenFunc = thenPred;
         this.elseFunc = elsePred;
@@ -67,7 +68,7 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object obj) {
+    public T evaluate(A obj) {
         return ifPred.test(obj) ? thenFunc.evaluate(obj) : elseFunc.evaluate(obj);
     }
 
@@ -75,7 +76,7 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalUnaryFunction && equals((ConditionalUnaryFunction) that));
+        return that == this || (that instanceof ConditionalUnaryFunction && equals((ConditionalUnaryFunction<?, ?>) that));
     }
 
     /**
@@ -83,7 +84,7 @@ public final class ConditionalUnaryFunction implements UnaryFunction, Serializab
      * @param that ConditionalUnaryFunction to test
      * @return boolean
      */
-    public boolean equals(ConditionalUnaryFunction that) {
+    public boolean equals(ConditionalUnaryFunction<?, ?> that) {
         return null != that
                 && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
                 && (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc))

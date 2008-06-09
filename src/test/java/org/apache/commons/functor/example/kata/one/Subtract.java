@@ -16,7 +16,6 @@
  */
 package org.apache.commons.functor.example.kata.one;
 
-import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.adapter.LeftBoundFunction;
 
@@ -24,12 +23,8 @@ import org.apache.commons.functor.adapter.LeftBoundFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class Subtract implements BinaryFunction {
-    public Object evaluate(Object left, Object right) {
-        return evaluate((Number) left,(Number) right);
-    }
-
-    public Object evaluate(Number left, Number right) {
+public class Subtract extends ArithmeticOperation {
+    public Number evaluate(Number left, Number right) {
         return new Integer(left.intValue() - right.intValue());
     }
 
@@ -37,8 +32,8 @@ public class Subtract implements BinaryFunction {
         return INSTANCE;
     }
 
-    public static UnaryFunction from(int factor) {
-        return new LeftBoundFunction(instance(),new Integer(factor));
+    public static UnaryFunction<Number, Number> from(int factor) {
+        return LeftBoundFunction.bind(INSTANCE, factor);
     }
 
     private static Subtract INSTANCE = new Subtract();

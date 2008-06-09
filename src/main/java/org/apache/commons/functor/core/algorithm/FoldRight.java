@@ -31,83 +31,27 @@ import org.apache.commons.functor.generator.Generator;
  * elements have been expended.
  * @version $Revision$ $Date$
  */
-public class FoldRight implements UnaryFunction, BinaryFunction, Serializable {
-
-    private BinaryFunction func;
-
-    /**
-     * Create a new FoldLeft.
-     * @param func {@link BinaryFunction} to apply to each (seed, next)
-     */
-    public FoldRight(BinaryFunction func) {
-        this.func = func;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @param obj {@link Generator} to transform
-     */
-    public Object evaluate(Object obj) {
-        FoldRightHelper helper = new FoldRightHelper(func);
-        ((Generator) obj).run(helper);
-        return helper.getResult();
-    }
-
-    /**
-     * {@inheritDoc}
-     * @param left {@link Generator} to transform
-     * @param right seed object
-     */
-    public Object evaluate(Object left, Object right) {
-        FoldRightHelper helper = new FoldRightHelper(func, right);
-        ((Generator) left).run(helper);
-        return helper.getResult();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof FoldRight == false) {
-            return false;
-        }
-        return ((FoldRight) obj).func.equals(func);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int hashCode() {
-        return "FoldRight".hashCode() << 2 ^ func.hashCode();
-    }
+public class FoldRight<T> implements UnaryFunction<Generator<T>, T>, BinaryFunction<Generator<T>, T, T>, Serializable {
 
     /**
      * Helper class
      */
-    private static class FoldRightHelper implements UnaryProcedure {
-        private BinaryFunction function;
-        private Object seed;
-        private Stack stk = new Stack();
+    private class FoldRightHelper implements UnaryProcedure<T> {
+        private T seed;
+        private Stack<T> stk = new Stack<T>();
         private boolean hasSeed;
 
         /**
          * Create a seedless FoldRightHelper.
-         * @param function to apply
          */
-        public FoldRightHelper(BinaryFunction function) {
-            this.function = function;
+        public FoldRightHelper() {
         }
 
         /**
          * Create a new FoldRightHelper.
-         * @param function to apply
          * @param seed initial left argument
          */
-        FoldRightHelper(BinaryFunction function, Object seed) {
-            this(function);
+        FoldRightHelper(T seed) {
             this.seed = seed;
             hasSeed = true;
         }
@@ -115,7 +59,7 @@ public class FoldRight implements UnaryFunction, BinaryFunction, Serializable {
         /**
          * {@inheritDoc}
          */
-        public void run(Object obj) {
+        public void run(T obj) {
             stk.push(obj);
         }
 
@@ -124,8 +68,8 @@ public class FoldRight implements UnaryFunction, BinaryFunction, Serializable {
          * Get current result.
          * @return Object
          */
-        Object getResult() {
-            Object right = seed;
+        T getResult() {
+            T right = seed;
             if (!hasSeed) {
                 if (stk.isEmpty()) {
                     return null;
@@ -139,4 +83,56 @@ public class FoldRight implements UnaryFunction, BinaryFunction, Serializable {
         }
 
     }
+
+    private BinaryFunction<? super T, ? super T, ? extends T> function;
+
+    /**
+     * Create a new FoldLeft.
+     * @param function {@link BinaryFunction} to apply to each (seed, next)
+     */
+    public FoldRight(BinaryFunction<? super T, ? super T, ? extends T> function) {
+        this.function = function;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param obj {@link Generator} to transform
+     */
+    public T evaluate(Generator<T> obj) {
+        FoldRightHelper helper = new FoldRightHelper();
+        obj.run(helper);
+        return helper.getResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param left {@link Generator} to transform
+     * @param right seed object
+     */
+    public T evaluate(Generator<T> left, T right) {
+        FoldRightHelper helper = new FoldRightHelper(right);
+        left.run(helper);
+        return helper.getResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof FoldRight == false) {
+            return false;
+        }
+        return ((FoldRight<?>) obj).function.equals(function);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        return "FoldRight".hashCode() << 2 ^ function.hashCode();
+    }
+
 }

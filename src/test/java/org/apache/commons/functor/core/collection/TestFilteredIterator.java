@@ -33,6 +33,7 @@ import org.apache.commons.functor.core.Constant;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestFilteredIterator extends BaseFunctorTest {
 
     // Conventional

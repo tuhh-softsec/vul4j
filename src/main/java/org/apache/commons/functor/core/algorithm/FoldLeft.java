@@ -31,25 +31,69 @@ import org.apache.commons.functor.generator.Generator;
  *
  * @version $Revision$ $Date$
  */
-public class FoldLeft implements UnaryFunction, BinaryFunction, Serializable {
+public class FoldLeft<T> implements UnaryFunction<Generator<T>, T>, BinaryFunction<Generator<T>, T, T>, Serializable {
 
-    private BinaryFunction func;
+    /**
+     * Helper procedure
+     */
+    private class FoldLeftHelper implements UnaryProcedure<T> {
+        private T seed;
+        private boolean started;
+
+        /**
+         * Create a seedless FoldLeftHelper.
+         */
+        public FoldLeftHelper() {
+        }
+
+        /**
+         * Create a new FoldLeftHelper.
+         * @param seed initial left argument
+         */
+        FoldLeftHelper(T seed) {
+            this.seed = seed;
+            started = true;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(T obj) {
+            if (!started) {
+                seed = obj;
+                started = true;
+            } else {
+                seed = function.evaluate(seed, obj);
+            }
+        }
+
+        /**
+         * Get current result.
+         * @return Object
+         */
+        T getResult() {
+            return started ? seed : null;
+        }
+
+    }
+
+    private BinaryFunction<? super T, ? super T, ? extends T> function;
 
     /**
      * Create a new FoldLeft.
      * @param func {@link BinaryFunction} to apply to each (seed, next)
      */
-    public FoldLeft(BinaryFunction func) {
-        this.func = func;
+    public FoldLeft(BinaryFunction<? super T, ? super T, ? extends T> func) {
+        this.function = func;
     }
 
     /**
      * {@inheritDoc}
      * @param obj {@link Generator} to transform
      */
-    public Object evaluate(Object obj) {
-        FoldLeftHelper helper = new FoldLeftHelper(func);
-        ((Generator) obj).run(helper);
+    public T evaluate(Generator<T> obj) {
+        FoldLeftHelper helper = new FoldLeftHelper();
+        obj.run(helper);
         return helper.getResult();
     }
 
@@ -58,9 +102,9 @@ public class FoldLeft implements UnaryFunction, BinaryFunction, Serializable {
      * @param left {@link Generator} to transform
      * @param right seed object
      */
-    public Object evaluate(Object left, Object right) {
-        FoldLeftHelper helper = new FoldLeftHelper(func, right);
-        ((Generator) left).run(helper);
+    public T evaluate(Generator<T> left, T right) {
+        FoldLeftHelper helper = new FoldLeftHelper(right);
+        left.run(helper);
         return helper.getResult();
     }
 
@@ -74,62 +118,14 @@ public class FoldLeft implements UnaryFunction, BinaryFunction, Serializable {
         if (obj instanceof FoldLeft == false) {
             return false;
         }
-        return ((FoldLeft) obj).func.equals(func);
+        return ((FoldLeft<?>) obj).function.equals(function);
     }
 
     /**
      * {@inheritDoc}
      */
     public int hashCode() {
-        return "FoldLeft".hashCode() << 2 ^ func.hashCode();
+        return "FoldLeft".hashCode() << 2 ^ function.hashCode();
     }
 
-    /**
-     * Helper procedure
-     */
-    private static class FoldLeftHelper implements UnaryProcedure {
-        private BinaryFunction function;
-        private Object seed;
-        private boolean started;
-
-        /**
-         * Create a seedless FoldLeftHelper.
-         * @param function to apply
-         */
-        public FoldLeftHelper(BinaryFunction function) {
-            this.function = function;
-        }
-
-        /**
-         * Create a new FoldLeftHelper.
-         * @param function to apply
-         * @param seed initial left argument
-         */
-        FoldLeftHelper(BinaryFunction function, Object seed) {
-            this(function);
-            this.seed = seed;
-            started = true;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void run(Object obj) {
-            if (!started) {
-                seed = obj;
-                started = true;
-            } else {
-                seed = function.evaluate(seed, obj);
-            }
-        }
-
-        /**
-         * Get current result.
-         * @return Object
-         */
-        Object getResult() {
-            return started ? seed : null;
-        }
-
-    }
 }

@@ -27,19 +27,18 @@ import org.apache.commons.functor.UnaryPredicate;
  *
  * @version $Revision$ $Date$
  */
-public final class RemoveMatching implements BinaryProcedure, Serializable {
-    private static final RemoveMatching INSTANCE = new RemoveMatching();
+public final class RemoveMatching<T> implements BinaryProcedure<Iterator<T>, UnaryPredicate<? super T>>, Serializable {
+    private static final RemoveMatching<Object> INSTANCE = new RemoveMatching<Object>();
 
     /**
      * {@inheritDoc}
      * @param left {@link Iterator}
      * @param right {@link UnaryPredicate}
      */
-    public void run(Object left, Object right) {
-        UnaryPredicate test = (UnaryPredicate) right;
-        for (Iterator iter = (Iterator) left; iter.hasNext();) {
-            if (test.test(iter.next())) {
-                iter.remove();
+    public void run(Iterator<T> left, UnaryPredicate<? super T> right) {
+        while (left.hasNext()) {
+            if (right.test(left.next())) {
+                left.remove();
             }
         }
     }
@@ -62,7 +61,7 @@ public final class RemoveMatching implements BinaryProcedure, Serializable {
      * Get a static {@link RemoveMatching} instance.
      * @return {@link RemoveMatching}
      */
-    public static final RemoveMatching instance() {
+    public static final RemoveMatching<Object> instance() {
         return INSTANCE;
     }
 

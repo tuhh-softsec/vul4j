@@ -46,10 +46,10 @@ public class TestBinaryCompositeBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryCompositeBinaryFunction(
-            new RightIdentity(),
-            new Constant("left"),
-            new RightIdentity());
+        return new BinaryCompositeBinaryFunction<Object, Object, Object>(
+            RightIdentity.FUNCTION,
+            Constant.of("left"),
+            RightIdentity.FUNCTION);
     }
 
     // Lifecycle
@@ -66,42 +66,59 @@ public class TestBinaryCompositeBinaryFunction extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
 
-    public void testEvaluate() throws Exception {
+    @SuppressWarnings("unchecked")
+    public void testEvaluateRaw() throws Exception {
         BinaryFunction f = new BinaryCompositeBinaryFunction(
-            new RightIdentity(),
-            new Constant("K"),
-            new RightIdentity());
+                RightIdentity.FUNCTION,
+                Constant.of("K"),
+                RightIdentity.FUNCTION);
+        assertEquals("right",f.evaluate("left","right"));
+        assertNull("right",f.evaluate("left",null));
+        assertEquals("right",f.evaluate(null,"right"));
+    }
+
+    public void testEvaluate() throws Exception {
+        BinaryFunction<String, String, String> f = new BinaryCompositeBinaryFunction<String, String, String>(
+                RightIdentity.<String, String>function(),
+                Constant.of("K"),
+                RightIdentity.<String, String>function());
+        assertEquals("right",f.evaluate("left","right"));
+        assertNull("right",f.evaluate("left",null));
+        assertEquals("right",f.evaluate(null,"right"));
+    }
+    
+    public void testEvaluateObject() throws Exception {
+        BinaryFunction<Object, Object, Object> f = new BinaryCompositeBinaryFunction<Object, Object, Object>(
+                RightIdentity.FUNCTION,
+                Constant.of("K"),
+                RightIdentity.FUNCTION);
         assertEquals("right",f.evaluate("left","right"));
         assertNull("right",f.evaluate("left",null));
         assertEquals("right",f.evaluate(null,"right"));
     }
 
     public void testEquals() throws Exception {
-        BinaryFunction f = new BinaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Constant("right"));
+        BinaryFunction<Object, Object, Object> f = new BinaryCompositeBinaryFunction<Object, Object, Object>(
+            LeftIdentity.FUNCTION,
+            Constant.of("left"),
+            Constant.of("right"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BinaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(
-            new RightIdentity(),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new RightIdentity(),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new RightIdentity()));
-        assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(null,null,null));
-        assertObjectsAreEqual(
-            new BinaryCompositeBinaryFunction(null,null,null),
-            new BinaryCompositeBinaryFunction(null,null,null));
+        assertObjectsAreEqual(f,new BinaryCompositeBinaryFunction<Object, Object, Object>(
+                LeftIdentity.FUNCTION,
+                Constant.of("left"),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction<Object, Object, Object>(
+            RightIdentity.FUNCTION,
+            Constant.of("left"),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction<Object, Object, Object>(
+            RightIdentity.FUNCTION,
+            RightIdentity.FUNCTION,
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction<Object, Object, Object>(
+            LeftIdentity.FUNCTION,
+            Constant.of("left"),
+            RightIdentity.FUNCTION));
     }
 
 }

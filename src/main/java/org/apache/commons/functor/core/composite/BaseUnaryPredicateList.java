@@ -37,11 +37,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
+abstract class BaseUnaryPredicateList<A> implements UnaryPredicate<A>, Serializable {
 
     // attributes
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
+    private List<UnaryPredicate<? super A>> list = new ArrayList<UnaryPredicate<? super A>>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -55,7 +55,7 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
      * Create a new BaseUnaryPredicateList.
      * @param p single Predicate to add
      */
-    protected BaseUnaryPredicateList(UnaryPredicate p) {
+    protected BaseUnaryPredicateList(UnaryPredicate<? super A> p) {
         addUnaryPredicate(p);
     }
 
@@ -64,7 +64,7 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
      * @param p Predicate to add
      * @param q Predicate to add
      */
-    protected BaseUnaryPredicateList(UnaryPredicate p, UnaryPredicate q) {
+    protected BaseUnaryPredicateList(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q) {
         addUnaryPredicate(p);
         addUnaryPredicate(q);
     }
@@ -75,7 +75,7 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
      * @param q Predicate to add
      * @param r Predicate to add
      */
-    protected BaseUnaryPredicateList(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
+    protected BaseUnaryPredicateList(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q, UnaryPredicate<? super A> r) {
         addUnaryPredicate(p);
         addUnaryPredicate(q);
         addUnaryPredicate(r);
@@ -98,18 +98,13 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
      */
     public abstract String toString();
 
-    /**
-     * {@inheritDoc}
-     */
-    public abstract boolean test(Object obj);
-
     // modifiers
     // ------------------------------------------------------------------------
     /**
      * Add a UnaryPredicate to the list
      * @param p UnaryPredicate to add
      */
-    protected void addUnaryPredicate(UnaryPredicate p) {
+    protected void addUnaryPredicate(UnaryPredicate<? super A> p) {
         list.add(p);
     }
 
@@ -119,7 +114,7 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
      * Get an Iterator over the contained UnaryPredicates.
      * @return Iterator
      */
-    protected Iterator getUnaryPredicateIterator() {
+    protected Iterator<UnaryPredicate<? super A>> getUnaryPredicateIterator() {
         return list.iterator();
     }
 
@@ -128,7 +123,7 @@ abstract class BaseUnaryPredicateList implements UnaryPredicate, Serializable {
      * @param that the BaseUnaryPredicateList to test
      * @return boolean
      */
-    protected boolean getUnaryPredicateListEquals(BaseUnaryPredicateList that) {
+    protected boolean getUnaryPredicateListEquals(BaseUnaryPredicateList<?> that) {
         return (null != that && this.list.equals(that.list));
     }
 

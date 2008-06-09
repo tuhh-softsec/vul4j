@@ -41,12 +41,12 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ConditionalBinaryFunction implements BinaryFunction, Serializable {
+public final class ConditionalBinaryFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate ifPred = null;
-    private BinaryFunction thenFunc = null;
-    private BinaryFunction elseFunc = null;
+    private BinaryPredicate<? super L, ? super R> ifPred;
+    private BinaryFunction<? super L, ? super R, ? extends T> thenFunc;
+    private BinaryFunction<? super L, ? super R, ? extends T> elseFunc;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -56,7 +56,15 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
      * @param thenFunc then
      * @param elseFunc else
      */
-    public ConditionalBinaryFunction(BinaryPredicate ifPred, BinaryFunction thenFunc, BinaryFunction elseFunc) {
+    public ConditionalBinaryFunction(BinaryPredicate<? super L, ? super R> ifPred,
+            BinaryFunction<? super L, ? super R, ? extends T> thenFunc,
+            BinaryFunction<? super L, ? super R, ? extends T> elseFunc) {
+        if (ifPred == null) {
+            throw new IllegalArgumentException("test predicate must not be null");
+        }
+        if (thenFunc == null || elseFunc == null) {
+            throw new IllegalArgumentException("neither resulting function may be null");
+        }
         this.ifPred = ifPred;
         this.thenFunc = thenFunc;
         this.elseFunc = elseFunc;
@@ -67,7 +75,7 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(L left, R right) {
         return ifPred.test(left, right) ? thenFunc.evaluate(left, right) : elseFunc.evaluate(left, right);
     }
 
@@ -75,7 +83,7 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalBinaryFunction && equals((ConditionalBinaryFunction) that));
+        return that == this || (that instanceof ConditionalBinaryFunction && equals((ConditionalBinaryFunction<?, ?, ?>) that));
     }
 
     /**
@@ -83,7 +91,7 @@ public final class ConditionalBinaryFunction implements BinaryFunction, Serializ
      * @param that ConditionalBinaryFunction to test
      * @return boolean
      */
-    public boolean equals(ConditionalBinaryFunction that) {
+    public boolean equals(ConditionalBinaryFunction<?, ?, ?> that) {
         return null != that
                 && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
                 && (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc))

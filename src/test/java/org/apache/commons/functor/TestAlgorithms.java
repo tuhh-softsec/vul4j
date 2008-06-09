@@ -56,6 +56,7 @@ import org.apache.commons.functor.generator.util.IntegerRange;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestAlgorithms extends TestCase {
 
     // Conventional

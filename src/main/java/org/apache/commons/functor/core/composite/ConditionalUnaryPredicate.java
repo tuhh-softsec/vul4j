@@ -40,12 +40,12 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializable {
+public final class ConditionalUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate ifPred = null;
-    private UnaryPredicate thenPred = null;
-    private UnaryPredicate elsePred = null;
+    private UnaryPredicate<? super A> ifPred = null;
+    private UnaryPredicate<? super A> thenPred = null;
+    private UnaryPredicate<? super A> elsePred = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -55,7 +55,8 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
      * @param thenPred then
      * @param elsePred else
      */
-    public ConditionalUnaryPredicate(UnaryPredicate ifPred, UnaryPredicate thenPred, UnaryPredicate elsePred) {
+    public ConditionalUnaryPredicate(UnaryPredicate<? super A> ifPred, UnaryPredicate<? super A> thenPred,
+            UnaryPredicate<? super A> elsePred) {
         this.ifPred = ifPred;
         this.thenPred = thenPred;
         this.elsePred = elsePred;
@@ -66,7 +67,7 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj) {
+    public boolean test(A obj) {
         return ifPred.test(obj) ? thenPred.test(obj) : elsePred.test(obj);
     }
 
@@ -74,7 +75,7 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalUnaryPredicate && equals((ConditionalUnaryPredicate) that));
+        return that == this || (that instanceof ConditionalUnaryPredicate && equals((ConditionalUnaryPredicate<?>) that));
     }
 
     /**
@@ -82,7 +83,7 @@ public final class ConditionalUnaryPredicate implements UnaryPredicate, Serializ
      * @param that ConditionalUnaryPredicate to test
      * @return boolean
      */
-    public boolean equals(ConditionalUnaryPredicate that) {
+    public boolean equals(ConditionalUnaryPredicate<?> that) {
         return null != that
                 && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
                 && (null == thenPred ? null == that.thenPred : thenPred.equals(that.thenPred))

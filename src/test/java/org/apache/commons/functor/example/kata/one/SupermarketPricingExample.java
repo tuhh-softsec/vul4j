@@ -21,12 +21,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.adapter.IgnoreRightFunction;
+import org.apache.commons.functor.adapter.BinaryFunctionUnaryFunction;
 import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.comparator.IsGreaterThan;
-import org.apache.commons.functor.core.composite.BinaryCompositeBinaryFunction;
-import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
+import org.apache.commons.functor.core.composite.Composite;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
+import org.apache.commons.functor.core.composite.UnaryCompositeBinaryFunction;
 
 /**
  * Dave Thomas's Kata One asks us to think about how one might
@@ -136,7 +136,7 @@ public class SupermarketPricingExample extends TestCase {
             "Banana",
             "SKU-0002",
             ToMoney.from(
-                new ConditionalUnaryFunction(
+                new ConditionalUnaryFunction<Integer, Number>(
                     IsGreaterThan.instance(new Integer(3)),
                     Multiply.by(25),
                     Multiply.by(33))));
@@ -158,17 +158,15 @@ public class SupermarketPricingExample extends TestCase {
             "Banana",
             "SKU-0002",
             ToMoney.from(
-                new BinaryFunctionUnaryFunction(
-                    new BinaryCompositeBinaryFunction(
+                new BinaryFunctionUnaryFunction<Integer, Number>(
+                    new UnaryCompositeBinaryFunction<Integer, Integer, Number>(
                         Add.instance(),
-                        IgnoreRightFunction.adapt(
-                            new CompositeUnaryFunction(
-                                Multiply.by(100),
-                                Divide.by(4))),
-                        IgnoreRightFunction.adapt(
-                            new CompositeUnaryFunction(
-                                Multiply.by(33),
-                                Mod.by(4)))))));
+                        Composite.function(
+                            Multiply.by(100),
+                            Divide.by(4)),
+                        Composite.function(
+                            Multiply.by(33),
+                            Mod.by(4))))));
         assertEquals(new Money(0*33+0*25),banana.getPrice(0));
         assertEquals(new Money(1*33+0*25),banana.getPrice(1));
         assertEquals(new Money(2*33+0*25),banana.getPrice(2));
@@ -196,13 +194,10 @@ public class SupermarketPricingExample extends TestCase {
             "Apple",
             "SKU-0003",
             ToMoney.from(
-                new CompositeUnaryFunction(
-                    Multiply.by(40),
-                    new BinaryFunctionUnaryFunction(
-                        new BinaryCompositeBinaryFunction(
-                            Subtract.instance(),
-                            IgnoreRightFunction.adapt(Identity.instance()),
-                            IgnoreRightFunction.adapt(Divide.by(3)))))));
+                    Composite.function(Multiply.by(40),
+                    BinaryFunctionUnaryFunction.adapt(new UnaryCompositeBinaryFunction<Number, Number, Number>(Subtract.instance(),
+                            new Identity<Number>(),
+                            Divide.by(3))))));
 
         assertEquals(new Money(0*40),apple.getPrice(0));
         assertEquals(new Money(1*40),apple.getPrice(1));
@@ -226,18 +221,14 @@ public class SupermarketPricingExample extends TestCase {
      * order:
      */
 
-    class BuyNGetMFree implements UnaryFunction {
+    class BuyNGetMFree implements UnaryFunction<Number, Number> {
        public BuyNGetMFree(int n, int m, int costPerUnit) {
            this.n = n;
            this.m = m;
            this.costPerUnit = costPerUnit;
        }
 
-       public Object evaluate(Object obj) {
-           return evaluate((Number) obj);
-       }
-
-       public Object evaluate(Number num) {
+       public Number evaluate(Number num) {
            int quantity = num.intValue();
            int cost = 0;
 

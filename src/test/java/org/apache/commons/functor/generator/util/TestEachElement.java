@@ -37,7 +37,7 @@ import org.apache.commons.functor.generator.WhileGenerate;
 /**
  * @author Jason Horman (jason@jhorman.org)
  */
-
+@SuppressWarnings("unchecked")
 public class TestEachElement extends BaseFunctorTest {
 
     private List list = null;

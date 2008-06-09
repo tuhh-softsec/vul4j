@@ -45,10 +45,11 @@ public final class Conditional {
      * @param q if
      * @param r then
      * @param s else
-     * @return UnaryProcedure
+     * @return UnaryProcedure<A>
      */
-    public static final UnaryProcedure procedure(UnaryPredicate q, UnaryProcedure r, UnaryProcedure s) {
-        return new ConditionalUnaryProcedure(q, r, s);
+    public static final <A> UnaryProcedure<A> procedure(UnaryPredicate<? super A> q, UnaryProcedure<? super A> r,
+            UnaryProcedure<? super A> s) {
+        return new ConditionalUnaryProcedure<A>(q, r, s);
     }
 
     /**
@@ -56,10 +57,11 @@ public final class Conditional {
      * @param q if
      * @param r then
      * @param s else
-     * @return UnaryFunction
+     * @return UnaryFunction<A, T>
      */
-    public static final UnaryFunction function(UnaryPredicate q, UnaryFunction r, UnaryFunction s) {
-        return new ConditionalUnaryFunction(q, r, s);
+    public static final <A, T> UnaryFunction<A, T> function(UnaryPredicate<? super A> q,
+            UnaryFunction<? super A, ? extends T> r, UnaryFunction<? super A, ? extends T> s) {
+        return new ConditionalUnaryFunction<A, T>(q, r, s);
     }
 
     /**
@@ -67,10 +69,11 @@ public final class Conditional {
      * @param q if
      * @param r then
      * @param s else
-     * @return UnaryPredicate
+     * @return UnaryPredicate<A>
      */
-    public static final UnaryPredicate predicate(UnaryPredicate q, UnaryPredicate r, UnaryPredicate s) {
-        return new ConditionalUnaryPredicate(q, r, s);
+    public static final <A> UnaryPredicate<A> predicate(UnaryPredicate<? super A> q, UnaryPredicate<? super A> r,
+            UnaryPredicate<? super A> s) {
+        return new ConditionalUnaryPredicate<A>(q, r, s);
     }
 
     /**
@@ -78,10 +81,11 @@ public final class Conditional {
      * @param q if
      * @param r then
      * @param s else
-     * @return BinaryProcedure
+     * @return BinaryProcedure<L, R>
      */
-    public static final BinaryProcedure procedure(BinaryPredicate q, BinaryProcedure r, BinaryProcedure s) {
-        return new ConditionalBinaryProcedure(q, r, s);
+    public static final <L, R> BinaryProcedure<L, R> procedure(BinaryPredicate<? super L, ? super R> q,
+            BinaryProcedure<? super L, ? super R> r, BinaryProcedure<? super L, ? super R> s) {
+        return new ConditionalBinaryProcedure<L, R>(q, r, s);
     }
 
     /**
@@ -89,10 +93,11 @@ public final class Conditional {
      * @param q if
      * @param r then
      * @param s else
-     * @return BinaryFunction
+     * @return BinaryFunction<L, R, T>
      */
-    public static final BinaryFunction function(BinaryPredicate q, BinaryFunction r, BinaryFunction s) {
-        return new ConditionalBinaryFunction(q, r, s);
+    public static final <L, R, T> BinaryFunction<L, R, T> function(BinaryPredicate<? super L, ? super R> q,
+            BinaryFunction<? super L, ? super R, ? extends T> r, BinaryFunction<? super L, ? super R, ? extends T> s) {
+        return new ConditionalBinaryFunction<L, R, T>(q, r, s);
     }
 
     /**
@@ -100,10 +105,11 @@ public final class Conditional {
      * @param q if
      * @param r then
      * @param s else
-     * @return BinaryPredicate
+     * @return BinaryPredicate<L, R>
      */
-    public static final BinaryPredicate predicate(BinaryPredicate q, BinaryPredicate r, BinaryPredicate s) {
-        return new ConditionalBinaryPredicate(q, r, s);
+    public static final <L, R> BinaryPredicate<L, R> predicate(BinaryPredicate<? super L, ? super R> q,
+            BinaryPredicate<? super L, ? super R> r, BinaryPredicate<? super L, ? super R> s) {
+        return new ConditionalBinaryPredicate<L, R>(q, r, s);
     }
 
 }

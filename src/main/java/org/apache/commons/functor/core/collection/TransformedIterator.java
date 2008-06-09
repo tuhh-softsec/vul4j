@@ -25,13 +25,13 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class TransformedIterator implements Iterator {
+public final class TransformedIterator<E, T> implements Iterator<T> {
 
     // attributes
     // ------------------------------------------------------------------------
 
-    private UnaryFunction function = null;
-    private Iterator iterator = null;
+    private UnaryFunction<? super E, ? extends T> function = null;
+    private Iterator<? extends E> iterator = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public final class TransformedIterator implements Iterator {
      * @param iterator Iterator to decorate
      * @param function to apply
      */
-    public TransformedIterator(Iterator iterator, UnaryFunction function) {
+    public TransformedIterator(Iterator<? extends E> iterator, UnaryFunction<? super E, ? extends T> function) {
         if (null == iterator) {
             throw new IllegalArgumentException("Iterator argument was null");
         }
@@ -66,7 +66,7 @@ public final class TransformedIterator implements Iterator {
      * {@inheritDoc}
      * @see java.util.Iterator#next()
      */
-    public Object next() {
+    public T next() {
         return function.evaluate(iterator.next());
     }
 
@@ -88,7 +88,7 @@ public final class TransformedIterator implements Iterator {
         if (obj instanceof TransformedIterator == false) {
             return false;
         }
-        TransformedIterator that = (TransformedIterator) obj;
+        TransformedIterator<?, ?> that = (TransformedIterator<?, ?>) obj;
         return function.equals(that.function) && iterator.equals(that.iterator);
     }
 
@@ -114,13 +114,26 @@ public final class TransformedIterator implements Iterator {
     // class methods
     // ------------------------------------------------------------------------
     /**
-     * Get a TransformedIterator instance.
-     * @param iter to decorate
-     * @param func transforming function
-     * @return Iterator
+     * Get a Transformed Iterator instance.
+     * @param iter to decorate, if null result is null
+     * @param func transforming function, cannot be null
+     * @return Iterator<T>
      */
-    public static Iterator transform(Iterator iter, UnaryFunction func) {
-        return null == func ? iter : (null == iter ? null : new TransformedIterator(iter, func));
+    public static <E, T> Iterator<T> transform(Iterator<? extends E> iter, UnaryFunction<? super E, ? extends T> func) {
+        if (null == iter) {
+            return null;
+        }
+        return new TransformedIterator<E, T>(iter, func);
     }
 
+    /**
+     * Get an Iterator instance that may be transformed.
+     * @param iter to decorate, if null result is null
+     * @param func transforming function, if null result is iter
+     * @return Iterator<?>
+     */
+    public static <E> Iterator<?> maybeTransform(Iterator<? extends E> iter, UnaryFunction<? super E, ?> func) {
+        return null == func ? (null == iter ? null : iter) : new TransformedIterator<E, Object>(iter, func);
+    }
+    
 }

@@ -84,6 +84,5 @@ public class TestIsNull extends BaseFunctorTest {
 
     public void testConstant() throws Exception {
         assertEquals(IsNull.instance(),IsNull.instance());
-        assertSame(IsNull.instance(),IsNull.instance());
     }
 }

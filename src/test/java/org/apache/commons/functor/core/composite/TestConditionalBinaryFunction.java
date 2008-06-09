@@ -44,10 +44,10 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalBinaryFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant("right"));
+        return new ConditionalBinaryFunction<Object, Object, String>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of("right"));
     }
 
     // Lifecycle
@@ -65,43 +65,31 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        ConditionalBinaryFunction f = new ConditionalBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Constant("right"));
+        ConditionalBinaryFunction<Boolean, Object, String> f = new ConditionalBinaryFunction<Boolean, Object, String>(
+            LeftIdentity.PREDICATE,
+            Constant.of("left"),
+            Constant.of("right"));
         assertEquals("left",f.evaluate(Boolean.TRUE,null));
         assertEquals("right",f.evaluate(Boolean.FALSE,null));
     }
 
     public void testEquals() throws Exception {
-        ConditionalBinaryFunction f = new ConditionalBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Constant("right"));
+        ConditionalBinaryFunction<Boolean, Object, String> f = new ConditionalBinaryFunction<Boolean, Object, String>(
+            LeftIdentity.PREDICATE,
+            Constant.of("left"),
+            Constant.of("right"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new ConditionalBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new LeftIdentity(),
-            new Constant(null),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            null,
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new Constant(true),
-            null,
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new Constant(true),
-            new Constant("left"),
-            null));
+        assertObjectsAreEqual(f,new ConditionalBinaryFunction<Boolean, Object, String>(
+                LeftIdentity.PREDICATE,
+                Constant.of("left"),
+                Constant.of("right")));
+        assertObjectsAreNotEqual(f,new ConditionalBinaryFunction<Boolean, Object, Object>(
+            LeftIdentity.PREDICATE,
+            Constant.of(null),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new ConditionalBinaryFunction<Boolean, Object, String>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of("right")));
     }
 }

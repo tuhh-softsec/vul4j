@@ -86,6 +86,5 @@ public class TestIsNotEqual extends BaseFunctorTest {
 
     public void testConstant() throws Exception {
         assertEquals(IsNotEqual.instance(),IsNotEqual.instance());
-        assertSame(IsNotEqual.instance(),IsNotEqual.instance());
     }
 }

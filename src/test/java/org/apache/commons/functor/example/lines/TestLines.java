@@ -33,7 +33,6 @@ import org.apache.commons.functor.core.composite.UnaryNot;
 import org.apache.commons.functor.generator.FilteredGenerator;
 import org.apache.commons.functor.generator.TransformedGenerator;
 
-
 /**
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
@@ -61,15 +60,15 @@ public class TestLines extends TestCase {
     }
 
     public void testCountCharacters() throws Exception {
-        Object result = new FoldLeft(Sum.instance()).evaluate(
-                new TransformedGenerator(Lines.from(reader), Size.instance()));
+        Object result = new FoldLeft<Integer>(Sum.instance()).evaluate(
+                new TransformedGenerator<String, Integer>(Lines.from(reader), new Size<String>()));
 
         assertEquals("Expected 990 characters",new Integer(990),result);
     }
 
     public void testCountWords() throws Exception {
-        Object result = new FoldLeft(Sum.instance()).evaluate(
-                new TransformedGenerator(Lines.from(reader),WordCount.instance()));
+        Object result = new FoldLeft<Integer>(Sum.instance()).evaluate(
+                new TransformedGenerator<String, Integer>(Lines.from(reader),WordCount.instance()));
 
         assertEquals("Expected 157 words",new Integer(157),result);
     }
@@ -84,29 +83,30 @@ public class TestLines extends TestCase {
     }
 
     public void testCountWordsExcludingComments() throws Exception {
-        Object result = new FoldLeft(Sum.instance()).evaluate(new TransformedGenerator(new FilteredGenerator(Lines
-            .from(reader), new UnaryNot(new StartsWith("#"))),
-                    WordCount.instance()));
+        Object result = new FoldLeft<Integer>(Sum.instance()).evaluate(new TransformedGenerator<String, Integer>(
+                new FilteredGenerator<String>(Lines.from(reader), UnaryNot.not(new StartsWith<String>("#"))), WordCount
+                        .instance()));
 
         assertEquals("Expected 90 words",new Integer(90),result);
     }
 
     public void testCountCommentLines() throws Exception {
         Count count = new Count();
-        new FilteredGenerator(Lines.from(reader), new StartsWith("#"))
-                    .run(ProcedureUnaryProcedure.adapt(count));
+        new FilteredGenerator<String>(Lines.from(reader), new StartsWith<String>("#"))
+                    .run(ProcedureUnaryProcedure.<String>adapt(count));
 
         assertEquals("Expected 6 lines",6,count.getCount());
     }
 
     public void testFindMatchingLines() throws Exception {
-        Collection matches = new FilteredGenerator(Lines.from(reader), new Contains("lo")).toCollection();
+        Collection<String> matches = new FilteredGenerator<String>(Lines.from(reader), new Contains<String>("lo"))
+                .toCollection();
         assertEquals("Expected 5 lines",5,matches.size());
     }
 
     public void testFindMatchingFromTail() throws Exception {
-        Collection matches = new FilteredGenerator(Lines.from(reader), new UnaryAnd(new Offset(8), new Contains("lo")))
-                .toCollection();
+        Collection<String> matches = new FilteredGenerator<String>(Lines.from(reader), new UnaryAnd<String>(new Offset(
+                8), new Contains<String>("lo"))).toCollection();
         assertEquals("Expected 2 lines",2,matches.size());
     }
 

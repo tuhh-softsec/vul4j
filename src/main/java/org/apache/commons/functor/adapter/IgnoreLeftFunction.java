@@ -38,22 +38,25 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
+public final class IgnoreLeftFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
+    private UnaryFunction<? super R, ? extends T> function = null;
 
     /**
      * Create a new IgnoreLeftFunction.
      * @param function UnaryFunction for right argument
      */
-    public IgnoreLeftFunction(UnaryFunction function) {
+    public IgnoreLeftFunction(UnaryFunction<? super R, ? extends T> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("UnaryFunction argument was null");
+        }
         this.function = function;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(L left, R right) {
         return function.evaluate(right);
     }
 
@@ -61,7 +64,7 @@ public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreLeftFunction && equals((IgnoreLeftFunction) that));
+        return that == this || (that instanceof IgnoreLeftFunction && equals((IgnoreLeftFunction<?, ?, ?>) that));
     }
 
     /**
@@ -69,7 +72,7 @@ public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
      * @param that IgnoreLeftFunction to test
      * @return boolean
      */
-    public boolean equals(IgnoreLeftFunction that) {
+    public boolean equals(IgnoreLeftFunction<?, ?, ?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -96,8 +99,8 @@ public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
      * @param function to adapt
      * @return IgnoreLeftFunction
      */
-    public static IgnoreLeftFunction adapt(UnaryFunction function) {
-        return null == function ? null : new IgnoreLeftFunction(function);
+    public static <L, R, T> IgnoreLeftFunction<L, R, T> adapt(UnaryFunction<? super R, ? extends T> function) {
+        return null == function ? null : new IgnoreLeftFunction<L, R, T>(function);
     }
 
 }

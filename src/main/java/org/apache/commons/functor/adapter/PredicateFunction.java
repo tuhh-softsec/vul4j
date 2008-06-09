@@ -37,9 +37,9 @@ import org.apache.commons.functor.Predicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class PredicateFunction implements Function, Serializable {
+public final class PredicateFunction implements Function<Boolean>, Serializable {
     /** The {@link Predicate Predicate} I'm wrapping. */
-    private Predicate predicate = null;
+    private Predicate predicate;
 
     /**
      * Create a new PredicateFunction.
@@ -57,8 +57,8 @@ public final class PredicateFunction implements Function, Serializable {
      *
      * @return a non-<code>null</code> <code>Boolean</code> instance
      */
-    public Object evaluate() {
-        return predicate.test() ? Boolean.TRUE : Boolean.FALSE;
+    public Boolean evaluate() {
+        return predicate.test();
     }
 
     /**

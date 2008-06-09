@@ -47,10 +47,10 @@ public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryCompositeBinaryFunction(
-            new RightIdentity(),
-            new Constant("left"),
-            new Identity());
+        return new UnaryCompositeBinaryFunction<Object, Object, Object>(
+            RightIdentity.FUNCTION,
+            Constant.of("left"),
+            Identity.instance());
     }
 
     // Lifecycle
@@ -68,41 +68,37 @@ public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryFunction f = new UnaryCompositeBinaryFunction(
-            new RightIdentity(),
-            new Constant("K"),
-            new Identity());
+        BinaryFunction<Object, Object, Object> f = new UnaryCompositeBinaryFunction<Object, Object, Object>(
+                RightIdentity.FUNCTION,
+                Constant.of("K"),
+                Identity.instance());
         assertEquals("right",f.evaluate("left","right"));
         assertNull("right",f.evaluate("left",null));
         assertEquals("right",f.evaluate(null,"right"));
     }
 
     public void testEquals() throws Exception {
-        BinaryFunction f = new UnaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Constant("right"));
+        BinaryFunction<Object, Object, Object> f = new UnaryCompositeBinaryFunction<Object, Object, Object>(
+                LeftIdentity.FUNCTION,
+                Constant.of("left"),
+                Constant.of("right"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new UnaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction(
-            new RightIdentity(),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new Identity(),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction(
-            new LeftIdentity(),
-            new Constant("left"),
-            new Identity()));
-        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction(null,null,null));
-        assertObjectsAreEqual(
-            new UnaryCompositeBinaryFunction(null,null,null),
-            new UnaryCompositeBinaryFunction(null,null,null));
+        assertObjectsAreEqual(f,new UnaryCompositeBinaryFunction<Object, Object, Object>(
+                LeftIdentity.FUNCTION,
+                Constant.of("left"),
+                Constant.of("right")));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction<Object, Object, Object>(
+                RightIdentity.FUNCTION,
+                Constant.of("left"),
+                Constant.of("right")));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction<Object, Object, Object>(
+                LeftIdentity.FUNCTION,
+                Identity.instance(),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction<Object, Object, Object>(
+                LeftIdentity.FUNCTION,
+                Constant.of("left"),
+                Identity.instance()));
     }
 
 }

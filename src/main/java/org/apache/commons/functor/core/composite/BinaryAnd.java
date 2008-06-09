@@ -36,7 +36,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BinaryAnd extends BaseBinaryPredicateList {
+public final class BinaryAnd<L, R> extends BaseBinaryPredicateList<L, R> {
 
     // constructor
     // ------------------------------------------------------------------------
@@ -51,7 +51,7 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
      * Create a new BinaryAnd.
      * @param p BinaryPredicate to add
      */
-    public BinaryAnd(BinaryPredicate p) {
+    public BinaryAnd(BinaryPredicate<? super L, ? super R> p) {
         super(p);
     }
 
@@ -60,7 +60,7 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
      * @param p BinaryPredicate to add
      * @param q BinaryPredicate to add
      */
-    public BinaryAnd(BinaryPredicate p, BinaryPredicate q) {
+    public BinaryAnd(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q) {
         super(p, q);
     }
 
@@ -70,7 +70,8 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
      * @param q BinaryPredicate to add
      * @param r BinaryPredicate to add
      */
-    public BinaryAnd(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
+    public BinaryAnd(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q,
+            BinaryPredicate<? super L, ? super R> r) {
         super(p, q, r);
     }
 
@@ -81,7 +82,7 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
      * @param p BinaryPredicate to add
      * @return this
      */
-    public BinaryAnd and(BinaryPredicate p) {
+    public BinaryAnd<L, R> and(BinaryPredicate<? super L, ? super R> p) {
         super.addBinaryPredicate(p);
         return this;
     }
@@ -91,9 +92,9 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object a, Object b) {
-        for (Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
-            if (!((BinaryPredicate) iter.next()).test(a, b)) {
+    public boolean test(L a, R b) {
+        for (Iterator<BinaryPredicate<? super L, ? super R>> iter = getBinaryPredicateIterator(); iter.hasNext();) {
+            if (!iter.next().test(a, b)) {
                 return false;
             }
         }
@@ -104,7 +105,7 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BinaryAnd && equals((BinaryAnd) that));
+        return that == this || (that instanceof BinaryAnd && equals((BinaryAnd<?, ?>) that));
     }
 
     /**
@@ -112,7 +113,7 @@ public final class BinaryAnd extends BaseBinaryPredicateList {
      * @param that the BinaryAnd to test
      * @return boolean
      */
-    public boolean equals(BinaryAnd that) {
+    public boolean equals(BinaryAnd<?, ?> that) {
         return getBinaryPredicateListEquals(that);
     }
 

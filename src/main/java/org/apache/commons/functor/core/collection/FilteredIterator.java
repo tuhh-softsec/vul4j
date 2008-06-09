@@ -27,13 +27,13 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class FilteredIterator implements Iterator {
+public final class FilteredIterator<T> implements Iterator<T> {
     // attributes
     // ------------------------------------------------------------------------
 
-    private UnaryPredicate predicate = null;
-    private Iterator iterator = null;
-    private Object next = null;
+    private UnaryPredicate<? super T> predicate = null;
+    private Iterator<? extends T> iterator = null;
+    private T next = null;
     private boolean nextSet = false;
     private boolean canRemove = false;
 
@@ -44,7 +44,7 @@ public final class FilteredIterator implements Iterator {
      * @param iterator to filter
      * @param predicate to apply
      */
-    public FilteredIterator(Iterator iterator, UnaryPredicate predicate) {
+    public FilteredIterator(Iterator<? extends T> iterator, UnaryPredicate<? super T> predicate) {
         if (null == iterator) {
             throw new IllegalArgumentException("Iterator argument was null");
         }
@@ -63,23 +63,18 @@ public final class FilteredIterator implements Iterator {
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
-        if (nextSet) {
-            return true;
-        } else {
-            return setNext();
-        }
+        return nextSet || setNext();
     }
 
     /**
      * {@inheritDoc}
      * @see java.util.Iterator#next()
      */
-    public Object next() {
+    public T next() {
         if (hasNext()) {
             return returnNext();
-        } else {
-            throw new NoSuchElementException();
         }
+        throw new NoSuchElementException();
     }
 
     /**
@@ -105,7 +100,7 @@ public final class FilteredIterator implements Iterator {
         if (obj instanceof FilteredIterator == false) {
             return false;
         }
-        FilteredIterator that = (FilteredIterator) obj;
+        FilteredIterator<?> that = (FilteredIterator<?>) obj;
         return predicate.equals(that.predicate) && iterator.equals(that.iterator);
     }
 
@@ -136,8 +131,8 @@ public final class FilteredIterator implements Iterator {
      * @param pred to apply
      * @return Iterator
      */
-    public static Iterator filter(Iterator iter, UnaryPredicate pred) {
-        return null == pred ? iter : (null == iter ? null : new FilteredIterator(iter, pred));
+    public static <T> Iterator<T> filter(Iterator<? extends T> iter, UnaryPredicate<? super T> pred) {
+        return null == pred ? (Iterator<T>) iter : (null == iter ? null : new FilteredIterator<T>(iter, pred));
     }
 
     // private
@@ -149,7 +144,7 @@ public final class FilteredIterator implements Iterator {
     private boolean setNext() {
         while (iterator.hasNext()) {
             canRemove = false;
-            Object obj = iterator.next();
+            T obj = iterator.next();
             if (predicate.test(obj)) {
                 nextSet = true;
                 next = obj;
@@ -165,8 +160,8 @@ public final class FilteredIterator implements Iterator {
      * Get the next element.
      * @return next element.
      */
-    private Object returnNext() {
-        Object temp = next;
+    private T returnNext() {
+        T temp = next;
         canRemove = true;
         next = null;
         nextSet = false;

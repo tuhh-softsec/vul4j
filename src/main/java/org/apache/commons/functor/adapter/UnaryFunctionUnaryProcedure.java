@@ -37,17 +37,17 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serializable {
+public final class UnaryFunctionUnaryProcedure<A> implements UnaryProcedure<A>, Serializable {
 
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
+    private UnaryFunction<? super A, ?> function;
 
     /**
      * Create an {@link UnaryProcedure UnaryProcedure} wrapping
      * the given {@link UnaryFunction UnaryFunction}.
      * @param function the {@link UnaryFunction UnaryFunction} to wrap
      */
-    public UnaryFunctionUnaryProcedure(UnaryFunction function) {
+    public UnaryFunctionUnaryProcedure(UnaryFunction<? super A, ?> function) {
         this.function = function;
     }
 
@@ -56,7 +56,7 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
      * ignore its returned value.
      * {@inheritDoc}
      */
-    public void run(Object obj) {
+    public void run(A obj) {
         function.evaluate(obj);
     }
 
@@ -65,7 +65,7 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof UnaryFunctionUnaryProcedure && equals((UnaryFunctionUnaryProcedure) that));
+                || (that instanceof UnaryFunctionUnaryProcedure && equals((UnaryFunctionUnaryProcedure<?>) that));
     }
 
     /**
@@ -73,7 +73,7 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
      * @param that the UnaryFunctionUnaryPredicate to test
      * @return boolean
      */
-    public boolean equals(UnaryFunctionUnaryProcedure that) {
+    public boolean equals(UnaryFunctionUnaryProcedure<?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -108,8 +108,8 @@ public final class UnaryFunctionUnaryProcedure implements UnaryProcedure, Serial
      *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
      *         if the given <code>UnaryFunction</code> is <code>null</code>
      */
-    public static UnaryFunctionUnaryProcedure adapt(UnaryFunction function) {
-        return null == function ? null : new UnaryFunctionUnaryProcedure(function);
+    public static <A> UnaryFunctionUnaryProcedure<A> adapt(UnaryFunction<? super A, ?> function) {
+        return null == function ? null : new UnaryFunctionUnaryProcedure<A>(function);
     }
 
 }

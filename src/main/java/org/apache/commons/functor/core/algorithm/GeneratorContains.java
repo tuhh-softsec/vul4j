@@ -28,28 +28,29 @@ import org.apache.commons.functor.generator.Generator;
  *
  * @version $Revision$ $Date$
  */
-public final class GeneratorContains implements BinaryPredicate, Serializable {
-    private static final GeneratorContains INSTANCE = new GeneratorContains();
+public final class GeneratorContains<T> implements BinaryPredicate<Generator<? extends T>, UnaryPredicate<? super T>>,
+        Serializable {
+    private static final GeneratorContains<Object> INSTANCE = new GeneratorContains<Object>();
 
     /**
      * Helper procedure.
      */
-    private class ContainsProcedure implements UnaryProcedure {
+    private class ContainsProcedure implements UnaryProcedure<T> {
         private boolean found;
-        private UnaryPredicate pred;
+        private UnaryPredicate<? super T> pred;
 
         /**
          * Create a new ContainsProcedure.
          * @pred test
          */
-        public ContainsProcedure(UnaryPredicate pred) {
+        public ContainsProcedure(UnaryPredicate<? super T> pred) {
             this.pred = pred;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void run(Object obj) {
+        public void run(T obj) {
             found |= pred.test(obj);
         }
     }
@@ -59,9 +60,9 @@ public final class GeneratorContains implements BinaryPredicate, Serializable {
      * @param left Generator
      * @param right UnaryPredicate
      */
-    public boolean test(Object left, Object right) {
-        ContainsProcedure findProcedure = new ContainsProcedure((UnaryPredicate) right);
-        ((Generator) left).run(findProcedure);
+    public boolean test(Generator<? extends T> left, UnaryPredicate<? super T> right) {
+        ContainsProcedure findProcedure = new ContainsProcedure(right);
+        left.run(findProcedure);
         return findProcedure.found;
     }
 
@@ -83,7 +84,7 @@ public final class GeneratorContains implements BinaryPredicate, Serializable {
      * Get a static {@link GeneratorContains} instance.
      * @return {@link GeneratorContains}
      */
-    public static GeneratorContains instance() {
+    public static GeneratorContains<Object> instance() {
         return INSTANCE;
     }
 }

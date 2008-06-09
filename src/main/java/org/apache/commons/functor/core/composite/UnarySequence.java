@@ -40,11 +40,11 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class UnarySequence implements UnaryProcedure, Serializable {
+public class UnarySequence<A> implements UnaryProcedure<A>, Serializable {
 
     // attributes
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
+    private List<UnaryProcedure<? super A>> list = new ArrayList<UnaryProcedure<? super A>>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public class UnarySequence implements UnaryProcedure, Serializable {
      * Create a new UnarySequence.
      * @param p UnaryProcedure to add
      */
-    public UnarySequence(UnaryProcedure p) {
+    public UnarySequence(UnaryProcedure<? super A> p) {
         then(p);
     }
 
@@ -67,7 +67,7 @@ public class UnarySequence implements UnaryProcedure, Serializable {
      * @param p UnaryProcedure to add
      * @param q UnaryProcedure to add
      */
-    public UnarySequence(UnaryProcedure p, UnaryProcedure q) {
+    public UnarySequence(UnaryProcedure<? super A> p, UnaryProcedure<? super A> q) {
         then(p);
         then(q);
     }
@@ -79,7 +79,7 @@ public class UnarySequence implements UnaryProcedure, Serializable {
      * @param p UnaryProcedure to add
      * @return this
      */
-    public UnarySequence then(UnaryProcedure p) {
+    public UnarySequence<A> then(UnaryProcedure<? super A> p) {
         list.add(p);
         return this;
     }
@@ -89,9 +89,9 @@ public class UnarySequence implements UnaryProcedure, Serializable {
     /**
      * {@inheritDoc}
      */
-    public void run(Object obj) {
-        for (ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((UnaryProcedure) iter.previous()).run(obj);
+    public void run(A obj) {
+        for (ListIterator<UnaryProcedure<? super A>> iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            iter.previous().run(obj);
         }
     }
 
@@ -99,7 +99,7 @@ public class UnarySequence implements UnaryProcedure, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof UnarySequence && equals((UnarySequence) that));
+        return that == this || (that instanceof UnarySequence && equals((UnarySequence<?>) that));
     }
 
     /**
@@ -107,7 +107,7 @@ public class UnarySequence implements UnaryProcedure, Serializable {
      * @param that UnarySequence to test
      * @return boolean
      */
-    public boolean equals(UnarySequence that) {
+    public boolean equals(UnarySequence<?> that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }

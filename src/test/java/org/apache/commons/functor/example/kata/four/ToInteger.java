@@ -28,12 +28,9 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ToInteger implements UnaryFunction {
-    public Object evaluate(Object obj) {
-        return evaluate((String) obj);
-    }
+public final class ToInteger implements UnaryFunction<String, Integer> {
 
-    public Object evaluate(String str) {
+    public Integer evaluate(String str) {
         StringBuffer buf = new StringBuffer();
         for (int i=0;i<str.length();i++) {
             if (Character.isDigit(str.charAt(i))) {

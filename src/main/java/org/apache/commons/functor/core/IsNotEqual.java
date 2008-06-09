@@ -19,6 +19,8 @@ package org.apache.commons.functor.core;
 import java.io.Serializable;
 
 import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.RightBoundPredicate;
 
 /**
  * {@link #test Tests}
@@ -32,10 +34,13 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsNotEqual implements BinaryPredicate, Serializable {
+public final class IsNotEqual<L, R> implements BinaryPredicate<L, R>, Serializable {
     // static attributes
     // ------------------------------------------------------------------------
-    private static final IsNotEqual INSTANCE = new IsNotEqual();
+    /**
+     * Basic IsNotEqual<Object, Object> instance.
+     */
+    public static final IsNotEqual<Object, Object> INSTANCE = IsNotEqual.<Object, Object>instance();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -50,7 +55,7 @@ public final class IsNotEqual implements BinaryPredicate, Serializable {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
+    public boolean test(L left, R right) {
         return (null == left ? null != right : !left.equals(right));
     }
 
@@ -76,13 +81,26 @@ public final class IsNotEqual implements BinaryPredicate, Serializable {
     }
 
     // static methods
-    // ------------------------------------------------------------------------
+  // ------------------------------------------------------------------------
+    
     /**
      * Get an IsNotEqual instance.
-     * @return IsNotEqual
+     * @param <L>
+     * @param <R>
+     * @return IsNotEqual<L, R>
      */
-    public static IsNotEqual instance() {
-        return INSTANCE;
+    public static <L, R> IsNotEqual<L, R> instance() {
+        return new IsNotEqual<L, R>();
     }
 
+    /**
+     * Get an IsNotEqual UnaryPredicate.
+     * @param <L>
+     * @param <R>
+     * @param object bound comparison object
+     * @return UnaryPredicate<L>
+     */
+    public static <L, R> UnaryPredicate<L> to(R object) {
+        return new RightBoundPredicate<L, R>(new IsNotEqual<L, R>(), object);
+    }
 }

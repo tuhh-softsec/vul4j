@@ -34,10 +34,10 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class UnaryNot implements UnaryPredicate, Serializable {
+public final class UnaryNot<A> implements UnaryPredicate<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate predicate = null;
+    private UnaryPredicate<? super A> predicate = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
      * Create a new UnaryNot.
      * @param p UnaryPredicate to negate
      */
-    public UnaryNot(UnaryPredicate p) {
+    public UnaryNot(UnaryPredicate<? super A> p) {
         this.predicate = p;
     }
 
@@ -54,7 +54,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj) {
+    public boolean test(A obj) {
         return !(predicate.test(obj));
     }
 
@@ -62,7 +62,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof UnaryNot && equals((UnaryNot) that));
+        return that == this || (that instanceof UnaryNot && equals((UnaryNot<?>) that));
     }
 
     /**
@@ -70,7 +70,7 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
      * @param that UnaryNot to test
      * @return boolean
      */
-    public boolean equals(UnaryNot that) {
+    public boolean equals(UnaryNot<?> that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
@@ -97,10 +97,10 @@ public final class UnaryNot implements UnaryPredicate, Serializable {
     /**
      * Invert a UnaryPredicate.
      * @param pred UnaryPredicate to invert
-     * @return UnaryPredicate
+     * @return UnaryPredicate<A
      */
-    public static UnaryPredicate not(UnaryPredicate pred) {
-        return null == pred ? null : new UnaryNot(pred);
+    public static <A> UnaryPredicate<A> not(UnaryPredicate<? super A> pred) {
+        return null == pred ? null : new UnaryNot<A>(pred);
     }
 
 }

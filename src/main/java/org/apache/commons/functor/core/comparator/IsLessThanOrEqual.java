@@ -33,17 +33,21 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
-    private static final IsLessThanOrEqual COMPARABLE_INSTANCE = new IsLessThanOrEqual();
+public final class IsLessThanOrEqual<T> implements BinaryPredicate<T, T>, Serializable {
+    /**
+     * Basic IsLessThanOrEqual instance.
+     */
+    public static final IsLessThanOrEqual<Comparable<?>> INSTANCE = IsLessThanOrEqual.<Comparable<?>>instance();
 
-    private Comparator comparator = null;
+    private Comparator<? super T> comparator = null;
 
     /**
      * Construct a <code>IsLessThanOrEqual</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
      */
+    @SuppressWarnings("unchecked")
     public IsLessThanOrEqual() {
-        this(null);
+        this(ComparableComparator.INSTANCE);
     }
 
     /**
@@ -54,8 +58,11 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      *        a <code>Comparator</code> for {@link Comparable Comparable}s will
      *        be used.
      */
-    public IsLessThanOrEqual(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
+    public IsLessThanOrEqual(Comparator<? super T> comparator) {
+        if (comparator == null) {
+            throw new IllegalArgumentException("Comparator argument must not be null");
+        }
+        this.comparator = comparator;
     }
 
     /**
@@ -64,7 +71,7 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      * less than or equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
      */
-    public boolean test(Object left, Object right) {
+    public boolean test(T left, T right) {
         return comparator.compare(left, right) <= 0;
     }
 
@@ -72,7 +79,7 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IsLessThanOrEqual && equals((IsLessThanOrEqual) that));
+        return that == this || (that instanceof IsLessThanOrEqual && equals((IsLessThanOrEqual<?>) that));
     }
 
     /**
@@ -80,7 +87,7 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      * @param that the IsLessThanOrEqual to test.
      * @return boolean
      */
-    public boolean equals(IsLessThanOrEqual that) {
+    public boolean equals(IsLessThanOrEqual<?> that) {
         return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
 
@@ -102,11 +109,12 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
     }
 
     /**
-     * Get a basic IsLessThanOrEqual instance.
-     * @return IsLessThanOrEqual
+     * Get a typed IsLessThanOrEqual instance.
+     * @param <T>
+     * @return IsLessThanOrEqual<T>
      */
-    public static final IsLessThanOrEqual instance() {
-        return COMPARABLE_INSTANCE;
+    public static final <T extends Comparable<?>> IsLessThanOrEqual<T> instance() {
+        return new IsLessThanOrEqual<T>();
     }
 
     /**
@@ -114,8 +122,8 @@ public final class IsLessThanOrEqual implements BinaryPredicate, Serializable {
      * @param right the right side object of the comparison.
      * @return UnaryPredicate
      */
-    public static final UnaryPredicate instance(Comparable right) {
-        return RightBoundPredicate.bind(instance(), right);
+    public static final <T extends Comparable<?>> UnaryPredicate<T> instance(T right) {
+        return RightBoundPredicate.bind(new IsLessThanOrEqual<T>(), right);
     }
 
 }

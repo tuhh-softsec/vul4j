@@ -29,6 +29,7 @@ import org.apache.commons.functor.BaseFunctorTest;
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestLongRange extends BaseFunctorTest {
     // Conventional
     // ------------------------------------------------------------------------

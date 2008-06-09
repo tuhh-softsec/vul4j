@@ -26,12 +26,12 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public interface Generator {
+public interface Generator<E> {
     /**
      * Generators must implement this method.
      * @param proc UnaryProcedure to run
      */
-    public abstract void run(UnaryProcedure proc);
+    public abstract void run(UnaryProcedure<? super E> proc);
 
     /**
      * Stop the generator. Will stop the wrapped generator if one was set.
@@ -51,18 +51,18 @@ public interface Generator {
      * @param transformer UnaryFunction to apply to this
      * @return transformation result
      */
-    public abstract Object to(UnaryFunction transformer);
+    public abstract <Z> Z to(UnaryFunction<Generator<? extends E>, ? extends Z> transformer);
 
     /**
      * Same as to(new CollectionTransformer(collection)).
      * @param collection Collection to which my elements should be added
      * @return <code>collection</code>
      */
-    public abstract Collection to(Collection collection);
+    public abstract Collection<? super E> to(Collection<? super E> collection);
 
     /**
      * Same as to(new CollectionTransformer()).
      * @return Collection
      */
-    public abstract Collection toCollection();
+    public abstract Collection<? super E> toCollection();
 }

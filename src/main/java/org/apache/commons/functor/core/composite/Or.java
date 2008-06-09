@@ -90,8 +90,8 @@ public final class Or extends BasePredicateList {
      * {@inheritDoc}
      */
     public boolean test() {
-        for (Iterator iter = getPredicateIterator(); iter.hasNext();) {
-            if (((Predicate) iter.next()).test()) {
+        for (Iterator<Predicate> iter = getPredicateIterator(); iter.hasNext();) {
+            if (iter.next().test()) {
                 return true;
             }
         }

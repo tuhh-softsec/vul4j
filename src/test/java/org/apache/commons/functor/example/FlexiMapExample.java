@@ -37,7 +37,7 @@ import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.IgnoreLeftFunction;
 import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
-import org.apache.commons.functor.core.IsInstanceOf;
+import org.apache.commons.functor.core.IsInstance;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.RightIdentity;
 import org.apache.commons.functor.core.composite.Conditional;
@@ -60,6 +60,7 @@ import org.apache.commons.functor.core.composite.Conditional;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class FlexiMapExample extends TestCase {
 
     public FlexiMapExample(String testName) {
@@ -289,8 +290,8 @@ public class FlexiMapExample extends TestCase {
          * from the map.
          */
         public FlexiMap(BinaryFunction putfn, BinaryFunction getfn) {
-            onPut = null == putfn ? RightIdentity.instance() : putfn;
-            onGet = null == getfn ? RightIdentity.instance() : getfn;
+            onPut = null == putfn ? RightIdentity.function() : putfn;
+            onGet = null == getfn ? RightIdentity.function() : getfn;
             proxiedMap = new HashMap();
         }
 
@@ -462,7 +463,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * we'll test the type of the right-hand argument,
                      */
-					new IsInstanceOf(clazz),
+					IsInstance.of(clazz),
                     /*
                      * and either pass the given value through,
                      */

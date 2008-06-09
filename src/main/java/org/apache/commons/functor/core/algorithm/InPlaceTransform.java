@@ -27,19 +27,17 @@ import org.apache.commons.functor.UnaryFunction;
  *
  * @version $Revision$ $Date$
  */
-public final class InPlaceTransform implements BinaryProcedure, Serializable {
-    private static final InPlaceTransform INSTANCE = new InPlaceTransform();
+public final class InPlaceTransform<T> implements BinaryProcedure<ListIterator<T>, UnaryFunction<? super T, ? extends T>>, Serializable {
+    private static final InPlaceTransform<Object> INSTANCE = new InPlaceTransform<Object>();
 
     /**
      * {@inheritDoc}
      * @param left {@link ListIterator}
      * @param right {@link UnaryFunction}
      */
-    public void run(Object left, Object right) {
-        ListIterator li = (ListIterator) left;
-        UnaryFunction func = (UnaryFunction) right;
-        while (li.hasNext()) {
-            li.set(func.evaluate(li.next()));
+    public void run(ListIterator<T> left, UnaryFunction<? super T, ? extends T> right) {
+        while (left.hasNext()) {
+            left.set(right.evaluate(left.next()));
         }
     }
 
@@ -61,7 +59,7 @@ public final class InPlaceTransform implements BinaryProcedure, Serializable {
      * Get an {@link InPlaceTransform} instance.
      * @return InPlaceTransform
      */
-    public static InPlaceTransform instance() {
+    public static InPlaceTransform<Object> instance() {
         return INSTANCE;
     }
 

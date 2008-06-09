@@ -31,10 +31,13 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class NoOp implements Procedure, UnaryProcedure, BinaryProcedure, Serializable {
+public final class NoOp implements Procedure, UnaryProcedure<Object>, BinaryProcedure<Object, Object>, Serializable {
     // static attributes
     // ------------------------------------------------------------------------
-    private static final NoOp INSTANCE = new NoOp();
+    /**
+     * Basic NoOp instance.
+     */
+    public static final NoOp INSTANCE = new NoOp();
 
     // constructor
     // ------------------------------------------------------------------------

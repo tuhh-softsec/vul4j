@@ -16,7 +16,6 @@
  */
 package org.apache.commons.functor.example.kata.one;
 
-import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.adapter.LeftBoundFunction;
 
@@ -24,12 +23,9 @@ import org.apache.commons.functor.adapter.LeftBoundFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class Multiply implements BinaryFunction {
-    public Object evaluate(Object left, Object right) {
-        return evaluate((Number) left,(Number) right);
-    }
+public class Multiply extends ArithmeticOperation {
 
-    public Object evaluate(Number left, Number right) {
+    public Number evaluate(Number left, Number right) {
         return new Integer(left.intValue() * right.intValue());
     }
 
@@ -37,8 +33,8 @@ public class Multiply implements BinaryFunction {
         return INSTANCE;
     }
 
-    public static UnaryFunction by(int factor) {
-        return new LeftBoundFunction(instance(),new Integer(factor));
+    public static UnaryFunction<Number, Number> by(int factor) {
+        return LeftBoundFunction.bind(INSTANCE, factor);
     }
 
     private static Multiply INSTANCE = new Multiply();

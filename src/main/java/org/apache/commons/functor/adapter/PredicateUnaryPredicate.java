@@ -38,9 +38,9 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class PredicateUnaryPredicate implements UnaryPredicate, Serializable {
+public final class PredicateUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     /** The {@link Predicate Predicate} I'm wrapping. */
-    private Predicate predicate = null;
+    private Predicate predicate;
 
     /**
      * Create a new PredicateUnaryPredicate.
@@ -61,7 +61,7 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof PredicateUnaryPredicate && equals((PredicateUnaryPredicate) that));
+        return that == this || (that instanceof PredicateUnaryPredicate && equals((PredicateUnaryPredicate<?>) that));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
      * @param that PredicateUnaryPredicate to test
      * @return boolean
      */
-    public boolean equals(PredicateUnaryPredicate that) {
+    public boolean equals(PredicateUnaryPredicate<?> that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
@@ -94,10 +94,10 @@ public final class PredicateUnaryPredicate implements UnaryPredicate, Serializab
     /**
      * Adapt a Predicate to the UnaryPredicate interface.
      * @param predicate to adapt
-     * @return PredicateUnaryPredicate
+     * @return PredicateUnaryPredicate<A
      */
-    public static PredicateUnaryPredicate adapt(Predicate predicate) {
-        return null == predicate ? null : new PredicateUnaryPredicate(predicate);
+    public static <A> PredicateUnaryPredicate<A> adapt(Predicate predicate) {
+        return null == predicate ? null : new PredicateUnaryPredicate<A>(predicate);
     }
 
 }

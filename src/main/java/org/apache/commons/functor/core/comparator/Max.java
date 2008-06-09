@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.adapter.RightBoundFunction;
 
 /**
  * Adapts a {@link Comparator Comparator} to the
@@ -28,30 +30,37 @@ import org.apache.commons.functor.BinaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class Max implements BinaryFunction, Serializable {
-    private static final Max INSTANCE = new Max();
+public final class Max<T> implements BinaryFunction<T, T, T>, Serializable {
+    /**
+     * Basic Max instance.
+     */
+    public static final Max<Comparable<?>> INSTANCE = Max.<Comparable<?>>instance();
 
-    private Comparator comparator = null;
+    private Comparator<T> comparator = null;
 
     /**
      * Create a new Max.
      */
-    public Max() {
-        this(null);
+    @SuppressWarnings("unchecked")
+    public Max() { 
+        this(ComparableComparator.instance());
     }
 
     /**
      * Create a new Max.
      * @param comparator Comparator to use
      */
-    public Max(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
+    public Max(Comparator<T> comparator) {
+        if (comparator == null) {
+            throw new IllegalArgumentException("Comparator argument must not be null");
+        }
+        this.comparator = comparator;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(T left, T right) {
         return (comparator.compare(left, right) >= 0) ? left : right;
     }
 
@@ -59,7 +68,7 @@ public final class Max implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof Max && equals((Max) that));
+        return that == this || (that instanceof Max && equals((Max<?>) that));
     }
 
     /**
@@ -67,7 +76,7 @@ public final class Max implements BinaryFunction, Serializable {
      * @param that Max to test
      * @return boolean
      */
-    public boolean equals(Max that) {
+    public boolean equals(Max<?> that) {
         return null != that && comparator.equals(that.comparator);
     }
 
@@ -89,8 +98,17 @@ public final class Max implements BinaryFunction, Serializable {
      * Get a Max instance.
      * @return Max
      */
-    public static Max instance() {
-        return INSTANCE;
+    public static <T extends Comparable<?>> Max<T> instance() {
+        return new Max<T>();
+    }
+
+    /**
+     * Get a Max UnaryFunction.
+     * @param right the right side argument of the Max function
+     * @return UnaryFunction<T, T>
+     */
+    public static final <T extends Comparable<?>> UnaryFunction<T, T> instance(T right) {
+        return RightBoundFunction.bind(new Max<T>(), right);
     }
 
 }

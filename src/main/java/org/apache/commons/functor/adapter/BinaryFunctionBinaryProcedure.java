@@ -37,17 +37,17 @@ import org.apache.commons.functor.BinaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Serializable {
+public final class BinaryFunctionBinaryProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
 
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction function = null;
+    private BinaryFunction<? super L, ? super R, ?> function;
 
     /**
      * Create an {@link BinaryProcedure BinaryProcedure} wrapping
      * the given {@link BinaryFunction BinaryFunction}.
      * @param function the {@link BinaryFunction BinaryFunction} to wrap
      */
-    public BinaryFunctionBinaryProcedure(BinaryFunction function) {
+    public BinaryFunctionBinaryProcedure(BinaryFunction<? super L, ? super R, ?> function) {
         this.function = function;
     }
 
@@ -56,7 +56,7 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
      * ignore its returned value.
      * {@inheritDoc}
      */
-    public void run(Object left, Object right) {
+    public void run(L left, R right) {
         function.evaluate(left, right);
     }
 
@@ -65,7 +65,7 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof BinaryFunctionBinaryProcedure && equals((BinaryFunctionBinaryProcedure) that));
+                || (that instanceof BinaryFunctionBinaryProcedure && equals((BinaryFunctionBinaryProcedure<?, ?>) that));
     }
 
     /**
@@ -73,7 +73,7 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
      * @param that BinaryFunctionBinaryPredicate to compare
      * @return boolean
      */
-    public boolean equals(BinaryFunctionBinaryProcedure that) {
+    public boolean equals(BinaryFunctionBinaryProcedure<?, ?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -108,8 +108,8 @@ public final class BinaryFunctionBinaryProcedure implements BinaryProcedure, Ser
      *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
      *         if the given <code>BinaryFunction</code> is <code>null</code>
      */
-    public static BinaryFunctionBinaryProcedure adapt(BinaryFunction function) {
-        return null == function ? null : new BinaryFunctionBinaryProcedure(function);
+    public static <L, R> BinaryFunctionBinaryProcedure<L, R> adapt(BinaryFunction<? super L, ? super R, ?> function) {
+        return null == function ? null : new BinaryFunctionBinaryProcedure<L, R>(function);
     }
 
 }

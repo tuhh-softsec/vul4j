@@ -28,16 +28,18 @@ import org.apache.commons.functor.core.composite.UnaryNot;
  *
  * @version $Revision$ $Date$
  */
-public final class RetainMatching implements BinaryProcedure, Serializable {
-    private static final RetainMatching INSTANCE = new RetainMatching();
+public final class RetainMatching<T> implements BinaryProcedure<Iterator<T>, UnaryPredicate<? super T>>, Serializable {
+    private static final RetainMatching<Object> INSTANCE = new RetainMatching<Object>();
+    
+    private RemoveMatching<T> removeMatching = new RemoveMatching<T>();
 
     /**
      * {@inheritDoc}
      * @param left {@link Iterator}
      * @param right {@link UnaryPredicate}
      */
-    public void run(Object left, Object right) {
-        RemoveMatching.instance().run(left, new UnaryNot((UnaryPredicate) right));
+    public void run(Iterator<T> left, UnaryPredicate<? super T> right) {
+        removeMatching.run(left, UnaryNot.not(right));
     }
 
     /**
@@ -58,7 +60,7 @@ public final class RetainMatching implements BinaryProcedure, Serializable {
      * Get a static {@link RetainMatching} instance.
      * @return {@link RetainMatching}
      */
-    public static final RetainMatching instance() {
+    public static final RetainMatching<Object> instance() {
         return INSTANCE;
     }
 }

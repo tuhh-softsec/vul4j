@@ -41,33 +41,33 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class Constant implements Function, UnaryFunction, BinaryFunction, Predicate, UnaryPredicate,
-        BinaryPredicate, Serializable {
+public final class Constant<T> implements Function<T>, UnaryFunction<Object, T>, BinaryFunction<Object, Object, T>,
+        Predicate, UnaryPredicate<Object>, BinaryPredicate<Object, Object>, Serializable {
 
     // static attributes
     // ------------------------------------------------------------------------
-    private static final Constant TRUE_PREDICATE = new Constant(true);
-    private static final Constant FALSE_PREDICATE = new Constant(false);
+    /**
+     * Constant for <code>true</code>.
+     */
+    public static final Constant<Boolean> TRUE = Constant.of(true);
+
+    /**
+     * Constant for <code>false</code>.
+     */
+    public static final Constant<Boolean> FALSE = Constant.of(false);
 
     // attributes
     // ------------------------------------------------------------------------
-    private Object value;
+    private T value;
 
     // constructor
     // ------------------------------------------------------------------------
-    /**
-     * Create a new Constant.
-     * @param value boolean
-     */
-    public Constant(boolean value) {
-        this(value ? Boolean.TRUE : Boolean.FALSE);
-    }
 
     /**
      * Create a new Constant.
      * @param value Object
      */
-    public Constant(Object value) {
+    public Constant(T value) {
         this.value = value;
     }
 
@@ -76,21 +76,21 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate() {
+    public T evaluate() {
         return value;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object obj) {
+    public T evaluate(Object obj) {
         return evaluate();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(Object left, Object right) {
         return evaluate();
     }
 
@@ -119,7 +119,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof Constant && equals((Constant) that));
+        return that == this || (that instanceof Constant && equals((Constant<?>) that));
     }
 
     /**
@@ -127,7 +127,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @param that Constant to test
      * @return boolean
      */
-    public boolean equals(Constant that) {
+    public boolean equals(Constant<?> that) {
         return (null != that && (null == this.value ? null == that.value : this.value.equals(that.value)));
     }
 
@@ -158,8 +158,8 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @return a <code>Constant</code> that always
      *         returns <code>true</code>
      */
-    public static Constant truePredicate() {
-        return TRUE_PREDICATE;
+    public static Constant<Boolean> truePredicate() {
+        return TRUE;
     }
 
     /**
@@ -168,8 +168,8 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @return a <code>Constant</code> that always
      *         returns <code>false</code>
      */
-    public static Constant falsePredicate() {
-        return FALSE_PREDICATE;
+    public static Constant<Boolean> falsePredicate() {
+        return FALSE;
     }
 
     /**
@@ -179,8 +179,8 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @return a <code>Constant</code> that always
      *         returns <i>value</i>
      */
-    public static Constant predicate(boolean value) {
-        return value ? TRUE_PREDICATE : FALSE_PREDICATE;
+    public static Constant<Boolean> predicate(boolean value) {
+        return value ? TRUE : FALSE;
     }
 
     /**
@@ -188,8 +188,8 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @param value Object
      * @return Constant
      */
-    public static Constant instance(Object value) {
-        return new Constant(value);
+    public static <Z extends Object> Constant<Z> of(Z value) {
+        return new Constant<Z>(value);
     }
 
 }

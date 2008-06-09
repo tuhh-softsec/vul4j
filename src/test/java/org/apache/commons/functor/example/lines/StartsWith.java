@@ -23,12 +23,12 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class StartsWith implements UnaryPredicate {
+public class StartsWith<T> implements UnaryPredicate<T> {
     public StartsWith(String prefix) {
         this.prefix = prefix;
     }
 
-    public boolean test(Object obj) {
+    public boolean test(T obj) {
         return null != obj && obj.toString().startsWith(prefix);
     }
 

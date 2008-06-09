@@ -62,23 +62,21 @@ public class TestBinaryPredicateBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
-        BinaryFunction f = new BinaryPredicateBinaryFunction(new Constant(true));
-        assertEquals(Boolean.TRUE,f.evaluate(null,null));
+        BinaryFunction<Object, Object, Boolean> f = new BinaryPredicateBinaryFunction<Object, Object>(Constant.TRUE);
+        assertTrue(f.evaluate(null,null));
     }
 
     public void testTestWhenFalse() throws Exception {
-        BinaryFunction f = new BinaryPredicateBinaryFunction(new Constant(false));
-        assertEquals(Boolean.FALSE,f.evaluate(null,null));
+        BinaryFunction<Object, Object, Boolean> f = new BinaryPredicateBinaryFunction<Object, Object>(Constant.FALSE);
+        assertFalse(f.evaluate(null,null));
     }
 
     public void testEquals() throws Exception {
-        BinaryFunction f = new BinaryPredicateBinaryFunction(new Constant(true));
+        BinaryFunction<Object, Object, Boolean> f = new BinaryPredicateBinaryFunction<Object, Object>(Constant.TRUE);
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BinaryPredicateBinaryFunction(new Constant(true)));
-        assertObjectsAreNotEqual(f,new Constant("x"));
-        assertObjectsAreNotEqual(f,new BinaryPredicateBinaryFunction(new Constant(false)));
-        assertObjectsAreNotEqual(f,new BinaryPredicateBinaryFunction(null));
-        assertObjectsAreEqual(new BinaryPredicateBinaryFunction(null),new BinaryPredicateBinaryFunction(null));
+        assertObjectsAreEqual(f,new BinaryPredicateBinaryFunction<Object, Object>(Constant.TRUE));
+        assertObjectsAreNotEqual(f,Constant.of("x"));
+        assertObjectsAreNotEqual(f,new BinaryPredicateBinaryFunction<Object, Object>(Constant.FALSE));
     }
 
     public void testAdaptNull() throws Exception {
@@ -86,6 +84,6 @@ public class TestBinaryPredicateBinaryFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BinaryPredicateBinaryFunction.adapt(new Constant(true)));
+        assertNotNull(BinaryPredicateBinaryFunction.adapt(Constant.TRUE));
     }
 }

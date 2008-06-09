@@ -30,11 +30,11 @@ import org.apache.commons.functor.UnaryPredicate;
  * @author Rodney Waldhoff
  */
 
-public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
+public final class Limit implements Predicate, UnaryPredicate<Object>, BinaryPredicate<Object, Object> {
     // instance variables
     //---------------------------------------------------------------
     private int max;
-    private int current = 0;
+    private int current;
 
     /**
      * Create a new Limit.
@@ -55,9 +55,8 @@ public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
         if (current < max) {
             current++;
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**

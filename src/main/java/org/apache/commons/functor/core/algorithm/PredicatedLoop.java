@@ -31,7 +31,7 @@ abstract class PredicatedLoop implements Procedure, Serializable {
     private Predicate test;
 
     /**
-     * Create a new DoWithTest.
+     * Create a new PredicatedLoop.
      * @param body to execute
      * @param test whether to keep going
      */

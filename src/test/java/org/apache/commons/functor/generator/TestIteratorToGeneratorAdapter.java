@@ -29,7 +29,7 @@ import org.apache.commons.functor.BaseFunctorTest;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-
+@SuppressWarnings("unchecked")
 public class TestIteratorToGeneratorAdapter extends BaseFunctorTest {
 
     // Conventional

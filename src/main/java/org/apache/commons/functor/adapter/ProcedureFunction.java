@@ -38,9 +38,9 @@ import org.apache.commons.functor.Procedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ProcedureFunction implements Function, Serializable {
+public final class ProcedureFunction<T> implements Function<T>, Serializable {
     /** The {@link Procedure Procedure} I'm wrapping. */
-    private Procedure procedure = null;
+    private Procedure procedure;
 
     /**
      * Create a new ProcedureFunction.
@@ -53,7 +53,7 @@ public final class ProcedureFunction implements Function, Serializable {
     /**
      * {@inheritDoc}
      */
-    public Object evaluate() {
+    public T evaluate() {
         procedure.run();
         return null;
     }
@@ -62,7 +62,7 @@ public final class ProcedureFunction implements Function, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ProcedureFunction && equals((ProcedureFunction) that));
+        return that == this || (that instanceof ProcedureFunction && equals((ProcedureFunction<?>) that));
     }
 
     /**
@@ -70,7 +70,7 @@ public final class ProcedureFunction implements Function, Serializable {
      * @param that ProcedureFunction to test
      * @return boolean
      */
-    public boolean equals(ProcedureFunction that) {
+    public boolean equals(ProcedureFunction<?> that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
@@ -95,10 +95,10 @@ public final class ProcedureFunction implements Function, Serializable {
     /**
      * Adapt a Procedure as a Function.
      * @param procedure to adapt
-     * @return ProcedureFunction
+     * @return ProcedureFunction<T>
      */
-    public static ProcedureFunction adapt(Procedure procedure) {
-        return null == procedure ? null : new ProcedureFunction(procedure);
+    public static <T> ProcedureFunction<T> adapt(Procedure procedure) {
+        return null == procedure ? null : new ProcedureFunction<T>(procedure);
     }
 
 }

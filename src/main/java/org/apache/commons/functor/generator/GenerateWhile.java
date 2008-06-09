@@ -25,15 +25,15 @@ import org.apache.commons.functor.UnaryProcedure;
  *
  * @version $Revision$ $Date$
  */
-public class GenerateWhile extends BaseGenerator {
-    private UnaryPredicate test;
+public class GenerateWhile<E> extends BaseGenerator<E> {
+    private UnaryPredicate<? super E> test;
 
     /**
      * Create a new GenerateWhile.
      * @param wrapped {@link Generator}
      * @param test {@link UnaryPredicate}
      */
-    public GenerateWhile(Generator wrapped, UnaryPredicate test) {
+    public GenerateWhile(Generator<? extends E> wrapped, UnaryPredicate<? super E> test) {
         super(wrapped);
         if (wrapped == null) {
             throw new IllegalArgumentException("Generator argument was null");
@@ -47,15 +47,23 @@ public class GenerateWhile extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(final UnaryProcedure proc) {
-        getWrappedGenerator().run(new UnaryProcedure() {
-            public void run(Object obj) {
+    public void run(final UnaryProcedure<? super E> proc) {
+        getWrappedGenerator().run(new UnaryProcedure<E>() {
+            public void run(E obj) {
                 proc.run(obj);
                 if (!test.test(obj)) {
                     getWrappedGenerator().stop();
                 }
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Generator<? extends E> getWrappedGenerator() {
+        return (Generator<? extends E>) super.getWrappedGenerator();
     }
 
     /**
@@ -68,7 +76,7 @@ public class GenerateWhile extends BaseGenerator {
         if (obj instanceof GenerateWhile == false) {
             return false;
         }
-        GenerateWhile other = (GenerateWhile) obj;
+        GenerateWhile<?> other = (GenerateWhile<?>) obj;
         return other.getWrappedGenerator().equals(getWrappedGenerator()) && other.test.equals(test);
     }
 
@@ -78,7 +86,7 @@ public class GenerateWhile extends BaseGenerator {
     public int hashCode() {
         int result = "GenerateWhile".hashCode();
         result <<= 2;
-        Generator gen = getWrappedGenerator();
+        Generator<?> gen = getWrappedGenerator();
         result ^= gen == null ? 0 : gen.hashCode();
         result <<= 2;
         result ^= test == null ? 0 : test.hashCode();

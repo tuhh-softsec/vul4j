@@ -41,12 +41,12 @@ import org.apache.commons.functor.core.NoOp;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializable {
+public final class ConditionalUnaryProcedure<A> implements UnaryProcedure<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate ifPred = null;
-    private UnaryProcedure thenProc = null;
-    private UnaryProcedure elseProc = null;
+    private UnaryPredicate<? super A> ifPred = null;
+    private UnaryProcedure<? super A> thenProc = null;
+    private UnaryProcedure<? super A> elseProc = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -55,7 +55,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
      * @param ifPred if
      * @param thenProc then
      */
-    public ConditionalUnaryProcedure(UnaryPredicate ifPred, UnaryProcedure thenProc) {
+    public ConditionalUnaryProcedure(UnaryPredicate<? super A> ifPred, UnaryProcedure<? super A> thenProc) {
     	this(ifPred, thenProc, NoOp.instance());
 	}
 
@@ -65,7 +65,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
      * @param thenProc then
      * @param elseProc else
      */
-    public ConditionalUnaryProcedure(UnaryPredicate ifPred, UnaryProcedure thenProc, UnaryProcedure elseProc) {
+    public ConditionalUnaryProcedure(UnaryPredicate<? super A> ifPred, UnaryProcedure<? super A> thenProc, UnaryProcedure<? super A> elseProc) {
         this.ifPred = ifPred;
         this.thenProc = thenProc;
         this.elseProc = elseProc;
@@ -76,7 +76,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
     /**
      * {@inheritDoc}
      */
-    public void run(Object obj) {
+    public void run(A obj) {
         if (ifPred.test(obj)) {
             thenProc.run(obj);
         } else {
@@ -88,7 +88,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalUnaryProcedure && equals((ConditionalUnaryProcedure) that));
+        return that == this || (that instanceof ConditionalUnaryProcedure && equals((ConditionalUnaryProcedure<?>) that));
     }
 
     /**
@@ -96,7 +96,7 @@ public final class ConditionalUnaryProcedure implements UnaryProcedure, Serializ
      * @param that ConditionalUnaryProcedure to test
      * @return boolean
      */
-    public boolean equals(ConditionalUnaryProcedure that) {
+    public boolean equals(ConditionalUnaryProcedure<?> that) {
         return null != that
                 && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
                 && (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc))

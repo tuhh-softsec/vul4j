@@ -41,12 +41,12 @@ import org.apache.commons.functor.Predicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ConditionalFunction implements Function, Serializable {
+public final class ConditionalFunction<T> implements Function<T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
     private Predicate ifPred = null;
-    private Function thenFunc = null;
-    private Function elseFunc = null;
+    private Function<? extends T> thenFunc = null;
+    private Function<? extends T> elseFunc = null;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -56,7 +56,7 @@ public final class ConditionalFunction implements Function, Serializable {
      * @param thenFunc then
      * @param elseFunc else
      */
-    public ConditionalFunction(Predicate ifPred, Function thenFunc, Function elseFunc) {
+    public ConditionalFunction(Predicate ifPred, Function<? extends T> thenFunc, Function<? extends T> elseFunc) {
         this.ifPred = ifPred;
         this.thenFunc = thenFunc;
         this.elseFunc = elseFunc;
@@ -67,7 +67,7 @@ public final class ConditionalFunction implements Function, Serializable {
     /**
      * {@inheritDoc}
      */
-    public Object evaluate() {
+    public T evaluate() {
         return ifPred.test() ? thenFunc.evaluate() : elseFunc.evaluate();
     }
 
@@ -75,7 +75,7 @@ public final class ConditionalFunction implements Function, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ConditionalFunction && equals((ConditionalFunction) that));
+        return that == this || (that instanceof ConditionalFunction && equals((ConditionalFunction<?>) that));
     }
 
     /**
@@ -83,7 +83,7 @@ public final class ConditionalFunction implements Function, Serializable {
      * @param that ConditionalFunction to test
      * @return boolean
      */
-    public boolean equals(ConditionalFunction that) {
+    public boolean equals(ConditionalFunction<?> that) {
         return null != that
                 && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
                 && (null == thenFunc ? null == that.thenFunc : thenFunc.equals(that.thenFunc))

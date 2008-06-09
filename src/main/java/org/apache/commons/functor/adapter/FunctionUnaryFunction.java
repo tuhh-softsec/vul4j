@@ -38,22 +38,22 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class FunctionUnaryFunction implements UnaryFunction, Serializable {
+public final class FunctionUnaryFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     /** The {@link Function Function} I'm wrapping. */
-    private Function function = null;
+    private Function<? extends T> function;
 
     /**
      * Create a new FunctionUnaryFunction.
      * @param function to adapt
      */
-    public FunctionUnaryFunction(Function function) {
+    public FunctionUnaryFunction(Function<? extends T> function) {
         this.function = function;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object obj) {
+    public T evaluate(A obj) {
         return function.evaluate();
     }
 
@@ -61,7 +61,7 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof FunctionUnaryFunction && equals((FunctionUnaryFunction) that));
+        return that == this || (that instanceof FunctionUnaryFunction && equals((FunctionUnaryFunction<?, ?>) that));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
      * @param that FunctionUnaryFunction to test
      * @return boolean
      */
-    public boolean equals(FunctionUnaryFunction that) {
+    public boolean equals(FunctionUnaryFunction<?, ?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -96,8 +96,8 @@ public final class FunctionUnaryFunction implements UnaryFunction, Serializable 
      * @param function to adapt
      * @return FunctionUnaryFunction
      */
-    public static FunctionUnaryFunction adapt(Function function) {
-        return null == function ? null : new FunctionUnaryFunction(function);
+    public static <A, T> FunctionUnaryFunction<A, T> adapt(Function<? extends T> function) {
+        return null == function ? null : new FunctionUnaryFunction<A, T>(function);
     }
 
 }

@@ -25,8 +25,8 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsInteger implements UnaryPredicate {
-    public boolean test(Object obj) {
+public final class IsInteger implements UnaryPredicate<String> {
+    public boolean test(String obj) {
         try {
             ToInteger.instance().evaluate(obj);
             return true;

@@ -30,6 +30,7 @@ import org.apache.commons.functor.core.NoOp;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestSequence extends BaseFunctorTest {
 
     // Conventional

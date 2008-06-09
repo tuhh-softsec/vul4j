@@ -51,7 +51,7 @@ public class TestComparatorFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() {
-        ComparatorFunction f = new ComparatorFunction();
+        ComparatorFunction f = ComparatorFunction.instance();
 
         assertTrue(((Integer)(f.evaluate(new Integer(Integer.MAX_VALUE),new Integer(Integer.MAX_VALUE)))).intValue() == 0);
         assertTrue(((Integer)(f.evaluate(new Integer(Integer.MAX_VALUE),new Integer(1)))).intValue() > 0);
@@ -85,10 +85,8 @@ public class TestComparatorFunction extends BaseFunctorTest {
     }
 
     public void testEquals() {
-        ComparatorFunction f = new ComparatorFunction();
+        ComparatorFunction f = ComparatorFunction.instance();
         assertObjectsAreEqual(f,f);
-        assertObjectsAreEqual(f,new ComparatorFunction(null));
-        assertObjectsAreEqual(new ComparatorFunction(null),new ComparatorFunction(null));
         assertObjectsAreEqual(f,new ComparatorFunction(new ComparableComparator()));
         assertObjectsAreNotEqual(f,new ComparatorFunction(Collections.reverseOrder()));
     }

@@ -46,10 +46,10 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalBinaryProcedure(
-            new Constant(true),
-            new NoOp(),
-            new NoOp());
+        return new ConditionalBinaryProcedure<Object, Object>(
+            Constant.TRUE,
+            NoOp.instance(),
+            NoOp.instance());
     }
 
     // Lifecycle
@@ -69,55 +69,43 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
     public void testRun() throws Exception {
         RunCounter left = new RunCounter();
         RunCounter right = new RunCounter();
-        ConditionalBinaryProcedure p = new ConditionalBinaryProcedure(
-            new LeftIdentity(),
+        ConditionalBinaryProcedure<Boolean, Object> p = new ConditionalBinaryProcedure<Boolean, Object>(
+            LeftIdentity.PREDICATE,
             left,
             right);
         assertEquals(0,left.count);
         assertEquals(0,right.count);
-        p.run(Boolean.TRUE,null);
+        p.run(true, null);
         assertEquals(1,left.count);
         assertEquals(0,right.count);
-        p.run(Boolean.FALSE,null);
+        p.run(false, null);
         assertEquals(1,left.count);
         assertEquals(1,right.count);
-        p.run(Boolean.TRUE,null);
+        p.run(true, null);
         assertEquals(2,left.count);
         assertEquals(1,right.count);
     }
 
     public void testEquals() throws Exception {
-        ConditionalBinaryProcedure p = new ConditionalBinaryProcedure(
-            new LeftIdentity(),
-            new NoOp(),
-            new NoOp());
+        ConditionalBinaryProcedure<?, ?> p = new ConditionalBinaryProcedure<Boolean, Object>(
+            LeftIdentity.PREDICATE,
+            NoOp.instance(),
+            NoOp.instance());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new ConditionalBinaryProcedure(
-            new LeftIdentity(),
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
-            new Constant(true),
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
-            null,
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
-            new LeftIdentity(),
-            null,
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
-            new LeftIdentity(),
-            new NoOp(),
-            null));
+        assertObjectsAreEqual(p,new ConditionalBinaryProcedure<Boolean, Object>(
+            LeftIdentity.PREDICATE,
+            NoOp.instance(),
+            NoOp.instance()));
+        assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure<Object, Object>(
+            Constant.TRUE,
+            NoOp.instance(),
+            NoOp.instance()));
     }
 
     // Classes
     // ------------------------------------------------------------------------
 
-    static class RunCounter implements BinaryProcedure {
+    static class RunCounter implements BinaryProcedure<Object, Object> {
         public void run(Object left, Object right) {
             count++;
         }

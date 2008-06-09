@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.UnaryPredicateUnaryFunction;
 
 /**
  * A {@link UnaryPredicate UnaryPredicate}
@@ -44,46 +45,41 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class CompositeUnaryPredicate implements UnaryPredicate, Serializable {
+public final class CompositeUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private CompositeUnaryFunction function = null;
-    private UnaryPredicate predicate = null;
+    private CompositeUnaryFunction<? super A, Boolean> function = null;
 
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new CompositeUnaryPredicate.
-     * @param p UnaryPredicate against which the composite functions' output will be tested
+     * @param predicate UnaryPredicate against which the composite functions' output will be tested
      */
-    public CompositeUnaryPredicate(UnaryPredicate p) {
-        if (null == p) { throw new NullPointerException(); }
-        this.predicate = p;
-        this.function = new CompositeUnaryFunction();
+    public CompositeUnaryPredicate(UnaryPredicate<? super A> predicate) {
+        if (null == predicate) {
+            throw new IllegalArgumentException("predicate must not be null");
+        }
+        this.function = new CompositeUnaryFunction<A, Boolean>(new UnaryPredicateUnaryFunction<A>(predicate));
     }
 
     /**
      * Create a new CompositeUnaryPredicate.
-     * @param p UnaryPredicate against which the composite functions' output will be tested
-     * @param f UnaryFunction single UnaryFunction to apply
+     * @param function delegate
      */
-    public CompositeUnaryPredicate(UnaryPredicate p, UnaryFunction f) {
-        if (null == p) { throw new NullPointerException(); }
-        if (null == f) { throw new NullPointerException(); }
-        this.predicate = p;
-        this.function = new CompositeUnaryFunction(f);
+    private CompositeUnaryPredicate(CompositeUnaryFunction<? super A, Boolean> function) {
+        this.function = function;
     }
 
     // modifiers
     // ------------------------------------------------------------------------
     /**
-     * Fluently prepend a UnaryFunction to the chain.
-     * @param f UnaryFunction to prepend
-     * @return this
+     * Fluently obtain a CompositeUnaryPredicate that applies our predicate to the result of the preceding function.
+     * @param preceding UnaryFunction
+     * @return CompositeUnaryPredicate<P>
      */
-    public CompositeUnaryPredicate of(UnaryFunction f) {
-        function.of(f);
-        return this;
+    public <P> CompositeUnaryPredicate<P> of(UnaryFunction<? super P, ? extends A> preceding) {
+        return new CompositeUnaryPredicate<P>(function.of(preceding));
     }
 
     // predicate interface
@@ -91,15 +87,15 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj) {
-        return predicate.test(function.evaluate(obj));
+    public boolean test(A obj) {
+        return function.evaluate(obj);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof CompositeUnaryPredicate && equals((CompositeUnaryPredicate) that));
+        return that == this || (that instanceof CompositeUnaryPredicate && equals((CompositeUnaryPredicate<?>) that));
     }
 
     /**
@@ -107,8 +103,8 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
      * @param that CompositeUnaryPredicate to test
      * @return boolean
      */
-    public boolean equals(CompositeUnaryPredicate that) {
-        return null != that && predicate.equals(that.predicate) && function.equals(that.function);
+    public boolean equals(CompositeUnaryPredicate<?> that) {
+        return null != that && function.equals(that.function);
     }
 
     /**
@@ -116,8 +112,6 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
      */
     public int hashCode() {
         int hash = "CompositeUnaryPredicate".hashCode();
-        hash <<= 2;
-        hash ^= predicate.hashCode();
         hash <<= 2;
         hash ^= function.hashCode();
         return hash;
@@ -127,7 +121,7 @@ public final class CompositeUnaryPredicate implements UnaryPredicate, Serializab
      * {@inheritDoc}
      */
     public String toString() {
-        return "CompositeUnaryFunction<" + predicate + ";" + function + ">";
+        return "CompositeUnaryFunction<" + function + ">";
     }
 
 }

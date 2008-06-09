@@ -31,12 +31,23 @@ import org.apache.commons.functor.adapter.IgnoreRightPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IsNull implements UnaryPredicate, Serializable {
+public final class IsNull<A> implements UnaryPredicate<A>, Serializable {
     // static attributes
     // ------------------------------------------------------------------------
-    private static final IsNull INSTANCE = new IsNull();
-    private static final BinaryPredicate LEFT = IgnoreRightPredicate.adapt(instance());
-    private static final BinaryPredicate RIGHT = IgnoreLeftPredicate.adapt(instance());
+    /**
+     * Basic IsNull instance.
+     */
+    public static final IsNull<Object> INSTANCE = IsNull.<Object>instance();
+
+    /**
+     * Left-handed BinaryPredicate.
+     */
+    public static final BinaryPredicate<Object, Object> LEFT = IsNull.<Object>left();
+
+    /**
+     * Right-handed BinaryPredicate.
+     */
+    public static final BinaryPredicate<Object, Object> RIGHT = IsNull.<Object>right();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -51,7 +62,7 @@ public final class IsNull implements UnaryPredicate, Serializable {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj) {
+    public boolean test(A obj) {
         return (null == obj);
     }
 
@@ -82,24 +93,24 @@ public final class IsNull implements UnaryPredicate, Serializable {
      * Get an IsNull instance.
      * @return IsNull
      */
-    public static IsNull instance() {
-        return INSTANCE;
+    public static <T> IsNull<T> instance() {
+        return new IsNull<T>();
     }
 
     /**
      * Get a BinaryPredicate that matches if the left argument is null.
      * @return BinaryPredicate
      */
-    public static BinaryPredicate left() {
-        return LEFT;
+    public static <A> BinaryPredicate<A, Object> left() {
+        return IgnoreRightPredicate.adapt(new IsNull<A>());
     }
 
     /**
      * Get a BinaryPredicate that matches if the right argument is null.
      * @return BinaryPredicate
      */
-    public static BinaryPredicate right() {
-        return RIGHT;
+    public static <A> BinaryPredicate<Object, A> right() {
+        return IgnoreLeftPredicate.adapt(new IsNull<A>());
     }
 
 }

@@ -25,12 +25,9 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class Abs implements UnaryFunction {
-    public Object evaluate(Object obj) {
-        return evaluate((Number) obj);
-    }
+public final class Abs implements UnaryFunction<Number, Integer> {
 
-    public Object evaluate(Number num) {
+    public Integer evaluate(Number num) {
         return new Integer(Math.abs(num.intValue()));
     }
 

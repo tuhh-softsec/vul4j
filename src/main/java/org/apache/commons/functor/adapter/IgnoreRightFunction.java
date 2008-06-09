@@ -38,22 +38,22 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IgnoreRightFunction implements BinaryFunction, Serializable {
+public final class IgnoreRightFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
+    private UnaryFunction<? super L, ? extends T> function;
 
     /**
      * Create a new IgnoreRightFunction.
      * @param function UnaryFunction to wrap
      */
-    public IgnoreRightFunction(UnaryFunction function) {
+    public IgnoreRightFunction(UnaryFunction<? super L, ? extends T> function) {
         this.function = function;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object left, Object right) {
+    public T evaluate(L left, R right) {
         return function.evaluate(left);
     }
 
@@ -61,7 +61,7 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreRightFunction && equals((IgnoreRightFunction) that));
+        return that == this || (that instanceof IgnoreRightFunction && equals((IgnoreRightFunction<?, ?, ?>) that));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
      * @param that IgnoreRightFunction to test
      * @return boolean
      */
-    public boolean equals(IgnoreRightFunction that) {
+    public boolean equals(IgnoreRightFunction<?, ?, ?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -96,8 +96,8 @@ public final class IgnoreRightFunction implements BinaryFunction, Serializable {
      * @param function UnaryFunction to adapt
      * @return IgnoreRightFunction
      */
-    public static IgnoreRightFunction adapt(UnaryFunction function) {
-        return null == function ? null : new IgnoreRightFunction(function);
+    public static <L, R, T> IgnoreRightFunction<L, R, T> adapt(UnaryFunction<? super L, ? extends T> function) {
+        return null == function ? null : new IgnoreRightFunction<L, R, T>(function);
     }
 
 }

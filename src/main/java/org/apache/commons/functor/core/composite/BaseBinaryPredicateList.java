@@ -37,11 +37,11 @@ import org.apache.commons.functor.BinaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable {
+abstract class BaseBinaryPredicateList<L, R> implements BinaryPredicate<L, R>, Serializable {
 
     // attributes
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
+    private List<BinaryPredicate<? super L, ? super R>> list = new ArrayList<BinaryPredicate<? super L, ? super R>>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -55,7 +55,7 @@ abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable 
      * Create a new BaseBinaryPredicateList.
      * @param p BinaryPredicate to add
      */
-    protected BaseBinaryPredicateList(BinaryPredicate p) {
+    protected BaseBinaryPredicateList(BinaryPredicate<? super L, ? super R> p) {
         addBinaryPredicate(p);
     }
 
@@ -64,7 +64,7 @@ abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable 
      * @param p BinaryPredicate to add
      * @param q BinaryPredicate to add
      */
-    protected BaseBinaryPredicateList(BinaryPredicate p, BinaryPredicate q) {
+    protected BaseBinaryPredicateList(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q) {
         addBinaryPredicate(p);
         addBinaryPredicate(q);
     }
@@ -75,7 +75,7 @@ abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable 
      * @param q BinaryPredicate to add
      * @param r BinaryPredicate to add
      */
-    protected BaseBinaryPredicateList(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
+    protected BaseBinaryPredicateList(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q, BinaryPredicate<? super L, ? super R> r) {
         addBinaryPredicate(p);
         addBinaryPredicate(q);
         addBinaryPredicate(r);
@@ -98,18 +98,13 @@ abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable 
      */
     public abstract String toString();
 
-    /**
-     * {@inheritDoc}
-     */
-    public abstract boolean test(Object left, Object right);
-
     // modifiers
     // ------------------------------------------------------------------------
     /**
      * Add a BinaryPredicate to the list
      * @param p BinaryPredicate to add
      */
-    protected void addBinaryPredicate(BinaryPredicate p) {
+    protected void addBinaryPredicate(BinaryPredicate<? super L, ? super R> p) {
         list.add(p);
     }
 
@@ -119,7 +114,7 @@ abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable 
      * Get an Iterator over the list contents.
      * @return Iterator
      */
-    protected Iterator getBinaryPredicateIterator() {
+    protected Iterator<BinaryPredicate<? super L, ? super R>> getBinaryPredicateIterator() {
         return list.iterator();
     }
 
@@ -128,7 +123,7 @@ abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable 
      * @param that BaseBinaryPredicateList to test
      * @return boolean
      */
-    protected boolean getBinaryPredicateListEquals(BaseBinaryPredicateList that) {
+    protected boolean getBinaryPredicateListEquals(BaseBinaryPredicateList<?, ?> that) {
         return (null != that && this.list.equals(that.list));
     }
 

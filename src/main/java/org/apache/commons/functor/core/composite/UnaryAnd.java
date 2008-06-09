@@ -36,7 +36,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class UnaryAnd extends BaseUnaryPredicateList {
+public final class UnaryAnd<A> extends BaseUnaryPredicateList<A> {
 
     // constructor
     // ------------------------------------------------------------------------
@@ -51,7 +51,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * Create a new UnaryAnd.
      * @param p UnaryPredicate to add
      */
-    public UnaryAnd(UnaryPredicate p) {
+    public UnaryAnd(UnaryPredicate<? super A> p) {
         super(p);
     }
 
@@ -60,7 +60,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * @param p UnaryPredicate to add
      * @param q UnaryPredicate to add
      */
-    public UnaryAnd(UnaryPredicate p, UnaryPredicate q) {
+    public UnaryAnd(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q) {
         super(p, q);
     }
 
@@ -70,7 +70,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * @param q UnaryPredicate to add
      * @param r UnaryPredicate to add
      */
-    public UnaryAnd(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
+    public UnaryAnd(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q, UnaryPredicate<? super A> r) {
         super(p, q, r);
     }
 
@@ -81,7 +81,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * @param p UnaryPredicate to add
      * @return this
      */
-    public UnaryAnd and(UnaryPredicate p) {
+    public UnaryAnd and(UnaryPredicate<? super A> p) {
         super.addUnaryPredicate(p);
         return this;
     }
@@ -91,9 +91,9 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj) {
-        for (Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
-            if (!((UnaryPredicate) iter.next()).test(obj)) {
+    public boolean test(A obj) {
+        for (Iterator<UnaryPredicate<? super A>> iter = getUnaryPredicateIterator(); iter.hasNext();) {
+            if (!iter.next().test(obj)) {
                 return false;
             }
         }
@@ -104,7 +104,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof UnaryAnd && equals((UnaryAnd) that));
+        return that == this || (that instanceof UnaryAnd && equals((UnaryAnd<?>) that));
     }
 
     /**
@@ -112,7 +112,7 @@ public final class UnaryAnd extends BaseUnaryPredicateList {
      * @param that UnaryAnd to test
      * @return boolean
      */
-    public boolean equals(UnaryAnd that) {
+    public boolean equals(UnaryAnd<?> that) {
         return getUnaryPredicateListEquals(that);
     }
 

@@ -16,90 +16,60 @@
  */
 package org.apache.commons.functor.core;
 
-import java.io.Serializable;
-
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.adapter.BinaryFunctionBinaryPredicate;
+import org.apache.commons.functor.adapter.IgnoreRightFunction;
 
 /**
- * {@link #evaluate Evaluates} to its first argument.
- *
- * {@link #test Tests} to the <code>boolean</code>
- * value of the <code>Boolean</code>-valued first
- * argument. The {@link #test test} method
- * throws an exception if the parameter isn't a
- * non-<code>null</code> <code>Boolean</code>.
+ * Holder class for a left-identity <code>BinaryFunction</code> (evaluates to the left argument) and a left-identity
+ * <code>BinaryPredicate</code> (tests whether left <code>Boolean</code> argument equals <code>Boolean.TRUE</code>).
  *
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
+ * @author Matt Benson
  */
-public final class LeftIdentity implements BinaryPredicate, BinaryFunction, Serializable {
+public final class LeftIdentity {
+
     // static attributes
     // ------------------------------------------------------------------------
-    private static final LeftIdentity INSTANCE = new LeftIdentity();
+    /**
+     * Left-identity function.
+     */
+    public static final BinaryFunction<Object, Object, Object> FUNCTION = LeftIdentity.<Object, Object>function();
+
+    /**
+     * Left-identity predicate.
+     */
+    public static final BinaryPredicate<Boolean, Object> PREDICATE = LeftIdentity.<Object>predicate();
 
     // constructor
     // ------------------------------------------------------------------------
     /**
-     * Create a new LeftIdentity.
+     * Create a new LeftIdentity (for clients that require an object).
      */
     public LeftIdentity() {
     }
 
-    // functor interface
-    // ------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public Object evaluate(Object left, Object right) {
-        return left;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean test(Object left, Object right) {
-        return test((Boolean) left);
-    }
-
-    /**
-     * Test a Boolean
-     * @param bool to test
-     * @return boolean
-     */
-    private boolean test(Boolean bool) {
-        return bool.booleanValue();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean equals(Object that) {
-        return (that instanceof LeftIdentity);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int hashCode() {
-        return "LeftIdentity".hashCode();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "LeftIdentity";
-    }
-
     // static methods
     // ------------------------------------------------------------------------
+
     /**
-     * Get a LeftIdentity instance.
-     * @return LeftIdentity
+     * Get a Left-identity BinaryFunction.
+     * @param <L>
+     * @param <R>
+     * @return BinaryFunction<L, R, L>
      */
-    public static LeftIdentity instance() {
-        return INSTANCE;
+    public static <L, R> BinaryFunction<L, R, L> function() {
+        return IgnoreRightFunction.adapt(new Identity<L>());
     }
 
+    /**
+     * Get a left-identity BinaryPredicate.
+     * @param <R>
+     * @return BinaryPredicate<Boolean, R>
+     */
+    public static <R> BinaryPredicate<Boolean, R> predicate() {
+        return BinaryFunctionBinaryPredicate.adapt(IgnoreRightFunction.<Boolean, R, Boolean>adapt(new Identity<Boolean>()));
+    }
 }

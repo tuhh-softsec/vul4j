@@ -25,15 +25,15 @@ import org.apache.commons.functor.UnaryProcedure;
  *
  * @version $Revision$ $Date$
  */
-public class UntilGenerate extends BaseGenerator {
-    private UnaryPredicate test;
+public class UntilGenerate<E> extends BaseGenerator<E> {
+    private UnaryPredicate<? super E> test;
 
     /**
      * Create a new UntilGenerate.
      * @param wrapped {@link Generator}
      * @param test {@link UnaryPredicate}
      */
-    public UntilGenerate(UnaryPredicate test, Generator wrapped) {
+    public UntilGenerate(UnaryPredicate<? super E> test, Generator<? extends E> wrapped) {
         super(wrapped);
         if (wrapped == null) {
             throw new IllegalArgumentException("Generator argument was null");
@@ -47,9 +47,9 @@ public class UntilGenerate extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
-    public void run(final UnaryProcedure proc) {
-        getWrappedGenerator().run(new UnaryProcedure() {
-            public void run(Object obj) {
+    public void run(final UnaryProcedure<? super E> proc) {
+        getWrappedGenerator().run(new UnaryProcedure<E>() {
+            public void run(E obj) {
                 if (test.test(obj)) {
                     getWrappedGenerator().stop();
                 } else {
@@ -62,6 +62,14 @@ public class UntilGenerate extends BaseGenerator {
     /**
      * {@inheritDoc}
      */
+    @Override
+    protected Generator<? extends E> getWrappedGenerator() {
+        return (Generator<? extends E>) super.getWrappedGenerator();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -69,7 +77,7 @@ public class UntilGenerate extends BaseGenerator {
         if (obj instanceof UntilGenerate == false) {
             return false;
         }
-        UntilGenerate other = (UntilGenerate) obj;
+        UntilGenerate<?> other = (UntilGenerate<?>) obj;
         return other.getWrappedGenerator().equals(getWrappedGenerator()) && other.test.equals(test);
     }
 
@@ -79,7 +87,7 @@ public class UntilGenerate extends BaseGenerator {
     public int hashCode() {
         int result = "UntilGenerate".hashCode();
         result <<= 2;
-        Generator gen = getWrappedGenerator();
+        Generator<?> gen = getWrappedGenerator();
         result ^= gen == null ? 0 : gen.hashCode();
         result <<= 2;
         result ^= test == null ? 0 : test.hashCode();

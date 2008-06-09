@@ -38,12 +38,36 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializable {
+public class UnaryCompositeBinaryPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
+    private class Helper<G, H> implements BinaryPredicate<L, R>, Serializable {
+        private BinaryPredicate<? super G, ? super H> f;
+        private UnaryFunction<? super L, ? extends G> g;
+        private UnaryFunction<? super R, ? extends H> h;
+
+        /**
+         * Create a new Helper.
+         * @param f BinaryPredicate to test <i>output(</i><code>f</code><i>), output(</i><code>g</code><i>)</i>
+         * @param g left UnaryFunction
+         * @param h right UnaryFunction
+         */
+        public Helper(BinaryPredicate<? super G, ? super H> f, UnaryFunction<? super L, ? extends G> g,
+                UnaryFunction<? super R, ? extends H> h) {
+            this.f = f;
+            this.g = g;
+            this.h = h;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean test(L left, R right) {
+            return f.test(g.evaluate(left), h.evaluate(right));
+        }
+    }
+
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate binary = null;
-    private UnaryFunction leftUnary = null;
-    private UnaryFunction rightUnary = null;
+    private Helper<?, ?> helper;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -53,10 +77,15 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
      * @param g left UnaryFunction
      * @param h right UnaryFunction
      */
-    public UnaryCompositeBinaryPredicate(BinaryPredicate f, UnaryFunction g, UnaryFunction h) {
-        binary = f;
-        leftUnary = g;
-        rightUnary = h;
+    public <G, H> UnaryCompositeBinaryPredicate(final BinaryPredicate<? super G, ? super H> f,
+            final UnaryFunction<? super L, ? extends G> g, final UnaryFunction<? super R, ? extends H> h) {
+        if (f == null) {
+            throw new IllegalArgumentException("BinaryPredicate must not be null");
+        }
+        if (g == null || h == null) {
+            throw new IllegalArgumentException("Left and right UnaryFunctions may not be null");
+        }
+        helper = new Helper<G, H>(f, g, h);
     }
 
     // function interface
@@ -64,8 +93,8 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object left, Object right) {
-        return binary.test(leftUnary.evaluate(left), rightUnary.evaluate(right));
+    public boolean test(L left, R right) {
+        return helper.test(left, right);
     }
 
     /**
@@ -73,7 +102,7 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof UnaryCompositeBinaryPredicate && equals((UnaryCompositeBinaryPredicate) that));
+                || (that instanceof UnaryCompositeBinaryPredicate && equals((UnaryCompositeBinaryPredicate<?, ?>) that));
     }
 
     /**
@@ -81,11 +110,9 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
      * @param that UnaryCompositeBinaryPredicate to test
      * @return boolean
      */
-    public boolean equals(UnaryCompositeBinaryPredicate that) {
-        return (null != that)
-                && (null == binary ? null == that.binary : binary.equals(that.binary))
-                && (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary))
-                && (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
+    public boolean equals(UnaryCompositeBinaryPredicate<?, ?> that) {
+        return null != that && helper.f.equals(that.helper.f) && helper.g.equals(that.helper.g)
+                && helper.h.equals(that.helper.h);
     }
 
     /**
@@ -93,18 +120,12 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
      */
     public int hashCode() {
         int hash = "UnaryCompositeBinaryPredicate".hashCode();
-        if (null != binary) {
-            hash <<= 4;
-            hash ^= binary.hashCode();
-        }
-        if (null != leftUnary) {
-            hash <<= 4;
-            hash ^= leftUnary.hashCode();
-        }
-        if (null != rightUnary) {
-            hash <<= 4;
-            hash ^= rightUnary.hashCode();
-        }
+        hash <<= 4;
+        hash ^= helper.f.hashCode();
+        hash <<= 4;
+        hash ^= helper.g.hashCode();
+        hash <<= 4;
+        hash ^= helper.h.hashCode();
         return hash;
     }
 
@@ -112,7 +133,7 @@ public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializa
      * {@inheritDoc}
      */
     public String toString() {
-        return "UnaryCompositeBinaryPredicate<" + binary + ";" + leftUnary + ";" + rightUnary + ">";
+        return "UnaryCompositeBinaryPredicate<" + helper.f + ";" + helper.g + ";" + helper.h + ">";
     }
 
 }

@@ -38,9 +38,9 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializable {
+public final class ProcedureUnaryProcedure<A> implements UnaryProcedure<A>, Serializable {
     /** The {@link Procedure Procedure} I'm wrapping. */
-    private Procedure procedure = null;
+    private Procedure procedure;
 
     /**
      * Create a new ProcedureUnaryProcedure.
@@ -53,7 +53,7 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
     /**
      * {@inheritDoc}
      */
-    public void run(Object obj) {
+    public void run(A obj) {
         procedure.run();
     }
 
@@ -61,7 +61,7 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof ProcedureUnaryProcedure && equals((ProcedureUnaryProcedure) that));
+        return that == this || (that instanceof ProcedureUnaryProcedure && equals((ProcedureUnaryProcedure<?>) that));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
      * @param that ProcedureUnaryProcedure to test
      * @return boolean
      */
-    public boolean equals(ProcedureUnaryProcedure that) {
+    public boolean equals(ProcedureUnaryProcedure<?> that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
@@ -94,10 +94,10 @@ public final class ProcedureUnaryProcedure implements UnaryProcedure, Serializab
     /**
      * Adapt a Procedure to the UnaryProcedure interface.
      * @param procedure to adapt
-     * @return ProcedureUnaryProcedure
+     * @return ProcedureUnaryProcedure<A>
      */
-    public static ProcedureUnaryProcedure adapt(Procedure procedure) {
-        return null == procedure ? null : new ProcedureUnaryProcedure(procedure);
+    public static <A> ProcedureUnaryProcedure<A> adapt(Procedure procedure) {
+        return null == procedure ? null : new ProcedureUnaryProcedure<A>(procedure);
     }
 
 }

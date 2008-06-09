@@ -23,7 +23,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * Utility methods for creating composite functors.
+ * Utility/fluent methods for creating composite functors.
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
@@ -37,33 +37,64 @@ public final class Composite {
 
     /**
      * Create a composite UnaryProcedure.
-     * @param p UnaryProcedure to execute against output of <code>f</code>
-     * @param f UnaryFunction to apply
-     * @return UnaryProcedure
+     * @param procedure UnaryProcedure to execute against output of <code>f</code>
+     * @return CompositeUnaryProcedure<A>
      */
-    public static final UnaryProcedure procedure(UnaryProcedure p, UnaryFunction f) {
-        return new CompositeUnaryProcedure(p, f);
+    public static final <A> CompositeUnaryProcedure<A> procedure(UnaryProcedure<? super A> procedure) {
+        return new CompositeUnaryProcedure<A>(procedure);
+    }
+
+    /**
+     * Create a composite UnaryProcedure.
+     * @param procedure UnaryProcedure to execute against output of <code>f</code>
+     * @param function UnaryFunction to apply
+     * @return CompositeUnaryProcedure<A>
+     */
+    public static final <A, T> CompositeUnaryProcedure<A> procedure(UnaryProcedure<? super T> procedure,
+            UnaryFunction<? super A, ? extends T> function) {
+        return new CompositeUnaryProcedure<T>(procedure).of(function);
     }
 
     /**
      * Create a composite UnaryPredicate.
-     * @param p UnaryPredicate to test the output of <code>f</code>
-     * @param f UnaryFunction to apply
-     * @return UnaryPredicate
+     * @param pred UnaryPredicate to test the output of <code>f</code>
+     * @return CompositeUnaryPredicate<A>
      */
-    public static final UnaryPredicate predicate(UnaryPredicate p, UnaryFunction f) {
-        return new CompositeUnaryPredicate(p, f);
+    public static final <A> CompositeUnaryPredicate<A> predicate(UnaryPredicate<? super A> pred) {
+        return new CompositeUnaryPredicate<A>(pred);
+    }
+
+    /**
+     * Create a composite UnaryPredicate.
+     * @param predicate UnaryPredicate to test the output of <code>f</code>
+     * @param function UnaryFunction to apply
+     * @return CompositeUnaryPredicate<A>
+     */
+    public static final <A, T> CompositeUnaryPredicate<A> predicate(UnaryPredicate<? super T> predicate,
+            UnaryFunction<? super A, ? extends T> function) {
+        return new CompositeUnaryPredicate<T>(predicate).of(function);
     }
 
     /**
      * Create a composite BinaryPredicate.
      * @param p BinaryPredicate to test <i>output(</i><code>f</code><i>), output(</i><code>g</code><i>)</i>
-     * @param f left UnaryFunction
-     * @param g right UnaryFunction
+     * @param g left UnaryFunction
+     * @param h right UnaryFunction
      * @return BinaryPredicate
      */
-    public static final BinaryPredicate predicate(BinaryPredicate p, UnaryFunction f, UnaryFunction g) {
-        return new UnaryCompositeBinaryPredicate(p, f, g);
+    public static final <L, R, G, H> UnaryCompositeBinaryPredicate<L, R> predicate(
+            BinaryPredicate<? super G, ? super H> p, UnaryFunction<? super L, ? extends G> g,
+            UnaryFunction<? super R, ? extends H> h) {
+        return new UnaryCompositeBinaryPredicate<L, R>(p, g, h);
+    }
+
+    /**
+     * Create a composite UnaryFunction.
+     * @param f UnaryFunction to apply to the output of <code>g</code>
+     * @return UnaryFunction
+     */
+    public static final <A, T> CompositeUnaryFunction<A, T> function(UnaryFunction<? super A, ? extends T> f) {
+        return new CompositeUnaryFunction<A, T>(f);
     }
 
     /**
@@ -72,9 +103,23 @@ public final class Composite {
      * @param g UnaryFunction to apply first
      * @return UnaryFunction
      */
-    public static final UnaryFunction function(UnaryFunction f, UnaryFunction g) {
-        return new CompositeUnaryFunction(f, g);
+    public static final <A, X, T> CompositeUnaryFunction<A, T> function(UnaryFunction<? super X, ? extends T> f, UnaryFunction<? super A, ? extends X> g) {
+        return new CompositeUnaryFunction<X, T>(f).of(g);
     }
+
+//    /**
+//     * Chain a BinaryFunction to a UnaryFunction.
+//     * @param <L>
+//     * @param <R>
+//     * @param <X>
+//     * @param <T>
+//     * @param f UnaryFunction to apply to the output of <code>g</code>
+//     * @param g BinaryFunction to apply first
+//     * @return BinaryFunction<L, R, T>
+//     */
+//    public static final <L, R, X, T> BinaryFunction<L, R, T> function(UnaryFunction<? super X, ? extends T> f, BinaryFunction<? super L, ? super R, ? extends X> g) {
+//        return new CompositeUnaryFunction<X, T>(f).of(g);
+//    }
 
     /**
      * Create a composite<UnaryFunction> BinaryFunction.
@@ -83,8 +128,10 @@ public final class Composite {
      * @param h right UnaryFunction
      * @return BinaryFunction
      */
-    public static final BinaryFunction function(BinaryFunction f, UnaryFunction g, UnaryFunction h) {
-        return new UnaryCompositeBinaryFunction(f, g, h);
+    public static final <L, R, G, H, T> UnaryCompositeBinaryFunction<L, R, T> function(
+            BinaryFunction<? super G, ? super H, ? extends T> f, UnaryFunction<? super L, ? extends G> g,
+            UnaryFunction<? super R, ? extends H> h) {
+        return new UnaryCompositeBinaryFunction<L, R, T>(f, g, h);
     }
 
     /**
@@ -94,7 +141,9 @@ public final class Composite {
      * @param h right BinaryFunction
      * @return BinaryFunction
      */
-    public static final BinaryFunction function(BinaryFunction f, BinaryFunction g, BinaryFunction h) {
-        return new BinaryCompositeBinaryFunction(f, g, h);
+    public static final <L, R, G, H, T> BinaryCompositeBinaryFunction<L, R, T> function(
+            BinaryFunction<? super G, ? super H, ? extends T> f, BinaryFunction<? super L, ? super R, ? extends G> g,
+            BinaryFunction<? super L, ? super R, ? extends H> h) {
+        return new BinaryCompositeBinaryFunction<L, R, T>(f, g, h);
     }
 }

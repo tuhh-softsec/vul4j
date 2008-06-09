@@ -97,6 +97,5 @@ public class TestIdentity extends BaseFunctorTest {
 
     public void testConstant() throws Exception {
         assertEquals(Identity.instance(),Identity.instance());
-        assertSame(Identity.instance(),Identity.instance());
     }
 }

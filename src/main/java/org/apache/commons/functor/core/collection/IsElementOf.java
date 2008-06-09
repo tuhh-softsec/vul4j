@@ -34,11 +34,11 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * @author  Jason Horman (jason@jhorman.org)
  * @author  Rodney Waldhoff
  */
-public final class IsElementOf implements BinaryPredicate, Serializable {
+public final class IsElementOf<L, R> implements BinaryPredicate<L, R>, Serializable {
     // static members
     //---------------------------------------------------------------
 
-    private static IsElementOf INSTANCE = new IsElementOf();
+    private static IsElementOf<Object, Object> INSTANCE = new IsElementOf<Object, Object>();
 
     // constructors
     //---------------------------------------------------------------
@@ -53,16 +53,17 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object obj, Object col) {
+    public boolean test(L obj, R col) {
         if (col instanceof Collection) {
-            return testCollection(obj, (Collection) col);
-        } else if (null != col && col.getClass().isArray()) {
-            return testArray(obj, col);
-        } else if (null == col) {
-            throw new NullPointerException("Right side argument must not be null.");
-        } else {
-            throw new IllegalArgumentException("Expected Collection or Array, found " + col.getClass());
+            return testCollection(obj, (Collection<?>) col);
         }
+        if (null != col && col.getClass().isArray()) {
+            return testArray(obj, col);
+        }
+        if (null == col) {
+            throw new IllegalArgumentException("Right side argument must not be null.");
+        }
+        throw new IllegalArgumentException("Expected Collection or Array, found " + col.getClass());
     }
 
     /**
@@ -92,7 +93,7 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
      * @param col to search
      * @return boolean
      */
-    private boolean testCollection(Object obj, Collection col) {
+    private boolean testCollection(Object obj, Collection<?> col) {
         return col.contains(obj);
     }
 
@@ -121,7 +122,7 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
      * Get an IsElementOf instance.
      * @return IsElementOf
      */
-    public static IsElementOf instance() {
+    public static IsElementOf<Object, Object> instance() {
         return INSTANCE;
     }
 
@@ -130,13 +131,13 @@ public final class IsElementOf implements BinaryPredicate, Serializable {
      * @param obj collection/array to search
      * @return UnaryPredicate
      */
-    public static UnaryPredicate instance(Object obj) {
+    public static <A> UnaryPredicate<A> instance(Object obj) {
         if (null == obj) {
             throw new NullPointerException("Argument must not be null");
         } else if (obj instanceof Collection) {
-            return new RightBoundPredicate(instance(), obj);
+            return new RightBoundPredicate<A, Object>(new IsElementOf<A, Object>(), obj);
         } else if (obj.getClass().isArray()) {
-            return new RightBoundPredicate(instance(), obj);
+            return new RightBoundPredicate<A, Object>(new IsElementOf<A, Object>(), obj);
         } else {
             throw new IllegalArgumentException("Expected Collection or Array, found " + obj.getClass());
         }

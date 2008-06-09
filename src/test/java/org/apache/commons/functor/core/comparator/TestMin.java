@@ -44,7 +44,7 @@ public class TestMin extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new Min();
+        return Min.instance();
     }
 
     private Integer MIN = new Integer(Integer.MIN_VALUE);
@@ -56,7 +56,7 @@ public class TestMin extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() {
-        Min f = new Min();
+        Min f = Min.instance();
         assertEquals(ONE,f.evaluate(ONE,ONE));
         assertEquals(ZERO,f.evaluate(ZERO,ONE));
         assertEquals(ZERO,f.evaluate(ONE,ZERO));
@@ -66,11 +66,9 @@ public class TestMin extends BaseFunctorTest {
     }
 
     public void testEquals() {
-        Min f = new Min();
+        Min f = Min.instance();
         assertObjectsAreEqual(f,f);
         assertObjectsAreEqual(f,Min.instance());
-        assertObjectsAreEqual(f,new Min(null));
-        assertObjectsAreEqual(new Min(null),new Min(null));
         assertObjectsAreEqual(f,new Min(new ComparableComparator()));
         assertObjectsAreNotEqual(f,new Min(Collections.reverseOrder()));
     }

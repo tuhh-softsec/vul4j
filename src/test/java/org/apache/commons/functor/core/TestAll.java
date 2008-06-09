@@ -38,7 +38,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestLeftIdentity.suite());
         suite.addTest(TestRightIdentity.suite());
 
-        suite.addTest(TestIsInstanceOf.suite());
+        suite.addTest(TestIsInstance.suite());
         suite.addTest(TestIsNull.suite());
         suite.addTest(TestIsNotNull.suite());
         suite.addTest(TestIsEqual.suite());

@@ -111,7 +111,7 @@ public class TestConstant extends BaseFunctorTest {
     }
 
     public void testConstants() throws Exception {
-        assertEquals(Constant.predicate(true),Constant.instance(Boolean.TRUE));
+        assertEquals(Constant.predicate(true),Constant.of(Boolean.TRUE));
 
         assertEquals(Constant.truePredicate(),Constant.truePredicate());
         assertSame(Constant.truePredicate(),Constant.truePredicate());

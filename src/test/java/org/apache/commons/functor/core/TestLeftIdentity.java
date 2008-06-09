@@ -44,7 +44,7 @@ public class TestLeftIdentity extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new LeftIdentity();
+        return LeftIdentity.FUNCTION;
     }
 
     // Lifecycle
@@ -62,7 +62,7 @@ public class TestLeftIdentity extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryFunction f = new LeftIdentity();
+        BinaryFunction<Object, Object, Object> f = LeftIdentity.FUNCTION;
         assertNull(f.evaluate(null,null));
         assertNull(f.evaluate(null,"xyzzy"));
         assertEquals("xyzzy",f.evaluate("xyzzy","abcdefg"));
@@ -74,35 +74,27 @@ public class TestLeftIdentity extends BaseFunctorTest {
     }
 
     public void testTest() throws Exception {
-        BinaryPredicate p = new LeftIdentity();
+        BinaryPredicate<Boolean, Object> p = LeftIdentity.PREDICATE;
         assertTrue(p.test(Boolean.TRUE,null));
         assertTrue(!p.test(Boolean.FALSE,null));
         try {
-            p.test("true",null);
-            fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
-            // expected
-        }
-        try {
-            p.test(null,null);
+            p.test(null, null);
             fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
+        } catch (NullPointerException npe) {
         }
     }
 
     public void testEquals() throws Exception {
-        BinaryFunction f = new LeftIdentity();
+        BinaryFunction<Object, Object, Object> f = LeftIdentity.<Object, Object>function();
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new LeftIdentity());
-        assertObjectsAreEqual(f,LeftIdentity.instance());
-        assertObjectsAreNotEqual(f,new RightIdentity());
-        assertObjectsAreNotEqual(f,new Constant("abcde"));
-        assertObjectsAreNotEqual(f,new Constant(true));
+        assertObjectsAreEqual(f,LeftIdentity.FUNCTION);
+        assertObjectsAreEqual(f,LeftIdentity.FUNCTION);
+        assertObjectsAreNotEqual(f,RightIdentity.FUNCTION);
+        assertObjectsAreNotEqual(f,Constant.of("abcde"));
+        assertObjectsAreNotEqual(f,Constant.of(true));
     }
 
     public void testConstant() throws Exception {
-        assertEquals(LeftIdentity.instance(),LeftIdentity.instance());
-        assertSame(LeftIdentity.instance(),LeftIdentity.instance());
+        assertEquals(LeftIdentity.function(),LeftIdentity.function());
     }
 }

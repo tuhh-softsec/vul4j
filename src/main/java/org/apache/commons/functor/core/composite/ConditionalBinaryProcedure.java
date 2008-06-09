@@ -41,13 +41,13 @@ import org.apache.commons.functor.core.NoOp;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class ConditionalBinaryProcedure implements BinaryProcedure, Serializable {
+public final class ConditionalBinaryProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
 
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate ifPred = null;
-    private BinaryProcedure thenProc = null;
-    private BinaryProcedure elseProc = null;
+    private BinaryPredicate<? super L, ? super R> ifPred;
+    private BinaryProcedure<? super L, ? super R> thenProc;
+    private BinaryProcedure<? super L, ? super R> elseProc;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -57,7 +57,8 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
      * @param ifPred to evaluate
      * @param thenProc if <code>ifPred</code> yields <code>true</code>
      */
-    public ConditionalBinaryProcedure(BinaryPredicate ifPred, BinaryProcedure thenProc) {
+    public ConditionalBinaryProcedure(BinaryPredicate<? super L, ? super R> ifPred,
+            BinaryProcedure<? super L, ? super R> thenProc) {
         this(ifPred, thenProc, NoOp.instance());
     }
     
@@ -67,7 +68,8 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
      * @param thenProc if <code>ifPred</code> yields <code>true</code>
      * @param elseProc if <code>ifPred</code> yields <code>false</code>
      */
-    public ConditionalBinaryProcedure(BinaryPredicate ifPred, BinaryProcedure thenProc, BinaryProcedure elseProc) {
+    public ConditionalBinaryProcedure(BinaryPredicate<? super L, ? super R> ifPred,
+            BinaryProcedure<? super L, ? super R> thenProc, BinaryProcedure<? super L, ? super R> elseProc) {
         this.ifPred = ifPred;
         this.thenProc = thenProc;
         this.elseProc = elseProc;
@@ -79,7 +81,7 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
     /**
      * {@inheritDoc}
      */
-    public void run(Object left, Object right) {
+    public void run(L left, R right) {
         if (ifPred.test(left, right)) {
             thenProc.run(left, right);
         } else {
@@ -92,7 +94,7 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof ConditionalBinaryProcedure && equals((ConditionalBinaryProcedure) that));
+                || (that instanceof ConditionalBinaryProcedure && equals((ConditionalBinaryProcedure<?, ?>) that));
     }
 
     /**
@@ -100,7 +102,7 @@ public final class ConditionalBinaryProcedure implements BinaryProcedure, Serial
      * @param that compared object
      * @return boolean
      */
-    public boolean equals(ConditionalBinaryProcedure that) {
+    public boolean equals(ConditionalBinaryProcedure<?, ?> that) {
         return null != that
                 && (null == ifPred ? null == that.ifPred : ifPred.equals(that.ifPred))
                 && (null == thenProc ? null == that.thenProc : thenProc.equals(that.thenProc))

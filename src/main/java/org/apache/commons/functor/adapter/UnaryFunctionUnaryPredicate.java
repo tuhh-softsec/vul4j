@@ -37,16 +37,16 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serializable {
+public final class UnaryFunctionUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
+    private UnaryFunction<A, Boolean> function;
 
     /**
      * Create an {@link UnaryPredicate UnaryPredicate} wrapping
      * the given {@link UnaryFunction UnaryFunction}.
      * @param function the {@link UnaryFunction UnaryFunction} to wrap
      */
-    public UnaryFunctionUnaryPredicate(UnaryFunction function) {
+    public UnaryFunctionUnaryPredicate(UnaryFunction<A, Boolean> function) {
         this.function = function;
     }
 
@@ -59,8 +59,8 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
      * @throws NullPointerException if my underlying function returns <code>null</code>
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
-    public boolean test(Object obj) {
-        return ((Boolean) (function.evaluate(obj))).booleanValue();
+    public boolean test(A obj) {
+        return function.evaluate(obj);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
      */
     public boolean equals(Object that) {
         return that == this
-                || (that instanceof UnaryFunctionUnaryPredicate && equals((UnaryFunctionUnaryPredicate) that));
+                || (that instanceof UnaryFunctionUnaryPredicate && equals((UnaryFunctionUnaryPredicate<?>) that));
     }
 
     /**
@@ -76,7 +76,7 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
      * @param that UnaryFunctionUnaryPredicate to test
      * @return boolean
      */
-    public boolean equals(UnaryFunctionUnaryPredicate that) {
+    public boolean equals(UnaryFunctionUnaryPredicate<?> that) {
         return null != that && (null == function ? null == that.function : function.equals(that.function));
     }
 
@@ -111,8 +111,8 @@ public final class UnaryFunctionUnaryPredicate implements UnaryPredicate, Serial
      *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
      *         if the given <code>UnaryFunction</code> is <code>null</code>
      */
-    public static UnaryFunctionUnaryPredicate adapt(UnaryFunction function) {
-        return null == function ? null : new UnaryFunctionUnaryPredicate(function);
+    public static <P> UnaryFunctionUnaryPredicate<P> adapt(UnaryFunction<P, Boolean> function) {
+        return null == function ? null : new UnaryFunctionUnaryPredicate<P>(function);
     }
 
 }
