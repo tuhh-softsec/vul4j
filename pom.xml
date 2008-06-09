@@ -74,6 +74,8 @@
 
   <properties>
     <commons.componentid>functor</commons.componentid>
+    <maven.compile.source>1.5</maven.compile.source>
+    <maven.compile.target>1.5</maven.compile.target>
     <commons.jira.componentid>12312256</commons.jira.componentid>
   </properties>
 
