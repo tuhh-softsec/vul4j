@@ -20,30 +20,31 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public class TestIsInstanceOf extends BaseFunctorTest {
+public class TestIsInstance extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestIsInstanceOf(String testName) {
+    public TestIsInstance(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestIsInstanceOf.class);
+        return new TestSuite(TestIsInstance.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsInstanceOf(String.class);
+        return IsInstance.of(String.class);
     }
 
     // Lifecycle
@@ -61,18 +62,25 @@ public class TestIsInstanceOf extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        UnaryPredicate p = new IsInstanceOf(Number.class);
-        assertTrue(!p.test(null));
-        assertTrue(!p.test("foo"));
-        assertTrue(p.test(new Integer(3)));
-        assertTrue(p.test(new Integer(3)));
-        assertTrue(p.test((new Long(3L))));
+        BinaryPredicate p = IsInstance.INSTANCE;
+        assertFalse(p.test(null, Number.class));
+        assertFalse(p.test("foo", Number.class));
+        assertTrue(p.test(3, Number.class));
+        assertTrue(p.test(3L, Number.class));
+    }
+
+    public void testBoundTest() throws Exception {
+        UnaryPredicate p = IsInstance.of(Number.class);
+        assertFalse(p.test(null));
+        assertFalse(p.test("foo"));
+        assertTrue(p.test(3));
+        assertTrue(p.test(3L));
     }
 
     public void testInstanceOfNull() throws Exception {
-        UnaryPredicate p = new IsInstanceOf(null);
+        BinaryPredicate p = new IsInstance();
         try {
-            p.test("foo");
+            p.test("foo", null);
             fail("Expected NullPointerException");
         } catch(NullPointerException e) {
             // expected
@@ -80,11 +88,18 @@ public class TestIsInstanceOf extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        UnaryPredicate p = new IsInstanceOf(Object.class);
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new IsInstanceOf(Object.class));
+        BinaryPredicate p = IsInstance.INSTANCE;
+        assertEquals(p, p);
+        assertObjectsAreEqual(p, IsInstance.instance());
         assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new IsInstanceOf(null));
-        assertObjectsAreNotEqual(p,new IsInstanceOf(String.class));
+    }
+
+    public void testBoundEquals() throws Exception {
+        UnaryPredicate p = IsInstance.of(Object.class);
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,IsInstance.of(Object.class));
+        assertObjectsAreNotEqual(p,Constant.truePredicate());
+        assertObjectsAreNotEqual(p,IsInstance.of(null));
+        assertObjectsAreNotEqual(p,IsInstance.of(String.class));
     }
 }
