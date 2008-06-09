@@ -74,6 +74,17 @@ import org.xml.sax.helpers.DefaultHandler;
  * only be used within the context of a single thread at a time, and a call
  * to <code>parse()</code> must be completed before another can be initiated
  * even from the same thread.</p>
+ * 
+ * <p>A Digester instance should not be used for parsing more than one input
+ * document. The problem is that the Digester class has quite a few member
+ * variables whose values "evolve" as SAX events are received during a parse.
+ * When reusing the Digester instance, all these members must be reset back
+ * to their initial states before the second parse begins. The "clear()"
+ * method makes a stab at resetting these, but it is actually rather a
+ * difficult problem. If you are determined to reuse Digester instances, then
+ * at the least you should call the clear() method before each parse, and must
+ * call it if the Digester parse terminates due to an exception during a parse.
+ * </p>
  *
  * <p><strong>IMPLEMENTATION NOTE</strong> - A bug in Xerces 2.0.2 prevents
  * the support of XML schema. You need Xerces 2.1/2.3 and up to make
@@ -2707,8 +2718,14 @@ public class Digester extends DefaultHandler {
      * <p>
      * Calling this method <i>might</i> allow another document of the same type
      * to be correctly parsed. However this method was not intended for this 
-     * purpose. In general, a separate Digester object should be created for
-     * each document to be parsed.
+     * purpose (just to tidy up memory usage). In general, a separate Digester
+     * object should be created for each document to be parsed.
+     * <p>
+     * Note that this method is called automatically after a document has been
+     * successfully parsed by a Digester instance. However it is not invoked
+     * automatically when a parse fails, so when reusing a Digester instance
+     * (which is not recommended) this method <i>must</i> be called manually
+     * after a parse failure.
      */
     public void clear() {
 
