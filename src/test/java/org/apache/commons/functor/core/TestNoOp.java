@@ -79,8 +79,8 @@ public class TestNoOp extends BaseFunctorTest {
         assertObjectsAreEqual(p,new NoOp());
         assertObjectsAreEqual(p,NoOp.instance());
         assertObjectsAreNotEqual(p,new Procedure() { public void run() { } });
-        assertObjectsAreNotEqual(p,new UnaryProcedure() { public void run(Object a) { } });
-        assertObjectsAreNotEqual(p,new BinaryProcedure() { public void run(Object a, Object b) { } });
+        assertObjectsAreNotEqual(p,new UnaryProcedure<Object>() { public void run(Object a) { } });
+        assertObjectsAreNotEqual(p,new BinaryProcedure<Object, Object>() { public void run(Object a, Object b) { } });
     }
 
     public void testConstant() throws Exception {
