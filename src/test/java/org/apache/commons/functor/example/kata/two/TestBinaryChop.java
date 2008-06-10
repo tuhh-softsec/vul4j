@@ -73,6 +73,7 @@ import org.apache.commons.functor.generator.util.IntegerRange;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class TestBinaryChop extends TestCase {
     public TestBinaryChop(String testName) {
         super(testName);

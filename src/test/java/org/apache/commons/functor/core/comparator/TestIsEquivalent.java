@@ -42,7 +42,7 @@ public class TestIsEquivalent extends BaseComparisonPredicateTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return IsEquivalent.instance();
+        return IsEquivalent.INSTANCE;
     }
 
     // Lifecycle
@@ -60,7 +60,7 @@ public class TestIsEquivalent extends BaseComparisonPredicateTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        IsEquivalent p = IsEquivalent.instance();
+        IsEquivalent<Integer> p = IsEquivalent.<Integer>instance();
         assertTrue(!p.test(new Integer(2),new Integer(4)));
         assertTrue(!p.test(new Integer(3),new Integer(4)));
         assertTrue(p.test(new Integer(4),new Integer(4)));
@@ -73,13 +73,14 @@ public class TestIsEquivalent extends BaseComparisonPredicateTest {
         assertTrue(!IsEquivalent.instance("Xyzzy").test("z"));
     }
 
+    @SuppressWarnings("unchecked")
     public void testEquals() throws Exception {
-        IsEquivalent p = IsEquivalent.instance();
+        IsEquivalent<Comparable<?>> p = IsEquivalent.INSTANCE;
         assertEquals(p,p);
 
         assertObjectsAreEqual(p,IsEquivalent.instance());
-        assertObjectsAreEqual(p,new IsEquivalent(new ComparableComparator()));
-        assertObjectsAreNotEqual(p,new Constant(false));
+        assertObjectsAreEqual(p,new IsEquivalent<Comparable<?>>(new ComparableComparator()));
+        assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
 }

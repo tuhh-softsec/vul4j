@@ -44,7 +44,7 @@ public class TestAnd extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new And(new Constant(true),new Constant(true));
+        return new And(Constant.TRUE, Constant.TRUE);
     }
 
     // Lifecycle
@@ -63,21 +63,21 @@ public class TestAnd extends BaseFunctorTest {
 
     public void testTrue() throws Exception {
         assertTrue((new And()).test());
-        assertTrue((new And(new Constant(true))).test());
-        assertTrue((new And(new Constant(true),new Constant(true))).test());
-        assertTrue((new And(new Constant(true),new Constant(true),new Constant(true))).test());
+        assertTrue((new And(Constant.TRUE)).test());
+        assertTrue((new And(Constant.TRUE,Constant.TRUE)).test());
+        assertTrue((new And(Constant.TRUE,Constant.TRUE,Constant.TRUE)).test());
 
-        And p = new And(new Constant(true));
+        And p = new And(Constant.TRUE);
         assertTrue(p.test());
         for (int i=0;i<10;i++) {
-            p.and(new Constant(true));
+            p.and(Constant.TRUE);
             assertTrue(p.test());
         }
 
-        And q = new And(new Constant(true));
+        And q = new And(Constant.TRUE);
         assertTrue(q.test());
         for (int i=0;i<10;i++) {
-            q.and(new Constant(true));
+            q.and(Constant.TRUE);
             assertTrue(q.test());
         }
 
@@ -86,21 +86,21 @@ public class TestAnd extends BaseFunctorTest {
     }
 
     public void testFalse() throws Exception {
-        assertTrue(!(new And(new Constant(false))).test());
-        assertTrue(!(new And(new Constant(true),new Constant(false))).test());
-        assertTrue(!(new And(new Constant(true),new Constant(true),new Constant(false))).test());
+        assertTrue(!(new And(Constant.FALSE)).test());
+        assertTrue(!(new And(Constant.TRUE,Constant.FALSE)).test());
+        assertTrue(!(new And(Constant.TRUE,Constant.TRUE,Constant.FALSE)).test());
 
-        And p = new And(new Constant(false));
+        And p = new And(Constant.FALSE);
         assertTrue(!p.test());
         for (int i=0;i<10;i++) {
-            p.and(new Constant(false));
+            p.and(Constant.FALSE);
             assertTrue(!p.test());
         }
 
-        And q = new And(new Constant(true));
+        And q = new And(Constant.TRUE);
         assertTrue(q.test());
         for (int i=0;i<10;i++) {
-            q.and(new Constant(true));
+            q.and(Constant.TRUE);
             assertTrue(q.test());
         }
 
@@ -109,7 +109,7 @@ public class TestAnd extends BaseFunctorTest {
     }
 
     public void testDuplicateAdd() throws Exception {
-        Predicate p = new Constant(true);
+        Predicate p = Constant.TRUE;
         And q = new And(p,p);
         assertTrue(q.test());
         for (int i=0;i<10;i++) {
@@ -125,17 +125,17 @@ public class TestAnd extends BaseFunctorTest {
         assertObjectsAreEqual(p,q);
 
         for (int i=0;i<3;i++) {
-            p.and(Constant.truePredicate());
+            p.and(Constant.TRUE);
             assertObjectsAreNotEqual(p,q);
             q.and(Constant.truePredicate());
             assertObjectsAreEqual(p,q);
-            p.and(new And(Constant.truePredicate(),Constant.falsePredicate()));
+            p.and(new And(Constant.TRUE,Constant.FALSE));
             assertObjectsAreNotEqual(p,q);
-            q.and(new And(Constant.truePredicate(),Constant.falsePredicate()));
+            q.and(new And(Constant.TRUE,Constant.FALSE));
             assertObjectsAreEqual(p,q);
         }
 
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
 }

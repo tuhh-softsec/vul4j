@@ -42,7 +42,7 @@ public class TestIsGreaterThan extends BaseComparisonPredicateTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsGreaterThan();
+        return new IsGreaterThan<Comparable<?>>();
     }
 
     // Lifecycle
@@ -60,10 +60,10 @@ public class TestIsGreaterThan extends BaseComparisonPredicateTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        IsGreaterThan p = new IsGreaterThan();
-        assertTrue(!p.test(new Integer(2),new Integer(4)));
-        assertTrue(!p.test(new Integer(3),new Integer(4)));
-        assertTrue(!p.test(new Integer(4),new Integer(4)));
+        IsGreaterThan<Integer> p = new IsGreaterThan<Integer>();
+        assertFalse(p.test(new Integer(2),new Integer(4)));
+        assertFalse(p.test(new Integer(3),new Integer(4)));
+        assertFalse(p.test(new Integer(4),new Integer(4)));
         assertTrue(p.test(new Integer(5),new Integer(4)));
         assertTrue(p.test(new Integer(6),new Integer(4)));
     }
@@ -73,14 +73,15 @@ public class TestIsGreaterThan extends BaseComparisonPredicateTest {
         assertTrue(! IsGreaterThan.instance(new Integer(7)).test(new Integer(6)));
     }
 
+    @SuppressWarnings("unchecked")
     public void testEquals() throws Exception {
-        IsGreaterThan p = new IsGreaterThan();
+        IsGreaterThan<Comparable<?>> p = new IsGreaterThan<Comparable<?>>();
         assertEquals(p,p);
 
-        assertObjectsAreEqual(p,new IsGreaterThan());
-        assertObjectsAreEqual(p,new IsGreaterThan(new ComparableComparator()));
+        assertObjectsAreEqual(p,new IsGreaterThan<Comparable<?>>());
+        assertObjectsAreEqual(p,new IsGreaterThan<Comparable<?>>(new ComparableComparator()));
         assertObjectsAreEqual(p,IsGreaterThan.instance());
-        assertObjectsAreNotEqual(p,new Constant(false));
+        assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
 }

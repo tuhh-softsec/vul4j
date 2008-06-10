@@ -46,7 +46,7 @@ public class TestAbstractLoopProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-		return new MockLoopProcedure(new Constant(false), new NoOp());
+		return new MockLoopProcedure(Constant.FALSE, NoOp.INSTANCE);
     }
 
 	// tests

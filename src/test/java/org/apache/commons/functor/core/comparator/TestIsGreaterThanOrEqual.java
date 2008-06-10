@@ -42,7 +42,7 @@ public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsGreaterThanOrEqual();
+        return new IsGreaterThanOrEqual<Comparable<?>>();
     }
 
     // Lifecycle
@@ -60,9 +60,9 @@ public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        IsGreaterThanOrEqual p = new IsGreaterThanOrEqual();
-        assertTrue(!p.test(new Integer(2),new Integer(4)));
-        assertTrue(!p.test(new Integer(3),new Integer(4)));
+        IsGreaterThanOrEqual<Integer> p = new IsGreaterThanOrEqual<Integer>();
+        assertFalse(p.test(new Integer(2),new Integer(4)));
+        assertFalse(p.test(new Integer(3),new Integer(4)));
         assertTrue(p.test(new Integer(4),new Integer(4)));
         assertTrue(p.test(new Integer(5),new Integer(4)));
         assertTrue(p.test(new Integer(6),new Integer(4)));
@@ -73,14 +73,15 @@ public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
         assertTrue(! IsGreaterThanOrEqual.instance(new Integer(7)).test(new Integer(6)));
     }
 
+    @SuppressWarnings("unchecked")
     public void testEquals() throws Exception {
-        IsGreaterThanOrEqual p = new IsGreaterThanOrEqual();
+        IsGreaterThanOrEqual<Comparable<?>> p = new IsGreaterThanOrEqual<Comparable<?>>();
         assertEquals(p,p);
 
-        assertObjectsAreEqual(p,new IsGreaterThanOrEqual());
-        assertObjectsAreEqual(p,new IsGreaterThanOrEqual(new ComparableComparator()));
+        assertObjectsAreEqual(p,new IsGreaterThanOrEqual<Comparable<?>>());
+        assertObjectsAreEqual(p,new IsGreaterThanOrEqual<Comparable<?>>(new ComparableComparator()));
         assertObjectsAreEqual(p,IsGreaterThanOrEqual.instance());
-        assertObjectsAreNotEqual(p,new Constant(false));
+        assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
 }

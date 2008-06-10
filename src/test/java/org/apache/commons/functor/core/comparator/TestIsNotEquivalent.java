@@ -60,7 +60,7 @@ public class TestIsNotEquivalent extends BaseComparisonPredicateTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        IsNotEquivalent p = IsNotEquivalent.instance();
+        IsNotEquivalent<Integer> p = new IsNotEquivalent<Integer>();
         assertTrue(p.test(new Integer(2),new Integer(4)));
         assertTrue(p.test(new Integer(3),new Integer(4)));
         assertTrue(!p.test(new Integer(4),new Integer(4)));
@@ -73,13 +73,14 @@ public class TestIsNotEquivalent extends BaseComparisonPredicateTest {
         assertTrue(IsNotEquivalent.instance(new Integer(7)).test(new Integer(8)));
     }
 
+    @SuppressWarnings("unchecked")
     public void testEquals() throws Exception {
-        IsNotEquivalent p = IsNotEquivalent.instance();
+        IsNotEquivalent<Comparable<?>> p = new IsNotEquivalent<Comparable<?>>();
         assertEquals(p,p);
 
-        assertObjectsAreEqual(p,new IsNotEquivalent(new ComparableComparator()));
+        assertObjectsAreEqual(p,new IsNotEquivalent<Comparable<?>>(new ComparableComparator()));
         assertObjectsAreEqual(p,IsNotEquivalent.instance());
-        assertObjectsAreNotEqual(p,new Constant(false));
+        assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
 }
