@@ -47,6 +47,9 @@ public final class FunctionUnaryFunction<A, T> implements UnaryFunction<A, T>, S
      * @param function to adapt
      */
     public FunctionUnaryFunction(Function<? extends T> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("Function argument was null");
+        }
         this.function = function;
     }
 

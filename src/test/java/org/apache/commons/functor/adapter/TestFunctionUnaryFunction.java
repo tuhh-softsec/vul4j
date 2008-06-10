@@ -44,7 +44,7 @@ public class TestFunctionUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FunctionUnaryFunction(new Constant("xyzzy"));
+        return new FunctionUnaryFunction<Object, Object>(Constant.of("xyzzy"));
     }
 
     // Lifecycle
@@ -62,20 +62,18 @@ public class TestFunctionUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        UnaryFunction f = new FunctionUnaryFunction(new Constant("xyzzy"));
+        UnaryFunction<Object, Object> f = new FunctionUnaryFunction<Object, Object>(Constant.of("xyzzy"));
         assertEquals("xyzzy",f.evaluate(null));
         assertEquals("xyzzy",f.evaluate("abc"));
     }
 
     public void testEquals() throws Exception {
-        UnaryFunction f = new FunctionUnaryFunction(new Constant("xyzzy"));
+        UnaryFunction<Object, Object> f = new FunctionUnaryFunction<Object, Object>(Constant.of("xyzzy"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new FunctionUnaryFunction(new Constant("xyzzy")));
-        assertObjectsAreNotEqual(f,new Constant("x"));
-        assertObjectsAreNotEqual(f,new FunctionUnaryFunction(new Constant(null)));
-        assertObjectsAreNotEqual(f,new Constant(null));
-        assertObjectsAreNotEqual(f,new FunctionUnaryFunction(null));
-        assertObjectsAreEqual(new FunctionUnaryFunction(null),new FunctionUnaryFunction(null));
+        assertObjectsAreEqual(f,new FunctionUnaryFunction<Object, Object>(Constant.of("xyzzy")));
+        assertObjectsAreNotEqual(f,Constant.of("x"));
+        assertObjectsAreNotEqual(f,new FunctionUnaryFunction<Object, Object>(Constant.of(null)));
+        assertObjectsAreNotEqual(f,Constant.of(null));
     }
 
     public void testAdaptNull() throws Exception {
@@ -83,6 +81,6 @@ public class TestFunctionUnaryFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(FunctionUnaryFunction.adapt(new Constant("xyzzy")));
+        assertNotNull(FunctionUnaryFunction.adapt(Constant.of("xyzzy")));
     }
 }

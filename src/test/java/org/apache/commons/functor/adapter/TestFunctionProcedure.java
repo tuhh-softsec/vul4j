@@ -46,7 +46,7 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FunctionProcedure(new Constant("K"));
+        return new FunctionProcedure(Constant.of("K"));
     }
 
     // Lifecycle
@@ -64,9 +64,9 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        class EvaluateCounter implements Function {
+        class EvaluateCounter implements Function<Integer> {
             int count = 0;
-            public Object evaluate() { return new Integer(count++); }
+            public Integer evaluate() { return count++; }
         }
         EvaluateCounter counter = new EvaluateCounter();
         Procedure p = new FunctionProcedure(counter);
@@ -78,13 +78,11 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        Procedure p = new FunctionProcedure(new Constant("K"));
+        Procedure p = new FunctionProcedure(Constant.of("K"));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new FunctionProcedure(new Constant("K")));
-        assertObjectsAreNotEqual(p,new NoOp());
-        assertObjectsAreNotEqual(p,new FunctionProcedure(null));
-        assertObjectsAreNotEqual(p,new FunctionProcedure(new Constant("J")));
-        assertObjectsAreEqual(new FunctionProcedure(null),new FunctionProcedure(null));
+        assertObjectsAreEqual(p,new FunctionProcedure(Constant.of("K")));
+        assertObjectsAreNotEqual(p,NoOp.INSTANCE);
+        assertObjectsAreNotEqual(p,new FunctionProcedure(Constant.of("J")));
     }
 
     public void testAdaptNull() throws Exception {
@@ -92,6 +90,6 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(FunctionProcedure.adapt(new Constant("K")));
+        assertNotNull(FunctionProcedure.adapt(Constant.of("K")));
     }
 }

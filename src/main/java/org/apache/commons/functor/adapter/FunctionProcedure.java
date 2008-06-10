@@ -47,6 +47,9 @@ public final class FunctionProcedure implements Procedure, Serializable {
      * @param function the {@link Function Function} to wrap
      */
     public FunctionProcedure(Function<?> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("Function argument was null");
+        }
         this.function = function;
     }
 
