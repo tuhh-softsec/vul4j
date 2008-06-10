@@ -46,7 +46,7 @@ public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryProcedureUnaryFunction(new NoOp());
+        return new UnaryProcedureUnaryFunction<Object, Object>(NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -64,19 +64,20 @@ public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        UnaryFunction f = new UnaryProcedureUnaryFunction(new NoOp());
+        UnaryFunction<Object, Object> f = new UnaryProcedureUnaryFunction<Object, Object>(NoOp.INSTANCE);
         assertNull(f.evaluate(null));
     }
 
     public void testEquals() throws Exception {
-        UnaryFunction f = new UnaryProcedureUnaryFunction(new NoOp());
+        UnaryFunction<Object, Object> f = new UnaryProcedureUnaryFunction<Object, Object>(NoOp.INSTANCE);
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new UnaryProcedureUnaryFunction(new NoOp()));
-        assertObjectsAreNotEqual(f,new Constant("x"));
-        assertObjectsAreNotEqual(f,new UnaryProcedureUnaryFunction(new UnaryProcedure() { public void run(Object a) { } }));
-        assertObjectsAreNotEqual(f,new Constant(null));
-        assertObjectsAreNotEqual(f,new UnaryProcedureUnaryFunction(null));
-        assertObjectsAreEqual(new UnaryProcedureUnaryFunction(null),new UnaryProcedureUnaryFunction(null));
+        assertObjectsAreEqual(f,new UnaryProcedureUnaryFunction<Object, Object>(NoOp.INSTANCE));
+        assertObjectsAreNotEqual(f,Constant.of("x"));
+        assertObjectsAreNotEqual(f, new UnaryProcedureUnaryFunction<Object, Object>(new UnaryProcedure<Object>() {
+            public void run(Object a) {
+            }
+        }));
+        assertObjectsAreNotEqual(f,Constant.of(null));
     }
 
     public void testAdaptNull() throws Exception {

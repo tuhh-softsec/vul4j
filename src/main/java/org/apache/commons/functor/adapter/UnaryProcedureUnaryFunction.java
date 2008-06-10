@@ -47,6 +47,9 @@ public final class UnaryProcedureUnaryFunction<A, T> implements UnaryFunction<A,
      * @param procedure to adapt
      */
     public UnaryProcedureUnaryFunction(UnaryProcedure<? super A> procedure) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("UnaryProcedure argument was null");
+        }
         this.procedure = procedure;
     }
 

@@ -44,7 +44,7 @@ public class TestIdentity extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new Identity();
+        return Identity.INSTANCE;
     }
 
     // Lifecycle
@@ -62,7 +62,7 @@ public class TestIdentity extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        UnaryFunction f = new Identity();
+        UnaryFunction<Object, Object> f = new Identity<Object>();
         assertNull(f.evaluate(null));
         assertEquals("xyzzy",f.evaluate("xyzzy"));
         assertEquals(new Integer(3),f.evaluate(new Integer(3)));
@@ -71,7 +71,7 @@ public class TestIdentity extends BaseFunctorTest {
     }
 
     public void testTest() throws Exception {
-        UnaryPredicate p = new Identity();
+        UnaryPredicate<Object> p = new Identity<Object>();
         assertTrue(p.test(Boolean.TRUE));
         assertTrue(!p.test(Boolean.FALSE));
         try {
@@ -88,11 +88,11 @@ public class TestIdentity extends BaseFunctorTest {
         }
     }
     public void testEquals() throws Exception {
-        UnaryFunction f = new Identity();
+        UnaryFunction<Object, Object> f = new Identity<Object>();
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new Identity());
+        assertObjectsAreEqual(f,new Identity<Object>());
         assertObjectsAreEqual(f,Identity.instance());
-        assertObjectsAreNotEqual(f,new Constant("abcde"));
+        assertObjectsAreNotEqual(f,Constant.of("abcde"));
     }
 
     public void testConstant() throws Exception {
