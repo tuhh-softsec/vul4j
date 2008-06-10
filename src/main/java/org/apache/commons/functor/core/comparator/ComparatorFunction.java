@@ -29,10 +29,12 @@ import org.apache.commons.functor.BinaryFunction;
  * @author Rodney Waldhoff
  */
 public final class ComparatorFunction<T> implements BinaryFunction<T, T, Integer>, Serializable {
-    private static final ComparatorFunction<Comparable<?>> INSTANCE = new ComparatorFunction<Comparable<?>>(
-            ComparableComparator.instance());
+    /**
+     * Basic ComparatorFunction instance.
+     */
+    public static final ComparatorFunction<Comparable<?>> INSTANCE = ComparatorFunction.<Comparable<?>>instance();
 
-    private Comparator<? super T> comparator = null;
+    private Comparator<? super T> comparator;
 
     /**
      * Create a new ComparatorFunction.
@@ -86,7 +88,8 @@ public final class ComparatorFunction<T> implements BinaryFunction<T, T, Integer
      * Get a basic ComparatorFunction instance.
      * @return ComparatorFunction
      */
-    public static ComparatorFunction<Comparable<?>> instance() {
-        return INSTANCE;
+    @SuppressWarnings("unchecked")
+    public static <T> ComparatorFunction<T> instance() {
+        return new ComparatorFunction<T>(ComparableComparator.INSTANCE);
     }
 }
