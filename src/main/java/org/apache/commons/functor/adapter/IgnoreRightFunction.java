@@ -47,6 +47,9 @@ public final class IgnoreRightFunction<L, R, T> implements BinaryFunction<L, R, 
      * @param function UnaryFunction to wrap
      */
     public IgnoreRightFunction(UnaryFunction<? super L, ? extends T> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("UnaryFunction argument was null");
+        }
         this.function = function;
     }
 
