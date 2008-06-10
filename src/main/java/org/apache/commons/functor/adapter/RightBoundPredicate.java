@@ -50,6 +50,9 @@ public final class RightBoundPredicate<L, R> implements UnaryPredicate<L>, Seria
      * @param arg the constant argument to use
      */
     public RightBoundPredicate(BinaryPredicate<? super L, ? super R> predicate, R arg) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("BinaryPredicate argument was null");
+        }
         this.predicate = predicate;
         this.param = arg;
     }

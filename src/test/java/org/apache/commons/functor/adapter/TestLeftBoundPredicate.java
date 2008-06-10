@@ -45,7 +45,7 @@ public class TestLeftBoundPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new LeftBoundPredicate(new Constant(true),"xyzzy");
+        return new LeftBoundPredicate<Object, Object>(Constant.TRUE,"xyzzy");
     }
 
     // Lifecycle
@@ -63,21 +63,20 @@ public class TestLeftBoundPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        UnaryPredicate p = new LeftBoundPredicate(new BinaryFunctionBinaryPredicate(RightIdentity.FUNCTION),"foo");
+        UnaryPredicate<Boolean> p = new LeftBoundPredicate<Object, Boolean>(
+                new BinaryFunctionBinaryPredicate<Object, Boolean>(RightIdentity.<Object, Boolean> function()), "foo");
         assertEquals(true,p.test(Boolean.TRUE));
         assertEquals(false,p.test(Boolean.FALSE));
     }
 
     public void testEquals() throws Exception {
-        UnaryPredicate p = new LeftBoundPredicate(new Constant(true),"xyzzy");
+        UnaryPredicate<Boolean> p = new LeftBoundPredicate<Object, Boolean>(Constant.TRUE,"xyzzy");
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new LeftBoundPredicate(new Constant(true),"xyzzy"));
-        assertObjectsAreNotEqual(p,new Constant(true));
-        assertObjectsAreNotEqual(p,new LeftBoundPredicate(new Constant(false),"xyzzy"));
-        assertObjectsAreNotEqual(p,new LeftBoundPredicate(new Constant(true),"foo"));
-        assertObjectsAreNotEqual(p,new LeftBoundPredicate(null,"xyzzy"));
-        assertObjectsAreNotEqual(p,new LeftBoundPredicate(new Constant(true),null));
-        assertObjectsAreEqual(new LeftBoundPredicate(null,null),new LeftBoundPredicate(null,null));
+        assertObjectsAreEqual(p,new LeftBoundPredicate<Object, Boolean>(Constant.TRUE,"xyzzy"));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
+        assertObjectsAreNotEqual(p,new LeftBoundPredicate<Object, Boolean>(Constant.FALSE,"xyzzy"));
+        assertObjectsAreNotEqual(p,new LeftBoundPredicate<Object, Boolean>(Constant.TRUE,"foo"));
+        assertObjectsAreNotEqual(p,new LeftBoundPredicate<Object, Boolean>(Constant.TRUE,null));
     }
 
     public void testAdaptNull() throws Exception {
@@ -85,7 +84,7 @@ public class TestLeftBoundPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(LeftBoundPredicate.bind(new Constant(false),"xyzzy"));
-        assertNotNull(LeftBoundPredicate.bind(new Constant(false),null));
+        assertNotNull(LeftBoundPredicate.bind(Constant.FALSE,"xyzzy"));
+        assertNotNull(LeftBoundPredicate.bind(Constant.FALSE,null));
     }
 }

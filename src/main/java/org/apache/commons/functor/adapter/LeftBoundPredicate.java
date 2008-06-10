@@ -51,6 +51,9 @@ public final class LeftBoundPredicate<L, R> implements UnaryPredicate<R>, Serial
      * @param arg the constant argument to use
      */
     public LeftBoundPredicate(BinaryPredicate<? super L, ? super R> predicate, L arg) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("BinaryPredicate argument was null");
+        }
         this.predicate = predicate;
         this.param = arg;
     }
