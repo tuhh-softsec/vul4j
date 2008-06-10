@@ -38,22 +38,25 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IgnoreRightProcedure<A> implements BinaryProcedure<A, Object>, Serializable {
+public final class IgnoreRightProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure<? super A> procedure;
+    private UnaryProcedure<? super L> procedure;
 
     /**
      * Create a new IgnoreRightProcedure.
      * @param procedure UnaryProcedure to adapt
      */
-    public IgnoreRightProcedure(UnaryProcedure<? super A> procedure) {
+    public IgnoreRightProcedure(UnaryProcedure<? super L> procedure) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("UnaryProcedure argument was null");
+        }
         this.procedure = procedure;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void run(A left, Object right) {
+    public void run(L left, R right) {
         procedure.run(left);
     }
 
@@ -61,7 +64,7 @@ public final class IgnoreRightProcedure<A> implements BinaryProcedure<A, Object>
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreRightProcedure && equals((IgnoreRightProcedure<?>) that));
+        return that == this || (that instanceof IgnoreRightProcedure && equals((IgnoreRightProcedure<?, ?>) that));
     }
 
     /**
@@ -69,7 +72,7 @@ public final class IgnoreRightProcedure<A> implements BinaryProcedure<A, Object>
      * @param that IgnoreRightProcedure to test
      * @return boolean
      */
-    public boolean equals(IgnoreRightProcedure<?> that) {
+    public boolean equals(IgnoreRightProcedure<?, ?> that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
@@ -96,8 +99,8 @@ public final class IgnoreRightProcedure<A> implements BinaryProcedure<A, Object>
      * @param procedure UnaryProcedure to adapt
      * @return IgnoreRightProcedure
      */
-    public static <A> IgnoreRightProcedure<A> adapt(UnaryProcedure<? super A> procedure) {
-        return null == procedure ? null : new IgnoreRightProcedure<A>(procedure);
+    public static <L, R> IgnoreRightProcedure<L, R> adapt(UnaryProcedure<? super L> procedure) {
+        return null == procedure ? null : new IgnoreRightProcedure<L, R>(procedure);
     }
 
 }

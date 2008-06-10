@@ -45,7 +45,7 @@ public class TestIgnoreRightProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IgnoreRightProcedure(new NoOp());
+        return new IgnoreRightProcedure<Object, Object>(NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -63,17 +63,16 @@ public class TestIgnoreRightProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryProcedure p = new IgnoreRightProcedure(new UnaryFunctionUnaryProcedure(new Identity()));
+        BinaryProcedure<Object, Object> p = new IgnoreRightProcedure<Object, Object>(
+                new UnaryFunctionUnaryProcedure<Object>(Identity.INSTANCE));
         p.run(Boolean.TRUE,null);
     }
 
     public void testEquals() throws Exception {
-        BinaryProcedure p = new IgnoreRightProcedure(new NoOp());
+        BinaryProcedure<Object, Object> p = new IgnoreRightProcedure<Object, Object>(NoOp.INSTANCE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IgnoreRightProcedure(new NoOp()));
-        assertObjectsAreNotEqual(p,new NoOp());
-        assertObjectsAreNotEqual(p,new IgnoreRightProcedure(null));
-        assertObjectsAreEqual(new IgnoreRightProcedure(null),new IgnoreRightProcedure(null));
+        assertObjectsAreEqual(p,new IgnoreRightProcedure<Object, Object>(NoOp.INSTANCE));
+        assertObjectsAreNotEqual(p,NoOp.INSTANCE);
     }
 
     public void testAdaptNull() throws Exception {
@@ -81,6 +80,6 @@ public class TestIgnoreRightProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(IgnoreRightProcedure.adapt(new NoOp()));
+        assertNotNull(IgnoreRightProcedure.adapt(NoOp.INSTANCE));
     }
 }

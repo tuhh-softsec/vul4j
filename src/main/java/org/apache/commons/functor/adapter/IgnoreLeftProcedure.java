@@ -38,22 +38,25 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IgnoreLeftProcedure<A> implements BinaryProcedure<Object, A>, Serializable {
+public final class IgnoreLeftProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure<? super A> procedure;
+    private UnaryProcedure<? super R> procedure;
 
     /**
      * Create a new IgnoreLeftProcedure.
      * @param procedure to adapt
      */
-    public IgnoreLeftProcedure(UnaryProcedure<? super A> procedure) {
+    public IgnoreLeftProcedure(UnaryProcedure<? super R> procedure) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("UnaryProcedure argument was null");
+        }
         this.procedure = procedure;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void run(Object left, A right) {
+    public void run(L left, R right) {
         procedure.run(right);
     }
 
@@ -61,7 +64,7 @@ public final class IgnoreLeftProcedure<A> implements BinaryProcedure<Object, A>,
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreLeftProcedure && equals((IgnoreLeftProcedure<?>) that));
+        return that == this || (that instanceof IgnoreLeftProcedure && equals((IgnoreLeftProcedure<?, ?>) that));
     }
 
     /**
@@ -69,7 +72,7 @@ public final class IgnoreLeftProcedure<A> implements BinaryProcedure<Object, A>,
      * @param that IgnoreLeftProcedure to test
      * @return boolean
      */
-    public boolean equals(IgnoreLeftProcedure<?> that) {
+    public boolean equals(IgnoreLeftProcedure<?, ?> that) {
         return null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure));
     }
 
@@ -93,11 +96,13 @@ public final class IgnoreLeftProcedure<A> implements BinaryProcedure<Object, A>,
 
     /**
      * Adapt a UnaryProcedure to the BinaryProcedure interface.
+     * @param <L>
+     * @param <R>
      * @param procedure to adapt
-     * @return IgnoreLeftProcedure
+     * @return IgnoreLeftProcedure<L, R>
      */
-    public static <A> IgnoreLeftProcedure<A> adapt(UnaryProcedure<? super A> procedure) {
-        return null == procedure ? null : new IgnoreLeftProcedure<A>(procedure);
+    public static <L, R> IgnoreLeftProcedure<L, R> adapt(UnaryProcedure<? super R> procedure) {
+        return null == procedure ? null : new IgnoreLeftProcedure<L, R>(procedure);
     }
 
 }

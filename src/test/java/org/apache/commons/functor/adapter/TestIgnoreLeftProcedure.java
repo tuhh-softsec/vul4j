@@ -45,7 +45,7 @@ public class TestIgnoreLeftProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IgnoreLeftProcedure(new NoOp());
+        return new IgnoreLeftProcedure<Object, Object>(NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -63,17 +63,16 @@ public class TestIgnoreLeftProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryProcedure p = new IgnoreLeftProcedure(new UnaryFunctionUnaryProcedure(new Identity()));
+        BinaryProcedure<Object, Object> p = new IgnoreLeftProcedure<Object, Object>(
+                new UnaryFunctionUnaryProcedure<Object>(Identity.INSTANCE));
         p.run(null,Boolean.TRUE);
     }
 
     public void testEquals() throws Exception {
-        BinaryProcedure p = new IgnoreLeftProcedure(new NoOp());
+        BinaryProcedure<Object, Object> p = new IgnoreLeftProcedure<Object, Object>(NoOp.INSTANCE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IgnoreLeftProcedure(new NoOp()));
-        assertObjectsAreNotEqual(p,new NoOp());
-        assertObjectsAreNotEqual(p,new IgnoreLeftProcedure(null));
-        assertObjectsAreEqual(new IgnoreLeftProcedure(null),new IgnoreLeftProcedure(null));
+        assertObjectsAreEqual(p,new IgnoreLeftProcedure<Object, Object>(NoOp.INSTANCE));
+        assertObjectsAreNotEqual(p,NoOp.INSTANCE);
     }
 
     public void testAdaptNull() throws Exception {
@@ -81,6 +80,6 @@ public class TestIgnoreLeftProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(IgnoreLeftProcedure.adapt(new NoOp()));
+        assertNotNull(IgnoreLeftProcedure.adapt(NoOp.INSTANCE));
     }
 }
