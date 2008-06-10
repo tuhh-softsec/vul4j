@@ -21,6 +21,8 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
@@ -63,19 +65,21 @@ public class TestIgnoreLeftPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryPredicate p = new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
+        BinaryPredicate<Object, Boolean> p = new IgnoreLeftPredicate<Object, Boolean>(
+                new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean> instance()));
         assertTrue(p.test(null,Boolean.TRUE));
         assertTrue(!p.test(null,Boolean.FALSE));
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate p = new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
+        BinaryPredicate<Object, Boolean> p = new IgnoreLeftPredicate<Object, Boolean>(
+                new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean> instance()));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new Identity())));
-        assertObjectsAreNotEqual(p,new Constant(true));
-        assertObjectsAreNotEqual(p,new IgnoreLeftPredicate(new Constant(false)));
-        assertObjectsAreNotEqual(p,new Constant(false));
-        assertObjectsAreEqual(new IgnoreLeftPredicate(null),new IgnoreLeftPredicate(null));
+        assertObjectsAreEqual(p,new IgnoreLeftPredicate<Object, Boolean>(
+                new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean> instance())));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
+        assertObjectsAreNotEqual(p,new IgnoreLeftPredicate(Constant.FALSE));
+        assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
     public void testAdaptNull() throws Exception {

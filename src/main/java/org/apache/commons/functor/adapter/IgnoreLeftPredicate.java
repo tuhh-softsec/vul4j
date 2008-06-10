@@ -38,22 +38,25 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class IgnoreLeftPredicate<A> implements BinaryPredicate<Object, A>, Serializable {
+public final class IgnoreLeftPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate<? super A> predicate;
+    private UnaryPredicate<? super R> predicate;
 
     /**
      * Create a new IgnoreLeftPredicate.
      * @param predicate the right predicate
      */
-    public IgnoreLeftPredicate(UnaryPredicate<? super A> predicate) {
+    public IgnoreLeftPredicate(UnaryPredicate<? super R> predicate) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("UnaryPredicate argument was null");
+        }
         this.predicate = predicate;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean test(Object left, A right) {
+    public boolean test(L left, R right) {
         return predicate.test(right);
     }
 
@@ -61,7 +64,7 @@ public final class IgnoreLeftPredicate<A> implements BinaryPredicate<Object, A>,
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof IgnoreLeftPredicate && equals((IgnoreLeftPredicate<?>) that));
+        return that == this || (that instanceof IgnoreLeftPredicate && equals((IgnoreLeftPredicate<?, ?>) that));
     }
 
     /**
@@ -69,7 +72,7 @@ public final class IgnoreLeftPredicate<A> implements BinaryPredicate<Object, A>,
      * @param that the IgnoreLeftPredicate to test
      * @return boolean
      */
-    public boolean equals(IgnoreLeftPredicate<?> that) {
+    public boolean equals(IgnoreLeftPredicate<?, ?> that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
 
@@ -93,11 +96,13 @@ public final class IgnoreLeftPredicate<A> implements BinaryPredicate<Object, A>,
 
     /**
      * Adapt a UnaryPredicate to an IgnoreLeftPredicate.
+     * @param <L>
+     * @param <R>
      * @param predicate to adapt
-     * @return IgnoreLeftPredicate
+     * @return IgnoreLeftPredicate<L, R>
      */
-    public static <A> IgnoreLeftPredicate<A> adapt(UnaryPredicate<? super A> predicate) {
-        return null == predicate ? null : new IgnoreLeftPredicate<A>(predicate);
+    public static <L, R> IgnoreLeftPredicate<L, R> adapt(UnaryPredicate<? super R> predicate) {
+        return null == predicate ? null : new IgnoreLeftPredicate<L, R>(predicate);
     }
 
 }
