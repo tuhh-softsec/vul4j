@@ -44,7 +44,7 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new PredicateUnaryPredicate(new Constant(true));
+        return new PredicateUnaryPredicate(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,18 +62,17 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        UnaryPredicate p = new PredicateUnaryPredicate(new Constant(true));
+        UnaryPredicate<Object> p = new PredicateUnaryPredicate<Object>(Constant.TRUE);
         assertTrue(p.test(null));
     }
 
     public void testEquals() throws Exception {
-        UnaryPredicate p = new PredicateUnaryPredicate(new Constant(true));
+        UnaryPredicate<Object> p = new PredicateUnaryPredicate<Object>(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new PredicateUnaryPredicate(new Constant(true)));
-        assertObjectsAreNotEqual(p,new Constant(true));
-        assertObjectsAreNotEqual(p,new PredicateUnaryPredicate(new Constant(false)));
-        assertObjectsAreNotEqual(p,new Constant(false));
-        assertObjectsAreEqual(new PredicateUnaryPredicate(null),new PredicateUnaryPredicate(null));
+        assertObjectsAreEqual(p,new PredicateUnaryPredicate<Object>(Constant.TRUE));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
+        assertObjectsAreNotEqual(p,new PredicateUnaryPredicate<Object>(Constant.FALSE));
+        assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
     public void testAdaptNull() throws Exception {
@@ -81,6 +80,6 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(PredicateUnaryPredicate.adapt(new Constant(true)));
+        assertNotNull(PredicateUnaryPredicate.adapt(Constant.TRUE));
     }
 }

@@ -47,6 +47,9 @@ public final class PredicateUnaryPredicate<A> implements UnaryPredicate<A>, Seri
      * @param predicate to adapt
      */
     public PredicateUnaryPredicate(Predicate predicate) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("Predicate argument was null");
+        }
         this.predicate = predicate;
     }
 

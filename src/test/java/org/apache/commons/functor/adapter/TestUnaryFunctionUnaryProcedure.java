@@ -46,7 +46,7 @@ public class TestUnaryFunctionUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryFunctionUnaryProcedure(new Constant("K"));
+        return new UnaryFunctionUnaryProcedure<Object>(Constant.of("K"));
     }
 
     // Lifecycle
@@ -64,12 +64,12 @@ public class TestUnaryFunctionUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        class EvaluateCounter implements UnaryFunction {
+        class EvaluateCounter implements UnaryFunction<Object, Integer> {
             int count = 0;
-            public Object evaluate(Object a) { return new Integer(count++); }
+            public Integer evaluate(Object a) { return count++; }
         }
         EvaluateCounter counter = new EvaluateCounter();
-        UnaryProcedure p = new UnaryFunctionUnaryProcedure(counter);
+        UnaryProcedure<Object> p = new UnaryFunctionUnaryProcedure<Object>(counter);
         assertEquals(0,counter.count);
         p.run(null);
         assertEquals(1,counter.count);
@@ -78,13 +78,11 @@ public class TestUnaryFunctionUnaryProcedure extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        UnaryProcedure p = new UnaryFunctionUnaryProcedure(new Constant("K"));
+        UnaryProcedure<Object> p = new UnaryFunctionUnaryProcedure<Object>(Constant.of("K"));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new UnaryFunctionUnaryProcedure(new Constant("K")));
-        assertObjectsAreNotEqual(p,new NoOp());
-        assertObjectsAreNotEqual(p,new UnaryFunctionUnaryProcedure(null));
-        assertObjectsAreNotEqual(p,new UnaryFunctionUnaryProcedure(new Constant("J")));
-        assertObjectsAreEqual(new UnaryFunctionUnaryProcedure(null),new UnaryFunctionUnaryProcedure(null));
+        assertObjectsAreEqual(p,new UnaryFunctionUnaryProcedure<Object>(Constant.of("K")));
+        assertObjectsAreNotEqual(p,NoOp.INSTANCE);
+        assertObjectsAreNotEqual(p,new UnaryFunctionUnaryProcedure<Object>(Constant.of("J")));
     }
 
     public void testAdaptNull() throws Exception {
@@ -92,6 +90,6 @@ public class TestUnaryFunctionUnaryProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(UnaryFunctionUnaryProcedure.adapt(new Constant("K")));
+        assertNotNull(UnaryFunctionUnaryProcedure.adapt(Constant.of("K")));
     }
 }

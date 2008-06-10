@@ -44,7 +44,7 @@ public class TestPredicateFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new PredicateFunction(new Constant(true));
+        return new PredicateFunction(Constant.of(true));
     }
 
     // Lifecycle
@@ -62,23 +62,21 @@ public class TestPredicateFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
-        Function f = new PredicateFunction(new Constant(true));
+        Function<Boolean> f = new PredicateFunction(Constant.TRUE);
         assertEquals(Boolean.TRUE,f.evaluate());
     }
 
     public void testTestWhenFalse() throws Exception {
-        Function f = new PredicateFunction(new Constant(false));
+        Function<Boolean> f = new PredicateFunction(Constant.FALSE);
         assertEquals(Boolean.FALSE,f.evaluate());
     }
 
     public void testEquals() throws Exception {
-        Function f = new PredicateFunction(new Constant(true));
+        Function<Boolean> f = new PredicateFunction(Constant.TRUE);
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new PredicateFunction(new Constant(true)));
-        assertObjectsAreNotEqual(f,new Constant("x"));
-        assertObjectsAreNotEqual(f,new PredicateFunction(new Constant(false)));
-        assertObjectsAreNotEqual(f,new PredicateFunction(null));
-        assertObjectsAreEqual(new PredicateFunction(null),new PredicateFunction(null));
+        assertObjectsAreEqual(f,new PredicateFunction(Constant.TRUE));
+        assertObjectsAreNotEqual(f,Constant.of("x"));
+        assertObjectsAreNotEqual(f,new PredicateFunction(Constant.FALSE));
     }
 
     public void testAdaptNull() throws Exception {
@@ -86,6 +84,6 @@ public class TestPredicateFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(PredicateFunction.adapt(new Constant(true)));
+        assertNotNull(PredicateFunction.adapt(Constant.TRUE));
     }
 }

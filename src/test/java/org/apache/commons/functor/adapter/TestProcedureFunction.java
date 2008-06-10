@@ -46,7 +46,7 @@ public class TestProcedureFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ProcedureFunction(new NoOp());
+        return new ProcedureFunction<Object>(NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -64,19 +64,17 @@ public class TestProcedureFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        Function f = new ProcedureFunction(new NoOp());
+        Function<Object> f = new ProcedureFunction<Object>(NoOp.INSTANCE);
         assertNull(f.evaluate());
     }
 
     public void testEquals() throws Exception {
-        Function f = new ProcedureFunction(new NoOp());
+        Function<Object> f = new ProcedureFunction<Object>(NoOp.INSTANCE);
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new ProcedureFunction(new NoOp()));
-        assertObjectsAreNotEqual(f,new Constant("x"));
-        assertObjectsAreNotEqual(f,new ProcedureFunction(new Procedure() { public void run() { } }));
-        assertObjectsAreNotEqual(f,new Constant(null));
-        assertObjectsAreNotEqual(f,new ProcedureFunction(null));
-        assertObjectsAreEqual(new ProcedureFunction(null),new ProcedureFunction(null));
+        assertObjectsAreEqual(f,new ProcedureFunction<Object>(NoOp.INSTANCE));
+        assertObjectsAreNotEqual(f,Constant.of("x"));
+        assertObjectsAreNotEqual(f,new ProcedureFunction<Object>(new Procedure() { public void run() { } }));
+        assertObjectsAreNotEqual(f,Constant.of(null));
     }
 
     public void testAdaptNull() throws Exception {

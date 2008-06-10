@@ -45,7 +45,7 @@ public class TestProcedureUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ProcedureUnaryProcedure(new NoOp());
+        return new ProcedureUnaryProcedure<Object>(NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -63,17 +63,15 @@ public class TestProcedureUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        UnaryProcedure p = new ProcedureUnaryProcedure(new FunctionProcedure(new Constant(null)));
+        UnaryProcedure<Object> p = new ProcedureUnaryProcedure<Object>(new FunctionProcedure(Constant.of(null)));
         p.run(Boolean.TRUE);
     }
 
     public void testEquals() throws Exception {
-        UnaryProcedure p = new ProcedureUnaryProcedure(new NoOp());
+        UnaryProcedure<Object> p = new ProcedureUnaryProcedure<Object>(NoOp.INSTANCE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new ProcedureUnaryProcedure(new NoOp()));
-        assertObjectsAreNotEqual(p,new NoOp());
-        assertObjectsAreNotEqual(p,new ProcedureUnaryProcedure(null));
-        assertObjectsAreEqual(new ProcedureUnaryProcedure(null),new ProcedureUnaryProcedure(null));
+        assertObjectsAreEqual(p,new ProcedureUnaryProcedure<Object>(NoOp.INSTANCE));
+        assertObjectsAreNotEqual(p,NoOp.INSTANCE);
     }
 
     public void testAdaptNull() throws Exception {
@@ -81,6 +79,6 @@ public class TestProcedureUnaryProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(ProcedureUnaryProcedure.adapt(new NoOp()));
+        assertNotNull(ProcedureUnaryProcedure.adapt(NoOp.INSTANCE));
     }
 }

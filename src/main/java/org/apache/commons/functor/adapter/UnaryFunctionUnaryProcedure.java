@@ -48,6 +48,9 @@ public final class UnaryFunctionUnaryProcedure<A> implements UnaryProcedure<A>, 
      * @param function the {@link UnaryFunction UnaryFunction} to wrap
      */
     public UnaryFunctionUnaryProcedure(UnaryFunction<? super A, ?> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("UnaryFunction argument was null");
+        }
         this.function = function;
     }
 

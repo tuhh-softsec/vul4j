@@ -47,6 +47,9 @@ public final class ProcedureFunction<T> implements Function<T>, Serializable {
      * @param procedure to adapt
      */
     public ProcedureFunction(Procedure procedure) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("Procedure argument was null");
+        }
         this.procedure = procedure;
     }
 

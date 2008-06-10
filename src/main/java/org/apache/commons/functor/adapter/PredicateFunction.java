@@ -46,6 +46,9 @@ public final class PredicateFunction implements Function<Boolean>, Serializable 
      * @param predicate to adapt
      */
     public PredicateFunction(Predicate predicate) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("Predicate argument was null");
+        }
         this.predicate = predicate;
     }
 

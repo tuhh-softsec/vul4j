@@ -47,6 +47,9 @@ public final class ProcedureUnaryProcedure<A> implements UnaryProcedure<A>, Seri
      * @param procedure to adapt
      */
     public ProcedureUnaryProcedure(Procedure procedure) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("Procedure argument was null");
+        }
         this.procedure = procedure;
     }
 
