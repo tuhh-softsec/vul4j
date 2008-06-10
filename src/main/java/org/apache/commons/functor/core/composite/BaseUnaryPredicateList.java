@@ -105,6 +105,9 @@ abstract class BaseUnaryPredicateList<A> implements UnaryPredicate<A>, Serializa
      * @param p UnaryPredicate to add
      */
     protected void addUnaryPredicate(UnaryPredicate<? super A> p) {
+        if (p == null) {
+            throw new IllegalArgumentException("Cannot add null UnaryPredicate");
+        }
         list.add(p);
     }
 

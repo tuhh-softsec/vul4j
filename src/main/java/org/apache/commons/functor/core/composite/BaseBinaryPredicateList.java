@@ -105,6 +105,9 @@ abstract class BaseBinaryPredicateList<L, R> implements BinaryPredicate<L, R>, S
      * @param p BinaryPredicate to add
      */
     protected void addBinaryPredicate(BinaryPredicate<? super L, ? super R> p) {
+        if (p == null) {
+            throw new IllegalArgumentException("Cannot add null BinaryPredicate");
+        }
         list.add(p);
     }
 

@@ -104,6 +104,9 @@ abstract class BasePredicateList implements Predicate, Serializable {
      * @param p Predicate to add
      */
     protected void addPredicate(Predicate p) {
+        if (p == null) {
+            throw new IllegalArgumentException("Cannot add null Predicate");
+        }
         list.add(p);
     }
 
