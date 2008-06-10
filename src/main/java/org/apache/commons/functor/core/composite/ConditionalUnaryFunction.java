@@ -53,14 +53,20 @@ public final class ConditionalUnaryFunction<A, T> implements UnaryFunction<A, T>
     /**
      * Create a new ConditionalUnaryFunction.
      * @param ifPred if
-     * @param thenPred then
-     * @param elsePred else
+     * @param thenFunc then
+     * @param elseFunc else
      */
-    public ConditionalUnaryFunction(UnaryPredicate<? super A> ifPred, UnaryFunction<? super A, ? extends T> thenPred,
-            UnaryFunction<? super A, ? extends T> elsePred) {
+    public ConditionalUnaryFunction(UnaryPredicate<? super A> ifPred, UnaryFunction<? super A, ? extends T> thenFunc,
+            UnaryFunction<? super A, ? extends T> elseFunc) {
+        if (ifPred == null) {
+            throw new IllegalArgumentException("UnaryPredicate argument was null");
+        }
         this.ifPred = ifPred;
-        this.thenFunc = thenPred;
-        this.elseFunc = elsePred;
+        if (thenFunc == null || elseFunc == null) {
+            throw new IllegalArgumentException("One or more UnaryFunction arguments was null");
+        }
+        this.thenFunc = thenFunc;
+        this.elseFunc = elseFunc;
     }
 
     // predicate interface

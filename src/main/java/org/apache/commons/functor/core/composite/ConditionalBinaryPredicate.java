@@ -57,6 +57,9 @@ public final class ConditionalBinaryPredicate<L, R> implements BinaryPredicate<L
      */
     public ConditionalBinaryPredicate(BinaryPredicate<? super L, ? super R> ifPred,
             BinaryPredicate<? super L, ? super R> thenPred, BinaryPredicate<? super L, ? super R> elsePred) {
+        if (ifPred == null || thenPred == null || elsePred == null) {
+            throw new IllegalArgumentException("One or more BinaryPredicate arguments was null");
+        }
         this.ifPred = ifPred;
         this.thenPred = thenPred;
         this.elsePred = elsePred;

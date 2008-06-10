@@ -70,7 +70,13 @@ public final class ConditionalBinaryProcedure<L, R> implements BinaryProcedure<L
      */
     public ConditionalBinaryProcedure(BinaryPredicate<? super L, ? super R> ifPred,
             BinaryProcedure<? super L, ? super R> thenProc, BinaryProcedure<? super L, ? super R> elseProc) {
+        if (ifPred == null) {
+            throw new IllegalArgumentException("BinaryPredicate argument was null");
+        }
         this.ifPred = ifPred;
+        if (thenProc == null || elseProc == null) {
+            throw new IllegalArgumentException("One or more BinaryProcedure arguments was null");
+        }
         this.thenProc = thenProc;
         this.elseProc = elseProc;
     }

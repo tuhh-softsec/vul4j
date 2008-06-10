@@ -44,10 +44,10 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalUnaryPredicate(
-            new Constant(true),
-            new Constant(false),
-            new Constant(true));
+        return new ConditionalUnaryPredicate<Object>(
+            Constant.TRUE,
+            Constant.FALSE,
+            Constant.TRUE);
     }
 
     // Lifecycle
@@ -65,43 +65,31 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
-            new Identity(),
-            new Constant(true),
-            new Constant(false));
+        ConditionalUnaryPredicate<Object> p = new ConditionalUnaryPredicate<Object>(
+            Identity.INSTANCE,
+            Constant.TRUE,
+            Constant.FALSE);
         assertTrue(p.test(Boolean.TRUE));
         assertTrue(!p.test(Boolean.FALSE));
     }
 
     public void testEquals() throws Exception {
-        ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
-            new Identity(),
-            new Constant(true),
-            new Constant(true));
+        ConditionalUnaryPredicate<Object> p = new ConditionalUnaryPredicate<Object>(
+            Identity.INSTANCE,
+            Constant.TRUE,
+            Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new ConditionalUnaryPredicate(
-            new Identity(),
-            new Constant(true),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new Identity(),
-            new Constant(false),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new Constant(true),
-            new Constant(true),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            null,
-            new Constant(true),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new Constant(true),
-            null,
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new Constant(true),
-            new Constant(true),
-            null));
+        assertObjectsAreEqual(p,new ConditionalUnaryPredicate<Object>(
+            Identity.INSTANCE,
+            Constant.TRUE,
+            Constant.TRUE));
+        assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate<Object>(
+            Identity.INSTANCE,
+            Constant.FALSE,
+            Constant.TRUE));
+        assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate<Object>(
+            Constant.TRUE,
+            Constant.TRUE,
+            Constant.TRUE));
     }
 }

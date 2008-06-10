@@ -43,10 +43,10 @@ public class TestConditionalBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalBinaryPredicate(
-            new Constant(true),
-            new Constant(false),
-            new Constant(true));
+        return new ConditionalBinaryPredicate<Object, Object>(
+            Constant.TRUE,
+            Constant.FALSE,
+            Constant.TRUE);
     }
 
     // Lifecycle
@@ -65,50 +65,38 @@ public class TestConditionalBinaryPredicate extends BaseFunctorTest {
 
     public void testTest() throws Exception {
         {
-            ConditionalBinaryPredicate p = new ConditionalBinaryPredicate(
-                new Constant(true),
-                new Constant(true),
-                new Constant(false));
+            ConditionalBinaryPredicate<Object, Object> p = new ConditionalBinaryPredicate<Object, Object>(
+                Constant.TRUE,
+                Constant.TRUE,
+                Constant.FALSE);
             assertTrue(p.test(null,null));
         }
         {
-            ConditionalBinaryPredicate p = new ConditionalBinaryPredicate(
-                new Constant(false),
-                new Constant(true),
-                new Constant(false));
-            assertTrue(!p.test(null,null));
+            ConditionalBinaryPredicate<Object, Object> p = new ConditionalBinaryPredicate<Object, Object>(
+                Constant.FALSE,
+                Constant.TRUE,
+                Constant.FALSE);
+            assertFalse(p.test(null,null));
         }
     }
 
     public void testEquals() throws Exception {
-        ConditionalBinaryPredicate p = new ConditionalBinaryPredicate(
-            new Constant(true),
-            new Constant(true),
-            new Constant(false));
+        ConditionalBinaryPredicate<Object, Object> p = new ConditionalBinaryPredicate<Object, Object>(
+            Constant.TRUE,
+            Constant.TRUE,
+            Constant.FALSE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new ConditionalBinaryPredicate(
-            new Constant(true),
-            new Constant(true),
-            new Constant(false)));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryPredicate(
-            new Constant(true),
-            new Constant(false),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryPredicate(
-            new Constant(true),
-            new Constant(true),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryPredicate(
-            null,
-            new Constant(true),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryPredicate(
-            new Constant(true),
-            null,
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalBinaryPredicate(
-            new Constant(true),
-            new Constant(true),
-            null));
+        assertObjectsAreEqual(p,new ConditionalBinaryPredicate<Object, Object>(
+            Constant.TRUE,
+            Constant.TRUE,
+            Constant.FALSE));
+        assertObjectsAreNotEqual(p,new ConditionalBinaryPredicate<Object, Object>(
+            Constant.TRUE,
+            Constant.FALSE,
+            Constant.TRUE));
+        assertObjectsAreNotEqual(p,new ConditionalBinaryPredicate<Object, Object>(
+            Constant.TRUE,
+            Constant.TRUE,
+            Constant.TRUE));
     }
 }

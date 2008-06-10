@@ -57,6 +57,9 @@ public final class ConditionalUnaryPredicate<A> implements UnaryPredicate<A>, Se
      */
     public ConditionalUnaryPredicate(UnaryPredicate<? super A> ifPred, UnaryPredicate<? super A> thenPred,
             UnaryPredicate<? super A> elsePred) {
+        if (ifPred == null || thenPred == null || elsePred == null) {
+            throw new IllegalArgumentException("One or more UnaryPredicate arguments was null");
+        }
         this.ifPred = ifPred;
         this.thenPred = thenPred;
         this.elsePred = elsePred;

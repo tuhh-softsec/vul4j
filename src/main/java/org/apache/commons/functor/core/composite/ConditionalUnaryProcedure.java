@@ -66,7 +66,13 @@ public final class ConditionalUnaryProcedure<A> implements UnaryProcedure<A>, Se
      * @param elseProc else
      */
     public ConditionalUnaryProcedure(UnaryPredicate<? super A> ifPred, UnaryProcedure<? super A> thenProc, UnaryProcedure<? super A> elseProc) {
+        if (ifPred == null) {
+            throw new IllegalArgumentException("UnaryPredicate argument was null");
+        }
         this.ifPred = ifPred;
+        if (thenProc == null || elseProc == null) {
+            throw new IllegalArgumentException("One or more UnaryProcedure arguments was null");
+        }
         this.thenProc = thenProc;
         this.elseProc = elseProc;
     }

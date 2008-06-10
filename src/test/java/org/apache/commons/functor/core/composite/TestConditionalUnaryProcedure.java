@@ -46,10 +46,10 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalUnaryProcedure(
-            new Constant(true),
-            new NoOp(),
-            new NoOp());
+        return new ConditionalUnaryProcedure<Object>(
+            Constant.TRUE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -69,8 +69,8 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
     public void testRun() throws Exception {
         RunCounter left = new RunCounter();
         RunCounter right = new RunCounter();
-        ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
-            new Identity(),
+        ConditionalUnaryProcedure<Object> p = new ConditionalUnaryProcedure<Object>(
+            Identity.INSTANCE,
             left,
             right);
         assertEquals(0,left.count);
@@ -87,37 +87,25 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
-            new Identity(),
-            new NoOp(),
-            new NoOp());
+        ConditionalUnaryProcedure<Object> p = new ConditionalUnaryProcedure<Object>(
+            Identity.INSTANCE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new ConditionalUnaryProcedure(
-            new Identity(),
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new Constant(true),
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            null,
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new Identity(),
-            null,
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new Identity(),
-            new NoOp(),
-            null));
+        assertObjectsAreEqual(p,new ConditionalUnaryProcedure<Object>(
+            Identity.INSTANCE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE));
+        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure<Object>(
+            Constant.TRUE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE));
     }
 
     // Classes
     // ------------------------------------------------------------------------
 
-    static class RunCounter implements UnaryProcedure {
+    static class RunCounter implements UnaryProcedure<Object> {
         public void run(Object obj) {
             count++;
         }

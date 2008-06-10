@@ -60,10 +60,10 @@ public final class ConditionalBinaryFunction<L, R, T> implements BinaryFunction<
             BinaryFunction<? super L, ? super R, ? extends T> thenFunc,
             BinaryFunction<? super L, ? super R, ? extends T> elseFunc) {
         if (ifPred == null) {
-            throw new IllegalArgumentException("test predicate must not be null");
+            throw new IllegalArgumentException("BinaryPredicate argument was null");
         }
         if (thenFunc == null || elseFunc == null) {
-            throw new IllegalArgumentException("neither resulting function may be null");
+            throw new IllegalArgumentException("One or more BinaryFunction arguments was null");
         }
         this.ifPred = ifPred;
         this.thenFunc = thenFunc;

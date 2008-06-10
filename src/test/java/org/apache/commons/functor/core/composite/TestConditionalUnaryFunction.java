@@ -44,10 +44,10 @@ public class TestConditionalUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalUnaryFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant("right"));
+        return new ConditionalUnaryFunction<Object, Object>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of("right"));
     }
 
     // Lifecycle
@@ -65,43 +65,31 @@ public class TestConditionalUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        ConditionalUnaryFunction f = new ConditionalUnaryFunction(
-            new Identity(),
-            new Constant("left"),
-            new Constant("right"));
+        ConditionalUnaryFunction<Object, Object> f = new ConditionalUnaryFunction<Object, Object>(
+            Identity.INSTANCE,
+            Constant.of("left"),
+            Constant.of("right"));
         assertEquals("left",f.evaluate(Boolean.TRUE));
         assertEquals("right",f.evaluate(Boolean.FALSE));
     }
 
     public void testEquals() throws Exception {
-        ConditionalUnaryFunction f = new ConditionalUnaryFunction(
-            new Identity(),
-            new Constant("left"),
-            new Constant("right"));
+        ConditionalUnaryFunction<Object, Object> f = new ConditionalUnaryFunction<Object, Object>(
+            Identity.INSTANCE,
+            Constant.of("left"),
+            Constant.of("right"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new ConditionalUnaryFunction(
-            new Identity(),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            new Identity(),
-            new Constant(null),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            null,
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            new Constant(true),
-            null,
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            new Constant(true),
-            new Constant("left"),
-            null));
+        assertObjectsAreEqual(f,new ConditionalUnaryFunction<Object, Object>(
+            Identity.INSTANCE,
+            Constant.of("left"),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new ConditionalUnaryFunction<Object, Object>(
+            Identity.INSTANCE,
+            Constant.of(null),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new ConditionalUnaryFunction<Object, Object>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of("right")));
     }
 }
