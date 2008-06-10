@@ -37,9 +37,20 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  *
  */
 public final class IsNotEquivalent<T> implements BinaryPredicate<T, T>, Serializable {
-    private static final IsNotEquivalent<Comparable<?>> COMPARABLE_INSTANCE = new IsNotEquivalent<Comparable<?>>(ComparableComparator.instance());
+    /**
+     * Basic IsNotEquivalent instance.
+     */
+    public static final IsNotEquivalent<Comparable<?>> INSTANCE = IsNotEquivalent.<Comparable<?>>instance();
 
     private Comparator<? super T> comparator = null;
+
+    /**
+     * Create a new IsNotEquivalent.
+     */
+    @SuppressWarnings("unchecked")
+    public IsNotEquivalent() {
+        this(ComparableComparator.INSTANCE);
+    }
 
     /**
      * Construct a <code>IsNotEquivalent</code> {@link BinaryPredicate predicate}
@@ -103,8 +114,9 @@ public final class IsNotEquivalent<T> implements BinaryPredicate<T, T>, Serializ
      * Get an IsNotEquivalent instance.
      * @return IsNotEquivalent
      */
-    public static final IsNotEquivalent<Comparable<?>> instance() {
-        return COMPARABLE_INSTANCE;
+    @SuppressWarnings("unchecked")
+    public static final <T extends Comparable<?>> IsNotEquivalent<T> instance() {
+        return new IsNotEquivalent<T>(ComparableComparator.INSTANCE);
     }
 
     /**
@@ -112,7 +124,7 @@ public final class IsNotEquivalent<T> implements BinaryPredicate<T, T>, Serializ
      * @param right Comparable against which UnaryPredicate arguments will be compared.
      * @return UnaryPredicate
      */
-    public static final UnaryPredicate<Comparable<?>> instance(Comparable<?> right) {
+    public static final <T extends Comparable<?>> UnaryPredicate<T> instance(T right) {
         return RightBoundPredicate.bind(instance(), right);
     }
 

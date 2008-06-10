@@ -37,10 +37,21 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  *
  */
 public final class IsEquivalent<T> implements BinaryPredicate<T, T>, Serializable {
-    private static final IsEquivalent<Comparable<?>> COMPARABLE_INSTANCE = new IsEquivalent<Comparable<?>>(
-            ComparableComparator.instance());
+    /**
+     * Basic IsEquivalent instance.
+     */
+    @SuppressWarnings("unchecked")
+    public static final IsEquivalent<Comparable<?>> INSTANCE = IsEquivalent.<Comparable<?>> instance();
 
     private Comparator<? super T> comparator;
+
+    /**
+     * Create a new IsEquivalent.
+     */
+    @SuppressWarnings("unchecked")
+    public IsEquivalent() {
+        this(ComparableComparator.INSTANCE);
+    }
 
     /**
      * Construct an <code>IsEquivalent</code> {@link BinaryPredicate predicate}
@@ -102,10 +113,12 @@ public final class IsEquivalent<T> implements BinaryPredicate<T, T>, Serializabl
 
     /**
      * Get a basic IsEquivalent instance.
-     * @return IsEquivalent
+     * @param T
+     * @return IsEquivalent<T>
      */
-    public static final IsEquivalent<Comparable<?>> instance() {
-        return COMPARABLE_INSTANCE;
+    @SuppressWarnings("unchecked")
+    public static final <T extends Comparable<?>> IsEquivalent<T> instance() {
+        return new IsEquivalent<T>(ComparableComparator.INSTANCE);
     }
 
     /**
@@ -113,7 +126,7 @@ public final class IsEquivalent<T> implements BinaryPredicate<T, T>, Serializabl
      * @param right argument
      * @return UnaryPredicate
      */
-    public static final UnaryPredicate<Comparable<?>> instance(Comparable<?> right) {
+    public static final <T extends Comparable<?>> UnaryPredicate<T> instance(T right) {
         return RightBoundPredicate.bind(instance(), right);
     }
 
