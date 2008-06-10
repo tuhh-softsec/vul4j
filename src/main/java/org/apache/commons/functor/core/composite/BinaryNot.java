@@ -37,16 +37,19 @@ import org.apache.commons.functor.BinaryPredicate;
 public final class BinaryNot<L, R> implements BinaryPredicate<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate<? super L, ? super R> predicate = null;
+    private BinaryPredicate<? super L, ? super R> predicate;
 
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new BinaryNot.
-     * @param p BinaryPredicate to negate
+     * @param predicate BinaryPredicate to negate
      */
-    public BinaryNot(BinaryPredicate<? super L, ? super R> p) {
-        this.predicate = p;
+    public BinaryNot(BinaryPredicate<? super L, ? super R> predicate) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("BinaryPredicate argument was null");
+        }
+        this.predicate = predicate;
     }
 
     // predicate interface

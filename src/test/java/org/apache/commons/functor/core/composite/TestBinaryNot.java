@@ -44,7 +44,7 @@ public class TestBinaryNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
+        return new BinaryNot<Object, Object>(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,20 +62,19 @@ public class TestBinaryNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
+        BinaryPredicate<Object, Object> truePred = new BinaryNot<Object, Object>(Constant.FALSE);
         assertTrue(truePred.test(null,null));
         assertTrue(truePred.test("xyzzy","abcde"));
         assertTrue(truePred.test("xyzzy",new Integer(3)));
     }
 
     public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
+        BinaryNot<Object, Object> p = new BinaryNot<Object, Object>(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+        assertObjectsAreEqual(p,new BinaryNot<Object, Object>(Constant.TRUE));
+        assertObjectsAreEqual(p,BinaryNot.not(Constant.TRUE));
+        assertObjectsAreNotEqual(p,new BinaryNot<Object, Object>(Constant.FALSE));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
     public void testNotNull() throws Exception {
