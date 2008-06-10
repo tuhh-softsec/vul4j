@@ -75,7 +75,6 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
         assertObjectsAreNotEqual(p,new Constant(true));
         assertObjectsAreNotEqual(p,new IgnoreRightPredicate(new Constant(false)));
         assertObjectsAreNotEqual(p,new Constant(false));
-        assertObjectsAreEqual(new IgnoreRightPredicate(null),new IgnoreRightPredicate(null));
     }
 
     public void testAdaptNull() throws Exception {
