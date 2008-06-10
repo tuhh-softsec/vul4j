@@ -66,6 +66,7 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
         assertFalse(Composite.predicate(Constant.FALSE, Constant.of(4)).test("xyzzy"));
     }
 
+    @SuppressWarnings("unchecked")
     public void testNullNotAllowed() throws Exception {
         try {
             new CompositeUnaryPredicate(null);
