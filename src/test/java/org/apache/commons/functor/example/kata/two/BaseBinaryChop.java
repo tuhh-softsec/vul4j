@@ -26,6 +26,7 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public abstract class BaseBinaryChop implements BinaryChop {
     public int find(int seeking, int[] in) {
         Object[] In = new Object[in.length];

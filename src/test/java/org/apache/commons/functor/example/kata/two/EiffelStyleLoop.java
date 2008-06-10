@@ -58,6 +58,7 @@ public class EiffelStyleLoop implements Procedure {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public EiffelStyleLoop variant(final Function function) {
         return variant(new Predicate() {
             public boolean test() {
