@@ -38,34 +38,88 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BoundFunction<A, T> implements Function<T>, Serializable {
-    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction<? super A, ? extends T> function;
-    /** The parameter to pass to that function. */
-    private A param = null;
+public final class BoundFunction<T> implements Function<T>, Serializable {
+    private class Helper<A> implements Function<T>, Serializable {
+        /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+        private UnaryFunction<? super A, ? extends T> function;
+
+        /** The parameter to pass to that function. */
+        private A arg = null;
+
+        private Helper(UnaryFunction<? super A, ? extends T> function, A arg) {
+            this.function = function;
+            this.arg = arg;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public T evaluate() {
+            return function.evaluate(arg);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this || obj instanceof Helper && equals((Helper<?>) obj);
+        }
+
+        private boolean equals(Helper<?> that) {
+            if (that != null && that.function.equals(this.function)) {
+                return that.arg == this.arg || that.arg != null && that.arg.equals(this.arg);
+            }
+            return false;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+            int result = "BoundFunction$Helper".hashCode();
+            result <<= 2;
+            result |= function.hashCode();
+            result <<= 2;
+            return arg == null ? result : result | arg.hashCode();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String toString() {
+            return function.toString() + "(" + arg + ")";
+        }
+    }
+
+    private Helper<?> helper;
 
     /**
      * Create a new BoundFunction.
      * @param function the function to adapt
      * @param arg the constant argument to use
      */
-    public BoundFunction(UnaryFunction<? super A, ? extends T> function, A arg) {
-        this.function = function;
-        this.param = arg;
+    public <A> BoundFunction(UnaryFunction<? super A, ? extends T> function, A arg) {
+        if (function == null) {
+            throw new IllegalArgumentException("UnaryFunction argument was null");
+        }
+        this.helper = new Helper<A>(function, arg);
     }
 
     /**
      * {@inheritDoc}
      */
     public T evaluate() {
-        return function.evaluate(param);
+        return helper.evaluate();
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BoundFunction && equals((BoundFunction<?, ?>) that));
+        return that == this || (that instanceof BoundFunction && equals((BoundFunction<?>) that));
     }
 
     /**
@@ -73,34 +127,22 @@ public final class BoundFunction<A, T> implements Function<T>, Serializable {
      * @param that BoundFunction to test
      * @return boolean
      */
-    public boolean equals(BoundFunction<?, ?> that) {
-        return null != that
-                && (null == function ? null == that.function : function.equals(that.function))
-                && (null == param ? null == that.param : param.equals(that.param));
-
+    public boolean equals(BoundFunction<?> that) {
+        return null != that && that.helper.equals(this.helper);
     }
 
     /**
      * {@inheritDoc}
      */
     public int hashCode() {
-        int hash = "BoundFunction".hashCode();
-        if (null != function) {
-            hash <<= 2;
-            hash ^= function.hashCode();
-        }
-        if (null != param) {
-            hash <<= 2;
-            hash ^= param.hashCode();
-        }
-        return hash;
+        return "BoundFunction".hashCode() << 8 | helper.hashCode();
     }
 
     /**
      * {@inheritDoc}
      */
     public String toString() {
-        return "BoundFunction<" + function + "(" + param + ")>";
+        return "BoundFunction<" + helper + ">";
     }
 
     /**
@@ -111,7 +153,8 @@ public final class BoundFunction<A, T> implements Function<T>, Serializable {
      * argument.
      * When the given <code>UnaryFunction</code> is <code>null</code>,
      * returns <code>null</code>.
-     *
+     * @param <A>
+     * @param <T>
      * @param function the possibly-<code>null</code>
      *        {@link UnaryFunction UnaryFunction} to adapt
      * @param arg the object to bind as a constant argument
@@ -119,8 +162,8 @@ public final class BoundFunction<A, T> implements Function<T>, Serializable {
      *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
      *         if the given <code>UnaryFunction</code> is <code>null</code>
      */
-    public static <A, T> BoundFunction<A, T> bind(UnaryFunction<? super A, ? extends T> function, A arg) {
-        return null == function ? null : new BoundFunction<A, T>(function, arg);
+    public static <A, T> BoundFunction<T> bind(UnaryFunction<? super A, ? extends T> function, A arg) {
+        return null == function ? null : new BoundFunction<T>(function, arg);
     }
 
 }

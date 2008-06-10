@@ -38,19 +38,23 @@ import org.apache.commons.functor.UnaryPredicate;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
-public final class BoundPredicate<A> implements Predicate, Serializable {
+public final class BoundPredicate implements Predicate, Serializable {
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate<? super A> predicate;
+    private UnaryPredicate<Object> predicate;
     /** The parameter to pass to that predicate. */
-    private A param;
+    private Object param;
 
     /**
      * Create a new BoundPredicate.
      * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
-    public BoundPredicate(UnaryPredicate<? super A> predicate, A arg) {
-        this.predicate = predicate;
+    @SuppressWarnings("unchecked")
+    public <A> BoundPredicate(UnaryPredicate<? super A> predicate, A arg) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("UnaryPredicate argument was null");
+        }
+        this.predicate = (UnaryPredicate<Object>) predicate;
         this.param = arg;
     }
 
@@ -65,7 +69,7 @@ public final class BoundPredicate<A> implements Predicate, Serializable {
      * {@inheritDoc}
      */
     public boolean equals(Object that) {
-        return that == this || (that instanceof BoundPredicate && equals((BoundPredicate<?>) that));
+        return that == this || (that instanceof BoundPredicate && equals((BoundPredicate) that));
     }
 
     /**
@@ -73,7 +77,7 @@ public final class BoundPredicate<A> implements Predicate, Serializable {
      * @param that BoundPredicate to test
      * @return boolean
      */
-    public boolean equals(BoundPredicate<?> that) {
+    public boolean equals(BoundPredicate that) {
         return null != that
                 && (null == predicate ? null == that.predicate : predicate.equals(that.predicate))
                 && (null == param ? null == that.param : param.equals(that.param));
@@ -119,8 +123,8 @@ public final class BoundPredicate<A> implements Predicate, Serializable {
      *         {@link UnaryPredicate UnaryPredicate}, or <code>null</code>
      *         if the given <code>UnaryPredicate</code> is <code>null</code>
      */
-    public static <A> BoundPredicate<A> bind(UnaryPredicate<? super A> predicate, A arg) {
-        return null == predicate ? null : new BoundPredicate<A>(predicate, arg);
+    public static <A> BoundPredicate bind(UnaryPredicate<? super A> predicate, A arg) {
+        return null == predicate ? null : new BoundPredicate(predicate, arg);
     }
 
 }

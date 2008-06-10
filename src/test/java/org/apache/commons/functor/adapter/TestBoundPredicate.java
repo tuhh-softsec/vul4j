@@ -45,7 +45,7 @@ public class TestBoundPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BoundPredicate(new Constant(true),"xyzzy");
+        return new BoundPredicate(Constant.TRUE,"xyzzy");
     }
 
     // Lifecycle
@@ -64,25 +64,23 @@ public class TestBoundPredicate extends BaseFunctorTest {
 
     public void testTest() throws Exception {
         {
-            Predicate p = new BoundPredicate(new UnaryFunctionUnaryPredicate(new Identity()),Boolean.TRUE);
+            Predicate p = new BoundPredicate(new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean>instance()),Boolean.TRUE);
             assertEquals(true,p.test());
         }
         {
-            Predicate p = new BoundPredicate(new UnaryFunctionUnaryPredicate(new Identity()),Boolean.FALSE);
+            Predicate p = new BoundPredicate(new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean>instance()),Boolean.FALSE);
             assertEquals(false,p.test());
         }
     }
 
     public void testEquals() throws Exception {
-        Predicate f = new BoundPredicate(new Constant(true),"xyzzy");
+        Predicate f = new BoundPredicate(Constant.TRUE,"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BoundPredicate(new Constant(true),"xyzzy"));
-        assertObjectsAreNotEqual(f,new Constant(true));
-        assertObjectsAreNotEqual(f,new BoundPredicate(new Constant(true),"foo"));
-        assertObjectsAreNotEqual(f,new BoundPredicate(new Constant(false),"xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundPredicate(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundPredicate(new Constant(true),null));
-        assertObjectsAreEqual(new BoundPredicate(null,null),new BoundPredicate(null,null));
+        assertObjectsAreEqual(f,new BoundPredicate(Constant.TRUE,"xyzzy"));
+        assertObjectsAreNotEqual(f,Constant.TRUE);
+        assertObjectsAreNotEqual(f,new BoundPredicate(Constant.TRUE,"foo"));
+        assertObjectsAreNotEqual(f,new BoundPredicate(Constant.FALSE,"xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundPredicate(Constant.TRUE,null));
     }
 
     public void testAdaptNull() throws Exception {
@@ -90,7 +88,7 @@ public class TestBoundPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BoundPredicate.bind(new Constant(true),"xyzzy"));
-        assertNotNull(BoundPredicate.bind(new Constant(true),null));
+        assertNotNull(BoundPredicate.bind(Constant.TRUE,"xyzzy"));
+        assertNotNull(BoundPredicate.bind(Constant.TRUE,null));
     }
 }

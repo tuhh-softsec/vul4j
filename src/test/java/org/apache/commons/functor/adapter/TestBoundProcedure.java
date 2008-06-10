@@ -45,7 +45,7 @@ public class TestBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BoundProcedure(new NoOp(),"xyzzy");
+        return new BoundProcedure(NoOp.INSTANCE,"xyzzy");
     }
 
     // Lifecycle
@@ -63,20 +63,18 @@ public class TestBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        Procedure p = new BoundProcedure(new UnaryFunctionUnaryProcedure(new Identity()),Boolean.TRUE);
+        Procedure p = new BoundProcedure(new UnaryFunctionUnaryProcedure<Object>(Identity.INSTANCE),Boolean.TRUE);
         p.run();
     }
 
     public void testEquals() throws Exception {
-        Procedure f = new BoundProcedure(new NoOp(),"xyzzy");
+        Procedure f = new BoundProcedure(NoOp.INSTANCE,"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BoundProcedure(new NoOp(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new NoOp());
-        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOp(),"foo"));
-        assertObjectsAreNotEqual(f,new BoundProcedure(new UnaryFunctionUnaryProcedure(new Identity()),"xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundProcedure(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOp(),null));
-        assertObjectsAreEqual(new BoundProcedure(null,null),new BoundProcedure(null,null));
+        assertObjectsAreEqual(f,new BoundProcedure(NoOp.INSTANCE,"xyzzy"));
+        assertObjectsAreNotEqual(f,NoOp.INSTANCE);
+        assertObjectsAreNotEqual(f,new BoundProcedure(NoOp.INSTANCE,"foo"));
+        assertObjectsAreNotEqual(f,new BoundProcedure(new UnaryFunctionUnaryProcedure<Object>(Identity.INSTANCE),"xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundProcedure(NoOp.INSTANCE,null));
     }
 
     public void testAdaptNull() throws Exception {

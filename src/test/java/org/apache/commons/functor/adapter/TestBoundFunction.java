@@ -45,7 +45,7 @@ public class TestBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BoundFunction(new Identity(),"xyzzy");
+        return new BoundFunction<Object>(Identity.INSTANCE,"xyzzy");
     }
 
     // Lifecycle
@@ -63,20 +63,18 @@ public class TestBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        Function f = new BoundFunction(new Identity(),"xyzzy");
+        Function<Object> f = new BoundFunction<Object>(Identity.INSTANCE,"xyzzy");
         assertEquals("xyzzy",f.evaluate());
     }
 
     public void testEquals() throws Exception {
-        Function f = new BoundFunction(new Identity(),"xyzzy");
+        Function<Object> f = new BoundFunction<Object>(Identity.INSTANCE,"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BoundFunction(new Identity(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new Constant("xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundFunction(new Identity(),"foo"));
-        assertObjectsAreNotEqual(f,new BoundFunction(new Constant("xyzzy"),"foo"));
-        assertObjectsAreNotEqual(f,new BoundFunction(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundFunction(new Identity(),null));
-        assertObjectsAreEqual(new BoundFunction(null,null),new BoundFunction(null,null));
+        assertObjectsAreEqual(f,new BoundFunction<Object>(Identity.INSTANCE,"xyzzy"));
+        assertObjectsAreNotEqual(f,Constant.of("xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundFunction<Object>(Identity.INSTANCE,"foo"));
+        assertObjectsAreNotEqual(f,new BoundFunction<Object>(Constant.of("xyzzy"),"foo"));
+        assertObjectsAreNotEqual(f,new BoundFunction<Object>(Identity.INSTANCE,null));
     }
 
     public void testAdaptNull() throws Exception {
@@ -84,7 +82,7 @@ public class TestBoundFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BoundFunction.bind(new Identity(),"xyzzy"));
-        assertNotNull(BoundFunction.bind(new Identity(),null));
+        assertNotNull(BoundFunction.bind(Identity.INSTANCE,"xyzzy"));
+        assertNotNull(BoundFunction.bind(Identity.INSTANCE,null));
     }
 }
