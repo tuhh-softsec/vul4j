@@ -46,6 +46,9 @@ public final class FunctionPredicate implements Predicate, Serializable {
      * @param function to adapt
      */
     public FunctionPredicate(Function<Boolean> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("Function argument was null");
+        }
         this.function = function;
     }
 

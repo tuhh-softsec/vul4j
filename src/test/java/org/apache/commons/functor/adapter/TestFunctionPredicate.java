@@ -44,7 +44,7 @@ public class TestFunctionPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FunctionPredicate(new Constant(Boolean.TRUE));
+        return new FunctionPredicate(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,43 +62,21 @@ public class TestFunctionPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
-        Predicate p = new FunctionPredicate(new Constant(Boolean.TRUE));
+        Predicate p = new FunctionPredicate(Constant.TRUE);
         assertTrue(p.test());
     }
 
     public void testTestWhenFalse() throws Exception {
-        Predicate p = new FunctionPredicate(new Constant(Boolean.FALSE));
+        Predicate p = new FunctionPredicate(Constant.FALSE);
         assertTrue(!p.test());
     }
 
-    public void testTestWhenNull() throws Exception {
-        Predicate p = new FunctionPredicate(new Constant(null));
-        try {
-            p.test();
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
-        }
-    }
-
-    public void testTestWhenNonBoolean() throws Exception {
-        Predicate p = new FunctionPredicate(new Constant(new Integer(2)));
-        try {
-            p.test();
-            fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
-            // expected
-        }
-    }
-
     public void testEquals() throws Exception {
-        Predicate p = new FunctionPredicate(new Constant(Boolean.TRUE));
+        Predicate p = new FunctionPredicate(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new FunctionPredicate(new Constant(Boolean.TRUE)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new FunctionPredicate(null));
-        assertObjectsAreNotEqual(p,new FunctionPredicate(new Constant(Boolean.FALSE)));
-        assertObjectsAreEqual(new FunctionPredicate(null),new FunctionPredicate(null));
+        assertObjectsAreEqual(p,new FunctionPredicate(Constant.TRUE));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
+        assertObjectsAreNotEqual(p,new FunctionPredicate(Constant.FALSE));
     }
 
     public void testAdaptNull() throws Exception {
@@ -106,6 +84,6 @@ public class TestFunctionPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(FunctionPredicate.adapt(new Constant(Boolean.TRUE)));
+        assertNotNull(FunctionPredicate.adapt(Constant.TRUE));
     }
 }
