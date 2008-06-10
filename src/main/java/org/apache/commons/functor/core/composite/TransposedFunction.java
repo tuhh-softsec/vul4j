@@ -42,19 +42,19 @@ import org.apache.commons.functor.BinaryFunction;
 public class TransposedFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryFunction<? super R, ? super L, ? extends T> function = null;
+    private BinaryFunction<? super R, ? super L, ? extends T> function;
 
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new TransposedFunction.
-     * @param f BinaryFunction to transpose.
+     * @param function BinaryFunction to transpose.
      */
-    public TransposedFunction(BinaryFunction<? super R, ? super L, ? extends T> f) {
-        if (f == null) {
+    public TransposedFunction(BinaryFunction<? super R, ? super L, ? extends T> function) {
+        if (function == null) {
             throw new IllegalArgumentException("BinaryFunction argument was null");
         }
-        function = f;
+        this.function = function;
     }
 
     // functor interface

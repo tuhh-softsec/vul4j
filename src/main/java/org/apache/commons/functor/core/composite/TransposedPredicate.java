@@ -42,19 +42,19 @@ import org.apache.commons.functor.BinaryPredicate;
 public class TransposedPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate<? super R, ? super L> predicate = null;
+    private BinaryPredicate<? super R, ? super L> predicate;
 
     // constructor
     // ------------------------------------------------------------------------
     /**
      * Create a new TransposedPredicate.
-     * @param p the BinaryPredicate to transpose
+     * @param predicate the BinaryPredicate to transpose
      */
-    public TransposedPredicate(BinaryPredicate<? super R, ? super L> p) {
-        if (p == null) {
+    public TransposedPredicate(BinaryPredicate<? super R, ? super L> predicate) {
+        if (predicate == null) {
             throw new IllegalArgumentException("BinaryPredicate argument must not be null");
         }
-        predicate = p;
+        this.predicate = predicate;
     }
 
     // functor interface
