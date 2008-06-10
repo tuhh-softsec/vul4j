@@ -26,6 +26,7 @@ import java.util.Comparator;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 final class ComparableComparator implements Comparator, Serializable {
     /** Singleton */
     public static final ComparableComparator INSTANCE = new ComparableComparator();
