@@ -44,7 +44,7 @@ public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryFunctionUnaryPredicate(new Constant(Boolean.TRUE));
+        return new UnaryFunctionUnaryPredicate<Object>(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,43 +62,21 @@ public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
-        UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(Boolean.TRUE));
+        UnaryPredicate<Object> p = new UnaryFunctionUnaryPredicate<Object>(Constant.TRUE);
         assertTrue(p.test(null));
     }
 
     public void testTestWhenFalse() throws Exception {
-        UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(Boolean.FALSE));
+        UnaryPredicate<Object> p = new UnaryFunctionUnaryPredicate<Object>(Constant.FALSE);
         assertTrue(!p.test(null));
     }
 
-    public void testTestWhenNull() throws Exception {
-        UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(null));
-        try {
-            p.test("xyzzy");
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
-        }
-    }
-
-    public void testTestWhenNonBoolean() throws Exception {
-        UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(new Integer(2)));
-        try {
-            p.test("xyzzy");
-            fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
-            // expected
-        }
-    }
-
     public void testEquals() throws Exception {
-        UnaryPredicate p = new UnaryFunctionUnaryPredicate(new Constant(Boolean.TRUE));
+        UnaryPredicate<Object> p = new UnaryFunctionUnaryPredicate<Object>(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new UnaryFunctionUnaryPredicate(new Constant(Boolean.TRUE)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new UnaryFunctionUnaryPredicate(null));
-        assertObjectsAreNotEqual(p,new UnaryFunctionUnaryPredicate(new Constant(Boolean.FALSE)));
-        assertObjectsAreEqual(new UnaryFunctionUnaryPredicate(null),new UnaryFunctionUnaryPredicate(null));
+        assertObjectsAreEqual(p,new UnaryFunctionUnaryPredicate<Object>(Constant.TRUE));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
+        assertObjectsAreNotEqual(p,new UnaryFunctionUnaryPredicate<Object>(Constant.FALSE));
     }
 
     public void testAdaptNull() throws Exception {
@@ -106,6 +84,6 @@ public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(UnaryFunctionUnaryPredicate.adapt(new Constant(Boolean.TRUE)));
+        assertNotNull(UnaryFunctionUnaryPredicate.adapt(Constant.TRUE));
     }
 }

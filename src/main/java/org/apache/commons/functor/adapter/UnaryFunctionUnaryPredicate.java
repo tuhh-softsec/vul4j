@@ -39,14 +39,17 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class UnaryFunctionUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction<A, Boolean> function;
+    private UnaryFunction<? super A, Boolean> function;
 
     /**
      * Create an {@link UnaryPredicate UnaryPredicate} wrapping
      * the given {@link UnaryFunction UnaryFunction}.
      * @param function the {@link UnaryFunction UnaryFunction} to wrap
      */
-    public UnaryFunctionUnaryPredicate(UnaryFunction<A, Boolean> function) {
+    public UnaryFunctionUnaryPredicate(UnaryFunction<? super A, Boolean> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("UnaryFunction argument was null");
+        }
         this.function = function;
     }
 
@@ -99,20 +102,22 @@ public final class UnaryFunctionUnaryPredicate<A> implements UnaryPredicate<A>, 
     }
 
     /**
+     * 
      * Adapt the given, possibly-<code>null</code>,
      * {@link UnaryFunction UnaryFunction} to the
      * {@link UnaryPredicate UnaryPredicate} interface.
      * When the given <code>UnaryFunction</code> is <code>null</code>,
      * returns <code>null</code>.
      *
+     * @param <A>
      * @param function the possibly-<code>null</code>
      *        {@link UnaryFunction UnaryFunction} to adapt
      * @return a {@link UnaryPredicate UnaryPredicate} wrapping the given
      *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
      *         if the given <code>UnaryFunction</code> is <code>null</code>
      */
-    public static <P> UnaryFunctionUnaryPredicate<P> adapt(UnaryFunction<P, Boolean> function) {
-        return null == function ? null : new UnaryFunctionUnaryPredicate<P>(function);
+    public static <A> UnaryFunctionUnaryPredicate<A> adapt(UnaryFunction<? super A, Boolean> function) {
+        return null == function ? null : new UnaryFunctionUnaryPredicate<A>(function);
     }
 
 }
