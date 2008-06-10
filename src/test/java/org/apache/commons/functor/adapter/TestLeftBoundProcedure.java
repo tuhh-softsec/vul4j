@@ -45,7 +45,7 @@ public class TestLeftBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new LeftBoundProcedure(new NoOp(),"xyzzy");
+        return new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE,"xyzzy");
     }
 
     // Lifecycle
@@ -63,21 +63,21 @@ public class TestLeftBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testRun() throws Exception {
-        UnaryProcedure p = new LeftBoundProcedure(new BinaryFunctionBinaryProcedure(RightIdentity.FUNCTION),"foo");
+        UnaryProcedure<Object> p = new LeftBoundProcedure<Object, Object>(
+                new BinaryFunctionBinaryProcedure<Object, Object>(RightIdentity.FUNCTION), "foo");
         p.run(Boolean.TRUE);
         p.run(Boolean.FALSE);
     }
 
     public void testEquals() throws Exception {
-        UnaryProcedure f = new LeftBoundProcedure(new NoOp(),"xyzzy");
-        assertEquals(f,f);
-        assertObjectsAreEqual(f,new LeftBoundProcedure(new NoOp(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new NoOp());
-        assertObjectsAreNotEqual(f,new LeftBoundProcedure(new BinaryFunctionBinaryProcedure(RightIdentity.FUNCTION),"xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundProcedure(new NoOp(),"foo"));
-        assertObjectsAreNotEqual(f,new LeftBoundProcedure(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundProcedure(new NoOp(),null));
-        assertObjectsAreEqual(new LeftBoundProcedure(null,null),new LeftBoundProcedure(null,null));
+        UnaryProcedure<Object> f = new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, "xyzzy");
+        assertEquals(f, f);
+        assertObjectsAreEqual(f, new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, "xyzzy"));
+        assertObjectsAreNotEqual(f, new NoOp());
+        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object, Object>(
+                new BinaryFunctionBinaryProcedure<Object, Object>(RightIdentity.FUNCTION), "xyzzy"));
+        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, "foo"));
+        assertObjectsAreNotEqual(f, new LeftBoundProcedure<Object, Object>(NoOp.INSTANCE, null));
     }
 
     public void testAdaptNull() throws Exception {

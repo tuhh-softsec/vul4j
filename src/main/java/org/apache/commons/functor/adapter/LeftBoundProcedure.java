@@ -50,6 +50,9 @@ public final class LeftBoundProcedure<L, R> implements UnaryProcedure<R>, Serial
      * @param arg the constant argument to use
      */
     public LeftBoundProcedure(BinaryProcedure<? super L, ? super R> procedure, L arg) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("BinaryProcedure argument was null");
+        }
         this.procedure = procedure;
         this.param = arg;
     }

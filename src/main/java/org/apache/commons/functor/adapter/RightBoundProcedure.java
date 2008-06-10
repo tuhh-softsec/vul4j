@@ -50,6 +50,9 @@ public final class RightBoundProcedure<L, R> implements UnaryProcedure<L>, Seria
      * @param arg the constant argument to use
      */
     public RightBoundProcedure(BinaryProcedure<? super L, ? super R> procedure, R arg) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("BinaryProcedure argument was null");
+        }
         this.procedure = procedure;
         this.param = arg;
     }
