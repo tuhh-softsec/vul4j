@@ -44,7 +44,7 @@ public class TestBinaryOr extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryOr(new Constant(false),new Constant(true));
+        return new BinaryOr<Object, Object>(Constant.FALSE, Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,55 +62,55 @@ public class TestBinaryOr extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTrue() throws Exception {
-        assertTrue((new BinaryOr(new Constant(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new BinaryOr(new Constant(false),new Constant(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new BinaryOr(new Constant(false),new Constant(false),new Constant(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryOr<Object, Object>(Constant.TRUE)).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryOr<Object, Object>(Constant.FALSE,Constant.TRUE)).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryOr<Object, Object>(Constant.FALSE, Constant.FALSE, Constant.TRUE)).test("xyzzy",new Integer(3)));
 
-        BinaryOr p = new BinaryOr(new Constant(true));
+        BinaryOr<Object, Object> p = new BinaryOr<Object, Object>(Constant.TRUE);
         assertTrue(p.test("xyzzy",new Integer(3)));
         for (int i=0;i<10;i++) {
-            p.or(new Constant(i%2==0));
+            p.or(Constant.of(i%2==0));
             assertTrue(p.test("xyzzy",new Integer(3)));
         }
 
-        BinaryOr q = new BinaryOr(new Constant(true));
+        BinaryOr<Object, Object> q = new BinaryOr<Object, Object>(Constant.TRUE);
         assertTrue(q.test("xyzzy",new Integer(3)));
         for (int i=0;i<10;i++) {
-            q.or(new Constant(i%2==0));
+            q.or(Constant.of(i%2==0));
             assertTrue(q.test("xyzzy",new Integer(3)));
         }
 
-        BinaryOr r = new BinaryOr(p,q);
+        BinaryOr<Object, Object> r = new BinaryOr<Object, Object>(p,q);
         assertTrue(r.test("xyzzy",new Integer(3)));
     }
 
     public void testFalse() throws Exception {
-        assertTrue(!(new BinaryOr()).test("xyzzy",new Integer(3)));
-        assertTrue(!(new BinaryOr(new Constant(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new BinaryOr(new Constant(false),new Constant(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new BinaryOr(new Constant(false),new Constant(false),new Constant(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr<Object, Object>()).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr<Object, Object>(Constant.FALSE)).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr<Object, Object>(Constant.FALSE,Constant.FALSE)).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr<Object, Object>(Constant.FALSE,Constant.FALSE,Constant.FALSE)).test("xyzzy",new Integer(3)));
 
-        BinaryOr p = new BinaryOr(new Constant(false));
+        BinaryOr<Object, Object> p = new BinaryOr<Object, Object>(Constant.FALSE);
         assertTrue(!p.test("xyzzy",new Integer(3)));
         for (int i=0;i<10;i++) {
-            p.or(new Constant(false));
+            p.or(Constant.FALSE);
             assertTrue(!p.test("xyzzy",new Integer(3)));
         }
 
-        BinaryOr q = new BinaryOr(new Constant(false));
+        BinaryOr<Object, Object> q = new BinaryOr<Object, Object>(Constant.FALSE);
         assertTrue(!q.test("xyzzy",new Integer(3)));
         for (int i=0;i<10;i++) {
-            q.or(new Constant(false));
+            q.or(Constant.FALSE);
             assertTrue(!q.test("xyzzy",new Integer(3)));
         }
 
-        BinaryOr r = new BinaryOr(p,q);
+        BinaryOr<Object, Object> r = new BinaryOr<Object, Object>(p,q);
         assertTrue(!r.test("xyzzy",new Integer(3)));
     }
 
     public void testDuplicateAdd() throws Exception {
-        BinaryPredicate p = new Constant(true);
-        BinaryOr q = new BinaryOr(p,p);
+        BinaryPredicate<Object, Object> p = Constant.TRUE;
+        BinaryOr<Object, Object> q = new BinaryOr<Object, Object>(p,p);
         assertTrue(q.test("xyzzy",new Integer(3)));
         for (int i=0;i<10;i++) {
             q.or(p);
@@ -119,32 +119,32 @@ public class TestBinaryOr extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        BinaryOr p = new BinaryOr();
+        BinaryOr<Object, Object> p = new BinaryOr<Object, Object>();
         assertEquals(p,p);
 
-        BinaryOr q = new BinaryOr();
+        BinaryOr<Object, Object> q = new BinaryOr<Object, Object>();
         assertObjectsAreEqual(p,q);
 
-        BinaryAnd r = new BinaryAnd();
+        BinaryAnd<Object, Object> r = new BinaryAnd<Object, Object>();
         assertObjectsAreNotEqual(p,r);
 
         for (int i=0;i<3;i++) {
-            p.or(Constant.truePredicate());
+            p.or(Constant.TRUE);
             assertObjectsAreNotEqual(p,q);
-            q.or(Constant.truePredicate());
+            q.or(Constant.TRUE);
             assertObjectsAreEqual(p,q);
-            r.and(Constant.truePredicate());
+            r.and(Constant.TRUE);
             assertObjectsAreNotEqual(p,r);
 
-            p.or(new BinaryOr(Constant.truePredicate(),Constant.falsePredicate()));
+            p.or(new BinaryOr<Object, Object>(Constant.truePredicate(),Constant.FALSE));
             assertObjectsAreNotEqual(p,q);
-            q.or(new BinaryOr(Constant.truePredicate(),Constant.falsePredicate()));
+            q.or(new BinaryOr<Object, Object>(Constant.truePredicate(),Constant.FALSE));
             assertObjectsAreEqual(p,q);
-            r.and(new BinaryOr(Constant.truePredicate(),Constant.falsePredicate()));
+            r.and(new BinaryOr<Object, Object>(Constant.truePredicate(),Constant.FALSE));
             assertObjectsAreNotEqual(p,r);
         }
 
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
 }
