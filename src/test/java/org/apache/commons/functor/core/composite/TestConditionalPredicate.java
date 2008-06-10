@@ -44,9 +44,9 @@ public class TestConditionalPredicate extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new ConditionalPredicate(
-            new Constant(true),
-            new Constant(false),
-            new Constant(true));
+            Constant.TRUE,
+            Constant.FALSE,
+            Constant.TRUE);
     }
 
     // Lifecycle
@@ -66,49 +66,37 @@ public class TestConditionalPredicate extends BaseFunctorTest {
     public void testTest() throws Exception {
         {
             ConditionalPredicate p = new ConditionalPredicate(
-                new Constant(true),
-                new Constant(true),
-                new Constant(false));
+                Constant.TRUE,
+                Constant.TRUE,
+                Constant.FALSE);
             assertTrue(p.test());
         }
         {
             ConditionalPredicate p = new ConditionalPredicate(
-                new Constant(false),
-                new Constant(true),
-                new Constant(false));
+                Constant.FALSE,
+                Constant.TRUE,
+                Constant.FALSE);
             assertTrue(!p.test());
         }
     }
 
     public void testEquals() throws Exception {
         ConditionalPredicate p = new ConditionalPredicate(
-            new Constant(true),
-            new Constant(true),
-            new Constant(false));
+            Constant.TRUE,
+            Constant.TRUE,
+            Constant.FALSE);
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalPredicate(
-            new Constant(true),
-            new Constant(true),
-            new Constant(false)));
+            Constant.TRUE,
+            Constant.TRUE,
+            Constant.FALSE));
         assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new Constant(true),
-            new Constant(false),
-            new Constant(true)));
+            Constant.TRUE,
+            Constant.FALSE,
+            Constant.TRUE));
         assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new Constant(true),
-            new Constant(true),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            null,
-            new Constant(true),
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new Constant(true),
-            null,
-            new Constant(true)));
-        assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new Constant(true),
-            new Constant(true),
-            null));
+            Constant.TRUE,
+            Constant.TRUE,
+            Constant.TRUE));
     }
 }

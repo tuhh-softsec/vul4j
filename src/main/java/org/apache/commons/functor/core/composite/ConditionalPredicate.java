@@ -56,6 +56,9 @@ public final class ConditionalPredicate implements Predicate, Serializable {
      * @param elsePred else
      */
     public ConditionalPredicate(Predicate ifPred, Predicate thenPred, Predicate elsePred) {
+        if (ifPred == null || thenPred == null || elsePred == null) {
+            throw new IllegalArgumentException("One or more Predicate arguments was null");
+        }
         this.ifPred = ifPred;
         this.thenPred = thenPred;
         this.elsePred = elsePred;

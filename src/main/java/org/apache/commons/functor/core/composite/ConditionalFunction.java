@@ -57,7 +57,13 @@ public final class ConditionalFunction<T> implements Function<T>, Serializable {
      * @param elseFunc else
      */
     public ConditionalFunction(Predicate ifPred, Function<? extends T> thenFunc, Function<? extends T> elseFunc) {
+        if (ifPred == null) {
+            throw new IllegalArgumentException("Predicate argument was null");
+        }
         this.ifPred = ifPred;
+        if (thenFunc == null || elseFunc == null) {
+            throw new IllegalArgumentException("One or more Function arguments was null");
+        }
         this.thenFunc = thenFunc;
         this.elseFunc = elseFunc;
     }

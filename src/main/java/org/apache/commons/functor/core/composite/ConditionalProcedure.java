@@ -66,7 +66,13 @@ public final class ConditionalProcedure implements Procedure, Serializable {
      * @param elseProc else
      */
     public ConditionalProcedure(Predicate ifPred, Procedure thenProc, Procedure elseProc) {
+        if (ifPred == null) {
+            throw new IllegalArgumentException("Predicate argument was null");
+        }
         this.ifPred = ifPred;
+        if (thenProc == null || elseProc == null) {
+            throw new IllegalArgumentException("Procedure argument was null");
+        }
         this.thenProc = thenProc;
         this.elseProc = elseProc;
     }

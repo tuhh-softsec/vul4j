@@ -46,9 +46,9 @@ public class TestConditionalProcedure extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new ConditionalProcedure(
-            new Constant(true),
-            new NoOp(),
-            new NoOp());
+            Constant.TRUE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -70,7 +70,7 @@ public class TestConditionalProcedure extends BaseFunctorTest {
             RunCounter left = new RunCounter();
             RunCounter right = new RunCounter();
             ConditionalProcedure p = new ConditionalProcedure(
-                new Constant(true),
+                Constant.TRUE,
                 left,
                 right);
             assertEquals(0,left.count);
@@ -89,7 +89,7 @@ public class TestConditionalProcedure extends BaseFunctorTest {
             RunCounter left = new RunCounter();
             RunCounter right = new RunCounter();
             ConditionalProcedure p = new ConditionalProcedure(
-                new Constant(false),
+                Constant.FALSE,
                 left,
                 right);
             assertEquals(0,left.count);
@@ -108,30 +108,18 @@ public class TestConditionalProcedure extends BaseFunctorTest {
 
     public void testEquals() throws Exception {
         ConditionalProcedure p = new ConditionalProcedure(
-            new Constant(false),
-            new NoOp(),
-            new NoOp());
+            Constant.FALSE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE);
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalProcedure(
-            new Constant(false),
-            new NoOp(),
-            new NoOp()));
+            Constant.FALSE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE));
         assertObjectsAreNotEqual(p,new ConditionalProcedure(
-            new Constant(true),
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalProcedure(
-            null,
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalProcedure(
-            new Constant(false),
-            null,
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalProcedure(
-            new Constant(false),
-            new NoOp(),
-            null));
+            Constant.TRUE,
+            NoOp.INSTANCE,
+            NoOp.INSTANCE));
     }
 
     // Classes

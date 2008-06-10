@@ -43,10 +43,10 @@ public class TestConditionalFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant("right"));
+        return new ConditionalFunction<Object>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of("right"));
     }
 
     // Lifecycle
@@ -65,50 +65,38 @@ public class TestConditionalFunction extends BaseFunctorTest {
 
     public void testEvaluate() throws Exception {
         {
-            ConditionalFunction f = new ConditionalFunction(
-                new Constant(true),
-                new Constant("left"),
-                new Constant("right"));
+            ConditionalFunction<Object> f = new ConditionalFunction<Object>(
+                Constant.TRUE,
+                Constant.of("left"),
+                Constant.of("right"));
             assertEquals("left",f.evaluate());
         }
         {
-            ConditionalFunction f = new ConditionalFunction(
-                new Constant(false),
-                new Constant("left"),
-                new Constant("right"));
+            ConditionalFunction<Object> f = new ConditionalFunction<Object>(
+                Constant.FALSE,
+                Constant.of("left"),
+                Constant.of("right"));
             assertEquals("right",f.evaluate());
         }
     }
 
     public void testEquals() throws Exception {
-        ConditionalFunction f = new ConditionalFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant("right"));
+        ConditionalFunction<Object> f = new ConditionalFunction<Object>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of("right"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new ConditionalFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalFunction(
-            new Constant(true),
-            new Constant(null),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalFunction(
-            new Constant(true),
-            new Constant("left"),
-            new Constant(null)));
-        assertObjectsAreNotEqual(f,new ConditionalFunction(
-            null,
-            new Constant("left"),
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalFunction(
-            new Constant(true),
-            null,
-            new Constant("right")));
-        assertObjectsAreNotEqual(f,new ConditionalFunction(
-            new Constant(true),
-            new Constant("left"),
-            null));
+        assertObjectsAreEqual(f,new ConditionalFunction<Object>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new ConditionalFunction<Object>(
+            Constant.TRUE,
+            Constant.of(null),
+            Constant.of("right")));
+        assertObjectsAreNotEqual(f,new ConditionalFunction<Object>(
+            Constant.TRUE,
+            Constant.of("left"),
+            Constant.of(null)));
     }
 }
