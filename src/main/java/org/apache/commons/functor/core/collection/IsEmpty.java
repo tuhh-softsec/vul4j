@@ -32,7 +32,10 @@ public final class IsEmpty<A> implements UnaryPredicate<A>, Serializable {
     // class variables
     // ------------------------------------------------------------------------
 
-    private static final IsEmpty<Object> INSTANCE = new IsEmpty<Object>();
+    /**
+     * Basic IsEmpty instance.
+     */
+    public static final IsEmpty<Object> INSTANCE = new IsEmpty<Object>();
 
     // constructor
     // ------------------------------------------------------------------------
@@ -129,8 +132,8 @@ public final class IsEmpty<A> implements UnaryPredicate<A>, Serializable {
      * Get an IsEmpty instance.
      * @return IsEmpty
      */
-    public static final IsEmpty<Object> instance() {
-        return INSTANCE;
+    public static final <A> IsEmpty<A> instance() {
+        return new IsEmpty<A>();
     }
 
 }
