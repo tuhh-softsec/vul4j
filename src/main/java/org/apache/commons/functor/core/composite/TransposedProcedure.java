@@ -48,10 +48,13 @@ public class TransposedProcedure<L, R> implements BinaryProcedure<L, R>, Seriali
     // ------------------------------------------------------------------------
     /**
      * Create a new TransposedProcedure.
-     * @param p BinaryProcedure to transpose
+     * @param procedure BinaryProcedure to transpose
      */
-    public TransposedProcedure(BinaryProcedure<? super R, ? super L> p) {
-        procedure = p;
+    public TransposedProcedure(BinaryProcedure<? super R, ? super L> procedure) {
+        if (procedure == null) {
+            throw new IllegalArgumentException("BinaryProcedure argument was null");
+        }
+        this.procedure = procedure;
     }
 
     // functor interface

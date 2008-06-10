@@ -44,7 +44,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedProcedure(NoOp.instance());
+        return new TransposedProcedure<Object, Object>(NoOp.INSTANCE);
     }
 
     // Lifecycle
@@ -63,7 +63,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
 
     public void testEvaluate() throws Exception {
         LeftNotNullCounter counter = new LeftNotNullCounter();
-        BinaryProcedure p = new TransposedProcedure(counter);
+        BinaryProcedure<Object, Object> p = new TransposedProcedure<Object, Object>(counter);
         assertEquals(0,counter.count);
         p.run(null,"not null");
         assertEquals(1,counter.count);
@@ -72,13 +72,12 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        BinaryProcedure p = new TransposedProcedure(NoOp.instance());
+        BinaryProcedure<Object, Object> p = new TransposedProcedure<Object, Object>(NoOp.INSTANCE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new TransposedProcedure(NoOp.instance()));
-        assertObjectsAreEqual(p,TransposedProcedure.transpose(NoOp.instance()));
-        assertObjectsAreNotEqual(p,new TransposedProcedure(new TransposedProcedure(NoOp.instance())));
-        assertObjectsAreNotEqual(p,new TransposedProcedure(null));
-        assertObjectsAreNotEqual(p,new NoOp());
+        assertObjectsAreEqual(p,new TransposedProcedure<Object, Object>(NoOp.INSTANCE));
+        assertObjectsAreEqual(p,TransposedProcedure.transpose(NoOp.INSTANCE));
+        assertObjectsAreNotEqual(p,new TransposedProcedure<Object, Object>(new TransposedProcedure<Object, Object>(NoOp.INSTANCE)));
+        assertObjectsAreNotEqual(p,NoOp.INSTANCE);
     }
 
     public void testTransposeNull() throws Exception {
@@ -86,13 +85,13 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     }
 
     public void testTranspose() throws Exception {
-        assertNotNull(TransposedProcedure.transpose(new NoOp()));
+        assertNotNull(TransposedProcedure.transpose(NoOp.INSTANCE));
     }
 
     // Classes
     // ------------------------------------------------------------------------
 
-    static class LeftNotNullCounter implements BinaryProcedure {
+    static class LeftNotNullCounter implements BinaryProcedure<Object, Object> {
         public void run(Object a, Object b) {
             if (null != a) {
                 count++;
