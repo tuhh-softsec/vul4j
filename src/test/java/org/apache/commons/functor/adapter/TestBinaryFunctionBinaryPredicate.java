@@ -44,7 +44,7 @@ public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE));
+        return new BinaryFunctionBinaryPredicate<Object, Object>(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,43 +62,21 @@ public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTestWhenTrue() throws Exception {
-        BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE));
+        BinaryPredicate<Object, Object> p = new BinaryFunctionBinaryPredicate<Object, Object>(Constant.TRUE);
         assertTrue(p.test(null,null));
     }
 
     public void testTestWhenFalse() throws Exception {
-        BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(Boolean.FALSE));
-        assertTrue(!p.test(null,null));
-    }
-
-    public void testTestWhenNull() throws Exception {
-        BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(null));
-        try {
-            p.test("xyzzy",Boolean.TRUE);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
-        }
-    }
-
-    public void testTestWhenNonBoolean() throws Exception {
-        BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(new Integer(2)));
-        try {
-            p.test("xyzzy",Boolean.TRUE);
-            fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
-            // expected
-        }
+        BinaryPredicate<Object, Object> p = new BinaryFunctionBinaryPredicate<Object, Object>(Constant.FALSE);
+        assertFalse(p.test(null,null));
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE));
+        BinaryPredicate<Object, Object> p = new BinaryFunctionBinaryPredicate<Object, Object>(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE)));
+        assertObjectsAreEqual(p,new BinaryFunctionBinaryPredicate<Object, Object>(Constant.TRUE));
         assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryFunctionBinaryPredicate(null));
-        assertObjectsAreNotEqual(p,new BinaryFunctionBinaryPredicate(new Constant(Boolean.FALSE)));
-        assertObjectsAreEqual(new BinaryFunctionBinaryPredicate(null),new BinaryFunctionBinaryPredicate(null));
+        assertObjectsAreNotEqual(p,new BinaryFunctionBinaryPredicate<Object, Object>(Constant.FALSE));
     }
 
     public void testAdaptNull() throws Exception {
@@ -106,6 +84,6 @@ public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BinaryFunctionBinaryPredicate.adapt(new Constant(Boolean.TRUE)));
+        assertNotNull(BinaryFunctionBinaryPredicate.adapt(Constant.TRUE));
     }
 }

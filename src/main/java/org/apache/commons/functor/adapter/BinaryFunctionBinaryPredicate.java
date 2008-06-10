@@ -47,6 +47,9 @@ public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicat
      * @param function the {@link BinaryFunction BinaryFunction} to wrap
      */
     public BinaryFunctionBinaryPredicate(BinaryFunction<? super L, ? super R, Boolean> function) {
+        if (function == null) {
+            throw new IllegalArgumentException("BinaryFunction argument must not be null");
+        }
         this.function = function;
     }
 
