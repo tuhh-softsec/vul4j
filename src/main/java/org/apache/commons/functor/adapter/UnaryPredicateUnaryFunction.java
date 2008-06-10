@@ -46,6 +46,9 @@ public final class UnaryPredicateUnaryFunction<A> implements UnaryFunction<A, Bo
      * @param predicate to adapt
      */
     public UnaryPredicateUnaryFunction(UnaryPredicate<? super A> predicate) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("UnaryPredicate argument was null");
+        }
         this.predicate = predicate;
     }
 
