@@ -62,6 +62,7 @@ public class UntilGenerate<E> extends BaseGenerator<E> {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected Generator<? extends E> getWrappedGenerator() {
         return (Generator<? extends E>) super.getWrappedGenerator();

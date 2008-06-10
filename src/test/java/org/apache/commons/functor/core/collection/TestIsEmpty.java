@@ -30,7 +30,6 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.Constant;
-import org.apache.commons.functor.core.composite.UnaryNot;
 
 /**
  * @version $Revision$ $Date$
@@ -130,9 +129,7 @@ public class TestIsEmpty extends BaseFunctorTest {
         assertEquals(p,p);
         assertObjectsAreEqual(p,new IsEmpty());
         assertObjectsAreEqual(p,IsEmpty.instance());
-        assertSame(IsEmpty.instance(),IsEmpty.instance());
         assertObjectsAreNotEqual(p,new Constant(true));
-        assertObjectsAreNotEqual(p,new UnaryNot(null));
     }
 
 }

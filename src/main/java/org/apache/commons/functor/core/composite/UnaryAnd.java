@@ -81,7 +81,7 @@ public final class UnaryAnd<A> extends BaseUnaryPredicateList<A> {
      * @param p UnaryPredicate to add
      * @return this
      */
-    public UnaryAnd and(UnaryPredicate<? super A> p) {
+    public UnaryAnd<A> and(UnaryPredicate<? super A> p) {
         super.addUnaryPredicate(p);
         return this;
     }

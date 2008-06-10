@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
@@ -51,6 +50,7 @@ public final class EachElement {
      * @param map to iterate
      * @return Generator
      */
+    @SuppressWarnings("unchecked")
     public static final <K, V> Generator<Map.Entry<K, V>> from(Map<? extends K, ? extends V> map) {
         if (map == null) {
             return null;

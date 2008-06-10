@@ -46,7 +46,7 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedPredicate(Constant.truePredicate());
+        return new TransposedPredicate<Object, Object>(Constant.TRUE);
     }
 
     // Lifecycle
@@ -84,6 +84,6 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     }
 
     public void testTranspose() throws Exception {
-        assertNotNull(TransposedPredicate.transpose(new Constant(true)));
+        assertNotNull(TransposedPredicate.transpose(Constant.TRUE));
     }
 }

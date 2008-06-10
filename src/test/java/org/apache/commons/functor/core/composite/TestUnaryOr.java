@@ -44,7 +44,7 @@ public class TestUnaryOr extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryOr(new Constant(false),new Constant(true));
+        return new UnaryOr<Object>(Constant.FALSE,Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,55 +62,55 @@ public class TestUnaryOr extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTrue() throws Exception {
-        assertTrue((new UnaryOr(new Constant(true))).test("xyzzy"));
-        assertTrue((new UnaryOr(new Constant(false),new Constant(true))).test("xyzzy"));
-        assertTrue((new UnaryOr(new Constant(false),new Constant(false),new Constant(true))).test("xyzzy"));
+        assertTrue((new UnaryOr<Object>(Constant.TRUE)).test("xyzzy"));
+        assertTrue((new UnaryOr<Object>(Constant.FALSE,Constant.TRUE)).test("xyzzy"));
+        assertTrue((new UnaryOr<Object>(Constant.FALSE,Constant.FALSE,Constant.TRUE)).test("xyzzy"));
 
-        UnaryOr p = new UnaryOr(new Constant(true));
+        UnaryOr<Object> p = new UnaryOr<Object>(Constant.TRUE);
         assertTrue(p.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            p.or(new Constant(i%2==0));
+            p.or(Constant.of(i%2==0));
             assertTrue(p.test("xyzzy"));
         }
 
-        UnaryOr q = new UnaryOr(new Constant(true));
+        UnaryOr<Object> q = new UnaryOr<Object>(Constant.TRUE);
         assertTrue(q.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            q.or(new Constant(i%2==0));
+            q.or(Constant.of(i%2==0));
             assertTrue(q.test("xyzzy"));
         }
 
-        UnaryOr r = new UnaryOr(p,q);
+        UnaryOr<Object> r = new UnaryOr<Object>(p,q);
         assertTrue(r.test("xyzzy"));
     }
 
     public void testFalse() throws Exception {
-        assertTrue(!(new UnaryOr()).test("xyzzy"));
-        assertTrue(!(new UnaryOr(new Constant(false))).test("xyzzy"));
-        assertTrue(!(new UnaryOr(new Constant(false),new Constant(false))).test("xyzzy"));
-        assertTrue(!(new UnaryOr(new Constant(false),new Constant(false),new Constant(false))).test("xyzzy"));
+        assertTrue(!(new UnaryOr<Object>()).test("xyzzy"));
+        assertTrue(!(new UnaryOr<Object>(Constant.FALSE)).test("xyzzy"));
+        assertTrue(!(new UnaryOr<Object>(Constant.FALSE,Constant.FALSE)).test("xyzzy"));
+        assertTrue(!(new UnaryOr<Object>(Constant.FALSE,Constant.FALSE,Constant.FALSE)).test("xyzzy"));
 
-        UnaryOr p = new UnaryOr(new Constant(false));
+        UnaryOr<Object> p = new UnaryOr<Object>(Constant.FALSE);
         assertTrue(!p.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            p.or(new Constant(false));
+            p.or(Constant.FALSE);
             assertTrue(!p.test("xyzzy"));
         }
 
-        UnaryOr q = new UnaryOr(new Constant(false));
+        UnaryOr<Object> q = new UnaryOr<Object>(Constant.FALSE);
         assertTrue(!q.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            q.or(new Constant(false));
+            q.or(Constant.FALSE);
             assertTrue(!q.test("xyzzy"));
         }
 
-        UnaryOr r = new UnaryOr(p,q);
+        UnaryOr<Object> r = new UnaryOr<Object>(p,q);
         assertTrue(!r.test("xyzzy"));
     }
 
     public void testDuplicateAdd() throws Exception {
-        UnaryPredicate p = new Constant(true);
-        UnaryOr q = new UnaryOr(p,p);
+        UnaryPredicate<Object> p = Constant.TRUE;
+        UnaryOr<Object> q = new UnaryOr<Object>(p,p);
         assertTrue(q.test("xyzzy"));
         for (int i=0;i<10;i++) {
             q.or(p);
@@ -119,13 +119,13 @@ public class TestUnaryOr extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        UnaryOr p = new UnaryOr();
+        UnaryOr<Object> p = new UnaryOr<Object>();
         assertEquals(p,p);
 
-        UnaryOr q = new UnaryOr();
+        UnaryOr<Object> q = new UnaryOr<Object>();
         assertObjectsAreEqual(p,q);
 
-        UnaryAnd r = new UnaryAnd();
+        UnaryAnd<Object> r = new UnaryAnd<Object>();
         assertObjectsAreNotEqual(p,r);
 
         for (int i=0;i<3;i++) {
@@ -136,11 +136,11 @@ public class TestUnaryOr extends BaseFunctorTest {
             r.and(Constant.truePredicate());
             assertObjectsAreNotEqual(p,r);
 
-            p.or(new UnaryOr(Constant.truePredicate(),Constant.falsePredicate()));
+            p.or(new UnaryOr<Object>(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreNotEqual(p,q);
-            q.or(new UnaryOr(Constant.truePredicate(),Constant.falsePredicate()));
+            q.or(new UnaryOr<Object>(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreEqual(p,q);
-            r.and(new UnaryOr(Constant.truePredicate(),Constant.falsePredicate()));
+            r.and(new UnaryOr<Object>(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreNotEqual(p,r);
         }
 

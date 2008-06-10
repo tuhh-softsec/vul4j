@@ -56,7 +56,7 @@ public class TestMin extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() {
-        Min f = Min.instance();
+        Min<Integer> f = Min.instance();
         assertEquals(ONE,f.evaluate(ONE,ONE));
         assertEquals(ZERO,f.evaluate(ZERO,ONE));
         assertEquals(ZERO,f.evaluate(ONE,ZERO));
@@ -65,11 +65,12 @@ public class TestMin extends BaseFunctorTest {
         assertEquals(MIN,f.evaluate(MIN,MINUS_TWO));
     }
 
+    @SuppressWarnings("unchecked")
     public void testEquals() {
-        Min f = Min.instance();
+        Min<Comparable<?>> f = Min.instance();
         assertObjectsAreEqual(f,f);
         assertObjectsAreEqual(f,Min.instance());
-        assertObjectsAreEqual(f,new Min(new ComparableComparator()));
-        assertObjectsAreNotEqual(f,new Min(Collections.reverseOrder()));
+        assertObjectsAreEqual(f,new Min<Comparable<?>>(ComparableComparator.INSTANCE));
+        assertObjectsAreNotEqual(f,new Min<Comparable<?>>(Collections.<Comparable<?>>reverseOrder()));
     }
 }

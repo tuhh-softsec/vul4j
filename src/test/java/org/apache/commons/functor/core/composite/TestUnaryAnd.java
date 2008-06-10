@@ -44,7 +44,7 @@ public class TestUnaryAnd extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryAnd(new Constant(true),new Constant(true));
+        return new UnaryAnd<Object>(Constant.TRUE, Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,55 +62,55 @@ public class TestUnaryAnd extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTrue() throws Exception {
-        assertTrue((new UnaryAnd()).test("xyzzy"));
-        assertTrue((new UnaryAnd(new Constant(true))).test("xyzzy"));
-        assertTrue((new UnaryAnd(new Constant(true),new Constant(true))).test("xyzzy"));
-        assertTrue((new UnaryAnd(new Constant(true),new Constant(true),new Constant(true))).test("xyzzy"));
+        assertTrue((new UnaryAnd<Object>()).test("xyzzy"));
+        assertTrue((new UnaryAnd<Object>(Constant.TRUE)).test("xyzzy"));
+        assertTrue((new UnaryAnd<Object>(Constant.TRUE,Constant.TRUE)).test("xyzzy"));
+        assertTrue((new UnaryAnd<Object>(Constant.TRUE,Constant.TRUE,Constant.TRUE)).test("xyzzy"));
 
-        UnaryAnd p = new UnaryAnd(new Constant(true));
+        UnaryAnd<Object> p = new UnaryAnd<Object>(Constant.TRUE);
         assertTrue(p.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            p.and(new Constant(true));
+            p.and(Constant.TRUE);
             assertTrue(p.test("xyzzy"));
         }
 
-        UnaryAnd q = new UnaryAnd(new Constant(true));
+        UnaryAnd<Object> q = new UnaryAnd<Object>(Constant.TRUE);
         assertTrue(q.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            q.and(new Constant(true));
+            q.and(Constant.TRUE);
             assertTrue(q.test("xyzzy"));
         }
 
-        UnaryAnd r = new UnaryAnd(p,q);
+        UnaryAnd<Object> r = new UnaryAnd<Object>(p,q);
         assertTrue(r.test("xyzzy"));
     }
 
     public void testFalse() throws Exception {
-        assertTrue(!(new UnaryAnd(new Constant(false))).test("xyzzy"));
-        assertTrue(!(new UnaryAnd(new Constant(true),new Constant(false))).test("xyzzy"));
-        assertTrue(!(new UnaryAnd(new Constant(true),new Constant(true),new Constant(false))).test("xyzzy"));
+        assertFalse(new UnaryAnd<Object>(Constant.FALSE).test("xyzzy"));
+        assertFalse(new UnaryAnd<Object>(Constant.TRUE,Constant.FALSE).test("xyzzy"));
+        assertFalse(new UnaryAnd<Object>(Constant.TRUE,Constant.TRUE,Constant.FALSE).test("xyzzy"));
 
-        UnaryAnd p = new UnaryAnd(new Constant(false));
+        UnaryAnd<Object> p = new UnaryAnd<Object>(Constant.FALSE);
         assertTrue(!p.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            p.and(new Constant(false));
+            p.and(Constant.TRUE);
             assertTrue(!p.test("xyzzy"));
         }
 
-        UnaryAnd q = new UnaryAnd(new Constant(true));
+        UnaryAnd<Object> q = new UnaryAnd<Object>(Constant.TRUE);
         assertTrue(q.test("xyzzy"));
         for (int i=0;i<10;i++) {
-            q.and(new Constant(true));
+            q.and(Constant.TRUE);
             assertTrue(q.test("xyzzy"));
         }
 
-        UnaryAnd r = new UnaryAnd(p,q);
+        UnaryAnd<Object> r = new UnaryAnd<Object>(p,q);
         assertTrue(!r.test("xyzzy"));
     }
 
     public void testDuplicateAdd() throws Exception {
-        UnaryPredicate p = new Constant(true);
-        UnaryAnd q = new UnaryAnd(p,p);
+        UnaryPredicate<Object> p = Constant.TRUE;
+        UnaryAnd<Object> q = new UnaryAnd<Object>(p,p);
         assertTrue(q.test("xyzzy"));
         for (int i=0;i<10;i++) {
             q.and(p);
@@ -119,9 +119,9 @@ public class TestUnaryAnd extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        UnaryAnd p = new UnaryAnd();
+        UnaryAnd<Object> p = new UnaryAnd<Object>();
         assertEquals(p,p);
-        UnaryAnd q = new UnaryAnd();
+        UnaryAnd<Object> q = new UnaryAnd<Object>();
         assertObjectsAreEqual(p,q);
 
         for (int i=0;i<3;i++) {
@@ -129,9 +129,9 @@ public class TestUnaryAnd extends BaseFunctorTest {
             assertObjectsAreNotEqual(p,q);
             q.and(Constant.truePredicate());
             assertObjectsAreEqual(p,q);
-            p.and(new UnaryAnd(Constant.truePredicate(),Constant.falsePredicate()));
+            p.and(new UnaryAnd<Object>(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreNotEqual(p,q);
-            q.and(new UnaryAnd(Constant.truePredicate(),Constant.falsePredicate()));
+            q.and(new UnaryAnd<Object>(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreEqual(p,q);
         }
 

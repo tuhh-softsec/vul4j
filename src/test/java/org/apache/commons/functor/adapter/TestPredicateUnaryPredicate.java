@@ -44,7 +44,7 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new PredicateUnaryPredicate(Constant.TRUE);
+        return new PredicateUnaryPredicate<Object>(Constant.TRUE);
     }
 
     // Lifecycle

@@ -43,10 +43,13 @@ public final class UnaryNot<A> implements UnaryPredicate<A>, Serializable {
     // ------------------------------------------------------------------------
     /**
      * Create a new UnaryNot.
-     * @param p UnaryPredicate to negate
+     * @param predicate UnaryPredicate to negate
      */
-    public UnaryNot(UnaryPredicate<? super A> p) {
-        this.predicate = p;
+    public UnaryNot(UnaryPredicate<? super A> predicate) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("UnaryPredicate argument was null");
+        }
+        this.predicate = predicate;
     }
 
     // predicate interface

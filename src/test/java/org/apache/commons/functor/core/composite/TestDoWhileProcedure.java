@@ -51,7 +51,7 @@ public class TestDoWhileProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new DoWhileProcedure(new NoOp(), new Constant(false));
+        return new DoWhileProcedure(NoOp.INSTANCE, Constant.FALSE);
     }
 
     // Lifecycle
@@ -68,10 +68,10 @@ public class TestDoWhileProcedure extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     public class ListRemoveFirstProcedure implements Procedure {
-        protected List list;
+        protected List<Object> list;
 
 
-        public ListRemoveFirstProcedure(List list) {
+        public ListRemoveFirstProcedure(List<Object> list) {
             this.list=list;
         }
 
@@ -82,8 +82,8 @@ public class TestDoWhileProcedure extends BaseFunctorTest {
     }
 
 
-    private List getList() {
-        List list=new LinkedList();
+    private List<Object> getList() {
+        List<Object> list = new LinkedList<Object>();
         list.add("a");
         list.add("b");
         list.add("c");
@@ -93,10 +93,10 @@ public class TestDoWhileProcedure extends BaseFunctorTest {
 
 
     public void testLoopWithAction() throws Exception {
-        List list=getList();
+        List<Object> list=getList();
 
         Procedure action=new ListRemoveFirstProcedure(list);
-        Predicate condition=new Not(new BoundPredicate(new IsEmpty(), list));
+        Predicate condition=new Not(new BoundPredicate(new IsEmpty<List<Object>>(), list));
         Procedure procedure=new DoWhileProcedure(action, condition);
 
         assertTrue("The condition should be true before running the loop", condition.test());
@@ -123,9 +123,9 @@ public class TestDoWhileProcedure extends BaseFunctorTest {
     }
 
     public void testLoopForNothing() {
-        List list=getList();
+        List<Object> list=getList();
         Procedure action=new ListRemoveFirstProcedure(list);
-        Procedure procedure=new DoWhileProcedure(action, new Constant(false));
+        Procedure procedure=new DoWhileProcedure(action, Constant.FALSE);
         assertTrue("The list should contain 4 elements before runnning the loop", list.size()==4);
         procedure.run();
         assertTrue("The list should contain 3 elements after runnning the loop", list.size()==3);

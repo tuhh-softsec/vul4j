@@ -131,6 +131,7 @@ public final class FilteredIterator<T> implements Iterator<T> {
      * @param pred to apply
      * @return Iterator
      */
+    @SuppressWarnings("unchecked")
     public static <T> Iterator<T> filter(Iterator<? extends T> iter, UnaryPredicate<? super T> pred) {
         return null == pred ? (Iterator<T>) iter : (null == iter ? null : new FilteredIterator<T>(iter, pred));
     }

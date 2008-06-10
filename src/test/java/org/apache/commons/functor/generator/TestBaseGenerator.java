@@ -25,10 +25,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.UnaryPredicate;
+//import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.adapter.LeftBoundPredicate;
-import org.apache.commons.functor.core.IsEqual;
+//import org.apache.commons.functor.adapter.LeftBoundPredicate;
+//import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
 
 /**
@@ -189,18 +189,18 @@ public class TestBaseGenerator extends TestCase {
     private List evens = null;
     private List listWithDuplicates = null;
     private int sum = 0;
-    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(3));
-    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(23));
-    private UnaryPredicate isEven = new UnaryPredicate() {
-        public boolean test(Object obj) {
-            return ((Number) obj).intValue() % 2 == 0;
-        }
-    };
-    private UnaryPredicate isOdd = new UnaryPredicate() {
-        public boolean test(Object obj) {
-            return ((Number) obj).intValue() % 2 != 0;
-        }
-    };
+//    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(3));
+//    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(23));
+//    private UnaryPredicate isEven = new UnaryPredicate() {
+//        public boolean test(Object obj) {
+//            return ((Number) obj).intValue() % 2 == 0;
+//        }
+//    };
+//    private UnaryPredicate isOdd = new UnaryPredicate() {
+//        public boolean test(Object obj) {
+//            return ((Number) obj).intValue() % 2 != 0;
+//        }
+//    };
 
     // Classes
     // ------------------------------------------------------------------------

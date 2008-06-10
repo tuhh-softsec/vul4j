@@ -44,7 +44,7 @@ public class TestUnaryNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryNot(new Constant(true));
+        return new UnaryNot<Object>(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,20 +62,19 @@ public class TestUnaryNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        UnaryPredicate truePred = new UnaryNot(new Constant(false));
+        UnaryPredicate<Object> truePred = new UnaryNot<Object>(Constant.FALSE);
         assertTrue(truePred.test(null));
         assertTrue(truePred.test("xyzzy"));
         assertTrue(truePred.test(new Integer(3)));
     }
 
     public void testEquals() throws Exception {
-        UnaryNot p = new UnaryNot(Constant.truePredicate());
+        UnaryNot<Object> p = new UnaryNot<Object>(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new UnaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,UnaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new UnaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new UnaryNot(null));
+        assertObjectsAreEqual(p,new UnaryNot<Object>(Constant.TRUE));
+        assertObjectsAreEqual(p,UnaryNot.not(Constant.TRUE));
+        assertObjectsAreNotEqual(p,new UnaryNot<Object>(Constant.FALSE));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
     public void testNotNull() throws Exception {

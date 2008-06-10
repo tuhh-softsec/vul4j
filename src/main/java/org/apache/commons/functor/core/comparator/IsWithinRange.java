@@ -99,6 +99,17 @@ public class IsWithinRange<A extends Comparable<A>> implements UnaryPredicate<A>
      * {@inheritDoc}
      */
     public String toString() {
-        return "IsBetween(" + min + ", " + max + ")";
+        return "IsWithinRange(" + min + ", " + max + ")";
+    }
+
+    /**
+     * Obtain an IsWithinRange instance.
+     * @param <A>
+     * @param min A
+     * @param max A
+     * @return IsWithinRange<A>
+     */
+    public static <A extends Comparable<A>> IsWithinRange<A> instance(A min, A max) {
+        return new IsWithinRange<A>(min, max);
     }
 }

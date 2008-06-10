@@ -57,6 +57,7 @@ public class CollectionTransformer<E> implements UnaryFunction<Generator<? exten
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public Collection<E> evaluate(Generator<? extends E> generator) {
         generator.run(new UnaryProcedure<E>() {
             public void run(E obj) {

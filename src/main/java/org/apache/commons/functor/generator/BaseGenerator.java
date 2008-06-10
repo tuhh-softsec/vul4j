@@ -98,6 +98,7 @@ public abstract class BaseGenerator<E> implements Generator<E> {
      * {@inheritDoc}
      * Same as to(new CollectionTransformer()).
      */
+    @SuppressWarnings("unchecked")
     public final Collection<E> toCollection() {
         return (Collection<E>) to(new CollectionTransformer<E>());
     }

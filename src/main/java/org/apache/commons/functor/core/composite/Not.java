@@ -44,10 +44,13 @@ public final class Not implements Predicate, Serializable {
     // ------------------------------------------------------------------------
     /**
      * Create a new Not.
-     * @param p Predicate to negate
+     * @param predicate Predicate to negate
      */
-    public Not(Predicate p) {
-        this.predicate = p;
+    public Not(Predicate predicate) {
+        if (predicate == null) {
+            throw new IllegalArgumentException("Predicate argument was null");
+        }
+        this.predicate = predicate;
     }
 
     // predicate interface

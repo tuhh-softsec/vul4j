@@ -44,7 +44,7 @@ public class TestNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new Not(new Constant(true));
+        return new Not(Constant.TRUE);
     }
 
     // Lifecycle
@@ -62,18 +62,17 @@ public class TestNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        Predicate truePred = new Not(new Constant(false));
+        Predicate truePred = new Not(Constant.FALSE);
         assertTrue(truePred.test());
     }
 
     public void testEquals() throws Exception {
-        Not p = new Not(Constant.truePredicate());
+        Not p = new Not(Constant.TRUE);
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new Not(new Constant(true)));
-        assertObjectsAreEqual(p,Not.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new Not(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new Not(null));
+        assertObjectsAreEqual(p,new Not(Constant.TRUE));
+        assertObjectsAreEqual(p,Not.not(Constant.TRUE));
+        assertObjectsAreNotEqual(p,new Not(Constant.FALSE));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
     public void testNotNull() throws Exception {
@@ -81,6 +80,6 @@ public class TestNot extends BaseFunctorTest {
     }
 
     public void testNotNotNull() throws Exception {
-        assertNotNull(Not.not(Constant.truePredicate()));
+        assertNotNull(Not.not(Constant.TRUE));
     }
 }

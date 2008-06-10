@@ -56,7 +56,7 @@ public class TestMax extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() {
-        Max f = Max.instance();
+        Max<Integer> f = Max.instance();
         assertEquals(ONE,f.evaluate(ONE,ONE));
         assertEquals(ONE,f.evaluate(ZERO,ONE));
         assertEquals(ONE,f.evaluate(ONE,ZERO));
@@ -65,11 +65,12 @@ public class TestMax extends BaseFunctorTest {
         assertEquals(MINUS_TWO,f.evaluate(MIN,MINUS_TWO));
     }
 
+    @SuppressWarnings("unchecked")
     public void testEquals() {
-        Max f = Max.instance();
+        Max<Comparable<?>> f = Max.instance();
         assertObjectsAreEqual(f,f);
         assertObjectsAreEqual(f,Max.instance());
-        assertObjectsAreEqual(f,new Max(new ComparableComparator()));
-        assertObjectsAreNotEqual(f,new Max(Collections.reverseOrder()));
+        assertObjectsAreEqual(f,new Max<Comparable<?>>(ComparableComparator.INSTANCE));
+        assertObjectsAreNotEqual(f,new Max<Comparable<?>>(Collections.<Comparable<?>>reverseOrder()));
     }
 }

@@ -43,7 +43,7 @@ public class TestIsNotNull extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsNotNull();
+        return new IsNotNull<Object>();
     }
 
     // Lifecycle
@@ -61,18 +61,18 @@ public class TestIsNotNull extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        UnaryPredicate p = new IsNotNull();
+        UnaryPredicate<Object> p = new IsNotNull<Object>();
         assertTrue(!p.test(null));
         assertTrue(p.test("foo"));
         assertTrue(p.test(new Integer(3)));
     }
 
     public void testEquals() throws Exception {
-        UnaryPredicate p = new IsNotNull();
+        UnaryPredicate<Object> p = new IsNotNull<Object>();
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IsNotNull());
+        assertObjectsAreEqual(p,new IsNotNull<Object>());
         assertObjectsAreEqual(p,IsNotNull.instance());
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
     public void testConstant() throws Exception {

@@ -43,7 +43,7 @@ public class TestIsNotEqual extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsNotEqual();
+        return new IsNotEqual<Object, Object>();
     }
 
     // Lifecycle

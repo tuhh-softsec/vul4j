@@ -43,7 +43,7 @@ public class TestIsWithinRange extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsWithinRange(new Integer(5), new Integer(10));
+        return new IsWithinRange<Integer>(new Integer(5), new Integer(10));
     }
 
     // Lifecycle
@@ -61,7 +61,7 @@ public class TestIsWithinRange extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        IsWithinRange p = new IsWithinRange(new Integer(5), new Integer(10));
+        IsWithinRange<Integer> p = new IsWithinRange<Integer>(new Integer(5), new Integer(10));
         assertTrue(p.test(new Integer(5)));
         assertTrue(p.test(new Integer(6)));
         assertTrue(p.test(new Integer(7)));
@@ -76,7 +76,7 @@ public class TestIsWithinRange extends BaseFunctorTest {
 
     public void testInvalidRange() {
         try {
-            new IsWithinRange(new Integer(5), new Integer(4));
+            new IsWithinRange<Integer>(new Integer(5), new Integer(4));
             fail("should have thrown IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // good
@@ -85,7 +85,7 @@ public class TestIsWithinRange extends BaseFunctorTest {
         }
 
         try {
-            new IsWithinRange(new Integer(5), null);
+            new IsWithinRange<Integer>(new Integer(5), null);
             fail("should have thrown IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // good
@@ -95,12 +95,26 @@ public class TestIsWithinRange extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        IsWithinRange p1 = new IsWithinRange(new Integer(5), new Integer(10));
-        IsWithinRange p2 = new IsWithinRange(new Integer(5), new Integer(10));
+        IsWithinRange<Integer> p1 = new IsWithinRange<Integer>(new Integer(5), new Integer(10));
+        IsWithinRange<Integer> p2 = new IsWithinRange<Integer>(new Integer(5), new Integer(10));
         assertEquals(p1, p2);
-        p2 = new IsWithinRange(new Integer(5), new Integer(11));
+        p2 = new IsWithinRange<Integer>(new Integer(5), new Integer(11));
         assertTrue(!p1.equals(p2));
-        p2 = new IsWithinRange(new Integer(6), new Integer(10));
+        p2 = new IsWithinRange<Integer>(new Integer(6), new Integer(10));
         assertTrue(!p1.equals(p2));
+    }
+
+    public void testFactory() throws Exception {
+        IsWithinRange<Integer> p = IsWithinRange.instance(new Integer(5), new Integer(10));
+        assertTrue(p.test(new Integer(5)));
+        assertTrue(p.test(new Integer(6)));
+        assertTrue(p.test(new Integer(7)));
+        assertTrue(p.test(new Integer(8)));
+        assertTrue(p.test(new Integer(9)));
+        assertTrue(p.test(new Integer(10)));
+
+        assertTrue(!p.test(new Integer(4)));
+        assertTrue(!p.test(new Integer(11)));
+
     }
 }

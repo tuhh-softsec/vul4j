@@ -43,7 +43,7 @@ public class TestIsNull extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsNull();
+        return new IsNull<Object>();
     }
 
     // Lifecycle
@@ -61,25 +61,25 @@ public class TestIsNull extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        UnaryPredicate p = new IsNull();
+        UnaryPredicate<Object> p = new IsNull<Object>();
         assertTrue(p.test(null));
-        assertTrue(!p.test("foo"));
-        assertTrue(!p.test(new Integer(3)));
+        assertFalse(p.test("foo"));
+        assertFalse(p.test(new Integer(3)));
     }
 
     public void testAsBinary() throws Exception {
-        assertTrue( IsNull.left().test(null,"not null"));
-        assertTrue(!IsNull.left().test("not null",null));
-        assertTrue( IsNull.right().test("not null",null));
-        assertTrue(!IsNull.right().test(null,"not null"));
+        assertTrue(IsNull.left().test(null,"not null"));
+        assertFalse(IsNull.left().test("not null",null));
+        assertTrue(IsNull.right().test("not null",null));
+        assertFalse(IsNull.right().test(null,"not null"));
     }
 
     public void testEquals() throws Exception {
-        UnaryPredicate p = new IsNull();
+        UnaryPredicate<Object> p = new IsNull<Object>();
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IsNull());
+        assertObjectsAreEqual(p,new IsNull<Object>());
         assertObjectsAreEqual(p,IsNull.instance());
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
+        assertObjectsAreNotEqual(p,Constant.TRUE);
     }
 
     public void testConstant() throws Exception {

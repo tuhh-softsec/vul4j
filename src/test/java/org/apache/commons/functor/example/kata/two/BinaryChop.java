@@ -25,6 +25,7 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public interface BinaryChop {
     int find(int seeking, int[] in);
     int find(Object seeking, Object[] in);
