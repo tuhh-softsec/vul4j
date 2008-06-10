@@ -31,6 +31,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class FunctoredMap implements Map {
     public FunctoredMap(Map map) {
         this.map = map;

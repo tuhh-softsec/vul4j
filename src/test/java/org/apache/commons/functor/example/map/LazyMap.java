@@ -25,6 +25,7 @@ import org.apache.commons.functor.UnaryFunction;
  * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
+@SuppressWarnings("unchecked")
 public class LazyMap extends FunctoredMap {
     public LazyMap(Map map, final UnaryFunction factory) {
         super(map);
