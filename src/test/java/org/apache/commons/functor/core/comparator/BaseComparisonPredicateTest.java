@@ -47,7 +47,8 @@ public abstract class BaseComparisonPredicateTest extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public final void testTestNull() throws Exception {
-        BinaryPredicate p = (BinaryPredicate)(makeFunctor());
+        @SuppressWarnings("unchecked")
+        BinaryPredicate<Object, Object> p = (BinaryPredicate<Object, Object>)(makeFunctor());
         try {
             p.test(new Integer(2),null);
             fail("Expected NullPointerException");
@@ -69,7 +70,8 @@ public abstract class BaseComparisonPredicateTest extends BaseFunctorTest {
     }
 
     public final void testTestNonComparable() throws Exception {
-        BinaryPredicate p = (BinaryPredicate)(makeFunctor());
+        @SuppressWarnings("unchecked")
+        BinaryPredicate<Object, Object> p = (BinaryPredicate<Object, Object>)(makeFunctor());
         try {
             p.test(new Integer(2),new Object());
             fail("Expected ClassCastException");

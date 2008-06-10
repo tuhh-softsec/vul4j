@@ -43,7 +43,7 @@ public class TestIsEqual extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsEqual();
+        return new IsEqual<Object, Object>();
     }
 
     // Lifecycle
@@ -61,7 +61,7 @@ public class TestIsEqual extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        IsEqual p = new IsEqual();
+        IsEqual<Object, Object> p = new IsEqual<Object, Object>();
         assertTrue("For symmetry, two nulls should be equal",p.test(null,null));
         assertTrue(p.test("foo","foo"));
         assertTrue(!p.test(null,"foo"));
@@ -77,10 +77,10 @@ public class TestIsEqual extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate f = new IsEqual();
+        BinaryPredicate<Object, Object> f = new IsEqual<Object, Object>();
         assertEquals(f,f);
 
-        assertObjectsAreEqual(f,new IsEqual());
+        assertObjectsAreEqual(f,new IsEqual<Object, Object>());
         assertObjectsAreEqual(f,IsEqual.instance());
         assertObjectsAreNotEqual(f,Constant.truePredicate());
     }

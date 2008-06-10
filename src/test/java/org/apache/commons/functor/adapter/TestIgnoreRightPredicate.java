@@ -45,7 +45,7 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IgnoreRightPredicate(new Constant(true));
+        return new IgnoreRightPredicate<Boolean, Object>(Constant.TRUE);
     }
 
     // Lifecycle
@@ -63,18 +63,21 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testEvaluate() throws Exception {
-        BinaryPredicate p = new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
+        BinaryPredicate<Boolean, Object> p = new IgnoreRightPredicate<Boolean, Object>(
+                new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean> instance()));
         assertTrue(p.test(Boolean.TRUE,null));
         assertTrue(!p.test(Boolean.FALSE,null));
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate p = new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
+        BinaryPredicate<Boolean, Object> p = new IgnoreRightPredicate<Boolean, Object>(
+                new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean> instance()));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity())));
-        assertObjectsAreNotEqual(p,new Constant(true));
-        assertObjectsAreNotEqual(p,new IgnoreRightPredicate(new Constant(false)));
-        assertObjectsAreNotEqual(p,new Constant(false));
+        assertObjectsAreEqual(p,new IgnoreRightPredicate<Boolean, Object>(
+                new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean> instance())));
+        assertObjectsAreNotEqual(p,Constant.TRUE);
+        assertObjectsAreNotEqual(p,new IgnoreRightPredicate<Boolean, Object>(Constant.FALSE));
+        assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
     public void testAdaptNull() throws Exception {
@@ -82,6 +85,6 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(IgnoreRightPredicate.adapt(new Constant(true)));
+        assertNotNull(IgnoreRightPredicate.adapt(Constant.TRUE));
     }
 }

@@ -70,7 +70,7 @@ public class TestOffset extends BaseFunctorTest {
         }
     }
 
-    public void testTestNilary() throws Exception {
+    public void testTestNullary() throws Exception {
         Predicate p = new Offset(3);
         assertTrue(!p.test());
         assertTrue(!p.test());
@@ -79,7 +79,7 @@ public class TestOffset extends BaseFunctorTest {
     }
 
     public void testTestUnary() throws Exception {
-        UnaryPredicate p = new Offset(3);
+        UnaryPredicate<Object> p = new Offset(3);
         assertTrue(!p.test(null));
         assertTrue(!p.test(null));
         assertTrue(!p.test(null));
@@ -87,7 +87,7 @@ public class TestOffset extends BaseFunctorTest {
     }
 
     public void testTestBinary() throws Exception {
-        BinaryPredicate p = new Offset(3);
+        BinaryPredicate<Object, Object> p = new Offset(3);
         assertTrue(!p.test(null,null));
         assertTrue(!p.test(null,null));
         assertTrue(!p.test(null,null));

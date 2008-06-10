@@ -44,7 +44,7 @@ public class TestBinaryPredicateBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryPredicateBinaryFunction(new Constant(true));
+        return new BinaryPredicateBinaryFunction<Object, Object>(Constant.TRUE);
     }
 
     // Lifecycle

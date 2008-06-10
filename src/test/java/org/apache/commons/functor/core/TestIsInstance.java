@@ -62,7 +62,7 @@ public class TestIsInstance extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        BinaryPredicate p = IsInstance.INSTANCE;
+        BinaryPredicate<Object, Class<?>> p = IsInstance.INSTANCE;
         assertFalse(p.test(null, Number.class));
         assertFalse(p.test("foo", Number.class));
         assertTrue(p.test(3, Number.class));
@@ -70,7 +70,7 @@ public class TestIsInstance extends BaseFunctorTest {
     }
 
     public void testBoundTest() throws Exception {
-        UnaryPredicate p = IsInstance.of(Number.class);
+        UnaryPredicate<Object> p = IsInstance.of(Number.class);
         assertFalse(p.test(null));
         assertFalse(p.test("foo"));
         assertTrue(p.test(3));
@@ -78,7 +78,7 @@ public class TestIsInstance extends BaseFunctorTest {
     }
 
     public void testInstanceOfNull() throws Exception {
-        BinaryPredicate p = new IsInstance();
+        BinaryPredicate<Object, Class<?>> p = new IsInstance<Object>();
         try {
             p.test("foo", null);
             fail("Expected NullPointerException");
@@ -88,14 +88,14 @@ public class TestIsInstance extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate p = IsInstance.INSTANCE;
+        BinaryPredicate<Object, Class<?>> p = IsInstance.INSTANCE;
         assertEquals(p, p);
         assertObjectsAreEqual(p, IsInstance.instance());
         assertObjectsAreNotEqual(p,Constant.truePredicate());
     }
 
     public void testBoundEquals() throws Exception {
-        UnaryPredicate p = IsInstance.of(Object.class);
+        UnaryPredicate<Object> p = IsInstance.of(Object.class);
         assertEquals(p,p);
         assertObjectsAreEqual(p,IsInstance.of(Object.class));
         assertObjectsAreNotEqual(p,Constant.truePredicate());

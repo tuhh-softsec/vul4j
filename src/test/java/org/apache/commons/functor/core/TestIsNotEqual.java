@@ -61,7 +61,7 @@ public class TestIsNotEqual extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     public void testTest() throws Exception {
-        IsNotEqual p = new IsNotEqual();
+        IsNotEqual<Object, Object> p = new IsNotEqual<Object, Object>();
         assertTrue("For symmetry, two nulls should be equal",!p.test(null,null));
         assertTrue(!p.test("foo","foo"));
         assertTrue(p.test(null,"foo"));
@@ -77,9 +77,9 @@ public class TestIsNotEqual extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        BinaryPredicate p = new IsNotEqual();
+        BinaryPredicate<Object, Object> p = new IsNotEqual<Object, Object>();
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IsNotEqual());
+        assertObjectsAreEqual(p,new IsNotEqual<Object, Object>());
         assertObjectsAreEqual(p,IsNotEqual.instance());
         assertObjectsAreNotEqual(p,Constant.truePredicate());
     }

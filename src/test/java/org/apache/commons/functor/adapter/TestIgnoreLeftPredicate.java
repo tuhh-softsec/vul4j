@@ -21,8 +21,6 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
@@ -47,7 +45,7 @@ public class TestIgnoreLeftPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IgnoreLeftPredicate(new Constant(true));
+        return new IgnoreLeftPredicate<Object, Object>(Constant.TRUE);
     }
 
     // Lifecycle
@@ -78,7 +76,7 @@ public class TestIgnoreLeftPredicate extends BaseFunctorTest {
         assertObjectsAreEqual(p,new IgnoreLeftPredicate<Object, Boolean>(
                 new UnaryFunctionUnaryPredicate<Boolean>(Identity.<Boolean> instance())));
         assertObjectsAreNotEqual(p,Constant.TRUE);
-        assertObjectsAreNotEqual(p,new IgnoreLeftPredicate(Constant.FALSE));
+        assertObjectsAreNotEqual(p,new IgnoreLeftPredicate<Object, Object>(Constant.FALSE));
         assertObjectsAreNotEqual(p,Constant.FALSE);
     }
 
@@ -87,6 +85,6 @@ public class TestIgnoreLeftPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(IgnoreLeftPredicate.adapt(new Constant(true)));
+        assertNotNull(IgnoreLeftPredicate.adapt(Constant.TRUE));
     }
 }

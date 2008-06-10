@@ -45,7 +45,7 @@ public class TestIgnoreLeftFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IgnoreLeftFunction(new Constant("xyzzy"));
+        return new IgnoreLeftFunction<Object, Object, Object>(Constant.of("xyzzy"));
     }
 
     // Lifecycle
