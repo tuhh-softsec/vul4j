@@ -185,11 +185,12 @@ public final class Constant<T> implements Function<T>, UnaryFunction<Object, T>,
 
     /**
      * Get a Constant instance for the specified value.
-     * @param value Object
-     * @return Constant
+     * @param <T>
+     * @param value T
+     * @return Constant<T>
      */
-    public static <Z extends Object> Constant<Z> of(Z value) {
-        return new Constant<Z>(value);
+    public static <T> Constant<T> of(T value) {
+        return new Constant<T>(value);
     }
 
 }
