@@ -28,7 +28,7 @@ import java.util.List;
 public class BourneShell
     extends Shell
 {
-    private static final char[] BASH_QUOTING_TRIGGER_CHARS = { ' ', '$' };
+    private static final char[] BASH_QUOTING_TRIGGER_CHARS = { ' ', '$', ';', '&' };
 
     public BourneShell()
     {
