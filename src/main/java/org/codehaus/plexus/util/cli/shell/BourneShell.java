@@ -23,12 +23,28 @@ import java.util.List;
 
 /**
  * @author Jason van Zyl
- *  @version $Id$
+ * @version $Id$
  */
 public class BourneShell
     extends Shell
 {
-    private static final char[] BASH_QUOTING_TRIGGER_CHARS = { ' ', '$', ';', '&' };
+    private static final char[] BASH_QUOTING_TRIGGER_CHARS = {
+        ' ',
+        '$',
+        ';',
+        '&',
+        '|',
+        '<',
+        '>',
+        '*',
+        '?',
+        '(',
+        ')',
+        '[',
+        ']',
+        '{',
+        '}',
+        '`' };
 
     public BourneShell()
     {
@@ -58,10 +74,10 @@ public class BourneShell
             return super.getExecutable();
         }
 
-        if ( ( super.getExecutable() != null ) && ( super.getExecutable().indexOf( " " ) == -1 ) &&
-            ( super.getExecutable().indexOf( "'" ) != -1 ) )
+        if ( ( super.getExecutable() != null ) && ( super.getExecutable().indexOf( " " ) == -1 )
+            && ( super.getExecutable().indexOf( "'" ) != -1 ) )
         {
-            return  StringUtils.replace( super.getExecutable(), "'", "\\\'"  );
+            return StringUtils.replace( super.getExecutable(), "'", "\\\'" );
         }
 
         return super.getExecutable();
@@ -87,10 +103,10 @@ public class BourneShell
         String[] shellArgs = super.getShellArgs();
         if ( shellArgs == null )
         {
-           shellArgs = new String[0];
+            shellArgs = new String[0];
         }
 
-        if ( ( shellArgs.length > 0 ) && !shellArgs[shellArgs.length-1].equals( "-c" ) )
+        if ( ( shellArgs.length > 0 ) && !shellArgs[shellArgs.length - 1].equals( "-c" ) )
         {
             String[] newArgs = new String[shellArgs.length + 1];
 
@@ -115,7 +131,7 @@ public class BourneShell
         sb.append( "cd " );
         if ( dir != null && dir.indexOf( " " ) == -1 && dir.indexOf( "'" ) != -1 )
         {
-            dir = StringUtils.replace( dir, "'", "\\\'"  );
+            dir = StringUtils.replace( dir, "'", "\\\'" );
         }
 
         sb.append( StringUtils.quoteAndEscape( dir, '\"' ) );
