@@ -128,7 +128,7 @@ public class BourneShellTest
         assertEquals( "-c", lines[1] );
         assertEquals( "chmod --password ';password'", lines[2] );       
         
-        commandline = new Commandline();
+        commandline = new Commandline(new CmdShell());
         commandline.getShell().setQuotedArgumentsEnabled( true );
         commandline.createArgument().setValue( "--password" );
         commandline.createArgument().setValue( ";password");
