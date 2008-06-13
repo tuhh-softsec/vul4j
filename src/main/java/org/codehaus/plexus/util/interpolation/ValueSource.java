@@ -1,12 +1,12 @@
 package org.codehaus.plexus.util.interpolation;
 
 
+/**
+ *
+ * @author jdcasey
+ * @deprecated Use plexus-interpolation APIs instead.
+ */
 public interface ValueSource
+    extends org.codehaus.plexus.interpolation.ValueSource
 {
-    
-    /**
-     * @return the value related to the expression, or null if not found.
-     */
-    public Object getValue( String expression );
-
 }

@@ -15,32 +15,18 @@ package org.codehaus.plexus.util.interpolation;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.codehaus.plexus.util.introspection.ReflectionValueExtractor;
 
 /**
  * @version $Id$
+ * @deprecated Use plexus-interpolation APIs instead.
  */
 public class ObjectBasedValueSource
-    implements ValueSource
+    extends org.codehaus.plexus.interpolation.ObjectBasedValueSource
 {
-
-    private final Object root;
 
     public ObjectBasedValueSource( Object root )
     {
-        this.root = root;
-    }
-
-    public Object getValue( String expression )
-    {
-        try
-        {
-            return ReflectionValueExtractor.evaluate( expression, root, false );
-        }
-        catch ( Exception e )
-        {
-            return null;
-        }
+        super( root );
     }
 
 }

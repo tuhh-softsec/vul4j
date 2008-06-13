@@ -14,6 +14,15 @@
     <system>JIRA</system>
     <url>http://jira.codehaus.org/browse/PLXUTILS</url>
   </issueManagement>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
   <build>
     <plugins>
       <plugin>
@@ -59,6 +68,31 @@
           </systemProperties>
         </configuration>
       </plugin>
+        <plugin>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>1.0.1</version>
+          <executions>
+            <execution>
+              <id>shade</id>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <artifactSet>
+                  <includes>
+                    <include>org.codehaus.plexus:plexus-interpolation</include>
+                  </includes>
+                </artifactSet>
+                <relocations>
+                  <relocation>
+                    <pattern>org.codehaus.plexus.interpolation</pattern>
+                  </relocation>
+                </relocations>
+                <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
     </plugins>
   </build>
   <scm>

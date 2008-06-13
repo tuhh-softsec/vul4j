@@ -2,20 +2,18 @@ package org.codehaus.plexus.util.interpolation;
 
 import java.util.Properties;
 
+/**
+ *
+ * @author jdcasey
+ * @deprecated Use plexus-interpolation APIs instead.
+ */
 public class PropertiesBasedValueSource
-    implements ValueSource
+    extends org.codehaus.plexus.interpolation.PropertiesBasedValueSource
 {
-
-    private final Properties properties;
 
     public PropertiesBasedValueSource( Properties properties )
     {
-        this.properties = properties;
-    }
-
-    public Object getValue( String expression )
-    {
-        return properties.getProperty( expression );
+        super( properties );
     }
 
 }

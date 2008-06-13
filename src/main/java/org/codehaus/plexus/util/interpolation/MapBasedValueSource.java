@@ -19,21 +19,15 @@ import java.util.Map;
 
 /**
  * @version $Id$
+ * @deprecated Use plexus-interpolation APIs instead.
  */
 public class MapBasedValueSource
-    implements ValueSource
+    extends org.codehaus.plexus.interpolation.MapBasedValueSource
 {
-
-    private final Map values;
 
     public MapBasedValueSource( Map values )
     {
-        this.values = values;
-    }
-
-    public Object getValue( String expression )
-    {
-        return values.get( expression );
+        super( values );
     }
 
 }
