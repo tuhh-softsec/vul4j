@@ -3,6 +3,7 @@ package org.codehaus.plexus.util.interpolation;
 import java.util.List;
 
 
+
 /**
  *
  * @version $Id$
@@ -35,5 +36,12 @@ public class RegexBasedInterpolator
     {
         super( startRegex, endRegex );
     }
+
+    public void addValueSource( ValueSource valueSource )
+    {
+        super.addValueSource( valueSource );
+    }
+    
+    
 
 }
