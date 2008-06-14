@@ -41,6 +41,11 @@ public class RegexBasedInterpolator
     {
         super.addValueSource( valueSource );
     }
+
+    public void removeValuesSource( ValueSource valueSource )
+    {
+        super.removeValuesSource( valueSource );
+    }
     
     
 

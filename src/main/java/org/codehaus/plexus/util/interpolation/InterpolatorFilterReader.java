@@ -62,6 +62,7 @@ import java.io.Reader;
  *
  * @author cstamas
  * @deprecated Use plexus-interpolation APIs instead.
+ * @version $Id$
  */
 public class InterpolatorFilterReader
     extends org.codehaus.plexus.interpolation.InterpolatorFilterReader

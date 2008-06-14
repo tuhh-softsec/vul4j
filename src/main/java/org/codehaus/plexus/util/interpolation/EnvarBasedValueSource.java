@@ -8,6 +8,7 @@ import java.io.IOException;
  * @version $Id$
  *
  * @deprecated Use plexus-interpolation APIs instead.
+ * @version $Id$
  */
 public class EnvarBasedValueSource
     extends org.codehaus.plexus.interpolation.EnvarBasedValueSource
