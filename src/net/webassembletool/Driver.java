@@ -260,7 +260,6 @@ public final class Driver {
 		throw new NeedsRefreshException(null);
 	    cachedResource.render(multipleOutput);
 	} catch (NeedsRefreshException e) {
-	    boolean cacheUpdated = false;
 	    try {
 		MemoryOutput memoryOutput = null;
 		if (baseURL != null)
@@ -287,8 +286,6 @@ public final class Driver {
 		}
 		if (memoryOutput != null) {
 		    cachedResource = memoryOutput.toResource();
-		    cache.putInCache(httpUrl, cachedResource);
-		    cacheUpdated = true;
 		    if (cachedResource != null)
 			cachedResource.release();
 		    if (httpResource != null)
@@ -299,7 +296,7 @@ public final class Driver {
 	    } finally {
 		// The resource was not found in cache so osCache has locked
 		// this key. We have to remove the lock.
-		if (useCache && !cacheUpdated)
+		if (useCache)
 		    if (cachedResource != null)
 			// Re-put the cached entry in the cache so that we will
 			// not try to reload it until new expiration delay
