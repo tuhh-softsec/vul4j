@@ -147,42 +147,34 @@
 
     <!-- P A T T E R N S E T S -->
     <patternset id="id.patternset.distFiles">
-		<include name="build.xml"/>
-		<include name="INSTALL"/>
-		<include name="KEYS"/>
-		<include name="LICENSE"/>
-		<include name="NOTICE"/>
-		<include name="README"/>
-		<include name="Readme.html"/>
-		<include name="TODO"/>
-		<include name="provider.properties"/>
-		<include name="proxy.properties"/>
+	<include name="build.xml"/>
+	<include name="INSTALL"/>
+	<include name="KEYS"/>
+	<include name="LICENSE"/>
+	<include name="NOTICE"/>
+	<include name="README"/>
+	<include name="Readme.html"/>
+	<include name="TODO"/>
+	<include name="provider.properties"/>
+	<include name="proxy.properties"/>
     </patternset>
 
     <patternset id="id.patternset.dataFiles">
-		<include name="data/**"/>
-		<exclude name="data/de/uni-siegen/**"/>
-		<exclude name="data/com/ibm/xss4j-20030127/**/*"/>
+	<include name="data/**"/>
+	<exclude name="data/de/uni-siegen/**"/>
+	<exclude name="data/com/ibm/xss4j-20030127/**/*"/>
     </patternset>
 
     <patternset id="id.patternset.srcFiles">
-		<!-- for some strange reasons, I can't use ${src} but must use src -->
-		<include name="src/**/*"/>
-<!--		<include name="src/org/apache/xml/security/**/*.java"/>
-		<include name="src/org/apache/xml/security/**/*.xml"/>
-		<include name="src/org/apache/xml/security/**/*.html"/>
-		<include name="src/org/apache/xml/security/resource/**/*"/> -->
+	<include name="src/**/*"/>
     </patternset>
 	
     <patternset id="id.patternset.srcSamplesFiles">
-		<include name="src_samples/org/apache/xml/security/samples/**/*"/>
-		<include name="src_samples/org/apache/xml/security/samples/**/*.html"/>
+	<include name="src_samples/**/*"/>
     </patternset>
 	
     <patternset id="id.patternset.srcUnitTestsFiles">
-		<include name="src_unitTests/org/apache/xml/security/test/**/*"/>
-		<include name="src_unitTests/org/apache/xml/security/test/**/*.html"/>
-		<include name="src_unitTests/org/apache/xml/security/c14n/**/*"/>
+	<include name="src_unitTests/**/*"/>
     </patternset>
 
     <!-- T A R G E T S -->
@@ -292,9 +284,7 @@
         <copy todir="${dir.build.bin}" >
             <fileset dir="${dir.src}"
                      includes="**/org/apache/xml/security/resource/*,
-                               **/org/apache/xml/security/resource/schema/*"
-                     excludes="**/org/apache/xml/security/resource/CVS,
-                               **/org/apache/xml/security/resource/schema/CVS" />
+                               **/org/apache/xml/security/resource/schema/*"/>
         </copy >
     </target >
     
@@ -626,16 +616,15 @@
 	<mkdir dir="${dir.build.srcdist}"/>
 
 	<copy todir="${dir.build.srcdist}">
-		<fileset dir=".">
-			<patternset refid="id.patternset.distFiles"/>
-			<patternset refid="id.patternset.srcFiles"/>
-			<patternset refid="id.patternset.srcUnitTestsFiles"/>
-			<patternset refid="id.patternset.srcSamplesFiles"/>
-			<patternset refid="id.patternset.dataFiles"/>
+	    <fileset dir=".">
+		<patternset refid="id.patternset.distFiles"/>
+		<patternset refid="id.patternset.srcFiles"/>
+		<patternset refid="id.patternset.srcUnitTestsFiles"/>
+		<patternset refid="id.patternset.srcSamplesFiles"/>
+		<patternset refid="id.patternset.dataFiles"/>
 				
-			<include name="ant/**/*"/>
-			<exclude name="**/CVS/**"/>
-		</fileset>
+		<include name="ant/**/*"/>
+	    </fileset>
 	</copy>
 
 	<mkdir description="create an empty libs dir"
@@ -652,15 +641,14 @@
 	<mkdir dir="${dir.build.bindist}"/>
 
 	<copy todir="${dir.build.bindist}">
-		<fileset dir=".">
-			<patternset refid="id.patternset.distFiles"/>
-			<patternset refid="id.patternset.dataFiles"/>
-			<patternset refid="id.patternset.srcUnitTestsFiles"/>
-			<patternset refid="id.patternset.srcSamplesFiles"/>
+	    <fileset dir=".">
+		<patternset refid="id.patternset.distFiles"/>
+		<patternset refid="id.patternset.dataFiles"/>
+		<patternset refid="id.patternset.srcUnitTestsFiles"/>
+		<patternset refid="id.patternset.srcSamplesFiles"/>
 				
-			<include name="ant/**/*"/>
-			<exclude name="**/CVS/**"/>
-		</fileset>
+		<include name="ant/**/*"/>
+	    </fileset>
 	</copy>
 
 	<mkdir dir="${dir.build.bindist}/libs"/>
