@@ -152,7 +152,6 @@
 	<include name="KEYS"/>
 	<include name="LICENSE"/>
 	<include name="NOTICE"/>
-	<include name="README"/>
 	<include name="Readme.html"/>
 	<include name="TODO"/>
 	<include name="provider.properties"/>
