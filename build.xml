@@ -65,9 +65,9 @@
     <property name="lib.clover"		value="${dir.libs}/clover.jar" />
 
     <!-- XML Security libraries (for bin distribution) -->
-    <property name="lib.xmlsec"         value="${dir.libs}/xmlsec.jar" />
-    <property name="lib.xmlsec.samples" value="${dir.libs}/xmlsecSamples.jar"/>
-    <property name="lib.xmlsec.tests"   value="${dir.libs}/xmlsecTests.jar" />
+    <property name="lib.xmlsec"         value="${dir.libs}/xmlsec-${product.version}.jar" />
+    <property name="lib.xmlsec.samples" value="${dir.libs}/xmlsecSamples-${product.version}.jar"/>
+    <property name="lib.xmlsec.tests"   value="${dir.libs}/xmlsecTests-${product.version}.jar" />
 
     <!-- JAR properties -->
     <property name="jar.library"        value="${dir.build}/xmlsec-${product.version}.jar" />
@@ -245,14 +245,14 @@
 
     <target name="do.check.bindist">
 	<condition property="is.bin.dist">
-		<and>
-			<available file="${lib.xmlsec}" />
-			<available file="${lib.xmlsec.samples}" />
-			<available file="${lib.xmlsec.tests}" />
-			<not>
-				<available type="dir" file="src" />
-			</not>
-		</and>
+	    <and>
+		<available file="${lib.xmlsec}" />
+		<available file="${lib.xmlsec.samples}" />
+		<available file="${lib.xmlsec.tests}" />
+		<not>
+		    <available type="dir" file="src" />
+		</not>
+	    </and>
 	</condition>
     </target>
 
@@ -659,6 +659,8 @@
 	      todir="${dir.build.bindist}/libs"/>
 	<copy file="${lib.xalan.2}" 
 	      todir="${dir.build.bindist}/libs"/>
+	<copy file="${lib.xalan.3}" 
+	      todir="${dir.build.bindist}/libs"/>
 	<copy file="${lib.logging}" 
 	      todir="${dir.build.bindist}/libs"/>
 	<copy file="${lib.logging.api}" 
@@ -676,11 +678,11 @@
 
 	<mkdir dir="${dir.build.bindist}/doc"/>
 	<copy todir="${dir.build.bindist}/doc">
-		<fileset dir="${dir.docs}/build/site"/>
+	    <fileset dir="${dir.docs}/build/site"/>
 	</copy>
 	<mkdir dir="${dir.build.bindist}/doc/Java/api" />
 	<copy todir="${dir.build.bindist}/doc/Java/api">
-		<fileset dir="${dir.build.docs.html}/javadoc"/>
+	    <fileset dir="${dir.build.docs.html}/javadoc"/>
 	</copy>
 
 	<zip basedir="${dir.build.dist}/bin" 
