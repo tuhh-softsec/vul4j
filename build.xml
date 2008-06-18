@@ -16,7 +16,7 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="4"/>
-    <property name="product.version.level" value="2rc1"/>
+    <property name="product.version.level" value="2"/>
     <property name="product.version" 
 	  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product_version" 
@@ -745,6 +745,8 @@
     <target name="manifest">
 	<tstamp/>
 	<mkdir dir="${dir.manifest}"/>
+	<copy file="${basedir}/LICENSE" tofile="${dir.manifest}/LICENSE.txt"/>
+	<copy file="${basedir}/NOTICE" tofile="${dir.manifest}/NOTICE.txt"/>
 	<manifest file="${jar.manifest}" mode="replace">
             <attribute name="Built-By" value="${user.name}"/>
             <section name="${product.shortname}">
@@ -762,25 +764,31 @@
 	    depends="manifest,build.src,build.test,build.samples">
 
 	<!-- Main Library -->
-	<jar basedir="${dir.build.bin}" 
+	<jar basedir="${dir.build.bin}"
 	     excludes="org/apache/xml/security/temp/**"
-	     includes="**/LICENSE, **/NOTICE, org/apache/**, org/jcp/**, javax/xml/crypto/**, *.txt" 
-	     jarfile="${jar.library}" 
-	     manifest="${jar.manifest}"/>
+	     includes="org/apache/**, org/jcp/**, javax/xml/crypto/**"
+	     destfile="${jar.library}" 
+	     manifest="${jar.manifest}">
+	  <metainf file="${dir.manifest}/*.txt"/>
+	</jar>
 
 	<!-- Samples -->
 	<jar basedir="${dir.build.samples}" 
 	     excludes="org/apache/xml/security/temp/**" 
-	     includes="**/LICENSE, **/NOTICE, org/apache/**, javax/xml/crypto/**"
-	     jarfile="${jar.samples}" 
-	     manifest="${jar.manifest}"/>
+	     includes="org/apache/**, javax/xml/crypto/**"
+	     destfile="${jar.samples}" 
+	     manifest="${jar.manifest}">
+	  <metainf file="${dir.manifest}/*.txt"/>
+	</jar>
 		
 	<!-- Tests -->
 	<jar basedir="${dir.build.test}" 
 	     excludes="org/apache/xml/security/temp/**" 
-	     includes="**/LICENSE, **/NOTICE, org/apache/**, javax/xml/crypto/**"
-	     jarfile="${jar.tests}" 
-	     manifest="${jar.manifest}"/>
+	     includes="org/apache/**, javax/xml/crypto/**"
+	     destfile="${jar.tests}" 
+	     manifest="${jar.manifest}">
+	  <metainf file="${dir.manifest}/*.txt"/>
+	</jar>
     </target>
 
     <target name="build.src.jar"
