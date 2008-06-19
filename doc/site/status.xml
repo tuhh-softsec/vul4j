@@ -34,6 +34,100 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
 
+    <release version="Java 1.4.2" date="June 2008">    
+      <action dev="SM" type="fix" fixes-bug="44999" context="java_general" 
+	due-to="Giedrius Noreikis">
+        DOMException is thrown at XMLSignature creation. 
+      </action>
+      <action dev="SM" type="update" fixes-bug="44863" context="java_general" 
+	due-to="Wally Dennis">
+        Improved logging in signature handling. Thanks to Wally Dennis.
+      </action>
+      <action dev="RB" type="fix" fixes-bug="44956" context="java_general" 
+	due-to="Giedrius Noreikis">
+        Concurrent creation of a XMLSignature instance produces an 
+        ArrayIndexOutOfBoundsException. Thanks to Giedrius Noreikis
+      </action>
+      <action dev="RB" type="fix" fixes-bug="44991" context="java_general" 
+	due-to="Giedrius Noreikis">
+        Concurrent invocation of KeyInfo.getX509Certificate() occasionally fails
+      </action>
+      <action dev="SM" type="add" fixes-bug="44810" context="java_general">
+        Add support for more XMLDSig algorithms listed in RFC 4051
+      </action>
+      <action dev="SM" type="fix" fixes-bug="44629" context="java_general">
+        Switch order of XML Signature validation steps
+      </action>
+      <action dev="SM" type="fix" fixes-bug="44617" context="java_general">
+        Regression when processing XPath transform (additional fix)
+      </action>
+      <action dev="SM" type="fix" fixes-bug="44586" context="java_general">
+        XMLX509IssuerSerial.getIssuerName incorrectly escapes '#' in hex values
+      </action>
+      <action dev="SM" type="add" fixes-bug="42653" context="java_general"
+	due-to="Sean Mullan">
+        Add support for C14N 1.1 to Java implementation.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="44205" context="java_general"
+	due-to="Vishal Mahajan">
+        XMLX509Certificate.getX509Certificate() results in certificate parsing 
+        error.
+      </action>
+      <action dev="RB" type="fix" fixes-bug="44177" context="java_general"
+	due-to="Matej Spiller">
+        When using xslt transformation there is problem with xalan newline.
+        Small refactor for ElementProxy to get rid of the state, it was an old
+        vestige that where taking space and obfuscating the code.
+      </action>
+      <action dev="RB" type="fix" fixes-bug="40897" context="java_general"
+	due-to="Vishal Mahajan">
+        String comparisons using '==' causes validation errors with some parsers
+      </action>
+      <action dev="SM" type="add" fixes-bug="43056" context="java_general"
+	due-to="Alon Bar-Lev">
+        Library does not allow specify provider for private key operations. 
+      </action>
+      <action dev="SM" type="fix" fixes-bug="44102" context="java_general"
+	due-to="Butler">
+        XMLCipher loadEncryptedKey error.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="43239" context="java_general"
+	due-to="Matthias Germann">
+        No installed provider supports this key when checking a RSA signature 
+        against a DSA key before RSA key.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="43597" context="java_general"
+	due-to="Brent Putnam">
+        Unnecessary namespace declarations on Signature children.
+      </action>
+      <action dev="SM" type="add" fixes-bug="42061" context="java_general"
+	due-to="Michael McIntosh">
+        Method to disable XMLUtils.addReturnToElement.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="42865" context="java_general"
+	due-to="Frank Cornelis">
+        Problem with empty BaseURI in ResolverLocalFilesystem.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="42230" context="java_general">
+        Inclusive C14n doesn't always handle xml:space & xml:lang
+        attributes correctly
+      </action>
+      <action dev="SM" type="add" fixes-bug="38668" context="java_general"
+	due-to="Vladmir Ionescu">
+        Add XMLCipher.encryptData method that takes serialized
+        data as parameter.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="42866" context="java_general"
+	due-to="Julien Taupin, Daniele Gagliardi">
+        Error when removing encrypted content in 1.4.1.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="42820" context="java_general"
+	due-to="James Washington">
+        ClassLoader issue causing NoSuchAlgorithmException loading
+        Provider Implementation.
+      </action>
+    </release>
+
     <release version="C++ 1.4.0" date="November 2007">
       <action dev="BL" type="fix" context="c_rel">
         Fix exclusive c14n namespace bug (rev. 526939)
@@ -556,9 +650,6 @@ limitations under the License.
       </action>
       <action context="C++ code" dev="MT">
         Implement NSS Crypto interface
-      </action>
-      <action context="Java-code" dev="SM">
-        Integrate JSR 105
       </action>
     </actions>
     <actions priority="medium">
