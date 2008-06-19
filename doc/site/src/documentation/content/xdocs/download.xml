@@ -57,13 +57,13 @@ limitations under the License.
 	  </p>
 	  <source>
 % pgpk -a KEYS
-% pgpv xml-security-bin-1_2_1.zip.sig
+% pgpv xml-security-bin-1_4_2.zip.sig
   <em>or</em>
 % pgp -ka KEYS
-% pgp xml-security-bin-1_2_1.zip.sig
+% pgp xml-security-bin-1_4_2.zip.sig
   <em>or</em>
 % gpg --import KEYS
-% gpg --verify xml-security-bin-1_2_1.zip.sig
+% gpg --verify xml-security-bin-1_4_2.zip.sig
 	  </source>
 	</section>
     <section>
