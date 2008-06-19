@@ -23,126 +23,141 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>      
-      	<title>May 2007</title>
-		<p>
-		  Version 1.4.1 of the Java library has been released. This a bugfix release that 
-          contains a major bugfix to the canonicalization engine introduced in the 1.4 release. 
-          It is recommended that 1.4 users upgrade to the new version as signatures containing 
-          non ascii characters created by this library are not according to the standard, and will be only validated by 1.4 library. 
+      	<title>June 2008</title>
+	<p>
+	  Version 1.4.2 of the Java library has been released. This is mainly
+          a bugfix release but also contains a few new enhancements including 
+	  support for XML Canonicalization 1.1.
         </p>
-		<p>
-		 Please see <link href="site:changes">changelog</link> for more information.
-		</p>
+	<p>
+	  Please see <link href="site:changes">changelog</link> for more 
+          information.
+	</p>
+      </section>
+      <section>      
+      	<title>May 2007</title>
+	<p>
+	  Version 1.4.1 of the Java library has been released. This is a bugfix 
+	  release that contains a major bugfix to the canonicalization engine 
+	  introduced in the 1.4 release. It is recommended that 1.4 users 
+	  upgrade to the new version as signatures containing non ascii 
+          characters created by this library are not according to the standard, 
+	  and will be only validated by 1.4 library. 
+        </p>
+	<p>
+	  Please see <link href="site:changes">changelog</link> for more 
+          information.
+	</p>
       </section>
       <section>      
       	<title>January 2007</title>
-		<p>
-		  Version 1.3.1 of the C++ library has been released. This release
+	<p>
+	  Version 1.3.1 of the C++ library has been released. This release
           contains some minor bug fixes and initial updates for Xerces 3.0.
           It also provides a new automake based build on *NIX.
-		  <link href="site:changes">changelog</link> for more information.
-		</p>
+	  <link href="site:changes">changelog</link> for more information.
+	</p>
       </section>
       <section>      
       	<title>January 2007</title>
-		<p>
-		  Version 1.4 of the Java library has been released. 
-		  The main changes for this version are:
-		</p>
-		<ul>
+	<p>
+	  Version 1.4 of the Java library has been released. 
+	  The main changes for this version are:
+	</p>
+	<ul>
           <li>Implementation of the standard API JSR105</li>
           <li>Rewritten c14n that increase performance for signature 
           with node-set transformations.</li>
           <li>Memory footprint reduction and several bugfixes</li>
          </ul> 
-         <p> Refer to the 
-		  <link href="site:changes">changelog</link> for more information.
-		</p>
+        <p> Refer to the 
+	  <link href="site:changes">changelog</link> for more information.
+	</p>
       </section>      
       <section>      
       	<title>September 2006</title>
-		<p>
-		  Version 1.3 of the C++ library has been released. This release
+	<p>
+	  Version 1.3 of the C++ library has been released. This release
           features performance improvements and a complete message set
           for XKMS.
-		  <link href="site:changes">changelog</link> for more information.
-		</p>
+	  <link href="site:changes">changelog</link> for more information.
+	</p>
       </section>
       <section>
-		<title>October 2005</title>
-		<p>
-		  Version 1.3 of the Java library has been released.  
-		  This version provides :
-		</p>
-		<ul>
-		  <li>Better speed &amp; memory utilization.</li>
-		  <li>Bug fixes.</li>
-		</ul>
-		<p>See the 
-		  <link href="site:changes">changelog</link> for more information.
-		  </p>
-	  </section>
+	<title>October 2005</title>
+	<p>
+	  Version 1.3 of the Java library has been released.  
+	  This version provides :
+	</p>
+	<ul>
+	  <li>Better speed &amp; memory utilization.</li>
+	  <li>Bug fixes.</li>
+	</ul>
+	<p>See the 
+	  <link href="site:changes">changelog</link> for more information.
+        </p>
+      </section>
       <section>      
       	<title>July 2005</title>
-		<p>
-		  Version 1.2.1 of the C++ library has been released. This minor
+	<p>
+	  Version 1.2.1 of the C++ library has been released. This minor
           release fixes versioning problems in the Windows project files.  See the 
-		  <link href="site:changes">changelog</link> for more information.
-		</p>
+	  <link href="site:changes">changelog</link> for more information.
+	</p>
       </section>
       <section>
       	<title>June 2005</title>
-		<p>
-		  Version 1.2 of the C++ library has been released. 
-		  This version includes a number of bug fixes, together with
+	<p>
+	  Version 1.2 of the C++ library has been released. 
+	  This version includes a number of bug fixes, together with
           a beta release of code to process and generate XKMS messages.
           See the 
-		  <link href="site:changes">changelog</link> for more information.
-		</p>
+	  <link href="site:changes">changelog</link> for more information.
+	</p>
       </section>
       <section>
       	<title>February 2005</title>
-		<p>
-		  Version 1.2.1 of the Java library has been released. 
-		  This is a bugfix version, for more detail information see the
-		  <link href="site:changes">changelog</link>.
-		</p>
+	<p>
+	  Version 1.2.1 of the Java library has been released. 
+	  This is a bugfix version, for more detail information see the
+	  <link href="site:changes">changelog</link>.
+	</p>
       </section>
       <section>
-		<title>December 2004</title>
-		<p>
-		  Version 1.2 of the Java library has been released.  
-		  This version provides :
-		</p>
-		<ul>
-		  <li>Better speed &amp; memory utilization.</li>
-		  <li>Easier JCE integration.</li>
-		</ul>
-	  </section>
-	  <section>
-		<title>April 2004</title>
-		<p>
-		  Version 1.1 of the Java library has been released.  
-		  This version provides :
-		</p>
-		<ul>
-		  <li>Beta implementation of XML Encryption</li>
-		  <li>Bug fixes to Signature implementation</li>
-		</ul>
-	  </section>
-	  <section>
-		<title>March 2004</title>
-		<p>
-		  Version 1.1 of the C++ library has been released.  Supporting
-		  Xerces 2.5, 2.4 and 2.3 together with Xalan 1.6 and 1.7, this
-		  version provides :
-		</p>
-		<ul>
-		  <li>Beta implementation of XML Encryption</li>
-		  <li>Improved support for Windows Crypto API</li>
-		  <li>Bug fixes to Signature implementation</li>
-		</ul>
-	  </section>
+	<title>December 2004</title>
+	<p>
+	  Version 1.2 of the Java library has been released.  
+	  This version provides :
+	</p>
+	<ul>
+	  <li>Better speed &amp; memory utilization.</li>
+	  <li>Easier JCE integration.</li>
+	</ul>
+      </section>
+      <section>
+	<title>April 2004</title>
+	<p>
+	  Version 1.1 of the Java library has been released.  
+	  This version provides :
+	</p>
+	<ul>
+	  <li>Beta implementation of XML Encryption</li>
+	  <li>Bug fixes to Signature implementation</li>
+	</ul>
+      </section>
+      <section>
+	<title>March 2004</title>
+	<p>
+	  Version 1.1 of the C++ library has been released.  Supporting
+	  Xerces 2.5, 2.4 and 2.3 together with Xalan 1.6 and 1.7, this
+	  version provides :
+	</p>
+	<ul>
+	  <li>Beta implementation of XML Encryption</li>
+	  <li>Improved support for Windows Crypto API</li>
+	  <li>Bug fixes to Signature implementation</li>
+	</ul>
+      </section>
       <section>
         <title>August 2003</title>
         <p>
@@ -150,27 +165,27 @@ limitations under the License.
           stable release of the library.  Functionality is still fairly basic,
           but all mandatory parts of the the DSIG standard are implemented.
         </p>
-		<p>
-		  This version supports Xerces 2.2 and 2.3 and Xalan 1.6.
-		</p>
+	<p>
+	  This version supports Xerces 2.2 and 2.3 and Xalan 1.6.
+	</p>
       </section>
-	  <section>
-		<title>May 2003</title>
-		<p>
-		  The Beta 0.20 of the C++ library has now been released.  Features:
-		</p>
-		<ul>
-		  <li>Ability to use the Windows Crypto API as a crypto provider</li>
-		  <li>Several minor bug fixes in transforms and UNIX build process</li>
-		</ul>
-	  </section>
-	  <section>
-		<title>February 2003</title>
-		<p>
-		  The site has now been re-built using the new xml.apache.org standard,
-		  using Forrest.
-		</p>
-	  </section>
+      <section>
+	<title>May 2003</title>
+	<p>
+	  The Beta 0.20 of the C++ library has now been released.  Features:
+	</p>
+	<ul>
+	  <li>Ability to use the Windows Crypto API as a crypto provider</li>
+	  <li>Several minor bug fixes in transforms and UNIX build process</li>
+	</ul>
+      </section>
+      <section>
+	<title>February 2003</title>
+	<p>
+	  The site has now been re-built using the new xml.apache.org standard,
+	  using Forrest.
+	</p>
+      </section>
     </section>
     <section>
       <title>The Project</title>
