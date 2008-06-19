@@ -38,7 +38,7 @@ limitations under the License.
     <section> 
       <title>Validating Distribution Signatures</title>
       <p>
-		All distributions are provided with signature <em>.sig</em> files.
+		All distributions are provided with signature <em>.asc</em> files.
 		These contain PGP signatures for the related distribution.
 		You should validate these using the keys found in the
 		<jump href="http://www.apache.org/dist/xml/security/KEYS">
@@ -57,13 +57,13 @@ limitations under the License.
 	  </p>
 	  <source>
 % pgpk -a KEYS
-% pgpv xml-security-bin-1_4_2.zip.sig
+% pgpv xml-security-bin-1_4_2.zip.asc
   <em>or</em>
 % pgp -ka KEYS
-% pgp xml-security-bin-1_4_2.zip.sig
+% pgp xml-security-bin-1_4_2.zip.asc
   <em>or</em>
 % gpg --import KEYS
-% gpg --verify xml-security-bin-1_4_2.zip.sig
+% gpg --verify xml-security-bin-1_4_2.zip.asc
 	  </source>
 	</section>
     <section>
