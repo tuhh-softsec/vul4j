@@ -275,7 +275,19 @@ case "${host}" in
 #                            *)            osver=HPUX11;;
 #                        esac;;
 #        *-*-mvs*)       platform=OS390 ;;
-#        *-*-osf*)       platform=TRU64 ;;
+
+  *-*-osf*)
+    platform=TRU64
+    shlibsuffix=.so
+    lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
+    lib_short_name="lib${PACKAGE_TARNAME}.so"
+
+    # Should use -D_REENTRANT - but not yet OK
+    PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DTRU64"]
+    SHARED_OPTIONS=["-Wl,-soname,\$(LIBNAME) -DTRU64 -shared"]
+    LINK_OPTIONS=["-DTRU64"]
+                        ;;
 
   *-apple-darwin*)
     platform=MACOSX 
@@ -382,7 +394,7 @@ if test $XERCESCROOT; then
 
 fi
 
-if test -z $xerces_found ; then
+if test -z "$xerces_found" ; then
 
   # Xerces was not found
 
@@ -403,7 +415,7 @@ fi
 # Where is the Xerces lib?
 AC_MSG_CHECKING([for Xerces 2.x or 3.x library naming convention])
 OLD_LIBS=$LIBS
-if test -z xerces_lib_base; then
+if test -z "$xerces_lib_base" ; then
   LIBS="${LIBS} -lxerces-c"
 else
   LIBS="-L${xerces_lib_base}/lib -lxerces-c ${LIBS}"
@@ -415,8 +427,8 @@ AC_TRY_LINK([#include <xercesc/util/PlatformUtils.hpp>],
    xerceslib_found=yes,
    [LIBS=$OLD_LIBS])
 
-if test -z $xerceslib_found; then
-  if test -z xerces_lib_base; then
+if test -z "$xerceslib_found" ; then
+  if test -z "$xerces_lib_base" ; then
     LIBS="${LIBS} -lxerces-3.0"
   else
     LIBS="-L${xerces_lib_base}/lib -lxerces-3.0 ${LIBS}"
@@ -475,7 +487,7 @@ AC_TRY_COMPILE([#include <xercesc/dom/DOM.hpp>],
 	[AC_DEFINE(XSEC_XERCES_HAS_SETIDATTRIBUTE)],
 	[AC_MSG_RESULT([no])])
 
-if test -z $xerces_has_setidattribute; then
+if test -z "$xerces_has_setidattribute" ; then
 
   AC_MSG_CHECKING([whether Xerces XMLElement has ::setIdAttribute(XMLCh*, bool)])
   AC_TRY_COMPILE([#include <xercesc/dom/DOM.hpp>],
@@ -537,7 +549,7 @@ if test x"$use_xalan" != x"no" ; then
 
   fi
 
-  if test -z $xalan_found ; then
+  if test -z "$xalan_found" ; then
 
     AC_MSG_CHECKING([for Xalan in system includes])
     AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
@@ -740,7 +752,7 @@ AC_TRY_LINK([#include <openssl/evp.h>],
    openssllib_found=yes,
    [LIBS=$OLD_LIBS])
 
-   if test -z $openssllib_found ; then
+   if test -z "$openssllib_found" ; then
 
    LIBS=["${LIBS} -L${OPENSSL}/lib -lcrypto"]
    AC_TRY_LINK([#include <openssl/evp.h>],
@@ -755,7 +767,7 @@ AC_TRY_LINK([#include <openssl/evp.h>],
 
 fi
 
-if test -z $openssl_found ; then
+if test -z "$openssl_found" ; then
 
     AC_PATH_PROG(PKG_CONFIG, pkg-config)
     if test "x$PKG_CONFIG" != x && test "x$PKG_CONFIG" != "xno" ; then
