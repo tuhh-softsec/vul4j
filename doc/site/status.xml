@@ -109,7 +109,7 @@ limitations under the License.
         Problem with empty BaseURI in ResolverLocalFilesystem.
       </action>
       <action dev="SM" type="fix" fixes-bug="42230" context="java_general">
-        Inclusive C14n doesn't always handle xml:space & xml:lang
+        Inclusive C14n doesn't always handle xml:space and xml:lang
         attributes correctly
       </action>
       <action dev="SM" type="add" fixes-bug="38668" context="java_general"
