@@ -37,7 +37,7 @@ public class XmlWriterUtil
     public static final int DEFAULT_COLUMN_LINE = 80;
 
     /**
-     * Convenience method to write one <code>CRLF</code>
+     * Convenience method to write one <code>CRLF</code>.
      *
      * @param writer not null writer
      */
@@ -47,7 +47,7 @@ public class XmlWriterUtil
     }
 
     /**
-     * Convenience method to repeat <code>CRLF</code>
+     * Convenience method to repeat <code>CRLF</code>.
      *
      * @param writer not null
      * @param repeat positive number
@@ -61,7 +61,7 @@ public class XmlWriterUtil
     }
 
     /**
-     * Convenience method to repeat <code>CRLF</code> and to indent the writer
+     * Convenience method to repeat <code>CRLF</code> and to indent the writer by <code>2</code>.
      *
      * @param writer not null
      * @param repeat
@@ -75,7 +75,7 @@ public class XmlWriterUtil
     }
 
     /**
-     * Convenience method to repeat <code>CRLF</code> and to indent the writer
+     * Convenience method to repeat <code>CRLF</code> and to indent the writer by <code>indentSize</code>.
      *
      * @param writer not null
      * @param repeat
@@ -100,7 +100,7 @@ public class XmlWriterUtil
     }
 
     /**
-     * Convenience method to write XML comment line break. Its size is 80.
+     * Convenience method to write XML comment line break. Its size is <code>80</code>.
      *
      * @param writer not null
      * @see #DEFAULT_COLUMN_LINE
@@ -112,14 +112,14 @@ public class XmlWriterUtil
     }
 
     /**
-     * Convenience method to write XML comment line break.
+     * Convenience method to write XML comment line break with <code>columnSize</code> as length.
      *
      * @param writer not null
      * @param columnSize positive number
      */
     public static void writeCommentLineBreak( XMLWriter writer, int columnSize )
     {
-        if ( columnSize < 0 )
+        if ( columnSize < 10 )
         {
             columnSize = DEFAULT_COLUMN_LINE;
         }
@@ -128,62 +128,149 @@ public class XmlWriterUtil
     }
 
     /**
-     * Convenience method to write XML comment line. The <code>comment</code> is splitted to have a size of 80.
+     * Convenience method to write XML comment line. The <code>comment</code> is splitted to have a size of <code>80</code>.
      *
      * @param writer not null
      * @param comment
+     * @see #DEFAULT_INDENTATION_SIZE
+     * @see #writeComment(XMLWriter, String, int, int)
      */
     public static void writeComment( XMLWriter writer, String comment )
+    {
+        writeComment( writer, comment, 0, DEFAULT_INDENTATION_SIZE );
+    }
+
+    /**
+     * Convenience method to write XML comment line. The <code>comment</code> is splitted to have a size of <code>80</code>
+     * and is indented by <code>indent</code> using <code>2</code> as indentation size.
+     *
+     * @param writer not null
+     * @param comment
+     * @param indent positive number
+     * @see #DEFAULT_INDENTATION_SIZE
+     * @see #writeComment(XMLWriter, String, int, int)
+     */
+    public static void writeComment( XMLWriter writer, String comment, int indent )
+    {
+        writeComment( writer, comment, indent, DEFAULT_INDENTATION_SIZE );
+    }
+
+    /**
+     * Convenience method to write XML comment line. The <code>comment</code> is splitted to have a size of <code>80</code>
+     * and is indented by <code>indent</code> using <code>indentSize</code>.
+     *
+     * @param writer not null
+     * @param comment
+     * @param indent positive number
+     * @param indentSize positive number
+     * @param columnSize positive number
+     * @see #DEFAULT_COLUMN_LINE
+     * @see #writeComment(XMLWriter, String, int, int, int)
+     */
+    public static void writeComment( XMLWriter writer, String comment, int indent, int indentSize )
+    {
+        writeComment( writer, comment, indent, indentSize, DEFAULT_COLUMN_LINE );
+    }
+    /**
+     * Convenience method to write XML comment line. The <code>comment</code> is splitted to have a size of <code>columnSize</code>
+     * and is indented by <code>indent</code> using <code>indentSize</code>.
+     *
+     * @param writer not null
+     * @param comment
+     * @param indent positive number
+     * @param indentSize positive number
+     * @param columnSize positive number
+     */
+    public static void writeComment( XMLWriter writer, String comment, int indent, int indentSize, int columnSize  )
     {
         if ( comment == null )
         {
             comment = "null";
         }
 
-        String[] words = StringUtils.split( comment, " " );
-
-        StringBuffer line = new StringBuffer( "<!-- " );
-        for ( int i = 0; i < words.length; i++ )
+        if ( indent < 0 )
         {
-            String[] sentences = StringUtils.split( words[i], "\n" );
-            if ( sentences.length > 1 )
-            {
-                for ( int j = 0; j < sentences.length - 1; j++ )
-                {
-                    line.append( sentences[j] ).append( ' ' );
-                    line.append( StringUtils.repeat( " ", 76 - line.length() ) ).append( "-->" ).append( '\n' );
-                    writer.writeMarkup( line.toString() );
-                    line = new StringBuffer( "<!-- " );
-                }
-                line.append( sentences[sentences.length - 1] ).append( ' ' );
-            }
-            else
+            indent = 0;
+        }
+
+        if ( indentSize < 0 )
+        {
+            indentSize = 0;
+        }
+
+        if ( columnSize < 0 )
+        {
+            columnSize = DEFAULT_COLUMN_LINE;
+        }
+
+        String indentation = StringUtils.repeat( " ", indent * indentSize );
+        int magicNumber = indentation.length() + columnSize - "-->\n".length();
+        String[] sentences = StringUtils.split( comment, "\n" );
+
+        StringBuffer line = new StringBuffer( indentation + "<!-- " );
+        for ( int i = 0; i < sentences.length; i++ )
+        {
+            String sentence = sentences[i];
+            String[] words = StringUtils.split( sentence, " " );
+            for ( int j = 0; j < words.length; j++ )
             {
                 StringBuffer sentenceTmp = new StringBuffer( line.toString() );
-                sentenceTmp.append( words[i] ).append( ' ' );
-                if ( sentenceTmp.length() > 76 )
+                sentenceTmp.append( words[j] ).append( ' ' );
+                if ( sentenceTmp.length() > magicNumber )
                 {
-                    line.append( StringUtils.repeat( " ", 76 - line.length() ) ).append( "-->" ).append( '\n' );
-                    writer.writeMarkup( line.toString() );
-                    line = new StringBuffer( "<!-- " );
-                    line.append( words[i] ).append( ' ' );
+                    if ( line.length() != indentation.length() + "<!-- ".length())
+                    {
+                        if ( magicNumber - line.length() > 0 )
+                        {
+                            line.append( StringUtils.repeat( " ", magicNumber - line.length() ) );
+                        }
+
+                        line.append( "-->" ).append( '\n' );
+                        writer.writeMarkup( line.toString() );
+                    }
+                    line = new StringBuffer( indentation + "<!-- " );
+                    line.append( words[j] ).append( ' ' );
                 }
                 else
                 {
-                    line.append( words[i] ).append( ' ' );
+                    line.append( words[j] ).append( ' ' );
                 }
             }
+
+            if ( magicNumber - line.length() > 0 )
+            {
+                line.append( StringUtils.repeat( " ", magicNumber - line.length() ) );
+            }
         }
-        if ( line.length() <= 76 )
+
+        if ( line.length() <= magicNumber )
         {
-            line.append( StringUtils.repeat( " ", 76 - line.length() ) ).append( "-->" ).append( '\n' );
+            line.append( StringUtils.repeat( " ", magicNumber - line.length() ) );
         }
+
+        line.append( "-->" ).append( '\n' );
+
         writer.writeMarkup( line.toString() );
     }
 
     /**
-     * Convenience method to write XML comment between two comment line break.
-     * The XML comment block is also indented.
+     * Convenience method to write XML comments between two comments line break.
+     * The XML comment block is not indented.
+     *
+     * @param writer not null
+     * @param comment
+     * @see #DEFAULT_INDENTATION_SIZE
+     * @see #writeCommentText(XMLWriter, String, int, int)
+     */
+    public static void writeCommentText( XMLWriter writer, String comment )
+    {
+        writeCommentText( writer, comment, 0, DEFAULT_INDENTATION_SIZE );
+    }
+
+    /**
+     * Convenience method to write XML comments between two comments line break.
+     * The XML comment block is also indented by <code>indent</code> using
+     * <code>2</code> as indentation size.
      *
      * @param writer not null
      * @param comment
@@ -198,14 +285,32 @@ public class XmlWriterUtil
 
     /**
      * Convenience method to write XML comment between two comment line break.
-     * The XML comment block is also indented.
+     * The XML comment block is also indented by <code>indent</code> using <code>indentSize</code>.
      *
      * @param writer not null
      * @param comment
      * @param indent positive number
      * @param indentSize positive number
+     * @see #DEFAULT_COLUMN_LINE
+     * @see #writeCommentText(XMLWriter, String, int, int, int)
      */
     public static void writeCommentText( XMLWriter writer, String comment, int indent, int indentSize )
+    {
+        writeCommentText( writer, comment, indent, indentSize, DEFAULT_COLUMN_LINE );
+    }
+
+    /**
+     * Convenience method to write XML comments between two comments line break.
+     * The XML comment block is also indented by <code>indent</code> using <code>indentSize</code>.
+     * The column size could be also be specified.
+     *
+     * @param writer not null
+     * @param comment
+     * @param indent positive number
+     * @param indentSize positive number
+     * @param columnSize positive number
+     */
+    public static void writeCommentText( XMLWriter writer, String comment, int indent, int indentSize, int columnSize )
     {
         if ( indent < 0 )
         {
@@ -217,17 +322,21 @@ public class XmlWriterUtil
             indentSize = 0;
         }
 
+        if ( columnSize < 0 )
+        {
+            columnSize = DEFAULT_COLUMN_LINE;
+        }
+
         writeLineBreak( writer, 1 );
 
         writer.writeMarkup( StringUtils.repeat( " ", indent * indentSize ) );
-        writeCommentLineBreak( writer );
+        writeCommentLineBreak( writer, columnSize );
+
+        writeComment( writer, comment, indent, indentSize, columnSize );
 
         writer.writeMarkup( StringUtils.repeat( " ", indent * indentSize ) );
-        writeComment( writer, comment );
+        writeCommentLineBreak( writer, columnSize );
 
-        writer.writeMarkup( StringUtils.repeat( " ", indent * indentSize ) );
-        writeCommentLineBreak( writer );
-
-        writeLineBreak( writer, 1, indent );
+        writeLineBreak( writer, 1, indent, indentSize );
     }
 }
