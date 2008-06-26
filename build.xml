@@ -6,14 +6,20 @@
 			<fileset dir="classes" />
 		</copy>
 		<copy todir="bin/master/WEB-INF/lib">
-			<fileset dir="lib" />
+			<fileset dir="lib">
+				<exclude name="jsp-api.jar" />
+				<exclude name="servlet-api.jar" />
+			</fileset>
 		</copy>
 		<copy todir="bin/master/WEB-INF" file="tld/webassembletool.tld" />
 		<copy todir="bin/provider/WEB-INF/classes">
 			<fileset dir="classes" />
 		</copy>
 		<copy todir="bin/provider/WEB-INF/lib">
-			<fileset dir="lib" />
+			<fileset dir="lib">
+				<exclude name="jsp-api.jar" />
+				<exclude name="servlet-api.jar" />
+			</fileset>
 		</copy>
 		<copy todir="bin/provider/WEB-INF" file="tld/webassembletool.tld" />
 		<copy todir="bin">
@@ -24,20 +30,23 @@
 		<delete>
 			<fileset file="bin/javadoc" />
 		</delete>
-		<javadoc destdir="bin/javadoc" sourcepath="src" charset="ISO-8859-1" />
+		<javadoc destdir="bin/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit">
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javadoc>
 	</target>
-	<target name="release" depends="build">
+	<target name="release" depends="build,javadoc">
 		<delete>
 			<fileset file="bin/webassembletool*.jar" />
 		</delete>
-		<copy todir="bin">
-			<fileset dir="lib" />
-		</copy>
 		<jar destfile="bin/webassembletool_${current.version}.jar" basedir="classes" includes="net/">
 			<metainf file="tld/webassembletool.tld" />
 		</jar>
 		<zip destfile="bin/webassembletool_${current.version}.zip">
-			<fileset dir="." includes="doc/, lib/, bin/webassembletool_${current.version}.jar, bin/javadoc/, test/, src/" />
+			<fileset dir="." includes="doc/, lib/, bin/webassembletool_${current.version}.jar, bin/javadoc/, test/, src/" excludes="lib/servlet-api.jar,lib/jsp-api.jar"/>
 		</zip>
 	</target>
 </project>
