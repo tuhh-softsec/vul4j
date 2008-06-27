@@ -1,4 +1,8 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
+New in v ...
+    Fixed bug 45095: log4j.properties in xmlsec sources and builds has side
+effects in production environment. Thanks to Joachim Rousseau.
+
 New in v1.4.2rc1
     Fixed bug 44999: DOMException is thrown at XMLSignature creation. Thanks to Giedrius Noreikis.
     Fixed bug 44863: Improved logging in signature handling. Thanks to Wally Dennis.
