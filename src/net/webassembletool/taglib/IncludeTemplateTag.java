@@ -6,18 +6,19 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import net.webassembletool.Driver;
 
 /**
  * Retrieves a template from the provider application and inserts it into the
- * page replacing the parameters.
+ * page replacing the parameters. Extends AbstractReplaceableTag, so a
+ * ReplaceTag can be used inside this tag.
  * 
  * @author François-Xavier Bonnet
  * 
+ * 
  */
-public class IncludeTemplateTag extends BodyTagSupport {
+public class IncludeTemplateTag extends AbstractReplaceableTag {
     private String name = null;
     private String page = null;
     private String provider;
@@ -27,7 +28,7 @@ public class IncludeTemplateTag extends BodyTagSupport {
     public int doEndTag() throws JspException {
 	try {
 	    Driver.getInstance(provider).renderTemplate(page, name,
-		    pageContext, params);
+		    pageContext, params, replaceRules);
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}
