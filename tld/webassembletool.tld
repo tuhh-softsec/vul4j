@@ -9,7 +9,7 @@
 		<tag-class>
 			net.webassembletool.taglib.IncludeBlockTag
 		</tag-class>
-		<body-content>empty</body-content>
+		<body-content>JSP</body-content>
 		<attribute>
 			<name>page</name>
 			<required>true</required>
@@ -80,6 +80,16 @@
 		<tag-class>net.webassembletool.taglib.BlockTag</tag-class>
 		<attribute>
 			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>replace</name>
+		<tag-class>net.webassembletool.taglib.ReplaceTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>expression</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
