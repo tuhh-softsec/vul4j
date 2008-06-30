@@ -10,7 +10,10 @@
 <body>
 <ul>
 	<li><a href="block.jsp">Block example</a></li>
+	<li><a href="replaceblock.jsp">Block &amp; Replace example</a></li>
 	<li><a href="template.jsp">Template example</a></li>
+	<li><a href="templatemultipleparams.jsp">Template example with multiple params with the same name</a></li>
+	<li><a href="replacetemplate.jsp">Template &amp; Replace example</a></li>
 	<li><a href="base.jsp">Base tag example</a></li>
 	<li><a href="proxy.jsp">Proxy servlet example</a></li>
 	<li><a href="images/smile_motoriste.bmp">Big file thru proxy servlet example</a></li>
