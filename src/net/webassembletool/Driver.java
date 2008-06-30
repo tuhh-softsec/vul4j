@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -200,21 +201,49 @@ public final class Driver {
      * @param name
      * @param writer
      * @param context
+     * @param replaceRules
+     *                the replace rules to be applied on the block
      * @throws IOException
      */
     public final void renderBlock(String page, String name, Writer writer,
-	    Context context) throws IOException {
+	    Context context, Map<String, String> replaceRules)
+	    throws IOException {
 	String content = getResourceAsString(page, context);
 	String beginString = "<!--$beginblock$" + name + "$-->";
 	String endString = "<!--$endblock$" + name + "$-->";
+	StringBuilder sb = new StringBuilder();
 	int begin = content.indexOf(beginString);
 	int end = content.indexOf(endString);
 	if (begin == -1 || end == -1) {
 	    log.warn("Block not found: page=" + page + " block=" + name);
 	} else {
 	    log.debug("Serving block: page=" + page + " block=" + name);
-	    writer.write(content, begin, end - begin);
+	    sb.append(content.substring(begin, end));
 	}
+	writer.append(replace(sb.toString(), replaceRules));
+    }
+
+    /**
+     * Applys the replace rules to the final String to be rendered and returns
+     * it. If there is no replace rule, returns the original string.
+     * 
+     * @param sb
+     *                the sb
+     * @param replaceRules
+     *                the replace rules
+     * 
+     * @return the result of the replace rules
+     */
+    private final String replace(String sb, Map<String, String> replaceRules) {
+	if (replaceRules != null && replaceRules.size() > 0) {
+	    log.debug("Found replace rules");
+	    for (Entry<String, String> replaceRule : replaceRules.entrySet()) {
+		sb = sb
+			.replaceAll(replaceRule.getKey(), replaceRule
+				.getValue());
+	    }
+	}
+	return sb;
     }
 
     /**
@@ -397,13 +426,15 @@ public final class Driver {
      * @param writer
      * @param context
      * @param params
+     * @param replaceRules
+     *                the replace rules to be applied on the block
      * @throws IOException
      */
     public final void renderTemplate(String page, String name, Writer writer,
-	    Context context, Map<String, String> params) throws IOException {
+	    Context context, Map<String, String> params,
+	    Map<String, String> replaceRules) throws IOException {
 	String content = getResourceAsString(page, context);
 	StringBuilder sb = new StringBuilder();
-	Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
 	if (content != null) {
 	    if (name != null) {
 		String beginString = "<!--$begintemplate$" + name + "$-->";
@@ -422,27 +453,34 @@ public final class Driver {
 		log.debug("Serving template: page=" + page);
 		sb.append(content);
 	    }
-	    while (it.hasNext()) {
-		Map.Entry<String, String> pairs = it.next();
-		String key = pairs.getKey();
-		String value = pairs.getValue();
+	    for (Entry<String, String> param : params.entrySet()) {
+		int lastIndexOfString = 0;
+		String key = param.getKey();
+		String value = param.getValue();
 		String beginString = "<!--$beginparam$" + key + "$-->";
 		String endString = "<!--$endparam$" + key + "$-->";
-		int begin = sb.indexOf(beginString);
-		int end = sb.indexOf(endString);
-		if (!(begin == -1 || end == -1)) {
-		    sb = sb.replace(begin + beginString.length(), end, value);
+		while (lastIndexOfString >= 0) {
+		    int begin = sb.indexOf(beginString, lastIndexOfString);
+		    int end = sb.indexOf(endString, lastIndexOfString);
+		    if (!(begin == -1 || end == -1)) {
+			sb.replace(begin + beginString.length(), end, value);
+		    }
+		    if (begin == -1 || end == -1) {
+			lastIndexOfString = -1;
+		    } else {
+			// New start search value to use
+			lastIndexOfString = begin + beginString.length()
+				+ value.length() + endString.length();
+		    }
 		}
 	    }
 
 	} else {
-	    while (it.hasNext()) {
-		Map.Entry<String, String> pairs = it.next();
-		String value = pairs.getValue();
-		sb = sb.append(value);
+	    for (Entry<String, String> param : params.entrySet()) {
+		sb.append(param.getValue());
 	    }
 	}
-	writer.append(sb);
+	writer.append(replace(sb.toString(), replaceRules));
     }
 
     /**
@@ -503,14 +541,16 @@ public final class Driver {
     }
 
     public final void renderBlock(String page, String name,
-	    PageContext pageContext) throws IOException {
-	renderBlock(page, name, pageContext.getOut(), getContext(pageContext));
+	    PageContext pageContext, HashMap<String, String> replaceRules)
+	    throws IOException {
+	renderBlock(page, name, pageContext.getOut(), getContext(pageContext),
+		replaceRules);
     }
 
     public final void renderTemplate(String page, String name,
-	    PageContext pageContext, Map<String, String> params)
-	    throws IOException {
+	    PageContext pageContext, Map<String, String> params,
+	    Map<String, String> replaceRules) throws IOException {
 	renderTemplate(page, name, pageContext.getOut(),
-		getContext(pageContext), params);
+		getContext(pageContext), params, replaceRules);
     }
 }
