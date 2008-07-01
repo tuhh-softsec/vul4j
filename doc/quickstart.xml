@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
+<document title="Quickstart">
+	Imagine you have to write a java application (master) that must include a block coming from
+	an existing application (povider).
+	<h1>Download the Website Assembling Toolkit</h1>
+	<p>
+		Download the last version from SourceForge site. Any library needed in included inside
+		the distribution.
+		Copy webassembletool.jar and the other libraries inside the WEB-INF/lib folder of 
+		your web application.
+	</p>
+	<h1>Configure it</h1>
+	<p>
+		The tool try to load its configuration file from the classpath. Copy the exemple file from
+		folder test/master/WEB-INF/classes/net/webassembletool/driver.properties into your source folder
+		in net/webassembletool/driver.properties.
+		Change the "remoteUrlBase" parameter to the base address of your provider application.
+	</p>
+	<img src="driverproperties.jpg" />
+	<h1>Tag the block on the provider application</h1>
+	<p>
+		The block has to be tagged using special HTML comments.
+	</p>
+	<img src="block.jpg" />
+	<h1>Retrieve the block inside a page of the master application</h1>
+	<p>
+		If using JSP, you can use the tag library. If not, the tool can be used as well directly using java code.
+	</p>
+	<p>
+		Suppose the block you want to include is inside a page http://localhost:8080/provider/mypage.php
+	</p>
+	<img src="includeblock.jpg" />
+	<p>
+		NOTE: do not forget to add the taglib declaration at the beging of the page.
+	</p>
+	<h1>Handling resources</h1>
+	
+</document>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
+<document title="Features">
+	<h1>Features</h1>
+	<h2>Blocks and templates</h2>
+	<p>
+		Any web application can be used as a provider. The master application will be 
+		able to use blocks and templates delimited with special HTML comments.
+	</p>
+	<h2>Cross technologies</h2>
+	<p>
+		As we only use HTML comments inside provider applications, a provider application
+		may have been developed with any technology, including Java, PHP on .NET.
+	</p>
+	<h2>Reverse proxy</h2>
+	<p>
+		The kit contains a reverse-proxy servlet that can be used to retrieve static contents
+		from the provider applications (images, css, js...). For better performance, you may
+		prefer to use Apache mod_proxy powerfull module but the reverse-proxy servlet may as
+		well be used in a production environment with good performance.
+	</p>
+	<h2>Cache</h2>
+	<p>
+		In order to improve performance, the tool can be configured to use a cache (the underlying cache 
+		implementation is the open source library OsCache). Cached entries may be long-lived or short-lived
+		depending on your needs and depending on the provider application.
+	</p>
+	<h2>User context</h2>
+	<p>
+		While calling the provider application, you may want to send informations about
+		the currently connected user for personalization. The tool lets you transfer the
+		user id, user locale and any key/value list. These informations will be automatically
+		appended as request parameters to the http request.
+	</p>
+
+
+</document>

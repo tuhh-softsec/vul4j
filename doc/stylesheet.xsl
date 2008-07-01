@@ -3,10 +3,13 @@
 	<xsl:template match="/">
 		<html>
 			<head>
-				<title><xsl:value-of select="document/@title" /></title>
+				<title>Website Assembling Toolkit - <xsl:value-of select="document/@title" /></title>
 				<link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
 			</head>
 			<body>
+				<img src="http://images.sourceforge.net/sfx_logo2.png" />
+				<div class="title">Website Assembling Toolkit</div>
+				<hr />
 				<ul id="menu">
 					<xsl:for-each select="document('menu.xml')/menu/*">
 						<li>

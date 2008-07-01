@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
-	<item id="index" title="Home" />
+	<item id="index" title="Overview" />
 	<item id="features" title="Features" />
-	<link href="download.html" title="Download" />
 	<item id="quickstart" title="Quick start" />
+	<link href="http://sourceforge.net/project/showfiles.php?group_id=209844" title="Download" />
 	<link href="javadoc/index.html" title="Javadoc" />
 	<item id="faq" title="FAQ" />
 </menu>

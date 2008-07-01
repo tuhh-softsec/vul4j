@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
-<document title="Welcome">
-	<h1>test</h1>
-	test
+<document title="Overview">
+	<h1>What can i do with it?</h1>
+	<p>
+		This toolkit was developped to help developpers to integrate
+		existing web applications and make them visible to the users as
+		a single website.
+	</p>
+	<p>
+		This way of agregating contents extracted from other web sites
+		is usually called
+		<a href="http://en.wikipedia.org/wiki/Web_scraping">web scraping</a>.
+	</p>
+	<h1>How does it work?</h1>
+	<img src="overview.jpg" />
+	<p>
+		HTML pages are fetched from the provider server using regular HTTP requests.
+		Pages are then parsed to find specific delimiters used to define the blocks.
+		The blocks are then agregated and sent to the browser as a single
+		HTML page.
+	</p>
+	<h1>Related technologies</h1>
+	<ul>
+		<li>Portlets</li>
+		<li>SSI</li>
+		<li>ESI</li>
+	</ul>
+	<p></p>
 </document>
