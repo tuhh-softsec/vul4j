@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -220,7 +221,7 @@ public final class Driver {
 	    log.debug("Serving block: page=" + page + " block=" + name);
 	    sb.append(content.substring(begin, end));
 	}
-	writer.append(replace(sb.toString(), replaceRules));
+	writer.append(replace(sb, replaceRules));
     }
 
     /**
@@ -234,16 +235,16 @@ public final class Driver {
      * 
      * @return the result of the replace rules
      */
-    private final String replace(String sb, Map<String, String> replaceRules) {
+    private final CharSequence replace(CharSequence charSequence,
+	    Map<String, String> replaceRules) {
 	if (replaceRules != null && replaceRules.size() > 0) {
 	    log.debug("Found replace rules");
 	    for (Entry<String, String> replaceRule : replaceRules.entrySet()) {
-		sb = sb
-			.replaceAll(replaceRule.getKey(), replaceRule
-				.getValue());
+		charSequence = Pattern.compile(replaceRule.getKey()).matcher(
+			charSequence).replaceAll(replaceRule.getValue());
 	    }
 	}
-	return sb;
+	return charSequence;
     }
 
     /**
@@ -480,7 +481,7 @@ public final class Driver {
 		sb.append(param.getValue());
 	    }
 	}
-	writer.append(replace(sb.toString(), replaceRules));
+	writer.append(replace(sb, replaceRules));
     }
 
     /**
