@@ -30,15 +30,16 @@
 		<delete>
 			<fileset file="bin/javadoc" />
 		</delete>
-		<javadoc destdir="bin/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit">
+		<javadoc destdir="bin/doc/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit">
 			<classpath>
 				<fileset dir="lib">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
+			<bottom>&lt;a href="http://sourceforge.net"&gt;&lt;img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;amp;type=2" width="125" height="37" border="0" alt="SourceForge.net" /&gt;&lt;/a&gt;</bottom>
 		</javadoc>
 	</target>
-	<target name="release" depends="build,javadoc">
+	<target name="release" depends="build,doc,javadoc">
 		<delete>
 			<fileset file="bin/webassembletool*.jar" />
 		</delete>
@@ -46,7 +47,15 @@
 			<metainf file="tld/webassembletool.tld" />
 		</jar>
 		<zip destfile="bin/webassembletool_${current.version}.zip">
-			<fileset dir="." includes="doc/, lib/, bin/webassembletool_${current.version}.jar, bin/javadoc/, test/, src/" excludes="lib/servlet-api.jar,lib/jsp-api.jar"/>
+			<fileset dir="." includes="lib/, bin/webassembletool_${current.version}.jar, test/, src/" excludes="lib/servlet-api.jar,lib/jsp-api.jar" />
+			<fileset dir="bin" includes="doc/" />
 		</zip>
+	</target>
+	<target name="doc">
+		<xslt style="doc/stylesheet.xsl" destdir="bin" includes="doc/*.xml" excludes="menu.xml">
+		</xslt>
+		<copy todir="bin/doc">
+			<fileset dir="doc" excludes="*.xml,*.xsl,schemas.ppt"/>
+		</copy>
 	</target>
 </project>

@@ -35,5 +35,12 @@
 		NOTE: do not forget to add the taglib declaration at the beging of the page.
 	</p>
 	<h1>Handling resources</h1>
-	
+	<p>
+		The HTML code included may contain links to resources (images, css, scripts, links). In order to have this links
+		work, there are two possibilities :
+	</p>
+	<ul>
+		<li>addind a HTML &lt;base&gt; tag in the page : you can use the tage&lt;assemble:includeBase&gt;</li>
+		<li>have the resources proxied by the reverse proxy servlet</li>
+	</ul>
 </document>

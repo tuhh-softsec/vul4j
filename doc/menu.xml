@@ -5,5 +5,5 @@
 	<item id="quickstart" title="Quick start" />
 	<link href="http://sourceforge.net/project/showfiles.php?group_id=209844" title="Download" />
 	<link href="javadoc/index.html" title="Javadoc" />
-	<item id="faq" title="FAQ" />
+	<link href="http://webassembletool.wiki.sourceforge.net/" title="FAQ (Wiki)" />
 </menu>

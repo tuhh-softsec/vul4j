@@ -12,6 +12,12 @@
 		is usually called
 		<a href="http://en.wikipedia.org/wiki/Web_scraping">web scraping</a>.
 	</p>
+	<p>
+		Basically, working with the Website Assembling Toolkit looks like working with Tiles 
+		tag library except that it enables you to include contents and use templates coming from
+		other applications that may have been written using any technology en deployed on other
+		servers.
+	</p>
 	<h1>How does it work?</h1>
 	<img src="overview.jpg" />
 	<p>
@@ -22,9 +28,13 @@
 	</p>
 	<h1>Related technologies</h1>
 	<ul>
-		<li>Portlets</li>
-		<li>SSI</li>
-		<li>ESI</li>
+		<li>Portlets (JSR 168)</li>
+		<li>Server Side Include</li>
+		<li>Edge Side Include</li>
+		<li>Mashup</li>
+		<li>Web scraping</li>
+		<li>Web clipping</li>
+		<li>Reverse proxy</li>
 	</ul>
 	<p></p>
 </document>

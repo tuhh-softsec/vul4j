@@ -5,9 +5,13 @@
 			<head>
 				<title>Website Assembling Toolkit - <xsl:value-of select="document/@title" /></title>
 				<link rel="stylesheet" type="text/css" href="stylesheet.css"></link>
+				<meta name="keywords" content="Website Assembling Toolkit,WAT,webassembletool,portal,jsr 168,web clipping,web scraping,ESI,JESI,Edge Side Include,SSI,Tiles,frame,iframe,Java,integration,agregation,mashup"/>
+				<meta name="description" content="Website Assembling Toolkit, the tool for developpers to integrate web applications together"/>
+				<meta name="author" content="François-Xavier Bonnet"/>
+				
 			</head>
 			<body>
-				<img src="http://images.sourceforge.net/sfx_logo2.png" />
+				<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
 				<div class="title">Website Assembling Toolkit</div>
 				<hr />
 				<ul id="menu">
@@ -26,7 +30,7 @@
 		</html>
 	</xsl:template>
 	<xsl:template match="item">
-		<xsl:attribute name="href"><xsl:value-of select="@id" />.xml</xsl:attribute>
+		<xsl:attribute name="href"><xsl:value-of select="@id" />.html</xsl:attribute>
 		<xsl:value-of select="@title" />
 	</xsl:template>
 	<xsl:template match="link">
