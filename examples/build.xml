@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="xslthl" default="build">
+
+	<target name="clean" description="Clean built examples">
+		<delete dir="build" />
+	</target>
+
+	<target name="init">
+		<mkdir dir="build" />
+	</target>
+	<!-- build-xalan, -->
+	<target name="build" depends="build-xalan" description="Build examples">
+	</target>
+
+	<target name="build-xalan" depends="init">
+		<macrodef name="xslthl-x">
+			<attribute name="format" />
+			<sequential>
+				<script language="javascript">
+					<![CDATA[
+					importClass(java.lang.System);
+					System.setProperty("xslthl.config", "file:///"+basedir+"/../dist/xslthl-config.xml");
+					]]>
+				</script>
+				<xslt style="xsl/example-@{format}-to-html.xsl" basedir="sources" destdir="build" extension=".xalan.html" force="true">
+					<include name="example-@{format}.xml" />
+					<classpath>
+						<fileset dir="../dist">
+							<include name="**/*.jar" />
+						</fileset>
+						<fileset dir="../lib">
+							<include name="**/*.jar" />
+							<exclude name="**/saxon.jar" />
+						</fileset>
+					</classpath>
+				</xslt>
+			</sequential>
+		</macrodef>
+
+		<xslthl-x format="delphi" />
+		<xslthl-x format="ini" />
+		<xslthl-x format="java" />
+		<xslthl-x format="m2" />
+		<xslthl-x format="php" />
+		<xslthl-x format="xml" />
+	</target>
+
+	<target name="build-saxon" depends="init">
+		<!-- saxon.jar needs to be in the ant lib directory or else this won't work -->
+		<macrodef name="xslthl-s">
+			<attribute name="format" />
+			<sequential>
+				<script language="javascript">
+					<![CDATA[
+						importClass(java.lang.System);
+						System.setProperty("xslthl.config", "file:///"+basedir+"/../dist/xslthl-config.xml");
+						]]>
+				</script>
+				<xslt style="xsl/example-@{format}-to-html.xsl" basedir="sources" destdir="build" extension=".saxon.html" force="true">
+					<include name="example-@{format}.xml" />
+					<classpath>
+						<fileset dir="../dist">
+							<include name="**/*.jar" />
+						</fileset>
+						<fileset dir="../lib">
+							<include name="**/*.jar" />
+						</fileset>
+					</classpath>
+					<factory name="com.icl.saxon.TransformerFactoryImpl" />
+				</xslt>
+			</sequential>
+		</macrodef>
+
+		<xslthl-s format="delphi" />
+		<xslthl-s format="ini" />
+		<xslthl-s format="java" />
+		<xslthl-s format="m2" />
+		<xslthl-s format="php" />
+		<xslthl-s format="xml" />
+	</target>
+
+</project>
