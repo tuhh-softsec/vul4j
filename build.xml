@@ -14,7 +14,7 @@
 
 	<target name="build" depends="jar,distmisc" description="Build the Xslthl distribution" />
 
-	<target name="examples">
+	<target name="examples" description="Run the examples">
 		<ant dir="examples" target="build" />
 	</target>
 
@@ -38,6 +38,9 @@
 		<copy todir="dist">
 			<fileset dir="highlighters">
 				<include name="**/*.xml" />
+			</fileset>
+			<fileset dir="${basedir}">
+				<include name="LICENSE.txt" />
 			</fileset>
 		</copy>
 	</target>
