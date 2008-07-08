@@ -1,39 +1,40 @@
 package net.sf.xslthl;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
 
 abstract class WholeHighlighter extends Highlighter {
-	private Collection<String> styles = new HashSet<String>();
-	private boolean emptyStyle = true;
-	private boolean allStyles = false;
-	
-	void loadStyles(Params params) {
-		if (!params.isSet("empty")) {
-			emptyStyle = false;
-		}
-		if (params.isSet("all")) {
-			allStyles = true;
-			return;
-		}
-		params.load("style", styles);
+    private Collection<String> styles = new HashSet<String>();
+    private boolean emptyStyle = true;
+    private boolean allStyles = false;
+
+    void loadStyles(Params params) {
+	if (!params.isSet("empty")) {
+	    emptyStyle = false;
 	}
-	
-	boolean appliesOnEmptyStyle() {
-		return emptyStyle;
+	if (params.isSet("all")) {
+	    allStyles = true;
+	    return;
 	}
-	
-	boolean appliesOnAllStyles() {
-		return allStyles;
+	params.load("style", styles);
+    }
+
+    boolean appliesOnEmptyStyle() {
+	return emptyStyle;
+    }
+
+    boolean appliesOnAllStyles() {
+	return allStyles;
+    }
+
+    boolean appliesOnStyle(String style) {
+	return styles.contains(style);
+    }
+
+    WholeHighlighter(Params params) {
+	if (params != null && params.isSet("applyOnStyles")) {
+	    loadStyles(params.getParams("applyOnStyles"));
 	}
-	
-	boolean appliesOnStyle(String style) {
-		return styles.contains(style);
-	}
-	
-	WholeHighlighter(Params params) {
-		if (params != null && params.isSet("applyOnStyles")) {
-			loadStyles(params.getParams("applyOnStyles"));
-		}
-	}
-	
+    }
+
 }
