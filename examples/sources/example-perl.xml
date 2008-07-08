@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example-document>
+	<header>Perl code</header>
+	<para>Example Perl code</para>
+	<code xml:whitespace="preserve" language="perl">
+		<![CDATA[
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+#######################################
+#
+#   99 bottles of beer on the wall
+#   Written in object oriented Perl
+#
+#######################################
+my $beer = Bottles->new();
+$beer->Take_One_Down() while $beer->Remaining();
+
+package Bottles;
+
+sub new
+{
+	my $bottles = 99;
+	bless \$bottles;
+}
+
+sub Take_One_Down
+{
+	my $self = shift;	
+	my $s = $$self == 1 ? '' : 's';
+	
+	print "$$self bottle$s of beer on the wall,\n";
+	print "$$self bottle$s of beer.\n";
+	print "Take one down, pass it around.\n";
+	
+	$$self--;
+	
+	$s = $$self == 1 ? '' : 's';
+	
+	print "$$self bottle$s of beer on the wall.\n\n";
+}
+
+sub Remaining
+{
+	my $self = shift;
+	return $$self;	
+}
+		]]>
+	</code>
+	<para>Origin: http://www.99-bottles-of-beer.net/language-perl-648.html</para>
+	<para>Alternative</para>
+	<code xml:whitespace="preserve" language="perl">
+		<![CDATA[
+#!/usr/bin/perl
+# Jim Menard     jimm@{bbn,io}.com     (617) 873-4326    http://www.io.com/~jimm/
+$nBottles = $ARGV[0];
+$nBottles = 100 if $nBottles eq '' || $nBottles < 0;
+
+foreach (reverse(1 .. $nBottles)) {
+    $s = ($_ == 1) ? "" : "s";
+    $oneLessS = ($_ == 2) ? "" : "s";
+    print "\n$_ bottle$s of beer on the wall,\n";
+    print "$_ bottle$s of beer,\n";
+    print "Take one down, pass it around,\n";
+    print $_ - 1, " bottle$oneLessS of beer on the wall\n";
+}
+print "\n*burp*\n";
+		]]>
+	</code>
+	<para>Origin: http://www.99-bottles-of-beer.net/language-perl-539.html</para>
+</example-document>

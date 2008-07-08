@@ -10,7 +10,7 @@
 -->
 <example-document>
 <para>This is some code</para>
-<code>
+<code language="xml">
 <![CDATA[
 <?xml version="1.0"?>
 

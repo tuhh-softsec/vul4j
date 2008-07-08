@@ -1,103 +1,154 @@
-<?xml version='1.0' ?>
-<!--
-
-  Bakalarska prace: Zvyraznovani syntaxe v XSLT
-  Michal Molhanec 2005
-
-  example-php.xml - tento soubor obsahuje kod v jazyce
-                     PHP, ktery bude zvyraznen
-
--->
+<?xml version="1.0" encoding="UTF-8"?>
 <example-document>
-<para>This is some code</para>
-<code>
+	<header>PHP Example</header>
+	<para>This is an example PHP program</para>
+	<code language="php">
 <![CDATA[
 <?php
-  /*
-  Devpaks repository 4.0 -- web portal
-  Copyright (C) 2005  Michal Molhanec
 
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU General Public License
-  as published by the Free Software Foundation; either version 2
-  of the License, or (at your option) any later version.
+/**
+ * One bottle left exception
+ *
+ * @author Dave Marshal
+ * @since 22/09/2005
+ * @package Bottles
+ */
+class LastBottleException extends Exception {}
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+/**
+ * Out of bottles exception
+ *
+ * @author Dave Marshal
+ * @since 22/09/2005
+ * @package Bottles
+ */
+class OutOfBottlesException extends Exception {}
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-  */
+/**
+ * Wall Class
+ *
+ * @author Dave Marshal
+ * @since 22/09/2005
+ * @package Bottles
+ */
+class Wall {
 
-  require_once('epf/main.php');
+	/**
+	 * Collection of Bottles
+	 */
+	private $bottle = array();
 
-  class DoAddCommentServlet extends Servlet {
+	/**
+	 * Wall Constructor
+	 *
+	 * @param int $numberOfBottles The number of bottles on this wall
+	 */
+	public function __construct($numberOfBottles=99)
+	{
+		$this->addBottles($numberOfBottles);
+	}
 
-    private $user = 'NULL';
-    private $title;
-    private $body;
-    private $devpak = 0;
+	/**
+	 * Wall Desctructor
+	 */
+	public function __Destruct() {}
 
-    function validate_input() {
-      $this->opt_post_string('devpak', $this->devpak);
-      if (!$this->devpak):
-        go_to('');
-      endif;
-      if (isset($_SESSION['user'])):
-        $this->user = $_SESSION['user']->get_id();
-      endif;
-      $this->req_post_string('title', $this->title, 'Please enter comment title.');
-      $this->req_post_string('body', $this->body, 'Please enter some text.');
-      $this->body = str_replace("\r", '', $this->body);
-    }
+	/**
+	 * Get next bottle
+	 *
+	 * @param boolean $force Force the function to return the last bottle
+	 * @returns Bottle
+	 * @throws OutOfBeerException
+	 */
+	public function getNextBottle($force = FALSE)
+	{
+		if (count($this->bottle) > 1) return array_pop($this->bottle);
+		else if (count($this->bottle)==1) 
+		{
+			if ($force) return array_pop($this->bottle);
+			else throw new LastBottleException();
+		}
+		else throw new OutOfBottlesException();
+	}
 
-    function work() {
-      global $admin_email;
-      try {
-        $author = one_line_query("SELECT author FROM devpak WHERE id=$this->devpak")->author;
-      }
-      catch (Exception $e) {
-        go_to('');
-      }
+	/** 
+	 * Get number of beers left on the wall
+	 *
+	 * @return int
+	 */
+	public function getNumberOfBottles() 
+	{
+		return count($this->bottle);
+	}
 
-      update(<<<EOT
-        INSERT INTO
-          comment
-        SET
-          title='$this->title',
-          body='$this->body',
-          author=$this->user,
-          devpak=$this->devpak
-EOT
-      );
+	/**
+	 * Add more bottles
+	 *
+	 * @param int $numberOfBottles
+	 */
+	public function addBottles($numberOfBottles)
+	{
+		for ($i=0;$i<$numberOfBottles;$i++)
+		{
+			$this->bottle[] = new Bottle();
+		}
+	}
+}
 
-      $title = "New comment for devpak #$this->devpak";
-      $body = "$title\nhttp://devpaks.org/details.php?devpak=$this->devpak\n\nSubject: $this->title\n$this->body";
-      if ($this->user and $author == $this->user):
-        $minecomm = one_line_query("SELECT minecomments, email FROM user WHERE id=$author");
-        if ($minecomm->minecomments):
-          mail($minecomm->email, stripslashes($title), stripslashes($body), "From: $admin_email");
-        endif;
-      else:
-        $forecomm = one_line_query("SELECT foreigncomments, email FROM user WHERE id=$author");
-        if ($forecomm->foreigncomments):
-          mail($forecomm->email, stripslashes($title), stripslashes($body), "From: $admin_email");
-        endif;
-      endif;
-      mail($admin_email, stripslashes($title), stripslashes($body), "From: $admin_email");
+/**
+ * Bottle Class
+ *
+ * @author Dave Marshal
+ * @since 22/09/2005
+ * @package Bottles
+ */
+class Bottle {
+	
+	/** 
+	 * Bottle Constructor
+	 */
+	public function __construct() {}
 
-      go_to("details.php?devpak=$this->devpak");
-    }
+	/**
+	 * Bottle Destructor
+	 */
+	public function __destruct() {}
 
-  }
+}
 
-  $servlet = new DoAddCommentServlet();
-  $servlet->run();
+$wall = new Wall(99);
+
+$continue = TRUE;
+
+while ($continue)
+{
+	try {
+		$bottlesLeftBefore = $wall->getNumberOfBottles();
+		$bottle = $wall->getNextBottle();
+		$bottlesLeftAfter = $wall->getNumberOfBottles();
+
+		echo $bottlesLeftBefore." bottles of beer on the wall, ".$bottlesLeftBefore." bottles of
+beer.\n";
+		echo "Take one down and pass it around, ".$bottlesLeftAfter." bottles of beer on the wall.\n\n";
+	}
+	catch (LastBottleException $oneLeft)
+	{
+		$bottle = $wall->getNextBottle(TRUE);
+		echo "1 bottle of beer on the wall, 1 bottle of beer.\n";
+		echo "Take one down and pass it around, no more bottles of beer on the wall.\n\n";
+	}
+	catch (OutOfBottlesException $out)
+	{
+		echo "No more bottles of beer on the wall, no more bottles of beer.\n";
+		echo "Go to the store and buy some more, ";
+		$wall->addBottles(99);
+		echo $wall->getNumberOfBottles()." bottles of beer on the wall.\n\n";
+		$continue=FALSE;
+	}
+}
+
 ?>
 ]]>
-</code>
-<para>The End.</para>
+	</code>
+	<para>Source: http://www.99-bottles-of-beer.net/language-php5-883.html</para>
 </example-document>
