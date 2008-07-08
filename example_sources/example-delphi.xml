@@ -1,0 +1,71 @@
+<?xml version='1.0' ?>
+<!--
+
+  Bakalarska prace: Zvyraznovani syntaxe v XSLT
+  Michal Molhanec 2005
+
+  example-delphi.xml - tento soubor obsahuje kod v jazyce
+                       Delphi, ktery bude zvyraznen
+
+-->
+<example-document>
+<para>This is some code</para>
+<code>
+<![CDATA[
+{
+  Sprava autoru.
+}
+
+unit UAuthors;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, DBCtrls, Grids, DBGrids, StdCtrls;
+
+type
+  TfrmAuthors = class(TForm)
+    gridAuthors: TDBGrid;
+    navigator: TDBNavigator;
+    btnDelete: TButton;
+    btnInsert: TButton;
+    procedure btnDeleteClick(Sender: TObject);
+    procedure btnInsertClick(Sender: TObject);
+  PRIVATE
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmAuthors: TfrmAuthors;
+
+(* dfsf {dsffsdf} dfsdf *)
+{ dfsdfd // dfsd (*fdsfsd *) dfsf}
+
+implementation
+
+uses UDM, ADODB, UAddAuthor, UDelAuthor;
+
+{$R *.dfm}
+
+procedure TfrmAuthors.btnDeleteClick(Sender: TObject);
+begin
+  x := 'dsdfsdfds dfsdf';
+  y := 'dfsdf ''dfsdfsdfds'''' ';
+  frmDelAuthors.ShowModal;
+  DM.tableAuthors.Requery;
+end;
+
+procedure TfrmAuthors.btnInsertClick(Sender: TObject);
+begin
+  frmAddAuthor.ShowModal;
+  DM.tableAuthors.Requery;
+end;
+
+end.
+]]>
+</code>
+<para>The End.</para>
+</example-document>

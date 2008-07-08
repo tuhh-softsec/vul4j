@@ -1,0 +1,100 @@
+<?xml version='1.0' ?>
+<!--
+
+  Bakalarska prace: Zvyraznovani syntaxe v XSLT
+  Michal Molhanec 2005
+
+  example-ini.xml - tento soubor obsahuje ukazku INI souboru, ktery 
+                    bude zvyraznen
+
+-->
+<example-document>
+<para>This is some code</para>
+<code>
+<![CDATA[
+; for 16-bit app support
+[fonts]
+[extensions]
+[mci extensions]
+[files]
+[Mail]
+MAPI=1
+MAPIX=1
+[MCI Extensions.BAK]
+aif=MPEGVideo
+aifc=MPEGVideo
+aiff=MPEGVideo
+asf=MPEGVideo2
+asx=MPEGVideo2
+au=MPEGVideo
+ivf=MPEGVideo2
+m1v=MPEGVideo
+m3u=MPEGVideo2
+mp2=MPEGVideo
+mp2v=MPEGVideo
+mp3=MPEGVideo2
+mpa=MPEGVideo
+mpe=MPEGVideo
+mpeg=MPEGVideo
+mpg=MPEGVideo
+mpv2=MPEGVideo
+snd=MPEGVideo
+wax=MPEGVideo2
+wm=MPEGVideo2
+wma=MPEGVideo2
+wmp=MPEGVideo2
+wmv=MPEGVideo2
+wmx=MPEGVideo2
+wvx=MPEGVideo2
+[SciCalc]
+layout=0
+[CDWizard]
+Drive=E
+path=\
+Root=\
+Windows=32
+[MSUCE]
+Advanced=0
+CodePage=Unicode
+Font=Trebuchet MS
+[WJED]
+black=0,0,0
+blue=0,0,192
+green=0,128,0
+cyan=0,192,192
+red=192,0,0
+magenta=192,0,192
+lightgray=192,192,192
+gray=128,128,128
+brightblue=0,0,255
+brightred=255,0,0
+brightgreen=0,255,0
+brightcyan=0,255,255
+brightmagenta=255,0,255
+yellow=255,255,0
+white=255,255,255
+brown=110,74,32
+X=0
+Y=0
+Width=700
+Height=500
+[Paradox Engine]
+UserName=PxEngine
+NetNamePath=D:\
+NetType=2
+ShareLocal=YES
+PX35Locking=NO
+MaxTables=20
+RecBufs=25
+MaxLocks=32
+MaxFiles=20
+SwapSize=96
+[programs]
+pythonw.exe=D:\Python24\pythonw.exe
+[DarkBasicStateData]
+BEST3DCARD=Primary Display Driver
+BEST3DDEPTH=16
+]]>
+</code>
+<para>The End.</para>
+</example-document>

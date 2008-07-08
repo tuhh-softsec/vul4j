@@ -1,0 +1,75 @@
+<?xml version='1.0' ?>
+<!--
+
+  Bakalarska prace: Zvyraznovani syntaxe v XSLT
+  Michal Molhanec 2005
+
+  example-java.xml - tento soubor obsahuje kod v jazyce
+                     Java, ktery bude zvyraznen
+
+-->
+<example-document>
+<para>This is some code</para>
+<code>
+<![CDATA[
+/**********
+  Some comment
+  ***********/
+package net.sf.xslthl;
+
+
+import java.util.*;
+
+/**
+ * dfsd <p>sdfsdf</p>sdfsdfsd
+ */
+
+public class CLASA extends OLD {
+  
+  private String str1 = "OK";
+  private char str2 = '!';
+  private String str1 = "OK\" df//sdf\\ sdfsf \" fdsfds 'sdfsd";
+  private char str2 = '\'';
+  private char str2 = '\\';
+  private String str1 = "\\\"\\";
+  
+// /* 
+int i  = 0;
+// dfdd 
+// */
+
+int i  = 0;
+    
+/*
+  int i  = 0;
+  // dfsdf
+  int i  = 0;
+*/  
+int i  = 0;    
+
+   boolean highlight(CharIter in, List<Block> out) {
+      in.moveNext(start.length()); // skip start
+      String s = "";
+      while (!in.finished() && !Character.isWhitespace(in.current())) {
+         s += in.current();
+         in.moveNext();
+      }
+      if (s.length() == 0) {
+         return false;
+      }
+      int i = in.indexOf(s);
+      if (i < 0) {
+         in.moveToEnd();
+      } else {
+         in.moveNext(i + s.length());
+      }
+      out.add(in.markedToStyledBlock("string"));
+      return true;      
+   }
+
+
+}
+]]>
+</code>
+<para>The End.</para>
+</example-document>

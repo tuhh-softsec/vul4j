@@ -1,0 +1,27 @@
+<?xml version='1.0' ?>
+<!--
+
+  Bakalarska prace: Zvyraznovani syntaxe v XSLT
+  Michal Molhanec 2005
+
+  example-java.xml - tento soubor obsahuje kod v jazyce
+                     Modula-2, ktery bude zvyraznen
+
+-->
+<example-document>
+<para>This is some code</para>
+<code>
+<![CDATA[
+PROCEDURE Max(a,b: CARDINAL) : CARDINAL;
+BEGIN
+  IF a > b THEN
+    RETURN a
+  ELSE
+    RETURN b
+  END
+END Max;
+(* Note that (* you can (* nest *) comments! *) Cool! *)
+]]>
+</code>
+<para>The End.</para>
+</example-document>

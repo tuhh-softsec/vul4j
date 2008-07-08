@@ -1,0 +1,103 @@
+<?xml version='1.0' ?>
+<!--
+
+  Bakalarska prace: Zvyraznovani syntaxe v XSLT
+  Michal Molhanec 2005
+
+  example-php.xml - tento soubor obsahuje kod v jazyce
+                     PHP, ktery bude zvyraznen
+
+-->
+<example-document>
+<para>This is some code</para>
+<code>
+<![CDATA[
+<?php
+  /*
+  Devpaks repository 4.0 -- web portal
+  Copyright (C) 2005  Michal Molhanec
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  */
+
+  require_once('epf/main.php');
+
+  class DoAddCommentServlet extends Servlet {
+
+    private $user = 'NULL';
+    private $title;
+    private $body;
+    private $devpak = 0;
+
+    function validate_input() {
+      $this->opt_post_string('devpak', $this->devpak);
+      if (!$this->devpak):
+        go_to('');
+      endif;
+      if (isset($_SESSION['user'])):
+        $this->user = $_SESSION['user']->get_id();
+      endif;
+      $this->req_post_string('title', $this->title, 'Please enter comment title.');
+      $this->req_post_string('body', $this->body, 'Please enter some text.');
+      $this->body = str_replace("\r", '', $this->body);
+    }
+
+    function work() {
+      global $admin_email;
+      try {
+        $author = one_line_query("SELECT author FROM devpak WHERE id=$this->devpak")->author;
+      }
+      catch (Exception $e) {
+        go_to('');
+      }
+
+      update(<<<EOT
+        INSERT INTO
+          comment
+        SET
+          title='$this->title',
+          body='$this->body',
+          author=$this->user,
+          devpak=$this->devpak
+EOT
+      );
+
+      $title = "New comment for devpak #$this->devpak";
+      $body = "$title\nhttp://devpaks.org/details.php?devpak=$this->devpak\n\nSubject: $this->title\n$this->body";
+      if ($this->user and $author == $this->user):
+        $minecomm = one_line_query("SELECT minecomments, email FROM user WHERE id=$author");
+        if ($minecomm->minecomments):
+          mail($minecomm->email, stripslashes($title), stripslashes($body), "From: $admin_email");
+        endif;
+      else:
+        $forecomm = one_line_query("SELECT foreigncomments, email FROM user WHERE id=$author");
+        if ($forecomm->foreigncomments):
+          mail($forecomm->email, stripslashes($title), stripslashes($body), "From: $admin_email");
+        endif;
+      endif;
+      mail($admin_email, stripslashes($title), stripslashes($body), "From: $admin_email");
+
+      go_to("details.php?devpak=$this->devpak");
+    }
+
+  }
+
+  $servlet = new DoAddCommentServlet();
+  $servlet->run();
+?>
+]]>
+</code>
+<para>The End.</para>
+</example-document>

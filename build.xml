@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="xslthl" default="jar" basedir=".">
+
+  <path id="classpath">
+    <fileset dir="lib" includes="**/*.jar" />
+  </path>
+
+  <target name="compile" description="Compiles the application.">
+    <mkdir dir="build"/>
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src" destdir="build/classes">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile" description="Creates the JAR file.">
+    <jar jarfile="build/xslthl.jar">
+      <fileset dir="build/classes">
+        <include name="**/*"/>
+      </fileset>
+    </jar>
+  </target>
+
+</project>
