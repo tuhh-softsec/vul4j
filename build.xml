@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="xslthl" default="jar" basedir=".">
+<project name="xslthl" default="build">
 
-  <path id="classpath">
-    <fileset dir="lib" includes="**/*.jar" />
-  </path>
+	<target name="clean" description="Clean the intermediate files and distribution">
+		<delete dir="build" />
+		<delete dir="dist" />
+		<ant dir="examples" target="clean" />
+	</target>
 
-  <target name="compile" description="Compiles the application.">
-    <mkdir dir="build"/>
-    <mkdir dir="build/classes"/>
-    <javac srcdir="src" destdir="build/classes">
-      <classpath refid="classpath"/>
-    </javac>
-  </target>
+	<target name="init">
+		<mkdir dir="build" />
+		<mkdir dir="dist" />
+	</target>
 
-  <target name="jar" depends="compile" description="Creates the JAR file.">
-    <jar jarfile="build/xslthl.jar">
-      <fileset dir="build/classes">
-        <include name="**/*"/>
-      </fileset>
-    </jar>
-  </target>
+	<target name="build" depends="jar,distmisc" description="Build the Xslthl distribution" />
+
+	<target name="examples">
+		<ant dir="examples" target="build" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="build">
+			<classpath>
+				<fileset dir="lib" includes="**/*.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="dist/xslthl.jar">
+			<fileset dir="build">
+				<include name="**/*.class" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="distmisc" depends="init">
+		<copy todir="dist">
+			<fileset dir="highlighters">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+	</target>
 
 </project>
