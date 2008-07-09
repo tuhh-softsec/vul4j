@@ -40,7 +40,7 @@ import org.w3c.dom.NodeList;
  * XalanConnector for XsltHL. Usage: Add the namespace
  * <code>xmlns:xhl="xalan://net.sf.xslthl.XalanConnector"</code> then you can
  * use the function:
- * <code>xhl:highlight($language, exsl:node-set($content))</code>
+ * <code>xhl:highlight($language, exsl:node-set($content))</code> or <code>xhl:highlight($language, exsl:node-set($content), 'myConfigFile')</code>
  * 
  * @author Michiel Hendriks
  */
@@ -64,10 +64,32 @@ public class XalanConnector {
 	return list;
     }
 
+    /**
+     * highlight the given nodes using the standard configuration
+     * 
+     * @param context
+     * @param hlCode
+     * @param nodes
+     * @return
+     */
     public static final NodeList highlight(ExpressionContext context,
 	    String hlCode, NodeList nodes) {
+	return highlight(context, hlCode, nodes, null);
+    }
+
+    /**
+     * highlight the given nodes
+     * 
+     * @param context
+     * @param hlCode
+     * @param nodes
+     * @param configFilename
+     * @return
+     */
+    public static final NodeList highlight(ExpressionContext context,
+	    String hlCode, NodeList nodes, String configFilename) {
 	try {
-	    Config c = Config.getInstance();
+	    Config c = Config.getInstance(configFilename);
 	    MainHighlighter hl = c.getMainHighlighter(hlCode);
 	    NodeSet list = new NodeSet();
 	    for (int i = 0; i < nodes.getLength(); i++) {

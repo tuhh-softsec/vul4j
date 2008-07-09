@@ -99,10 +99,34 @@ public class ConnectorSaxon6 {
 	}
     }
 
+    /**
+     * Highlight the nodes using the standard configuration file
+     * 
+     * @param context
+     * @param hlCode
+     * @param nodes
+     * @return
+     * @throws Exception
+     */
     public static NodeEnumeration highlight(Context context, String hlCode,
 	    NodeEnumeration nodes) throws Exception {
+	return highlight(context, hlCode, nodes, null);
+    }
+
+    /**
+     * highlight the nodes using a specific interface
+     * 
+     * @param context
+     * @param hlCode
+     * @param nodes
+     * @param configFilename
+     * @return
+     * @throws Exception
+     */
+    public static NodeEnumeration highlight(Context context, String hlCode,
+	    NodeEnumeration nodes, String configFilename) throws Exception {
 	try {
-	    Config c = Config.getInstance();
+	    Config c = Config.getInstance(configFilename);
 	    MainHighlighter hl = c.getMainHighlighter(hlCode);
 
 	    Builder builder = context.getController().makeBuilder();

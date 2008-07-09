@@ -28,20 +28,41 @@ package net.sf.xslthl;
 import java.util.LinkedList;
 import java.util.List;
 
-class MainHighlighter {
+/**
+ * Main source highlighter. It will call all registered highlighters.
+ */
+public class MainHighlighter {
 
-    List<Highlighter> highlighters = new LinkedList<Highlighter>();
-    List<WholeHighlighter> wholehighlighters = new LinkedList<WholeHighlighter>();
+    /**
+     * Normale highlighter 
+     */
+    protected List<Highlighter> highlighters = new LinkedList<Highlighter>();
+    
+    /**
+     * 
+     */
+    protected List<WholeHighlighter> wholehighlighters = new LinkedList<WholeHighlighter>();
 
-    void add(Highlighter h) {
-	highlighters.add(h);
+    public void add(Highlighter h) {
+	if (h instanceof WholeHighlighter) {
+	    wholehighlighters.add((WholeHighlighter) h);
+	} else {
+	    highlighters.add(h);
+	}
     }
 
-    void addWhole(WholeHighlighter h) {
-	wholehighlighters.add(h);
+    @Deprecated
+    public void addWhole(WholeHighlighter h) {
+	add(h);
     }
 
-    List<Block> highlight(String source) {
+    /**
+     * Convert the input string into a collection of text blocks
+     * 
+     * @param source
+     * @return
+     */
+    public List<Block> highlight(String source) {
 	CharIter in = new CharIter(source);
 	List<Block> out = new LinkedList<Block>();
 
