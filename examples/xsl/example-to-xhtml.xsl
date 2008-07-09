@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:chl="java:net.sf.xslthl.ConnectorSaxon6"
 	xmlns:xhl="xalan://net.sf.xslthl.XalanConnector" xmlns:xslthl="http://xslthl.sf.net" extension-element-prefixes="chl xhl xslthl">
-	<xsl:import href='output_html.xsl' />
 	<xsl:output indent="no" method="html" version="1.0" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" />
+	<xsl:param name="xslthl.config" />
 	<xsl:template match="/">
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 			<head>
@@ -81,6 +81,11 @@ H1 {
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>
+	<xsl:template match="xslthl:macro">
+		<span style="color: maroon;">
+			<xsl:value-of select="." />
+		</span>
+	</xsl:template>
 	<xsl:template match="xslthl:section">
 		<span style="background: silver; font-weight: bold;">
 			<xsl:value-of select="." />
@@ -93,11 +98,11 @@ H1 {
 		<xsl:param name="source" />
 		<xsl:choose>
 			<xsl:when test="function-available('chl:highlight')">
-				<xsl:variable name="highlighted" select="chl:highlight($language, $source)" />
+				<xsl:variable name="highlighted" select="chl:highlight($language, $source, $xslthl.config)" />
 				<xsl:apply-templates select="$highlighted" />
 			</xsl:when>
 			<xsl:when test="function-available('xhl:highlight')">
-				<xsl:variable name="highlighted" select="xhl:highlight($language, $source)" />
+				<xsl:variable name="highlighted" select="xhl:highlight($language, $source, $xslthl.config)" />
 				<xsl:apply-templates select="$highlighted" />
 			</xsl:when>
 			<xsl:otherwise>

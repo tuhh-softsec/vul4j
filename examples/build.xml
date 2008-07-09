@@ -31,6 +31,7 @@
 					<exclude name="**/saxon.jar" />
 				</fileset>
 			</classpath>
+			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml"/>
 		</xslt>
 	</target>
 
