@@ -792,7 +792,7 @@ public final class IOUtil
     /**
      * Closes the writer. The writer can be null and any IOException's will be swallowed.
      * 
-     * @param wrtier The writer to close.
+     * @param writer The writer to close.
      */
     public static void close( Writer writer )
     {
