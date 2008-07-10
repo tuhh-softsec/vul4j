@@ -14,7 +14,7 @@
 
 	<target name="build" depends="jar,distmisc" description="Build the Xslthl distribution" />
 
-	<target name="examples" description="Run the examples">
+	<target name="examples" depends="build" description="Run the examples">
 		<ant dir="examples" target="build" />
 	</target>
 
