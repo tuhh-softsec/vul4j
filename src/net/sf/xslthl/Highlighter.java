@@ -37,13 +37,14 @@ import java.util.List;
  */
 public abstract class Highlighter {
 
-    final static class IgnoreCaseComparator implements Comparator<String> {
+    public final static class IgnoreCaseComparator implements
+	    Comparator<String> {
 	public int compare(String s1, String s2) {
 	    return s1.compareToIgnoreCase(s2);
 	}
     }
 
-    final static boolean isNewLine(Character c) {
+    public final static boolean isNewLine(Character c) {
 	return '\n' == c || '\r' == c;
     }
 

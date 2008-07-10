@@ -23,12 +23,21 @@
  * Jirka Kosek <kosek at users.sourceforge.net>
  * Michiel Hendriks <elmuerte at users.sourceforge.net>
  */
-package net.sf.xslthl;
+package net.sf.xslthl.highlighters;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
+
+import net.sf.xslthl.Block;
+import net.sf.xslthl.CharIter;
+import net.sf.xslthl.Highlighter;
+import net.sf.xslthl.HighlighterConfigurationException;
+import net.sf.xslthl.Params;
+import net.sf.xslthl.WholeHighlighter;
+import net.sf.xslthl.Highlighter.IgnoreCaseComparator;
+import net.sf.xslthl.Params.ParamsLoader;
 
 /**
  * XML/SGML highlighter.

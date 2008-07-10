@@ -23,38 +23,48 @@
  * Jirka Kosek <kosek at users.sourceforge.net>
  * Michiel Hendriks <elmuerte at users.sourceforge.net>
  */
-package net.sf.xslthl;
+package net.sf.xslthl.highlighters;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.TreeSet;
+
+import net.sf.xslthl.Block;
+import net.sf.xslthl.CharIter;
+import net.sf.xslthl.Highlighter;
+import net.sf.xslthl.HighlighterConfigurationException;
+import net.sf.xslthl.Params;
 
 /**
- * Performs highlighting for multi-line comments Accepted parameters:
+ * Scans for registered keywords Accepted parameters:
  * <dl>
- * <dt>start</dt>
- * <dd>How the multiline comment starts. <b>Required.</b></dd>
- * <dt>end</dt>
- * <dd>How the multiline comment ends. <b>Required.</b></dd>
+ * <dt>keywords</dt>
+ * <dd>Keywords this highlighter recognizes. Can be used multiple times</dd>
+ * <dt>ignoreCase</dt>
+ * <dd>If this element is present the keywords are case insensitive.</dd>
  * </dl>
  */
-public class MultilineCommentHighlighter extends Highlighter {
+public class KeywordsHighlighter extends Highlighter {
 
     /**
-     * The start and end token
+     * the keywords this highligher accepts
      */
-    protected String start, end;
+    protected Collection<String> keywords;
+
+    /**
+     * Ignore case of the keywords.
+     */
+    protected boolean ignoreCase = false;
 
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
-	start = params.getParam("start");
-	end = params.getParam("end");
-	if (start == null || start.length() == 0) {
-	    throw new HighlighterConfigurationException(
-		    "Required parameter 'start' is not set.");
+	ignoreCase = params.isSet("ignoreCase");
+	if (ignoreCase) {
+	    keywords = new TreeSet<String>(new IgnoreCaseComparator());
+	} else {
+	    keywords = new TreeSet<String>();
 	}
-	if (end == null || end.length() == 0) {
-	    throw new HighlighterConfigurationException(
-		    "Required parameter 'end' is not set.");
-	}
+	params.getMutliParams("keyword", keywords);
     }
 
     /*
@@ -64,7 +74,9 @@ public class MultilineCommentHighlighter extends Highlighter {
      */
     @Override
     public boolean startsWith(CharIter in) {
-	if (in.startsWith(start)) {
+	if (Character.isJavaIdentifierStart(in.current())
+		&& (in.prev() == null || !Character.isJavaIdentifierPart(in
+			.prev()))) {
 	    return true;
 	}
 	return false;
@@ -78,15 +90,14 @@ public class MultilineCommentHighlighter extends Highlighter {
      */
     @Override
     public boolean highlight(CharIter in, List<Block> out) {
-	in.moveNext(start.length()); // skip start
-	int endIndex = in.indexOf(end);
-	if (endIndex == -1) {
-	    in.moveToEnd();
-	} else {
-	    in.moveNext(endIndex + end.length());
+	while (!in.finished() && Character.isJavaIdentifierPart(in.current())) {
+	    in.moveNext();
 	}
-	out.add(in.markedToStyledBlock(styleName));
-	return true;
+	if (keywords.contains(in.getMarked())) {
+	    out.add(in.markedToStyledBlock(styleName));
+	    return true;
+	}
+	return false;
     }
 
     /*
@@ -96,7 +107,7 @@ public class MultilineCommentHighlighter extends Highlighter {
      */
     @Override
     public String getDefaultStyle() {
-	return "comment";
+	return "keyword";
     }
 
 }

@@ -23,44 +23,60 @@
  * Jirka Kosek <kosek at users.sourceforge.net>
  * Michiel Hendriks <elmuerte at users.sourceforge.net>
  */
-package net.sf.xslthl;
+package net.sf.xslthl.highlighters;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import net.sf.xslthl.Block;
+import net.sf.xslthl.CharIter;
+import net.sf.xslthl.Highlighter;
+import net.sf.xslthl.HighlighterConfigurationException;
+import net.sf.xslthl.Params;
 
 /**
- * Accepts heredoc constructions. Accepted parameters:
+ * Recognizes strings. Accepted parameters:
  * <dl>
- * <dt>start</dt>
- * <dd>How the heredoc construction starts. <b>Required.</b></dd>
- * <dt>quote</dt>
- * <dd>Allowed quote characters to be used in the identifier name. This
- * parameter can be used more than once.</dd>
+ * <dt>string</dt>
+ * <dd>How the string starts. <b>Required.</b></dd>
+ * <dt>endString</dt>
+ * <dd>How the string ends. If not present the start value is used.</dd>
+ * <dt>escape</dt>
+ * <dd>Character to use to escape characters. Optional.</dd>
+ * <dt>doubleEscapes</dt>
+ * <dd>When present the double usage of start is considered to be an escaped
+ * start (used in Pascal). Optional.</dd>
+ * <dt>spanNewLines</dt>
+ * <dd>When present strings can span newlines, otherwise a newline breaks the
+ * string parsing.</dd>
  * </dl>
- * See http://en.wikipedia.org/wiki/Heredoc
  */
-public class HeredocHighlighter extends Highlighter {
+public class StringHighlighter extends Highlighter {
 
     /**
-     * The token that initiates a heredoc construction
+     * The start token and the escape token.
      */
-    protected String start;
-
+    private String start, end, escape;
     /**
-     * quote characters that can be used in the heredoc identifier
+     * If set the double occurance of start escapes it.
      */
-    protected Set<String> quoteChar;
+    private boolean doubleEscapes;
+    /**
+     * If set newlines are ignored in string parsing.
+     */
+    private boolean spansNewLines;
 
-    public void init(Params params) throws HighlighterConfigurationException {
+    public void init(Params params)
+	    throws HighlighterConfigurationException {
 	super.init(params);
-	start = params.getParam("start");
+	start = params.getParam("string");
+	end = params.getParam("endString", start);
+	escape = params.getParam("escape");
+	doubleEscapes = params.isSet("doubleEscapes");
+	spansNewLines = params.isSet("spanNewLines");
 	if (start == null || start.length() == 0) {
 	    throw new HighlighterConfigurationException(
 		    "Required parameter 'start' is not set.");
 	}
-	quoteChar = new HashSet<String>();
-	params.getMutliParams("quote", quoteChar);
     }
 
     /*
@@ -85,34 +101,26 @@ public class HeredocHighlighter extends Highlighter {
     @Override
     public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
-	// skip whitespace
-	while (!in.finished() && Character.isWhitespace(in.current())) {
+	boolean wasEscape = false;
+	while (!in.finished()) {
+	    if (!spansNewLines && isNewLine(in.current())) {
+		break;
+	    }
+	    if (in.startsWith(end) && !wasEscape) {
+		if (doubleEscapes && in.startsWith(end, end.length())) {
+		    in.moveNext();
+		} else {
+		    break;
+		}
+	    } else if (escape != null && in.startsWith(escape) && !wasEscape) {
+		wasEscape = true;
+	    } else {
+		wasEscape = false;
+	    }
 	    in.moveNext();
 	}
-	String s = "";
-	Character quoted = '\0';
-	// identifier might me quoted
-	if (quoteChar.contains(in.current())) {
-	    quoted = in.current();
+	if (!in.finished()) {
 	    in.moveNext();
-	}
-	while (!in.finished() && !Character.isWhitespace(in.current())
-		&& quoted != in.current()) {
-	    s += in.current();
-	    in.moveNext();
-	}
-	if (quoted == in.current()) {
-	    in.moveNext();
-	}
-	if (s.length() == 0) {
-	    return false;
-	}
-	// TODO: must start on a newline
-	int i = in.indexOf(s);
-	if (i < 0) {
-	    in.moveToEnd();
-	} else {
-	    in.moveNext(i + s.length());
 	}
 	out.add(in.markedToStyledBlock(styleName));
 	return true;

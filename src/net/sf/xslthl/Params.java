@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
  */
 public class Params {
 
-    interface ParamsLoader<T> {
+    public interface ParamsLoader<T> {
 	T load(Params params);
     }
 

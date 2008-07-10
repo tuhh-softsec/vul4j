@@ -32,6 +32,15 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.sf.xslthl.highlighters.HeredocHighlighter;
+import net.sf.xslthl.highlighters.KeywordsHighlighter;
+import net.sf.xslthl.highlighters.MultilineCommentHighlighter;
+import net.sf.xslthl.highlighters.NestedMultilineCommentHighlighter;
+import net.sf.xslthl.highlighters.OnelineCommentHighlighter;
+import net.sf.xslthl.highlighters.RegexHighlighter;
+import net.sf.xslthl.highlighters.StringHighlighter;
+import net.sf.xslthl.highlighters.XMLHighlighter;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

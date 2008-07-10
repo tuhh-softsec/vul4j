@@ -23,42 +23,50 @@
  * Jirka Kosek <kosek at users.sourceforge.net>
  * Michiel Hendriks <elmuerte at users.sourceforge.net>
  */
-package net.sf.xslthl;
+package net.sf.xslthl.highlighters;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
+
+import net.sf.xslthl.Block;
+import net.sf.xslthl.CharIter;
+import net.sf.xslthl.Highlighter;
+import net.sf.xslthl.HighlighterConfigurationException;
+import net.sf.xslthl.Params;
 
 /**
- * Scans for registered keywords Accepted parameters:
+ * Single line comments. Accepted parameters:
  * <dl>
- * <dt>keywords</dt>
- * <dd>Keywords this highlighter recognizes. Can be used multiple times</dd>
- * <dt>ignoreCase</dt>
- * <dd>If this element is present the keywords are case insensitive.</dd>
+ * <dt>start</dt>
+ * <dd>How the single line comment starts <b>Required.</b></dd>
+ * <dt>lineBreakEscape</dt>
+ * <dd>string that can be used to break the line and continue on the next line</dd>
  * </dl>
  */
-public class KeywordsHighlighter extends Highlighter {
+public class OnelineCommentHighlighter extends Highlighter {
 
     /**
-     * the keywords this highligher accepts
+     * The start of the comment highlighter
      */
-    protected Collection<String> keywords;
+    protected String start;
 
     /**
-     * Ignore case of the keywords.
+     * String used to escape a newline
      */
-    protected boolean ignoreCase = false;
+    protected String lineBreakEscape;
 
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
-	ignoreCase = params.isSet("ignoreCase");
-	if (ignoreCase) {
-	    keywords = new TreeSet<String>(new IgnoreCaseComparator());
+	if (params.isSet("start")) {
+	    start = params.getParam("start");
+	    lineBreakEscape = params.getParam("lineBreakEscape");
 	} else {
-	    keywords = new TreeSet<String>();
+	    // legacy format
+	    start = params.getParam();
 	}
-	params.getMutliParams("keyword", keywords);
+	if (start == null || start.length() == 0) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'start' is not set.");
+	}
     }
 
     /*
@@ -68,9 +76,7 @@ public class KeywordsHighlighter extends Highlighter {
      */
     @Override
     public boolean startsWith(CharIter in) {
-	if (Character.isJavaIdentifierStart(in.current())
-		&& (in.prev() == null || !Character.isJavaIdentifierPart(in
-			.prev()))) {
+	if (in.startsWith(start)) {
 	    return true;
 	}
 	return false;
@@ -84,14 +90,19 @@ public class KeywordsHighlighter extends Highlighter {
      */
     @Override
     public boolean highlight(CharIter in, List<Block> out) {
-	while (!in.finished() && Character.isJavaIdentifierPart(in.current())) {
-	    in.moveNext();
+	in.moveNext(start.length()); // skip start
+	// TODO: accept line breaks
+	int endIndex = in.indexOf("\n");
+	if (endIndex == -1) {
+	    in.moveToEnd();
+	} else {
+	    in.moveNext(endIndex);
+	    if (in.prev().equals('\r')) {
+		in.moveNext(-1);
+	    }
 	}
-	if (keywords.contains(in.getMarked())) {
-	    out.add(in.markedToStyledBlock(styleName));
-	    return true;
-	}
-	return false;
+	out.add(in.markedToStyledBlock(styleName));
+	return true;
     }
 
     /*
@@ -101,7 +112,7 @@ public class KeywordsHighlighter extends Highlighter {
      */
     @Override
     public String getDefaultStyle() {
-	return "keyword";
+	return "comment";
     }
 
 }

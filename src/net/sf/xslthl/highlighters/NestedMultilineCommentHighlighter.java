@@ -23,70 +23,54 @@
  * Jirka Kosek <kosek at users.sourceforge.net>
  * Michiel Hendriks <elmuerte at users.sourceforge.net>
  */
-package net.sf.xslthl;
+package net.sf.xslthl.highlighters;
 
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+
+import net.sf.xslthl.Block;
+import net.sf.xslthl.CharIter;
+import net.sf.xslthl.HighlighterConfigurationException;
+import net.sf.xslthl.Params;
 
 /**
- * A regular expression based highlighter. Accepted parameters:
- * <dl>
- * <dt>pattern</dt>
- * <dd>The regular expression pattern to be matched.</dd>
- * </dl>
+ * Just like the multiline comment highlighter, but accepts nesting of comments.
  */
-public class RegexHighlighter extends WholeHighlighter {
-
-    /**
-     * The pattern to accept
-     */
-    protected Pattern pattern;
+public class NestedMultilineCommentHighlighter extends MultilineCommentHighlighter {
 
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
-	if (params.isSet("pattern")) {
-	    try {
-		pattern = Pattern.compile(params.getParam("pattern"));
-	    } catch (PatternSyntaxException e) {
-		throw new HighlighterConfigurationException(e.getMessage(), e);
-	    }
-	}
-	if (pattern == null) {
-	    throw new HighlighterConfigurationException(
-		    "Required parameter 'pattern' is not set.");
-	}
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
-     * java.util.List)
+     * @see
+     * net.sf.xslthl.MultilineCommentHighlighter#highlight(net.sf.xslthl.CharIter
+     * , java.util.List)
      */
     @Override
     public boolean highlight(CharIter in, List<Block> out) {
-	in.createMatcher(pattern);
-	while (in.find()) {
-	    if (in.isMarked()) {
-		out.add(in.markedToBlock());
+	in.moveNext(start.length()); // skip start
+
+	int depth = 1;
+	while (!in.finished()) {
+	    if (in.startsWith(end)) {
+		in.moveNext(end.length());
+		if (depth == 1) {
+		    break;
+		} else {
+		    depth--;
+		}
+	    } else if (in.startsWith(start)) {
+		depth++;
+		in.moveNext(start.length());
+	    } else {
+		in.moveNext();
 	    }
-	    in.markMatched();
-	    out.add(in.markedToStyledBlock(styleName));
 	}
-	if (in.isMarked()) {
-	    out.add(in.markedToBlock());
-	}
-	return false;
+
+	out.add(in.markedToStyledBlock(styleName));
+	return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
-     */
-    @Override
-    public String getDefaultStyle() {
-	return null;
-    }
 }

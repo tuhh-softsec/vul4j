@@ -23,57 +23,45 @@
  * Jirka Kosek <kosek at users.sourceforge.net>
  * Michiel Hendriks <elmuerte at users.sourceforge.net>
  */
-package net.sf.xslthl;
+package net.sf.xslthl.highlighters;
 
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import net.sf.xslthl.Block;
+import net.sf.xslthl.CharIter;
+import net.sf.xslthl.HighlighterConfigurationException;
+import net.sf.xslthl.Params;
+import net.sf.xslthl.WholeHighlighter;
 
 /**
- * Single line comments. Accepted parameters:
+ * A regular expression based highlighter. Accepted parameters:
  * <dl>
- * <dt>start</dt>
- * <dd>How the single line comment starts <b>Required.</b></dd>
- * <dt>lineBreakEscape</dt>
- * <dd>string that can be used to break the line and continue on the next line</dd>
+ * <dt>pattern</dt>
+ * <dd>The regular expression pattern to be matched.</dd>
  * </dl>
  */
-public class OnelineCommentHighlighter extends Highlighter {
+public class RegexHighlighter extends WholeHighlighter {
 
     /**
-     * The start of the comment highlighter
+     * The pattern to accept
      */
-    protected String start;
-
-    /**
-     * String used to escape a newline
-     */
-    protected String lineBreakEscape;
+    protected Pattern pattern;
 
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
-	if (params.isSet("start")) {
-	    start = params.getParam("start");
-	    lineBreakEscape = params.getParam("lineBreakEscape");
-	} else {
-	    // legacy format
-	    start = params.getParam();
+	if (params.isSet("pattern")) {
+	    try {
+		pattern = Pattern.compile(params.getParam("pattern"));
+	    } catch (PatternSyntaxException e) {
+		throw new HighlighterConfigurationException(e.getMessage(), e);
+	    }
 	}
-	if (start == null || start.length() == 0) {
+	if (pattern == null) {
 	    throw new HighlighterConfigurationException(
-		    "Required parameter 'start' is not set.");
+		    "Required parameter 'pattern' is not set.");
 	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
-     */
-    @Override
-    public boolean startsWith(CharIter in) {
-	if (in.startsWith(start)) {
-	    return true;
-	}
-	return false;
     }
 
     /*
@@ -84,19 +72,18 @@ public class OnelineCommentHighlighter extends Highlighter {
      */
     @Override
     public boolean highlight(CharIter in, List<Block> out) {
-	in.moveNext(start.length()); // skip start
-	// TODO: accept line breaks
-	int endIndex = in.indexOf("\n");
-	if (endIndex == -1) {
-	    in.moveToEnd();
-	} else {
-	    in.moveNext(endIndex);
-	    if (in.prev().equals('\r')) {
-		in.moveNext(-1);
+	in.createMatcher(pattern);
+	while (in.find()) {
+	    if (in.isMarked()) {
+		out.add(in.markedToBlock());
 	    }
+	    in.markMatched();
+	    out.add(in.markedToStyledBlock(styleName));
 	}
-	out.add(in.markedToStyledBlock(styleName));
-	return true;
+	if (in.isMarked()) {
+	    out.add(in.markedToBlock());
+	}
+	return false;
     }
 
     /*
@@ -106,7 +93,6 @@ public class OnelineCommentHighlighter extends Highlighter {
      */
     @Override
     public String getDefaultStyle() {
-	return "comment";
+	return null;
     }
-
 }
