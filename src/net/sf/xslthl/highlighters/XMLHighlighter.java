@@ -32,12 +32,9 @@ import java.util.TreeSet;
 
 import net.sf.xslthl.Block;
 import net.sf.xslthl.CharIter;
-import net.sf.xslthl.Highlighter;
 import net.sf.xslthl.HighlighterConfigurationException;
 import net.sf.xslthl.Params;
 import net.sf.xslthl.WholeHighlighter;
-import net.sf.xslthl.Highlighter.IgnoreCaseComparator;
-import net.sf.xslthl.Params.ParamsLoader;
 
 /**
  * XML/SGML highlighter.
