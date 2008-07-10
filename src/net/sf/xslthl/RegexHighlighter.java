@@ -27,31 +27,67 @@ package net.sf.xslthl;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
-class RegexHighlighter extends WholeHighlighter {
+/**
+ * A regular expression based highlighter. Accepted parameters:
+ * <dl>
+ * <dt>pattern</dt>
+ * <dd>The regular expression pattern to be matched.</dd>
+ * </dl>
+ */
+public class RegexHighlighter extends WholeHighlighter {
 
-    Pattern pattern;
-    String style;
+    /**
+     * The pattern to accept
+     */
+    protected Pattern pattern;
 
-    RegexHighlighter(Params params) {
+    public RegexHighlighter(Params params)
+	    throws HighlighterConfigurationException {
 	super(params);
-	pattern = Pattern.compile(params.getParam("pattern"));
-	style = params.getParam("style");
+	if (params.isSet("pattern")) {
+	    try {
+		pattern = Pattern.compile(params.getParam("pattern"));
+	    } catch (PatternSyntaxException e) {
+		throw new HighlighterConfigurationException(e.getMessage(), e);
+	    }
+	}
+	if (pattern == null) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'pattern' is not set.");
+	}
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+     * java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	in.createMatcher(pattern);
 	while (in.find()) {
 	    if (in.isMarked()) {
 		out.add(in.markedToBlock());
 	    }
 	    in.markMatched();
-	    out.add(in.markedToStyledBlock(style));
+	    out.add(in.markedToStyledBlock(styleName));
 	}
 	if (in.isMarked()) {
 	    out.add(in.markedToBlock());
 	}
 	return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+     */
+    @Override
+    public String getDefaultStyle() {
+	return null;
     }
 }

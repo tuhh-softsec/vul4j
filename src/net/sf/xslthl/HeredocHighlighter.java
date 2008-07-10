@@ -25,43 +25,108 @@
  */
 package net.sf.xslthl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-class HeredocHighlighter extends Highlighter {
+/**
+ * Accepts heredoc constructions. Accepted parameters:
+ * <dl>
+ * <dt>start</dt>
+ * <dd>How the heredoc construction starts. <b>Required.</b></dd>
+ * <dt>quote</dt>
+ * <dd>Allowed quote characters to be used in the identifier name. This
+ * parameter can be used more than once.</dd>
+ * </dl>
+ * See http://en.wikipedia.org/wiki/Heredoc
+ */
+public class HeredocHighlighter extends Highlighter {
 
-    private String start;
+    /**
+     * The token that initiates a heredoc construction
+     */
+    protected String start;
 
-    HeredocHighlighter(Params params) {
+    /**
+     * quote characters that can be used in the heredoc identifier
+     */
+    protected Set<String> quoteChar;
+
+    public HeredocHighlighter(Params params)
+	    throws HighlighterConfigurationException {
+	super(params);
 	start = params.getParam("start");
+	if (start == null || start.length() == 0) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'start' is not set.");
+	}
+	quoteChar = new HashSet<String>();
+	params.getMutliParams("quote", quoteChar);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+     */
     @Override
-    boolean startsWith(CharIter in) {
+    public boolean startsWith(CharIter in) {
 	if (in.startsWith(start)) {
 	    return true;
 	}
 	return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+     * java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
+	// skip whitespace
+	while (!in.finished() && Character.isWhitespace(in.current())) {
+	    in.moveNext();
+	}
 	String s = "";
-	while (!in.finished() && !Character.isWhitespace(in.current())) {
+	Character quoted = '\0';
+	// identifier might me quoted
+	if (quoteChar.contains(in.current())) {
+	    quoted = in.current();
+	    in.moveNext();
+	}
+	while (!in.finished() && !Character.isWhitespace(in.current())
+		&& quoted != in.current()) {
 	    s += in.current();
+	    in.moveNext();
+	}
+	if (quoted == in.current()) {
 	    in.moveNext();
 	}
 	if (s.length() == 0) {
 	    return false;
 	}
+	// TODO: must start on a newline
 	int i = in.indexOf(s);
 	if (i < 0) {
 	    in.moveToEnd();
 	} else {
 	    in.moveNext(i + s.length());
 	}
-	out.add(in.markedToStyledBlock("string"));
+	out.add(in.markedToStyledBlock(styleName));
 	return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+     */
+    @Override
+    public String getDefaultStyle() {
+	return "string";
     }
 
 }

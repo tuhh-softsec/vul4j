@@ -27,25 +27,66 @@ package net.sf.xslthl;
 
 import java.util.List;
 
-class OnelineCommentHighlighter extends Highlighter {
+/**
+ * Single line comments. Accepted parameters:
+ * <dl>
+ * <dt>start</dt>
+ * <dd>How the single line comment starts <b>Required.</b></dd>
+ * <dt>lineBreakEscape</dt>
+ * <dd>string that can be used to break the line and continue on the next line</dd>
+ * </dl>
+ */
+public class OnelineCommentHighlighter extends Highlighter {
 
-    private String start;
+    /**
+     * The start of the comment highlighter
+     */
+    protected String start;
 
-    OnelineCommentHighlighter(Params params) {
-	start = params.getParam();
+    /**
+     * String used to escape a newline
+     */
+    protected String lineBreakEscape;
+
+    OnelineCommentHighlighter(Params params)
+	    throws HighlighterConfigurationException {
+	super(params);
+	if (params.isSet("start")) {
+	    start = params.getParam("start");
+	    lineBreakEscape = params.getParam("lineBreakEscape");
+	} else {
+	    // legacy format
+	    start = params.getParam();
+	}
+	if (start == null || start.length() == 0) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'start' is not set.");
+	}
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+     */
     @Override
-    boolean startsWith(CharIter in) {
+    public boolean startsWith(CharIter in) {
 	if (in.startsWith(start)) {
 	    return true;
 	}
 	return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+     * java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
+	// TODO: accept line breaks
 	int endIndex = in.indexOf("\n");
 	if (endIndex == -1) {
 	    in.moveToEnd();
@@ -55,8 +96,18 @@ class OnelineCommentHighlighter extends Highlighter {
 		in.moveNext(-1);
 	    }
 	}
-	out.add(in.markedToStyledBlock("comment"));
+	out.add(in.markedToStyledBlock(styleName));
 	return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+     */
+    @Override
+    public String getDefaultStyle() {
+	return "comment";
     }
 
 }

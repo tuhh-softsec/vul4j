@@ -131,21 +131,27 @@ public class Config {
 	    Element hl = (Element) hls.item(i);
 	    Params params = new Params(hl);
 	    String type = hl.getAttribute("type");
-	    if (type.equals("multiline-comment")) {
-		main.add(new MultilineCommentHighlighter(params));
-	    } else if (type.equals("nested-multiline-comment")) {
-		main.add(new NestedMultilineCommentHighlighter(params));
-	    } else if (type.equals("oneline-comment")) {
-		main.add(new OnelineCommentHighlighter(params));
-	    } else if (type.equals("string")) {
-		main.add(new StringHighlighter(params));
-	    } else if (type.equals("heredoc")) {
-		main.add(new HeredocHighlighter(params));
-	    } else if (type.equals("keywords")) {
-		main.add(new KeywordsHighlighter(params));
-	    } else {
-		System.err.println(String.format("Unknown highlighter: %s",
-			type));
+	    try {
+		if (type.equals("multiline-comment")) {
+		    main.add(new MultilineCommentHighlighter(params));
+		} else if (type.equals("nested-multiline-comment")) {
+		    main.add(new NestedMultilineCommentHighlighter(params));
+		} else if (type.equals("oneline-comment")) {
+		    main.add(new OnelineCommentHighlighter(params));
+		} else if (type.equals("string")) {
+		    main.add(new StringHighlighter(params));
+		} else if (type.equals("heredoc")) {
+		    main.add(new HeredocHighlighter(params));
+		} else if (type.equals("keywords")) {
+		    main.add(new KeywordsHighlighter(params));
+		} else {
+		    System.err.println(String.format("Unknown highlighter: %s",
+			    type));
+		}
+	    } catch (HighlighterConfigurationException hce) {
+		System.err.println(String.format(
+			"Invalid configuration for highlighter %s: %s", type,
+			hce.getMessage()));
 	    }
 	}
 	hls = doc.getDocumentElement().getElementsByTagName("wholehighlighter");
@@ -153,13 +159,19 @@ public class Config {
 	    Element hl = (Element) hls.item(i);
 	    Params params = new Params(hl);
 	    String type = hl.getAttribute("type");
-	    if (type.equals("regex")) {
-		main.add(new RegexHighlighter(params));
-	    } else if (type.equals("xml")) {
-		main.add(new XMLHighlighter(params));
-	    } else {
+	    try {
+		if (type.equals("regex")) {
+		    main.add(new RegexHighlighter(params));
+		} else if (type.equals("xml")) {
+		    main.add(new XMLHighlighter(params));
+		} else {
+		    System.err.println(String.format(
+			    "Unknown wholehighlighter: %s", type));
+		}
+	    } catch (HighlighterConfigurationException hce) {
 		System.err.println(String.format(
-			"Unknown wholehighlighter: %s", type));
+			"Invalid configuration for highlighter %s: %s", type,
+			hce.getMessage()));
 	    }
 	}
 	return main;
@@ -236,8 +248,11 @@ public class Config {
 	if (!highlighters.containsKey("xml")) {
 	    // add the built-in XML highlighting if it wasn't overloaded
 	    MainHighlighter xml = new MainHighlighter();
-	    xml.add(new XMLHighlighter(null));
-	    highlighters.put("xml", xml);
+	    try {
+		xml.add(new XMLHighlighter(null));
+		highlighters.put("xml", xml);
+	    } catch (HighlighterConfigurationException e) {
+	    }
 	}
     }
 }

@@ -30,7 +30,10 @@ import java.util.Collection;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-class Params {
+/**
+ * Syntax highlighter parameters
+ */
+public class Params {
 
     private Element paramElem;
 
@@ -42,16 +45,28 @@ class Params {
 	this.paramElem = paramElem;
     }
 
-    String getParam(String name) {
-	return paramElem.getElementsByTagName(name).item(0).getTextContent()
-		.trim();
-    }
-
     String getParam() {
 	return paramElem.getTextContent().trim();
     }
 
-    String getParam(String name, String defaultValue) {
+    /**
+     * Get a single parameter. Returns null when the parameter doesn't exist.
+     * 
+     * @param name
+     * @return
+     */
+    public String getParam(String name) {
+	return getParam(name, null);
+    }
+
+    /**
+     * Get a single parameter with a default value.
+     * 
+     * @param name
+     * @param defaultValue
+     * @return
+     */
+    public String getParam(String name, String defaultValue) {
 	NodeList nodes = paramElem.getElementsByTagName(name);
 	if (nodes.getLength() == 0) {
 	    return defaultValue;
@@ -64,11 +79,31 @@ class Params {
 		.item(0));
     }
 
-    boolean isSet(String name) {
+    /**
+     * Return true if a parameter with the given name exists.
+     * 
+     * @param name
+     * @return
+     */
+    public boolean isSet(String name) {
 	return paramElem.getElementsByTagName(name).getLength() > 0;
     }
 
+    /**
+     * @deprecated Use {@link #getMutliParams(String,Collection<String>)}
+     *             instead
+     */
     void load(String name, Collection<String> list) {
+	getMutliParams(name, list);
+    }
+
+    /**
+     * Load multiple parameters into a list
+     * 
+     * @param name
+     * @param list
+     */
+    public void getMutliParams(String name, Collection<String> list) {
 	NodeList nodes = paramElem.getElementsByTagName(name);
 	for (int i = 0; i < nodes.getLength(); i++) {
 	    Element elem = (Element) nodes.item(i);
@@ -76,7 +111,25 @@ class Params {
 	}
     }
 
+    /**
+     * @deprecated Use {@link
+     *             #getMultiParams(String,Collection<T>,ParamsLoader<? extends
+     *             T>)} instead
+     */
     <T> void load(String name, Collection<T> list,
+	    ParamsLoader<? extends T> loader) {
+	getMultiParams(name, list, loader);
+    }
+
+    /**
+     * Get the parameters using a specialized loader
+     * 
+     * @param <T>
+     * @param name
+     * @param list
+     * @param loader
+     */
+    public <T> void getMultiParams(String name, Collection<T> list,
 	    ParamsLoader<? extends T> loader) {
 	NodeList nodes = paramElem.getElementsByTagName(name);
 	for (int i = 0; i < nodes.getLength(); i++) {

@@ -25,27 +25,41 @@
  */
 package net.sf.xslthl;
 
-class Block {
+public class Block {
 
-    private String text;
+    protected String text;
 
     public Block(String text) {
 	this.text = text;
     }
 
+    /**
+     * @return the text within this block
+     */
     public String getText() {
 	return text;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
 	return getText();
     }
 
+    /**
+     * @return true if this block contains style information
+     */
     public boolean isStyled() {
 	return false;
     }
 
+    /**
+     * @return true if this block as no content
+     */
     public boolean empty() {
 	if (text == null || text.length() == 0) {
 	    return true;

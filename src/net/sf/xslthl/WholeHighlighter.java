@@ -28,7 +28,7 @@ package net.sf.xslthl;
 import java.util.Collection;
 import java.util.HashSet;
 
-abstract class WholeHighlighter extends Highlighter {
+public abstract class WholeHighlighter extends Highlighter {
     private Collection<String> styles = new HashSet<String>();
     private boolean emptyStyle = true;
     private boolean allStyles = false;
@@ -41,7 +41,7 @@ abstract class WholeHighlighter extends Highlighter {
 	    allStyles = true;
 	    return;
 	}
-	params.load("style", styles);
+	params.getMutliParams("style", styles);
     }
 
     boolean appliesOnEmptyStyle() {
@@ -56,7 +56,8 @@ abstract class WholeHighlighter extends Highlighter {
 	return styles.contains(style);
     }
 
-    WholeHighlighter(Params params) {
+    public WholeHighlighter(Params params) throws HighlighterConfigurationException {
+	super(params);
 	if (params != null && params.isSet("applyOnStyles")) {
 	    loadStyles(params.getParams("applyOnStyles"));
 	}

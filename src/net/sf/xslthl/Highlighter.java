@@ -28,13 +28,14 @@ package net.sf.xslthl;
 import java.util.Comparator;
 import java.util.List;
 
-abstract class Highlighter {
-
-    boolean startsWith(CharIter in) {
-	return false;
-    }
-
-    abstract boolean highlight(CharIter in, List<Block> out);
+/**
+ * Base highlighter. Accepted parameters:
+ * <dl>
+ * <dt>Style</dt>
+ * <dd>The style to use in the generated block</dd>
+ * </dl>
+ */
+public abstract class Highlighter {
 
     final static class IgnoreCaseComparator implements Comparator<String> {
 	public int compare(String s1, String s2) {
@@ -42,23 +43,52 @@ abstract class Highlighter {
 	}
     }
 
-    final static boolean isNewline(Character c) {
-	if (c == null) {
-	    return false;
+    final static boolean isNewLine(Character c) {
+	return '\n' == c || '\r' == c;
+    }
+
+    /**
+     * The name of the style to use
+     */
+    protected String styleName;
+
+    public Highlighter(Params params) throws HighlighterConfigurationException {
+	if (params == null) {
+	    styleName = getDefaultStyle();
+	} else {
+	    styleName = params.getParam("style", getDefaultStyle());
 	}
-	if (c == '\n' || c == '\r') {
-	    return true;
+	if (styleName == null || styleName.length() == 0) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'style' is not set.");
 	}
+    }
+
+    /**
+     * return true if the current character is a possible match for this
+     * highlighter
+     * 
+     * @param in
+     * @return
+     */
+    public boolean startsWith(CharIter in) {
 	return false;
     }
 
-    final static Character APOSTROPHE = '\'';
-    final static Character EQUALS = '=';
-    final static Character EXCLAMATION_MARK = '!';
-    final static Character GREATER_THAN = '>';
-    final static Character HYPHEN = '-';
-    final static Character LESS_THAN = '<';
-    final static Character QUESTION_MARK = '?';
-    final static Character QUOTE = '"';
-    final static Character SLASH = '/';
+    /**
+     * Perform highlighting on the current token stream. Return true when
+     * highlighting was performed, or false in case of a false positive.
+     * 
+     * @param in
+     * @param out
+     * @return
+     */
+    public abstract boolean highlight(CharIter in, List<Block> out);
+
+    /**
+     * The default style name
+     * 
+     * @return
+     */
+    public abstract String getDefaultStyle();
 }

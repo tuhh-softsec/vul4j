@@ -29,23 +29,45 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
-class KeywordsHighlighter extends Highlighter {
+/**
+ * Scans for registered keywords Accepted parameters:
+ * <dl>
+ * <dt>keywords</dt>
+ * <dd>Keywords this highlighter recognizes. Can be used multiple times</dd>
+ * <dt>ignoreCase</dt>
+ * <dd>If this element is present the keywords are case insensitive.</dd>
+ * </dl>
+ */
+public class KeywordsHighlighter extends Highlighter {
 
-    private Collection<String> keywords;
-    private boolean ignoreCase = false;
+    /**
+     * the keywords this highligher accepts
+     */
+    protected Collection<String> keywords;
 
-    KeywordsHighlighter(Params params) {
+    /**
+     * Ignore case of the keywords.
+     */
+    protected boolean ignoreCase = false;
+
+    public KeywordsHighlighter(Params params) throws HighlighterConfigurationException {
+	super(params);
 	ignoreCase = params.isSet("ignoreCase");
 	if (ignoreCase) {
 	    keywords = new TreeSet<String>(new IgnoreCaseComparator());
 	} else {
 	    keywords = new TreeSet<String>();
 	}
-	params.load("keyword", keywords);
+	params.getMutliParams("keyword", keywords);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+     */
     @Override
-    boolean startsWith(CharIter in) {
+    public boolean startsWith(CharIter in) {
 	if (Character.isJavaIdentifierStart(in.current())
 		&& (in.prev() == null || !Character.isJavaIdentifierPart(in
 			.prev()))) {
@@ -54,16 +76,32 @@ class KeywordsHighlighter extends Highlighter {
 	return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+     * java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	while (!in.finished() && Character.isJavaIdentifierPart(in.current())) {
 	    in.moveNext();
 	}
 	if (keywords.contains(in.getMarked())) {
-	    out.add(in.markedToStyledBlock("keyword"));
+	    out.add(in.markedToStyledBlock(styleName));
 	    return true;
 	}
 	return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+     */
+    @Override
+    public String getDefaultStyle() {
+	return "keyword";
     }
 
 }

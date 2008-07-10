@@ -27,14 +27,24 @@ package net.sf.xslthl;
 
 import java.util.List;
 
-class NestedMultilineCommentHighlighter extends MultilineCommentHighlighter {
+/**
+ * Just like the multiline comment highlighter, but accepts nesting of comments.
+ */
+public class NestedMultilineCommentHighlighter extends MultilineCommentHighlighter {
 
-    NestedMultilineCommentHighlighter(Params params) {
+    public NestedMultilineCommentHighlighter(Params params) throws HighlighterConfigurationException {
 	super(params);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * net.sf.xslthl.MultilineCommentHighlighter#highlight(net.sf.xslthl.CharIter
+     * , java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
 
 	int depth = 1;
@@ -54,7 +64,7 @@ class NestedMultilineCommentHighlighter extends MultilineCommentHighlighter {
 	    }
 	}
 
-	out.add(in.markedToStyledBlock("comment"));
+	out.add(in.markedToStyledBlock(styleName));
 	return true;
     }
 

@@ -27,25 +27,57 @@ package net.sf.xslthl;
 
 import java.util.List;
 
-class MultilineCommentHighlighter extends Highlighter {
+/**
+ * Performs highlighting for multi-line comments Accepted parameters:
+ * <dl>
+ * <dt>start</dt>
+ * <dd>How the multiline comment starts. <b>Required.</b></dd>
+ * <dt>end</dt>
+ * <dd>How the multiline comment ends. <b>Required.</b></dd>
+ * </dl>
+ */
+public class MultilineCommentHighlighter extends Highlighter {
 
+    /**
+     * The start and end token
+     */
     protected String start, end;
 
-    MultilineCommentHighlighter(Params params) {
+    public MultilineCommentHighlighter(Params params) throws HighlighterConfigurationException {
+	super(params);
 	start = params.getParam("start");
 	end = params.getParam("end");
+	if (start == null || start.length() == 0) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'start' is not set.");
+	}
+	if (end == null || end.length() == 0) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'end' is not set.");
+	}
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+     */
     @Override
-    boolean startsWith(CharIter in) {
+    public boolean startsWith(CharIter in) {
 	if (in.startsWith(start)) {
 	    return true;
 	}
 	return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+     * java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
 	int endIndex = in.indexOf(end);
 	if (endIndex == -1) {
@@ -53,8 +85,18 @@ class MultilineCommentHighlighter extends Highlighter {
 	} else {
 	    in.moveNext(endIndex + end.length());
 	}
-	out.add(in.markedToStyledBlock("comment"));
+	out.add(in.markedToStyledBlock(styleName));
 	return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+     */
+    @Override
+    public String getDefaultStyle() {
+	return "comment";
     }
 
 }

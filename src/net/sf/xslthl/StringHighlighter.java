@@ -27,32 +27,81 @@ package net.sf.xslthl;
 
 import java.util.List;
 
-class StringHighlighter extends Highlighter {
+/**
+ * Recognizes strings. Accepted parameters:
+ * <dl>
+ * <dt>string</dt>
+ * <dd>How the string starts. <b>Required.</b></dd>
+ * <dt>endString</dt>
+ * <dd>How the string ends. If not present the start value is used.</dd>
+ * <dt>escape</dt>
+ * <dd>Character to use to escape characters. Optional.</dd>
+ * <dt>doubleEscapes</dt>
+ * <dd>When present the double usage of start is considered to be an escaped
+ * start (used in Pascal). Optional.</dd>
+ * <dt>spanNewLines</dt>
+ * <dd>When present strings can span newlines, otherwise a newline breaks the
+ * string parsing.</dd>
+ * </dl>
+ */
+public class StringHighlighter extends Highlighter {
 
-    private String start, escape;
+    /**
+     * The start token and the escape token.
+     */
+    private String start, end, escape;
+    /**
+     * If set the double occurance of start escapes it.
+     */
     private boolean doubleEscapes;
+    /**
+     * If set newlines are ignored in string parsing.
+     */
+    private boolean spansNewLines;
 
-    StringHighlighter(Params params) {
+    public StringHighlighter(Params params)
+	    throws HighlighterConfigurationException {
+	super(params);
 	start = params.getParam("string");
-	escape = params.getParam("escape", null);
+	end = params.getParam("endString", start);
+	escape = params.getParam("escape");
 	doubleEscapes = params.isSet("doubleEscapes");
+	spansNewLines = params.isSet("spanNewLines");
+	if (start == null || start.length() == 0) {
+	    throw new HighlighterConfigurationException(
+		    "Required parameter 'start' is not set.");
+	}
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+     */
     @Override
-    boolean startsWith(CharIter in) {
+    public boolean startsWith(CharIter in) {
 	if (in.startsWith(start)) {
 	    return true;
 	}
 	return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+     * java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
 	boolean wasEscape = false;
 	while (!in.finished()) {
-	    if (in.startsWith(start) && !wasEscape) {
-		if (doubleEscapes && in.startsWith(start, start.length())) {
+	    if (!spansNewLines && isNewLine(in.current())) {
+		break;
+	    }
+	    if (in.startsWith(end) && !wasEscape) {
+		if (doubleEscapes && in.startsWith(end, end.length())) {
 		    in.moveNext();
 		} else {
 		    break;
@@ -67,8 +116,18 @@ class StringHighlighter extends Highlighter {
 	if (!in.finished()) {
 	    in.moveNext();
 	}
-	out.add(in.markedToStyledBlock("string"));
+	out.add(in.markedToStyledBlock(styleName));
 	return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+     */
+    @Override
+    public String getDefaultStyle() {
+	return "string";
     }
 
 }

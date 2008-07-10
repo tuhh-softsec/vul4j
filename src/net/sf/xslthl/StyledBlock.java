@@ -25,24 +25,40 @@
  */
 package net.sf.xslthl;
 
-class StyledBlock extends Block {
+public class StyledBlock extends Block {
 
-    private String style;
+    /**
+     * The style name
+     */
+    protected String style;
 
     public StyledBlock(String text, String style) {
 	super(text);
 	this.style = style;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Block#toString()
+     */
     @Override
     public String toString() {
 	return String.format("<%s>%s</%s>", getStyle(), getText(), getStyle());
     }
 
+    /**
+     * @return the style name
+     */
     public String getStyle() {
 	return style;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Block#isStyled()
+     */
     @Override
     public boolean isStyled() {
 	return true;

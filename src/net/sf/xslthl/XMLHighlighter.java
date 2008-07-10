@@ -30,7 +30,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 
-class XMLHighlighter extends WholeHighlighter {
+/**
+ * XML/SGML highlighter.
+ * 
+ */
+public class XMLHighlighter extends WholeHighlighter {
 
     abstract static class ElementSet {
 	String style;
@@ -48,7 +52,7 @@ class XMLHighlighter extends WholeHighlighter {
 	    } else {
 		tagNames = new TreeSet<String>();
 	    }
-	    params.load("element", tagNames);
+	    params.getMutliParams("element", tagNames);
 	    style = params.getParam("style");
 	}
 
@@ -73,8 +77,21 @@ class XMLHighlighter extends WholeHighlighter {
     }
 
     private Collection<ElementSet> elementSets = new HashSet<ElementSet>();
+    final static Character APOSTROPHE = '\'';
+    final static Character EQUALS = '=';
+    final static Character EXCLAMATION_MARK = '!';
+    final static Character GREATER_THAN = '>';
+    final static Character HYPHEN = '-';
+    final static Character LESS_THAN = '<';
+    final static Character QUESTION_MARK = '?';
+    final static Character QUOTE = '"';
+    final static Character SLASH = '/';
 
-    String getStyleForTagName(String tagName) {
+    /**
+     * @param tagName
+     * @return
+     */
+    protected String getStyleForTagName(String tagName) {
 	for (ElementSet es : elementSets) {
 	    if (es.matches(tagName)) {
 		return es.style;
@@ -83,16 +100,17 @@ class XMLHighlighter extends WholeHighlighter {
 	return null;
     }
 
-    XMLHighlighter(Params params) {
+    public XMLHighlighter(Params params)
+	    throws HighlighterConfigurationException {
 	super(params);
 	if (params != null) {
-	    params.load("elementSet", elementSets,
+	    params.getMultiParams("elementSet", elementSets,
 		    new Params.ParamsLoader<RealElementSet>() {
 			public RealElementSet load(Params params) {
 			    return new RealElementSet(params);
 			}
 		    });
-	    params.load("elementPrefix", elementSets,
+	    params.getMultiParams("elementPrefix", elementSets,
 		    new Params.ParamsLoader<ElementPrefix>() {
 			public ElementPrefix load(Params params) {
 			    return new ElementPrefix(params);
@@ -101,14 +119,20 @@ class XMLHighlighter extends WholeHighlighter {
 	}
     }
 
+    /**
+     * @param in
+     * @param out
+     */
     void readTagContent(CharIter in, List<Block> out) {
-	while (!in.finished() && !GREATER_THAN.equals(in.current())
-		&& !SLASH.equals(in.current())) {
+	while (!in.finished()
+		&& !XMLHighlighter.GREATER_THAN.equals(in.current())
+		&& !XMLHighlighter.SLASH.equals(in.current())) {
 	    if (!Character.isWhitespace(in.current())) {
 		if (in.isMarked()) {
 		    out.add(in.markedToBlock());
 		}
-		while (!in.finished() && !EQUALS.equals(in.current())
+		while (!in.finished()
+			&& !XMLHighlighter.EQUALS.equals(in.current())
 			&& !Character.isWhitespace(in.current())) {
 		    in.moveNext();
 		}
@@ -116,9 +140,10 @@ class XMLHighlighter extends WholeHighlighter {
 		while (!in.finished() && Character.isWhitespace(in.current())) {
 		    in.moveNext();
 		}
-		if (in.finished() || !EQUALS.equals(in.current())) { // HTML
-									// no-value
-									// attributes
+		if (in.finished()
+			|| !XMLHighlighter.EQUALS.equals(in.current())) { // HTML
+		    // no-value
+		    // attributes
 		    continue;
 		}
 		in.moveNext(); // skip =
@@ -126,8 +151,8 @@ class XMLHighlighter extends WholeHighlighter {
 		    in.moveNext();
 		}
 		out.add(in.markedToBlock());
-		if (QUOTE.equals(in.current())
-			|| APOSTROPHE.equals(in.current())) {
+		if (XMLHighlighter.QUOTE.equals(in.current())
+			|| XMLHighlighter.APOSTROPHE.equals(in.current())) {
 		    Character boundary = in.current();
 		    in.moveNext();
 		    while (!in.finished() && !boundary.equals(in.current())) {
@@ -138,8 +163,10 @@ class XMLHighlighter extends WholeHighlighter {
 		    }
 		    out.add(in.markedToStyledBlock("value"));
 		} else {
-		    while (!in.finished() && !GREATER_THAN.equals(in.current())
-			    && !SLASH.equals(in.current())
+		    while (!in.finished()
+			    && !XMLHighlighter.GREATER_THAN
+				    .equals(in.current())
+			    && !XMLHighlighter.SLASH.equals(in.current())
 			    && !Character.isWhitespace(in.current())) {
 			in.moveNext();
 		    }
@@ -151,14 +178,22 @@ class XMLHighlighter extends WholeHighlighter {
 	}
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+     * java.util.List)
+     */
     @Override
-    boolean highlight(CharIter in, List<Block> out) {
+    public boolean highlight(CharIter in, List<Block> out) {
 	while (!in.finished()) {
-	    if (LESS_THAN.equals(in.current())) {
+	    if (XMLHighlighter.LESS_THAN.equals(in.current())) {
 		in.moveNext(); // skip <
 		out.add(in.markedToBlock());
-		if (SLASH.equals(in.current())) { // it's end tag
-		    while (!in.finished() && !GREATER_THAN.equals(in.current())) {
+		if (XMLHighlighter.SLASH.equals(in.current())) { // it's end tag
+		    while (!in.finished()
+			    && !XMLHighlighter.GREATER_THAN
+				    .equals(in.current())) {
 			in.moveNext();
 		    }
 		    String style = getStyleForTagName(in.getMarked().trim()
@@ -169,29 +204,34 @@ class XMLHighlighter extends WholeHighlighter {
 		    } else {
 			out.add(in.markedToStyledBlock("tag"));
 		    }
-		} else if (QUESTION_MARK.equals(in.current())) { // it's
-								    // processing
-								    // instruction
+		} else if (XMLHighlighter.QUESTION_MARK.equals(in.current())) { // it
+		    // 's
+		    // processing
+		    // instruction
 		    while (!in.finished()
-			    && !(GREATER_THAN.equals(in.current()) && QUESTION_MARK
+			    && !(XMLHighlighter.GREATER_THAN.equals(in
+				    .current()) && XMLHighlighter.QUESTION_MARK
 				    .equals(in.prev()))) {
 			in.moveNext();
 		    }
 		    out.add(in.markedToStyledBlock("tag"));
-		} else if (EXCLAMATION_MARK.equals(in.current())
-			&& HYPHEN.equals(in.next())
-			&& HYPHEN.equals(in.next(2))) {
+		} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+			&& XMLHighlighter.HYPHEN.equals(in.next())
+			&& XMLHighlighter.HYPHEN.equals(in.next(2))) {
 		    // it's comment
 		    while (!in.finished()
-			    && !(GREATER_THAN.equals(in.current())
-				    && HYPHEN.equals(in.prev()) && HYPHEN
+			    && !(XMLHighlighter.GREATER_THAN.equals(in
+				    .current())
+				    && XMLHighlighter.HYPHEN.equals(in.prev()) && XMLHighlighter.HYPHEN
 				    .equals(in.prev(2)))) {
 			in.moveNext();
 		    }
 		    out.add(in.markedToStyledBlock("comment"));
 		} else {
-		    while (!in.finished() && !GREATER_THAN.equals(in.current())
-			    && !SLASH.equals(in.current())
+		    while (!in.finished()
+			    && !XMLHighlighter.GREATER_THAN
+				    .equals(in.current())
+			    && !XMLHighlighter.SLASH.equals(in.current())
 			    && !Character.isWhitespace(in.current())) {
 			in.moveNext();
 		    }
@@ -216,5 +256,15 @@ class XMLHighlighter extends WholeHighlighter {
 	    out.add(in.markedToBlock());
 	}
 	return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+     */
+    @Override
+    public String getDefaultStyle() {
+	return "xml";
     }
 }
