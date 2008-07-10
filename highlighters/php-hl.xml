@@ -46,11 +46,13 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 <highlighter type="string">
   <string>"</string>
   <escape>\</escape>
+  <spanNewLines/>
 </highlighter>
 
 <highlighter type="string">
   <string>'</string>
   <escape>\</escape>
+  <spanNewLines/>
 </highlighter>
 
 <highlighter type="heredoc">
@@ -126,6 +128,8 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
   <keyword>throw</keyword>
   <keyword>cfunction</keyword>
   <keyword>old_function</keyword>
+  <keyword>true</keyword>
+  <keyword>false</keyword>
   <ignoreCase/>
 </highlighter>
 
