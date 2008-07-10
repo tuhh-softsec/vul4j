@@ -151,4 +151,18 @@ beer.\n";
 ]]>
 	</code>
 	<para>Source: http://www.99-bottles-of-beer.net/language-php5-883.html</para>
+	<para>Some various special constructions</para>
+	<code language="php"><![CDATA[
+$heredoc = <<< EOF
+	this all is heredoc
+	it should be considered as a string
+	keywords like if else while return are not highlighted	
+EOF;
+
+# this is also a comment
+
+// and this is a comment
+
+$string = 'using a \' also makes a string';
+	]]></code>
 </example-document>

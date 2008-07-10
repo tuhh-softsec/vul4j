@@ -154,4 +154,19 @@ No more bottles of {0}.", beverage, null);
 		]]>
 	</code>
 	<para>Origin: http://www.99-bottles-of-beer.net/language-csharp-107.html</para>
+	<para>Additional examples</para>
+	<code xml:whitespace="preserve" language="csharp">
+		<![CDATA[
+/*
+	This is a multiline comment
+*/
+"string can contain an escape \"";
+
+public string multiline = @"this string
+	can span
+	new lines
+	"; // end
+		]]>
+	</code>
+	
 </example-document>

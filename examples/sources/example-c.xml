@@ -124,4 +124,14 @@ module_exit(__cleanup_module);
 		]]>
 	</code>
 	<para>Origin: http://www.99-bottles-of-beer.net/language-c-820.html</para>
+	<para>Some additional examples</para>
+	<code language="c">
+	<![CDATA[
+// this is also a comment
+"a string with a \" in it"
+
+// this is invalid
+"strings to not span
+new lines";	
+	]]></code>
 </example-document>
