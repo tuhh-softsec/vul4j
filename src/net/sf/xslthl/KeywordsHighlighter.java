@@ -50,8 +50,8 @@ public class KeywordsHighlighter extends Highlighter {
      */
     protected boolean ignoreCase = false;
 
-    public KeywordsHighlighter(Params params) throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
 	ignoreCase = params.isSet("ignoreCase");
 	if (ignoreCase) {
 	    keywords = new TreeSet<String>(new IgnoreCaseComparator());

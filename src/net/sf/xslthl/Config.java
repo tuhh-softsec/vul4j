@@ -51,7 +51,29 @@ public class Config {
      */
     public static final String VERBOSE_LOADING_PROPERTY = "xslthl.config.verbose";
 
+    /**
+     * Instances per config file
+     */
     private static final Map<String, Config> instances = new HashMap<String, Config>();
+
+    /**
+     * Registered highlighter classes
+     */
+    public static final Map<String, Class<? extends Highlighter>> highlighterClasses = new HashMap<String, Class<? extends Highlighter>>();
+
+    static {
+	highlighterClasses.put("multiline-comment",
+		MultilineCommentHighlighter.class);
+	highlighterClasses.put("nested-multiline-comment",
+		NestedMultilineCommentHighlighter.class);
+	highlighterClasses.put("oneline-comment",
+		OnelineCommentHighlighter.class);
+	highlighterClasses.put("string", StringHighlighter.class);
+	highlighterClasses.put("heredoc", HeredocHighlighter.class);
+	highlighterClasses.put("keywords", KeywordsHighlighter.class);
+	highlighterClasses.put("regex", RegexHighlighter.class);
+	highlighterClasses.put("xml", XMLHighlighter.class);
+    }
 
     /**
      * Prefix to use on created XML elements
@@ -63,6 +85,9 @@ public class Config {
      */
     protected String uri = "";
 
+    /**
+     * Registered highlighters
+     */
     protected Map<String, MainHighlighter> highlighters = new HashMap<String, MainHighlighter>();
 
     /**
@@ -125,56 +150,50 @@ public class Config {
 	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	DocumentBuilder builder = dbf.newDocumentBuilder();
 	Document doc = builder.parse(filename);
-	NodeList hls = doc.getDocumentElement().getElementsByTagName(
-		"highlighter");
-	for (int i = 0; i < hls.getLength(); i++) {
-	    Element hl = (Element) hls.item(i);
+	createHighlighters(main, doc.getDocumentElement().getElementsByTagName(
+		"highlighter"));
+	// backwards compatibility
+	createHighlighters(main, doc.getDocumentElement().getElementsByTagName(
+		"wholehighlighter"));
+	return main;
+    }
+
+    /**
+     * Creates the defined highlighters
+     * 
+     * @param main
+     * @param list
+     */
+    protected void createHighlighters(MainHighlighter main, NodeList list) {
+	for (int i = 0; i < list.getLength(); i++) {
+	    Element hl = (Element) list.item(i);
 	    Params params = new Params(hl);
 	    String type = hl.getAttribute("type");
 	    try {
-		if (type.equals("multiline-comment")) {
-		    main.add(new MultilineCommentHighlighter(params));
-		} else if (type.equals("nested-multiline-comment")) {
-		    main.add(new NestedMultilineCommentHighlighter(params));
-		} else if (type.equals("oneline-comment")) {
-		    main.add(new OnelineCommentHighlighter(params));
-		} else if (type.equals("string")) {
-		    main.add(new StringHighlighter(params));
-		} else if (type.equals("heredoc")) {
-		    main.add(new HeredocHighlighter(params));
-		} else if (type.equals("keywords")) {
-		    main.add(new KeywordsHighlighter(params));
+		Class<? extends Highlighter> hlClass = highlighterClasses
+			.get(type);
+		if (hlClass != null) {
+		    Highlighter hlinstance = hlClass.newInstance();
+		    hlinstance.init(params);
+		    main.add(hlinstance);
 		} else {
 		    System.err.println(String.format("Unknown highlighter: %s",
 			    type));
 		}
-	    } catch (HighlighterConfigurationException hce) {
+	    } catch (HighlighterConfigurationException e) {
 		System.err.println(String.format(
-			"Invalid configuration for highlighter %s: %s", type,
-			hce.getMessage()));
+			"Invalid configuration for highlighter %s: %s", type, e
+				.getMessage()));
+	    } catch (InstantiationException e) {
+		System.err.println(String.format(
+			"Error constructing highlighter %s: %s", type, e
+				.getMessage()));
+	    } catch (IllegalAccessException e) {
+		System.err.println(String.format(
+			"IError constructing highlighter %s: %s", type, e
+				.getMessage()));
 	    }
 	}
-	hls = doc.getDocumentElement().getElementsByTagName("wholehighlighter");
-	for (int i = 0; i < hls.getLength(); i++) {
-	    Element hl = (Element) hls.item(i);
-	    Params params = new Params(hl);
-	    String type = hl.getAttribute("type");
-	    try {
-		if (type.equals("regex")) {
-		    main.add(new RegexHighlighter(params));
-		} else if (type.equals("xml")) {
-		    main.add(new XMLHighlighter(params));
-		} else {
-		    System.err.println(String.format(
-			    "Unknown wholehighlighter: %s", type));
-		}
-	    } catch (HighlighterConfigurationException hce) {
-		System.err.println(String.format(
-			"Invalid configuration for highlighter %s: %s", type,
-			hce.getMessage()));
-	    }
-	}
-	return main;
     }
 
     protected Config() {
@@ -248,11 +267,8 @@ public class Config {
 	if (!highlighters.containsKey("xml")) {
 	    // add the built-in XML highlighting if it wasn't overloaded
 	    MainHighlighter xml = new MainHighlighter();
-	    try {
-		xml.add(new XMLHighlighter(null));
-		highlighters.put("xml", xml);
-	    } catch (HighlighterConfigurationException e) {
-	    }
+	    xml.add(new XMLHighlighter());
+	    highlighters.put("xml", xml);
 	}
     }
 }

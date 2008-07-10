@@ -56,8 +56,8 @@ public abstract class WholeHighlighter extends Highlighter {
 	return styles.contains(style);
     }
 
-    public WholeHighlighter(Params params) throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
 	if (params != null && params.isSet("applyOnStyles")) {
 	    loadStyles(params.getParams("applyOnStyles"));
 	}

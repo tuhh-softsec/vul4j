@@ -32,8 +32,8 @@ import java.util.List;
  */
 public class NestedMultilineCommentHighlighter extends MultilineCommentHighlighter {
 
-    public NestedMultilineCommentHighlighter(Params params) throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
     }
 
     /*

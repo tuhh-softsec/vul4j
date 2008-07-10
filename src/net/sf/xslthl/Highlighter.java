@@ -52,7 +52,13 @@ public abstract class Highlighter {
      */
     protected String styleName;
 
-    public Highlighter(Params params) throws HighlighterConfigurationException {
+    /**
+     * Initializer
+     * 
+     * @param params
+     * @throws HighlighterConfigurationException
+     */
+    public void init(Params params) throws HighlighterConfigurationException {
 	if (params == null) {
 	    styleName = getDefaultStyle();
 	} else {

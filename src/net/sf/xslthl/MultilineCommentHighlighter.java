@@ -43,8 +43,8 @@ public class MultilineCommentHighlighter extends Highlighter {
      */
     protected String start, end;
 
-    public MultilineCommentHighlighter(Params params) throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
 	start = params.getParam("start");
 	end = params.getParam("end");
 	if (start == null || start.length() == 0) {

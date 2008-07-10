@@ -35,17 +35,22 @@ import org.w3c.dom.NodeList;
  */
 public class Params {
 
-    private Element paramElem;
-
     interface ParamsLoader<T> {
 	T load(Params params);
     }
 
-    Params(Element paramElem) {
+    protected Element paramElem;
+
+    public Params(Element paramElem) {
 	this.paramElem = paramElem;
     }
 
-    String getParam() {
+    /**
+     * Get the current element as value
+     * 
+     * @return
+     */
+    public String getParam() {
 	return paramElem.getTextContent().trim();
     }
 
@@ -74,7 +79,11 @@ public class Params {
 	return nodes.item(0).getTextContent().trim();
     }
 
-    Params getParams(String name) {
+    /**
+     * @param name
+     * @return
+     */
+    public Params getParams(String name) {
 	return new Params((Element) paramElem.getElementsByTagName(name)
 		.item(0));
     }

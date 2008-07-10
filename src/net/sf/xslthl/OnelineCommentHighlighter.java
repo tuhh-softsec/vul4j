@@ -48,9 +48,8 @@ public class OnelineCommentHighlighter extends Highlighter {
      */
     protected String lineBreakEscape;
 
-    OnelineCommentHighlighter(Params params)
-	    throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
 	if (params.isSet("start")) {
 	    start = params.getParam("start");
 	    lineBreakEscape = params.getParam("lineBreakEscape");

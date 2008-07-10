@@ -52,9 +52,8 @@ public class HeredocHighlighter extends Highlighter {
      */
     protected Set<String> quoteChar;
 
-    public HeredocHighlighter(Params params)
-	    throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
 	start = params.getParam("start");
 	if (start == null || start.length() == 0) {
 	    throw new HighlighterConfigurationException(

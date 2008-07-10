@@ -59,9 +59,9 @@ public class StringHighlighter extends Highlighter {
      */
     private boolean spansNewLines;
 
-    public StringHighlighter(Params params)
+    public void init(Params params)
 	    throws HighlighterConfigurationException {
-	super(params);
+	super.init(params);
 	start = params.getParam("string");
 	end = params.getParam("endString", start);
 	escape = params.getParam("escape");

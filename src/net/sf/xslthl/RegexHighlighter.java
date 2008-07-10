@@ -43,9 +43,8 @@ public class RegexHighlighter extends WholeHighlighter {
      */
     protected Pattern pattern;
 
-    public RegexHighlighter(Params params)
-	    throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
 	if (params.isSet("pattern")) {
 	    try {
 		pattern = Pattern.compile(params.getParam("pattern"));

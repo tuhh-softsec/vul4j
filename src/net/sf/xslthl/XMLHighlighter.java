@@ -100,9 +100,8 @@ public class XMLHighlighter extends WholeHighlighter {
 	return null;
     }
 
-    public XMLHighlighter(Params params)
-	    throws HighlighterConfigurationException {
-	super(params);
+    public void init(Params params) throws HighlighterConfigurationException {
+	super.init(params);
 	if (params != null) {
 	    params.getMultiParams("elementSet", elementSets,
 		    new Params.ParamsLoader<RealElementSet>() {
