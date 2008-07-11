@@ -4,6 +4,8 @@
 	<item id="features" title="Features" />
 	<item id="quickstart" title="Quick start" />
 	<link href="http://sourceforge.net/project/showfiles.php?group_id=209844" title="Download" />
+	<link href="http://sourceforge.net/svn/?group_id=209844" title="Source" />
 	<link href="javadoc/index.html" title="Javadoc" />
 	<link href="http://webassembletool.wiki.sourceforge.net/" title="FAQ (Wiki)" />
+	<link href="http://sourceforge.net/projects/webassembletool/" title="SourceForge.net project page" />
 </menu>

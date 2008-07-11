@@ -52,7 +52,10 @@
 		</zip>
 	</target>
 	<target name="doc">
-		<xslt style="doc/stylesheet.xsl" destdir="bin" includes="doc/*.xml" excludes="menu.xml">
+		<delete>
+			<fileset dir="bin/doc" />
+		</delete>
+		<xslt style="doc/stylesheet.xsl" destdir="bin" includes="doc/*.xml" excludes="doc/menu.xml">
 		</xslt>
 		<copy todir="bin/doc">
 			<fileset dir="doc" excludes="*.xml,*.xsl,schemas.ppt"/>
