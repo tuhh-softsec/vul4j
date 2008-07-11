@@ -1,16 +1,11 @@
 <?xml version='1.0' ?>
-<!--
-
-  Bakalarska prace: Zvyraznovani syntaxe v XSLT
-  Michal Molhanec 2005
-
-  example-xml.xml - tento soubor obsahuje ukazku XML, ktera
-                    bude zvyraznena
-
--->
+	<!--
+		Bakalarska prace: Zvyraznovani syntaxe v XSLT Michal Molhanec 2005 example-xml.xml - tento soubor obsahuje ukazku XML,
+		ktera bude zvyraznena
+	-->
 <example-document>
-<para>This is some code</para>
-<code language="xml">
+	<para>This is some code</para>
+	<code language="xml">
 <![CDATA[
 <?xml version="1.0"?>
 
@@ -49,6 +44,7 @@ Is this information correct?
 If it's not use Go back button of your browser or click on Restart wizard link
 below.
 </p>
+<hr/>
 <p>
 <a href='do_add_devpak.php' id='yeslink'>Yes, all information is correct.</a>
 </p>
@@ -74,6 +70,21 @@ below.
 
 </xsl:stylesheet>
 ]]>
-</code>
-<para>The End.</para>
+	</code>
+	<para>Another example</para>
+	<code language="xml" xml:space="preserve">
+	
+&lt;code language="xml" xml:space="preserve"&gt;
+	&lt;![CDATA[
+		plain data that may contain &gt; and &lt; without issues
+	]]&gt;
+&lt;/code&gt;
+
+&lt;!-- 
+	only text sections are highlighted, real XML tags are untouched
+	below you should see a header 
+--&gt;
+		<header>This is formatted as a header</header>
+	
+	</code>
 </example-document>

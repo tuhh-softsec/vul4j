@@ -35,10 +35,10 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	</wholehighlighter>
 	<wholehighlighter type="regex">
 		<pattern>(?m)^(\[.+\]\s*)$</pattern>
-		<style>section</style>
+		<style>keyword</style>
 	</wholehighlighter>
 	<wholehighlighter type="regex">
 		<pattern>(?m)^(.+=)</pattern>
-		<style>keyword</style>
+		<style>attribute</style>
 	</wholehighlighter>
 </highlighters>

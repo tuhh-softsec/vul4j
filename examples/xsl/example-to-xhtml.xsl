@@ -76,6 +76,11 @@ H1 {
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>
+	<xsl:template match="xslthl:number">
+		<span style="color: blue;">
+			<xsl:value-of select="." />
+		</span>
+	</xsl:template>
 	<xsl:template match="xslthl:comment">
 		<span style="color: green; font-style: italic;">
 			<xsl:value-of select="." />
@@ -91,8 +96,20 @@ H1 {
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>
-	<xsl:template match="xslthl:section">
-		<span style="background: silver; font-weight: bold;">
+
+	<!-- default XML styles -->
+	<xsl:template match="xslthl:tag">
+		<span style="color: teal;">
+			<xsl:value-of select="." />
+		</span>
+	</xsl:template>
+	<xsl:template match="xslthl:attribute">
+		<span style="color: purple;">
+			<xsl:value-of select="." />
+		</span>
+	</xsl:template>
+	<xsl:template match="xslthl:value">
+		<span style="color: blue;">
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>
