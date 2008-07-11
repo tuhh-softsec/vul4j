@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-Syntax highlighting definition for C
+Syntax highlighting definition for Python
 
 xslthl - XSLT Syntax Highlighting
 http://sourceforge.net/projects/xslthl/
@@ -29,57 +29,59 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 
 -->
 <highlighters>
-	<highlighter type="multiline-comment">
-		<start>/*</start>
-		<end>*/</end>
+	<highlighter type="oneline-comment">#</highlighter>
+	<highlighter type="string">
+		<string>"""</string>
+		<spanNewLines />
 	</highlighter>
-	<highlighter type="oneline-comment">//</highlighter>
-	<highlighter type="oneline-comment">
-		<start>#</start>
-		<lineBreakEscape>\</lineBreakEscape>
-		<style>directive</style>
+	<highlighter type="string">
+		<string>'''</string>
+		<spanNewLines />
 	</highlighter>
 	<highlighter type="string">
 		<string>"</string>
 		<escape>\</escape>
 	</highlighter>
+	<highlighter type="string">
+		<string>'</string>
+		<escape>\</escape>
+	</highlighter>
+	<highlighter type="annotation">
+		<start>@</start>
+		<valueStart>(</valueStart>
+		<valueEnd>)</valueEnd>
+	</highlighter>
 	<highlighter type="keywords">
-		<keyword>auto</keyword>
-		<keyword>_Bool</keyword>
-		<keyword>break</keyword>
-		<keyword>case</keyword>
-		<keyword>char</keyword>
-		<keyword>_Complex</keyword>
-		<keyword>const</keyword>
-		<keyword>continue</keyword>
-		<keyword>default</keyword>
-		<keyword>do</keyword>
-		<keyword>double</keyword>
-		<keyword>else</keyword>
-		<keyword>enum</keyword>
-		<keyword>extern</keyword>
-		<keyword>float</keyword>
-		<keyword>for</keyword>
-		<keyword>goto</keyword>
-		<keyword>if</keyword>
-		<keyword>_Imaginary</keyword>
-		<keyword>inline</keyword>
-		<keyword>int</keyword>
-		<keyword>long</keyword>
-		<keyword>register</keyword>
-		<keyword>restrict</keyword>
-		<keyword>return</keyword>
-		<keyword>short</keyword>
-		<keyword>signed</keyword>
-		<keyword>sizeof</keyword>
-		<keyword>static</keyword>
-		<keyword>struct</keyword>
-		<keyword>switch</keyword>
-		<keyword>typedef</keyword>
-		<keyword>union</keyword>
-		<keyword>unsigned</keyword>
-		<keyword>void</keyword>
-		<keyword>volatile</keyword>
+		<keyword>and</keyword>
+		<keyword>del</keyword>
+		<keyword>from</keyword>
+		<keyword>not</keyword>
 		<keyword>while</keyword>
+		<keyword>as</keyword>
+		<keyword>elif</keyword>
+		<keyword>global</keyword>
+		<keyword>or</keyword>
+		<keyword>with</keyword>
+		<keyword>assert</keyword>
+		<keyword>else</keyword>
+		<keyword>if</keyword>
+		<keyword>pass</keyword>
+		<keyword>yield</keyword>
+		<keyword>break</keyword>
+		<keyword>except</keyword>
+		<keyword>import</keyword>
+		<keyword>print</keyword>
+		<keyword>class</keyword>
+		<keyword>exec</keyword>
+		<keyword>in</keyword>
+		<keyword>raise</keyword>
+		<keyword>continue</keyword>
+		<keyword>finally</keyword>
+		<keyword>is</keyword>
+		<keyword>return</keyword>
+		<keyword>def</keyword>
+		<keyword>for</keyword>
+		<keyword>lambda</keyword>
+		<keyword>try</keyword>
 	</highlighter>
 </highlighters>

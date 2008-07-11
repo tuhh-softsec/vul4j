@@ -69,4 +69,40 @@ print "\n*burp*\n";
 		]]>
 	</code>
 	<para>Origin: http://www.99-bottles-of-beer.net/language-perl-539.html</para>
+	<para>Some additional examples</para>
+	<code xml:whitespace="preserve" language="perl">
+		<![CDATA[
+print <<"END";
+ 
+Dear $recipient, 
+ 
+I wish you to leave Sunnydale and never return.
+ 
+Not Quite Love,
+$sender
+ 
+END
+
+print <<'END';
+Dear $recipient,
+ 
+I wish you to leave Sunnydale and never return.
+ 
+Not Quite Love,
+$sender
+END
+
+
+print <<END;
+Dear $recipient,
+ 
+I wish you to leave Sunnydale and never return.
+ 
+Not Quite Love,
+$sender
+END		
+
+fin
+		]]>
+	</code>
 </example-document>

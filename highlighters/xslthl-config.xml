@@ -37,5 +37,8 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="tcl" file="tcl-hl.xml" />
 	<highlighter id="c" file="c-hl.xml" />
 	<highlighter id="csharp" file="csharp-hl.xml" />
+	<highlighter id="python" file="python-hl.xml" />
+	<highlighter id="ruby" file="ruby-hl.xml" />
+	<highlighter id="perl" file="perl-hl.xml" />
 	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
 </xslthl-config>

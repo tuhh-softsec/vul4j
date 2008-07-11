@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-Syntax highlighting definition for C
+Syntax highlighting definition for Ruby
 
 xslthl - XSLT Syntax Highlighting
 http://sourceforge.net/projects/xslthl/
@@ -29,57 +29,72 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 
 -->
 <highlighters>
-	<highlighter type="multiline-comment">
-		<start>/*</start>
-		<end>*/</end>
-	</highlighter>
-	<highlighter type="oneline-comment">//</highlighter>
-	<highlighter type="oneline-comment">
-		<start>#</start>
-		<lineBreakEscape>\</lineBreakEscape>
-		<style>directive</style>
+	<highlighter type="oneline-comment">#</highlighter>
+	<highlighter type="heredoc">
+		<start>&lt;&lt;</start>
+		<noWhiteSpace/>
 	</highlighter>
 	<highlighter type="string">
 		<string>"</string>
 		<escape>\</escape>
 	</highlighter>
+	<highlighter type="string">
+		<string>%Q{</string>
+		<endString>}</endString>
+		<escape>\</escape>
+	</highlighter>
+	<highlighter type="string">
+		<string>%/</string>
+		<endString>/</endString>
+		<escape>\</escape>
+	</highlighter>
+	<highlighter type="string">
+		<string>'</string>
+		<escape>\</escape>
+	</highlighter>
+	<highlighter type="string">
+		<string>%q{</string>
+		<endString>}</endString>
+		<escape>\</escape>
+	</highlighter>
 	<highlighter type="keywords">
-		<keyword>auto</keyword>
-		<keyword>_Bool</keyword>
+		<keyword>alias</keyword>
+		<keyword>and</keyword>
+		<keyword>BEGIN</keyword>
+		<keyword>begin</keyword>
 		<keyword>break</keyword>
 		<keyword>case</keyword>
-		<keyword>char</keyword>
-		<keyword>_Complex</keyword>
-		<keyword>const</keyword>
-		<keyword>continue</keyword>
-		<keyword>default</keyword>
+		<keyword>class</keyword>
+		<keyword>def</keyword>
+		<keyword>defined</keyword>
 		<keyword>do</keyword>
-		<keyword>double</keyword>
 		<keyword>else</keyword>
-		<keyword>enum</keyword>
-		<keyword>extern</keyword>
-		<keyword>float</keyword>
+		<keyword>elsif</keyword>
+		<keyword>END</keyword>
+		<keyword>end</keyword>
+		<keyword>ensure</keyword>
+		<keyword>false</keyword>
 		<keyword>for</keyword>
-		<keyword>goto</keyword>
 		<keyword>if</keyword>
-		<keyword>_Imaginary</keyword>
-		<keyword>inline</keyword>
-		<keyword>int</keyword>
-		<keyword>long</keyword>
-		<keyword>register</keyword>
-		<keyword>restrict</keyword>
+		<keyword>in</keyword>
+		<keyword>module</keyword>
+		<keyword>next</keyword>
+		<keyword>nil</keyword>
+		<keyword>not</keyword>
+		<keyword>or</keyword>
+		<keyword>redo</keyword>
+		<keyword>rescue</keyword>
+		<keyword>retry</keyword>
 		<keyword>return</keyword>
-		<keyword>short</keyword>
-		<keyword>signed</keyword>
-		<keyword>sizeof</keyword>
-		<keyword>static</keyword>
-		<keyword>struct</keyword>
-		<keyword>switch</keyword>
-		<keyword>typedef</keyword>
-		<keyword>union</keyword>
-		<keyword>unsigned</keyword>
-		<keyword>void</keyword>
-		<keyword>volatile</keyword>
+		<keyword>self</keyword>
+		<keyword>super</keyword>
+		<keyword>then</keyword>
+		<keyword>true</keyword>
+		<keyword>undef</keyword>
+		<keyword>unless</keyword>
+		<keyword>until</keyword>
+		<keyword>when</keyword>
 		<keyword>while</keyword>
+		<keyword>yield</keyword>
 	</highlighter>
 </highlighters>

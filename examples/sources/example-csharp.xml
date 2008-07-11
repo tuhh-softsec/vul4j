@@ -166,6 +166,25 @@ public string multiline = @"this string
 	can span
 	new lines
 	"; // end
+	
+#if 0
+	/* test */
+	C# also supports directives
+	previous line is not a directive
+	#this is a directive
+#endif	
+
+[Deprecated]
+
+// another annotation
+
+[Foo(value="some value")]
+
+[method: SomeAttr] int Method1( string s ) // applies to method
+[return: SomeAttr] int Method1( string s ) // applies to return value
+[SomeAttr] int Method1( string s ) // default: applies to method
+
+
 		]]>
 	</code>
 	

@@ -2,7 +2,7 @@
 <example-document>
 	<header>Python code</header>
 	<para>Example Python code</para>
-	<code xml:whitespace="preserve" language="perl">
+	<code xml:whitespace="preserve" language="python">
 		<![CDATA[
 '''An extensible framework for simulated bottle buying, 
 putting away, taking down, and drinking.
@@ -226,4 +226,24 @@ if __name__ == "__main__":
 		]]>
 	</code>
 	<para>Origin: http://www.99-bottles-of-beer.net/language-python-1154.html</para>
+	<para>Some additional examples</para>
+	<code xml:whitespace="preserve" language="python">
+		<![CDATA[
+"""
+this is a multi-line string
+"""
+
+#another example:
+
+'''
+just like
+	this string
+'''
+
+#a single line string
+
+'this is _NOT_ a multiline
+string # the newline broke the highlighting of the string
+		]]>
+	</code>
 </example-document>

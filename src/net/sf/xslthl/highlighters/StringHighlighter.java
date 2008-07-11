@@ -65,6 +65,9 @@ public class StringHighlighter extends Highlighter {
      */
     private boolean spansNewLines;
 
+    /* (non-Javadoc)
+     * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
+     */
     public void init(Params params)
 	    throws HighlighterConfigurationException {
 	super.init(params);

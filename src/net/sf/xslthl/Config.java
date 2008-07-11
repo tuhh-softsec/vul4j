@@ -32,6 +32,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.sf.xslthl.highlighters.AnnotationHighlighter;
 import net.sf.xslthl.highlighters.HeredocHighlighter;
 import net.sf.xslthl.highlighters.KeywordsHighlighter;
 import net.sf.xslthl.highlighters.MultilineCommentHighlighter;
@@ -80,6 +81,7 @@ public class Config {
 	highlighterClasses.put("string", StringHighlighter.class);
 	highlighterClasses.put("heredoc", HeredocHighlighter.class);
 	highlighterClasses.put("keywords", KeywordsHighlighter.class);
+	highlighterClasses.put("annotation", AnnotationHighlighter.class);
 	highlighterClasses.put("regex", RegexHighlighter.class);
 	highlighterClasses.put("xml", XMLHighlighter.class);
     }

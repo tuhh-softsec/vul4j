@@ -34,7 +34,11 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<end>*/</end>
 	</highlighter>
 	<highlighter type="oneline-comment">//</highlighter>
-	<!-- <highlighter type="macro">#</highlighter>  -->
+	<highlighter type="oneline-comment">
+		<start>#</start>
+		<lineBreakEscape>\</lineBreakEscape>
+		<style>directive</style>
+	</highlighter>
 	<highlighter type="string">
 		<string>"</string>
 		<escape>\</escape>
@@ -44,6 +48,12 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<endString>"</endString>
 		<escape>\</escape>
 		<spanNewLines />
+	</highlighter>
+	<highlighter type="annotation">
+		<start>[</start>
+		<end>]</end>
+		<valueStart>(</valueStart>
+		<valueEnd>)</valueEnd>
 	</highlighter>
 	<highlighter type="keywords">
 		<keyword>abstract</keyword>

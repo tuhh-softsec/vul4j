@@ -133,5 +133,13 @@ module_exit(__cleanup_module);
 // this is invalid
 "strings to not span
 new lines";	
+
+#a directive \
+	can span multiple\
+		lines when the newline\
+	is escaped with a\
+	blackslash
+this is no longer a directive
+
 	]]></code>
 </example-document>

@@ -91,16 +91,27 @@ public class OnelineCommentHighlighter extends Highlighter {
     @Override
     public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
-	// TODO: accept line breaks
-	int endIndex = in.indexOf("\n");
-	if (endIndex == -1) {
-	    in.moveToEnd();
-	} else {
-	    in.moveNext(endIndex);
-	    if (in.prev().equals('\r')) {
-		in.moveNext(-1);
+	int endIndex;
+	do {
+	    endIndex = in.indexOf("\n");
+	    int cnt = 1;
+	    if (endIndex == -1) {
+		in.moveToEnd();
+	    } else {
+		in.moveNext(endIndex);
+		if (in.prev().equals('\r')) {
+		    in.moveNext(-1);
+		    ++cnt;
+		}
 	    }
-	}
+	    if (lineBreakEscape == null || lineBreakEscape.length() == 0) {
+		break;
+	    }
+	    if (!in.startsWith(lineBreakEscape, -1 * lineBreakEscape.length())) {
+		break;
+	    }
+	    in.moveNext(cnt);
+	} while (endIndex != -1);
 	out.add(in.markedToStyledBlock(styleName));
 	return true;
     }

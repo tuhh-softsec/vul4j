@@ -81,8 +81,13 @@ H1 {
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>
-	<xsl:template match="xslthl:macro">
+	<xsl:template match="xslthl:directive">
 		<span style="color: maroon;">
+			<xsl:value-of select="." />
+		</span>
+	</xsl:template>
+	<xsl:template match="xslthl:annotation">
+		<span style="color: gray; font-style: italic;">
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>

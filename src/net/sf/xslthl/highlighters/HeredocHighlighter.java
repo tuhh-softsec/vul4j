@@ -43,6 +43,10 @@ import net.sf.xslthl.Params;
  * <dt>quote</dt>
  * <dd>Allowed quote characters to be used in the identifier name. This
  * parameter can be used more than once.</dd>
+ * <dt>noWhiteSpace</dt>
+ * <dd>whitespace after start is not allowed.</dd>
+ * <dt>looseTerminator</dt>
+ * <dd>if set the identifier does not have to start on a new line</dd>
  * </dl>
  * See http://en.wikipedia.org/wiki/Heredoc
  */
@@ -58,6 +62,10 @@ public class HeredocHighlighter extends Highlighter {
      */
     protected Set<String> quoteChar;
 
+    protected boolean noWhiteSpace;
+
+    protected boolean looseTerminator;
+
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	start = params.getParam("start");
@@ -67,6 +75,8 @@ public class HeredocHighlighter extends Highlighter {
 	}
 	quoteChar = new HashSet<String>();
 	params.getMutliParams("quote", quoteChar);
+	noWhiteSpace = params.isSet("noWhiteSpace");
+	looseTerminator = params.isSet("looseTerminator");
     }
 
     /*
@@ -77,6 +87,9 @@ public class HeredocHighlighter extends Highlighter {
     @Override
     public boolean startsWith(CharIter in) {
 	if (in.startsWith(start)) {
+	    if (noWhiteSpace) {
+		return !Character.isWhitespace(in.next(start.length() + 1));
+	    }
 	    return true;
 	}
 	return false;
@@ -92,17 +105,20 @@ public class HeredocHighlighter extends Highlighter {
     public boolean highlight(CharIter in, List<Block> out) {
 	in.moveNext(start.length()); // skip start
 	// skip whitespace
-	while (!in.finished() && Character.isWhitespace(in.current())) {
-	    in.moveNext();
+	if (!noWhiteSpace) {
+	    while (!in.finished() && Character.isWhitespace(in.current())) {
+		in.moveNext();
+	    }
 	}
 	String s = "";
 	Character quoted = '\0';
 	// identifier might me quoted
-	if (quoteChar.contains(in.current())) {
+	if (quoteChar.contains(in.current().toString())) {
 	    quoted = in.current();
 	    in.moveNext();
 	}
-	while (!in.finished() && !Character.isWhitespace(in.current())
+	while (!in.finished()
+		&& (Character.isLetterOrDigit(in.current()) || in.current() == '_')
 		&& quoted != in.current()) {
 	    s += in.current();
 	    in.moveNext();
@@ -113,13 +129,18 @@ public class HeredocHighlighter extends Highlighter {
 	if (s.length() == 0) {
 	    return false;
 	}
-	// TODO: must start on a newline
-	int i = in.indexOf(s);
-	if (i < 0) {
-	    in.moveToEnd();
-	} else {
-	    in.moveNext(i + s.length());
-	}
+	int i;
+	do {
+	    i = in.indexOf(s);
+	    if (i < 0) {
+		in.moveToEnd();
+	    } else {
+		in.moveNext(i + s.length());
+	    }
+	    if (looseTerminator || isNewLine(in.prev(s.length() + 1))) {
+		break;
+	    }
+	} while (i != -1);
 	out.add(in.markedToStyledBlock(styleName));
 	return true;
     }

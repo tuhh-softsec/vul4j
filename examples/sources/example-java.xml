@@ -105,4 +105,16 @@ public class Sing99Bob {
 ]]>
 	</code>
 	<para>Source: http://www.99-bottles-of-beer.net/language-java-3.html</para>
+	<para></para>
+	<code language="java">
+<![CDATA[
+// the following is an annotation
+@Deprecated
+
+// the next is also an annotation
+@SomeAnnotation("this is a value")
+
+// the end
+]]>
+	</code>
 </example-document>

@@ -48,4 +48,19 @@ callcc { |song.wall| song.of(99) }.sing { |beer| beer.drink }
 		]]>
 	</code>
 	<para>Origin: http://www.99-bottles-of-beer.net/language-ruby-1272.html</para>
+	<para>Some additional examples</para>
+	<code xml:whitespace="preserve" language="ruby">
+		<![CDATA[
+#more strings
+		
+a = "\nThis is a double quoted string\n"
+a = %Q{\nThis is a double quoted string\n}
+a = <<BLOCK
+This is a multi-line double quoted string
+BLOCK # end of heredoc string
+a = %/\nThis is a double quoted string\n/		
+a = 'This is a single quoted string'
+a = %q{This is a single quoted string}
+		]]>
+	</code>
 </example-document>
