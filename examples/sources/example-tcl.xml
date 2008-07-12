@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example-document>
+	<header>Tcl code</header>
+	<para>Example tcl code</para>
+	<code xml:whitespace="preserve" language="tcl">
+		<![CDATA[
+#!/usr/bin/tclsh
+
+# 99.tcl; Tcl version of 99 Bottles of Beer Song
+
+proc findBString { count } {
+  return [switch -exact -- $count {
+    0       { expr {"No more bottles"}  }
+    1       { expr {"1 bottle"}         }
+    default { expr {"$count bottles"}   }
+  }]
+}
+
+set bottles 99
+set bString [findBString $bottles]
+while {$bottles + 1} {
+  puts "$bString of beer on the wall.  $bString of beer."
+  incr bottles -1
+  if {$bottles + 1} {
+    set bString [findBString $bottles]
+    puts "Take one down, pass it round, $bString of beer on the wall.\n"
+  } else {
+    puts "Go to the store and buy some more...99 bottles of beer."
+  }
+}
+		]]>
+	</code>
+	<para>Origin: http://www.99-bottles-of-beer.net/language-tcl-797.html</para>
+</example-document>

@@ -4,7 +4,8 @@
 		ktera bude zvyraznena
 	-->
 <example-document>
-	<para>This is some code</para>
+	<header>Example XML document</header>
+	<para>This uses the standard builtin xml highlighter</para>
 	<code language="xml">
 <![CDATA[
 <?xml version="1.0"?>
@@ -84,7 +85,10 @@ below.
 	only text sections are highlighted, real XML tags are untouched
 	below you should see a header 
 --&gt;
-		<header>This is formatted as a header</header>
+		<header>This is formatted as a header &lt;no-tag&gt;</header>
+&lt;!-- 
+	this code is still highlighted
+--&gt;
 	
 	</code>
 </example-document>

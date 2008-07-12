@@ -164,5 +164,38 @@ EOF;
 // and this is a comment
 
 $string = 'using a \' also makes a string';
-	]]></code>
+
+// everything between php closing and open tags is ignored
+]]>
+?&gt;
+	PHP opening and closing tags are highlighted as directives 
+	although everything is highlighted even though it is not actual PHP
+	code, this is a limitation
+	// incorrectly highlighted as comment
+	
+	<code>to make text show verbatim nest is within another XML tag
+	// like this part
+	"correctly not highlighted as string"</code>
+&lt;?php
+	</code>
+	
+	<code language="xml">
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;Example of mixing different languages&lt;title&gt;
+&lt;head&gt;
+&lt;body&gt;
+	&lt;H1 style="page-header"&gt;Hello World&lt;/h1&gt;
+	<code language="php">&lt;?php
+	/*
+	 * HTML document using the default xml highligter
+	 * with a nested code block using the php syntax highlighter
+	 */
+	$string = "Hello universe";
+	echo $string;
+	?&gt;</code>
+&lt;/body&gt;
+&lt;/html&gt;
+	</code>
+	
 </example-document>

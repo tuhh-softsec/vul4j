@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:shl="java:net.sf.xslthl.ConnectorSaxon6"
 	xmlns:xhl="http://net.sf.xslthl/XalanConnector" xmlns:xalan="http://xml.apache.org/xalan" xmlns:xslthl="http://xslthl.sf.net"
-	extension-element-prefixes="shl xhl xalan xslthl">
+	extension-element-prefixes="shl xhl xslthl">
 	<xsl:output indent="no" method="html" version="1.0" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" />
 		
@@ -74,14 +74,25 @@ H1 {
 		</u>
 	</xsl:template>
 	<xsl:template match="code">
-		<pre>
+		<xsl:variable name="result">
 			<xsl:call-template name="syntax-highlight">
 				<xsl:with-param name="language">
 					<xsl:value-of select="@language" />
 				</xsl:with-param>
 				<xsl:with-param name="source" select="." />
 			</xsl:call-template>
-		</pre>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="count(ancestor::*) = 0">
+				<!-- prevent starting a new "pre" part when it's already highlighted -->
+				<xsl:copy-of select="$result" />
+			</xsl:when>
+			<xsl:otherwise>
+				<pre>
+					<xsl:copy-of select="$result" />
+				</pre>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- highlighting of the xslthl tags -->
