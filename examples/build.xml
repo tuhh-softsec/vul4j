@@ -7,54 +7,76 @@
 
 	<target name="init">
 		<mkdir dir="build" />
-	</target>
 
-	<target name="build" depends="build-xalan" description="Build examples using Xalan">
-	</target>
+		<path id="classpath.xalan">
+			<fileset dir="../dist">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="../lib/xalan-2.7">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+		<available classname="org.apache.xalan.processor.TransformerFactoryImpl" property="xalan.present" classpathref="classpath.xalan" />
 
-	<target name="build-xalan" depends="init">
-		<script language="javascript">
-			<![CDATA[
-			importClass(java.lang.System);
-			System.setProperty("xslthl.config.verbose", "true");
-			System.setProperty("xslthl.config", "file:///"+basedir+"/../dist/xslthl-config.xml");
-			]]>
-		</script>
-		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".xalan.html" force="true">
-			<include name="example-*.xml" />
-			<classpath>
-				<fileset dir="../dist">
-					<include name="**/*.jar" />
-				</fileset>
-				<fileset dir="../lib">
-					<include name="**/*.jar" />
-					<exclude name="**/saxon.jar" />
-				</fileset>
-			</classpath>
-			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml"/>
-		</xslt>
-	</target>
-
-	<target name="build-saxon" depends="init" description="Build examples using Saxon">
 		<!-- saxon.jar needs to be in the ant lib directory or else this won't work -->
+		<path id="classpath.saxon">
+			<fileset dir="../dist">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="../lib/saxon-6">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+		<available classname="com.icl.saxon.TransformerFactoryImpl" property="saxon6.present" classpathref="classpath.saxon" />
+
 		<script language="javascript">
 			<![CDATA[
 				importClass(java.lang.System);
 				System.setProperty("xslthl.config.verbose", "true");
 				System.setProperty("xslthl.config", "file:///"+basedir+"/../dist/xslthl-config.xml");
-				]]>
+			]]>
+		</script>
+	</target>
+
+	<target name="build" depends="build-xalan,build-saxon" description="Build the examples" />
+
+	<target name="build-xalan" depends="init,-build-xalan,-build-no-xalan" description="Build examples using Xalan" />
+
+	<target name="-build-no-xalan" unless="xalan.present">
+		<echo>Xalan 2.7 not present in the classpath, not executing saxon6 example</echo>
+	</target>
+
+	<target name="-build-xalan" if="xalan.present">
+		<script language="javascript">
+			<![CDATA[
+				importClass(java.lang.System);
+				System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
+			]]>
+		</script>
+		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".xalan.html" force="true" classpathref="classpath.xalan">
+			<include name="example-*.xml" />
+			<classpath refid="classpath.xalan" />
+			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml" />
+		</xslt>
+	</target>
+
+	<target name="build-saxon" depends="init,-build-saxon,-build-no-saxon" description="Build examples using Saxon" />
+
+	<target name="-build-no-saxon" unless="saxon6.present">
+		<echo>Saxon6 not present in the classpath, not executing saxon6 example</echo>
+	</target>
+
+	<target name="-build-saxon" if="saxon6.present">
+		<script language="javascript">
+			<![CDATA[
+				importClass(java.lang.System);
+				System.setProperty("javax.xml.transform.TransformerFactory", "com.icl.saxon.TransformerFactoryImpl");
+			]]>
 		</script>
 		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".saxon.html" force="true">
 			<include name="example-*.xml" />
-			<classpath>
-				<fileset dir="../dist">
-					<include name="**/*.jar" />
-				</fileset>
-				<fileset dir="../lib">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-			<factory name="com.icl.saxon.TransformerFactoryImpl" />
+			<classpath refid="classpath.saxon" />
+			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml" />
 		</xslt>
 	</target>
 
