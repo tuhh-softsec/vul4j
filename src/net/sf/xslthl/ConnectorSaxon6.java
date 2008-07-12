@@ -25,9 +25,12 @@
  */
 package net.sf.xslthl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.icl.saxon.Context;
+import com.icl.saxon.expr.XPathException;
 import com.icl.saxon.om.Axis;
 import com.icl.saxon.om.AxisEnumeration;
 import com.icl.saxon.om.Builder;
@@ -65,6 +68,7 @@ public class ConnectorSaxon6 {
      * @param node
      * @throws Exception
      */
+    @Deprecated
     protected static void deepCopy(Builder builder, NamePool pool, NodeInfo node)
 	    throws Exception {
 	if (node.getNodeType() == NodeInfo.ELEMENT) {
@@ -129,9 +133,9 @@ public class ConnectorSaxon6 {
 	    Config c = Config.getInstance(configFilename);
 	    MainHighlighter hl = c.getMainHighlighter(hlCode);
 
-	    Builder builder = context.getController().makeBuilder();
 	    NamePool pool = context.getController().getNamePool();
-	    builder.startDocument();
+
+	    List<NodeInfo> resultNodes = new ArrayList<NodeInfo>();
 
 	    while (nodes.hasMoreElements()) {
 		NodeInfo ni = nodes.nextElement();
@@ -141,26 +145,64 @@ public class ConnectorSaxon6 {
 		    NodeInfo n2i = ae.nextElement();
 		    if (n2i.getNodeType() == NodeInfo.TEXT) {
 			if (hl != null) {
+			    Builder builder = context.getController()
+				    .makeBuilder();
+			    builder.startDocument();
 			    List<Block> l = hl.highlight(n2i.getStringValue());
 			    for (Block b : l) {
 				blockToSaxon6Node(b, builder, pool, c);
 			    }
+			    builder.endDocument();
+			    DocumentInfo doc = builder.getCurrentDocument();
+			    NodeEnumeration elms = doc.getEnumeration(
+				    Axis.CHILD, AnyNodeTest.getInstance());
+			    while (elms.hasMoreElements()) {
+				resultNodes.add(elms.nextElement());
+			    }
 			} else {
-			    String s = n2i.getStringValue();
-			    builder.characters(s.toCharArray(), 0, s.length());
+			    resultNodes.add(n2i);
 			}
 		    } else {
-			deepCopy(builder, pool, n2i);
+			// deepCopy(builder, pool, n2i);
+			resultNodes.add(n2i);
 		    }
 		}
 	    }
-	    builder.endDocument();
-	    DocumentInfo doc = builder.getCurrentDocument();
-	    return doc.getEnumeration(Axis.CHILD, AnyNodeTest.getInstance());
+	    return new NodeEnumerationIterator(resultNodes.iterator());
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    return null;
 	}
+    }
+
+    static class NodeEnumerationIterator implements NodeEnumeration {
+
+	protected Iterator<NodeInfo> it;
+
+	NodeEnumerationIterator(Iterator<NodeInfo> useit) {
+	    it = useit;
+	}
+
+	public boolean hasMoreElements() {
+	    return it.hasNext();
+	}
+
+	public boolean isPeer() {
+	    return true;
+	}
+
+	public boolean isReverseSorted() {
+	    return false;
+	}
+
+	public boolean isSorted() {
+	    return true;
+	}
+
+	public NodeInfo nextElement() throws XPathException {
+	    return it.next();
+	}
+
     }
 
 }

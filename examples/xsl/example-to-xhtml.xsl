@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:shl="java:net.sf.xslthl.ConnectorSaxon6"
 	xmlns:xhl="http://net.sf.xslthl/XalanConnector" xmlns:xalan="http://xml.apache.org/xalan" xmlns:xslthl="http://xslthl.sf.net"
-	extension-element-prefixes="shl xhl xslthl">
+	extension-element-prefixes="shl xhl xslthl" xmlns="http://www.w3.org/1999/xhtml">
+	
+	<!-- produce xhtml -->
 	<xsl:output indent="no" method="html" version="1.0" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" />
 		
-		<!-- this parameter is used to set the location of the filename -->
+	<!-- this parameter is used to set the location of the filename -->
 	<xsl:param name="xslthl.config" />
 	
 	<!-- this construction is needed to have the saxon and xalan connectors working alongside eachother -->
@@ -83,7 +85,7 @@ H1 {
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="count(ancestor::*) = 0">
+			<xsl:when test="count(ancestor::code) &gt; 0">
 				<!-- prevent starting a new "pre" part when it's already highlighted -->
 				<xsl:copy-of select="$result" />
 			</xsl:when>
