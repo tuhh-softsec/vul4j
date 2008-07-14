@@ -40,6 +40,7 @@ import net.sf.xslthl.highlighters.NestedMultilineCommentHighlighter;
 import net.sf.xslthl.highlighters.OnelineCommentHighlighter;
 import net.sf.xslthl.highlighters.RegexHighlighter;
 import net.sf.xslthl.highlighters.StringHighlighter;
+import net.sf.xslthl.highlighters.WordHighlighter;
 import net.sf.xslthl.highlighters.XMLHighlighter;
 
 import org.w3c.dom.Document;
@@ -83,6 +84,7 @@ public class Config {
 	highlighterClasses.put("keywords", KeywordsHighlighter.class);
 	highlighterClasses.put("annotation", AnnotationHighlighter.class);
 	highlighterClasses.put("regex", RegexHighlighter.class);
+	highlighterClasses.put("word", WordHighlighter.class);
 	highlighterClasses.put("xml", XMLHighlighter.class);
     }
 

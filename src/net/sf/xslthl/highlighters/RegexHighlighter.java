@@ -40,6 +40,9 @@ import net.sf.xslthl.WholeHighlighter;
  * <dl>
  * <dt>pattern</dt>
  * <dd>The regular expression pattern to be matched.</dd>
+ * <dt>caseInsensitive, dotAll, multiLine, unicodeCase, literal, unixLines,
+ * comments, canonEQ</dt>
+ * <dd>Flags, see javadoc</dd>
  * </dl>
  */
 public class RegexHighlighter extends WholeHighlighter {
@@ -51,9 +54,35 @@ public class RegexHighlighter extends WholeHighlighter {
 
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
+	int flags = 0;
+	if (params.isSet("caseInsensitive")) {
+	    flags += Pattern.CASE_INSENSITIVE;
+	}
+	if (params.isSet("dotAll")) {
+	    flags += Pattern.DOTALL;
+	}
+	if (params.isSet("multiLine")) {
+	    flags += Pattern.MULTILINE;
+	}
+	if (params.isSet("unicodeCase")) {
+	    flags += Pattern.UNICODE_CASE;
+	}
+	if (params.isSet("literal")) {
+	    flags += Pattern.LITERAL;
+	}
+	if (params.isSet("unixLines")) {
+	    flags += Pattern.UNIX_LINES;
+	}
+	if (params.isSet("comments")) {
+	    flags += Pattern.COMMENTS;
+	}
+	if (params.isSet("canonEQ")) {
+	    flags += Pattern.CANON_EQ;
+	}
+	String pat = params.getParam("pattern");
 	if (params.isSet("pattern")) {
 	    try {
-		pattern = Pattern.compile(params.getParam("pattern"));
+		pattern = Pattern.compile(pat, flags);
 	    } catch (PatternSyntaxException e) {
 		throw new HighlighterConfigurationException(e.getMessage(), e);
 	    }

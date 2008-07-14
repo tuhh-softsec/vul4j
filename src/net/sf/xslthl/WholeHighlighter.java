@@ -28,6 +28,9 @@ package net.sf.xslthl;
 import java.util.Collection;
 import java.util.HashSet;
 
+/**
+ * 
+ */
 public abstract class WholeHighlighter extends Highlighter {
     private Collection<String> styles = new HashSet<String>();
     private boolean emptyStyle = true;

@@ -25,10 +25,14 @@
  */
 package net.sf.xslthl;
 
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CharIter {
+/**
+ * A special character iterator
+ */
+public class CharIter implements Iterable<Character>, Iterator<Character> {
     private String s;
     private int i = 0;
     private int l;
@@ -40,22 +44,39 @@ public class CharIter {
 	l = s.length();
     }
 
+    /**
+     * @return the marked position
+     */
     public int getMark() {
 	return mark;
     }
 
+    /**
+     * Set the current position as the mark
+     */
     public void setMark() {
 	mark = i;
     }
 
+    /**
+     * Set the mark to the given location
+     * 
+     * @param i
+     */
     public void setMark(int i) {
 	mark = i;
     }
 
+    /**
+     * @return true if there is a mark set
+     */
     public boolean isMarked() {
 	return mark < i;
     }
 
+    /**
+     * @return the marked section
+     */
     public String getMarked() {
 	if (i > l) {
 	    i = l;
@@ -63,6 +84,9 @@ public class CharIter {
 	return s.substring(mark, i);
     }
 
+    /**
+     * @return the marked string as a block
+     */
     public Block markedToBlock() {
 	Block b = new Block(getMarked());
 	// System.err.println("Block: " + b.getText());
@@ -70,6 +94,10 @@ public class CharIter {
 	return b;
     }
 
+    /**
+     * @param styleName
+     * @return the marked string as a styled block
+     */
     public Block markedToStyledBlock(String styleName) {
 	Block b = new StyledBlock(getMarked(), styleName);
 	// System.err.println("StyledBlock: " + b.getText());
@@ -77,31 +105,54 @@ public class CharIter {
 	return b;
     }
 
+    /**
+     * Increase the pointer
+     */
     public void moveNext() {
 	i++;
     }
 
+    /**
+     * Increase the point with the given offset
+     * 
+     * @param diff
+     */
     public void moveNext(int diff) {
 	i += diff;
     }
 
+    /**
+     * Increase the pointer and mark the position after it
+     */
     public void moveNextAndMark() {
 	moveNext();
 	setMark();
     }
 
+    /**
+     * Move to the end of the string
+     */
     public void moveToEnd() {
 	i = l;
     }
 
+    /**
+     * @return true if the iterator finished
+     */
     public boolean finished() {
 	return i >= l;
     }
 
+    /**
+     * @return the current character
+     */
     public Character current() {
 	return s.charAt(i);
     }
 
+    /**
+     * @return the next character
+     */
     public Character next() {
 	if (i + 1 < l) {
 	    return s.charAt(i + 1);
@@ -109,6 +160,10 @@ public class CharIter {
 	return null;
     }
 
+    /**
+     * @param diff
+     * @return the characters at the given offset
+     */
     public Character next(int diff) {
 	if (i + diff < l) {
 	    return s.charAt(i + diff);
@@ -116,6 +171,9 @@ public class CharIter {
 	return null;
     }
 
+    /**
+     * @return the previous character
+     */
     public Character prev() {
 	if (i > 0) {
 	    return s.charAt(i - 1);
@@ -123,6 +181,10 @@ public class CharIter {
 	return null;
     }
 
+    /**
+     * @param diff
+     * @return the previous character at a given offset
+     */
     public Character prev(int diff) {
 	if (i - diff >= 0) {
 	    return s.charAt(i - diff);
@@ -130,18 +192,56 @@ public class CharIter {
 	return null;
     }
 
+    /**
+     * @param prefix
+     * @return true if the current position starts with the prefix
+     */
     public boolean startsWith(String prefix) {
-	return s.startsWith(prefix, i);
+	return startsWith(prefix, false);
     }
 
+    /**
+     * @param prefix
+     * @param ignoreCase
+     * @return true if the current position starts with the prefix
+     */
+    public boolean startsWith(String prefix, boolean ignoreCase) {
+	return startsWith(prefix, 0, ignoreCase);
+    }
+
+    /**
+     * @param prefix
+     * @param diff
+     * @return true if the current position starts with the prefix at a given
+     *         offset
+     */
     public boolean startsWith(String prefix, int diff) {
+	return startsWith(prefix, diff, false);
+    }
+
+    /**
+     * @param prefix
+     * @param diff
+     * @param ignoreCase
+     * @return true if the current position starts with the prefix at a given
+     *         offset
+     */
+    public boolean startsWith(String prefix, int diff, boolean ignoreCase) {
 	return s.startsWith(prefix, i + diff);
     }
 
+    /**
+     * Create a pattern matcher
+     * 
+     * @param pattern
+     */
     public void createMatcher(Pattern pattern) {
 	matcher = pattern.matcher(s);
     }
 
+    /**
+     * @return return true if the created matcher has a match
+     */
     public boolean find() {
 	boolean found = matcher.find();
 	if (found) {
@@ -152,11 +252,17 @@ public class CharIter {
 	return found;
     }
 
+    /**
+     * Mark the matched section
+     */
     public void markMatched() {
 	setMark(i);
 	i = matcher.end();
     }
 
+    /**
+     * @return the remaining characters in the buffer
+     */
     public int remaining() {
 	if (i < l) {
 	    return l - i;
@@ -164,9 +270,40 @@ public class CharIter {
 	return 0;
     }
 
+    /**
+     * @param substr
+     * @return the index of the given string
+     */
     public int indexOf(String substr) {
 	int index = s.indexOf(substr, i);
 	return index < 0 ? -1 : index - i;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Iterable#iterator()
+     */
+    public Iterator<Character> iterator() {
+	return this;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.Iterator#hasNext()
+     */
+    public boolean hasNext() {
+	return !finished();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.Iterator#remove()
+     */
+    public void remove() {
+	throw new UnsupportedOperationException();
     }
 
 }

@@ -29,16 +29,16 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 
 -->
 <highlighters>
-	<wholehighlighter type="regex">
+	<highlighter type="regex">
 		<pattern>(?m)(;.*)$</pattern>
 		<style>comment</style>
-	</wholehighlighter>
-	<wholehighlighter type="regex">
+	</highlighter>
+	<highlighter type="regex">
 		<pattern>(?m)^(\[.+\]\s*)$</pattern>
 		<style>keyword</style>
-	</wholehighlighter>
-	<wholehighlighter type="regex">
+	</highlighter>
+	<highlighter type="regex">
 		<pattern>(?m)^(.+=)</pattern>
 		<style>attribute</style>
-	</wholehighlighter>
+	</highlighter>
 </highlighters>

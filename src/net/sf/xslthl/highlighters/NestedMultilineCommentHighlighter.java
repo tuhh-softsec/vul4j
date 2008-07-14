@@ -35,7 +35,8 @@ import net.sf.xslthl.Params;
 /**
  * Just like the multiline comment highlighter, but accepts nesting of comments.
  */
-public class NestedMultilineCommentHighlighter extends MultilineCommentHighlighter {
+public class NestedMultilineCommentHighlighter extends
+	MultilineCommentHighlighter {
 
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
