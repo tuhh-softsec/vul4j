@@ -215,6 +215,9 @@ public class Config {
 
     protected Config(String configFilename) {
 	boolean verbose = Boolean.getBoolean(VERBOSE_LOADING_PROPERTY);
+	if (verbose) {
+	    System.out.println("Initializing xslthl " + Version.getVersion());
+	}
 
 	try {
 	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

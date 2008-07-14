@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="xslthl" default="build">
 
+	<target name="rebuild" depends="clean,build" description="Rebuild all" />
+
 	<target name="clean" description="Clean the intermediate files and distribution">
 		<delete dir="build" />
 		<delete dir="dist" />
@@ -10,6 +12,11 @@
 	<target name="init">
 		<mkdir dir="build" />
 		<mkdir dir="dist" />
+		<loadproperties srcFile="src/net/sf/xslthl/version.properties">
+			<filterchain>
+				<deletecharacters chars=" \t" />
+			</filterchain>
+		</loadproperties>
 	</target>
 
 	<target name="build" depends="jar,distmisc" description="Build the Xslthl distribution" />
@@ -24,12 +31,18 @@
 				<fileset dir="lib" includes="**/*.jar" />
 			</classpath>
 		</javac>
+		<copy todir="build">
+			<fileset dir="src">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="jar" depends="compile">
-		<jar jarfile="dist/xslthl.jar">
+		<jar jarfile="dist/xslthl-${xslthl.version.major}.${xslthl.version.minor}.${xslthl.version.revision}${xslthl.version.type}.jar">
 			<fileset dir="build">
 				<include name="**/*.class" />
+				<include name="**/*.properties" />
 			</fileset>
 		</jar>
 	</target>
