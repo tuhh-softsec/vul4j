@@ -18,8 +18,7 @@
 		</path>
 		<available classname="org.apache.xalan.processor.TransformerFactoryImpl" property="xalan.present" classpathref="classpath.xalan" />
 
-		<!-- saxon.jar needs to be in the ant lib directory or else this won't work -->
-		<path id="classpath.saxon">
+		<path id="classpath.saxon6">
 			<fileset dir="../dist">
 				<include name="**/*.jar" />
 			</fileset>
@@ -27,7 +26,17 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</path>
-		<available classname="com.icl.saxon.TransformerFactoryImpl" property="saxon6.present" classpathref="classpath.saxon" />
+		<available classname="com.icl.saxon.TransformerFactoryImpl" property="saxon6.present" classpathref="classpath.saxon6" />
+
+		<path id="classpath.saxonb">
+			<fileset dir="../dist">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="../lib/saxon-9">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+		<available classname="net.sf.saxon.TransformerFactoryImpl" property="saxonb.present" classpathref="classpath.saxonb" />
 
 		<script language="javascript">
 			<![CDATA[
@@ -38,7 +47,7 @@
 		</script>
 	</target>
 
-	<target name="build" depends="build-xalan,build-saxon" description="Build the examples" />
+	<target name="build" depends="build-xalan,build-saxon6,build-saxonb" description="Build the examples" />
 
 	<target name="build-xalan" depends="init,-build-xalan,-build-no-xalan" description="Build examples using Xalan" />
 
@@ -60,22 +69,42 @@
 		</xslt>
 	</target>
 
-	<target name="build-saxon" depends="init,-build-saxon,-build-no-saxon" description="Build examples using Saxon" />
+	<target name="build-saxon6" depends="init,-build-saxon6,-build-no-saxon6" description="Build examples using Saxon 6" />
 
-	<target name="-build-no-saxon" unless="saxon6.present">
+	<target name="-build-no-saxon6" unless="saxon6.present">
 		<echo>Saxon6 not present in the classpath, not executing saxon6 example</echo>
 	</target>
 
-	<target name="-build-saxon" if="saxon6.present">
+	<target name="-build-saxon6" if="saxon6.present">
 		<script language="javascript">
 			<![CDATA[
 				importClass(java.lang.System);
 				System.setProperty("javax.xml.transform.TransformerFactory", "com.icl.saxon.TransformerFactoryImpl");
 			]]>
 		</script>
+		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".saxon6.html" force="true">
+			<include name="example-*.xml" />
+			<classpath refid="classpath.saxon6" />
+			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml" />
+		</xslt>
+	</target>
+
+	<target name="build-saxonb" depends="init,-build-saxonb,-build-no-saxonb" description="Build examples using Saxon 8.5+" />
+
+	<target name="-build-no-saxonb" unless="saxonb.present">
+		<echo>Saxon6 not present in the classpath, not executing saxonb example</echo>
+	</target>
+
+	<target name="-build-saxonb" if="saxonb.present">
+		<script language="javascript">
+			<![CDATA[
+					importClass(java.lang.System);
+					System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+				]]>
+		</script>
 		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".saxon.html" force="true">
 			<include name="example-*.xml" />
-			<classpath refid="classpath.saxon" />
+			<classpath refid="classpath.saxonb" />
 			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml" />
 		</xslt>
 	</target>

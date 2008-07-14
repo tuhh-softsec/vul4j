@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:shl="java:net.sf.xslthl.ConnectorSaxon6"
-	xmlns:xhl="http://net.sf.xslthl/XalanConnector" xmlns:xalan="http://xml.apache.org/xalan" xmlns:xslthl="http://xslthl.sf.net"
-	extension-element-prefixes="shl xhl xslthl" xmlns="http://www.w3.org/1999/xhtml">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s6hl="http://net.sf.xslthl/ConnectorSaxon6" xmlns:sbhl="http://net.sf.xslthl/ConnectorSaxonB" xmlns:xhl="http://net.sf.xslthl/ConnectorXalan"
+	xmlns:saxon6="http://icl.com/saxon" xmlns:saxonb="http://saxon.sf.net/" xmlns:xalan="http://xml.apache.org/xalan"
+	xmlns:xslthl="http://xslthl.sf.net" extension-element-prefixes="s6hl sbhl xhl xslthl">
 	
 	<!-- produce xhtml -->
-	<xsl:output indent="no" method="html" version="1.0" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+	<xsl:output indent="no" method="html" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" />
 		
 	<!-- this parameter is used to set the location of the filename -->
 	<xsl:param name="xslthl.config" />
 	
-	<!-- this construction is needed to have the saxon and xalan connectors working alongside eachother -->
+	<!-- this construction is needed to have the saxon and xalan connectors working alongside each other -->
 	<xalan:component prefix="xhl" functions="highlight">
-		<xalan:script lang="javaclass" src="xalan://net.sf.xslthl.XalanConnector" />
+		<xalan:script lang="javaclass" src="xalan://net.sf.xslthl.ConnectorXalan" />
 	</xalan:component>
+	
+	<!-- for saxon 6 -->
+	<saxon6:script implements-prefix="s6hl" language="java" src="java:net.sf.xslthl.ConnectorSaxon6" />
+	
+	<!-- for saxon 8.5 and later -->
+	<saxonb:script implements-prefix="sbhl" language="java" src="java:net.sf.xslthl.ConnectorSaxonB" />  
 	
 	<!-- start of the stylesheet -->
 	<xsl:template match="/">
@@ -42,7 +49,8 @@ H1 {
 				]]></style>
 			</head>
 			<body>
-				<div style="border: 5px dashed red; background: white; font-family: sans-serif; font-size: 1.5em; padding: 0.5em; text-align: center;">
+				<div
+					style="border: 5px dashed red; background: white; font-family: sans-serif; font-size: 1.5em; padding: 0.5em; text-align: center;">
 					The following is an example of syntax highlighting through xslt using
 					<a href="http://sourceforge.net/projects/xslthl">xslthl</a>
 					.
@@ -156,8 +164,12 @@ H1 {
 		<xsl:param name="language" />
 		<xsl:param name="source" />
 		<xsl:choose>
-			<xsl:when test="function-available('shl:highlight')">
-				<xsl:variable name="highlighted" select="shl:highlight($language, $source, $xslthl.config)" />
+			<xsl:when test="function-available('s6hl:highlight')">
+				<xsl:variable name="highlighted" select="s6hl:highlight($language, $source, $xslthl.config)" />
+				<xsl:apply-templates select="$highlighted" />
+			</xsl:when>
+			<xsl:when test="function-available('sbhl:highlight')">
+				<xsl:variable name="highlighted" select="sbhl:highlight($language, $source, $xslthl.config)" />
 				<xsl:apply-templates select="$highlighted" />
 			</xsl:when>
 			<xsl:when test="function-available('xhl:highlight')">
