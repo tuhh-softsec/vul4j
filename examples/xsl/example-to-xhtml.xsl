@@ -50,10 +50,14 @@ H1 {
 			</head>
 			<body>
 				<div
-					style="border: 5px dashed red; background: white; font-family: sans-serif; font-size: 1.5em; padding: 0.5em; text-align: center;">
+					style="border: 5px dashed green; background: white; font-family: sans-serif; font-size: 1.5em; padding: 0.5em; text-align: center;">
 					The following is an example of syntax highlighting through xslt using
 					<a href="http://sourceforge.net/projects/xslthl">xslthl</a>
-					.
+					. The following Xslt processor was used:
+					<xsl:value-of select="system-property('xsl:vendor')" />
+					(
+					<xsl:value-of select="system-property('xsl:vendor-url')" />
+					)
 				</div>
 				<xsl:apply-templates />
 				<hr />

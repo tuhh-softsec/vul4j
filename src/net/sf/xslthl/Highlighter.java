@@ -27,12 +27,13 @@ package net.sf.xslthl;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Base highlighter. Accepted parameters:
  * <dl>
  * <dt>Style</dt>
- * <dd>The style to use in the generated block</dd>
+ * <dd>The style to use in the generated block. Must be a valid XML name.</dd>
  * </dl>
  */
 public abstract class Highlighter {
@@ -68,6 +69,14 @@ public abstract class Highlighter {
 	if (styleName == null || styleName.length() == 0) {
 	    throw new HighlighterConfigurationException(
 		    "Required parameter 'style' is not set.");
+	}
+	// validates a valid XML name (note: ':' is not allowed)
+	// http://www.w3.org/TR/2000/REC-xml-20001006#NT-Letter
+	final Pattern XMLname = Pattern
+		.compile("[\\p{Ll}\\p{Lu}\\p{Lo}\\p{Lt}\\p{Nl}_][\\p{Ll}\\p{Lu}\\p{Lo}\\p{Lt}\\p{Nl}\\p{Mc}\\p{Me}\\p{Mn}\\p{Lm}\\p{Nd}_.-]*");
+	if (!XMLname.matcher(styleName).matches()) {
+	    throw new HighlighterConfigurationException(String.format(
+		    "%s is not a valid XML Name", styleName));
 	}
     }
 
