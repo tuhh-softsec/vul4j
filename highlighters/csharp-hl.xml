@@ -35,6 +35,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	</highlighter>
 	<highlighter type="oneline-comment">//</highlighter>
 	<highlighter type="oneline-comment">
+		<!-- C# supports a couple of directives -->
 		<start>#</start>
 		<lineBreakEscape>\</lineBreakEscape>
 		<style>directive</style>
@@ -44,12 +45,14 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<escape>\</escape>
 	</highlighter>
 	<highlighter type="string">
+		<!-- strings starting with an "@" can span multiple lines -->
 		<string>@"</string>
 		<endString>"</endString>
 		<escape>\</escape>
 		<spanNewLines />
 	</highlighter>
 	<highlighter type="annotation">
+		<!-- annotations are called (custom) "attributes" in .NET -->
 		<start>[</start>
 		<end>]</end>
 		<valueStart>(</valueStart>
@@ -57,7 +60,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	</highlighter>
 	<highlighter type="keywords">
 		<keyword>abstract</keyword>
-		<keyword> as</keyword>
+		<keyword>as</keyword>
 		<keyword>base</keyword>
 		<keyword>bool</keyword>
 		<keyword>break</keyword>

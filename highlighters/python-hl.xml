@@ -47,6 +47,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<escape>\</escape>
 	</highlighter>
 	<highlighter type="annotation">
+		<!-- these are actually called decorators -->
 		<start>@</start>
 		<valueStart>(</valueStart>
 		<valueEnd>)</valueEnd>

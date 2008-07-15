@@ -33,11 +33,13 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<pattern>(?m)(;.*)$</pattern>
 		<style>comment</style>
 	</highlighter>
-	<highlighter type="regex">
+	<highlighter type="regex">	
+		<!-- ini sections -->
 		<pattern>(?m)^(\[.+\]\s*)$</pattern>
 		<style>keyword</style>
 	</highlighter>
 	<highlighter type="regex">
+		<!-- the keys in an ini section -->
 		<pattern>(?m)^(.+=)</pattern>
 		<style>attribute</style>
 	</highlighter>

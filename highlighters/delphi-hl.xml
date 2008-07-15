@@ -30,11 +30,13 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 -->
 <highlighters>
 	<highlighter type="multiline-comment">
+		<!-- multiline comments starting with an $ are directives -->
 		<start>{$</start>
 		<end>}</end>
 		<style>directive</style>
 	</highlighter>
-		<highlighter type="multiline-comment">
+	<highlighter type="multiline-comment">
+		<!-- multiline comments starting with an $ are directives -->
 		<start>(*$</start>
 		<end>)</end>
 		<style>directive</style>
@@ -47,14 +49,13 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<start>(*</start>
 		<end>*)</end>
 	</highlighter>
-	<highlighter type="oneline-comment"> //</highlighter>
+	<highlighter type="oneline-comment">//</highlighter>
 	<highlighter type="string">
 		<string>'</string>
 		<doubleEscapes />
 	</highlighter>
 	<highlighter type="keywords">
-
-  <!-- Reserved words -->
+  		<!-- Reserved words -->
 		<keyword>and</keyword>
 		<keyword>else</keyword>
 		<keyword>inherited</keyword>
@@ -125,11 +126,11 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<keyword>out</keyword>
 		<keyword>string</keyword>
 
-  <!-- Special meaning -->
+  		<!-- Special meaning -->
 		<keyword>at</keyword>
 		<keyword>on</keyword>
   
-  <!-- Directives -->
+		<!-- Directives -->
 		<keyword>absolute</keyword>
 		<keyword>dynamic</keyword>
 		<keyword>local</keyword>
