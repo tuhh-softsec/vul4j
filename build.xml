@@ -48,12 +48,19 @@
 	</target>
 
 	<target name="distmisc" depends="init">
+		<fileset dir="${basedir}" id="files.misc">
+			<include name="LICENSE.txt" />
+			<include name="highlighters/*.xml" />
+		</fileset>
 		<copy todir="dist">
-			<fileset dir="${basedir}">
-				<include name="LICENSE.txt" />
-				<include name="highlighters/*.xml" />
-			</fileset>
+			<fileset refid="files.misc" />
 		</copy>
+		<zip destfile="dist/xslthl-${xslthl.version.major}.${xslthl.version.minor}.${xslthl.version.revision}${xslthl.version.type}.zip">
+			<fileset refid="files.misc" />
+			<fileset dir="dist">
+				<include name="xslthl-*.jar" />
+			</fileset>
+		</zip>
 	</target>
 
 </project>
