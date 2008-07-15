@@ -8,6 +8,8 @@
 	<target name="init">
 		<mkdir dir="build" />
 
+		<property name="configfile" value="file:///${basedir}/../dist/highlighters/xslthl-config.xml" />
+
 		<path id="classpath.xalan">
 			<fileset dir="../dist">
 				<include name="**/*.jar" />
@@ -42,7 +44,7 @@
 			<![CDATA[
 				importClass(java.lang.System);
 				System.setProperty("xslthl.config.verbose", "true");
-				System.setProperty("xslthl.config", "file:///"+basedir+"/../dist/xslthl-config.xml");
+				System.setProperty("xslthl.config", configfile);
 			]]>
 		</script>
 	</target>
@@ -65,7 +67,7 @@
 		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".xalan.html" force="true" classpathref="classpath.xalan">
 			<include name="example-*.xml" />
 			<classpath refid="classpath.xalan" />
-			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml" />
+			<param name="xslthl.config" expression="${configfile}" />
 		</xslt>
 	</target>
 
@@ -85,7 +87,7 @@
 		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".saxon6.html" force="true">
 			<include name="example-*.xml" />
 			<classpath refid="classpath.saxon6" />
-			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml" />
+			<param name="xslthl.config" expression="${configfile}" />
 		</xslt>
 	</target>
 
@@ -105,7 +107,7 @@
 		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".saxon.html" force="true">
 			<include name="example-*.xml" />
 			<classpath refid="classpath.saxonb" />
-			<param name="xslthl.config" expression="file:///${basedir}/../dist/xslthl-config.xml" />
+			<param name="xslthl.config" expression="${configfile}" />
 		</xslt>
 	</target>
 
