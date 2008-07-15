@@ -110,4 +110,10 @@ public abstract class Highlighter {
      * @return
      */
     public abstract String getDefaultStyle();
+    
+    /**
+     * Reset this highlighter to it's initially configured state 
+     */
+    public void reset()
+    {}
 }

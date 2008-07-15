@@ -33,15 +33,15 @@ import java.util.regex.Pattern;
  * A special character iterator
  */
 public class CharIter implements Iterable<Character>, Iterator<Character> {
-    private String s;
-    private int i = 0;
-    private int l;
+    private String buffer;
+    private int position = 0;
+    private int length;
     private int mark = 0;
     private Matcher matcher;
 
-    public CharIter(String s) {
-	this.s = s;
-	l = s.length();
+    public CharIter(String input) {
+	buffer = input;
+	length = input.length();
     }
 
     /**
@@ -55,33 +55,33 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      * Set the current position as the mark
      */
     public void setMark() {
-	mark = i;
+	mark = position;
     }
 
     /**
      * Set the mark to the given location
      * 
-     * @param i
+     * @param newMark
      */
-    public void setMark(int i) {
-	mark = i;
+    public void setMark(int newMark) {
+	mark = newMark;
     }
 
     /**
      * @return true if there is a mark set
      */
     public boolean isMarked() {
-	return mark < i;
+	return mark < position;
     }
 
     /**
      * @return the marked section
      */
     public String getMarked() {
-	if (i > l) {
-	    i = l;
+	if (position > length) {
+	    position = length;
 	}
-	return s.substring(mark, i);
+	return buffer.substring(mark, position);
     }
 
     /**
@@ -109,16 +109,16 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      * Increase the pointer
      */
     public void moveNext() {
-	i++;
+	position++;
     }
 
     /**
      * Increase the point with the given offset
      * 
-     * @param diff
+     * @param offset
      */
-    public void moveNext(int diff) {
-	i += diff;
+    public void moveNext(int offset) {
+	position += offset;
     }
 
     /**
@@ -133,40 +133,40 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      * Move to the end of the string
      */
     public void moveToEnd() {
-	i = l;
+	position = length;
     }
 
     /**
      * @return true if the iterator finished
      */
     public boolean finished() {
-	return i >= l;
+	return position >= length;
     }
 
     /**
      * @return the current character
      */
     public Character current() {
-	return s.charAt(i);
+	return buffer.charAt(position);
     }
 
     /**
      * @return the next character
      */
     public Character next() {
-	if (i + 1 < l) {
-	    return s.charAt(i + 1);
+	if (position + 1 < length) {
+	    return buffer.charAt(position + 1);
 	}
 	return null;
     }
 
     /**
-     * @param diff
+     * @param offset
      * @return the characters at the given offset
      */
-    public Character next(int diff) {
-	if (i + diff < l) {
-	    return s.charAt(i + diff);
+    public Character next(int offset) {
+	if (position + offset < length) {
+	    return buffer.charAt(position + offset);
 	}
 	return null;
     }
@@ -175,19 +175,19 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      * @return the previous character
      */
     public Character prev() {
-	if (i > 0) {
-	    return s.charAt(i - 1);
+	if (position > 0) {
+	    return buffer.charAt(position - 1);
 	}
 	return null;
     }
 
     /**
-     * @param diff
+     * @param offset
      * @return the previous character at a given offset
      */
-    public Character prev(int diff) {
-	if (i - diff >= 0) {
-	    return s.charAt(i - diff);
+    public Character prev(int offset) {
+	if (position - offset >= 0) {
+	    return buffer.charAt(position - offset);
 	}
 	return null;
     }
@@ -227,7 +227,7 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      *         offset
      */
     public boolean startsWith(String prefix, int diff, boolean ignoreCase) {
-	return s.startsWith(prefix, i + diff);
+	return buffer.startsWith(prefix, position + diff);
     }
 
     /**
@@ -235,17 +235,19 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      * 
      * @param pattern
      */
-    public void createMatcher(Pattern pattern) {
-	matcher = pattern.matcher(s);
+    public Matcher createMatcher(Pattern pattern) {
+	matcher = pattern.matcher(buffer);
+	return matcher;
     }
 
     /**
      * @return return true if the created matcher has a match
      */
+    @Deprecated
     public boolean find() {
 	boolean found = matcher.find();
 	if (found) {
-	    i = matcher.start();
+	    position = matcher.start();
 	} else {
 	    moveToEnd();
 	}
@@ -255,17 +257,32 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
     /**
      * Mark the matched section
      */
+    @Deprecated
     public void markMatched() {
-	setMark(i);
-	i = matcher.end();
+	setMark(position);
+	position = matcher.end();
+    }
+
+    /**
+     * @return
+     */
+    public int getPosition() {
+	return position;
+    }
+
+    /**
+     * @return
+     */
+    public int getLength() {
+	return length;
     }
 
     /**
      * @return the remaining characters in the buffer
      */
     public int remaining() {
-	if (i < l) {
-	    return l - i;
+	if (position < length) {
+	    return length - position;
 	}
 	return 0;
     }
@@ -275,8 +292,8 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      * @return the index of the given string
      */
     public int indexOf(String substr) {
-	int index = s.indexOf(substr, i);
-	return index < 0 ? -1 : index - i;
+	int index = buffer.indexOf(substr, position);
+	return index < 0 ? -1 : index - position;
     }
 
     /*
@@ -305,5 +322,4 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
     public void remove() {
 	throw new UnsupportedOperationException();
     }
-
 }

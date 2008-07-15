@@ -34,10 +34,10 @@ import java.util.List;
 public class MainHighlighter {
 
     /**
-     * Normale highlighter 
+     * Normal highlighter
      */
     protected List<Highlighter> highlighters = new LinkedList<Highlighter>();
-    
+
     /**
      * 
      */
@@ -120,6 +120,13 @@ public class MainHighlighter {
 		    }
 		}
 	    }
+	}
+
+	for (Highlighter h : highlighters) {
+	    h.reset();
+	}
+	for (WholeHighlighter h : wholehighlighters) {
+	    h.reset();
 	}
 
 	return out;

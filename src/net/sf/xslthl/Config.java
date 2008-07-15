@@ -38,7 +38,7 @@ import net.sf.xslthl.highlighters.KeywordsHighlighter;
 import net.sf.xslthl.highlighters.MultilineCommentHighlighter;
 import net.sf.xslthl.highlighters.NestedMultilineCommentHighlighter;
 import net.sf.xslthl.highlighters.OnelineCommentHighlighter;
-import net.sf.xslthl.highlighters.RegexHighlighter;
+import net.sf.xslthl.highlighters.RegexHighlighterEx;
 import net.sf.xslthl.highlighters.StringHighlighter;
 import net.sf.xslthl.highlighters.WordHighlighter;
 import net.sf.xslthl.highlighters.XMLHighlighter;
@@ -83,7 +83,7 @@ public class Config {
 	highlighterClasses.put("heredoc", HeredocHighlighter.class);
 	highlighterClasses.put("keywords", KeywordsHighlighter.class);
 	highlighterClasses.put("annotation", AnnotationHighlighter.class);
-	highlighterClasses.put("regex", RegexHighlighter.class);
+	highlighterClasses.put("regex", RegexHighlighterEx.class);
 	highlighterClasses.put("word", WordHighlighter.class);
 	highlighterClasses.put("xml", XMLHighlighter.class);
     }
