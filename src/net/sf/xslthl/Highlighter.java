@@ -25,6 +25,7 @@
  */
 package net.sf.xslthl;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,7 +40,9 @@ import java.util.regex.Pattern;
 public abstract class Highlighter {
 
     public final static class IgnoreCaseComparator implements
-	    Comparator<String> {
+	    Comparator<String>, Serializable {
+	private static final long serialVersionUID = -3992873598858412249L;
+
 	public int compare(String s1, String s2) {
 	    return s1.compareToIgnoreCase(s2);
 	}

@@ -110,7 +110,7 @@ public class HeredocHighlighter extends Highlighter {
 		in.moveNext();
 	    }
 	}
-	String s = "";
+	StringBuilder heredocId = new StringBuilder();
 	Character quoted = '\0';
 	// identifier might me quoted
 	if (quoteChar.contains(in.current().toString())) {
@@ -119,25 +119,25 @@ public class HeredocHighlighter extends Highlighter {
 	}
 	while (!in.finished()
 		&& (Character.isLetterOrDigit(in.current()) || in.current() == '_')
-		&& quoted != in.current()) {
-	    s += in.current();
+		&& quoted.equals(in.current())) {
+	    heredocId.append(in.current());
 	    in.moveNext();
 	}
-	if (quoted == in.current()) {
+	if (quoted.equals(in.current())) {
 	    in.moveNext();
 	}
-	if (s.length() == 0) {
+	if (heredocId.length() == 0) {
 	    return false;
 	}
 	int i;
 	do {
-	    i = in.indexOf(s);
+	    i = in.indexOf(heredocId.toString());
 	    if (i < 0) {
 		in.moveToEnd();
 	    } else {
-		in.moveNext(i + s.length());
+		in.moveNext(i + heredocId.length());
 	    }
-	    if (looseTerminator || isNewLine(in.prev(s.length() + 1))) {
+	    if (looseTerminator || isNewLine(in.prev(heredocId.length() + 1))) {
 		break;
 	    }
 	} while (i != -1);
