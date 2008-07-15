@@ -49,11 +49,9 @@
 
 	<target name="distmisc" depends="init">
 		<copy todir="dist">
-			<fileset dir="highlighters">
-				<include name="**/*.xml" />
-			</fileset>
 			<fileset dir="${basedir}">
 				<include name="LICENSE.txt" />
+				<include name="highlighters/*.xml" />
 			</fileset>
 		</copy>
 	</target>
