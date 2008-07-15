@@ -69,7 +69,6 @@ public class Version {
 	    if (is != null) {
 		try {
 		    prop.load(is);
-		    prop.list(System.out);
 		    major = Integer.parseInt(prop.getProperty(
 			    "xslthl.version.major", Integer.toString(major)));
 		    minor = Integer.parseInt(prop.getProperty(
