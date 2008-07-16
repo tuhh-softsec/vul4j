@@ -36,6 +36,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="m2" file="m2-hl.xml" />
 	<highlighter id="tcl" file="tcl-hl.xml" />
 	<highlighter id="c" file="c-hl.xml" />
+	<highlighter id="cpp" file="cpp-hl.xml" />
 	<highlighter id="csharp" file="csharp-hl.xml" />
 	<highlighter id="python" file="python-hl.xml" />
 	<highlighter id="ruby" file="ruby-hl.xml" />

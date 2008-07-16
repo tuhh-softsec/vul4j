@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example-document>
+	<header>C code</header>
+	<para>Example C code</para>
+	<code xml:whitespace="preserve" language="cpp">
+		<![CDATA[
+/* Richard Wolf, 2002
+
+99 bottles of beer on the wall in an extreme template-metaprogramming style.  
+It uses template specialisation to decided how to print numbers, whether 
+'bottles' should be plural, and to finish the song correctly.  
+Macros are used to generate the large number of specialisations required for
+printing numbers nicely, eg 45 printed as "forty five" with pretty_print<45>().
+
+Note that this will probably no compile immediately, since it requires the 
+compiler to instantiate templates to a depth of (number of bottles + 4).  
+Either reduce the number of starting bottles, or increase the maximum 
+template depth on your compiler. 
+
+Eg. using g++ use the -ftemplate-depth-103 command line option.
+
+Tested on gcc, other compilers at your risk
+*/
+
+#include <iostream>
+
+using namespace std;
+
+template<bool small, int I>
+struct pretty_printer;
+
+#define SMALL_PRETTY_PRINTER(num, string) \
+template<>\
+struct pretty_printer<true, num>\
+{\
+    static void print()\
+    {\
+        cout << string;\
+    }\
+};
+
+SMALL_PRETTY_PRINTER(0, "No")
+SMALL_PRETTY_PRINTER(1, "One")
+SMALL_PRETTY_PRINTER(2, "Two")
+SMALL_PRETTY_PRINTER(3, "Three")
+SMALL_PRETTY_PRINTER(4, "Four")
+SMALL_PRETTY_PRINTER(5, "Five")
+SMALL_PRETTY_PRINTER(6, "Six")
+SMALL_PRETTY_PRINTER(7, "Seven")
+SMALL_PRETTY_PRINTER(8, "Eight")
+SMALL_PRETTY_PRINTER(9, "Nine")
+SMALL_PRETTY_PRINTER(10, "Ten")
+SMALL_PRETTY_PRINTER(11, "Eleven")
+SMALL_PRETTY_PRINTER(12, "Twelve")
+SMALL_PRETTY_PRINTER(13, "Thirteen")
+SMALL_PRETTY_PRINTER(14, "Fourteen")
+SMALL_PRETTY_PRINTER(15, "Fifteen")
+SMALL_PRETTY_PRINTER(16, "Sixteen")
+SMALL_PRETTY_PRINTER(17, "Seventeen")
+SMALL_PRETTY_PRINTER(18, "Eighteen")
+SMALL_PRETTY_PRINTER(19, "Nineteen")
+
+#undef SMALL_PRETTY_PRINTER
+
+template<int ones>
+inline void 
+print_ones();
+
+#define ONES_PRINTER(ones, string) \
+template<> \
+inline void \
+print_ones<ones>() \
+{\
+  cout << string;\
+}
+
+ONES_PRINTER(0, " ")
+ONES_PRINTER(1, " one")
+ONES_PRINTER(2, " two")
+ONES_PRINTER(3, " three")
+ONES_PRINTER(4, " four")
+ONES_PRINTER(5, " five")
+ONES_PRINTER(6, " six")
+ONES_PRINTER(7, " seven")
+ONES_PRINTER(8, " eight")
+ONES_PRINTER(9, " nine")
+
+#undef ONES_PRINTER
+
+template<int tens>
+inline void
+print_tens();
+
+#define TENS_PRINTER(tens, string) \
+template<> \
+inline void \
+print_tens<tens>() \
+{\
+  cout << string;\
+}
+
+TENS_PRINTER(2, "Twenty")
+TENS_PRINTER(3, "Thirty")
+TENS_PRINTER(4, "Forty")
+TENS_PRINTER(5, "Fifty")
+TENS_PRINTER(6, "Sixty")
+TENS_PRINTER(7, "Seventy")
+TENS_PRINTER(8, "Eighty")
+TENS_PRINTER(9, "Ninety")
+
+#undef TENS_PRINTER
+
+template<int I>
+struct pretty_printer<false, I>
+{
+    static void print(){
+        print_tens<(I - I%10)/10>();
+        print_ones<(I%10)>();
+    }
+};
+
+template<int I>
+void pretty_print()
+{
+    pretty_printer<(I<20), I>::print();
+}
+
+template<int I>
+inline void
+BottlesOfBeer()
+{
+    pretty_print<I>();
+    cout << " bottles of beer" ;
+}
+
+template<>
+inline void
+BottlesOfBeer<1>()
+{
+    pretty_print<1>();
+    cout << " bottle of beer" ;
+}
+
+template<int I>
+inline void
+BottlesOfBeerOnTheWall()
+{
+    BottlesOfBeer<I>();
+    cout << " on the wall";
+}
+
+template<int I>
+inline void stanza()
+{
+    BottlesOfBeerOnTheWall<I>(); 
+    cout << ",\n";
+    BottlesOfBeer<I>(); 
+    cout <<",\n";
+}
+
+template<int I>
+inline void bridge()
+{
+    cout   << "Take one down, pass it around," << endl;
+    BottlesOfBeerOnTheWall<I-1>();
+    cout <<",\n";
+}
+
+template<>
+inline void bridge<0>()
+{
+    cout << "Go to the store and buy some more," << endl;
+    BottlesOfBeerOnTheWall<99>();
+}
+
+template<int I>
+inline void verse()
+{
+    stanza<I>();
+    bridge<I>();
+}
+
+template<int I>
+inline void sing () 
+{
+    verse<I>();
+    cout << endl;
+    sing<I-1>();
+} 
+
+
+template<>
+inline void sing<0> ()
+{
+    verse<0>();    
+}
+
+int main () {
+  sing<99>();
+}
+		]]>
+	</code>
+	<para>Origin: http://www.99-bottles-of-beer.net/language-c++-108.html</para>
+	<para>Some additional examples</para>
+	<code language="cpp">
+	<![CDATA[
+// 99 bottles of beer, C++ template 'meta-programming' version
+// By Arion Lei (philipl@cs.ust.hk)
+
+#include <iostream.h>
+
+template<int I>
+class Loop {
+public:
+  static inline void f () {
+    cout << I << " bottles of beer on the wall," << endl
+         << I << " bottles of beer." << endl
+         << "Take one down, pass it around," << endl
+         << I-1 << " bottles of beer on the wall." << endl;
+    Loop<I-1>::f();
+  } 
+};
+
+class Loop<0> {
+public:
+  static inline void f () {
+    cout << "Go to the store and buy some more," << endl
+         << "99 bottles of beer on the wall." << endl;
+  }
+};
+
+
+int main () {
+  Loop<3>::f();
+  return 0;
+}
+	]]></code>
+	<para>Origin: http://www.99-bottles-of-beer.net/language-c++-110.html</para>
+</example-document>
