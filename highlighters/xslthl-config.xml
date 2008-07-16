@@ -27,7 +27,6 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 
  -->
 <xslthl-config>
-<!-- 
 	<highlighter id="java" file="java-hl.xml" />
 	<highlighter id="delphi" file="delphi-hl.xml" />
 	<highlighter id="pascal" file="delphi-hl.xml" />
@@ -41,8 +40,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="csharp" file="csharp-hl.xml" />
 	<highlighter id="python" file="python-hl.xml" />
 	<highlighter id="ruby" file="ruby-hl.xml" />
-	<highlighter id="perl" file="perl-hl.xml" />
- -->	
+	<highlighter id="perl" file="perl-hl.xml" />	
 	<highlighter id="javascript" file="javascript-hl.xml" />
 	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
 </xslthl-config>
