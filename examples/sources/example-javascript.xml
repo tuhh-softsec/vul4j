@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example-document>
+	<header>JavaScript syntax highlighting example</header>
+	<para>Below is an example of JavaScript</para>
+	<code language="javascript">
+<![CDATA[
+/**
+ * @projectDescription Javascript snippet to generate the lyrics of the song "99 Bottles".
+ * Copyright (c) 2008 Ariel Flesler - aflesler(at)gmail(dot)com | http://flesler.blogspot.com
+ * Date: 3/27/2008
+ * @author Ariel Flesler
+ * --This script follows the standard specified by scriptDoc: http://scriptdoc.org/
+ */
+
+/**
+ * @classDescription This class generates the lyrics of the song "99 Bottles".
+ * @return { Song }	Returns a new Song Object.
+ * @constructor
+ */
+var Song = function(){};
+
+//add methods to the prototype, to affect the instances of the class Song
+Song.prototype = {
+	/**
+	 * Maps an array of items using a function.
+	 * @param { Array } src Source array whose items will be mapped.
+	 * @param { Function } fn Function that receives each item & index and returns the mapped item.
+	 * @return { Array } The mapped array.
+	 * @method
+	 * http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Global_Objects:Array:map
+	 */
+	map: function( src, fn ){
+		var 
+			mapped = [ ], //will hold the mapped items
+			pos = src.length; //holds the actual index
+
+		//do a reversed loop as we know the last index
+		while( pos-- )
+			mapped[pos] = fn.call( this, src[pos], pos );
+		
+		return mapped;
+	},
+	/**
+	 * @param { Number } amount Specifies the # of bottle.
+	 * @return { String } The related text.
+	 * @method
+	 */
+	bottle:function( left ){
+		switch( left ){
+			case 0: return 'no more bottles';
+			case 1: return '1 bottle';
+			default: return left + ' bottles';
+		}
+	},
+	/**
+	 * @param { Number } amount The amount of bottles to buy.
+	 * @method
+	 */
+	buy:function( amount ){
+		this.bottles = Array(amount+1);
+	},
+	/**
+	 * @param { String } separator String to separate each line.
+	 * @return { String } Lyrics of the song.
+	 * @method
+	 */
+	sing:function( separator ){
+		var lines =  this.map( this.bottles, function( bottle, left ){
+			
+			bottle = this.bottle( left );//the text for this bottle, and then the next one.
+			var nextBottle = left - 1 + ( left ? 0 : this.bottles.length );
+			nextBottle = this.bottle( nextBottle );
+			
+			return this.apply( this.line1, bottle ) + separator +					
+					this.apply( left ? this.line2a : this.line2b, nextBottle );
+		});
+		
+		return lines.reverse().join( separator+separator );
+	},
+	caseRegex: /%([ul])/g, //matches %u or %l
+	/**
+	 * @param { String } template String template of the line.
+	 * @param { String } bottle The text for this bottle.
+	 * @return { String } The parsed template.
+	 * @method
+	 */
+	apply:function( template, bottle ){
+		return template.replace( this.caseRegex, function( all, kase ){
+			return kase == 'l' ? bottle //lowercase
+				: bottle.charAt(0).toUpperCase() + bottle.slice(1); //uppercase
+		});	
+	},
+	line1: '%u of beer on the wall, %l of beer.',
+	line2a: 'Take one down and pass it around, %l of beer on the wall.',
+	line2b: 'Go to the store and buy some more, %l of beer on the wall.'
+};
+
+var bottlesSong = new Song();
+bottlesSong.buy( 99 );
+
+var lyrics = bottlesSong.sing( '<br />' );
+
+document.body.innerHTML = lyrics;
+]]>
+	</code>
+	<para>Source: http://www.99-bottles-of-beer.net/language-javascript-1740.html</para>
+</example-document>

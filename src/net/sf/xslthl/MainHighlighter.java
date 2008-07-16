@@ -71,6 +71,7 @@ public class MainHighlighter {
 		boolean found = false;
 		for (Highlighter h : highlighters) {
 		    if (h.startsWith(in)) {
+			int pos = in.getPosition();
 			int oldMark = -2;
 			Block preBlock = null;
 			if (in.isMarked()) {
@@ -83,6 +84,7 @@ public class MainHighlighter {
 			    break;
 			} else {
 			    // undo last action when it was a false positive
+			    in.moveNext(pos - in.getPosition());
 			    if (preBlock != null) {
 				out.remove(preBlock);
 			    }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <example-document>
-	<header>C code</header>
-	<para>Example C code</para>
+	<header>C++ code</header>
+	<para>Example C++ code</para>
 	<code xml:whitespace="preserve" language="cpp">
 		<![CDATA[
 /* Richard Wolf, 2002
