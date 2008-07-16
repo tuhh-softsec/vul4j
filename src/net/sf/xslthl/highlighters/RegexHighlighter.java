@@ -45,6 +45,7 @@ import net.sf.xslthl.WholeHighlighter;
  * <dd>Flags, see javadoc</dd>
  * </dl>
  */
+@Deprecated
 public class RegexHighlighter extends WholeHighlighter {
 
     /**
@@ -52,6 +53,7 @@ public class RegexHighlighter extends WholeHighlighter {
      */
     protected Pattern pattern;
 
+    @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	int flags = 0;

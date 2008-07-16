@@ -38,6 +38,7 @@ import net.sf.xslthl.Params;
 public class NestedMultilineCommentHighlighter extends
 	MultilineCommentHighlighter {
 
+    @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
     }

@@ -102,6 +102,7 @@ public class Params {
      * @deprecated Use {@link #getMutliParams(String,Collection<String>)}
      *             instead
      */
+    @Deprecated
     void load(String name, Collection<String> list) {
 	getMutliParams(name, list);
     }
@@ -125,6 +126,7 @@ public class Params {
      *             #getMultiParams(String,Collection<T>,ParamsLoader<? extends
      *             T>)} instead
      */
+    @Deprecated
     <T> void load(String name, Collection<T> list,
 	    ParamsLoader<? extends T> loader) {
 	getMultiParams(name, list, loader);

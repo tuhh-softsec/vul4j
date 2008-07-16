@@ -70,6 +70,7 @@ public class StringHighlighter extends Highlighter {
      * 
      * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
      */
+    @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	start = params.getParam("string");

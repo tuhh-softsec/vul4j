@@ -54,6 +54,7 @@ public class OnelineCommentHighlighter extends Highlighter {
      */
     protected String lineBreakEscape;
 
+    @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	if (params.isSet("start")) {

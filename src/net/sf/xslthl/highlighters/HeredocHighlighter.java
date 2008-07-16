@@ -66,6 +66,7 @@ public class HeredocHighlighter extends Highlighter {
 
     protected boolean looseTerminator;
 
+    @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	start = params.getParam("start");

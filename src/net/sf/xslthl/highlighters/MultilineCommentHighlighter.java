@@ -49,6 +49,7 @@ public class MultilineCommentHighlighter extends Highlighter {
      */
     protected String start, end;
 
+    @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	start = params.getParam("start");

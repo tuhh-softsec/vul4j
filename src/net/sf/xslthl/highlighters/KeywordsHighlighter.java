@@ -56,6 +56,7 @@ public class KeywordsHighlighter extends Highlighter {
      */
     protected boolean ignoreCase = false;
 
+    @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	ignoreCase = params.isSet("ignoreCase");
