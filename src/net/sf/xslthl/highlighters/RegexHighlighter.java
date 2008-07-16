@@ -40,9 +40,8 @@ import net.sf.xslthl.WholeHighlighter;
  * <dl>
  * <dt>pattern</dt>
  * <dd>The regular expression pattern to be matched.</dd>
- * <dt>caseInsensitive, dotAll, multiLine, unicodeCase, literal, unixLines,
- * comments, canonEQ</dt>
- * <dd>Flags, see javadoc</dd>
+ * <dt>flags</dt>
+ * <dd>Flags, see javadoc (use the constant names AS IS)</dd>
  * </dl>
  */
 @Deprecated
@@ -57,29 +56,26 @@ public class RegexHighlighter extends WholeHighlighter {
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	int flags = 0;
-	if (params.isSet("caseInsensitive")) {
-	    flags += Pattern.CASE_INSENSITIVE;
-	}
-	if (params.isSet("dotAll")) {
-	    flags += Pattern.DOTALL;
-	}
-	if (params.isSet("multiLine")) {
-	    flags += Pattern.MULTILINE;
-	}
-	if (params.isSet("unicodeCase")) {
-	    flags += Pattern.UNICODE_CASE;
-	}
-	if (params.isSet("literal")) {
-	    flags += Pattern.LITERAL;
-	}
-	if (params.isSet("unixLines")) {
-	    flags += Pattern.UNIX_LINES;
-	}
-	if (params.isSet("comments")) {
-	    flags += Pattern.COMMENTS;
-	}
-	if (params.isSet("canonEQ")) {
-	    flags += Pattern.CANON_EQ;
+	String[] flagString = params.getParam("flags", "").split("[;,]");
+	for (String flag : flagString) {
+	    flag = flag.trim();
+	    if ("CASE_INSENSITIVE".equalsIgnoreCase(flag)) {
+		flags += Pattern.CASE_INSENSITIVE;
+	    } else if ("DOTALL".equalsIgnoreCase(flag)) {
+		flags += Pattern.DOTALL;
+	    } else if ("MULTILINE".equalsIgnoreCase(flag)) {
+		flags += Pattern.MULTILINE;
+	    } else if ("UNICODE_CASE".equalsIgnoreCase(flag)) {
+		flags += Pattern.UNICODE_CASE;
+	    } else if ("LITERAL".equalsIgnoreCase(flag)) {
+		flags += Pattern.LITERAL;
+	    } else if ("UNIX_LINES".equalsIgnoreCase(flag)) {
+		flags += Pattern.UNIX_LINES;
+	    } else if ("COMMENTS".equalsIgnoreCase(flag)) {
+		flags += Pattern.COMMENTS;
+	    } else if ("CANON_EQ".equalsIgnoreCase(flag)) {
+		flags += Pattern.CANON_EQ;
+	    }
 	}
 	String pat = params.getParam("pattern");
 	if (params.isSet("pattern")) {
