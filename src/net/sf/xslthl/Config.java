@@ -238,26 +238,41 @@ public class Config {
 	    Document doc = builder.parse(configFilename);
 	    NodeList hls = doc.getDocumentElement().getElementsByTagName(
 		    "highlighter");
+	    Map<String, MainHighlighter> fileMapping = new HashMap<String, MainHighlighter>();
 	    for (int i = 0; i < hls.getLength(); i++) {
 		Element hl = (Element) hls.item(i);
 		String id = hl.getAttribute("id");
+
+		if (highlighters.containsKey(id)) {
+		    System.out
+			    .println(String
+				    .format(
+					    "Warning: highlighter with id '%s' already exists!",
+					    id));
+		}
+
 		String filename = hl.getAttribute("file");
 		String absFilename = new URL(new URL(configFilename), filename)
 			.toString();
+		if (fileMapping.containsKey(absFilename)) {
+		    // no need to load the same file twice.
+		    if (verbose) {
+			System.out.println("Reusing loaded highlighter for "
+				+ id + " from " + absFilename + "...");
+		    }
+		    highlighters.put(id, fileMapping.get(absFilename));
+		    continue;
+		}
 		if (verbose) {
 		    System.out.print("Loading " + id + " highligter from "
 			    + absFilename + "...");
 		}
 		try {
-		    MainHighlighter old = highlighters.put(id,
-			    loadHl(absFilename));
+		    MainHighlighter mhl = loadHl(absFilename);
+		    highlighters.put(id, mhl);
 		    if (verbose) {
-			if (old != null) {
-			    System.out
-				    .println(" Warning: highlighter with such id already existed!");
-			} else {
-			    System.out.println(" OK");
-			}
+			System.out.println(" OK");
+			fileMapping.put(absFilename, mhl);
 		    }
 		} catch (Exception e) {
 		    if (verbose) {
