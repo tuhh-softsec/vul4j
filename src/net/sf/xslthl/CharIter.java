@@ -89,18 +89,19 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      */
     public Block markedToBlock() {
 	Block b = new Block(getMarked());
-	// System.err.println("Block: " + b.getText());
 	setMark();
 	return b;
     }
 
     /**
+     * Create a style block, unless the stylename is equale to
+     * {@value StyledBlock#NO_STYLE}
+     * 
      * @param styleName
      * @return the marked string as a styled block
      */
     public Block markedToStyledBlock(String styleName) {
 	Block b = new StyledBlock(getMarked(), styleName);
-	// System.err.println("StyledBlock: " + b.getText());
 	setMark();
 	return b;
     }
