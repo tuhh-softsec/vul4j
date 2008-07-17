@@ -69,7 +69,7 @@ below.
 ]]>
 	</code>
 	<para>Another example, uses a highlighter from the internal</para>
-	<code language="http://xslthl.svn.sourceforge.net/viewvc/*checkout*/xslthl/trunk/xslthl/highlighters/myxml-hl.xml">
+	<code language="http://xslthl.svn.sourceforge.net/viewvc/*checkout*/xslthl/trunk/xslthl/highlighters/xslt-hl.xml">
 <![CDATA[
 <?xml version="1.0"?>
 
