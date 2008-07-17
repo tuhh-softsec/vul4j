@@ -141,5 +141,35 @@ new lines";
 	blackslash
 this is no longer a directive
 
+
+//////// numbers ///////
+
+// octal
+01234
+// normal
+1234
+// hex
+0x1234AE
+// octal
+01234u
+// normal
+1234u
+// hex
+0x1234AEu
+// octal
+01234l
+// normal
+1234l
+// hex
+0x1234AEl
+
+////// floats
+
+12.34F
+12e12f
+12.34
+12E12
+12.34l
+12e12L
 	]]></code>
 </example-document>
