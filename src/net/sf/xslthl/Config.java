@@ -37,9 +37,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import net.sf.xslthl.highlighters.AnnotationHighlighter;
 import net.sf.xslthl.highlighters.HeredocHighlighter;
+import net.sf.xslthl.highlighters.HexaDecimalHighlighter;
 import net.sf.xslthl.highlighters.KeywordsHighlighter;
 import net.sf.xslthl.highlighters.MultilineCommentHighlighter;
 import net.sf.xslthl.highlighters.NestedMultilineCommentHighlighter;
+import net.sf.xslthl.highlighters.NumberHighlighter;
 import net.sf.xslthl.highlighters.OnelineCommentHighlighter;
 import net.sf.xslthl.highlighters.RegexHighlighterEx;
 import net.sf.xslthl.highlighters.StringHighlighter;
@@ -93,6 +95,8 @@ public class Config {
 	highlighterClasses.put("annotation", AnnotationHighlighter.class);
 	highlighterClasses.put("regex", RegexHighlighterEx.class);
 	highlighterClasses.put("word", WordHighlighter.class);
+	highlighterClasses.put("number", NumberHighlighter.class);
+	highlighterClasses.put("hexnumber", HexaDecimalHighlighter.class);
 	highlighterClasses.put("xml", XMLHighlighter.class);
     }
 

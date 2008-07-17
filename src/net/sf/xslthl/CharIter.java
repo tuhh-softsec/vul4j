@@ -228,6 +228,14 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
      *         offset
      */
     public boolean startsWith(String prefix, int diff, boolean ignoreCase) {
+	if (ignoreCase) {
+	    int end = position + diff + prefix.length();
+	    if (end >= length) {
+		end = length - 1;
+	    }
+	    return buffer.substring(position + diff, end).equalsIgnoreCase(
+		    prefix);
+	}
 	return buffer.startsWith(prefix, position + diff);
     }
 
