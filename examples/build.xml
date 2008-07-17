@@ -111,4 +111,14 @@
 		</xslt>
 	</target>
 
+	<target name="docbook" depends="init" description="docbook sample">
+		<xslt style="docbook/custom-docbook.xsl" extension=".html" basedir="docbook" destdir="build" force="true">
+			<include name="sample-article.xml" />
+			<classpath refid="classpath.xalan" />
+			<param name="use.extensions" expression="1" />
+			<param name="highlight.source" expression="1" />
+			<param name="xslthl.config" expression="${configfile}" />
+		</xslt>
+	</target>
+
 </project>

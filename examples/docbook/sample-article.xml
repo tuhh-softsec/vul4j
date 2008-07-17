@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xml:id="sample" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://docbook.org/ns/docbook ../../../ComposestarDocCORE/lib/docbook-5/xsd/docbook.xsd ">
+	<title>Sample Article</title>
+	<para>This is an sample article written in DocBook to shown off the functionality of xslthl.</para>
+	<para>This sample article contains two program listings. First a simple java example that should work without any changes. And after that a example of mixing HTML and PHP.</para>
+	<example xml:id="example.java">
+		<title>Java Example</title>
+		<programlisting language="java"><![CDATA[
+package net.sf.xslthl.example;
+
+public final class Example {
+	/**
+	 * The version of this example
+	 */
+	public static final String VERSION = "1.0";
+	
+	public Example() {
+		// nothing to do here
+	}
+	
+	@override
+	public String toString() {
+		return Example.class.getName()"_"+VERSION;
+	}
+}
+		]]></programlisting>
+	</example>
+	<para>The following program listing makes a composition of two highlighters. This is done by using a <code>code</code> element within the program listing.</para>
+	<example xml:id="example.html_php">
+		<title>HTML + PHP Example</title>
+		<programlisting language="xml"><![CDATA[
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Using PHP in a HTML document</title>
+</head>
+<body>
+	<p>A PHP script can contain normally formatted HTML, 
+	it only has to be used outside of the <em>&lt;?php ... ?&gt;</em>
+	section. The following string is produced by PHP:</p>
+	]]><code language="php"><![CDATA[<?php
+	// this is the message we want to show
+	$msg = "Hello world!";
+	echo "<p><b>" . $msg . "</b></p>";
+	?>]]></code><![CDATA[
+	<!-- end of the example -->
+</body>
+</html>		
+		]]></programlisting>
+	</example>
+	<para>To mix highlighters like this you need to make an adjustment to the DocBook XSL to allow highlighting in the code elements.</para>
+</article>
