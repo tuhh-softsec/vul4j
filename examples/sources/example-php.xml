@@ -180,11 +180,12 @@ $string = 'using a \' also makes a string';
 	</code>
 	
 	<code language="xml">
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
 &lt;html&gt;
 &lt;head&gt;
 	&lt;title&gt;Example of mixing different languages&lt;title&gt;
 &lt;head&gt;
-&lt;body&gt;
+&lt;body nowrap class="test"&gt;
 	&lt;H1 style="page-header"&gt;Hello World&lt;/h1&gt;
 	<code language="php">&lt;?php
 	/*
