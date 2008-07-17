@@ -28,19 +28,48 @@ package net.sf.xslthl.highlighters;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 
 import net.sf.xslthl.Block;
 import net.sf.xslthl.CharIter;
 import net.sf.xslthl.HighlighterConfigurationException;
 import net.sf.xslthl.Params;
 import net.sf.xslthl.WholeHighlighter;
+import net.sf.xslthl.highlighters.xml.ElementPrefix;
+import net.sf.xslthl.highlighters.xml.ElementSet;
+import net.sf.xslthl.highlighters.xml.RealElementSet;
 
 /**
- * XML/SGML highlighter.
- * 
+ * XML/SGML highlighter. It has a couple of default styles: tag, attribute,
+ * value, directive. Accepted parameters:
+ * <dl>
+ * <dt>elementSet</dt>
+ * <dd>Specialized highlighting for set elements</dd>
+ * <dt>elementPrefix</dt>
+ * <dd>Specialized highlighting for element prefixes</dd>
+ * </dl>
  */
 public class XMLHighlighter extends WholeHighlighter {
+
+    /**
+     * Style to use for elements
+     */
+    final static String STYLE_ELEMENT = "tag";
+    /**
+     * The style for attributes
+     */
+    final static String STYLE_ATTRIBUTE = "attribute";
+    /**
+     * The style for attribute values
+     */
+    final static String STYLE_VALUE = "value";
+    /**
+     * The style for processing instructions
+     */
+    final static String STYLE_PI = "directive";
+    /**
+     * The style for comments
+     */
+    final static String STYLE_COMMENT = "comment";
 
     final static Character APOSTROPHE = '\'';
     final static Character EQUALS = '=';
@@ -52,47 +81,10 @@ public class XMLHighlighter extends WholeHighlighter {
     final static Character QUOTE = '"';
     final static Character SLASH = '/';
 
-    abstract static class ElementSet {
-	String style;
-
-	abstract boolean matches(String tagName);
-    }
-
-    final static class RealElementSet extends ElementSet {
-	private Collection<String> tagNames;
-
-	RealElementSet(Params params) {
-	    boolean ignoreCase = params.isSet("ignoreCase");
-	    if (ignoreCase) {
-		tagNames = new TreeSet<String>(new IgnoreCaseComparator());
-	    } else {
-		tagNames = new TreeSet<String>();
-	    }
-	    params.getMutliParams("element", tagNames);
-	    style = params.getParam("style");
-	}
-
-	@Override
-	boolean matches(String tagName) {
-	    return tagNames.contains(tagName);
-	}
-    }
-
-    final static class ElementPrefix extends ElementSet {
-	private String prefix;
-
-	ElementPrefix(Params params) {
-	    style = params.getParam("style");
-	    prefix = params.getParam("prefix");
-	}
-
-	@Override
-	boolean matches(String tagName) {
-	    return tagName.startsWith(prefix);
-	}
-    }
-
-    private Collection<ElementSet> elementSets = new HashSet<ElementSet>();
+    /**
+     * Overriden styles
+     */
+    protected Collection<ElementSet> elementSets = new HashSet<ElementSet>();
 
     /**
      * @param tagName
@@ -101,25 +93,32 @@ public class XMLHighlighter extends WholeHighlighter {
     protected String getStyleForTagName(String tagName) {
 	for (ElementSet es : elementSets) {
 	    if (es.matches(tagName)) {
-		return es.style;
+		return es.getStyle();
 	    }
 	}
 	return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.WholeHighlighter#init(net.sf.xslthl.Params)
+     */
     @Override
     public void init(Params params) throws HighlighterConfigurationException {
 	super.init(params);
 	if (params != null) {
 	    params.getMultiParams("elementSet", elementSets,
 		    new Params.ParamsLoader<RealElementSet>() {
-			public RealElementSet load(Params params) {
+			public RealElementSet load(Params params)
+				throws HighlighterConfigurationException {
 			    return new RealElementSet(params);
 			}
 		    });
 	    params.getMultiParams("elementPrefix", elementSets,
 		    new Params.ParamsLoader<ElementPrefix>() {
-			public ElementPrefix load(Params params) {
+			public ElementPrefix load(Params params)
+				throws HighlighterConfigurationException {
 			    return new ElementPrefix(params);
 			}
 		    });
@@ -143,7 +142,7 @@ public class XMLHighlighter extends WholeHighlighter {
 			&& !Character.isWhitespace(in.current())) {
 		    in.moveNext();
 		}
-		out.add(in.markedToStyledBlock("attribute"));
+		out.add(in.markedToStyledBlock(STYLE_ATTRIBUTE));
 		while (!in.finished() && Character.isWhitespace(in.current())) {
 		    in.moveNext();
 		}
@@ -153,7 +152,7 @@ public class XMLHighlighter extends WholeHighlighter {
 		    // attributes
 		    continue;
 		}
-		in.moveNext(); // skip =
+		in.moveNext(); // skip '='
 		while (!in.finished() && Character.isWhitespace(in.current())) {
 		    in.moveNext();
 		}
@@ -168,7 +167,7 @@ public class XMLHighlighter extends WholeHighlighter {
 		    if (!in.finished()) {
 			in.moveNext();
 		    }
-		    out.add(in.markedToStyledBlock("value"));
+		    out.add(in.markedToStyledBlock(STYLE_VALUE));
 		} else {
 		    while (!in.finished()
 			    && !XMLHighlighter.GREATER_THAN
@@ -177,7 +176,7 @@ public class XMLHighlighter extends WholeHighlighter {
 			    && !Character.isWhitespace(in.current())) {
 			in.moveNext();
 		    }
-		    out.add(in.markedToStyledBlock("value"));
+		    out.add(in.markedToStyledBlock(STYLE_VALUE));
 		}
 	    } else {
 		in.moveNext();
@@ -197,25 +196,24 @@ public class XMLHighlighter extends WholeHighlighter {
 	    if (XMLHighlighter.LESS_THAN.equals(in.current())) {
 		out.add(in.markedToBlock());
 		in.moveNext(); // skip <
-		if (XMLHighlighter.SLASH.equals(in.current())) { // it's end tag
+		if (XMLHighlighter.SLASH.equals(in.current())) {
+		    // closing tag -> tag
 		    while (!in.finished()
 			    && !XMLHighlighter.GREATER_THAN
 				    .equals(in.current())) {
 			in.moveNext();
 		    }
 		    String style = getStyleForTagName(in.getMarked().trim()
-			    .substring(1));
+			    .substring(2));
 		    // </dfsdf > trims to </dfsdf> and than to <dfsdf>
 		    in.moveNext(); // get >
 		    if (style != null) {
 			out.add(in.markedToStyledBlock(style));
 		    } else {
-			out.add(in.markedToStyledBlock("tag"));
+			out.add(in.markedToStyledBlock(STYLE_ELEMENT));
 		    }
-		} else if (XMLHighlighter.QUESTION_MARK.equals(in.current())) { // it
-		    // 's
-		    // processing
-		    // instruction
+		} else if (XMLHighlighter.QUESTION_MARK.equals(in.current())) {
+		    // processing instruction -> directive
 		    while (!in.finished()
 			    && !(XMLHighlighter.GREATER_THAN.equals(in
 				    .current()) && XMLHighlighter.QUESTION_MARK
@@ -223,11 +221,11 @@ public class XMLHighlighter extends WholeHighlighter {
 			in.moveNext();
 		    }
 		    in.moveNext();
-		    out.add(in.markedToStyledBlock("directive"));
+		    out.add(in.markedToStyledBlock(STYLE_PI));
 		} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
 			&& XMLHighlighter.HYPHEN.equals(in.next())
 			&& XMLHighlighter.HYPHEN.equals(in.next(2))) {
-		    // it's comment
+		    // comment
 		    while (!in.finished()
 			    && !(XMLHighlighter.GREATER_THAN.equals(in
 				    .current())
@@ -236,11 +234,12 @@ public class XMLHighlighter extends WholeHighlighter {
 			in.moveNext();
 		    }
 		    in.moveNext();
-		    out.add(in.markedToStyledBlock("comment"));
+		    out.add(in.markedToStyledBlock(STYLE_COMMENT));
 		} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
 			&& in.startsWith("[CDATA[", 1)) {
+		    // CDATA section
 		    in.moveNext(8);
-		    out.add(in.markedToStyledBlock("tag"));
+		    out.add(in.markedToStyledBlock(STYLE_ELEMENT));
 		    int idx = in.indexOf("]]>");
 		    if (idx == -1) {
 			in.moveToEnd();
@@ -250,9 +249,10 @@ public class XMLHighlighter extends WholeHighlighter {
 		    out.add(in.markedToBlock());
 		    if (idx != -1) {
 			in.moveNext(3);
-			out.add(in.markedToStyledBlock("tag"));
+			out.add(in.markedToStyledBlock(STYLE_ELEMENT));
 		    }
 		} else {
+		    // normal tag
 		    while (!in.finished()
 			    && !XMLHighlighter.GREATER_THAN
 				    .equals(in.current())
@@ -288,7 +288,7 @@ public class XMLHighlighter extends WholeHighlighter {
 		    if (style != null) {
 			out.add(in.markedToStyledBlock(style));
 		    } else {
-			out.add(in.markedToStyledBlock("tag"));
+			out.add(in.markedToStyledBlock(STYLE_ELEMENT));
 		    }
 		    if (!shortTag && !in.finished()
 			    && Character.isWhitespace(in.current())) {
@@ -302,7 +302,7 @@ public class XMLHighlighter extends WholeHighlighter {
 			    if (style != null) {
 				out.add(in.markedToStyledBlock(style));
 			    } else {
-				out.add(in.markedToStyledBlock("tag"));
+				out.add(in.markedToStyledBlock(STYLE_ELEMENT));
 			    }
 			}
 		    }
@@ -327,6 +327,7 @@ public class XMLHighlighter extends WholeHighlighter {
      */
     @Override
     public String getDefaultStyle() {
+	// not really used
 	return "xml";
     }
 }
