@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 public class Params {
 
     public interface ParamsLoader<T> {
-	T load(Params params);
+	T load(Params params) throws HighlighterConfigurationException;
     }
 
     protected Element paramElem;
@@ -122,13 +122,14 @@ public class Params {
     }
 
     /**
+     * @throws HighlighterConfigurationException
      * @deprecated Use {@link
      *             #getMultiParams(String,Collection<T>,ParamsLoader<? extends
      *             T>)} instead
      */
     @Deprecated
     <T> void load(String name, Collection<T> list,
-	    ParamsLoader<? extends T> loader) {
+	    ParamsLoader<? extends T> loader) throws HighlighterConfigurationException {
 	getMultiParams(name, list, loader);
     }
 
@@ -139,9 +140,10 @@ public class Params {
      * @param name
      * @param list
      * @param loader
+     * @throws HighlighterConfigurationException 
      */
     public <T> void getMultiParams(String name, Collection<T> list,
-	    ParamsLoader<? extends T> loader) {
+	    ParamsLoader<? extends T> loader) throws HighlighterConfigurationException {
 	NodeList nodes = paramElem.getElementsByTagName(name);
 	for (int i = 0; i < nodes.getLength(); i++) {
 	    Element elem = (Element) nodes.item(i);
