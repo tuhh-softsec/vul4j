@@ -113,6 +113,9 @@ public class RegexHighlighterEx extends Highlighter {
 	    matcher = in.createMatcher(pattern);
 	    finished = !matcher.find();
 	}
+	while (!finished && matcher.start() < in.getPosition()) {
+	    finished = !matcher.find();
+	}
 	if (!finished) {
 	    return matcher.start() == in.getPosition();
 	}
