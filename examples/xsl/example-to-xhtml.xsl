@@ -135,6 +135,11 @@ H1 {
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>
+	<xsl:template match="xslthl:doccomment">
+		<span style="color: teal; font-style: italic;">
+			<xsl:value-of select="." />
+		</span>
+	</xsl:template>
 	<xsl:template match="xslthl:directive">
 		<span style="color: maroon;">
 			<xsl:value-of select="." />
