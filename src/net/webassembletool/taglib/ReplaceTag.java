@@ -4,12 +4,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * Only used inside a tag that extends AbstractReplaceableTag. This tag add a
+ * Only used inside a tag that implements IReplaceableTag. This tag add a
  * replace rule to the parent tag, which will be applied on render.
  * 
  * <hr>
  * 
- * @author Cédric Brandes, 27 juin 08
+ * @author Cedric Brandes, 27 juin 08
  */
 public class ReplaceTag extends BodyTagSupport {
     private static final long serialVersionUID = 1L;
@@ -36,7 +36,7 @@ public class ReplaceTag extends BodyTagSupport {
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
      */
     public int doAfterBody() throws JspException {
-	AbstractReplaceableTag replaceableTag = (AbstractReplaceableTag) getParent();
+	IReplaceableTag replaceableTag = (IReplaceableTag) getParent();
 	String newExpression = getBodyContent().getString();
 	replaceableTag.getReplaceRules().put(expression, newExpression);
 	return SKIP_BODY;
