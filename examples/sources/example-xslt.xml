@@ -68,8 +68,8 @@ below.
 </xsl:stylesheet>
 ]]>
 	</code>
-	<para>Another example, uses a highlighter from the internal</para>
-	<code language="http://xslthl.svn.sourceforge.net/viewvc/*checkout*/xslthl/trunk/xslthl/highlighters/xslt-hl.xml">
+	<para>Another example, uses a highlighter configuration downloaded from the internet</para>
+	<code language="http://xslthl.svn.sourceforge.net/viewvc/*checkout*/xslthl/trunk/xslthl/examples/sources/xslt-hl.xml">
 <![CDATA[
 <?xml version="1.0"?>
 
