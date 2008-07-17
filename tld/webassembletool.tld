@@ -95,6 +95,16 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>parameter</name>
+		<tag-class>net.webassembletool.taglib.ParameterTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>parameter</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>template</name>
 		<tag-class>net.webassembletool.taglib.TemplateTag</tag-class>
 		<attribute>
