@@ -25,6 +25,9 @@
  */
 package net.sf.xslthl;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +66,11 @@ public class Config {
     public static final String VERBOSE_LOADING_PROPERTY = "xslthl.config.verbose";
 
     /**
+     * Property set to disable external configuration loading
+     */
+    public static final String NO_EXTERNAL_PROPERTY = "xslthl.noexternal";
+
+    /**
      * Instances per config file
      */
     private static final Map<String, Config> instances = new HashMap<String, Config>();
@@ -91,17 +99,19 @@ public class Config {
     /**
      * Prefix to use on created XML elements
      */
-    protected String prefix = "";
+    protected String prefix = "http://xslthl.sf.net";
 
     /**
      * The namespace uri
      */
-    protected String uri = "";
+    protected String uri = "xslthl";
 
     /**
      * Registered highlighters
      */
     protected Map<String, MainHighlighter> highlighters = new HashMap<String, MainHighlighter>();
+
+    protected boolean verbose;
 
     /**
      * Get the default config
@@ -148,6 +158,42 @@ public class Config {
      * @return
      */
     public MainHighlighter getMainHighlighter(String id) {
+	if (id != null && id.length() > 0 && !highlighters.containsKey(id)) {
+	    if (!Boolean.getBoolean(NO_EXTERNAL_PROPERTY)) {
+		// might be a URI
+		String uri = null;
+		try {
+		    URI location = new URI(id);
+		    if (location.getScheme() != null) {
+			uri = location.toString();
+		    }
+		} catch (URISyntaxException e) {
+		}
+		if (uri == null) {
+		    File floc = new File(id);
+		    if (floc.getAbsoluteFile().exists()) {
+			uri = floc.getAbsoluteFile().toURI().toString();
+		    } else if (verbose) {
+			System.out
+				.println(String
+					.format(
+						"%s is not an known language id, valid URI, or existing file name",
+						id));
+		    }
+		}
+		if (uri != null) {
+		    try {
+			MainHighlighter hl = loadHl(uri);
+			highlighters.put(id, hl);
+			return hl;
+		    } catch (Exception e) {
+			System.err.println(String.format(
+				"Unable to load highlighter from %s: %s", id, e
+					.getMessage()));
+		    }
+		}
+	    }
+	}
 	return highlighters.get(id);
     }
 
@@ -214,7 +260,7 @@ public class Config {
     }
 
     protected Config(String configFilename) {
-	boolean verbose = Boolean.getBoolean(VERBOSE_LOADING_PROPERTY);
+	verbose = Boolean.getBoolean(VERBOSE_LOADING_PROPERTY);
 	if (verbose) {
 	    System.out.println("Initializing xslthl " + Version.getVersion());
 	}
@@ -292,7 +338,7 @@ public class Config {
 	    }
 	} catch (Exception e) {
 	    System.err
-		    .println("XSLT Highlighter: Cannot read xslthl-config.xml, no custom highlighter will be available.\n");
+		    .println("XSLT Highlighter: Cannot read xslthl-config.xml, no custom highlighters will be available.");
 	}
 
 	if (!highlighters.containsKey("xml")) {
