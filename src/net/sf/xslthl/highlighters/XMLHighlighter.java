@@ -70,6 +70,11 @@ public class XMLHighlighter extends WholeHighlighter {
      * The style for comments
      */
     final static String STYLE_COMMENT = "comment";
+    
+    /**
+     * Style to use for the doctype part
+     */
+    final static String STYLE_DOCTYPE = "doccomment";
 
     final static Character APOSTROPHE = '\'';
     final static Character EQUALS = '=';
@@ -251,6 +256,19 @@ public class XMLHighlighter extends WholeHighlighter {
 			in.moveNext(3);
 			out.add(in.markedToStyledBlock(STYLE_ELEMENT));
 		    }
+		} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+			&& in.startsWith("DOCTYPE", 1)) {
+		    // doctype... just ignore most of it
+		    int cnt = 1;
+		    while (!in.finished() && cnt > 0) {
+			if (in.current().equals(GREATER_THAN)) {
+			    --cnt;
+			} else if (in.current().equals(LESS_THAN)) {
+			    ++cnt;
+			}
+			in.moveNext();
+		    }
+		    out.add(in.markedToStyledBlock(STYLE_DOCTYPE));
 		} else {
 		    // normal tag
 		    while (!in.finished()
