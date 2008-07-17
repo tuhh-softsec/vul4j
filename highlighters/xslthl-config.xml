@@ -25,7 +25,7 @@ Michal Molhanec <mol1111 at users.sourceforge.net>
 Jirka Kosek <kosek at users.sourceforge.net>
 Michiel Hendriks <elmuerte at users.sourceforge.net>
 
- -->
+-->
 <xslthl-config>
 	<highlighter id="java" file="java-hl.xml" />
 	<highlighter id="delphi" file="delphi-hl.xml" />
