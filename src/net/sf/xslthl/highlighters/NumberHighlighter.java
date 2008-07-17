@@ -13,7 +13,28 @@ import net.sf.xslthl.HighlighterConfigurationException;
 import net.sf.xslthl.Params;
 
 /**
- * 
+ * Recognizes numbers. Accepted parameters:
+ * <dl>
+ * <dt>point</dt>
+ * <dd>character used for the decimal point. If not declared no decimal points
+ * are accepted.</dd>
+ * <dt>thousands</dt>
+ * <dd>thousand separator</dd>
+ * <dt>exponent</dt>
+ * <dd>the string used for recognizing the exponent part of a floating point</dd>
+ * <dt>pointStarts</dt>
+ * <dd>a switch, when set the value defined as point can also be used to start a
+ * number. For example ".1234" would also be accepted as a number.</dd>
+ * <dt>prefix</dt>
+ * <dd>required start of a number, can be useful in the hexnumber highlighter to
+ * define how a hexadecimal number is started</dd>
+ * <dt>suffix</dt>
+ * <dd>an optional string that can be found after a number, can be define
+ * multiple times. This is often used to set the "size" of a integer or floating
+ * point.</dd>
+ * <dt>ignoreCase</dt>
+ * <dd>all strings parameters are case insensitive</dd>
+ * </dl>
  */
 public class NumberHighlighter extends Highlighter {
 
