@@ -30,6 +30,11 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 -->
 <highlighters>
 	<highlighter type="multiline-comment">
+		<start>/**</start>
+		<end>*/</end>
+		<style>doccomment</style>
+	</highlighter>
+	<highlighter type="multiline-comment">
 		<start>/*</start>
 		<end>*/</end>
 	</highlighter>
