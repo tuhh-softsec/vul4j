@@ -163,6 +163,12 @@ H1 {
 		</span>
 	</xsl:template>
 	
+	<xsl:template match="xslthl:xslt">
+		<span style="color: red;">
+			<xsl:value-of select="." />
+		</span>
+	</xsl:template>
+	
 	<!-- This template will perform the actual highlighting -->
 	<xsl:template name="syntax-highlight">
 		<xsl:param name="language" />

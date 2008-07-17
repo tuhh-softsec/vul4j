@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<highlighters>
+	<highlighter type="xml">
+		<elementPrefix>
+			<style>xslt</style>
+			<prefix>xsl:</prefix>
+			<prefix>xslt:</prefix>
+		</elementPrefix>
+	</highlighter>
+</highlighters>

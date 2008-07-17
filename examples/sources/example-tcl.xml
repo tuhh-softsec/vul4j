@@ -31,4 +31,17 @@ while {$bottles + 1} {
 		]]>
 	</code>
 	<para>Origin: http://www.99-bottles-of-beer.net/language-tcl-797.html</para>
+	<para>Additional examples</para>
+	<code xml:whitespace="preserve" language="tcl">
+		<![CDATA[
+# keywords starting with an '-' are not keyword		
+proc -proc { -swicth } {
+  switch -exact -- $-switch {
+    0       { expr {"No more bottles"}  }
+    1       { expr {"1 bottle"}         }
+    default { expr {"$count bottles"}   }
+  }
+}		
+		]]>
+	</code>
 </example-document>
