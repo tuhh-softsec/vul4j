@@ -120,7 +120,7 @@ public class HeredocHighlighter extends Highlighter {
 	}
 	while (!in.finished()
 		&& (Character.isLetterOrDigit(in.current()) || in.current() == '_')
-		&& quoted.equals(in.current())) {
+		&& !quoted.equals(in.current())) {
 	    heredocId.append(in.current());
 	    in.moveNext();
 	}
