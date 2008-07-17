@@ -10,8 +10,7 @@ import net.webassembletool.Driver;
 
 /**
  * Generates an HTML "base" tag pointing to a page inside the provider
- * application.<br />
- * This tag is an alternative to using the ProxyServlet.
+ * application.<br /> This tag is an alternative to using the ProxyServlet.
  * 
  * @author François-Xavier Bonnet
  * 
@@ -40,11 +39,11 @@ public class IncludeBaseTag extends TagSupport {
 	this.page = page;
     }
 
-    String getProvider() {
+    public String getProvider() {
 	return provider;
     }
 
-    void setProvider(String provider) {
+    public void setProvider(String provider) {
 	this.provider = provider;
     }
 }
