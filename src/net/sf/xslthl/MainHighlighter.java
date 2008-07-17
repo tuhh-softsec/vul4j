@@ -25,6 +25,7 @@
  */
 package net.sf.xslthl;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,12 +37,12 @@ public class MainHighlighter {
     /**
      * Normal highlighter
      */
-    protected List<Highlighter> highlighters = new LinkedList<Highlighter>();
+    protected List<Highlighter> highlighters = new ArrayList<Highlighter>();
 
     /**
      * 
      */
-    protected List<WholeHighlighter> wholehighlighters = new LinkedList<WholeHighlighter>();
+    protected List<WholeHighlighter> wholehighlighters = new ArrayList<WholeHighlighter>();
 
     public void add(Highlighter h) {
 	if (h instanceof WholeHighlighter) {
@@ -64,7 +65,7 @@ public class MainHighlighter {
      */
     public List<Block> highlight(String source) {
 	CharIter in = new CharIter(source);
-	List<Block> out = new LinkedList<Block>();
+	List<Block> out = new ArrayList<Block>();
 
 	if (highlighters.size() > 0) {
 	    while (!in.finished()) {

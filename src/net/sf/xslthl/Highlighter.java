@@ -73,13 +73,19 @@ public abstract class Highlighter {
 	    throw new HighlighterConfigurationException(
 		    "Required parameter 'style' is not set.");
 	}
-	// validates a valid XML name (note: ':' is not allowed)
-	// http://www.w3.org/TR/2000/REC-xml-20001006#NT-Letter
-	final Pattern XMLname = Pattern
-		.compile("[\\p{Ll}\\p{Lu}\\p{Lo}\\p{Lt}\\p{Nl}_][\\p{Ll}\\p{Lu}\\p{Lo}\\p{Lt}\\p{Nl}\\p{Mc}\\p{Me}\\p{Mn}\\p{Lm}\\p{Nd}_.-]*");
-	if (!XMLname.matcher(styleName).matches()) {
-	    throw new HighlighterConfigurationException(String.format(
-		    "%s is not a valid XML Name", styleName));
+	if (StyledBlock.NO_STYLE.equalsIgnoreCase(styleName)) {
+	    styleName = StyledBlock.NO_STYLE;
+	} else if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(styleName)) {
+	    styleName = StyledBlock.HIDDEN_STYLE;
+	} else {
+	    // validates a valid XML name (note: ':' is not allowed)
+	    // http://www.w3.org/TR/2000/REC-xml-20001006#NT-Letter
+	    final Pattern XMLname = Pattern
+		    .compile("[\\p{Ll}\\p{Lu}\\p{Lo}\\p{Lt}\\p{Nl}_][\\p{Ll}\\p{Lu}\\p{Lo}\\p{Lt}\\p{Nl}\\p{Mc}\\p{Me}\\p{Mn}\\p{Lm}\\p{Nd}_.-]*");
+	    if (!XMLname.matcher(styleName).matches()) {
+		throw new HighlighterConfigurationException(String.format(
+			"%s is not a valid XML Name", styleName));
+	    }
 	}
     }
 
