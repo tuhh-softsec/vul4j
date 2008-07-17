@@ -57,6 +57,15 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter type="heredoc">
 		<start>&lt;&lt;&lt;</start>
 	</highlighter>
+	<highlighter type="hexnumber">
+		<prefix>0x</prefix>
+		<ignoreCase />
+	</highlighter>
+	<highlighter type="number">
+		<point>.</point>
+		<exponent>e</exponent>
+		<ignoreCase />
+	</highlighter>
 	<highlighter type="keywords">
 		<keyword>and</keyword>
 		<keyword>or</keyword>

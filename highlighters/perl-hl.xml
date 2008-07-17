@@ -45,6 +45,15 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<escape>\</escape>
 		<spanNewLines/>
 	</highlighter>
+	<highlighter type="hexnumber">
+		<prefix>0x</prefix>
+		<ignoreCase />
+	</highlighter>
+	<highlighter type="number">
+		<point>.</point>
+		<pointStarts />
+		<ignoreCase />
+	</highlighter>
 	<highlighter type="keywords">
 		<keyword>if</keyword>
 		<keyword>unless</keyword>

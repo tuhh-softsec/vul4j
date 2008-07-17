@@ -54,6 +54,25 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<string>'</string>
 		<doubleEscapes />
 	</highlighter>
+	<highlighter type="hexnumber">
+		<prefix>#$</prefix>
+		<ignoreCase />
+		<style>string</style>		
+	</highlighter>
+	<highlighter type="number">
+		<prefix>#</prefix>
+		<ignoreCase />
+		<style>string</style>		
+	</highlighter>
+	<highlighter type="hexnumber">
+		<prefix>$</prefix>
+		<ignoreCase />
+	</highlighter>
+	<highlighter type="number">
+		<point>.</point>
+		<exponent>e</exponent>
+		<ignoreCase />
+	</highlighter>
 	<highlighter type="keywords">
   		<!-- Reserved words -->
 		<keyword>and</keyword>

@@ -39,6 +39,11 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter type="string">
 		<string>'</string>
 	</highlighter>
+	<highlighter type="number">
+		<point>.</point>
+		<exponent>e</exponent>
+		<ignoreCase />
+	</highlighter>
 	<highlighter type="keywords">
 		<keyword>and</keyword>
 		<keyword>array</keyword>

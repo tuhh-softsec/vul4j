@@ -38,6 +38,10 @@ freely, subject to the following restrictions:
 		</pattern>
 		<style>none</style>
 	</highlighter>
+	<highlighter type="number">
+		<point>.</point>
+		<ignoreCase />
+	</highlighter>
 	<highlighter type="keywords">
 		<!-- Tcl and itcl / structural -->
 		<keyword>if</keyword>

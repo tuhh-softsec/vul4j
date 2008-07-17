@@ -52,6 +52,18 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<string>'</string>
 		<escape>\</escape>
 	</highlighter>
+	<highlighter type="hexnumber">
+		<prefix>0x</prefix>
+		<suffix>l</suffix>
+		<ignoreCase />
+	</highlighter>
+	<highlighter type="number">
+		<point>.</point>
+		<pointStarts />
+		<exponent>e</exponent>
+		<suffix>l</suffix>
+		<ignoreCase />
+	</highlighter>
 	<highlighter type="keywords">
 		<keyword>and</keyword>
 		<keyword>del</keyword>

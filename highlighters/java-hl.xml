@@ -52,6 +52,18 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<valueStart>(</valueStart>
 		<valueEnd>)</valueEnd>
 	</highlighter>
+	<highlighter type="hexnumber">
+		<prefix>0x</prefix>
+		<ignoreCase />
+	</highlighter>
+	<highlighter type="number">
+		<point>.</point>
+		<exponent>e</exponent>
+		<suffix>f</suffix>
+		<suffix>d</suffix>
+		<suffix>l</suffix>
+		<ignoreCase />
+	</highlighter>
 	<highlighter type="keywords">
 		<keyword>abstract</keyword>
 		<keyword>boolean</keyword>
