@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import net.webassembletool.Driver;
 
@@ -18,23 +19,29 @@ import net.webassembletool.Driver;
  * 
  * 
  */
-public class IncludeTemplateTag extends AbstractReplaceableTag {
+public class IncludeTemplateTag extends BodyTagSupport implements
+	IReplaceableTag, IParameterTag {
+    private static final long serialVersionUID = 1L;
     private String name = null;
     private String page = null;
     private String provider;
     private Map<String, String> params = new HashMap<String, String>();
+    private Map<String, String> replaceRules = new HashMap<String, String>();
+    private Map<String, String> parameters = new HashMap<String, String>();
     Properties prop = null;
 
     public int doEndTag() throws JspException {
 	try {
 	    Driver.getInstance(provider).renderTemplate(page, name,
-		    pageContext, params, replaceRules);
+		    pageContext, params, replaceRules, parameters);
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}
 	name = null;
 	page = null;
 	params = new HashMap<String, String>();
+	replaceRules = new HashMap<String, String>();
+	parameters = new HashMap<String, String>();
 	return EVAL_PAGE;
     }
 
@@ -68,5 +75,23 @@ public class IncludeTemplateTag extends AbstractReplaceableTag {
 
     void setProvider(String provider) {
 	this.provider = provider;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.webassembletool.taglib.IReplaceableTag#getReplaceRules()
+     */
+    public Map<String, String> getReplaceRules() {
+	return replaceRules;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.webassembletool.taglib.IParameterTag#getParameters()
+     */
+    public Map<String, String> getParameters() {
+	return parameters;
     }
 }

@@ -1,8 +1,11 @@
 package net.webassembletool.taglib;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import net.webassembletool.Driver;
 
@@ -14,10 +17,14 @@ import net.webassembletool.Driver;
  * @author François-Xavier Bonnet
  * 
  */
-public class IncludeBlockTag extends AbstractReplaceableTag {
+public class IncludeBlockTag extends BodyTagSupport implements IReplaceableTag,
+	IParameterTag {
+    private static final long serialVersionUID = 1L;
     private String name;
     private String page;
     private String provider;
+    private Map<String, String> replaceRules = new HashMap<String, String>();
+    private Map<String, String> parameters = new HashMap<String, String>();
 
     public String getName() {
 	return name;
@@ -31,10 +38,15 @@ public class IncludeBlockTag extends AbstractReplaceableTag {
     public int doEndTag() throws JspException {
 	try {
 	    Driver.getInstance(provider).renderBlock(page, name, pageContext,
-		    replaceRules);
+		    replaceRules, parameters);
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}
+	name = null;
+	page = null;
+	provider = null;
+	replaceRules = new HashMap<String, String>();
+	parameters = new HashMap<String, String>();
 
 	return EVAL_PAGE;
     }
@@ -47,11 +59,30 @@ public class IncludeBlockTag extends AbstractReplaceableTag {
 	this.page = page;
     }
 
-    String getProvider() {
+    public String getProvider() {
 	return provider;
     }
 
-    void setProvider(String provider) {
+    public void setProvider(String provider) {
 	this.provider = provider;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.webassembletool.taglib.IReplaceableTag#getReplaceRules()
+     */
+    public Map<String, String> getReplaceRules() {
+	return replaceRules;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.webassembletool.taglib.IParameterTag#getParameters()
+     */
+    public Map<String, String> getParameters() {
+	return parameters;
+    }
+
 }

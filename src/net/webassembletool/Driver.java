@@ -79,7 +79,8 @@ public final class Driver {
 	    if (props.getProperty("timeout") != null) {
 		timeout = Integer.parseInt(props.getProperty("timeout"));
 		httpClient.getParams().setSoTimeout(timeout);
-		// httpClient.getHttpConnectionManager().getParams().setSoTimeout(
+		//httpClient.getHttpConnectionManager().getParams().setSoTimeout
+		// (
 		// timeout);
 
 		httpClient.getHttpConnectionManager().getParams()
@@ -116,8 +117,8 @@ public final class Driver {
      * to the properties file (driver.properties)
      * 
      * @param instanceName
-     *                The name of the instance (corresponding to the prefix in
-     *                the driver.properties file)
+     *            The name of the instance (corresponding to the prefix in the
+     *            driver.properties file)
      * 
      * @return the named instance
      */
@@ -139,7 +140,7 @@ public final class Driver {
      * Loads all the instances according to the properties parameter
      * 
      * @param props
-     *                properties to use for configuration
+     *            properties to use for configuration
      */
     public final static void configure(Properties props) {
 	instances = new HashMap<String, Driver>();
@@ -194,8 +195,7 @@ public final class Driver {
     /**
      * Retrieves a block from the provider application and writes it to a
      * Writer. Block can be defined in the provider application using HTML
-     * comments.<br />
-     * eg: a block name "myblock" should be delimited with
+     * comments.<br /> eg: a block name "myblock" should be delimited with
      * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
      * 
      * @param page
@@ -203,13 +203,14 @@ public final class Driver {
      * @param writer
      * @param context
      * @param replaceRules
-     *                the replace rules to be applied on the block
+     *            the replace rules to be applied on the block
+     * @param parameters
      * @throws IOException
      */
     public final void renderBlock(String page, String name, Writer writer,
-	    Context context, Map<String, String> replaceRules)
-	    throws IOException {
-	String content = getResourceAsString(page, context);
+	    Context context, Map<String, String> replaceRules,
+	    Map<String, String> parameters) throws IOException {
+	String content = getResourceAsString(page, context, parameters);
 	String beginString = "<!--$beginblock$" + name + "$-->";
 	String endString = "<!--$endblock$" + name + "$-->";
 	StringBuilder sb = new StringBuilder();
@@ -229,9 +230,9 @@ public final class Driver {
      * it. If there is no replace rule, returns the original string.
      * 
      * @param sb
-     *                the sb
+     *            the sb
      * @param replaceRules
-     *                the replace rules
+     *            the replace rules
      * 
      * @return the result of the replace rules
      */
@@ -252,18 +253,20 @@ public final class Driver {
      * writes it to the response.
      * 
      * @param relUrl
-     *                the relative URL to the resource
+     *            the relative URL to the resource
      * @param request
-     *                the request
+     *            the request
      * @param response
-     *                the response
+     *            the response
+     * @param parameters
      * @throws IOException
      */
     public final void renderResource(String relUrl, HttpServletRequest request,
-	    HttpServletResponse response) throws IOException {
+	    HttpServletResponse response, Map<String, String> parameters)
+	    throws IOException {
 	try {
 	    renderResource(relUrl, new ResponseOutput(request, response),
-		    getContext(request));
+		    getContext(request), parameters);
 	} catch (ResourceNotFoundException e) {
 	    response.sendError(HttpServletResponse.SC_NOT_FOUND,
 		    "Page not found: " + relUrl);
@@ -271,9 +274,10 @@ public final class Driver {
     }
 
     private final void renderResource(String relUrl, Output output,
-	    Context context) throws IOException, ResourceNotFoundException {
-	String httpUrl = getUrlForHttpResource(relUrl, context);
-	String fileUrl = getUrlForFileResource(relUrl, context);
+	    Context context, Map<String, String> parameters)
+	    throws IOException, ResourceNotFoundException {
+	String httpUrl = getUrlForHttpResource(relUrl, context, parameters);
+	String fileUrl = getUrlForFileResource(relUrl, context, parameters);
 	MultipleOutput multipleOutput = new MultipleOutput();
 	multipleOutput.addOutput(output);
 	MemoryResource cachedResource = null;
@@ -358,7 +362,8 @@ public final class Driver {
 	}
     }
 
-    private final String getUrlForFileResource(String relUrl, Context context) {
+    private final String getUrlForFileResource(String relUrl, Context context,
+	    Map<String, String> parameters) {
 	StringBuilder url = new StringBuilder("");
 	if (localBase != null && relUrl != null
 		&& (localBase.endsWith("/") || localBase.endsWith("\\"))
@@ -373,14 +378,15 @@ public final class Driver {
 	if (index > -1) {
 	    url = new StringBuilder(url.substring(0, index));
 	}
-	if (context != null) {
+	if (context != null || (parameters != null && parameters.size() > 0)) {
 	    // Append queryString hashcode to supply different cache filenames
-	    addContextToQueryString(url, context, true);
+	    addParametersAndContextToQueryString(url, context, parameters, true);
 	}
 	return url.toString();
     }
 
-    private final String getUrlForHttpResource(String relUrl, Context context) {
+    private final String getUrlForHttpResource(String relUrl, Context context,
+	    Map<String, String> parameters) {
 	StringBuilder url = new StringBuilder();
 	if (baseURL != null && relUrl != null && baseURL.endsWith("/")
 		&& relUrl.startsWith("/")) {
@@ -390,19 +396,29 @@ public final class Driver {
 	    url.append(baseURL).append(relUrl);
 	}
 
-	if (context != null) {
-	    addContextToQueryString(url, context, false);
+	if (context != null || (parameters != null && parameters.size() > 0)) {
+	    addParametersAndContextToQueryString(url, context, parameters,
+		    false);
 	}
+
 	return url.toString();
     }
 
-    private final void addContextToQueryString(StringBuilder url,
-	    Context context, boolean isFile) {
+    private final void addParametersAndContextToQueryString(StringBuilder url,
+	    Context context, Map<String, String> parameters, boolean isFile) {
 	StringBuilder queryString = new StringBuilder("");
-	for (Map.Entry<String, String> temp : context.getParameterMap()
-		.entrySet()) {
-	    queryString.append(temp.getKey()).append("=").append(
-		    temp.getValue()).append("&");
+	if (context != null) {
+	    for (Map.Entry<String, String> temp : context.getParameterMap()
+		    .entrySet()) {
+		queryString.append(temp.getKey()).append("=").append(
+			temp.getValue()).append("&");
+	    }
+	}
+	if (parameters != null) {
+	    for (Map.Entry<String, String> temp : parameters.entrySet()) {
+		queryString.append(temp.getKey()).append("=").append(
+			temp.getValue()).append("&");
+	    }
 	}
 	if (isFile)
 	    url.append("_").append(queryString.toString().hashCode());
@@ -414,12 +430,12 @@ public final class Driver {
     /**
      * Retrieves a template from the provider application and renders it to the
      * writer replacing the parameters with the given map. If "page" param is
-     * null, the whole page will be used as the template.<br />
-     * eg: The template "mytemplate" can be delimited in the provider page by
-     * comments "&lt;!--$begintemplate$mytemplate$--&gt;" and
-     * "&lt;!--$endtemplate$mytemplate$--&gt;".<br />
-     * Inside the template, the parameters can be defined by comments.<br />
-     * eg: parameter named "myparam" should be delimited by comments
+     * null, the whole page will be used as the template.<br /> eg: The template
+     * "mytemplate" can be delimited in the provider page by comments
+     * "&lt;!--$begintemplate$mytemplate$--&gt;" and
+     * "&lt;!--$endtemplate$mytemplate$--&gt;".<br /> Inside the template, the
+     * parameters can be defined by comments.<br /> eg: parameter named
+     * "myparam" should be delimited by comments
      * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
      * 
      * @param page
@@ -428,13 +444,15 @@ public final class Driver {
      * @param context
      * @param params
      * @param replaceRules
-     *                the replace rules to be applied on the block
+     *            the replace rules to be applied on the block
+     * @param parameters
      * @throws IOException
      */
     public final void renderTemplate(String page, String name, Writer writer,
 	    Context context, Map<String, String> params,
-	    Map<String, String> replaceRules) throws IOException {
-	String content = getResourceAsString(page, context);
+	    Map<String, String> replaceRules, Map<String, String> parameters)
+	    throws IOException {
+	String content = getResourceAsString(page, context, parameters);
 	StringBuilder sb = new StringBuilder();
 	if (content != null) {
 	    if (name != null) {
@@ -492,11 +510,11 @@ public final class Driver {
      * @throws IOException
      * @throws HttpException
      */
-    private final String getResourceAsString(String relUrl, Context context)
-	    throws HttpException, IOException {
+    private final String getResourceAsString(String relUrl, Context context,
+	    Map<String, String> parameters) throws HttpException, IOException {
 	StringOutput stringOutput = new StringOutput();
 	try {
-	    renderResource(relUrl, stringOutput, context);
+	    renderResource(relUrl, stringOutput, context, parameters);
 	    return stringOutput.toString();
 	} catch (ResourceNotFoundException e) {
 	    log.error("Page not found: " + relUrl);
@@ -542,16 +560,17 @@ public final class Driver {
     }
 
     public final void renderBlock(String page, String name,
-	    PageContext pageContext, HashMap<String, String> replaceRules)
-	    throws IOException {
+	    PageContext pageContext, Map<String, String> replaceRules,
+	    Map<String, String> parameters) throws IOException {
 	renderBlock(page, name, pageContext.getOut(), getContext(pageContext),
-		replaceRules);
+		replaceRules, parameters);
     }
 
     public final void renderTemplate(String page, String name,
 	    PageContext pageContext, Map<String, String> params,
-	    Map<String, String> replaceRules) throws IOException {
+	    Map<String, String> replaceRules, Map<String, String> parameters)
+	    throws IOException {
 	renderTemplate(page, name, pageContext.getOut(),
-		getContext(pageContext), params, replaceRules);
+		getContext(pageContext), params, replaceRules, parameters);
     }
 }
