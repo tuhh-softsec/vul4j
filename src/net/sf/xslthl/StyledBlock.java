@@ -25,7 +25,19 @@
  */
 package net.sf.xslthl;
 
+/**
+ * A block with a style
+ */
 public class StyledBlock extends Block {
+    /**
+     * Do not add a style, just "block" it
+     */
+    public static final String NO_STYLE = "none";
+
+    /**
+     * Remove this part from the result
+     */
+    public static final String HIDDEN_STYLE = "hidden";
 
     /**
      * The style name
@@ -44,7 +56,24 @@ public class StyledBlock extends Block {
      */
     @Override
     public String toString() {
+	if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style)) {
+	    return "";
+	}
 	return String.format("<%s>%s</%s>", getStyle(), getText(), getStyle());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see net.sf.xslthl.Block#getText()
+     */
+    @Override
+    public String getText() {
+	if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style)) {
+	    return "";
+	}
+
+	return super.getText();
     }
 
     /**
@@ -61,7 +90,8 @@ public class StyledBlock extends Block {
      */
     @Override
     public boolean isStyled() {
-	return true;
+	return style != null && !StyledBlock.NO_STYLE.equalsIgnoreCase(style)
+		&& !StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style);
     }
 
 }

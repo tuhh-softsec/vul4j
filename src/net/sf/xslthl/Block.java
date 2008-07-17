@@ -25,8 +25,14 @@
  */
 package net.sf.xslthl;
 
+/**
+ * A block of text
+ */
 public class Block {
 
+    /**
+     * The content of this block
+     */
     protected String text;
 
     public Block(String text) {
