@@ -23,9 +23,9 @@
 	
 	<!-- the following is to make sure all elements are highlighted -->
 	<xsl:template match="xslthl:keyword">
-		<b>
+		<span style="font-weight: bold;">
 			<xsl:value-of select="." />
-		</b>
+		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:string">
 		<span style="color: blue;">
