@@ -250,29 +250,6 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
     }
 
     /**
-     * @return return true if the created matcher has a match
-     */
-    @Deprecated
-    public boolean find() {
-	boolean found = matcher.find();
-	if (found) {
-	    position = matcher.start();
-	} else {
-	    moveToEnd();
-	}
-	return found;
-    }
-
-    /**
-     * Mark the matched section
-     */
-    @Deprecated
-    public void markMatched() {
-	setMark(position);
-	position = matcher.end();
-    }
-
-    /**
      * @return
      */
     public int getPosition() {
