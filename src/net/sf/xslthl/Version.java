@@ -62,7 +62,6 @@ public class Version {
 	private static String type = null;
 
 	static {
-	    System.out.println("Loading version data");
 	    Properties prop = new Properties();
 	    InputStream is = VersionInternal.class
 		    .getResourceAsStream("version.properties");

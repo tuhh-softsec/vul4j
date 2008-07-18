@@ -115,6 +115,9 @@ H1 {
 	</xsl:template>
 	
 	<!-- highlighting of the xslthl tags -->
+	<xsl:template match="xslthl:*">
+		<xsl:value-of select="." /><!-- fallback -->
+	</xsl:template>
 	<xsl:template match="xslthl:keyword">
 		<b>
 			<xsl:value-of select="." />
