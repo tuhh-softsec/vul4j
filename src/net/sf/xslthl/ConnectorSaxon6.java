@@ -41,6 +41,10 @@ import com.icl.saxon.om.NodeInfo;
 import com.icl.saxon.pattern.AnyNodeTest;
 import com.icl.saxon.tree.AttributeCollection;
 
+/**
+ * Connector for Saxon 6. For newer saxon versions the ConnectorSaxonB should be
+ * used.
+ */
 public class ConnectorSaxon6 {
 
     private static void blockToSaxon6Node(Block b, Builder builder,
@@ -56,50 +60,6 @@ public class ConnectorSaxon6 {
 	} else {
 	    builder.characters(b.getText().toCharArray(), 0, b.getText()
 		    .length());
-	}
-    }
-
-    /**
-     * Performs a deep copy of a node. This is needed to include non highlighted
-     * tags in the return of the highlight function
-     * 
-     * @param builder
-     * @param pool
-     * @param node
-     * @throws Exception
-     */
-    @Deprecated
-    protected static void deepCopy(Builder builder, NamePool pool, NodeInfo node)
-	    throws Exception {
-	if (node.getNodeType() == NodeInfo.ELEMENT) {
-	    AttributeCollection attrs = new AttributeCollection(pool);
-	    NodeEnumeration ne = node.getEnumeration(Axis.ATTRIBUTE,
-		    AnyNodeTest.getInstance());
-	    while (ne.hasMoreElements()) {
-		NodeInfo attr = ne.nextElement();
-		attrs.addAttribute(attr.getPrefix(), attr.getURI(), attr
-			.getLocalName(), "", attr.getStringValue());
-	    }
-	    int elm = pool.allocate(node.getPrefix(), node.getURI(), node
-		    .getLocalName());
-	    builder.startElement(elm, attrs, new int[0], 0);
-	    ne = node.getEnumeration(Axis.CHILD, AnyNodeTest.getInstance());
-	    while (ne.hasMoreElements()) {
-		deepCopy(builder, pool, ne.nextElement());
-	    }
-	    builder.endElement(elm);
-	} else if (node.getNodeType() == NodeInfo.TEXT) {
-	    String s = node.getStringValue();
-	    builder.characters(s.toCharArray(), 0, s.length());
-	} else if (node.getNodeType() == NodeInfo.COMMENT) {
-	    String s = node.getStringValue();
-	    builder.comment(s.toCharArray(), 0, s.length());
-	} else if (node.getNodeType() == NodeInfo.PI) {
-	    builder.processingInstruction(node.getLocalName(), node
-		    .getStringValue());
-	} else {
-	    System.err.println("Unknown node type in deepCopy: "
-		    + node.getNodeType());
 	}
     }
 
