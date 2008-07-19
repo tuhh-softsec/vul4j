@@ -28,6 +28,7 @@ package net.sf.xslthl;
 import java.util.Collection;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -46,12 +47,40 @@ public class Params {
     }
 
     /**
+     * Return the text content for the given element. This is different from the
+     * Element.getTextContect() function in a way that normal text nodes are
+     * trimmed and CDATA is used AS IS
+     * 
+     * @param elm
+     * @return
+     */
+    protected String getTextContent(Node elm) {
+	if (elm == null) {
+	    return "";
+	}
+	StringBuilder sb = new StringBuilder();
+	NodeList list = elm.getChildNodes();
+	for (int i = 0; i < list.getLength(); i++) {
+	    Node n = list.item(i);
+	    if (sb.length() > 0) {
+		sb.append(' ');
+	    }
+	    if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
+		sb.append(n.getTextContent());
+	    } else {
+		sb.append(n.getTextContent().trim());
+	    }
+	}
+	return sb.toString();
+    }
+
+    /**
      * Get the current element as value
      * 
      * @return
      */
     public String getParam() {
-	return paramElem.getTextContent().trim();
+	return getTextContent(paramElem);
     }
 
     /**
@@ -76,7 +105,7 @@ public class Params {
 	if (nodes.getLength() == 0) {
 	    return defaultValue;
 	}
-	return nodes.item(0).getTextContent().trim();
+	return getTextContent(nodes.item(0));
     }
 
     /**
@@ -99,15 +128,6 @@ public class Params {
     }
 
     /**
-     * @deprecated Use {@link #getMutliParams(String,Collection<String>)}
-     *             instead
-     */
-    @Deprecated
-    void load(String name, Collection<String> list) {
-	getMutliParams(name, list);
-    }
-
-    /**
      * Load multiple parameters into a list
      * 
      * @param name
@@ -117,20 +137,8 @@ public class Params {
 	NodeList nodes = paramElem.getElementsByTagName(name);
 	for (int i = 0; i < nodes.getLength(); i++) {
 	    Element elem = (Element) nodes.item(i);
-	    list.add(elem.getTextContent().trim());
+	    list.add(getTextContent(elem));
 	}
-    }
-
-    /**
-     * @throws HighlighterConfigurationException
-     * @deprecated Use {@link
-     *             #getMultiParams(String,Collection<T>,ParamsLoader<? extends
-     *             T>)} instead
-     */
-    @Deprecated
-    <T> void load(String name, Collection<T> list,
-	    ParamsLoader<? extends T> loader) throws HighlighterConfigurationException {
-	getMultiParams(name, list, loader);
     }
 
     /**
@@ -140,10 +148,11 @@ public class Params {
      * @param name
      * @param list
      * @param loader
-     * @throws HighlighterConfigurationException 
+     * @throws HighlighterConfigurationException
      */
     public <T> void getMultiParams(String name, Collection<T> list,
-	    ParamsLoader<? extends T> loader) throws HighlighterConfigurationException {
+	    ParamsLoader<? extends T> loader)
+	    throws HighlighterConfigurationException {
 	NodeList nodes = paramElem.getElementsByTagName(name);
 	for (int i = 0; i < nodes.getLength(); i++) {
 	    Element elem = (Element) nodes.item(i);

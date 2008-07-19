@@ -40,6 +40,9 @@ import net.sf.xslthl.Params;
  * <dd>How the single line comment starts <b>Required.</b></dd>
  * <dt>lineBreakEscape</dt>
  * <dd>string that can be used to break the line and continue on the next line</dd>
+ * <dt>solitary</dt>
+ * <dd>a switch, if set the comment must not be preceded by non whitespace on
+ * the line</dd>
  * </dl>
  */
 public class OnelineCommentHighlighter extends Highlighter {
@@ -53,6 +56,8 @@ public class OnelineCommentHighlighter extends Highlighter {
      * String used to escape a newline
      */
     protected String lineBreakEscape;
+
+    protected boolean solitary;
 
     @Override
     public void init(Params params) throws HighlighterConfigurationException {
@@ -68,6 +73,7 @@ public class OnelineCommentHighlighter extends Highlighter {
 	    throw new HighlighterConfigurationException(
 		    "Required parameter 'start' is not set.");
 	}
+	solitary = params.isSet("solitary");
     }
 
     /*
@@ -78,6 +84,17 @@ public class OnelineCommentHighlighter extends Highlighter {
     @Override
     public boolean startsWith(CharIter in) {
 	if (in.startsWith(start)) {
+	    if (solitary) {
+		int i = 1;
+		while (i < in.getPosition()
+			&& Character.isWhitespace(in.prev(i))) {
+		    if (isNewLine(in.prev(i))) {
+			return true;
+		    }
+		    ++i;
+		}
+		return false;
+	    }
 	    return true;
 	}
 	return false;
