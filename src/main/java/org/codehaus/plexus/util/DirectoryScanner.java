@@ -687,6 +687,10 @@ public class DirectoryScanner
              * NOTE: I can't find the problematic code, as it appears to come from a native method 
              * in UnixFileSystem...
              */
+            /*
+             * [bentmann] A null array will also be returned from list() on NTFS when dir refers to a soft link or
+             * junction point whose target is not existent.
+             */
             newfiles = new String[0];
             
             // throw new IOException( "IO error scanning directory " + dir.getAbsolutePath() );
