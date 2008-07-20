@@ -84,4 +84,37 @@ public class DirectoryScannerTest
         assertTrue( "4 not found.", fileNames.contains( new File( "scanner4.dat" ) ) );
         assertTrue( "5 not found.", fileNames.contains( new File( "scanner5.dat" ) ) );
     }
+
+    private void createTestDirectories()
+        throws IOException
+    {
+        FileUtils.mkdir( testDir + File.separator + "directoryTest" );
+        FileUtils.mkdir( testDir + File.separator + "directoryTest" + File.separator + "testDir123" );
+        FileUtils.mkdir( testDir + File.separator + "directoryTest" + File.separator + "test_dir_123" );
+        FileUtils.mkdir( testDir + File.separator + "directoryTest" + File.separator + "test-dir-123" );
+        this.createFile( new File( testDir + File.separator + "directoryTest" + File.separator + "testDir123"
+            + File.separator + "file1.dat" ), 0 );
+        this.createFile( new File( testDir + File.separator + "directoryTest" + File.separator + "test_dir_123"
+            + File.separator + "file1.dat" ), 0 );
+        this.createFile( new File( testDir + File.separator + "directoryTest" + File.separator + "test-dir-123"
+            + File.separator + "file1.dat" ), 0 );
+    }
+
+    public void testDirectoriesWithHyphens()
+        throws IOException
+    {
+        this.createTestDirectories();
+
+        DirectoryScanner ds = new DirectoryScanner();
+        String[] includes = { "**/*.dat" };
+        String[] excludes = { "" };
+        ds.setIncludes( includes );
+        ds.setExcludes( excludes );
+        ds.setBasedir( new File( testDir + File.separator + "directoryTest" ) );
+        ds.setCaseSensitive( true );
+        ds.scan();
+
+        String[] files = ds.getIncludedFiles();
+        assertEquals( "Wrong number of results.", 3, files.length );
+    }
 }
