@@ -1576,7 +1576,7 @@ public class FileUtils
      * @param excludes  the excludes pattern, comma separated
      * @return a list of File objects
      * @throws IOException
-     * @see getFileNames( File, String, String, boolean )
+     * @see #getFileNames( File, String, String, boolean )
      */
     public static List getFiles( File directory, String includes, String excludes )
         throws IOException
@@ -1593,7 +1593,7 @@ public class FileUtils
      * @param includeBasedir true to include the base dir in each file
      * @return a list of File objects
      * @throws IOException
-     * @see getFileNames( File, String, String, boolean )
+     * @see #getFileNames( File, String, String, boolean )
      */
     public static List getFiles( File directory, String includes, String excludes, boolean includeBasedir )
         throws IOException
@@ -2092,7 +2092,7 @@ public class FileUtils
      * @param f not null file
      * @return <code>false</code> if the file path contains any of forbidden Windows characters,
      * <code>true</code> if the Os is not Windows or if the file path respect the Windows constraints.
-     * @see #INVALID_CHARACTERS_FOR_WINDOWS_FILE
+     * @see #INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME
      * @since 1.5.2
      */
     public static boolean isValidWindowsFileName( File f )

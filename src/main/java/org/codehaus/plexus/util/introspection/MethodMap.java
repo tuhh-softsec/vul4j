@@ -70,7 +70,7 @@ public class MethodMap
     /**
      * Return a list of methods with the same name.
      *
-     * @param String key
+     * @param key The name of the method.
      * @return List list of methods
      */
     public List get(String key)

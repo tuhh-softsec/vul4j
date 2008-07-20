@@ -296,8 +296,8 @@ public abstract class CommandLineUtils
     }
 
     /**
-     * Kill a process launched by executeCommandLine methods
-     * Doesn't work correctly on windows, only the cmd process will be destroy but not the sub process (<a href="http://bugs.sun.com/bugdatabase/view_bug.do;:YfiG?bug_id=4770092">Bug ID 4770092</a>)
+     * Kill a process launched by executeCommandLine methods.
+     * Doesn't work correctly on windows, only the cmd process will be destroy but not the sub process (<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4770092">Bug ID 4770092</a>)
      *
      * @param pid The pid of command return by Commandline.getPid()
      */

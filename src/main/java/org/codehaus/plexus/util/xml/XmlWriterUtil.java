@@ -163,7 +163,6 @@ public class XmlWriterUtil
      * @param comment
      * @param indent positive number
      * @param indentSize positive number
-     * @param columnSize positive number
      * @see #DEFAULT_COLUMN_LINE
      * @see #writeComment(XMLWriter, String, int, int, int)
      */
