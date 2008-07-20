@@ -166,7 +166,7 @@ public abstract class CommandLineUtils
             {
                 synchronized ( inputFeeder )
                 {
-                    if ( !inputFeeder.isDone() )
+                    while ( !inputFeeder.isDone() )
                     {
                         inputFeeder.wait();
                     }
@@ -175,7 +175,7 @@ public abstract class CommandLineUtils
 
             synchronized ( outputPumper )
             {
-                if ( !outputPumper.isDone() )
+                while ( !outputPumper.isDone() )
                 {
                     outputPumper.wait();
                 }
@@ -183,7 +183,7 @@ public abstract class CommandLineUtils
 
             synchronized ( errorPumper )
             {
-                if ( !errorPumper.isDone() )
+                while ( !errorPumper.isDone() )
                 {
                     errorPumper.wait();
                 }
