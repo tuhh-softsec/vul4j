@@ -1241,4 +1241,66 @@ public final class FileUtilsTest
             assertFalse( FileUtils.isValidWindowsFileName( f ) );
         }
     }
+
+    public void testDeleteDirectoryWithValidFileSymlink()
+        throws Exception
+    {
+        File symlinkTarget = new File( getTestDirectory(), "fileSymlinkTarget" );
+        createFile( symlinkTarget, 1 );
+        File symlink = new File( getTestDirectory(), "fileSymlink" );
+        createSymlink( symlink, symlinkTarget );
+        try
+        {
+            FileUtils.deleteDirectory( getTestDirectory() );
+        }
+        finally
+        {
+            /*
+             * Ensure to cleanup problematic symlink or "mvn clean" will fail
+             */
+            symlink.delete();
+        }
+        assertTrue( "Failed to delete test directory", !getTestDirectory().exists() );
+    }
+
+    public void testDeleteDirectoryWithValidDirSymlink()
+        throws Exception
+    {
+        File symlinkTarget = new File( getTestDirectory(), "dirSymlinkTarget" );
+        symlinkTarget.mkdir();
+        File symlink = new File( getTestDirectory(), "dirSymlink" );
+        createSymlink( symlink, symlinkTarget );
+        try
+        {
+            FileUtils.deleteDirectory( getTestDirectory() );
+        }
+        finally
+        {
+            /*
+             * Ensure to cleanup problematic symlink or "mvn clean" will fail
+             */
+            symlink.delete();
+        }
+        assertTrue( "Failed to delete test directory", !getTestDirectory().exists() );
+    }
+
+    public void testDeleteDirectoryWithDanglingSymlink()
+        throws Exception
+    {
+        File symlinkTarget = new File( getTestDirectory(), "missingSymlinkTarget" );
+        File symlink = new File( getTestDirectory(), "danglingSymlink" );
+        createSymlink( symlink, symlinkTarget );
+        try
+        {
+            FileUtils.deleteDirectory( getTestDirectory() );
+        }
+        finally
+        {
+            /*
+             * Ensure to cleanup problematic symlink or "mvn clean" will fail
+             */
+            symlink.delete();
+        }
+        assertTrue( "Failed to delete test directory", !getTestDirectory().exists() );
+    }
 }

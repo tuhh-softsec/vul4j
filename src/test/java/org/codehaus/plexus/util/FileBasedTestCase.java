@@ -81,6 +81,24 @@ public abstract class FileBasedTestCase
         }
     }
 
+    protected boolean createSymlink( final File link, final File target )
+    {
+        try
+        {
+            String[] args = { "ln", "-s", target.getAbsolutePath(), link.getAbsolutePath() };
+            Process process = Runtime.getRuntime().exec( args );
+            process.waitFor();
+            if ( 0 != process.exitValue() )
+                return false;
+        }
+        catch ( Exception e )
+        {
+            // assume platform does not support "ln" command, tests should be skipped
+            return false;
+        }
+        return true;
+    }
+
     protected byte[] generateTestData( final long size )
     {
         try
