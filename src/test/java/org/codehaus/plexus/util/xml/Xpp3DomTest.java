@@ -4,6 +4,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
@@ -151,6 +152,32 @@ public class Xpp3DomTest
         assertEquals( dom, dom );
         assertFalse( dom.equals( null ) );
         assertFalse( dom.equals( new Xpp3Dom( (String) null ) ) );
+    }
+
+    public void testEqualsIsNullSafe()
+        throws XmlPullParserException, IOException
+    {
+        String testDom = "<configuration><items thing='blah'><item>one</item><item>two</item></items></configuration>";
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( testDom ) );
+        Xpp3Dom dom2 = Xpp3DomBuilder.build( new StringReader( testDom ) );
+
+        try
+        {
+            dom2.attributes = new HashMap();
+            dom2.attributes.put( "nullValue", null );
+            dom2.attributes.put( null, "nullKey" );
+            dom2.childList.clear();
+            dom2.childList.add( null );
+
+            assertFalse( dom.equals( dom2 ) );
+            assertFalse( dom2.equals( dom ) );
+
+        }
+        catch ( NullPointerException ex )
+        {
+            ex.printStackTrace();
+            fail( "\nNullPointerExceptions should not be thrown." );
+        }
     }
 
     public void testShouldOverwritePluginConfigurationSubItemsByDefault()

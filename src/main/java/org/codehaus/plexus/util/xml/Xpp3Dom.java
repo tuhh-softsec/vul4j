@@ -450,11 +450,11 @@ public class Xpp3Dom
         {
             return false;
         }
-        else if ( attributes == null ? dom.attributes != null : !dom.attributes.equals( attributes ) )
+        else if ( attributes == null ? dom.attributes != null : !attributes.equals( dom.attributes ) )
         {
             return false;
         }
-        else if ( childList == null ? dom.childList != null : !dom.childList.equals( childList ) )
+        else if ( childList == null ? dom.childList != null : !childList.equals( dom.childList ) )
         {
             return false;
         }
