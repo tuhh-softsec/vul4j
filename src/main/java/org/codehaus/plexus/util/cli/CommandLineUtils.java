@@ -211,10 +211,19 @@ public abstract class CommandLineUtils
         }
     }
 
+    /**
+     * Gets the shell environment variables for this process. Note that the returned mapping from variable names to
+     * values will always be case-sensitive regardless of the platform, i.e. <code>getSystemEnvVars().get("path")</code>
+     * and <code>getSystemEnvVars().get("PATH")</code> will in general return different values. However, on platforms
+     * with case-insensitive environment variables like Windows, all variable names will be normalized to upper case.
+     * 
+     * @return The shell environment variables, can be empty but never <code>null</code>.
+     * @throws IOException If the environment variables could not be queried from the shell.
+     */
     public static Properties getSystemEnvVars()
         throws IOException
     {
-        return getSystemEnvVars( true );
+        return getSystemEnvVars( !Os.isFamily( Os.FAMILY_WINDOWS ) );
     }
 
     /**
