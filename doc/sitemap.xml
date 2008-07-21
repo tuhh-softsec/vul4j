@@ -3,30 +3,30 @@
 	<url>
 		<loc>http://webassembletool.sourceforge.net/</loc>
 		<changefreq>weekly</changefreq>
-		<priority>0.</priority>
+		<priority>0.8</priority>
 	</url>
 	<url>
 		<loc>http://webassembletool.sourceforge.net/index.html</loc>
 		<changefreq>weekly</changefreq>
-		<priority>0.</priority>
+		<priority>0.0</priority>
 	</url>
 	<url>
 		<loc>http://webassembletool.sourceforge.net/features.html</loc>
 		<changefreq>weekly</changefreq>
-		<priority>0.</priority>
+		<priority>0.4</priority>
 	</url>
 	<url>
 		<loc>
 			http://webassembletool.sourceforge.net/quickstart.html
 		</loc>
 		<changefreq>weekly</changefreq>
-		<priority>0.</priority>
+		<priority>0.4</priority>
 	</url>
 	<url>
 		<loc>
 			http://webassembletool.sourceforge.net/javadoc/index.html
 		</loc>
 		<changefreq>weekly</changefreq>
-		<priority>0.</priority>
+		<priority>0.4S</priority>
 	</url>
 </urlset>
