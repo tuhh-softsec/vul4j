@@ -55,10 +55,11 @@
 		<delete>
 			<fileset dir="bin/doc" />
 		</delete>
-		<xslt style="doc/stylesheet.xsl" destdir="bin" includes="doc/*.xml" excludes="doc/menu.xml">
+		<xslt style="doc/stylesheet.xsl" destdir="bin" includes="doc/*.xml" excludes="doc/menu.xml,doc/sitemap.xml">
 		</xslt>
 		<copy todir="bin/doc">
-			<fileset dir="doc" excludes="*.xml,*.xsl,schemas.ppt"/>
+			<fileset dir="doc" excludes="*.xml,*.xsl,schemas.ppt" />
+			<fileset file="doc/sitemap.xml" />
 		</copy>
 	</target>
 </project>

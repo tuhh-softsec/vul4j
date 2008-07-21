@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
+	<url>
+		<loc>http://webassembletool.sourceforge.net/</loc>
+		<changefreq>weekly</changefreq>
+		<priority>0.</priority>
+	</url>
+	<url>
+		<loc>http://webassembletool.sourceforge.net/index.html</loc>
+		<changefreq>weekly</changefreq>
+		<priority>0.</priority>
+	</url>
+	<url>
+		<loc>http://webassembletool.sourceforge.net/features.html</loc>
+		<changefreq>weekly</changefreq>
+		<priority>0.</priority>
+	</url>
+	<url>
+		<loc>
+			http://webassembletool.sourceforge.net/quickstart.html
+		</loc>
+		<changefreq>weekly</changefreq>
+		<priority>0.</priority>
+	</url>
+	<url>
+		<loc>
+			http://webassembletool.sourceforge.net/javadoc/index.html
+		</loc>
+		<changefreq>weekly</changefreq>
+		<priority>0.</priority>
+	</url>
+</urlset>

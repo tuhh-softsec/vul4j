@@ -8,8 +8,7 @@
 				<meta name="keywords" content="Website Assembling Toolkit,WAT,webassembletool,portal,jsr 168,web clipping,web scraping,ESI,JESI,Edge Side Include,SSI,Tiles,frame,iframe,Java,integration,agregation,mashup"/>
 				<meta name="description" content="Website Assembling Toolkit, the tool for developpers to integrate web applications together"/>
 				<meta name="author" content="François-Xavier Bonnet"/>
-				
-			</head>
+				<meta name="verify-v1" content="1ryEsoSGASwBoIJBnGDudtyAxYm+A1fEae6TJLtTzEE=" />			</head>
 			<body>
 				<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
 				<div class="title">Website Assembling Toolkit</div>
