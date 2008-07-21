@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  */
 public class ProxyServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
     private String provider;
 
     @Override

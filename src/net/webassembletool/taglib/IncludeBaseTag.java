@@ -16,6 +16,7 @@ import net.webassembletool.Driver;
  * 
  */
 public class IncludeBaseTag extends TagSupport {
+    private static final long serialVersionUID = 1L;
     private String page;
     private String provider;
 
