@@ -349,9 +349,6 @@ public class XMLHighlighter extends WholeHighlighter {
 			}
 		    }
 		}
-		if (!in.finished()) {
-		    in.moveNext();
-		}
 	    } else {
 		in.moveNext();
 	    }

@@ -50,6 +50,10 @@ below.
 <a href='do_add_devpak.php' id='yeslink'>Yes, all information is correct.</a>
 </p>
 
+<p><a href="http://sourceforge.net/tracker/index.php?func=detail&aid=2023748&group_id=153524&atid=788111">bug #2023748</a> test
+<b><u>underlined</u> and bold</b>
+</p>
+
 </xsl:template>
 
 <otherElement>dfsf</otherElement>
