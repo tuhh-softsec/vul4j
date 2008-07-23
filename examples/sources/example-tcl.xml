@@ -35,7 +35,7 @@ while {$bottles + 1} {
 	<code xml:whitespace="preserve" language="tcl">
 		<![CDATA[
 # keywords starting with an '-' are not keyword		
-proc -proc { -swicth } {
+proc -proc { -switch } {
   switch -exact -- $-switch {
     0       { expr {"No more bottles"}  }
     1       { expr {"1 bottle"}         }

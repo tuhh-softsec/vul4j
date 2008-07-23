@@ -50,4 +50,9 @@ public final class Example {
 		]]></programlisting>
 	</example>
 	<para>To mix highlighters like this you need to make an adjustment to the DocBook XSL to allow highlighting in the code elements.</para>
+	<para>The following example presents using imported text through a textobject, the example imported is the source document.</para>
+	<example xml:id="example.importtext">
+		<title>Example listing with imported text</title>
+		<programlisting language="xml" xml:space="preserve"><textobject><textdata fileref="sample-article.xml" /></textobject></programlisting>
+	</example>
 </article>
