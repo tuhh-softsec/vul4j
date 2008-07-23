@@ -138,7 +138,7 @@ H1 {
 			<xsl:value-of select="." />
 		</span>
 	</xsl:template>
-	<xsl:template match="xslthl:doccomment">
+	<xsl:template match="xslthl:doccomment|xslthl:doctype">
 		<span style="color: teal; font-style: italic;">
 			<xsl:value-of select="." />
 		</span>

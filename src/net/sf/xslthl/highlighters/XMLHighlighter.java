@@ -105,7 +105,7 @@ public class XMLHighlighter extends WholeHighlighter {
     /**
      * Style to use for the doctype part
      */
-    protected String styleDoctype = "doccomment";
+    protected String styleDoctype = "doctype";
 
     /**
      * @param tagName
