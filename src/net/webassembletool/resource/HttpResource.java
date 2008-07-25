@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketTimeoutException;
 
+import net.webassembletool.Context;
 import net.webassembletool.ouput.Output;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
@@ -17,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Resource implementation pointing to a resource on an external application.
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  * 
  */
 public class HttpResource implements Resource {
@@ -25,10 +26,12 @@ public class HttpResource implements Resource {
     private GetMethod getMethod;
     private boolean exists = false;
 
-    public HttpResource(HttpClient httpClient, String url) {
+    public HttpResource(HttpClient httpClient, String url, Context context) {   
+	if (context != null && context.getHttpState() != null) httpClient.setState(context.getHttpState());
 	getMethod = new GetMethod(url);
 	try {
 	    httpClient.executeMethod(getMethod);
+	    if (context != null) context.setHttpState(httpClient.getState());
 	    exists = (getMethod.getStatusCode() == 200);
 	} catch (ConnectTimeoutException e) {
 	    log.warn("Connect timeout retrieving URL: " + url);
