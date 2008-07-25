@@ -27,6 +27,7 @@ import net.webassembletool.resource.HttpResource;
 import net.webassembletool.resource.MemoryResource;
 import net.webassembletool.resource.ResourceNotFoundException;
 
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -42,7 +43,7 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
  * To improve performance, the Driver uses a cache that can be configured
  * depending on the needs.
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  * 
  */
 public final class Driver {
@@ -98,6 +99,16 @@ public final class Driver {
 	localBase = props.getProperty("localBase");
 	if (props.getProperty("putInCache") != null)
 	    putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
+	
+	//proxy settings
+	if (props.getProperty("proxyHost") != null
+		&& props.getProperty("proxyPort") != null) {
+	    String proxyHost = props.getProperty("proxyHost");
+	    int proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
+	    HostConfiguration config = 
+		httpClient.getHostConfiguration();  
+	    config.setProxy(proxyHost, proxyPort);	  
+	}	
 	if (props.getProperty("useCache") != null)
 	    useCache = Boolean.parseBoolean(props.getProperty("useCache"));
     }
@@ -224,6 +235,24 @@ public final class Driver {
 	}
 	writer.append(replace(sb, replaceRules));
     }
+    
+    public final String renderBlock(String page, String name, 
+	    Context context, Map<String, String> replaceRules,
+	    Map<String, String> parameters) throws IOException {
+	String content = getResourceAsString(page, context, parameters);
+	String beginString = "<!--$beginblock$" + name + "$-->";
+	String endString = "<!--$endblock$" + name + "$-->";
+	StringBuilder sb = new StringBuilder();
+	int begin = content.indexOf(beginString);
+	int end = content.indexOf(endString);
+	if (begin == -1 || end == -1) {
+	    log.warn("Block not found: page=" + page + " block=" + name);
+	} else {
+	    log.debug("Serving block: page=" + page + " block=" + name);
+	    sb.append(content.substring(begin, end));
+	}
+	return replace(sb, replaceRules).toString();
+    }
 
     /**
      * Applys the replace rules to the final String to be rendered and returns
@@ -297,7 +326,7 @@ public final class Driver {
 	    try {
 		MemoryOutput memoryOutput = null;
 		if (baseURL != null)
-		    httpResource = getResourceFromHttp(httpUrl);
+		    httpResource = getResourceFromHttp(httpUrl, context);
 		if (httpResource != null) {
 		    if (useCache) {
 			memoryOutput = new MemoryOutput(cacheMaxFileSize);
@@ -341,9 +370,9 @@ public final class Driver {
 	}
     }
 
-    private final HttpResource getResourceFromHttp(String url)
+    private final HttpResource getResourceFromHttp(String url, Context context)
 	    throws HttpException, IOException {
-	HttpResource httpResource = new HttpResource(httpClient, url);
+	HttpResource httpResource = new HttpResource(httpClient, url, context);
 	if (httpResource.exists())
 	    return httpResource;
 	else {
@@ -422,7 +451,7 @@ public final class Driver {
 	}
 	if (isFile)
 	    url.append("_").append(queryString.toString().hashCode());
-	else
+	else if (queryString.length()>0)
 	    url.append("?").append(
 		    queryString.substring(0, queryString.length() - 1));
     }
@@ -506,7 +535,10 @@ public final class Driver {
      * This method returns the content of an url. We check before in the cache
      * if the content is here. If yes, we return the content of the cache. If
      * not, we get it via an HTTP connection and put it in the cache.
-     * 
+     * @param relUrl the target URL
+     * @param context the context of the request
+     * @param parameters the parameters of the request
+     * @return the content of the url
      * @throws IOException
      * @throws HttpException
      */
