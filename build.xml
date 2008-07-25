@@ -52,7 +52,7 @@
 		</zip>
 	</target>
 	<target name="doc">
-		<delete>
+		<delete quiet="true">
 			<fileset dir="bin/doc" />
 		</delete>
 		<xslt style="doc/stylesheet.xsl" destdir="bin" includes="doc/*.xml" excludes="doc/menu.xml,doc/sitemap.xml">

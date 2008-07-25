@@ -2,12 +2,14 @@ package net.webassembletool;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
+import net.webassembletool.aggregator.AggregationSyntaxException;
 import net.webassembletool.ouput.FileOutput;
 import net.webassembletool.ouput.MemoryOutput;
 import net.webassembletool.ouput.MultipleOutput;
@@ -43,11 +46,12 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
  * To improve performance, the Driver uses a cache that can be configured
  * depending on the needs.
  * 
- * @author Franï¿½ois-Xavier Bonnet
+ * @author François-Xavier Bonnet
  * 
  */
 public final class Driver {
     // TODO improve last-modified management
+    // TODO write a tokenizer class to avoid String.indexOf usage in the driver.
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
     private boolean useCache = true;
@@ -99,16 +103,15 @@ public final class Driver {
 	localBase = props.getProperty("localBase");
 	if (props.getProperty("putInCache") != null)
 	    putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
-	
-	//proxy settings
+
+	// proxy settings
 	if (props.getProperty("proxyHost") != null
 		&& props.getProperty("proxyPort") != null) {
 	    String proxyHost = props.getProperty("proxyHost");
 	    int proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
-	    HostConfiguration config = 
-		httpClient.getHostConfiguration();  
-	    config.setProxy(proxyHost, proxyPort);	  
-	}	
+	    HostConfiguration config = httpClient.getHostConfiguration();
+	    config.setProxy(proxyHost, proxyPort);
+	}
 	if (props.getProperty("useCache") != null)
 	    useCache = Boolean.parseBoolean(props.getProperty("useCache"));
     }
@@ -235,23 +238,24 @@ public final class Driver {
 	}
 	writer.append(replace(sb, replaceRules));
     }
-    
-    public final String renderBlock(String page, String name, 
+
+    /**
+     * Returns a block as a String.
+     * 
+     * @param page
+     * @param name
+     * @param context
+     * @param replaceRules
+     * @param parameters
+     * @return the block.
+     * @throws IOException
+     */
+    public final String getBlockAsString(String page, String name,
 	    Context context, Map<String, String> replaceRules,
 	    Map<String, String> parameters) throws IOException {
-	String content = getResourceAsString(page, context, parameters);
-	String beginString = "<!--$beginblock$" + name + "$-->";
-	String endString = "<!--$endblock$" + name + "$-->";
-	StringBuilder sb = new StringBuilder();
-	int begin = content.indexOf(beginString);
-	int end = content.indexOf(endString);
-	if (begin == -1 || end == -1) {
-	    log.warn("Block not found: page=" + page + " block=" + name);
-	} else {
-	    log.debug("Serving block: page=" + page + " block=" + name);
-	    sb.append(content.substring(begin, end));
-	}
-	return replace(sb, replaceRules).toString();
+	StringWriter stringWriter = new StringWriter();
+	renderBlock(page, name, stringWriter, context, replaceRules, parameters);
+	return stringWriter.toString();
     }
 
     /**
@@ -451,7 +455,7 @@ public final class Driver {
 	}
 	if (isFile)
 	    url.append("_").append(queryString.toString().hashCode());
-	else if (queryString.length()>0)
+	else if (queryString.length() > 0)
 	    url.append("?").append(
 		    queryString.substring(0, queryString.length() - 1));
     }
@@ -501,31 +505,37 @@ public final class Driver {
 		log.debug("Serving template: page=" + page);
 		sb.append(content);
 	    }
-	    for (Entry<String, String> param : params.entrySet()) {
-		int lastIndexOfString = 0;
-		String key = param.getKey();
-		String value = param.getValue();
-		String beginString = "<!--$beginparam$" + key + "$-->";
-		String endString = "<!--$endparam$" + key + "$-->";
-		while (lastIndexOfString >= 0) {
-		    int begin = sb.indexOf(beginString, lastIndexOfString);
-		    int end = sb.indexOf(endString, lastIndexOfString);
-		    if (!(begin == -1 || end == -1)) {
-			sb.replace(begin + beginString.length(), end, value);
-		    }
-		    if (begin == -1 || end == -1) {
-			lastIndexOfString = -1;
-		    } else {
-			// New start search value to use
-			lastIndexOfString = begin + beginString.length()
-				+ value.length() + endString.length();
+	    if (params != null) {
+		for (Entry<String, String> param : params.entrySet()) {
+		    int lastIndexOfString = 0;
+		    String key = param.getKey();
+		    String value = param.getValue();
+		    String beginString = "<!--$beginparam$" + key + "$-->";
+		    String endString = "<!--$endparam$" + key + "$-->";
+		    while (lastIndexOfString >= 0) {
+			int begin = sb.indexOf(beginString, lastIndexOfString);
+			int end = sb.indexOf(endString, lastIndexOfString);
+			if (!(begin == -1 || end == -1)) {
+			    sb
+				    .replace(begin + beginString.length(), end,
+					    value);
+			}
+			if (begin == -1 || end == -1) {
+			    lastIndexOfString = -1;
+			} else {
+			    // New start search value to use
+			    lastIndexOfString = begin + beginString.length()
+				    + value.length() + endString.length();
+			}
 		    }
 		}
 	    }
 
 	} else {
-	    for (Entry<String, String> param : params.entrySet()) {
-		sb.append(param.getValue());
+	    if (params != null) {
+		for (Entry<String, String> param : params.entrySet()) {
+		    sb.append(param.getValue());
+		}
 	    }
 	}
 	writer.append(replace(sb, replaceRules));
@@ -535,9 +545,13 @@ public final class Driver {
      * This method returns the content of an url. We check before in the cache
      * if the content is here. If yes, we return the content of the cache. If
      * not, we get it via an HTTP connection and put it in the cache.
-     * @param relUrl the target URL
-     * @param context the context of the request
-     * @param parameters the parameters of the request
+     * 
+     * @param relUrl
+     *            the target URL
+     * @param context
+     *            the context of the request
+     * @param parameters
+     *            the parameters of the request
      * @return the content of the url
      * @throws IOException
      * @throws HttpException
@@ -549,7 +563,7 @@ public final class Driver {
 	    renderResource(relUrl, stringOutput, context, parameters);
 	    return stringOutput.toString();
 	} catch (ResourceNotFoundException e) {
-	    log.error("Page not found: " + relUrl);
+	    log.info("Page not found: " + relUrl);
 	    return "";
 	}
     }
@@ -604,5 +618,150 @@ public final class Driver {
 	    throws IOException {
 	renderTemplate(page, name, pageContext.getOut(),
 		getContext(pageContext), params, replaceRules, parameters);
+    }
+
+    /**
+     * Retrieves a resource from the provider application and parses it to find
+     * tags to be replaced by contents from other providers.
+     * 
+     * Sample syntax used for includes :
+     * <ul>
+     * <li>&lt;!--$includeblock$provider$page$blockname$--&gt;</li>
+     * <li>&lt;!--$beginincludetemplate$provider$page$templatename$--&gt;</li>
+     * <li>&lt;!--$beginput$name$--&gt;</li>
+     * </ul>
+     * 
+     * Sample syntax used inside included contents for template and block
+     * definition :
+     * <ul>
+     * <li>&lt;!--$beginblock$name$--&gt;</li>
+     * <li>&lt;!--$begintemplate$name$--&gt;</li>
+     * <li>&lt;!--$beginparam$name$--&gt;</li>
+     * </ul>
+     * 
+     * 
+     * @param relUrl
+     *            the relative URL to the resource
+     * @param request
+     *            the request
+     * @param response
+     *            the response
+     * @throws IOException
+     * @throws AggregationSyntaxException
+     */
+    public final void aggregate(String relUrl, HttpServletRequest request,
+	    HttpServletResponse response) throws IOException,
+	    AggregationSyntaxException {
+	String content = getResourceAsString(relUrl, getContext(request), null);
+	Writer writer = response.getWriter();
+	int currentPosition = 0;
+	int previousPosition;
+	int endPosition;
+	String currentTag;
+	StringTokenizer stringTokenizer;
+	String tagName;
+	String provider;
+	String page;
+	String blockOrTemplate;
+	while (currentPosition > -1) {
+	    // look for includeBlock or includeTemplate markers
+	    previousPosition = currentPosition;
+	    currentPosition = content.indexOf("<!--$include", currentPosition);
+	    if (currentPosition > -1) {
+		writer.append(content, previousPosition, currentPosition);
+		endPosition = content.indexOf("-->", currentPosition);
+		if (endPosition == -1)
+		    throw new AggregationSyntaxException("Tag not closed");
+		currentTag = content
+			.substring(currentPosition + 4, endPosition);
+		log.debug("Found tag: " + currentTag);
+		currentPosition = endPosition + 3;
+		stringTokenizer = new StringTokenizer(currentTag, "$");
+		if (stringTokenizer.countTokens() < 3)
+		    throw new AggregationSyntaxException("Invalid syntax: "
+			    + currentTag);
+		tagName = stringTokenizer.nextToken();
+		provider = stringTokenizer.nextToken();
+		page = stringTokenizer.nextToken();
+		if (stringTokenizer.hasMoreTokens())
+		    blockOrTemplate = stringTokenizer.nextToken();
+		else
+		    blockOrTemplate = null;
+		if (stringTokenizer.hasMoreTokens())
+		    throw new AggregationSyntaxException("Invalid syntax: "
+			    + currentTag);
+		if ("includeblock".equals(tagName)) {
+		    Driver.getInstance(provider).renderBlock(page,
+			    blockOrTemplate, writer, getContext(request), null,
+			    null);
+		} else if ("includetemplate".equals(tagName)) {
+		    endPosition = content
+			    .indexOf("<!--$endincludetemplate$-->");
+		    if (endPosition < 0)
+			throw new AggregationSyntaxException("Tag not closed: "
+				+ currentTag);
+		    Driver.getInstance(provider).aggregateTemplate(page,
+			    blockOrTemplate,
+			    content.substring(currentPosition, endPosition),
+			    writer, request);
+		    currentPosition = endPosition + 27;
+		} else {
+		    throw new AggregationSyntaxException("Invalid syntax: "
+			    + currentTag);
+		}
+	    } else {
+		writer.append(content, previousPosition, content.length());
+	    }
+	}
+    }
+
+    /**
+     * Aggregates a template to the output writer </ul>
+     * 
+     * Searches for tags :
+     * <ul>
+     * <li>&lt;!--$beginput$name$--&gt;</li>
+     * <li>&lt;!--$endput$--&gt;</li>
+     * </ul>
+     * 
+     */
+    private final void aggregateTemplate(String page, String template,
+	    String content, Writer writer, HttpServletRequest request)
+	    throws IOException, AggregationSyntaxException {
+	int currentPosition = 0;
+	int endPosition;
+	String currentTag;
+	StringTokenizer stringTokenizer;
+	String name;
+	HashMap<String, String> params = new HashMap<String, String>();
+	while (currentPosition > -1) {
+	    // look for includeBlock or includeTemplate markers
+	    currentPosition = content.indexOf("<!--$beginput", currentPosition);
+	    if (currentPosition > -1) {
+		endPosition = content.indexOf("-->", currentPosition);
+		if (endPosition == -1)
+		    throw new AggregationSyntaxException("Tag not closed");
+		currentTag = content
+			.substring(currentPosition + 4, endPosition);
+		log.debug("Found tag: " + currentTag);
+		stringTokenizer = new StringTokenizer(currentTag, "$");
+		if (stringTokenizer.countTokens() != 2)
+		    throw new AggregationSyntaxException("Invalid syntax: "
+			    + currentTag);
+		stringTokenizer.nextToken();
+		name = stringTokenizer.nextToken();
+		currentPosition = endPosition;
+		endPosition = content.indexOf("<!--$endput$-->",
+			currentPosition);
+		if (endPosition == -1)
+		    throw new AggregationSyntaxException("Tag not closed: "
+			    + currentTag);
+		params.put(name, content.substring(currentPosition + 3,
+			endPosition));
+		currentPosition = endPosition;
+	    }
+	}
+	renderTemplate(page, template, writer, getContext(request), params,
+		null, null);
     }
 }

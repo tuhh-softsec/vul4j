@@ -12,7 +12,7 @@ import org.apache.commons.httpclient.HttpState;
  * applications.<br />
  * There is one instance of user context associated with each Thread.
  * 
- * @author Franï¿½ois-Xavier Bonnet
+ * @author François-Xavier Bonnet
  * 
  */
 public class Context {
@@ -48,7 +48,7 @@ public class Context {
     public void setUser(String user) {
 	parameterMap.put(USER_PARAM_KEY, user);
     }
-   
+
     public HttpState getHttpState() {
         return httpState;
     }
