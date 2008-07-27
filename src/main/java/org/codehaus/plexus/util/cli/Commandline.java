@@ -106,10 +106,14 @@ import java.util.Vector;
 public class Commandline
     implements Cloneable
 {
-    // TODO: should be deprecated/deleted, use plexus.util.Os instead
+    /**
+     * @deprecated Use {@link org.codehaus.plexus.util.Os} class instead.
+     */
     protected static final String OS_NAME = "os.name";
 
-    // TODO: should be deprecated/deleted, use plexus.util.Os instead
+    /**
+     * @deprecated Use {@link org.codehaus.plexus.util.Os} class instead.
+     */
     protected static final String WINDOWS = "Windows";
 
     protected Vector arguments = new Vector();

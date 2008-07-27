@@ -258,7 +258,7 @@ public class CommandlineTest
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \'hello world\'";
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             expectedShellCmd = "\\bin\\echo \'hello world\'";
         }
@@ -289,7 +289,7 @@ public class CommandlineTest
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "cd \"" + root.getAbsolutePath()
                                   + "path with spaces\" && /bin/echo \'hello world\'";
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             expectedShellCmd = "cd \"" + root.getAbsolutePath()
                                + "path with spaces\" && \\bin\\echo \'hello world\'";
@@ -317,7 +317,7 @@ public class CommandlineTest
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
         String expectedShellCmd = "/bin/echo \'hello world\'";
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             expectedShellCmd = "\\bin\\echo \'hello world\'";
         }
@@ -340,7 +340,7 @@ public class CommandlineTest
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
 
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             assertEquals( "\\usr\\bin a b", shellCommandline[2] );
         }
@@ -392,7 +392,7 @@ public class CommandlineTest
 
         // Create a script file
         File bat;
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             bat = new File( dir, "echo.bat" );
         }
@@ -412,7 +412,7 @@ public class CommandlineTest
         }
 
         // Change permission
-        if ( !Os.isFamily( "windows" ) )
+        if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             Runtime.getRuntime().exec( new String[] {
                 "chmod",
@@ -458,7 +458,7 @@ public class CommandlineTest
     {
         File javaHome = new File( System.getProperty( "java.home" ) );
         File java;
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             java = new File( javaHome, "/bin/java.exe" );
         }
@@ -477,7 +477,7 @@ public class CommandlineTest
 
         // Create a script file
         File bat;
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             bat = new File( dir, "echo.bat" );
         }
@@ -497,7 +497,7 @@ public class CommandlineTest
         }
 
         // Change permission
-        if ( !Os.isFamily( "windows" ) )
+        if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             Runtime.getRuntime().exec( new String[] { "chmod", "a+x", bat.getAbsolutePath() } );
             Thread.sleep( 10 );

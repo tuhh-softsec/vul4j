@@ -177,7 +177,7 @@ public final class FileUtilsTest
         FileUtils.mkdir( dir.getAbsolutePath() );
         dir.deleteOnExit();
 
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             try
             {
@@ -306,7 +306,7 @@ public final class FileUtilsTest
         FileUtils.forceMkdir( testFile );
         assertTrue( "Directory was not created.", testFile.exists() );
 
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             try
             {
@@ -1223,7 +1223,7 @@ public final class FileUtilsTest
         File f = new File( "c:\test" );
         assertTrue( FileUtils.isValidWindowsFileName( f ) );
 
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             f = new File( "c:\test\bla:bla" );
             assertFalse( FileUtils.isValidWindowsFileName( f ) );

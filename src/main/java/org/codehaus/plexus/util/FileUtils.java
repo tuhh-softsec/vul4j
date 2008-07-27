@@ -612,7 +612,7 @@ public class FileUtils
     {
         File file = new File( dir );
 
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             if ( !isValidWindowsFileName( file ) )
             {
@@ -1406,7 +1406,7 @@ public class FileUtils
     public static void forceMkdir( final File file )
         throws IOException
     {
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             if ( !isValidWindowsFileName( file ) )
             {
@@ -2097,7 +2097,7 @@ public class FileUtils
      */
     public static boolean isValidWindowsFileName( File f )
     {
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             if ( StringUtils.indexOfAny( f.getName(), INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME ) != -1 )
             {

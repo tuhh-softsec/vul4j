@@ -69,7 +69,7 @@ public class BourneShell
     /** {@inheritDoc} */
     public String getExecutable()
     {
-        if ( Os.isFamily( "windows" ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             return super.getExecutable();
         }
