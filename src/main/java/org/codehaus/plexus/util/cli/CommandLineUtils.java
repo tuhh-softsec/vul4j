@@ -78,7 +78,7 @@ public abstract class CommandLineUtils
 
         public void consumeLine( String line )
         {
-            string.append( line + ls );
+            string.append( line ).append( ls );
         }
 
         public String getOutput()
