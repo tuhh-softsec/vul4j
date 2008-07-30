@@ -38,53 +38,82 @@
 	<!-- the following is to make sure all elements are highlighted -->
 	<xsl:template match="xslthl:keyword" mode="xslthl">
 		<span style="font-weight: bold;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:string" mode="xslthl">
 		<span style="color: blue;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:number" mode="xslthl">
 		<span style="color: blue;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:comment" mode="xslthl">
 		<span style="color: green; font-style: italic;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:doccomment|xslthl:doctype" mode="xslthl">
 		<span style="color: teal; font-style: italic;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:directive" mode="xslthl">
 		<span style="color: maroon;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:annotation" mode="xslthl">
 		<span style="color: gray; font-style: italic;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
-	<!-- default XML styles -->
 	<xsl:template match="xslthl:tag" mode="xslthl">
 		<span style="color: teal;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:attribute" mode="xslthl">
 		<span style="color: purple;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 	<xsl:template match="xslthl:value" mode="xslthl">
 		<span style="color: blue;">
-			<xsl:value-of select="." />
+			<xsl:attribute name="class">
+				<xsl:value-of select="concat('hl-', local-name(.))" />
+			</xsl:attribute>
+			<xsl:apply-templates mode="xslthl" />
 		</span>
 	</xsl:template>
 </xsl:stylesheet>
