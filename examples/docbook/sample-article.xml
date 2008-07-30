@@ -6,25 +6,32 @@
 	<para>This sample article contains two program listings. First a simple java example that should work without any changes. And after that a example of mixing HTML and PHP.</para>
 	<example xml:id="example.java">
 		<title>Java Example</title>
-		<programlisting language="java"><![CDATA[
+		<programlisting language="java" xml:space="preserve">
 package net.sf.xslthl.example;
 
 public final class Example {
 	/**
 	 * The version of this example
 	 */
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "1.0"; <co xml:id="example.java.const" />
 	
-	public Example() {
+	public Example() { <co xml:id="example.java.ctor" />
 		// nothing to do here
 	}
 	
-	@override
+	@Override
 	public String toString() {
 		return Example.class.getName()"_"+VERSION;
 	}
-}
-		]]></programlisting>
+}</programlisting>
+		<calloutlist>
+			<callout arearefs="example.java.const">
+				<simpara>This is a Java equivalent of a constant</simpara>
+			</callout>
+			<callout arearefs="example.java.ctor">
+				<simpara>The default (no argument) constructor for an class. It is implied when no other constructor is defined.</simpara>
+			</callout>
+		</calloutlist>
 	</example>
 	<para>The following program listing makes a composition of two highlighters. This is done by using a <code>code</code> element within the program listing.</para>
 	<example xml:id="example.html_php">
