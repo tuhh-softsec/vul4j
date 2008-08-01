@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
-  <version>1.5.6</version>
+  <version>1.5.7-SNAPSHOT</version>
   <url>http://plexus.codehaus.org/plexus-utils</url>
   <issueManagement>
     <system>JIRA</system>
@@ -141,9 +141,9 @@
   </profiles>
   
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/tags/plexus-utils-1.5.6</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/tags/plexus-utils-1.5.6</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/tags/plexus-utils-1.5.6</url>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
   </scm>
   <reporting>
     <plugins>
