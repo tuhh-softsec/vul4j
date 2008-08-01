@@ -10,6 +10,7 @@
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
   <version>1.5.7-SNAPSHOT</version>
+  <description>A collection of various utility classes to ease working with strings, files, command lines, XML and more.</description>
   <url>http://plexus.codehaus.org/plexus-utils</url>
   <issueManagement>
     <system>JIRA</system>
