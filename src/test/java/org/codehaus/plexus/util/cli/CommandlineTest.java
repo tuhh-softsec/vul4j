@@ -412,15 +412,7 @@ public class CommandlineTest
         }
 
         // Change permission
-        if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
-        {
-            Runtime.getRuntime().exec( new String[] {
-                "chmod",
-                "a+x",
-                bat.getAbsolutePath()
-            } );
-            Thread.sleep( 10 );
-        }
+        setExecutable( bat );
 
         Commandline cmd = new Commandline();
         cmd.setExecutable( bat.getAbsolutePath() );
@@ -497,11 +489,7 @@ public class CommandlineTest
         }
 
         // Change permission
-        if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
-        {
-            Runtime.getRuntime().exec( new String[] { "chmod", "a+x", bat.getAbsolutePath() } );
-            Thread.sleep( 10 );
-        }
+        setExecutable( bat );
 
         Commandline cmd = new Commandline();
         cmd.setExecutable( bat.getAbsolutePath() );
@@ -578,4 +566,26 @@ public class CommandlineTest
             throw new Exception( "Unable to execute command: " + e.getMessage(), e );
         }
     }
+
+    private void setExecutable( File path )
+        throws IOException
+    {
+        if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
+        {
+            Process proc = Runtime.getRuntime().exec( new String[] { "chmod", "a+x", path.getAbsolutePath() } );
+            while ( true )
+            {
+                try
+                {
+                    proc.waitFor();
+                    break;
+                }
+                catch ( InterruptedException e )
+                {
+                    // ignore
+                }
+            }
+        }
+    }
+
 }
