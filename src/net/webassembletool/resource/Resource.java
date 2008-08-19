@@ -30,6 +30,7 @@ public interface Resource {
 
     /**
      * Returns the HTTP status code for this resource
+     * @return status code
      */
     public int getStatusCode();
 }

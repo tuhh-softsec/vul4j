@@ -2,7 +2,7 @@
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@taglib uri="http://www.sourceforge.net/webassembletool" prefix="assemble"%>
-<assemble:includeTemplate page="templatemultipleparams.jsp" name="page">
+<assemble:includeTemplate page="templatemultipleparams.jsp">
 	<assemble:includeParam name="title">
 		<title>Exemple d'utilisation d'un template (titre inséré par
 		l'applicatif)</title>

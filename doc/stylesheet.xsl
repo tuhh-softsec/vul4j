@@ -23,7 +23,7 @@
 					</xsl:for-each>
 				</ul>
 				<div id="main">
-					<xsl:copy-of select="*" />
+					<xsl:copy-of select="document/*" />
 				</div>
 			</body>
 		</html>

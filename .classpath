@@ -30,7 +30,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jsp-api.jar">
 		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/oscache-2.4.1.jar">
@@ -40,7 +40,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/servlet-api.jar">
 		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="classes"/>
