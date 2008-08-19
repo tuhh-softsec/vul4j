@@ -1,7 +1,5 @@
 package net.webassembletool.ouput;
 
-import java.io.IOException;
-
 /**
  * An Output is designed to collect the response to a successfull HTTP request,
  * typically an HTML page or any other file type with all the headers sent by
@@ -14,53 +12,63 @@ import java.io.IOException;
  * 
  */
 public interface Output {
-    // TODO gérer l'arrêt d'un output
     /**
      * Adds an HTTP Header
      * 
      * @param name
-     *                The name of the HTTP header
+     *            The name of the HTTP header
      * @param value
-     *                The value of the header
+     *            The value of the header
      */
     public void addHeader(String name, String value);
 
     /**
-     * Defines the charset of the Output. <br />
-     * Needed for text outputs (for example HTML pages).
+     * Sets the HTTP status code of the response
+     * 
+     * @param code
+     *            The code
+     * @param message
+     *            The message
+     */
+    public void setStatus(int code, String message);
+
+    /**
+     * Defines the charset of the Output. <br /> Needed for text outputs (for
+     * example HTML pages).
      * 
      * @param charset
-     *                The name of the charset
+     *            The name of the charset
      * 
      */
     public void setCharset(String charset);
 
     /**
-     * Opens the OutputStreams that may be needed by the OutPut.<br />
-     * The headers and charset may be ignored if not defined before calling this
-     * method.<br />
-     * Any opened Output should be closed in order to release the resources.
+     * Opens the OutputStreams that may be needed by the OutPut.<br /> The
+     * headers and charset may be ignored if not defined before calling this
+     * method.<br /> Any opened Output should be closed in order to release the
+     * resources.
      */
     public void open();
 
     /**
-     * Writes some bytes to the Output.<br />
-     * The Output must be opened before calling this method.<br />
-     * This method cannot be called any more when the Output has been closed.
+     * Writes some bytes to the Output.<br /> The Output must be opened before
+     * calling this method.<br /> This method cannot be called any more when the
+     * Output has been closed.
      * 
      * @param bytes
-     *                Array containing the bytes to be written
+     *            Array containing the bytes to be written
      * @param offset
-     *                First byte to be written
+     *            First byte to be written
      * @param length
-     *                Number of bytes to be written
-     * @throws IOException
+     *            Number of bytes to be written
+     * @throws OutputException
      */
-    public void write(byte[] bytes, int offset, int length) throws IOException;
+    public void write(byte[] bytes, int offset, int length)
+	    throws OutputException;
 
     /**
-     * Closes the OutputStreams that may have been used by the OutPut.<br />
-     * Any opened Output should be closed in order to release the resources.
+     * Closes the OutputStreams that may have been used by the OutPut.<br /> Any
+     * opened Output should be closed in order to release the resources.
      */
     public void close();
 }

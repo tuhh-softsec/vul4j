@@ -1,6 +1,5 @@
 package net.webassembletool.ouput;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -19,7 +18,7 @@ public class MultipleOutput implements Output {
      * forward data.
      * 
      * @param output
-     *                An Output to add to the list
+     *            An Output to add to the list
      */
     public void addOutput(Output output) {
 	outputs.add(output);
@@ -53,10 +52,18 @@ public class MultipleOutput implements Output {
 	}
     }
 
-    public void write(byte[] bytes, int offset, int length) throws IOException {
+    public void write(byte[] bytes, int offset, int length) {
 	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
 	    Output output = iterator.next();
 	    output.write(bytes, offset, length);
 	}
+    }
+
+    public void setStatus(int code, String message) {
+	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
+	    Output output = iterator.next();
+	    output.setStatus(code, message);
+	}
+
     }
 }

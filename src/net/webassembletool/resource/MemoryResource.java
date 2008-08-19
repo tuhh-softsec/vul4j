@@ -17,15 +17,16 @@ public class MemoryResource implements Resource {
     private byte[] byteArray;
     private Header[] headers;
     private String charset;
+    private int statusCode;
+    private String statusMessage;
 
-    public MemoryResource(byte[] byteArray, String charset, Header[] headers) {
+    public MemoryResource(byte[] byteArray, String charset, Header[] headers,
+	    int statusCode, String statusMessage) {
 	this.byteArray = byteArray;
 	this.headers = headers;
 	this.charset = charset;
-    }
-
-    public boolean exists() {
-	return true;
+	this.statusCode = statusCode;
+	this.statusMessage = statusMessage;
     }
 
     public void release() {
@@ -33,6 +34,7 @@ public class MemoryResource implements Resource {
     }
 
     public void render(Output output) throws IOException {
+	output.setStatus(statusCode, statusMessage);
 	output.open();
 	try {
 	    output.setCharset(charset);
@@ -43,5 +45,13 @@ public class MemoryResource implements Resource {
 	} finally {
 	    output.close();
 	}
+    }
+
+    public String getStatusMessage() {
+	return statusMessage;
+    }
+
+    public int getStatusCode() {
+	return statusCode;
     }
 }

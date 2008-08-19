@@ -28,11 +28,11 @@ import net.webassembletool.ouput.StringOutput;
 import net.webassembletool.resource.FileResource;
 import net.webassembletool.resource.HttpResource;
 import net.webassembletool.resource.MemoryResource;
-import net.webassembletool.resource.ResourceNotFoundException;
+import net.webassembletool.resource.NullResource;
+import net.webassembletool.resource.Resource;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,8 +50,8 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
  * 
  */
 public final class Driver {
-    // TODO improve last-modified management
     // TODO write a tokenizer class to avoid String.indexOf usage in the driver.
+    // TODO handle redirects
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
     private boolean useCache = true;
@@ -225,6 +225,8 @@ public final class Driver {
 	    Context context, Map<String, String> replaceRules,
 	    Map<String, String> parameters) throws IOException {
 	String content = getResourceAsString(page, context, parameters);
+	if (content == null)
+	    return;
 	String beginString = "<!--$beginblock$" + name + "$-->";
 	String endString = "<!--$endblock$" + name + "$-->";
 	StringBuilder sb = new StringBuilder();
@@ -297,18 +299,12 @@ public final class Driver {
     public final void renderResource(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response, Map<String, String> parameters)
 	    throws IOException {
-	try {
-	    renderResource(relUrl, new ResponseOutput(request, response),
-		    getContext(request), parameters);
-	} catch (ResourceNotFoundException e) {
-	    response.sendError(HttpServletResponse.SC_NOT_FOUND,
-		    "Page not found: " + relUrl);
-	}
+	renderResource(relUrl, new ResponseOutput(request, response),
+		getContext(request), parameters);
     }
 
     private final void renderResource(String relUrl, Output output,
-	    Context context, Map<String, String> parameters)
-	    throws IOException, ResourceNotFoundException {
+	    Context context, Map<String, String> parameters) throws IOException {
 	String httpUrl = getUrlForHttpResource(relUrl, context, parameters);
 	String fileUrl = getUrlForFileResource(relUrl, context, parameters);
 	MultipleOutput multipleOutput = new MultipleOutput();
@@ -316,83 +312,78 @@ public final class Driver {
 	MemoryResource cachedResource = null;
 	HttpResource httpResource = null;
 	FileResource fileResource = null;
+	MemoryOutput memoryOutput = null;
 	try {
 	    if (useCache) {
-		// Load the resource from cache even if not up to date
-		cachedResource = (MemoryResource) cache.getFromCache(httpUrl);
-		cachedResource = (MemoryResource) cache.getFromCache(httpUrl,
-			cacheRefreshDelay);
+		// Try to load the resource from cache
+		try {
+		    cachedResource = (MemoryResource) cache
+			    .getFromCache(httpUrl);
+		    cachedResource = (MemoryResource) cache.getFromCache(
+			    httpUrl, cacheRefreshDelay);
+		    cachedResource.render(multipleOutput);
+		    return;
+		} catch (NeedsRefreshException e1) {
+		    // Resource not in cache or stale
+		    memoryOutput = new MemoryOutput(cacheMaxFileSize);
+		    multipleOutput.addOutput(memoryOutput);
+		}
 	    }
-	    if (cachedResource == null)
-		throw new NeedsRefreshException(null);
-	    cachedResource.render(multipleOutput);
-	} catch (NeedsRefreshException e) {
-	    try {
-		MemoryOutput memoryOutput = null;
-		if (baseURL != null)
-		    httpResource = getResourceFromHttp(httpUrl, context);
-		if (httpResource != null) {
-		    if (useCache) {
-			memoryOutput = new MemoryOutput(cacheMaxFileSize);
-			multipleOutput.addOutput(memoryOutput);
-		    }
+	    // Resource not in cache or stale or cache not activated, try to
+	    // load it from HTTP
+	    if (baseURL != null) {
+		httpResource = getResourceFromHttp(httpUrl, context);
+		if (httpResource.getStatusCode() == 200) {
 		    if (putInCache)
 			multipleOutput.addOutput(new FileOutput(fileUrl));
 		    httpResource.render(multipleOutput);
-		} else if (cachedResource != null) {
-		    cachedResource.render(multipleOutput);
-		} else {
-		    fileResource = getResourceFromLocal(fileUrl);
-		    if (fileResource == null)
-			throw new ResourceNotFoundException(relUrl);
-		    if (useCache) {
-			memoryOutput = new MemoryOutput(cacheMaxFileSize);
-			multipleOutput.addOutput(memoryOutput);
-		    }
-		    fileResource.render(multipleOutput);
+		    return;
 		}
-		if (memoryOutput != null) {
-		    cachedResource = memoryOutput.toResource();
-		    if (cachedResource != null)
-			cachedResource.release();
-		    if (httpResource != null)
-			httpResource.release();
-		    if (fileResource != null)
-			fileResource.release();
-		}
-	    } finally {
-		// The resource was not found in cache so osCache has locked
-		// this key. We have to remove the lock.
-		if (useCache)
-		    if (cachedResource != null)
-			// Re-put the cached entry in the cache so that we will
-			// not try to reload it until new expiration delay
-			cache.putInCache(httpUrl, cachedResource);
-		    else
-			cache.cancelUpdate(httpUrl);
 	    }
+	    // Resource could not be loaded from HTTP, let's use the cache
+	    if (cachedResource != null) {
+		cachedResource.render(multipleOutput);
+		return;
+	    }
+	    // Resource could not be loaded neither from HTTP, nor from the
+	    // cache, let's try from the file system
+	    fileResource = getResourceFromLocal(fileUrl);
+	    if (fileResource.getStatusCode() == 200) {
+		fileResource.render(multipleOutput);
+		return;
+	    }
+	    // Resource could not be loaded at all
+	    if (useCache) {
+		new NullResource().render(multipleOutput);
+	    }
+	} finally {
+	    // Free all the resources
+	    if (cachedResource != null)
+		cachedResource.release();
+	    if (memoryOutput != null) {
+		Resource newCache = memoryOutput.toResource();
+		if (newCache != null)
+		    cache.putInCache(httpUrl, memoryOutput.toResource());
+		else
+		    // if we cannot put the resource in cache, we must call
+		    // cancelUpdate to release the lock on the key
+		    cache.cancelUpdate(httpUrl);
+	    }
+	    if (httpResource != null)
+		httpResource.release();
+	    if (fileResource != null)
+		fileResource.release();
 	}
     }
 
-    private final HttpResource getResourceFromHttp(String url, Context context)
-	    throws HttpException, IOException {
+    private final HttpResource getResourceFromHttp(String url, Context context) {
 	HttpResource httpResource = new HttpResource(httpClient, url, context);
-	if (httpResource.exists())
-	    return httpResource;
-	else {
-	    httpResource.release();
-	    return null;
-	}
+	return httpResource;
     }
 
     private final FileResource getResourceFromLocal(String relUrl) {
 	FileResource fileResource = new FileResource(relUrl);
-	if (fileResource.exists())
-	    return fileResource;
-	else {
-	    fileResource.release();
-	    return null;
-	}
+	return fileResource;
     }
 
     private final String getUrlForFileResource(String relUrl, Context context,
@@ -486,6 +477,8 @@ public final class Driver {
 	    Map<String, String> replaceRules, Map<String, String> parameters)
 	    throws IOException {
 	String content = getResourceAsString(page, context, parameters);
+	if (content == null)
+	    return;
 	StringBuilder sb = new StringBuilder();
 	if (content != null) {
 	    if (name != null) {
@@ -542,9 +535,7 @@ public final class Driver {
     }
 
     /**
-     * This method returns the content of an url. We check before in the cache
-     * if the content is here. If yes, we return the content of the cache. If
-     * not, we get it via an HTTP connection and put it in the cache.
+     * This method returns the content of an url.
      * 
      * @param relUrl
      *            the target URL
@@ -554,18 +545,12 @@ public final class Driver {
      *            the parameters of the request
      * @return the content of the url
      * @throws IOException
-     * @throws HttpException
      */
     private final String getResourceAsString(String relUrl, Context context,
-	    Map<String, String> parameters) throws HttpException, IOException {
+	    Map<String, String> parameters) throws IOException {
 	StringOutput stringOutput = new StringOutput();
-	try {
-	    renderResource(relUrl, stringOutput, context, parameters);
-	    return stringOutput.toString();
-	} catch (ResourceNotFoundException e) {
-	    log.info("Page not found: " + relUrl);
-	    return "";
-	}
+	renderResource(relUrl, stringOutput, context, parameters);
+	return stringOutput.toString();
     }
 
     /**
@@ -653,6 +638,8 @@ public final class Driver {
 	    HttpServletResponse response) throws IOException,
 	    AggregationSyntaxException {
 	String content = getResourceAsString(relUrl, getContext(request), null);
+	if (content == null)
+	    return;
 	Writer writer = response.getWriter();
 	int currentPosition = 0;
 	int previousPosition;

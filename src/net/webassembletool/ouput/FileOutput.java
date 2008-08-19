@@ -24,6 +24,9 @@ public class FileOutput implements Output {
     }
 
     public void addHeader(String name, String value) {
+	if (headers.isEmpty())
+	    throw new OutputException(
+		    "Status code should be set before writing any HTTP headers");
 	headers.put(name, value);
     }
 
@@ -68,7 +71,18 @@ public class FileOutput implements Output {
 	headers.put("Charset", charset);
     }
 
-    public void write(byte[] bytes, int off, int len) throws IOException {
-	fileOutputStream.write(bytes, off, len);
+    public void write(byte[] bytes, int off, int len) {
+	try {
+	    fileOutputStream.write(bytes, off, len);
+	} catch (IOException e) {
+	    throw new OutputException("Could not write to file", e);
+	}
+    }
+
+    public void setStatus(int code, String message) {
+	if (!headers.isEmpty())
+	    throw new OutputException(
+		    "Status code cannot be set after HTTP headers have been written");
+	headers.put(code, message);
     }
 }

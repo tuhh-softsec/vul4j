@@ -22,6 +22,8 @@ public class MemoryOutput implements Output {
     private ByteArrayOutputStream byteArrayOutputStream;
     private int maxSize = 0;
     private boolean tooBig = false;
+    private int statusCode;
+    private String statusMessage;
 
     public MemoryOutput(int maxSize) {
 	this.maxSize = maxSize;
@@ -49,7 +51,7 @@ public class MemoryOutput implements Output {
 	this.charset = charset;
     }
 
-    public void write(byte[] bytes, int off, int len) throws IOException {
+    public void write(byte[] bytes, int off, int len) {
 	if (!tooBig) {
 	    byteArrayOutputStream.write(bytes, off, len);
 	    tooBig = (maxSize > 0 && byteArrayOutputStream.size() > maxSize);
@@ -63,6 +65,11 @@ public class MemoryOutput implements Output {
 	for (int i = 0; i < headersArray.length; i++) {
 	    headersArray[i] = headers.get(i);
 	}
-	return new MemoryResource(byteArray, charset, headersArray);
+	return new MemoryResource(byteArray, charset, headersArray, statusCode, statusMessage);
+    }
+
+    public void setStatus(int code, String message) {
+	statusCode = code;
+	statusMessage = message;
     }
 }

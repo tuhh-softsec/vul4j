@@ -50,8 +50,16 @@ public class ResponseOutput implements Output {
 	response.setCharacterEncoding(charset);
     }
 
-    public void write(byte[] bytes, int offset, int length) throws IOException {
+    public void write(byte[] bytes, int offset, int length) {
 	if (!notModified)
-	    response.getOutputStream().write(bytes, offset, length);
+	    try {
+		response.getOutputStream().write(bytes, offset, length);
+	    } catch (IOException e) {
+		throw new OutputException("Could not write to the response", e);
+	    }
+    }
+
+    public void setStatus(int code, String message) {
+	response.setStatus(code);
     }
 }

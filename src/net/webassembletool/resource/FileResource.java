@@ -25,10 +25,6 @@ public class FileResource implements Resource {
 	headersFile = new File(url + ".headers");
     }
 
-    public boolean exists() {
-	return file.exists();
-    }
-
     public void release() {
 	file = null;
     }
@@ -38,13 +34,20 @@ public class FileResource implements Resource {
 	Properties headers = new Properties();
 	headers.load(headersInputStream);
 	headersInputStream.close();
-	for (Iterator<Entry<Object, Object>> iterator = headers.entrySet()
-		.iterator(); iterator.hasNext();) {
-	    Entry<Object, Object> header = iterator.next();
+	Iterator<Entry<Object, Object>> iterator = headers.entrySet()
+		.iterator();
+	if (!iterator.hasNext())
+	    throw new ResourceException("Invalid headers file");
+	Entry<Object, Object> header = iterator.next();
+	output.setStatus(Integer.parseInt(header.getKey().toString()), header
+		.getValue().toString());
+	while (iterator.hasNext()) {
+	    header = iterator.next();
 	    if (header.getKey().equals("Charset"))
 		output.setCharset(header.getValue().toString());
 	    else
-		output.addHeader(header.getKey().toString(), header.getValue().toString());
+		output.addHeader(header.getKey().toString(), header.getValue()
+			.toString());
 	}
 	InputStream inputStream = new FileInputStream(file);
 	try {
@@ -57,5 +60,15 @@ public class FileResource implements Resource {
 	    inputStream.close();
 	    output.close();
 	}
+    }
+
+    /**
+     * @see net.webassembletool.resource.Resource#getStatusCode()
+     */
+    public int getStatusCode() {
+	if (file.exists())
+	    return 200;
+	else
+	    return 404;
     }
 }
