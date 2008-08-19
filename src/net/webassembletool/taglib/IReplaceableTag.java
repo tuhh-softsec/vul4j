@@ -3,9 +3,8 @@ package net.webassembletool.taglib;
 import java.util.Map;
 
 /**
- * Interface
- * 
- * TODO: Javadoc
+ * Interface for tag that can take regular expression replacements rules using
+ * nested Replace tags
  * 
  * @author Cedric Brandes
  * 
