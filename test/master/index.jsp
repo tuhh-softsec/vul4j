@@ -20,6 +20,7 @@
 	<li><a href="user.jsp">User example</a></li>
 	<li><a href="timeout.jsp">Timeout example</a></li>
 	<li><a href="error500.jsp">Error 500 example</a></li>
+	<li><a href="redirect.jsp">Redirect thru proxy servlet example</a></li>
 </ul>
 </body>
 </html>

@@ -33,11 +33,14 @@ public class HttpResource implements Resource {
 	if (context != null && context.getHttpState() != null)
 	    httpClient.setState(context.getHttpState());
 	getMethod = new GetMethod(url);
+	getMethod.setFollowRedirects(false);
 	try {
 	    httpClient.executeMethod(getMethod);
 	    statusCode = getMethod.getStatusCode();
 	    statusText = getMethod.getStatusText();
-	    if (statusCode != HttpServletResponse.SC_OK)
+	    if (statusCode != HttpServletResponse.SC_OK
+		    && statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
+		    && statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY)
 		log.warn("Problem retrieving URL: " + url + ": " + statusCode
 			+ " " + statusText);
 	    if (context != null)
@@ -63,12 +66,17 @@ public class HttpResource implements Resource {
 
     public void render(Output output) throws IOException {
 	output.setStatus(statusCode, statusText);
-	if (statusCode == 200) {
+	if (statusCode == HttpServletResponse.SC_OK
+		|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY
+		|| statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY) {
 	    try {
 		Header header = getMethod.getResponseHeader("Content-Type");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
 		header = getMethod.getResponseHeader("Content-Length");
+		if (header != null)
+		    output.addHeader(header.getName(), header.getValue());
+		header = getMethod.getResponseHeader("Location");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
 		header = getMethod.getResponseHeader("Last-Modified");

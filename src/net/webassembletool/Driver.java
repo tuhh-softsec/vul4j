@@ -84,10 +84,6 @@ public final class Driver {
 	    if (props.getProperty("timeout") != null) {
 		timeout = Integer.parseInt(props.getProperty("timeout"));
 		httpClient.getParams().setSoTimeout(timeout);
-		//httpClient.getHttpConnectionManager().getParams().setSoTimeout
-		// (
-		// timeout);
-
 		httpClient.getHttpConnectionManager().getParams()
 			.setConnectionTimeout(timeout);
 	    }
@@ -333,7 +329,9 @@ public final class Driver {
 	    // load it from HTTP
 	    if (baseURL != null) {
 		httpResource = getResourceFromHttp(httpUrl, context);
-		if (httpResource.getStatusCode() == 200) {
+		if (httpResource.getStatusCode() == HttpServletResponse.SC_OK
+			|| httpResource.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY
+			|| httpResource.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY) {
 		    if (putInCache)
 			multipleOutput.addOutput(new FileOutput(fileUrl));
 		    httpResource.render(multipleOutput);

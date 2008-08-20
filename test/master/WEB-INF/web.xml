@@ -15,4 +15,12 @@
 		<servlet-name>proxy</servlet-name>
 		<url-pattern>/smile.jpg</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>proxy</servlet-name>
+		<url-pattern>/redirect.jsp</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>proxy</servlet-name>
+		<url-pattern>/redirected.jsp</url-pattern>
+	</servlet-mapping>
 </web-app>
