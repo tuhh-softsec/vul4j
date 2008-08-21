@@ -21,6 +21,8 @@ package org.apache.xml.security.signature;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -103,14 +105,13 @@ public class Reference extends SignatureElementProxy {
     * will be added if necessary when generating the signature. See section
     * 3.1.1 of http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/ for more info.
     */
-   private static boolean useC14N11 = false;
-   static {
-      try {
-         useC14N11 = Boolean.getBoolean("org.apache.xml.security.useC14N11");
-      } catch (Exception e) {
-         // ignore exceptions
-      }
-   }
+   private static boolean useC14N11 = ((Boolean)
+      AccessController.doPrivileged(new PrivilegedAction() {
+         public Object run() {
+            return new Boolean(Boolean.getBoolean
+               ("org.apache.xml.security.useC14N11"));
+         }
+      })).booleanValue();
 
    /** Field CacheSignedNodes */
    public final static boolean CacheSignedNodes = false;

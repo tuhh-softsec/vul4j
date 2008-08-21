@@ -21,6 +21,8 @@ package org.apache.xml.security.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,15 +49,13 @@ import org.w3c.dom.Text;
  */
 public class XMLUtils {
 
-   private static boolean ignoreLineBreaks = false;
-   static {
-      try {
-         ignoreLineBreaks = Boolean.getBoolean
-	    ("org.apache.xml.security.ignoreLineBreaks");
-      } catch (Exception e) {
-         // ignore exceptions
-      }
-   }
+   private static boolean ignoreLineBreaks = ((Boolean)
+      AccessController.doPrivileged(new PrivilegedAction() {
+         public Object run() {
+            return new Boolean(Boolean.getBoolean
+	       ("org.apache.xml.security.ignoreLineBreaks"));
+         }
+      })).booleanValue();
 	
    /**
     * Constructor XMLUtils
