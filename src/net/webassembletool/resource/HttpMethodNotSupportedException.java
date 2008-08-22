@@ -1,14 +1,12 @@
-/**
- * 
- */
 package net.webassembletool.resource;
 
 /**
- * TODO
+ * Exception thrown when an unsupported HTTP method is called
  * 
- * @author FRBON, 22 août 2008
+ * @author François-Xavier Bonnet
  */
 public class HttpMethodNotSupportedException extends ResourceException {
+    private static final long serialVersionUID = 1L;
 
     /**
      * @param message
@@ -16,10 +14,5 @@ public class HttpMethodNotSupportedException extends ResourceException {
     public HttpMethodNotSupportedException(String message) {
 	super(message);
     }
-
-    /**
-     * [Description].
-     */
-    private static final long serialVersionUID = 1L;
 
 }

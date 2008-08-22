@@ -1,14 +1,11 @@
-/**
- * 
- */
 package net.webassembletool;
 
 import java.util.Map;
 
 /**
- * TODO
+ * Utility class to generate URL and path for Resources
  * 
- * @author FRBON, 22 août 2008
+ * @author François-Xavier Bonnet
  */
 public class ResourceUtils {
 

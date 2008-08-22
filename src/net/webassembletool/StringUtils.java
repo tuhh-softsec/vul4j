@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.webassembletool;
 
 import java.util.Map;
@@ -8,14 +5,14 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 /**
- * TODO
+ * Strings manipulation utility
  * 
- * @author FRBON, 22 août 2008
+ * @author François-Xavier Bonnet
  */
 public class StringUtils {
 
     /**
-     * Applys the replace rules to the final String to be rendered and returns
+     * Applies the replace rules to the final String to be rendered and returns
      * it. If there is no replace rule, returns the original string.
      * 
      * @param charSequence

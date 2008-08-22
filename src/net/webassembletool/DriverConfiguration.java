@@ -6,9 +6,9 @@ package net.webassembletool;
 import java.util.Properties;
 
 /**
- * TODO
+ * Driver configuration parameters
  * 
- * @author FRBON, 22 août 2008
+ * @author François-Xavier Bonnet
  */
 class DriverConfiguration {
     private String instanceName;

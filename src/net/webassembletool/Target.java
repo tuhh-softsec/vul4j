@@ -8,9 +8,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * TODO
+ * Represents the location of a requested resource with all the necessary
+ * parameters. When proxyMode is set to true, the resource should not be cached
+ * and any cookie or parameter coming from the original request should be
+ * forwarded to the target server.
  * 
- * @author FRBON, 22 août 2008
+ * @author François-Xavier Bonnet
  */
 public class Target {
     private String relUrl;

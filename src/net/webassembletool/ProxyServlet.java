@@ -19,20 +19,13 @@ public class ProxyServlet extends HttpServlet {
     private String provider;
 
     @Override
-    protected void doGet(HttpServletRequest request,
+    protected void service(HttpServletRequest request,
 	    HttpServletResponse response) throws ServletException, IOException {
 	String relUrl = request.getServletPath();
 	if (request.getPathInfo() != null)
 	    relUrl += request.getPathInfo();
 	Driver.getInstance(provider).renderResource(relUrl, request, response,
 		null);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-	    throws ServletException, IOException {
-	// TODO Raccord de méthode auto-généré
-	super.doPost(request, response);
     }
 
     @Override

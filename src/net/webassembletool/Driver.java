@@ -49,6 +49,7 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 public final class Driver {
     // TODO write a tokenizer class to avoid String.indexOf usage in the driver.
     // TODO handle redirects
+    // TODO proxy mode option for taglibs, aggregator and proxy, recursive or not for aggregator
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
     private DriverConfiguration config;
@@ -452,6 +453,11 @@ public final class Driver {
      * <li>&lt;!--$begintemplate$name$--&gt;</li>
      * <li>&lt;!--$beginparam$name$--&gt;</li>
      * </ul>
+     * 
+     * Aggregation is always in "proxy mode" that means cookies or parameters
+     * from the original request are transmitted to the target server. NB:
+     * Cookies and parameters are not transmitted to templates or blocks invoked
+     * by the page.
      * 
      * 
      * @param relUrl

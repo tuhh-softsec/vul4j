@@ -13,9 +13,9 @@ import javax.servlet.jsp.PageContext;
 import net.webassembletool.Driver;
 
 /**
- * TODO
+ * Utility class used by all tags to access to the Driver
  * 
- * @author FRBON, 21 août 2008
+ * @author François-Xavier Bonnet
  */
 public class DriverUtils {
     public final static String getBaseUrl(String provider) {
