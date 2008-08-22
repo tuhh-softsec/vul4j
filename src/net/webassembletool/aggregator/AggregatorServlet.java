@@ -21,7 +21,7 @@ public class AggregatorServlet extends HttpServlet {
     private String provider;
 
     @Override
-    protected void doGet(HttpServletRequest request,
+    protected void service(HttpServletRequest request,
 	    HttpServletResponse response) throws ServletException, IOException {
 	String relUrl = request.getServletPath();
 	if (request.getPathInfo() != null)

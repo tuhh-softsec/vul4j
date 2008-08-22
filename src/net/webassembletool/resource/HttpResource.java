@@ -3,17 +3,25 @@ package net.webassembletool.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketTimeoutException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.Context;
+import net.webassembletool.ResourceUtils;
+import net.webassembletool.Target;
 import net.webassembletool.ouput.Output;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,26 +33,63 @@ import org.apache.commons.logging.LogFactory;
  */
 public class HttpResource implements Resource {
     private final static Log log = LogFactory.getLog(Resource.class);
-    private GetMethod getMethod;
+    private HttpMethodBase httpMethod;
     private int statusCode;
     private String statusText;
 
-    public HttpResource(HttpClient httpClient, String url, Context context) {
-	if (context != null && context.getHttpState() != null)
-	    httpClient.setState(context.getHttpState());
-	getMethod = new GetMethod(url);
-	getMethod.setFollowRedirects(false);
+    // TODO multipart requests
+    public HttpResource(HttpClient httpClient, String baseUrl, Target target) {
+	// Retrieve session and other cookies
+	HttpState httpState = null;
+	if (target.getContext() != null)
+	    httpState = target.getContext().getHttpState();
+	String url;
+	if ("GET".equalsIgnoreCase(target.getMethod()) || !target.isProxyMode()) {
+	    url = ResourceUtils.getHttpUrlWithQueryString(baseUrl, target);
+	    httpMethod = new GetMethod(url);
+	} else if ("POST".equalsIgnoreCase(target.getMethod())) {
+	    url = ResourceUtils.getHttpUrl(baseUrl, target);
+	    PostMethod postMethod = new PostMethod(url);
+	    Context context = target.getContext();
+	    Map<String, String> parameters = target.getParameters();
+	    if (context != null) {
+		for (Map.Entry<String, String> temp : context.getParameterMap()
+			.entrySet()) {
+		    postMethod.addParameter(new NameValuePair(temp.getKey(),
+			    temp.getValue()));
+		}
+	    }
+	    if (parameters != null) {
+		for (Map.Entry<String, String> temp : parameters.entrySet()) {
+		    postMethod.addParameter(new NameValuePair(temp.getKey(),
+			    temp.getValue()));
+		}
+	    }
+	    // TODO multiple values for one parameter
+	    if (target.getOriginalRequest() != null) {
+		for (Object obj : target.getOriginalRequest().getParameterMap()
+			.entrySet()) {
+		    Entry temp = (Entry) obj;
+		    postMethod.addParameter(new NameValuePair((String) temp
+			    .getKey(), ((String[]) temp.getValue())[0]));
+		}
+	    }
+	    httpMethod = postMethod;
+	} else {
+	    throw new HttpMethodNotSupportedException(target.getMethod() + " "
+		    + ResourceUtils.getHttpUrl(baseUrl, target));
+	}
+	httpMethod.setFollowRedirects(false);
 	try {
-	    httpClient.executeMethod(getMethod);
-	    statusCode = getMethod.getStatusCode();
-	    statusText = getMethod.getStatusText();
+	    httpClient.executeMethod(httpClient.getHostConfiguration(),
+		    httpMethod, httpState);
+	    statusCode = httpMethod.getStatusCode();
+	    statusText = httpMethod.getStatusText();
 	    if (statusCode != HttpServletResponse.SC_OK
 		    && statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
 		    && statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY)
 		log.warn("Problem retrieving URL: " + url + ": " + statusCode
 			+ " " + statusText);
-	    if (context != null)
-		context.setHttpState(httpClient.getState());
 	} catch (ConnectTimeoutException e) {
 	    statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 	    statusText = "Connect timeout retrieving URL: " + url;
@@ -70,27 +115,27 @@ public class HttpResource implements Resource {
 		|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY
 		|| statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY) {
 	    try {
-		Header header = getMethod.getResponseHeader("Content-Type");
+		Header header = httpMethod.getResponseHeader("Content-Type");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
-		header = getMethod.getResponseHeader("Content-Length");
+		header = httpMethod.getResponseHeader("Content-Length");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
-		header = getMethod.getResponseHeader("Location");
+		header = httpMethod.getResponseHeader("Location");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
-		header = getMethod.getResponseHeader("Last-Modified");
+		header = httpMethod.getResponseHeader("Last-Modified");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
-		header = getMethod.getResponseHeader("ETag");
+		header = httpMethod.getResponseHeader("ETag");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
-		String charset = getMethod.getResponseCharSet();
+		String charset = httpMethod.getResponseCharSet();
 		if (charset != null)
 		    output.setCharset(charset);
 		output.open();
 		byte[] buffer = new byte[1024];
-		InputStream inputStream = getMethod.getResponseBodyAsStream();
+		InputStream inputStream = httpMethod.getResponseBodyAsStream();
 		for (int len = -1; (len = inputStream.read(buffer)) != -1;) {
 		    output.write(buffer, 0, len);
 		}
@@ -101,9 +146,9 @@ public class HttpResource implements Resource {
     }
 
     public void release() {
-	if (getMethod != null) {
-	    getMethod.releaseConnection();
-	    getMethod = null;
+	if (httpMethod != null) {
+	    httpMethod.releaseConnection();
+	    httpMethod = null;
 	}
     }
 

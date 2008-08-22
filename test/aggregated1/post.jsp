@@ -3,14 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>aggregated1</title>
+<title>Form post example</title>
 </head>
 <body style="background-color: yellow">
-<ul>
-	<li><a href="block.html">Block exemple</a></li>
-	<li><a href="template.html">Template exemple</a></li>
-	<li><a href="ag2/index.html">Page from aggregated2</a></li>
-	<li><a href="post.jsp">Form POST test</a></li>
-</ul>
+<% if ("POST".equals(request.getMethod())) { %>
+Method = POST<br />
+Posted field value = <%=request.getParameter("myField") %>
+<% } else { %>
+<form method="post">
+<input type="text" name="myField" />
+<input type="submit" name="send" value="Post this form"/>
+</form>
+<% } %>
 </body>
 </html>

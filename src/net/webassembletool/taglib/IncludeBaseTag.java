@@ -6,8 +6,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import net.webassembletool.Driver;
-
 /**
  * Generates an HTML "base" tag pointing to a page inside the provider
  * application.<br /> This tag is an alternative to using the ProxyServlet.
@@ -23,8 +21,7 @@ public class IncludeBaseTag extends TagSupport {
     public int doStartTag() throws JspException {
 	JspWriter out = pageContext.getOut();
 	try {
-	    out.write("<base href=\""
-		    + Driver.getInstance(provider).getBaseURL() + page
+	    out.write("<base href=\"" + DriverUtils.getBaseUrl(provider) + page
 		    + "\" />");
 	} catch (IOException e) {
 	    throw new JspException(e);

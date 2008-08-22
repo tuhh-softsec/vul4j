@@ -1,14 +1,11 @@
 package net.webassembletool.taglib;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import net.webassembletool.Driver;
 
 /**
  * Retrieves a template from the provider application and inserts it into the
@@ -31,12 +28,8 @@ public class IncludeTemplateTag extends BodyTagSupport implements
     Properties prop = null;
 
     public int doEndTag() throws JspException {
-	try {
-	    Driver.getInstance(provider).renderTemplate(page, name,
-		    pageContext, params, replaceRules, parameters);
-	} catch (IOException e) {
-	    throw new JspException(e);
-	}
+	DriverUtils.renderTemplate(provider, page, name, pageContext, params,
+		replaceRules, parameters);
 	name = null;
 	page = null;
 	params = new HashMap<String, String>();

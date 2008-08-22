@@ -2,7 +2,6 @@ package net.webassembletool;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -11,12 +10,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 
 import net.webassembletool.aggregator.AggregationSyntaxException;
 import net.webassembletool.ouput.FileOutput;
@@ -54,13 +51,7 @@ public final class Driver {
     // TODO handle redirects
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
-    private boolean useCache = true;
-    private int cacheRefreshDelay = 0;
-    private int cacheMaxFileSize = 0;
-    private int timeout = 1000;
-    private String baseURL;
-    private String localBase;
-    private boolean putInCache = false;
+    private DriverConfiguration config;
     private GeneralCacheAdministrator cache = new GeneralCacheAdministrator();
     private HttpClient httpClient;
 
@@ -69,47 +60,23 @@ public final class Driver {
 	configure();
     }
 
-    public Driver(Properties props) {
+    public Driver(String name, Properties props) {
+	config = new DriverConfiguration(name, props);
 	// Remote application settings
-	baseURL = props.getProperty("remoteUrlBase");
-	if (baseURL != null) {
+	if (config.getBaseURL() != null) {
 	    MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-	    int maxConnectionsPerHost = 20;
-	    if (props.getProperty("maxConnectionsPerHost") != null)
-		maxConnectionsPerHost = Integer.parseInt(props
-			.getProperty("maxConnectionsPerHost"));
 	    connectionManager.getParams().setDefaultMaxConnectionsPerHost(
-		    maxConnectionsPerHost);
+		    config.getMaxConnectionsPerHost());
 	    httpClient = new HttpClient(connectionManager);
-	    if (props.getProperty("timeout") != null) {
-		timeout = Integer.parseInt(props.getProperty("timeout"));
-		httpClient.getParams().setSoTimeout(timeout);
-		httpClient.getHttpConnectionManager().getParams()
-			.setConnectionTimeout(timeout);
-	    }
+	    httpClient.getParams().setSoTimeout(config.getTimeout());
+	    httpClient.getHttpConnectionManager().getParams()
+		    .setConnectionTimeout(config.getTimeout());
 	}
-	// Cache settings
-	if (props.getProperty("cacheRefreshDelay") != null)
-	    cacheRefreshDelay = Integer.parseInt(props
-		    .getProperty("cacheRefreshDelay"));
-	if (props.getProperty("cacheMaxFileSize") != null)
-	    cacheMaxFileSize = Integer.parseInt(props
-		    .getProperty("cacheMaxFileSize"));
-	// Local file system settings
-	localBase = props.getProperty("localBase");
-	if (props.getProperty("putInCache") != null)
-	    putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
-
 	// proxy settings
-	if (props.getProperty("proxyHost") != null
-		&& props.getProperty("proxyPort") != null) {
-	    String proxyHost = props.getProperty("proxyHost");
-	    int proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
-	    HostConfiguration config = httpClient.getHostConfiguration();
-	    config.setProxy(proxyHost, proxyPort);
+	if (config.getProxyHost() != null) {
+	    HostConfiguration conf = httpClient.getHostConfiguration();
+	    conf.setProxy(config.getProxyHost(), config.getProxyPort());
 	}
-	if (props.getProperty("useCache") != null)
-	    useCache = Boolean.parseBoolean(props.getProperty("useCache"));
     }
 
     /**
@@ -180,7 +147,7 @@ public final class Driver {
 		.hasNext();) {
 	    String name = iterator.next();
 	    Properties driverProperties = driversProps.get(name);
-	    instances.put(name, new Driver(driverProperties));
+	    instances.put(name, new Driver(name, driverProperties));
 	}
 
     }
@@ -220,7 +187,8 @@ public final class Driver {
     public final void renderBlock(String page, String name, Writer writer,
 	    Context context, Map<String, String> replaceRules,
 	    Map<String, String> parameters) throws IOException {
-	String content = getResourceAsString(page, context, parameters);
+	Target target = new Target(page, context, parameters);
+	String content = getResourceAsString(target);
 	if (content == null)
 	    return;
 	String beginString = "<!--$beginblock$" + name + "$-->";
@@ -234,49 +202,7 @@ public final class Driver {
 	    log.debug("Serving block: page=" + page + " block=" + name);
 	    sb.append(content.substring(begin, end));
 	}
-	writer.append(replace(sb, replaceRules));
-    }
-
-    /**
-     * Returns a block as a String.
-     * 
-     * @param page
-     * @param name
-     * @param context
-     * @param replaceRules
-     * @param parameters
-     * @return the block.
-     * @throws IOException
-     */
-    public final String getBlockAsString(String page, String name,
-	    Context context, Map<String, String> replaceRules,
-	    Map<String, String> parameters) throws IOException {
-	StringWriter stringWriter = new StringWriter();
-	renderBlock(page, name, stringWriter, context, replaceRules, parameters);
-	return stringWriter.toString();
-    }
-
-    /**
-     * Applys the replace rules to the final String to be rendered and returns
-     * it. If there is no replace rule, returns the original string.
-     * 
-     * @param sb
-     *            the sb
-     * @param replaceRules
-     *            the replace rules
-     * 
-     * @return the result of the replace rules
-     */
-    private final CharSequence replace(CharSequence charSequence,
-	    Map<String, String> replaceRules) {
-	if (replaceRules != null && replaceRules.size() > 0) {
-	    log.debug("Found replace rules");
-	    for (Entry<String, String> replaceRule : replaceRules.entrySet()) {
-		charSequence = Pattern.compile(replaceRule.getKey()).matcher(
-			charSequence).replaceAll(replaceRule.getValue());
-	    }
-	}
-	return charSequence;
+	writer.append(StringUtils.replace(sb, replaceRules));
     }
 
     /**
@@ -295,14 +221,16 @@ public final class Driver {
     public final void renderResource(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response, Map<String, String> parameters)
 	    throws IOException {
-	renderResource(relUrl, new ResponseOutput(request, response),
-		getContext(request), parameters);
+	Target target = new Target(relUrl, getContext(request), parameters,
+		request);
+	target.setProxyMode(true);
+	renderResource(target, new ResponseOutput(request, response));
     }
 
-    private final void renderResource(String relUrl, Output output,
-	    Context context, Map<String, String> parameters) throws IOException {
-	String httpUrl = getUrlForHttpResource(relUrl, context, parameters);
-	String fileUrl = getUrlForFileResource(relUrl, context, parameters);
+    private final void renderResource(Target target, Output output)
+	    throws IOException {
+	String httpUrl = ResourceUtils.getHttpUrlWithQueryString(config
+		.getBaseURL(), target);
 	MultipleOutput multipleOutput = new MultipleOutput();
 	multipleOutput.addOutput(output);
 	MemoryResource cachedResource = null;
@@ -310,30 +238,33 @@ public final class Driver {
 	FileResource fileResource = null;
 	MemoryOutput memoryOutput = null;
 	try {
-	    if (useCache) {
+	    if (config.isUseCache() && target.isCacheable()) {
 		// Try to load the resource from cache
 		try {
 		    cachedResource = (MemoryResource) cache
 			    .getFromCache(httpUrl);
 		    cachedResource = (MemoryResource) cache.getFromCache(
-			    httpUrl, cacheRefreshDelay);
+			    httpUrl, config.getCacheRefreshDelay());
 		    cachedResource.render(multipleOutput);
 		    return;
 		} catch (NeedsRefreshException e1) {
 		    // Resource not in cache or stale
-		    memoryOutput = new MemoryOutput(cacheMaxFileSize);
+		    memoryOutput = new MemoryOutput(config
+			    .getCacheMaxFileSize());
 		    multipleOutput.addOutput(memoryOutput);
 		}
 	    }
 	    // Resource not in cache or stale or cache not activated, try to
 	    // load it from HTTP
-	    if (baseURL != null) {
-		httpResource = getResourceFromHttp(httpUrl, context);
+	    if (config.getBaseURL() != null) {
+		httpResource = new HttpResource(httpClient,
+			config.getBaseURL(), target);
 		if (httpResource.getStatusCode() == HttpServletResponse.SC_OK
 			|| httpResource.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY
 			|| httpResource.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY) {
-		    if (putInCache)
-			multipleOutput.addOutput(new FileOutput(fileUrl));
+		    if (config.isPutInCache() && target.isCacheable())
+			multipleOutput.addOutput(new FileOutput(ResourceUtils
+				.getFileUrl(config.getLocalBase(), target)));
 		    httpResource.render(multipleOutput);
 		    return;
 		}
@@ -345,15 +276,15 @@ public final class Driver {
 	    }
 	    // Resource could not be loaded neither from HTTP, nor from the
 	    // cache, let's try from the file system
-	    fileResource = getResourceFromLocal(fileUrl);
-	    if (fileResource.getStatusCode() == 200) {
-		fileResource.render(multipleOutput);
-		return;
+	    if (config.isPutInCache() && target.isCacheable()) {
+		fileResource = new FileResource(config.getLocalBase(), target);
+		if (fileResource.getStatusCode() == 200) {
+		    fileResource.render(multipleOutput);
+		    return;
+		}
 	    }
 	    // Resource could not be loaded at all
-	    if (useCache) {
-		new NullResource().render(multipleOutput);
-	    }
+	    new NullResource().render(multipleOutput);
 	} finally {
 	    // Free all the resources
 	    if (cachedResource != null)
@@ -374,81 +305,6 @@ public final class Driver {
 	}
     }
 
-    private final HttpResource getResourceFromHttp(String url, Context context) {
-	HttpResource httpResource = new HttpResource(httpClient, url, context);
-	return httpResource;
-    }
-
-    private final FileResource getResourceFromLocal(String relUrl) {
-	FileResource fileResource = new FileResource(relUrl);
-	return fileResource;
-    }
-
-    private final String getUrlForFileResource(String relUrl, Context context,
-	    Map<String, String> parameters) {
-	StringBuilder url = new StringBuilder("");
-	if (localBase != null && relUrl != null
-		&& (localBase.endsWith("/") || localBase.endsWith("\\"))
-		&& relUrl.startsWith("/")) {
-	    url.append(localBase.substring(0, localBase.length() - 1)).append(
-		    relUrl);
-	} else {
-	    url.append(localBase).append(relUrl);
-	}
-
-	int index = url.indexOf("?");
-	if (index > -1) {
-	    url = new StringBuilder(url.substring(0, index));
-	}
-	if (context != null || (parameters != null && parameters.size() > 0)) {
-	    // Append queryString hashcode to supply different cache filenames
-	    addParametersAndContextToQueryString(url, context, parameters, true);
-	}
-	return url.toString();
-    }
-
-    private final String getUrlForHttpResource(String relUrl, Context context,
-	    Map<String, String> parameters) {
-	StringBuilder url = new StringBuilder();
-	if (baseURL != null && relUrl != null && baseURL.endsWith("/")
-		&& relUrl.startsWith("/")) {
-	    url.append(baseURL.substring(0, baseURL.length() - 1)).append(
-		    relUrl);
-	} else {
-	    url.append(baseURL).append(relUrl);
-	}
-
-	if (context != null || (parameters != null && parameters.size() > 0)) {
-	    addParametersAndContextToQueryString(url, context, parameters,
-		    false);
-	}
-
-	return url.toString();
-    }
-
-    private final void addParametersAndContextToQueryString(StringBuilder url,
-	    Context context, Map<String, String> parameters, boolean isFile) {
-	StringBuilder queryString = new StringBuilder("");
-	if (context != null) {
-	    for (Map.Entry<String, String> temp : context.getParameterMap()
-		    .entrySet()) {
-		queryString.append(temp.getKey()).append("=").append(
-			temp.getValue()).append("&");
-	    }
-	}
-	if (parameters != null) {
-	    for (Map.Entry<String, String> temp : parameters.entrySet()) {
-		queryString.append(temp.getKey()).append("=").append(
-			temp.getValue()).append("&");
-	    }
-	}
-	if (isFile)
-	    url.append("_").append(queryString.toString().hashCode());
-	else if (queryString.length() > 0)
-	    url.append("?").append(
-		    queryString.substring(0, queryString.length() - 1));
-    }
-
     /**
      * Retrieves a template from the provider application and renders it to the
      * writer replacing the parameters with the given map. If "page" param is
@@ -461,6 +317,7 @@ public final class Driver {
      * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
      * 
      * @param page
+     * 
      * @param name
      * @param writer
      * @param context
@@ -474,7 +331,8 @@ public final class Driver {
 	    Context context, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
 	    throws IOException {
-	String content = getResourceAsString(page, context, parameters);
+	Target target = new Target(page, context, null);
+	String content = getResourceAsString(target);
 	if (content == null)
 	    return;
 	StringBuilder sb = new StringBuilder();
@@ -529,7 +387,7 @@ public final class Driver {
 		}
 	    }
 	}
-	writer.append(replace(sb, replaceRules));
+	writer.append(StringUtils.replace(sb, replaceRules));
     }
 
     /**
@@ -544,10 +402,9 @@ public final class Driver {
      * @return the content of the url
      * @throws IOException
      */
-    private final String getResourceAsString(String relUrl, Context context,
-	    Map<String, String> parameters) throws IOException {
+    private final String getResourceAsString(Target target) throws IOException {
 	StringOutput stringOutput = new StringOutput();
-	renderResource(relUrl, stringOutput, context, parameters);
+	renderResource(target, stringOutput);
 	return stringOutput.toString();
     }
 
@@ -558,11 +415,11 @@ public final class Driver {
      * @return the base URL as a String
      */
     public final String getBaseURL() {
-	return baseURL;
+	return config.getBaseURL();
     }
 
     private final String getContextKey() {
-	return Context.class.getName() + "#" + this.hashCode();
+	return Context.class.getName() + "#" + config.getInstanceName();
     }
 
     public final Context getContext(HttpServletRequest request) {
@@ -572,35 +429,9 @@ public final class Driver {
 	return null;
     }
 
-    public final Context getContext(PageContext pageContext) {
-	return getContext((HttpServletRequest) pageContext.getRequest());
-    }
-
     public final void setContext(Context context, HttpServletRequest request) {
 	HttpSession session = request.getSession();
 	session.setAttribute(getContextKey(), context);
-    }
-
-    public final void setContext(Context context, PageContext pageContext,
-	    String provider) {
-	HttpSession session = ((HttpServletRequest) pageContext.getRequest())
-		.getSession();
-	session.setAttribute(getContextKey(), context);
-    }
-
-    public final void renderBlock(String page, String name,
-	    PageContext pageContext, Map<String, String> replaceRules,
-	    Map<String, String> parameters) throws IOException {
-	renderBlock(page, name, pageContext.getOut(), getContext(pageContext),
-		replaceRules, parameters);
-    }
-
-    public final void renderTemplate(String page, String name,
-	    PageContext pageContext, Map<String, String> params,
-	    Map<String, String> replaceRules, Map<String, String> parameters)
-	    throws IOException {
-	renderTemplate(page, name, pageContext.getOut(),
-		getContext(pageContext), params, replaceRules, parameters);
     }
 
     /**
@@ -635,7 +466,9 @@ public final class Driver {
     public final void aggregate(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response) throws IOException,
 	    AggregationSyntaxException {
-	String content = getResourceAsString(relUrl, getContext(request), null);
+	Target target = new Target(relUrl, getContext(request), null, request);
+	target.setProxyMode(true);
+	String content = getResourceAsString(target);
 	if (content == null)
 	    return;
 	Writer writer = response.getWriter();

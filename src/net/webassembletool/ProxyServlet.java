@@ -29,6 +29,13 @@ public class ProxyServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	    throws ServletException, IOException {
+	// TODO Raccord de méthode auto-généré
+	super.doPost(request, response);
+    }
+
+    @Override
     public void init(ServletConfig config) throws ServletException {
 	provider = config.getInitParameter("provider");
     }

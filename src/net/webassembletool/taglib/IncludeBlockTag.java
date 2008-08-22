@@ -1,13 +1,10 @@
 package net.webassembletool.taglib;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import net.webassembletool.Driver;
 
 /**
  * Retrieves an HTML fragment from the provider application and inserts it into
@@ -36,18 +33,13 @@ public class IncludeBlockTag extends BodyTagSupport implements IReplaceableTag,
 
     @Override
     public int doEndTag() throws JspException {
-	try {
-	    Driver.getInstance(provider).renderBlock(page, name, pageContext,
-		    replaceRules, parameters);
-	} catch (IOException e) {
-	    throw new JspException(e);
-	}
+	DriverUtils.renderBlock(provider, page, name, pageContext,
+		replaceRules, parameters);
 	name = null;
 	page = null;
 	provider = null;
 	replaceRules = new HashMap<String, String>();
 	parameters = new HashMap<String, String>();
-
 	return EVAL_PAGE;
     }
 
