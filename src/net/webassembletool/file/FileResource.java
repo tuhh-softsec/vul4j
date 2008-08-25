@@ -1,4 +1,4 @@
-package net.webassembletool.resource;
+package net.webassembletool.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,9 +8,10 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Map.Entry;
 
-import net.webassembletool.ResourceUtils;
 import net.webassembletool.Target;
 import net.webassembletool.ouput.Output;
+import net.webassembletool.resource.Resource;
+import net.webassembletool.resource.ResourceUtils;
 
 /**
  * Resource implementation pointing to a file on the local FileSystem.
@@ -40,7 +41,7 @@ public class FileResource implements Resource {
 	Iterator<Entry<Object, Object>> iterator = headers.entrySet()
 		.iterator();
 	if (!iterator.hasNext())
-	    throw new ResourceException("Invalid headers file");
+	    throw new InvalidHeaderFileException("Invalid headers file");
 	Entry<Object, Object> header = iterator.next();
 	output.setStatus(Integer.parseInt(header.getKey().toString()), header
 		.getValue().toString());

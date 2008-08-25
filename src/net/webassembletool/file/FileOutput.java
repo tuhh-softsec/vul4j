@@ -1,9 +1,12 @@
-package net.webassembletool.ouput;
+package net.webassembletool.file;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+
+import net.webassembletool.ouput.Output;
+import net.webassembletool.ouput.OutputException;
 
 /**
  * Output implementation that saves the file and headers into two distinct

@@ -21,9 +21,27 @@ public class StringOutput implements Output {
     private String charset = "ISO-8859-1";
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     private int statusCode = 200;
+    private String location;
+
+    public int getStatusCode() {
+	return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+	this.statusCode = statusCode;
+    }
+
+    public String getLocation() {
+	return location;
+    }
+
+    public void setLocation(String location) {
+	this.location = location;
+    }
 
     public void addHeader(String name, String value) {
-	// Nothing to do
+	if ("location".equalsIgnoreCase(name))
+	    location = value;
     }
 
     public void close() {

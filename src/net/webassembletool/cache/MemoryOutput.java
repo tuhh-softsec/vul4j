@@ -1,10 +1,10 @@
-package net.webassembletool.ouput;
+package net.webassembletool.cache;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import net.webassembletool.resource.MemoryResource;
+import net.webassembletool.ouput.Output;
 
 import org.apache.commons.httpclient.Header;
 

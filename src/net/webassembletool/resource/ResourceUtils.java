@@ -1,6 +1,9 @@
-package net.webassembletool;
+package net.webassembletool.resource;
 
 import java.util.Map;
+
+import net.webassembletool.Context;
+import net.webassembletool.Target;
 
 /**
  * Utility class to generate URL and path for Resources

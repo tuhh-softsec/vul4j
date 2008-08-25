@@ -1,4 +1,4 @@
-package net.webassembletool.resource;
+package net.webassembletool.http;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,9 +9,10 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.Context;
-import net.webassembletool.ResourceUtils;
 import net.webassembletool.Target;
 import net.webassembletool.ouput.Output;
+import net.webassembletool.resource.Resource;
+import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Header;
@@ -36,19 +37,21 @@ public class HttpResource implements Resource {
     private HttpMethodBase httpMethod;
     private int statusCode;
     private String statusText;
+    private Target target;
+    private String url;
 
     // TODO handle multipart POST requests
     public HttpResource(HttpClient httpClient, String baseUrl, Target target) {
+	this.target = target;
 	// Retrieve session and other cookies
 	HttpState httpState = null;
 	if (target.getContext() != null)
 	    httpState = target.getContext().getHttpState();
-	String url;
 	if ("GET".equalsIgnoreCase(target.getMethod()) || !target.isProxyMode()) {
 	    url = ResourceUtils.getHttpUrlWithQueryString(baseUrl, target);
 	    httpMethod = new GetMethod(url);
-	    
-	   // TODO forward cookies in proxy mode
+
+	    // TODO forward cookies in proxy mode
 	} else if ("POST".equalsIgnoreCase(target.getMethod())) {
 	    url = ResourceUtils.getHttpUrl(baseUrl, target);
 	    PostMethod postMethod = new PostMethod(url);
@@ -70,6 +73,7 @@ public class HttpResource implements Resource {
 	    if (target.getOriginalRequest() != null) {
 		for (Object obj : target.getOriginalRequest().getParameterMap()
 			.entrySet()) {
+		    @SuppressWarnings("unchecked")
 		    Entry<String, String[]> entry = (Entry<String, String[]>) obj;
 		    for (int i = 0; i < entry.getValue().length; i++) {
 			postMethod.addParameter(new NameValuePair(entry
@@ -79,10 +83,14 @@ public class HttpResource implements Resource {
 	    }
 	    httpMethod = postMethod;
 	} else {
-	    throw new HttpMethodNotSupportedException(target.getMethod() + " "
+	    throw new UnsupportedHttpMethodException(target.getMethod() + " "
 		    + ResourceUtils.getHttpUrl(baseUrl, target));
 	}
-	httpMethod.setFollowRedirects(false);
+	if (target.isProxyMode()) {
+	    httpMethod.setFollowRedirects(false);
+	} else {
+	    httpMethod.setFollowRedirects(true);
+	}
 	try {
 	    httpClient.executeMethod(httpClient.getHostConfiguration(),
 		    httpMethod, httpState);
@@ -124,9 +132,28 @@ public class HttpResource implements Resource {
 		header = httpMethod.getResponseHeader("Content-Length");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
+		// TODO refactor this please
 		header = httpMethod.getResponseHeader("Location");
-		if (header != null)
-		    output.addHeader(header.getName(), header.getValue());
+		if (header != null) {
+		    // Location header rewriting
+		    String location = header.getValue();
+		    String originalBase = target.getOriginalRequest()
+			    .getScheme()
+			    + "://"
+			    + target.getOriginalRequest().getServerName()
+			    + ":"
+			    + target.getOriginalRequest().getServerPort()
+			    + target.getOriginalRequest().getContextPath()
+			    + target.getOriginalRequest().getServletPath();
+		    if (target.getOriginalRequest().getPathInfo() != null)
+			originalBase += target.getOriginalRequest()
+				.getPathInfo();
+		    int pos = originalBase.indexOf(target.getRelUrl());
+		    originalBase = originalBase.substring(0, pos + 1);
+		    location = location.replaceFirst(target.getBaseUrl(),
+			    originalBase);
+		    output.addHeader(header.getName(), location);
+		}
 		header = httpMethod.getResponseHeader("Last-Modified");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());

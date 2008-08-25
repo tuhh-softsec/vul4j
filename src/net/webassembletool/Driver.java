@@ -16,26 +16,25 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.webassembletool.aggregator.AggregationSyntaxException;
-import net.webassembletool.ouput.FileOutput;
-import net.webassembletool.ouput.MemoryOutput;
+import net.webassembletool.cache.Cache;
+import net.webassembletool.cache.MemoryOutput;
+import net.webassembletool.cache.MemoryResource;
+import net.webassembletool.file.FileOutput;
+import net.webassembletool.file.FileResource;
+import net.webassembletool.http.HttpResource;
+import net.webassembletool.http.ResponseOutput;
 import net.webassembletool.ouput.MultipleOutput;
 import net.webassembletool.ouput.Output;
-import net.webassembletool.ouput.ResponseOutput;
 import net.webassembletool.ouput.StringOutput;
-import net.webassembletool.resource.FileResource;
-import net.webassembletool.resource.HttpResource;
-import net.webassembletool.resource.MemoryResource;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.Resource;
+import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 /**
  * Main class used to retrieve data from a provider application using HTTP
@@ -49,11 +48,12 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 public final class Driver {
     // TODO write a tokenizer class to avoid String.indexOf usage in the driver.
     // TODO handle redirects
-    // TODO proxy mode option for taglibs, aggregator and proxy, recursive or not for aggregator
+    // TODO proxy mode option for taglibs, aggregator and proxy, recursive or
+    // not for aggregator
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
     private DriverConfiguration config;
-    private GeneralCacheAdministrator cache = new GeneralCacheAdministrator();
+    private Cache cache;
     private HttpClient httpClient;
 
     static {
@@ -73,11 +73,14 @@ public final class Driver {
 	    httpClient.getHttpConnectionManager().getParams()
 		    .setConnectionTimeout(config.getTimeout());
 	}
-	// proxy settings
+	// Proxy settings
 	if (config.getProxyHost() != null) {
 	    HostConfiguration conf = httpClient.getHostConfiguration();
 	    conf.setProxy(config.getProxyHost(), config.getProxyPort());
 	}
+	// Cache
+	if (config.isUseCache())
+	    cache = new Cache(config.getCacheRefreshDelay());
     }
 
     /**
@@ -189,7 +192,7 @@ public final class Driver {
 	    Context context, Map<String, String> replaceRules,
 	    Map<String, String> parameters) throws IOException {
 	Target target = new Target(page, context, parameters);
-	String content = getResourceAsString(target);
+	String content = getResourceAsString(target).toString();
 	if (content == null)
 	    return;
 	String beginString = "<!--$beginblock$" + name + "$-->";
@@ -230,6 +233,7 @@ public final class Driver {
 
     private final void renderResource(Target target, Output output)
 	    throws IOException {
+	target.setBaseUrl(config.getBaseURL());
 	String httpUrl = ResourceUtils.getHttpUrlWithQueryString(config
 		.getBaseURL(), target);
 	MultipleOutput multipleOutput = new MultipleOutput();
@@ -241,14 +245,11 @@ public final class Driver {
 	try {
 	    if (config.isUseCache() && target.isCacheable()) {
 		// Try to load the resource from cache
-		try {
-		    cachedResource = (MemoryResource) cache
-			    .getFromCache(httpUrl);
-		    cachedResource = (MemoryResource) cache.getFromCache(
-			    httpUrl, config.getCacheRefreshDelay());
+		cachedResource = cache.get(httpUrl);
+		if (cachedResource != null && !cachedResource.isStale()) {
 		    cachedResource.render(multipleOutput);
 		    return;
-		} catch (NeedsRefreshException e1) {
+		} else {
 		    // Resource not in cache or stale
 		    memoryOutput = new MemoryOutput(config
 			    .getCacheMaxFileSize());
@@ -293,7 +294,7 @@ public final class Driver {
 	    if (memoryOutput != null) {
 		Resource newCache = memoryOutput.toResource();
 		if (newCache != null)
-		    cache.putInCache(httpUrl, memoryOutput.toResource());
+		    cache.put(httpUrl, memoryOutput.toResource());
 		else
 		    // if we cannot put the resource in cache, we must call
 		    // cancelUpdate to release the lock on the key
@@ -333,7 +334,7 @@ public final class Driver {
 	    Map<String, String> replaceRules, Map<String, String> parameters)
 	    throws IOException {
 	Target target = new Target(page, context, null);
-	String content = getResourceAsString(target);
+	String content = getResourceAsString(target).toString();
 	if (content == null)
 	    return;
 	StringBuilder sb = new StringBuilder();
@@ -403,10 +404,11 @@ public final class Driver {
      * @return the content of the url
      * @throws IOException
      */
-    private final String getResourceAsString(Target target) throws IOException {
+    private final StringOutput getResourceAsString(Target target)
+	    throws IOException {
 	StringOutput stringOutput = new StringOutput();
 	renderResource(target, stringOutput);
-	return stringOutput.toString();
+	return stringOutput;
     }
 
     /**
@@ -474,7 +476,14 @@ public final class Driver {
 	    AggregationSyntaxException {
 	Target target = new Target(relUrl, getContext(request), null, request);
 	target.setProxyMode(true);
-	String content = getResourceAsString(target);
+	StringOutput stringOutput = getResourceAsString(target);
+	if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
+		|| stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
+	    response.setStatus(stringOutput.getStatusCode());
+	    response.setHeader("location", stringOutput.getLocation());
+	    return;
+	}
+	String content = stringOutput.toString();
 	if (content == null)
 	    return;
 	Writer writer = response.getWriter();

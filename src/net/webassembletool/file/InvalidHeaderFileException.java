@@ -1,7 +1,4 @@
-/**
- * 
- */
-package net.webassembletool.resource;
+package net.webassembletool.file;
 
 /**
  * Exception to be thrown when a problem occurs with a resource.
@@ -9,11 +6,11 @@ package net.webassembletool.resource;
  * @author François-Xavier Bonnet
  * 
  */
-public class ResourceException extends RuntimeException {
+public class InvalidHeaderFileException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public ResourceException(String string) {
+    public InvalidHeaderFileException(String string) {
 	super(string);
     }
 

@@ -1,8 +1,9 @@
-package net.webassembletool.resource;
+package net.webassembletool.cache;
 
 import java.io.IOException;
 
 import net.webassembletool.ouput.Output;
+import net.webassembletool.resource.Resource;
 
 import org.apache.commons.httpclient.Header;
 
@@ -19,6 +20,7 @@ public class MemoryResource implements Resource {
     private String charset;
     private int statusCode;
     private String statusMessage;
+    private boolean stale = false;
 
     public MemoryResource(byte[] byteArray, String charset, Header[] headers,
 	    int statusCode, String statusMessage) {
@@ -54,4 +56,13 @@ public class MemoryResource implements Resource {
     public int getStatusCode() {
 	return statusCode;
     }
+
+    public boolean isStale() {
+	return stale;
+    }
+
+    public void setStale(boolean stale) {
+	this.stale = stale;
+    }
+
 }

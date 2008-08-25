@@ -21,6 +21,15 @@ public class Target {
     private Map<String, String> parameters;
     private Context context;
     private boolean proxyMode = false;
+    private String baseUrl;
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
 
     public void setProxyMode(boolean proxyMode) {
 	this.proxyMode = proxyMode;

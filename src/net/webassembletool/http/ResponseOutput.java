@@ -1,9 +1,12 @@
-package net.webassembletool.ouput;
+package net.webassembletool.http;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.webassembletool.ouput.Output;
+import net.webassembletool.ouput.OutputException;
 
 /**
  * Output implementation that simply writes to an HttpServletResponse.
