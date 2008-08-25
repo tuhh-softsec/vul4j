@@ -1,5 +1,6 @@
 package org.codehaus.plexus.util;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -166,6 +167,35 @@ public class StringUtilsTest
         String result = StringUtils.quoteAndEscape( src, '\'' );
 
         assertEquals( src, result );
+    }
+
+    public void testSplit()
+    {
+        String[] tokens;
+
+        tokens = StringUtils.split( "", ", " );
+        assertNotNull( tokens );
+        assertEquals( Arrays.asList( new String[0] ), Arrays.asList( tokens ) );
+
+        tokens = StringUtils.split( ", ,,,   ,", ", " );
+        assertNotNull( tokens );
+        assertEquals( Arrays.asList( new String[0] ), Arrays.asList( tokens ) );
+
+        tokens = StringUtils.split( "this", ", " );
+        assertNotNull( tokens );
+        assertEquals( Arrays.asList( new String[] { "this" } ), Arrays.asList( tokens ) );
+
+        tokens = StringUtils.split( "this is a test", ", " );
+        assertNotNull( tokens );
+        assertEquals( Arrays.asList( new String[] { "this", "is", "a", "test" } ), Arrays.asList( tokens ) );
+
+        tokens = StringUtils.split( "   this   is   a   test  ", ", " );
+        assertNotNull( tokens );
+        assertEquals( Arrays.asList( new String[] { "this", "is", "a", "test" } ), Arrays.asList( tokens ) );
+
+        tokens = StringUtils.split( "this is a test, really", ", " );
+        assertNotNull( tokens );
+        assertEquals( Arrays.asList( new String[] { "this", "is", "a", "test", "really" } ), Arrays.asList( tokens ) );
     }
 
 }
