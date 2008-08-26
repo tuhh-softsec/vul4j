@@ -1,5 +1,7 @@
 package net.webassembletool.resource;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import net.webassembletool.Context;
@@ -13,25 +15,42 @@ import net.webassembletool.Target;
 public class ResourceUtils {
 
     private final static String buildQueryString(Target target) {
-	StringBuilder queryString = new StringBuilder();
-	Context context = target.getContext();
-	Map<String, String> parameters = target.getParameters();
-	if (context != null) {
-	    for (Map.Entry<String, String> temp : context.getParameterMap()
-		    .entrySet()) {
-		queryString.append(temp.getKey()).append("=").append(
-			temp.getValue()).append("&");
+	try {
+	    String charset = "ISO-8859-1";
+	    StringBuilder queryString = new StringBuilder();
+	    if (target.getOriginalRequest() != null) {
+		charset = target.getOriginalRequest().getCharacterEncoding();
+		String qs = target.getOriginalRequest().getQueryString();
+		if (qs != null && !qs.equals(""))
+		    queryString.append(qs).append("&");
 	    }
-	}
-	if (parameters != null) {
-	    for (Map.Entry<String, String> temp : parameters.entrySet()) {
-		queryString.append(temp.getKey()).append("=").append(
-			temp.getValue()).append("&");
+	    Context context = target.getContext();
+	    Map<String, String> parameters = target.getParameters();
+	    if (context != null) {
+		for (Map.Entry<String, String> temp : context.getParameterMap()
+			.entrySet()) {
+		    queryString.append(
+			    URLEncoder.encode(temp.getKey(), charset)).append(
+			    "=").append(
+			    URLEncoder.encode(temp.getValue(), charset))
+			    .append("&");
+		}
 	    }
+	    if (parameters != null) {
+		for (Map.Entry<String, String> temp : parameters.entrySet()) {
+		    queryString.append(
+			    URLEncoder.encode(temp.getKey(), charset)).append(
+			    "=").append(
+			    URLEncoder.encode(temp.getValue(), charset))
+			    .append("&");
+		}
+	    }
+	    if (queryString.length() == 0)
+		return "";
+	    return queryString.substring(0, queryString.length() - 1);
+	} catch (UnsupportedEncodingException e) {
+	    throw new RuntimeException(e);
 	}
-	if (queryString.length() == 0)
-	    return "";
-	return queryString.substring(0, queryString.length() - 1);
     }
 
     private final static String concatUrl(String baseUrl, String relUrl) {

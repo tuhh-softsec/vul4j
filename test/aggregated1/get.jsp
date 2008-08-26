@@ -8,14 +8,10 @@
 <title>Form post example</title>
 </head>
 <body style="background-color: yellow">
-<% if ("POST".equals(request.getMethod())) { %>
-Method = POST<br />
 Posted field value = <%=request.getParameter("myField") %>
-<% } else { %>
-<form method="post">
+<form method="get">
 <input type="text" name="myField" />
 <input type="submit" name="send" value="Post this form"/>
 </form>
-<% } %>
 </body>
 </html>

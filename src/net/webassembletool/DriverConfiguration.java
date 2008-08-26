@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.webassembletool;
 
 import java.util.Properties;
@@ -13,6 +10,7 @@ import java.util.Properties;
 class DriverConfiguration {
     private String instanceName;
     private String baseURL;
+    private String uriEncoding = "ISO-8859-1";
     private int maxConnectionsPerHost = 20;
     private int timeout = 1000;
     private boolean useCache = true;
@@ -26,6 +24,8 @@ class DriverConfiguration {
     public DriverConfiguration(String instanceName, Properties props) {
 	// Remote application settings
 	baseURL = props.getProperty("remoteUrlBase");
+	if (props.getProperty("uriEncoding") != null)
+	    uriEncoding = props.getProperty("uriEncoding");
 	if (props.getProperty("maxConnectionsPerHost") != null)
 	    maxConnectionsPerHost = Integer.parseInt(props
 		    .getProperty("maxConnectionsPerHost"));
@@ -94,6 +94,10 @@ class DriverConfiguration {
 
     public int getProxyPort() {
 	return proxyPort;
+    }
+
+    public String getUriEncoding() {
+	return uriEncoding;
     }
 
 }

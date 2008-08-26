@@ -23,6 +23,10 @@ public class StringOutput implements Output {
     private int statusCode = 200;
     private String location;
 
+    public String getCharset() {
+	return charset;
+    }
+
     public int getStatusCode() {
 	return statusCode;
     }

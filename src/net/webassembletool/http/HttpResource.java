@@ -50,8 +50,6 @@ public class HttpResource implements Resource {
 	if ("GET".equalsIgnoreCase(target.getMethod()) || !target.isProxyMode()) {
 	    url = ResourceUtils.getHttpUrlWithQueryString(baseUrl, target);
 	    httpMethod = new GetMethod(url);
-
-	    // TODO forward cookies in proxy mode
 	} else if ("POST".equalsIgnoreCase(target.getMethod())) {
 	    url = ResourceUtils.getHttpUrl(baseUrl, target);
 	    PostMethod postMethod = new PostMethod(url);
@@ -132,7 +130,7 @@ public class HttpResource implements Resource {
 		header = httpMethod.getResponseHeader("Content-Length");
 		if (header != null)
 		    output.addHeader(header.getName(), header.getValue());
-		// TODO refactor this please
+		// TODO refactor this
 		header = httpMethod.getResponseHeader("Location");
 		if (header != null) {
 		    // Location header rewriting

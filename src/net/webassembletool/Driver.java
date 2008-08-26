@@ -486,6 +486,7 @@ public final class Driver {
 	String content = stringOutput.toString();
 	if (content == null)
 	    return;
+	response.setCharacterEncoding(stringOutput.getCharset());
 	Writer writer = response.getWriter();
 	int currentPosition = 0;
 	int previousPosition;
