@@ -23,7 +23,7 @@
 		</copy>
 		<copy todir="bin/provider/WEB-INF" file="tld/webassembletool.tld" />
 		<copy todir="bin">
-			<fileset dir="test" />
+			<fileset dir="test/webapps" />
 		</copy>
 	</target>
 	<target name="javadoc">

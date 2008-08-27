@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure id="Server" class="org.mortbay.jetty.Server">
+
+    <!-- =========================================================== -->
+    <!-- Server Thread Pool                                          -->
+    <!-- =========================================================== -->
+	<Set name="ThreadPool">
+		<New class="org.mortbay.thread.QueuedThreadPool">
+        <!-- initial threads set to 10 -->
+			<Set name="minThreads">10</Set>
+
+        <!-- the thread pool will grow only up to 200 -->
+			<Set name="maxThreads">200</Set>
+			<!--
+				indicates that having 20 and below, the pool will be considered low
+				on threads
+			-->
+			<Set name="lowThreads">20</Set>
+			<!--
+				The number of queued jobs (or idle threads) needed before the thread
+				pool is grown (or shrunk)
+			-->
+			<Set name="SpawnOrShrinkAt">2</Set>
+		</New>
+	</Set>
+
+
+
+    <!-- =========================================================== -->
+    <!-- Set connectors                                              -->
+    <!-- =========================================================== -->
+	<Call name="addConnector">
+		<Arg>
+			<New class="org.mortbay.jetty.nio.SelectChannelConnector">
+            <!-- the ip address or domain to bind -->
+				<Set name="host">
+					<SystemProperty name="jetty.host" />
+				</Set>
+
+            <!-- the port to use/bind, defaults to 8080 if property not set -->
+				<Set name="port">
+					<SystemProperty name="jetty.port" default="8080" />
+				</Set>
+
+            <!-- the time in milliseconds when a connection is considered idle -->
+				<Set name="maxIdleTime">300000</Set>
+				<!--
+					the number of acceptors (their job is to accept the connection and
+					dispatch to thread pool)
+				-->
+				<Set name="Acceptors">2</Set>
+				<!--
+					should the connection statistics be turned on? (Not advisable in
+					production)
+				-->
+				<Set name="statsOn">false</Set>
+
+            <!-- the confidential port -->
+				<Set name="confidentialPort">8443</Set>
+				<!--
+					indicates the minimum number of connections when the server is
+					considered low on resources
+				-->
+				<Set name="lowResourcesConnections">20000</Set>
+				<!--
+					when low on resources, this indicates the maximum time
+					(milliseconds) a connection must be idle to not be closed
+				-->
+				<Set name="lowResourcesMaxIdleTime">5000</Set>
+			</New>
+		</Arg>
+	</Call>
+
+
+    <!-- =========================================================== -->
+    <!-- Set handler Collection Structure                            -->
+    <!-- =========================================================== -->
+	<Set name="handler">
+      <!-- the collection of handlers that will handle the request -->
+		<New id="Handlers" class="org.mortbay.jetty.handler.HandlerCollection">
+			<Set name="handlers">
+				<Array type="org.mortbay.jetty.Handler">
+					<!--
+						primarily handles the request and maps the request to a
+						ContextHandler
+					-->
+					<Item>
+						<New id="Contexts" class="org.mortbay.jetty.handler.ContextHandlerCollection" />
+					</Item>
+
+           <!-- The default handler ... handles the request if not yet handled -->
+					<Item>
+						<New id="DefaultHandler" class="org.mortbay.jetty.handler.DefaultHandler" />
+					</Item>
+				</Array>
+			</Set>
+		</New>
+	</Set>
+	<Call name="addLifeCycle">
+		<Arg>
+			<New class="org.mortbay.jetty.deployer.WebAppDeployer">
+          <!-- the ContextHandlerCollection to add the webapps to -->
+				<Set name="contexts">
+					<Ref id="Contexts" />
+				</Set>
+				<!--
+					the directory where all the webapps are located (can be exploded or
+					packaged as war
+				-->
+				<Set name="webAppDir">
+					<SystemProperty name="webapptest.webapproot" />
+				</Set>
+				<!--
+					indicates whether to lookup/load from the parent class loader first
+				-->
+				<Set name="parentLoaderPriority">false</Set>
+				<!--
+					indicates whether to extract the webapp if it is packaged as a war
+				-->
+				<Set name="extract">true</Set>
+				<!--
+					indicates whether a deployed webapp on a certain contextPath should
+					have a duplicate webapp deployment
+				-->
+				<Set name="allowDuplicates">false</Set>
+				<Set name="configurationClasses">
+					<Array type="java.lang.String">
+						<!-- Default configurators -->
+						<Item>org.mortbay.jetty.webapp.WebInfConfiguration
+						</Item>
+						<Item>org.mortbay.jetty.webapp.WebXmlConfiguration
+						</Item>
+						<Item>org.mortbay.jetty.webapp.JettyWebXmlConfiguration
+						</Item>
+						<Item>org.mortbay.jetty.webapp.TagLibConfiguration
+						</Item>
+						<Item>net.webassembletool.webapptest.jetty.ClassPathConfig
+						</Item>
+					</Array>
+				</Set>
+			</New>
+		</Arg>
+	</Call>
+    <!-- =========================================================== -->
+    <!-- extra options                                               -->
+    <!-- =========================================================== -->
+	<Set name="sendServerVersion">true</Set>
+
+    <!-- send the date header in the response header? -->
+	<Set name="sendDateHeader">true</Set>
+
+    <!-- allows requests(prior to shutdown) to finish gracefully -->
+	<Set name="gracefulShutdown">1000</Set>
+</Configure>
