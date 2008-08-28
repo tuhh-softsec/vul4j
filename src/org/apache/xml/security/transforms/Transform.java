@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2008 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
  */
 package org.apache.xml.security.transforms;
 
-
-
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
-import java.util.Map;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -39,12 +37,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
 /**
  * Implements the behaviour of the <code>ds:Transform</code> element.
  *
- * This <code>Transform</code>(Factory) class role as the Factory and Proxy of
- * implemanting class that have the functionality of <a
+ * This <code>Transform</code>(Factory) class acts as the Factory and Proxy of
+ * the implementing class that supports the functionality of <a
  * href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>a Transform
  * algorithm</a>.
  * Implements the Factory and Proxy pattern for ds:Transform algorithms.
@@ -52,326 +49,318 @@ import org.xml.sax.SAXException;
  * @author Christian Geuer-Pollmann
  * @see Transforms
  * @see TransformSpi
- *
  */
 public final class Transform extends SignatureElementProxy {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
+    /** {@link org.apache.commons.logging} logging facility */
+    private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(Transform.class.getName());
 
-   /** Field _alreadyInitialized */
-   static boolean _alreadyInitialized = false;
+    /** Field _alreadyInitialized */
+    private static boolean alreadyInitialized = false;
 
-   /** All available Transform classes are registered here */
-   static Map _transformHash = null;
+    /** All available Transform classes are registered here */
+    private static HashMap transformClassHash = null;
    
-   static HashMap classesHash =  new HashMap();	      
+    private static HashMap transformSpiHash = new HashMap();	      
 
-   /** Field transformSpi */
-   protected TransformSpi transformSpi = null;
+    private TransformSpi transformSpi = null;
 
-   /**
-    * Constructs {@link Transform}
-    *
-    * @param doc the {@link Document} in which <code>Transform</code> will be placed
-    * @param algorithmURI URI representation of 
-    * <code>Transform algorithm</code> will be specified as parameter of 
-    * {@link #getInstance(Document, String)}, when generate. </br>
-    * @param contextNodes the child node list of <code>Transform</code> element
-    * @throws InvalidTransformException
-    */
-   public Transform(Document doc, String algorithmURI, NodeList contextNodes)
-           throws InvalidTransformException {
+    /**
+     * Constructs {@link Transform}
+     *
+     * @param doc the {@link Document} in which <code>Transform</code> will be 
+     * placed
+     * @param algorithmURI URI representation of 
+     * <code>Transform algorithm</code> which will be specified as parameter of 
+     * {@link #getInstance(Document, String)}, when generated. </br>
+     * @param contextNodes the child node list of <code>Transform</code> element
+     * @throws InvalidTransformException
+     */
+    public Transform(Document doc, String algorithmURI, NodeList contextNodes)
+        throws InvalidTransformException {
 
-      super(doc);
+        super(doc);
 
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
-                                                algorithmURI);
+        this._constructionElement.setAttributeNS
+            (null, Constants._ATT_ALGORITHM, algorithmURI);
 
-         this.transformSpi  =
-            Transform.getImplementingClass(algorithmURI);
-		 
-         if(transformSpi == null) {
-             Object exArgs[] = { algorithmURI };
-
-             throw new InvalidTransformException(
+        transformSpi = getTransformSpi(algorithmURI);
+        if (transformSpi == null) {
+            Object exArgs[] = { algorithmURI };
+            throw new InvalidTransformException(
                 "signature.Transform.UnknownTransform", exArgs);
-         }
-         if (log.isDebugEnabled()) {
-         	log.debug("Create URI \"" + algorithmURI + "\" class \""
+        }
+
+        if (log.isDebugEnabled()) {
+       	    log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + transformSpi.getClass() + "\"");
-         	log.debug("The NodeList is " + contextNodes);
-         }
+       	    log.debug("The NodeList is " + contextNodes);
+        }
 
-         // create the custom Transform object        
-         //this.transformSpi.setTransform(this);
-
-         // give it to the current document
-         if (contextNodes != null) {
-            /*
-            while (contextNodes.getLength() > 0) {
-               this._constructionElement.appendChild(contextNodes.item(0));
-            }
-            */
-
+        // give it to the current document
+        if (contextNodes != null) {
             for (int i = 0; i < contextNodes.getLength(); i++) {
-               this._constructionElement.appendChild(contextNodes.item(i).cloneNode(true));
+                this._constructionElement.appendChild
+                    (contextNodes.item(i).cloneNode(true));
             }
-
          }
-      
-   }
+    }
 
-   /**
-    * This constructor can only be called from the {@link Transforms} object, so
-    * it's protected.
-    *
-    * @param element <code>ds:Transform</code> element
-    * @param BaseURI the URI of the resource where the XML instance was stored
-    * @throws InvalidTransformException
-    * @throws TransformationException
-    * @throws XMLSecurityException
-    */
-   public Transform(Element element, String BaseURI)
-           throws InvalidTransformException, TransformationException,
-                  XMLSecurityException {
+    /**
+     * This constructor can only be called from the {@link Transforms} object,
+     * so it's protected.
+     *
+     * @param element <code>ds:Transform</code> element
+     * @param BaseURI the URI of the resource where the XML instance was stored
+     * @throws InvalidTransformException
+     * @throws TransformationException
+     * @throws XMLSecurityException
+     */
+    public Transform(Element element, String BaseURI)
+        throws InvalidTransformException, TransformationException,
+               XMLSecurityException {
 
-      super(element, BaseURI);
+        super(element, BaseURI);
 
-      // retrieve Algorithm Attribute from ds:Transform
-      String AlgorithmURI = element.getAttributeNS(null, Constants._ATT_ALGORITHM);
+        // retrieve Algorithm Attribute from ds:Transform
+        String algorithmURI = element.getAttributeNS(null, Constants._ATT_ALGORITHM);
 
-      if ((AlgorithmURI == null) || (AlgorithmURI.length() == 0)) {
-         Object exArgs[] = { Constants._ATT_ALGORITHM,
-                             Constants._TAG_TRANSFORM };
-
-         throw new TransformationException("xml.WrongContent", exArgs);
-      }
+        if (algorithmURI == null || algorithmURI.length() == 0) {
+            Object exArgs[] = { Constants._ATT_ALGORITHM,
+                                Constants._TAG_TRANSFORM };
+            throw new TransformationException("xml.WrongContent", exArgs);
+        }
 
      
-      // Class implementingClass = (Class) _transformHash.get(AlgorithmURI);		 
-      this.transformSpi = Transform.getImplementingClass(AlgorithmURI);
-      //this.transformSpi.setTransform(this);
-     
-      if (this.transformSpi==null) {
-		  Object exArgs[] = { AlgorithmURI };
+        transformSpi = getTransformSpi(algorithmURI);
+        if (transformSpi == null) {
+            Object exArgs[] = { algorithmURI };
+            throw new InvalidTransformException(
+	        "signature.Transform.UnknownTransform", exArgs);
+        }
+    }
 
-	         throw new InvalidTransformException(
-	            "signature.Transform.UnknownTransform", exArgs);
-      }
-   }
+    /**
+     * Generates a Transform object that implements the specified 
+     * <code>Transform algorithm</code> URI.
+     *
+     * @param algorithmURI <code>Transform algorithm</code> URI representation, 
+     * such as specified in 
+     * <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
+     * @param doc the proxy {@link Document}
+     * @return <code>{@link Transform}</code> object
+     * @throws InvalidTransformException
+     */
+    public static Transform getInstance(
+        Document doc, String algorithmURI) throws InvalidTransformException {
+        return getInstance(doc, algorithmURI, (NodeList) null);
+    }
 
-   /**
-    * Generates a Transform object that implements the specified <code>Transform algorithm</code> URI.
-    *
-    * @param algorithmURI <code>Transform algorithm</code> URI representation, such as specified in <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
-    * @param doc the proxy {@link Document}
-    * @return <code>{@link Transform}</code> object
-    * @throws InvalidTransformException
-    */
-   public static final Transform getInstance(
-           Document doc, String algorithmURI) throws InvalidTransformException {
-      return Transform.getInstance(doc, algorithmURI, (NodeList) null);
-   }
+    /**
+     * Generates a Transform object that implements the specified 
+     * <code>Transform algorithm</code> URI.
+     *
+     * @param algorithmURI <code>Transform algorithm</code> URI representation, 
+     * such as specified in 
+     * <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
+     * @param contextChild the child element of <code>Transform</code> element
+     * @param doc the proxy {@link Document}
+     * @return <code>{@link Transform}</code> object
+     * @throws InvalidTransformException
+     */
+    public static Transform getInstance(
+        Document doc, String algorithmURI, Element contextChild)
+        throws InvalidTransformException {
 
-   /**
-    * Generates a Transform object that implements the specified <code>Transform algorithm</code> URI.
-    *
-    * @param algorithmURI <code>Transform algorithm</code> URI representation, such as specified in <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
-    * @param contextChild the child element of <code>Transform</code> element
-    * @param doc the proxy {@link Document}
-    * @return <code>{@link Transform}</code> object
-    * @throws InvalidTransformException
-    */
-   public static final Transform getInstance(
-           Document doc, String algorithmURI, Element contextChild)
-              throws InvalidTransformException {
+        HelperNodeList contextNodes = new HelperNodeList();
 
-      HelperNodeList contextNodes = new HelperNodeList();
+        XMLUtils.addReturnToElement(doc, contextNodes);
+        contextNodes.appendChild(contextChild);
+        XMLUtils.addReturnToElement(doc, contextNodes);
 
-      XMLUtils.addReturnToElement(doc, contextNodes);
-      contextNodes.appendChild(contextChild);
-      XMLUtils.addReturnToElement(doc, contextNodes);
+        return getInstance(doc, algorithmURI, contextNodes);
+    }
 
-      return Transform.getInstance(doc, algorithmURI, contextNodes);
-   }
+    /**
+     * Generates a Transform object that implements the specified 
+     * <code>Transform algorithm</code> URI.
+     *
+     * @param algorithmURI <code>Transform algorithm</code> URI form, such as 
+     * specified in <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>
+     * Transform algorithm </a>
+     * @param contextNodes the child node list of <code>Transform</code> element
+     * @param doc the proxy {@link Document}
+     * @return <code>{@link Transform}</code> object
+     * @throws InvalidTransformException
+     */
+    public static Transform getInstance(
+        Document doc, String algorithmURI, NodeList contextNodes)
+        throws InvalidTransformException {
+        return new Transform(doc, algorithmURI, contextNodes);
+    }
 
-   /**
-    * Generates a Transform object that implements the specified <code>Transform algorithm</code> URI.
-    *
-    * @param algorithmURI <code>Transform algorithm</code> URI form, such as specified in <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
-    * @param contextNodes the child node list of <code>Transform</code> element
-    * @param doc the proxy {@link Document}
-    * @return <code>{@link Transform}</code> object
-    * @throws InvalidTransformException
-    */
-   public static final Transform getInstance(
-           Document doc, String algorithmURI, NodeList contextNodes)
-              throws InvalidTransformException {
-      return new Transform(doc, algorithmURI, contextNodes);
-   }
+    /**
+     * Initalizes for this {@link Transform}.
+     */
+    public static void init() {
+        if (!alreadyInitialized) {
+            transformClassHash = new HashMap(10);
+            alreadyInitialized = true;
+        }
+    }
 
-   /**
-    * Initalizes for this {@link Transform}
-    *
-    */
-   public static void init() {
+    /**
+     * Registers implementing class of the Transform algorithm with algorithmURI
+     *
+     * @param algorithmURI algorithmURI URI representation of 
+     * <code>Transform algorithm</code> will be specified as parameter of 
+     * {@link #getInstance(Document, String)}, when generate. </br>
+     * @param implementingClass <code>implementingClass</code> the implementing 
+     * class of {@link TransformSpi}
+     * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI 
+     * is already registered
+     */
+    public static void register(String algorithmURI, String implementingClass)
+        throws AlgorithmAlreadyRegisteredException {
 
-      if (!_alreadyInitialized) {
-         _transformHash = new HashMap(10);
-         _alreadyInitialized = true;
-      }
-   }
-
-   /**
-    * Registers implementing class of the Transform algorithm with algorithmURI
-    *
-    * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code>
-    *  will be specified as parameter of {@link #getInstance(Document, String)}, when generate. </br>
-    * @param implementingClass <code>implementingClass</code> the implementing class of {@link TransformSpi}
-    * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
-    */
-   public static void register(String algorithmURI, String implementingClass)
-           throws AlgorithmAlreadyRegisteredException {
-
-      {
-
-         // are we already registered?
-        Object registeredClass=null;
-		try {
-			registeredClass = Transform.getImplementingClass(algorithmURI);
-		} catch (InvalidTransformException e1) {
-			Object exArgs[] = { algorithmURI, registeredClass };
-			throw new AlgorithmAlreadyRegisteredException(
-		               "algorithm.alreadyRegistered", exArgs);
-		}
-
-         if ((registeredClass != null) ) {
+        // are we already registered?
+        Class registeredClass = getImplementingClass(algorithmURI);
+        if ((registeredClass != null) ) {
             Object exArgs[] = { algorithmURI, registeredClass };
             throw new AlgorithmAlreadyRegisteredException(
                "algorithm.alreadyRegistered", exArgs);
-         }
+        }
 
-         try {
-			Transform._transformHash.put(algorithmURI, Class.forName(implementingClass));
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-      }
-   }
+        ClassLoader cl = (ClassLoader) AccessController.doPrivileged(
+            new PrivilegedAction() {
+                public Object run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
 
-   /**
-    * Returns the URI representation of Transformation algorithm
-    *
-    * @return the URI representation of Transformation algorithm
-    */
-   public final String getURI() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
-   }
+        try {
+	    transformClassHash.put
+                (algorithmURI, Class.forName(implementingClass, true, cl));
+	} catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-   /**
-    * Transforms the input, and generats {@link XMLSignatureInput} as output.
-    * @param input input {@link XMLSignatureInput} which can supplied Octect Stream and NodeSet as Input of Transformation
-    *
-    * @return the {@link XMLSignatureInput} class as the result of transformation
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws TransformationException
-    */
-   public XMLSignatureInput performTransform(XMLSignatureInput input)
-           throws IOException, CanonicalizationException,
-                  InvalidCanonicalizerException, TransformationException {
+    /**
+     * Returns the URI representation of Transformation algorithm
+     *
+     * @return the URI representation of Transformation algorithm
+     */
+    public String getURI() {
+        return this._constructionElement.getAttributeNS
+            (null, Constants._ATT_ALGORITHM);
+    }
 
-      XMLSignatureInput result = null;
+    /**
+     * Transforms the input, and generates {@link XMLSignatureInput} as output.
+     *
+     * @param input input {@link XMLSignatureInput} which can supplied Octet 
+     * Stream and NodeSet as Input of Transformation
+     * @return the {@link XMLSignatureInput} class as the result of 
+     * transformation
+     * @throws CanonicalizationException
+     * @throws IOException
+     * @throws InvalidCanonicalizerException
+     * @throws TransformationException
+     */
+    public XMLSignatureInput performTransform(XMLSignatureInput input)
+        throws IOException, CanonicalizationException,
+               InvalidCanonicalizerException, TransformationException {
 
-      try {
-         result = transformSpi.enginePerformTransform(input, this);
-      } catch (ParserConfigurationException ex) {
-         Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
+        XMLSignatureInput result = null;
 
-         throw new CanonicalizationException(
-            "signature.Transform.ErrorDuringTransform", exArgs, ex);
-      } catch (SAXException ex) {
-         Object exArgs[] = { this.getURI(), "SAXException" };
+        try {
+            result = transformSpi.enginePerformTransform(input, this);
+        } catch (ParserConfigurationException ex) {
+            Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
+            throw new CanonicalizationException(
+                "signature.Transform.ErrorDuringTransform", exArgs, ex);
+        } catch (SAXException ex) {
+            Object exArgs[] = { this.getURI(), "SAXException" };
+            throw new CanonicalizationException(
+                "signature.Transform.ErrorDuringTransform", exArgs, ex);
+        }
 
-         throw new CanonicalizationException(
-            "signature.Transform.ErrorDuringTransform", exArgs, ex);
-      }
-
-      return result;
-   }
+        return result;
+    }
    
-   /**
-    * Transforms the input, and generats {@link XMLSignatureInput} as output.
-    * @param input input {@link XMLSignatureInput} which can supplied Octect Stream and NodeSet as Input of Transformation
-    * @param os where to output the result of the last transformation
-    *
-    * @return the {@link XMLSignatureInput} class as the result of transformation
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws TransformationException
-    */
-   public XMLSignatureInput performTransform(XMLSignatureInput input, OutputStream os)
-   throws IOException, CanonicalizationException,
-          InvalidCanonicalizerException, TransformationException {
+    /**
+     * Transforms the input, and generates {@link XMLSignatureInput} as output.
+     *
+     * @param input input {@link XMLSignatureInput} which can supplied Octect 
+     * Stream and NodeSet as Input of Transformation
+     * @param os where to output the result of the last transformation
+     * @return the {@link XMLSignatureInput} class as the result of 
+     * transformation
+     * @throws CanonicalizationException
+     * @throws IOException
+     * @throws InvalidCanonicalizerException
+     * @throws TransformationException
+     */
+    public XMLSignatureInput performTransform(XMLSignatureInput input, 
+        OutputStream os) throws IOException, CanonicalizationException,
+        InvalidCanonicalizerException, TransformationException {
 
-   	    XMLSignatureInput result = null;
+        XMLSignatureInput result = null;
 
-   	    try {
-   	    	result = transformSpi.enginePerformTransform(input,os, this);
-   	    } catch (ParserConfigurationException ex) {
-   	    	Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
+        try {
+       	    result = transformSpi.enginePerformTransform(input, os, this);
+        } catch (ParserConfigurationException ex) {
+       	    Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
+   	    throw new CanonicalizationException(
+   	   	"signature.Transform.ErrorDuringTransform", exArgs, ex);
+        } catch (SAXException ex) {
+       	    Object exArgs[] = { this.getURI(), "SAXException" };
+   	    throw new CanonicalizationException(
+   	   	"signature.Transform.ErrorDuringTransform", exArgs, ex);
+        }
 
-   	    	throw new CanonicalizationException(
-   	    			"signature.Transform.ErrorDuringTransform", exArgs, ex);
-   	    } catch (SAXException ex) {
-   	    	Object exArgs[] = { this.getURI(), "SAXException" };
+        return result;
+    }
 
-   	    	throw new CanonicalizationException(
-   	    			"signature.Transform.ErrorDuringTransform", exArgs, ex);
-   	    }
+    /**
+     * Method getImplementingClass
+     *
+     * @param URI
+     * @return The name of the class implementing the URI.
+     */
+    private static Class getImplementingClass(String URI) {
+        return (Class) transformClassHash.get(URI);
+    }
 
-   	    return result;
-   }
-
-   /**
-    * Method getImplementingClass
-    *
-    * @param URI
-    * @return The name of the class implementing the URI.
- * @throws InvalidTransformException 
-    */
-   private static TransformSpi getImplementingClass(String URI) throws InvalidTransformException {
-       try {
-    	   Object value=classesHash.get(URI);
-    	   if (value!=null){
-    		   return (TransformSpi) value;
-    	   }
-    	   Class cl=(Class)Transform._transformHash.get(URI);
-    	   if (cl!=null) {
-    		   TransformSpi tr= (TransformSpi)cl.newInstance();
-    		   classesHash.put(URI,tr);
-    		   return tr;
-    	   } 
+    private static TransformSpi getTransformSpi(String URI) 
+        throws InvalidTransformException {
+        try {
+    	    Object value = transformSpiHash.get(URI);
+    	    if (value != null) {
+	        return (TransformSpi) value;
+    	    }
+    	    Class cl = (Class) transformClassHash.get(URI);
+    	    if (cl != null) {
+    	        TransformSpi tr = (TransformSpi) cl.newInstance();
+    	        transformSpiHash.put(URI, tr);
+    	        return tr;
+    	    } 
 	} catch (InstantiationException ex) {
-		Object exArgs[] = { URI };
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs, ex);      
+	    Object exArgs[] = { URI };
+            throw new InvalidTransformException(
+                "signature.Transform.UnknownTransform", exArgs, ex);      
 	} catch (IllegalAccessException ex) {
-		Object exArgs[] = { URI };
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs, ex);      
+	    Object exArgs[] = { URI };
+            throw new InvalidTransformException(
+                "signature.Transform.UnknownTransform", exArgs, ex);      
 	}
 	return null;	
-   }
-
+    }
    
-   /** @inheritDoc */
-   public String getBaseLocalName() {
-      return Constants._TAG_TRANSFORM;
-   }
+    /** @inheritDoc */
+    public String getBaseLocalName() {
+        return Constants._TAG_TRANSFORM;
+    }
 }

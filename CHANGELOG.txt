@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in v ...
+    Fixed bug 45706: Transform.register class loading and recursive instantiation problems
     Fixed bug 45664: Some calls should be wrapped in AccessController.doPrivileged
     Fixed bug 45634: Restore XMLUtils.createDSctx method.
     Fixed bug 45095: log4j.properties in xmlsec sources and builds has side
