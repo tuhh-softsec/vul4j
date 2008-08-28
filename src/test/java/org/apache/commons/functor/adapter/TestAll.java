@@ -63,14 +63,17 @@ public class TestAll extends TestCase {
         suite.addTest(TestBoundFunction.suite());
         suite.addTest(TestLeftBoundFunction.suite());
         suite.addTest(TestRightBoundFunction.suite());
+        suite.addTest(TestFullyBoundFunction.suite());
 
         suite.addTest(TestBoundPredicate.suite());
         suite.addTest(TestLeftBoundPredicate.suite());
         suite.addTest(TestRightBoundPredicate.suite());
+        suite.addTest(TestFullyBoundPredicate.suite());
 
         suite.addTest(TestBoundProcedure.suite());
         suite.addTest(TestLeftBoundProcedure.suite());
         suite.addTest(TestRightBoundProcedure.suite());
+        suite.addTest(TestFullyBoundProcedure.suite());
 
         return suite;
     }
