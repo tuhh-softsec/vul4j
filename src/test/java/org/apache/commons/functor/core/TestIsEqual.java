@@ -62,30 +62,32 @@ public class TestIsEqual extends BaseFunctorTest {
 
     public void testTest() throws Exception {
         IsEqual<Object, Object> p = new IsEqual<Object, Object>();
-        assertTrue("For symmetry, two nulls should be equal",p.test(null,null));
-        assertTrue(p.test("foo","foo"));
-        assertTrue(!p.test(null,"foo"));
-        assertTrue(!p.test("foo",null));
-        assertTrue(p.test(new Integer(3),new Integer(3)));
-        assertTrue(!p.test(null,new Integer(3)));
-        assertTrue(!p.test(new Integer(3),null));
+        assertTrue("For symmetry, two nulls should be equal", p.test(null, null));
+        assertTrue(p.test("foo", "foo"));
+        assertFalse(p.test(null, "foo"));
+        assertFalse(p.test("foo", null));
+        assertTrue(p.test(new Integer(3), new Integer(3)));
+        assertFalse(p.test(null, new Integer(3)));
+        assertFalse(p.test(new Integer(3), null));
 
-        assertTrue(!p.test(new Integer(3),new Integer(4)));
-        assertTrue(!p.test(new Integer(4),new Integer(3)));
-        assertTrue(!p.test("3",new Integer(3)));
-        assertTrue(!p.test(new Integer(3),"3"));
+        assertFalse(p.test(new Integer(3), new Integer(4)));
+        assertFalse(p.test(new Integer(4), new Integer(3)));
+        assertFalse(p.test("3", new Integer(3)));
+        assertFalse(p.test(new Integer(3), "3"));
     }
 
     public void testEquals() throws Exception {
         BinaryPredicate<Object, Object> f = new IsEqual<Object, Object>();
-        assertEquals(f,f);
+        assertEquals(f, f);
 
-        assertObjectsAreEqual(f,new IsEqual<Object, Object>());
-        assertObjectsAreEqual(f,IsEqual.instance());
-        assertObjectsAreNotEqual(f,Constant.truePredicate());
+        assertObjectsAreEqual(f, new IsEqual<Object, Object>());
+        assertObjectsAreEqual(f, IsEqual.instance());
+        assertObjectsAreNotEqual(f, Constant.truePredicate());
     }
 
     public void testConstant() throws Exception {
-        assertEquals(IsEqual.instance(),IsEqual.instance());
+        assertEquals(IsEqual.instance(), IsEqual.instance());
+        assertNotSame(IsEqual.instance(), IsEqual.instance());
+        assertSame(IsEqual.INSTANCE, IsEqual.INSTANCE);
     }
 }
