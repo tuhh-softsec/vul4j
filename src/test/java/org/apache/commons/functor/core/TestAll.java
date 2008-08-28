@@ -43,6 +43,8 @@ public class TestAll extends TestCase {
         suite.addTest(TestIsNotNull.suite());
         suite.addTest(TestIsEqual.suite());
         suite.addTest(TestIsNotEqual.suite());
+        suite.addTest(TestIsSame.suite());
+        suite.addTest(TestIsNotSame.suite());
 
         suite.addTest(TestLimit.suite());
         suite.addTest(TestOffset.suite());
