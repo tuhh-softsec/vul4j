@@ -39,6 +39,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestProcedureFunction.suite());
         suite.addTest(TestUnaryProcedureUnaryFunction.suite());
         suite.addTest(TestBinaryProcedureBinaryFunction.suite());
+        suite.addTest(TestBinaryFunctionUnaryFunction.suite());
 
         suite.addTest(TestFunctionPredicate.suite());
         suite.addTest(TestUnaryFunctionUnaryPredicate.suite());
