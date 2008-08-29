@@ -19,6 +19,9 @@ package org.apache.commons.functor.core.composite;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.BinaryProcedure;
+import org.apache.commons.functor.Function;
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
@@ -41,7 +44,60 @@ public final class Conditional {
     // ------------------------------------------------------------------------
 
     /**
-     * Create a conditional procedure.
+     * Create a guarded Procedure.
+     * @param q if
+     * @param r then
+     * @return Procedure
+     */
+    public static final Procedure procedure(Predicate q, Procedure r) {
+        return new ConditionalProcedure(q, r);
+    }
+
+    /**
+     * Create a conditional Procedure.
+     * @param q if
+     * @param r then
+     * @param s else
+     * @return Procedure
+     */
+    public static final Procedure procedure(Predicate q, Procedure r, Procedure s) {
+        return new ConditionalProcedure(q, r, s);
+    }
+
+    /**
+     * Create a conditional Function.
+     * @param q if
+     * @param r then
+     * @param s else
+     * @return Function<T>
+     */
+    public static final <T> Function<T> function(Predicate q, Function<? extends T> r, Function<? extends T> s) {
+        return new ConditionalFunction<T>(q, r, s);
+    }
+
+    /**
+     * Create a conditional Predicate.
+     * @param q if
+     * @param r then
+     * @param s else
+     * @return Predicate
+     */
+    public static final Predicate predicate(Predicate q, Predicate r, Predicate s) {
+        return new ConditionalPredicate(q, r, s);
+    }
+
+    /**
+     * Create a guarded UnaryProcedure.
+     * @param q if
+     * @param r then
+     * @return UnaryProcedure<A>
+     */
+    public static final <A> UnaryProcedure<A> procedure(UnaryPredicate<? super A> q, UnaryProcedure<? super A> r) {
+        return new ConditionalUnaryProcedure<A>(q, r);
+    }
+
+    /**
+     * Create a conditional UnaryProcedure.
      * @param q if
      * @param r then
      * @param s else
@@ -53,7 +109,7 @@ public final class Conditional {
     }
 
     /**
-     * Create a conditional function.
+     * Create a conditional UnaryFunction.
      * @param q if
      * @param r then
      * @param s else
@@ -65,7 +121,7 @@ public final class Conditional {
     }
 
     /**
-     * Create a conditional predicate.
+     * Create a conditional UnaryPredicate.
      * @param q if
      * @param r then
      * @param s else
@@ -77,7 +133,18 @@ public final class Conditional {
     }
 
     /**
-     * Create a conditional binary procedure.
+     * Create a guarded BinaryProcedure.
+     * @param q if
+     * @param r then
+     * @return BinaryProcedure<L, R>
+     */
+    public static final <L, R> BinaryProcedure<L, R> procedure(BinaryPredicate<? super L, ? super R> q,
+            BinaryProcedure<? super L, ? super R> r) {
+        return new ConditionalBinaryProcedure<L, R>(q, r);
+    }
+
+    /**
+     * Create a conditional BinaryProcedure.
      * @param q if
      * @param r then
      * @param s else
@@ -89,7 +156,7 @@ public final class Conditional {
     }
 
     /**
-     * Create a conditional binary function.
+     * Create a conditional BinaryFunction.
      * @param q if
      * @param r then
      * @param s else
@@ -101,7 +168,7 @@ public final class Conditional {
     }
 
     /**
-     * Create a conditional binary predicate.
+     * Create a conditional BinaryPredicate.
      * @param q if
      * @param r then
      * @param s else
