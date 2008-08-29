@@ -18,8 +18,8 @@ package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.commons.functor.BinaryProcedure;
 
@@ -88,8 +88,8 @@ public class BinarySequence<L, R> implements BinaryProcedure<L, R>, Serializable
      * {@inheritDoc}
      */
     public void run(L left, R right) {
-        for (ListIterator<BinaryProcedure<? super L, ? super R>> iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            iter.previous().run(left, right);
+        for (Iterator<BinaryProcedure<? super L, ? super R>> iter = list.iterator(); iter.hasNext();) {
+            iter.next().run(left, right);
         }
     }
 

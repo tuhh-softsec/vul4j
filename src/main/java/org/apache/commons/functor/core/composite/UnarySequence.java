@@ -18,8 +18,8 @@ package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.commons.functor.UnaryProcedure;
 
@@ -90,8 +90,8 @@ public class UnarySequence<A> implements UnaryProcedure<A>, Serializable {
      * {@inheritDoc}
      */
     public void run(A obj) {
-        for (ListIterator<UnaryProcedure<? super A>> iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            iter.previous().run(obj);
+        for (Iterator<UnaryProcedure<? super A>> iter = list.iterator(); iter.hasNext();) {
+            iter.next().run(obj);
         }
     }
 
