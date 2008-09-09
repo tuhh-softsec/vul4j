@@ -135,7 +135,7 @@
 						</Item>
 						<Item>org.mortbay.jetty.webapp.TagLibConfiguration
 						</Item>
-						<Item>net.webassembletool.webapptest.jetty.ClassPathConfig
+						<Item>net.webassembletool.webapptests.http.jetty.ClassPathConfig
 						</Item>
 					</Array>
 				</Set>

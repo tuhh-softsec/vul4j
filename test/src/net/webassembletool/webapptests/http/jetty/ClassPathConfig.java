@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.webassembletool.webapptest.jetty;
+package net.webassembletool.webapptests.http.jetty;
 
 import org.mortbay.jetty.webapp.Configuration;
 import org.mortbay.jetty.webapp.WebAppClassLoader;

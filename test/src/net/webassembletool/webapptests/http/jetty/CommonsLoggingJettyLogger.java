@@ -1,4 +1,4 @@
-package net.webassembletool.webapptest.jetty;
+package net.webassembletool.webapptests.http.jetty;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,19 +41,19 @@ public class CommonsLoggingJettyLogger implements Logger {
     }
 
     public void debug(String arg0, Throwable arg1) {
-	debug(arg0, arg1);
+	log.debug(arg0, arg1);
     }
 
     public void debug(String arg0, Object arg1, Object arg2) {
 	log.debug(format(arg0, arg1, arg2));
     }
 
-    public Logger getLogger(String arg0) {
-	return new CommonsLoggingJettyLogger(arg0);
+    public Logger getLogger(String name) {
+	return new CommonsLoggingJettyLogger(name);
     }
 
-    public void info(String arg0, Object arg1, Object arg2) {
-	log.info(format(arg0, arg1, arg2));
+    public void info(String format, Object arg0, Object arg1) {
+	log.info(format(format, arg0, arg1));
 
     }
 
@@ -71,8 +71,8 @@ public class CommonsLoggingJettyLogger implements Logger {
 	log.warn(arg0, arg1);
     }
 
-    public void warn(String arg0, Object arg1, Object arg2) {
-	log.warn(format(arg0, arg1, arg2));
+    public void warn(String format, Object arg0, Object arg1) {
+	log.warn(format(format, arg0, arg1));
     }
 
 }
