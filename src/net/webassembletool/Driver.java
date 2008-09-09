@@ -483,6 +483,7 @@ public final class Driver {
 	    response.setHeader("location", stringOutput.getLocation());
 	    return;
 	}
+	stringOutput.copyHeaders(response);
 	String content = stringOutput.toString();
 	if (content == null)
 	    return;

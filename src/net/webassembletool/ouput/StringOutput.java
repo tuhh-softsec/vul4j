@@ -2,9 +2,14 @@ package net.webassembletool.ouput;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.Driver;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class StringOutput implements Output {
     private final static Log log = LogFactory.getLog(Driver.class);
+    private ArrayList<Header> headers = new ArrayList<Header>();
     private String charset = "ISO-8859-1";
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     private int statusCode = 200;
@@ -46,6 +52,8 @@ public class StringOutput implements Output {
     public void addHeader(String name, String value) {
 	if ("location".equalsIgnoreCase(name))
 	    location = value;
+	else
+	    headers.add(new Header(name, value));
     }
 
     public void close() {
@@ -78,4 +86,13 @@ public class StringOutput implements Output {
 	statusCode = code;
 	log.debug(code + "" + message);
     }
+
+    public void copyHeaders(HttpServletResponse response) {
+	Iterator<Header> iterator = headers.iterator();
+	while (iterator.hasNext()) {
+	    Header header = iterator.next();
+	    response.addHeader(header.getName(), header.getValue());
+	}
+    }
+
 }
