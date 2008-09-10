@@ -72,6 +72,7 @@ public class StringOutput implements Output {
 	byteArrayOutputStream.write(bytes, off, len);
     }
 
+    @Override
     public String toString() {
 	if (statusCode != 200)
 	    return null;
