@@ -22,6 +22,7 @@ class DriverConfiguration {
     private int proxyPort = 0;
 
     public DriverConfiguration(String instanceName, Properties props) {
+	this.instanceName = instanceName;
 	// Remote application settings
 	baseURL = props.getProperty("remoteUrlBase");
 	if (props.getProperty("uriEncoding") != null)
