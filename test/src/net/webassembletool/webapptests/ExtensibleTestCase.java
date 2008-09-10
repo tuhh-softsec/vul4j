@@ -37,7 +37,7 @@ import junit.framework.TestResult;
  * 
  */
 public class ExtensibleTestCase extends TestCase {
-	protected List features = new LinkedList();
+	protected List<TestCaseFeature> features = new LinkedList<TestCaseFeature>();
 
 	/**
 	 * Adds a tcd as a decortar at the top of decorator stack
@@ -50,7 +50,7 @@ public class ExtensibleTestCase extends TestCase {
 	}
 
 	public void run(TestResult result) {
-		ListIterator iter = features.listIterator();
+		ListIterator<TestCaseFeature> iter = features.listIterator();
 		// start feature chain
 		while (iter.hasNext()) {
 			TestCaseFeature feature = (TestCaseFeature) iter.next();

@@ -11,7 +11,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
  * <b>Description : </b>
  * <p>
  * This class adds to the WebappContext extra classpath entries that are read
- * form the system environement property fr.smile.webapptest.extraclasspath"
+ * form the system environment property fr.smile.webapptest.extraclasspath"
  * </p>
  * <hr>
  * 
