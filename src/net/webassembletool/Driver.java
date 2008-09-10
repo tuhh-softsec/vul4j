@@ -335,8 +335,6 @@ public final class Driver {
 	    throws IOException {
 	Target target = new Target(page, context, null);
 	String content = getResourceAsString(target).toString();
-	if (content == null)
-	    return;
 	StringBuilder sb = new StringBuilder();
 	if (content != null) {
 	    if (name != null) {
