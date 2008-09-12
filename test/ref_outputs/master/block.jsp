@@ -12,7 +12,7 @@
 Page servie par l'application
 <br />
 Le tag include permet d'intégrer des blocs de contenu fournis par le provider
-<!--$beginblock$block1$-->
+
 	<div style="background-color: aqua">Bloc de contenu<br />
 	<img src="images/smile.jpg" />&lt;--image gérée par le provider</div>
 
