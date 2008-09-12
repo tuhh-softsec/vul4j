@@ -9,7 +9,6 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 /**
  * <b>Description : </b>
  * <p>
@@ -32,45 +31,44 @@ import org.apache.commons.logging.LogFactory;
 
 public class WebAppTestCase extends ExtensibleTestCase {
 
-	static final Log log = LogFactory.getLog(WebAppTestCase.class);
-	JettyWebappContainerFeature jettyStarter;
-	
-	public WebAppTestCase(String webappsRoot) {
-		super();
-		jettyStarter = new JettyWebappContainerFeature(webappsRoot);
-		addFeature(jettyStarter);
-	}
+    static final Log log = LogFactory.getLog(WebAppTestCase.class);
+    JettyWebappContainerFeature jettyStarter;
 
-	/**
-	 * Converts a relative url to a url on the test server.
-	 * 
-	 * @param relativeURL
-	 *            the relative URL to append to server name
-	 * @return returns the absolute URL as a string
-	 */
-	public String getAbsoluteURL(String relativeURL) {
-		return jettyStarter.getAbsoluteURL(relativeURL);
-	}
+    public WebAppTestCase(String webappsRoot) {
+	super();
+	jettyStarter = new JettyWebappContainerFeature(webappsRoot);
+	addFeature(jettyStarter);
+    }
 
-	/**
-	 * Utility method to execute get requests on local http applicaiton server.
-	 * 
-	 * @param url
-	 *            the url of the ressource to query. The url can either be
-	 *            absolute or relative, in which case it is evalueated agains
-	 *            this test's server
-	 * @return the HttpMethod object.
-	 */
-	public HttpMethod createGet(String url) {
-		return jettyStarter.createGet(url);
-	}
-	
-	/**
-	 * Get the server part of url to this container
-	 * @return url ending with /
-	 */
-	public String getServerURLPrefix() {
-		return jettyStarter.getServerURLPrefix();
-	}
+    /**
+     * Converts a relative url to a url on the test server.
+     * 
+     * @param relativeURL the relative URL to append to server name
+     * @return returns the absolute URL as a string
+     */
+    public String getAbsoluteURL(String relativeURL) {
+	return jettyStarter.getAbsoluteURL(relativeURL);
+    }
+
+    /**
+     * Utility method to execute get requests on local http applicaiton server.
+     * 
+     * @param url the url of the ressource to query. The url can either be
+     *            absolute or relative, in which case it is evalueated agains
+     *            this test's server
+     * @return the HttpMethod object.
+     */
+    public HttpMethod createGet(String url) {
+	return jettyStarter.createGet(url);
+    }
+
+    /**
+     * Get the server part of url to this container
+     * 
+     * @return url ending with /
+     */
+    public String getServerURLPrefix() {
+	return jettyStarter.getServerURLPrefix();
+    }
 
 }

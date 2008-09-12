@@ -52,9 +52,8 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
     /**
      * Construct webapp engine. Webapp server has default configuration.
      * 
-     * @param webappsRoot
-     *            : the root where to find webapps that should be started up or
-     *            static content.
+     * @param webappsRoot : the root where to find webapps that should be
+     *            started up or static content.
      */
     public JettyWebappContainerFeature(String webappsRoot) {
 	this.webappsRoot = webappsRoot;
@@ -63,10 +62,8 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
     /**
      * Construct webapp engine. Webapp server has default configuration.
      * 
-     * @param webappsRoot
-     *            The root of webapps tu run
-     * @param port
-     *            the port on which to start this featuer
+     * @param webappsRoot The root of webapps tu run
+     * @param port the port on which to start this featuer
      */
     public JettyWebappContainerFeature(String webappsRoot, int port) {
 	this.webappsRoot = webappsRoot;
@@ -140,7 +137,9 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
 
     /**
      * Start jetty server
-     * @see net.webassembletool.webapptests.TestCaseFeature#beforeRun(junit.framework.TestCase, junit.framework.TestResult)
+     * 
+     * @see net.webassembletool.webapptests.TestCaseFeature#beforeRun(junit.framework.TestCase,
+     *      junit.framework.TestResult)
      */
     public void beforeRun(TestCase c, TestResult res) {
 	try {
@@ -152,7 +151,9 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
 
     /**
      * Stop jetty server
-     * @see net.webassembletool.webapptests.TestCaseFeature#afterRun(junit.framework.TestCase, junit.framework.TestResult)
+     * 
+     * @see net.webassembletool.webapptests.TestCaseFeature#afterRun(junit.framework.TestCase,
+     *      junit.framework.TestResult)
      */
     public void afterRun(TestCase c, TestResult res) {
 	try {
@@ -165,8 +166,7 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
     /**
      * Converts a relative url to a url on the test server.
      * 
-     * @param relativeURL
-     *            the relative URL to append to server name
+     * @param relativeURL the relative URL to append to server name
      * @return returns the absolute URL as a string
      */
     public String getAbsoluteURL(String relativeURL) {
@@ -178,8 +178,7 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
     /**
      * Utility method to execute get requests on local http applicaiton server.
      * 
-     * @param url
-     *            the url of the ressource to query. The url can either be
+     * @param url the url of the ressource to query. The url can either be
      *            absolute or relative, in which case it is evalueated agains
      *            this test's server
      * @return the HttpMethod object.
@@ -197,8 +196,7 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
     /**
      * Run jetty as if it were in test
      * 
-     * @param args
-     *            command line arguments : 1 unique argument : path to webapps.
+     * @param args command line arguments : 1 unique argument : path to webapps.
      */
     public static void main(String[] args) {
 	if (args.length != 1) {
@@ -227,7 +225,8 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
 		    System.out
 			    .println("Type q[uit] to shutdown server, r[estart] to restart it :");
 		    String ln = in.readLine().toLowerCase().trim();
-		    if(ln.length() == 0) continue;
+		    if (ln.length() == 0)
+			continue;
 		    if ("quit".startsWith(ln)) {
 			shutdown = true;
 			break;
@@ -244,6 +243,7 @@ public class JettyWebappContainerFeature implements TestCaseFeature {
 	    try {
 		Thread.sleep(500);
 	    } catch (InterruptedException e) {
+		// Nothing to do
 	    }
 	} while (!shutdown);
 	System.out.println("Jetty shutdown.");
