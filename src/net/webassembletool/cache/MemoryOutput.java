@@ -65,7 +65,8 @@ public class MemoryOutput implements Output {
 	for (int i = 0; i < headersArray.length; i++) {
 	    headersArray[i] = headers.get(i);
 	}
-	return new MemoryResource(byteArray, charset, headersArray, statusCode, statusMessage);
+	return new MemoryResource(byteArray, charset, headersArray, statusCode,
+		statusMessage);
     }
 
     public void setStatus(int code, String message) {
