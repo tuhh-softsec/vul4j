@@ -9,7 +9,7 @@ public class UnsupportedHttpMethodException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param message
+     * @param message Error message
      */
     public UnsupportedHttpMethodException(String message) {
 	super(message);

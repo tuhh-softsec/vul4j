@@ -37,7 +37,7 @@ public class HttpResource implements Resource {
     private HttpMethodBase httpMethod;
     private int statusCode;
     private String statusText;
-    private Target target;
+    private final Target target;
     private String url;
 
     // TODO handle multipart POST requests
@@ -53,6 +53,8 @@ public class HttpResource implements Resource {
 	} else if ("POST".equalsIgnoreCase(target.getMethod())) {
 	    url = ResourceUtils.getHttpUrl(baseUrl, target);
 	    PostMethod postMethod = new PostMethod(url);
+	    postMethod.getParams().setContentCharset(
+		    target.getOriginalRequest().getCharacterEncoding());
 	    Context context = target.getContext();
 	    Map<String, String> parameters = target.getParameters();
 	    if (context != null) {
