@@ -22,7 +22,7 @@ public class ReplaceTag extends BodyTagSupport {
     /**
      * Sets the expression to replace.
      * 
-     * @param expression
+     * @param expression Regular expression to be replaced by the tag body
      */
     public void setExpression(String expression) {
 	this.expression = expression;

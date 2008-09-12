@@ -22,10 +22,10 @@ public class ParameterTag extends BodyTagSupport {
     /**
      * Sets the parameter to add to the request.
      * 
-     * @param expression
+     * @param parameterName Name of the parameter
      */
-    public void setParameter(String expression) {
-	this.parameter = expression;
+    public void setParameter(String parameterName) {
+	this.parameter = parameterName;
     }
 
     /**
