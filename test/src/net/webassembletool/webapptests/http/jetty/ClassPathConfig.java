@@ -26,7 +26,7 @@ public class ClassPathConfig implements Configuration {
      * @see org.mortbay.jetty.webapp.Configuration#configureDefaults()
      */
     public void configureDefaults() throws Exception {
-
+	// Nothing to do
     }
 
     /**
@@ -34,8 +34,7 @@ public class ClassPathConfig implements Configuration {
      * are read from the webapptest.extraclasspath system property to each
      * context that uses this configuration object
      * 
-     * @exception Exception
-     *                as defined in {@link Configuration}
+     * @exception Exception as defined in {@link Configuration}
      */
     public void configureClassLoader() throws Exception {
 	((WebAppClassLoader) _ctx.getClassLoader()).addClassPath(System
@@ -43,18 +42,15 @@ public class ClassPathConfig implements Configuration {
 
     }
 
-    /**
-     * @see org.mortbay.jetty.webapp.Configuration#configureWebApp()
-     */
     public void configureWebApp() throws Exception {
-
+	// Nothing to do
     }
 
     /**
      * @see org.mortbay.jetty.webapp.Configuration#deconfigureWebApp()
      */
     public void deconfigureWebApp() throws Exception {
-
+	// Nothing to do
     }
 
     /**
