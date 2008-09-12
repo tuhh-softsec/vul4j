@@ -10,23 +10,19 @@ import junit.framework.TestResult;
  * 
  */
 public interface TestCaseFeature {
-	/**
-	 * Called before tests
-	 * 
-	 * @param c
-	 *            the TestCase being run
-	 * @param res
-	 *            the result object
-	 */
-	public void beforeRun(TestCase c, TestResult res);
+    /**
+     * Called before tests
+     * 
+     * @param c the TestCase being run
+     * @param res the result object
+     */
+    public void beforeRun(TestCase c, TestResult res);
 
-	/**
-	 * Called after tests
-	 * 
-	 * @param c
-	 *            the TestCase being run
-	 * @param res
-	 *            the result object
-	 */
-	public void afterRun(TestCase c, TestResult res);
+    /**
+     * Called after tests
+     * 
+     * @param c the TestCase being run
+     * @param res the result object
+     */
+    public void afterRun(TestCase c, TestResult res);
 }
