@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="webassembletool" default="build" basedir=".">
 	<loadproperties srcfile="build.properties" />
-	<!-- = = = = = = = = = = = = = = = = =
-          macrodef: deploy-wat-classes          
-         = = = = = = = = = = = = = = = = = -->
 	<macrodef name="deploy-wat-classes">
 		<attribute name="webapp-root" />
 		<sequential>
@@ -19,10 +16,12 @@
 			<copy todir="@{webapp-root}/WEB-INF" file="tld/webassembletool.tld" />
 		</sequential>
 	</macrodef>
-
-
-
-
+	<target name="clean">
+		<delete>
+			<fileset file="bin" />
+		</delete>
+		<mkdir dir="bin"/>
+	</target>
 	<target name="build">
 		<copy todir="bin">
 			<fileset dir="test/webapps" />
