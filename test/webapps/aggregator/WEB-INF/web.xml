@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE web-app
-  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-  "http://java.sun.com/j2ee/dtds/web-app_2_3.dtd">
-<web-app>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="WebApp_ID">
 	<servlet>
 		<servlet-name>aggregator1</servlet-name>
 		<servlet-class>net.webassembletool.aggregator.AggregatorServlet</servlet-class>
@@ -16,12 +14,11 @@
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<!-- aggregator 1 is default servlet -->
 		<servlet-name>aggregator1</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>aggregator2</servlet-name>
-		<url-pattern>/folder2</url-pattern>
+		<url-pattern>/ag2/*</url-pattern>
 	</servlet-mapping>
 </web-app>
