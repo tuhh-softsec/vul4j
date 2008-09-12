@@ -15,7 +15,7 @@ package net.webassembletool.aggregator;
 public class AggregationSyntaxException extends Exception {
 
     /**
-     * @param string
+     * @param string Error message
      */
     public AggregationSyntaxException(String string) {
 	super(string);
