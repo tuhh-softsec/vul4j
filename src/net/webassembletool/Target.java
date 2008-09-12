@@ -24,11 +24,11 @@ public class Target {
     private String baseUrl;
 
     public String getBaseUrl() {
-        return baseUrl;
+	return baseUrl;
     }
 
     public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+	this.baseUrl = baseUrl;
     }
 
     public void setProxyMode(boolean proxyMode) {

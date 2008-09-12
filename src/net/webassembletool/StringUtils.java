@@ -15,10 +15,10 @@ public class StringUtils {
      * Applies the replace rules to the final String to be rendered and returns
      * it. If there is no replace rule, returns the original string.
      * 
-     * @param charSequence
+     * @param charSequence The original charSequence to apply the replacements
+     *            to
      * 
-     * @param replaceRules
-     *            the replace rules
+     * @param replaceRules the replace rules
      * 
      * @return the result of the replace rules
      */

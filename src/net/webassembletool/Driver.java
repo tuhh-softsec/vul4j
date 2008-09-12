@@ -47,7 +47,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class Driver {
     // TODO write a tokenizer class to avoid String.indexOf usage in the driver.
-    // TODO handle redirects
     // TODO proxy mode option for taglibs, aggregator and proxy, recursive or
     // not for aggregator
     private final static Log log = LogFactory.getLog(Driver.class);
@@ -97,9 +96,8 @@ public final class Driver {
      * Retrieves the default instance of this class that is configured according
      * to the properties file (driver.properties)
      * 
-     * @param instanceName
-     *            The name of the instance (corresponding to the prefix in the
-     *            driver.properties file)
+     * @param instanceName The name of the instance (corresponding to the prefix
+     *            in the driver.properties file)
      * 
      * @return the named instance
      */
@@ -120,8 +118,7 @@ public final class Driver {
     /**
      * Loads all the instances according to the properties parameter
      * 
-     * @param props
-     *            properties to use for configuration
+     * @param props properties to use for configuration
      */
     public final static void configure(Properties props) {
 	instances = new HashMap<String, Driver>();
@@ -179,14 +176,13 @@ public final class Driver {
      * comments.<br /> eg: a block name "myblock" should be delimited with
      * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
      * 
-     * @param page
-     * @param name
-     * @param writer
-     * @param context
-     * @param replaceRules
-     *            the replace rules to be applied on the block
-     * @param parameters
-     * @throws IOException
+     * @param page Page containing the block
+     * @param name Name of the block
+     * @param writer Writer to write the block to
+     * @param context User context
+     * @param replaceRules the replace rules to be applied on the block
+     * @param parameters Additional parameters
+     * @throws IOException If an IOException occurs while writing to the writer
      */
     public final void renderBlock(String page, String name, Writer writer,
 	    Context context, Map<String, String> replaceRules,
@@ -197,36 +193,33 @@ public final class Driver {
 	    return;
 	String beginString = "<!--$beginblock$" + name + "$-->";
 	String endString = "<!--$endblock$" + name + "$-->";
-	StringBuilder sb = new StringBuilder();
 	int begin = content.indexOf(beginString);
 	int end = content.indexOf(endString);
 	if (begin == -1 || end == -1) {
 	    log.warn("Block not found: page=" + page + " block=" + name);
 	} else {
 	    log.debug("Serving block: page=" + page + " block=" + name);
-	    sb.append(content.substring(begin, end));
+	    writer.append(StringUtils.replace(content.substring(begin
+		    + beginString.length(), end), replaceRules));
 	}
-	writer.append(StringUtils.replace(sb, replaceRules));
     }
 
     /**
      * Retrieves a resource from the provider application as binary data and
      * writes it to the response.
      * 
-     * @param relUrl
-     *            the relative URL to the resource
-     * @param request
-     *            the request
-     * @param response
-     *            the response
-     * @param parameters
-     * @throws IOException
+     * @param relUrl the relative URL to the resource
+     * @param request the request
+     * @param response the response
+     * @param parameters Additional parameters that will be added to the request
+     * @throws IOException If an IOException occurs while rendering the response
      */
     public final void renderResource(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response, Map<String, String> parameters)
 	    throws IOException {
 	Target target = new Target(relUrl, getContext(request), parameters,
 		request);
+	request.setCharacterEncoding(config.getUriEncoding());
 	target.setProxyMode(true);
 	renderResource(target, new ResponseOutput(request, response));
     }
@@ -318,22 +311,20 @@ public final class Driver {
      * "myparam" should be delimited by comments
      * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
      * 
-     * @param page
-     * 
-     * @param name
-     * @param writer
-     * @param context
-     * @param params
-     * @param replaceRules
-     *            the replace rules to be applied on the block
-     * @param parameters
-     * @throws IOException
+     * @param page Address of the page containing the template
+     * @param name Template name
+     * @param writer Writer where to write the result
+     * @param context User context
+     * @param params Blocks to replace inside the template
+     * @param replaceRules The replace rules to be applied on the block
+     * @param parameters Parameters to be added to the request
+     * @throws IOException If an IOException occurs while writing to the writer
      */
     public final void renderTemplate(String page, String name, Writer writer,
 	    Context context, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
 	    throws IOException {
-	Target target = new Target(page, context, null);
+	Target target = new Target(page, context, parameters);
 	String content = getResourceAsString(target).toString();
 	StringBuilder sb = new StringBuilder();
 	if (content != null) {
@@ -393,12 +384,9 @@ public final class Driver {
     /**
      * This method returns the content of an url.
      * 
-     * @param relUrl
-     *            the target URL
-     * @param context
-     *            the context of the request
-     * @param parameters
-     *            the parameters of the request
+     * @param relUrl the target URL
+     * @param context the context of the request
+     * @param parameters the parameters of the request
      * @return the content of the url
      * @throws IOException
      */
@@ -460,19 +448,18 @@ public final class Driver {
      * by the page.
      * 
      * 
-     * @param relUrl
-     *            the relative URL to the resource
-     * @param request
-     *            the request
-     * @param response
-     *            the response
-     * @throws IOException
-     * @throws AggregationSyntaxException
+     * @param relUrl the relative URL to the resource
+     * @param request the request
+     * @param response the response
+     * @throws IOException If an IOException occurs while writing to the
+     *             response
+     * @throws AggregationSyntaxException If the page contains incorrect tags
      */
     public final void aggregate(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response) throws IOException,
 	    AggregationSyntaxException {
 	Target target = new Target(relUrl, getContext(request), null, request);
+	request.setCharacterEncoding(config.getUriEncoding());
 	target.setProxyMode(true);
 	StringOutput stringOutput = getResourceAsString(target);
 	if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY

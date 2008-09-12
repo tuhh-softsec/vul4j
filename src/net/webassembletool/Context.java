@@ -9,8 +9,8 @@ import org.apache.commons.httpclient.HttpState;
 /**
  * User context that can be used in the master application to define the user id
  * and the Locale. This context will be transmitted to the provider
- * applications.<br />
- * There is one instance of user context associated with each Thread.
+ * applications.<br /> There is one instance of user context associated with
+ * each Thread.
  * 
  * @author François-Xavier Bonnet
  * 
@@ -50,11 +50,11 @@ public class Context {
     }
 
     public HttpState getHttpState() {
-        return httpState;
+	return httpState;
     }
 
     public void setHttpState(HttpState httpState) {
-        this.httpState = httpState;
+	this.httpState = httpState;
     }
 
     public Object getParameter(String key) {
