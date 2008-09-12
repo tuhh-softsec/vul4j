@@ -15,20 +15,16 @@ public interface Output {
     /**
      * Adds an HTTP Header
      * 
-     * @param name
-     *            The name of the HTTP header
-     * @param value
-     *            The value of the header
+     * @param name The name of the HTTP header
+     * @param value The value of the header
      */
     public void addHeader(String name, String value);
 
     /**
      * Sets the HTTP status code of the response
      * 
-     * @param code
-     *            The code
-     * @param message
-     *            The message
+     * @param code The code
+     * @param message The message
      */
     public void setStatus(int code, String message);
 
@@ -36,8 +32,7 @@ public interface Output {
      * Defines the charset of the Output. <br /> Needed for text outputs (for
      * example HTML pages).
      * 
-     * @param charset
-     *            The name of the charset
+     * @param charset The name of the charset
      * 
      */
     public void setCharset(String charset);
@@ -55,13 +50,10 @@ public interface Output {
      * calling this method.<br /> This method cannot be called any more when the
      * Output has been closed.
      * 
-     * @param bytes
-     *            Array containing the bytes to be written
-     * @param offset
-     *            First byte to be written
-     * @param length
-     *            Number of bytes to be written
-     * @throws OutputException
+     * @param bytes Array containing the bytes to be written
+     * @param offset First byte to be written
+     * @param length Number of bytes to be written
+     * @throws OutputException If an problem occurs while writing the result
      */
     public void write(byte[] bytes, int offset, int length)
 	    throws OutputException;

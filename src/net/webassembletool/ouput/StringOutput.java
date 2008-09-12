@@ -92,7 +92,8 @@ public class StringOutput implements Output {
 	Iterator<Header> iterator = headers.iterator();
 	while (iterator.hasNext()) {
 	    Header header = iterator.next();
-	    response.addHeader(header.getName(), header.getValue());
+	    if (!"content-length".equalsIgnoreCase(header.getName()))
+		response.addHeader(header.getName(), header.getValue());
 	}
     }
 

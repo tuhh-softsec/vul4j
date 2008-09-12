@@ -17,8 +17,7 @@ public class MultipleOutput implements Output {
      * Adds an Output to the list of Outputs to which the MultipleOuput should
      * forward data.
      * 
-     * @param output
-     *            An Output to add to the list
+     * @param output An Output to add to the list
      */
     public void addOutput(Output output) {
 	outputs.add(output);
