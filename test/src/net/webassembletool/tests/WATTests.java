@@ -1,7 +1,6 @@
 package net.webassembletool.tests;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.webassembletool.webapptests.http.HttpAssert;
 import net.webassembletool.webapptests.http.WebAppTestCase;
@@ -21,7 +20,7 @@ public class WATTests extends WebAppTestCase {
 
     String refPathPrefix;
 
-    public WATTests() throws IOException {
+    public WATTests() {
 	super("bin");
 
 	File refPath = new File(System.getenv("TEST_REF_DIR"));
@@ -32,11 +31,10 @@ public class WATTests extends WebAppTestCase {
     }
 
     /**
-     * Gets absolute path to reference data for given relative path relative is merged
-     * with refernce prefix.
+     * Gets absolute path to reference data for given relative path relative is
+     * merged with refernce prefix.
      * 
-     * @param relative
-     *            relative path
+     * @param relative relative path
      */
 
     private String referencePath(String relative) {
@@ -45,14 +43,14 @@ public class WATTests extends WebAppTestCase {
 			: relative);
     }
 
-    public void testBlock() throws Exception {
+    public void testBlock() {
 	HttpMethod res = new GetMethod(getAbsoluteURL("/master/block.jsp"));
 	HttpAssert.assertStatus(res, 200);
 	HttpAssert.assertBodyContains(res,
 		"&lt;--image gérée par le provider</div>");
     }
 
-    public void testBlockAndReplace() throws Exception {
+    public void testBlockAndReplace() {
 	HttpMethod res = createGet("/master/replaceblock.jsp");
 	HttpAssert.assertStatus(res, 200);
 	// S'assurer qu'on a bien récupéré quelque chose depuis le provider.
@@ -64,17 +62,17 @@ public class WATTests extends WebAppTestCase {
 	HttpAssert.assertBodyNotContains(res, "aqua\">Bloc de contenu<br");
     }
 
-    public void testProviderWebapp() throws Exception {
+    public void testProviderWebapp() {
 	HttpAssert.assertBodyGetEqualsLocalFile(getAbsoluteURL("/provider"),
 		referencePath("provider"));
     }
-    
-    public void testMasterWebapp() throws Exception {
+
+    public void testMasterWebapp() {
 	HttpAssert.assertBodyGetEqualsLocalFile(getAbsoluteURL("/master"),
 		referencePath("master"));
     }
-    
-    public void testAggregatorWebapp() throws Exception {
+
+    public void testAggregatorWebapp() {
 	HttpAssert.assertBodyGetEqualsLocalFile(getAbsoluteURL("/aggregator"),
 		referencePath("aggregator"));
     }
