@@ -17,9 +17,8 @@ public interface Resource {
     /**
      * Renders the Resource to an Output
      * 
-     * @param output
-     *            The output to render the resource to.
-     * @throws IOException
+     * @param output The output to render the resource to.
+     * @throws IOException If an exception occurs while rendering to the output
      */
     public void render(Output output) throws IOException;
 
@@ -30,6 +29,7 @@ public interface Resource {
 
     /**
      * Returns the HTTP status code for this resource
+     * 
      * @return status code
      */
     public int getStatusCode();
