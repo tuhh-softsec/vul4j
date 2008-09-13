@@ -1993,7 +1993,7 @@ public class FileUtils
     }
 
     /**
-     * <b>If wrappers is null or empty, the file will be copy only if to.lastModified() < from.lastModified()</b>
+     * <b>If wrappers is null or empty, the file will be copy only if to.lastModified() < from.lastModified() or if overwrite is true</b>
      * @param from the file to copy
      * @param to the destination file
      * @param encoding the file output encoding (only if wrappers is not empty)
