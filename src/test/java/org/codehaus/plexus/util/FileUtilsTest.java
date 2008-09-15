@@ -945,7 +945,7 @@ public final class FileUtilsTest
     }
 
     public void testFilteredWithoutFilterAndOlderFile()
-    throws Exception
+        throws Exception
     {
         String content = "This is a test.";
         File sourceFile = new File( getTestDirectory(), "source.txt" );
@@ -972,14 +972,14 @@ public final class FileUtilsTest
         olderFile.setLastModified( 1 );
         destFile = new File( getTestDirectory(), "target.txt" );
         FileUtils.copyFile( olderFile, destFile, null, null );
-        String destFileContent = IOUtil.toString( new FileInputStream (destFile) );
+        String destFileContent = IOUtil.toString( new FileInputStream( destFile ) );
         assertEquals( content, destFileContent );
 
     }
 
 
     public void testFilteredWithoutFilterAndOlderFileAndOverwrite()
-    throws Exception
+        throws Exception
     {
         String content = "This is a test.";
         File sourceFile = new File( getTestDirectory(), "source.txt" );
@@ -1006,7 +1006,7 @@ public final class FileUtilsTest
         olderFile.setLastModified( 1 );
         destFile = new File( getTestDirectory(), "target.txt" );
         FileUtils.copyFile( olderFile, destFile, null, null, true );
-        String destFileContent = IOUtil.toString( new FileInputStream (destFile) );
+        String destFileContent = IOUtil.toString( new FileInputStream( destFile ) );
         assertEquals( newercontent, destFileContent );
 
     }
@@ -1031,7 +1031,7 @@ public final class FileUtilsTest
         }
         finally
         {
-            writer.close();
+            IOUtil.close( writer );
         }
         assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFile ) );
         assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFileName ) );
@@ -1054,7 +1054,7 @@ public final class FileUtilsTest
         }
         finally
         {
-            writer.close();
+            IOUtil.close( writer );
         }
         assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFile, "UTF-8" ) );
         assertEquals( "testString should be equal", testString, FileUtils.fileRead( testFileName, "UTF-8" ) );
@@ -1075,7 +1075,7 @@ public final class FileUtilsTest
         }
         finally
         {
-            writer.close();
+            IOUtil.close( writer );
         }
         // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
         String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
@@ -1099,7 +1099,7 @@ public final class FileUtilsTest
         }
         finally
         {
-            writer.close();
+            IOUtil.close( writer );
         }
         // unicode escaped Japanese hiragana, "aiueo" + Umlaut a
         String testString = "\u3042\u3044\u3046\u3048\u304a\u00e4";
@@ -1302,5 +1302,42 @@ public final class FileUtilsTest
             symlink.delete();
         }
         assertTrue( "Failed to delete test directory", !getTestDirectory().exists() );
+    }
+    
+    public void testcopyDirectoryStructureWithExcludesIncludes()
+        throws Exception
+    {
+        File destination = new File( "target", "copyDirectoryStructureWithExcludesIncludes" );
+        if ( !destination.exists() )
+        {
+            destination.mkdirs();
+        }
+        FileUtils.cleanDirectory( destination );
+
+        File source = new File( "src/test/resources/dir-structure-copy" );
+
+        FileUtils.copyDirectoryStructure( source, destination, null, null );
+
+        assertTrue( destination.exists() );
+
+        File[] childs = destination.listFiles();
+        assertEquals( 2, childs.length );
+
+        for ( int i = 0, size = childs.length; i < size; i++ )
+        {
+            File current = childs[i];
+            if ( current.getName().endsWith( "empty-dir" ) || current.getName().endsWith( "dir1" ) )
+            {
+                if ( current.getName().endsWith( "dir1" ) )
+                {
+                    assertEquals( 1, current.listFiles().length );
+                    assertTrue( current.listFiles()[0].getName().endsWith( "dir2" ) );
+                }
+            }
+            else
+            {
+                fail( "not empty-dir or dir1" );
+            }
+        }
     }
 }

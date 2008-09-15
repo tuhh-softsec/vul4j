@@ -1791,6 +1791,95 @@ public class FileUtils
      *
      * @param sourceDirectory
      * @param destinationDirectory
+     * @param includes
+     * @param excludes
+     * @since 1.5.7
+     * @throws IOException
+     */
+    public static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String[] includes,
+                                               String[] excludes )
+        throws IOException
+    {
+        if ( sourceDirectory == null )
+        {
+            throw new IOException( "source directory can't be null." );
+        }
+
+        if ( destinationDirectory == null )
+        {
+            throw new IOException( "destination directory can't be null." );
+        }
+
+        if ( sourceDirectory.equals( destinationDirectory ) )
+        {
+            throw new IOException( "source and destination are the same directory." );
+        }
+
+        if ( !sourceDirectory.exists() )
+        {
+            throw new IOException( "Source directory doesn't exists (" + sourceDirectory.getAbsolutePath() + ")." );
+        }
+        
+        DirectoryScanner scanner = new DirectoryScanner();
+        
+        scanner.setBasedir( sourceDirectory );
+        
+        if ( includes != null && includes.length >= 1 )
+        {
+            scanner.setIncludes( includes );
+        }
+        else
+        {
+            scanner.setIncludes( new String[] { "**/**" } );
+        }
+
+        if ( excludes != null && excludes.length >= 1 )
+        {
+            scanner.setExcludes( excludes );
+        }
+
+        scanner.addDefaultExcludes();
+        scanner.scan();
+        
+        List includedDirectories = Arrays.asList( scanner.getIncludedDirectories() );
+        
+        for (Iterator i = includedDirectories.iterator();i.hasNext();)
+        {
+            String name = (String)i.next();
+            
+            if (StringUtils.isEmpty( name ))
+            {
+                continue;
+            }
+            
+            File source = new File(sourceDirectory, name);
+            
+            if ( source.equals( sourceDirectory ) )
+            {
+                continue;
+            }
+            
+            File destination = new File(destinationDirectory, name);
+            
+            if (source.isDirectory())
+            {
+                destination.mkdirs();
+                copyDirectoryStructure( source, destination, includes, excludes );
+            }
+        }
+    }    
+    
+    /**
+     * Copies a entire directory structure.
+     * <p/>
+     * Note:
+     * <ul>
+     * <li>It will include empty directories.
+     * <li>The <code>sourceDirectory</code> must exists.
+     * </ul>
+     *
+     * @param sourceDirectory
+     * @param destinationDirectory
      * @throws IOException
      */
     public static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory )
