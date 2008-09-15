@@ -71,7 +71,7 @@ public final class DOMReference extends DOMStructure
     private static boolean useC14N11 = ((Boolean)
         AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {
-                return new Boolean(Boolean.getBoolean
+                return Boolean.valueOf(Boolean.getBoolean
                     ("com.sun.org.apache.xml.internal.security.useC14N11"));
             }
         })).booleanValue();
@@ -478,7 +478,15 @@ public final class DOMReference extends DOMStructure
                 this.dis = dos.getInputStream();
             }
             return dos.getDigestValue();
-	} catch (Exception e) {
+	} catch (NoSuchAlgorithmException e) {
+	    throw new XMLSignatureException(e);
+	} catch (TransformException e) {
+	    throw new XMLSignatureException(e);
+	} catch (MarshalException e) {
+	    throw new XMLSignatureException(e);
+	} catch (IOException e) {
+	    throw new XMLSignatureException(e);
+	} catch (org.apache.xml.security.c14n.CanonicalizationException e) {
 	    throw new XMLSignatureException(e);
 	}
     }
@@ -506,8 +514,9 @@ public final class DOMReference extends DOMStructure
 	boolean digestValuesEqual = 
 	    Arrays.equals(digestValue, oref.getDigestValue());
 
-	return (digestMethod.equals(oref.getDigestMethod()) && idsEqual &&
-	    urisEqual && typesEqual && allTransforms.equals(oref.getTransforms()));
+	return digestMethod.equals(oref.getDigestMethod()) && idsEqual &&
+	    urisEqual && typesEqual && 
+            allTransforms.equals(oref.getTransforms()) && digestValuesEqual;
     }
 
     public int hashCode() {

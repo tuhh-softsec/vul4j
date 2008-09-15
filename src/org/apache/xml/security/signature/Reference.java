@@ -108,7 +108,7 @@ public class Reference extends SignatureElementProxy {
    private static boolean useC14N11 = ((Boolean)
       AccessController.doPrivileged(new PrivilegedAction() {
          public Object run() {
-            return new Boolean(Boolean.getBoolean
+            return Boolean.valueOf(Boolean.getBoolean
                ("org.apache.xml.security.useC14N11"));
          }
       })).booleanValue();

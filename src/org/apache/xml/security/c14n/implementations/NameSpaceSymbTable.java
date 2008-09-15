@@ -300,7 +300,7 @@ class NameSpaceSymbEntry implements Cloneable {
             return null;
         }
     }
-    /** The level where the definition was rendered(Only for inclusive) */
+    /** the level where the definition was rendered(Only for inclusive) */
     int level=0;
     String prefix;
     /**The URI that the prefix defines */

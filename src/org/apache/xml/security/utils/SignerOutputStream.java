@@ -26,7 +26,6 @@ import org.apache.xml.security.signature.XMLSignatureException;
  *
  */
 public class SignerOutputStream extends ByteArrayOutputStream {
-    final static byte none[]="error".getBytes();
     final SignatureAlgorithm sa;
     static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog
@@ -39,11 +38,6 @@ public class SignerOutputStream extends ByteArrayOutputStream {
         this.sa=sa;       
     }
 
-    /** @inheritDoc */
-    public byte[] toByteArray() {
-        return none;
-    }
-    
     /** @inheritDoc */
     public void write(byte[] arg0)  {
         try {

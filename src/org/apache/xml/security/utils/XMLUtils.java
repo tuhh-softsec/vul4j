@@ -52,7 +52,7 @@ public class XMLUtils {
    private static boolean ignoreLineBreaks = ((Boolean)
       AccessController.doPrivileged(new PrivilegedAction() {
          public Object run() {
-            return new Boolean(Boolean.getBoolean
+            return Boolean.valueOf(Boolean.getBoolean
 	       ("org.apache.xml.security.ignoreLineBreaks"));
          }
       })).booleanValue();

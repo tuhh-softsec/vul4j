@@ -106,19 +106,13 @@ public class XMLSignatureInputDebugger {
 
 	static final String HTMLExcludePrefix = "<span class=\"EXCLUDED\">";
 
-	static final String HTMLExcludeSuffix = "</span>";
-
 	static final String HTMLIncludePrefix = "<span class=\"INCLUDED\">";
 
-	static final String HTMLIncludeSuffix = "</span>";
+	static final String HTMLIncludeOrExcludeSuffix = "</span>";
 
 	static final String HTMLIncludedInclusiveNamespacePrefix = "<span class=\"INCLUDEDINCLUSIVENAMESPACE\">";
 
-	static final String HTMLIncludedInclusiveNamespaceSuffix = "</span>";
-
 	static final String HTMLExcludedInclusiveNamespacePrefix = "<span class=\"EXCLUDEDINCLUSIVENAMESPACE\">";
-
-	static final String HTMLExcludedInclusiveNamespaceSuffix = "</span>";
 
 	private static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
 
@@ -251,11 +245,7 @@ public class XMLSignatureInputDebugger {
 				this._writer.write("\n");
 			}
 
-			if (this._xpathNodeSet.contains(currentNode)) {
-				this._writer.write(HTMLIncludeSuffix);
-			} else {
-				this._writer.write(HTMLExcludeSuffix);
-			}
+			this._writer.write(HTMLIncludeOrExcludeSuffix);
 			break;
 
 		case Node.PROCESSING_INSTRUCTION_NODE:
@@ -277,11 +267,7 @@ public class XMLSignatureInputDebugger {
 				this._writer.write("\n");
 			}
 
-			if (this._xpathNodeSet.contains(currentNode)) {
-				this._writer.write(HTMLIncludeSuffix);
-			} else {
-				this._writer.write(HTMLExcludeSuffix);
-			}
+			this._writer.write(HTMLIncludeOrExcludeSuffix);
 			break;
 
 		case Node.TEXT_NODE:
@@ -309,11 +295,7 @@ public class XMLSignatureInputDebugger {
 				this.outputTextToWriter(nextSibling.getNodeValue());
 			}
 
-			if (this._xpathNodeSet.contains(currentNode)) {
-				this._writer.write(HTMLIncludeSuffix);
-			} else {
-				this._writer.write(HTMLExcludeSuffix);
-			}
+			this._writer.write(HTMLIncludeOrExcludeSuffix);
 			break;
 
 		case Node.ELEMENT_NODE:
@@ -328,11 +310,7 @@ public class XMLSignatureInputDebugger {
 			this._writer.write("&lt;");
 			this._writer.write(currentElement.getTagName());
 
-			if (this._xpathNodeSet.contains(currentNode)) {
-				this._writer.write(HTMLIncludeSuffix);
-			} else {
-				this._writer.write(HTMLExcludeSuffix);
-			}
+			this._writer.write(HTMLIncludeOrExcludeSuffix);
 
 			// we output all Attrs which are available
 			NamedNodeMap attrs = currentElement.getAttributes();
@@ -378,29 +356,7 @@ public class XMLSignatureInputDebugger {
 
 				this.outputAttrToWriter(a.getNodeName(), a.getNodeValue());
 
-				if (included) {
-					if (inclusive) {
-
-						// included and inclusive
-						this._writer
-								.write(HTMLIncludedInclusiveNamespaceSuffix);
-					} else {
-
-						// included and not inclusive
-						this._writer.write(HTMLIncludeSuffix);
-					}
-				} else {
-					if (inclusive) {
-
-						// excluded and inclusive
-						this._writer
-								.write(HTMLExcludedInclusiveNamespaceSuffix);
-					} else {
-
-						// excluded and not inclusive
-						this._writer.write(HTMLExcludeSuffix);
-					}
-				}
+				this._writer.write(HTMLIncludeOrExcludeSuffix);
 			}
 
 			if (this._xpathNodeSet.contains(currentNode)) {
@@ -411,11 +367,7 @@ public class XMLSignatureInputDebugger {
 
 			this._writer.write("&gt;");
 
-			if (this._xpathNodeSet.contains(currentNode)) {
-				this._writer.write(HTMLIncludeSuffix);
-			} else {
-				this._writer.write(HTMLExcludeSuffix);
-			}
+			this._writer.write(HTMLIncludeOrExcludeSuffix);
 
 			// traversal
 			for (Node currentChild = currentNode.getFirstChild(); currentChild != null; currentChild = currentChild
@@ -433,11 +385,7 @@ public class XMLSignatureInputDebugger {
 			this._writer.write(currentElement.getTagName());
 			this._writer.write("&gt;");
 
-			if (this._xpathNodeSet.contains(currentNode)) {
-				this._writer.write(HTMLIncludeSuffix);
-			} else {
-				this._writer.write(HTMLExcludeSuffix);
-			}
+			this._writer.write(HTMLIncludeOrExcludeSuffix);
 			break;
 		}
 	}

@@ -392,9 +392,6 @@ public final class DOMXMLSignature extends DOMStructure
             throw new XMLSignatureException(ike);
 	}
 
-	if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "SignatureValue = " + val);        
-	}
 	((DOMSignatureValue) sv).setValue(val);
 
         this.localSigElem = sigElem;   

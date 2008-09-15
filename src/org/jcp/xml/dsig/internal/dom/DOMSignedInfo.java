@@ -30,7 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.security.Provider;
 import java.util.*;
@@ -196,16 +195,12 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 
         // this whole block should only be done if logging is enabled
 	if (log.isLoggable(Level.FINE)) {
-            InputStreamReader isr = new InputStreamReader
-		(new ByteArrayInputStream(signedInfoBytes));
-            char[] siBytes = new char[signedInfoBytes.length];
-            try {
-                isr.read(siBytes);
-                log.log(Level.FINE, "Canonicalized SignedInfo:\n" 
-		    + new String(siBytes));
-            } catch (IOException ioex) {
-		log.log(Level.FINE, "IOException reading SignedInfo bytes");
-	    } 
+            log.log(Level.FINE, "Canonicalized SignedInfo:"); 
+            StringBuffer sb = new StringBuffer(signedInfoBytes.length);
+            for (int i = 0; i < signedInfoBytes.length; i++) {
+                sb.append((char) signedInfoBytes[i]);
+            }
+            log.log(Level.FINE, sb.toString());
 	    log.log(Level.FINE, "Data to be signed/verified:"
                 + Base64.encode(signedInfoBytes));
 	}

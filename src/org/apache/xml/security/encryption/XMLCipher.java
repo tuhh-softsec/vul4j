@@ -266,34 +266,33 @@ public class XMLCipher {
         // sanity checks
         logger.debug("Getting XMLCipher...");
         if (null == transformation)
-            logger.error("Transformation unexpectedly null...");
+            throw new NullPointerException("Transformation unexpectedly null...");
         if(!isValidEncryptionAlgorithm(transformation))
             logger.warn("Algorithm non-standard, expected one of " + ENC_ALGORITHMS);
 
-		XMLCipher instance = new XMLCipher();
+	XMLCipher instance = new XMLCipher();
 
         instance._algorithm = transformation;
-		instance._key = null;
-		instance._kek = null;
+	instance._key = null;
+	instance._kek = null;
 
+	/* Create a canonicaliser - used when serialising DOM to octets
+	 * prior to encryption (and for the reverse) */
 
-		/* Create a canonicaliser - used when serialising DOM to octets
-		 * prior to encryption (and for the reverse) */
-
-		try {
-			instance._canon = Canonicalizer.getInstance
-				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+	try {
+	    instance._canon = Canonicalizer.getInstance
+			(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
             
-		} catch (InvalidCanonicalizerException ice) {
-			throw new XMLEncryptionException("empty", ice);
-		}
+	} catch (InvalidCanonicalizerException ice) {
+	    throw new XMLEncryptionException("empty", ice);
+	}
 
-		String jceAlgorithm = JCEMapper.translateURItoJCEID(transformation);
+	String jceAlgorithm = JCEMapper.translateURItoJCEID(transformation);
 
-		try {
+	try {
             instance._contextCipher = Cipher.getInstance(jceAlgorithm);
             logger.debug("cihper.algoritm = " +
-                instance._contextCipher.getAlgorithm());
+            instance._contextCipher.getAlgorithm());
         } catch (NoSuchAlgorithmException nsae) {
             throw new XMLEncryptionException("empty", nsae);
         } catch (NoSuchPaddingException nspe) {
@@ -347,40 +346,36 @@ public class XMLCipher {
      * @return the XMLCipher
      * @throws XMLEncryptionException
      */
-
     public static XMLCipher getProviderInstance(String transformation, String provider)
             throws XMLEncryptionException {
         // sanity checks
         logger.debug("Getting XMLCipher...");
         if (null == transformation)
-            logger.error("Transformation unexpectedly null...");
-        if(null == provider)
-            logger.error("Provider unexpectedly null..");
-        if("" == provider)
-            logger.error("Provider's value unexpectedly not specified...");
-        if(!isValidEncryptionAlgorithm(transformation))
+            throw new NullPointerException("Transformation unexpectedly null...");
+        if (null == provider)
+            throw new NullPointerException("Provider unexpectedly null..");
+        if (!isValidEncryptionAlgorithm(transformation))
             logger.warn("Algorithm non-standard, expected one of " + ENC_ALGORITHMS);
 
-		XMLCipher instance = new XMLCipher();
+	XMLCipher instance = new XMLCipher();
 
         instance._algorithm = transformation;
-		instance._requestedJCEProvider = provider;
-		instance._key = null;
-		instance._kek = null;
+	instance._requestedJCEProvider = provider;
+	instance._key = null;
+	instance._kek = null;
 
-		/* Create a canonicaliser - used when serialising DOM to octets
-		 * prior to encryption (and for the reverse) */
+	/* Create a canonicaliser - used when serialising DOM to octets
+	 * prior to encryption (and for the reverse) */
 
-		try {
-			instance._canon = Canonicalizer.getInstance
-				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-		} catch (InvalidCanonicalizerException ice) {
-			throw new XMLEncryptionException("empty", ice);
-		}
+	try {
+	    instance._canon = Canonicalizer.getInstance
+		(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+	} catch (InvalidCanonicalizerException ice) {
+	    throw new XMLEncryptionException("empty", ice);
+	}
 
         try {
-			String jceAlgorithm =
-				JCEMapper.translateURItoJCEID(transformation);
+	    String jceAlgorithm = JCEMapper.translateURItoJCEID(transformation);
 
             instance._contextCipher = Cipher.getInstance(jceAlgorithm, provider);
 
@@ -470,43 +465,40 @@ public class XMLCipher {
 
     /**
      * Returns an <code>XMLCipher</code> that implements no specific
-	 * transformation, and can therefore only be used for decrypt or
-	 * unwrap operations where the encryption method is defined in the 
-	 * <code>EncryptionMethod</code> element.
-	 *
-	 * Allows the caller to specify a provider that will be used for
-	 * cryptographic operations.
+     * transformation, and can therefore only be used for decrypt or
+     * unwrap operations where the encryption method is defined in the 
+     * <code>EncryptionMethod</code> element.
+     *
+     * Allows the caller to specify a provider that will be used for
+     * cryptographic operations.
      *
      * @param provider the JCE provider that supplies the cryptographic
-	 * needs.
+     * needs.
      * @return the XMLCipher
      * @throws XMLEncryptionException
      */
-
     public static XMLCipher getProviderInstance(String provider)
             throws XMLEncryptionException {
         // sanity checks
 
         logger.debug("Getting XMLCipher, provider but no transformation");
-        if(null == provider)
-            logger.error("Provider unexpectedly null..");
-        if("" == provider)
-            logger.error("Provider's value unexpectedly not specified...");
+        if (null == provider)
+            throw new NullPointerException("Provider unexpectedly null..");
 
-		XMLCipher instance = new XMLCipher();
+	XMLCipher instance = new XMLCipher();
 
         instance._algorithm = null;
-		instance._requestedJCEProvider = provider;
-		instance._key = null;
-		instance._kek = null;
-		instance._contextCipher = null;
+	instance._requestedJCEProvider = provider;
+	instance._key = null;
+	instance._kek = null;
+	instance._contextCipher = null;
 
-		try {
-			instance._canon = Canonicalizer.getInstance
-				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-		} catch (InvalidCanonicalizerException ice) {
-			throw new XMLEncryptionException("empty", ice);
-		}
+	try {
+	    instance._canon = Canonicalizer.getInstance
+		(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+	} catch (InvalidCanonicalizerException ice) {
+	    throw new XMLEncryptionException("empty", ice);
+	}
 
         return (instance);
     }
@@ -983,7 +975,7 @@ public class XMLCipher {
 
 	String serializedOctets = null;
 	if (serializedData == null) {
-	    if (type == EncryptionConstants.TYPE_CONTENT) {
+	    if (type.equals(EncryptionConstants.TYPE_CONTENT)) {
 		NodeList children = element.getChildNodes();
 		if (null != children) {
 		    serializedOctets = _serializer.serialize(children);
@@ -1094,7 +1086,7 @@ public class XMLCipher {
     /**
      * Returns an <code>EncryptedData</code> interface. Use this operation if
      * you want to load an <code>EncryptedData</code> structure from a DOM 
-	 * structure and manipulate the contents 
+     * structure and manipulate the contents 
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be loaded
@@ -1104,69 +1096,67 @@ public class XMLCipher {
     public EncryptedData loadEncryptedData(Document context, Element element) 
 		throws XMLEncryptionException {
         logger.debug("Loading encrypted element...");
-        if(null == context)
-            logger.error("Context document unexpectedly null...");
-        if(null == element)
-            logger.error("Element unexpectedly null...");
-        if(_cipherMode != DECRYPT_MODE)
-            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+        if (null == context)
+            throw new NullPointerException("Context document unexpectedly null...");
+        if (null == element)
+            throw new NullPointerException("Element unexpectedly null...");
+        if (_cipherMode != DECRYPT_MODE)
+            throw new XMLEncryptionException("XMLCipher unexpectedly not in DECRYPT_MODE...");
 
         _contextDocument = context;
         _ed = _factory.newEncryptedData(element);
 
-		return (_ed);
+	return (_ed);
     }
 
     /**
      * Returns an <code>EncryptedKey</code> interface. Use this operation if
      * you want to load an <code>EncryptedKey</code> structure from a DOM 
-	 * structure and manipulate the contents.
+     * structure and manipulate the contents.
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be loaded
      * @return
      * @throws XMLEncryptionException
      */
-
     public EncryptedKey loadEncryptedKey(Document context, Element element) 
 		throws XMLEncryptionException {
         logger.debug("Loading encrypted key...");
-        if(null == context)
-            logger.error("Context document unexpectedly null...");
-        if(null == element)
-            logger.error("Element unexpectedly null...");
-        if(_cipherMode != UNWRAP_MODE && _cipherMode != DECRYPT_MODE)
-            logger.debug("XMLCipher unexpectedly not in UNWRAP_MODE or DECRYPT_MODE...");
+        if (null == context)
+            throw new NullPointerException("Context document unexpectedly null...");
+        if (null == element)
+            throw new NullPointerException("Element unexpectedly null...");
+        if (_cipherMode != UNWRAP_MODE && _cipherMode != DECRYPT_MODE)
+            throw new XMLEncryptionException("XMLCipher unexpectedly not in UNWRAP_MODE or DECRYPT_MODE...");
 
         _contextDocument = context;
         _ek = _factory.newEncryptedKey(element);
-		return (_ek);
+	return (_ek);
     }
 
     /**
      * Returns an <code>EncryptedKey</code> interface. Use this operation if
      * you want to load an <code>EncryptedKey</code> structure from a DOM 
-	 * structure and manipulate the contents.
-	 *
-	 * Assumes that the context document is the document that owns the element
+     * structure and manipulate the contents.
+     *
+     * Assumes that the context document is the document that owns the element
      *
      * @param element the <code>Element</code> that will be loaded
      * @return
      * @throws XMLEncryptionException
      */
-
     public EncryptedKey loadEncryptedKey(Element element) 
-		throws XMLEncryptionException {
+	throws XMLEncryptionException {
 
-		return (loadEncryptedKey(element.getOwnerDocument(), element));
+	return (loadEncryptedKey(element.getOwnerDocument(), element));
     }
 
     /**
      * Encrypts a key to an EncryptedKey structure
-	 *
-	 * @param doc the Context document that will be used to general DOM
-	 * @param key Key to encrypt (will use previously set KEK to 
-	 * perform encryption
+     *
+     * @param doc the Context document that will be used to general DOM
+     * @param key Key to encrypt (will use previously set KEK to 
+     * perform encryption
      * @return
      * @throws XMLEncryptionException
      */
@@ -1293,6 +1283,7 @@ public class XMLCipher {
 
 		String jceKeyAlgorithm =
 			JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
+		System.out.println("keyAlg:"+jceKeyAlgorithm);
 
 		Cipher c;
 		if (_contextCipher == null) {
@@ -1301,6 +1292,7 @@ public class XMLCipher {
 			String jceAlgorithm =
 				JCEMapper.translateURItoJCEID(
 					encryptedKey.getEncryptionMethod().getAlgorithm());
+		        System.out.println("jcekeyAlg:"+jceAlgorithm);
 
 			logger.debug("JCE Algorithm = " + jceAlgorithm);
 
@@ -1449,7 +1441,7 @@ public class XMLCipher {
      * @throws XMLEncryptionException
 	 */
 
-	public byte[] decryptToByteArray(Element element) 
+    public byte[] decryptToByteArray(Element element) 
 		throws XMLEncryptionException {
 		
         logger.debug("Decrypting to ByteArray...");
@@ -1459,30 +1451,29 @@ public class XMLCipher {
 
         EncryptedData encryptedData = _factory.newEncryptedData(element);
 
-		if (_key == null) {
+	if (_key == null) {
 
-			KeyInfo ki = encryptedData.getKeyInfo();
+	    KeyInfo ki = encryptedData.getKeyInfo();
 
-			if (ki != null) {
-				try {
-					// Add a EncryptedKey resolver
-					ki.registerInternalKeyResolver(
-			             new EncryptedKeyResolver(encryptedData.
-												  getEncryptionMethod().
-												  getAlgorithm(), 
-												  _kek));
-					_key = ki.getSecretKey();
-				} catch (KeyResolverException kre) {
-					// We will throw in a second...
-				}
-			}
-
-			if (_key == null) {
-				logger.error("XMLCipher::decryptElement called without a key and unable to resolve");
-
-				throw new XMLEncryptionException("encryption.nokey");
-			}
+	    if (ki != null) {
+		try {
+		    // Add a EncryptedKey resolver
+		    ki.registerInternalKeyResolver(
+		        new EncryptedKeyResolver(
+                            encryptedData.getEncryptionMethod().getAlgorithm(), 
+                            _kek));
+		    _key = ki.getSecretKey();
+		} catch (KeyResolverException kre) {
+		    // We will throw in a second...
 		}
+	    }
+
+	    if (_key == null) {
+		logger.error("XMLCipher::decryptElement called without a key and unable to resolve");
+
+		throw new XMLEncryptionException("encryption.nokey");
+	    }
+	}
 
 		// Obtain the encrypted octets 
 		XMLCipherInput cipherInput = new XMLCipherInput(encryptedData);
@@ -1492,6 +1483,7 @@ public class XMLCipher {
 
 		String jceAlgorithm = 
 			JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod().getAlgorithm());
+		System.out.println("alg:"+jceAlgorithm);
 
 		Cipher c;
 		try {
@@ -2488,6 +2480,7 @@ public class XMLCipher {
                     EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_OAEPPARAMS).item(0);
             if (null != oaepParamsElement) {
+		System.out.println("OAEPParams");
                 result.setOAEPparams(
                     oaepParamsElement.getNodeValue().getBytes());
             }
@@ -2743,7 +2736,7 @@ public class XMLCipher {
                 try {
                     tmpAlgorithm = new URI(algorithm);
                 } catch (URI.MalformedURIException fmue) {
-                    //complain?
+                    throw new IllegalArgumentException(fmue);
                 }
                 algorithmURI = tmpAlgorithm.toString();
             }
@@ -2804,7 +2797,7 @@ public class XMLCipher {
                 try {
                     tmpAlgorithm = new URI(algorithm);
                 } catch (URI.MalformedURIException mfue) {
-                    //complain
+                    throw new IllegalArgumentException(mfue);
                 }
                 algorithmURI = tmpAlgorithm.toString();
             }
@@ -3336,7 +3329,7 @@ public class XMLCipher {
                     try {
                         tmpType = new URI(type);
                     } catch (URI.MalformedURIException mfue) {
-                        // complain
+                        throw new IllegalArgumentException(mfue);
                     }
                     this.type = tmpType.toString();
 		}
@@ -3374,7 +3367,7 @@ public class XMLCipher {
                     try {
                         tmpEncoding = new URI(encoding);
                     } catch (URI.MalformedURIException mfue) {
-                        // complain
+                        throw new IllegalArgumentException(mfue);
                     }
                     this.encoding = tmpEncoding.toString();
 		}
@@ -3453,7 +3446,7 @@ public class XMLCipher {
                 try {
                     tmpAlgorithm = new URI(algorithm);
                 } catch (URI.MalformedURIException mfue) {
-                    // complain
+                    throw new IllegalArgumentException(mfue);
                 }
                 this.algorithm = tmpAlgorithm.toString();
                 encryptionMethodInformation = new LinkedList();
@@ -3634,7 +3627,7 @@ public class XMLCipher {
                     try {
                         tmpTarget = new URI(target);
                     } catch (URI.MalformedURIException mfue) {
-                        // complain
+                        throw new IllegalArgumentException(mfue);
                     }
                     this.target = tmpTarget.toString();
 		}
@@ -3705,68 +3698,65 @@ public class XMLCipher {
 		       org.apache.xml.security.transforms.Transforms 
 		       implements Transforms {
 
-			/**
-			 * Construct Transforms
-			 */
+	    /**
+	     * Construct Transforms
+	     */
+	    public TransformsImpl() {
+		super(_contextDocument);
+	    }
 
-			public TransformsImpl() {
-				super(_contextDocument);
-			}
-			/**
+	    /**
              * 
-			 * @param doc
-			 */
-			public TransformsImpl(Document doc) {
-				if (doc == null) {
-			         throw new RuntimeException("Document is null");
-			      }
+	     * @param doc
+	     */
+	    public TransformsImpl(Document doc) {
+		if (doc == null) {
+	            throw new RuntimeException("Document is null");
+		}
 
-			      this._doc = doc;
-			      this._constructionElement =  createElementForFamilyLocal(this._doc,
-			    		  this.getBaseNamespace(), this.getBaseLocalName()); 
-			}
-			/**
+		this._doc = doc;
+		this._constructionElement =  createElementForFamilyLocal(this._doc,
+		this.getBaseNamespace(), this.getBaseLocalName()); 
+	    }
+
+	    /**
              * 
-			 * @param element
-			 * @throws XMLSignatureException
-			 * @throws InvalidTransformException
-			 * @throws XMLSecurityException
-			 * @throws TransformationException
-			 */
-			public TransformsImpl(Element element) 
-				throws XMLSignatureException,
-			           InvalidTransformException,
-				       XMLSecurityException,
-				       TransformationException {
+	     * @param element
+	     * @throws XMLSignatureException
+	     * @throws InvalidTransformException
+	     * @throws XMLSecurityException
+	     * @throws TransformationException
+	     */
+	    public TransformsImpl(Element element) 
+		throws XMLSignatureException,
+	               InvalidTransformException,
+		       XMLSecurityException,
+		       TransformationException {
 
-				super(element, "");
-				
-			}
+		super(element, "");
+	    }
 
             /** 
              * 
              * @return
              */
-			public Element toElement() {
+	    public Element toElement() {
+		if (_doc == null)
+		    _doc = _contextDocument;
 
-				if (_doc == null)
-					_doc = _contextDocument;
-
-				return getElement();
-			}
+		return getElement();
+	    }
 
             /** @inheritDoc */
-			public org.apache.xml.security.transforms.Transforms getDSTransforms() {
-				return (this);
-			}
+	    public org.apache.xml.security.transforms.Transforms getDSTransforms() {
+		return (this);
+	    }
 
-
-			// Over-ride the namespace
+	    // Over-ride the namespace
             /** @inheritDoc */
-			public String getBaseNamespace() {
-				return EncryptionConstants.EncryptionSpecNS;
-			}
-
+	    public String getBaseNamespace() {
+		return EncryptionConstants.EncryptionSpecNS;
+	    }
         }
 
         //<element name='ReferenceList'>
