@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in v ...
+    Fixed bug 45475: XMLSignature::getKeyInfo method modifies document
     Fixed bug 45811: Fix XMLSec 1.4.2 problems reported by findbugs
     Fixed bug 45706: Transform.register class loading and recursive instantiation problems
     Fixed bug 45664: Some calls should be wrapped in AccessController.doPrivileged
