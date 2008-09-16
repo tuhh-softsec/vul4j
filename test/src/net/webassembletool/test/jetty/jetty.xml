@@ -135,8 +135,6 @@
 						</Item>
 						<Item>org.mortbay.jetty.webapp.TagLibConfiguration
 						</Item>
-						<Item>net.webassembletool.webapptests.http.jetty.ClassPathConfig
-						</Item>
 					</Array>
 				</Set>
 			</New>
@@ -151,5 +149,5 @@
 	<Set name="sendDateHeader">true</Set>
 
     <!-- allows requests(prior to shutdown) to finish gracefully -->
-	<Set name="gracefulShutdown">1000</Set>
+	<Set name="gracefulShutdown">5000</Set>
 </Configure>

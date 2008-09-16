@@ -17,18 +17,16 @@
 		</sequential>
 	</macrodef>
 	<target name="clean">
-		<delete>
-			<fileset file="bin" />
-		</delete>
-		<mkdir dir="bin"/>
+		<delete dir="bin" />
+		<mkdir dir="bin" />
 	</target>
 	<target name="build">
-		<copy todir="bin">
+		<copy todir="bin/webapps">
 			<fileset dir="test/webapps" />
 		</copy>
-		<deploy-wat-classes webapp-root="bin/master" />
-		<deploy-wat-classes webapp-root="bin/provider" />
-		<deploy-wat-classes webapp-root="bin/aggregator" />
+		<deploy-wat-classes webapp-root="bin/webapps/master" />
+		<deploy-wat-classes webapp-root="bin/webapps/provider" />
+		<deploy-wat-classes webapp-root="bin/webapps/aggregator" />
 	</target>
 	<target name="javadoc">
 		<delete>

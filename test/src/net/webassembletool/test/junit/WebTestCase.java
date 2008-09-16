@@ -1,4 +1,4 @@
-package net.webassembletool.webapptests.http;
+package net.webassembletool.test.junit;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,25 +9,29 @@ import java.net.URLConnection;
 import java.util.Arrays;
 
 import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
+import junit.framework.TestCase;
+import net.webassembletool.test.jetty.JettyRunner;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This class contains methods for http request testing.
  * 
- * 
  * @author Omar BENHAMID
  */
-public class HttpAssert {
+public class WebTestCase extends TestCase {
+    private static final Log log = LogFactory.getLog(WebTestCase.class);
+
     /**
      * Protected constructor. In fact, this class is essentially meant to be
      * used through static methods
      */
-    private HttpAssert() {
+    protected WebTestCase() {
 	// Private
     }
 
@@ -60,7 +64,7 @@ public class HttpAssert {
 	try {
 	    return m.getURI().toString();
 	} catch (Exception ex) {
-	    WebAppTestCase.log.warn("Failed to retrieve URI for method", ex);
+	    log.warn("Failed to retrieve URI for method", ex);
 	}
 	return null;
     }
@@ -306,13 +310,8 @@ public class HttpAssert {
 		continue;
 	    }
 
-	    try {
-		assertBodyEqualsURLBody(new GetMethod(serverPrefix + relPath),
-			f.toURI().toString());
-	    } catch (AssertionFailedError ex) {
-		throw new HttpAssertionError("Failed checking " + relPath
-			+ " in server " + serverPrefix, ex);
-	    }
+	    assertBodyEqualsURLBody(new GetMethod(serverPrefix + relPath), f
+		    .toURI().toString());
 	}
     }
 
@@ -338,20 +337,43 @@ public class HttpAssert {
 	    serverPrefix += "/";
 	recurseAndValidateFiles(f, serverPrefix, null);
     }
-}
 
-/**
- * Assertion error class that has a cause !
- * 
- * @author omben
- */
-
-class HttpAssertionError extends AssertionError {
-    private static final long serialVersionUID = 1L;
-
-    public HttpAssertionError(String msg, Throwable cause) {
-	super(msg);
-	initCause(cause);
+    @Override
+    protected void setUp() {
+	try {
+	    JettyRunner.startJetty();
+	} catch (Exception e) {
+	    throw new RuntimeException(e);
+	}
     }
 
+    @Override
+    protected void tearDown() throws Exception {
+	try {
+	    JettyRunner.stopJetty();
+	} catch (Exception e) {
+	    throw new RuntimeException(e);
+	}
+    }
+
+    /**
+     * Converts a relative url to a url on the test server.
+     * 
+     * @param relativeURL the relative URL to append to server name
+     * @return returns the absolute URL as a string
+     */
+    public String getAbsoluteURL(String relativeURL) {
+	return getServerURLPrefix()
+		+ (relativeURL.startsWith("/") ? relativeURL.substring(1)
+			: relativeURL);
+    }
+
+    /**
+     * Get the server part of url to this container
+     * 
+     * @return url ending with /
+     */
+    public String getServerURLPrefix() {
+	return "http://localhost:8080/";
+    }
 }
