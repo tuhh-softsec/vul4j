@@ -1781,7 +1781,7 @@ public class FileUtils
     }
 
     /**
-     * Copies a entire directory structure.
+     * Copies a entire directory layout : no files will be copied only directories
      * <p/>
      * Note:
      * <ul>
@@ -1796,7 +1796,7 @@ public class FileUtils
      * @since 1.5.7
      * @throws IOException
      */
-    public static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String[] includes,
+    public static void copyDirectoryLayout( File sourceDirectory, File destinationDirectory, String[] includes,
                                                String[] excludes )
         throws IOException
     {
@@ -1830,7 +1830,7 @@ public class FileUtils
         }
         else
         {
-            scanner.setIncludes( new String[] { "**/**" } );
+            scanner.setIncludes( new String[] { "**" } );
         }
 
         if ( excludes != null && excludes.length >= 1 )
@@ -1840,17 +1840,11 @@ public class FileUtils
 
         scanner.addDefaultExcludes();
         scanner.scan();
-        
         List includedDirectories = Arrays.asList( scanner.getIncludedDirectories() );
         
         for (Iterator i = includedDirectories.iterator();i.hasNext();)
         {
             String name = (String)i.next();
-            
-            if (StringUtils.isEmpty( name ))
-            {
-                continue;
-            }
             
             File source = new File(sourceDirectory, name);
             
@@ -1860,12 +1854,7 @@ public class FileUtils
             }
             
             File destination = new File(destinationDirectory, name);
-            
-            if (source.isDirectory())
-            {
-                destination.mkdirs();
-                copyDirectoryStructure( source, destination, includes, excludes );
-            }
+            destination.mkdirs();
         }
     }    
     

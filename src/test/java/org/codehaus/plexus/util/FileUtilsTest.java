@@ -1304,7 +1304,7 @@ public final class FileUtilsTest
         assertTrue( "Failed to delete test directory", !getTestDirectory().exists() );
     }
     
-    public void testcopyDirectoryStructureWithExcludesIncludes()
+    public void testcopyDirectoryLayoutWithExcludesIncludes()
         throws Exception
     {
         File destination = new File( "target", "copyDirectoryStructureWithExcludesIncludes" );
@@ -1314,9 +1314,9 @@ public final class FileUtilsTest
         }
         FileUtils.cleanDirectory( destination );
 
-        File source = new File( "src/test/resources/dir-structure-copy" );
+        File source = new File( "src/test/resources/dir-layout-copy" );
 
-        FileUtils.copyDirectoryStructure( source, destination, null, null );
+        FileUtils.copyDirectoryLayout( source, destination, null, null );
 
         assertTrue( destination.exists() );
 
