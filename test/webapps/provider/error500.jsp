@@ -7,6 +7,9 @@
 <title>Timeout test</title>
 </head>
 <body style="background-color: aqua">
-<% response.sendError(500, "This page allways throws an error"); %>
+<% 
+response.setStatus(500);
+%>
+This is an error page !
 </body>
 </html>

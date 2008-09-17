@@ -32,7 +32,7 @@
 		<delete>
 			<fileset file="bin/javadoc" />
 		</delete>
-		<javadoc destdir="bin/doc/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit">
+		<javadoc destdir="bin/doc/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit" >
 			<classpath>
 				<fileset dir="lib">
 					<include name="*.jar" />

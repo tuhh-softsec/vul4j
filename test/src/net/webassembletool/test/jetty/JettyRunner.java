@@ -32,22 +32,6 @@ public class JettyRunner {
     private static int serverPort = 8080;
     private static String webappsRoot = null;
 
-    public static int getServerPort() {
-	return serverPort;
-    }
-
-    public static void setServerPort(int serverPort) {
-	JettyRunner.serverPort = serverPort;
-    }
-
-    public static String getWebappsRoot() {
-	return webappsRoot;
-    }
-
-    public static void setWebappsRoot(String webappsRoot) {
-	JettyRunner.webappsRoot = webappsRoot;
-    }
-
     private JettyRunner() {
 	// Do not use
     }
@@ -57,7 +41,7 @@ public class JettyRunner {
      * 
      * @throws Exception If a problem occurs
      */
-    public final static void startJetty() throws Exception {
+    private final static void startJetty() throws Exception {
 	if (webappsRoot == null)
 	    webappsRoot = System.getenv("webappsRoot");
 	log.info("Starting jetty");
@@ -74,7 +58,7 @@ public class JettyRunner {
      * 
      * @throws Exception If a problem occurs
      */
-    public final static void stopJetty() throws Exception {
+    private final static void stopJetty() throws Exception {
 	log.info("Stopping jetty");
 	server.stop();
 	server = null;
@@ -94,7 +78,7 @@ public class JettyRunner {
 	}
 	File webappsRootFolder = new File(args[0]);
 	if (!webappsRootFolder.isDirectory()) {
-	    throw new Exception("The argument is not a valid directory");
+	    throw new Exception(args[0] + " is not a valid directory");
 	}
 	webappsRoot = webappsRootFolder.getAbsolutePath();
 	serverPort = Integer.parseInt(args[1]);

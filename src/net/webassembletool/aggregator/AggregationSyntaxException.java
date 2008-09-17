@@ -1,16 +1,10 @@
-/**
- * 
- */
 package net.webassembletool.aggregator;
 
 /**
- * <b>Description : </b>
- * <p>
- * [Description].
- * </p>
- * <hr>
+ * Exception thrown when an HTML document contains WAT tags with invalid
+ * arguments
  * 
- * @author FRBON, 24 juil. 2008
+ * @author François-Xavier Bonnet
  */
 public class AggregationSyntaxException extends Exception {
 
