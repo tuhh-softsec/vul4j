@@ -27,11 +27,8 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.CRC32;
@@ -52,7 +49,7 @@ import org.codehaus.plexus.util.FileUtils;
 public abstract class AbstractZipArchiver
     extends AbstractArchiver
 {
-
+    
     private String comment;
 
     /**
@@ -78,8 +75,6 @@ public abstract class AbstractZipArchiver
     private boolean doFilesonly = false;
 
     protected Hashtable entries = new Hashtable();
-
-    protected String duplicate = "add";
 
     protected Hashtable addedDirs = new Hashtable();
 
@@ -485,28 +480,28 @@ public abstract class AbstractZipArchiver
                             int mode )
         throws IOException, ArchiverException
     {
-        if ( entries.contains( vPath ) )
-        {
-            if ( duplicate.equals( "preserve" ) )
-            {
-                getLogger().info( vPath + " already added, skipping" );
-                return;
-            }
-            else if ( duplicate.equals( "fail" ) )
-            {
-                throw new ArchiverException( "Duplicate file " + vPath + " was found and the duplicate "
-                    + "attribute is 'fail'." );
-            }
-            else
-            {
-                // duplicate equal to add, so we continue
-                getLogger().debug( "duplicate file " + vPath + " found, adding." );
-            }
-        }
-        else
-        {
+//        if ( entries.contains( vPath ) )
+//        {
+//            if ( ArchiverConstants.DUPLICATES_PRESERVE.equals( duplicate ) || ArchiverConstants.DUPLICATES_SKIP.equals( duplicate ) )
+//            {
+//                getLogger().info( vPath + " already added, skipping" );
+//                return;
+//            }
+//            else if ( ArchiverConstants.DUPLICATES_FAIL.equals( duplicate ) )
+//            {
+//                throw new ArchiverException( "Duplicate file " + vPath + " was found and the duplicate "
+//                    + "attribute is 'fail'." );
+//            }
+//            else
+//            {
+//                // duplicate equal to add, so we continue
+//                getLogger().debug( "duplicate file " + vPath + " found, adding." );
+//            }
+//        }
+//        else
+//        {
             getLogger().debug( "adding entry " + vPath );
-        }
+//        }
 
         entries.put( vPath, vPath );
 
@@ -739,7 +734,7 @@ public abstract class AbstractZipArchiver
     public void reset()
     {
         setDestFile( null );
-        duplicate = "add";
+//        duplicate = "add";
         archiveType = "zip";
         doCompress = true;
         doUpdate = false;

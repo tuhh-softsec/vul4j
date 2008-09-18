@@ -24,10 +24,12 @@ import java.io.InputStream;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
@@ -101,8 +103,26 @@ public abstract class AbstractArchiver
 
     private File dotFileDirectory;
 
+    private String duplicateBehavior = Archiver.DUPLICATES_ADD;
+
     // contextualized.
     private ArchiverManager archiverManager;
+
+    public String getDuplicateBehavior()
+    {
+        return duplicateBehavior;
+    }
+
+    public void setDuplicateBehavior( String duplicate )
+    {
+        if ( !Archiver.DUPLICATES_VALID_BEHAVIORS.contains( duplicate ) )
+        {
+            throw new IllegalArgumentException( "Invalid duplicate-file behavior: \'" + duplicate
+                + "\'. Please specify one of: " + Archiver.DUPLICATES_VALID_BEHAVIORS );
+        }
+        
+        this.duplicateBehavior = duplicate;
+    }
 
     public void setDefaultFileMode( int mode )
     {
@@ -348,75 +368,108 @@ public abstract class AbstractArchiver
     {
         return new ResourceIterator()
         {
-            private final Iterator archiveEntryIter = resources.iterator();
-            private boolean currentArchiveEntryValid;
-            private PlexusIoResourceCollection plexusIoResourceCollection;
-            private Iterator plexusIoResourceIter;
-            private ArchiveEntry archiveEntry;
+            private final Iterator addedResourceIter = resources.iterator();
+            private PlexusIoResourceCollection currentResourceCollection;
+            private Iterator ioResourceIter;
+            private ArchiveEntry nextEntry;
+            
+            private Set seenEntries = new HashSet();
 
-            public boolean hasNext() throws ArchiverException
+            public boolean hasNext()
+                throws ArchiverException
             {
-                if (!currentArchiveEntryValid)
+                if ( nextEntry == null )
                 {
-                    if ( plexusIoResourceIter == null )
+                    if ( ioResourceIter == null )
                     {
-                        if ( archiveEntryIter.hasNext() )
+                        if ( addedResourceIter.hasNext() )
                         {
-                            Object o = archiveEntryIter.next();
+                            Object o = addedResourceIter.next();
                             if ( o instanceof ArchiveEntry )
                             {
-                                archiveEntry = (ArchiveEntry) o;
+                                nextEntry = (ArchiveEntry) o;
                             }
                             else if ( o instanceof PlexusIoResourceCollection )
                             {
-                                plexusIoResourceCollection = (PlexusIoResourceCollection) o;
+                                currentResourceCollection = (PlexusIoResourceCollection) o;
+                                
                                 try
                                 {
-                                    plexusIoResourceIter = plexusIoResourceCollection.getResources();
+                                    ioResourceIter = currentResourceCollection.getResources();
                                 }
                                 catch ( IOException e )
                                 {
                                     throw new ArchiverException( e.getMessage(), e );
                                 }
+                                
                                 return hasNext();
                             }
                             else
                             {
-                                throw new IllegalStateException( "Invalid object type: "
-                                                                 + o.getClass().getName() );
+                                throw new IllegalStateException( "An invalid resource of type: "
+                                    + o.getClass().getName() + " was added to archiver: " + this.getClass().getName() );
                             }
                         }
                         else
                         {
-                            archiveEntry = null;
+                            nextEntry = null;
                         }
                     }
                     else
                     {
-                        if ( plexusIoResourceIter.hasNext() )
+                        if ( ioResourceIter.hasNext() )
                         {
-                            PlexusIoResource resource = (PlexusIoResource) plexusIoResourceIter.next();
-                            archiveEntry = asArchiveEntry( plexusIoResourceCollection, resource );
+                            PlexusIoResource resource = (PlexusIoResource) ioResourceIter.next();
+                            nextEntry = asArchiveEntry( currentResourceCollection, resource );
                         }
                         else
                         {
-                            plexusIoResourceIter = null;
+                            ioResourceIter = null;
                             return hasNext();
                         }
                     }
-                    currentArchiveEntryValid = true;
                 }
-                return archiveEntry != null;
+                
+                if ( nextEntry != null && seenEntries.contains( nextEntry.getName() ) )
+                {
+                    String path = nextEntry.getName();
+                    
+                    if ( Archiver.DUPLICATES_PRESERVE.equals( duplicateBehavior ) || Archiver.DUPLICATES_SKIP.equals( duplicateBehavior ) )
+                    {
+                        getLogger().info( path + " already added, skipping" );
+                        
+                        nextEntry = null;
+                        return hasNext();
+                    }
+                    else if ( Archiver.DUPLICATES_FAIL.equals( duplicateBehavior ) )
+                    {
+                        throw new ArchiverException( "Duplicate file " + path + " was found and the duplicate "
+                            + "attribute is 'fail'." );
+                    }
+                    else
+                    {
+                        // duplicate equal to add, so we continue
+                        getLogger().debug( "duplicate file " + path + " found, adding." );
+                    }
+                }
+                
+                return nextEntry != null;
             }
 
-            public ArchiveEntry next() throws ArchiverException
+            public ArchiveEntry next()
+                throws ArchiverException
             {
                 if ( !hasNext() )
                 {
                     throw new NoSuchElementException();
                 }
-                currentArchiveEntryValid = false;
-                return archiveEntry;
+                
+                ArchiveEntry next = nextEntry;
+                nextEntry = null;
+                
+                seenEntries.add( next.getName() );
+                
+                return next;
             }
         };
     }

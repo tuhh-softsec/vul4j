@@ -19,8 +19,9 @@ package org.codehaus.plexus.archiver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
@@ -32,6 +33,26 @@ public interface Archiver
 {
     String ROLE = Archiver.class.getName();
 
+    public static final String DUPLICATES_ADD = "add";
+
+    public static final String DUPLICATES_PRESERVE = "preserve";
+
+    public static final String DUPLICATES_SKIP = "skip";
+
+    public static final String DUPLICATES_FAIL = "fail";
+    
+    public static final Set DUPLICATES_VALID_BEHAVIORS = new HashSet()
+    {
+        private static final long serialVersionUID = 1L;
+
+        {
+            add( DUPLICATES_ADD );
+            add( DUPLICATES_PRESERVE );
+            add( DUPLICATES_SKIP );
+            add( DUPLICATES_FAIL );
+        }
+    };
+    
     void createArchive()
         throws ArchiverException, IOException;
 
@@ -198,4 +219,22 @@ public interface Archiver
      * @see #isForced()
      */
     boolean isSupportingForced();
+
+    /**
+     * Returns the behavior of this archiver when duplicate files are detected.
+     */
+    String getDuplicateBehavior();
+
+    /**
+     * Set the behavior of this archiver when duplicate files are detected. One of: <br/>
+     * <ul>
+     * <li>add - Add the duplicates to the archive as duplicate entries</li>
+     * <li>skip/preserve - Leave the first entry encountered in the archive, skip the new one</li>
+     * <li>fail - throw an {@link ArchiverException}</li>
+     * </ul>
+     * <br/>
+     * See {@link Archiver#DUPLICATES_ADD}, {@link Archiver#DUPLICATES_SKIP}, {@link Archiver#DUPLICATES_PRESERVE},
+     * {@link Archiver#DUPLICATES_FAIL}.
+     */
+    void setDuplicateBehavior( String duplicate );
 }
