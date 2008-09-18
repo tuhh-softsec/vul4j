@@ -35,6 +35,7 @@ import java.util.zip.CRC32;
 
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
+import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
@@ -85,6 +86,11 @@ public abstract class AbstractZipArchiver
     protected boolean doubleFilePass = false;
 
     protected boolean skipWriting = false;
+    
+    /**
+     * @deprecated Use {@link Archiver#setDuplicateBehavior(String)} instead.
+     */
+    protected String duplicate = Archiver.DUPLICATES_ADD;
 
     /**
      * true when we are adding new files into the Zip file, as opposed
@@ -255,6 +261,8 @@ public abstract class AbstractZipArchiver
     private void createArchiveMain()
         throws ArchiverException, IOException
     {
+        setDuplicateBehavior( duplicate );
+        
         ResourceIterator iter = getResources();
         if ( !iter.hasNext() && !hasVirtualFiles() )
         {
@@ -480,28 +488,7 @@ public abstract class AbstractZipArchiver
                             int mode )
         throws IOException, ArchiverException
     {
-//        if ( entries.contains( vPath ) )
-//        {
-//            if ( ArchiverConstants.DUPLICATES_PRESERVE.equals( duplicate ) || ArchiverConstants.DUPLICATES_SKIP.equals( duplicate ) )
-//            {
-//                getLogger().info( vPath + " already added, skipping" );
-//                return;
-//            }
-//            else if ( ArchiverConstants.DUPLICATES_FAIL.equals( duplicate ) )
-//            {
-//                throw new ArchiverException( "Duplicate file " + vPath + " was found and the duplicate "
-//                    + "attribute is 'fail'." );
-//            }
-//            else
-//            {
-//                // duplicate equal to add, so we continue
-//                getLogger().debug( "duplicate file " + vPath + " found, adding." );
-//            }
-//        }
-//        else
-//        {
-            getLogger().debug( "adding entry " + vPath );
-//        }
+        getLogger().debug( "adding entry " + vPath );
 
         entries.put( vPath, vPath );
 
