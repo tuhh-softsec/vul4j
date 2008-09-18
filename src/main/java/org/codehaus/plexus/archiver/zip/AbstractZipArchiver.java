@@ -88,7 +88,7 @@ public abstract class AbstractZipArchiver
     protected boolean skipWriting = false;
     
     /**
-     * @deprecated Use {@link Archiver#setDuplicateBehavior(String)} instead.
+     * @deprecated Unused, use {@link Archiver#setDuplicateBehavior(String)} instead.
      */
     protected String duplicate = Archiver.DUPLICATES_ADD;
 
@@ -261,8 +261,6 @@ public abstract class AbstractZipArchiver
     private void createArchiveMain()
         throws ArchiverException, IOException
     {
-        setDuplicateBehavior( duplicate );
-        
         ResourceIterator iter = getResources();
         if ( !iter.hasNext() && !hasVirtualFiles() )
         {
