@@ -16,7 +16,7 @@
 
 /*
  * XSEC
- * 
+ *
  * Configuration file for Windows platform
  *
  * Needs to be modified by hand
@@ -38,7 +38,7 @@
 
 #define XSEC_VERSION_MAJOR   1
 #define XSEC_VERSION_MEDIUM  4
-#define XSEC_VERSION_MINOR   0
+#define XSEC_VERSION_MINOR   1
 
 /*
  * Because we don't have a configure script, we need to rely on version
@@ -64,7 +64,7 @@
 #endif
 
 #if (XERCES_VERSION_MAJOR == 3) || ((XERCES_VERSION_MAJOR == 2) && (XERCES_VERSION_MINOR >= 3))
-/* 
+/*
  * As of version 2.3, xerces requires a version parameter in XMLFormatter
  * constructors
  */
@@ -113,7 +113,7 @@
 #		define XSEC_XSLEXCEPTION_RETURNS_DOMSTRING	1
 #	endif
 #	if (_XALAN_VERSION >= 10900)
-		
+
 		/* 1.9 and above have XSLException::getType() returns XalanDOMChar *, not
 			XalanDOMString
 		*/
@@ -125,7 +125,7 @@
 #		undef XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
 
 		/* 1.9 and above require a NodeRefList as input to XPathEvaluator::
-		   selectNodeList 
+		   selectNodeList
 		*/
 
 #		define XSEC_SELECTNODELIST_REQS_NODEREFLIST
@@ -146,7 +146,7 @@
 #		define XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
 
 		/* 1.9 and above require a NodeRefList as input to XPathEvaluator::
-		   selectNodeList 
+		   selectNodeList
 		*/
 
 #		undef XSEC_SELECTNODELIST_REQS_NODEREFLIST

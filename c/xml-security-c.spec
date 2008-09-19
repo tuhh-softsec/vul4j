@@ -1,5 +1,5 @@
 Name:           xml-security-c
-Version:        1.4.0
+Version:        1.4.1
 Release:        1
 Summary:        C++ XML security library
 
@@ -59,6 +59,8 @@ Requires:       %{name} = %{version}-%{release}
 %{_libdir}/*.so
 
 %changelog
+* Fri Sep 19 2008   Scott Cantor  <cantor.2@osu.edu> 1.4.1-1
+- update to 1.4.1
 * Wed Aug 15 2007   Scott Cantor  <cantor.2@osu.edu> 1.4.0-1
 - update to 1.4.0
 * Mon Jun 11 2007   Scott Cantor  <cantor.2@osu.edu> 1.3.1-1
