@@ -43,14 +43,11 @@ XSEC_USING_XERCES(ArrayJanitor);
 #include <memory.h>
 
 OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA() :
+mp_rsaKey(NULL),
 mp_oaepParams(NULL),
 m_oaepParamsLen(0) {
-
-	// Create a new key to be loaded as we go
-
-	mp_rsaKey = RSA_new();
-
 };
+
 OpenSSLCryptoKeyRSA::~OpenSSLCryptoKeyRSA() {
 
 
@@ -141,7 +138,7 @@ OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA(EVP_PKEY *k) {
 	m_oaepParamsLen = 0;
 
 	mp_rsaKey = RSA_new();
-	
+
 	if (k == NULL || k->type != EVP_PKEY_RSA)
 		return;	// Nothing to do with us
 
@@ -175,7 +172,7 @@ OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA(EVP_PKEY *k) {
 //           Verify a signature encoded as a Base64 string
 // --------------------------------------------------------------------------------
 
-bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf, 
+bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf,
 								 unsigned int hashLen,
 								 const char * base64Signature,
 								 unsigned int sigLen,
@@ -198,15 +195,15 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	char * cleanedBase64Signature;
 	unsigned int cleanedBase64SignatureLen = 0;
 
-	cleanedBase64Signature = 
+	cleanedBase64Signature =
 		XSECCryptoBase64::cleanBuffer(base64Signature, sigLen, cleanedBase64SignatureLen);
 	ArrayJanitor<char> j_cleanedBase64Signature(cleanedBase64Signature);
 
 	EVP_DecodeInit(&m_dctx);
-	rc = EVP_DecodeUpdate(&m_dctx, 
-						  sigVal, 
-						  &sigValLen, 
-						  (unsigned char *) cleanedBase64Signature, 
+	rc = EVP_DecodeUpdate(&m_dctx,
+						  sigVal,
+						  &sigValLen,
+						  (unsigned char *) cleanedBase64Signature,
 						  cleanedBase64SignatureLen);
 
 	if (rc < 0) {
@@ -216,7 +213,7 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	}
 	int t = 0;
 
-	EVP_DecodeFinal(&m_dctx, &sigVal[sigValLen], &t); 
+	EVP_DecodeFinal(&m_dctx, &sigVal[sigValLen], &t);
 
 	sigValLen += t;
 
@@ -235,8 +232,8 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	// padding should be and what the message digest OID should
 	// be.
 
-	int decryptSize = RSA_public_decrypt(sigValLen, 
-											 sigVal, 
+	int decryptSize = RSA_public_decrypt(sigValLen,
+											 sigVal,
 											 decryptBuf,
 											 mp_rsaKey,
 											 RSA_PKCS1_PADDING);
@@ -252,7 +249,7 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	/* Check the OID */
 	int oidLen = 0;
 	unsigned char * oid = getRSASigOID(hm, oidLen);
-	
+
 	if (oid == NULL) {
 		throw XSECCryptoException(XSECCryptoException::RSAError,
 			"OpenSSL:RSA::verify() - Unsupported HASH algorithm for RSA");
@@ -261,11 +258,11 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	if (decryptSize != (int) (oidLen + hashLen) || hashLen != oid[oidLen-1]) {
 
 		return false;
-	
+
 	}
 
 	for (t = 0; t < oidLen; ++t) {
-		
+
 		if (oid[t] != decryptBuf[t]) {
 
 			return false;
@@ -316,9 +313,9 @@ unsigned int OpenSSLCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 	int oidLen;
 	int encryptLen;
 	int preEncryptLen;
-	
+
 	oid = getRSASigOID(hm, oidLen);
-	
+
 	if (oid == NULL) {
 		throw XSECCryptoException(XSECCryptoException::RSAError,
 			"OpenSSL:RSA::sign() - Unsupported HASH algorithm for RSA");
@@ -386,7 +383,7 @@ unsigned int OpenSSLCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 // --------------------------------------------------------------------------------
 
 unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
-								 unsigned char * plainBuf, 
+								 unsigned char * plainBuf,
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
@@ -429,7 +426,7 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 							plainBuf,
 							mp_rsaKey,
 							RSA_PKCS1_PADDING);
-		
+
 		if (decryptSize < 0) {
 
 			throw XSECCryptoException(XSECCryptoException::RSAError,
@@ -516,7 +513,7 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 // --------------------------------------------------------------------------------
 
 unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
-								 unsigned char * cipherBuf, 
+								 unsigned char * cipherBuf,
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
@@ -544,7 +541,7 @@ unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 							cipherBuf,
 							mp_rsaKey,
 							RSA_PKCS1_PADDING);
-		
+
 		if (encryptSize < 0) {
 
 			throw XSECCryptoException(XSECCryptoException::RSAError,
@@ -592,7 +589,7 @@ unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 								cipherBuf,
 								mp_rsaKey,
 								RSA_NO_PADDING);
-			
+
 
 			if (encryptSize < 0) {
 
@@ -650,7 +647,7 @@ XSECCryptoKey * OpenSSLCryptoKeyRSA::clone() const {
 		ret->m_oaepParamsLen = 0;
 	}
 
-	// Duplicate parameters 
+	// Duplicate parameters
 
 	if (mp_rsaKey->n)
 		ret->mp_rsaKey->n = BN_dup(mp_rsaKey->n);

@@ -35,18 +35,14 @@
 
 #include <openssl/dsa.h>
 
-OpenSSLCryptoKeyDSA::OpenSSLCryptoKeyDSA() {
-
-	// Create a new key to be loaded as we go
-
-	mp_dsaKey = DSA_new();
-
+OpenSSLCryptoKeyDSA::OpenSSLCryptoKeyDSA() : mp_dsaKey(NULL) {
 };
+
 OpenSSLCryptoKeyDSA::~OpenSSLCryptoKeyDSA() {
 
 
 	// If we have a DSA, delete it
-	// OpenSSL will ensure the memory holding any private key is overwritten
+	// OpenSSL will ensure the memory holding any private key is freed.
 
 	if (mp_dsaKey)
 		DSA_free(mp_dsaKey);
@@ -126,7 +122,7 @@ OpenSSLCryptoKeyDSA::OpenSSLCryptoKeyDSA(EVP_PKEY *k) {
 	// Create a new key to be loaded as we go
 
 	mp_dsaKey = DSA_new();
-	
+
 	if (k == NULL || k->type != EVP_PKEY_DSA)
 		return;	// Nothing to do with us
 
@@ -148,7 +144,7 @@ OpenSSLCryptoKeyDSA::OpenSSLCryptoKeyDSA(EVP_PKEY *k) {
 //           Verify a signature encoded as a Base64 string
 // --------------------------------------------------------------------------------
 
-bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf, 
+bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 								 unsigned int hashLen,
 								 char * base64Signature,
 								 unsigned int sigLen) {
@@ -169,10 +165,10 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	int rc;
 
 	EVP_DecodeInit(&m_dctx);
-	rc = EVP_DecodeUpdate(&m_dctx, 
-						  sigVal, 
-						  &sigValLen, 
-						  (unsigned char *) base64Signature, 
+	rc = EVP_DecodeUpdate(&m_dctx,
+						  sigVal,
+						  &sigValLen,
+						  (unsigned char *) base64Signature,
 						  sigLen);
 
 	if (rc < 0) {
@@ -182,7 +178,7 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	}
 	int t = 0;
 
-	EVP_DecodeFinal(&m_dctx, &sigVal[sigValLen], &t); 
+	EVP_DecodeFinal(&m_dctx, &sigVal[sigValLen], &t);
 
 	sigValLen += t;
 
@@ -229,7 +225,7 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	sigValTranslatedLen = i2d_DSA_SIG(dsa_sig, &sigValTranslated);
 
 	// Now we have a signature and a key - lets check
-	
+
 	err = DSA_do_verify(hashBuf, hashLen, dsa_sig, mp_dsaKey);
 
 	DSA_SIG_free(dsa_sig);
@@ -279,7 +275,7 @@ unsigned int OpenSSLCryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 	unsigned int rawLen;
 
 	rawLen = BN_bn2bin(dsa_sig->r, rawSigBuf);
-	
+
 	if (rawLen <= 0) {
 
 		throw XSECCryptoException(XSECCryptoException::DSAError,
