@@ -377,11 +377,15 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 
 		// Now just run through each node type in turn to process "local" KeyInfos
 
-		else if (!addXMLKeyInfo(tmpKI)) {
-
+		else {
+            // This used to check the return value, and throw if the child was unknown.
+            // For now, just ignore unknown children and pretend they don't exist.
+            // TBD: add new classes to expose them
+            addXMLKeyInfo(tmpKI);
+            /*
 			throw XSECException(XSECException::KeyInfoError,
 				"Unknown KeyInfo element found");
-
+            */
 		}
 
 		if (tmpKI != NULL)
