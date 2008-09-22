@@ -26,53 +26,6 @@
 	</Set>
 
 
-
-    <!-- =========================================================== -->
-    <!-- Set connectors                                              -->
-    <!-- =========================================================== -->
-	<Call name="addConnector">
-		<Arg>
-			<New class="org.mortbay.jetty.nio.SelectChannelConnector">
-            <!-- the ip address or domain to bind -->
-				<Set name="host">
-					<SystemProperty name="jetty.host" />
-				</Set>
-
-            <!-- the port to use/bind, defaults to 8080 if property not set -->
-				<Set name="port">
-					<SystemProperty name="jetty.port" default="8080" />
-				</Set>
-
-            <!-- the time in milliseconds when a connection is considered idle -->
-				<Set name="maxIdleTime">300000</Set>
-				<!--
-					the number of acceptors (their job is to accept the connection and
-					dispatch to thread pool)
-				-->
-				<Set name="Acceptors">2</Set>
-				<!--
-					should the connection statistics be turned on? (Not advisable in
-					production)
-				-->
-				<Set name="statsOn">false</Set>
-
-            <!-- the confidential port -->
-				<Set name="confidentialPort">8443</Set>
-				<!--
-					indicates the minimum number of connections when the server is
-					considered low on resources
-				-->
-				<Set name="lowResourcesConnections">20000</Set>
-				<!--
-					when low on resources, this indicates the maximum time
-					(milliseconds) a connection must be idle to not be closed
-				-->
-				<Set name="lowResourcesMaxIdleTime">5000</Set>
-			</New>
-		</Arg>
-	</Call>
-
-
     <!-- =========================================================== -->
     <!-- Set handler Collection Structure                            -->
     <!-- =========================================================== -->
