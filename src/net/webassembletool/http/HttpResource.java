@@ -32,26 +32,22 @@ import org.apache.commons.logging.LogFactory;
  * @author François-Xavier Bonnet
  * 
  */
-public class HttpResource implements Resource {
+public class HttpResource extends Resource {
     private final static Log log = LogFactory.getLog(Resource.class);
     private HttpMethodBase httpMethod;
     private int statusCode;
     private String statusText;
     private final Target target;
     private String url;
+    private Exception exception;
 
-    // TODO handle multipart POST requests
-    public HttpResource(HttpClient httpClient, String baseUrl, Target target) {
-	this.target = target;
-	// Retrieve session and other cookies
-	HttpState httpState = null;
-	if (target.getContext() != null)
-	    httpState = target.getContext().getHttpState();
+    private void buildHttpMethod() {
+	// TODO do not proxy all the time
 	if ("GET".equalsIgnoreCase(target.getMethod()) || !target.isProxyMode()) {
-	    url = ResourceUtils.getHttpUrlWithQueryString(baseUrl, target);
+	    url = ResourceUtils.getHttpUrlWithQueryString(target);
 	    httpMethod = new GetMethod(url);
 	} else if ("POST".equalsIgnoreCase(target.getMethod())) {
-	    url = ResourceUtils.getHttpUrl(baseUrl, target);
+	    url = ResourceUtils.getHttpUrl(target);
 	    PostMethod postMethod = new PostMethod(url);
 	    postMethod.getParams().setContentCharset(
 		    target.getOriginalRequest().getCharacterEncoding());
@@ -84,97 +80,112 @@ public class HttpResource implements Resource {
 	    httpMethod = postMethod;
 	} else {
 	    throw new UnsupportedHttpMethodException(target.getMethod() + " "
-		    + ResourceUtils.getHttpUrl(baseUrl, target));
+		    + ResourceUtils.getHttpUrl(target));
 	}
 	if (target.isProxyMode()) {
 	    httpMethod.setFollowRedirects(false);
 	} else {
 	    httpMethod.setFollowRedirects(true);
 	}
+    }
+
+    // TODO handle multipart POST requests
+    public HttpResource(HttpClient httpClient, Target target) {
+	this.target = target;
+	// Retrieve session and other cookies
+	HttpState httpState = null;
+	if (target.getContext() != null)
+	    httpState = target.getContext().getHttpState();
+	buildHttpMethod();
 	try {
 	    httpClient.executeMethod(httpClient.getHostConfiguration(),
 		    httpMethod, httpState);
 	    statusCode = httpMethod.getStatusCode();
 	    statusText = httpMethod.getStatusText();
-	    if (statusCode != HttpServletResponse.SC_OK
-		    && statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
-		    && statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY)
+	    if (isError())
 		log.warn("Problem retrieving URL: " + url + ": " + statusCode
 			+ " " + statusText);
 	} catch (ConnectTimeoutException e) {
+	    exception = e;
 	    statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 	    statusText = "Connect timeout retrieving URL: " + url;
 	    log.warn("Connect timeout retrieving URL: " + url);
 	} catch (SocketTimeoutException e) {
+	    exception = e;
 	    statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 	    statusText = "Socket timeout retrieving URL: " + url;
 	    log.warn("Socket timeout retrieving URL: " + url);
 	} catch (HttpException e) {
+	    exception = e;
 	    statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	    statusText = "Error retrieving URL: " + url;
 	    log.error("Error retrieving URL: " + url, e);
 	} catch (IOException e) {
+	    exception = e;
 	    statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	    statusText = "Error retrieving URL: " + url;
 	    log.error("Error retrieving URL: " + url, e);
 	}
     }
 
+    @Override
     public void render(Output output) throws IOException {
 	output.setStatus(statusCode, statusText);
-	if (statusCode == HttpServletResponse.SC_OK
-		|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY
-		|| statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY) {
-	    try {
-		Header header = httpMethod.getResponseHeader("Content-Type");
-		if (header != null)
-		    output.addHeader(header.getName(), header.getValue());
-		header = httpMethod.getResponseHeader("Content-Length");
-		if (header != null)
-		    output.addHeader(header.getName(), header.getValue());
-		// TODO refactor this
-		header = httpMethod.getResponseHeader("Location");
-		if (header != null) {
-		    // Location header rewriting
-		    String location = header.getValue();
-		    String originalBase = target.getOriginalRequest()
-			    .getScheme()
-			    + "://"
-			    + target.getOriginalRequest().getServerName()
-			    + ":"
-			    + target.getOriginalRequest().getServerPort()
-			    + target.getOriginalRequest().getContextPath()
-			    + target.getOriginalRequest().getServletPath();
-		    if (target.getOriginalRequest().getPathInfo() != null)
-			originalBase += target.getOriginalRequest()
-				.getPathInfo();
-		    int pos = originalBase.indexOf(target.getRelUrl());
-		    originalBase = originalBase.substring(0, pos + 1);
-		    location = location.replaceFirst(target.getBaseUrl(),
-			    originalBase);
-		    output.addHeader(header.getName(), location);
-		}
-		header = httpMethod.getResponseHeader("Last-Modified");
-		if (header != null)
-		    output.addHeader(header.getName(), header.getValue());
-		header = httpMethod.getResponseHeader("ETag");
-		if (header != null)
-		    output.addHeader(header.getName(), header.getValue());
-		String charset = httpMethod.getResponseCharSet();
-		if (charset != null)
-		    output.setCharset(charset);
-		output.open();
+	Header header = httpMethod.getResponseHeader("Content-Type");
+	if (header != null)
+	    output.addHeader(header.getName(), header.getValue());
+	header = httpMethod.getResponseHeader("Content-Length");
+	if (header != null)
+	    output.addHeader(header.getName(), header.getValue());
+	// TODO refactor this
+	header = httpMethod.getResponseHeader("Location");
+	if (header != null) {
+	    // Location header rewriting
+	    String location = header.getValue();
+	    String originalBase = target.getOriginalRequest().getScheme()
+		    + "://" + target.getOriginalRequest().getServerName() + ":"
+		    + target.getOriginalRequest().getServerPort()
+		    + target.getOriginalRequest().getContextPath()
+		    + target.getOriginalRequest().getServletPath();
+	    if (target.getOriginalRequest().getPathInfo() != null)
+		originalBase += target.getOriginalRequest().getPathInfo();
+	    int pos = originalBase.indexOf(target.getRelUrl());
+	    originalBase = originalBase.substring(0, pos + 1);
+	    location = location.replaceFirst(target.getBaseUrl(), originalBase);
+	    output.addHeader(header.getName(), location);
+	}
+	header = httpMethod.getResponseHeader("Last-Modified");
+	if (header != null)
+	    output.addHeader(header.getName(), header.getValue());
+	header = httpMethod.getResponseHeader("ETag");
+	if (header != null)
+	    output.addHeader(header.getName(), header.getValue());
+	String charset = httpMethod.getResponseCharSet();
+	if (charset != null)
+	    output.setCharsetName(charset);
+	try {
+	    output.open();
+	    if (exception != null) {
+		output.write(statusText);
+	    } else {
 		byte[] buffer = new byte[1024];
 		InputStream inputStream = httpMethod.getResponseBodyAsStream();
-		for (int len = -1; (len = inputStream.read(buffer)) != -1;) {
-		    output.write(buffer, 0, len);
+		if (inputStream != null) {
+		    try {
+			for (int len = -1; (len = inputStream.read(buffer)) != -1;) {
+			    output.write(buffer, 0, len);
+			}
+		    } finally {
+			inputStream.close();
+		    }
 		}
-	    } finally {
-		output.close();
 	    }
+	} finally {
+	    output.close();
 	}
     }
 
+    @Override
     public void release() {
 	if (httpMethod != null) {
 	    httpMethod.releaseConnection();
@@ -182,7 +193,9 @@ public class HttpResource implements Resource {
 	}
     }
 
+    @Override
     public int getStatusCode() {
 	return statusCode;
     }
+
 }

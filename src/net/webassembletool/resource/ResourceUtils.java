@@ -66,9 +66,8 @@ public class ResourceUtils {
 	return url.toString();
     }
 
-    public final static String getHttpUrlWithQueryString(String baseUrl,
-	    Target target) {
-	String url = concatUrl(baseUrl, target.getRelUrl());
+    public final static String getHttpUrlWithQueryString(Target target) {
+	String url = concatUrl(target.getBaseUrl(), target.getRelUrl());
 	String queryString = ResourceUtils.buildQueryString(target);
 	if ("".equals(queryString))
 	    return url;
@@ -76,8 +75,8 @@ public class ResourceUtils {
 	    return url + "?" + queryString;
     }
 
-    public final static String getHttpUrl(String baseUrl, Target target) {
-	String url = concatUrl(baseUrl, target.getRelUrl());
+    public final static String getHttpUrl(Target target) {
+	String url = concatUrl(target.getBaseUrl(), target.getRelUrl());
 	return url;
     }
 

@@ -1,7 +1,9 @@
 package net.webassembletool.ouput;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Output implementation that forwards data received to several Outputs at the
@@ -10,8 +12,12 @@ import java.util.Iterator;
  * @author François-Xavier Bonnet
  * 
  */
-public class MultipleOutput implements Output {
-    private ArrayList<Output> outputs = new ArrayList<Output>();
+public class MultipleOutput extends Output {
+    private final ArrayList<Output> outputs = new ArrayList<Output>();
+
+    public MultipleOutput() {
+	super();
+    }
 
     /**
      * Adds an Output to the list of Outputs to which the MultipleOuput should
@@ -23,46 +29,43 @@ public class MultipleOutput implements Output {
 	outputs.add(output);
     }
 
-    public void addHeader(String name, String value) {
-	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
-	    Output output = iterator.next();
-	    output.addHeader(name, value);
-	}
-    }
-
-    public void close() {
-	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
-	    Output output = iterator.next();
-	    output.close();
-	}
-    }
-
+    @Override
     public void open() {
 	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
 	    Output output = iterator.next();
+	    for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
+		    .entrySet().iterator(); headersIterator.hasNext();) {
+		Map.Entry<Object, Object> entry = headersIterator.next();
+		output.addHeader(entry.getKey().toString(), entry.getValue()
+			.toString());
+	    }
+	    output.setStatus(getStatusCode(), getStatusMessage());
+	    output.setCharsetName(getCharsetName());
 	    output.open();
 	}
     }
 
-    public void setCharset(String charset) {
+    /**
+     * @see java.io.OutputStream#write(int)
+     */
+    @Override
+    public void write(int i) throws IOException {
 	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
 	    Output output = iterator.next();
-	    output.setCharset(charset);
+	    output.write(i);
 	}
+
     }
 
-    public void write(byte[] bytes, int offset, int length) {
+    @Override
+    public void close() {
 	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
 	    Output output = iterator.next();
-	    output.write(bytes, offset, length);
+	    try {
+		output.close();
+	    } catch (IOException e) {
+		throw new OutputException(e);
+	    }
 	}
-    }
-
-    public void setStatus(int code, String message) {
-	for (Iterator<Output> iterator = outputs.iterator(); iterator.hasNext();) {
-	    Output output = iterator.next();
-	    output.setStatus(code, message);
-	}
-
     }
 }

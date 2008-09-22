@@ -1,5 +1,12 @@
 package net.webassembletool.ouput;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
 /**
  * An Output is designed to collect the response to a successfull HTTP request,
  * typically an HTML page or any other file type with all the headers sent by
@@ -11,14 +18,12 @@ package net.webassembletool.ouput;
  * @author François-Xavier Bonnet
  * 
  */
-public interface Output {
-    /**
-     * Adds an HTTP Header
-     * 
-     * @param name The name of the HTTP header
-     * @param value The value of the header
-     */
-    public void addHeader(String name, String value);
+public abstract class Output extends OutputStream {
+
+    private String charsetName;
+    private int statusCode;
+    private String statusMessage;
+    private final Properties headers = new Properties();
 
     /**
      * Sets the HTTP status code of the response
@@ -26,16 +31,74 @@ public interface Output {
      * @param code The code
      * @param message The message
      */
-    public void setStatus(int code, String message);
+    public final void setStatus(int code, String message) {
+	statusCode = code;
+	statusMessage = message;
+    }
+
+    public final int getStatusCode() {
+	return statusCode;
+    }
+
+    public final void setStatusCode(int statusCode) {
+	this.statusCode = statusCode;
+    }
+
+    public final String getStatusMessage() {
+	return statusMessage;
+    }
+
+    public final void setStatusMessage(String statusMessage) {
+	this.statusMessage = statusMessage;
+    }
+
+    protected final Properties getHeaders() {
+	return headers;
+    }
+
+    public final String getHeader(String key) {
+	for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
+		.entrySet().iterator(); headersIterator.hasNext();) {
+	    Map.Entry<Object, Object> entry = headersIterator.next();
+	    if (key.equalsIgnoreCase(entry.getKey().toString()))
+		return entry.getValue().toString();
+	}
+	return null;
+    }
+
+    public final void setHeader(String key, String value) {
+	for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
+		.entrySet().iterator(); headersIterator.hasNext();) {
+	    Map.Entry<Object, Object> entry = headersIterator.next();
+	    if (key.equalsIgnoreCase(entry.getKey().toString()))
+		headers.put(entry.getKey(), value);
+	}
+    }
+
+    /**
+     * Adds an HTTP Header
+     * 
+     * @param name The name of the HTTP header
+     * @param value The value of the header
+     */
+    public final void addHeader(String name, String value) {
+	headers.put(name, value);
+    }
+
+    public final String getCharsetName() {
+	return charsetName;
+    }
 
     /**
      * Defines the charset of the Output. <br /> Needed for text outputs (for
      * example HTML pages).
      * 
-     * @param charset The name of the charset
+     * @param charsetName The name of the charset
      * 
      */
-    public void setCharset(String charset);
+    public final void setCharsetName(String charsetName) {
+	this.charsetName = charsetName;
+    }
 
     /**
      * Opens the OutputStreams that may be needed by the OutPut.<br /> The
@@ -43,24 +106,15 @@ public interface Output {
      * method.<br /> Any opened Output should be closed in order to release the
      * resources.
      */
-    public void open();
+    public abstract void open();
 
-    /**
-     * Writes some bytes to the Output.<br /> The Output must be opened before
-     * calling this method.<br /> This method cannot be called any more when the
-     * Output has been closed.
-     * 
-     * @param bytes Array containing the bytes to be written
-     * @param offset First byte to be written
-     * @param length Number of bytes to be written
-     * @throws OutputException If an problem occurs while writing the result
-     */
-    public void write(byte[] bytes, int offset, int length)
-	    throws OutputException;
-
-    /**
-     * Closes the OutputStreams that may have been used by the OutPut.<br /> Any
-     * opened Output should be closed in order to release the resources.
-     */
-    public void close();
+    public final void write(String string) {
+	try {
+	    write(string.getBytes(charsetName));
+	} catch (UnsupportedEncodingException e) {
+	    throw new OutputException(e);
+	} catch (IOException e) {
+	    throw new OutputException(e);
+	}
+    }
 }

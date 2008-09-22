@@ -1,17 +1,12 @@
 package net.webassembletool.ouput;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-
-import net.webassembletool.Driver;
-
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Output implementation that writes to a String.<br /> StringOutput should be
@@ -21,79 +16,51 @@ import org.apache.commons.logging.LogFactory;
  * @author François-Xavier Bonnet
  * 
  */
-public class StringOutput implements Output {
-    private final static Log log = LogFactory.getLog(Driver.class);
-    private ArrayList<Header> headers = new ArrayList<Header>();
-    private String charset = "ISO-8859-1";
-    private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    private int statusCode = 200;
-    private String location;
+public class StringOutput extends Output {
+    private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-    public String getCharset() {
-	return charset;
-    }
-
-    public int getStatusCode() {
-	return statusCode;
-    }
-
-    public void setStatusCode(int statusCode) {
-	this.statusCode = statusCode;
+    public StringOutput() {
+	super();
     }
 
     public String getLocation() {
-	return location;
+	return getHeader("location");
     }
 
-    public void setLocation(String location) {
-	this.location = location;
-    }
-
-    public void addHeader(String name, String value) {
-	if ("location".equalsIgnoreCase(name))
-	    location = value;
-	else
-	    headers.add(new Header(name, value));
-    }
-
-    public void close() {
-	// Nothing to do
-    }
-
+    @Override
     public void open() {
 	// Nothing to do
     }
 
-    public void setCharset(String charset) {
-	this.charset = charset;
+    /**
+     * @see java.io.OutputStream#write(int)
+     */
+    @Override
+    public void write(int i) throws IOException {
+	byteArrayOutputStream.write(i);
     }
 
-    public void write(byte[] bytes, int off, int len) {
-	byteArrayOutputStream.write(bytes, off, len);
+    @Override
+    public void close() {
+	// Nothing to do
+    }
+
+    public void copyHeaders(HttpServletResponse response) {
+	for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
+		.entrySet().iterator(); headersIterator.hasNext();) {
+	    Map.Entry<Object, Object> entry = headersIterator.next();
+	    if (!"content-length".equalsIgnoreCase(entry.getKey().toString()))
+		response.addHeader(entry.getKey().toString(), entry.getValue()
+			.toString());
+	}
     }
 
     @Override
     public String toString() {
-	if (statusCode != 200)
-	    return null;
 	try {
-	    return byteArrayOutputStream.toString(charset);
+	    return byteArrayOutputStream.toString(getCharsetName());
 	} catch (UnsupportedEncodingException e) {
-	    throw new OutputException("Encoding not supported: " + charset, e);
-	}
-    }
-
-    public void setStatus(int code, String message) {
-	statusCode = code;
-	log.debug(code + "" + message);
-    }
-
-    public void copyHeaders(HttpServletResponse response) {
-	Iterator<Header> iterator = headers.iterator();
-	while (iterator.hasNext()) {
-	    Header header = iterator.next();
-	    if (!"content-length".equalsIgnoreCase(header.getName()))
-		response.addHeader(header.getName(), header.getValue());
+	    throw new OutputException(e);
 	}
     }
 

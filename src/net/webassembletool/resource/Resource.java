@@ -2,6 +2,8 @@ package net.webassembletool.resource;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import net.webassembletool.ouput.Output;
 
 /**
@@ -13,24 +15,32 @@ import net.webassembletool.ouput.Output;
  * @author François-Xavier Bonnet
  * 
  */
-public interface Resource {
+public abstract class Resource {
     /**
      * Renders the Resource to an Output
      * 
      * @param output The output to render the resource to.
      * @throws IOException If an exception occurs while rendering to the output
      */
-    public void render(Output output) throws IOException;
+    public abstract void render(Output output) throws IOException;
 
     /**
      * Releases underlying open files or network connections
      */
-    public void release();
+    public abstract void release();
 
     /**
      * Returns the HTTP status code for this resource
      * 
      * @return status code
      */
-    public int getStatusCode();
+    public abstract int getStatusCode();
+
+    public boolean isError() {
+	int statusCode = getStatusCode();
+	return statusCode != HttpServletResponse.SC_OK
+		&& statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
+		&& statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY;
+    }
+
 }

@@ -1,6 +1,7 @@
 package net.webassembletool.http;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,12 +15,11 @@ import net.webassembletool.ouput.OutputException;
  * @author François-Xavier Bonnet
  * 
  */
-public class ResponseOutput implements Output {
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+public class ResponseOutput extends Output {
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
     private boolean notModified = false;
-    private String etag;
-    private String lastModified;
+    private OutputStream outputStream;
 
     public ResponseOutput(HttpServletRequest request,
 	    HttpServletResponse response) {
@@ -27,42 +27,42 @@ public class ResponseOutput implements Output {
 	this.response = response;
     }
 
-    public void addHeader(String name, String value) {
-	if ("Last-Modified".equalsIgnoreCase(name))
-	    lastModified = value;
-	if ("ETag".equalsIgnoreCase(name))
-	    etag = value;
-	response.addHeader(name, value);
-    }
-
-    public void close() {
-	// Nothing to do
-    }
-
+    @Override
     public void open() {
-	String ifModifiedSince = request.getHeader("If-Modified-Since");
-	String ifNoneMatch = request.getHeader("If-None-Match");
-	if ((ifModifiedSince != null && ifModifiedSince.equals(lastModified))
-		|| (ifNoneMatch != null && ifNoneMatch.equals(etag))) {
-	    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-	    notModified = true;
+        String ifModifiedSince = request.getHeader("If-Modified-Since");
+        String ifNoneMatch = request.getHeader("If-None-Match");
+        if ((ifModifiedSince != null && ifModifiedSince
+        	.equals(getHeader("Last-Modified")))
+        	|| (ifNoneMatch != null && ifNoneMatch
+        		.equals(getHeader("ETag")))) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            notModified = true;
+        }
+        response.setStatus(getStatusCode());
+        response.setCharacterEncoding(getCharsetName());
+        if (!notModified)
+            if (!notModified)
+        	try {
+        	    outputStream = response.getOutputStream();
+        	} catch (IOException e) {
+        	    throw new OutputException(e);
+        	}
+    }
+
+    /**
+     * @see java.io.OutputStream#write(int)
+     */
+    @Override
+    public void write(int i) throws IOException {
+        outputStream.write(i);
+    }
+
+    @Override
+    public void close() {
+	try {
+	    outputStream.close();
+	} catch (IOException e) {
+	    throw new OutputException(e);
 	}
-    }
-
-    public void setCharset(String charset) {
-	response.setCharacterEncoding(charset);
-    }
-
-    public void write(byte[] bytes, int offset, int length) {
-	if (!notModified)
-	    try {
-		response.getOutputStream().write(bytes, offset, length);
-	    } catch (IOException e) {
-		throw new OutputException("Could not write to the response", e);
-	    }
-    }
-
-    public void setStatus(int code, String message) {
-	response.setStatus(code);
     }
 }

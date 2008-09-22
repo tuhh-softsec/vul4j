@@ -4,7 +4,8 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 /**
- * TODO Type javadoc
+ * TODO Type javadoc TODO Rewrite a caching system that will not depend on
+ * Oscache, non blocking and thread-safe
  * 
  * @author François-Xavier Bonnet
  */

@@ -27,7 +27,6 @@ import net.webassembletool.ouput.MultipleOutput;
 import net.webassembletool.ouput.Output;
 import net.webassembletool.ouput.StringOutput;
 import net.webassembletool.resource.NullResource;
-import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.httpclient.HostConfiguration;
@@ -51,7 +50,7 @@ public final class Driver {
     // not for aggregator
     private final static Log log = LogFactory.getLog(Driver.class);
     private static HashMap<String, Driver> instances;
-    private DriverConfiguration config;
+    private final DriverConfiguration config;
     private Cache cache;
     private HttpClient httpClient;
 
@@ -170,6 +169,28 @@ public final class Driver {
 	}
     }
 
+    public final Context getContext(HttpServletRequest request) {
+	HttpSession session = request.getSession(false);
+	if (session != null)
+	    return (Context) session.getAttribute(getContextKey());
+	return null;
+    }
+
+    public final void setContext(Context context, HttpServletRequest request) {
+	HttpSession session = request.getSession();
+	session.setAttribute(getContextKey(), context);
+    }
+
+    /**
+     * Returns the base URL used to retrieve contents from the provider
+     * application.
+     * 
+     * @return the base URL as a String
+     */
+    public final String getBaseURL() {
+	return config.getBaseURL();
+    }
+
     /**
      * Retrieves a block from the provider application and writes it to a
      * Writer. Block can be defined in the provider application using HTML
@@ -183,12 +204,18 @@ public final class Driver {
      * @param replaceRules the replace rules to be applied on the block
      * @param parameters Additional parameters
      * @throws IOException If an IOException occurs while writing to the writer
+     * @throws RenderException If an Exception occurs while retrieving the block
      */
     public final void renderBlock(String page, String name, Writer writer,
 	    Context context, Map<String, String> replaceRules,
-	    Map<String, String> parameters) throws IOException {
+	    Map<String, String> parameters) throws IOException, RenderException {
 	Target target = new Target(page, context, parameters);
-	String content = getResourceAsString(target).toString();
+	StringOutput stringOutput = getResourceAsString(target);
+	if (stringOutput.getStatusCode() != HttpServletResponse.SC_OK) {
+	    throw new RenderException(stringOutput.getStatusCode(),
+		    stringOutput.getStatusMessage(), stringOutput.toString());
+	}
+	String content = stringOutput.toString();
 	if (content == null)
 	    return;
 	String beginString = "<!--$beginblock$" + name + "$-->";
@@ -201,102 +228,6 @@ public final class Driver {
 	    log.debug("Serving block: page=" + page + " block=" + name);
 	    writer.append(StringUtils.replace(content.substring(begin
 		    + beginString.length(), end), replaceRules));
-	}
-    }
-
-    /**
-     * Retrieves a resource from the provider application as binary data and
-     * writes it to the response.
-     * 
-     * @param relUrl the relative URL to the resource
-     * @param request the request
-     * @param response the response
-     * @param parameters Additional parameters that will be added to the request
-     * @throws IOException If an IOException occurs while rendering the response
-     */
-    public final void renderResource(String relUrl, HttpServletRequest request,
-	    HttpServletResponse response, Map<String, String> parameters)
-	    throws IOException {
-	Target target = new Target(relUrl, getContext(request), parameters,
-		request);
-	request.setCharacterEncoding(config.getUriEncoding());
-	target.setProxyMode(true);
-	renderResource(target, new ResponseOutput(request, response));
-    }
-
-    private final void renderResource(Target target, Output output)
-	    throws IOException {
-	target.setBaseUrl(config.getBaseURL());
-	String httpUrl = ResourceUtils.getHttpUrlWithQueryString(config
-		.getBaseURL(), target);
-	MultipleOutput multipleOutput = new MultipleOutput();
-	multipleOutput.addOutput(output);
-	MemoryResource cachedResource = null;
-	HttpResource httpResource = null;
-	FileResource fileResource = null;
-	MemoryOutput memoryOutput = null;
-	try {
-	    if (config.isUseCache() && target.isCacheable()) {
-		// Try to load the resource from cache
-		cachedResource = cache.get(httpUrl);
-		if (cachedResource != null && !cachedResource.isStale()) {
-		    cachedResource.render(multipleOutput);
-		    return;
-		} else {
-		    // Resource not in cache or stale
-		    memoryOutput = new MemoryOutput(config
-			    .getCacheMaxFileSize());
-		    multipleOutput.addOutput(memoryOutput);
-		}
-	    }
-	    // Resource not in cache or stale or cache not activated, try to
-	    // load it from HTTP
-	    if (config.getBaseURL() != null) {
-		httpResource = new HttpResource(httpClient,
-			config.getBaseURL(), target);
-		if (httpResource.getStatusCode() == HttpServletResponse.SC_OK
-			|| httpResource.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY
-			|| httpResource.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY) {
-		    if (config.isPutInCache() && target.isCacheable())
-			multipleOutput.addOutput(new FileOutput(ResourceUtils
-				.getFileUrl(config.getLocalBase(), target)));
-		    httpResource.render(multipleOutput);
-		    return;
-		}
-	    }
-	    // Resource could not be loaded from HTTP, let's use the cache
-	    if (cachedResource != null) {
-		cachedResource.render(multipleOutput);
-		return;
-	    }
-	    // Resource could not be loaded neither from HTTP, nor from the
-	    // cache, let's try from the file system
-	    if (config.isPutInCache() && target.isCacheable()) {
-		fileResource = new FileResource(config.getLocalBase(), target);
-		if (fileResource.getStatusCode() == 200) {
-		    fileResource.render(multipleOutput);
-		    return;
-		}
-	    }
-	    // Resource could not be loaded at all
-	    new NullResource().render(multipleOutput);
-	} finally {
-	    // Free all the resources
-	    if (cachedResource != null)
-		cachedResource.release();
-	    if (memoryOutput != null) {
-		Resource newCache = memoryOutput.toResource();
-		if (newCache != null)
-		    cache.put(httpUrl, memoryOutput.toResource());
-		else
-		    // if we cannot put the resource in cache, we must call
-		    // cancelUpdate to release the lock on the key
-		    cache.cancelUpdate(httpUrl);
-	    }
-	    if (httpResource != null)
-		httpResource.release();
-	    if (fileResource != null)
-		fileResource.release();
 	}
     }
 
@@ -319,13 +250,20 @@ public final class Driver {
      * @param replaceRules The replace rules to be applied on the block
      * @param parameters Parameters to be added to the request
      * @throws IOException If an IOException occurs while writing to the writer
+     * @throws RenderException If an Exception occurs while retrieving the
+     *             template
      */
     public final void renderTemplate(String page, String name, Writer writer,
 	    Context context, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
-	    throws IOException {
+	    throws IOException, RenderException {
 	Target target = new Target(page, context, parameters);
-	String content = getResourceAsString(target).toString();
+	StringOutput stringOutput = getResourceAsString(target);
+	if (stringOutput.getStatusCode() != HttpServletResponse.SC_OK) {
+	    throw new RenderException(stringOutput.getStatusCode(),
+		    stringOutput.getStatusMessage(), stringOutput.toString());
+	}
+	String content = stringOutput.toString();
 	StringBuilder sb = new StringBuilder();
 	if (content != null) {
 	    if (name != null) {
@@ -382,45 +320,23 @@ public final class Driver {
     }
 
     /**
-     * This method returns the content of an url.
+     * Retrieves a resource from the provider application as binary data and
+     * writes it to the response.
      * 
-     * @param relUrl the target URL
-     * @param context the context of the request
-     * @param parameters the parameters of the request
-     * @return the content of the url
-     * @throws IOException
+     * @param relUrl the relative URL to the resource
+     * @param request the request
+     * @param response the response
+     * @param parameters Additional parameters that will be added to the request
+     * @throws IOException If an IOException occurs while rendering the response
      */
-    private final StringOutput getResourceAsString(Target target)
+    public final void proxy(String relUrl, HttpServletRequest request,
+	    HttpServletResponse response, Map<String, String> parameters)
 	    throws IOException {
-	StringOutput stringOutput = new StringOutput();
-	renderResource(target, stringOutput);
-	return stringOutput;
-    }
-
-    /**
-     * Returns the base URL used to retrieve contents from the provider
-     * application.
-     * 
-     * @return the base URL as a String
-     */
-    public final String getBaseURL() {
-	return config.getBaseURL();
-    }
-
-    private final String getContextKey() {
-	return Context.class.getName() + "#" + config.getInstanceName();
-    }
-
-    public final Context getContext(HttpServletRequest request) {
-	HttpSession session = request.getSession(false);
-	if (session != null)
-	    return (Context) session.getAttribute(getContextKey());
-	return null;
-    }
-
-    public final void setContext(Context context, HttpServletRequest request) {
-	HttpSession session = request.getSession();
-	session.setAttribute(getContextKey(), context);
+	Target target = new Target(relUrl, getContext(request), parameters,
+		request);
+	request.setCharacterEncoding(config.getUriEncoding());
+	target.setProxyMode(true);
+	renderResource(target, new ResponseOutput(request, response));
     }
 
     /**
@@ -472,7 +388,7 @@ public final class Driver {
 	String content = stringOutput.toString();
 	if (content == null)
 	    return;
-	response.setCharacterEncoding(stringOutput.getCharset());
+	response.setCharacterEncoding(stringOutput.getCharsetName());
 	Writer writer = response.getWriter();
 	int currentPosition = 0;
 	int previousPosition;
@@ -511,19 +427,29 @@ public final class Driver {
 		    throw new AggregationSyntaxException("Invalid syntax: "
 			    + currentTag);
 		if ("includeblock".equals(tagName)) {
-		    Driver.getInstance(provider).renderBlock(page,
-			    blockOrTemplate, writer, getContext(request), null,
-			    null);
+		    try {
+			Driver.getInstance(provider).renderBlock(page,
+				blockOrTemplate, writer, getContext(request),
+				null, null);
+		    } catch (RenderException e) {
+			writer.append(stringOutput.toString());
+		    }
 		} else if ("includetemplate".equals(tagName)) {
 		    endPosition = content
 			    .indexOf("<!--$endincludetemplate$-->");
 		    if (endPosition < 0)
 			throw new AggregationSyntaxException("Tag not closed: "
 				+ currentTag);
-		    Driver.getInstance(provider).aggregateTemplate(page,
-			    blockOrTemplate,
-			    content.substring(currentPosition, endPosition),
-			    writer, request);
+		    try {
+			Driver.getInstance(provider)
+				.aggregateTemplate(
+					page,
+					blockOrTemplate,
+					content.substring(currentPosition,
+						endPosition), writer, request);
+		    } catch (RenderException e) {
+			writer.append(stringOutput.toString());
+		    }
 		    currentPosition = endPosition + 27;
 		} else {
 		    throw new AggregationSyntaxException("Invalid syntax: "
@@ -535,6 +461,114 @@ public final class Driver {
 	}
     }
 
+    private final void renderResource(Target target, Output output)
+	    throws IOException {
+	target.setBaseUrl(config.getBaseURL());
+	String httpUrl = ResourceUtils.getHttpUrlWithQueryString(target);
+	MultipleOutput multipleOutput = new MultipleOutput();
+	multipleOutput.addOutput(output);
+	MemoryResource cachedResource = null;
+	HttpResource httpResource = null;
+	FileResource fileResource = null;
+	MemoryOutput memoryOutput = null;
+	try {
+	    if (config.isUseCache() && target.isCacheable()) {
+		// Try to load the resource from cache
+		cachedResource = cache.get(httpUrl);
+		if (cachedResource == null || cachedResource.isStale()) {
+		    // Resource not in cache or stale, prepare a memoryOutput to
+		    // collect the new version
+		    memoryOutput = new MemoryOutput(config
+			    .getCacheMaxFileSize());
+		    multipleOutput.addOutput(memoryOutput);
+		} else if (cachedResource.isEmpty() || cachedResource.isError()) {
+		    // Empty resource in cache because it was too big, or error
+		    // we have to reload it
+		} else {
+		    // Resource in cache, not empty and not stale with no error,
+		    // we can render it and return
+		    cachedResource.render(multipleOutput);
+		    return;
+		}
+	    }
+	    // Try to load it from HTTP
+	    if (config.getBaseURL() != null
+		    && (cachedResource == null || cachedResource.isStale() || cachedResource
+			    .isEmpty())) {
+		// Prepare a FileOutput to store the result on the file system
+		if (config.isPutInCache() && target.isCacheable())
+		    multipleOutput.addOutput(new FileOutput(ResourceUtils
+			    .getFileUrl(config.getLocalBase(), target)));
+		httpResource = new HttpResource(httpClient, target);
+		if (!httpResource.isError()) {
+		    httpResource.render(multipleOutput);
+		    return;
+		}
+	    }
+	    // Resource could not be loaded from HTTP, let's use the expired
+	    // cache entry if not empty and not error.
+	    if (cachedResource != null && !cachedResource.isEmpty()
+		    && !cachedResource.isError()) {
+		cachedResource.render(multipleOutput);
+		return;
+	    }
+	    // Resource could not be loaded neither from HTTP, nor from the
+	    // cache, let's try from the file system
+	    if (config.getLocalBase() != null && target.isCacheable()) {
+		fileResource = new FileResource(config.getLocalBase(), target);
+		if (!fileResource.isError()) {
+		    fileResource.render(multipleOutput);
+		    return;
+		}
+	    }
+	    // Not valid response could be found, let's render the response even
+	    // if it is an error
+	    if (httpResource != null) {
+		httpResource.render(multipleOutput);
+		return;
+	    } else if (cachedResource != null) {
+		cachedResource.render(multipleOutput);
+		return;
+	    } else if (fileResource != null) {
+		fileResource.render(multipleOutput);
+		return;
+	    } else {
+		// Resource could not be loaded at all
+		new NullResource().render(multipleOutput);
+	    }
+	} finally {
+	    // Free all the resources
+	    if (cachedResource != null)
+		cachedResource.release();
+	    if (memoryOutput != null)
+		cache.put(httpUrl, memoryOutput.toResource());
+	    if (httpResource != null)
+		httpResource.release();
+	    if (fileResource != null)
+		fileResource.release();
+	}
+    }
+
+    /**
+     * This method returns the content of an url.
+     * 
+     * @param relUrl the target URL
+     * @param context the context of the request
+     * @param parameters the parameters of the request
+     * @return the content of the url
+     * @throws IOException
+     */
+    private final StringOutput getResourceAsString(Target target)
+	    throws IOException {
+	StringOutput stringOutput = new StringOutput();
+	renderResource(target, stringOutput);
+	return stringOutput;
+    }
+
+    private final String getContextKey() {
+	return Context.class.getName() + "#" + config.getInstanceName();
+    }
+
     /**
      * Aggregates a template to the output writer </ul>
      * 
@@ -544,10 +578,13 @@ public final class Driver {
      * <li>&lt;!--$endput$--&gt;</li>
      * </ul>
      * 
+     * @throws RenderException If an Exception occurs while retrieving the
+     *             template
+     * 
      */
     private final void aggregateTemplate(String page, String template,
 	    String content, Writer writer, HttpServletRequest request)
-	    throws IOException, AggregationSyntaxException {
+	    throws IOException, AggregationSyntaxException, RenderException {
 	int currentPosition = 0;
 	int endPosition;
 	String currentTag;

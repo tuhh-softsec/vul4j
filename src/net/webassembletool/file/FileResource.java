@@ -19,9 +19,9 @@ import net.webassembletool.resource.ResourceUtils;
  * @author François-Xavier Bonnet
  * 
  */
-public class FileResource implements Resource {
+public class FileResource extends Resource {
     private File file;
-    private File headersFile;
+    private final File headersFile;
 
     public FileResource(String localBase, Target target) {
 	String url = ResourceUtils.getFileUrl(localBase, target);
@@ -29,10 +29,12 @@ public class FileResource implements Resource {
 	headersFile = new File(url + ".headers");
     }
 
+    @Override
     public void release() {
 	file = null;
     }
 
+    @Override
     public void render(Output output) throws IOException {
 	InputStream headersInputStream = new FileInputStream(headersFile);
 	Properties headers = new Properties();
@@ -48,7 +50,7 @@ public class FileResource implements Resource {
 	while (iterator.hasNext()) {
 	    header = iterator.next();
 	    if (header.getKey().equals("Charset"))
-		output.setCharset(header.getValue().toString());
+		output.setCharsetName(header.getValue().toString());
 	    else
 		output.addHeader(header.getKey().toString(), header.getValue()
 			.toString());
@@ -69,6 +71,7 @@ public class FileResource implements Resource {
     /**
      * @see net.webassembletool.resource.Resource#getStatusCode()
      */
+    @Override
     public int getStatusCode() {
 	if (file.exists())
 	    return 200;

@@ -2,11 +2,8 @@ package net.webassembletool.cache;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import net.webassembletool.ouput.Output;
-
-import org.apache.commons.httpclient.Header;
 
 /**
  * Output implementation that stores the file and headers to a MemoryResource.
@@ -15,24 +12,38 @@ import org.apache.commons.httpclient.Header;
  * @see MemoryResource
  * 
  */
-public class MemoryOutput implements Output {
-    private ArrayList<Header> headers = new ArrayList<Header>();
+public class MemoryOutput extends Output {
     private byte[] byteArray;
-    private String charset;
     private ByteArrayOutputStream byteArrayOutputStream;
     private int maxSize = 0;
+    private int size;
     private boolean tooBig = false;
-    private int statusCode;
-    private String statusMessage;
 
     public MemoryOutput(int maxSize) {
 	this.maxSize = maxSize;
     }
 
-    public void addHeader(String name, String value) {
-	headers.add(new Header(name, value));
+    @Override
+    public void open() {
+	byteArrayOutputStream = new ByteArrayOutputStream();
+	size = 0;
     }
 
+    /**
+     * @see java.io.OutputStream#write(int)
+     */
+    @Override
+    public void write(int i) throws IOException {
+	if (!tooBig) {
+	    size++;
+	    if (size > maxSize)
+		tooBig = true;
+	    else
+		byteArrayOutputStream.write(i);
+	}
+    }
+
+    @Override
     public void close() {
 	byteArray = byteArrayOutputStream.toByteArray();
 	try {
@@ -43,34 +54,10 @@ public class MemoryOutput implements Output {
 	byteArrayOutputStream = null;
     }
 
-    public void open() {
-	byteArrayOutputStream = new ByteArrayOutputStream();
-    }
-
-    public void setCharset(String charset) {
-	this.charset = charset;
-    }
-
-    public void write(byte[] bytes, int off, int len) {
-	if (!tooBig) {
-	    byteArrayOutputStream.write(bytes, off, len);
-	    tooBig = (maxSize > 0 && byteArrayOutputStream.size() > maxSize);
-	}
-    }
-
     public MemoryResource toResource() {
 	if (tooBig)
-	    return null;
-	Header[] headersArray = new Header[headers.size()];
-	for (int i = 0; i < headersArray.length; i++) {
-	    headersArray[i] = headers.get(i);
-	}
-	return new MemoryResource(byteArray, charset, headersArray, statusCode,
-		statusMessage);
-    }
-
-    public void setStatus(int code, String message) {
-	statusCode = code;
-	statusMessage = message;
+	    return new MemoryResource();
+	return new MemoryResource(byteArray, getCharsetName(), getHeaders(),
+		getStatusCode(), getStatusMessage());
     }
 }
