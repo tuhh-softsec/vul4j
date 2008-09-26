@@ -472,4 +472,11 @@ public class PrettyPrintXMLWriter
         return docType;
     }
 
+    /**
+     * @return the current elementStack;
+     */
+    protected LinkedList getElementStack()
+    {
+        return elementStack;
+    }
 }
