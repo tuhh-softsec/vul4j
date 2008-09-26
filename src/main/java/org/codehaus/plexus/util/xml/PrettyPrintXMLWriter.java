@@ -53,46 +53,89 @@ public class PrettyPrintXMLWriter
 
     private boolean tagIsEmpty;
 
+    /**
+     * @param writer not null
+     * @param lineIndenter could be null, but the normal way is some spaces.
+     */
     public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter )
     {
         this( writer, lineIndenter, null, null );
     }
 
+    /**
+     * @param writer not null
+     * @param lineIndenter could be null, but the normal way is some spaces.
+     */
     public PrettyPrintXMLWriter( Writer writer, String lineIndenter )
     {
         this( new PrintWriter( writer ), lineIndenter );
     }
 
+    /**
+     * @param writer not null
+     */
     public PrettyPrintXMLWriter( PrintWriter writer )
     {
         this( writer, null, null );
     }
 
+    /**
+     * @param writer not null
+     */
     public PrettyPrintXMLWriter( Writer writer )
     {
         this( new PrintWriter( writer ) );
     }
 
+    /**
+     * @param writer not null
+     * @param lineIndenter could be null, but the normal way is some spaces.
+     * @param encoding could be null or invalid.
+     * @param doctype could be null.
+     */
     public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter, String encoding, String doctype )
     {
         this( writer, lineIndenter, LS, encoding, doctype );
     }
 
+    /**
+     * @param writer not null
+     * @param lineIndenter could be null, but the normal way is some spaces.
+     * @param encoding could be null or invalid.
+     * @param doctype could be null.
+     */
     public PrettyPrintXMLWriter( Writer writer, String lineIndenter, String encoding, String doctype )
     {
         this( new PrintWriter( writer ), lineIndenter, encoding, doctype );
     }
 
+    /**
+     * @param writer not null
+     * @param encoding could be null or invalid.
+     * @param doctype could be null.
+     */
     public PrettyPrintXMLWriter( PrintWriter writer, String encoding, String doctype )
     {
         this( writer, "  ", encoding, doctype );
     }
 
+    /**
+     * @param writer not null
+     * @param encoding could be null or invalid.
+     * @param doctype could be null.
+     */
     public PrettyPrintXMLWriter( Writer writer, String encoding, String doctype )
     {
         this( new PrintWriter( writer ), encoding, doctype );
     }
 
+    /**
+     * @param writer not null
+     * @param lineIndenter could be null, but the normal way is some spaces.
+     * @param lineSeparator could be null, but the normal way is valid line separator ("\n" on UNIX).
+     * @param encoding could be null or invalid.
+     * @param doctype could be null.
+     */
     public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter, String lineSeparator, String encoding, String doctype )
     {
         setWriter( writer );
@@ -111,6 +154,7 @@ public class PrettyPrintXMLWriter
         }
     }
 
+    /** {@inheritDoc} */
     public void startElement( String name )
     {
         tagIsEmpty = false;
@@ -132,11 +176,13 @@ public class PrettyPrintXMLWriter
         tagIsEmpty = true;
     }
 
+    /** {@inheritDoc} */
     public void writeText( String text )
     {
         writeText( text, true );
     }
 
+    /** {@inheritDoc} */
     public void writeMarkup( String text )
     {
         writeText( text, false );
@@ -191,6 +237,7 @@ public class PrettyPrintXMLWriter
         return b.toString();
     }
 
+    /** {@inheritDoc} */
     public void addAttribute( String key, String value )
     {
         write( " " );
@@ -204,6 +251,7 @@ public class PrettyPrintXMLWriter
         write( "\"" );
     }
 
+    /** {@inheritDoc} */
     public void endElement()
     {
         setDepth( getDepth() - 1 );
@@ -257,17 +305,21 @@ public class PrettyPrintXMLWriter
 
     /**
      * Get the string used as line indenter
+     *
      * @return the line indenter
      */
-    protected String getLineIndenter(){
+    protected String getLineIndenter()
+    {
         return lineIndenter;
     }
 
     /**
      * Set the string used as line indenter
-     * @param lineIndenter
+     *
+     * @param lineIndenter new line indenter, could be null, but the normal way is some spaces.
      */
-    protected void setLineIndenter( String lineIndenter ){
+    protected void setLineIndenter( String lineIndenter )
+    {
         this.lineIndenter = lineIndenter;
     }
 
@@ -285,7 +337,8 @@ public class PrettyPrintXMLWriter
     /**
      * Set the string used as line separator
      *
-     * @param lineSeparator
+     * @param lineSeparator new line separator, could be null but the normal way is valid line separator
+     * ("\n" on UNIX).
      */
     protected void setLineSeparator( String lineSeparator )
     {
@@ -295,6 +348,7 @@ public class PrettyPrintXMLWriter
     /**
      * Write the end of line character (using specified line separator)
      * and start new line with indentation
+     *
      * @see #getLineIndenter()
      * @see #getLineSeparator()
      */
@@ -335,15 +389,22 @@ public class PrettyPrintXMLWriter
 
     /**
      * Set the underlying writer
-     * @param writer
+     *
+     * @param writer not null writer
      */
     protected void setWriter( PrintWriter writer )
     {
+        if ( writer == null )
+        {
+            throw new IllegalArgumentException( "writer could not be null");
+        }
+
         this.writer = writer;
     }
 
     /**
      * Get the underlying writer
+     *
      * @return the underlying writer
      */
     protected PrintWriter getWriter()
@@ -352,8 +413,9 @@ public class PrettyPrintXMLWriter
     }
 
     /**
-     * Set the current depth in the xml indentation
-     * @param depth
+     * Set the depth in the xml indentation
+     *
+     * @param depth new depth
      */
     protected void setDepth( int depth )
     {
@@ -362,28 +424,49 @@ public class PrettyPrintXMLWriter
 
     /**
      * Get the current depth in the xml indentation
-     * @return
+     *
+     * @return the current depth
      */
     protected int getDepth()
     {
         return depth;
     }
 
+    /**
+     * Set the encoding in the xml
+     *
+     * @param encoding new encoding
+     */
     protected void setEncoding( String encoding )
     {
         this.encoding = encoding;
     }
 
+    /**
+     * Get the current encoding in the xml
+     *
+     * @return the current encoding
+     */
     protected String getEncoding()
     {
         return encoding;
     }
 
+    /**
+     * Set the docType in the xml
+     *
+     * @param docType new docType
+     */
     protected void setDocType( String docType )
     {
         this.docType = docType;
     }
 
+    /**
+     * Get the docType in the xml
+     *
+     * @return the current docType
+     */
     protected String getDocType()
     {
         return docType;
