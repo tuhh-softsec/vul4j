@@ -1,7 +1,7 @@
 package org.codehaus.plexus.util.xml;
 
 /*
- * Copyright 2007 The Codehaus Foundation.
+ * Copyright 2008 The Codehaus Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@ package org.codehaus.plexus.util.xml;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.LinkedList;
@@ -22,13 +23,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Implementation of XMLWriter which emits nicely formatted documents.
+ *
  * @version $Id$
  */
 public class PrettyPrintXMLWriter
     implements XMLWriter
 {
-
-    private static final String LS = System.getProperty( "line.separator" );
+    /** Line separator ("\n" on UNIX) */
+    protected static final String LS = System.getProperty( "line.separator" );
 
     private PrintWriter writer;
 
@@ -39,6 +42,8 @@ public class PrettyPrintXMLWriter
     private int depth;
 
     private String lineIndenter;
+
+    private String lineSeparator;
 
     private String encoding;
 
@@ -70,18 +75,7 @@ public class PrettyPrintXMLWriter
 
     public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter, String encoding, String doctype )
     {
-        setWriter( writer );
-
-        setLineIndenter( lineIndenter );
-
-        setEncoding( encoding );
-
-        setDocType( doctype );
-
-        if ( doctype != null || encoding != null )
-        {
-            writeDocumentHeaders();
-        }
+        this( writer, lineIndenter, LS, encoding, doctype );
     }
 
     public PrettyPrintXMLWriter( Writer writer, String lineIndenter, String encoding, String doctype )
@@ -97,6 +91,24 @@ public class PrettyPrintXMLWriter
     public PrettyPrintXMLWriter( Writer writer, String encoding, String doctype )
     {
         this( new PrintWriter( writer ), encoding, doctype );
+    }
+
+    public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter, String lineSeparator, String encoding, String doctype )
+    {
+        setWriter( writer );
+
+        setLineIndenter( lineIndenter );
+
+        setLineSeparator( lineSeparator );
+
+        setEncoding( encoding );
+
+        setDocType( doctype );
+
+        if ( doctype != null || encoding != null )
+        {
+            writeDocumentHeaders();
+        }
     }
 
     public void startElement( String name )
@@ -252,7 +264,7 @@ public class PrettyPrintXMLWriter
     }
 
     /**
-     * Set the string used as line indenter 
+     * Set the string used as line indenter
      * @param lineIndenter
      */
     protected void setLineIndenter( String lineIndenter ){
@@ -260,12 +272,35 @@ public class PrettyPrintXMLWriter
     }
 
     /**
-     * Write the end of line character (using system line separator)
-     * and start new line with indentation 
+     * Get the string used as line separator or LS if not set.
+     *
+     * @return the line separator
+     * @see #LS
+     */
+    protected String getLineSeparator()
+    {
+        return lineSeparator;
+    }
+
+    /**
+     * Set the string used as line separator
+     *
+     * @param lineSeparator
+     */
+    protected void setLineSeparator( String lineSeparator )
+    {
+        this.lineSeparator = lineSeparator;
+    }
+
+    /**
+     * Write the end of line character (using specified line separator)
+     * and start new line with indentation
+     * @see #getLineIndenter()
+     * @see #getLineSeparator()
      */
     protected void endOfLine()
     {
-        write( LS );
+        write( getLineSeparator() );
 
         for ( int i = 0; i < getDepth(); i++ )
         {
