@@ -39,10 +39,8 @@ import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.components.io.filemappers.PrefixFileMapper;
-import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
-import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoProxyResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
@@ -52,7 +50,6 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
-import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.IOUtil;
 
 
@@ -187,93 +184,29 @@ public abstract class AbstractArchiver
     public void addFileSet( FileSet fileSet )
         throws ArchiverException
     {
-        DirectoryScanner scanner = new DirectoryScanner();
-
-        if ( fileSet.getIncludes() != null )
-        {
-            scanner.setIncludes( fileSet.getIncludes() );
-        }
-
-        if ( fileSet.getExcludes() != null )
-        {
-            scanner.setExcludes( fileSet.getExcludes() );
-        }
-
         File directory = fileSet.getDirectory();
         if ( directory == null )
         {
             throw new ArchiverException( "The file sets base directory is null." );
         }
+        
         if ( !directory.isDirectory() )
         {
             throw new ArchiverException( directory.getAbsolutePath() + " isn't a directory." );
         }
-
-        String basedir = directory.getAbsolutePath();
-        scanner.setBasedir( basedir );
-        scanner.scan();
-
-        String prefix = fileSet.getPrefix();
-        FileSelector[] fileSelectors = fileSet.getFileSelectors();
-        if ( fileSet.isIncludingEmptyDirectories() )
-        {
-            String[] dirs = scanner.getIncludedDirectories();
-
-            for ( int i = 0; i < dirs.length; i++ )
-            {
-                String name = dirs[i];
-                String sourceDir = name.replace( '\\', '/' );
-                File dir = new File( basedir, sourceDir );
-                final PlexusIoFileResource res = new PlexusIoFileResource( dir );
-                if ( isSelected( fileSelectors, res ) )
-                {
-                    String targetDir = PrefixFileMapper.getMappedFileName( prefix, sourceDir );
-
-                    resources.add( ArchiveEntry.createDirectoryEntry( targetDir, res,
-                                                                      getDefaultDirectoryMode() ) );
-                }
-            }
-        }
-
-        String[] files = scanner.getIncludedFiles();
-
-        for ( int i = 0; i < files.length; i++ )
-        {
-            String file = files[i];
-            String sourceFile = file.replace( '\\', '/' );
-            File source = new File( basedir, sourceFile );
-            final PlexusIoFileResource res = new PlexusIoFileResource( source, sourceFile );
-            if ( isSelected( fileSelectors, res ) )
-            {
-                String targetFile = PrefixFileMapper.getMappedFileName( prefix, sourceFile );
-                addResource( res, targetFile, getDefaultFileMode() );
-            }
-        }
-    }
-
-    private boolean isSelected( FileSelector[] fileSelectors, PlexusIoResource fileInfo )
-        throws ArchiverException
-    {
-        if ( fileSelectors != null )
-        {
-            for ( int i = 0;  i < fileSelectors.length;  i++ )
-            {
-                try
-                {
-                    if ( !fileSelectors[i].isSelected( fileInfo ) )
-                    {
-                        return false;
-                    }
-                }
-                catch ( IOException e )
-                {
-                    throw new ArchiverException( "Failed to check, whether "
-                                                 + fileInfo.getName()
-                                                 + " is selected.", e );
-                }
-            }
-        }
-        return true;
+        
+        PlexusIoFileResourceCollection collection = new PlexusIoFileResourceCollection( getLogger() );
+        
+        collection.setIncludes( fileSet.getIncludes() );
+        collection.setExcludes( fileSet.getExcludes() );
+        collection.setBaseDir( directory );
+        collection.setFileSelectors( fileSet.getFileSelectors() );
+        collection.setIncludingEmptyDirectories( fileSet.isIncludingEmptyDirectories() );
+        collection.setPrefix( fileSet.getPrefix() );
+        collection.setCaseSensitive( fileSet.isCaseSensitive() );
+        collection.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
+        
+        addResources( collection );
     }
 
     public void addFile( File inputFile, String destFileName )
@@ -575,6 +508,7 @@ public abstract class AbstractArchiver
         }
 
         final PlexusIoProxyResourceCollection proxy = new PlexusIoProxyResourceCollection();
+        
         proxy.setSrc( resources );
         proxy.setExcludes( fileSet.getExcludes() );
         proxy.setIncludes( fileSet.getIncludes() );
@@ -583,6 +517,7 @@ public abstract class AbstractArchiver
         proxy.setPrefix( fileSet.getPrefix() );
         proxy.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
         proxy.setFileSelectors( fileSet.getFileSelectors() );
+        
         return proxy;
     }
 

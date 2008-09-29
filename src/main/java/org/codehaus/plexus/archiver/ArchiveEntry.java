@@ -21,8 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
+import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
 
 /**
  * @version $Revision: 1502 $ $Date$
@@ -43,6 +46,8 @@ public class ArchiveEntry
 
     private int mode;
 
+    private PlexusIoResourceAttributes attributes;
+
     /**
      * @param name     the filename as it will appear in the archive
      * @param original original filename
@@ -53,6 +58,9 @@ public class ArchiveEntry
     {
         this.name = name;
         this.resource = resource;
+        this.attributes =
+            ( resource instanceof PlexusIoResourceWithAttributes ) ? ( (PlexusIoResourceWithAttributes) resource ).getAttributes()
+                            : null;
         this.type = type;
         this.mode = ( mode & UnixStat.PERM_MASK ) |
                     ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
@@ -104,6 +112,11 @@ public class ArchiveEntry
      */
     public int getMode()
     {
+        if ( attributes != null && attributes.getOctalMode() > -1 )
+        {
+            return attributes.getOctalMode();
+        }
+        
         return mode;
     }
 
@@ -124,7 +137,18 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Not a file: " + file );
         }
-        final PlexusIoFileResource res =  new PlexusIoFileResource( file );
+        
+        PlexusIoResourceAttributes attrs;
+        try
+        {
+            attrs = PlexusIoResourceAttributeUtils.getFileAttributes( file );
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "Failed to read filesystem attributes for: " + file );
+        }
+        
+        final PlexusIoFileResource res =  new PlexusIoFileResource( file, attrs );
         return new ArchiveEntry( target, res, FILE, permissions );
     }
 
@@ -145,7 +169,18 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Not a directory: " + file );
         }
-        final PlexusIoFileResource res = new PlexusIoFileResource( file );
+        
+        PlexusIoResourceAttributes attrs;
+        try
+        {
+            attrs = PlexusIoResourceAttributeUtils.getFileAttributes( file );
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "Failed to read filesystem attributes for: " + file );
+        }
+        
+        final PlexusIoFileResource res = new PlexusIoFileResource( file, attrs );
         return new ArchiveEntry( target, res, DIRECTORY, permissions );
     }
 
@@ -164,6 +199,16 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Neither a file nor a directory: " + file );
         }
+    }
+    
+    public PlexusIoResourceAttributes getResourceAttributes()
+    {
+        return attributes;
+    }
+    
+    public void setResourceAttributes( PlexusIoResourceAttributes attributes )
+    {
+        this.attributes = attributes;
     }
 
     public PlexusIoResource getResource()

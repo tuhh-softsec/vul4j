@@ -23,9 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 import org.codehaus.plexus.archiver.AbstractArchiver;
@@ -36,6 +33,7 @@ import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.bzip2.CBZip2OutputStream;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -286,10 +284,13 @@ public class TarArchiver
             {
                 te.setMode( entry.getMode() );
             }
-            te.setUserName( options.getUserName() );
-            te.setGroupName( options.getGroup() );
-            te.setUserId( options.getUid() );
-            te.setGroupId( options.getGid() );
+            
+            PlexusIoResourceAttributes attributes = entry.getResourceAttributes();
+            
+            te.setUserName( ( attributes != null && attributes.getUserName() != null ) ? attributes.getUserName() : options.getUserName() );
+            te.setGroupName( ( attributes != null && attributes.getGroupName() != null ) ? attributes.getGroupName() : options.getGroup() );
+            te.setUserId( ( attributes != null && attributes.getUserId() != -1 ) ? attributes.getUserId() : options.getUid() );
+            te.setGroupId( ( attributes != null && attributes.getGroupId() != -1 ) ? attributes.getGroupId() : options.getGid() );
 
             tOut.putNextEntry( te );
 
