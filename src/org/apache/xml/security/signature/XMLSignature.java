@@ -286,6 +286,8 @@ public final class XMLSignature extends SignatureElementProxy {
 
         // create a SignedInfo object from that element
         this._signedInfo = new SignedInfo(signedInfoElem, BaseURI);
+	// get signedInfoElem again in case it has changed
+        signedInfoElem = XMLUtils.getNextElement(element.getFirstChild());
 
         // check out SignatureValue child
         this.signatureValueElement = 
