@@ -11,13 +11,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.ObjectContainer;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import junit.framework.TestCase;
 
@@ -39,17 +42,21 @@ public class Bug45961Test extends TestCase {
 		_builder = factory.newDocumentBuilder();
 	}
 
-	public void testBug() throws Exception {
-		Document document = getSignedDocument();
-		try {
-			Element element = (Element) document.getFirstChild();
-			assertEquals(Constants.getSignatureSpecNSprefix() + ":"
-					+ Constants._TAG_SIGNATURE, element.getNodeName());
-			new XMLSignature(element, null);
-		} catch (XMLSignatureException e) {
-			fail(e.getMessage());
-		}
-	}
+        public void testBug() throws Exception {
+                Document document = getSignedDocument();
+                NodeList list = document.getElementsByTagNameNS(
+                         Constants.SignatureSpecNS, Constants._TAG_SIGNATURE);
+                Element element = (Element) list.item(0);
+                XMLSignature signature = new XMLSignature(element, null);
+                KeyInfo keyInfo = signature.getKeyInfo();
+                X509Certificate certificate = keyInfo.getX509Certificate();
+                assertNotNull(certificate);
+                try {
+                        signature.checkSignatureValue(certificate);
+                } catch (XMLSignatureException e) {
+               		fail(e.getMessage());
+                }
+        }
 
 	private Document getSignedDocument() throws Exception {
 		KeyStore ks = KeyStore.getInstance("JKS");
@@ -66,20 +73,32 @@ public class Bug45961Test extends TestCase {
 				XMLSignature.ALGO_ID_SIGNATURE_DSA,
 				MOCK_CANONICALIZATION_METHOD);
 
-		document.appendChild(signature.getElement());
+                Element root = document.createElementNS("", "RootElement");
+                root.appendChild(document.createTextNode("Some simple test\n"));
+                root.appendChild(signature.getElement());
+                document.appendChild(root);
 
-		Element root = document.createElementNS("", "RootElement");
-		root.appendChild(document.createTextNode("Some simple test\n"));
+//		document.appendChild(signature.getElement());
+
+		Element root2 = document.createElementNS("", "RootElement");
+		root2.appendChild(document.createTextNode("Some simple test\n"));
 		ObjectContainer object = new ObjectContainer(document);
-		object.appendChild(root);
+		object.appendChild(root2);
 		object.setId(OBJECT_ID);
 
 		signature.addDocument("#" + OBJECT_ID);
+		signature.addDocument("", getTransforms(document));
 
 		signature.addKeyInfo(signingCert);
 		signature.sign(privateKey);
 		return document;
 	}
+
+        private Transforms getTransforms(Document document) throws Exception {
+                Transforms transforms = new Transforms(document);
+                transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+                return transforms;
+        }
 
    private String getAbsolutePath(String path)
    {
