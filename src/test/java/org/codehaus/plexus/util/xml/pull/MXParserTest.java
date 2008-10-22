@@ -114,4 +114,18 @@ public class MXParserTest
 
         assertEquals( XmlPullParser.END_TAG, parser.next() );
     }
+
+    public void testProcessingInstruction()
+        throws Exception
+    {
+        String input = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><test>nnn</test>";
+
+        MXParser parser = new MXParser();
+        parser.setInput( new StringReader( input ) );
+
+        assertEquals( XmlPullParser.PROCESSING_INSTRUCTION, parser.nextToken() );
+        assertEquals( XmlPullParser.START_TAG, parser.nextToken() );
+        assertEquals( XmlPullParser.TEXT, parser.nextToken() );
+        assertEquals( XmlPullParser.END_TAG, parser.nextToken() );
+    }
 }
