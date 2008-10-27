@@ -66,10 +66,15 @@ public class IdResolver {
      */
     public static void registerElementById(Element element, String idValue) {
         Document doc = element.getOwnerDocument();
-        WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
+        WeakHashMap elementMap;
+        synchronized (docMap) {
+            elementMap = (WeakHashMap) docMap.get(doc);
+        }
         if(elementMap == null) {
             elementMap = new WeakHashMap();
-            docMap.put(doc, elementMap);
+            synchronized (docMap) {
+                docMap.put(doc, elementMap);
+            }
         }
         elementMap.put(idValue, new WeakReference(element));
     }
@@ -149,7 +154,10 @@ public class IdResolver {
     private static Element getElementByIdType(Document doc, String id) {
         if (log.isDebugEnabled())
 	    log.debug("getElementByIdType() Search for ID " + id);
-        WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
+        WeakHashMap elementMap;
+        synchronized (docMap) {
+            elementMap = (WeakHashMap) docMap.get(doc);
+        }
         if (elementMap != null) {
             WeakReference weakReference = (WeakReference) elementMap.get(id);
             if (weakReference != null) {
