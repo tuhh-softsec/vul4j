@@ -58,6 +58,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>Common <code>String</code> manipulation routines.</p>
@@ -181,7 +183,7 @@ public class StringUtils
      * <p>
      * Checks if a String is whitespace, empty ("") or null.
      * </p>
-     * 
+     *
      * <pre>
      * StringUtils.isBlank(null)      = true
      * StringUtils.isBlank("")        = true
@@ -189,7 +191,7 @@ public class StringUtils
      * StringUtils.isBlank("bob")     = false
      * StringUtils.isBlank("  bob  ") = false
      * </pre>
-     * 
+     *
      * @param str the String to check, may be null
      * @return <code>true</code> if the String is null, empty or whitespace
      * @since 1.5.2
@@ -215,7 +217,7 @@ public class StringUtils
      * <p>
      * Checks if a String is not empty (""), not null and not whitespace only.
      * </p>
-     * 
+     *
      * <pre>
      * StringUtils.isNotBlank(null)      = false
      * StringUtils.isNotBlank("")        = false
@@ -223,7 +225,7 @@ public class StringUtils
      * StringUtils.isNotBlank("bob")     = true
      * StringUtils.isNotBlank("  bob  ") = true
      * </pre>
-     * 
+     *
      * @param str the String to check, may be null
      * @return <code>true</code> if the String is not empty and not null and not whitespace
      * @since 1.5.2
@@ -2304,5 +2306,21 @@ public class StringUtils
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Remove all duplicate whitespace characters and line terminators are replaced with a single
+     * space.
+     *
+     * @param s a not null String
+     * @return a string with unique whitespace.
+     */
+    public static String removeDuplicateWhitespace( String s )
+    {
+        String patternStr = "\\s+";
+        String replaceStr = " ";
+        Pattern pattern = Pattern.compile( patternStr );
+        Matcher matcher = pattern.matcher( s );
+        return matcher.replaceAll( replaceStr );
     }
 }

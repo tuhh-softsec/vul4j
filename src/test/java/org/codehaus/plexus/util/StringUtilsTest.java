@@ -198,4 +198,12 @@ public class StringUtilsTest
         assertEquals( Arrays.asList( new String[] { "this", "is", "a", "test", "really" } ), Arrays.asList( tokens ) );
     }
 
+    public void testRemoveDuplicateWhitespace()
+        throws Exception
+    {
+        String s = "this     is     test   ";
+        assertEquals( "this is test ", StringUtils.removeDuplicateWhitespace( s ) );
+        s = "this  \r\n   is \n  \r  test   ";
+        assertEquals( "this is test ", StringUtils.removeDuplicateWhitespace( s ) );
+    }
 }
