@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.xml.XmlStreamWriter;
 /**
  * Utility to create Writers, with explicit encoding choice: platform default,
  * XML, or specified.
- * 
+ *
  * @author <a href="mailto:hboutemy@codehaus.org">Herve Boutemy</a>
  * @see Charset
  * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
@@ -91,9 +91,13 @@ public class WriterFactory
      * The <code>file.encoding</code> System Property.
      */
     public static final String FILE_ENCODING = System.getProperty( "file.encoding" );
-    
+
     /**
      * Create a new Writer with XML encoding detection rules.
+     *
+     * @param out not null output stream.
+     * @return an XML writer instance for the output stream.
+     * @throws IOException if any.
      * @see XmlStreamWriter
      */
     public static XmlStreamWriter newXmlWriter( OutputStream out )
@@ -104,6 +108,10 @@ public class WriterFactory
 
     /**
      * Create a new Writer with XML encoding detection rules.
+     *
+     * @param file not null file.
+     * @return an XML writer instance for the output file.
+     * @throws IOException if any.
      * @see XmlStreamWriter
      */
     public static XmlStreamWriter newXmlWriter( File file )
@@ -114,6 +122,11 @@ public class WriterFactory
 
     /**
      * Create a new Writer with default plaform encoding.
+     *
+     * @param out not null output stream.
+     * @return a writer instance for the output stream using the default platform charset.
+     * @throws IOException if any.
+     * @see Charset#defaultCharset()
      */
     public static Writer newPlatformWriter( OutputStream out )
     {
@@ -122,6 +135,11 @@ public class WriterFactory
 
     /**
      * Create a new Writer with default plaform encoding.
+     *
+     * @param file not null file.
+     * @return a writer instance for the output file using the default platform charset.
+     * @throws IOException if any.
+     * @see Charset#defaultCharset()
      */
     public static Writer newPlatformWriter( File file )
     throws IOException
@@ -131,6 +149,11 @@ public class WriterFactory
 
     /**
      * Create a new Writer with specified encoding.
+     *
+     * @param out not null output stream.
+     * @param encoding not null supported encoding.
+     * @return a writer instance for the output stream using the given encoding.
+     * @throws UnsupportedEncodingException if any.
      * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
      */
     public static Writer newWriter( OutputStream out, String encoding )
@@ -141,6 +164,12 @@ public class WriterFactory
 
     /**
      * Create a new Writer with specified encoding.
+     *
+     * @param file not null file.
+     * @param encoding not null supported encoding.
+     * @return a writer instance for the output file using the given encoding.
+     * @throws UnsupportedEncodingException if any.
+     * @throws FileNotFoundException if any.
      * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
      */
     public static Writer newWriter( File file, String encoding )

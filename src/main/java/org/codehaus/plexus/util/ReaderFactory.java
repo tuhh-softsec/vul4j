@@ -36,7 +36,7 @@ import org.codehaus.plexus.util.xml.XmlStreamReader;
 /**
  * Utility to create Readers from streams, with explicit encoding choice: platform default,
  * XML, or specified.
- * 
+ *
  * @author <a href="mailto:hboutemy@codehaus.org">Herve Boutemy</a>
  * @see Charset
  * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
@@ -92,9 +92,13 @@ public class ReaderFactory
      * The <code>file.encoding</code> System Property.
      */
     public static final String FILE_ENCODING = System.getProperty( "file.encoding" );
-    
+
     /**
      * Create a new Reader with XML encoding detection rules.
+     *
+     * @param in not null input stream.
+     * @return an XML reader instance for the input stream.
+     * @throws IOException if any.
      * @see XmlStreamReader
      */
     public static XmlStreamReader newXmlReader( InputStream in )
@@ -105,6 +109,10 @@ public class ReaderFactory
 
     /**
      * Create a new Reader with XML encoding detection rules.
+     *
+     * @param file not null file.
+     * @return an XML reader instance for the input file.
+     * @throws IOException if any.
      * @see XmlStreamReader
      */
     public static XmlStreamReader newXmlReader( File file )
@@ -112,9 +120,13 @@ public class ReaderFactory
     {
         return new XmlStreamReader( file );
     }
-    
+
     /**
      * Create a new Reader with XML encoding detection rules.
+     *
+     * @param url not null url.
+     * @return an XML reader instance for the input url.
+     * @throws IOException if any.
      * @see XmlStreamReader
      */
     public static XmlStreamReader newXmlReader( URL url )
@@ -125,6 +137,10 @@ public class ReaderFactory
 
     /**
      * Create a new Reader with default plaform encoding.
+     *
+     * @param in not null input stream.
+     * @return a reader instance for the input stream using the default platform charset.
+     * @see Charset#defaultCharset()
      */
     public static Reader newPlatformReader( InputStream in )
     {
@@ -133,6 +149,11 @@ public class ReaderFactory
 
     /**
      * Create a new Reader with default plaform encoding.
+     *
+     * @param file not null file.
+     * @return a reader instance for the input file using the default platform charset.
+     * @throws FileNotFoundException if any.
+     * @see Charset#defaultCharset()
      */
     public static Reader newPlatformReader( File file )
     throws FileNotFoundException
@@ -142,6 +163,11 @@ public class ReaderFactory
 
     /**
      * Create a new Reader with default plaform encoding.
+     *
+     * @param url not null url.
+     * @return a reader instance for the input url using the default platform charset.
+     * @throws IOException if any.
+     * @see Charset#defaultCharset()
      */
     public static Reader newPlatformReader( URL url )
     throws IOException
@@ -151,6 +177,11 @@ public class ReaderFactory
 
     /**
      * Create a new Reader with specified encoding.
+     *
+     * @param in not null input stream.
+     * @param encoding not null supported encoding.
+     * @return a reader instance for the input stream using the given encoding.
+     * @throws UnsupportedEncodingException if any.
      * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
      */
     public static Reader newReader( InputStream in, String encoding )
@@ -161,6 +192,12 @@ public class ReaderFactory
 
     /**
      * Create a new Reader with specified encoding.
+     *
+     * @param file not null file.
+     * @param encoding not null supported encoding.
+     * @return a reader instance for the input file using the given encoding.
+     * @throws FileNotFoundException if any.
+     * @throws UnsupportedEncodingException if any.
      * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
      */
     public static Reader newReader( File file, String encoding )
@@ -171,6 +208,11 @@ public class ReaderFactory
 
     /**
      * Create a new Reader with specified encoding.
+     *
+     * @param url not null url.
+     * @param encoding not null supported encoding.
+     * @return a reader instance for the input url using the given encoding.
+     * @throws IOException if any.
      * @see <a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">Supported encodings</a>
      */
     public static Reader newReader( URL url, String encoding )
