@@ -26,14 +26,10 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class XmlWriterUtil
 {
-    /**
-     * The default line indenter i.e. 2.
-     */
+    /** The default line indenter size i.e. 2. */
     public static final int DEFAULT_INDENTATION_SIZE = 2;
 
-    /**
-     * The default column before line wrapping i.e. 80.
-     */
+    /** The default column before line wrapping i.e. 80. */
     public static final int DEFAULT_COLUMN_LINE = 80;
 
     /**
