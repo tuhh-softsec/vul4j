@@ -69,10 +69,8 @@ public class IdResolver {
         WeakHashMap elementMap;
         synchronized (docMap) {
             elementMap = (WeakHashMap) docMap.get(doc);
-        }
-        if(elementMap == null) {
-            elementMap = new WeakHashMap();
-            synchronized (docMap) {
+            if (elementMap == null) {
+                elementMap = new WeakHashMap();
                 docMap.put(doc, elementMap);
             }
         }
