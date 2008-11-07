@@ -48,7 +48,9 @@ public class Baltimore23Test extends TestCase {
     public Baltimore23Test(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	dir = new File(System.getProperty("basedir") + fs + "data" + fs 
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	
+	dir = new File(base + fs + "data" + fs 
 	    + "ie" + fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-twenty-three");
 	validator = new SignatureValidator(dir);
@@ -179,7 +181,9 @@ public class Baltimore23Test extends TestCase {
     public void test_signature() throws Exception {
         String file = "signature.xml";
 	String fs = System.getProperty("file.separator");
-	String keystore = System.getProperty("basedir") + fs + "data" + fs +
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	
+	String keystore = base + fs + "data" + fs +
 	     "ie" + fs + "baltimore" + fs + "merlin-examples" + fs +
 	     "merlin-xmldsig-twenty-three" + fs + "certs" + fs + "xmldsig.jks";
 	KeyStore ks = KeyStore.getInstance("JKS");

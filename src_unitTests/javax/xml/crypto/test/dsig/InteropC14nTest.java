@@ -45,7 +45,8 @@ public class InteropC14nTest extends TestCase {
     public InteropC14nTest(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	base = System.getProperty("basedir") + fs + "data" + fs + "interop";
+	base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");	
+	base = base + fs + "data" + fs + "interop";
     }
     public void test_y1_exc_signature() throws Exception {
 	validator = new SignatureValidator(new File(base, "c14n/Y1"));

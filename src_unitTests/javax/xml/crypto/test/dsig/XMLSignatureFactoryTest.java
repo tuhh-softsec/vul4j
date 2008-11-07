@@ -165,7 +165,8 @@ public class XMLSignatureFactoryTest extends TestCase {
 	docFactory.setNamespaceAware(true);
 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	String fs = System.getProperty("file.separator");
-	File dir = new File(System.getProperty("basedir") + fs +
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	File dir = new File(base + fs +
 	    "data" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
 	    "merlin-xmldsig-twenty-three");
 	Document doc = docBuilder.parse(new File(dir, "signature.xml"));

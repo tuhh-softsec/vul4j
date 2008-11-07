@@ -47,7 +47,8 @@ public class IaikCoreFeaturesTest extends TestCase {
     public IaikCoreFeaturesTest(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	base = System.getProperty("basedir") + fs + "data" + fs +
+	base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	base = base + fs + "data" + fs +
 	    "at" + fs + "iaik" + fs + "ixsil";
 	validator = new SignatureValidator(new File
 	    (base, "coreFeatures/signatures"));

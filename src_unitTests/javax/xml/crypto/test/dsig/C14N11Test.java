@@ -46,7 +46,8 @@ public class C14N11Test extends TestCase {
     public C14N11Test(String name) throws Exception {
         super(name);
         String fs = System.getProperty("file.separator");
-        dir = new File(System.getProperty("basedir") + fs + "data" + fs
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+    	dir = new File(base + fs + "data" + fs
             + "org" + fs + "w3c" + fs + "www" + fs
 	    + "interop" + fs + "xmldsig" + fs + "c14n11");
         validator = new SignatureValidator(dir);

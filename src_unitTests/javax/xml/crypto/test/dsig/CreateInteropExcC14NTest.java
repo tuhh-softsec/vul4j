@@ -71,9 +71,11 @@ public class CreateInteropExcC14NTest extends TestCase {
         db = dbf.newDocumentBuilder();
 
         // get key & self-signed certificate from keystore
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+    	
 	String fs = System.getProperty("file.separator");
         FileInputStream fis = new FileInputStream
-            (System.getProperty("basedir") + fs + "data" + fs + "test.jks");
+            (base + fs + "data" + fs + "test.jks");
         ks = KeyStore.getInstance("JKS");
         ks.load(fis, "changeit".toCharArray());
         Certificate signingCert = ks.getCertificate("mullan");

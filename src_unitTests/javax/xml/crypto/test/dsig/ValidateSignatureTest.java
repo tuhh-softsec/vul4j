@@ -51,7 +51,9 @@ public class ValidateSignatureTest extends TestCase {
     public ValidateSignatureTest(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	dir = new File(System.getProperty("basedir") + fs + "data" + fs 
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	
+	dir = new File(base + fs + "data" + fs 
 	    + "javax" + fs + "xml" + fs + "crypto", "dsig");
 	validator = new SignatureValidator(dir);
     }

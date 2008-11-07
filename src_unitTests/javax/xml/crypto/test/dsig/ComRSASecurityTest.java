@@ -44,7 +44,9 @@ public class ComRSASecurityTest extends TestCase {
     public ComRSASecurityTest(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") + fs + "data" + fs + "com";
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	
+	base += fs + "data" + fs + "com";
 	validator = new SignatureValidator(new File
 	    (base, "rsasecurity/bdournaee"));
     }

@@ -44,7 +44,9 @@ public class BaltimoreExcC14n1Test extends TestCase {
     public BaltimoreExcC14n1Test(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") + fs + "data" + fs + "ie" +
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	
+	base += fs + "data" + fs + "ie" +
 	    fs + "baltimore" + fs + "merlin-examples";
 	validator = new SignatureValidator(new File
 	    (base, "merlin-exc-c14n-one"));

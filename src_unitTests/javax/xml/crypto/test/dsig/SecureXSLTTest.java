@@ -24,7 +24,9 @@ public class SecureXSLTTest extends TestCase {
     public void test() throws Exception {
 
         String fs = System.getProperty("file.separator");
-        File baseDir = new File(System.getProperty("basedir") + fs + "data" 
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+    	
+        File baseDir = new File(base + fs + "data" 
 	    + fs + "javax" + fs + "xml" + fs + "crypto", "dsig");
 
         String[] signatures =

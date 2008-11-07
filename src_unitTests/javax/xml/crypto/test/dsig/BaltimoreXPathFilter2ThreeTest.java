@@ -44,7 +44,8 @@ public class BaltimoreXPathFilter2ThreeTest extends TestCase {
     public BaltimoreXPathFilter2ThreeTest(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") + fs + "data"
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	base += fs + "data"
 	    + fs + "interop" + fs + "xfilter2";
 	validator = new SignatureValidator(new File
 	    (base, "merlin-xpath-filter2-three"));

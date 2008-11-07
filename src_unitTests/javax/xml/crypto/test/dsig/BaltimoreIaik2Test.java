@@ -45,7 +45,9 @@ public class BaltimoreIaik2Test extends TestCase {
     public BaltimoreIaik2Test(String name) {
         super(name);
 	String fs = System.getProperty("file.separator");
-	dir = new File(System.getProperty("basedir") + fs + "data" + fs +
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+	
+	dir = new File(base + fs + "data" + fs +
 	    "ie" + fs + "baltimore" + fs + "merlin-examples",
             "ec-merlin-iaikTests-two");
 	validator = new SignatureValidator(dir);

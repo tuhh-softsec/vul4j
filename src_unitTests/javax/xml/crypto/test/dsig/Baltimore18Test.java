@@ -46,8 +46,10 @@ public class Baltimore18Test extends TestCase {
 
     public Baltimore18Test(String name) {
         super(name);
+    String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+    	
 	String fs = System.getProperty("file.separator");
-	dir = new File(System.getProperty("basedir") + fs + "data" + fs + "ie" +
+	dir = new File(base + fs + "data" + fs + "ie" +
 	    fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-eighteen");
 	validator = new SignatureValidator(dir);

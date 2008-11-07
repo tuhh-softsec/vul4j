@@ -93,8 +93,10 @@ public class CreateBaltimore23Test extends TestCase {
 
 	// get key & self-signed certificate from keystore
 	String fs = System.getProperty("file.separator");
+	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+
 	FileInputStream fis = new FileInputStream
-	    (System.getProperty("basedir") + fs + "data" + fs + "test.jks");
+	    (base + fs + "data" + fs + "test.jks");
 	ks = KeyStore.getInstance("JKS");
 	ks.load(fis, "changeit".toCharArray());
 	signingKey = ks.getKey("mullan", "changeit".toCharArray());
