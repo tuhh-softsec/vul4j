@@ -8,7 +8,7 @@
 <title>Form post example</title>
 </head>
 <body style="background-color: yellow">
-Posted field value = null
+Posted field value = é
 <form method="get">
 <input type="text" name="myField" />
 <input type="submit" name="send" value="Post this form"/>
