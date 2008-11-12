@@ -8,7 +8,8 @@
 <title>Timeout example</title>
 </head>
 <body style="background-color: yellow">
-Nothing should appear bellow as the included block is too slow to be fetched
-
+Nothing should appear bellow as the included block does not work at all
+<br />
+500 Internal Server Error
 </body>
 </html>
