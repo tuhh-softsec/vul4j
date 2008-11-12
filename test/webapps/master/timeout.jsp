@@ -9,7 +9,8 @@
 <title>Timeout example</title>
 </head>
 <body style="background-color: yellow">
-Nothing should appear bellow as the included block does not work at all
+Nothing should appear bellow as the included block is too slow to be fetched
+<br />
 <assemble:includeblock page="timeout.jsp" name="block1" />
 </body>
 </html>
