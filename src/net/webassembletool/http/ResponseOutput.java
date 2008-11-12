@@ -29,24 +29,27 @@ public class ResponseOutput extends Output {
 
     @Override
     public void open() {
-        String ifModifiedSince = request.getHeader("If-Modified-Since");
-        String ifNoneMatch = request.getHeader("If-None-Match");
-        if ((ifModifiedSince != null && ifModifiedSince
-        	.equals(getHeader("Last-Modified")))
-        	|| (ifNoneMatch != null && ifNoneMatch
-        		.equals(getHeader("ETag")))) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            notModified = true;
-        }
-        response.setStatus(getStatusCode());
-        response.setCharacterEncoding(getCharsetName());
-        if (!notModified)
-            if (!notModified)
-        	try {
-        	    outputStream = response.getOutputStream();
-        	} catch (IOException e) {
-        	    throw new OutputException(e);
-        	}
+	String ifModifiedSince = request.getHeader("If-Modified-Since");
+	String ifNoneMatch = request.getHeader("If-None-Match");
+	if ((ifModifiedSince != null && ifModifiedSince
+		.equals(getHeader("Last-Modified")))
+		|| (ifNoneMatch != null && ifNoneMatch
+			.equals(getHeader("ETag")))) {
+	    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+	    notModified = true;
+	}
+	response.setStatus(getStatusCode());
+	response.setCharacterEncoding(getCharsetName());
+	String location = getHeader("location");
+	if (location != null)
+	    response.setHeader("location", location);
+	if (!notModified)
+	    if (!notModified)
+		try {
+		    outputStream = response.getOutputStream();
+		} catch (IOException e) {
+		    throw new OutputException(e);
+		}
     }
 
     /**
@@ -54,7 +57,7 @@ public class ResponseOutput extends Output {
      */
     @Override
     public void write(int i) throws IOException {
-        outputStream.write(i);
+	outputStream.write(i);
     }
 
     @Override

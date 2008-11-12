@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -194,7 +193,8 @@ public final class Driver {
     /**
      * Retrieves a block from the provider application and writes it to a
      * Writer. Block can be defined in the provider application using HTML
-     * comments.<br /> eg: a block name "myblock" should be delimited with
+     * comments.<br />
+     * eg: a block name "myblock" should be delimited with
      * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
      * 
      * @param page Page containing the block
@@ -218,28 +218,26 @@ public final class Driver {
 	String content = stringOutput.toString();
 	if (content == null)
 	    return;
-	String beginString = "<!--$beginblock$" + name + "$-->";
-	String endString = "<!--$endblock$" + name + "$-->";
-	int begin = content.indexOf(beginString);
-	int end = content.indexOf(endString);
-	if (begin == -1 || end == -1) {
+	Tag openTag = Tag.find("beginblock$" + name, content, 0);
+	Tag closeTag = Tag.find("endblock$" + name, content, 0);
+	if (openTag == null || closeTag == null) {
 	    log.warn("Block not found: page=" + page + " block=" + name);
 	} else {
 	    log.debug("Serving block: page=" + page + " block=" + name);
-	    writer.append(StringUtils.replace(content.substring(begin
-		    + beginString.length(), end), replaceRules));
+	    writer.append(StringUtils.replace(content.substring(openTag
+		    .getEndIndex(), closeTag.getBeginIndex()), replaceRules));
 	}
     }
 
     /**
      * Retrieves a template from the provider application and renders it to the
      * writer replacing the parameters with the given map. If "page" param is
-     * null, the whole page will be used as the template.<br /> eg: The template
-     * "mytemplate" can be delimited in the provider page by comments
-     * "&lt;!--$begintemplate$mytemplate$--&gt;" and
-     * "&lt;!--$endtemplate$mytemplate$--&gt;".<br /> Inside the template, the
-     * parameters can be defined by comments.<br /> eg: parameter named
-     * "myparam" should be delimited by comments
+     * null, the whole page will be used as the template.<br />
+     * eg: The template "mytemplate" can be delimited in the provider page by
+     * comments "&lt;!--$begintemplate$mytemplate$--&gt;" and
+     * "&lt;!--$endtemplate$mytemplate$--&gt;".<br />
+     * Inside the template, the parameters can be defined by comments.<br />
+     * eg: parameter named "myparam" should be delimited by comments
      * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
      * 
      * @param page Address of the page containing the template
@@ -267,17 +265,16 @@ public final class Driver {
 	StringBuilder sb = new StringBuilder();
 	if (content != null) {
 	    if (name != null) {
-		String beginString = "<!--$begintemplate$" + name + "$-->";
-		String endString = "<!--$endtemplate$" + name + "$-->";
-		int begin = content.indexOf(beginString);
-		int end = content.indexOf(endString);
-		if (begin == -1 || end == -1) {
+		Tag openTag = Tag.find("begintemplate$" + name, content, 0);
+		Tag closeTag = Tag.find("endtemplate$" + name, content, 0);
+		if (openTag == null || closeTag == null) {
 		    log.warn("Template not found: page=" + page + " template="
 			    + name);
 		} else {
 		    log.debug("Serving template: page=" + page + " template="
 			    + name);
-		    sb.append(content, begin + beginString.length(), end);
+		    sb.append(content, openTag.getEndIndex(), closeTag
+			    .getBeginIndex());
 		}
 	    } else {
 		log.debug("Serving template: page=" + page);
@@ -285,26 +282,17 @@ public final class Driver {
 	    }
 	    if (params != null) {
 		for (Entry<String, String> param : params.entrySet()) {
-		    int lastIndexOfString = 0;
 		    String key = param.getKey();
 		    String value = param.getValue();
-		    String beginString = "<!--$beginparam$" + key + "$-->";
-		    String endString = "<!--$endparam$" + key + "$-->";
-		    while (lastIndexOfString >= 0) {
-			int begin = sb.indexOf(beginString, lastIndexOfString);
-			int end = sb.indexOf(endString, lastIndexOfString);
-			if (!(begin == -1 || end == -1)) {
-			    sb
-				    .replace(begin + beginString.length(), end,
-					    value);
-			}
-			if (begin == -1 || end == -1) {
-			    lastIndexOfString = -1;
-			} else {
-			    // New start search value to use
-			    lastIndexOfString = begin + beginString.length()
-				    + value.length() + endString.length();
-			}
+		    Tag openTag = Tag.find("beginparam$" + key, sb, 0);
+		    Tag closeTag = Tag.find("endparam$" + key, sb, 0);
+		    while (openTag != null && closeTag != null) {
+			sb.replace(openTag.getBeginIndex(), closeTag
+				.getEndIndex(), value);
+			openTag = Tag.find("beginparam$" + key, sb, closeTag
+				.getEndIndex());
+			closeTag = Tag.find("endparam$" + key, sb, closeTag
+				.getEndIndex());
 		    }
 		}
 	    }
@@ -390,75 +378,75 @@ public final class Driver {
 	    return;
 	response.setCharacterEncoding(stringOutput.getCharsetName());
 	Writer writer = response.getWriter();
-	int currentPosition = 0;
-	int previousPosition;
-	int endPosition;
-	String currentTag;
-	StringTokenizer stringTokenizer;
-	String tagName;
-	String provider;
-	String page;
-	String blockOrTemplate;
-	while (currentPosition > -1) {
-	    // look for includeBlock or includeTemplate markers
-	    previousPosition = currentPosition;
-	    currentPosition = content.indexOf("<!--$include", currentPosition);
-	    if (currentPosition > -1) {
-		writer.append(content, previousPosition, currentPosition);
-		endPosition = content.indexOf("-->", currentPosition);
-		if (endPosition == -1)
-		    throw new AggregationSyntaxException("Tag not closed");
-		currentTag = content
-			.substring(currentPosition + 4, endPosition);
-		log.debug("Found tag: " + currentTag);
-		currentPosition = endPosition + 3;
-		stringTokenizer = new StringTokenizer(currentTag, "$");
-		if (stringTokenizer.countTokens() < 3)
-		    throw new AggregationSyntaxException("Invalid syntax: "
-			    + currentTag);
-		tagName = stringTokenizer.nextToken();
-		provider = stringTokenizer.nextToken();
-		page = stringTokenizer.nextToken();
-		if (stringTokenizer.hasMoreTokens())
-		    blockOrTemplate = stringTokenizer.nextToken();
-		else
-		    blockOrTemplate = null;
-		if (stringTokenizer.hasMoreTokens())
-		    throw new AggregationSyntaxException("Invalid syntax: "
-			    + currentTag);
+	Tag previousCloseTag = null;
+	// look for includeBlock or includeTemplate markers
+	Tag openTag = Tag.find("include", content, 0);
+	Tag closeTag = null;
+	if (openTag != null) {
+	    if ("includeblock".equals(openTag.getTokens()[0])) {
+		closeTag = Tag.find("endincludeblock", content, 0);
+		if (closeTag == null)
+		    closeTag = openTag;
+	    } else if ("includetemplate".equals(openTag.getTokens()[0]))
+		closeTag = Tag.find("endincludetemplate", content, 0);
+	    else
+		// False alert, wrong tag
+		openTag = null;
+	}
+	while (openTag != null) {
+	    if (closeTag == null)
+		throw new AggregationSyntaxException("Tag not closed: "
+			+ openTag);
+	    if (previousCloseTag != null)
+		writer.append(content, previousCloseTag.getEndIndex(), openTag
+			.getBeginIndex());
+	    else
+		writer.append(content, 0, openTag.getBeginIndex());
+	    if (openTag.countTokens() != 3 && openTag.countTokens() != 4)
+		throw new AggregationSyntaxException("Invalid syntax: "
+			+ openTag);
+	    String tagName = openTag.getTokens()[0];
+	    String provider = openTag.getTokens()[1];
+	    String page = openTag.getTokens()[2];
+	    String blockOrTemplate;
+	    if (openTag.countTokens() == 4)
+		blockOrTemplate = openTag.getTokens()[3];
+	    else
+		blockOrTemplate = null;
+	    try {
 		if ("includeblock".equals(tagName)) {
-		    try {
-			Driver.getInstance(provider).renderBlock(page,
-				blockOrTemplate, writer, getContext(request),
-				null, null);
-		    } catch (RenderException e) {
-			writer.append(stringOutput.toString());
-		    }
-		} else if ("includetemplate".equals(tagName)) {
-		    endPosition = content
-			    .indexOf("<!--$endincludetemplate$-->");
-		    if (endPosition < 0)
-			throw new AggregationSyntaxException("Tag not closed: "
-				+ currentTag);
-		    try {
-			Driver.getInstance(provider)
-				.aggregateTemplate(
-					page,
-					blockOrTemplate,
-					content.substring(currentPosition,
-						endPosition), writer, request);
-		    } catch (RenderException e) {
-			writer.append(stringOutput.toString());
-		    }
-		    currentPosition = endPosition + 27;
+		    Driver.getInstance(provider).renderBlock(page,
+			    blockOrTemplate, writer, getContext(request), null,
+			    null);
 		} else {
-		    throw new AggregationSyntaxException("Invalid syntax: "
-			    + currentTag);
+		    Driver.getInstance(provider).aggregateTemplate(
+			    page,
+			    blockOrTemplate,
+			    content.substring(openTag.getEndIndex(), closeTag
+				    .getBeginIndex()), writer, request);
 		}
-	    } else {
-		writer.append(content, previousPosition, content.length());
+	    } catch (RenderException e) {
+		writer.append(e.getStatusCode() + " " + e.getStatusMessage());
+	    }
+	    openTag = Tag.find("include", content, closeTag.getEndIndex());
+	    previousCloseTag = closeTag;
+	    if (openTag != null) {
+		if ("includeblock".equals(openTag.getTokens()[0])) {
+		    closeTag = Tag.find("endincludeblock", content, 0);
+		    if (closeTag == null)
+			closeTag = openTag;
+		} else if ("includetemplate".equals(openTag.getTokens()[0]))
+		    closeTag = Tag.find("endincludetemplate", content, 0);
+		else
+		    // False alert, wrong tag
+		    openTag = null;
 	    }
 	}
+	if (previousCloseTag != null)
+	    writer.append(content, previousCloseTag.getEndIndex(), content
+		    .length());
+	else
+	    writer.append(content, 0, content.length());
     }
 
     private final void renderResource(Target target, Output output)
@@ -585,38 +573,25 @@ public final class Driver {
     private final void aggregateTemplate(String page, String template,
 	    String content, Writer writer, HttpServletRequest request)
 	    throws IOException, AggregationSyntaxException, RenderException {
-	int currentPosition = 0;
-	int endPosition;
-	String currentTag;
-	StringTokenizer stringTokenizer;
-	String name;
+	Tag openTag = Tag.find("beginput", content, 0);
+	Tag closeTag = null;
+	if (openTag != null)
+	    closeTag = Tag.find("endput", content, openTag.getEndIndex());
 	HashMap<String, String> params = new HashMap<String, String>();
-	while (currentPosition > -1) {
+	while (openTag != null) {
 	    // look for includeBlock or includeTemplate markers
-	    currentPosition = content.indexOf("<!--$beginput", currentPosition);
-	    if (currentPosition > -1) {
-		endPosition = content.indexOf("-->", currentPosition);
-		if (endPosition == -1)
-		    throw new AggregationSyntaxException("Tag not closed");
-		currentTag = content
-			.substring(currentPosition + 4, endPosition);
-		log.debug("Found tag: " + currentTag);
-		stringTokenizer = new StringTokenizer(currentTag, "$");
-		if (stringTokenizer.countTokens() != 2)
-		    throw new AggregationSyntaxException("Invalid syntax: "
-			    + currentTag);
-		stringTokenizer.nextToken();
-		name = stringTokenizer.nextToken();
-		currentPosition = endPosition;
-		endPosition = content.indexOf("<!--$endput$-->",
-			currentPosition);
-		if (endPosition == -1)
-		    throw new AggregationSyntaxException("Tag not closed: "
-			    + currentTag);
-		params.put(name, content.substring(currentPosition + 3,
-			endPosition));
-		currentPosition = endPosition;
-	    }
+	    if (openTag.countTokens() != 2)
+		throw new AggregationSyntaxException("Invalid syntax: "
+			+ openTag);
+	    if (closeTag == null)
+		throw new AggregationSyntaxException("Tag not closed: "
+			+ openTag);
+	    String name = openTag.getTokens()[1];
+	    params.put(name, content.substring(openTag.getEndIndex(), closeTag
+		    .getBeginIndex()));
+	    openTag = Tag.find("beginput", content, closeTag.getEndIndex());
+	    if (openTag != null)
+		closeTag = Tag.find("endput", content, openTag.getEndIndex());
 	}
 	renderTemplate(page, template, writer, getContext(request), params,
 		null, null);

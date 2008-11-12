@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import net.webassembletool.Driver;
+import net.webassembletool.RenderException;
 
 /**
  * Utility class used by all tags to access to the Driver
@@ -28,13 +29,18 @@ public class DriverUtils {
 	    throws JspException {
 
 	try {
-	    Driver.getInstance(provider).renderBlock(
-		    page,
-		    name,
-		    pageContext.getOut(),
-		    Driver.getInstance(provider).getContext(
-			    (HttpServletRequest) pageContext.getRequest()),
-		    replaceRules, parameters);
+	    try {
+		Driver.getInstance(provider).renderBlock(
+			page,
+			name,
+			pageContext.getOut(),
+			Driver.getInstance(provider).getContext(
+				(HttpServletRequest) pageContext.getRequest()),
+			replaceRules, parameters);
+	    } catch (RenderException e) {
+		pageContext.getOut().write(
+			e.getStatusCode() + " " + e.getStatusMessage());
+	    }
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}
@@ -46,13 +52,18 @@ public class DriverUtils {
 	    throws JspException {
 
 	try {
-	    Driver.getInstance(provider).renderTemplate(
-		    page,
-		    name,
-		    pageContext.getOut(),
-		    Driver.getInstance(provider).getContext(
-			    (HttpServletRequest) pageContext.getRequest()),
-		    params, replaceRules, parameters);
+	    try {
+		Driver.getInstance(provider).renderTemplate(
+			page,
+			name,
+			pageContext.getOut(),
+			Driver.getInstance(provider).getContext(
+				(HttpServletRequest) pageContext.getRequest()),
+			params, replaceRules, parameters);
+	    } catch (RenderException e) {
+		pageContext.getOut().write(
+			e.getStatusCode() + " " + e.getStatusMessage());
+	    }
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}
