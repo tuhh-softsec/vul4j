@@ -31,6 +31,16 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
  */
 public interface Archiver
 {
+    /**
+     * Default value for the dirmode attribute.
+     */
+    int DEFAULT_DIR_MODE = UnixStat.DIR_FLAG | UnixStat.DEFAULT_DIR_PERM;
+
+    /**
+     * Default value for the filemode attribute.
+     */
+    int DEFAULT_FILE_MODE = UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
+    
     String ROLE = Archiver.class.getName();
 
     public static final String DUPLICATES_ADD = "add";

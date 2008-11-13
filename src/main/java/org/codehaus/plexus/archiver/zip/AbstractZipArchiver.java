@@ -471,7 +471,7 @@ public abstract class AbstractZipArchiver
                     f = new File( dir );
                 }
                 final PlexusIoFileResource res = new PlexusIoFileResource( f );
-                zipDir( res, zOut, prefix + dir, getDefaultDirectoryMode() );
+                zipDir( res, zOut, prefix + dir, getRawDefaultDirectoryMode() );
             }
         }
     }

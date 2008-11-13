@@ -39,11 +39,13 @@ import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoProxyResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -60,15 +62,6 @@ public abstract class AbstractArchiver
     extends AbstractLogEnabled
     implements Archiver, Contextualizable, FilterEnabled, FinalizerEnabled
 {
-    /**
-     * Default value for the dirmode attribute.
-     */
-    public static final int DEFAULT_DIR_MODE = UnixStat.DIR_FLAG | UnixStat.DEFAULT_DIR_PERM;
-
-    /**
-     * Default value for the filemode attribute.
-     */
-    public static final int DEFAULT_FILE_MODE = UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
 
     private Logger logger;
 
@@ -86,11 +79,11 @@ public abstract class AbstractArchiver
      */
     private List resources = new ArrayList();
 
-    private int defaultFileMode = DEFAULT_FILE_MODE;
+    private int defaultFileMode = -1;
 
     private boolean includeEmptyDirs = true;
 
-    private int defaultDirectoryMode = DEFAULT_DIR_MODE;
+    private int defaultDirectoryMode = -1;
 
     private boolean forced = true;
 
@@ -128,6 +121,16 @@ public abstract class AbstractArchiver
 
     public int getDefaultFileMode()
     {
+        if ( defaultFileMode == -1 )
+        {
+            return DEFAULT_FILE_MODE;
+        }
+        
+        return defaultFileMode;
+    }
+    
+    public int getRawDefaultFileMode()
+    {
         return defaultFileMode;
     }
 
@@ -137,6 +140,16 @@ public abstract class AbstractArchiver
     }
 
     public int getDefaultDirectoryMode()
+    {
+        if ( defaultDirectoryMode == -1 )
+        {
+            return DEFAULT_DIR_MODE;
+        }
+        
+        return defaultDirectoryMode;
+    }
+    
+    public int getRawDefaultDirectoryMode()
     {
         return defaultDirectoryMode;
     }
@@ -212,7 +225,9 @@ public abstract class AbstractArchiver
     public void addFile( File inputFile, String destFileName )
         throws ArchiverException
     {
-        addFile( inputFile, destFileName, getDefaultFileMode() );
+        int rawDefaultFileMode = getRawDefaultFileMode();
+        
+        addFile( inputFile, destFileName, rawDefaultFileMode );
     }
 
     protected ArchiveEntry asArchiveEntry( PlexusIoResource resource, String destFileName, int permissions )
@@ -238,7 +253,23 @@ public abstract class AbstractArchiver
         try
         {
             final String destFileName = collection.getName( resource );
-            final int permissions = resource.isFile() ? getDefaultFileMode() : getDefaultDirectoryMode();
+            
+//            1. use given permissions (doesn't apply here)
+//            2. use preferred default permissions
+//            3. use detected permissions
+//            4. use default permissions as initialized by the archiver component when it was created
+            
+            int permissions = resource.isFile() ? defaultFileMode : defaultDirectoryMode;
+            if ( permissions == -1 && ( resource instanceof PlexusIoResourceWithAttributes ) )
+            {
+                PlexusIoResourceAttributes attrs = ((PlexusIoResourceWithAttributes) resource ).getAttributes();
+                
+                if ( attrs != null )
+                {
+                    permissions = attrs.getOctalMode();
+                }
+            }
+            
             return asArchiveEntry( resource, destFileName, permissions );
         }
         catch ( IOException e )

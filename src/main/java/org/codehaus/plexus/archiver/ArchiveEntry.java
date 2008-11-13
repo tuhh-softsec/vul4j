@@ -62,7 +62,14 @@ public class ArchiveEntry
             ( resource instanceof PlexusIoResourceWithAttributes ) ? ( (PlexusIoResourceWithAttributes) resource ).getAttributes()
                             : null;
         this.type = type;
-        this.mode = ( mode & UnixStat.PERM_MASK ) |
+        int permissions = mode;
+        
+        if ( mode == -1 && this.attributes == null )
+        {
+            permissions = resource.isFile() ? Archiver.DEFAULT_FILE_MODE : Archiver.DEFAULT_DIR_MODE;
+        }
+        
+        this.mode = permissions == -1 ? permissions : ( permissions & UnixStat.PERM_MASK ) |
                     ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
     }
 
@@ -112,12 +119,18 @@ public class ArchiveEntry
      */
     public int getMode()
     {
+        if ( mode != -1 )
+        {
+            return mode;
+        }
+        
         if ( attributes != null && attributes.getOctalMode() > -1 )
         {
             return attributes.getOctalMode();
         }
         
-        return mode;
+        return ( ( type == FILE ? Archiver.DEFAULT_FILE_MODE : Archiver.DEFAULT_DIR_MODE ) & UnixStat.PERM_MASK ) |
+                ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
     }
 
     public static ArchiveEntry createFileEntry( String target, PlexusIoResource resource, int permissions )
