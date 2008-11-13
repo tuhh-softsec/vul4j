@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -71,17 +72,19 @@ public abstract class HttpTestCase extends TestCase {
 
     @Override
     public void setUp() {
+	httpMethod = null;
 	referenceFilesPath = System.getenv("referenceFilesPath");
 	if (!referenceFilesPath.endsWith(File.separator))
 	    referenceFilesPath += File.separator;
 	httpClient = new HttpClient();
-	httpMethod = null;
     }
 
     @Override
     public void tearDown() throws Exception {
-	httpClient = null;
 	httpMethod = null;
+	((SimpleHttpConnectionManager) httpClient.getHttpConnectionManager())
+		.shutdown();
+	httpClient = null;
     }
 
     public void doGet(String relativeURL) throws Exception {

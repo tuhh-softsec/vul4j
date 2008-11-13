@@ -7,7 +7,11 @@ import java.io.LineNumberReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Server;
-import org.mortbay.xml.XmlConfiguration;
+import org.mortbay.jetty.deployer.WebAppDeployer;
+import org.mortbay.jetty.handler.ContextHandlerCollection;
+import org.mortbay.jetty.handler.DefaultHandler;
+import org.mortbay.jetty.handler.HandlerCollection;
+import org.mortbay.thread.QueuedThreadPool;
 
 /**
  * 
@@ -46,10 +50,16 @@ public class JettyRunner {
 	    webappsRoot = System.getenv("webappsRoot");
 	log.info("Starting jetty");
 	server = new Server(serverPort);
-	System.setProperty("webapptest.webapproot", webappsRoot);
-	XmlConfiguration xml = new XmlConfiguration(JettyRunner.class
-		.getResourceAsStream("jetty.xml"));
-	xml.configure(server);
+	server.setThreadPool(new QueuedThreadPool());
+	HandlerCollection handlers = new HandlerCollection();
+	ContextHandlerCollection contexts = new ContextHandlerCollection();
+	handlers.addHandler(contexts);
+	handlers.addHandler(new DefaultHandler());
+	server.setHandler(handlers);
+	WebAppDeployer webAppDeployer = new WebAppDeployer();
+	webAppDeployer.setContexts(contexts);
+	webAppDeployer.setWebAppDir(webappsRoot);
+	server.addLifeCycle(webAppDeployer);
 	server.start();
     }
 
