@@ -14,6 +14,7 @@ import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUti
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.Os;
 
 public class TarFileAttributesTest
     extends PlexusTestCase
@@ -71,6 +72,11 @@ public class TarFileAttributesTest
         throws Exception
     {
         printTestHeader();
+        if ( checkForWindows() )
+        {
+            System.out.println( "This test cannot run on windows. Aborting." );
+            return;
+        }
         
         File tempFile = File.createTempFile( "tar-file-attributes.", ".tmp" );
         toDelete.add( tempFile );
@@ -124,10 +130,25 @@ public class TarFileAttributesTest
         assertEquals( 0440, fileAttributes.getOctalMode() );
     }
 
+    private boolean checkForWindows()
+    {
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
+        {
+            return true;
+        }
+        
+        return false;
+    }
+
     public void testOverrideDetectedFileAttributes()
         throws Exception
     {
         printTestHeader();
+        if ( checkForWindows() )
+        {
+            System.out.println( "This test cannot run on windows. Aborting." );
+            return;
+        }
         
         File tempFile = File.createTempFile( "tar-file-attributes.", ".tmp" );
         toDelete.add( tempFile );
@@ -179,6 +200,11 @@ public class TarFileAttributesTest
         throws Exception
     {
         printTestHeader();
+        if ( checkForWindows() )
+        {
+            System.out.println( "This test cannot run on windows. Aborting." );
+            return;
+        }
         
         File tempFile = File.createTempFile( "tar-file-attributes.", ".tmp" );
         toDelete.add( tempFile );
