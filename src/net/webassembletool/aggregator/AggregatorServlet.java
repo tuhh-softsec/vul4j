@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 
 /**
@@ -28,7 +27,8 @@ public class AggregatorServlet extends HttpServlet {
 	if (request.getPathInfo() != null)
 	    relUrl += request.getPathInfo();
 	try {
-	    DriverFactory.getInstance(provider).aggregate(relUrl, request, response);
+	    DriverFactory.getInstance(provider).aggregate(relUrl, request,
+		    response);
 	} catch (AggregationSyntaxException e) {
 	    throw new ServletException(e);
 	}
