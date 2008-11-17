@@ -37,9 +37,9 @@ public class ParameterTag extends BodyTagSupport {
      */
     @Override
     public int doAfterBody() throws JspException {
-	IParameterTag parameterTag = (IParameterTag) getParent();
+	ParametrizableTag parent = (ParametrizableTag) getParent();
 	String value = getBodyContent().getString();
-	parameterTag.getParameters().put(parameter, value);
+	parent.getParameters().put(parameter, value);
 	return SKIP_BODY;
     }
 }

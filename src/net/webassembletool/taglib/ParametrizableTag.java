@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Cedric Brandes
  * 
  */
-public interface IParameterTag {
+public interface ParametrizableTag {
     public abstract Map<String, String> getParameters();
 
 }

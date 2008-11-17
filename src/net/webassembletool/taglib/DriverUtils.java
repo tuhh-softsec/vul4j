@@ -27,22 +27,13 @@ public class DriverUtils {
     public final static void renderBlock(String provider, String page,
 	    String name, PageContext pageContext,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
-	    throws JspException {
+	    throws JspException, RenderException {
 
 	try {
-	    try {
-		Driver driver = DriverFactory.getInstance(provider);
-		driver.renderBlock(
-			page,
-			name,
-			pageContext.getOut(),
-			driver.getContext(
-				(HttpServletRequest) pageContext.getRequest()),
-			replaceRules, parameters);
-	    } catch (RenderException e) {
-		pageContext.getOut().write(
-			e.getStatusCode() + " " + e.getStatusMessage());
-	    }
+	    Driver driver = DriverFactory.getInstance(provider);
+	    driver.renderBlock(page, name, pageContext.getOut(), driver
+		    .getContext((HttpServletRequest) pageContext.getRequest()),
+		    replaceRules, parameters);
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}
@@ -51,22 +42,13 @@ public class DriverUtils {
     public final static void renderTemplate(String provider, String page,
 	    String name, PageContext pageContext, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
-	    throws JspException {
+	    throws JspException, RenderException {
 
 	try {
-	    try {
-		Driver driver = DriverFactory.getInstance(provider);
-		driver.renderTemplate(
-			page,
-			name,
-			pageContext.getOut(),
-			driver.getContext(
-				(HttpServletRequest) pageContext.getRequest()),
-			params, replaceRules, parameters);
-	    } catch (RenderException e) {
-		pageContext.getOut().write(
-			e.getStatusCode() + " " + e.getStatusMessage());
-	    }
+	    Driver driver = DriverFactory.getInstance(provider);
+	    driver.renderTemplate(page, name, pageContext.getOut(), driver
+		    .getContext((HttpServletRequest) pageContext.getRequest()),
+		    params, replaceRules, parameters);
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}

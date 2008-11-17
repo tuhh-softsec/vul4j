@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Cedric Brandes
  * 
  */
-public interface IReplaceableTag {
+public interface ReplaceableTag {
 
     public abstract Map<String, String> getReplaceRules();
 }

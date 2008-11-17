@@ -37,9 +37,9 @@ public class ReplaceTag extends BodyTagSupport {
      */
     @Override
     public int doAfterBody() throws JspException {
-	IReplaceableTag replaceableTag = (IReplaceableTag) getParent();
+	ReplaceableTag parent = (ReplaceableTag) getParent();
 	String newExpression = getBodyContent().getString();
-	replaceableTag.getReplaceRules().put(expression, newExpression);
+	parent.getReplaceRules().put(expression, newExpression);
 	return SKIP_BODY;
     }
 }

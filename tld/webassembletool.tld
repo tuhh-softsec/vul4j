@@ -25,6 +25,24 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>addQuery</name>
+			<required>false</required>
+			<type>boolean</type>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>displayErrorPage</name>
+			<required>false</required>
+			<type>boolean</type>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>parseAbsoluteUrl</name>
+			<required>false</required>
+			<type>boolean</type>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>includeBase</name>
@@ -121,5 +139,20 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+	</tag>
+	<tag>
+		<name>errorDefinition</name>
+		<tag-class>net.webassembletool.taglib.ErrorDefinitionTag</tag-class>
+		<attribute>
+			<name>errorCode</name>
+			<required>true</required>
+			<type>java.lang.Integer</type>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>defaultError</name>
+		<tag-class>net.webassembletool.taglib.DefaultErrorTag</tag-class>
+		<body-content>JSP</body-content>
 	</tag>
 </taglib>
