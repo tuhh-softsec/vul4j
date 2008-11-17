@@ -1,4 +1,4 @@
-package net.webassembletool;
+package net.webassembletool.parse;
 
 import java.util.StringTokenizer;
 
@@ -42,6 +42,31 @@ public class Tag {
 	}
     }
 
+    /**
+     * Finds tag named <code>what</code> from the start of the source
+     * <code>where</code>
+     * 
+     * @param what tag name to find
+     * @param where source data where to find tag
+     * @return tag found or <code>null</code> in other case
+     */
+    public final static Tag find(String what, String where) {
+	return find(what, where, 0);
+    }
+
+    /**
+     * Finds next tag named <code>what</code> in the source <code>where</code>
+     * after the end of the tag <code>tag</code>
+     * 
+     * @param what tag name to find
+     * @param where source data where to find tag
+     * @param tag previous tag inthe source
+     * @return tag found or <code>null</code> in other case
+     */
+    public final static Tag findNext(String what, String where, Tag tag) {
+	return find(what, where, tag.getEndIndex());
+    }
+
     public final static Tag find(String what, String where, int offset) {
 	int begin = where.indexOf("<!--$" + what, offset);
 	if (begin < 0)
@@ -50,6 +75,31 @@ public class Tag {
 	if (end < 0)
 	    return null;
 	return new Tag(begin, end + 3, where.substring(begin + 5, end));
+    }
+
+    /**
+     * Finds tag named <code>what</code> from the start of the source
+     * <code>where</code>
+     * 
+     * @param what tag name to find
+     * @param where source data where to find tag
+     * @return tag found or <code>null</code> in other case
+     */
+    public final static Tag find(String what, StringBuilder where) {
+	return find(what, where, 0);
+    }
+
+    /**
+     * Finds next tag named <code>what</code> in the source <code>where</code>
+     * after the end of the tag <code>tag</code>
+     * 
+     * @param what tag name to find
+     * @param where source data where to find tag
+     * @param tag previous tag inthe source
+     * @return tag found or <code>null</code> in other case
+     */
+    public final static Tag findNext(String what, StringBuilder where, Tag tag) {
+	return find(what, where, tag.getEndIndex());
     }
 
     public final static Tag find(String what, StringBuilder where, int offset) {

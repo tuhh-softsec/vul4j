@@ -24,7 +24,7 @@ public class ProxyServlet extends HttpServlet {
 	String relUrl = request.getServletPath();
 	if (request.getPathInfo() != null)
 	    relUrl += request.getPathInfo();
-	Driver.getInstance(provider).proxy(relUrl, request, response,
+	DriverFactory.getInstance(provider).proxy(relUrl, request, response,
 		null);
     }
 

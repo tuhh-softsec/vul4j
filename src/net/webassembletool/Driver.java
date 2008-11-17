@@ -1,14 +1,10 @@
 package net.webassembletool;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,14 +21,16 @@ import net.webassembletool.http.ResponseOutput;
 import net.webassembletool.ouput.MultipleOutput;
 import net.webassembletool.ouput.Output;
 import net.webassembletool.ouput.StringOutput;
+import net.webassembletool.parse.BlockRenderer;
+import net.webassembletool.parse.Renderer;
+import net.webassembletool.parse.Tag;
+import net.webassembletool.parse.TemplateRenderer;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Main class used to retrieve data from a provider application using HTTP
@@ -43,20 +41,13 @@ import org.apache.commons.logging.LogFactory;
  * @author François-Xavier Bonnet
  * 
  */
-public final class Driver {
+public class Driver {
     // TODO write a tokenizer class to avoid String.indexOf usage in the driver.
     // TODO proxy mode option for taglibs, aggregator and proxy, recursive or
     // not for aggregator
-    private final static Log log = LogFactory.getLog(Driver.class);
-    private static HashMap<String, Driver> instances;
     private final DriverConfiguration config;
-    private Cache cache;
-    private HttpClient httpClient;
-
-    static {
-	// Load default settings
-	configure();
-    }
+    private final Cache cache;
+    private final HttpClient httpClient;
 
     public Driver(String name, Properties props) {
 	config = new DriverConfiguration(name, props);
@@ -69,6 +60,8 @@ public final class Driver {
 	    httpClient.getParams().setSoTimeout(config.getTimeout());
 	    httpClient.getHttpConnectionManager().getParams()
 		    .setConnectionTimeout(config.getTimeout());
+	} else {
+	    httpClient = null;
 	}
 	// Proxy settings
 	if (config.getProxyHost() != null) {
@@ -76,95 +69,10 @@ public final class Driver {
 	    conf.setProxy(config.getProxyHost(), config.getProxyPort());
 	}
 	// Cache
-	if (config.isUseCache())
+	if (config.isUseCache()) {
 	    cache = new Cache(config.getCacheRefreshDelay());
-    }
-
-    /**
-     * Retrieves the default instance of this class that is configured according
-     * to the properties file (driver.properties)
-     * 
-     * @return the default instance
-     */
-    public final static Driver getInstance() {
-	return getInstance("default");
-    }
-
-    /**
-     * Retrieves the default instance of this class that is configured according
-     * to the properties file (driver.properties)
-     * 
-     * @param instanceName The name of the instance (corresponding to the prefix
-     *            in the driver.properties file)
-     * 
-     * @return the named instance
-     */
-    public final static Driver getInstance(String instanceName) {
-	if (instances == null)
-	    throw new ConfigurationException(
-		    "Driver has not been configured and driver.properties file was not found");
-	if (instanceName == null)
-	    instanceName = "default";
-	Driver instance = instances.get(instanceName);
-	if (instance == null)
-	    throw new ConfigurationException(
-		    "No configuration properties found for factory : "
-			    + instanceName);
-	return instance;
-    }
-
-    /**
-     * Loads all the instances according to the properties parameter
-     * 
-     * @param props properties to use for configuration
-     */
-    public final static void configure(Properties props) {
-	instances = new HashMap<String, Driver>();
-	HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
-	for (Enumeration<?> enumeration = props.propertyNames(); enumeration
-		.hasMoreElements();) {
-	    String propertyName = (String) enumeration.nextElement();
-	    String prefix;
-	    String name;
-	    if (propertyName.indexOf(".") < 0) {
-		prefix = "default";
-		name = propertyName;
-	    } else {
-		prefix = propertyName.substring(0, propertyName
-			.lastIndexOf("."));
-		name = propertyName
-			.substring(propertyName.lastIndexOf(".") + 1);
-	    }
-	    Properties driverProperties = driversProps.get(prefix);
-	    if (driverProperties == null) {
-		driverProperties = new Properties();
-		driversProps.put(prefix, driverProperties);
-	    }
-	    driverProperties.put(name, props.getProperty(propertyName));
-	}
-	for (Iterator<String> iterator = driversProps.keySet().iterator(); iterator
-		.hasNext();) {
-	    String name = iterator.next();
-	    Properties driverProperties = driversProps.get(name);
-	    instances.put(name, new Driver(name, driverProperties));
-	}
-
-    }
-
-    /**
-     * Loads all the instances according to default configuration file
-     */
-    public final static void configure() {
-	try {
-	    InputStream inputStream = Driver.class
-		    .getResourceAsStream("driver.properties");
-	    if (inputStream != null) {
-		Properties props = new Properties();
-		props.load(inputStream);
-		configure(props);
-	    }
-	} catch (IOException e) {
-	    throw new ConfigurationException(e);
+	} else {
+	    cache = null;
 	}
     }
 
@@ -211,27 +119,14 @@ public final class Driver {
 	    Map<String, String> parameters) throws IOException, RenderException {
 	Target target = new Target(page, context, parameters);
 	StringOutput stringOutput = getResourceAsString(target);
-	if (stringOutput.getStatusCode() != HttpServletResponse.SC_OK) {
-	    throw new RenderException(stringOutput.getStatusCode(),
-		    stringOutput.getStatusMessage(), stringOutput.toString());
-	}
-	String content = stringOutput.toString();
-	if (content == null)
-	    return;
-	Tag openTag = Tag.find("beginblock$" + name, content, 0);
-	Tag closeTag = Tag.find("endblock$" + name, content, 0);
-	if (openTag == null || closeTag == null) {
-	    log.warn("Block not found: page=" + page + " block=" + name);
-	} else {
-	    log.debug("Serving block: page=" + page + " block=" + name);
-	    writer.append(StringUtils.replace(content.substring(openTag
-		    .getEndIndex(), closeTag.getBeginIndex()), replaceRules));
-	}
+
+	Renderer renderer = new BlockRenderer(name, replaceRules, writer, page);
+	renderer.render(stringOutput);
     }
 
     /**
      * Retrieves a template from the provider application and renders it to the
-     * writer replacing the parameters with the given map. If "page" param is
+     * writer replacing the parameters with the given map. If "name" param is
      * null, the whole page will be used as the template.<br />
      * eg: The template "mytemplate" can be delimited in the provider page by
      * comments "&lt;!--$begintemplate$mytemplate$--&gt;" and
@@ -257,54 +152,10 @@ public final class Driver {
 	    throws IOException, RenderException {
 	Target target = new Target(page, context, parameters);
 	StringOutput stringOutput = getResourceAsString(target);
-	if (stringOutput.getStatusCode() != HttpServletResponse.SC_OK) {
-	    throw new RenderException(stringOutput.getStatusCode(),
-		    stringOutput.getStatusMessage(), stringOutput.toString());
-	}
-	String content = stringOutput.toString();
-	StringBuilder sb = new StringBuilder();
-	if (content != null) {
-	    if (name != null) {
-		Tag openTag = Tag.find("begintemplate$" + name, content, 0);
-		Tag closeTag = Tag.find("endtemplate$" + name, content, 0);
-		if (openTag == null || closeTag == null) {
-		    log.warn("Template not found: page=" + page + " template="
-			    + name);
-		} else {
-		    log.debug("Serving template: page=" + page + " template="
-			    + name);
-		    sb.append(content, openTag.getEndIndex(), closeTag
-			    .getBeginIndex());
-		}
-	    } else {
-		log.debug("Serving template: page=" + page);
-		sb.append(content);
-	    }
-	    if (params != null) {
-		for (Entry<String, String> param : params.entrySet()) {
-		    String key = param.getKey();
-		    String value = param.getValue();
-		    Tag openTag = Tag.find("beginparam$" + key, sb, 0);
-		    Tag closeTag = Tag.find("endparam$" + key, sb, 0);
-		    while (openTag != null && closeTag != null) {
-			sb.replace(openTag.getBeginIndex(), closeTag
-				.getEndIndex(), value);
-			openTag = Tag.find("beginparam$" + key, sb, closeTag
-				.getEndIndex());
-			closeTag = Tag.find("endparam$" + key, sb, closeTag
-				.getEndIndex());
-		    }
-		}
-	    }
 
-	} else {
-	    if (params != null) {
-		for (Entry<String, String> param : params.entrySet()) {
-		    sb.append(param.getValue());
-		}
-	    }
-	}
-	writer.append(StringUtils.replace(sb, replaceRules));
+	Renderer renderer = new TemplateRenderer(name, replaceRules, params,
+		writer, page);
+	renderer.render(stringOutput);
     }
 
     /**
@@ -347,9 +198,9 @@ public final class Driver {
      * </ul>
      * 
      * Aggregation is always in "proxy mode" that means cookies or parameters
-     * from the original request are transmitted to the target server. NB:
-     * Cookies and parameters are not transmitted to templates or blocks invoked
-     * by the page.
+     * from the original request are transmitted to the target server. <br/>
+     * <b>NB: Cookies and parameters are not transmitted to templates or blocks
+     * invoked by the page</b>.
      * 
      * 
      * @param relUrl the relative URL to the resource
@@ -378,17 +229,18 @@ public final class Driver {
 	    return;
 	response.setCharacterEncoding(stringOutput.getCharsetName());
 	Writer writer = response.getWriter();
+	Context context = getContext(request);
 	Tag previousCloseTag = null;
 	// look for includeBlock or includeTemplate markers
-	Tag openTag = Tag.find("include", content, 0);
+	Tag openTag = Tag.find("include", content);
 	Tag closeTag = null;
 	if (openTag != null) {
 	    if ("includeblock".equals(openTag.getTokens()[0])) {
-		closeTag = Tag.find("endincludeblock", content, 0);
+		closeTag = Tag.find("endincludeblock", content);
 		if (closeTag == null)
 		    closeTag = openTag;
 	    } else if ("includetemplate".equals(openTag.getTokens()[0]))
-		closeTag = Tag.find("endincludetemplate", content, 0);
+		closeTag = Tag.find("endincludetemplate", content);
 	    else
 		// False alert, wrong tag
 		openTag = null;
@@ -415,28 +267,27 @@ public final class Driver {
 		blockOrTemplate = null;
 	    try {
 		if ("includeblock".equals(tagName)) {
-		    Driver.getInstance(provider).renderBlock(page,
-			    blockOrTemplate, writer, getContext(request), null,
-			    null);
+		    DriverFactory.getInstance(provider).renderBlock(page,
+			    blockOrTemplate, writer, context, null, null);
 		} else {
-		    Driver.getInstance(provider).aggregateTemplate(
+		    DriverFactory.getInstance(provider).aggregateTemplate(
 			    page,
 			    blockOrTemplate,
 			    content.substring(openTag.getEndIndex(), closeTag
-				    .getBeginIndex()), writer, request);
+				    .getBeginIndex()), writer, context);
 		}
 	    } catch (RenderException e) {
 		writer.append(e.getStatusCode() + " " + e.getStatusMessage());
 	    }
-	    openTag = Tag.find("include", content, closeTag.getEndIndex());
+	    openTag = Tag.findNext("include", content, closeTag);
 	    previousCloseTag = closeTag;
 	    if (openTag != null) {
 		if ("includeblock".equals(openTag.getTokens()[0])) {
-		    closeTag = Tag.find("endincludeblock", content, 0);
+		    closeTag = Tag.find("endincludeblock", content);
 		    if (closeTag == null)
 			closeTag = openTag;
 		} else if ("includetemplate".equals(openTag.getTokens()[0]))
-		    closeTag = Tag.find("endincludetemplate", content, 0);
+		    closeTag = Tag.find("endincludetemplate", content);
 		else
 		    // False alert, wrong tag
 		    openTag = null;
@@ -546,7 +397,7 @@ public final class Driver {
      * @return the content of the url
      * @throws IOException
      */
-    private final StringOutput getResourceAsString(Target target)
+    protected StringOutput getResourceAsString(Target target)
 	    throws IOException {
 	StringOutput stringOutput = new StringOutput();
 	renderResource(target, stringOutput);
@@ -571,12 +422,12 @@ public final class Driver {
      * 
      */
     private final void aggregateTemplate(String page, String template,
-	    String content, Writer writer, HttpServletRequest request)
-	    throws IOException, AggregationSyntaxException, RenderException {
-	Tag openTag = Tag.find("beginput", content, 0);
+	    String content, Writer writer, Context ctx) throws IOException,
+	    AggregationSyntaxException, RenderException {
+	Tag openTag = Tag.find("beginput", content);
 	Tag closeTag = null;
 	if (openTag != null)
-	    closeTag = Tag.find("endput", content, openTag.getEndIndex());
+	    closeTag = Tag.findNext("endput", content, openTag);
 	HashMap<String, String> params = new HashMap<String, String>();
 	while (openTag != null) {
 	    // look for includeBlock or includeTemplate markers
@@ -589,11 +440,10 @@ public final class Driver {
 	    String name = openTag.getTokens()[1];
 	    params.put(name, content.substring(openTag.getEndIndex(), closeTag
 		    .getBeginIndex()));
-	    openTag = Tag.find("beginput", content, closeTag.getEndIndex());
+	    openTag = Tag.findNext("beginput", content, closeTag);
 	    if (openTag != null)
-		closeTag = Tag.find("endput", content, openTag.getEndIndex());
+		closeTag = Tag.findNext("endput", content, openTag);
 	}
-	renderTemplate(page, template, writer, getContext(request), params,
-		null, null);
+	renderTemplate(page, template, writer, ctx, params, null, null);
     }
 }

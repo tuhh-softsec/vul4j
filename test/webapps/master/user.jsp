@@ -2,11 +2,11 @@
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@page import="net.webassembletool.Context"%>
-<%@page import="net.webassembletool.Driver"%>
+<%@page import="net.webassembletool.DriverFactory"%>
 <%@taglib uri="http://www.sourceforge.net/webassembletool" prefix="assemble"%>
 <%
 	Context context = new Context();	
 	context.setUser("test");
-	Driver.getInstance().setContext(context, request);
+	DriverFactory.getInstance().setContext(context, request);
 %>
 <assemble:includeTemplate page="user.jsp" />

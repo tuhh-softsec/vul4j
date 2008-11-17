@@ -16,10 +16,10 @@ import javax.servlet.http.HttpServletRequest;
  * @author François-Xavier Bonnet
  */
 public class Target {
-    private String relUrl;
-    private HttpServletRequest originalRequest;
-    private Map<String, String> parameters;
-    private Context context;
+    private final String relUrl;
+    private final HttpServletRequest originalRequest;
+    private final Map<String, String> parameters;
+    private final Context context;
     private boolean proxyMode = false;
     private String baseUrl;
 
@@ -44,9 +44,7 @@ public class Target {
     }
 
     public Target(String relUrl, Context context, Map<String, String> parameters) {
-	this.relUrl = relUrl;
-	this.context = context;
-	this.parameters = parameters;
+	this(relUrl, context, parameters, null);
     }
 
     public String getMethod() {

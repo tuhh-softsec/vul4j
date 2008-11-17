@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import net.webassembletool.Driver;
+import net.webassembletool.DriverFactory;
 import net.webassembletool.RenderException;
 
 /**
@@ -20,7 +21,7 @@ import net.webassembletool.RenderException;
  */
 public class DriverUtils {
     public final static String getBaseUrl(String provider) {
-	return Driver.getInstance(provider).getBaseURL();
+	return DriverFactory.getInstance(provider).getBaseURL();
     }
 
     public final static void renderBlock(String provider, String page,
@@ -30,11 +31,12 @@ public class DriverUtils {
 
 	try {
 	    try {
-		Driver.getInstance(provider).renderBlock(
+		Driver driver = DriverFactory.getInstance(provider);
+		driver.renderBlock(
 			page,
 			name,
 			pageContext.getOut(),
-			Driver.getInstance(provider).getContext(
+			driver.getContext(
 				(HttpServletRequest) pageContext.getRequest()),
 			replaceRules, parameters);
 	    } catch (RenderException e) {
@@ -53,11 +55,12 @@ public class DriverUtils {
 
 	try {
 	    try {
-		Driver.getInstance(provider).renderTemplate(
+		Driver driver = DriverFactory.getInstance(provider);
+		driver.renderTemplate(
 			page,
 			name,
 			pageContext.getOut(),
-			Driver.getInstance(provider).getContext(
+			driver.getContext(
 				(HttpServletRequest) pageContext.getRequest()),
 			params, replaceRules, parameters);
 	    } catch (RenderException e) {
