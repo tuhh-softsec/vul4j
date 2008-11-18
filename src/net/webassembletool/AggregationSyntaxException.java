@@ -1,4 +1,5 @@
-package net.webassembletool.aggregator;
+package net.webassembletool;
+
 
 /**
  * Exception thrown when an HTML document contains WAT tags with invalid
@@ -6,15 +7,12 @@ package net.webassembletool.aggregator;
  * 
  * @author François-Xavier Bonnet
  */
-public class AggregationSyntaxException extends Exception {
+public class AggregationSyntaxException extends RenderingException {
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * @param string Error message
-     */
+    /** @param string Error message */
     public AggregationSyntaxException(String string) {
 	super(string);
     }
-
-    private static final long serialVersionUID = 1L;
 
 }

@@ -8,7 +8,8 @@ import java.util.Properties;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import net.webassembletool.RenderException;
+import net.webassembletool.RenderingException;
+import net.webassembletool.RetrieveException;
 
 /**
  * Retrieves a template from the provider application and inserts it into the
@@ -38,7 +39,7 @@ public class IncludeTemplateTag extends BodyTagSupport implements
 	try {
 	    DriverUtils.renderTemplate(provider, page, name, pageContext,
 		    params, replaceRules, parameters);
-	} catch (RenderException e) {
+	} catch (RetrieveException e) {
 	    if (displayErrorPage) {
 		try {
 		    pageContext.getOut().append(e.getErrorPageContent());
@@ -68,6 +69,8 @@ public class IncludeTemplateTag extends BodyTagSupport implements
 		    throw new JspException(e1);
 		}
 	    }
+	} catch (RenderingException e) {
+	    throw new JspException(e);
 	}
 	name = null;
 	page = null;

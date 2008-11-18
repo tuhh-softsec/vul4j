@@ -2,7 +2,6 @@ package net.webassembletool;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.webassembletool.aggregator.AggregationSyntaxException;
 import net.webassembletool.cache.Cache;
 import net.webassembletool.cache.MemoryOutput;
 import net.webassembletool.cache.MemoryResource;
@@ -21,9 +19,9 @@ import net.webassembletool.http.ResponseOutput;
 import net.webassembletool.ouput.MultipleOutput;
 import net.webassembletool.ouput.Output;
 import net.webassembletool.ouput.StringOutput;
+import net.webassembletool.parse.AggregateRenderer;
 import net.webassembletool.parse.BlockRenderer;
 import net.webassembletool.parse.Renderer;
-import net.webassembletool.parse.Tag;
 import net.webassembletool.parse.TemplateRenderer;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.ResourceUtils;
@@ -112,16 +110,18 @@ public class Driver {
      * @param replaceRules the replace rules to be applied on the block
      * @param parameters Additional parameters
      * @throws IOException If an IOException occurs while writing to the writer
-     * @throws RenderException If an Exception occurs while retrieving the block
+     * @throws RenderingException If an Exception occurs while retrieving the
+     *             block
      */
     public final void renderBlock(String page, String name, Writer writer,
 	    Context context, Map<String, String> replaceRules,
-	    Map<String, String> parameters) throws IOException, RenderException {
+	    Map<String, String> parameters) throws IOException,
+	    RenderingException {
 	Target target = new Target(page, context, parameters);
 	StringOutput stringOutput = getResourceAsString(target);
 
-	Renderer renderer = new BlockRenderer(name, replaceRules, writer, page);
-	renderer.render(stringOutput);
+	Renderer renderer = new BlockRenderer(name, writer, page);
+	renderer.render(stringOutput, replaceRules);
     }
 
     /**
@@ -143,19 +143,18 @@ public class Driver {
      * @param replaceRules The replace rules to be applied on the block
      * @param parameters Parameters to be added to the request
      * @throws IOException If an IOException occurs while writing to the writer
-     * @throws RenderException If an Exception occurs while retrieving the
+     * @throws RenderingException If an Exception occurs while retrieving the
      *             template
      */
     public final void renderTemplate(String page, String name, Writer writer,
 	    Context context, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
-	    throws IOException, RenderException {
+	    throws IOException, RenderingException {
 	Target target = new Target(page, context, parameters);
 	StringOutput stringOutput = getResourceAsString(target);
 
-	Renderer renderer = new TemplateRenderer(name, replaceRules, params,
-		writer, page);
-	renderer.render(stringOutput);
+	Renderer renderer = new TemplateRenderer(name, params, writer, page);
+	renderer.render(stringOutput, replaceRules);
     }
 
     /**
@@ -208,96 +207,18 @@ public class Driver {
      * @param response the response
      * @throws IOException If an IOException occurs while writing to the
      *             response
-     * @throws AggregationSyntaxException If the page contains incorrect tags
+     * @throws RenderingException If the page contains incorrect tags
      */
     public final void aggregate(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response) throws IOException,
-	    AggregationSyntaxException {
+	    RenderingException {
 	Target target = new Target(relUrl, getContext(request), null, request);
 	request.setCharacterEncoding(config.getUriEncoding());
 	target.setProxyMode(true);
 	StringOutput stringOutput = getResourceAsString(target);
-	if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
-		|| stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-	    response.setStatus(stringOutput.getStatusCode());
-	    response.setHeader("location", stringOutput.getLocation());
-	    return;
-	}
-	stringOutput.copyHeaders(response);
-	String content = stringOutput.toString();
-	if (content == null)
-	    return;
-	response.setCharacterEncoding(stringOutput.getCharsetName());
-	Writer writer = response.getWriter();
-	Context context = getContext(request);
-	Tag previousCloseTag = null;
-	// look for includeBlock or includeTemplate markers
-	Tag openTag = Tag.find("include", content);
-	Tag closeTag = null;
-	if (openTag != null) {
-	    if ("includeblock".equals(openTag.getTokens()[0])) {
-		closeTag = Tag.find("endincludeblock", content);
-		if (closeTag == null)
-		    closeTag = openTag;
-	    } else if ("includetemplate".equals(openTag.getTokens()[0]))
-		closeTag = Tag.find("endincludetemplate", content);
-	    else
-		// False alert, wrong tag
-		openTag = null;
-	}
-	while (openTag != null) {
-	    if (closeTag == null)
-		throw new AggregationSyntaxException("Tag not closed: "
-			+ openTag);
-	    if (previousCloseTag != null)
-		writer.append(content, previousCloseTag.getEndIndex(), openTag
-			.getBeginIndex());
-	    else
-		writer.append(content, 0, openTag.getBeginIndex());
-	    if (openTag.countTokens() != 3 && openTag.countTokens() != 4)
-		throw new AggregationSyntaxException("Invalid syntax: "
-			+ openTag);
-	    String tagName = openTag.getTokens()[0];
-	    String provider = openTag.getTokens()[1];
-	    String page = openTag.getTokens()[2];
-	    String blockOrTemplate;
-	    if (openTag.countTokens() == 4)
-		blockOrTemplate = openTag.getTokens()[3];
-	    else
-		blockOrTemplate = null;
-	    try {
-		if ("includeblock".equals(tagName)) {
-		    DriverFactory.getInstance(provider).renderBlock(page,
-			    blockOrTemplate, writer, context, null, null);
-		} else {
-		    DriverFactory.getInstance(provider).aggregateTemplate(
-			    page,
-			    blockOrTemplate,
-			    content.substring(openTag.getEndIndex(), closeTag
-				    .getBeginIndex()), writer, context);
-		}
-	    } catch (RenderException e) {
-		writer.append(e.getStatusCode() + " " + e.getStatusMessage());
-	    }
-	    openTag = Tag.findNext("include", content, closeTag);
-	    previousCloseTag = closeTag;
-	    if (openTag != null) {
-		if ("includeblock".equals(openTag.getTokens()[0])) {
-		    closeTag = Tag.find("endincludeblock", content);
-		    if (closeTag == null)
-			closeTag = openTag;
-		} else if ("includetemplate".equals(openTag.getTokens()[0]))
-		    closeTag = Tag.find("endincludetemplate", content);
-		else
-		    // False alert, wrong tag
-		    openTag = null;
-	    }
-	}
-	if (previousCloseTag != null)
-	    writer.append(content, previousCloseTag.getEndIndex(), content
-		    .length());
-	else
-	    writer.append(content, 0, content.length());
+
+	Renderer renderer = new AggregateRenderer(response, getContext(request));
+	renderer.render(stringOutput, null);
     }
 
     private final void renderResource(Target target, Output output)
@@ -408,42 +329,4 @@ public class Driver {
 	return Context.class.getName() + "#" + config.getInstanceName();
     }
 
-    /**
-     * Aggregates a template to the output writer </ul>
-     * 
-     * Searches for tags :
-     * <ul>
-     * <li>&lt;!--$beginput$name$--&gt;</li>
-     * <li>&lt;!--$endput$--&gt;</li>
-     * </ul>
-     * 
-     * @throws RenderException If an Exception occurs while retrieving the
-     *             template
-     * 
-     */
-    private final void aggregateTemplate(String page, String template,
-	    String content, Writer writer, Context ctx) throws IOException,
-	    AggregationSyntaxException, RenderException {
-	Tag openTag = Tag.find("beginput", content);
-	Tag closeTag = null;
-	if (openTag != null)
-	    closeTag = Tag.findNext("endput", content, openTag);
-	HashMap<String, String> params = new HashMap<String, String>();
-	while (openTag != null) {
-	    // look for includeBlock or includeTemplate markers
-	    if (openTag.countTokens() != 2)
-		throw new AggregationSyntaxException("Invalid syntax: "
-			+ openTag);
-	    if (closeTag == null)
-		throw new AggregationSyntaxException("Tag not closed: "
-			+ openTag);
-	    String name = openTag.getTokens()[1];
-	    params.put(name, content.substring(openTag.getEndIndex(), closeTag
-		    .getBeginIndex()));
-	    openTag = Tag.findNext("beginput", content, closeTag);
-	    if (openTag != null)
-		closeTag = Tag.findNext("endput", content, openTag);
-	}
-	renderTemplate(page, template, writer, ctx, params, null, null);
-    }
 }

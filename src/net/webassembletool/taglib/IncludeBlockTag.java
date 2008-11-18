@@ -9,7 +9,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import net.webassembletool.DriverFactory;
-import net.webassembletool.RenderException;
+import net.webassembletool.RenderingException;
+import net.webassembletool.RetrieveException;
 
 /**
  * Retrieves an HTML fragment from the provider application and inserts it into
@@ -109,7 +110,7 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 	try {
 	    DriverUtils.renderBlock(provider, page, name, pageContext,
 		    replaceRules, parameters);
-	} catch (RenderException re) {
+	} catch (RetrieveException re) {
 	    if (displayErrorPage) {
 		try {
 		    pageContext.getOut().append(re.getErrorPageContent());
@@ -139,6 +140,8 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 		}
 
 	    }
+	} catch (RenderingException e) {
+	    throw new JspException(e);
 	}
 	name = null;
 	page = null;

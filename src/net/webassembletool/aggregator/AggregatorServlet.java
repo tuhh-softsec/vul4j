@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.DriverFactory;
+import net.webassembletool.RenderingException;
 
 /**
  * Servlet used to proxy requests from a remote application.
@@ -29,7 +30,7 @@ public class AggregatorServlet extends HttpServlet {
 	try {
 	    DriverFactory.getInstance(provider).aggregate(relUrl, request,
 		    response);
-	} catch (AggregationSyntaxException e) {
+	} catch (RenderingException e) {
 	    throw new ServletException(e);
 	}
     }

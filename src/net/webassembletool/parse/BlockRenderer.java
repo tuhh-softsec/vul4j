@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.webassembletool.RenderException;
+import net.webassembletool.RetrieveException;
 import net.webassembletool.StringUtils;
 import net.webassembletool.ouput.StringOutput;
 
@@ -27,20 +27,18 @@ public class BlockRenderer implements Renderer {
     private final String page;
     private final String name;
     private final Writer out;
-    private final Map<String, String> replaceRules;
 
-    public BlockRenderer(String name, Map<String, String> replaceRules,
-	    Writer out, String page) {
+    public BlockRenderer(String name, Writer out, String page) {
 	this.name = name;
-	this.replaceRules = replaceRules;
 	this.out = out;
 	this.page = page;
     }
 
     /** {@inheritDoc} */
-    public void render(StringOutput src) throws IOException, RenderException {
+    public void render(StringOutput src, Map<String, String> replaceRules)
+	    throws IOException, RetrieveException {
 	if (src.getStatusCode() != HttpServletResponse.SC_OK) {
-	    throw new RenderException(src.getStatusCode(), src
+	    throw new RetrieveException(src.getStatusCode(), src
 		    .getStatusMessage(), src.toString());
 	}
 

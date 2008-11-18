@@ -18,7 +18,7 @@ import net.webassembletool.ouput.StringOutput;
  */
 public class DriverTest extends TestCase {
 
-    public void testRenderBlockError() throws IOException {
+    public void testRenderBlockError() throws IOException, RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -33,14 +33,14 @@ public class DriverTest extends TestCase {
 	try {
 	    tested.renderBlock(null, null, null, null, null, null);
 	    fail("should throw RenderException");
-	} catch (RenderException e) {
+	} catch (RetrieveException e) {
 	    assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
 	    assertEquals("abc", e.getStatusMessage());
 	    assertEquals("expected", e.getErrorPageContent());
 	}
     }
 
-    public void testRenderBlockNull() throws IOException, RenderException {
+    public void testRenderBlockNull() throws IOException, RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -54,7 +54,7 @@ public class DriverTest extends TestCase {
 	tested.renderBlock(null, null, null, null, null, null);
     }
 
-    public void testRenderBlock() throws IOException, RenderException {
+    public void testRenderBlock() throws IOException, RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -71,7 +71,8 @@ public class DriverTest extends TestCase {
 	assertEquals("some text goes here", out.toString());
     }
 
-    public void testRenderTemplateError() throws IOException {
+    public void testRenderTemplateError() throws IOException,
+	    RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -86,14 +87,15 @@ public class DriverTest extends TestCase {
 	try {
 	    tested.renderTemplate(null, null, null, null, null, null, null);
 	    fail("should throw RenderException");
-	} catch (RenderException e) {
+	} catch (RetrieveException e) {
 	    assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
 	    assertEquals("abc", e.getStatusMessage());
 	    assertEquals("expected", e.getErrorPageContent());
 	}
     }
 
-    public void testRenderTemplateNull1() throws IOException, RenderException {
+    public void testRenderTemplateNull1() throws IOException,
+	    RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -109,7 +111,8 @@ public class DriverTest extends TestCase {
 	assertEquals(0, out.toString().length());
     }
 
-    public void testRenderTemplateNull2() throws IOException, RenderException {
+    public void testRenderTemplateNull2() throws IOException,
+	    RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -132,7 +135,7 @@ public class DriverTest extends TestCase {
 	assertTrue(out.toString().contains("'another value'"));
     }
 
-    public void testRenderTemplate1() throws IOException, RenderException {
+    public void testRenderTemplate1() throws IOException, RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -156,7 +159,7 @@ public class DriverTest extends TestCase {
 	assertEquals("some 'value' printed", out.toString());
     }
 
-    public void testRenderTemplate2() throws IOException, RenderException {
+    public void testRenderTemplate2() throws IOException, RenderingException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {

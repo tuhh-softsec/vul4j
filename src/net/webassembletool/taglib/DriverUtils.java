@@ -12,7 +12,7 @@ import javax.servlet.jsp.PageContext;
 
 import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
-import net.webassembletool.RenderException;
+import net.webassembletool.RenderingException;
 
 /**
  * Utility class used by all tags to access to the Driver
@@ -27,7 +27,7 @@ public class DriverUtils {
     public final static void renderBlock(String provider, String page,
 	    String name, PageContext pageContext,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
-	    throws JspException, RenderException {
+	    throws JspException, RenderingException {
 
 	try {
 	    Driver driver = DriverFactory.getInstance(provider);
@@ -42,7 +42,7 @@ public class DriverUtils {
     public final static void renderTemplate(String provider, String page,
 	    String name, PageContext pageContext, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
-	    throws JspException, RenderException {
+	    throws JspException, RenderingException {
 
 	try {
 	    Driver driver = DriverFactory.getInstance(provider);

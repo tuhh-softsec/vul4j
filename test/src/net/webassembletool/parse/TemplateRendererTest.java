@@ -7,7 +7,7 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
-import net.webassembletool.RenderException;
+import net.webassembletool.RetrieveException;
 import net.webassembletool.ouput.StringOutput;
 
 /**
@@ -27,19 +27,18 @@ public class TemplateRendererTest extends TestCase {
 	expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
 	expectedOutput.setStatusMessage("abc");
 
-	TemplateRenderer tested = new TemplateRenderer(null, null, null, null,
-		null);
+	TemplateRenderer tested = new TemplateRenderer(null, null, null, null);
 	try {
-	    tested.render(expectedOutput);
-	    fail("should throw RenderException");
-	} catch (RenderException e) {
+	    tested.render(expectedOutput, null);
+	    fail("should throw RetrieveException");
+	} catch (RetrieveException e) {
 	    assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
 	    assertEquals("abc", e.getStatusMessage());
 	    assertEquals("expected", e.getErrorPageContent());
 	}
     }
 
-    public void testRenderTemplateNull1() throws IOException, RenderException {
+    public void testRenderTemplateNull1() throws IOException, RetrieveException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -49,13 +48,12 @@ public class TemplateRendererTest extends TestCase {
 	expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
 	StringWriter out = new StringWriter();
 
-	TemplateRenderer tested = new TemplateRenderer(null, null, null, out,
-		null);
-	tested.render(expectedOutput);
+	TemplateRenderer tested = new TemplateRenderer(null, null, out, null);
+	tested.render(expectedOutput, null);
 	assertEquals(0, out.toString().length());
     }
 
-    public void testRenderTemplateNull2() throws IOException, RenderException {
+    public void testRenderTemplateNull2() throws IOException, RetrieveException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -70,9 +68,8 @@ public class TemplateRendererTest extends TestCase {
 
 	StringWriter out = new StringWriter();
 
-	TemplateRenderer tested = new TemplateRenderer(null, null, params, out,
-		null);
-	tested.render(expectedOutput);
+	TemplateRenderer tested = new TemplateRenderer(null, params, out, null);
+	tested.render(expectedOutput, null);
 
 	assertFalse(out.toString().contains("key"));
 	assertTrue(out.toString().contains("'value'"));
@@ -80,7 +77,7 @@ public class TemplateRendererTest extends TestCase {
 	assertTrue(out.toString().contains("'another value'"));
     }
 
-    public void testRenderTemplate1() throws IOException, RenderException {
+    public void testRenderTemplate1() throws IOException, RetrieveException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -94,9 +91,8 @@ public class TemplateRendererTest extends TestCase {
 	params.put("some other key", "'another value'");
 
 	StringWriter out = new StringWriter();
-	TemplateRenderer tested = new TemplateRenderer(null, null, params, out,
-		null);
-	tested.render(expectedOutput);
+	TemplateRenderer tested = new TemplateRenderer(null, params, out, null);
+	tested.render(expectedOutput, null);
 
 	assertFalse(out.toString().contains("key"));
 	assertTrue(out.toString().contains("'value'"));
@@ -105,7 +101,7 @@ public class TemplateRendererTest extends TestCase {
 	assertEquals("some 'value' printed", out.toString());
     }
 
-    public void testRenderTemplate2() throws IOException, RenderException {
+    public void testRenderTemplate2() throws IOException, RetrieveException {
 	final StringOutput expectedOutput = new StringOutput() {
 	    @Override
 	    public String toString() {
@@ -116,9 +112,8 @@ public class TemplateRendererTest extends TestCase {
 
 	StringWriter out = new StringWriter();
 
-	TemplateRenderer tested = new TemplateRenderer("A", null, null, out,
-		null);
-	tested.render(expectedOutput);
+	TemplateRenderer tested = new TemplateRenderer("A", null, out, null);
+	tested.render(expectedOutput, null);
 	assertEquals("some text goes here", out.toString());
     }
 }

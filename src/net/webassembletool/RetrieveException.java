@@ -5,13 +5,13 @@ package net.webassembletool;
  * 
  * @author François-Xavier Bonnet
  */
-public class RenderException extends Exception {
+public class RetrieveException extends RenderingException {
     private static final long serialVersionUID = 1L;
     private final int statusCode;
     private final String statusMessage;
     private final String errorPageContent;
 
-    public RenderException(int statusCode, String statusMessage,
+    public RetrieveException(int statusCode, String statusMessage,
 	    String errorPageContent) {
 	this.statusCode = statusCode;
 	this.statusMessage = statusMessage;
