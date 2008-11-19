@@ -1,6 +1,5 @@
 package net.webassembletool.ouput;
 
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class MultipleOutput extends Output {
 	    output.setCharsetName(getCharsetName());
 	    output.open();
 	}
-	output = ChainedOutputStream.createChain(outputs);
+	output = new MultipleOutputStream(outputs);
     }
 
     /** {@inheritDoc} */
@@ -64,46 +63,14 @@ public class MultipleOutput extends Output {
 	}
     }
 
-    // private final static class MultipleOutputStream extends OutputStream {
-    // private final List<OutputStream> dest;
-    //
-    // public MultipleOutputStream(List<Output> outputs) {
-    // dest = new ArrayList<OutputStream>(outputs.size());
-    // for (Output output : outputs) {
-    // dest.add(output.getOutputStream());
-    // }
-    // }
-    //
-    // /** {@inheritDoc} */
-    // @Override
-    // public void write(int b) throws IOException {
-    // byte buf[] = new byte[] { (byte) b };
-    // write(buf, 0, 1);
-    // }
-    //
-    // /** {@inheritDoc} */
-    // @Override
-    // public void write(byte[] b, int off, int len) throws IOException {
-    // for (OutputStream out : dest) {
-    // out.write(b, off, len);
-    // }
-    // }
-    //
-    // /** {@inheritDoc} */
-    // @Override
-    // public void close() throws IOException {
-    // for (OutputStream out : dest) {
-    // out.close();
-    // }
-    // }
-    // }
+    private final static class MultipleOutputStream extends OutputStream {
+	private final List<OutputStream> dest;
 
-    public final static class ChainedOutputStream extends FilterOutputStream {
-	private final OutputStream next;
-
-	public ChainedOutputStream(OutputStream dest, OutputStream next) {
-	    super(dest);
-	    this.next = next;
+	public MultipleOutputStream(List<Output> outputs) {
+	    dest = new ArrayList<OutputStream>(outputs.size());
+	    for (Output output : outputs) {
+		dest.add(output.getOutputStream());
+	    }
 	}
 
 	/** {@inheritDoc} */
@@ -116,37 +83,70 @@ public class MultipleOutput extends Output {
 	/** {@inheritDoc} */
 	@Override
 	public void write(byte[] b, int off, int len) throws IOException {
-	    super.write(b, off, len);
-	    next.write(b, off, len);
+	    for (OutputStream out : dest) {
+		out.write(b, off, len);
+	    }
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException {
-	    super.close();
-	    next.close();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void flush() throws IOException {
-	    super.flush();
-	    next.flush();
-	}
-
-	public static OutputStream createChain(List<Output> outputs) {
-	    OutputStream current = null;
-	    OutputStream previous = null;
-	    for (Output output : outputs) {
-		if (previous == null) {
-		    current = output.getOutputStream();
-		} else {
-		    current = new ChainedOutputStream(output.getOutputStream(),
-			    previous);
-		}
-		previous = current;
+	    for (OutputStream out : dest) {
+		out.close();
 	    }
-	    return current;
 	}
     }
+
+    // public final static class ChainedOutputStream extends FilterOutputStream
+    // {
+    // private final OutputStream next;
+    //
+    // public ChainedOutputStream(OutputStream dest, OutputStream next) {
+    // super(dest);
+    // this.next = next;
+    // }
+    //
+    // /** {@inheritDoc} */
+    // @Override
+    // public void write(int b) throws IOException {
+    // byte buf[] = new byte[] { (byte) b };
+    // write(buf, 0, 1);
+    // }
+    //
+    // /** {@inheritDoc} */
+    // @Override
+    // public void write(byte[] b, int off, int len) throws IOException {
+    // super.write(b, off, len);
+    // next.write(b, off, len);
+    // }
+    //
+    // /** {@inheritDoc} */
+    // @Override
+    // public void close() throws IOException {
+    // super.close();
+    // next.close();
+    // }
+    //
+    // /** {@inheritDoc} */
+    // @Override
+    // public void flush() throws IOException {
+    // super.flush();
+    // next.flush();
+    // }
+    //
+    // public static OutputStream createChain(List<Output> outputs) {
+    // OutputStream current = null;
+    // OutputStream previous = null;
+    // for (Output output : outputs) {
+    // if (previous == null) {
+    // current = output.getOutputStream();
+    // } else {
+    // current = new ChainedOutputStream(output.getOutputStream(),
+    // previous);
+    // }
+    // previous = current;
+    // }
+    // return current;
+    // }
+    // }
 }
