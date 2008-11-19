@@ -2,6 +2,7 @@ package net.webassembletool.http;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -172,8 +173,9 @@ public class HttpResource extends Resource {
 		InputStream inputStream = httpMethod.getResponseBodyAsStream();
 		if (inputStream != null) {
 		    try {
+			OutputStream out = output.getOutputStream();
 			for (int len = -1; (len = inputStream.read(buffer)) != -1;) {
-			    output.write(buffer, 0, len);
+			    out.write(buffer, 0, len);
 			}
 		    } finally {
 			inputStream.close();

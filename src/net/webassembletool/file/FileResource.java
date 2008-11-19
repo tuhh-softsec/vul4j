@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Map.Entry;
@@ -59,8 +60,9 @@ public class FileResource extends Resource {
 	try {
 	    output.open();
 	    byte[] buffer = new byte[1024];
+	    OutputStream out = output.getOutputStream();
 	    for (int len = -1; (len = inputStream.read(buffer)) != -1;) {
-		output.write(buffer, 0, len);
+		out.write(buffer, 0, len);
 	    }
 	} finally {
 	    inputStream.close();

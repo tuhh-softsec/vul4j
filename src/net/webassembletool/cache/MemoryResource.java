@@ -1,9 +1,8 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import net.webassembletool.ouput.Output;
 import net.webassembletool.resource.Resource;
@@ -58,14 +57,13 @@ public class MemoryResource extends Resource {
 	output.setStatus(statusCode, statusMessage);
 	try {
 	    output.setCharsetName(charset);
-	    for (Iterator<Map.Entry<Object, Object>> headersIterator = headers
-		    .entrySet().iterator(); headersIterator.hasNext();) {
-		Map.Entry<Object, Object> entry = headersIterator.next();
-		output.addHeader(entry.getKey().toString(), entry.getValue()
-			.toString());
+	    for (Entry<Object, Object> entry : headers.entrySet()) {
+		String key = entry.getKey().toString();
+		String value = entry.getValue().toString();
+		output.addHeader(key, value);
 	    }
 	    output.open();
-	    output.write(byteArray, 0, byteArray.length);
+	    output.getOutputStream().write(byteArray, 0, byteArray.length);
 	} finally {
 	    output.close();
 	}

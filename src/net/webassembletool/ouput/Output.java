@@ -18,7 +18,7 @@ import java.util.Properties;
  * @author François-Xavier Bonnet
  * 
  */
-public abstract class Output extends OutputStream {
+public abstract class Output {
 
     private String charsetName;
     private int statusCode;
@@ -28,8 +28,10 @@ public abstract class Output extends OutputStream {
     /**
      * Sets the HTTP status code of the response
      * 
-     * @param code The code
-     * @param message The message
+     * @param code
+     *            The code
+     * @param message
+     *            The message
      */
     public final void setStatus(int code, String message) {
 	statusCode = code;
@@ -76,10 +78,22 @@ public abstract class Output extends OutputStream {
     }
 
     /**
+     * Copy all headers from this output to the <code>dest</code> Output
+     * 
+     * @param dest
+     *            destination output
+     */
+    public final void copyHeaders(Output dest) {
+	dest.headers.putAll(headers);
+    }
+
+    /**
      * Adds an HTTP Header
      * 
-     * @param name The name of the HTTP header
-     * @param value The value of the header
+     * @param name
+     *            The name of the HTTP header
+     * @param value
+     *            The value of the header
      */
     public final void addHeader(String name, String value) {
 	headers.put(name, value);
@@ -90,27 +104,42 @@ public abstract class Output extends OutputStream {
     }
 
     /**
-     * Defines the charset of the Output. <br /> Needed for text outputs (for
-     * example HTML pages).
+     * Defines the charset of the Output. <br />
+     * Needed for text outputs (for example HTML pages).
      * 
-     * @param charsetName The name of the charset
-     * 
+     * @param charsetName
+     *            name of the charset
      */
     public final void setCharsetName(String charsetName) {
 	this.charsetName = charsetName;
     }
 
     /**
-     * Opens the OutputStreams that may be needed by the OutPut.<br /> The
-     * headers and charset may be ignored if not defined before calling this
-     * method.<br /> Any opened Output should be closed in order to release the
-     * resources.
+     * Opens the OutputStreams that may be needed by the OutPut.<br />
+     * The headers and charset may be ignored if not defined before calling this
+     * method.<br />
+     * Any opened Output should be closed in order to release the resources.
      */
     public abstract void open();
 
+    /**
+     * Returns underlying output stream
+     * 
+     * @return output stream
+     */
+    public abstract OutputStream getOutputStream();
+
+    /**
+     * Closes underlying output stream
+     * 
+     * @throws OutputException
+     *             in case of error
+     */
+    public abstract void close();
+
     public final void write(String string) {
 	try {
-	    write(string.getBytes(charsetName));
+	    getOutputStream().write(string.getBytes(charsetName));
 	} catch (UnsupportedEncodingException e) {
 	    throw new OutputException(e);
 	} catch (IOException e) {

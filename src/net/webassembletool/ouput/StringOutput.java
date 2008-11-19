@@ -2,6 +2,7 @@ package net.webassembletool.ouput;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,9 +10,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Output implementation that writes to a String.<br /> StringOutput should be
- * used only for text responses such as HTML and not for binary data such as
- * images.
+ * Output implementation that writes to a String.<br />
+ * StringOutput should be used only for text responses such as HTML and not for
+ * binary data such as images.
  * 
  * @author François-Xavier Bonnet
  * 
@@ -27,22 +28,27 @@ public class StringOutput extends Output {
 	return getHeader("location");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void open() {
 	// Nothing to do
     }
 
-    /**
-     * @see java.io.OutputStream#write(int)
-     */
+    /** {@inheritDoc} */
     @Override
-    public void write(int i) throws IOException {
-	byteArrayOutputStream.write(i);
+    public OutputStream getOutputStream() {
+	return byteArrayOutputStream;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() {
-	// Nothing to do
+	try {
+	    byteArrayOutputStream.close();
+	} catch (IOException e) {
+	    // should not happen
+	    throw new OutputException(e);
+	}
     }
 
     public void copyHeaders(HttpServletResponse response) {

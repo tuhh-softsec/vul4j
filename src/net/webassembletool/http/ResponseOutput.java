@@ -27,6 +27,7 @@ public class ResponseOutput extends Output {
 	this.response = response;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void open() {
 	String ifModifiedSince = request.getHeader("If-Modified-Since");
@@ -52,14 +53,13 @@ public class ResponseOutput extends Output {
 		}
     }
 
-    /**
-     * @see java.io.OutputStream#write(int)
-     */
+    /** {@inheritDoc} */
     @Override
-    public void write(int i) throws IOException {
-	outputStream.write(i);
+    public OutputStream getOutputStream() {
+	return outputStream;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() {
 	try {

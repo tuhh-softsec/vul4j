@@ -3,6 +3,7 @@ package net.webassembletool.file;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import net.webassembletool.ouput.Output;
 import net.webassembletool.ouput.OutputException;
@@ -24,28 +25,28 @@ public class FileOutput extends Output {
 	headerFile = new File(url + ".headers");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void open() {
-        try {
-            if (!file.exists()) {
-        	file.getParentFile().mkdirs();
-        	file.createNewFile();
-            }
-            fileOutputStream = new FileOutputStream(file);
-        } catch (IOException e) {
-            throw new OutputException("Could not create file: " + file.toURI(),
-        	    e);
-        }
+	try {
+	    if (!file.exists()) {
+		file.getParentFile().mkdirs();
+		file.createNewFile();
+	    }
+	    fileOutputStream = new FileOutputStream(file);
+	} catch (IOException e) {
+	    throw new OutputException("Could not create file: " + file.toURI(),
+		    e);
+	}
     }
 
-    /**
-     * @see java.io.OutputStream#write(int)
-     */
+    /** {@inheritDoc} */
     @Override
-    public void write(int i) throws IOException {
-        fileOutputStream.write(i);
+    public OutputStream getOutputStream() {
+	return fileOutputStream;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() {
 	try {
@@ -59,16 +60,14 @@ public class FileOutput extends Output {
 	    throw new OutputException("Could not close file: " + file.toURI(),
 		    e);
 	}
-	FileOutputStream headersFileOutputStream;
 	try {
-	    headersFileOutputStream = new FileOutputStream(headerFile);
+	    FileOutputStream headers = new FileOutputStream(headerFile);
 	    addHeader(Integer.toString(getStatusCode()), getStatusMessage());
-	    getHeaders().store(headersFileOutputStream, "Headers");
-	    headersFileOutputStream.close();
+	    getHeaders().store(headers, "Headers");
+	    headers.close();
 	} catch (IOException e) {
 	    throw new OutputException("Could write to file: "
 		    + headerFile.toURI(), e);
 	}
-	headersFileOutputStream = null;
     }
 }

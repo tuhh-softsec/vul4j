@@ -2,8 +2,10 @@ package net.webassembletool.cache;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import net.webassembletool.ouput.Output;
+import net.webassembletool.ouput.OutputException;
 
 /**
  * Output implementation that stores the file and headers to a MemoryResource.
@@ -13,51 +15,81 @@ import net.webassembletool.ouput.Output;
  * 
  */
 public class MemoryOutput extends Output {
-    private byte[] byteArray;
-    private ByteArrayOutputStream byteArrayOutputStream;
-    private int maxSize = 0;
-    private int size;
-    private boolean tooBig = false;
+    private final MemoryOutputStream out;
 
     public MemoryOutput(int maxSize) {
-	this.maxSize = maxSize;
+	out = new MemoryOutputStream(maxSize);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void open() {
-	byteArrayOutputStream = new ByteArrayOutputStream();
-	size = 0;
+	// nothing to do
     }
 
-    /**
-     * @see java.io.OutputStream#write(int)
-     */
+    /** {@inheritDoc} */
     @Override
-    public void write(int i) throws IOException {
-	if (!tooBig) {
-	    size++;
-	    if (size > maxSize)
-		tooBig = true;
-	    else
-		byteArrayOutputStream.write(i);
-	}
+    public OutputStream getOutputStream() {
+	return out;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() {
-	byteArray = byteArrayOutputStream.toByteArray();
 	try {
-	    byteArrayOutputStream.close();
+	    out.close();
 	} catch (IOException e) {
-	    // Should not happen
+	    // should not happen
+	    throw new OutputException(e);
 	}
-	byteArrayOutputStream = null;
     }
 
     public MemoryResource toResource() {
-	if (tooBig)
-	    return new MemoryResource();
-	return new MemoryResource(byteArray, getCharsetName(), getHeaders(),
-		getStatusCode(), getStatusMessage());
+	MemoryResource result;
+	if (out.isTooBig()) {
+	    result = new MemoryResource();
+	} else {
+	    result = new MemoryResource(out.toByteArray(), getCharsetName(),
+		    getHeaders(), getStatusCode(), getStatusMessage());
+	}
+	out.clear();
+	return result;
+    }
+
+    public static final class MemoryOutputStream extends ByteArrayOutputStream {
+	private final int maxSize;
+	private boolean tooBig = false;
+
+	public MemoryOutputStream(int maxSize) {
+	    this.maxSize = maxSize;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void write(int b) {
+	    byte buf[] = new byte[] { (byte) b };
+	    write(buf, 0, 1);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void write(byte[] b, int off, int len) {
+	    if (!tooBig) {
+		if ((count + len) > maxSize) {
+		    tooBig = true;
+		} else {
+		    super.write(b, off, len);
+		}
+	    }
+	}
+
+	public boolean isTooBig() {
+	    return tooBig;
+	}
+
+	public void clear() {
+	    count = 0;
+	    buf = new byte[32];
+	}
     }
 }
