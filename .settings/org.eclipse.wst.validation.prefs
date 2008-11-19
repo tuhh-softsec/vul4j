@@ -1,13 +1,14 @@
-#Fri Sep 12 16:01:40 CEST 2008
+#Wed Nov 19 16:19:46 CET 2008
 DELEGATES_PREFERENCE=delegateValidatorList
-USER_BUILD_PREFERENCE=enabledBuildValidatorListorg.eclipse.wst.wsi.ui.internal.WSIMessageValidator;org.eclipse.jst.jsf.validation.internal.appconfig.AppConfigValidator;org.eclipse.wst.common.componentcore.internal.ModuleCoreValidator;
-USER_MANUAL_PREFERENCE=enabledManualValidatorListorg.eclipse.wst.wsi.ui.internal.WSIMessageValidator;org.eclipse.jst.jsf.validation.internal.appconfig.AppConfigValidator;org.eclipse.wst.common.componentcore.internal.ModuleCoreValidator;
-USER_PREFERENCE=overrideGlobalPreferencestruedisableAllValidationfalseversion1.2.0.v200806051402
+USER_BUILD_PREFERENCE=enabledBuildValidatorListorg.eclipse.wst.wsi.ui.internal.WSIMessageValidator;org.eclipse.wst.common.componentcore.internal.ModuleCoreValidator;org.eclipse.jst.jsf.validation.internal.appconfig.AppConfigValidator;
+USER_MANUAL_PREFERENCE=enabledManualValidatorListorg.eclipse.wst.wsi.ui.internal.WSIMessageValidator;org.eclipse.wst.common.componentcore.internal.ModuleCoreValidator;org.eclipse.jst.jsf.validation.internal.appconfig.AppConfigValidator;
+USER_PREFERENCE=overrideGlobalPreferencestruedisableAllValidationfalseversion1.2.2.v200809050219
 eclipse.preferences.version=1
 override=true
 suspend=false
 vals/org.eclipse.jst.jsp.core.JSPBatchValidator/global=FF01
 vals/org.eclipse.jst.jsp.core.JSPContentValidator/global=FF01
+vals/org.eclipse.wst.html.ui.HTMLValidator/groups=0107include06111contentType136org.eclipse.wst.html.core.htmlsourceT07fileext04htmlF07fileext05xhtmlF07fileext03htmF07fileext04htplF07fileext03wmlF0107exclude0104file03binF02
 vals/org.eclipse.wst.xml.core.xml/global=FF03
 vals/org.eclipse.wst.xsd.core.xsd/global=TT02162org.eclipse.wst.xsd.core.internal.validation.eclipse.Validator
 vf.version=3

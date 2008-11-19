@@ -28,10 +28,8 @@ public abstract class Output {
     /**
      * Sets the HTTP status code of the response
      * 
-     * @param code
-     *            The code
-     * @param message
-     *            The message
+     * @param code The code
+     * @param message The message
      */
     public final void setStatus(int code, String message) {
 	statusCode = code;
@@ -80,8 +78,7 @@ public abstract class Output {
     /**
      * Copy all headers from this output to the <code>dest</code> Output
      * 
-     * @param dest
-     *            destination output
+     * @param dest destination output
      */
     public final void copyHeaders(Output dest) {
 	dest.headers.putAll(headers);
@@ -90,10 +87,8 @@ public abstract class Output {
     /**
      * Adds an HTTP Header
      * 
-     * @param name
-     *            The name of the HTTP header
-     * @param value
-     *            The value of the header
+     * @param name The name of the HTTP header
+     * @param value The value of the header
      */
     public final void addHeader(String name, String value) {
 	headers.put(name, value);
@@ -107,8 +102,7 @@ public abstract class Output {
      * Defines the charset of the Output. <br />
      * Needed for text outputs (for example HTML pages).
      * 
-     * @param charsetName
-     *            name of the charset
+     * @param charsetName name of the charset
      */
     public final void setCharsetName(String charsetName) {
 	this.charsetName = charsetName;
@@ -132,8 +126,7 @@ public abstract class Output {
     /**
      * Closes underlying output stream
      * 
-     * @throws OutputException
-     *             in case of error
+     * @throws OutputException in case of error
      */
     public abstract void close();
 

@@ -61,7 +61,7 @@ public class OutputTest extends TestCase {
 	    assertNotNull(e.getCause());
 	    assertTrue(
 		    "cause should be instance of UnsupportedEncodingException",
-		    e.getCause() instanceof IOException);
+		    e.getCause() instanceof UnsupportedEncodingException);
 	}
     }
 
@@ -78,6 +78,7 @@ public class OutputTest extends TestCase {
 
 	@Override
 	public void close() {
+	    // Nothing to do
 	}
 
 	@Override
@@ -87,6 +88,7 @@ public class OutputTest extends TestCase {
 
 	@Override
 	public void open() {
+	    // Nothing to do
 	}
     }
 
