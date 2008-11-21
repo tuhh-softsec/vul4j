@@ -31,8 +31,8 @@ public class DriverUtils {
 
 	try {
 	    Driver driver = DriverFactory.getInstance(provider);
-	    driver.renderBlock(page, name, pageContext.getOut(), driver
-		    .getContext((HttpServletRequest) pageContext.getRequest()),
+	    driver.renderBlock(page, name, pageContext.getOut(),
+		    (HttpServletRequest) pageContext.getRequest(),
 		    replaceRules, parameters);
 	} catch (IOException e) {
 	    throw new JspException(e);
@@ -46,9 +46,9 @@ public class DriverUtils {
 
 	try {
 	    Driver driver = DriverFactory.getInstance(provider);
-	    driver.renderTemplate(page, name, pageContext.getOut(), driver
-		    .getContext((HttpServletRequest) pageContext.getRequest()),
-		    params, replaceRules, parameters);
+	    driver.renderTemplate(page, name, pageContext.getOut(),
+		    (HttpServletRequest) pageContext.getRequest(), params,
+		    replaceRules, parameters);
 	} catch (IOException e) {
 	    throw new JspException(e);
 	}

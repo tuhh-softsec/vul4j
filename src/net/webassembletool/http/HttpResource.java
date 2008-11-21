@@ -9,8 +9,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.webassembletool.Context;
-import net.webassembletool.Target;
+import net.webassembletool.RequestContext;
 import net.webassembletool.ouput.Output;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
@@ -34,12 +33,13 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class HttpResource extends Resource {
-    private final static Log log = LogFactory.getLog(Resource.class);
+    private final static Log LOG = LogFactory.getLog(Resource.class);
     private HttpMethodBase httpMethod;
     private int statusCode;
     private String statusText;
-    private final Target target;
+    private final RequestContext target;
     private String url;
+
     private Exception exception;
 
     private void buildHttpMethod() {
@@ -52,11 +52,10 @@ public class HttpResource extends Resource {
 	    PostMethod postMethod = new PostMethod(url);
 	    postMethod.getParams().setContentCharset(
 		    target.getOriginalRequest().getCharacterEncoding());
-	    Context context = target.getContext();
 	    Map<String, String> parameters = target.getParameters();
-	    if (context != null) {
-		for (Map.Entry<String, String> temp : context.getParameterMap()
-			.entrySet()) {
+	    if (target.getUserContext() != null) {
+		for (Map.Entry<String, String> temp : target.getUserContext()
+			.getParameterMap().entrySet()) {
 		    postMethod.addParameter(new NameValuePair(temp.getKey(),
 			    temp.getValue()));
 		}
@@ -91,41 +90,44 @@ public class HttpResource extends Resource {
     }
 
     // TODO handle multipart POST requests
-    public HttpResource(HttpClient httpClient, Target target) {
+    public HttpResource(HttpClient httpClient, RequestContext target) {
 	this.target = target;
 	// Retrieve session and other cookies
 	HttpState httpState = null;
-	if (target.getContext() != null)
-	    httpState = target.getContext().getHttpState();
+	if (target.getUserContext() != null)
+	    httpState = target.getUserContext().getHttpState();
 	buildHttpMethod();
 	try {
+	    if (LOG.isDebugEnabled())
+		LOG.debug(toString());
+	    System.out.println(toString());
 	    httpClient.executeMethod(httpClient.getHostConfiguration(),
 		    httpMethod, httpState);
 	    statusCode = httpMethod.getStatusCode();
 	    statusText = httpMethod.getStatusText();
 	    if (isError())
-		log.warn("Problem retrieving URL: " + url + ": " + statusCode
+		LOG.warn("Problem retrieving URL: " + url + ": " + statusCode
 			+ " " + statusText);
 	} catch (ConnectTimeoutException e) {
 	    exception = e;
 	    statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 	    statusText = "Connect timeout retrieving URL: " + url;
-	    log.warn("Connect timeout retrieving URL: " + url);
+	    LOG.warn("Connect timeout retrieving URL: " + url);
 	} catch (SocketTimeoutException e) {
 	    exception = e;
 	    statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 	    statusText = "Socket timeout retrieving URL: " + url;
-	    log.warn("Socket timeout retrieving URL: " + url);
+	    LOG.warn("Socket timeout retrieving URL: " + url);
 	} catch (HttpException e) {
 	    exception = e;
 	    statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	    statusText = "Error retrieving URL: " + url;
-	    log.error("Error retrieving URL: " + url, e);
+	    LOG.error("Error retrieving URL: " + url, e);
 	} catch (IOException e) {
 	    exception = e;
 	    statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	    statusText = "Error retrieving URL: " + url;
-	    log.error("Error retrieving URL: " + url, e);
+	    LOG.error("Error retrieving URL: " + url, e);
 	}
     }
 
@@ -152,7 +154,8 @@ public class HttpResource extends Resource {
 		originalBase += target.getOriginalRequest().getPathInfo();
 	    int pos = originalBase.indexOf(target.getRelUrl());
 	    originalBase = originalBase.substring(0, pos + 1);
-	    location = location.replaceFirst(target.getBaseUrl(), originalBase);
+	    location = location.replaceFirst(target.getDriver().getBaseURL(),
+		    originalBase);
 	    output.addHeader(header.getName(), location);
 	}
 	header = httpMethod.getResponseHeader("Last-Modified");
@@ -200,4 +203,18 @@ public class HttpResource extends Resource {
 	return statusCode;
     }
 
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+	StringBuilder result = new StringBuilder();
+	result.append(target.getMethod());
+	result.append(" ");
+	result.append(ResourceUtils.getHttpUrlWithQueryString(target));
+	result.append("\n");
+	if (target.getUserContext() != null)
+	    result.append(target.getUserContext().toString());
+	return result.toString();
+    }
 }

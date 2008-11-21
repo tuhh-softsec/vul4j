@@ -15,36 +15,31 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author François-Xavier Bonnet
  */
-public class Target {
+public class RequestContext {
+    private final Driver driver;
+
+    /**
+     * @return driver.
+     */
+    public Driver getDriver() {
+	return driver;
+    }
+
     private final String relUrl;
     private final HttpServletRequest originalRequest;
     private final Map<String, String> parameters;
-    private final Context context;
     private boolean proxyMode = false;
-    private String baseUrl;
-
-    public String getBaseUrl() {
-	return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-	this.baseUrl = baseUrl;
-    }
 
     public void setProxyMode(boolean proxyMode) {
 	this.proxyMode = proxyMode;
     }
 
-    public Target(String relUrl, Context context,
+    public RequestContext(Driver driver, String relUrl,
 	    Map<String, String> parameters, HttpServletRequest originalRequest) {
+	this.driver = driver;
 	this.relUrl = relUrl;
-	this.context = context;
 	this.parameters = parameters;
 	this.originalRequest = originalRequest;
-    }
-
-    public Target(String relUrl, Context context, Map<String, String> parameters) {
-	this(relUrl, context, parameters, null);
     }
 
     public String getMethod() {
@@ -69,11 +64,11 @@ public class Target {
 	return proxyMode;
     }
 
-    public Context getContext() {
-	return context;
-    }
-
     public boolean isCacheable() {
 	return !proxyMode && "GET".equalsIgnoreCase(getMethod());
+    }
+
+    public UserContext getUserContext() {
+	return driver.getContext(originalRequest);
     }
 }

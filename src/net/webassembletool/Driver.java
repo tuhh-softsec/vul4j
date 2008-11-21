@@ -77,14 +77,18 @@ public class Driver {
 	}
     }
 
-    public final Context getContext(HttpServletRequest request) {
-	HttpSession session = request.getSession(false);
-	if (session != null)
-	    return (Context) session.getAttribute(getContextKey());
-	return null;
+    public final UserContext getContext(HttpServletRequest request) {
+	HttpSession session = request.getSession(true);
+	String key = getContextKey();
+	UserContext context = (UserContext) session.getAttribute(key);
+	if (context == null) {
+	    context = new UserContext();
+	    setContext(context, request);
+	}
+	return context;
     }
 
-    public final void setContext(Context context, HttpServletRequest request) {
+    public final void setContext(UserContext context, HttpServletRequest request) {
 	HttpSession session = request.getSession();
 	session.setAttribute(getContextKey(), context);
     }
@@ -117,10 +121,11 @@ public class Driver {
      *             block
      */
     public final void renderBlock(String page, String name, Writer writer,
-	    Context context, Map<String, String> replaceRules,
-	    Map<String, String> parameters) throws IOException,
-	    RenderingException {
-	Target target = new Target(page, context, parameters);
+	    HttpServletRequest originalRequest,
+	    Map<String, String> replaceRules, Map<String, String> parameters)
+	    throws IOException, RenderingException {
+	RequestContext target = new RequestContext(this, page, parameters,
+		originalRequest);
 	StringOutput stringOutput = getResourceAsString(target);
 
 	Renderer renderer = new BlockRenderer(name, writer, page);
@@ -150,10 +155,11 @@ public class Driver {
      *             template
      */
     public final void renderTemplate(String page, String name, Writer writer,
-	    Context context, Map<String, String> params,
+	    HttpServletRequest originalRequest, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
 	    throws IOException, RenderingException {
-	Target target = new Target(page, context, parameters);
+	RequestContext target = new RequestContext(this, page, params,
+		originalRequest);
 	StringOutput stringOutput = getResourceAsString(target);
 
 	Renderer renderer = new TemplateRenderer(name, params, writer, page);
@@ -173,11 +179,11 @@ public class Driver {
     public final void proxy(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response, Map<String, String> parameters)
 	    throws IOException {
-	Target target = new Target(relUrl, getContext(request), parameters,
-		request);
+	RequestContext requestContext = new RequestContext(this, relUrl,
+		parameters, request);
 	request.setCharacterEncoding(config.getUriEncoding());
-	target.setProxyMode(true);
-	renderResource(target, new ResponseOutput(request, response));
+	requestContext.setProxyMode(true);
+	renderResource(requestContext, new ResponseOutput(request, response));
     }
 
     /**
@@ -215,18 +221,18 @@ public class Driver {
     public final void aggregate(String relUrl, HttpServletRequest request,
 	    HttpServletResponse response) throws IOException,
 	    RenderingException {
-	Target target = new Target(relUrl, getContext(request), null, request);
+	RequestContext target = new RequestContext(this, relUrl, null, request);
 	request.setCharacterEncoding(config.getUriEncoding());
 	target.setProxyMode(true);
 	StringOutput stringOutput = getResourceAsString(target);
 
-	Renderer renderer = new AggregateRenderer(response, getContext(request));
+	Renderer renderer = new AggregateRenderer(response, target,
+		getContext(request));
 	renderer.render(stringOutput, null);
     }
 
-    private final void renderResource(Target target, Output output)
+    private final void renderResource(RequestContext target, Output output)
 	    throws IOException {
-	target.setBaseUrl(config.getBaseURL());
 	String httpUrl = ResourceUtils.getHttpUrlWithQueryString(target);
 	MultipleOutput multipleOutput = new MultipleOutput();
 	multipleOutput.addOutput(output);
@@ -319,7 +325,7 @@ public class Driver {
      * @return the content of the url
      * @throws IOException
      */
-    protected StringOutput getResourceAsString(Target target)
+    protected StringOutput getResourceAsString(RequestContext target)
 	    throws IOException {
 	StringOutput stringOutput = new StringOutput();
 	renderResource(target, stringOutput);
@@ -327,7 +333,7 @@ public class Driver {
     }
 
     private final String getContextKey() {
-	return Context.class.getName() + "#" + config.getInstanceName();
+	return UserContext.class.getName() + "#" + config.getInstanceName();
     }
 
 }

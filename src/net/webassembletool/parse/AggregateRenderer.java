@@ -8,11 +8,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.AggregationSyntaxException;
-import net.webassembletool.Context;
+import net.webassembletool.UserContext;
 import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 import net.webassembletool.RenderingException;
 import net.webassembletool.RetrieveException;
+import net.webassembletool.RequestContext;
 import net.webassembletool.ouput.StringOutput;
 
 /**
@@ -43,11 +44,14 @@ import net.webassembletool.ouput.StringOutput;
  */
 public class AggregateRenderer implements Renderer {
     private final HttpServletResponse response;
-    private final Context context;
+    private final UserContext context;
+    private final RequestContext target;
 
-    public AggregateRenderer(HttpServletResponse response, Context context) {
+    public AggregateRenderer(HttpServletResponse response, RequestContext target,
+	    UserContext context) {
 	this.response = response;
 	this.context = context;
+	this.target = target;
     }
 
     /** {@inheritDoc} */
@@ -103,7 +107,8 @@ public class AggregateRenderer implements Renderer {
 	    try {
 		if ("includeblock".equals(tagName)) {
 		    DriverFactory.getInstance(provider).renderBlock(page,
-			    blockOrTemplate, writer, context, null, null);
+			    blockOrTemplate, writer,
+			    target.getOriginalRequest(), null, null);
 		} else {
 		    aggregateTemplate(page, blockOrTemplate, content.substring(
 			    openTag.getEndIndex(), closeTag.getBeginIndex()),
@@ -169,7 +174,7 @@ public class AggregateRenderer implements Renderer {
 	    if (openTag != null)
 		closeTag = Tag.findNext("endput", content, openTag);
 	}
-	driver.renderTemplate(page, template, writer, context, params, null,
-		null);
+	driver.renderTemplate(page, template, writer, target
+		.getOriginalRequest(), params, null, null);
     }
 }

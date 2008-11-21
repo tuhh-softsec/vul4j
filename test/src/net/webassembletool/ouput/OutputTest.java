@@ -59,9 +59,8 @@ public class OutputTest extends TestCase {
 	    fail("should throw OutputException");
 	} catch (OutputException e) {
 	    assertNotNull(e.getCause());
-	    assertTrue(
-		    "cause should be instance of UnsupportedEncodingException",
-		    e.getCause() instanceof UnsupportedEncodingException);
+	    assertTrue("cause should be instance of IOException",
+		    e.getCause() instanceof IOException);
 	}
     }
 

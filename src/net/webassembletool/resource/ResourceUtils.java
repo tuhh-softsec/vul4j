@@ -4,8 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import net.webassembletool.Context;
-import net.webassembletool.Target;
+import net.webassembletool.RequestContext;
+import net.webassembletool.UserContext;
 
 /**
  * Utility class to generate URL and path for Resources
@@ -14,17 +14,17 @@ import net.webassembletool.Target;
  */
 public class ResourceUtils {
 
-    private final static String buildQueryString(Target target) {
+    private final static String buildQueryString(RequestContext target) {
+	UserContext context = target.getUserContext();
 	try {
-	    String charset = "ISO-8859-1";
+
 	    StringBuilder queryString = new StringBuilder();
-	    if (target.getOriginalRequest() != null) {
-		charset = target.getOriginalRequest().getCharacterEncoding();
-		String qs = target.getOriginalRequest().getQueryString();
-		if (qs != null && !qs.equals(""))
-		    queryString.append(qs).append("&");
-	    }
-	    Context context = target.getContext();
+	    String charset = target.getOriginalRequest().getCharacterEncoding();
+	    if (charset == null)
+		charset = "ISO-8859-1";
+	    String qs = target.getOriginalRequest().getQueryString();
+	    if (qs != null && !qs.equals(""))
+		queryString.append(qs).append("&");
 	    Map<String, String> parameters = target.getParameters();
 	    if (context != null) {
 		for (Map.Entry<String, String> temp : context.getParameterMap()
@@ -66,8 +66,9 @@ public class ResourceUtils {
 	return url.toString();
     }
 
-    public final static String getHttpUrlWithQueryString(Target target) {
-	String url = concatUrl(target.getBaseUrl(), target.getRelUrl());
+    public final static String getHttpUrlWithQueryString(RequestContext target) {
+	String url = concatUrl(target.getDriver().getBaseURL(), target
+		.getRelUrl());
 	String queryString = ResourceUtils.buildQueryString(target);
 	if ("".equals(queryString))
 	    return url;
@@ -75,12 +76,14 @@ public class ResourceUtils {
 	    return url + "?" + queryString;
     }
 
-    public final static String getHttpUrl(Target target) {
-	String url = concatUrl(target.getBaseUrl(), target.getRelUrl());
+    public final static String getHttpUrl(RequestContext target) {
+	String url = concatUrl(target.getDriver().getBaseURL(), target
+		.getRelUrl());
 	return url;
     }
 
-    public final static String getFileUrl(String localBase, Target target) {
+    public final static String getFileUrl(String localBase,
+	    RequestContext target) {
 	String url = concatUrl(localBase, target.getRelUrl());
 	// Append queryString hashcode to supply different cache
 	// filenames

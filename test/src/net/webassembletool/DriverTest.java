@@ -186,7 +186,7 @@ public class DriverTest extends TestCase {
 	}
 
 	@Override
-	protected StringOutput getResourceAsString(Target target) {
+	protected StringOutput getResourceAsString(RequestContext target) {
 	    return expectedOutput;
 	}
 
