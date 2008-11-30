@@ -115,6 +115,7 @@ public class StringHighlighter extends Highlighter {
 		if (doubleEscapes && in.startsWith(end, end.length())) {
 		    in.moveNext();
 		} else {
+		    in.moveNext(end.length()-1);
 		    break;
 		}
 	    } else if (escape != null && in.startsWith(escape) && !wasEscape) {
