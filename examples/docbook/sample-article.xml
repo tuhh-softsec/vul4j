@@ -62,4 +62,12 @@ public final class Example {
 		<title>Example listing with imported text</title>
 		<programlisting language="xml" xml:space="preserve"><textobject><textdata fileref="sample-article.xml" /></textobject></programlisting>
 	</example>
+	
+	<para>The following is a test case for bug #2361821</para>
+	<programlisting language="xml">
+	&lt;myelement /&gt;
+	</programlisting>
+	<programlisting language="xml"><![CDATA[
+	<myelement />
+	]]></programlisting>	
 </article>
