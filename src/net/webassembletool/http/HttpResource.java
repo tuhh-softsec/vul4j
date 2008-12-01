@@ -100,7 +100,6 @@ public class HttpResource extends Resource {
 	try {
 	    if (LOG.isDebugEnabled())
 		LOG.debug(toString());
-	    System.out.println(toString());
 	    httpClient.executeMethod(httpClient.getHostConfiguration(),
 		    httpMethod, httpState);
 	    statusCode = httpMethod.getStatusCode();
