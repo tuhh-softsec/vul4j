@@ -29,7 +29,6 @@ import net.webassembletool.resource.ResourceUtils;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
 
 /**
  * Main class used to retrieve data from a provider application using HTTP
@@ -59,8 +58,6 @@ public class Driver {
 	    httpClient.getParams().setSoTimeout(config.getTimeout());
 	    httpClient.getHttpConnectionManager().getParams()
 		    .setConnectionTimeout(config.getTimeout());
-	    httpClient.getParams().setCookiePolicy(
-		    CookiePolicy.BROWSER_COMPATIBILITY);
 	} else {
 	    httpClient = null;
 	}
