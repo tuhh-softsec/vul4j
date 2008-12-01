@@ -7,6 +7,11 @@
 		<delete dir="build" />
 		<delete dir="dist" />
 		<ant dir="examples" target="clean" />
+		<delete dir="test">
+			<fileset>
+				<include name="**/*.class" />
+			</fileset>
+		</delete>
 	</target>
 
 	<target name="init">
@@ -61,6 +66,20 @@
 				<include name="xslthl-*.jar" />
 			</fileset>
 		</zip>
+	</target>
+
+	<target name="test" depends="jar" description="Run unit tests">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+				<pathelement location="build" />
+				<fileset dir="lib" includes="**/*.jar" />
+			</classpath>
+			<batchtest>
+				<fileset dir="test">
+					<include name="**/*Test*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
 	</target>
 
 </project>

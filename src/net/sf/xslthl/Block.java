@@ -65,8 +65,17 @@ public class Block {
 
     /**
      * @return true if this block as no content
+     * @deprecated Use {@link #isEmpty()} instead
      */
+    @Deprecated
     public boolean empty() {
+	return isEmpty();
+    }
+
+    /**
+     * @return true if this block as no content
+     */
+    public boolean isEmpty() {
 	if (text == null || text.length() == 0) {
 	    return true;
 	}

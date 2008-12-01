@@ -59,6 +59,9 @@ public class StyledBlock extends Block {
 	if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style)) {
 	    return "";
 	}
+	if (StyledBlock.NO_STYLE.equalsIgnoreCase(style)) {
+	    return getText();
+	}
 	return String.format("<%s>%s</%s>", getStyle(), getText(), getStyle());
     }
 

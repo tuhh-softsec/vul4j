@@ -2,9 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry including="**/*.xml" kind="src" output="dist/highlighters" path="highlighters"/>
+	<classpathentry kind="src" output="test" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/xalan-2.7/xalan-2.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/saxon-6/saxon.jar" sourcepath="lib/saxon-6/source.zip"/>
 	<classpathentry kind="lib" path="lib/saxon-9/saxon9.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
