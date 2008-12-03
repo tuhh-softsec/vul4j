@@ -9,7 +9,12 @@ URL:            http://xml.apache.org/security/c/
 Source0:        http://xml.apache.org/security/dist/c-library/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  xerces%{?xercesver}-c-devel >= 2.3, openssl-devel
+%if 0%{?suse_version} > 1030
+BuildRequires:  libXerces-c-devel >= 2.8.0
+%else
+BuildRequires:  xerces%{?xercesver}-c-devel >= 2.3
+%endif
+BuildRequires:  openssl-devel
 %{?_with_xalan:BuildRequires: xalan-c-devel >= 1.6}
 
 %description
@@ -61,6 +66,7 @@ Requires:       %{name} = %{version}-%{release}
 %changelog
 * Fri Sep 19 2008   Scott Cantor  <cantor.2@osu.edu> 1.4.1-1
 - update to 1.4.1
+- fix Xerces dependency name on SUSE
 * Wed Aug 15 2007   Scott Cantor  <cantor.2@osu.edu> 1.4.0-1
 - update to 1.4.0
 * Mon Jun 11 2007   Scott Cantor  <cantor.2@osu.edu> 1.3.1-1
