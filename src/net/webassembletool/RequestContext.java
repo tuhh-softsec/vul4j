@@ -3,6 +3,7 @@
  */
 package net.webassembletool;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,10 @@ public class RequestContext {
 	    Map<String, String> parameters, HttpServletRequest originalRequest) {
 	this.driver = driver;
 	this.relUrl = relUrl;
-	this.parameters = parameters;
+	if (parameters != null)
+	    this.parameters = parameters;
+	else
+	    this.parameters = new HashMap<String, String>();
 	this.originalRequest = originalRequest;
     }
 

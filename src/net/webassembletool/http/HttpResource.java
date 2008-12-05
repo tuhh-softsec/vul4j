@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketTimeoutException;
+import java.security.Principal;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -25,6 +26,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.authentication.AttributePrincipal;
 
 /**
  * Resource implementation pointing to a resource on an external application.
@@ -43,7 +45,17 @@ public class HttpResource extends Resource {
     private Exception exception;
 
     private void buildHttpMethod() {
-	// TODO do not proxy all the time
+	// CAS support
+	Principal principal = target.getOriginalRequest().getUserPrincipal();
+	if (principal != null && principal instanceof AttributePrincipal) {
+	    AttributePrincipal casPrincipal = (AttributePrincipal) principal;
+	    LOG.debug("User logged in CAS as: " + casPrincipal.getName());
+	    url = ResourceUtils.getHttpUrl(target);
+	    String casProxyTicket = casPrincipal.getProxyTicketFor(url);
+	    LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName()
+		    + " for service: " + url);
+	    target.getParameters().put("ticket", casProxyTicket);
+	}
 	if ("GET".equalsIgnoreCase(target.getMethod()) || !target.isProxyMode()) {
 	    url = ResourceUtils.getHttpUrlWithQueryString(target);
 	    httpMethod = new GetMethod(url);

@@ -27,6 +27,7 @@
 		<deploy-wat-classes webapp-root="bin/webapps/master" />
 		<deploy-wat-classes webapp-root="bin/webapps/provider" />
 		<deploy-wat-classes webapp-root="bin/webapps/aggregator" />
+		<deploy-wat-classes webapp-root="bin/webapps/casified_agregator" />
 	</target>
 	<target name="javadoc">
 		<delete>
