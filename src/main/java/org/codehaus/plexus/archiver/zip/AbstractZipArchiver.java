@@ -90,7 +90,7 @@ public abstract class AbstractZipArchiver
     /**
      * @deprecated Use {@link Archiver#setDuplicateBehavior(String)} instead.
      */
-    protected String duplicate = Archiver.DUPLICATES_ADD;
+    protected String duplicate = Archiver.DUPLICATES_SKIP;
 
     /**
      * true when we are adding new files into the Zip file, as opposed
@@ -261,7 +261,7 @@ public abstract class AbstractZipArchiver
     private void createArchiveMain()
         throws ArchiverException, IOException
     {
-        if ( !Archiver.DUPLICATES_ADD.equals( duplicate ) )
+        if ( !Archiver.DUPLICATES_SKIP.equals( duplicate ) )
         {
             setDuplicateBehavior( duplicate );
         }

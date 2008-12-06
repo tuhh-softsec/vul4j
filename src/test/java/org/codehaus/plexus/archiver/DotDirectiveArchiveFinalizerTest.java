@@ -32,7 +32,7 @@ public class DotDirectiveArchiveFinalizerTest
 
         assertNotNull( jar.getEntry( "NOTICE.txt" ) );
 
-        assertNotNull( jar.getEntry( "META-INF/maven/NOTICE.txt" ) );
+        assertNotNull( jar.getEntry( "META-INF/maven/LICENSE.txt" ) );
 
         assertNotNull( jar.getEntry( "META-INF/maven/NOTICE.txt" ) );
     }
@@ -58,7 +58,7 @@ public class DotDirectiveArchiveFinalizerTest
 
         assertNotNull( jar.getEntry( "NOTICE.txt" ) );
 
-        assertNotNull( jar.getEntry( "META-INF/maven/NOTICE.txt" ) );
+        assertNotNull( jar.getEntry( "META-INF/maven/LICENSE.txt" ) );
 
         assertNotNull( jar.getEntry( "META-INF/maven/NOTICE.txt" ) );
     }

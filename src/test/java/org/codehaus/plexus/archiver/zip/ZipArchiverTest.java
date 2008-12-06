@@ -73,7 +73,9 @@ public class ZipArchiverTest
         return archiver;
     }
 
-    private void createArchive(ZipArchiver archiver) throws ArchiverException, IOException {
+    private void createArchive( ZipArchiver archiver )
+        throws ArchiverException, IOException
+    {
         archiver.createArchive();
 
         ZipFile zf = new ZipFile( archiver.getDestFile() );

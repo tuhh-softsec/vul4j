@@ -93,7 +93,7 @@ public abstract class AbstractArchiver
 
     private File dotFileDirectory;
 
-    private String duplicateBehavior = Archiver.DUPLICATES_ADD;
+    private String duplicateBehavior = Archiver.DUPLICATES_SKIP;
 
     // contextualized.
     private ArchiverManager archiverManager;
@@ -219,6 +219,11 @@ public abstract class AbstractArchiver
         collection.setCaseSensitive( fileSet.isCaseSensitive() );
         collection.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
         
+        if ( defaultDirectoryMode > -1 || defaultFileMode > -1 )
+        {
+            collection.setOverrideAttributes( -1, null, -1, null, defaultFileMode, defaultDirectoryMode );
+        }
+        
         addResources( collection );
     }
 
@@ -254,13 +259,8 @@ public abstract class AbstractArchiver
         {
             final String destFileName = collection.getName( resource );
             
-//            1. use given permissions (doesn't apply here)
-//            2. use preferred default permissions
-//            3. use detected permissions
-//            4. use default permissions as initialized by the archiver component when it was created
-            
-            int permissions = resource.isFile() ? defaultFileMode : defaultDirectoryMode;
-            if ( permissions == -1 && ( resource instanceof PlexusIoResourceWithAttributes ) )
+            int permissions = -1;
+            if ( resource instanceof PlexusIoResourceWithAttributes )
             {
                 PlexusIoResourceAttributes attrs = ((PlexusIoResourceWithAttributes) resource ).getAttributes();
                 
@@ -548,6 +548,11 @@ public abstract class AbstractArchiver
         proxy.setPrefix( fileSet.getPrefix() );
         proxy.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
         proxy.setFileSelectors( fileSet.getFileSelectors() );
+        
+        if ( defaultDirectoryMode > -1 || defaultFileMode > -1 )
+        {
+            proxy.setOverrideAttributes( -1, null, -1, null, defaultFileMode, defaultDirectoryMode );
+        }
         
         return proxy;
     }
