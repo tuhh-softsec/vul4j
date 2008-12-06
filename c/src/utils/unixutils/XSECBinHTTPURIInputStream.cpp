@@ -102,7 +102,7 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
     char*               queryAsCharStar = 0;
     if (query)
         queryAsCharStar = XMLString::transcode(query);
-    ArrayJanitor<char>  janBuf4(queryAsCharStar);		
+    ArrayJanitor<char>  janBuf4(queryAsCharStar);
 
     unsigned short      portNumber = (unsigned short) urlSource.getPort();
 	if (portNumber == USHRT_MAX)
@@ -159,7 +159,7 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
     strcat(fBuffer, pathAsCharStar);
 
     if (queryAsCharStar != 0)
-    {		
+    {
         size_t n = strlen(fBuffer);
         fBuffer[n] = XERCES_CPP_NAMESPACE_QUALIFIER chQuestion;
         fBuffer[n+1] = XERCES_CPP_NAMESPACE_QUALIFIER chNull;
@@ -264,7 +264,7 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
 							"Error reported reading socket");
 		}
 
-		// Now read 
+		// Now read
 		p++;
 		for (q=0; q < 255 && p[q] != '\r' && p[q] !='\n'; ++q)
 			redirectBuf[q] = p[q];
@@ -309,10 +309,10 @@ XSECBinHTTPURIInputStream::~XSECBinHTTPURIInputStream()
 }
 
 
-unsigned int XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
-                                      , const unsigned int    maxToRead)
+xsecsize_t XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
+                                      , const xsecsize_t    maxToRead)
 {
-    unsigned int len = fBufferEnd - fBufferPos;
+    xsecsize_t len = fBufferEnd - fBufferPos;
     if (len > 0)
     {
         // If there's any data left over in the buffer into which we first
@@ -339,3 +339,8 @@ unsigned int XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
     return len;
 }
 
+#ifdef XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE
+const XMLCh* XSECBinHTTPURIInputStream::getContentType() const {
+    return NULL;
+}
+#endif

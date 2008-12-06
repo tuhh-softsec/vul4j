@@ -76,6 +76,14 @@
 
 #undef XSEC_XERCES_DOMENTITYINPUTENCODING
 
+/* 3.0 now 64-bit safe */
+
+#undef XSEC_XERCES_64BITSAFE 1
+
+/* 3.0 InputStream must expose content type */
+
+#undef XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE 1
+
 /*
  * Find out the idiosyncracies of the version of Xalan we are using
  */

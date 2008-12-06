@@ -142,7 +142,7 @@ public:
     // -----------------------------------------------------------------------
 
     void writeChars(const   XMLByte* const  toWrite,
-                    const   unsigned int    count,
+                    const   xsecsize_t    count,
                             XMLFormatter * const formatter)
     {
         // Surprisingly, Solaris was the only platform on which
@@ -150,7 +150,7 @@ public:
         // Without the cast, it was printing the pointer value in hex.
         // Quite annoying, considering every other platform printed
         // the string with the explicit cast to char* below.
-        cout.write((char *) toWrite, (int) count);
+        cout.write((char *) toWrite, count);
     };
 
 private:
@@ -174,7 +174,7 @@ ostream& operator<<(ostream& target, DOMNode* toWrite)
     // Get the name and value out for convenience
     const XMLCh*   nodeName = toWrite->getNodeName();
     const XMLCh*   nodeValue = toWrite->getNodeValue();
-    unsigned long lent = XMLString::stringLen(nodeValue);
+    xsecsize_t lent = XMLString::stringLen(nodeValue);
 
     switch (toWrite->getNodeType())
     {
@@ -224,8 +224,8 @@ ostream& operator<<(ostream& target, DOMNode* toWrite)
 
             // Output any attributes on this element
             DOMNamedNodeMap *attributes = toWrite->getAttributes();
-            int attrCount = attributes->getLength();
-            for (int i = 0; i < attrCount; i++)
+            XMLSize_t attrCount = attributes->getLength();
+            for (XMLSize_t i = 0; i < attrCount; i++)
             {
                 DOMNode  *attribute = attributes->item(i);
 
@@ -920,7 +920,7 @@ void docSetup(DOMDocument *doc) {
             encNameStr = aStr;
         }
     }
-    unsigned int lent = XMLString::stringLen(encNameStr);
+    xsecsize_t lent = XMLString::stringLen(encNameStr);
     gEncodingName = new XMLCh[lent + 1];
     XMLString::copyNString(gEncodingName, encNameStr, lent);
     gEncodingName[lent] = 0;

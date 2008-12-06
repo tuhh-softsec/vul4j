@@ -114,10 +114,8 @@ void TXFMParser::setInput(TXFMBase *newInput) {
 	parser.setCreateEntityReferenceNodes(true);
 	parser.setDoSchema(true);
 
-	int errorCount = 0;
-
 	parser.parse(is);
-    errorCount = parser.getErrorCount();
+    xsecsize_t errorCount = parser.getErrorCount();
     if (errorCount > 0)
 		throw XSECException(XSECException::XSLError, "Errors occured parsing BYTE STREAM");
 

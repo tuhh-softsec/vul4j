@@ -156,7 +156,7 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKeyAES(
 	XMLByte aesBuf[16];
 	XMLByte aesOutBuf[16];
 	TXFMBase * b = cipherText->getLastTxfm();
-	int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+	unsigned int sz = (unsigned int) b->readBytes(buf, _MY_MAX_KEY_SIZE);
 
 	if (sz <= 0) {
 		throw XSECException(XSECException::CipherError, 
@@ -233,7 +233,7 @@ bool XENCAlgorithmHandlerDefault::wrapKeyAES(
 	XMLByte aesBuf[16];
 	XMLByte aesOutBuf[32];  // Give this an extra block for WinCAPI
 	TXFMBase * b = cipherText->getLastTxfm();
-	int sz = b->readBytes(&buf[8], _MY_MAX_KEY_SIZE);
+	unsigned int sz = (unsigned int) b->readBytes(&buf[8], _MY_MAX_KEY_SIZE);
 
 	if (sz <= 0) {
 		throw XSECException(XSECException::CipherError, 
@@ -329,13 +329,13 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKey3DES(
 	// Cat the encrypted key
 	XMLByte buf[_MY_MAX_KEY_SIZE];
 	TXFMBase * b = cipherText->getLastTxfm();
-	int offset = 0;
-	int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+	unsigned int offset = 0;
+	unsigned int sz = (unsigned int) b->readBytes(buf, _MY_MAX_KEY_SIZE);
 
 	while (sz > 0) {
 		cipherSB.sbMemcpyIn(offset, buf, sz);
 		offset += sz;
-		sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+		sz = (unsigned int) b->readBytes(buf, _MY_MAX_KEY_SIZE);
 	}
 
 	if (offset > _MY_MAX_KEY_SIZE) {
@@ -360,7 +360,7 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKey3DES(
 
 	// We now have the first cut, reverse the cipher text
 	XMLByte buf2[_MY_MAX_KEY_SIZE];
-	for (int i = 0; i < sz; ++ i) {
+	for (unsigned int i = 0; i < sz; ++ i) {
 		buf2[sz - i - 1] = buf[i];
 	}
 
@@ -383,7 +383,7 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKey3DES(
 	sha1->finish(buf2, _MY_MAX_KEY_SIZE);
 
 	// Compare
-	for (int j = 0; j < 8; ++j) {
+	for (unsigned int j = 0; j < 8; ++j) {
 
 		if (buf[offset - 8 + j] != buf2[j]) {
 			throw XSECException(XSECException::CipherError, 
@@ -406,7 +406,7 @@ bool XENCAlgorithmHandlerDefault::wrapKey3DES(
 	XMLByte buf[_MY_MAX_KEY_SIZE + 16];
 	TXFMBase * b = cipherText->getLastTxfm();
 	int offset = 0;
-	int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+	unsigned int sz = (unsigned int) b->readBytes(buf, _MY_MAX_KEY_SIZE);
 
 	if (sz <= 0) {
 		throw XSECException(XSECException::CipherError, 
@@ -458,7 +458,7 @@ bool XENCAlgorithmHandlerDefault::wrapKey3DES(
 	}
 
 	// We now have the first cut, reverse the cipher text
-	for (int i = 0; i < sz; ++ i) {
+	for (unsigned int i = 0; i < sz; ++ i) {
 		buf[sz - i - 1] = buf2[i];
 	}
 
@@ -561,11 +561,11 @@ unsigned int XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer(
 	XMLByte buf[1024];
 	unsigned int offset = 0;
 
-	int bytesRead = b->readBytes(buf, 1024);
+	unsigned int bytesRead = (unsigned int) b->readBytes(buf, 1024);
 	while (bytesRead > 0) {
 		cipherSB.sbMemcpyIn(offset, buf, bytesRead);
 		offset += bytesRead;
-		bytesRead = b->readBytes(buf, 1024);
+		bytesRead = (unsigned int) b->readBytes(buf, 1024);
 	}
 
 	unsigned int decryptLen;
@@ -715,11 +715,11 @@ unsigned int XENCAlgorithmHandlerDefault::decryptToSafeBuffer(
 	XMLByte buf[1024];
 	TXFMBase * b = cipherText->getLastTxfm();
 
-	int bytesRead = b->readBytes(buf, 1024);
+	unsigned int bytesRead = (unsigned int) b->readBytes(buf, 1024);
 	while (bytesRead > 0) {
 		result.sbMemcpyIn(offset, buf, bytesRead);
 		offset += bytesRead;
-		bytesRead = b->readBytes(buf, 1024);
+		bytesRead = (unsigned int) b->readBytes(buf, 1024);
 	}
 
 	result[offset] = '\0'; 
@@ -761,11 +761,11 @@ bool XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer(
 	XMLByte buf[1024];
 	unsigned int offset = 0;
 
-	int bytesRead = b->readBytes(buf, 1024);
+	unsigned int bytesRead = (unsigned int) b->readBytes(buf, 1024);
 	while (bytesRead > 0) {
 		plainSB.sbMemcpyIn(offset, buf, bytesRead);
 		offset += bytesRead;
-		bytesRead = b->readBytes(buf, 1024);
+		bytesRead = (unsigned int) b->readBytes(buf, 1024);
 	}
 
 	unsigned int encryptLen;

@@ -71,6 +71,24 @@ static LPFN_WSACLEANUP gWSACleanup = NULL;
 bool XSECBinHTTPURIInputStream::fInitialized = false;
 XMLMutex* XSECBinHTTPURIInputStream::fInitMutex = 0;
 
+// Ported from Xerces 2.x, now missing on 3.x, so I'm inlining it.
+static void* compareAndSwap(void** toFill, const void* const newValue, const void* const toCompare) {
+#if defined _WIN64
+    return ::InterlockedCompareExchangePointer(toFill, (void*)newValue, (void*)toCompare);
+#else
+    void*   result;
+    __asm
+    {
+        mov             eax, toCompare;
+        mov             ebx, newValue;
+        mov             ecx, toFill
+        lock cmpxchg    [ecx], ebx;
+        mov             result, eax;
+    }
+    return result;
+#endif
+}
+
 void XSECBinHTTPURIInputStream::Initialize() {
     //
     // Initialize the WinSock library here.
@@ -226,7 +244,7 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
     char*               queryAsCharStar = 0;
     if (query)
         queryAsCharStar = XMLString::transcode(query);
-    ArrayJanitor<char>  janBuf4(queryAsCharStar);		
+    ArrayJanitor<char>  janBuf4(queryAsCharStar);
 
     unsigned short      portNumber = (unsigned short) urlSource.getPort();
 
@@ -420,14 +438,14 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
 	        throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Error reported reading socket");
 		}
-		
+
 		// Now read
 		p++;
 		for (q=0; q < 255 && p[q] != '\r' && p[q] !='\n'; ++q)
 			redirectBuf[q] = p[q];
-		
+
 		redirectBuf[q] = '\0';
-		
+
 		// Try to find this location
 		XMLCh * redirectBufTrans = XMLString::transcode(redirectBuf);
 		ArrayJanitor<XMLCh> j_redirectBuf(redirectBufTrans);
@@ -456,7 +474,7 @@ XSECBinHTTPURIInputStream::XSECBinHTTPURIInputStream(const XMLUri& urlSource)
         if (!fInitMutex)
         {
             XMLMutex* tmpMutex = new XMLMutex;
-            if (XMLPlatformUtils::compareAndSwap((void**)&fInitMutex, tmpMutex, 0))
+            if (compareAndSwap((void**)&fInitMutex, tmpMutex, 0))
             {
                 // Someone beat us to it, so let's clean up ours
                 delete tmpMutex;
@@ -480,7 +498,7 @@ void XSECBinHTTPURIInputStream::ExternalInitialize(void) {
         if (!fInitMutex)
         {
             XMLMutex* tmpMutex = new XMLMutex;
-            if (XMLPlatformUtils::compareAndSwap((void**)&fInitMutex, tmpMutex, 0))
+            if (compareAndSwap((void**)&fInitMutex, tmpMutex, 0))
             {
                 // Someone beat us to it, so let's clean up ours
                 delete tmpMutex;
@@ -505,10 +523,11 @@ XSECBinHTTPURIInputStream::~XSECBinHTTPURIInputStream()
 //
 //  readBytes
 //
-unsigned int XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
-                                    , const unsigned int    maxToRead)
+xsecsize_t XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
+                                    , const xsecsize_t    maxToRead)
 {
-    unsigned int len = (unsigned int) (fBufferEnd - fBufferPos);
+
+    xsecsize_t len = (xsecsize_t) (fBufferEnd - fBufferPos);
     if (len > 0)
     {
         // If there's any data left over in the buffer into which we first
@@ -535,3 +554,9 @@ unsigned int XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
     fBytesProcessed += len;
     return len;
 }
+
+#ifdef XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE
+const XMLCh* XSECBinHTTPURIInputStream::getContentType() const {
+    return NULL;
+}
+#endif

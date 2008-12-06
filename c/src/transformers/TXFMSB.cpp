@@ -114,7 +114,7 @@ unsigned int TXFMSB::readBytes(XMLByte * const toFill, unsigned int maxToFill) {
 	if (toOutput <= maxToFill) {
 
 		memcpy((char *) toFill, &(sb.rawBuffer()[sbs - toOutput]), toOutput);
-		ret = toOutput;
+		ret = (unsigned int) toOutput;
 		toOutput = 0;
 
 		return ret;

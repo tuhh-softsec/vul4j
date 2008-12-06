@@ -24,7 +24,7 @@
  * $ID$
  *
  * $LOG$
- *					 
+ *
  */
 
 
@@ -72,21 +72,22 @@ XSECBinTXFMInputStream::~XSECBinTXFMInputStream() {
 
 void XSECBinTXFMInputStream::reset(void) {}
 
-unsigned int XSECBinTXFMInputStream::curPos() const {
-
+#ifdef XSEC_XERCES_64BITSAFE
+XMLFilePos
+#else
+unsigned int
+#endif
+XSECBinTXFMInputStream::curPos() const {
 	return m_currentIndex;
-
 }
 
-unsigned int XSECBinTXFMInputStream::readBytes(XMLByte* const  toFill, 
-					   const unsigned int maxToRead) {
+xsecsize_t XSECBinTXFMInputStream::readBytes(XMLByte* const  toFill,
+					   const xsecsize_t maxToRead) {
 
 	if (m_done == true)
 		return 0;
 
-	unsigned int bytesRead;
-
-	bytesRead = mp_txfm->readBytes(toFill, maxToRead);
+	xsecsize_t bytesRead = mp_txfm->readBytes(toFill, maxToRead);
 
 	if (bytesRead == 0) {
 
@@ -109,3 +110,8 @@ unsigned int XSECBinTXFMInputStream::readBytes(XMLByte* const  toFill,
 
 }
 
+#ifdef XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE
+const XMLCh* XSECBinTXFMInputStream::getContentType() const {
+    return NULL;
+}
+#endif

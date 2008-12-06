@@ -34,7 +34,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib Xalan-C_1D.lib crypt32.lib libeay32.lib "
+				AdditionalDependencies="xerces-c_3D.lib Xalan-C_1D.lib crypt32.lib libeay32.lib "
 				OutputFile="$(OutDir)/threadTest.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -81,7 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib crypt32.lib libeay32.lib  Xalan-C_1.lib"
+				AdditionalDependencies="xerces-c_3.lib crypt32.lib libeay32.lib  Xalan-C_1.lib"
 				OutputFile="$(OutDir)/threadTest.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -128,7 +128,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib crypt32.lib libeay32.lib "
+				AdditionalDependencies="xerces-c_3D.lib crypt32.lib libeay32.lib "
 				OutputFile="$(OutDir)/threadTest.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -175,7 +175,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib crypt32.lib libeay32.lib"
+				AdditionalDependencies="xerces-c_3.lib crypt32.lib libeay32.lib"
 				OutputFile="$(OutDir)/threadTest.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"

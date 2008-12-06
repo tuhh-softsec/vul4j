@@ -135,7 +135,7 @@ int main (int argc, char **argv) {
 
 	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) docToValidate, (unsigned int) strlen(docToValidate), "XSECMem");
 
-	int errorCount = 0;
+	xsecsize_t errorCount = 0;
 
 	parser->parse(*memIS);
     errorCount = parser->getErrorCount();

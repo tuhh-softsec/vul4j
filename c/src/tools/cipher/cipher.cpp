@@ -557,7 +557,7 @@ int evaluate(int argc, char ** argv) {
 
 		// Now parse out file
 
-		int errorCount = 0;
+		xsecsize_t errorCount = 0;
 		try
 		{
     		parser->parse(filename);
@@ -681,7 +681,7 @@ int evaluate(int argc, char ** argv) {
 				Janitor<XSECBinTXFMInputStream> j_bis(bis);
 	
 				XMLByte buf[1024];			
-				unsigned int read = bis->readBytes(buf, 1023);
+				xsecsize_t read = bis->readBytes(buf, 1023);
 				while (read > 0) {
 					formatTarget->writeChars(buf, read, NULL);
 					read = bis->readBytes(buf, 1023);

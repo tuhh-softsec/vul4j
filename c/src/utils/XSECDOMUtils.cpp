@@ -165,7 +165,7 @@ DOMNode *findFirstChildOfType(DOMNode *n, DOMNode::NodeType t) {
 
 	DOMNode *c;
 
-	if (n == NULL) 
+	if (n == NULL)
 		return n;
 
 	c = n->getFirstChild();
@@ -196,7 +196,7 @@ DOMElement *findFirstElementChild(DOMNode *n) {
 
 	DOMNode *c;
 
-	if (n == NULL) 
+	if (n == NULL)
 		return NULL;
 
 	c = n->getFirstChild();
@@ -288,7 +288,7 @@ XMLT::~XMLT (void) {
 }
 
 XMLCh * XMLT::getUnicodeStr(void) {
-	
+
 	return mp_unicodeStr;
 
 }
@@ -333,37 +333,38 @@ XMLCh * transcodeFromUTF8(const unsigned char * src) {
 	XMLTransService::Codes failReason;
 
 #if defined(XSEC_XERCES_REQUIRES_MEMMGR)
-	XMLTranscoder* t = 
-		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
-															   failReason, 
-															   2*1024, 
+	XMLTranscoder* t =
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8",
+															   failReason,
+															   2*1024,
 															   XMLPlatformUtils::fgMemoryManager);
 #else
-	XMLTranscoder* t = 
-		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
-															   failReason, 
+	XMLTranscoder* t =
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8",
+															   failReason,
 															   2*1024);
 #endif
 	Janitor<XMLTranscoder> j_t(t);
 
 	// Need to loop through, 2K at a time
-	unsigned int bytesEaten, bytesEatenCounter;
-	unsigned int charactersEaten;
-	unsigned int totalBytesEaten = 0;
-	unsigned int bytesToEat = XMLString::stringLen((char *) src);
+	xsecsize_t bytesEaten, bytesEatenCounter;
+    xsecsize_t charactersEaten;
+	xsecsize_t totalBytesEaten = 0;
+	xsecsize_t bytesToEat = XMLString::stringLen((char *) src);
 
 	while (totalBytesEaten < bytesToEat) {
 
-		int toEat = bytesToEat - totalBytesEaten;
+	    xsecsize_t toEat = bytesToEat - totalBytesEaten;
+
 
 		if (toEat > 2048)
 			toEat = 2048;
 
-		t->transcodeFrom(&src[totalBytesEaten], 
-						toEat, 
-						outputBuf, 
-						2048, 
-						bytesEaten, 
+		t->transcodeFrom(&src[totalBytesEaten],
+						toEat,
+						outputBuf,
+						2048,
+						bytesEaten,
 						charSizes);
 
 		// Determine how many characters were used
@@ -372,7 +373,7 @@ XMLCh * transcodeFromUTF8(const unsigned char * src) {
 		while (bytesEatenCounter < bytesEaten) {
 			bytesEatenCounter += charSizes[charactersEaten++];
 		}
-		
+
 		outputBuf[charactersEaten] = chNull;
 		fullDest.sbXMLChCat(outputBuf);
 		totalBytesEaten += bytesEaten;
@@ -394,36 +395,36 @@ char DSIG_EXPORT * transcodeToUTF8(const XMLCh * src) {
 	XMLTransService::Codes failReason;
 
 #if defined(XSEC_XERCES_REQUIRES_MEMMGR)
-	XMLTranscoder* t = 
-		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
-															   failReason, 
-															   2*1024, 
+	XMLTranscoder* t =
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8",
+															   failReason,
+															   2*1024,
 															   XMLPlatformUtils::fgMemoryManager);
 #else
-	XMLTranscoder* t = 
-		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
-															   failReason, 
+	XMLTranscoder* t =
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8",
+															   failReason,
 															   2*1024);
 #endif
 	Janitor<XMLTranscoder> j_t(t);
 
 	// Need to loop through, 2K at a time
-	unsigned int charactersEaten, charactersOutput;
-	unsigned int totalCharsEaten = 0;
-	unsigned int charsToEat = XMLString::stringLen(src);
+	xsecsize_t charactersEaten, charactersOutput;
+	xsecsize_t totalCharsEaten = 0;
+	xsecsize_t charsToEat = XMLString::stringLen(src);
 
 	while (totalCharsEaten < charsToEat) {
 
-		int toEat = charsToEat - totalCharsEaten;
+	    xsecsize_t toEat = charsToEat - totalCharsEaten;
 
 		if (toEat > 2048)
 			toEat = 2048;
 
-		charactersOutput = t->transcodeTo(&src[totalCharsEaten], 
-						toEat, 
-						(unsigned char * const) outputBuf, 
-						2048, 
-						charactersEaten, 
+		charactersOutput = t->transcodeTo(&src[totalCharsEaten],
+						toEat,
+						(unsigned char * const) outputBuf,
+						2048,
+						charactersEaten,
 						XMLTranscoder::UnRep_RepChar);
 
 		outputBuf[charactersOutput] = '\0';
@@ -464,12 +465,12 @@ XMLCh * encodeDName(const XMLCh * toEncode) {
 		return NULL;
 	}
 
-	
+
 	// Find where the trailing whitespace starts
 	const XMLCh * ws = &toEncode[XMLString::stringLen(toEncode)];
-	
+
 	*ws--;
-	while (ws != toEncode && 
+	while (ws != toEncode &&
 		(*ws == '\t' || *ws == '\r' || *ws ==' ' || *ws == '\n'))
 		*ws--;
 
@@ -525,7 +526,7 @@ XMLCh * encodeDName(const XMLCh * toEncode) {
 		}
 
 		else {
-			
+
 			if (*i == chPlus ||
 				*i == chDoubleQuote ||
 				*i == chBackSlash ||
@@ -589,7 +590,7 @@ XMLCh * decodeDName(const XMLCh * toDecode) {
 		if (*i == chBackSlash) {
 
 			*i++;
-			
+
 			if (*i == chDigit_0) {
 
 				*i++;
@@ -712,7 +713,7 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 	XMLCh * retPath = XMLString::replicate(str);
 	ArrayJanitor<XMLCh> j_retPath(retPath);
 
-	int len = XMLString::stringLen(retPath);
+	xsecsize_t len = XMLString::stringLen(retPath);
 	int percentIndex = XMLString::indexOf(retPath, chPercent, 0);
 
 	while (percentIndex != -1) {
@@ -720,8 +721,8 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 		if (percentIndex+2 >= len ||
 			!isHexDigit(retPath[percentIndex+1]) ||
 			!isHexDigit(retPath[percentIndex+2]))
-			
-			throw XSECException(XSECException::ErrorOpeningURI, 
+
+			throw XSECException(XSECException::ErrorOpeningURI,
 					"Bad escape sequence in URI");
 
 		unsigned int value = (xlatHexDigit(retPath[percentIndex+1]) * 16) +

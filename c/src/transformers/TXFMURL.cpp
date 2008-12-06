@@ -122,7 +122,7 @@ unsigned int TXFMURL::readBytes(XMLByte * const toFill, unsigned int maxToFill) 
 	if (done || is == NULL) return 0;
 
 	try {
-		ret = is->readBytes(toFill, maxToFill);
+		ret = (unsigned int) is->readBytes(toFill, maxToFill);
 	}
 	catch (NetAccessorException e) {
 

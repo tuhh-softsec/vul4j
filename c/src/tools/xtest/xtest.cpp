@@ -510,7 +510,7 @@ bool reValidateSig(DOMImplementation *impl, DOMDocument * inDoc, XSECCryptoKey *
 #endif
 
 		// Copy to a new buffer
-		int len = formatTarget->getLen();
+		xsecsize_t len = formatTarget->getLen();
 		char * mbuf = new char [len + 1];
 		memcpy(mbuf, formatTarget->getRawBuffer(), len);
 		mbuf[len] = '\0';
@@ -1342,7 +1342,7 @@ count(ancestor-or-self::dsig:Signature)");
 		cerr << endl << "Doc signed OK - Checking values against Known Good" << endl;
 
 		unsigned char buf[128];
-		int len;
+		xsecsize_t len;
 
 		/*
 		 * Validate the reference hash values from known good
@@ -1668,7 +1668,7 @@ void unitTestCipherReference(DOMImplementation * impl) {
 
 		cerr << "done ... comparing to known good ... ";
 
-		int bytesRead = is->readBytes(buf, 1024);
+		xsecsize_t bytesRead = is->readBytes(buf, 1024);
 		buf[bytesRead] = '\0';
 		if (strcmp((char *) buf, s_tstDecryptedString) == 0) {
 			cerr << "OK" << endl;

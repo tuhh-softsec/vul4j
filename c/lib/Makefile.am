@@ -72,7 +72,7 @@ canon_sources = \
   ../src/canon/XSECC14n20010315.cpp \
   ../src/canon/XSECXMLNSStack.cpp \
   ../src/canon/XSECCanon.hpp \
-  ../src/canon/XSECCannon.cpp
+  ../src/canon/XSECCanon.cpp
 
 # Signature
 

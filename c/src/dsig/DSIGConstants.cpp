@@ -258,7 +258,7 @@ void DSIGConstants::create() {
 	s_unicodeStrURIHMAC_SHA512 = XMLString::transcode(URI_ID_HMAC_SHA512);
 	s_unicodeStrURIXMLNS = XMLString::transcode(URI_ID_XMLNS);
 	s_unicodeStrURIMANIFEST = XMLString::transcode(URI_ID_MANIFEST);
-	
+
 	s_unicodeStrURI3DES_CBC	= XMLString::transcode(URI_ID_3DES_CBC);
 	s_unicodeStrURIAES128_CBC	= XMLString::transcode(URI_ID_AES128_CBC);
 	s_unicodeStrURIAES192_CBC	= XMLString::transcode(URI_ID_AES192_CBC);
@@ -298,7 +298,7 @@ void DSIGConstants::destroy() {
 
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISIGBASE);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISIGBASEMORE);
-	
+
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA1);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA224);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA256);
@@ -395,8 +395,8 @@ bool getHashMethod(const XMLCh * URI, hashMethod & hm) {
 
 }
 
-bool XSECmapURIToSignatureMethods(const XMLCh * URI, 
-								  signatureMethod & sm, 
+bool XSECmapURIToSignatureMethods(const XMLCh * URI,
+								  signatureMethod & sm,
 								  hashMethod & hm) {
 
 
@@ -430,9 +430,8 @@ bool XSECmapURIToSignatureMethods(const XMLCh * URI,
 	}
 
 	/* Check to see if we are one of the more exotic RSA signatures */
+	xsecsize_t cnt = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASEMORE);
 
-	unsigned int cnt = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASEMORE);
-	
 	if (XMLString::compareNString(URI, DSIGConstants::s_unicodeStrURISIGBASEMORE, cnt) == 0) {
 
 		// Have an "new" algorithm
@@ -440,7 +439,7 @@ bool XSECmapURIToSignatureMethods(const XMLCh * URI,
 
 			// Some kind of HMAC
 			sm = SIGNATURE_HMAC;
-		
+
 			// Determine a trailing hash method
 			if (URI[cnt+4] != chDash)
 				return false;
@@ -464,14 +463,14 @@ bool XSECmapURIToSignatureMethods(const XMLCh * URI,
 
 }
 
-bool XSECmapURIToHashMethod(const XMLCh * URI, 
+bool XSECmapURIToHashMethod(const XMLCh * URI,
 							hashMethod & hm) {
 
 
 	// Check this is a known prefix on the URI.
-	unsigned int blen = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASE);
-	unsigned int bmlen = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASEMORE);
-	unsigned int belen = XMLString::stringLen(DSIGConstants::s_unicodeStrURIXENC);
+	xsecsize_t blen = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASE);
+	xsecsize_t bmlen = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASEMORE);
+	xsecsize_t belen = XMLString::stringLen(DSIGConstants::s_unicodeStrURIXENC);
 	if (XMLString::compareNString(URI, DSIGConstants::s_unicodeStrURISIGBASE, blen) == 0) {
 
 		// This is actually cheating - this will return SHA256 (as an example), even if
@@ -497,7 +496,7 @@ bool XSECmapURIToHashMethod(const XMLCh * URI,
 
 }
 
-bool XSECmapURIToCanonicalizationMethod(const XMLCh * URI, 
+bool XSECmapURIToCanonicalizationMethod(const XMLCh * URI,
 							canonicalizationMethod & cm) {
 
 	// Quick and dirty but inefficient

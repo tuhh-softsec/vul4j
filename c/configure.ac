@@ -19,12 +19,12 @@
 
 # Process this file with autoconf to produce a configure script
 
-AC_INIT([[XML-Security-C]], [1.4.1], [security-dev@xml.apache.org], [xml-security-c])
+AC_INIT([[XML-Security-C]], [1.5], [security-dev@xml.apache.org], [xml-security-c])
 AC_CONFIG_AUX_DIR([config])
 
 # kick off automake
 
-AM_INIT_AUTOMAKE(xml-security-c, 1.4.1)
+AM_INIT_AUTOMAKE(xml-security-c, 1.5)
 sinclude(m4/acx_pthread.m4)
 AM_PROG_LIBTOOL
 
@@ -443,6 +443,31 @@ if test -z "$xerceslib_found" ; then
 fi
 
 # Find out some properties of the version of Xerces we have
+
+AC_MSG_CHECKING([whether Xerces is 64-bit clean])
+
+AC_TRY_RUN([#include <xercesc/util/XercesVersion.hpp>
+    int main(int argc, char **argv) {
+      if (XERCES_VERSION_MAJOR > 2)
+        return 1;
+      else
+        return 0;
+    }],
+    [AC_MSG_RESULT([yes])]
+    [AC_DEFINE(XSEC_XERCES_64BITSAFE)],
+    [AC_MSG_RESULT([no])])
+
+AC_MSG_CHECKING([whether Xerces BinInputStream requires getContentType])
+
+AC_TRY_COMPILE([#include <xercesc/framework/MemBufInputSource.hpp>],
+    [using namespace XERCES_CPP_NAMESPACE;
+      char buf[1024];
+      BinMemInputStream in(buf,1024);
+      in.getContentType();
+    ],
+    [AC_MSG_RESULT([yes])]
+    [AC_DEFINE(XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE)],
+    [AC_MSG_RESULT([no])])
 
 AC_MSG_CHECKING([whether Xerces XMLFormatter requires a version])
 

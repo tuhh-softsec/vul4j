@@ -22,7 +22,7 @@
  * Author(s): Berin Lautenbach
  *
  * $Id$
- *					 
+ *
  */
 
 
@@ -34,7 +34,7 @@
 
 class TXFMBase;
 
-/** 
+/**
  * \addtogroup internal
  * @{
  */
@@ -53,7 +53,7 @@ class TXFMBase;
  * library, a single class that manipulates buffers of variable
  * size was felt to be preferable,
  *
- * The safeBuffer is not exposed through interface classes that 
+ * The safeBuffer is not exposed through interface classes that
  * might be used by external functions.  In these cases, a
  * pointer to a XMLCh * buffer is used by preference.
  */
@@ -72,10 +72,9 @@ public:
 
 
 	safeBuffer();
-	safeBuffer(int initialSize);
-	safeBuffer(const char * inStr, unsigned int initialSize = DEFAULT_SAFE_BUFFER_SIZE);
-	safeBuffer(const safeBuffer & other);
-
+    safeBuffer(const safeBuffer & other);
+	safeBuffer(xsecsize_t initialSize);
+	safeBuffer(const char * inStr, xsecsize_t initialSize = DEFAULT_SAFE_BUFFER_SIZE);
 	~safeBuffer();
 
 	static void init(void);
@@ -84,55 +83,63 @@ public:
 
 	void sbStrcpyIn(const char * inStr);
 	void sbStrcpyIn(const safeBuffer & inStr);
-	void sbStrncpyIn(const char * inStr, int n);
-	void sbStrncpyIn(const safeBuffer & inStr, int n);
+    void sbStrncpyIn(const char * inStr, xsecsize_t n);
+    void sbStrncpyIn(const safeBuffer & inStr, xsecsize_t n);
+
 	void sbStrcatIn(const char * inStr);
 	void sbStrcatIn(const safeBuffer & inStr);
-	void sbStrncatIn(const char * inStr, int n);
-	void sbStrinsIn(const char * inStr, unsigned int offset);
+    void sbStrncatIn(const char * inStr, xsecsize_t n);
+    void sbStrinsIn(const char * inStr, xsecsize_t offset);
 
-	void sbMemcpyIn(const void * inBuf, int n);
-	void sbMemcpyIn(int offset, const void * inBuf, int n);
+    void sbMemcpyIn(const void * inBuf, xsecsize_t n);
+    void sbMemcpyIn(xsecsize_t offset, const void * inBuf, xsecsize_t n);
 
-	void sbMemcpyOut(void * outBuf, int n) const;
-	void sbMemshift(int toOffset, int fromOffset, int len);
+    void sbMemcpyOut(void * outBuf, xsecsize_t n) const;
+    void sbMemshift(xsecsize_t toOffset, xsecsize_t fromOffset, xsecsize_t len);
 
 	// Comparison functions
 
-	int sbStrncmp(const char * inStr, int n) const;
-	int sbOffsetStrcmp(const char * inStr, unsigned int offset) const;
-	int sbOffsetStrncmp(const char * inStr, unsigned int offset, int n) const;
+    int sbStrncmp(const char * inStr, xsecsize_t n) const;
+    int sbOffsetStrcmp(const char * inStr, xsecsize_t offset) const;
+    int sbOffsetStrncmp(const char * inStr, xsecsize_t offset, xsecsize_t n) const;
 	int sbStrcmp(const char * inStr) const;
 	int sbStrcmp(const safeBuffer & inStr) const;
-	int sbStrstr(const char * inStr) const;
-	int sbOffsetStrstr(const char * inStr, unsigned int offset) const;
 
+#ifdef XSEC_XERCES_64BITSAFE
+	long sbStrstr(const char * inStr) const;
+	long sbOffsetStrstr(const char * inStr, xsecsize_t offset) const;
 	// XMLCh versions
-	int sbStrstr(const XMLCh * inStr) const;
-	void sbStrinsIn(const XMLCh * inStr, unsigned int offset);
+	long sbStrstr(const XMLCh * inStr) const;
+#else
+    int sbStrstr(const char * inStr) const;
+    int sbOffsetStrstr(const char * inStr, xsecsize_t offset) const;
+    // XMLCh versions
+    int sbStrstr(const XMLCh * inStr) const;
+#endif
+    void sbStrinsIn(const XMLCh * inStr, xsecsize_t offset);
 
 	// XMLCh and char common functions
 	void sbStrlwr(void);		// Lowercase the string
 
 	// Operators
 
-	unsigned char & operator[](int n);
+    unsigned char & operator[](xsecsize_t n);
 	safeBuffer & operator= (const safeBuffer & cpy);
 	safeBuffer & operator= (const XMLCh * inStr);
 	safeBuffer & operator << (TXFMBase * t);
 
 	// Get functions
 
-	int sbStrlen(void) const;
-	unsigned int sbRawBufferSize(void) const;
+	xsecsize_t sbStrlen(void) const;
+	xsecsize_t sbRawBufferSize(void) const;
 
 	// raw buffer manipulation
 
 	const unsigned char * rawBuffer() const;
 	const char * rawCharBuffer() const;
 	const XMLCh * rawXMLChBuffer() const;
-	void resize(unsigned int sz);			// NOTE : Only grows
-	void setBufferType(bufferType bt);		// Use with care
+    void resize(xsecsize_t sz);                 // NOTE : Only grows
+	void setBufferType(bufferType bt);		    // Use with care
 
 	// Unicode (UTF-16 manipulation)
 	const XMLCh * sbStrToXMLCh(void) const;		// Note does not affect internal buffer
@@ -150,14 +157,14 @@ public:
 
 private:
 
-	// Internal function that is used to get a string size and 
+	// Internal function that is used to get a string size and
 	// then re-allocate if necessary
 
-	void checkAndExpand(unsigned int size);
+    void checkAndExpand(xsecsize_t size);
 	void checkBufferType(bufferType bt) const;
 
 	unsigned char * buffer;
-	unsigned int	bufferSize;
+	xsecsize_t      bufferSize;
 	mutable XMLCh   * mp_XMLCh;
 	bufferType		m_bufferType;
 

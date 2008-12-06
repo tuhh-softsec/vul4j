@@ -554,10 +554,10 @@ safeBuffer c14nCleanText(safeBuffer &input) {
 
 	*/
 
-	int len = input.sbStrlen();
+	xsecsize_t len = input.sbStrlen();
 	safeBuffer ret;
 
-	int i, j;
+	xsecsize_t i, j;
 	unsigned char c;
 
 	j = 0;
@@ -636,10 +636,10 @@ safeBuffer c14nCleanAttribute(safeBuffer &input) {
 
 	*/
 
-	int len = input.sbStrlen();
+	xsecsize_t len = input.sbStrlen();
 	safeBuffer ret;
 
-	int i, j;
+	xsecsize_t i, j;
 	unsigned char c;
 
 	j = 0;
@@ -912,7 +912,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 
 // This is the main worker function of this class
 
-int XSECC14n20010315::processNextNode() {
+xsecsize_t XSECC14n20010315::processNextNode() {
 
 	// The information currently in the buffer has all been used.  We now process the
 	// next node.

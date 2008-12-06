@@ -210,7 +210,7 @@ public:
     // -----------------------------------------------------------------------
 
     void writeChars(const   XMLByte* const  toWrite,
-                    const   unsigned int    count,
+                    const   xsecsize_t    count,
                             XMLFormatter * const formatter)
     {
         // Surprisingly, Solaris was the only platform on which
@@ -242,7 +242,7 @@ ostream& operator<<(ostream& target, DOMNode* toWrite)
     // Get the name and value out for convenience
     const XMLCh*   nodeName = toWrite->getNodeName();
     const XMLCh*   nodeValue = toWrite->getNodeValue();
-    unsigned long lent = XMLString::stringLen(nodeValue);
+    xsecsize_t lent = XMLString::stringLen(nodeValue);
 
     switch (toWrite->getNodeType())
     {
@@ -292,8 +292,8 @@ ostream& operator<<(ostream& target, DOMNode* toWrite)
 
             // Output any attributes on this element
             DOMNamedNodeMap *attributes = toWrite->getAttributes();
-            int attrCount = attributes->getLength();
-            for (int i = 0; i < attrCount; i++)
+            XMLSize_t attrCount = attributes->getLength();
+            for (XMLSize_t i = 0; i < attrCount; i++)
             {
                 DOMNode  *attribute = attributes->item(i);
 
@@ -1072,7 +1072,7 @@ int main(int argc, char **argv) {
 	// Now parse out file
 
 	bool errorsOccured = false;
-	int errorCount = 0;
+	xsecsize_t errorCount = 0;
     try
     {
     	parser->parse(argv[argc - 1]);
@@ -1327,7 +1327,7 @@ int main(int argc, char **argv) {
             encNameStr = aStr;
         }
     }
-    unsigned int lent = XMLString::stringLen(encNameStr);
+    xsecsize_t lent = XMLString::stringLen(encNameStr);
     gEncodingName = new XMLCh[lent + 1];
     XMLString::copyNString(gEncodingName, encNameStr, lent);
     gEncodingName[lent] = 0;

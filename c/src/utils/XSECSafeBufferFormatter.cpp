@@ -36,20 +36,20 @@ XSECSafeBufferFormatter::XSECSafeBufferFormatter(
 						const XMLFormatter::EscapeFlags	escapeFlags,
 						const XMLFormatter::UnRepFlags unrepFlags) {
 
-	
+
 	sbf = new sbFormatTarget();
 	sbf->setBuffer(&formatBuffer);
 
 #if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
-	formatter = new XMLFormatter(outEncoding, 
+	formatter = new XMLFormatter(outEncoding,
 									0,
-									sbf, 
-									escapeFlags, 
+									sbf,
+									escapeFlags,
 									unrepFlags);
 #else
-	XSECnew(formatter, XMLFormatter(outEncoding, 
-									sbf, 
-									escapeFlags, 
+	XSECnew(formatter, XMLFormatter(outEncoding,
+									sbf,
+									escapeFlags,
 									unrepFlags));
 #endif
 }
@@ -67,15 +67,15 @@ XSECSafeBufferFormatter::XSECSafeBufferFormatter(
 	sbf->setBuffer(&formatBuffer);
 
 #if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
-	formatter = new XMLFormatter(outEncoding, 
+	formatter = new XMLFormatter(outEncoding,
 									0,
-									sbf, 
-									escapeFlags, 
+									sbf,
+									escapeFlags,
 									unrepFlags);
 #else
-	XSECnew(formatter, XMLFormatter(outEncoding, 
-									sbf, 
-									escapeFlags, 
+	XSECnew(formatter, XMLFormatter(outEncoding,
+									sbf,
+									escapeFlags,
 									unrepFlags));
 #endif
 
@@ -97,7 +97,7 @@ XSECSafeBufferFormatter::~XSECSafeBufferFormatter() {
 
 void  XSECSafeBufferFormatter::formatBuf (
 				 const XMLCh *const toFormat,
-				 const unsigned int count,
+				 const xsecsize_t count,
 				 const XMLFormatter::EscapeFlags escapeFlags,
 				 const XMLFormatter::UnRepFlags unrepFlags) {
 
@@ -115,7 +115,7 @@ XSECSafeBufferFormatter&  XSECSafeBufferFormatter::operator<< (const XMLCh *cons
 
 }
 
-XSECSafeBufferFormatter&  
+XSECSafeBufferFormatter&
      XSECSafeBufferFormatter::operator<< (const XMLCh toFormat) {
 
 	sbf->reset();

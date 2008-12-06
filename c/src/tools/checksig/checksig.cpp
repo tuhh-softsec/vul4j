@@ -333,7 +333,7 @@ int evaluate(int argc, char ** argv) {
 	// Now parse out file
 
 	bool errorsOccured = false;
-	int errorCount = 0;
+	xsecsize_t errorCount = 0;
     try
     {
     	parser->parse(filename);

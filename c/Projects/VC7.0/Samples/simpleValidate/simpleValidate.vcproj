@@ -34,7 +34,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libeay32.lib Xalan-C_1D.lib xerces-c_2D.lib ../../../../Build/Win32/vc7/Debug/xsec_1D.lib"
+				AdditionalDependencies="libeay32.lib Xalan-C_1D.lib xerces-c_3D.lib ../../../../Build/Win32/vc7/Debug/xsec_1D.lib"
 				OutputFile="$(OutDir)/simpleValidate.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -81,7 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libeay32.lib Xalan-C_1.lib xerces-c_2.lib ../../../../Build/Win32/vc7/Release/xsec_1.lib"
+				AdditionalDependencies="libeay32.lib Xalan-C_1.lib xerces-c_3.lib ../../../../Build/Win32/vc7/Release/xsec_1.lib"
 				OutputFile="$(OutDir)/simpleValidate.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -128,7 +128,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libeay32.lib xerces-c_2D.lib ../../../../Build/Win32/vc7/Debug/xsec_1D.lib"
+				AdditionalDependencies="libeay32.lib xerces-c_3D.lib ../../../../Build/Win32/vc7/Debug/xsec_1D.lib"
 				OutputFile="$(OutDir)/simpleValidate.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -175,7 +175,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libeay32.lib xerces-c_2.lib ../../../../Build/Win32/vc7/Release/xsec_1.lib"
+				AdditionalDependencies="libeay32.lib xerces-c_3.lib ../../../../Build/Win32/vc7/Release/xsec_1.lib"
 				OutputFile="$(OutDir)/simpleValidate.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"

@@ -57,6 +57,14 @@
 
 #include <xercesc/util/XercesDefs.hpp>
 
+// Define "sizes" of data to correspond to Xerces APIs
+#ifdef XSEC_XERCES_64BITSAFE
+    typedef XMLSize_t xsecsize_t;
+#else
+    typedef unsigned int xsecsize_t;
+#endif
+
+
 // --------------------------------------------------------------------------------
 //           Namespace Handling
 // --------------------------------------------------------------------------------

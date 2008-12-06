@@ -82,8 +82,16 @@ public :
     XSECBinHTTPURIInputStream(const XERCES_CPP_NAMESPACE_QUALIFIER XMLUri&  urlSource);
     ~XSECBinHTTPURIInputStream();
 
+#ifdef XSEC_XERCES_64BITSAFE
+    XMLFilePos curPos() const;
+#else
     unsigned int curPos() const;
-    unsigned int readBytes(XMLByte* const  toFill, const unsigned int    maxToRead);
+#endif
+    xsecsize_t readBytes(XMLByte* const  toFill, const xsecsize_t    maxToRead);
+
+#ifdef XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE
+    const XMLCh* getContentType() const;
+#endif
 
 	static void Cleanup();
 
@@ -91,7 +99,7 @@ public :
 
 protected:
 
-	/* 
+	/*
 	 * These are called by other classes that use the loaded DLL
 	 *
 	 * Actually - this is cheating of the worst kind, but it
@@ -133,7 +141,7 @@ private :
     // -----------------------------------------------------------------------
 
     unsigned int        fSocketHandle;
-    unsigned int        fBytesProcessed;
+    xsecsize_t          fBytesProcessed;
     char                fBuffer[4000];
     char *              fBufferEnd;
     char *              fBufferPos;
@@ -146,7 +154,13 @@ private :
 };
 
 
-inline unsigned int XSECBinHTTPURIInputStream::curPos() const
+inline
+#ifdef XSEC_XERCES_64BITSAFE
+XMLFilePos
+#else
+unsigned int
+#endif
+XSECBinHTTPURIInputStream::curPos() const
 {
     return fBytesProcessed;
 }

@@ -37,8 +37,8 @@
  */
 
 #define XSEC_VERSION_MAJOR   1
-#define XSEC_VERSION_MEDIUM  4
-#define XSEC_VERSION_MINOR   1
+#define XSEC_VERSION_MEDIUM  5
+#define XSEC_VERSION_MINOR   0
 
 /*
  * Because we don't have a configure script, we need to rely on version
@@ -61,6 +61,14 @@
    encoding that was found in input document */
 
 #	define XSEC_XERCES_DOMENTITYINPUTENCODING 1
+
+/* 3.0 now 64-bit safe */
+
+#   define XSEC_XERCES_64BITSAFE 1
+
+/* 3.0 InputStream must expose content type */
+
+#   define XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE 1
 #endif
 
 #if (XERCES_VERSION_MAJOR == 3) || ((XERCES_VERSION_MAJOR == 2) && (XERCES_VERSION_MINOR >= 3))
@@ -103,7 +111,7 @@
  * Activate this #define if Xalan is not required (or desired)
  */
 
-// #define XSEC_NO_XALAN
+#define XSEC_NO_XALAN
 
 #if !defined (XSEC_NO_XALAN)
 

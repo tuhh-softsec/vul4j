@@ -329,15 +329,12 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 
 	// Create an input source
 
-	unsigned int bytes = XMLString::stringLen(sbt.rawCharBuffer());
+	xsecsize_t bytes = XMLString::stringLen(sbt.rawCharBuffer());
 	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) sbt.rawBuffer(), bytes, "XSECMem");
 	Janitor<MemBufInputSource> j_memIS(memIS);
 
-	int errorCount = 0;
-
-
 	parser->parse(*memIS);
-    errorCount = parser->getErrorCount();
+    xsecsize_t errorCount = parser->getErrorCount();
     if (errorCount > 0)
         throw XSECException(XSECException::CipherError, "Errors occured during de-serialisation of decrypted element content");
 

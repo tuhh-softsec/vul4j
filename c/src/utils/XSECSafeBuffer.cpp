@@ -49,22 +49,22 @@ size_t safeBuffer::size_XMLCh;
 #pragma warning(disable: 4311)
 #endif
 
-void safeBuffer::checkAndExpand(unsigned int size) {
+void safeBuffer::checkAndExpand(xsecsize_t size) {
 
-	// For a given size, check it will fit (with one byte spare) 
+	// For a given size, check it will fit (with one byte spare)
 	// and expand if necessary
 
 	if (size + 1 < bufferSize)
 		return;
 
 	// Make the new size twice the size of the new string requirement
-	int newBufferSize = size * 2;
+	xsecsize_t newBufferSize = size * 2;
 
 	unsigned char * newBuffer = new unsigned char[newBufferSize];
 	memcpy(newBuffer, buffer, bufferSize);
 
 	// If we are sensitive, clean the old buffer
-	if (m_isSensitive == true) 
+	if (m_isSensitive == true)
 		cleanseBuffer();
 
 	// clean up
@@ -91,13 +91,13 @@ void safeBuffer::setBufferType(bufferType bt) {
 
 }
 
-void safeBuffer::resize(unsigned int sz) {
+void safeBuffer::resize(xsecsize_t sz) {
 
 	checkAndExpand(sz);
 
 }
 
-safeBuffer::safeBuffer(int initialSize) {
+safeBuffer::safeBuffer(xsecsize_t initialSize) {
 
 	// Initialise the buffer with a set size string
 
@@ -118,11 +118,10 @@ safeBuffer::safeBuffer() {
 
 }
 
-safeBuffer::safeBuffer(const char * inStr, unsigned int initialSize) {
+safeBuffer::safeBuffer(const char * inStr, xsecsize_t initialSize) {
+    // Initialise with a string
+    bufferSize = ((xsecsize_t) strlen(inStr) > initialSize ? (xsecsize_t) (strlen(inStr) * 2) : initialSize);
 
-	// Initialise with a string
-
-	bufferSize = ((unsigned int) strlen(inStr) > initialSize ? (unsigned int) (strlen(inStr) * 2) : initialSize);
 	buffer = new unsigned char[bufferSize];
 	strcpy((char *) buffer, inStr);
 	mp_XMLCh = NULL;
@@ -155,7 +154,7 @@ safeBuffer::safeBuffer(const safeBuffer & other) {
 	m_isSensitive = other.m_isSensitive;
 
 }
-	
+
 safeBuffer::~safeBuffer() {
 
 
@@ -181,7 +180,7 @@ void safeBuffer::init (void) {
 void safeBuffer::sbStrcpyIn(const char * inStr) {
 
 	// Copy a string into the safe buffer
-	checkAndExpand((unsigned int) strlen(inStr));
+    checkAndExpand((xsecsize_t) strlen(inStr));
 	strcpy((char *) buffer, inStr);
 	m_bufferType = BUFFER_CHAR;
 
@@ -190,23 +189,22 @@ void safeBuffer::sbStrcpyIn(const char * inStr) {
 void safeBuffer::sbStrcpyIn(const safeBuffer & inStr) {
 
 	inStr.checkBufferType(BUFFER_CHAR);
-	checkAndExpand((unsigned int) strlen((char *) inStr.buffer));
+    checkAndExpand((xsecsize_t) strlen((char *) inStr.buffer));
 	strcpy((char *) buffer, (char *) inStr.buffer);
 	m_bufferType = BUFFER_CHAR;
 
 }
 
 
-void safeBuffer::sbStrncpyIn(const char * inStr, int n) {
-
-	int len = (int) strlen(inStr);
+void safeBuffer::sbStrncpyIn(const char * inStr, xsecsize_t n) {
+    xsecsize_t len = (xsecsize_t) strlen(inStr);
 	checkAndExpand((n < len) ? n : len);
 	strncpy((char *) buffer, inStr, n);
 	m_bufferType = BUFFER_CHAR;
 
 }
 
-void safeBuffer::sbStrncpyIn(const safeBuffer & inStr, int n) {
+void safeBuffer::sbStrncpyIn(const safeBuffer & inStr, xsecsize_t n) {
 
 	inStr.checkBufferType(BUFFER_CHAR);
 	checkAndExpand(n);
@@ -221,7 +219,7 @@ void safeBuffer::sbStrncpyIn(const safeBuffer & inStr, int n) {
 void safeBuffer::sbStrcatIn(const char * inStr) {
 
 	checkBufferType(BUFFER_CHAR);
-	checkAndExpand((unsigned int) (strlen((char *) buffer) + strlen(inStr)));
+    checkAndExpand((xsecsize_t) (strlen((char *) buffer) + strlen(inStr)));
 	strcat((char *) buffer, inStr);
 
 }
@@ -229,22 +227,20 @@ void safeBuffer::sbStrcatIn(const char * inStr) {
 void safeBuffer::sbStrcatIn(const safeBuffer & inStr) {
 
 	checkBufferType(BUFFER_CHAR);
-	checkAndExpand((unsigned int) (strlen((char *) buffer) + strlen((char *) inStr.buffer) + 2));
+    checkAndExpand((xsecsize_t) (strlen((char *) buffer) + strlen((char *) inStr.buffer) + 2));
 	strcat((char *) buffer, (char *) inStr.buffer);
 
 }
 
-void safeBuffer::sbStrncatIn(const char * inStr, int n) {
-
-
-	checkBufferType(BUFFER_CHAR);
-	int len = (int) strlen(inStr);
-	checkAndExpand(((n < len) ? n : len) + (unsigned int) strlen((char *) buffer) + 2);
+void safeBuffer::sbStrncatIn(const char * inStr, xsecsize_t n) {
+    checkBufferType(BUFFER_CHAR);
+    xsecsize_t len = (xsecsize_t) strlen(inStr);
+    checkAndExpand(((n < len) ? n : len) + (xsecsize_t) strlen((char *) buffer) + 2);
 	strncat((char *) buffer, inStr, n);
 
 }
 
-void safeBuffer::sbMemcpyIn(const void * inBuf, int n) {
+void safeBuffer::sbMemcpyIn(const void * inBuf, xsecsize_t n) {
 
 	checkAndExpand(n);
 	memcpy(buffer, inBuf, n);
@@ -252,19 +248,19 @@ void safeBuffer::sbMemcpyIn(const void * inBuf, int n) {
 
 }
 
-void safeBuffer::sbMemcpyIn(int offset, const void * inBuf, int n) {
+void safeBuffer::sbMemcpyIn(xsecsize_t offset, const void * inBuf, xsecsize_t n) {
 
 	checkAndExpand(n + offset);
 	memcpy(&buffer[offset], inBuf, n);
 	m_bufferType = BUFFER_UNKNOWN;
 }
 
-void safeBuffer::sbStrinsIn(const char * inStr, unsigned int offset) {
+void safeBuffer::sbStrinsIn(const char * inStr, xsecsize_t offset) {
 
-	checkBufferType(BUFFER_CHAR);
-	
-	unsigned int bl = (unsigned int) strlen((char *) buffer);
-	unsigned int il = (unsigned int) strlen((char *) inStr);
+    checkBufferType(BUFFER_CHAR);
+
+    xsecsize_t bl = (xsecsize_t) strlen((char *) buffer);
+    xsecsize_t il = (xsecsize_t) strlen((char *) inStr);
 
 	if (offset > bl) {
 		throw XSECException(XSECException::SafeBufferError,
@@ -278,14 +274,14 @@ void safeBuffer::sbStrinsIn(const char * inStr, unsigned int offset) {
 
 }
 
-void safeBuffer::sbStrinsIn(const XMLCh * inStr, unsigned int offset) {
+void safeBuffer::sbStrinsIn(const XMLCh * inStr, xsecsize_t offset) {
 
-	checkBufferType(BUFFER_UNICODE);
-	
-	unsigned int bl = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
-	unsigned int il = XMLString::stringLen((XMLCh *) inStr) * size_XMLCh;
+    checkBufferType(BUFFER_UNICODE);
 
-	unsigned int xoffset = offset * size_XMLCh;
+    xsecsize_t bl = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
+    xsecsize_t il = XMLString::stringLen((XMLCh *) inStr) * size_XMLCh;
+
+    xsecsize_t xoffset = offset * size_XMLCh;
 	if (xoffset > bl) {
 		throw XSECException(XSECException::SafeBufferError,
 			"Attempt to insert string after termination point");
@@ -299,7 +295,7 @@ void safeBuffer::sbStrinsIn(const XMLCh * inStr, unsigned int offset) {
 }
 
 
-void safeBuffer::sbMemcpyOut(void *outBuf, int n) const {
+void safeBuffer::sbMemcpyOut(void *outBuf, xsecsize_t n) const {
 
 	// WARNING - JUST ASSUMES OUTPUT BUFFER LONG ENOUGH
 	// ALSO MAKES NO ASSUMPTION OF THE BUFFER TYPE
@@ -308,10 +304,10 @@ void safeBuffer::sbMemcpyOut(void *outBuf, int n) const {
 
 }
 
-void safeBuffer::sbMemshift(int toOffset, int fromOffset, int len) {
+void safeBuffer::sbMemshift(xsecsize_t toOffset, xsecsize_t fromOffset, xsecsize_t len) {
 
 	// Move data in the buffer around
-	checkAndExpand((toOffset > fromOffset ? toOffset : fromOffset) + len);
+	checkAndExpand(len + (toOffset > fromOffset ? toOffset : fromOffset));
 
 	memmove(&buffer[toOffset], &buffer[fromOffset], len);
 
@@ -320,7 +316,7 @@ void safeBuffer::sbMemshift(int toOffset, int fromOffset, int len) {
 
 // Comparisons
 
-int safeBuffer::sbStrncmp(const char *inStr, int n) const {
+int safeBuffer::sbStrncmp(const char *inStr, xsecsize_t n) const {
 
 	checkBufferType(BUFFER_CHAR);
 	return (strncmp((char *) buffer, inStr, n));
@@ -341,10 +337,10 @@ int safeBuffer::sbStrcmp(const safeBuffer & inStr) const {
 
 }
 
-int safeBuffer::sbOffsetStrcmp(const char * inStr, unsigned int offset) const {
+int safeBuffer::sbOffsetStrcmp(const char * inStr, xsecsize_t offset) const {
 
-	checkBufferType(BUFFER_CHAR);
-	unsigned int bl = (unsigned int) strlen((char *) buffer);
+    checkBufferType(BUFFER_CHAR);
+    xsecsize_t bl = (xsecsize_t) strlen((char *) buffer);
 
 	if (offset > bl)
 		return -1;
@@ -353,10 +349,10 @@ int safeBuffer::sbOffsetStrcmp(const char * inStr, unsigned int offset) const {
 
 }
 
-int safeBuffer::sbOffsetStrncmp(const char * inStr, unsigned int offset, int n) const {
+int safeBuffer::sbOffsetStrncmp(const char * inStr, xsecsize_t offset, xsecsize_t n) const {
 
-	checkBufferType(BUFFER_CHAR);
-	unsigned int bl = (unsigned int) strlen((char *) buffer);
+    checkBufferType(BUFFER_CHAR);
+    xsecsize_t bl = (xsecsize_t) strlen((char *) buffer);
 	if (offset > bl)
 		return -1;
 
@@ -364,65 +360,65 @@ int safeBuffer::sbOffsetStrncmp(const char * inStr, unsigned int offset, int n) 
 
 }
 
+#ifdef XSEC_XERCES_64BITSAFE
+long safeBuffer::sbStrstr(const char * inStr) const {
+#else
 int safeBuffer::sbStrstr(const char * inStr) const {
-
-	char * p;
-	long int d;
+#endif
 
 	checkBufferType(BUFFER_CHAR);
-	p = strstr((char *) buffer, inStr);
+	char* p = strstr((char *) buffer, inStr);
 
 	if (p == NULL)
 		return -1;
 
-	d = (unsigned long int) p - (unsigned long int) buffer;
-
-	if (d < 0 || (unsigned int) d > bufferSize)
+	long d = (unsigned long) p - (unsigned long) buffer;
+	if (d < 0 || d > bufferSize)
 		return -1;
 
 	return d;
 
 }
 
+#ifdef XSEC_XERCES_64BITSAFE
+long safeBuffer::sbStrstr(const XMLCh * inStr) const {
+#else
 int safeBuffer::sbStrstr(const XMLCh * inStr) const {
-
-	XMLCh * p;
-	long int d;
+#endif
 
 	checkBufferType(BUFFER_UNICODE);
-	p = XMLString::findAny((XMLCh *) buffer, inStr);
+	XMLCh* p = XMLString::findAny((XMLCh *) buffer, inStr);
 
 	if (p == NULL)
 		return -1;
 
-	d = ((unsigned long int) ((p - (unsigned long int) buffer)) / size_XMLCh);
-
-	if (d < 0 || (unsigned int) d > bufferSize)
+	long d = ((unsigned long) ((p - (unsigned long) buffer)) / size_XMLCh);
+	if (d < 0 || d > bufferSize)
 		return -1;
 
 	return d;
 
 }
 
-int safeBuffer::sbOffsetStrstr(const char * inStr, unsigned int offset) const {
-
-	char * p;
-	long int d;
+#ifdef XSEC_XERCES_64BITSAFE
+long safeBuffer::sbOffsetStrstr(const char * inStr, xsecsize_t offset) const {
+#else
+int safeBuffer::sbOffsetStrstr(const char * inStr, xsecsize_t offset) const {
+#endif
 
 	checkBufferType(BUFFER_CHAR);
-	unsigned int bl = (unsigned int) strlen((char *) buffer);
+	xsecsize_t bl = (xsecsize_t) strlen((char *) buffer);
 
 	if (offset > bl)
 		return -1;
 
-	p = strstr((char *) &buffer[offset], inStr);
+	char* p = strstr((char *) &buffer[offset], inStr);
 
 	if (p == NULL)
 		return -1;
 
-	d = (unsigned long int) p - (unsigned long int) buffer;
-
-	if (d < 0 || (unsigned int) d > bufferSize)
+	long d = (unsigned long) p - (unsigned long) buffer;
+	if (d < 0 || d > bufferSize)
 		return -1;
 
 	return d;
@@ -434,7 +430,7 @@ int safeBuffer::sbOffsetStrstr(const char * inStr, unsigned int offset) const {
 void safeBuffer::sbStrlwr(void) {
 
 	if (m_bufferType == BUFFER_UNKNOWN) {
-	
+
 		throw XSECException(XSECException::SafeBufferError,
 			"Attempt to perform an operation on a buffer of incorrect type");
 
@@ -442,8 +438,7 @@ void safeBuffer::sbStrlwr(void) {
 
 	if (m_bufferType == BUFFER_CHAR) {
 
-		unsigned int i;
-		unsigned int l = (unsigned int) strlen((char *) buffer);
+	    xsecsize_t i, l = (xsecsize_t) strlen((char *) buffer);
 
 		for (i = 0; i < l; ++i) {
 			if (buffer[i] >= 'A' && buffer[i] <= 'Z')
@@ -454,9 +449,8 @@ void safeBuffer::sbStrlwr(void) {
 
 	else {
 
-		unsigned int i;
 		XMLCh * b = (XMLCh *) buffer;
-		unsigned int l = XMLString::stringLen(b);
+		xsecsize_t i, l = XMLString::stringLen(b);
 
 		for (i = 0; i < l; ++i) {
 			if (b[i] >= XERCES_CPP_NAMESPACE_QUALIFIER chLatin_A && b[i] <= XERCES_CPP_NAMESPACE_QUALIFIER chLatin_Z)
@@ -468,15 +462,12 @@ void safeBuffer::sbStrlwr(void) {
 }
 // Operators
 
-unsigned char & safeBuffer::operator[](int n) {
+unsigned char & safeBuffer::operator[](xsecsize_t n) {
 
 	// If the character is outside our range (but +ve), then simply increase
 	// the buffer size - NOTE: it is not our problem if the caller does
 	// not realise they are outside the buffer, we are simply trying to ensure
 	// the call is "safe"
-
-	if (n < 0)
-		return buffer[0];  // Should raise exception
 
 	checkAndExpand(n);
 
@@ -489,7 +480,7 @@ safeBuffer & safeBuffer::operator= (const safeBuffer & cpy) {
 	if (bufferSize != cpy.bufferSize) {
 
 		if (bufferSize != 0) {
-			
+
 			if (m_isSensitive == true)
 				cleanseBuffer();
 
@@ -521,9 +512,9 @@ safeBuffer & safeBuffer::operator= (const XMLCh * inStr) {
 safeBuffer & safeBuffer::operator << (TXFMBase * t) {
 
 	// Read into buffer the output of the transform
-	unsigned offset = 0;
+	xsecsize_t offset = 0;
 	unsigned char inBuf[2048];
-	unsigned int bytesRead;
+	xsecsize_t bytesRead;
 
 	while ((bytesRead = t->readBytes(inBuf, 2000)) > 0) {
 
@@ -558,17 +549,17 @@ void safeBuffer::sbTranscodeIn(const XMLCh * inStr) {
 
 	// Transcode the string to the local code page and store in the buffer
 	char * t;
-	
+
 	t = XMLString::transcode(inStr);
 
 	assert (t != 0);
 
 
 	// Now copy into our local buffer - a bit inefficient but better in the long run
-	// as a buffer that is the exact size is likely to be deleted anyway during a 
+	// as a buffer that is the exact size is likely to be deleted anyway during a
 	// concat operation
 
-	unsigned int len = (unsigned int) strlen(t) + 1;
+	xsecsize_t len = (xsecsize_t) strlen(t) + 1;
 	checkAndExpand(len);
 	strcpy((char *) buffer, t);
 	m_bufferType = BUFFER_CHAR;
@@ -581,20 +572,20 @@ void safeBuffer::sbTranscodeIn(const char * inStr) {
 
 	// Transcode the string to the local code page and store in the buffer
 	XMLCh * t;
-	
+
 	t = XMLString::transcode(inStr);
 
 	assert (t != 0);
 
 	// Copy into local buffer
 
-	unsigned int len = XMLString::stringLen(t) + 1;
-	len *= (unsigned int) size_XMLCh;
+	xsecsize_t len = XMLString::stringLen(t) + 1;
+    len *= (xsecsize_t) size_XMLCh;
 	checkAndExpand(len);
 
 	XMLString::copyString((XMLCh *) buffer, t);
 	m_bufferType = BUFFER_UNICODE;
-	
+
 	XSEC_RELEASE_XMLCH(t);
 
 }
@@ -610,23 +601,23 @@ void safeBuffer::sbXMLChIn(const XMLCh * in) {
 }
 
 void safeBuffer::sbXMLChAppendCh(const XMLCh c) {
-	
-	checkBufferType(BUFFER_UNICODE);
-	unsigned int len = XMLString::stringLen((XMLCh *) buffer);
 
-	checkAndExpand((len + 2) * size_XMLCh); 
+	checkBufferType(BUFFER_UNICODE);
+	xsecsize_t len = XMLString::stringLen((XMLCh *) buffer);
+
+	checkAndExpand((len + 2) * size_XMLCh);
 
 	((XMLCh *) buffer)[len++] = c;
 	((XMLCh *) buffer)[len] = 0;
 
 }
-	
+
 void safeBuffer::sbXMLChCat(const XMLCh *str) {
-	
+
 	checkBufferType(BUFFER_UNICODE);
-	unsigned int len = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
+	xsecsize_t len = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
 	len += XMLString::stringLen(str) * size_XMLCh;
-	len += (2 * ((unsigned int) size_XMLCh));
+	len += (2 * ((xsecsize_t) size_XMLCh));
 
 	checkAndExpand(len);
 
@@ -637,14 +628,14 @@ void safeBuffer::sbXMLChCat(const XMLCh *str) {
 void safeBuffer::sbXMLChCat(const char * str) {
 
 	checkBufferType(BUFFER_UNICODE);
-	unsigned int len = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
+	xsecsize_t len = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
 
 	XMLCh * t = XMLString::transcode(str);
 
 	assert (t != NULL);
 
 	len += XMLString::stringLen(t);
-	len += (unsigned int) (2 * size_XMLCh);
+	len += (xsecsize_t) (2 * size_XMLCh);
 
 	checkAndExpand(len);
 
@@ -665,16 +656,16 @@ void safeBuffer::sbXMLChCat8(const char * str) {
 
 // Get functions
 
-int safeBuffer::sbStrlen(void) const {
+xsecsize_t safeBuffer::sbStrlen(void) const {
 
-	checkBufferType(BUFFER_CHAR);
-	return (int) (strlen ((char *) buffer));
+    checkBufferType(BUFFER_CHAR);
+    return (xsecsize_t) (strlen ((char *) buffer));
 
 }
 
-unsigned int safeBuffer::sbRawBufferSize(void) const {
+xsecsize_t safeBuffer::sbRawBufferSize(void) const {
 
-	return bufferSize;
+    return bufferSize;
 
 }
 
@@ -710,7 +701,7 @@ void safeBuffer::isSensitive(void) {
 void safeBuffer::cleanseBuffer(void) {
 
 	// Cleanse the main buffer
-	for (unsigned int i = 0; i < bufferSize; ++i)
+	for (xsecsize_t i = 0; i < bufferSize; ++i)
 		buffer[i] = 0;
 
 }

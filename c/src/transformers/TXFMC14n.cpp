@@ -164,7 +164,7 @@ unsigned int TXFMC14n::readBytes(XMLByte * const toFill, unsigned int maxToFill)
 
 		return 0;
 
-	return mp_c14n->outputBuffer(toFill, maxToFill);
+	return (unsigned int) mp_c14n->outputBuffer(toFill, maxToFill);
 
 }
 

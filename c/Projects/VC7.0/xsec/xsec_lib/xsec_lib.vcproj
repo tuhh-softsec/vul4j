@@ -35,8 +35,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib Xalan-C_1D.lib crypt32.lib libeay32.lib "
-				OutputFile="$(OutDir)/xsec_1_4_1D.dll"
+				AdditionalDependencies="xerces-c_3D.lib Xalan-C_1D.lib crypt32.lib libeay32.lib "
+				OutputFile="$(OutDir)/xsec_1_5D.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/xsec_lib.pdb"
@@ -90,8 +90,8 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib crypt32.lib libeay32.lib  Xalan-C_1.lib"
-				OutputFile="$(OutDir)/xsec_1_4_1.dll"
+				AdditionalDependencies="xerces-c_3.lib crypt32.lib libeay32.lib  Xalan-C_1.lib"
+				OutputFile="$(OutDir)/xsec_1_5.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -145,8 +145,8 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib crypt32.lib libeay32.lib "
-				OutputFile="$(OutDir)/xsec_1_4_1D.dll"
+				AdditionalDependencies="xerces-c_3D.lib crypt32.lib libeay32.lib "
+				OutputFile="$(OutDir)/xsec_1_5D.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/xsec_lib.pdb"
@@ -200,8 +200,8 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib crypt32.lib libeay32.lib"
-				OutputFile="$(OutDir)/xsec_1_4_1.dll"
+				AdditionalDependencies="xerces-c_3.lib crypt32.lib libeay32.lib"
+				OutputFile="$(OutDir)/xsec_1_5.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -242,7 +242,7 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				RelativePath="..\..\..\..\src\canon\XSECC14n20010315.hpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\src\canon\XSECCannon.cpp">
+				RelativePath="..\..\..\..\src\canon\XSECCanon.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\src\canon\XSECCanon.hpp">

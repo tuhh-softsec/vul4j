@@ -4438,7 +4438,7 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 	}
 
 	bool errorsOccured = false;
-	int errorCount = 0;
+	xsecsize_t errorCount = 0;
     try
     {
     	parser->parse(inputFile);

@@ -43,7 +43,7 @@
 class sbFormatTarget : public XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatTarget
 {
 public:
-    
+
 	sbFormatTarget()  {m_offset = 0;}
     ~sbFormatTarget() {}
 
@@ -56,10 +56,10 @@ public:
     // -----------------------------------------------------------------------
 
     void writeChars(const   XMLByte* const  toWrite,
-                    const unsigned int    count,
+                    const xsecsize_t    count,
                     XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter * const formatter)
     {
-         m_buffer->sbMemcpyIn(m_offset, (char *) toWrite, (int) count);
+         m_buffer->sbMemcpyIn(m_offset, (char *) toWrite, count);
 		 m_buffer->setBufferType(safeBuffer::BUFFER_CHAR);
 		 m_offset += count;
 		(*m_buffer)[m_offset] = '\0';
@@ -73,8 +73,7 @@ private:
     void operator=(const sbFormatTarget& rhs);
 
 	safeBuffer					* m_buffer;		// Buffer to write to
-	unsigned int				m_offset;
-	
+	xsecsize_t				      m_offset;
 };
 
 /**
@@ -87,7 +86,7 @@ private:
 
 class XSECSafeBufferFormatter {
 
-	XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter		
+	XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter
 						* formatter;		// To actually perform the formatting
 	safeBuffer			formatBuffer;		// Storage of translated strings
 	sbFormatTarget		* sbf;				// Format target used by XMLFormatter
@@ -98,17 +97,17 @@ public:
 
 	XSECSafeBufferFormatter(
 		const XMLCh * const						outEncoding,
-		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags			
+		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags
 				escapeFlags=XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::NoEscapes,
-		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags			
+		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags
 				unrepFlags=XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRep_Fail
 	);
 
 	XSECSafeBufferFormatter(
 		const char * const						outEncoding,
-		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags			
+		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags
 				escapeFlags=XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::NoEscapes,
-		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags			
+		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags
 				unrepFlags=XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRep_Fail
 	);
 
@@ -120,16 +119,16 @@ public:
 
 	void  formatBuf (
 		const XMLCh *const toFormat,
-		const unsigned int count,
-		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags 
+		const xsecsize_t count,
+		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags
 				escapeFlags=XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::DefaultEscape,
-		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags 
+		const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags
 				unrepFlags=XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::DefaultUnRep
 	);		// Format a buffer
 
 	XSECSafeBufferFormatter&  operator<< (
 		const XMLCh *const toFormat);					// Format a buffer
-	
+
 	XSECSafeBufferFormatter&  operator<< (
 		const XMLCh toFormat);							// Format a character
 
@@ -138,8 +137,8 @@ public:
 	void  setEscapeFlags (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags newFlags);
 	void  setUnRepFlags (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags newFlags);
 
-	XSECSafeBufferFormatter&  operator<< (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags newFlags); 
-	XSECSafeBufferFormatter&  operator<< (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags newFlags); 
+	XSECSafeBufferFormatter&  operator<< (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags newFlags);
+	XSECSafeBufferFormatter&  operator<< (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags newFlags);
 
 	// Friends for working with safestrings
 
@@ -151,7 +150,7 @@ private:
 
 	XSECSafeBufferFormatter() {};
 
-	
+
 };
 
 /** @} */

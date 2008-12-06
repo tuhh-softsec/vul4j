@@ -291,15 +291,13 @@ void outputReferenceList (DSIGReferenceList * lst, outputter & theOutputter, int
 		return;
 	
 	DSIGReference * ref;
-	int lstSz, i, sz;
+	unsigned int sz;
 	XSECBinTXFMInputStream * is;
 	unsigned char buf[1024];
 
-	lstSz = 0;
+    DSIGReferenceList::size_type lstSz = (int) lst->getSize();
 
-	lstSz = (int) lst->getSize();
-
-	for (i = 0; i < lstSz; ++i) {
+	for (DSIGReferenceList::size_type i = 0; i < lstSz; ++i) {
 
 		ref = lst->item(i);
 		if (refNum == -1 || theOutputter.getIndex() == refNum) {
@@ -318,14 +316,14 @@ void outputReferenceList (DSIGReferenceList * lst, outputter & theOutputter, int
 
 			if (is != 0) {
 
-				sz = is->readBytes(buf, 1023);
+				sz = (unsigned int) is->readBytes(buf, 1023);
 
 				while (sz != 0) {
 					
 					buf[sz] = '\0';
 					theOutputter.output(buf, sz);
 
-					sz = is->readBytes(buf, 1023);
+					sz = (unsigned int) is->readBytes(buf, 1023);
 
 				}
 
@@ -338,7 +336,7 @@ void outputReferenceList (DSIGReferenceList * lst, outputter & theOutputter, int
 	}
 
 	// Look for manifests
-	for (i = 0; i < lstSz; ++i) {
+	for (DSIGReferenceList::size_type i = 0; i < lstSz; ++i) {
 
 		ref = lst->item(i);
 
@@ -435,7 +433,7 @@ int main(int argc, char **argv) {
 	// Now parse out file
 
 	bool errorsOccured = false;
-	int errorCount = 0;
+	xsecsize_t errorCount = 0;
     try
     {
     	parser->parse(filename);
@@ -545,14 +543,14 @@ int main(int argc, char **argv) {
 			if (is != NULL) {
 
 				theOutputter.openSection();
-				sz = is->readBytes(buf, 1023);
+				sz = (unsigned int) is->readBytes(buf, 1023);
 
 				while (sz != 0) {
 					
 					buf[sz] = '\0';
 					theOutputter.output(buf, sz);
 	
-					sz = is->readBytes(buf, 1023);
+					sz = (unsigned int) is->readBytes(buf, 1023);
 
 				}
 				theOutputter.closeSection();

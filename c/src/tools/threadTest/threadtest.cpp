@@ -103,23 +103,38 @@ unsigned int			g_errors;
 
 void outputDoc (DOMImplementation *impl, DOMDocument * doc) {
 
-	// Output a doc to stdout
-	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
+
+    // Output a doc to stdout
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+    // DOM L3 version as per Xerces 3.0 API
+    DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+    // Get the config so we can set up pretty printing
+    DOMConfiguration *dc = theSerializer->getDomConfig();
+    dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+
+    // Now create an output object to format to UTF-8
+    DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+    Janitor<DOMLSOutput> j_theOutput(theOutput);
+
+    theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+    theOutput->setByteStream(formatTarget);
+    
+    theSerializer->write(doc, theOutput);
+#else
+    DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
 	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
 	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
 		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
-
-
-	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
-
 	theSerializer->writeNode(formatTarget, *doc);
-	
+#endif
+
 	cout << endl;
 
 	delete theSerializer;
 	delete formatTarget;
-
 }
 
 void addDocToQueue (DOMImplementation *impl, DOMDocument * doc) {
@@ -127,19 +142,36 @@ void addDocToQueue (DOMImplementation *impl, DOMDocument * doc) {
 	// Output a document to a memory buffer and add the buffer to
 	// the queue
 
+	MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
+
+#if defined (XSEC_XERCES_DOMLSSERIALIZER)
+    // DOM L3 version as per Xerces 3.0 API
+    DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+    // Get the config so we can set up pretty printing
+    DOMConfiguration *dc = theSerializer->getDomConfig();
+    dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+    // Now create an output object to format to UTF-8
+    DOMLSOutput *theOutput = ((DOMImplementationLS*)impl)->createLSOutput();
+    Janitor<DOMLSOutput> j_theOutput(theOutput);
+
+    theOutput->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+    theOutput->setByteStream(formatTarget);
+    
+    theSerializer->write(doc, theOutput);
+#else
 	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
 	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
 	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
 		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
-
-	MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
-
 	theSerializer->writeNode(formatTarget, *doc);
+#endif
 
 	// Copy to a new buffer
-	unsigned int len = formatTarget->getLen();
+	xsecsize_t len = formatTarget->getLen();
 	char * buf = new char [len + 1];
 	memcpy(buf, formatTarget->getRawBuffer(), len);
 	buf[len] = '\0';

@@ -24,7 +24,7 @@
  * $ID$
  *
  * $LOG$
- *					 
+ *
  */
 
 
@@ -50,7 +50,7 @@ class TXFMBase;
  * @brief BinInputSource wrapper for a TXFMChain.
  *
  * This class provides a wrapper for a TXFMChain.  It can be used to either provide
- * a nice interface to applications wishing to read the BYTESTREAM output of a 
+ * a nice interface to applications wishing to read the BYTESTREAM output of a
  * TXFM chain, or, as it is derived from BinInputStream, provide an input to the
  * Xerces Parser.
  *
@@ -89,7 +89,7 @@ public :
 	/** @name Stream management methods */
 	//@{
 
-	/** 
+	/**
 	 * \brief Reset the stream.
 	 *
 	 * @note At this time simply deletes the TXFM chain - many TXFMs do not
@@ -109,7 +109,11 @@ public :
 	 * @returns Bytes already returned.
 	 */
 
+#ifdef XSEC_XERCES_64BITSAFE
+    virtual XMLFilePos curPos() const;
+#else
     virtual unsigned int curPos() const;
+#endif
 
 	/**
 	 * \brief Retrieve the required number of bytes and return
@@ -125,9 +129,13 @@ public :
 	 * @returns The number of bytes read or 0 if complete.
 	 */
 
-    virtual unsigned int readBytes(XMLByte* const  toFill, 
-		const unsigned int maxToRead);
+    virtual xsecsize_t readBytes(XMLByte* const  toFill,
+		const xsecsize_t maxToRead);
 
+
+#ifdef XSEC_XERCES_INPUTSTREAM_HAS_CONTENTTYPE
+    const XMLCh* getContentType() const;
+#endif
 
 private :
 
@@ -136,7 +144,7 @@ private :
 	bool						m_deleteWhenDone;	// Do we delete?
 	bool						m_deleted;			// Have we deleted?
 	bool						m_done;				// Are we done?
-	unsigned int				m_currentIndex;		// How much read?
+    xsecsize_t				    m_currentIndex;		// How much read?
 
 };
 
