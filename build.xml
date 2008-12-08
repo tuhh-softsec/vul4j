@@ -19,7 +19,11 @@
 	<target name="clean">
 		<delete dir="bin" />
 		<mkdir dir="bin" />
-	</target>
+		<unwar src="test/cas/cas-server-webapp-3.3.1.war" dest="bin/webapps/cas" />
+		<touch datetime="01/01/1980 0:00 am">
+			<fileset dir="bin/webapps/cas" />
+		</touch>
+</target>
 	<target name="build">
 		<copy todir="bin/webapps">
 			<fileset dir="test/webapps" />

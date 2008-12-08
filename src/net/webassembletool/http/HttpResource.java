@@ -44,8 +44,45 @@ public class HttpResource extends Resource {
 
     private Exception exception;
 
-    private void buildHttpMethod() {
-	// CAS support
+    private void buildPostMethod() {
+	url = ResourceUtils.getHttpUrl(target);
+	PostMethod postMethod = new PostMethod(url);
+	postMethod.getParams().setContentCharset(
+		target.getOriginalRequest().getCharacterEncoding());
+	Map<String, String> parameters = target.getParameters();
+	if (target.getUserContext() != null) {
+	    for (Map.Entry<String, String> temp : target.getUserContext()
+		    .getParameterMap().entrySet()) {
+		postMethod.addParameter(new NameValuePair(temp.getKey(), temp
+			.getValue()));
+	    }
+	}
+	if (parameters != null) {
+	    for (Map.Entry<String, String> temp : parameters.entrySet()) {
+		postMethod.addParameter(new NameValuePair(temp.getKey(), temp
+			.getValue()));
+	    }
+	}
+	if (target.getOriginalRequest() != null) {
+	    for (Object obj : target.getOriginalRequest().getParameterMap()
+		    .entrySet()) {
+		@SuppressWarnings("unchecked")
+		Entry<String, String[]> entry = (Entry<String, String[]>) obj;
+		for (int i = 0; i < entry.getValue().length; i++) {
+		    postMethod.addParameter(new NameValuePair(entry.getKey(),
+			    (entry.getValue())[i]));
+		}
+	    }
+	}
+	httpMethod = postMethod;
+    }
+
+    private void buildGetMethod() {
+	url = ResourceUtils.getHttpUrlWithQueryString(target);
+	httpMethod = new GetMethod(url);
+    }
+
+    private void addCasAuthentication() {
 	Principal principal = target.getOriginalRequest().getUserPrincipal();
 	if (principal != null && principal instanceof AttributePrincipal) {
 	    AttributePrincipal casPrincipal = (AttributePrincipal) principal;
@@ -56,40 +93,13 @@ public class HttpResource extends Resource {
 		    + " for service: " + url);
 	    target.getParameters().put("ticket", casProxyTicket);
 	}
+    }
+
+    private void buildHttpMethod() {
 	if ("GET".equalsIgnoreCase(target.getMethod()) || !target.isProxyMode()) {
-	    url = ResourceUtils.getHttpUrlWithQueryString(target);
-	    httpMethod = new GetMethod(url);
+	    buildGetMethod();
 	} else if ("POST".equalsIgnoreCase(target.getMethod())) {
-	    url = ResourceUtils.getHttpUrl(target);
-	    PostMethod postMethod = new PostMethod(url);
-	    postMethod.getParams().setContentCharset(
-		    target.getOriginalRequest().getCharacterEncoding());
-	    Map<String, String> parameters = target.getParameters();
-	    if (target.getUserContext() != null) {
-		for (Map.Entry<String, String> temp : target.getUserContext()
-			.getParameterMap().entrySet()) {
-		    postMethod.addParameter(new NameValuePair(temp.getKey(),
-			    temp.getValue()));
-		}
-	    }
-	    if (parameters != null) {
-		for (Map.Entry<String, String> temp : parameters.entrySet()) {
-		    postMethod.addParameter(new NameValuePair(temp.getKey(),
-			    temp.getValue()));
-		}
-	    }
-	    if (target.getOriginalRequest() != null) {
-		for (Object obj : target.getOriginalRequest().getParameterMap()
-			.entrySet()) {
-		    @SuppressWarnings("unchecked")
-		    Entry<String, String[]> entry = (Entry<String, String[]>) obj;
-		    for (int i = 0; i < entry.getValue().length; i++) {
-			postMethod.addParameter(new NameValuePair(entry
-				.getKey(), (entry.getValue())[i]));
-		    }
-		}
-	    }
-	    httpMethod = postMethod;
+	    buildPostMethod();
 	} else {
 	    throw new UnsupportedHttpMethodException(target.getMethod() + " "
 		    + ResourceUtils.getHttpUrl(target));
@@ -116,6 +126,24 @@ public class HttpResource extends Resource {
 		    httpMethod, httpState);
 	    statusCode = httpMethod.getStatusCode();
 	    statusText = httpMethod.getStatusText();
+	    // CAS support
+	    String currentLocation = null;
+	    if (!target.isProxyMode())
+		currentLocation = httpMethod.getPath();
+	    else if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
+		    || statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY)
+		currentLocation = httpMethod.getResponseHeader("location")
+			.getValue();
+	    if (currentLocation != null
+		    && currentLocation.contains("/cas/login")) {
+		addCasAuthentication();
+		buildHttpMethod();
+		LOG.debug(toString());
+		httpClient.executeMethod(httpClient.getHostConfiguration(),
+			httpMethod, httpState);
+		statusCode = httpMethod.getStatusCode();
+		statusText = httpMethod.getStatusText();
+	    }
 	    if (isError())
 		LOG.warn("Problem retrieving URL: " + url + ": " + statusCode
 			+ " " + statusText);

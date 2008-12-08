@@ -30,6 +30,10 @@
 			<param-name>redirectAfterValidation</param-name>
 			<param-value>true</param-value>
 		</init-param>
+		<init-param>
+			<param-name>acceptAnyProxy</param-name>
+			<param-value>true</param-value>
+		</init-param>
 	</filter>
 	<filter>
 		<filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
