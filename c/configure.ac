@@ -446,13 +446,10 @@ fi
 
 AC_MSG_CHECKING([whether Xerces is 64-bit clean])
 
-AC_TRY_RUN([#include <xercesc/util/XercesVersion.hpp>
-    int main(int argc, char **argv) {
-      if (XERCES_VERSION_MAJOR > 2)
-        return 1;
-      else
-        return 0;
-    }],
+AC_TRY_COMPILE([#include <xercesc/framework/MemBufInputSource.hpp>],
+    [using namespace XERCES_CPP_NAMESPACE;
+      XMLFilePos testvar;
+    ],
     [AC_MSG_RESULT([yes])]
     [AC_DEFINE(XSEC_XERCES_64BITSAFE)],
     [AC_MSG_RESULT([no])])
