@@ -17,9 +17,7 @@
 		in net/webassembletool/driver.properties.
 		Change the "remoteUrlBase" parameter to the base address of your provider application.
 	</p>
-	<code>
-	remoteUrlBase=http://localhost:8080/provider/
-	</code>
+	<img src="driverproperties.jpg" />
 	<h1>Tag the block on the provider application</h1>
 	<p>
 		The block has to be tagged using special HTML comments.

@@ -19,6 +19,11 @@
 		prefer to use Apache mod_proxy powerfull module but the reverse-proxy servlet may as
 		well be used in a production environment with good performance.
 	</p>
+	<h2>Aggregator</h2>
+	<p>
+		The aggregator is a reverse-proxy servlet that can parse the pages on the fly and process
+		inclusion instructions inserted in the pages by the applications as tags.
+	</p>
 	<h2>Cache</h2>
 	<p>
 		In order to improve performance, the tool can be configured to use a cache (the underlying cache 
@@ -32,6 +37,10 @@
 		user id, user locale and any key/value list. These informations will be automatically
 		appended as request parameters to the http request.
 	</p>
-
-
+	<h2>Single Sign On with CAS</h2>
+	<p>
+		The kit supports CAS protocol using the
+		<a href="http://www.ja-sig.org/products/cas/overview/proxy_auth/index.html">proxy authentication mode</a> 
+		and the JA-SIG CAS client.
+	</p>
 </document>

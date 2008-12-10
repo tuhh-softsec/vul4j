@@ -3,6 +3,13 @@
 	<item id="index" title="Overview" />
 	<item id="features" title="Features" />
 	<item id="quickstart" title="Quick start" />
+	<item id="configuration" title="Configuration" />
+	<item id="taglib" title="Using the taglib" />
+	<item id="api" title="Using the API" />
+	<item id="proxy" title="Using the proxy" />
+	<item id="aggregator" title="Using the aggregator" />
+	<item id="cas" title="SSO with CAS" />
+	<item id="sample" title="Sample applications" />
 	<link href="http://sourceforge.net/project/showfiles.php?group_id=209844" title="Download" />
 	<link href="http://sourceforge.net/svn/?group_id=209844" title="Source" />
 	<link href="javadoc/index.html" title="Javadoc" />

@@ -12,11 +12,28 @@
 		is usually called
 		<a href="http://en.wikipedia.org/wiki/Web_scraping">web scraping</a>.
 	</p>
+	<h1>Taglib</h1>
 	<p>
-		Basically, working with the Website Assembling Toolkit looks like working with Tiles 
+		The Website Assembling Toolkit offers a taglib that can be used in any JSP-based java web application.
+	</p>
+	<p>
+		Basically, the taglib looks like Tiles 
 		tag library except that it enables you to include contents and use templates coming from
 		other applications that may have been written using any technology en deployed on other
 		servers.
+	</p>
+	<h1>Reverse proxy</h1>
+	<p>
+		The Website Assembling Toolkit can also be used as a reverse proxy. Proxied pages are parsed in order
+		to process inclusion instructions that the applications insert.
+	</p>
+	<p>
+		It is similar to an ESI processor that would process ESI tags inside the pages. Future plans include ESI 
+		tags support but for now we use proprietary tags.
+	</p>
+	<h1>Other uses</h1>
+	<p>
+		Any functionality used by the taglib or the reverse proxy can be used through a simple API.
 	</p>
 	<h1>How does it work?</h1>
 	<img src="overview.jpg" />

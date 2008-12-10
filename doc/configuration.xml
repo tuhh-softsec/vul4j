@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
+<document title="Configuration">
+	<h1>Configuration file</h1>
+	<p>
+		The tools default behavior is to load a configuration file from the classpath net/webassembletool/driver.properties
+	</p>
+	<p>
+		Alternatively you can use method <code>net.webassembletool.DriverFactory.configure(Properties)</code>.
+	</p>
+	<h1>Configuration directives</h1>
+	<p>
+		<table>
+		<tr>
+			<th>Directive</th>
+			<th>Usage</th>
+			<th>Mandatory</th>
+			<th>Default value</th>
+		</tr>
+		<tr>
+			<td>remoteUrlBase</td>
+			<td>Base URL of the remote application. Eg: <code>remoteUrlBase=http://localhost:8080/provider/</code> If not defined, local file system will be used (see localBase directive)</td>
+			<td>No</td>
+			<td>-</td>
+		</tr>
+		<tr>
+			<td>uriEncoding</td>
+			<td>Charset used for encoding parameters in URI</td>
+			<td>No</td>
+			<td>ISO-8859-1</td>
+		</tr>
+		<tr>
+			<td>maxConnectionsPerHost</td>
+			<td>Maximum number of HTTP connections simultaneously opened with this application</td>
+			<td>No</td>
+			<td>20</td>
+		</tr>
+		<tr>
+			<td>timeout</td>
+			<td>Timeout while establishing a connection with the server (connect time out) or while waiting for data (socket timeout)</td>
+			<td>No</td>
+			<td>1000</td>
+		</tr>
+		<tr>
+			<td>useCache</td>
+			<td>Use OsCache to reuse downloaded resources. Additional parameters can be set using oscache.properties file (see <a href="http://www.opensymphony.com/oscache/wiki/Configuration.html">OsCache documentation</a>)</td>
+			<td>No</td>
+			<td>true</td>
+		</tr>
+		<tr>
+			<td>cacheRefreshDelay</td>
+			<td>Time to live of any cached page. If 0, cache entries will never expire</td>
+			<td>No</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>cacheMaxFileSize</td>
+			<td>Maximum size of a cache entry. If 0, no size limit. This directive can be used to avoid excessive memory usage</td>
+			<td>No</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>localBase</td>
+			<td>File system path where to retrieve a resource if it cannot be retrieved neither from the remote server nor from the cache. This directive is particularly useful for developers to make mock applications. For each file in the folder, you can simulate HTTP headers in an additional header file (same file name with .header extension)</td>
+			<td>No</td>
+			<td>-</td>
+		</tr>
+		<tr>
+			<td>putInCache</td>
+			<td>The tool can automatically store a copy of any downloaded resource to the file system. These files will then be used if the application is not available</td>
+			<td>No</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>proxyHost</td>
+			<td>Proxy host name or IP. The tool can work through an HTTP proxy server.</td>
+			<td>No</td>
+			<td>-</td>
+		</tr>
+		<tr>
+			<td>proxyPort</td>
+			<td>Proxy port</td>
+			<td>No</td>
+			<td>-</td>
+		</tr>
+		</table>
+		
+	</p>
+	<h1>Specifying several provider applications</h1>
+	<p>
+		You can specify several provider applications prefixing directives with the provider name.
+		Eg for 3 applications, the first one is the default applications, the other ones are called "appli1" and "appli2":
+		<code><pre>
+		
+		remoteUrlBase=http://localhost:8080/appli0/
+
+		appli1.remoteUrlBase=http://localhost:8080/appli1/
+		appli1.uriEncoding=UTF-8
+
+		appli2.remoteUrlBase=http://localhost:8080/appli2/
+		appli2.uriEncoding=UTF-8
+		</pre></code>
+	</p>
+</document>

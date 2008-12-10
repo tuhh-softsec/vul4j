@@ -7,9 +7,18 @@
 #menu {
 	position: absolute;
 	left: 0px;
-	width: 120px;
+	width: 170px;
 }
 #main {
 	position: absolute;
 	left: 200px;
 }
+table {
+	border: 1px solid black;
+}
+td, th {
+	border: 1px solid black;
+}
+code {
+	white-space: pre; 
+} 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
+<document title="Implementing SSO using JA-SIG CAS">
+	<h1>Principles</h1>
+	<p>
+		The toolkit can do CAS authentication using the JA-SIG CAS client. The toolkit will
+		then use CAS <a href="http://www.ja-sig.org/products/cas/overview/proxy_auth/index.html">proxy authentication mode</a>
+		to authenticate the user while processing block or template includes. 
+	</p>
+	<h1>Configuring CAS on the aggregator or master application</h1>
+	<p>
+		You will have to define all the URL that have to be behind CAS authentication. WARN: CAS has to be configured in proxy mode, this means configuring proxyCallbackUrl and proxyReceptorUrl. Unless you disable security on the CAS server CAS AND the aggregator application MUST be in HTTPS!
+	</p>
+	<img src="cas_aggregator.jpg" />
+	<h1>Configuring CAS on the aggregated or provider applications</h1>
+	<p>
+		Aggregated applications can use any CAS client but must be configured to accept proxy chains.
+	</p>
+	<img src="cas_aggregated.jpg" />
+</document>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
+<document title="Aggregator">
+<h1>Goals</h1>
+<p>
+Like the reverse proxy servlet, the aggregator is implemented as a servlet.
+In addition to reverse proxying the pages, it parses the HTML code to find include directives to process.
+</p>
+<h1>Other advantages</h1>
+<p>
+<ul>
+<li>The toolkit is deployed on a separate web application</li>
+<li>Aggregated applications do not have any dependency on the toolkit, they just have to insert include directives in the pages</li>
+<li>Include directives are not intrusive, they are html comments and do not have any impact on pages</li>
+<li>Aggregated applications are not necessarily written in Java</li>
+</ul>
+</p>
+<h1>Configuration</h1>
+<p>
+Target applications configuration is achieved through the usual driver.properties file. See configuration chapter for more details. Eg for 2 applications:
+</p>
+<img src="aggregator_conf.jpg" />
+<p>
+The aggregator is a servlet that has to be configured in the web.xml file.
+</p>
+<img src="aggregator.jpg" />
+<h1>Syntax</h1>
+<h2>Defining a block</h2>
+<p>Use the "beginblock" and "endblock" directives with the name of the block.</p>
+<img src="aggregator_block.jpg" />
+<h2>Including a block</h2>
+<p>Use the "includeblock" directives with the name of the provider, the page and the name of the block to retrieve. If no block name, the complete page is retrieved.</p>
+<img src="aggregator_includeblock.jpg" />
+<h2>Defining a template</h2>
+<p>Use the "begintemplate" and "endtemplate" directives with the name of the template. Use the "beginparam" and "endparam" directives to delimit params (variable parts that can be replaced inside the template)</p>
+<img src="aggregator_template.jpg" />
+<h2>Including a block</h2>
+<p>Use the "includetemplate" directives with the name of the provider, the page and the name of the template to retrieve. If no template name, the complete page is retrieved.
+Use directives "beginput" and "endput" to replace params inside the template.</p>
+<img src="aggregator_includetemplate.jpg" />
+</document>

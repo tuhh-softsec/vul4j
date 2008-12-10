@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
+<document title="Sample applications">
+<h1>Applications</h1>
+<p>The source distribution includes to demonstrate most of the functionalities of the toolkit:
+</p><ul>
+<li>Taglib and reverse proxy : master and provider applications</li>
+<li>Aggregator : aggregator, aggregated1 and aggregated2 applications</li>
+<li>Aggregator with CAS SSO : cas, casified_aggregator, casified_aggregated1 and casified_aggregated2 applications</li>
+</ul>
+<h1>Building</h1>
+<p>To build the applications, use clean and build Ant tasks</p>
+<p>Built webapps are located under bin/webapps folder and can be deployed on a servlet container</p>
+</document>
