@@ -10,6 +10,7 @@ import java.util.List;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.util.FileUtils;
@@ -21,11 +22,12 @@ public class TarFileAttributesTest
 {
 
     private final List toDelete = new ArrayList();
-    
-    public void setUp() throws Exception
+
+    public void setUp()
+        throws Exception
     {
         super.setUp();
-        
+
         System.out.println( "Octal 0660 is decimal " + 0660 );
         System.out.println( "Octal 0644 is decimal " + 0644 );
         System.out.println( "Octal 0440 is decimal " + 0440 );
@@ -35,7 +37,7 @@ public class TarFileAttributesTest
         throws Exception
     {
         super.tearDown();
-        
+
         if ( !toDelete.isEmpty() )
         {
             for ( Iterator it = toDelete.iterator(); it.hasNext(); )
@@ -68,7 +70,7 @@ public class TarFileAttributesTest
         System.out.println( "\n\nRunning: " + e.getMethodName() + "\n\n" );
     }
 
-    public void testUseDetectedFileAttributes()
+    public void testUseAttributesFromTarArchiveInputInTarArchiverOutput()
         throws Exception
     {
         printTestHeader();
@@ -77,7 +79,7 @@ public class TarFileAttributesTest
             System.out.println( "This test cannot run on windows. Aborting." );
             return;
         }
-        
+
         File tempFile = File.createTempFile( "tar-file-attributes.", ".tmp" );
         toDelete.add( tempFile );
 
@@ -93,14 +95,87 @@ public class TarFileAttributesTest
         }
 
         int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
-        
         assertEquals( 0, result );
 
+        TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+
+        File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
+        toDelete.add( tempTarFile );
+
+        tarArchiver.setDestFile( tempTarFile );
+        tarArchiver.addFile( tempFile, tempFile.getName(), 0660 );
+
+        tarArchiver.createArchive();
+        
+        tarArchiver = null;
+
+        TarArchiver tarArchiver2 = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+
+        File tempTarFile2 = File.createTempFile( "tar-file.", ".tar" );
+        toDelete.add( tempTarFile2 );
+
+        tarArchiver2.setDestFile( tempTarFile2 );
+        
+        DefaultArchivedFileSet afs = new DefaultArchivedFileSet();
+        afs.setArchive( tempTarFile );
+
+        System.out.println( "Adding tar archive to new archiver: " + tempTarFile );
+        tarArchiver2.addArchivedFileSet( afs );
+
+        tarArchiver2.createArchive();
+        
+        // Cut from here, and feed it into a new tar archiver...then unarchive THAT.
+        TarUnArchiver tarUnArchiver = (TarUnArchiver) lookup( UnArchiver.ROLE, "tar" );
+
+        File tempTarDir = File.createTempFile( "tar-test.", ".dir" );
+        tempTarDir.delete();
+        tempTarDir.mkdirs();
+
+        toDelete.add( tempTarDir );
+
+        tarUnArchiver.setDestDirectory( tempTarDir );
+        tarUnArchiver.setSourceFile( tempTarFile2 );
+
+        tarUnArchiver.extract();
+
         PlexusIoResourceAttributes fileAttributes =
-            PlexusIoResourceAttributeUtils.getFileAttributes( tempFile );
-        
+            PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
+
+        assertEquals( 0660, fileAttributes.getOctalMode() );
+    }
+
+    public void testUseDetectedFileAttributes()
+        throws Exception
+    {
+        printTestHeader();
+        if ( checkForWindows() )
+        {
+            System.out.println( "This test cannot run on windows. Aborting." );
+            return;
+        }
+
+        File tempFile = File.createTempFile( "tar-file-attributes.", ".tmp" );
+        toDelete.add( tempFile );
+
+        FileWriter writer = null;
+        try
+        {
+            writer = new FileWriter( tempFile );
+            writer.write( "This is a test file." );
+        }
+        finally
+        {
+            IOUtil.close( writer );
+        }
+
+        int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
+
+        assertEquals( 0, result );
+
+        PlexusIoResourceAttributes fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( tempFile );
+
         assertEquals( 0440, fileAttributes.getOctalMode() );
-        
+
         TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
@@ -124,8 +199,7 @@ public class TarFileAttributesTest
 
         tarUnArchiver.extract();
 
-        fileAttributes =
-            PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
+        fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
         assertEquals( 0440, fileAttributes.getOctalMode() );
     }
@@ -136,7 +210,7 @@ public class TarFileAttributesTest
         {
             return true;
         }
-        
+
         return false;
     }
 
@@ -149,7 +223,7 @@ public class TarFileAttributesTest
             System.out.println( "This test cannot run on windows. Aborting." );
             return;
         }
-        
+
         File tempFile = File.createTempFile( "tar-file-attributes.", ".tmp" );
         toDelete.add( tempFile );
 
@@ -205,7 +279,7 @@ public class TarFileAttributesTest
             System.out.println( "This test cannot run on windows. Aborting." );
             return;
         }
-        
+
         File tempFile = File.createTempFile( "tar-file-attributes.", ".tmp" );
         toDelete.add( tempFile );
 
