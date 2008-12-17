@@ -3,7 +3,9 @@ package net.webassembletool.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
+import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -82,15 +84,25 @@ public class HttpResource extends Resource {
 	httpMethod = new GetMethod(url);
     }
 
-    private void addCasAuthentication() {
+    private void addCasAuthentication(String location) {
 	Principal principal = target.getOriginalRequest().getUserPrincipal();
 	if (principal != null && principal instanceof AttributePrincipal) {
 	    AttributePrincipal casPrincipal = (AttributePrincipal) principal;
 	    LOG.debug("User logged in CAS as: " + casPrincipal.getName());
-	    url = ResourceUtils.getHttpUrl(target);
-	    String casProxyTicket = casPrincipal.getProxyTicketFor(url);
+	    String service = location;
+	    service = service.substring(service.indexOf("service=")
+		    + "service=".length());
+	    int ampersandPosition = service.indexOf('&');
+	    if (ampersandPosition > 0)
+		service = service.substring(0, ampersandPosition);
+	    try {
+		service = URLDecoder.decode(service, "ISO-8859-1");
+	    } catch (UnsupportedEncodingException e) {
+		// Should not happen
+	    }
+	    String casProxyTicket = casPrincipal.getProxyTicketFor(service);
 	    LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName()
-		    + " for service: " + url);
+		    + " for service: " + service + " : " + casProxyTicket);
 	    target.getParameters().put("ticket", casProxyTicket);
 	}
     }
@@ -129,14 +141,14 @@ public class HttpResource extends Resource {
 	    // CAS support
 	    String currentLocation = null;
 	    if (!target.isProxyMode())
-		currentLocation = httpMethod.getPath();
+		currentLocation = httpMethod.getPath() + "?"
+			+ httpMethod.getQueryString();
 	    else if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
 		    || statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY)
 		currentLocation = httpMethod.getResponseHeader("location")
 			.getValue();
-	    if (currentLocation != null
-		    && currentLocation.contains("/cas/login")) {
-		addCasAuthentication();
+	    if (currentLocation != null && currentLocation.contains("/login")) {
+		addCasAuthentication(currentLocation);
 		buildHttpMethod();
 		LOG.debug(toString());
 		httpClient.executeMethod(httpClient.getHostConfiguration(),
