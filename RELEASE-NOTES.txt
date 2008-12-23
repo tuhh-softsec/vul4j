@@ -72,6 +72,8 @@ IMPROVEMENTS FROM PREVIOUS RELEASE
  * [DIGESTER-111] Null arguments to all Digester#parse() methods now an
                   IllegalArgumentException.
 
+ * 'serialVersionUID' fields have been added to Serializable classes.
+
 DEPRECATIONS
 ============
 
