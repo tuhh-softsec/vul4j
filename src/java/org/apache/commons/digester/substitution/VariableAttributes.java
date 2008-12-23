@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class VariableAttributes implements Attributes {
 
     // list of mapped attributes.
-    private ArrayList values = new ArrayList(10);
+    private ArrayList<String> values = new ArrayList<String>(10);
 
     private Attributes attrs;
     private VariableExpander expander;
@@ -68,7 +68,7 @@ public class VariableAttributes implements Attributes {
             }
         }
         
-        String s = (String) values.get(index);
+        String s = values.get(index);
         
         if (s == null) {
             // we have never been asked for this value before.

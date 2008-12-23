@@ -29,13 +29,13 @@ import java.util.ArrayList;
 
 public class MultiVariableExpander implements VariableExpander {
     private int nEntries = 0;
-    private ArrayList markers = new ArrayList(2);
-    private ArrayList sources = new ArrayList(2);
+    private ArrayList<String> markers = new ArrayList<String>(2);
+    private ArrayList<Map<String, Object>> sources = new ArrayList<Map<String, Object>>(2);
     
     public MultiVariableExpander() {
     }
     
-    public void addSource(String marker, Map source) {
+    public void addSource(String marker, Map<String, Object> source) {
         ++nEntries;
         markers.add(marker);
         sources.add(source);
@@ -52,8 +52,8 @@ public class MultiVariableExpander implements VariableExpander {
         for(int i=0; i<nEntries; ++i) {
             param = expand(
                 param, 
-                (String) markers.get(i), 
-                (Map) sources.get(i));
+                markers.get(i), 
+                sources.get(i));
         }
         return param;
     }
@@ -73,7 +73,7 @@ public class MultiVariableExpander implements VariableExpander {
      * @throws IllegalArgumentException if the input param references
      * a variable which is not known to the specified source.
      */
-    public String expand(String str, String marker, Map source) {
+    public String expand(String str, String marker, Map<String, Object> source) {
         String startMark = marker + "{";
         int markLen = startMark.length();
         
