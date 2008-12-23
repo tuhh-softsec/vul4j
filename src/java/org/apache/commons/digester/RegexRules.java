@@ -19,7 +19,6 @@
 package org.apache.commons.digester;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class RegexRules extends AbstractRulesImpl {
     // --------------------------------------------------------- Fields
     
     /** All registered <code>Rule</code>'s  */
-    private ArrayList registeredRules = new ArrayList();
+    private ArrayList<RegisteredRule> registeredRules = new ArrayList<RegisteredRule>();
     /** The regex strategy used by this RegexRules */
     private RegexMatcher matcher;
 
@@ -105,7 +104,7 @@ public class RegexRules extends AbstractRulesImpl {
      * @param pattern Nesting pattern to be matched
      * @return a list of matching <code>Rule</code>'s
      */
-    public List match(String namespaceURI, String pattern) {
+    public List<Rule> match(String namespaceURI, String pattern) {
         //
         // not a particularly quick implementation
         // regex is probably going to be slower than string equality
@@ -114,12 +113,10 @@ public class RegexRules extends AbstractRulesImpl {
         //
         // XXX FIX ME - Time And Optimize
         //
-        ArrayList rules = new ArrayList(registeredRules.size());
-        Iterator it = registeredRules.iterator();
-        while (it.hasNext()) {
-            RegisteredRule next = (RegisteredRule) it.next();
-            if (matcher.match(pattern, next.pattern)) {
-                rules.add(next.rule);
+        ArrayList<Rule> rules = new ArrayList<Rule>(registeredRules.size());
+        for (RegisteredRule rr : registeredRules) {
+            if (matcher.match(pattern, rr.pattern)) {
+                rules.add(rr.rule);
             }
         }
         return rules;
@@ -133,11 +130,10 @@ public class RegexRules extends AbstractRulesImpl {
      * in the order originally registered through the <code>add()</code>
      * method.
      */
-    public List rules() {
-        ArrayList rules = new ArrayList(registeredRules.size());
-        Iterator it = registeredRules.iterator();
-        while (it.hasNext()) {
-            rules.add(((RegisteredRule) it.next()).rule);
+    public List<Rule> rules() {
+        ArrayList<Rule> rules = new ArrayList<Rule>(registeredRules.size());
+        for (RegisteredRule rr : registeredRules) {
+            rules.add(rr.rule);
         }
         return rules;
     }
