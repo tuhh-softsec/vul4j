@@ -28,6 +28,7 @@ package org.apache.commons.digester.xmlrules;
 
 public class DigesterLoadingException extends Exception {
 
+    private static final long serialVersionUID = 1L;
     private Throwable cause = null;
 
     /**

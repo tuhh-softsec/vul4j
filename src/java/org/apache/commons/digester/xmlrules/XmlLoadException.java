@@ -27,6 +27,7 @@ package org.apache.commons.digester.xmlrules;
  */
 public class XmlLoadException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
     private Throwable cause = null;
 
     /**

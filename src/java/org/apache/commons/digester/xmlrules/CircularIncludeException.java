@@ -29,6 +29,8 @@ package org.apache.commons.digester.xmlrules;
 
 public class CircularIncludeException extends XmlLoadException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * @param fileName the name of the XML file suspected of causing the
      * circular inclusion
