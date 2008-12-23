@@ -50,7 +50,8 @@ BUGS FROM PREVIOUS RELEASE
 IMPROVEMENTS FROM PREVIOUS RELEASE
 ==================================
 
-
+ * [DIGESTER-111] Null arguments to all Digester#parse() methods now an
+                  IllegalArgumentException.
 
 DEPRECATIONS
 ============

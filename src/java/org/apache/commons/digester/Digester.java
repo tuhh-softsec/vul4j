@@ -1733,6 +1733,10 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(File file) throws IOException, SAXException {
 
+        if (file == null) {
+            throw new IllegalArgumentException("File to parse is null");
+        }
+
         configure();
         InputSource input = new InputSource(new FileInputStream(file));
         input.setSystemId(file.toURL().toString());
@@ -1752,6 +1756,10 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(InputSource input) throws IOException, SAXException {
  
+        if (input == null) {
+            throw new IllegalArgumentException("InputSource to parse is null");
+        }
+
         configure();
         getXMLReader().parse(input);
         cleanup();
@@ -1770,6 +1778,10 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing exception occurs
      */
     public Object parse(InputStream input) throws IOException, SAXException {
+
+        if (input == null) {
+            throw new IllegalArgumentException("InputStream to parse is null");
+        }
 
         configure();
         InputSource is = new InputSource(input);
@@ -1791,6 +1803,10 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(Reader reader) throws IOException, SAXException {
 
+        if (reader == null) {
+            throw new IllegalArgumentException("Reader to parse is null");
+        }
+
         configure();
         InputSource is = new InputSource(reader);
         getXMLReader().parse(is);
@@ -1810,6 +1826,10 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing exception occurs
      */
     public Object parse(String uri) throws IOException, SAXException {
+
+        if (uri == null) {
+            throw new IllegalArgumentException("String URI to parse is null");
+        }
 
         configure();
         InputSource is = createInputSourceFromURL(uri);
@@ -1832,6 +1852,10 @@ public class Digester extends DefaultHandler {
      * @since 1.8
      */
     public Object parse(URL url) throws IOException, SAXException {
+
+        if (url == null) {
+            throw new IllegalArgumentException("URL to parse is null");
+        }
 
         configure();
         InputSource is = createInputSourceFromURL(url);

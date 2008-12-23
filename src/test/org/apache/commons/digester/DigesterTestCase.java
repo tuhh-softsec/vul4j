@@ -19,6 +19,9 @@
 
 package org.apache.commons.digester;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -122,6 +125,77 @@ public class DigesterTestCase extends TestCase {
 
 
     // ------------------------------------------------ Individual Test Methods
+
+
+    /**
+     * Test <code>null</code> parsing.
+     * (should lead to <code>IllegalArgumentException</code>s)
+     */
+    public void testNullFileParse() throws Exception {
+
+        try {
+            digester.parse((File) null);
+            fail("Expected IllegalArgumentException with null argument");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+    }
+
+    public void testNullInputSourceParse() throws Exception {
+
+        try {
+            digester.parse((InputSource) null);
+            fail("Expected IllegalArgumentException with null argument");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+    }
+
+    public void testNullInputStreamParse() throws Exception {
+
+        try {
+            digester.parse((InputStream) null);
+            fail("Expected IllegalArgumentException with null argument");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+    }
+
+    public void testNullReaderParse() throws Exception {
+
+        try {
+            digester.parse((Reader) null);
+            fail("Expected IllegalArgumentException with null argument");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+    }
+
+    public void testNullStringParse() throws Exception {
+
+        try {
+            digester.parse((String) null);
+            fail("Expected IllegalArgumentException with null argument");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+    }
+
+    public void testNullURLParse() throws Exception {
+
+        try {
+            digester.parse((URL) null);
+            fail("Expected IllegalArgumentException with null argument");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+    }
 
 
     /**
