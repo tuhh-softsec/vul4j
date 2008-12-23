@@ -76,7 +76,7 @@ public class PluginContext {
      * indirectly by all PluginCreateRules to locate the custom rules
      * for plugin classes.
      */
-    private List ruleFinders;
+    private List<RuleFinder> ruleFinders;
 
     //------------------- constructors ---------------------------------------
     
@@ -94,12 +94,12 @@ public class PluginContext {
      * It is explicitly permitted for the caller to modify this list
      * by inserting or removing RuleFinder objects.
      */
-    public List getRuleFinders() {
+    public List<RuleFinder> getRuleFinders() {
         if (ruleFinders == null) {
             // when processing a plugin declaration, attempts are made to
             // find custom rules in the order in which the Finder objects
             // are added below. However this list can be modified
-            ruleFinders = new LinkedList();
+            ruleFinders = new LinkedList<RuleFinder>();
             ruleFinders.add(new FinderFromFile());
             ruleFinders.add(new FinderFromResource());
             ruleFinders.add(new FinderFromClass());
@@ -123,7 +123,7 @@ public class PluginContext {
      * it may be better to call #getRuleFinders, and insert a new object into 
      * the start of the list.
      */
-    public void setRuleFinders(List ruleFinders) {
+    public void setRuleFinders(List<RuleFinder> ruleFinders) {
         this.ruleFinders = ruleFinders;
     }
 
