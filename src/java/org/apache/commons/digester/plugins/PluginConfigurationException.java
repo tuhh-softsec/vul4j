@@ -29,6 +29,8 @@ package org.apache.commons.digester.plugins;
  */
 
 public class PluginConfigurationException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
     private Throwable cause = null;
 
     /**

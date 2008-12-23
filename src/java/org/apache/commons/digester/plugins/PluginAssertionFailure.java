@@ -47,6 +47,7 @@ package org.apache.commons.digester.plugins;
  */
 public class PluginAssertionFailure extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
     private Throwable cause = null;
 
     /**
