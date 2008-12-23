@@ -6,95 +6,51 @@ $Id$
                                Release Notes
 
 
-*** Current as of Dec 03, 2006 (these are 1.8 notes, update for next release)
+** Current as of Dec 23, 2008 (these are 1.8.1 notes, update for next release)
 
 INTRODUCTION
 ============
 
-This is a minor bugfix and maintenance release. A few small features have been added.
-New projects are encouraged to use this release of digester, but there is no urgency
-for existing projects to upgrade; Digester 1.7 has proven to be a stable release.
+This is a minor bugfix and maintenance release. New projects are encouraged to
+use this release of digester, but there is no urgency for existing projects to
+upgrade; Digester 1.8 has proven to be a stable release.
 
 This release is 100% binary and source compatible with the previous release.
 
 IMPORTANT NOTES
 ===============
 
-none
+None
 
 Dependencies
 =============
-Digester 1.8 works with all sets of dependencies that worked for Digester 1.7.
-Users should upgrade to the recommended dependency set below where possible.
+Digester 1.8.1 works with all sets of dependencies that worked for
+Digester 1.8. Users should upgrade to the recommended dependency set below
+where possible.
 
-The Recommended Dependency Set for Digester 1.8 is:
-   Digester 1.8 + Logging 1.1.x + BeanUtils 1.7
+The Recommended Dependency Set for Digester 1.8.1 is:
+   Digester 1.8.1 + Logging 1.1.x + BeanUtils 1.7
 
 Other Compatible Dependency Sets:
-   Digester 1.8 + Logging 1.1.x + BeanUtils 1.x + Collections 2.x
-   Digester 1.8 + Logging 1.1.x + BeanUtils 1.x + Collections 3.x
+   Digester 1.8.1 + Logging 1.1.x + BeanUtils 1.x + Collections 2.x
+   Digester 1.8.1 + Logging 1.1.x + BeanUtils 1.x + Collections 3.x
 
 It is also possible to use Logging 1.0.x instead.
 
 NEW FEATURES
 =============
 
-Kaffe/GNU-Classpath compatibility
--------------------
-All Digester unit tests now pass with the Kaffe 1.1.6 JVM. It is expected
-that Digester works with other free Java implementations that also use the
-GNU Classpath libraries.
 
-Xmlrules Enhancements
-----------------------
-The xmlrules module has had the following updates to provide access
-to functionality that was previously accessable only via the digester
-API:
-     -- node-create-rule tag added to provide access to NodeCreateRule.
-        Patch provided by Kevin Ross; [DIGESTER-75]
-
-Stack Monitoring
-----------------
-
-Method "setStackAction" has been added to the Digester class. This allows user
-code to monitor all objects pushed onto and popped off digester stacks. In
-particular, this makes it easier to store source file/line info for all
-objects created during parsing.
-
-Namespace Access
-----------------
-
-Method "getCurrentNamespaces" has been added to the Digester class. This allows user
-code to get a snapshot of all the prefix->url mappings applicable at a point in time.
-This is particularly useful for elements that contain xpath expressions that should
-be evaluated later using the same namespaces defined for the element.
-
-Maven 2.x build support
------------------------
-
-This release now comes with a pom.xml file to allow digester to be built using maven 2.x.
-
-APIs that accept URLs
----------------------
-
-[DIGESTER-110] Digester class now provides alternative public APIs
-               that accept URLs directly.
 
 BUGS FROM PREVIOUS RELEASE
 ==========================
 
-Reports Addressed
-------------------
-* [DIGESTER-29] raises issue with jarfiles being "locked" on Windows machines.
-  A bug in Sun's java libraries can cause a jarfile to become "locked"
-  when a jarfile is the source of an xml or dtd file used by Digester.
-  In particular, this can cause problems when redeploying a J2EE webapp.
-  A workaround for the Sun bug has been added to Digester to resolve this.
 
-Fixes without JIRA entries
----------------------------
-* digester-rules.dtd file defined xml attribute "param" for xml element
-  object-param-rule. This has been removed as it wasn't being used.
+
+IMPROVEMENTS FROM PREVIOUS RELEASE
+==================================
+
+
 
 DEPRECATIONS
 ============
