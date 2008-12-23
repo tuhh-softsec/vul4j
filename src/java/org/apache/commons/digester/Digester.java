@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -39,11 +39,11 @@ import java.util.Properties;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.validation.Schema;
 
+import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.collections.ArrayStack;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
@@ -63,9 +63,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * <p>A <strong>Digester</strong> processes an XML input stream by matching a
  * series of element nesting patterns to execute Rules that have been added
- * prior to the start of parsing.  This package was inspired by the
- * <code>XmlMapper</code> class that was part of Tomcat 3.0 and 3.1,
- * but is organized somewhat differently.</p>
+ * prior to the start of parsing.</p>
  *
  * <p>See the <a href="package-summary.html#package_description">Digester
  * Developer Guide</a> for more information.</p>
@@ -86,9 +84,13 @@ import org.xml.sax.helpers.DefaultHandler;
  * call it if the Digester parse terminates due to an exception during a parse.
  * </p>
  *
- * <p><strong>IMPLEMENTATION NOTE</strong> - A bug in Xerces 2.0.2 prevents
- * the support of XML schema. You need Xerces 2.1/2.3 and up to make
- * this class working with XML schema</p>
+ * <p><strong>LEGACY IMPLEMENTATION NOTE</strong> - When using the legacy XML
+ * schema support (instead of using the {@link Schema} class), a bug in
+ * Xerces 2.0.2 prevents the support of XML schema. You need Xerces 2.1/2.3
+ * and up to make this class work with the legacy XML schema support.</p>
+ *
+ * <p>This package was inspired by the <code>XmlMapper</code> class that was
+ * part of Tomcat 3.0 and 3.1, but is organized somewhat differently.</p>
  */
 
 public class Digester extends DefaultHandler {
@@ -290,16 +292,26 @@ public class Digester extends DefaultHandler {
    /**
      * The XML schema language to use for validating an XML instance. By
      * default this value is set to <code>W3C_XML_SCHEMA</code>
+     *
+     * @deprecated Use {@link Schema} support instead.
      */
     protected String schemaLanguage = W3C_XML_SCHEMA;
     
         
     /**
      * The XML schema to use for validating an XML instance.
+     *
+     * @deprecated Use {@link Schema} support instead.
      */
     protected String schemaLocation = null;
     
     
+    /**
+     * The XML schema to use for validating an XML instance.
+     */
+    protected Schema schema = null;
+
+
     /**
      * The object stack being constructed.
      */
@@ -518,6 +530,7 @@ public class Digester extends DefaultHandler {
             factory.setNamespaceAware(namespaceAware);
             factory.setXIncludeAware(xincludeAware);
             factory.setValidating(validating);
+            factory.setSchema(schema);
         }
         return (factory);
 
@@ -746,6 +759,10 @@ public class Digester extends DefaultHandler {
                 // we have to use parser-specific code for this. That code
                 // is hidden behind the ParserFeatureSetterFactory class.
 
+            	// The above has changed in JDK 1.5 and no longer true. The
+            	// functionality used in this block has now been deprecated.
+            	// We now use javax.xml.validation.Schema instead.
+
                 Properties properties = new Properties();
                 properties.put("SAXParserFactory", getFactory());
                 if (schemaLocation != null) {
@@ -865,6 +882,9 @@ public class Digester extends DefaultHandler {
 
     /**
      * Return the XML Schema URI used for validating an XML instance.
+     *
+     * @deprecated Use {@link Schema} for validation instead. 
+     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
      */
     public String getSchema() {
 
@@ -901,6 +921,8 @@ public class Digester extends DefaultHandler {
      * parameter to the Digester constructor.
      *
      * @param schemaLocation a URI to the schema.
+     * @deprecated Use {@link Schema} for validation instead. 
+     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
      */
     public void setSchema(String schemaLocation){
 
@@ -911,6 +933,9 @@ public class Digester extends DefaultHandler {
 
     /**
      * Return the XML Schema language used when parsing.
+     *
+     * @deprecated Use {@link Schema} for validation instead. 
+     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
      */
     public String getSchemaLanguage() {
 
@@ -923,12 +948,38 @@ public class Digester extends DefaultHandler {
      * Set the XML Schema language used when parsing. By default, we use W3C.
      *
      * @param schemaLanguage a URI to the schema language.
+     * @deprecated Use {@link Schema} for validation instead. 
+     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
      */
     public void setSchemaLanguage(String schemaLanguage){
 
         this.schemaLanguage = schemaLanguage;
 
     }   
+    
+
+    /**
+     * Return the XML Schema used when parsing.
+     *
+     * @return The {@link Schema} instance in use.
+     */
+    public Schema getXMLSchema() {
+
+        return (this.schema);
+
+    }
+
+
+    /**
+     * Set the XML Schema to be used when parsing.
+     *
+     * @param schema The {@link Schema} instance to use.
+     */
+    public void setXMLSchema(Schema schema){
+
+        this.schema = schema;
+
+    }
 
 
     /**

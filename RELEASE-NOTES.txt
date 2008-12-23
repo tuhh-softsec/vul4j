@@ -16,11 +16,18 @@ of digester. There are breaking changes from Digester 1.8, see release notes
 in detail before choosing to upgrade. There is no urgency for existing
 projects to upgrade; Digester 1.8 has proven to be a stable release.
 
-IMPORTANT NOTES (BREAKING CHANGES)
-===================================
+IMPORTANT NOTES
+================
+
+BREAKING CHANGES:
 
  * The minimum JDK requirement is now JDK 1.5. The provided binaries will not
    work on lower JDKs. The source requires JDK 1.5 to compile.
+
+OTHER CHANGES:
+
+ * The legacy schema support has been deprecated in favor of
+   javax.xml.validation.Schema support.
 
 Dependencies
 =============
@@ -36,7 +43,15 @@ It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
 NEW FEATURES
 =============
 
- * XInclude awareness
+ * XML SCHEMA SUPPORT
+       Support for XML Schema validation using javax.xml.validation.Schema
+       has been added to Digester. See Digester class Javadoc, and
+       Digester#setSchema(javax.xml.validation.Schema) method.
+       This allows usage of W3C XML Schema, Relax NG and Schematron for
+       validation of XML documents.
+       The legacy schema support has been deprecated (details below).
+
+ * XINCLUDE AWARENESS
        The underlying SAXParser factory can now be easily configured to be
        XInclude aware. This allows for general purpose inclusion of XML or
        text documents, for example, and facilitates document modularity. For
@@ -60,5 +75,28 @@ IMPROVEMENTS FROM PREVIOUS RELEASE
 DEPRECATIONS
 ============
 
-None.
+ * org.apache.commons.digester.Digester#schemaLanguage and
+   org.apache.commons.digester.Digester#schemaLocation
 
+    Use org.apache.commons.digester.Digester#schema instead.
+
+ * org.apache.commons.digester.Digester#getSchemaLanguage(),
+   org.apache.commons.digester.Digester#setSchemaLanguage(String),
+   org.apache.commons.digester.Digester#getSchemaLocation(), and
+   org.apache.commons.digester.Digester#setSchemaLocation(String)
+
+    Use org.apache.commons.digester.Digester#getSchema() and
+    org.apache.commons.digester.Digester#setSchema(javax.xml.validation.Schema)
+    instead.
+
+ * org.apache.commons.digester.ParserFeatureSetterFactory
+
+    Switch to javax.xml.validation.Schema validation via Digester class
+    instead.
+
+ * org.apache.commons.digester.parsers package; classes
+   org.apache.commons.digester.parsers.GenericParser and
+   org.apache.commons.digester.parsers.XercesParser
+
+    Switch to javax.xml.validation.Schema validation via Digester class
+    instead.
