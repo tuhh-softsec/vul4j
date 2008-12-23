@@ -31,7 +31,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -191,7 +190,7 @@ public class Digester extends DefaultHandler {
      * The URLs of entityValidator that have been registered, keyed by the public
      * identifier that corresponds.
      */
-    protected HashMap entityValidator = new HashMap();
+    protected HashMap<String, URL> entityValidator = new HashMap<String, URL>();
 
 
     /**
@@ -239,7 +238,7 @@ public class Digester extends DefaultHandler {
      * is required because documents can declare nested uses of the same
      * prefix for different Namespace URIs).
      */
-    protected HashMap namespaces = new HashMap();
+    protected HashMap<String, ArrayStack> namespaces = new HashMap<String, ArrayStack>();
 
 
     /**
@@ -358,7 +357,7 @@ public class Digester extends DefaultHandler {
     protected Substitutor substitutor;
     
     /** Stacks used for interrule communication, indexed by name String */
-    private HashMap stacksByName = new HashMap();
+    private HashMap<String, ArrayStack> stacksByName = new HashMap<String, ArrayStack>();
     
     /**
      * If not null, then calls by the parser to this object's characters, 
@@ -388,7 +387,7 @@ public class Digester extends DefaultHandler {
      */
     public String findNamespaceURI(String prefix) {
         
-        ArrayStack nsStack = (ArrayStack) namespaces.get(prefix);
+        ArrayStack nsStack = namespaces.get(prefix);
         if (nsStack == null) {
             return null;
         }
@@ -1147,17 +1146,15 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.8
      */
-    public Map getCurrentNamespaces() {
+    public Map<String, String> getCurrentNamespaces() {
         if (!namespaceAware) {
             log.warn("Digester is not namespace aware");
         }
-        Map currentNamespaces = new HashMap();
-        Iterator nsIterator = namespaces.entrySet().iterator();
-        while (nsIterator.hasNext()) {
-            Map.Entry nsEntry = (Map.Entry) nsIterator.next();
-            try {
+        Map<String, String> currentNamespaces = new HashMap<String, String>();
+        for (Map.Entry<String, ArrayStack> nsEntry : namespaces.entrySet()) {
+             try {
                 currentNamespaces.put(nsEntry.getKey(),
-                    ((ArrayStack) nsEntry.getValue()).peek());
+                    (String) nsEntry.getValue().peek());
             } catch (RuntimeException e) {
                 // rethrow, after logging
                 log.error(e.getMessage(), e);
@@ -1215,9 +1212,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Fire "finish" events for all defined rules
-        Iterator rules = getRules().rules().iterator();
-        while (rules.hasNext()) {
-            Rule rule = (Rule) rules.next();
+        for (Rule rule : getRules().rules()) {
             try {
                 rule.finish();
             } catch (Exception e) {
@@ -1275,7 +1270,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Fire "body" events for all relevant rules
-        List rules = (List) matches.pop();
+        List<Rule> rules = (List<Rule>) matches.pop(); // legacy ArrayStack code
         if ((rules != null) && (rules.size() > 0)) {
             String bodyText = this.bodyText.toString();
             Substitutor substitutor = getSubstitutor();
@@ -1354,7 +1349,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Deregister this prefix mapping
-        ArrayStack stack = (ArrayStack) namespaces.get(prefix);
+        ArrayStack stack = namespaces.get(prefix);
         if (stack == null) {
             return;
         }
@@ -1536,7 +1531,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Fire "begin" events for all relevant rules
-        List rules = getRules().match(namespaceURI, match);
+        List<Rule> rules = getRules().match(namespaceURI, match);
         matches.push(rules);
         if ((rules != null) && (rules.size() > 0)) {
             Substitutor substitutor = getSubstitutor();
@@ -1583,7 +1578,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Register this prefix mapping
-        ArrayStack stack = (ArrayStack) namespaces.get(prefix);
+        ArrayStack stack = namespaces.get(prefix);
         if (stack == null) {
             stack = new ArrayStack();
             namespaces.put(prefix, stack);
@@ -1675,12 +1670,12 @@ public class Digester extends DefaultHandler {
         // Has this system identifier been registered?
         URL entityURL = null;
         if (publicId != null) {
-            entityURL = (URL) entityValidator.get(publicId);
+            entityURL = entityValidator.get(publicId);
         }
          
         // Redirect the schema location to a local destination
         if (schemaLocation != null && entityURL == null && systemId != null){
-            entityURL = (URL) entityValidator.get(systemId);
+            entityURL = entityValidator.get(systemId);
         } 
 
         if (entityURL == null) { 
@@ -1827,7 +1822,7 @@ public class Digester extends DefaultHandler {
 
         configure();
         InputSource input = new InputSource(new FileInputStream(file));
-        input.setSystemId(file.toURL().toString());
+        input.setSystemId(file.toURI().toURL().toString());
         getXMLReader().parse(input);
         cleanup();
         return (root);
@@ -2016,7 +2011,7 @@ public class Digester extends DefaultHandler {
      * closed to avoid resource leaks, as well as potentially locked
      * JAR files on Windows.</p>
      */
-    protected List inputSources = new ArrayList(5);
+    protected List<InputSource> inputSources = new ArrayList<InputSource>(5);
 
 
     /**
@@ -2234,7 +2229,7 @@ public class Digester extends DefaultHandler {
      * @see CallMethodRule
      */
     public void addCallMethod(String pattern, String methodName,
-                              int paramCount, Class paramTypes[]) {
+                              int paramCount, Class<?> paramTypes[]) {
 
         addRule(pattern,
                 new CallMethodRule(
@@ -2376,7 +2371,7 @@ public class Digester extends DefaultHandler {
      * @param clazz Java class of the object creation factory class
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate(String pattern, Class clazz) {
+    public void addFactoryCreate(String pattern, Class<?> clazz) {
 
         addFactoryCreate(pattern, clazz, false);
 
@@ -2411,7 +2406,7 @@ public class Digester extends DefaultHandler {
      *  value specified by <code>className</code>
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate(String pattern, Class clazz,
+    public void addFactoryCreate(String pattern, Class<?> clazz,
                                  String attributeName) {
 
         addFactoryCreate(pattern, clazz, attributeName, false);
@@ -2467,7 +2462,7 @@ public class Digester extends DefaultHandler {
      */
     public void addFactoryCreate(
                                     String pattern, 
-                                    Class clazz,
+                                    Class<?> clazz,
                                     boolean ignoreCreateExceptions) {
 
         addRule(
@@ -2514,7 +2509,7 @@ public class Digester extends DefaultHandler {
      */
     public void addFactoryCreate(
                                     String pattern, 
-                                    Class clazz,
+                                    Class<?> clazz,
                                     String attributeName,
                                     boolean ignoreCreateExceptions) {
 
@@ -2567,7 +2562,7 @@ public class Digester extends DefaultHandler {
      * @param clazz Java class to be created
      * @see ObjectCreateRule
      */
-    public void addObjectCreate(String pattern, Class clazz) {
+    public void addObjectCreate(String pattern, Class<?> clazz) {
 
         addRule(pattern,
                 new ObjectCreateRule(clazz));
@@ -2604,7 +2599,7 @@ public class Digester extends DefaultHandler {
      */
     public void addObjectCreate(String pattern,
                                 String attributeName,
-                                Class clazz) {
+                                Class<?> clazz) {
 
         addRule(pattern,
                 new ObjectCreateRule(attributeName, clazz));
@@ -2938,7 +2933,7 @@ public class Digester extends DefaultHandler {
             value = stackAction.onPush(this, stackName, value);
         }
 
-        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        ArrayStack namedStack = stacksByName.get(stackName);
         if (namedStack == null) {
             namedStack = new ArrayStack();
             stacksByName.put(stackName, namedStack);
@@ -2961,7 +2956,7 @@ public class Digester extends DefaultHandler {
      */
     public Object pop(String stackName) {
         Object result = null;
-        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        ArrayStack namedStack = stacksByName.get(stackName);
         if (namedStack == null) {
             if (log.isDebugEnabled()) {
                 log.debug("Stack '" + stackName + "' is empty");
@@ -3013,7 +3008,7 @@ public class Digester extends DefaultHandler {
      */
     public Object peek(String stackName, int n) {
         Object result = null;
-        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        ArrayStack namedStack = stacksByName.get(stackName);
         if (namedStack == null ) {
             if (log.isDebugEnabled()) {
                 log.debug("Stack '" + stackName + "' is empty");
@@ -3039,7 +3034,7 @@ public class Digester extends DefaultHandler {
      */
     public boolean isEmpty(String stackName) {
         boolean result = true;
-        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        ArrayStack namedStack = stacksByName.get(stackName);
         if (namedStack != null ) {
             result = namedStack.isEmpty();
         }
@@ -3108,9 +3103,7 @@ public class Digester extends DefaultHandler {
 
         // If we created any InputSource objects in this instance,
         // they each have an input stream that should be closed
-        Iterator sources = inputSources.iterator();
-        while (sources.hasNext()) {
-            InputSource source = (InputSource) sources.next();
+        for (InputSource source : inputSources) {
             try {
                 source.getByteStream().close();
             } catch (IOException e) {
@@ -3183,7 +3176,7 @@ public class Digester extends DefaultHandler {
     /**
      * Return the set of DTD URL registrations, keyed by public identifier.
      */
-    Map getRegistrations() {
+    Map<String, URL> getRegistrations() {
 
         return (entityValidator);
 
@@ -3203,7 +3196,7 @@ public class Digester extends DefaultHandler {
      * @deprecated Call <code>match()</code> on the <code>Rules</code>
      *  implementation returned by <code>getRules()</code>
      */
-    List getRules(String match) {
+    List<Rule> getRules(String match) {
 
         return (getRules().match(match));
 
