@@ -76,7 +76,7 @@ public class FactoryCreateRule extends Rule {
      * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
      * Use {@link #FactoryCreateRule(Class clazz)} instead.
      */
-    public FactoryCreateRule(Digester digester, Class clazz) {
+    public FactoryCreateRule(Digester digester, Class<?> clazz) {
 
         this(clazz);
 
@@ -120,7 +120,7 @@ public class FactoryCreateRule extends Rule {
      * Use {@link #FactoryCreateRule(Class clazz, String attributeName)} instead.
      */
     public FactoryCreateRule(Digester digester,
-                             Class clazz, String attributeName) {
+                             Class<?> clazz, String attributeName) {
 
         this(clazz, attributeName);
 
@@ -169,7 +169,7 @@ public class FactoryCreateRule extends Rule {
      *
      * @param clazz Java class name of the object creation factory class
      */
-    public FactoryCreateRule(Class clazz) {
+    public FactoryCreateRule(Class<?> clazz) {
 
         this(clazz, false);
 
@@ -207,7 +207,7 @@ public class FactoryCreateRule extends Rule {
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
      */
-    public FactoryCreateRule(Class clazz, String attributeName) {
+    public FactoryCreateRule(Class<?> clazz, String attributeName) {
 
         this(clazz, attributeName, false);
 
@@ -255,7 +255,7 @@ public class FactoryCreateRule extends Rule {
      *  object creation factory
      * will be ignored.
      */
-    public FactoryCreateRule(Class clazz, boolean ignoreCreateExceptions) {
+    public FactoryCreateRule(Class<?> clazz, boolean ignoreCreateExceptions) {
 
         this(clazz, null, ignoreCreateExceptions);
 
@@ -299,7 +299,7 @@ public class FactoryCreateRule extends Rule {
      *  creation factory will be ignored.
      */
     public FactoryCreateRule(
-                                Class clazz, 
+                                Class<?> clazz, 
                                 String attributeName,
                                 boolean ignoreCreateExceptions) {
 
@@ -489,7 +489,7 @@ public class FactoryCreateRule extends Rule {
                 digester.log.debug("[FactoryCreateRule]{" + digester.match +
                         "} New factory " + realClassName);
             }
-            Class clazz = digester.getClassLoader().loadClass(realClassName);
+            Class<?> clazz = digester.getClassLoader().loadClass(realClassName);
             creationFactory = (ObjectCreationFactory)
                     clazz.newInstance();
             creationFactory.setDigester(digester);

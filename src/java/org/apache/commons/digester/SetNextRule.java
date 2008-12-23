@@ -199,7 +199,7 @@ public class SetNextRule extends Rule {
         }
 
         // Call the specified method
-        Class paramTypes[] = new Class[1];
+        Class<?> paramTypes[] = new Class<?>[1];
         if (paramType != null) {
             paramTypes[0] =
                     digester.getClassLoader().loadClass(paramType);

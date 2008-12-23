@@ -157,7 +157,7 @@ public class CallMethodRule extends Rule {
      * Use {@link #CallMethodRule(String methodName,int paramCount, Class [] paramTypes)} instead.
      */
     public CallMethodRule(Digester digester, String methodName,
-                          int paramCount, Class paramTypes[]) {
+                          int paramCount, Class<?> paramTypes[]) {
 
         this(methodName, paramCount, paramTypes);
     }
@@ -321,7 +321,7 @@ public class CallMethodRule extends Rule {
     public CallMethodRule(
                             String methodName,
                             int paramCount, 
-                            Class paramTypes[]) {
+                            Class<?> paramTypes[]) {
         this(0, methodName, paramCount, paramTypes);
     }
 
@@ -348,7 +348,7 @@ public class CallMethodRule extends Rule {
     public CallMethodRule(  int targetOffset,
                             String methodName,
                             int paramCount, 
-                            Class paramTypes[]) {
+                            Class<?> paramTypes[]) {
 
         this.targetOffset = targetOffset;
         this.methodName = methodName;
@@ -401,7 +401,7 @@ public class CallMethodRule extends Rule {
     /**
      * The parameter types of the parameters to be collected.
      */
-    protected Class paramTypes[] = null;
+    protected Class<?> paramTypes[] = null;
 
     /**
      * The names of the classes of the parameters to be collected.
