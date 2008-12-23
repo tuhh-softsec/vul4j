@@ -32,7 +32,7 @@ import org.apache.commons.digester.Digester;
 public class Declaration {
    
     /** The class of the object to be instantiated. */
-    private Class pluginClass;
+    private Class<?> pluginClass;
 
     /** The name of the class of the object to be instantiated. */
     private String pluginClassName;
@@ -68,7 +68,7 @@ public class Declaration {
     /**
      * Constructor.
      */
-    public Declaration(Class pluginClass) {
+    public Declaration(Class<?> pluginClass) {
         this.pluginClass = pluginClass;
         this.pluginClassName = pluginClass.getName();
     }
@@ -78,7 +78,7 @@ public class Declaration {
      * is provided by the caller instead of having the PluginManager
      * "discover" an appropriate one.
      */
-    public Declaration(Class pluginClass, RuleLoader ruleLoader) {
+    public Declaration(Class<?> pluginClass, RuleLoader ruleLoader) {
         this.pluginClass = pluginClass;
         this.pluginClassName = pluginClass.getName();
         this.ruleLoader = ruleLoader;
@@ -129,7 +129,7 @@ public class Declaration {
      * 
      * @return The pluginClass.
      */
-    public Class getPluginClass() {
+    public Class<?> getPluginClass() {
         return pluginClass;
     }
 

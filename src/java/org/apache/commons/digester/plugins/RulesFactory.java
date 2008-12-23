@@ -50,7 +50,7 @@ public abstract class RulesFactory {
      * of rules, but there is something invalid about that source.
      */
 
-     public abstract Rules newRules(Digester d, Class pluginClass) 
+     public abstract Rules newRules(Digester d, Class<?> pluginClass) 
                         throws PluginException;
 }
 

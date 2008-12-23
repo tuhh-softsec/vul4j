@@ -70,7 +70,7 @@ public abstract class RuleFinder {
      */
 
      public abstract RuleLoader findLoader(
-                        Digester d, Class pluginClass, 
+                        Digester d, Class<?> pluginClass, 
                         Properties p) throws PluginException;
 }
 
