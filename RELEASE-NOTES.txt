@@ -2,40 +2,35 @@ $Id$
 
 
                           Commons Digester Package
-                           Version 1.8.1-SNAPSHOT
+                            Version 2.0-SNAPSHOT
                                Release Notes
 
 
-** Current as of Dec 23, 2008 (these are 1.8.1 notes, update for next release)
+** Current as of Dec 23, 2008 (these are 2.0 notes, update for next release)
 
 INTRODUCTION
 ============
 
-This is a minor bugfix and maintenance release. New projects are encouraged to
-use this release of digester, but there is no urgency for existing projects to
-upgrade; Digester 1.8 has proven to be a stable release.
+This is a major release. New projects are encouraged to use this release
+of digester. There are breaking changes from Digester 1.8, see release notes
+in detail before choosing to upgrade. There is no urgency for existing
+projects to upgrade; Digester 1.8 has proven to be a stable release.
 
-This release is 100% binary and source compatible with the previous release.
+IMPORTANT NOTES (BREAKING CHANGES)
+===================================
 
-IMPORTANT NOTES
-===============
-
-None
+ * The minimum JDK requirement is now JDK 1.5. The provided binaries will not
+   work in lower JDKs. The source requires JDK 1.5 to compile.
 
 Dependencies
 =============
-Digester 1.8.1 works with all sets of dependencies that worked for
-Digester 1.8. Users should upgrade to the recommended dependency set below
+Digester 2.0 users should upgrade to the recommended dependency set below
 where possible.
 
-The Recommended Dependency Set for Digester 1.8.1 is:
-   Digester 1.8.1 + Logging 1.1.x + BeanUtils 1.7
+The Recommended Dependency Set for Digester 2.0 is:
+   Digester 2.0 + Logging 1.1.1 + BeanUtils 1.8
 
-Other Compatible Dependency Sets:
-   Digester 1.8.1 + Logging 1.1.x + BeanUtils 1.x + Collections 2.x
-   Digester 1.8.1 + Logging 1.1.x + BeanUtils 1.x + Collections 3.x
-
-It is also possible to use Logging 1.0.x instead.
+It is also possible to use Logging 1.0.x or BeanUtils 1.7 instead.
 
 NEW FEATURES
 =============
@@ -43,12 +38,12 @@ NEW FEATURES
 
 
 BUGS FROM PREVIOUS RELEASE
-==========================
+===========================
 
 
 
 IMPROVEMENTS FROM PREVIOUS RELEASE
-==================================
+===================================
 
  * [DIGESTER-111] Null arguments to all Digester#parse() methods now an
                   IllegalArgumentException.
@@ -61,5 +56,6 @@ IMPROVEMENTS FROM PREVIOUS RELEASE
 
 DEPRECATIONS
 ============
+
 None
 
