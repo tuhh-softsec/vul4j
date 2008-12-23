@@ -47,7 +47,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     private String pattern;
 
     /** A base class that any plugin must derive from. */
-    private Class baseClass = null;
+    private Class<?> baseClass = null;
 
     /**
      * Info about optional default plugin to be used if no plugin-id is
@@ -73,7 +73,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @param baseClass is the class which any specified plugin <i>must</i> be
      * descended from.
      */
-    public PluginCreateRule(Class baseClass) {
+    public PluginCreateRule(Class<?> baseClass) {
         this.baseClass = baseClass;
     }
 
@@ -88,7 +88,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * doesn't specify any plugin-class or plugin-id. This class will have
      * custom rules installed for it just like a declared plugin.
      */
-    public PluginCreateRule(Class baseClass, Class dfltPluginClass) {
+    public PluginCreateRule(Class<?> baseClass, Class<?> dfltPluginClass) {
         this.baseClass = baseClass;
         if (dfltPluginClass != null) {
             defaultPlugin = new Declaration(dfltPluginClass);
@@ -108,7 +108,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @param dfltPluginRuleLoader is a RuleLoader instance which knows how
      * to load the custom rules associated with this default plugin.
      */
-    public PluginCreateRule(Class baseClass, Class dfltPluginClass,
+    public PluginCreateRule(Class<?> baseClass, Class<?> dfltPluginClass,
                     RuleLoader dfltPluginRuleLoader) {
 
         this.baseClass = baseClass;
@@ -379,7 +379,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         }
             
         // get the class of the user plugged-in type
-        Class pluginClass = currDeclaration.getPluginClass();
+        Class<?> pluginClass = currDeclaration.getPluginClass();
         
         String path = digester.getMatch();
 
@@ -413,7 +413,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         // and now we have to fire any custom rules which would have
         // been matched by the same path that matched this rule, had
         // they been loaded at that time.
-        List rules = newRules.getDecoratedRules().match(namespace, path);
+        List<Rule> rules = newRules.getDecoratedRules().match(namespace, path);
         fireBeginMethods(rules, namespace, name, attributes); 
     }
 
@@ -440,7 +440,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
 
         String path = digester.getMatch();
         PluginRules newRules = (PluginRules) digester.getRules();
-        List rules = newRules.getDecoratedRules().match(namespace, path);
+        List<Rule> rules = newRules.getDecoratedRules().match(namespace, path);
         fireBodyMethods(rules, namespace, name, text);
     }
 
@@ -462,7 +462,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         // see body method for more info
         String path = digester.getMatch();
         PluginRules newRules = (PluginRules) digester.getRules();
-        List rules = newRules.getDecoratedRules().match(namespace, path);
+        List<Rule> rules = newRules.getDecoratedRules().match(namespace, path);
         fireEndMethods(rules, namespace, name);
         
         // pop the stack of PluginRules instances, which
@@ -496,7 +496,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * class provided a way for this functionality to just be invoked
      * directly.
      */
-    public void fireBeginMethods(List rules,
+    public void fireBeginMethods(List<Rule> rules,
                       String namespace, String name,
                       org.xml.sax.Attributes list)
                       throws java.lang.Exception {
@@ -526,7 +526,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * class provided a way for this functionality to just be invoked
      * directly.
      */
-    private void fireBodyMethods(List rules,
+    private void fireBodyMethods(List<Rule> rules,
                     String namespaceURI, String name,
                     String text) throws Exception {
 
@@ -555,7 +555,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * class provided a way for this functionality to just be invoked
      * directly.
      */
-    public void fireEndMethods(List rules,
+    public void fireEndMethods(List<Rule> rules,
                     String namespaceURI, String name)
                     throws Exception {
 

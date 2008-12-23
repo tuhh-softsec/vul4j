@@ -39,10 +39,10 @@ import org.apache.commons.logging.Log;
 public class PluginManager {
 
     /** Map of classname->Declaration */
-    private HashMap declarationsByClass = new HashMap();
+    private HashMap<String, Declaration> declarationsByClass = new HashMap<String, Declaration>();
 
     /** Map of id->Declaration  */
-    private HashMap declarationsById = new HashMap();
+    private HashMap<String, Declaration> declarationsById = new HashMap<String, Declaration>();
 
     /** the parent manager to which this one may delegate lookups. */
     private PluginManager parent;
@@ -90,7 +90,7 @@ public class PluginManager {
         Log log = LogUtils.getLogger(null);
         boolean debug = log.isDebugEnabled();
         
-        Class pluginClass = decl.getPluginClass();
+        Class<?> pluginClass = decl.getPluginClass();
         String id = decl.getId();
         
         declarationsByClass.put(pluginClass.getName(), decl);
@@ -145,7 +145,7 @@ public class PluginManager {
      * If no source of custom rules can be found, null is returned.
      */
     public RuleLoader findLoader(Digester digester, String id, 
-                        Class pluginClass, Properties props) 
+                        Class<?> pluginClass, Properties props) 
                         throws PluginException {    
 
         // iterate over the list of RuleFinders, trying each one 
@@ -156,10 +156,10 @@ public class PluginManager {
         boolean debug = log.isDebugEnabled();
         log.debug("scanning ruleFinders to locate loader..");
         
-        List ruleFinders = pluginContext.getRuleFinders();
+        List<RuleFinder> ruleFinders = pluginContext.getRuleFinders();
         RuleLoader ruleLoader = null;
         try {
-            for(Iterator i = ruleFinders.iterator(); 
+            for(Iterator<RuleFinder> i = ruleFinders.iterator(); 
                 i.hasNext() && ruleLoader == null; ) {
                     
                 RuleFinder finder = (RuleFinder) i.next();

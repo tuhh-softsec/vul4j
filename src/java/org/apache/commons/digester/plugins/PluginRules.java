@@ -131,7 +131,7 @@ public class PluginRules implements Rules {
      Digester digester, 
      String mountPoint, 
      PluginRules parent, 
-     Class pluginClass) 
+     Class<?> pluginClass) 
      throws PluginException {
         // no need to set digester or decoratedRules.digester,
         // because when Digester.setRules is called, the setDigester
@@ -210,14 +210,14 @@ public class PluginRules implements Rules {
     /**
      * See {@link PluginContext#getRuleFinders}.
      */
-    public List getRuleFinders() {
+    public List<RuleFinder> getRuleFinders() {
         return pluginContext.getRuleFinders();
     }
     
     /**
      * See {@link PluginContext#setRuleFinders}.
      */
-    public void setRuleFinders(List ruleFinders) {
+    public void setRuleFinders(List<RuleFinder> ruleFinders) {
         pluginContext.setRuleFinders(ruleFinders);
     }
     
@@ -256,7 +256,7 @@ public class PluginRules implements Rules {
      * 
      * @return list of all Rule objects known to this Rules instance.
      */
-    public List rules() {
+    public List<Rule> rules() {
         return decoratedRules.rules();
     }
 
@@ -347,7 +347,7 @@ public class PluginRules implements Rules {
      *
      * @deprecated Call match(namespaceURI,pattern) instead.
      */
-    public List match(String path) {
+    public List<Rule> match(String path) {
         return (match(null, path));
     }
 
@@ -362,7 +362,7 @@ public class PluginRules implements Rules {
      *  or <code>null</code> to match regardless of namespace URI
      * @param path the path to the xml nodes to be matched.
      */
-    public List match(String namespaceURI, String path) {
+    public List<Rule> match(String namespaceURI, String path) {
         Log log = LogUtils.getLogger(digester);
         boolean debug = log.isDebugEnabled();
         
@@ -372,7 +372,7 @@ public class PluginRules implements Rules {
                 "] on rules object " + this.toString());
         }
 
-        List matches;
+        List<Rule> matches;
         if ((mountPoint != null) && 
             (path.length() <= mountPoint.length())) {
             if (debug) {
