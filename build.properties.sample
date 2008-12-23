@@ -16,7 +16,7 @@
 ##########################################################################
 # Sample Ant build.properties file
 #
-# This setup assumes dependent jars are in a local maven 1 repository.
+# This setup assumes dependent jars are in a local maven 2 repository.
 # However the jars are located, the properties ending in ".jar" need
 # expand to full paths to the jars.
 #
@@ -25,28 +25,19 @@
 ##########################################################################
 
 # Repository base path
-repository=${user.home}/.maven/repository
+repository=${user.home}/.m2/repository
 
 # JUnit
-junit.home=${repository}/junit/jars
-junit.jar=${junit.home}/junit-3.8.1.jar
-
-# XML parser
-# When using java 1.3 or earlier, JAXP is not included in the standard
-# libraries, so external jar files are required. If you are using Java
-# 1.4 or later, you can omit these libraries
-jaxp.parser.home=${repository}/xerces/jars
-jaxp.parser.jar=${jaxp.parser.home}/xerces-2.0.2.jar
-jaxp.jaxp.home=${repository}/xml-apis/jars
-jaxp.jaxp.jar=${jaxp.jaxp.home}/xml-apis-1.0.b2.jar
+junit.home=${repository}/junit/junit
+junit.jar=${junit.home}/3.8.1/junit-3.8.1.jar
 
 # Commons logging
-commons-logging.home=${repository}/commons-logging/jars
-commons-logging.jar=${commons-logging.home}/commons-logging-1.1.jar
+commons-logging.home=${repository}/commons-logging/commons-logging
+commons-logging.jar=${commons-logging.home}/1.1.1/commons-logging-1.1.1.jar
 
 # Commons beanutils
-commons-beanutils.home=${repository}/commons-beanutils/jars
-commons-beanutils.jar=${commons-beanutils.home}/commons-beanutils-1.7.0.jar
+commons-beanutils.home=${repository}/commons-beanutils/commons-beanutils
+commons-beanutils.jar=${commons-beanutils.home}/1.8.0/commons-beanutils-1.8.0.jar
 
 # The digester tests output logging information (including Exceptions) 
 # which can often be confusing to new developers.
