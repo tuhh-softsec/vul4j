@@ -84,7 +84,7 @@ public class FinderSetProperties extends RuleFinder {
      * The returned object (when non-null) will add a SetPropertiesRule to
      * the digester whenever its addRules method is invoked.
      */
-    public RuleLoader findLoader(Digester d, Class pluginClass, Properties p) {
+    public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p) {
         String state = p.getProperty(propsAttr);
         if ((state != null)  && state.equals(falseval)) {
             // user has explicitly disabled automatic setting of properties.

@@ -64,7 +64,7 @@ public class FinderFromResource extends RuleFinder {
      * The returned object (when non-null) will add the selected rules to
      * the digester whenever its addRules method is invoked.
      */
-    public RuleLoader findLoader(Digester d, Class pluginClass, Properties p)
+    public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p)
                         throws PluginException {
 
         String resourceName = p.getProperty(resourceAttr);
@@ -97,7 +97,7 @@ public class FinderFromResource extends RuleFinder {
      * @param resourceName is a string describing the source of the xmlrules,
      *  for use in generating error messages.
      */
-    public static RuleLoader loadRules(Digester d, Class pluginClass, 
+    public static RuleLoader loadRules(Digester d, Class<?> pluginClass, 
                         InputStream is, String resourceName)
                         throws PluginException {
 

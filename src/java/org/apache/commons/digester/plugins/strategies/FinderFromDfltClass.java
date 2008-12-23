@@ -69,12 +69,12 @@ public class FinderFromDfltClass extends RuleFinder {
      * target method is expected to have the following prototype:
      * <code> public static void xxxxx(Digester d, String patternPrefix); </code>
      */
-    public RuleLoader findLoader(Digester digester, Class pluginClass, Properties p)
+    public RuleLoader findLoader(Digester digester, Class<?> pluginClass, Properties p)
                             throws PluginException {
 
         String rulesClassName = pluginClass.getName() + rulesClassSuffix;
 
-        Class rulesClass = null;
+        Class<?> rulesClass = null;
         try {
             rulesClass = digester.getClassLoader().loadClass(rulesClassName);
         } catch(ClassNotFoundException cnfe) {

@@ -90,7 +90,7 @@ public class FinderFromClass extends RuleFinder {
      * that class provided it has the correct prototype) as the source of
      * dynamic rules for the plugged-in class.
      */
-    public RuleLoader findLoader(Digester digester, Class pluginClass, 
+    public RuleLoader findLoader(Digester digester, Class<?> pluginClass, 
                         Properties p) throws PluginException {
 
         String ruleClassName = p.getProperty(ruleClassAttr);
@@ -112,7 +112,7 @@ public class FinderFromClass extends RuleFinder {
             methodName = DFLT_METHOD_NAME;
         }
         
-        Class ruleClass;
+        Class<?> ruleClass;
         try {
             // load the plugin class object
             ruleClass = 

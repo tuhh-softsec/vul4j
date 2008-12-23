@@ -35,17 +35,17 @@ import org.apache.commons.digester.plugins.PluginException;
 
 public class LoaderFromClass extends RuleLoader {
     
-    private Class rulesClass;
+    private Class<?> rulesClass;
     private Method rulesMethod;
     
     /** Constructor. */
-    public LoaderFromClass(Class rulesClass, Method rulesMethod) {
+    public LoaderFromClass(Class<?> rulesClass, Method rulesMethod) {
         this.rulesClass = rulesClass;
         this.rulesMethod = rulesMethod;
     }
     
     /** Constructor. */
-    public LoaderFromClass(Class rulesClass, String methodName)
+    public LoaderFromClass(Class<?> rulesClass, String methodName)
                 throws PluginException {
 
         Method method = locateMethod(rulesClass, methodName);
@@ -90,10 +90,10 @@ public class LoaderFromClass extends RuleLoader {
      *
      * @return null if no such method exists.
      */
-    public static Method locateMethod(Class rulesClass, String methodName) 
+    public static Method locateMethod(Class<?> rulesClass, String methodName) 
                             throws PluginException {
 
-        Class[] paramSpec = { Digester.class, String.class };
+        Class<?>[] paramSpec = { Digester.class, String.class };
         Method rulesMethod = MethodUtils.getAccessibleMethod(
             rulesClass, methodName, paramSpec);
             
