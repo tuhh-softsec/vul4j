@@ -87,6 +87,9 @@ public class DigesterRuleParser extends RuleSetBase {
      * of all the elements in the stack.
      */
     protected class PatternStack extends ArrayStack {
+
+        private static final long serialVersionUID = 1L;
+
         public String toString() {
             StringBuffer str = new StringBuffer();
             for (int i = 0; i < size(); i++) {
@@ -113,7 +116,7 @@ public class DigesterRuleParser extends RuleSetBase {
     /**
      * Used to detect circular includes
      */
-    private Set includedFiles = new HashSet();
+    private Set<String> includedFiles = new HashSet<String>();
     
     /**
      * Constructs a DigesterRuleParser. This object will be inoperable
@@ -144,7 +147,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * to any pattern parsed by this rule set.
      */
     private DigesterRuleParser(Digester targetDigester,
-                                PatternStack stack, Set includedFiles) {
+                                PatternStack stack, Set<String> includedFiles) {
         this.targetDigester = targetDigester;
         patternStack = stack;
         this.includedFiles = includedFiles;
@@ -403,7 +406,7 @@ public class DigesterRuleParser extends RuleSetBase {
                         throws ClassNotFoundException, ClassCastException,
                         InstantiationException, IllegalAccessException {
             
-            Class cls = Class.forName(className);
+            Class<?> cls = Class.forName(className);
             DigesterRulesSource rulesSource = (DigesterRulesSource) cls.newInstance();
             
             // wrap the digester's Rules object, to prepend pattern
@@ -481,21 +484,21 @@ public class DigesterRuleParser extends RuleSetBase {
         /**
          * @deprecated Call match(namespaceURI,pattern) instead.
          */
-        public List match(String pattern) {
+        public List<Rule> match(String pattern) {
             return delegate.match(pattern);
         }
         
         /**
          * This method passes through to the underlying Rules object.
          */
-        public List match(String namespaceURI, String pattern) {
+        public List<Rule> match(String namespaceURI, String pattern) {
             return delegate.match(namespaceURI, pattern);
         }
         
         /**
          * This method passes through to the underlying Rules object.
          */
-        public List rules() {
+        public List<Rule> rules() {
             return delegate.rules();
         }
         
@@ -582,7 +585,7 @@ public class DigesterRuleParser extends RuleSetBase {
         private String[] getParamTypes(String paramTypes) {
             String[] paramTypesArray;
             if( paramTypes != null ) {
-                ArrayList paramTypesList = new ArrayList();
+                ArrayList<String> paramTypesList = new ArrayList<String>();
                 StringTokenizer tokens = new StringTokenizer(
                         paramTypes, " \t\n\r,");
                 while (tokens.hasMoreTokens()) {
@@ -652,7 +655,7 @@ public class DigesterRuleParser extends RuleSetBase {
 
             // create object instance
             Object param = null;
-            Class clazz = Class.forName(type);
+            Class<?> clazz = Class.forName(type);
             if (value == null) {
                 param = clazz.newInstance();
             } else {
