@@ -1599,7 +1599,7 @@ public class Digester extends DefaultHandler {
             if (systemId == null) {
                 // cannot resolve
                 if (log.isDebugEnabled()) {
-                    log.debug(" Cannot resolve entity: '" + entityURL + "'");
+                    log.debug(" Cannot resolve null entity, returning null InputSource");
                 }
                 return (null);
                 

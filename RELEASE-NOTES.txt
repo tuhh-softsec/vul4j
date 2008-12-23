@@ -53,6 +53,9 @@ IMPROVEMENTS FROM PREVIOUS RELEASE
  * [DIGESTER-111] Null arguments to all Digester#parse() methods now an
                   IllegalArgumentException.
 
+ * [DIGESTER-122] Potential NullPointerException if debug is enabled in
+                  Digester#resolveEntity()
+
 DEPRECATIONS
 ============
 None
