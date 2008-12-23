@@ -185,7 +185,7 @@ public class ExtendedBaseRules extends RulesBase {
      * before it's returned.
      * This map stores the entry number keyed by the rule.
      */
-    private Map order = new HashMap();
+    private Map<Rule, Integer> order = new HashMap<Rule, Integer>();
 
 
     // --------------------------------------------------------- Public Methods
@@ -200,7 +200,7 @@ public class ExtendedBaseRules extends RulesBase {
     public void add(String pattern, Rule rule) {
         super.add(pattern, rule);
         counter++;
-        order.put(rule, new Integer(counter));
+        order.put(rule, counter);
     }
 
 
@@ -213,7 +213,7 @@ public class ExtendedBaseRules extends RulesBase {
      *
      * @param pattern Nesting pattern to be matched
      */
-    public List match(String namespace, String pattern) {
+    public List<Rule> match(String namespace, String pattern) {
         // calculate the pattern of the parent
         // (if the element has one)
         String parentPattern = "";
@@ -232,18 +232,18 @@ public class ExtendedBaseRules extends RulesBase {
 
 
         // we keep the list of universal matches separate
-        List universalList = new ArrayList(counter);
+        List<Rule> universalList = new ArrayList<Rule>(counter);
 
         // Universal all wildards ('!*')
         // These are always matched so always add them
-        List tempList = (List) this.cache.get("!*");
+        List<Rule> tempList = this.cache.get("!*");
         if (tempList != null) {
             universalList.addAll(tempList);
         }
 
         // Universal exact parent match
         // need to get this now since only wildcards are considered later
-        tempList = (List) this.cache.get("!" + parentPattern + "/?");
+        tempList = this.cache.get("!" + parentPattern + "/?");
         if (tempList != null) {
             universalList.addAll(tempList);
         }
@@ -256,7 +256,7 @@ public class ExtendedBaseRules extends RulesBase {
 
 
         // see if we have an exact basic pattern match
-        List rulesList = (List) this.cache.get(pattern);
+        List<Rule> rulesList = this.cache.get(pattern);
         if (rulesList != null) {
             // we have a match!
             // so ignore all basic matches from now on
@@ -267,7 +267,7 @@ public class ExtendedBaseRules extends RulesBase {
             // see if we have an exact child match
             if (hasParent) {
                 // matching children takes preference
-                rulesList = (List) this.cache.get(parentPattern + "/?");
+                rulesList = this.cache.get(parentPattern + "/?");
                 if (rulesList != null) {
                     // we have a match!
                     // so ignore all basic matches from now on
@@ -295,9 +295,7 @@ public class ExtendedBaseRules extends RulesBase {
         String longKey = "";
         int longKeyLength = 0;
         
-        Iterator keys = this.cache.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
+        for (String key : this.cache.keySet()) {
 
             // find out if it's a univeral pattern
             // set a flag
@@ -354,7 +352,7 @@ public class ExtendedBaseRules extends RulesBase {
                     if (isUniversal) {
                         // universal rules go straight in
                         // (no longest matching rule)
-                        tempList = (List) this.cache.get("!" + key);
+                        tempList = this.cache.get("!" + key);
                         if (tempList != null) {
                             universalList.addAll(tempList);
                         }
@@ -378,7 +376,7 @@ public class ExtendedBaseRules extends RulesBase {
                             }
 
                             if (keyLength > longKeyLength) {
-                                rulesList = (List) this.cache.get(key);
+                                rulesList = this.cache.get(key);
                                 longKey = key;
                                 longKeyLength = keyLength;
                             }
@@ -392,7 +390,7 @@ public class ExtendedBaseRules extends RulesBase {
         // '*' works in practice as a default matching
         // (this is because anything is a deeper match!)
         if (rulesList == null) {
-            rulesList = (List) this.cache.get("*");
+            rulesList = this.cache.get("*");
         }
 
         // if we've matched a basic pattern, then add to the universal list
@@ -404,9 +402,9 @@ public class ExtendedBaseRules extends RulesBase {
         // don't filter if namespace is null
         if (namespace != null) {
             // remove invalid namespaces
-            Iterator it = universalList.iterator();
+            Iterator<Rule> it = universalList.iterator();
             while (it.hasNext()) {
-                Rule rule = (Rule) it.next();
+                Rule rule = it.next();
                 String ns_uri = rule.getNamespaceURI();
                 if (ns_uri != null && !ns_uri.equals(namespace)) {
                     it.remove();
@@ -419,12 +417,12 @@ public class ExtendedBaseRules extends RulesBase {
         // of addition.  We use a custom comparator for this
         Collections.sort(
                 universalList,
-                new Comparator() {
+                new Comparator<Rule>() {
 
-                    public int compare(Object o1, Object o2) throws ClassCastException {
+                    public int compare(Rule r1, Rule r2) throws ClassCastException {
                         // Get the entry order from the map
-                        Integer i1 = (Integer) order.get(o1);
-                        Integer i2 = (Integer) order.get(o2);
+                        Integer i1 = order.get(r1);
+                        Integer i2 = order.get(r2);
 
                         // and use that to perform the comparison
                         if (i1 == null) {
@@ -467,13 +465,13 @@ public class ExtendedBaseRules extends RulesBase {
     /**
      * Finds an exact ancester match for given pattern
      */
-    private List findExactAncesterMatch(String parentPattern) {
-        List matchingRules = null;
+    private List<Rule> findExactAncesterMatch(String parentPattern) {
+        List<Rule> matchingRules = null;
         int lastIndex = parentPattern.length();
         while (lastIndex-- > 0) {
             lastIndex = parentPattern.lastIndexOf('/', lastIndex);
             if (lastIndex > 0) {
-                matchingRules = (List) this.cache.get(parentPattern.substring(0, lastIndex) + "/*");
+                matchingRules = this.cache.get(parentPattern.substring(0, lastIndex) + "/*");
                 if (matchingRules != null) {
                     return matchingRules;
                 }
