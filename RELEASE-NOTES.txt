@@ -22,16 +22,15 @@ IMPORTANT NOTES
 BREAKING CHANGES:
 
  * The minimum JDK requirement is now JDK 1.5. The provided binaries will not
-   work on lower JDKs. The source requires JDK 1.5 to compile.
+   work on lower JDKs. The source has been updated to leverage Generics and
+   other JDK 1.5 features where possible, and requires JDK 1.5 to compile.
 
-OTHER CHANGES:
+OTHER IMPORTANT CHANGES:
 
  * The legacy schema support has been deprecated in favor of
    javax.xml.validation.Schema support.
 
- * The source has been updated to leverage Generics, where possible.
-
-Dependencies
+DEPENDENCIES
 =============
 
 Digester 2.0 users should upgrade to the recommended dependency set below
@@ -68,7 +67,7 @@ BUGS FROM PREVIOUS RELEASE
  * [DIGESTER-126] Potential NullPointerException if debug is enabled in
                   FactoryCreateRule#begin()
 
-IMPROVEMENTS FROM PREVIOUS RELEASE
+IMPROVEMENTS OVER PREVIOUS RELEASE
 ===================================
 
  * [DIGESTER-111] Null arguments to all Digester#parse() methods now an
@@ -104,3 +103,9 @@ DEPRECATIONS
 
     Switch to javax.xml.validation.Schema validation via Digester class
     instead.
+
+OTHER NOTES
+============
+
+ * This is the first Digester release using Maven 2.
+
