@@ -106,7 +106,7 @@ public class SetNestedPropertiesRule extends Rule {
     private boolean trimData = true;
     private boolean allowUnknownChildElements = false;
     
-    private HashMap elementNames = new HashMap();
+    private HashMap<String, String> elementNames = new HashMap<String, String>();
 
     // ----------------------------------------------------------- Constructors
 
@@ -297,7 +297,7 @@ public class SetNestedPropertiesRule extends Rule {
         private String matchPrefix = null;
         private Rules decoratedRules = null;
         
-        private ArrayList rules = new ArrayList(1);
+        private ArrayList<Rule> rules = new ArrayList<Rule>(1);
         private AnyChildRule rule;
         
         public AnyChildRules(AnyChildRule rule) {
@@ -312,12 +312,12 @@ public class SetNestedPropertiesRule extends Rule {
         public void add(String pattern, Rule rule) {}
         public void clear() {}
         
-        public List match(String matchPath) { 
+        public List<Rule> match(String matchPath) { 
             return match(null,matchPath); 
         }
         
-        public List match(String namespaceURI, String matchPath) {
-            List match = decoratedRules.match(namespaceURI, matchPath);
+        public List<Rule> match(String namespaceURI, String matchPath) {
+            List<Rule> match = decoratedRules.match(namespaceURI, matchPath);
             
             if ((matchPath.startsWith(matchPrefix)) &&
                 (matchPath.indexOf('/', matchPrefix.length()) == -1)) {
@@ -341,7 +341,7 @@ public class SetNestedPropertiesRule extends Rule {
                     //
                     // It might not be safe to modify the returned list,
                     // so clone it first.
-                    LinkedList newMatch = new LinkedList(match);
+                    LinkedList<Rule> newMatch = new LinkedList<Rule>(match);
                     newMatch.addLast(rule);
                     return newMatch;
                 }
@@ -351,7 +351,7 @@ public class SetNestedPropertiesRule extends Rule {
             }
         }
         
-        public List rules() {
+        public List<Rule> rules() {
             // This is not actually expected to be called during normal
             // processing.
             //
