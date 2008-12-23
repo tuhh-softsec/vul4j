@@ -241,6 +241,12 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * Do we want a "XInclude aware" parser.
+     */
+    protected boolean xincludeAware = false;
+
+
+    /**
      * The parameters stack being utilized by CallMethodRule and
      * CallParamRule rules.
      */
@@ -510,6 +516,7 @@ public class Digester extends DefaultHandler {
         if (factory == null) {
             factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(namespaceAware);
+            factory.setXIncludeAware(xincludeAware);
             factory.setValidating(validating);
         }
         return (factory);
@@ -640,6 +647,36 @@ public class Digester extends DefaultHandler {
     public void setNamespaceAware(boolean namespaceAware) {
 
         this.namespaceAware = namespaceAware;
+
+    }
+
+
+    /**
+     * Return the XInclude-aware flag for parsers we create. XInclude
+     * functionality additionally requires namespace-awareness.
+     *
+     * @return The XInclude-aware flag
+     *
+     * @see #getNamespaceAware()
+     */
+    public boolean getXIncludeAware() {
+
+        return (this.xincludeAware);
+
+    }
+
+
+    /**
+     * Set the XInclude-aware flag for parsers we create. This additionally
+     * requires namespace-awareness.
+     *
+     * @param xincludeAware The new XInclude-aware flag
+     *
+     * @see #setNamespaceAware(boolean)
+     */
+    public void setXIncludeAware(boolean xincludeAware) {
+
+        this.xincludeAware = xincludeAware;
 
     }
 

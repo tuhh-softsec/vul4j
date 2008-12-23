@@ -36,7 +36,11 @@ It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
 NEW FEATURES
 =============
 
-
+ * XInclude awareness
+       The underlying SAXParser factory can now be easily configured to be
+       XInclude aware. This allows for general purpose inclusion of XML or
+       text documents, for example, and facilitates document modularity. For
+       more details on XInclude, see: http://www.w3.org/TR/xinclude/
 
 BUGS FROM PREVIOUS RELEASE
 ===========================
