@@ -29,6 +29,8 @@ OTHER CHANGES:
  * The legacy schema support has been deprecated in favor of
    javax.xml.validation.Schema support.
 
+ * The source has been updated to leverage Generics, where possible.
+
 Dependencies
 =============
 
