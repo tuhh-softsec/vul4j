@@ -164,7 +164,7 @@ public class SetPropertiesRule extends Rule {
     public void begin(Attributes attributes) throws Exception {
         
         // Build a set of attribute names and corresponding values
-        HashMap values = new HashMap();
+        HashMap<String, String> values = new HashMap<String, String>();
         
         // set up variables for custom names mappings
         int attNamesLength = 0;
