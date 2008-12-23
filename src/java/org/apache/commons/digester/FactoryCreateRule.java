@@ -369,7 +369,8 @@ public class FactoryCreateRule extends Rule {
                 
                 if (digester.log.isDebugEnabled()) {
                     digester.log.debug("[FactoryCreateRule]{" + digester.match +
-                            "} New " + instance.getClass().getName());
+                            "} New " + (instance == null ? "null object" :
+                            instance.getClass().getName()));
                 }
                 digester.push(instance);
                 exceptionIgnoredStack.push(Boolean.FALSE);
@@ -391,7 +392,8 @@ public class FactoryCreateRule extends Rule {
             
             if (digester.log.isDebugEnabled()) {
                 digester.log.debug("[FactoryCreateRule]{" + digester.match +
-                        "} New " + instance.getClass().getName());
+                        "} New " + (instance == null ? "null object" :
+                        instance.getClass().getName()));
             }
             digester.push(instance);
         }

@@ -56,6 +56,9 @@ IMPROVEMENTS FROM PREVIOUS RELEASE
  * [DIGESTER-122] Potential NullPointerException if debug is enabled in
                   Digester#resolveEntity()
 
+ * [DIGESTER-126] Potential NullPointerException if debug is enabled in
+                  FactoryCreateRule#begin()
+
 DEPRECATIONS
 ============
 None
