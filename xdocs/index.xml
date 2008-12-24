@@ -110,19 +110,17 @@ It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
 
     <subsection name='Digester 1.8 Release (December 2006)'>
         <p>
-Digester 1.8 is a minor bugfix and maintenance release. A few small features have been added.
-New projects are encouraged to use this release of digester, but there is no urgency
-for existing projects to upgrade; Digester 1.7 has proven to be a stable release. See
-the release notes for more details.
+Digester 1.8 was a minor bugfix and maintenance release. A few small features were added.
+See the release notes for more details.
         </p>
         <p>
 The dependencies for Digester 1.8 are identical to the dependencies for Digester 1.7.
         </p>
         <p>
-Digester has a dependency on
+Digester 1.x versions had a dependency on
 <a href='http://commons.apache.org/collections'>Commons Collections</a>.
 The dependency can alternatively be satisfied by including the latest BeanUtils
-releases (1.7 or above) (which includes the stable collections ArrayStack class
+releases (1.7.0 or above) (which include the stable collections ArrayStack class
 necessary).
         </p>
         <p>
