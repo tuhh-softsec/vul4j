@@ -21,22 +21,21 @@
 * include dtds as resources
 * build src jars
 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-<project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
     <version>11</version>
   </parent>
+
   <modelVersion>4.0.0</modelVersion>
+  <name>Commons Digester</name>
   <groupId>commons-digester</groupId>
   <artifactId>commons-digester</artifactId>
-  <name>Commons Digester</name>
   <version>2.0-SNAPSHOT</version>
 
+  <inceptionYear>2001</inceptionYear>
   <description>
     The Digester package lets you configure an XML->Java object mapping module
     which triggers certain actions called rules whenever a particular 
@@ -50,7 +49,11 @@
     <url>http://issues.apache.org/jira/browse/DIGESTER</url>
   </issueManagement>
 
-  <inceptionYear>2001</inceptionYear>
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/digester/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/digester/trunk</url>
+  </scm>
 
   <developers>
     <developer>
@@ -155,11 +158,14 @@
     </contributor>
   </contributors>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/digester/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/commons/proper/digester/trunk</url>
-  </scm>
+  <distributionManagement>
+    <!-- Cannot define in parent ATM, see COMMONSSITE-26 -->
+    <site>
+      <id>apache.website</id>
+      <name>Apache Commons Site</name>
+      <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/digester</url>
+    </site>
+  </distributionManagement>
 
   <properties>
     <maven.compile.source>1.5</maven.compile.source>
