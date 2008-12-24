@@ -891,7 +891,8 @@ public class Digester extends DefaultHandler {
      * Return the XML Schema URI used for validating an XML instance.
      *
      * @deprecated Use {@link Schema} for validation instead. 
-     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
+     * @see #getXMLSchema()
+     * @see #setXMLSchema(Schema)
      */
     public String getSchema() {
 
@@ -929,7 +930,8 @@ public class Digester extends DefaultHandler {
      *
      * @param schemaLocation a URI to the schema.
      * @deprecated Use {@link Schema} for validation instead. 
-     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
+     * @see #getXMLSchema()
+     * @see #setXMLSchema(Schema)
      */
     public void setSchema(String schemaLocation){
 
@@ -942,7 +944,8 @@ public class Digester extends DefaultHandler {
      * Return the XML Schema language used when parsing.
      *
      * @deprecated Use {@link Schema} for validation instead. 
-     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
+     * @see #getXMLSchema()
+     * @see #setXMLSchema(Schema)
      */
     public String getSchemaLanguage() {
 
@@ -956,7 +959,8 @@ public class Digester extends DefaultHandler {
      *
      * @param schemaLanguage a URI to the schema language.
      * @deprecated Use {@link Schema} for validation instead. 
-     * @see {@link #getXMLSchema()} and {@link #setXMLSchema(Schema)}
+     * @see #getXMLSchema()
+     * @see #setXMLSchema(Schema)
      */
     public void setSchemaLanguage(String schemaLanguage){
 
