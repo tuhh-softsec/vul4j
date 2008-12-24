@@ -79,7 +79,36 @@ download the files.
 </section>
 
 <section name="Releases">
-    <subsection name='Digester 1.8 Release (03 December 2006)'>
+    <subsection name='Digester 2.0 Release (December 2008)'>
+        <p>
+Digester 2.0 is a major release. New projects are encouraged to use this release
+of digester. There are breaking changes from Digester 1.8, see release notes
+in detail before choosing to upgrade. There is no urgency for existing
+projects to upgrade; Digester 1.8 has proven to be a stable release.
+        </p>
+        <p>
+Digester 2.0 <b>requires a minimum of JDK 1.5</b> and no longer requires any
+classes from Commons Collections (as Digester 1.8 did).
+        </p>
+        <p>
+The recommended dependency set for Digester 2.0 is:
+        </p>
+<table>
+<tr>
+<th colspan='3'>Recommended Dependency Set</th>
+</tr>
+<tr>
+<td>Digester</td>
+<td>+Logging 1.1.1</td>
+<td>+BeanUtils 1.8.0</td>
+</tr>
+</table>
+        <p>
+It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
+        </p>
+    </subsection>
+
+    <subsection name='Digester 1.8 Release (December 2006)'>
         <p>
 Digester 1.8 is a minor bugfix and maintenance release. A few small features have been added.
 New projects are encouraged to use this release of digester, but there is no urgency
