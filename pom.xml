@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
    Licensed to the Apache Software Foundation (ASF) under one or more
    contributor license agreements.  See the NOTICE file distributed with
@@ -16,12 +15,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 <!-- TODO:
 * include dtds as resources
 * build src jars
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.apache.commons</groupId>
@@ -37,7 +36,7 @@
 
   <inceptionYear>2001</inceptionYear>
   <description>
-    The Digester package lets you configure an XML->Java object mapping module
+    The Digester package lets you configure an XML to Java object mapping module
     which triggers certain actions called rules whenever a particular 
     pattern of nested XML elements is recognized.
   </description>
@@ -110,43 +109,33 @@
     </contributor>
     <contributor>
       <name>Christopher Lenz</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Ted Husted</name>
-      <email/>
     </contributor>
     <contributor>
       <name>David H. Martin</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Henri Chen</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Janek Bogucki</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Mark Huisman</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Paul Jack</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Anton Maslovsky</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Matt Cleveland</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Gabriele Carcassi</name>
-      <email/>
     </contributor>
     <contributor>
       <name>Wendy Smoak</name>
@@ -175,7 +164,7 @@
     <commons.rc.version>RC1</commons.rc.version>
     <commons.jira.id>DIGESTER</commons.jira.id>
     <commons.jira.pid>12310471</commons.jira.pid>
-    <commons.binary.suffix></commons.binary.suffix>
+    <commons.binary.suffix />
   </properties> 
 
   <build>
