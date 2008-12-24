@@ -80,14 +80,14 @@ public class VariableExpansionTestCase extends TestCase {
     }
 
     // method used in tests4
-    private LinkedList simpleTestBeans = new LinkedList();
+    private LinkedList<SimpleTestBean> simpleTestBeans = new LinkedList<SimpleTestBean>();
     public void addSimpleTestBean(SimpleTestBean bean) {
         simpleTestBeans.add(bean);
     }
     
     // implementation of source shared by the variable expander and
     // is updatable during digesting via an Ant-like property element
-    private HashMap mutableSource=new HashMap();
+    private HashMap<String, Object> mutableSource=new HashMap<String, Object>();
 
     /**
      * Used in test case "testExpansionWithMutableSource", where the
@@ -111,7 +111,7 @@ public class VariableExpansionTestCase extends TestCase {
         digester.setSubstitutor(new VariableSubstitutor(expander));
 
         int useRootObj = -1;
-        Class[] callerArgTypes = new Class[] {String.class, String.class};
+        Class<?>[] callerArgTypes = new Class[] {String.class, String.class};
         CallMethodRule caller = new CallMethodRule(useRootObj, "addProperty",
             callerArgTypes.length, callerArgTypes);
         digester.addRule("root/property", caller);
@@ -191,11 +191,11 @@ public class VariableExpansionTestCase extends TestCase {
         Digester digester = new Digester();
         
         // Configure the digester as required
-        HashMap source1 = new HashMap();
+        HashMap<String, Object> source1 = new HashMap<String, Object>();
         source1.put("attr1", "source1.attr1");
         source1.put("attr2", "source1.attr2"); // should not be used
         
-        HashMap source2 = new HashMap();
+        HashMap<String, Object> source2 = new HashMap<String, Object>();
         source2.put("attr1", "source2.attr1"); // should not be used
         source2.put("attr2", "source2.attr2");
         
@@ -244,12 +244,12 @@ public class VariableExpansionTestCase extends TestCase {
         Digester digester = new Digester();
         
         // Configure the digester as required
-        HashMap nouns = new HashMap();
+        HashMap<String, Object> nouns = new HashMap<String, Object>();
         nouns.put("1", "brillig");
         nouns.put("2", "slithy toves");
         nouns.put("3", "wabe");
         
-        HashMap verbs = new HashMap();
+        HashMap<String, Object> verbs = new HashMap<String, Object>();
         verbs.put("1", "gyre");
         verbs.put("2", "gimble");
         
@@ -284,7 +284,7 @@ public class VariableExpansionTestCase extends TestCase {
         
         // Configure the digester as required
         MultiVariableExpander expander = new MultiVariableExpander();
-        expander.addSource("$", new HashMap());
+        expander.addSource("$", new HashMap<String, Object>());
         digester.setSubstitutor(new VariableSubstitutor(expander));
         
         digester.addObjectCreate("root", SimpleTestBean.class);
