@@ -181,6 +181,7 @@
     <commons.rc.version>RC1</commons.rc.version>
     <commons.jira.id>DIGESTER</commons.jira.id>
     <commons.jira.pid>12310471</commons.jira.pid>
+    <commons.binary.suffix></commons.binary.suffix>
   </properties> 
 
   <build>
