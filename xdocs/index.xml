@@ -54,12 +54,12 @@ include:</p>
 <section name="Documentation">
 
 <p>User documentation is available as package descriptions within the 
-<a href="http://commons.apache.org/digester/commons-digester-1.8/docs/api/">JavaDoc
+<a href="http://commons.apache.org/digester/commons-digester-2.0/docs/api/">JavaDoc
 API documents</a>.  In particular, you should read the package description for 
 the <code>org.apache.commons.digester</code> package for detailed information 
 on using the package.</p>
 
-<p>The <a href="http://commons.apache.org/digester/commons-digester-1.8/RELEASE-NOTES.txt">
+<p>The <a href="http://commons.apache.org/digester/commons-digester-2.0/RELEASE-NOTES.txt">
 Release Notes</a> document the new features and bug fixes that have been
 included in this release.</p>
 
