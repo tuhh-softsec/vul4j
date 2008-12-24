@@ -136,13 +136,13 @@ It is also possible to use Logging 1.0.x instead.
     <subsection name='Downloading'>
  <ul>
   <li>The most recent release is available from apache mirrors via
-  <a href="http://commons.apache.org/downloads/download_digester.cgi">
+  <a href="http://commons.apache.org/digester/download_digester.cgi">
   the regular download page</a>.</li>
   <li>Reasonably recent releases are also available from apache mirrors, via the
   "browse downloads" link at
-  <a href="http://commons.apache.org/downloads/download_digester.cgi">
+  <a href="http://commons.apache.org/digester/download_digester.cgi">
   the regular download page</a>.</li>
-  <li>Older releases can be found 
+  <li>Much older releases can be found 
   <a href="http://archive.apache.org/dist/commons/digester/old">
   on the archive site</a>.</li>
  </ul>
