@@ -163,11 +163,11 @@ public class NodeCreateRule extends Rule {
          * if the content reported by the parser is not purely whitespace.
          */
         private void addTextIfPresent() throws SAXException {
-        	if (topText.length() > 0) {
-        		String str = topText.toString();
-        		topText.setLength(0);
+            if (topText.length() > 0) {
+                String str = topText.toString();
+                topText.setLength(0);
 
-        		if (str.trim().length() > 0) {
+                if (str.trim().length() > 0) {
                     // The contained text is not *pure* whitespace, so create
                     // a text node to hold it. Note that the "untrimmed" text
                     // is stored in the node.
@@ -209,7 +209,7 @@ public class NodeCreateRule extends Rule {
         public void characters(char[] ch, int start, int length)
             throws SAXException {
 
-        	topText.append(ch, start, length);
+            topText.append(ch, start, length);
         }
 
 
