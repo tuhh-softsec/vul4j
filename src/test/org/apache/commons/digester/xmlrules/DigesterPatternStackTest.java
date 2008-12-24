@@ -47,70 +47,69 @@ public class DigesterPatternStackTest extends TestCase {
         return suite;
     }
 
-    private DigesterRuleParser.PatternStack<String> stack;
+    private DigesterRuleParser parser;
 
     public void setUp() {
-        DigesterRuleParser parser = new DigesterRuleParser();
-        stack = parser.patternStack;
+        parser = new DigesterRuleParser();
     }
 
     public void test1() throws Exception {
-        assertEquals("", stack.toString());
+        assertEquals("", parser.patternStack.toString());
     }
 
     public void test2() throws Exception {
-        stack.push("A");
-        assertEquals("A", stack.toString());
-        stack.pop();
-        assertEquals("", stack.toString());
+        parser.patternStack.push("A");
+        assertEquals("A", parser.patternStack.toString());
+        parser.patternStack.pop();
+        assertEquals("", parser.patternStack.toString());
     }
 
     public void test3() throws Exception {
-        stack.push("A");
-        stack.push("B");
-        assertEquals("A/B", stack.toString());
+        parser.patternStack.push("A");
+        parser.patternStack.push("B");
+        assertEquals("A/B", parser.patternStack.toString());
 
-        stack.pop();
-        assertEquals("A", stack.toString());
+        parser.patternStack.pop();
+        assertEquals("A", parser.patternStack.toString());
     }
 
     public void test4() throws Exception {
-        stack.push("");
-        assertEquals("", stack.toString());
+        parser.patternStack.push("");
+        assertEquals("", parser.patternStack.toString());
 
-        stack.push("");
-        assertEquals("", stack.toString());
+        parser.patternStack.push("");
+        assertEquals("", parser.patternStack.toString());
     }
 
     public void test5() throws Exception {
-        stack.push("A");
-        assertEquals("A", stack.toString());
+        parser.patternStack.push("A");
+        assertEquals("A", parser.patternStack.toString());
 
-        stack.push("");
-        stack.push("");
-        assertEquals("A", stack.toString());
+        parser.patternStack.push("");
+        parser.patternStack.push("");
+        assertEquals("A", parser.patternStack.toString());
 
     }
 
     public void test6() throws Exception {
-        stack.push("A");
-        stack.push("B");
-        stack.clear();
-        assertEquals("", stack.toString());
+        parser.patternStack.push("A");
+        parser.patternStack.push("B");
+        parser.patternStack.clear();
+        assertEquals("", parser.patternStack.toString());
     }
 
     public void test7() throws Exception {
-        stack.push("///");
-        assertEquals("///", stack.toString());
+        parser.patternStack.push("///");
+        assertEquals("///", parser.patternStack.toString());
 
-        stack.push("/");
-        assertEquals("/////", stack.toString());
+        parser.patternStack.push("/");
+        assertEquals("/////", parser.patternStack.toString());
 
-        stack.pop();
-        assertEquals("///", stack.toString());
+        parser.patternStack.pop();
+        assertEquals("///", parser.patternStack.toString());
 
-        stack.pop();
-        assertEquals("", stack.toString());
+        parser.patternStack.pop();
+        assertEquals("", parser.patternStack.toString());
     }
 
 }
