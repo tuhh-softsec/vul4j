@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 public class Container implements Widget {
-    private LinkedList children = new LinkedList();
+    private LinkedList<Widget> children = new LinkedList<Widget>();
 
     public Container() {}
     
@@ -30,7 +30,7 @@ public class Container implements Widget {
         children.add(child);
     }
 
-    public List getChildren() {
+    public List<Widget> getChildren() {
         return children;
     }
 }

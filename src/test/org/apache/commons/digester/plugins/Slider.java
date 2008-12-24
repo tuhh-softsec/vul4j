@@ -29,7 +29,7 @@ public class Slider implements Widget {
     public static void addRules(Digester digester, String pattern) {
         digester.addSetProperties(pattern);
         
-        Class[] paramtypes = {Integer.class};
+        Class<?>[] paramtypes = {Integer.class};
         digester.addCallMethod(pattern+"/min", "setMin", 0, paramtypes);  
         digester.addCallMethod(pattern+"/max", "setMax", 0, paramtypes);  
     }
@@ -37,7 +37,7 @@ public class Slider implements Widget {
     // define different rules on this class
     public static void addRangeRules(Digester digester, String pattern) {
         // note: deliberately no addSetProperties rule
-        Class[] paramtypes = {Integer.class, Integer.class};
+        Class<?>[] paramtypes = {Integer.class, Integer.class};
         digester.addCallMethod(pattern+"/range", "setRange", 2, paramtypes);  
         digester.addCallParam(pattern+"/range", 0, "min");  
         digester.addCallParam(pattern+"/range", 1, "max");  

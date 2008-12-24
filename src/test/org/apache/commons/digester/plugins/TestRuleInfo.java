@@ -80,7 +80,7 @@ public class TestRuleInfo extends TestCase {
         }
 
         Object child;
-        List children = root.getChildren();
+        List<Widget> children = root.getChildren();
         assertTrue(children != null);
         assertEquals(1, children.size());
         
@@ -122,7 +122,7 @@ public class TestRuleInfo extends TestCase {
         }
 
         Object child;
-        List children = root.getChildren();
+        List<Widget> children = root.getChildren();
         assertTrue(children != null);
         assertEquals(1, children.size());
         
@@ -164,7 +164,7 @@ public class TestRuleInfo extends TestCase {
         }
 
         Object child;
-        List children = root.getChildren();
+        List<Widget> children = root.getChildren();
         assertTrue(children != null);
         assertEquals(1, children.size());
         

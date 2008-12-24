@@ -78,7 +78,7 @@ public class TestLocalRules extends TestCase {
         }
         
         Object child;
-        List children = root.getChildren();
+        List<Widget> children = root.getChildren();
         assertTrue(children != null);
         assertEquals(3, children.size());
         
@@ -141,7 +141,7 @@ public class TestLocalRules extends TestCase {
         }
         
         Object child;
-        List children = root.getChildren();
+        List<Widget> children = root.getChildren();
         assertTrue(children != null);
         assertEquals(3, children.size());
         

@@ -85,7 +85,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
             throw e;
         }
 
-        List widgets = root.getWidgets();
+        List<Widget> widgets = root.getWidgets();
         assertTrue(widgets != null);
         assertEquals(4, widgets.size());
 
@@ -94,7 +94,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(TextLabel.class, widgets.get(2).getClass());
         assertEquals(TextLabel.class, widgets.get(3).getClass());
         
-        List gadgets = root.getGadgets();
+        List<Widget> gadgets = root.getGadgets();
         assertTrue(gadgets != null);
         assertEquals(4, gadgets.size());
 
@@ -142,7 +142,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
             throw e;
         }
 
-        List widgets = root.getWidgets();
+        List<Widget> widgets = root.getWidgets();
         assertTrue(widgets != null);
         assertEquals(4, widgets.size());
 
@@ -151,7 +151,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(Slider.class, widgets.get(2).getClass());
         assertEquals(Slider.class, widgets.get(3).getClass());
         
-        List gadgets = root.getGadgets();
+        List<Widget> gadgets = root.getGadgets();
         assertTrue(gadgets != null);
         assertEquals(4, gadgets.size());
 
@@ -200,7 +200,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
             throw e;
         }
 
-        List widgets = root.getWidgets();
+        List<Widget> widgets = root.getWidgets();
         assertTrue(widgets != null);
         assertEquals(4, widgets.size());
 
@@ -209,7 +209,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
         assertEquals(TextLabel2.class, widgets.get(2).getClass());
         assertEquals(TextLabel2.class, widgets.get(3).getClass());
         
-        List gadgets = root.getGadgets();
+        List<Widget> gadgets = root.getGadgets();
         assertTrue(gadgets != null);
         assertEquals(4, gadgets.size());
 
@@ -222,8 +222,8 @@ public class TestConfigurablePluginAttributes extends TestCase {
     // inner classes used for testing
     
     public static class MultiContainer {
-        private LinkedList widgets = new LinkedList();
-        private LinkedList gadgets = new LinkedList();
+        private LinkedList<Widget> widgets = new LinkedList<Widget>();
+        private LinkedList<Widget> gadgets = new LinkedList<Widget>();
     
         public MultiContainer() {}
         
@@ -231,7 +231,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
             widgets.add(child);
         }
     
-        public List getWidgets() {
+        public List<Widget> getWidgets() {
             return widgets;
         }
 
@@ -239,7 +239,7 @@ public class TestConfigurablePluginAttributes extends TestCase {
             gadgets.add(child);
         }
     
-        public List getGadgets() {
+        public List<Widget> getGadgets() {
             return gadgets;
         }
     }

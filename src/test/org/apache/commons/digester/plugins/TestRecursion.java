@@ -20,7 +20,6 @@
 package org.apache.commons.digester.plugins;
 
 import java.util.List;
-import java.util.Iterator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -86,10 +85,9 @@ public class TestRecursion extends TestCase {
     }
 
     private int countWidgets(Container c) {
-        List l = c.getChildren();
+        List<Widget> l = c.getChildren();
         int sum = 0;
-        for(Iterator i = l.iterator(); i.hasNext(); ) {
-            Widget w = (Widget) i.next();
+        for(Widget w : l) {
             ++sum; 
             if (w instanceof Container) {
                 sum += countWidgets((Container) w);

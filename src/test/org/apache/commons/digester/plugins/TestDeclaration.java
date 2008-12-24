@@ -78,7 +78,7 @@ public class TestDeclaration extends TestCase {
         }
         
         Object child;
-        List children = root.getChildren();
+        List<Widget> children = root.getChildren();
         assertTrue(children != null);
         assertEquals(2, children.size());
         
