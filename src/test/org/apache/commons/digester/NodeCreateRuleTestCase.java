@@ -120,7 +120,7 @@ public class NodeCreateRuleTestCase extends TestCase {
 
 
     /**
-     * Tests simple element construction, using the {@link TEST_XML TEST_XML}
+     * Tests simple element construction, using the {@link #TEST_XML}
      * XML input data.
      */
     public void testInvalidNodeTypes()
@@ -204,7 +204,7 @@ public class NodeCreateRuleTestCase extends TestCase {
     }
 
     /**
-     * Tests simple element construction, using the {@link TEST_XML TEST_XML}
+     * Tests simple element construction, using the {@link #TEST_XML}
      * XML input data.
      */
     public void testElement()
@@ -226,7 +226,7 @@ public class NodeCreateRuleTestCase extends TestCase {
 
 
     /**
-     * Tests simple fragment construction, using the {@link TEST_XML TEST_XML}
+     * Tests simple fragment construction, using the {@link #TEST_XML}
      * XML input data.
      */
     public void testDocumentFragment()

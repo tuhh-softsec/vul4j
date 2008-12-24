@@ -31,7 +31,6 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision$ $Date$
  */
 
 public class TestRule extends Rule {
@@ -63,7 +62,6 @@ public class TestRule extends Rule {
     /**
      * Constructor sets namespace URI.
      *
-     * @param digester The digester with which this rule is associated
      * @param identifier Used to tell which TestRule is which
      * @param namespaceURI Set rule namespace
      */

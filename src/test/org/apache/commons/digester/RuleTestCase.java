@@ -644,7 +644,7 @@ public class RuleTestCase extends TestCase {
     /**
      * Validate the assertions for ObjectCreateRule3.
      *
-     * @param object Root object returned by <code>digester.parse()</code>
+     * @param root Root object returned by <code>digester.parse()</code>
      */
     protected void validateObjectCreate3(Object root) {
 
