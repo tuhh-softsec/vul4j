@@ -250,6 +250,8 @@ public class Digester extends DefaultHandler {
     /**
      * The parameters stack being utilized by CallMethodRule and
      * CallParamRule rules.
+     *
+     * @since 2.0
      */
     protected Stack<Object> params = new Stack<Object>();
 
@@ -307,6 +309,8 @@ public class Digester extends DefaultHandler {
     
     /**
      * The XML schema to use for validating an XML instance.
+     *
+     * @since 2.0
      */
     protected Schema schema = null;
 
@@ -670,6 +674,8 @@ public class Digester extends DefaultHandler {
      * @return The XInclude-aware flag
      *
      * @see #getNamespaceAware()
+     *
+     * @since 2.0
      */
     public boolean getXIncludeAware() {
 
@@ -685,6 +691,8 @@ public class Digester extends DefaultHandler {
      * @param xincludeAware The new XInclude-aware flag
      *
      * @see #setNamespaceAware(boolean)
+     *
+     * @since 2.0
      */
     public void setXIncludeAware(boolean xincludeAware) {
 
@@ -961,6 +969,8 @@ public class Digester extends DefaultHandler {
      * Return the XML Schema used when parsing.
      *
      * @return The {@link Schema} instance in use.
+     *
+     * @since 2.0
      */
     public Schema getXMLSchema() {
 
@@ -973,6 +983,8 @@ public class Digester extends DefaultHandler {
      * Set the XML Schema to be used when parsing.
      *
      * @param schema The {@link Schema} instance to use.
+     *
+     * @since 2.0
      */
     public void setXMLSchema(Schema schema){
 
