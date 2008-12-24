@@ -259,7 +259,7 @@
   <target name="jar" depends="compile, test"
    description="Create commons-digester.jar">
     <mkdir      dir="${dist.home}"/>
-    <jar    jarfile="${dist.home}/commons-${component.name}-${component.version}.jar"
+    <jar    jarfile="${dist.home}/commons-${component.name}.jar"
             basedir="${build.home}/classes"
            manifest="${build.home}/conf/MANIFEST.MF"/>
   </target>
