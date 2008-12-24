@@ -141,7 +141,7 @@ public class ObjectParamRuleTestCase extends TestCase {
         digester.addRule("arraylist/E", opr);
 
         //Parse it and obtain the ArrayList
-        ArrayList al = (ArrayList)digester.parse(new StringReader(sb.toString()));
+        ArrayList<?> al = (ArrayList<?>)digester.parse(new StringReader(sb.toString()));
         assertNotNull(al);
         assertEquals(al.size(), 4);
         assertTrue(al.contains(new Integer(-9)));

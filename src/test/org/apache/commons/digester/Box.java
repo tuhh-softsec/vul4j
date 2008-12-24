@@ -17,9 +17,8 @@
 
 package org.apache.commons.digester;
 
-import java.util.List;
 import java.util.LinkedList;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * Simple class for use in unit tests. A box has an ID, and can have
@@ -28,7 +27,7 @@ import java.util.Iterator;
 public class Box {
     private String id;
     
-    private List children = new LinkedList();
+    private List<Box> children = new LinkedList<Box>();
 
     public Box() {}
     
@@ -44,7 +43,7 @@ public class Box {
         this.children.add(child);
     }
     
-    public List getChildren() {
+    public List<Box> getChildren() {
         return children;
     }
     
@@ -56,8 +55,7 @@ public class Box {
         buf.append(" nchildren=");
         buf.append(children.size());
         
-        for(Iterator i = children.iterator(); i.hasNext(); ) {
-            Box child = (Box) i.next();
+        for(Box child : children) {
             buf.append("  ");
             buf.append(child.toString());
         }
@@ -72,8 +70,7 @@ public class Box {
     public String getIds() {
         StringBuffer buf = new StringBuffer();
         buf.append(this.id);
-        for(Iterator i = children.iterator(); i.hasNext(); ) {
-            Box child = (Box) i.next();
+        for(Box child : children) {
             buf.append(" ");
             buf.append(child.getIds());
         }

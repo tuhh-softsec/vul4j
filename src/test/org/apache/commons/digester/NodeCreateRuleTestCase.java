@@ -289,7 +289,7 @@ public class NodeCreateRuleTestCase extends TestCase {
 
         assertNotNull(result);
         assertTrue(result instanceof List);
-        List list = (List)result;
+        List<?> list = (List<?>)result;
         assertEquals(2, list.size());
 
         assertTrue(list.get(0) instanceof DocumentFragment);

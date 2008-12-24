@@ -204,8 +204,8 @@ public class RulesBaseTestCase extends TestCase {
      */
     public void testBasicNamespaceMatching() {
 
-        List list = null;
-        Iterator it = null;
+        List<Rule> list = null;
+        Iterator<Rule> it = null;
 
         // clear any existing rules
         digester.getRules().clear();
@@ -272,11 +272,11 @@ public class RulesBaseTestCase extends TestCase {
         digester.addRule("alpha/beta/gamma", new TestRule("three"));
 
         // test that rules are returned in set order
-        List list = digester.getRules().match(null, "alpha/beta/gamma");
+        List<Rule> list = digester.getRules().match(null, "alpha/beta/gamma");
 
         assertEquals("Testing ordering mismatch (A)", 3, list.size());
 
-        Iterator it = list.iterator();
+        Iterator<Rule> it = list.iterator();
         assertEquals("Testing ordering mismatch (B)", "one", ((TestRule) it.next()).getIdentifier());
         assertEquals("Testing ordering mismatch (C)", "two", ((TestRule) it.next()).getIdentifier());
         assertEquals("Testing ordering mismatch (D)", "three", ((TestRule) it.next()).getIdentifier());
@@ -300,11 +300,11 @@ public class RulesBaseTestCase extends TestCase {
         digester.addRule("beta/gamma/alpha", new TestRule("three"));
 
         // test that rules are returned in set order
-        List list = digester.getRules().match(null, "alpha/beta/gamma");
+        List<Rule> list = digester.getRules().match(null, "alpha/beta/gamma");
 
         assertEquals("Testing number of matches", 1, list.size());
 
-        Iterator it = list.iterator();
+        Iterator<Rule> it = list.iterator();
         assertEquals("Testing ordering (A)", "one", ((TestRule) it.next()).getIdentifier());
 
         // clean up

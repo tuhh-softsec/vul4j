@@ -46,7 +46,7 @@ public class TestRule extends Rule {
     private String bodyText;
 
     /** Used when testing call orders */
-    private List order;
+    private List<Rule> order;
 
     // ----------------------------------------------------------- Constructors
 
@@ -136,7 +136,7 @@ public class TestRule extends Rule {
     /**
      * Get call order list.
      */
-    public List getOrder() {
+    public List<Rule> getOrder() {
         return order;
     }
 
@@ -144,7 +144,7 @@ public class TestRule extends Rule {
     /**
      * Set call order list
      */
-    public void setOrder(List order) {
+    public void setOrder(List<Rule> order) {
         this.order = order;
     }
 

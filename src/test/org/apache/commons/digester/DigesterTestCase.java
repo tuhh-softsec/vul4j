@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
-import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.Test;
@@ -238,7 +237,7 @@ public class DigesterTestCase extends TestCase {
      */
     public void testRegistrations() {
 
-        Map map = digester.getRegistrations();
+        Map<String, URL> map = digester.getRegistrations();
         assertEquals("Initially zero registrations", 0, map.size());
         int n = 0;
         for (int i = 0; i < registrations.length; i += 2) {
@@ -254,9 +253,7 @@ public class DigesterTestCase extends TestCase {
         int count[] = new int[n];
         for (int i = 0; i < n; i++)
             count[i] = 0;
-        Iterator keys = map.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
+        for (String key : map.keySet()) {
             for (int i = 0; i < n; i++) {
                 if (key.equals(registrations[i * 2])) {
                     count[i]++;
@@ -573,7 +570,7 @@ public class DigesterTestCase extends TestCase {
     
     /** Utility class for method testStackAction */
     private static class TrackingStackAction implements StackAction {
-    	public ArrayList events = new ArrayList();
+    	public ArrayList<String> events = new ArrayList<String>();
     	public Object onPush(Digester d, String stackName, Object o) {
     		String msg = "push:" + stackName + ":" + o.toString();
     		events.add(msg);

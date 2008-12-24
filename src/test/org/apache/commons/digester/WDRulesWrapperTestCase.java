@@ -87,7 +87,7 @@ public class WDRulesWrapperTestCase extends TestCase {
         rules.addDefault(new TestRule("Roger"));
         rules.addDefault(new TestRule("Rabbit"));
         
-        List matches = rules.match("", "alpha");
+        List<Rule> matches = rules.match("", "alpha");
         assertEquals("Wrong size (1)", 3 , matches.size());
         assertEquals("Wrong order (1)", "Tom" , ((TestRule) matches.get(0)).getIdentifier());
         assertEquals("Wrong order (2)", "Dick" , ((TestRule) matches.get(1)).getIdentifier());

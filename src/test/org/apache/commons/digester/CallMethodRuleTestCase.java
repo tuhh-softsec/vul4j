@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -244,14 +244,14 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addSetProperties("map/value");
         digester.addCallParam("map/value", 1, true);
 
-        Map map = (Map) digester.parse(new StringReader(xml.toString()));
+        HashMap<AlphaBean, BetaBean> map = (HashMap<AlphaBean, BetaBean>) digester.parse(new StringReader(xml.toString()));
 
         assertNotNull(map);
         assertEquals(1, map.size());
         assertEquals("The key",
-                     ((AlphaBean)map.keySet().iterator().next()).getName());
+                     map.keySet().iterator().next().getName());
         assertEquals("The value",
-                     ((BetaBean)map.values().iterator().next()).getName());
+                     map.values().iterator().next().getName());
     }
 
 
@@ -344,38 +344,38 @@ public class CallMethodRuleTestCase extends TestCase {
         
         digester.addObjectCreate("root/bean", PrimitiveBean.class);
         digester.addSetNext("root/bean", "add");
-        Class [] params = { Boolean.TYPE };
+        Class<?> [] params = { Boolean.TYPE };
         digester.addCallMethod("root/bean", "setBoolean", 1, params);
         digester.addCallParam("root/bean", 0, "good");
         
         digester.addObjectCreate("root/beanie", PrimitiveBean.class);
         digester.addSetNext("root/beanie", "add");
-        Class [] beanieParams = { String.class, Boolean.TYPE };
+        Class<?> [] beanieParams = { String.class, Boolean.TYPE };
         digester.addCallMethod("root/beanie", "testSetBoolean", 2, beanieParams);
         digester.addCallParam("root/beanie", 0, "bad");
         digester.addCallParam("root/beanie", 1, "good");
         
-        ArrayList list = new ArrayList();
+        ArrayList<PrimitiveBean> list = new ArrayList<PrimitiveBean>();
         digester.push(list);
         digester.parse(reader);
         
         assertEquals("Wrong number of beans in list", 6, list.size());
-        PrimitiveBean bean = (PrimitiveBean) list.get(0);
+        PrimitiveBean bean = list.get(0);
         assertTrue("Bean 0 property not called", bean.getSetBooleanCalled());
         assertEquals("Bean 0 property incorrect", true, bean.getBoolean());
-        bean = (PrimitiveBean) list.get(1);
+        bean = list.get(1);
         assertTrue("Bean 1 property not called", bean.getSetBooleanCalled());
         assertEquals("Bean 1 property incorrect", false, bean.getBoolean());
-        bean = (PrimitiveBean) list.get(2);
+        bean = list.get(2);
         // no attibute, no call is what's expected
         assertTrue("Bean 2 property called", !bean.getSetBooleanCalled());
-        bean = (PrimitiveBean) list.get(3);
+        bean = list.get(3);
         assertTrue("Bean 3 property not called", bean.getSetBooleanCalled());
         assertEquals("Bean 3 property incorrect", true, bean.getBoolean());
-        bean = (PrimitiveBean) list.get(4);
+        bean = list.get(4);
         assertTrue("Bean 4 property not called", bean.getSetBooleanCalled());
         assertEquals("Bean 4 property incorrect", false, bean.getBoolean());
-        bean = (PrimitiveBean) list.get(5);
+        bean = list.get(5);
         assertTrue("Bean 5 property not called", bean.getSetBooleanCalled());
         assertEquals("Bean 5 property incorrect", false, bean.getBoolean());       
     }
@@ -387,7 +387,7 @@ public class CallMethodRuleTestCase extends TestCase {
             
         Digester digester = new Digester();
         
-        Class [] params = { String.class };
+        Class<?> [] params = { String.class };
         
         digester.addObjectCreate("root/one", NamedBean.class);
         digester.addSetNext("root/one", "add");
@@ -411,7 +411,7 @@ public class CallMethodRuleTestCase extends TestCase {
         
         digester.addObjectCreate("root/five", NamedBean.class);
         digester.addSetNext("root/five", "add");
-        Class [] newParams = { String.class, String.class };
+        Class<?> [] newParams = { String.class, String.class };
         digester.addCallMethod("root/five", "test", 2, newParams);
         digester.addCallParam("root/five", 0, 10);
         digester.addCallParam("root/five", 1, 3);
@@ -422,20 +422,20 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.push("It's fleece was white as snow.");
         digester.push("Mary had a little lamb,");
         
-        ArrayList list = new ArrayList();
+        ArrayList<NamedBean> list = new ArrayList<NamedBean>();
         digester.push(list);
         digester.parse(reader);
         
         assertEquals("Wrong number of beans in list", 5, list.size());
-        NamedBean bean = (NamedBean) list.get(0);
+        NamedBean bean = list.get(0);
         assertEquals("Parameter not set from stack (1)", "Mary had a little lamb,", bean.getName());
-        bean = (NamedBean) list.get(1);
+        bean = list.get(1);
         assertEquals("Parameter not set from stack (2)", "It's fleece was white as snow.", bean.getName());
-        bean = (NamedBean) list.get(2);
+        bean = list.get(2);
         assertEquals("Parameter not set from stack (3)", "And everywhere that Mary went,", bean.getName());
-        bean = (NamedBean) list.get(3);
+        bean = list.get(3);
         assertEquals("Parameter not set from stack (4)", "That lamb was sure to go.", bean.getName());
-        bean = (NamedBean) list.get(4);
+        bean = list.get(4);
         assertEquals("Out of stack not set to null", null , bean.getName());
     }
     
@@ -461,20 +461,20 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addCallMethod( "root/param", "setCool", 1, new Class[] {boolean.class } );
         digester.addCallParam( "root/param", 0, "coolness" );
         
-        ArrayList list = new ArrayList();
+        ArrayList<ParamBean> list = new ArrayList<ParamBean>();
         digester.push(list);
         digester.parse(reader);
     
         assertEquals("Wrong number of objects created", 3, list.size());
-        ParamBean bean = (ParamBean) list.get(0);
+        ParamBean bean = list.get(0);
         assertEquals("Coolness wrong (1)", true, bean.isCool());
         assertEquals("This wrong (1)", "int", bean.getThis());
         assertEquals("That wrong (1)", "25", bean.getThat());
-        bean = (ParamBean) list.get(1);
+        bean = list.get(1);
         assertEquals("Coolness wrong (2)", false, bean.isCool());
         assertEquals("This wrong (2)", "long", bean.getThis());
         assertEquals("That wrong (2)", "50", bean.getThat());
-        bean = (ParamBean) list.get(2);
+        bean = list.get(2);
         assertEquals("Coolness wrong (3)", false, bean.isCool());
         assertEquals("This wrong (3)", "float", bean.getThis());
         assertEquals("That wrong (3)", "90", bean.getThat());
@@ -516,20 +516,20 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addCallMethod( "root/spam/spam/spam/spam", "setName", 1 );
         digester.addCallParam( "root/spam/spam/spam/spam", 0);   
         
-        ArrayList list = new ArrayList();
+        ArrayList<NamedBean> list = new ArrayList<NamedBean>();
         digester.push(list);
         digester.parse(reader);
         
-        NamedBean bean = (NamedBean) list.get(0);
+        NamedBean bean = list.get(0);
         assertEquals("Wrong name (1)", "Simple", bean.getName());
         // these are added in deepest first order by the addRootRule
-        bean = (NamedBean) list.get(4);
+        bean = list.get(4);
         assertEquals("Wrong name (2)", "Complex", bean.getName());
-        bean = (NamedBean) list.get(3);
+        bean = list.get(3);
         assertEquals("Wrong name (3)", "Deep", bean.getName());
-        bean = (NamedBean) list.get(2);
+        bean = list.get(2);
         assertEquals("Wrong name (4)", "Deeper", bean.getName());
-        bean = (NamedBean) list.get(1);
+        bean = list.get(1);
         assertEquals("Wrong name (5)", "Deepest", bean.getName());
     }
     
@@ -563,7 +563,7 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addCallParam( "root/param", 0, "class" );
         digester.addCallParam( "root/param", 1, "coolness" );
         
-        ArrayList list = new ArrayList();
+        ArrayList<ParamBean> list = new ArrayList<ParamBean>();
         digester.push(list);
         digester.parse(reader);
     
@@ -636,10 +636,10 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addCallParam("employee/address/type", 0);
         digester.addCallParam("employee/address", 1, 0);
         
-        HashMap map = (HashMap) digester.parse(getInputStream("Test5.xml"));
+        HashMap<String, Address> map = (HashMap<String, Address>) digester.parse(getInputStream("Test5.xml"));
         
         assertNotNull(map);
-        java.util.Set keys = map.keySet();
+        Set<String> keys = map.keySet();
         assertEquals(2, keys.size());
         Address home = (Address) map.get("home");
         assertNotNull(home);
@@ -665,10 +665,10 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addCallParam("employee/address/type", 0);
         digester.addCallParam("employee/address", 1, 0);
         
-        HashMap map = (HashMap) digester.parse(getInputStream("Test5.xml"));
+        HashMap<String, Address> map = (HashMap<String, Address>) digester.parse(getInputStream("Test5.xml"));
         
         assertNotNull(map);
-        java.util.Set keys = map.keySet();
+        Set<String> keys = map.keySet();
         assertEquals(2, keys.size());
         Address home = (Address) map.get("home");
         assertNotNull(home);

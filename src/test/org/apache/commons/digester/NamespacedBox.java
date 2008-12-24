@@ -28,17 +28,17 @@ import java.util.Map;
  */
 public class NamespacedBox extends Box {
 
-    private Map namespaces;
+    private Map<String, String> namespaces;
 
     public NamespacedBox() {
         super();
     }
 
-    public Map getNamespaces() {
+    public Map<String, String> getNamespaces() {
         return namespaces;
     }
 
-    public void setNamespaces(Map namespaces) {
+    public void setNamespaces(Map<String, String> namespaces) {
         this.namespaces = namespaces;
     }
 

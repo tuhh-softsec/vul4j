@@ -52,7 +52,7 @@ public class RegexRulesTestCase extends TestCase {
         
         // now test a few patterns
         // check that all are return in the order which they were added
-        List matches = rules.match("", "x/g/e");
+        List<Rule> matches = rules.match("", "x/g/e");
         assertEquals("Wrong number of rules returned (1)", 3, matches.size());
         assertEquals("Rule Out Of Order (1)", "alpha", ((TestRule) matches.get(0)).getIdentifier());
         assertEquals("Rule Out Of Order (2)", "beta", ((TestRule) matches.get(1)).getIdentifier());
@@ -81,7 +81,7 @@ public class RegexRulesTestCase extends TestCase {
         
         // now test a few patterns
         // check that all are return in the order which they were added
-        List matches = rules.match("", "/b/c");
+        List<Rule> matches = rules.match("", "/b/c");
         assertEquals("Wrong number of rules returned (1)", 0, matches.size());
         
         matches = rules.match("", "/b/c/f");
@@ -104,7 +104,7 @@ public class RegexRulesTestCase extends TestCase {
         
         // now test a few patterns
         // check that all are return in the order which they were added
-        List matches = rules.match("", "/match");
+        List<Rule> matches = rules.match("", "/match");
         assertEquals("Wrong number of rules returned (1)", 1, matches.size());
         assertEquals("Wrong Rule (1)", "beta", ((TestRule) matches.get(0)).getIdentifier());
         
@@ -127,7 +127,7 @@ public class RegexRulesTestCase extends TestCase {
         rules.add("/gamma", new TestRule("gamma"));
         
         // check that rules returns all rules in the order which they were added
-        List matches = rules.rules();
+        List<Rule> matches = rules.rules();
         assertEquals("Wrong number of rules returned (1)", 3, matches.size());
         assertEquals("Rule Out Of Order (1)", "alpha", ((TestRule) matches.get(0)).getIdentifier());
         assertEquals("Rule Out Of Order (2)", "beta", ((TestRule) matches.get(1)).getIdentifier());

@@ -121,7 +121,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      */
     public void testDigesterRuleCallOrder() throws SAXException, IOException {
 
-        List callOrder = new ArrayList();
+        List<Rule> callOrder = new ArrayList<Rule>();
 
         // use the standard rules
         digester.setRules(new RulesBase());

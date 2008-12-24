@@ -486,8 +486,8 @@ public class RuleTestCase extends TestCase {
         digester.addSetNext("!*/b/?", "setChild");
         digester.addSetNext("!*/a/?", "setChild");
         digester.addSetNext("!root/?", "add");
-        ArrayList root = 
-            (ArrayList) digester.parse(getInputStream("Test4.xml"));
+        ArrayList<?> root = 
+            (ArrayList<?>) digester.parse(getInputStream("Test4.xml"));
         
         assertEquals("Wrong array size", 2, root.size());
         AlphaBean one = (AlphaBean) root.get(0);
@@ -520,8 +520,8 @@ public class RuleTestCase extends TestCase {
         digester.addSetTop("!*/a/?", "setParent");
         digester.addSetRoot("!*/a", "add");
         digester.addSetRoot("!*/b", "add");
-        ArrayList root = 
-            (ArrayList) digester.parse(getInputStream("Test4.xml"));
+        ArrayList<?> root = 
+            (ArrayList<?>) digester.parse(getInputStream("Test4.xml"));
         
         assertEquals("Wrong array size", 5, root.size());
         
@@ -580,8 +580,8 @@ public class RuleTestCase extends TestCase {
         digester.addSetProperties("toplevel/four", "alt-city", "city");
         
 
-        ArrayList root = 
-            (ArrayList) digester.parse(getInputStream("Test7.xml"));
+        ArrayList<?> root = 
+            (ArrayList<?>) digester.parse(getInputStream("Test7.xml"));
         
         assertEquals("Wrong array size", 4, root.size());
         

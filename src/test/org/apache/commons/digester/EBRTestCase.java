@@ -97,8 +97,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("*/beta/gamma/?", new TestRule("wild_parent"));
 
 
-        List list = null;
-        Iterator it = null;
+        List<Rule> list = null;
+        Iterator<Rule> it = null;
 
         // this should match just the exact since this has presidence
         list = digester.getRules().match(null, "alpha/beta/gamma/delta");
@@ -171,8 +171,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("!*/epsilon/beta/gamma/?", new TestRule("universal_wildhead_child"));
 
 
-        List list = null;
-        Iterator it = null;
+        List<Rule> list = null;
+        Iterator<Rule> it = null;
 
         // test universal wild head
         list = digester.getRules().match(null, "alpha/beta/gamma");
@@ -250,8 +250,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("*/beta/gamma/?", new TestRule("wild_parent"));
 
 
-        List list = null;
-        Iterator it = null;
+        List<Rule> list = null;
+        Iterator<Rule> it = null;
 
         // The universal wild will always match whatever else does
         list = digester.getRules().match(null, "alpha/beta/gamma/delta");
@@ -311,7 +311,7 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("*/a", new TestRule("a_tail"));
 
 
-        List list = null;
+        List<Rule> list = null;
 
         list = digester.getRules().match(null, "a");
 
@@ -350,8 +350,7 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("a/b/c", new TestRule("a-b-c"));
         digester.addRule("a/b/?", new TestRule("a-b-child"));
         
-        List
-        list = digester.getRules().match(null, "a/b/c");
+        List<Rule> list = digester.getRules().match(null, "a/b/c");
         
         assertEquals("Simple ancester matches (1)", 2, list.size());
         assertEquals("Univeral ancester mismatch (1)", "uni-a-b-star" , ((TestRule) list.get(0)).getIdentifier());
@@ -408,7 +407,7 @@ public class EBRTestCase extends RulesBaseTestCase {
 
         digester.addRule("a/b/c/d/*", new TestRule("a-b-c-d-star"));
         
-        List list = digester.getRules().match(null, "a/b/c/d/e"); 
+        List<Rule> list = digester.getRules().match(null, "a/b/c/d/e"); 
         assertEquals("Long match (1)", 1, list.size());
         assertEquals("Match missed (1)", "a-b-c-d-star" , ((TestRule) list.get(0)).getIdentifier()); 
         
@@ -430,7 +429,7 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("!instructors/*", new TestRule("instructors"));
         digester.addRule("!instructor/*", new TestRule("instructor"));
         
-        List list = digester.getRules().match(null, "instructors");
+        List<Rule> list = digester.getRules().match(null, "instructors");
         assertEquals("Only expect to match instructors", 1, list.size());
         assertEquals("Instructors expected", "instructors" , ((TestRule) list.get(0)).getIdentifier()); 
 
@@ -441,7 +440,7 @@ public class EBRTestCase extends RulesBaseTestCase {
         
         digester.addRule("!instructors/*", new TestRule("instructors"));
         
-        List list = digester.getRules().match(null, "/tosh/instructors/fiddlesticks");
+        List<Rule> list = digester.getRules().match(null, "/tosh/instructors/fiddlesticks");
         assertEquals("No matches expected", 0, list.size());
 
     }

@@ -46,7 +46,7 @@ public class NamespaceSnapshotTestCase extends TestCase {
         public final void begin(final String namespace, final String name,
                 final Attributes attributes) {
             Digester d = getDigester();
-            Map namespaces = d.getCurrentNamespaces();
+            Map<String, String> namespaces = d.getCurrentNamespaces();
             ((NamespacedBox) d.peek()).setNamespaces(namespaces);
         }
     }
@@ -70,13 +70,13 @@ public class NamespaceSnapshotTestCase extends TestCase {
         assertNotNull(result);
 
         NamespacedBox root = (NamespacedBox) result;
-        Map nsmap = root.getNamespaces();
+        Map<String, String> nsmap = root.getNamespaces();
         assertEquals(3, nsmap.size());
         assertEquals("", nsmap.get(""));
         assertEquals("http://commons.apache.org/digester/Foo", nsmap.get("foo"));
         assertEquals("http://commons.apache.org/digester/Bar", nsmap.get("bar"));
 
-        List children = root.getChildren();
+        List<Box> children = root.getChildren();
         assertEquals(3, children.size());
 
         NamespacedBox child1 = (NamespacedBox) children.get(0);

@@ -38,7 +38,7 @@ import org.xml.sax.Locator;
 public class LocationTrackerTestCase extends TestCase {
 	
 	private static class LocationTracker implements StackAction {
-		public Map locations = new HashMap();
+		public Map<Object, String> locations = new HashMap<Object, String>();
 
     	public Object onPush(Digester d, String stackName, Object o) {
     		if (stackName == null) {
@@ -82,11 +82,11 @@ public class LocationTrackerTestCase extends TestCase {
         Object result = digester.parse(new StringReader(TEST_XML));
         assertNotNull(result);
         Box root = (Box) result;
-        List children = root.getChildren();
+        List<Box> children = root.getChildren();
         assertEquals(3, children.size());
-        Box box1 = (Box) children.get(0);
-        Box box2 = (Box) children.get(1);
-        Box box3 = (Box) children.get(2);
+        Box box1 = children.get(0);
+        Box box2 = children.get(1);
+        Box box3 = children.get(2);
         
         assertEquals("line=2", locnTracker.locations.get(root));
         assertEquals("line=3", locnTracker.locations.get(box1));

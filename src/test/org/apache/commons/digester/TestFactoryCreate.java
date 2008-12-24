@@ -146,7 +146,7 @@ public class TestFactoryCreate extends TestCase {
         digester.addSetNext("root", "add");
         xml = new String (
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>");        
-        List list = new ArrayList();
+        List<TestObjectCreationFactory> list = new ArrayList<TestObjectCreationFactory>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -176,7 +176,7 @@ public class TestFactoryCreate extends TestCase {
         digester.addSetNext("root", "add");
         xml = new String (
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>");        
-        list = new ArrayList();
+        list = new ArrayList<TestObjectCreationFactory>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -207,7 +207,7 @@ public class TestFactoryCreate extends TestCase {
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly' "
             + " override='org.apache.commons.digester.OtherTestObjectCreationFactory' >"
             + "<element/></root>");        
-        list = new ArrayList();
+        list = new ArrayList<TestObjectCreationFactory>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -240,7 +240,7 @@ public class TestFactoryCreate extends TestCase {
         digester.addSetNext("root", "add");
         xml = new String (
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>");        
-        list = new ArrayList();
+        list = new ArrayList<TestObjectCreationFactory>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         
@@ -271,7 +271,7 @@ public class TestFactoryCreate extends TestCase {
             "<?xml version='1.0' ?><root one='good' two='bad' three='ugly' "
             + " override='org.apache.commons.digester.OtherTestObjectCreationFactory' >"
             + "<element/></root>");        
-        list = new ArrayList();
+        list = new ArrayList<TestObjectCreationFactory>();
         digester.push(list);
         digester.parse(new StringReader(xml));
         

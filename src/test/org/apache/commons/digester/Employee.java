@@ -20,7 +20,6 @@ package org.apache.commons.digester;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 /**
@@ -39,18 +38,16 @@ public class Employee {
         setLastName(lastName);
     }
 
-    private ArrayList addresses = new ArrayList();
+    private ArrayList<Address> addresses = new ArrayList<Address>();
 
     public void addAddress(Address address) {
         addresses.add(address);
     }
 
     public Address getAddress(String type) {
-        Iterator elements = addresses.iterator();
-        while (elements.hasNext()) {
-            Address element = (Address) elements.next();
-            if (type.equals(element.getType()))
-                return (element);
+        for (Address address : addresses) {
+            if (type.equals(address.getType()))
+                return (address);
         }
         return (null);
     }
