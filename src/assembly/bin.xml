@@ -16,12 +16,12 @@
    limitations under the License.
 -->
 <assembly>
-  <id></id>
+  <id>bin</id>
   <formats>
     <format>tar.gz</format>
     <format>zip</format>
   </formats>
-  <includeSiteDirectory>true</includeSiteDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
   <fileSets>
     <fileSet>
       <includes>
@@ -36,6 +36,10 @@
       <includes>
         <include>*.jar</include>
       </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target/site/apidocs</directory>
+      <outputDirectory>apidocs</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>
