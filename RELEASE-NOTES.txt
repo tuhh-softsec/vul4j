@@ -22,8 +22,6 @@ $Id$
                                Release Notes
 
 
-** Current as of Dec 23, 2008 (these are 2.0 notes, update for next release)
-
 INTRODUCTION
 ============
 
@@ -43,14 +41,13 @@ BREAKING CHANGES:
 
  * This release eliminates all dependencies on Commons Collections classes.
    Previously, ArrayStack was used in the Digester implementation and was
-   exposed via protected fields in the following classes:
+   exposed via protected fields or inner classes of the following classes:
      org.apache.commons.digester.Digester,
-     org.apache.commons.digester.CallParamRule,
-     org.apache.commons.digester.FactoryCreateRule and
+     org.apache.commons.digester.CallParamRule, and
      org.apache.commons.digester.xmlrules.DigesterRuleParser
    These classes now use java.util.Stack instead. Any subclasses of the above
-   will require appropriate migration to using java.util.Stack for use with
-   version 2.0.
+   using protected ArrayStack members will require appropriate migration to
+   use java.util.Stack instead before they can be used with version 2.0.
 
 OTHER IMPORTANT CHANGES:
 
