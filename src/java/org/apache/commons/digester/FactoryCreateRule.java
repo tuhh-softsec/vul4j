@@ -19,9 +19,9 @@
 
 package org.apache.commons.digester;
 
-import org.xml.sax.Attributes;
+import java.util.Stack;
 
-import org.apache.commons.collections.ArrayStack;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -42,7 +42,7 @@ public class FactoryCreateRule extends Rule {
     /** Should exceptions thrown by the factory be ignored? */
     private boolean ignoreCreateExceptions;
     /** Stock to manage */
-    private ArrayStack exceptionIgnoredStack;
+    private Stack<Boolean> exceptionIgnoredStack;
 
     // ----------------------------------------------------------- Constructors
 
@@ -361,7 +361,7 @@ public class FactoryCreateRule extends Rule {
         if (ignoreCreateExceptions) {
         
             if (exceptionIgnoredStack == null) {
-                exceptionIgnoredStack = new ArrayStack();
+                exceptionIgnoredStack = new Stack<Boolean>();
             }
             
             try {
@@ -412,7 +412,7 @@ public class FactoryCreateRule extends Rule {
                 exceptionIgnoredStack != null &&
                 !(exceptionIgnoredStack.empty())) {
                 
-            if (((Boolean) exceptionIgnoredStack.pop()).booleanValue()) {
+            if (exceptionIgnoredStack.pop().booleanValue()) {
                 // creation exception was ignored
                 // nothing was put onto the stack
                 if (digester.log.isTraceEnabled()) {

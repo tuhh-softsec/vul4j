@@ -25,6 +25,17 @@ BREAKING CHANGES:
    work on lower JDKs. The source has been updated to leverage Generics and
    other JDK 1.5 features where possible, and requires JDK 1.5 to compile.
 
+ * This release eliminates all dependencies on Commons Collections classes.
+   Previously, ArrayStack was used in the Digester implementation and was
+   exposed via protected fields in the following classes:
+     org.apache.commons.digester.Digester,
+     org.apache.commons.digester.CallParamRule,
+     org.apache.commons.digester.FactoryCreateRule and
+     org.apache.commons.digester.xmlrules.DigesterRuleParser
+   These classes now use java.util.Stack instead. Any subclasses of the above
+   will require appropriate migration to using java.util.Stack for use with
+   version 2.0.
+
 OTHER IMPORTANT CHANGES:
 
  * The legacy schema support has been deprecated in favor of

@@ -47,7 +47,7 @@ public class DigesterPatternStackTest extends TestCase {
         return suite;
     }
 
-    private DigesterRuleParser.PatternStack stack;
+    private DigesterRuleParser.PatternStack<String> stack;
 
     public void setUp() {
         DigesterRuleParser parser = new DigesterRuleParser();

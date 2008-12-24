@@ -20,9 +20,9 @@
 package org.apache.commons.digester;
 
 
-import org.xml.sax.Attributes;
+import java.util.Stack;
 
-import org.apache.commons.collections.ArrayStack;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -181,7 +181,7 @@ public class CallParamRule extends Rule {
      * Stack is used to allow nested body text to be processed.
      * Lazy creation.
      */
-    protected ArrayStack bodyTextStack;
+    protected Stack<String> bodyTextStack;
 
     // --------------------------------------------------------- Public Methods
 
@@ -238,7 +238,7 @@ public class CallParamRule extends Rule {
             // so that we can make sure that the right set of parameters
             // is at the top of the stack
             if (bodyTextStack == null) {
-                bodyTextStack = new ArrayStack();
+                bodyTextStack = new Stack<String>();
             }
             bodyTextStack.push(bodyText.trim());
         }

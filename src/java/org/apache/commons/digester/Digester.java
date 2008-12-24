@@ -34,13 +34,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Stack;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 
-import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
@@ -151,7 +151,7 @@ public class Digester extends DefaultHandler {
     /**
      * The stack of body text string buffers for surrounding elements.
      */
-    protected ArrayStack bodyTexts = new ArrayStack();
+    protected Stack<StringBuffer> bodyTexts = new Stack<StringBuffer>();
 
 
     /**
@@ -164,7 +164,7 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.6
      */
-    protected ArrayStack matches = new ArrayStack(10);
+    protected Stack<List<Rule>> matches = new Stack<List<Rule>>();
     
     /**
      * The class loader to use for instantiating application objects.
@@ -233,12 +233,12 @@ public class Digester extends DefaultHandler {
     /**
      * Registered namespaces we are currently processing.  The key is the
      * namespace prefix that was declared in the document.  The value is an
-     * ArrayStack of the namespace URIs this prefix has been mapped to --
+     * Stack of the namespace URIs this prefix has been mapped to --
      * the top Stack element is the most current one.  (This architecture
      * is required because documents can declare nested uses of the same
      * prefix for different Namespace URIs).
      */
-    protected HashMap<String, ArrayStack> namespaces = new HashMap<String, ArrayStack>();
+    protected HashMap<String, Stack<String>> namespaces = new HashMap<String, Stack<String>>();
 
 
     /**
@@ -251,7 +251,7 @@ public class Digester extends DefaultHandler {
      * The parameters stack being utilized by CallMethodRule and
      * CallParamRule rules.
      */
-    protected ArrayStack params = new ArrayStack();
+    protected Stack<Object> params = new Stack<Object>();
 
 
     /**
@@ -314,7 +314,7 @@ public class Digester extends DefaultHandler {
     /**
      * The object stack being constructed.
      */
-    protected ArrayStack stack = new ArrayStack();
+    protected Stack<Object> stack = new Stack<Object>();
 
 
     /**
@@ -357,7 +357,7 @@ public class Digester extends DefaultHandler {
     protected Substitutor substitutor;
     
     /** Stacks used for interrule communication, indexed by name String */
-    private HashMap<String, ArrayStack> stacksByName = new HashMap<String, ArrayStack>();
+    private HashMap<String, Stack<Object>> stacksByName = new HashMap<String, Stack<Object>>();
     
     /**
      * If not null, then calls by the parser to this object's characters, 
@@ -387,12 +387,12 @@ public class Digester extends DefaultHandler {
      */
     public String findNamespaceURI(String prefix) {
         
-        ArrayStack nsStack = namespaces.get(prefix);
+        Stack<String> nsStack = namespaces.get(prefix);
         if (nsStack == null) {
             return null;
         }
         try {
-            return ((String) nsStack.peek());
+            return (nsStack.peek());
         } catch (EmptyStackException e) {
             return null;
         }
@@ -758,9 +758,9 @@ public class Digester extends DefaultHandler {
                 // we have to use parser-specific code for this. That code
                 // is hidden behind the ParserFeatureSetterFactory class.
 
-            	// The above has changed in JDK 1.5 and no longer true. The
-            	// functionality used in this block has now been deprecated.
-            	// We now use javax.xml.validation.Schema instead.
+                // The above has changed in JDK 1.5 and no longer true. The
+                // functionality used in this block has now been deprecated.
+                // We now use javax.xml.validation.Schema instead.
 
                 Properties properties = new Properties();
                 properties.put("SAXParserFactory", getFactory());
@@ -1151,10 +1151,10 @@ public class Digester extends DefaultHandler {
             log.warn("Digester is not namespace aware");
         }
         Map<String, String> currentNamespaces = new HashMap<String, String>();
-        for (Map.Entry<String, ArrayStack> nsEntry : namespaces.entrySet()) {
+        for (Map.Entry<String, Stack<String>> nsEntry : namespaces.entrySet()) {
              try {
                 currentNamespaces.put(nsEntry.getKey(),
-                    (String) nsEntry.getValue().peek());
+                    nsEntry.getValue().peek());
             } catch (RuntimeException e) {
                 // rethrow, after logging
                 log.error(e.getMessage(), e);
@@ -1270,7 +1270,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Fire "body" events for all relevant rules
-        List<Rule> rules = (List<Rule>) matches.pop(); // legacy ArrayStack code
+        List<Rule> rules = matches.pop();
         if ((rules != null) && (rules.size() > 0)) {
             String bodyText = this.bodyText.toString();
             Substitutor substitutor = getSubstitutor();
@@ -1279,7 +1279,7 @@ public class Digester extends DefaultHandler {
             }
             for (int i = 0; i < rules.size(); i++) {
                 try {
-                    Rule rule = (Rule) rules.get(i);
+                    Rule rule = rules.get(i);
                     if (debug) {
                         log.debug("  Fire body() for " + rule);
                     }
@@ -1299,7 +1299,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Recover the body text from the surrounding element
-        bodyText = (StringBuffer) bodyTexts.pop();
+        bodyText = bodyTexts.pop();
         if (debug) {
             log.debug("  Popping body text '" + bodyText.toString() + "'");
         }
@@ -1309,7 +1309,7 @@ public class Digester extends DefaultHandler {
             for (int i = 0; i < rules.size(); i++) {
                 int j = (rules.size() - i) - 1;
                 try {
-                    Rule rule = (Rule) rules.get(j);
+                    Rule rule = rules.get(j);
                     if (debug) {
                         log.debug("  Fire end() for " + rule);
                     }
@@ -1349,7 +1349,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Deregister this prefix mapping
-        ArrayStack stack = namespaces.get(prefix);
+        Stack<String> stack = namespaces.get(prefix);
         if (stack == null) {
             return;
         }
@@ -1540,7 +1540,7 @@ public class Digester extends DefaultHandler {
             }
             for (int i = 0; i < rules.size(); i++) {
                 try {
-                    Rule rule = (Rule) rules.get(i);
+                    Rule rule = rules.get(i);
                     if (debug) {
                         log.debug("  Fire begin() for " + rule);
                     }
@@ -1578,9 +1578,9 @@ public class Digester extends DefaultHandler {
         }
 
         // Register this prefix mapping
-        ArrayStack stack = namespaces.get(prefix);
+        Stack<String> stack = namespaces.get(prefix);
         if (stack == null) {
-            stack = new ArrayStack();
+            stack = new Stack<String>();
             namespaces.put(prefix, stack);
         }
         stack.push(namespaceURI);
@@ -2872,8 +2872,13 @@ public class Digester extends DefaultHandler {
      */
     public Object peek(int n) {
 
+        int index = (stack.size() - 1) - n;
+        if (index < 0) {
+            log.warn("Empty stack (returning null)");
+            return (null);
+        }
         try {
-            return (stack.peek(n));
+            return (stack.get(index));
         } catch (EmptyStackException e) {
             log.warn("Empty stack (returning null)");
             return (null);
@@ -2933,9 +2938,9 @@ public class Digester extends DefaultHandler {
             value = stackAction.onPush(this, stackName, value);
         }
 
-        ArrayStack namedStack = stacksByName.get(stackName);
+        Stack<Object> namedStack = stacksByName.get(stackName);
         if (namedStack == null) {
-            namedStack = new ArrayStack();
+            namedStack = new Stack<Object>();
             stacksByName.put(stackName, namedStack);
         }
         namedStack.push(value);
@@ -2956,7 +2961,7 @@ public class Digester extends DefaultHandler {
      */
     public Object pop(String stackName) {
         Object result = null;
-        ArrayStack namedStack = stacksByName.get(stackName);
+        Stack<Object> namedStack = stacksByName.get(stackName);
         if (namedStack == null) {
             if (log.isDebugEnabled()) {
                 log.debug("Stack '" + stackName + "' is empty");
@@ -3008,7 +3013,7 @@ public class Digester extends DefaultHandler {
      */
     public Object peek(String stackName, int n) {
         Object result = null;
-        ArrayStack namedStack = stacksByName.get(stackName);
+        Stack<Object> namedStack = stacksByName.get(stackName);
         if (namedStack == null ) {
             if (log.isDebugEnabled()) {
                 log.debug("Stack '" + stackName + "' is empty");
@@ -3016,8 +3021,11 @@ public class Digester extends DefaultHandler {
             throw new EmptyStackException();
         
         } else {
-        
-            result = namedStack.peek(n);
+            int index = (namedStack.size() - 1) - n;
+            if (index < 0) {
+                throw new EmptyStackException();
+            }
+            result = namedStack.get(index);
         }
         return result;
     }
@@ -3034,7 +3042,7 @@ public class Digester extends DefaultHandler {
      */
     public boolean isEmpty(String stackName) {
         boolean result = true;
-        ArrayStack namedStack = stacksByName.get(stackName);
+        Stack<Object> namedStack = stacksByName.get(stackName);
         if (namedStack != null ) {
             result = namedStack.isEmpty();
         }
@@ -3235,8 +3243,13 @@ public class Digester extends DefaultHandler {
      */
     public Object peekParams(int n) {
 
+        int index = (params.size() - 1) - n;
+        if (index < 0) {
+            log.warn("Empty stack (returning null)");
+            return (null);
+        }
         try {
-            return (params.peek(n));
+            return (params.get(index));
         } catch (EmptyStackException e) {
             log.warn("Empty stack (returning null)");
             return (null);

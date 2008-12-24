@@ -27,12 +27,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 import org.apache.commons.beanutils.ConvertUtils;
-
-import org.apache.commons.collections.ArrayStack;
-
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.BeanPropertySetterRule;
 import org.apache.commons.digester.CallMethodRule;
@@ -41,6 +39,7 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.FactoryCreateRule;
 import org.apache.commons.digester.NodeCreateRule;
 import org.apache.commons.digester.ObjectCreateRule;
+import org.apache.commons.digester.ObjectParamRule;
 import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.RuleSetBase;
 import org.apache.commons.digester.Rules;
@@ -50,8 +49,6 @@ import org.apache.commons.digester.SetPropertiesRule;
 import org.apache.commons.digester.SetPropertyRule;
 import org.apache.commons.digester.SetRootRule;
 import org.apache.commons.digester.SetTopRule;
-import org.apache.commons.digester.ObjectParamRule;
-
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -86,7 +83,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * A stack whose toString method returns a '/'-separated concatenation
      * of all the elements in the stack.
      */
-    protected class PatternStack extends ArrayStack {
+    protected class PatternStack<E> extends Stack<E> {
 
         private static final long serialVersionUID = 1L;
 
@@ -111,7 +108,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * pattern, the resulting pattern is a concatenation of that pattern with
      * all the ancestor elements' patterns. Hence the need for a stack.
      */
-    protected PatternStack patternStack;
+    protected PatternStack<String> patternStack;
     
     /**
      * Used to detect circular includes
@@ -123,7 +120,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * until the target digester is set, via <code>setTarget(Digester)</code>
      */
     public DigesterRuleParser() {
-        patternStack = new PatternStack();
+        patternStack = new PatternStack<String>();
     }
     
     /**
@@ -133,7 +130,7 @@ public class DigesterRuleParser extends RuleSetBase {
      */
     public DigesterRuleParser(Digester targetDigester) {
         this.targetDigester = targetDigester;
-        patternStack = new PatternStack();
+        patternStack = new PatternStack<String>();
     }
     
     /**
@@ -147,7 +144,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * to any pattern parsed by this rule set.
      */
     private DigesterRuleParser(Digester targetDigester,
-                                PatternStack stack, Set<String> includedFiles) {
+                                PatternStack<String> stack, Set<String> includedFiles) {
         this.targetDigester = targetDigester;
         patternStack = stack;
         this.includedFiles = includedFiles;
