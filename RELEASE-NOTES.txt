@@ -18,7 +18,7 @@ $Id$
 
 
                           Commons Digester Package
-                            Version 2.0-SNAPSHOT
+                                Version 2.0
                                Release Notes
 
 
