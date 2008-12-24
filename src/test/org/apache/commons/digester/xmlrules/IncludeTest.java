@@ -37,7 +37,7 @@ public class IncludeTest extends TestCase {
             digester.addRule("bar", 
                 new Rule() {
                     public void body(String namespace, String name, String text) {
-                        ((ArrayList) this.digester.peek()).add(text);
+                        ((ArrayList<String>) this.digester.peek()).add(text);
                     }
                 });
         }
@@ -57,7 +57,7 @@ public class IncludeTest extends TestCase {
                 
         String xml = "<?xml version='1.0' ?><root><foo><bar>short</bar></foo></root>";
         
-        ArrayList list = new ArrayList();
+        ArrayList<String> list = new ArrayList<String>();
         Digester digester = DigesterLoader.createDigester(new InputSource(new StringReader(rulesXml)));
         digester.push(list);
         digester.parse(new StringReader(xml));        

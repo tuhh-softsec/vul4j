@@ -21,7 +21,6 @@ package org.apache.commons.digester.xmlrules;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 
 /**
@@ -33,13 +32,13 @@ import java.util.Iterator;
  */
 public class TestObject {
 
-    private ArrayList children = new ArrayList();
+    private ArrayList<Object> children = new ArrayList<Object>();
     private String value = "";
     private Long longValue = new Long(-1L);
 
     private String property = "";
 
-    private HashMap mapValue = new HashMap();
+    private HashMap<String, String> mapValue = new HashMap<String, String>();
 
     private boolean pushed = false;
     
@@ -48,8 +47,8 @@ public class TestObject {
 
     public String toString() {
         String str = value;
-        for (Iterator i = children.iterator(); i.hasNext();) {
-            str += " " + i.next();
+        for (Object o : children) {
+            str += " " + o;
         }
         return str;
     }

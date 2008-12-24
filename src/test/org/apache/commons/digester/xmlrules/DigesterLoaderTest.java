@@ -70,7 +70,7 @@ public class DigesterLoaderTest extends TestCase {
         assertNotNull("The test could not locate testrules.xml", rules);
         assertNotNull("The test could not locate test.xml", input);
         Digester digester = DigesterLoader.createDigester(rules);
-        digester.push(new ArrayList());
+        digester.push(new ArrayList<Object>());
         Object root = digester.parse(input.openStream());
         assertEquals("[foo1 baz1 foo2, foo3 foo4]",root.toString());
     }
@@ -86,13 +86,13 @@ public class DigesterLoaderTest extends TestCase {
         URL input = classLoader.getResource("org/apache/commons/digester/xmlrules/test.xml");
         assertNotNull("The test could not locate testrules.xml", rules);
         assertNotNull("The test could not locate test.xml", input);
-        Object root = DigesterLoader.load(rules, classLoader, input, new ArrayList());
+        Object root = DigesterLoader.load(rules, classLoader, input, new ArrayList<Object>());
         if (!(root instanceof ArrayList)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
         assertEquals( "[foo1 baz1 foo2, foo3 foo4]",root.toString());
 
-        ArrayList al = (ArrayList)root;
+        ArrayList<Object> al = (ArrayList<Object>)root;
         Object obj = al.get(0);
         if (! (obj instanceof TestObject)) {
             fail("Unexpected object returned from DigesterLoader. Expected TestObject; got " + obj.getClass().getName());
@@ -110,11 +110,11 @@ public class DigesterLoaderTest extends TestCase {
     public void testLoad2() throws Exception {
         URL rules = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/testrules.xml");
         InputStream input = getClass().getClassLoader().getResource("org/apache/commons/digester/xmlrules/test.xml").openStream();
-        Object root = DigesterLoader.load(rules, getClass().getClassLoader(), input, new ArrayList());
+        Object root = DigesterLoader.load(rules, getClass().getClassLoader(), input, new ArrayList<Object>());
         if (!(root instanceof ArrayList)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
-        ArrayList list = (ArrayList) root;
+        ArrayList<Object> list = (ArrayList<Object>) root;
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
         assertEquals("Wrong number of classes created", 2 , list.size());
         assertEquals("Pushed first", true , ((TestObject)list.get(0)).isPushed());
@@ -150,7 +150,7 @@ public class DigesterLoaderTest extends TestCase {
                                         rules, 
                                         getClass().getClassLoader(), 
                                         input, 
-                                        new ArrayList());
+                                        new ArrayList<Address>());
                                         
         if (!(obj instanceof ArrayList)) {
             fail(
@@ -158,36 +158,32 @@ public class DigesterLoaderTest extends TestCase {
                 + obj.getClass().getName());
         }
         
-        ArrayList root = (ArrayList) obj;                
+        ArrayList<Address> root = (ArrayList<Address>) obj;                
         
         assertEquals("Wrong array size", 4, root.size());
         
         // note that the array is in popped order (rather than pushed)
          
-        obj = root.get(0);
-        assertTrue("(1) Should be an Address ", obj instanceof Address);
-        Address addressOne = (Address) obj;
+        Address add = root.get(0);
+        Address addressOne = add;
         assertEquals("(1) Street attribute", "New Street", addressOne.getStreet());
         assertEquals("(1) City attribute", "Las Vegas", addressOne.getCity());
         assertEquals("(1) State attribute", "Nevada", addressOne.getState());
         
-        obj = root.get(1);
-        assertTrue("(2) Should be an Address ", obj instanceof Address);
-        Address addressTwo = (Address) obj;
+        add = root.get(1);
+        Address addressTwo = add;
         assertEquals("(2) Street attribute", "Old Street", addressTwo.getStreet());
         assertEquals("(2) City attribute", "Portland", addressTwo.getCity());
         assertEquals("(2) State attribute", "Oregon", addressTwo.getState());
         
-        obj = root.get(2);
-        assertTrue("(3) Should be an Address ", obj instanceof Address);
-        Address addressThree = (Address) obj;
+        add = root.get(2);
+        Address addressThree = add;
         assertEquals("(3) Street attribute", "4th Street", addressThree.getStreet());
         assertEquals("(3) City attribute", "Dayton", addressThree.getCity());
         assertEquals("(3) State attribute", "US" , addressThree.getState());
        
-        obj = root.get(3);
-        assertTrue("(4) Should be an Address ", obj instanceof Address);
-        Address addressFour = (Address) obj;
+        add = root.get(3);
+        Address addressFour = add;
         assertEquals("(4) Street attribute", "6th Street", addressFour.getStreet());
         assertEquals("(4) City attribute", "Cleveland", addressFour.getCity());
         assertEquals("(4) State attribute", "Ohio", addressFour.getState());
@@ -203,7 +199,7 @@ public class DigesterLoaderTest extends TestCase {
                                         rules, 
                                         getClass().getClassLoader(), 
                                         new StringReader(xml), 
-                                        new ArrayList());
+                                        new ArrayList<TestObjectCreationFactory>());
                                         
         if (!(obj instanceof ArrayList)) {
             fail(
@@ -211,10 +207,10 @@ public class DigesterLoaderTest extends TestCase {
                 + obj.getClass().getName());
         }
         
-        ArrayList list = (ArrayList) obj;                
+        ArrayList<TestObjectCreationFactory> list = (ArrayList<TestObjectCreationFactory>) obj;                
          
         assertEquals("List should contain only the factory object", list.size() , 1);
-        TestObjectCreationFactory factory = (TestObjectCreationFactory) list.get(0);
+        TestObjectCreationFactory factory = list.get(0);
         assertEquals("Object create not called(1)", factory.called , true);
         assertEquals(
                     "Attribute not passed (1)", 
@@ -322,16 +318,17 @@ public class DigesterLoaderTest extends TestCase {
         assertNotNull("The test could not locate test-node-create-rules.xml", rules);
         assertNotNull("The test could not locate test-node-create-rules-input.xml", input);
         Digester digester = DigesterLoader.createDigester(rules);
-        digester.push(new ArrayList());
+        digester.push(new ArrayList<Node>());
         Object root = digester.parse(input.openStream());
 
-        assertNotNull("root was null", root);        
-        assertTrue("no nodes were captured.", (((List)root).size() > 0));
-        Object[] nodeArray = (Object[])((List)root).toArray();
+        assertNotNull("root was null", root);
+        List<Node> nlist = (List<Node>) root;
+        assertTrue("no nodes were captured.", nlist.size() > 0);
+        Node[] nodeArray = nlist.toArray(new Node[0]);
         assertNotNull("resulting node array from array list was null", nodeArray);
         
         // test foo1 structure        
-        Node foo1 = (Node)nodeArray[0];
+        Node foo1 = nodeArray[0];
         assertTrue("foo1 didn't have any children", foo1.hasChildNodes());
         
         Node foo1Bar1 = foo1.getFirstChild();
