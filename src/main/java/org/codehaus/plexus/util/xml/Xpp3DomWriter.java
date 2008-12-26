@@ -51,7 +51,7 @@ public class Xpp3DomWriter
         Xpp3Dom[] children = dom.getChildren();
         for ( int i = 0; i < children.length; i++ )
         {
-            write( xmlWriter, children[i] );
+            write( xmlWriter, children[i], escape );
         }
 
         String value = dom.getValue();

@@ -19,10 +19,19 @@ public class Xpp3DomWriterTest
 
         Xpp3DomWriter.write( writer, createXpp3Dom() );
 
-        assertEquals( "Check if output matches", createExpectedXML(), writer.toString() );
+        assertEquals( "Check if output matches", createExpectedXML( true ), writer.toString() );
     }
 
-    private String createExpectedXML()
+    public void testWriterNoEscape()
+    {
+        StringWriter writer = new StringWriter();
+
+        Xpp3DomWriter.write( new PrettyPrintXMLWriter(writer), createXpp3Dom(), false );
+
+        assertEquals( "Check if output matches", createExpectedXML( false ), writer.toString() );
+    }
+
+    private String createExpectedXML( boolean escape )
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "<root>" );
@@ -38,6 +47,19 @@ public class Xpp3DomWriterTest
         buf.append( "  <el4></el4>" );
         buf.append( LS );
         buf.append( "  <el5/>" );
+        buf.append( LS );
+        buf.append( "  <el6 att6=\"attribute6&#10;&amp;&quot;&apos;&lt;&gt;\">" );
+        buf.append( LS );
+        if ( escape )
+        {
+            buf.append( "    <el7>element7\n&amp;&quot;&apos;&lt;&gt;</el7>" );
+        }
+        else
+        {
+            buf.append( "    <el7>element7\n&\"\'<></el7>" );
+        }
+        buf.append( LS );
+        buf.append( "  </el6>" );
         buf.append( LS );
         buf.append( "</root>" );
 
@@ -67,6 +89,15 @@ public class Xpp3DomWriterTest
 
         Xpp3Dom el5 = new Xpp3Dom( "el5" );
         dom.addChild( el5 );
+
+        // test escaping
+        Xpp3Dom el6 = new Xpp3Dom( "el6" );
+        el6.setAttribute( "att6","attribute6\n&\"'<>" );
+        dom.addChild( el6 );
+
+        Xpp3Dom el7 = new Xpp3Dom( "el7" );
+        el7.setValue( "element7\n&\"\'<>" );
+        el6.addChild( el7 );
 
         return dom;
     }
