@@ -68,6 +68,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2129,7 +2130,9 @@ public class FileUtils
             parent = parentDir.getPath();
         }
         DecimalFormat fmt = new DecimalFormat( "#####" );
-        Random rand = new Random( System.currentTimeMillis() + Runtime.getRuntime().freeMemory() );
+        SecureRandom secureRandom = new SecureRandom();
+        long secureInitializer = secureRandom.nextLong();
+        Random rand = new Random( secureInitializer + Runtime.getRuntime().freeMemory() );
         synchronized ( rand )
         {
             do

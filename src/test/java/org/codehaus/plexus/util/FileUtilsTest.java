@@ -1182,6 +1182,7 @@ public final class FileUtilsTest
     {
         String content = "ggrgreeeeeeeeeeeeeeeeeeeeeeeoierjgioejrgiojregioejrgufcdxivbsdibgfizgerfyaezgv!zeez";
         final File theFile = File.createTempFile( "test", ".txt" );
+        theFile.deleteOnExit();
         FileUtils.fileAppend( theFile.getAbsolutePath(), content );
 
         assertTrue( theFile.length() > 0 );
@@ -1303,7 +1304,7 @@ public final class FileUtilsTest
         }
         assertTrue( "Failed to delete test directory", !getTestDirectory().exists() );
     }
-    
+
     public void testcopyDirectoryLayoutWithExcludesIncludes()
         throws Exception
     {
@@ -1338,6 +1339,23 @@ public final class FileUtilsTest
             {
                 fail( "not empty-dir or dir1" );
             }
+        }
+    }
+
+    /**
+     * Be sure that {@link FileUtils#createTempFile(String, String, File)} is always unique.
+     * @throws Exception if any
+     */
+    public void testCreateTempFile()
+        throws Exception
+    {
+        File last = FileUtils.createTempFile( "unique", ".tmp", null );
+        for (int i = 0; i < 10; i ++ )
+        {
+            File current = FileUtils.createTempFile( "unique", ".tmp", null );
+            assertTrue( "No unique name: " + current.getName(),
+                        !current.getName().equals( last.getName() ) );
+            last = current;
         }
     }
 }
