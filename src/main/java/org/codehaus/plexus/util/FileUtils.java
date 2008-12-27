@@ -1819,11 +1819,11 @@ public class FileUtils
         {
             throw new IOException( "Source directory doesn't exists (" + sourceDirectory.getAbsolutePath() + ")." );
         }
-        
+
         DirectoryScanner scanner = new DirectoryScanner();
-        
+
         scanner.setBasedir( sourceDirectory );
-        
+
         if ( includes != null && includes.length >= 1 )
         {
             scanner.setIncludes( includes );
@@ -1841,23 +1841,23 @@ public class FileUtils
         scanner.addDefaultExcludes();
         scanner.scan();
         List includedDirectories = Arrays.asList( scanner.getIncludedDirectories() );
-        
+
         for (Iterator i = includedDirectories.iterator();i.hasNext();)
         {
             String name = (String)i.next();
-            
+
             File source = new File(sourceDirectory, name);
-            
+
             if ( source.equals( sourceDirectory ) )
             {
                 continue;
             }
-            
+
             File destination = new File(destinationDirectory, name);
             destination.mkdirs();
         }
-    }    
-    
+    }
+
     /**
      * Copies a entire directory structure.
      * <p/>
@@ -2017,11 +2017,14 @@ public class FileUtils
      * <p/>
      * The filename is prefixNNNNNsuffix where NNNN is a random number
      * </p>
-     * <p>This method is different to File.createTempFile of JDK 1.2
+     * <p>This method is different to {@link File#createTempFile(String, String, File)} of JDK 1.2
      * as it doesn't create the file itself.
      * It uses the location pointed to by java.io.tmpdir
      * when the parentDir attribute is
      * null.</p>
+     * <p>This method provides only part of a temporary-file facility.
+     * To arrange for a file created by this method to be deleted
+     * automatically, use the {@link File#deleteOnExit()} method.</p>
      *
      * @param prefix    prefix before the random number
      * @param suffix    file extension; include the '.'
@@ -2031,7 +2034,6 @@ public class FileUtils
      */
     public static File createTempFile( String prefix, String suffix, File parentDir )
     {
-
         File result = null;
         String parent = System.getProperty( "java.io.tmpdir" );
         if ( parentDir != null )
@@ -2048,6 +2050,7 @@ public class FileUtils
             }
             while ( result.exists() );
         }
+
         return result;
     }
 
