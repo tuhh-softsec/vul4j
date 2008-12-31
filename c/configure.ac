@@ -456,7 +456,7 @@ AC_TRY_COMPILE([#include <xercesc/framework/MemBufInputSource.hpp>],
 
 AC_MSG_CHECKING([whether Xerces BinInputStream requires getContentType])
 
-AC_TRY_COMPILE([#include <xercesc/framework/MemBufInputSource.hpp>],
+AC_TRY_COMPILE([#include <xercesc/util/BinMemInputStream.hpp>],
     [using namespace XERCES_CPP_NAMESPACE;
       char buf[1024];
       BinMemInputStream in(buf,1024);
