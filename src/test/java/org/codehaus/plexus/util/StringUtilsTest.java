@@ -206,4 +206,23 @@ public class StringUtilsTest
         s = "this  \r\n   is \n  \r  test   ";
         assertEquals( "this is test ", StringUtils.removeDuplicateWhitespace( s ) );
     }
+
+    public void testUnifyLineSeparators()
+        throws Exception
+    {
+        String s = "this\r\nis\na\r\ntest";
+
+        try
+        {
+            StringUtils.unifyLineSeparators( s, "abs" );
+            assertTrue( "Exception NOT catched", false );
+        }
+        catch ( IllegalArgumentException e)
+        {
+            assertTrue( "Exception catched", true );
+        }
+
+        assertEquals( "this\nis\na\ntest", StringUtils.unifyLineSeparators( s, "\n" ) );
+        assertEquals( "this\r\nis\r\na\r\ntest", StringUtils.unifyLineSeparators( s, "\r\n" ) );
+    }
 }

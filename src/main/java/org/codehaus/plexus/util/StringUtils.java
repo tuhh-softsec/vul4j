@@ -78,12 +78,12 @@ import java.util.regex.Pattern;
  * @author <a href="mailto:fredrik@westermarck.com">Fredrik Westermarck</a>
  * @author Holger Krauth
  * @author <a href="mailto:alex@purpletech.com">Alexander Day Chaffee</a>
+ * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 1.0
  * @version $Id$
  */
 public class StringUtils
 {
-
     /**
      * <p><code>StringUtils</code> instances should NOT be constructed in
      * standard programming. Instead, the class should be used as
@@ -2322,5 +2322,71 @@ public class StringUtils
         Pattern pattern = Pattern.compile( patternStr );
         Matcher matcher = pattern.matcher( s );
         return matcher.replaceAll( replaceStr );
+    }
+
+    /**
+     * Parses the given String and replaces all occurrences of
+     * '\n', '\r' and '\r\n' with the system line separator.
+     *
+     * @param s a not null String
+     * @return a String that contains only System line separators.
+     * @see #unifyLineSeparators(String, String)
+     */
+     public static String unifyLineSeparators( String s )
+     {
+         return unifyLineSeparators( s, System.getProperty( "line.separator" ) );
+     }
+
+    /**
+     * Parses the given String and replaces all occurrences of
+     * '\n', '\r' and '\r\n' with the system line separator.
+     *
+     * @param s a not null String
+     * @param ls the wanted line separator ("\n" on UNIX), if null using the System line separator.
+     * @return a String that contains only System line separators.
+     * @throws IllegalArgumentException if ls is not '\n', '\r' and '\r\n' characters.
+     */
+     public static String unifyLineSeparators( String s, String ls )
+     {
+        if ( s == null )
+        {
+            return null;
+        }
+
+        if ( ls == null )
+        {
+            ls = System.getProperty( "line.separator" );
+        }
+
+        if ( !( ls.equals( "\n" ) || ls.equals( "\r" ) || ls.equals( "\r\n" ) ) )
+        {
+            throw new IllegalArgumentException( "Requested line separator is invalid." );
+        }
+
+        int length = s.length();
+
+        StringBuffer buffer = new StringBuffer( length );
+        for ( int i = 0; i < length; i++ )
+        {
+            if ( s.charAt( i ) == '\r' )
+            {
+                if ( ( i + 1 ) < length && s.charAt( i + 1 ) == '\n' )
+                {
+                    i++;
+                }
+
+                buffer.append( ls );
+            }
+            else if ( s.charAt( i ) == '\n' )
+            {
+                buffer.append( ls );
+            }
+            else
+            {
+                buffer.append( s.charAt( i ) );
+            }
+        }
+
+        return buffer.toString();
     }
 }
