@@ -149,7 +149,24 @@ import java.util.Vector;
 public class DirectoryScanner
 {
     /**
-     * Patterns which should be excluded by default.
+     * Patterns which should be excluded by default, like SCM files
+     * <ul>
+     * <li>Misc: &#42;&#42;/&#42;~, &#42;&#42;/#&#42;#, &#42;&#42;/.#&#42;, &#42;&#42;/%&#42;%, &#42;&#42;/._&#42; </li>
+     * <li>CVS: &#42;&#42;/CVS, &#42;&#42;/CVS/&#42;&#42;, &#42;&#42;/.cvsignore</li>
+     * <li>RCS: &#42;&#42;/RCS, &#42;&#42;/RCS/&#42;&#42;</li>
+     * <li>SCCS: &#42;&#42;/SCCS, &#42;&#42;/SCCS/&#42;&#42;</li>
+     * <li>VSSercer: &#42;&#42;/vssver.scc</li>
+     * <li>SVN: &#42;&#42;/.svn, &#42;&#42;/.svn/&#42;&#42;</li>
+     * <li>GNU: &#42;&#42;/.arch-ids, &#42;&#42;/.arch-ids/&#42;&#42;</li>
+     * <li>Bazaar: &#42;&#42;/.bzr, &#42;&#42;/.bzr/&#42;&#42;</li>
+     * <li>SurroundSCM: &#42;&#42;/.MySCMServerInfo</li>
+     * <li>Mac: &#42;&#42;/.DS_Store</li>
+     * <li>Serena Dimension: &#42;&#42;/.metadata, &#42;&#42;/.metadata/&#42;&#42;</li>
+     * <li>Mercurial: &#42;&#42;/.hg, &#42;&#42;/.hg/&#42;&#42;</li>
+     * <li>GIT: &#42;&#42;/.git, &#42;&#42;/.git/&#42;&#42;</li>
+     * <li>Bitkeeper: &#42;&#42;/BitKeeper, &#42;&#42;/BitKeeper/&#42;&#42;, &#42;&#42;/ChangeSet, &#42;&#42;/ChangeSet/&#42;&#42;</li>
+     * <li>Darcs: &#42;&#42;/_darcs, &#42;&#42;/_darcs/&#42;&#42;, &#42;&#42;/.darcsrepo, &#42;&#42;/.darcsrepo/&#42;&#42;&#42;&#42;/-darcs-backup&#42;, &#42;&#42;/.darcs-temp-mail
+     * </ul>
      *
      * @see #addDefaultExcludes()
      */
@@ -165,6 +182,10 @@ public class DirectoryScanner
         "**/CVS",
         "**/CVS/**",
         "**/.cvsignore",
+
+        // RCS
+        "**/RCS",
+        "**/RCS/**",
 
         // SCCS
         "**/SCCS",
@@ -193,7 +214,29 @@ public class DirectoryScanner
 
         // Serena Dimensions Version 10
         "**/.metadata",
-        "**/.metadata/**"
+        "**/.metadata/**",
+
+        // Mercurial
+        "**/.hg",
+        "**/.hg/**",
+
+        // git
+        "**/.git",
+        "**/.git/**",
+
+        // BitKeeper
+        "**/BitKeeper",
+        "**/BitKeeper/**",
+        "**/ChangeSet",
+        "**/ChangeSet/**",
+
+        // darcs
+        "**/_darcs",
+        "**/_darcs/**",
+        "**/.darcsrepo",
+        "**/.darcsrepo/**",
+        "**/-darcs-backup*",
+        "**/.darcs-temp-mail"
     };
 
     /** The base directory to be scanned. */
@@ -1076,5 +1119,4 @@ public class DirectoryScanner
         File toTest = new File( resolvedParent, name );
         return !toTest.getAbsolutePath().equals( toTest.getCanonicalPath() );
     }
-
 }
