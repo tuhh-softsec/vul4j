@@ -10,8 +10,7 @@ import java.io.StringWriter;
 public class Xpp3DomWriterTest
     extends TestCase
 {
-
-    private static final String LS = System.getProperty("line.separator");
+    private static final String LS = System.getProperty( "line.separator" );
 
     public void testWriter()
     {
@@ -26,7 +25,7 @@ public class Xpp3DomWriterTest
     {
         StringWriter writer = new StringWriter();
 
-        Xpp3DomWriter.write( new PrettyPrintXMLWriter(writer), createXpp3Dom(), false );
+        Xpp3DomWriter.write( new PrettyPrintXMLWriter( writer ), createXpp3Dom(), false );
 
         assertEquals( "Check if output matches", createExpectedXML( false ), writer.toString() );
     }
@@ -52,11 +51,11 @@ public class Xpp3DomWriterTest
         buf.append( LS );
         if ( escape )
         {
-            buf.append( "    <el7>element7\n&amp;&quot;&apos;&lt;&gt;</el7>" );
+            buf.append( "    <el7>element7" + LS + "&amp;&quot;&apos;&lt;&gt;</el7>" );
         }
         else
         {
-            buf.append( "    <el7>element7\n&\"\'<></el7>" );
+            buf.append( "    <el7>element7"+ LS + "&\"\'<></el7>" );
         }
         buf.append( LS );
         buf.append( "  </el6>" );
@@ -92,7 +91,7 @@ public class Xpp3DomWriterTest
 
         // test escaping
         Xpp3Dom el6 = new Xpp3Dom( "el6" );
-        el6.setAttribute( "att6","attribute6\n&\"'<>" );
+        el6.setAttribute( "att6", "attribute6\n&\"'<>" );
         dom.addChild( el6 );
 
         Xpp3Dom el7 = new Xpp3Dom( "el7" );
