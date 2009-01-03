@@ -2389,4 +2389,62 @@ public class StringUtils
 
         return buffer.toString();
     }
+
+    /**
+     * <p>Checks if String contains a search character, handling <code>null</code>.
+     * This method uses {@link String#indexOf(int)}.</p>
+     *
+     * <p>A <code>null</code> or empty ("") String will return <code>false</code>.</p>
+     *
+     * <pre>
+     * StringUtils.contains(null, *)    = false
+     * StringUtils.contains("", *)      = false
+     * StringUtils.contains("abc", 'a') = true
+     * StringUtils.contains("abc", 'z') = false
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @param searchChar  the character to find
+     * @return true if the String contains the search character,
+     *  false if not or <code>null</code> string input
+     * @since 1.5.7
+     */
+    public static boolean contains( String str, char searchChar )
+    {
+        if ( isEmpty( str ) )
+        {
+            return false;
+        }
+        return str.indexOf( searchChar ) >= 0;
+    }
+
+    /**
+     * <p>Checks if String contains a search String, handling <code>null</code>.
+     * This method uses {@link String#indexOf(int)}.</p>
+     *
+     * <p>A <code>null</code> String will return <code>false</code>.</p>
+     *
+     * <pre>
+     * StringUtils.contains(null, *)     = false
+     * StringUtils.contains(*, null)     = false
+     * StringUtils.contains("", "")      = true
+     * StringUtils.contains("abc", "")   = true
+     * StringUtils.contains("abc", "a")  = true
+     * StringUtils.contains("abc", "z")  = false
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @param searchStr  the String to find, may be null
+     * @return true if the String contains the search String,
+     *  false if not or <code>null</code> string input
+     * @since 1.5.7
+     */
+    public static boolean contains( String str, String searchStr )
+    {
+        if ( str == null || searchStr == null )
+        {
+            return false;
+        }
+        return str.indexOf( searchStr ) >= 0;
+    }
 }
