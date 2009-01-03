@@ -2214,12 +2214,39 @@ public class StringUtils
         return sb.toString().trim().toLowerCase( Locale.ENGLISH );
     }
 
+    /**
+     * <p>Quote and escape a String with the given character, handling <code>null</code>.</p>
+     *
+     * <pre>
+     * StringUtils.quoteAndEscape(null, *)    = null
+     * StringUtils.quoteAndEscape("", *)      = ""
+     * StringUtils.quoteAndEscape("abc", '"') = abc
+     * StringUtils.quoteAndEscape("a\"bc", '"') = "a\"bc"
+     * StringUtils.quoteAndEscape("a\"bc", '\'') = 'a\"bc'
+     * </pre>
+     *
+     * @param source
+     * @param quoteChar
+     * @return the String quoted and escaped
+     * @since 1.5.1
+     * @see #quoteAndEscape(String, char, char[], char[], char, boolean)
+     */
     public static String quoteAndEscape( String source,
                                 char quoteChar )
     {
         return quoteAndEscape( source, quoteChar, new char[]{ quoteChar }, new char[]{ ' ' }, '\\', false );
     }
 
+    /**
+     * <p>Quote and escape a String with the given character, handling <code>null</code>.</p>
+     *
+     * @param source
+     * @param quoteChar
+     * @param quotingTriggers
+     * @return the String quoted and escaped
+     * @since 1.5.1
+     * @see #quoteAndEscape(String, char, char[], char[], char, boolean)
+     */
     public static String quoteAndEscape( String source,
                                          char quoteChar,
                                          char[] quotingTriggers )
@@ -2227,6 +2254,16 @@ public class StringUtils
         return quoteAndEscape( source, quoteChar, new char[]{ quoteChar }, quotingTriggers, '\\', false );
     }
 
+    /**
+     * @param source
+     * @param quoteChar
+     * @param escapedChars
+     * @param escapeChar
+     * @param force
+     * @return the String quoted and escaped
+     * @since 1.5.1
+     * @see #quoteAndEscape(String, char, char[], char[], char, boolean)
+     */
     public static String quoteAndEscape( String source,
                                 char quoteChar,
                                 final char[] escapedChars,
@@ -2236,6 +2273,16 @@ public class StringUtils
         return quoteAndEscape( source, quoteChar, escapedChars, new char[]{ ' ' }, escapeChar, force );
     }
 
+    /**
+     * @param source
+     * @param quoteChar
+     * @param escapedChars
+     * @param quotingTriggers
+     * @param escapeChar
+     * @param force
+     * @return the String quoted and escaped
+     * @since 1.5.1
+     */
     public static String quoteAndEscape( String source,
                                 char quoteChar,
                                 final char[] escapedChars,
@@ -2243,6 +2290,11 @@ public class StringUtils
                                 char escapeChar,
                                 boolean force )
     {
+        if ( source == null )
+        {
+            return null;
+        }
+
         if ( !force && source.startsWith( Character.toString( quoteChar ) )
              && source.endsWith( Character.toString( quoteChar ) ) )
         {
@@ -2276,14 +2328,24 @@ public class StringUtils
         {
             return quoteChar + escaped + quoteChar;
         }
-        else
-        {
-            return escaped;
-        }
+
+        return escaped;
     }
 
+    /**
+     * @param source
+     * @param escapedChars
+     * @param escapeChar
+     * @return the String escaped
+     * @since 1.5.1
+     */
     public static String escape( String source, final char[] escapedChars, char escapeChar )
     {
+        if ( source == null )
+        {
+            return null;
+        }
+
         char[] eqc = new char[ escapedChars.length ];
         System.arraycopy( escapedChars, 0, eqc, 0, escapedChars.length );
         Arrays.sort( eqc );
@@ -2314,6 +2376,7 @@ public class StringUtils
      *
      * @param s a not null String
      * @return a string with unique whitespace.
+     * @since 1.5.7
      */
     public static String removeDuplicateWhitespace( String s )
     {
@@ -2331,6 +2394,7 @@ public class StringUtils
      * @param s a not null String
      * @return a String that contains only System line separators.
      * @see #unifyLineSeparators(String, String)
+     * @since 1.5.7
      */
      public static String unifyLineSeparators( String s )
      {
@@ -2345,6 +2409,7 @@ public class StringUtils
      * @param ls the wanted line separator ("\n" on UNIX), if null using the System line separator.
      * @return a String that contains only System line separators.
      * @throws IllegalArgumentException if ls is not '\n', '\r' and '\r\n' characters.
+     * @since 1.5.7
      */
      public static String unifyLineSeparators( String s, String ls )
      {
