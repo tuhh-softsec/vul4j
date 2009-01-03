@@ -70,7 +70,7 @@ public class XmlWriterUtilTest
     {
         XmlWriterUtil.writeLineBreak( xmlWriter );
         writer.close();
-        assertTrue( StringUtils.countMatches( output.toString(), "\n" ) == 1 );
+        assertTrue( StringUtils.countMatches( output.toString(), XmlWriterUtil.LS ) == 1 );
     }
 
     /**
@@ -83,7 +83,7 @@ public class XmlWriterUtilTest
     {
         XmlWriterUtil.writeLineBreak( xmlWriter, 10 );
         writer.close();
-        assertTrue( StringUtils.countMatches( output.toString(), "\n" ) == 10 );
+        assertTrue( StringUtils.countMatches( output.toString(), XmlWriterUtil.LS ) == 10 );
     }
 
     /**
@@ -96,7 +96,7 @@ public class XmlWriterUtilTest
     {
         XmlWriterUtil.writeLineBreak( xmlWriter, 10, 2 );
         writer.close();
-        assertTrue( StringUtils.countMatches( output.toString(), "\n" ) == 10 );
+        assertTrue( StringUtils.countMatches( output.toString(), XmlWriterUtil.LS ) == 10 );
         assertTrue( StringUtils.countMatches( output.toString(), StringUtils
             .repeat( " ", 2 * XmlWriterUtil.DEFAULT_INDENTATION_SIZE ) ) == 1 );
     }
@@ -111,7 +111,7 @@ public class XmlWriterUtilTest
     {
         XmlWriterUtil.writeLineBreak( xmlWriter, 10, 2, 4 );
         writer.close();
-        assertTrue( StringUtils.countMatches( output.toString(), "\n" ) == 10 );
+        assertTrue( StringUtils.countMatches( output.toString(), XmlWriterUtil.LS ) == 10 );
         assertTrue( StringUtils.countMatches( output.toString(), StringUtils.repeat( " ", 2 * 4 ) ) == 1 );
     }
 
@@ -126,9 +126,9 @@ public class XmlWriterUtilTest
         XmlWriterUtil.writeCommentLineBreak( xmlWriter );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( "<!-- ====================================================================== -->" ).append( '\n' );
+        sb.append( "<!-- ====================================================================== -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE );
+        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE - 1 + XmlWriterUtil.LS.length() );
     }
 
     /**
@@ -141,14 +141,14 @@ public class XmlWriterUtilTest
     {
         XmlWriterUtil.writeCommentLineBreak( xmlWriter, 20 );
         writer.close();
-        assertEquals( output.toString(), "<!-- ========== -->\n" );
+        assertEquals( output.toString(), "<!-- ========== -->" + XmlWriterUtil.LS );
 
         tearDown();
         setUp();
 
         XmlWriterUtil.writeCommentLineBreak( xmlWriter, 10 );
         writer.close();
-        assertEquals( output.toString(), output.toString(), "<!--  -->\n" );
+        assertEquals( output.toString(), output.toString(), "<!--  -->" + XmlWriterUtil.LS );
     }
 
     /**
@@ -162,9 +162,9 @@ public class XmlWriterUtilTest
         XmlWriterUtil.writeComment( xmlWriter, "hello" );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( "<!-- hello                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- hello                                                                  -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE );
+        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE - 1 + XmlWriterUtil.LS.length() );
 
         tearDown();
         setUp();
@@ -174,7 +174,7 @@ public class XmlWriterUtilTest
         writer.close();
         sb = new StringBuffer();
         sb.append( "<!-- hellooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
         assertTrue( output.toString().length() >= XmlWriterUtil.DEFAULT_COLUMN_LINE );
 
@@ -183,12 +183,11 @@ public class XmlWriterUtilTest
 
         XmlWriterUtil.writeComment( xmlWriter, "hello\nworld" );
         writer.close();
-        writer.close();
         sb = new StringBuffer();
-        sb.append( "<!-- hello                                                                  -->" ).append( '\n' );
-        sb.append( "<!-- world                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- hello                                                                  -->" ).append( XmlWriterUtil.LS );
+        sb.append( "<!-- world                                                                  -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == 2 * XmlWriterUtil.DEFAULT_COLUMN_LINE );
+        assertTrue( output.toString().length() == 2 * ( XmlWriterUtil.DEFAULT_COLUMN_LINE - 1 + XmlWriterUtil.LS.length() ) );
     }
 
     /**
@@ -205,9 +204,9 @@ public class XmlWriterUtilTest
         writer.close();
         StringBuffer sb = new StringBuffer();
         sb.append( indent );
-        sb.append( "<!-- hello                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- hello                                                                  -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE + 2
+        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE - 1 + XmlWriterUtil.LS.length() + 2
             * XmlWriterUtil.DEFAULT_INDENTATION_SIZE );
 
         tearDown();
@@ -217,11 +216,11 @@ public class XmlWriterUtilTest
         writer.close();
         sb = new StringBuffer();
         sb.append( indent );
-        sb.append( "<!-- hello                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- hello                                                                  -->" ).append( XmlWriterUtil.LS );
         sb.append( indent );
-        sb.append( "<!-- world                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- world                                                                  -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == 2 * XmlWriterUtil.DEFAULT_COLUMN_LINE + 2 * indent.length() );
+        assertTrue( output.toString().length() == 2 * ( XmlWriterUtil.DEFAULT_COLUMN_LINE - 1 + XmlWriterUtil.LS.length() ) + 2 * indent.length() );
     }
 
     /**
@@ -238,9 +237,9 @@ public class XmlWriterUtilTest
         writer.close();
         StringBuffer sb = new StringBuffer();
         sb.append( repeat );
-        sb.append( "<!-- hello                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- hello                                                                  -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE + 2 * 4 );
+        assertTrue( output.toString().length() == XmlWriterUtil.DEFAULT_COLUMN_LINE - 1 + XmlWriterUtil.LS.length() + 2 * 4 );
 
         tearDown();
         setUp();
@@ -249,11 +248,11 @@ public class XmlWriterUtilTest
         writer.close();
         sb = new StringBuffer();
         sb.append( repeat );
-        sb.append( "<!-- hello                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- hello                                                                  -->" ).append( XmlWriterUtil.LS );
         sb.append( repeat );
-        sb.append( "<!-- world                                                                  -->" ).append( '\n' );
+        sb.append( "<!-- world                                                                  -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == 2 * XmlWriterUtil.DEFAULT_COLUMN_LINE + 2 * repeat.length() );
+        assertTrue( output.toString().length() == 2 * ( XmlWriterUtil.DEFAULT_COLUMN_LINE - 1 + XmlWriterUtil.LS.length() ) + 2 * repeat.length() );
     }
 
     /**
@@ -270,9 +269,9 @@ public class XmlWriterUtilTest
         writer.close();
         StringBuffer sb = new StringBuffer();
         sb.append( indent );
-        sb.append( "<!-- hello                                    -->" ).append( '\n' );
+        sb.append( "<!-- hello                                    -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == 50 + 2 * 4 );
+        assertTrue( output.toString().length() == 50 - 1 + XmlWriterUtil.LS.length() + 2 * 4 );
 
         tearDown();
         setUp();
@@ -281,7 +280,7 @@ public class XmlWriterUtilTest
         writer.close();
         sb = new StringBuffer();
         sb.append( indent );
-        sb.append( "<!-- hello -->" ).append( '\n' );
+        sb.append( "<!-- hello -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
         assertTrue( output.toString().length() >= 10 + 2 * 4 );
     }
@@ -297,13 +296,13 @@ public class XmlWriterUtilTest
         XmlWriterUtil.writeCommentText( xmlWriter, "hello", 0 );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( '\n' );
-        sb.append( "<!-- ====================================================================== -->" ).append( '\n' );
-        sb.append( "<!-- hello                                                                  -->" ).append( '\n' );
-        sb.append( "<!-- ====================================================================== -->" ).append( '\n' );
-        sb.append( '\n' );
+        sb.append( XmlWriterUtil.LS );
+        sb.append( "<!-- ====================================================================== -->" ).append( XmlWriterUtil.LS );
+        sb.append( "<!-- hello                                                                  -->" ).append( XmlWriterUtil.LS );
+        sb.append( "<!-- ====================================================================== -->" ).append( XmlWriterUtil.LS );
+        sb.append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == 3 * 80 + 2 );
+        assertTrue( output.toString().length() == 3 * ( 80 - 1 + XmlWriterUtil.LS.length() ) + 2 * XmlWriterUtil.LS.length() );
 
         tearDown();
         setUp();
@@ -314,20 +313,20 @@ public class XmlWriterUtilTest
             + "loooooooooooooooooooooooooooooooooooooooooooooooooooooonnnnnnnnnnong line", 2 );
         writer.close();
         sb = new StringBuffer();
-        sb.append( '\n' );
+        sb.append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- ====================================================================== -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- hello world with end of line                                           -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- and                                                                    -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- loooooooooooooooooooooooooooooooooooooooooooooooooooooonnnnnnnnnnong   -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- line                                                                   -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- ====================================================================== -->" )
-            .append( '\n' );
-        sb.append( '\n' );
+            .append( XmlWriterUtil.LS );
+        sb.append( XmlWriterUtil.LS );
         sb.append( indent );
         assertEquals( output.toString(), sb.toString() );
     }
@@ -345,17 +344,17 @@ public class XmlWriterUtilTest
         XmlWriterUtil.writeCommentText( xmlWriter, "hello", 2, 4 );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( '\n' );
+        sb.append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- ====================================================================== -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- hello                                                                  -->" )
-            .append( '\n' );
+            .append( XmlWriterUtil.LS );
         sb.append( indent ).append( "<!-- ====================================================================== -->" )
-            .append( '\n' );
-        sb.append( '\n' );
+            .append( XmlWriterUtil.LS );
+        sb.append( XmlWriterUtil.LS );
         sb.append( indent );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == 3 * 80 + 4 * 2 * 4 + 2 );
+        assertTrue( output.toString().length() == 3 * ( 80 - 1 + XmlWriterUtil.LS.length() ) + 4 * 2 * 4 + 2 * XmlWriterUtil.LS.length() );
     }
 
     /**
@@ -371,14 +370,14 @@ public class XmlWriterUtilTest
         XmlWriterUtil.writeCommentText( xmlWriter, "hello", 2, 4, 50 );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( '\n' );
-        sb.append( indent ).append( "<!-- ======================================== -->" ).append( '\n' );
-        sb.append( indent ).append( "<!-- hello                                    -->" ).append( '\n' );
-        sb.append( indent ).append( "<!-- ======================================== -->" ).append( '\n' );
-        sb.append( '\n' );
+        sb.append( XmlWriterUtil.LS );
+        sb.append( indent ).append( "<!-- ======================================== -->" ).append( XmlWriterUtil.LS );
+        sb.append( indent ).append( "<!-- hello                                    -->" ).append( XmlWriterUtil.LS );
+        sb.append( indent ).append( "<!-- ======================================== -->" ).append( XmlWriterUtil.LS );
+        sb.append( XmlWriterUtil.LS );
         sb.append( indent );
         assertEquals( output.toString(), sb.toString() );
-        assertTrue( output.toString().length() == 3 * 50 + 4 * 2 * 4 + 2 );
+        assertTrue( output.toString().length() == 3 * ( 50 - 1 + XmlWriterUtil.LS.length() ) + 4 * 2 * 4 + 2 * XmlWriterUtil.LS.length() );
     }
 
     /**
@@ -392,7 +391,7 @@ public class XmlWriterUtilTest
         XmlWriterUtil.writeComment( xmlWriter, null );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( "<!-- null                                                                   -->" ).append( '\n' );
+        sb.append( "<!-- null                                                                   -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
     }
 
@@ -407,7 +406,7 @@ public class XmlWriterUtilTest
         XmlWriterUtil.writeComment( xmlWriter, "This is a short text" );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( "<!-- This is a short text                                                   -->" ).append( '\n' );
+        sb.append( "<!-- This is a short text                                                   -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
     }
 
@@ -424,11 +423,10 @@ public class XmlWriterUtilTest
             + "and documentation from a central piece of information." );
         writer.close();
         StringBuffer sb = new StringBuffer();
-        sb.append( "<!-- Maven is a software project management and comprehension tool. Based   -->" ).append( '\n' );
-        sb.append( "<!-- on the concept of a project object model (POM), Maven can manage a     -->" ).append( '\n' );
-        sb.append( "<!-- project's build, reporting and documentation from a central piece of   -->" ).append( '\n' );
-        sb.append( "<!-- information.                                                           -->" ).append( '\n' );
+        sb.append( "<!-- Maven is a software project management and comprehension tool. Based   -->" ).append( XmlWriterUtil.LS );
+        sb.append( "<!-- on the concept of a project object model (POM), Maven can manage a     -->" ).append( XmlWriterUtil.LS );
+        sb.append( "<!-- project's build, reporting and documentation from a central piece of   -->" ).append( XmlWriterUtil.LS );
+        sb.append( "<!-- information.                                                           -->" ).append( XmlWriterUtil.LS );
         assertEquals( output.toString(), sb.toString() );
     }
-
 }

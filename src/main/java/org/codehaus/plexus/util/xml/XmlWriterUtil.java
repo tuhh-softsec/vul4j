@@ -26,6 +26,9 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class XmlWriterUtil
 {
+    /** The vm line separator */
+    public static final String LS = System.getProperty( "line.separator" );
+
     /** The default line indenter size i.e. 2. */
     public static final int DEFAULT_INDENTATION_SIZE = 2;
 
@@ -52,7 +55,7 @@ public class XmlWriterUtil
     {
         for ( int i = 0; i < repeat; i++ )
         {
-            writer.writeMarkup( "\n" );
+            writer.writeMarkup( LS );
         }
     }
 
@@ -120,7 +123,7 @@ public class XmlWriterUtil
             columnSize = DEFAULT_COLUMN_LINE;
         }
 
-        writer.writeMarkup( "<!-- " + StringUtils.repeat( "=", columnSize - 10 ) + " -->\n" );
+        writer.writeMarkup( "<!-- " + StringUtils.repeat( "=", columnSize - 10 ) + " -->" + LS );
     }
 
     /**
@@ -199,8 +202,8 @@ public class XmlWriterUtil
         }
 
         String indentation = StringUtils.repeat( " ", indent * indentSize );
-        int magicNumber = indentation.length() + columnSize - "-->\n".length();
-        String[] sentences = StringUtils.split( comment, "\n" );
+        int magicNumber = indentation.length() + columnSize - new String( "-->" + LS ).length() + 1;
+        String[] sentences = StringUtils.split( comment, LS );
 
         StringBuffer line = new StringBuffer( indentation + "<!-- " );
         for ( int i = 0; i < sentences.length; i++ )
@@ -220,7 +223,7 @@ public class XmlWriterUtil
                             line.append( StringUtils.repeat( " ", magicNumber - line.length() ) );
                         }
 
-                        line.append( "-->" ).append( '\n' );
+                        line.append( "-->" ).append( LS );
                         writer.writeMarkup( line.toString() );
                     }
                     line = new StringBuffer( indentation + "<!-- " );
@@ -243,7 +246,7 @@ public class XmlWriterUtil
             line.append( StringUtils.repeat( " ", magicNumber - line.length() ) );
         }
 
-        line.append( "-->" ).append( '\n' );
+        line.append( "-->" ).append( LS );
 
         writer.writeMarkup( line.toString() );
     }
