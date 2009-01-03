@@ -387,8 +387,10 @@ public class CommandlineTest
         throws Exception
     {
         File dir = new File( System.getProperty( "basedir" ), "target/quoted path'test" );
-
-        dir.mkdirs();
+        if ( !dir.exists() )
+        {
+            assertTrue( "Can't create dir:" + dir.getAbsolutePath(), dir.mkdirs() );
+        }
 
         // Create a script file
         File bat;
@@ -465,7 +467,10 @@ public class CommandlineTest
         }
 
         File dir = new File( System.getProperty( "basedir" ), "target/quotedpath\'test" );
-        dir.mkdirs();
+        if ( !dir.exists() )
+        {
+            assertTrue( "Can't create dir:" + dir.getAbsolutePath(), dir.mkdirs() );
+        }
 
         // Create a script file
         File bat;
@@ -519,9 +524,10 @@ public class CommandlineTest
         throws Exception
     {
         File dir = new File( System.getProperty( "basedir" ), "target" );
-
-        dir.mkdirs();
-
+        if ( !dir.exists() )
+        {
+            assertTrue( "Can't create dir:" + dir.getAbsolutePath(), dir.mkdirs() );
+        }
 
         FileWriter writer = null;
         try
