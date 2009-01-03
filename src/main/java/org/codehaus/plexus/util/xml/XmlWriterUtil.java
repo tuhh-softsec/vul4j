@@ -202,7 +202,7 @@ public class XmlWriterUtil
         }
 
         String indentation = StringUtils.repeat( " ", indent * indentSize );
-        int magicNumber = indentation.length() + columnSize - new String( "-->" + LS ).length() + 1;
+        int magicNumber = indentation.length() + columnSize - "-->".length() - 1;
         String[] sentences = StringUtils.split( comment, LS );
 
         StringBuffer line = new StringBuffer( indentation + "<!-- " );
