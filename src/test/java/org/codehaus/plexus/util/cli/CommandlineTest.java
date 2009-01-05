@@ -361,7 +361,6 @@ public class CommandlineTest
     public void testEnvironmentWitOverrideSystemEnvironment()
         throws Exception
     {
-
         Commandline cmd = new Commandline();
         cmd.addSystemEnvironment();
         cmd.addEnvironment( "JAVA_HOME", "/usr/jdk1.5" );
@@ -379,67 +378,61 @@ public class CommandlineTest
     }
 
     /**
-     * Test an executable with a quote in its path
+     * Test an executable with a single apostrophe <code>'</code> in its path
      *
      * @throws Exception
      */
-    public void testQuotedPath()
+    public void testQuotedPathWithSingleApostrophe()
         throws Exception
     {
-        File dir = new File( System.getProperty( "basedir" ), "target/quoted path'test" );
-        if ( !dir.exists() )
-        {
-            assertTrue( "Can't create dir:" + dir.getAbsolutePath(), dir.mkdirs() );
-        }
+        File dir = new File( System.getProperty( "basedir" ), "target/test/quotedpath'test" );
+        createAndCallScript( dir, "echo Quoted" );
 
-        // Create a script file
-        File bat;
+        dir = new File( System.getProperty( "basedir" ), "target/test/quoted path'test" );
+        createAndCallScript( dir, "echo Quoted" );
+    }
+
+    /**
+     * Test an executable with a single quotation mark <code>\"</code> in its path only for non Windows box.
+     *
+     * @throws Exception
+     */
+    public void testQuotedPathWithQuotationMark()
+        throws Exception
+    {
         if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
-            bat = new File( dir, "echo.bat" );
+            System.out.println( "testQuotedPathWithQuotationMark() skipped on Windows" );
+            return;
         }
-        else
+
+        File dir = new File( System.getProperty( "basedir" ), "target/test/quotedpath\"test" );
+        createAndCallScript( dir, "echo Quoted" );
+
+        dir = new File( System.getProperty( "basedir" ), "target/test/quoted path\"test" );
+        createAndCallScript( dir, "echo Quoted" );
+    }
+
+    /**
+     * Test an executable with a single quotation mark <code>\"</code> and <code>'</code> in its path only for non
+     * Windows box.
+     *
+     * @throws Exception
+     */
+    public void testQuotedPathWithQuotationMarkAndApostrophe()
+        throws Exception
+    {
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
-            bat = new File( dir, "echo" );
+            System.out.println( "testQuotedPathWithQuotationMarkAndApostrophe() skipped on Windows" );
+            return;
         }
 
-        Writer w = new FileWriter( bat );
-        try
-        {
-            IOUtil.copy( "echo Quoted", w );
-        }
-        finally
-        {
-            IOUtil.close( w );
-        }
+        File dir = new File( System.getProperty( "basedir" ), "target/test/quotedpath\"'test" );
+        createAndCallScript( dir, "echo Quoted" );
 
-        // Change permission
-        setExecutable( bat );
-
-        Commandline cmd = new Commandline();
-        cmd.setExecutable( bat.getAbsolutePath() );
-        cmd.setWorkingDirectory( dir );
-
-        CommandLineUtils.StringStreamConsumer err = new CommandLineUtils.StringStreamConsumer();
-
-        try
-        {
-            System.out.println( "Command line is: "
-                                + StringUtils.join( cmd.getShellCommandline(), " " ) );
-
-            int exitCode = CommandLineUtils.executeCommandLine( cmd, new DefaultConsumer(), err );
-
-            if ( exitCode != 0 )
-            {
-                StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - "
-                                                     + err.getOutput() );
-                throw new Exception( msg.toString() );
-            }
-        }
-        catch ( CommandLineException e )
-        {
-            throw new Exception( "Unable to execute command: " + e.getMessage(), e );
-        }
+        dir = new File( System.getProperty( "basedir" ), "target/test/quoted path\"'test" );
+        createAndCallScript( dir, "echo Quoted" );
     }
 
     /**
@@ -450,6 +443,8 @@ public class CommandlineTest
     public void testOnlyQuotedPath()
         throws Exception
     {
+        File dir = new File( System.getProperty( "basedir" ), "target/test/quotedpath\'test" );
+
         File javaHome = new File( System.getProperty( "java.home" ) );
         File java;
         if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
@@ -466,64 +461,13 @@ public class CommandlineTest
             throw new IOException( java.getAbsolutePath() + " doesn't exist" );
         }
 
-        File dir = new File( System.getProperty( "basedir" ), "target/quotedpath\'test" );
-        if ( !dir.exists() )
-        {
-            assertTrue( "Can't create dir:" + dir.getAbsolutePath(), dir.mkdirs() );
-        }
-
-        // Create a script file
-        File bat;
-        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
-        {
-            bat = new File( dir, "echo.bat" );
-        }
-        else
-        {
-            bat = new File( dir, "echo" );
-        }
-
-        Writer w = new FileWriter( bat );
-        try
-        {
-            IOUtil.copy( java.getAbsolutePath() + " -version", w );
-        }
-        finally
-        {
-            IOUtil.close( w );
-        }
-
-        // Change permission
-        setExecutable( bat );
-
-        Commandline cmd = new Commandline();
-        cmd.setExecutable( bat.getAbsolutePath() );
-        cmd.setWorkingDirectory( dir );
-
-        CommandLineUtils.StringStreamConsumer err = new CommandLineUtils.StringStreamConsumer();
-
-        try
-        {
-            System.out.println( "Command line is: " + StringUtils.join( cmd.getShellCommandline(), " " ) );
-
-            int exitCode = CommandLineUtils.executeCommandLine( cmd, new DefaultConsumer(), err );
-
-            if ( exitCode != 0 )
-            {
-                StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - " + err.getOutput() );
-                throw new Exception( msg.toString() );
-            }
-        }
-        catch ( CommandLineException e )
-        {
-            throw new Exception( "Unable to execute command: " + e.getMessage(), e );
-        }
+        createAndCallScript( dir, java.getAbsolutePath() + " -version" );
     }
 
     public void testDollarSignInArgumentPath()
         throws Exception
     {
-        File dir = new File( System.getProperty( "basedir" ), "target" );
+        File dir = new File( System.getProperty( "basedir" ), "target/test" );
         if ( !dir.exists() )
         {
             assertTrue( "Can't create dir:" + dir.getAbsolutePath(), dir.mkdirs() );
@@ -551,31 +495,28 @@ public class CommandlineTest
         cmd.setWorkingDirectory( dir );
         cmd.createArg().setLine( "test$1.txt" );
 
-        CommandLineUtils.StringStreamConsumer err = new CommandLineUtils.StringStreamConsumer();
-
-        try
-        {
-            System.out.println( "Command line is: "
-                                + StringUtils.join( cmd.getShellCommandline(), " " ) );
-
-            int exitCode = CommandLineUtils.executeCommandLine( cmd, new DefaultConsumer(), err );
-
-            if ( exitCode != 0 )
-            {
-                StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - "
-                                                     + err.getOutput() );
-                throw new Exception( msg.toString() );
-            }
-        }
-        catch ( CommandLineException e )
-        {
-            throw new Exception( "Unable to execute command: " + e.getMessage(), e );
-        }
+        executeCommandLine( cmd );
     }
 
-    private void setExecutable( File path )
+    /**
+     * Make the file executable for Unix box.
+     *
+     * @param path not null
+     * @throws IOException if any
+     */
+    private static void makeExecutable( File path )
         throws IOException
     {
+        if ( path == null )
+        {
+            throw new IllegalArgumentException( "The file is null" );
+        }
+
+        if ( !path.isFile() )
+        {
+            throw new IllegalArgumentException( "The file '" + path.getAbsolutePath() + "' should be a file" );
+        }
+
         if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             Process proc = Runtime.getRuntime().exec( new String[] { "chmod", "a+x", path.getAbsolutePath() } );
@@ -594,4 +535,80 @@ public class CommandlineTest
         }
     }
 
+    /**
+     * Create and execute a script file in the given dir with the given content. The script file will be called
+     * <code>echo.bat</code> for Windows box, otherwise <code>echo</code>.
+     *
+     * @param dir the parent dir where echo.bat or echo will be created
+     * @param content the content of the script file
+     * @throws Exception if any
+     */
+    private static void createAndCallScript( File dir, String content )
+        throws Exception
+    {
+        if ( !dir.exists() )
+        {
+            assertTrue( "Can't create dir:" + dir.getAbsolutePath(), dir.mkdirs() );
+        }
+
+        // Create a script file
+        File bat;
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
+        {
+            bat = new File( dir, "echo.bat" );
+        }
+        else
+        {
+            bat = new File( dir, "echo" );
+        }
+
+        Writer w = new FileWriter( bat );
+        try
+        {
+            IOUtil.copy( content, w );
+        }
+        finally
+        {
+            IOUtil.close( w );
+        }
+
+        // Change permission
+        makeExecutable( bat );
+
+        Commandline cmd = new Commandline();
+        cmd.setExecutable( bat.getAbsolutePath() );
+        cmd.setWorkingDirectory( dir );
+
+        // Execute the script file
+        executeCommandLine( cmd );
+    }
+
+    /**
+     * Execute the command line
+     *
+     * @param cmd not null
+     * @throws Exception if any
+     */
+    private static void executeCommandLine( Commandline cmd )
+        throws Exception
+    {
+        CommandLineUtils.StringStreamConsumer err = new CommandLineUtils.StringStreamConsumer();
+
+        try
+        {
+            System.out.println( "Command line is: " + StringUtils.join( cmd.getShellCommandline(), " " ) );
+
+            int exitCode = CommandLineUtils.executeCommandLine( cmd, new DefaultConsumer(), err );
+
+            if ( exitCode != 0 )
+            {
+                StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - " + err.getOutput() );
+                throw new Exception( msg.toString() );
+            }
+        }
+        catch ( CommandLineException e )
+        {
+            throw new Exception( "Unable to execute command: " + e.getMessage(), e );
+        }
+    }
 }

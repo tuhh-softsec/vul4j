@@ -74,13 +74,7 @@ public class BourneShell
             return super.getExecutable();
         }
 
-        if ( ( super.getExecutable() != null ) && ( super.getExecutable().indexOf( " " ) == -1 )
-            && ( super.getExecutable().indexOf( "'" ) != -1 ) )
-        {
-            return StringUtils.replace( super.getExecutable(), "'", "\\\'" );
-        }
-
-        return super.getExecutable();
+        return unifyQuotes( super.getExecutable());
     }
 
     public List getShellArgsList()
@@ -129,12 +123,8 @@ public class BourneShell
         String dir = getWorkingDirectoryAsString();
         StringBuffer sb = new StringBuffer();
         sb.append( "cd " );
-        if ( dir != null && dir.indexOf( " " ) == -1 && dir.indexOf( "'" ) != -1 )
-        {
-            dir = StringUtils.replace( dir, "'", "\\\'" );
-        }
 
-        sb.append( StringUtils.quoteAndEscape( dir, '\"' ) );
+        sb.append( unifyQuotes( dir ) );
         sb.append( " && " );
 
         return sb.toString();
@@ -143,5 +133,37 @@ public class BourneShell
     protected char[] getQuotingTriggerChars()
     {
         return BASH_QUOTING_TRIGGER_CHARS;
+    }
+
+    /**
+     * <p>Unify quotes in a path for the Bourne Shell.</p>
+     *
+     * <pre>
+     * BourneShell.unifyQuotes(null)                       = null
+     * BourneShell.unifyQuotes("")                         = (empty)
+     * BourneShell.unifyQuotes("/test/quotedpath'abc")     = /test/quotedpath\'abc
+     * BourneShell.unifyQuotes("/test/quoted path'abc")    = "/test/quoted path'abc"
+     * BourneShell.unifyQuotes("/test/quotedpath\"abc")    = "/test/quotedpath\"abc"
+     * BourneShell.unifyQuotes("/test/quoted path\"abc")   = "/test/quoted path\"abc"
+     * BourneShell.unifyQuotes("/test/quotedpath\"'abc")   = "/test/quotedpath\"'abc"
+     * BourneShell.unifyQuotes("/test/quoted path\"'abc")  = "/test/quoted path\"'abc"
+     * </pre>
+     *
+     * @param path not null path.
+     * @return the path unified correctly for the Bourne shell.
+     */
+    protected static String unifyQuotes( String path )
+    {
+        if ( path == null )
+        {
+            return null;
+        }
+
+        if ( path.indexOf( " " ) == -1 && path.indexOf( "'" ) != -1 && path.indexOf( "\"" ) == -1 )
+        {
+            return StringUtils.escape( path );
+        }
+
+        return StringUtils.quoteAndEscape( path, '\"', BASH_QUOTING_TRIGGER_CHARS );
     }
 }
