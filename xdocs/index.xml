@@ -79,7 +79,7 @@ download the files.
 </section>
 
 <section name="Releases">
-    <subsection name='Digester 2.0 Release (December 2008)'>
+    <subsection name='Digester 2.0 Release (January 2009)'>
         <p>
 Digester 2.0 is a major release. New projects are encouraged to use this release
 of digester. There are breaking changes from Digester 1.8, see release notes
@@ -108,13 +108,15 @@ It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
         </p>
     </subsection>
 
-    <subsection name='Digester 1.8 Release (December 2006)'>
+    <subsection name='Digester 1.8.1 Release (January 2009)'>
         <p>
-Digester 1.8 was a minor bugfix and maintenance release. A few small features were added.
-See the release notes for more details.
+Digester 1.8.1 is a minor bugfix and maintenance release. Existing projects
+using Digester 1.8 are encouraged to upgrade to the 1.8.1 release. New projects
+are encouraged to use Digester 2.0, which requires JDK 1.5. See the release
+notes for more details.
         </p>
         <p>
-The dependencies for Digester 1.8 are identical to the dependencies for Digester 1.7.
+The dependencies for Digester 1.8.1 are identical to the dependencies for Digester 1.8.
         </p>
         <p>
 Digester 1.x versions had a dependency on
@@ -124,7 +126,7 @@ releases (1.7.0 or above) (which include the stable collections ArrayStack class
 necessary).
         </p>
         <p>
-The recommended dependency set for Digester 1.8 is:
+The recommended dependency set for Digester 1.8.1 is:
         </p>
 <table>
 <tr>
@@ -132,12 +134,12 @@ The recommended dependency set for Digester 1.8 is:
 </tr>
 <tr>
 <td>Digester</td>
-<td>+Logging 1.1.x</td>
-<td>+BeanUtils 1.7</td>
+<td>+Logging 1.1.1</td>
+<td>+BeanUtils 1.8.0</td>
 </tr>
 </table>
         <p>
-Other compatible dependency sets for Digester 1.8 can be summarized as follows:
+Other compatible dependency sets for Digester 1.8.1 can be summarized as follows:
         </p>
 <table>
 <tr>
@@ -157,7 +159,7 @@ Other compatible dependency sets for Digester 1.8 can be summarized as follows:
 </tr>
 </table>
         <p>
-It is also possible to use Logging 1.0.x instead.
+It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
         </p>
     </subsection>
     <subsection name='Downloading'>
