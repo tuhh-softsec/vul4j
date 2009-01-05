@@ -41,15 +41,15 @@
       <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-2.0/docs/api"/>
       <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-2.0/RELEASE-NOTES.txt"/>
     </menu>
+    <menu name="Release 1.8.1">
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.8.1/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
+      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.8.1/docs/api"/>
+      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.8.1/RELEASE-NOTES.txt"/>
+    </menu>
     <menu name="Release 1.8">
       <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.8/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
       <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.8/docs/api"/>
       <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.8/RELEASE-NOTES.txt"/>
-    </menu>
-    <menu name="Release 1.7">
-      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.7/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
-      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.7/docs/api"/>
-      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.7/RELEASE-NOTES.txt"/>
     </menu>
 
   </body>
