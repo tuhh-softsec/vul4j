@@ -1,20 +1,19 @@
 package org.codehaus.plexus.util.introspection;
 
-/* ====================================================================
- *   Copyright 2001-2004 The Apache Software Foundation.
+/*
+ * Copyright The Codehaus Foundation.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- * ====================================================================
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import java.lang.reflect.Method;
@@ -129,7 +128,7 @@ public class ClassMap
         }
 
         // Yes, this might just be null.
-        
+
         return (Method) cacheEntry;
     }
 
@@ -157,7 +156,7 @@ public class ClassMap
             Method method = methods[i];
 
             /*
-             *  now get the 'public method', the method declared by a 
+             *  now get the 'public method', the method declared by a
              *  public interface or class. (because the actual implementing
              *  class may be a facade...
              */
@@ -194,7 +193,7 @@ public class ClassMap
         {
             /*
              * If the argument type is primitive then we want
-             * to convert our primitive type signature to the 
+             * to convert our primitive type signature to the
              * corresponding Object type so introspection for
              * methods with primitive types will work correctly.
              */
@@ -254,12 +253,12 @@ public class ClassMap
     private static Method[] getAccessibleMethods( Class clazz )
     {
         Method[] methods = clazz.getMethods();
-        
+
         /*
          *  Short circuit for the (hopefully) majority of cases where the
          *  clazz is public
          */
-        
+
         if ( Modifier.isPublic( clazz.getModifiers() ) )
         {
             return methods;
@@ -311,7 +310,7 @@ public class ClassMap
     private static int getAccessibleMethods( Class clazz, MethodInfo[] methodInfos, int upcastCount )
     {
         int l = methodInfos.length;
-        
+
         /*
          *  if this class is public, then check each of the currently
          *  'non-upcasted' methods to see if we have a match
@@ -409,7 +408,7 @@ public class ClassMap
     public static Method getPublicMethod( Method method )
     {
         Class clazz = method.getDeclaringClass();
-        
+
         /*
          *   Short circuit for (hopefully the majority of) cases where the declaring
          *   class is public.
@@ -458,7 +457,7 @@ public class ClassMap
          *  try the superclass
          */
 
- 
+
         Class superclazz = clazz.getSuperclass();
 
         if ( superclazz != null )

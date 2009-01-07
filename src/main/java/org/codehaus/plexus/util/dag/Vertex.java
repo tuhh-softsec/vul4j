@@ -1,10 +1,20 @@
-/*
- * Created on 2003-09-21
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.codehaus.plexus.util.dag;
+
+/*
+ * Copyright The Codehaus Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,8 +35,8 @@ public class Vertex implements Cloneable, Serializable
     List children = new ArrayList();
 
     List parents = new ArrayList();
-    
-    
+
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -42,7 +52,7 @@ public class Vertex implements Cloneable, Serializable
     // ------------------------------------------------------------
     // Accessors
     // ------------------------------------------------------------
-    
+
 
     /**
      * @return
@@ -143,7 +153,7 @@ public class Vertex implements Cloneable, Serializable
 
     /**
      * Indicates if given vertex has no child
-     * 
+     *
      * @return <code>true</true> if this vertex has no child, <code>false</code> otherwise
      */
     public boolean isLeaf()
@@ -154,7 +164,7 @@ public class Vertex implements Cloneable, Serializable
 
     /**
      * Indicates if given vertex has no parent
-     * 
+     *
      * @return <code>true</true> if this vertex has no parent, <code>false</code> otherwise
      */
     public boolean isRoot()
@@ -165,7 +175,7 @@ public class Vertex implements Cloneable, Serializable
 
     /**
      * Indicates if there is at least one edee leading to or from given vertex
-     * 
+     *
      * @return <code>true</true> if this vertex is connected with other vertex,<code>false</code> otherwise
      */
     public boolean isConnected()

@@ -1,20 +1,19 @@
 package org.codehaus.plexus.util;
 
-/* ====================================================================
- *   Copyright 2001-2004 The Apache Software Foundation.
+/*
+ * Copyright The Codehaus Foundation.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- * ====================================================================
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import org.codehaus.plexus.util.reflection.Reflector;
@@ -326,7 +325,7 @@ public class LineOrientedInterpolatingReader
                     break;
                 }
 
-                // if we reach this point, we have a valid start and end position, which 
+                // if we reach this point, we have a valid start and end position, which
                 // means we have a valid expression. So, we add it to the set of
                 // expressions in need of evaluation.
                 expressions.add( rawLine.substring( start, end + endDelim.length() ) );
@@ -369,13 +368,13 @@ public class LineOrientedInterpolatingReader
 
         return position;
     }
-    
+
     private String findAndReplaceUnlessEscaped(String rawLine, String search, String replace)
     {
         StringBuffer lineBuffer = new StringBuffer( (int)(rawLine.length() * 1.5) );
-        
+
         int lastReplacement = -1;
-        
+
         do
         {
             int nextReplacement = rawLine.indexOf( search, lastReplacement + 1 );
@@ -385,9 +384,9 @@ public class LineOrientedInterpolatingReader
                 {
                     lastReplacement = 0;
                 }
-                
+
                 lineBuffer.append( rawLine.substring( lastReplacement, nextReplacement ) );
-                
+
                 int escIdx = rawLine.indexOf( escapeSeq, lastReplacement + 1 );
                 if(escIdx > -1 && escIdx + escapeSeq.length() == nextReplacement)
                 {
@@ -398,7 +397,7 @@ public class LineOrientedInterpolatingReader
                 {
                     lineBuffer.append( replace );
                 }
-                
+
                 lastReplacement = nextReplacement + search.length();
             }
             else
@@ -407,7 +406,7 @@ public class LineOrientedInterpolatingReader
             }
         }
         while(lastReplacement > -1);
-        
+
         if( lastReplacement < rawLine.length() )
         {
             lineBuffer.append( rawLine.substring( lastReplacement ) );
@@ -415,5 +414,5 @@ public class LineOrientedInterpolatingReader
 
         return lineBuffer.toString();
     }
-    
+
 }

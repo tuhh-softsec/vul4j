@@ -1,5 +1,21 @@
 package org.codehaus.plexus.util.dag;
 
+/*
+ * Copyright The Codehaus Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +96,7 @@ public class DAG implements Cloneable, Serializable
     public Vertex addVertex( final String label )
     {
         Vertex retValue = null;
-        
+
         // check if vertex is alredy in DAG
         if ( vertexMap.containsKey( label ) )
         {
@@ -202,7 +218,7 @@ public class DAG implements Cloneable, Serializable
 
     /**
      * Indicates if there is at least one edge leading to or from vertex of given label
-     * 
+     *
      * @return <code>true</true> if this vertex is connected with other vertex,<code>false</code> otherwise
      */
     public boolean isConnected( final String label )
@@ -230,7 +246,7 @@ public class DAG implements Cloneable, Serializable
         final Vertex vertex = getVertex( label );
 
         final List retValue;
-        
+
         //optimization.
         if ( vertex.isLeaf() )
         {

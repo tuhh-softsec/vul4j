@@ -50,7 +50,7 @@ import java.text.MessageFormat;
  * (following HTTP MIME and XML specifications). All this is nicely explained by Mark Pilgrim in his blog, <a
  * href="http://diveintomark.org/archives/2004/02/13/xml-media-types"> Determining the character encoding of a feed</a>.
  * <p>
- * 
+ *
  * @author Alejandro Abdelnur
  * @version revision 1.17 taken on 26/06/2007 from Rome (see https://rome.dev.java.net/source/browse/rome/src/java/com/sun/syndication/io/XmlReader.java)
  * @deprecated use XmlStreamReader
@@ -84,7 +84,7 @@ public class XmlReader extends Reader
      * Sets the default encoding to use if none is set in HTTP content-type, XML prolog and the rules based on
      * content-type are not adequate. <p/> If it is set to NULL the content-type based rules are used. <p/> By default
      * it is NULL. <p/>
-     * 
+     *
      * @param encoding
      *            charset encoding to default to.
      */
@@ -96,7 +96,7 @@ public class XmlReader extends Reader
     /**
      * Returns the default encoding to use if none is set in HTTP content-type, XML prolog and the rules based on
      * content-type are not adequate. <p/> If it is NULL the content-type based rules are used. <p/>
-     * 
+     *
      * @return the default encoding to use.
      */
     public static String getDefaultEncoding()
@@ -112,12 +112,12 @@ public class XmlReader extends Reader
      * <p>
      * It does a lenient charset encoding detection, check the constructor with the lenient parameter for details.
      * <p>
-     * 
+     *
      * @param file
      *            File to create a Reader from.
      * @throws IOException
      *             thrown if there is a problem reading the file.
-     * 
+     *
      */
     public XmlReader( File file ) throws IOException
     {
@@ -131,12 +131,12 @@ public class XmlReader extends Reader
      * <p>
      * It does a lenient charset encoding detection, check the constructor with the lenient parameter for details.
      * <p>
-     * 
+     *
      * @param is
      *            InputStream to create a Reader from.
      * @throws IOException
      *             thrown if there is a problem reading the stream.
-     * 
+     *
      */
     public XmlReader( InputStream is ) throws IOException
     {
@@ -161,7 +161,7 @@ public class XmlReader extends Reader
      * <p>
      * If lenient detection is indicated an XmlStreamReaderException is never thrown.
      * <p>
-     * 
+     *
      * @param is
      *            InputStream to create a Reader from.
      * @param lenient
@@ -170,7 +170,7 @@ public class XmlReader extends Reader
      *             thrown if there is a problem reading the stream.
      * @throws XmlStreamReaderException
      *             thrown if the charset encoding could not be determined according to the specs.
-     * 
+     *
      */
     public XmlReader( InputStream is, boolean lenient ) throws IOException, XmlStreamReaderException
     {
@@ -203,12 +203,12 @@ public class XmlReader extends Reader
      * <p>
      * It does a lenient charset encoding detection, check the constructor with the lenient parameter for details.
      * <p>
-     * 
+     *
      * @param url
      *            URL to create a Reader from.
      * @throws IOException
      *             thrown if there is a problem reading the stream of the URL.
-     * 
+     *
      */
     public XmlReader( URL url ) throws IOException
     {
@@ -226,12 +226,12 @@ public class XmlReader extends Reader
      * <p>
      * It does a lenient charset encoding detection, check the constructor with the lenient parameter for details.
      * <p>
-     * 
+     *
      * @param conn
      *            URLConnection to create a Reader from.
      * @throws IOException
      *             thrown if there is a problem reading the stream of the URLConnection.
-     * 
+     *
      */
     public XmlReader( URLConnection conn ) throws IOException
     {
@@ -281,14 +281,14 @@ public class XmlReader extends Reader
      * <p>
      * It does a lenient charset encoding detection, check the constructor with the lenient parameter for details.
      * <p>
-     * 
+     *
      * @param is
      *            InputStream to create the reader from.
      * @param httpContentType
      *            content-type header to use for the resolution of the charset encoding.
      * @throws IOException
      *             thrown if there is a problem reading the file.
-     * 
+     *
      */
     public XmlReader( InputStream is, String httpContentType ) throws IOException
     {
@@ -316,7 +316,7 @@ public class XmlReader extends Reader
      * <p>
      * If lenient detection is indicated an XmlStreamReaderException is never thrown.
      * <p>
-     * 
+     *
      * @param is
      *            InputStream to create the reader from.
      * @param httpContentType
@@ -327,7 +327,7 @@ public class XmlReader extends Reader
      *             thrown if there is a problem reading the file.
      * @throws XmlStreamReaderException
      *             thrown if the charset encoding could not be determined according to the specs.
-     * 
+     *
      */
     public XmlReader( InputStream is, String httpContentType, boolean lenient, String defaultEncoding )
         throws IOException, XmlStreamReaderException
@@ -371,7 +371,7 @@ public class XmlReader extends Reader
      * <p>
      * If lenient detection is indicated an XmlStreamReaderException is never thrown.
      * <p>
-     * 
+     *
      * @param is
      *            InputStream to create the reader from.
      * @param httpContentType
@@ -382,7 +382,7 @@ public class XmlReader extends Reader
      *             thrown if there is a problem reading the file.
      * @throws XmlStreamReaderException
      *             thrown if the charset encoding could not be determined according to the specs.
-     * 
+     *
      */
     public XmlReader( InputStream is, String httpContentType, boolean lenient ) throws IOException, XmlStreamReaderException
     {
@@ -426,9 +426,9 @@ public class XmlReader extends Reader
     /**
      * Returns the charset encoding of the XmlReader.
      * <p>
-     * 
+     *
      * @return charset encoding.
-     * 
+     *
      */
     public String getEncoding()
     {
@@ -443,10 +443,10 @@ public class XmlReader extends Reader
     /**
      * Closes the XmlReader stream.
      * <p>
-     * 
+     *
      * @throws IOException
      *             thrown if there was a problem closing the stream.
-     * 
+     *
      */
     public void close() throws IOException
     {

@@ -1,5 +1,21 @@
 package org.codehaus.plexus.util.xml;
 
+/*
+ * Copyright The Codehaus Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,25 +28,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 /**
  * Character stream that handles (or at least attemtps to) all the necessary Voodo to figure out the charset encoding of
  * the XML document written to the stream.
@@ -42,26 +39,26 @@ public class XmlStreamWriter
 extends Writer
 {
     private static final int BUFFER_SIZE = 4096;
-    
+
     private StringWriter xmlPrologWriter = new StringWriter( BUFFER_SIZE );
-    
+
     private OutputStream out;
 
     private Writer writer;
 
     private String encoding;
-    
+
     public XmlStreamWriter( OutputStream out )
     {
         this.out = out;
     }
-    
+
     public XmlStreamWriter( File file )
     throws FileNotFoundException
     {
         this( new FileOutputStream( file ) );
     }
-    
+
     public String getEncoding()
     {
         return encoding;
@@ -98,7 +95,7 @@ extends Writer
             size = BUFFER_SIZE - xmlProlog.length();
         }
         xmlPrologWriter.write( cbuf, off, size );
-        
+
         // try to determine encoding
         if ( xmlProlog.length() >= 5 )
         {
@@ -148,7 +145,7 @@ extends Writer
             }
         }
     }
-    
+
     public void write( char[] cbuf, int off, int len )
     throws IOException
     {

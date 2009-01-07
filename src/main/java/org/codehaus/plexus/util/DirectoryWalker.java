@@ -1,13 +1,13 @@
 package org.codehaus.plexus.util;
 
 /*
- * Copyright 2001-2006 The Apache Software Foundation.
+ * Copyright The Codehaus Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -60,7 +60,7 @@ public class DirectoryWalker
 
         /**
          * Create a DirStackEntry.
-         * 
+         *
          * @param d the directory to track
          * @param length the length of entries in the directory.
          */
@@ -73,7 +73,7 @@ public class DirectoryWalker
         /**
          * Calculate the next percentage offset.
          * Used by the next DirStackEntry.
-         * 
+         *
          * @return the value for the next percentage offset.
          */
         public double getNextPercentageOffset()
@@ -84,7 +84,7 @@ public class DirectoryWalker
         /**
          * Calculate the next percentage size.
          * Used by the next DirStackEntry.
-         * 
+         *
          * @return the value for the next percentage size.
          */
         public double getNextPercentageSize()
@@ -95,7 +95,7 @@ public class DirectoryWalker
         /**
          * The percentage of the DirStackEntry right now.
          * Based on count, index, percentageOffset, and percentageSize.
-         * 
+         *
          * @return the percentage right now.
          */
         public int getPercentage()
@@ -152,7 +152,7 @@ public class DirectoryWalker
     }
 
     /**
-     * Add's to the Exclude List the default list of SCM excludes. 
+     * Add's to the Exclude List the default list of SCM excludes.
      */
     public void addSCMExcludes()
     {
@@ -282,8 +282,8 @@ public class DirectoryWalker
     }
 
     /**
-     * Removes a DirectoryWalkListener. 
-     * 
+     * Removes a DirectoryWalkListener.
+     *
      * @param listener the listener to remove.
      */
     public void removeDirectoryWalkListener( DirectoryWalkListener listener )
@@ -292,7 +292,7 @@ public class DirectoryWalker
     }
 
     /**
-     * Performs a Scan against the provided {@link #setBaseDir(File)} 
+     * Performs a Scan against the provided {@link #setBaseDir(File)}
      */
     public void scan()
     {
