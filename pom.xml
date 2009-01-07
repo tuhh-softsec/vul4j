@@ -17,19 +17,27 @@ limitations under the License.
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
-    <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus</artifactId>
     <version>1.0.12</version>
     <relativePath>../pom/pom.xml</relativePath>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-utils</artifactId>
-  <name>Plexus Common Utilities</name>
   <version>1.5.7-SNAPSHOT</version>
+
+  <name>Plexus Common Utilities</name>
   <description>A collection of various utility classes to ease working with strings, files, command lines, XML and more.</description>
   <url>http://plexus.codehaus.org/plexus-utils</url>
+
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
+  </scm>
   <issueManagement>
     <system>JIRA</system>
     <url>http://jira.codehaus.org/browse/PLXUTILS</url>
@@ -159,11 +167,6 @@ limitations under the License.
     </profile>
   </profiles>
 
-  <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
-  </scm>
   <reporting>
     <plugins>
       <plugin>
