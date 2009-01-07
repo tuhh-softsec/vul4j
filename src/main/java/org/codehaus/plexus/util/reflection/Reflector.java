@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Utility class used to instantiate an object using reflection. This utility
  * hides many of the gory details needed to do this.
- * 
+ *
  * @author John Casey
  */
 public final class Reflector
@@ -47,7 +47,7 @@ public final class Reflector
      * Create a new instance of a class, given the array of parameters... Uses
      * constructor caching to find a constructor that matches the parameter
      * types, either specifically (first choice) or abstractly...
-     * 
+     *
      * @param theClass
      *            The class to instantiate
      * @param params
@@ -56,7 +56,8 @@ public final class Reflector
      * @throws ReflectorException
      *             In case anything goes wrong here...
      */
-    public Object newInstance( Class theClass, Object[] params ) throws ReflectorException
+    public Object newInstance( Class theClass, Object[] params )
+        throws ReflectorException
     {
         if ( params == null )
         {
@@ -113,7 +114,7 @@ public final class Reflector
      * Retrieve the singleton instance of a class, given the array of
      * parameters... Uses constructor caching to find a constructor that matches
      * the parameter types, either specifically (first choice) or abstractly...
-     * 
+     *
      * @param theClass
      *            The class to retrieve the singleton of
      * @param initParams
@@ -122,7 +123,8 @@ public final class Reflector
      * @throws ReflectorException
      *             In case anything goes wrong here...
      */
-    public Object getSingleton( Class theClass, Object[] initParams ) throws ReflectorException
+    public Object getSingleton( Class theClass, Object[] initParams )
+        throws ReflectorException
     {
         Class[] paramTypes = new Class[initParams.length];
 
@@ -150,7 +152,7 @@ public final class Reflector
     /**
      * Invoke the specified method on the specified target with the specified
      * params...
-     * 
+     *
      * @param target
      *            The target of the invocation
      * @param methodName
@@ -161,7 +163,8 @@ public final class Reflector
      * @throws ReflectorException
      *             In case of an error looking up or invoking the method.
      */
-    public Object invoke( Object target, String methodName, Object[] params ) throws ReflectorException
+    public Object invoke( Object target, String methodName, Object[] params )
+        throws ReflectorException
     {
         if ( params == null )
         {
@@ -183,7 +186,8 @@ public final class Reflector
             {
                 StringBuffer buffer = new StringBuffer();
 
-                buffer.append( "Singleton-producing method named '" ).append( methodName ).append( "' not found with specified parameter classes: " );
+                buffer.append( "Singleton-producing method named '" ).append( methodName )
+                      .append( "' not found with specified parameter classes: " );
 
                 for ( int i = 0; i < paramTypes.length; i++ )
                 {
@@ -208,7 +212,8 @@ public final class Reflector
         }
     }
 
-    public Object getStaticField( Class targetClass, String fieldName ) throws ReflectorException
+    public Object getStaticField( Class targetClass, String fieldName )
+        throws ReflectorException
     {
         try
         {
@@ -234,51 +239,60 @@ public final class Reflector
         }
     }
 
-    public Object getField( Object target, String fieldName ) throws ReflectorException
+    public Object getField( Object target, String fieldName )
+        throws ReflectorException
     {
         return getField( target, fieldName, false );
     }
-    
-    public Object getField( Object target, String fieldName, boolean breakAccessibility ) throws ReflectorException
-    {
-        try
-        {
-            Class targetClass = target.getClass();
-            Field field = targetClass.getField( fieldName );
-            
-            boolean accessibilityBroken = false;
-            if(!field.isAccessible() && breakAccessibility)
-            {
-                field.setAccessible(true);
-                accessibilityBroken = true;
-            }
 
-            Object result = field.get( target );
-            
-            if(accessibilityBroken)
+    public Object getField( Object target, String fieldName, boolean breakAccessibility )
+        throws ReflectorException
+    {
+        Class targetClass = target.getClass();
+        while ( targetClass != null )
+        {
+            try
             {
-                field.setAccessible(false);
+                Field field = targetClass.getDeclaredField( fieldName );
+
+                boolean accessibilityBroken = false;
+                if ( !field.isAccessible() && breakAccessibility )
+                {
+                    field.setAccessible( true );
+                    accessibilityBroken = true;
+                }
+
+                Object result = field.get( target );
+
+                if ( accessibilityBroken )
+                {
+                    field.setAccessible( false );
+                }
+
+                return result;
             }
-            
-            return result;
+            catch ( SecurityException e )
+            {
+                throw new ReflectorException( e );
+            }
+            catch ( NoSuchFieldException e )
+            {
+                if ( targetClass == Object.class )
+                    throw new ReflectorException( e );
+                targetClass = targetClass.getSuperclass();
+            }
+            catch ( IllegalAccessException e )
+            {
+                throw new ReflectorException( e );
+            }
         }
-        catch ( SecurityException e )
-        {
-            throw new ReflectorException( e );
-        }
-        catch ( NoSuchFieldException e )
-        {
-            throw new ReflectorException( e );
-        }
-        catch ( IllegalAccessException e )
-        {
-            throw new ReflectorException( e );
-        }
+        // Never reached, but needed to satisfy compiler
+        return null;
     }
 
     /**
      * Invoke the specified static method with the specified params...
-     * 
+     *
      * @param targetClass
      *            The target class of the invocation
      * @param methodName
@@ -289,7 +303,8 @@ public final class Reflector
      * @throws ReflectorException
      *             In case of an error looking up or invoking the method.
      */
-    public Object invokeStatic( Class targetClass, String methodName, Object[] params ) throws ReflectorException
+    public Object invokeStatic( Class targetClass, String methodName, Object[] params )
+        throws ReflectorException
     {
         if ( params == null )
         {
@@ -340,7 +355,7 @@ public final class Reflector
     /**
      * Return the constructor, checking the cache first and storing in cache if
      * not already there..
-     * 
+     *
      * @param targetClass
      *            The class to get the constructor from
      * @param params
@@ -350,7 +365,8 @@ public final class Reflector
      * @throws ReflectorException
      *             In case we can't retrieve the proper constructor.
      */
-    public Constructor getConstructor( Class targetClass, Class[] params ) throws ReflectorException
+    public Constructor getConstructor( Class targetClass, Class[] params )
+        throws ReflectorException
     {
         Map constructorMap = getConstructorMap( targetClass );
 
@@ -415,61 +431,85 @@ public final class Reflector
 
         return constructor;
     }
-    
+
     public Object getObjectProperty( Object target, String propertyName )
         throws ReflectorException
     {
-        if(propertyName == null || propertyName.trim().length() < 1)
+        Object returnValue = null;
+
+        if ( propertyName == null || propertyName.trim().length() < 1 )
         {
             throw new ReflectorException( "Cannot retrieve value for empty property." );
         }
-        
-        String beanAccessor = "get" + Character.toUpperCase(propertyName.charAt(0));
-        if(propertyName.trim().length() > 1)
+
+        String beanAccessor = "get" + Character.toUpperCase( propertyName.charAt( 0 ) );
+        if ( propertyName.trim().length() > 1 )
         {
-            beanAccessor += propertyName.substring(1).trim();
+            beanAccessor += propertyName.substring( 1 ).trim();
         }
-        
+
         Class targetClass = target.getClass();
         Class[] emptyParams = {};
-        
+
         Method method = _getMethod( targetClass, beanAccessor, emptyParams );
-        
-        if(method == null)
+        if ( method == null )
         {
             method = _getMethod( targetClass, propertyName, emptyParams );
         }
-        
-        Object returnValue = getField( targetClass, propertyName, true );
-        
-        if( method == null && returnValue == null )
-        {
-            throw new ReflectorException( "Neither method: \'" + propertyName + "\' nor bean accessor: \'" + beanAccessor + "\' can be found for class: \'" + targetClass + "\', and retrieval of field: \'" + propertyName + "\' returned null." );
-        }
-        
-        if(method != null)
+        if ( method != null )
         {
             try
             {
-                returnValue = method.invoke( target, new Object[]{} );
+                returnValue = method.invoke( target, new Object[] {} );
             }
             catch ( IllegalAccessException e )
             {
-                throw new ReflectorException( "Error retrieving property \'" + propertyName + "\' from \'" + targetClass + "\'", e );
+                throw new ReflectorException( "Error retrieving property \'" + propertyName + "\' from \'"
+                    + targetClass + "\'", e );
             }
             catch ( InvocationTargetException e )
             {
-                throw new ReflectorException( "Error retrieving property \'" + propertyName + "\' from \'" + targetClass + "\'", e );
+                throw new ReflectorException( "Error retrieving property \'" + propertyName + "\' from \'"
+                    + targetClass + "\'", e );
             }
         }
-        
+
+        if ( method != null )
+        {
+            try
+            {
+                returnValue = method.invoke( target, new Object[] {} );
+            }
+            catch ( IllegalAccessException e )
+            {
+                throw new ReflectorException( "Error retrieving property \'" + propertyName + "\' from \'"
+                    + targetClass + "\'", e );
+            }
+            catch ( InvocationTargetException e )
+            {
+                throw new ReflectorException( "Error retrieving property \'" + propertyName + "\' from \'"
+                    + targetClass + "\'", e );
+            }
+        }
+        else
+        {
+            returnValue = getField( target, propertyName, true );
+            if ( method == null && returnValue == null )
+            {
+                // TODO: Check if exception is the right action! Field exists, but contains null
+                throw new ReflectorException( "Neither method: \'" + propertyName + "\' nor bean accessor: \'"
+                    + beanAccessor + "\' can be found for class: \'" + targetClass
+                    + "\', and retrieval of field: \'" + propertyName + "\' returned null as value." );
+            }
+        }
+
         return returnValue;
     }
 
     /**
      * Return the method, checking the cache first and storing in cache if not
      * already there..
-     * 
+     *
      * @param targetClass
      *            The class to get the method from
      * @param params
@@ -478,19 +518,21 @@ public final class Reflector
      * @throws ReflectorException
      *             In case we can't retrieve the proper method.
      */
-    public Method getMethod( Class targetClass, String methodName, Class[] params ) throws ReflectorException
+    public Method getMethod( Class targetClass, String methodName, Class[] params )
+        throws ReflectorException
     {
         Method method = _getMethod( targetClass, methodName, params );
-        
+
         if ( method == null )
         {
-            throw new ReflectorException( "Method: \'" + methodName + "\' not found in class: \'" + targetClass + "\'" );
+            throw new ReflectorException( "Method: \'" + methodName + "\' not found in class: \'" + targetClass
+                + "\'" );
         }
-        
+
         return method;
     }
-    
-    private Method _getMethod( Class targetClass, String methodName, Class[] params ) 
+
+    private Method _getMethod( Class targetClass, String methodName, Class[] params )
         throws ReflectorException
     {
         Map methodMap = getMethodMap( targetClass, methodName );
@@ -555,21 +597,22 @@ public final class Reflector
 
     /**
      * Retrieve the cache of constructors for the specified class.
-     * 
+     *
      * @param theClass
      *            the class to lookup.
      * @return The cache of constructors.
      * @throws ReflectorException
      *             in case of a lookup error.
      */
-    private Map getConstructorMap( Class theClass ) throws ReflectorException
+    private Map getConstructorMap( Class theClass )
+        throws ReflectorException
     {
         return getMethodMap( theClass, CONSTRUCTOR_METHOD_NAME );
     }
 
     /**
      * Retrieve the cache of methods for the specified class and method name.
-     * 
+     *
      * @param theClass
      *            the class to lookup.
      * @param methodName
@@ -578,7 +621,8 @@ public final class Reflector
      * @throws ReflectorException
      *             in case of a lookup error.
      */
-    private Map getMethodMap( Class theClass, String methodName ) throws ReflectorException
+    private Map getMethodMap( Class theClass, String methodName )
+        throws ReflectorException
     {
         Map methodMap = null;
 
