@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * XML Pull Parser is an interface that defines parsing functionlity provided
+ * XML Pull Parser is an interface that defines parsing functionality provided
  * in <a href="http://www.xmlpull.org/">XMLPULL V1 API</a> (visit this website to
  * learn more about API and its implementations).
  *
@@ -22,8 +22,8 @@ import java.io.Reader;
  *   if different value is required necessary must be changed before parsing is started)
  *   then parser behaves like XML 1.0 compliant non-validating parser under condition that
  *  <em>no DOCDECL is present</em> in XML documents
- *   (internal entites can still be defined with defineEntityReplacementText()).
- *   This mode of operation is intened <b>for operation in constrained environments</b> such as J2ME.
+ *   (internal entities can still be defined with defineEntityReplacementText()).
+ *   This mode of operation is intended <b>for operation in constrained environments</b> such as J2ME.
  * </ul>
  *
  *
@@ -42,10 +42,10 @@ import java.io.Reader;
  * state and is identical to the value returned from following calls to
  * getEventType ().
  *
- * <p>Th following event types are seen by next()<dl>
+ * <p>The following event types are seen by next()<dl>
  * <dt><a href="#START_TAG">START_TAG</a><dd> An XML start tag was read.
  * <dt><a href="#TEXT">TEXT</a><dd> Text content was read;
- * the text content can be retreived using the getText() method.
+ * the text content can be retrieved using the getText() method.
  *  (when in validating mode next() will not report ignorable whitespaces, use nextToken() instead)
  * <dt><a href="#END_TAG">END_TAG</a><dd> An end tag was read
  * <dt><a href="#END_DOCUMENT">END_DOCUMENT</a><dd> No more events are available
@@ -62,7 +62,7 @@ import java.io.Reader;
  *  getProperty(&quot;<a href="http://xmlpull.org/v1/doc/features.html#xmldecl-standalone">http://xmlpull.org/v1/doc/features.html#xmldecl-standalone</a>&quot;)
  *       returns Boolean: null if there was no standalone declaration
  *  or if property is not supported
- *         otherwise returns Boolean(true) if standalon="yes" and Boolean(false) when standalone="no"
+ *         otherwise returns Boolean(true) if standalone="yes" and Boolean(false) when standalone="no"
  * <li><b>encoding</b>: obtained from getInputEncoding()
  *       null if stream had unknown encoding (not set in setInputStream)
  *           and it was not declared in XMLDecl
@@ -220,9 +220,9 @@ public interface XmlPullParser {
      * Also, when the state was reached by calling next(), the text value will
      * be normalized, whereas getText() will
      * return unnormalized content in the case of nextToken(). This allows
-     * an exact roundtrip without chnanging line ends when examining low
+     * an exact roundtrip without changing line ends when examining low
      * level events, whereas for high level applications the text is
-     * normalized apropriately.
+     * normalized appropriately.
      *
      * @see #next
      * @see #nextToken
@@ -238,7 +238,7 @@ public interface XmlPullParser {
      * this token is available only from calls to <a href="#nextToken()">nextToken()</a>.
      * A call to next() will accumulate various text events into a single event
      * of type TEXT. The text contained in the CDATA section is available
-     * by callling getText().
+     * by calling getText().
      *
      * @see #nextToken
      * @see #getText
@@ -250,7 +250,7 @@ public interface XmlPullParser {
      * this token is available from <a href="#nextToken()">nextToken()</a>
      * only. The entity name is available by calling getName(). If available,
      * the replacement text can be obtained by calling getTextt(); otherwise,
-     * the user is responsibile for resolving the entity reference.
+     * the user is responsible for resolving the entity reference.
      * This event type is never returned from next(); next() will
      * accumulate the replacement text and other text
      * events to a single TEXT event.
@@ -322,7 +322,7 @@ public interface XmlPullParser {
      * the string "START_TAG".
      *
      * This array is intended for diagnostic output only. Relying
-     * on the contents of the array may be dangerous since malicous
+     * on the contents of the array may be dangerous since malicious
      * applications may alter the array, although it is final, due
      * to limitations of the Java language.
      */

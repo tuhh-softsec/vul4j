@@ -75,7 +75,7 @@ public class MXParser
 
     private static final boolean TRACE_SIZING = false;
 
-    // NOTE: features are not resetable and typicaly defaults to false ...
+    // NOTE: features are not resetable and typically defaults to false ...
     protected boolean processNamespaces;
     protected boolean roundtripSupported;
 
@@ -271,7 +271,7 @@ public class MXParser
     protected static final int fastHash( char ch[], int off, int len ) {
         if(len == 0) return 0;
         //assert len >0
-        int hash = ch[off]; // hash at beginnig
+        int hash = ch[off]; // hash at beginning
         //try {
         hash = (hash << 7) + ch[ off +  len - 1 ]; // hash at the end
         //} catch(ArrayIndexOutOfBoundsException aie) {
@@ -565,7 +565,7 @@ public class MXParser
         //protected char[] entityReplacement[];
         ensureEntityCapacity();
 
-        // this is to make sure that if interning works we wil take advatage of it ...
+        // this is to make sure that if interning works we will take advantage of it ...
         this.entityName[entityEnd] = newString(entityName.toCharArray(), 0, entityName.length());
         entityNameBuf[entityEnd] = entityName.toCharArray();
 
@@ -1148,7 +1148,7 @@ public class MXParser
             // when true there is some potential event TEXT to return - keep gathering
             boolean hadCharData = false;
 
-            // when true TEXT data is not continous (like <![CDATA[text]]>) and requires PC merging
+            // when true TEXT data is not continuous (like <![CDATA[text]]>) and requires PC merging
             boolean needsMerging = false;
 
             MAIN_LOOP:
@@ -1183,7 +1183,7 @@ public class MXParser
                             }
                         } else if(ch == '[') {
                             //posEnd = pos - 3;
-                            // must remeber previous posStart/End as it merges with content of CDATA
+                            // must remember previous posStart/End as it merges with content of CDATA
                             //int oldStart = posStart + bufAbsoluteStart;
                             //int oldEnd = posEnd + bufAbsoluteStart;
                             parseCDSect(hadCharData);
@@ -1353,7 +1353,7 @@ public class MXParser
                             if(ch == '\r') {
                                 normalizedCR = true;
                                 posEnd = pos -1;
-                                // posEnd is alreadys set
+                                // posEnd is already set
                                 if(!usePC) {
                                     if(posEnd > posStart) {
                                         joinPC();
@@ -1384,7 +1384,7 @@ public class MXParser
                         ch = more();
                     } while(ch != '<' && ch != '&');
                     posEnd = pos - 1;
-                    continue MAIN_LOOP;  // skip ch = more() from below - we are alreayd ahead ...
+                    continue MAIN_LOOP;  // skip ch = more() from below - we are already ahead ...
                 }
                 ch = more();
             } // endless while(true)
@@ -1413,7 +1413,7 @@ public class MXParser
         if(eventType == START_DOCUMENT) {
             // bootstrap parsing with getting first character input!
             // deal with BOM
-            // detect BOM and frop it (Unicode int Order Mark)
+            // detect BOM and crop it (Unicode int Order Mark)
             if(ch == '\uFFFE') {
                 throw new XmlPullParserException(
                     "first character in input was UNICODE noncharacter (0xFFFE)"+
@@ -1485,7 +1485,7 @@ public class MXParser
                         normalizedCR = true;
                         //posEnd = pos -1;
                         //joinPC();
-                        // posEnd is alreadys set
+                        // posEnd is already set
                         if(!usePC) {
                             posEnd = pos -1;
                             if(posEnd > posStart) {
@@ -1596,7 +1596,7 @@ public class MXParser
                                 normalizedCR = true;
                                 //posEnd = pos -1;
                                 //joinPC();
-                                // posEnd is alreadys set
+                                // posEnd is already set
                                 if(!usePC) {
                                     posEnd = pos -1;
                                     if(posEnd > posStart) {
@@ -1636,8 +1636,8 @@ public class MXParser
                 }
             }
 
-            // throw Exceptin("unexpected content in epilog
-            // cach EOFException return END_DOCUEMENT
+            // throw Exception("unexpected content in epilog
+            // catch EOFException return END_DOCUMENT
             //try {
         } catch(EOFException ex) {
             reachedEnd = true;
@@ -2107,7 +2107,7 @@ public class MXParser
                     prefixHash = namespacePrefixHash[ namespaceEnd ] = name.hashCode();
                 }
             } else {
-                // declare  new default namespace ...
+                // declare new default namespace...
                 namespacePrefix[ namespaceEnd ] = null; //""; //null; //TODO check FIXME Alek
                 if(!allStringsInterned) {
                     prefixHash = namespacePrefixHash[ namespaceEnd ] = -1;
@@ -2587,7 +2587,7 @@ public class MXParser
         }
         final int versionEnd = pos - 1;
         parseXmlDeclWithVersion(versionStart, versionEnd);
-        preventBufferCompaction = false; // alow again buffer commpaction - pos MAY chnage
+        preventBufferCompaction = false; // allow again buffer commpaction - pos MAY chnage
     }
     //protected String xmlDeclVersion;
 

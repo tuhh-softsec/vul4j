@@ -10,7 +10,7 @@ import java.io.Writer;
 
 /**
  * Implementation of XmlSerializer interface from XmlPull V1 API.
- * This implementation is optimzied for performance and low memory footprint.
+ * This implementation is optimized for performance and low memory footprint.
  *
  * <p>Implemented features:<ul>
  *  <li> FEATURE_NAMES_INTERNED - when enabled all returned names
@@ -74,7 +74,7 @@ public class MXSerializer implements XmlSerializer {
     protected boolean seenBracket;
     protected boolean seenBracketBracket;
 
-    // buffer output if neede to write escaped String see text(String)
+    // buffer output if needed to write escaped String see text(String)
     private static final int BUF_LEN = Runtime.getRuntime().freeMemory() > 1000000L ? 8*1024 : 256;
     protected char buf[] = new char[ BUF_LEN ];
 
@@ -124,7 +124,7 @@ public class MXSerializer implements XmlSerializer {
         //assert XMLNS_URI == XMLNS_URI.intern();
 
         //TODO: how to prevent from reporting this namespace?
-        // this is special namespace declared for consistensy with XML infoset
+        // this is special namespace declared for consistency with XML infoset
         namespacePrefix[ namespaceEnd ] = "xmlns";
         namespaceUri[ namespaceEnd ] = XMLNS_URI;
         ++namespaceEnd;
@@ -574,11 +574,11 @@ public class MXSerializer implements XmlSerializer {
                 //ALEK: in future make it as feature on serializer
                 String prefix = null;
                 if(depth > 0 && (namespaceEnd - elNamespaceCount[depth-1]) == 1) {
-                    // if only one prefix was declared un-declare it ifprefix is alredy declared on parent el with the same URI
+                    // if only one prefix was declared un-declare it if prefix is already declared on parent el with the same URI
                     String uri = namespaceUri[namespaceEnd-1];
                     if(uri == namespace || uri.equals(namespace)) {
                         String elPfx = namespacePrefix[namespaceEnd-1];
-                        // 2 == to skip predefined namesapces (xml and xmlns ...)
+                        // 2 == to skip predefined namespaces (xml and xmlns ...)
                         for(int pos = elNamespaceCount[depth-1] - 1; pos >= 2; --pos ) {
                             String pf = namespacePrefix[pos];
                             if(pf == elPfx || pf.equals(elPfx)) {
@@ -681,7 +681,7 @@ public class MXSerializer implements XmlSerializer {
                 throw new IllegalArgumentException("trying to close start tag that is not opened"+getLocation());
             }
 
-            // write all namespace delcarations!
+            // write all namespace declarations!
             writeNamespaceDeclarations();
             out.write('>');
             elNamespaceCount[ depth ] = namespaceEnd;
@@ -916,7 +916,7 @@ public class MXSerializer implements XmlSerializer {
 
     protected void writeElementContent(String text, Writer out) throws IOException
     {
-        // esccape '<', '&', ']]>', <32 if necessary
+        // escape '<', '&', ']]>', <32 if necessary
         int pos = 0;
         for (int i = 0; i < text.length(); i++)
         {
@@ -986,7 +986,7 @@ public class MXSerializer implements XmlSerializer {
 
     protected void writeElementContent(char[] buf, int off, int len, Writer out) throws IOException
     {
-        // esccape '<', '&', ']]>'
+        // escape '<', '&', ']]>'
         final int end = off + len;
         int pos = off;
         for (int i = off; i < end; i++)
