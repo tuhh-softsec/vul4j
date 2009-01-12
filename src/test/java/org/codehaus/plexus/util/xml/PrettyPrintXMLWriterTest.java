@@ -43,8 +43,7 @@ public class PrettyPrintXMLWriterTest
     {
         super.setUp();
 
-        w = new StringWriter();
-        writer = new PrettyPrintXMLWriter( w );
+        initWriter();
     }
 
     /** {@inheritDoc} */
@@ -55,6 +54,12 @@ public class PrettyPrintXMLWriterTest
 
         writer = null;
         w = null;
+    }
+
+    private void initWriter()
+    {
+        w = new StringWriter();
+        writer = new PrettyPrintXMLWriter( w );
     }
 
     public void testDefaultPrettyPrintXMLWriter()
@@ -100,6 +105,29 @@ public class PrettyPrintXMLWriterTest
         assertEquals( expectedResult( "    ", PrettyPrintXMLWriter.LS ), w.toString() );
     }
 
+    public void testEscapeXmlAttribute()
+    {
+        // Windows
+        writer.startElement( Tag.DIV.toString() );
+        writer.addAttribute( "class", "sect\r\nion" );
+        writer.endElement(); // Tag.DIV
+        assertEquals( "<div class=\"sect&#10;ion\"/>", w.toString() );
+
+        // Mac
+        initWriter();
+        writer.startElement( Tag.DIV.toString() );
+        writer.addAttribute( "class", "sect\rion" );
+        writer.endElement(); // Tag.DIV
+        assertEquals( "<div class=\"sect&#13;ion\"/>", w.toString() );
+
+        // Unix
+        initWriter();
+        writer.startElement( Tag.DIV.toString() );
+        writer.addAttribute( "class", "sect\nion" );
+        writer.endElement(); // Tag.DIV
+        assertEquals( "<div class=\"sect&#10;ion\"/>", w.toString() );
+    }
+
     private void writeXhtmlHead( XMLWriter writer )
     {
         writer.startElement( Tag.HEAD.toString() );
@@ -119,7 +147,6 @@ public class PrettyPrintXMLWriterTest
 
     private void writeXhtmlBody( XMLWriter writer )
     {
-
         writer.startElement( Tag.BODY.toString() );
         writer.startElement( Tag.P.toString() );
         writer.writeText( "Paragraph 1, line 1. Paragraph 1, line 2." );

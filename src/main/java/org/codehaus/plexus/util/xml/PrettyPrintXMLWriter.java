@@ -225,7 +225,8 @@ public class PrettyPrintXMLWriter
     {
         text = escapeXml( text );
 
-        text = text.replaceAll( "\n\r", "&#10;" );
+        // Windows
+        text = text.replaceAll( "\r\n", "&#10;" );
 
         Pattern pattern = Pattern.compile( "([\000-\037])" );
         Matcher m = pattern.matcher( text );
