@@ -28,7 +28,6 @@ import java.util.Set;
 
 /**
  * @author <a href="mailto:olamy@codehaus.org">olamy</a>
- * @since 28 f�vr. 07
  * @version $Id$
  */
 public class CollectionUtils
