@@ -170,6 +170,16 @@ public class FileUtils
     }
 
     /**
+     * @return the default excludes pattern as comma separated string.
+     * @see DirectoryScanner#DEFAULTEXCLUDES
+     * @see StringUtils#join(Object[], String)
+     */
+    public static String getDefaultExcludesAsString()
+    {
+        return StringUtils.join( DirectoryScanner.DEFAULTEXCLUDES, "," );
+    }
+
+    /**
      * Returns a human-readable version of the file size (original is in
      * bytes).
      *
