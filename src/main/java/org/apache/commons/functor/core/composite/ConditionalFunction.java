@@ -74,7 +74,11 @@ public final class ConditionalFunction<T> implements Function<T>, Serializable {
      * {@inheritDoc}
      */
     public T evaluate() {
-        return ifPred.test() ? thenFunc.evaluate() : elseFunc.evaluate();
+        if (ifPred.test()) {
+            return thenFunc.evaluate();
+        } else {
+            return elseFunc.evaluate();
+        }
     }
 
     /**

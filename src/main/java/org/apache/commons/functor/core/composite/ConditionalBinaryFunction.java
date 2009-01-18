@@ -76,7 +76,11 @@ public final class ConditionalBinaryFunction<L, R, T> implements BinaryFunction<
      * {@inheritDoc}
      */
     public T evaluate(L left, R right) {
-        return ifPred.test(left, right) ? thenFunc.evaluate(left, right) : elseFunc.evaluate(left, right);
+        if (ifPred.test(left, right)) {
+            return thenFunc.evaluate(left, right);
+        } else {
+            return elseFunc.evaluate(left, right);
+        }
     }
 
     /**

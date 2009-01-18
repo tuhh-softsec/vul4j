@@ -75,7 +75,11 @@ public final class ConditionalUnaryFunction<A, T> implements UnaryFunction<A, T>
      * {@inheritDoc}
      */
     public T evaluate(A obj) {
-        return ifPred.test(obj) ? thenFunc.evaluate(obj) : elseFunc.evaluate(obj);
+        if (ifPred.test(obj)) {
+            return thenFunc.evaluate(obj);
+        } else {
+            return elseFunc.evaluate(obj);
+        }
     }
 
     /**
