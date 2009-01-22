@@ -75,18 +75,17 @@ public class AggregateRendererRegionParser implements IRegionParser {
 	    String page = openTag.getToken(2);
 	    String blockOrTemplate = (openTag.countTokens() == 4) ? openTag
 		    .getToken(3) : null;
-	    Tag closeTag = null;
-	    // FIXME [stas]: parser will fail with following sequence:
-	    // FIXME [stas]: [includeblock, includeblock, endincludeblock]
 	    if ("includeblock".equals(openTag.getToken(0))) {
-		closeTag = Tag.findNext("endincludeblock", content, openTag);
-		if (closeTag == null) {
+		Tag closeTag = Tag.findNext("", content, openTag);
+		if (closeTag == null
+			|| !"endincludeblock".equals(closeTag.getToken(0))) {
 		    closeTag = openTag;
 		}
 		return new Result(new IncludeBlockRegion(provider, page,
 			blockOrTemplate), closeTag.getEndIndex());
 	    } else if ("includetemplate".equals(openTag.getToken(0))) {
-		closeTag = Tag.findNext("endincludetemplate", content, openTag);
+		Tag closeTag = Tag.findNext("endincludetemplate", content,
+			openTag);
 		return new Result(new IncludeTemplateRegion(provider, page,
 			blockOrTemplate, content.substring(openTag
 				.getEndIndex(), closeTag.getBeginIndex())),

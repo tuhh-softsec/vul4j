@@ -40,10 +40,11 @@ public class AggregateRendererRegionParserTest extends TestCase {
 	AggregateRendererRegionParser tested = new AggregateRendererRegionParser();
 	String content = "content<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->"
 		+ "content<!--$includetemplate$token1$token2--> some text <!--$endincludetemplate-->"
-		+ "content<!--$includeblock$token1$token2-->content";
+		+ "content<!--$includeblock$token1$token2-->content"
+		+ "<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->content";
 	List<IRegion> actual = tested.parse(content);
 	assertNotNull(actual);
-	assertEquals(7, actual.size());
+	assertEquals(9, actual.size());
 	int i = 0;
 	assertNotNull(actual.get(i));
 	assertTrue(actual.get(i) instanceof UnmodifiableRegion);
@@ -70,7 +71,14 @@ public class AggregateRendererRegionParserTest extends TestCase {
 	assertTrue(actual.get(i) instanceof UnmodifiableRegion);
 	checkOutput("content", actual.get(i));
 	i++;
-	assertEquals(7, i);
+	assertNotNull(actual.get(i));
+	assertTrue(actual.get(i) instanceof IncludeBlockRegion);
+	i++;
+	assertNotNull(actual.get(i));
+	assertTrue(actual.get(i) instanceof UnmodifiableRegion);
+	checkOutput("content", actual.get(i));
+	i++;
+	assertEquals(9, i);
     }
 
     private void checkOutput(String expected, IRegion region)
@@ -123,10 +131,21 @@ public class AggregateRendererRegionParserTest extends TestCase {
 		    .getMessage());
 	}
 
-	// TODO [stas]: left to test:
-	// 1) <!--$includeblock$token1$token2--><!--$endincludeblock-->
-	// 2) <!--$includetemplate$token1$token2--><!--$endincludetemplate-->
-	// fail("Not yet implemented");
+	content = "<!--$includeblock$token1$token2-->ignored<!--$endincludeblock-->";
+	actual = tested.find(content, 0);
+	assertNotNull(actual);
+	assertEquals(content.length(), actual.getPos());
+	assertTrue(actual.getRegion() instanceof IncludeBlockRegion);
+	actual = tested.find(content, actual.getPos());
+	assertNull("should be one result found", actual);
+
+	content = "<!--$includetemplate$token1$token2-->ignored<!--$endincludetemplate-->";
+	actual = tested.find(content, 0);
+	assertNotNull(actual);
+	assertEquals(content.length(), actual.getPos());
+	assertTrue(actual.getRegion() instanceof IncludeTemplateRegion);
+	actual = tested.find(content, actual.getPos());
+	assertNull("should be one result found", actual);
     }
 
     private static class MockRegion implements IRegion {
