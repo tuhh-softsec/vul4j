@@ -26,6 +26,10 @@ public class Tag {
 	return tokens;
     }
 
+    public String getToken(int idx) {
+	return tokens[idx];
+    }
+
     public int countTokens() {
 	return tokens.length;
     }

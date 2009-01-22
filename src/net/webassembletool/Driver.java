@@ -117,7 +117,7 @@ public class Driver {
      * @throws RenderingException If an Exception occurs while retrieving the
      *             block
      */
-    public final void renderBlock(String page, String name, Writer writer,
+    public void renderBlock(String page, String name, Writer writer,
 	    HttpServletRequest originalRequest,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
 	    throws IOException, RenderingException {
@@ -151,7 +151,7 @@ public class Driver {
      * @throws RenderingException If an Exception occurs while retrieving the
      *             template
      */
-    public final void renderTemplate(String page, String name, Writer writer,
+    public void renderTemplate(String page, String name, Writer writer,
 	    HttpServletRequest originalRequest, Map<String, String> params,
 	    Map<String, String> replaceRules, Map<String, String> parameters)
 	    throws IOException, RenderingException {
@@ -223,8 +223,8 @@ public class Driver {
 	target.setProxyMode(true);
 	StringOutput stringOutput = getResourceAsString(target);
 
-	Renderer renderer = new AggregateRenderer(response, target,
-		getContext(request));
+	Renderer renderer = new AggregateRenderer(response, target
+		.getOriginalRequest());
 	renderer.render(stringOutput, null);
     }
 
