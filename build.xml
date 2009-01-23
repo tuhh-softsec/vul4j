@@ -7,8 +7,8 @@
 		<delete dir="build" />
 		<delete dir="dist" />
 		<ant dir="examples" target="clean" />
-		<delete dir="test">
-			<fileset>
+		<delete>
+			<fileset dir="test">
 				<include name="**/*.class" />
 			</fileset>
 		</delete>
