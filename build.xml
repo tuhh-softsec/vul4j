@@ -47,9 +47,10 @@
 		</javadoc>
 	</target>
 	<target name="release" depends="build,doc,javadoc">
-		<tstamp/>
-		<delete>
+		<tstamp />
+		<delete quiet="true">
 			<fileset file="bin/webassembletool*.jar" />
+			<fileset dir="bin/samples" />
 		</delete>
 		<jar destfile="bin/webassembletool_${current.version}.jar" basedir="classes" includes="net/">
 			<metainf file="tld/webassembletool.tld" />
@@ -61,9 +62,27 @@
 				</section>
 			</manifest>
 		</jar>
+		<mkdir dir="bin/samples" />
+		<war destfile="bin/samples/aggregated1.war" basedir="bin/webapps/aggregated1" needxmlfile="false" />
+		<war destfile="bin/samples/aggregated2.war" basedir="bin/webapps/aggregated2" needxmlfile="false" />
+		<war destfile="bin/samples/aggregator.war" basedir="bin/webapps/aggregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="bin/webassembletool_${current.version}.jar" />
+		</war>
+		<war destfile="bin/samples/cas.war" basedir="bin/webapps/cas" />
+		<war destfile="bin/samples/casified_agregated1.war" basedir="bin/webapps/casified_agregated1" />
+		<war destfile="bin/samples/casified_agregated2.war" basedir="bin/webapps/casified_agregated2" />
+		<war destfile="bin/samples/casified_agregator.war" basedir="bin/webapps/casified_agregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="bin/webassembletool_${current.version}.jar" />
+		</war>
+		<war destfile="bin/samples/master.war" basedir="bin/webapps/master" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="bin/webassembletool_${current.version}.jar" />
+		</war>
+		<war destfile="bin/samples/provider.war" basedir="bin/webapps/provider" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="bin/webassembletool_${current.version}.jar" />
+		</war>
 		<zip destfile="bin/webassembletool_${current.version}.zip">
-			<fileset dir="." includes="lib/, bin/webassembletool_${current.version}.jar, test/, src/" excludes="lib/servlet-api.jar,lib/jsp-api.jar" />
-			<fileset dir="bin" includes="doc/" />
+			<fileset dir="." includes="lib/, bin/webassembletool_${current.version}.jar, src/" excludes="lib/servlet-api.jar,lib/jsp-api.jar" />
+			<fileset dir="bin" includes="doc/, samples/" />
 		</zip>
 	</target>
 	<target name="doc">
