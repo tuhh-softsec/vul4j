@@ -23,7 +23,7 @@
 		<touch datetime="01/01/1980 0:00 am">
 			<fileset dir="bin/webapps/cas" />
 		</touch>
-</target>
+	</target>
 	<target name="build">
 		<copy todir="bin/webapps">
 			<fileset dir="test/webapps" />
@@ -37,7 +37,7 @@
 		<delete>
 			<fileset file="bin/javadoc" />
 		</delete>
-		<javadoc destdir="bin/doc/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit" >
+		<javadoc destdir="bin/doc/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit">
 			<classpath>
 				<fileset dir="lib">
 					<include name="*.jar" />
@@ -47,11 +47,19 @@
 		</javadoc>
 	</target>
 	<target name="release" depends="build,doc,javadoc">
+		<tstamp/>
 		<delete>
 			<fileset file="bin/webassembletool*.jar" />
 		</delete>
 		<jar destfile="bin/webassembletool_${current.version}.jar" basedir="classes" includes="net/">
 			<metainf file="tld/webassembletool.tld" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<section name="net/webassembletool">
+					<attribute name="Package-Title" value="Website Assembling Toolkit" />
+					<attribute name="Implementation-Version" value="${current.version} ${TODAY}" />
+				</section>
+			</manifest>
 		</jar>
 		<zip destfile="bin/webassembletool_${current.version}.zip">
 			<fileset dir="." includes="lib/, bin/webassembletool_${current.version}.jar, test/, src/" excludes="lib/servlet-api.jar,lib/jsp-api.jar" />
