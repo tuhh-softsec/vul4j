@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.webassembletool.AggregationSyntaxException;
+import net.webassembletool.parse.Tag.Template;
 
 /**
  * {@linkplain IRegionParser} parser implementation used internally in
@@ -33,17 +34,19 @@ import net.webassembletool.AggregationSyntaxException;
  * @author Stanislav Bernatskyi
  */
 public class AggregateRendererRegionParser implements IRegionParser {
+    private static final Template LAST = new Template(Integer.MAX_VALUE,
+            Integer.MAX_VALUE, null);
 
     /** {@inheritDoc} */
     public List<IRegion> parse(String content)
-	    throws AggregationSyntaxException {
-	List<IRegion> result = new LinkedList<IRegion>();
-	Result found = find(content, 0);
-	while (found != null) {
-	    result.add(found.getRegion());
-	    found = find(content, found.getPos());
-	}
-	return result;
+            throws AggregationSyntaxException {
+        List<IRegion> result = new LinkedList<IRegion>();
+        Result found = find(content, 0);
+        while (found != null) {
+            result.add(found.getRegion());
+            found = find(content, found.getPos());
+        }
+        return result;
     }
 
     /**
@@ -55,63 +58,98 @@ public class AggregateRendererRegionParser implements IRegionParser {
      *         no more regions could not be found.
      */
     protected Result find(String content, int position)
-	    throws AggregationSyntaxException {
-	if (position >= content.length()) {
-	    return null;
-	}
-	// look for includeBlock or includeTemplate markers
-	Tag openTag = Tag.find("include", content, position);
-	if (openTag == null) {
-	    return new Result(new UnmodifiableRegion(content, position, content
-		    .length()), content.length());
-	} else if (openTag.getBeginIndex() > position) {
-	    return new Result(new UnmodifiableRegion(content, position, openTag
-		    .getBeginIndex()), openTag.getBeginIndex());
-	} else { // start with 'include'
-	    if (openTag.countTokens() < 3 || openTag.countTokens() > 4)
-		throw new AggregationSyntaxException("Invalid syntax: "
-			+ openTag);
-	    String provider = openTag.getToken(1);
-	    String page = openTag.getToken(2);
-	    String blockOrTemplate = (openTag.countTokens() == 4) ? openTag
-		    .getToken(3) : null;
-	    if ("includeblock".equals(openTag.getToken(0))) {
-		Tag closeTag = Tag.findNext("", content, openTag);
-		if (closeTag == null
-			|| !"endincludeblock".equals(closeTag.getToken(0))) {
-		    closeTag = openTag;
-		}
-		return new Result(new IncludeBlockRegion(provider, page,
-			blockOrTemplate), closeTag.getEndIndex());
-	    } else if ("includetemplate".equals(openTag.getToken(0))) {
-		Tag closeTag = Tag.findNext("endincludetemplate", content,
-			openTag);
-		return new Result(new IncludeTemplateRegion(provider, page,
-			blockOrTemplate, content.substring(openTag
-				.getEndIndex(), closeTag.getBeginIndex())),
-			closeTag.getEndIndex());
-	    } else {
-		// False alert, wrong tag
-		throw new AggregationSyntaxException("Unknown tag: " + openTag);
-	    }
-	}
+            throws AggregationSyntaxException {
+        if (position >= content.length()) {
+            return null;
+        }
+        // TODO [stas]: esi parsing
+        // 1. look for {<!--esi,-->} template
+        // 2. look for {<esi:,/>} template
+        // 3. look for {<!--$,-->} template
+        // find most recent from them and use it further
+        // final Template esiComment = Tag.findTemplate("<!--esi", Tag.WAT_END,
+        // content, position);
+        final Template esi = Tag.findTemplate("<esi:include", "/>", content,
+                position);
+        final Template wat = Tag.findTemplate(Tag.WAT_START + "include",
+                Tag.WAT_END, content, position);
+        final Template first = findFirst(LAST, /* esiComment, */esi, wat);
+        if (LAST == first) {
+            // nothing found -> all is plain content
+            return new Result(new UnmodifiableRegion(content, position, content
+                    .length()), content.length());
+        } else if (first.getStart() > position) {
+            // does not start with dynamic content -> report plain part
+            return new Result(new UnmodifiableRegion(content, position, first
+                    .getStart()), first.getStart());
+            // } else if (esiComment == first) {
+            // // <!--esi... -->
+            // // TODO [stas]: add esi comment parser impl
+            // String inner = first.getContent();
+            // return new Result(null, first.getEnd());
+        } else if (esi == first) {
+            // <esi:include... />
+            EsiIncludeTag esiTag = new EsiIncludeTag(first);
+            return new Result(new IncludeBlockRegion(esiTag.getProvider(),
+                    esiTag.getPage(), null), esiTag.getEnd());
+        } else { // wat == first
+            // <!--$include...-->
+            // look for includeBlock or includeTemplate markers
+            Tag openTag = Tag.create(Tag.WAT_START, Tag.WAT_END, wat);
+            if (openTag.countTokens() < 3 || openTag.countTokens() > 4)
+                throw new AggregationSyntaxException("Invalid syntax: "
+                        + openTag);
+            String provider = openTag.getToken(1);
+            String page = openTag.getToken(2);
+            String blockOrTemplate = (openTag.countTokens() == 4) ? openTag
+                    .getToken(3) : null;
+            if ("includeblock".equals(openTag.getToken(0))) {
+                Tag closeTag = Tag.findNext("", content, openTag);
+                if (closeTag == null
+                        || !"endincludeblock".equals(closeTag.getToken(0))) {
+                    closeTag = openTag;
+                }
+                return new Result(new IncludeBlockRegion(provider, page,
+                        blockOrTemplate), closeTag.getEndIndex());
+            } else if ("includetemplate".equals(openTag.getToken(0))) {
+                Tag closeTag = Tag.findNext("endincludetemplate", content,
+                        openTag);
+                return new Result(new IncludeTemplateRegion(provider, page,
+                        blockOrTemplate, content.substring(openTag
+                                .getEndIndex(), closeTag.getBeginIndex())),
+                        closeTag.getEndIndex());
+            } else {
+                // False alert, wrong tag
+                throw new AggregationSyntaxException("Unknown tag: " + openTag);
+            }
+        }
+    }
+
+    protected Template findFirst(Template base, Template... templates) {
+        Template result = base;
+        for (Template template : templates) {
+            if (template != null && result.getStart() > template.getStart()) {
+                result = template;
+            }
+        }
+        return result;
     }
 
     protected static class Result {
-	private final IRegion region;
-	private final int pos;
+        private final IRegion region;
+        private final int pos;
 
-	public Result(IRegion region, int pos) {
-	    this.region = region;
-	    this.pos = pos;
-	}
+        public Result(IRegion region, int pos) {
+            this.region = region;
+            this.pos = pos;
+        }
 
-	public IRegion getRegion() {
-	    return region;
-	}
+        public IRegion getRegion() {
+            return region;
+        }
 
-	public int getPos() {
-	    return pos;
-	}
+        public int getPos() {
+            return pos;
+        }
     }
 }

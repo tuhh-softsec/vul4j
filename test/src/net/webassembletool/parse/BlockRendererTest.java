@@ -18,52 +18,58 @@ import net.webassembletool.ouput.StringOutput;
 public class BlockRendererTest extends TestCase {
 
     public void testRenderBlockError() throws IOException {
-	final StringOutput expectedOutput = new StringOutput() {
-	    @Override
-	    public String toString() {
-		return "expected";
-	    }
-	};
-	expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
-	expectedOutput.setStatusMessage("abc");
+        final StringOutput expectedOutput = new StringOutput() {
+            @Override
+            public String toString() {
+                return "expected";
+            }
+        };
+        expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
+        expectedOutput.setStatusMessage("abc");
 
-	BlockRenderer tested = new BlockRenderer(null, null, null);
-	try {
-	    tested.render(expectedOutput, null);
-	    fail("should throw RetrieveException");
-	} catch (RetrieveException e) {
-	    assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
-	    assertEquals("abc", e.getStatusMessage());
-	    assertEquals("expected", e.getErrorPageContent());
-	}
+        BlockRenderer tested = new BlockRenderer(null, null, null);
+        try {
+            tested.render(expectedOutput, null);
+            fail("should throw RetrieveException");
+        } catch (RetrieveException e) {
+            assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
+            assertEquals("abc", e.getStatusMessage());
+            assertEquals("expected", e.getErrorPageContent());
+        }
     }
 
     public void testRenderBlockNull() throws IOException, RetrieveException {
-	final StringOutput expectedOutput = new StringOutput() {
-	    @Override
-	    public String toString() {
-		return null;
-	    }
-	};
-	expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-	BlockRenderer tested = new BlockRenderer(null, null, null);
+        final StringOutput expectedOutput = new StringOutput() {
+            @Override
+            public String toString() {
+                return null;
+            }
+        };
+        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
+        BlockRenderer tested = new BlockRenderer(null, null, null);
 
-	tested.render(expectedOutput, null);
+        tested.render(expectedOutput, null);
     }
 
     public void testRenderBlock() throws IOException, RetrieveException {
-	final StringOutput expectedOutput = new StringOutput() {
-	    @Override
-	    public String toString() {
-		return "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello";
-	    }
-	};
-	expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-	Writer out = new StringWriter();
+        final StringOutput expectedOutput = new StringOutput() {
+            @Override
+            public String toString() {
+                return "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello";
+            }
+        };
+        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
+        Writer out = new StringWriter();
 
-	BlockRenderer tested = new BlockRenderer("A", out, null);
-	tested.render(expectedOutput, null);
-	assertEquals("some text goes here", out.toString());
+        BlockRenderer tested = new BlockRenderer("A", out, null);
+        tested.render(expectedOutput, null);
+        assertEquals("some text goes here", out.toString());
+
+        // null name means whole page
+        out = new StringWriter();
+        tested = new BlockRenderer(null, out, null);
+        tested.render(expectedOutput, null);
+        assertEquals(expectedOutput.toString(), out.toString());
     }
 
 }

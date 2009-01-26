@@ -29,31 +29,37 @@ public class BlockRenderer implements Renderer {
     private final Writer out;
 
     public BlockRenderer(String name, Writer out, String page) {
-	this.name = name;
-	this.out = out;
-	this.page = page;
+        this.name = name;
+        this.out = out;
+        this.page = page;
     }
 
     /** {@inheritDoc} */
     public void render(StringOutput src, Map<String, String> replaceRules)
-	    throws IOException, RetrieveException {
-	if (src.getStatusCode() != HttpServletResponse.SC_OK) {
-	    throw new RetrieveException(src.getStatusCode(), src
-		    .getStatusMessage(), src.toString());
-	}
+            throws IOException, RetrieveException {
+        if (src.getStatusCode() != HttpServletResponse.SC_OK) {
+            throw new RetrieveException(src.getStatusCode(), src
+                    .getStatusMessage(), src.toString());
+        }
 
-	String content = src.toString();
-	if (content == null)
-	    return;
-	Tag openTag = Tag.find("beginblock$" + name, content);
-	Tag closeTag = Tag.find("endblock$" + name, content);
-	if (openTag == null || closeTag == null) {
-	    LOG.warn("Block not found: page=" + page + " block=" + name);
-	} else {
-	    LOG.debug("Serving block: page=" + page + " block=" + name);
-	    out.append(StringUtils.replace(content.substring(openTag
-		    .getEndIndex(), closeTag.getBeginIndex()), replaceRules));
-	}
+        String content = src.toString();
+        if (content == null)
+            return;
+        if (name == null) {
+            LOG.debug("Serving whole page: page=" + page);
+            out.append(StringUtils.replace(content, replaceRules));
+        } else {
+            Tag openTag = Tag.find("beginblock$" + name, content);
+            Tag closeTag = Tag.find("endblock$" + name, content);
+            if (openTag == null || closeTag == null) {
+                LOG.warn("Block not found: page=" + page + " block=" + name);
+            } else {
+                LOG.debug("Serving block: page=" + page + " block=" + name);
+                out.append(StringUtils
+                        .replace(content.substring(openTag.getEndIndex(),
+                                closeTag.getBeginIndex()), replaceRules));
+            }
+        }
     }
 
 }
