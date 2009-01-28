@@ -38,4 +38,8 @@ public class CompositeRegion implements IRegion {
         children.remove(child);
     }
 
+    public List<IRegion> getChildren() {
+        return children;
+    }
+
 }

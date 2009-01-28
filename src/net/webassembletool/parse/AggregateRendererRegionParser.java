@@ -40,6 +40,11 @@ public class AggregateRendererRegionParser implements IRegionParser {
     /** {@inheritDoc} */
     public List<IRegion> parse(String content)
             throws AggregationSyntaxException {
+        return doParse(content);
+    }
+
+    protected List<IRegion> doParse(String content)
+            throws AggregationSyntaxException {
         List<IRegion> result = new LinkedList<IRegion>();
         Result found = find(content, 0);
         while (found != null) {
@@ -64,16 +69,16 @@ public class AggregateRendererRegionParser implements IRegionParser {
         }
         // TODO [stas]: esi parsing
         // 1. look for {<!--esi,-->} template
-        // 2. look for {<esi:,/>} template
+        // 2. look for {<esi:include,/>} template
         // 3. look for {<!--$,-->} template
         // find most recent from them and use it further
-        // final Template esiComment = Tag.findTemplate("<!--esi", Tag.WAT_END,
-        // content, position);
+        final Template esiComment = Tag.findTemplate("<!--esi", Tag.WAT_END,
+                content, position);
         final Template esi = Tag.findTemplate("<esi:include", "/>", content,
                 position);
         final Template wat = Tag.findTemplate(Tag.WAT_START + "include",
                 Tag.WAT_END, content, position);
-        final Template first = findFirst(LAST, /* esiComment, */esi, wat);
+        final Template first = findFirst(LAST, esiComment, esi, wat);
         if (LAST == first) {
             // nothing found -> all is plain content
             return new Result(new UnmodifiableRegion(content, position, content
@@ -82,11 +87,17 @@ public class AggregateRendererRegionParser implements IRegionParser {
             // does not start with dynamic content -> report plain part
             return new Result(new UnmodifiableRegion(content, position, first
                     .getStart()), first.getStart());
-            // } else if (esiComment == first) {
-            // // <!--esi... -->
-            // // TODO [stas]: add esi comment parser impl
-            // String inner = first.getContent();
-            // return new Result(null, first.getEnd());
+        } else if (esiComment == first) {
+            // <!--esi... -->
+            String inner = first.getContent();
+            inner = inner.substring("<!--esi".length(), inner.length()
+                    - Tag.WAT_END.length());
+            List<IRegion> parsed = doParse(inner);
+            CompositeRegion result = new CompositeRegion();
+            for (IRegion child : parsed) {
+                result.add(child);
+            }
+            return new Result(result, first.getEnd());
         } else if (esi == first) {
             // <esi:include... />
             EsiIncludeTag esiTag = new EsiIncludeTag(first);

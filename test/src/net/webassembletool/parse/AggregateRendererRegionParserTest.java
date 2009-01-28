@@ -42,10 +42,12 @@ public class AggregateRendererRegionParserTest extends TestCase {
                 + "content<!--$includetemplate$token1$token2--> some text <!--$endincludetemplate-->"
                 + "content<!--$includeblock$token1$token2-->content"
                 + "<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->content"
-                + "<esi:include src='$PROVIDER({something})/page' />content";
+                + "<esi:include src='$PROVIDER({something})/page' />content"
+                + "<!--esicontent-->";
         List<IRegion> actual = tested.parse(content);
         assertNotNull(actual);
-        assertEquals(11, actual.size());
+        int expCount = 12;
+        assertEquals(expCount, actual.size());
         int i = 0;
         assertNotNull(actual.get(i));
         assertTrue(actual.get(i) instanceof UnmodifiableRegion);
@@ -86,7 +88,14 @@ public class AggregateRendererRegionParserTest extends TestCase {
         assertTrue(actual.get(i) instanceof UnmodifiableRegion);
         checkOutput("content", actual.get(i));
         i++;
-        assertEquals(11, i);
+        assertNotNull(actual.get(i));
+        assertTrue(actual.get(i) instanceof CompositeRegion);
+        assertEquals(1, ((CompositeRegion) actual.get(i)).getChildren().size());
+        assertTrue(((CompositeRegion) actual.get(i)).getChildren().get(0) instanceof UnmodifiableRegion);
+        checkOutput("content", ((CompositeRegion) actual.get(i)).getChildren()
+                .get(0));
+        i++;
+        assertEquals(expCount, i);
     }
 
     private void checkOutput(String expected, IRegion region)
@@ -165,6 +174,26 @@ public class AggregateRendererRegionParserTest extends TestCase {
         assertTrue(actual.getRegion() instanceof IncludeTemplateRegion);
         actual = tested.find(content, actual.getPos());
         assertNull("should be one result found", actual);
+
+        content = "<!--esi content<esi:include src='$PROVIDER({something})/page' />content -->";
+        actual = tested.find(content, 0);
+        assertNotNull(actual);
+        assertEquals(content.length(), actual.getPos());
+        assertTrue(actual.getRegion() instanceof CompositeRegion);
+        List<IRegion> children = ((CompositeRegion) actual.getRegion())
+                .getChildren();
+        assertNotNull(children);
+        assertEquals(3, children.size());
+        assertNotNull(children.get(0));
+        assertTrue(children.get(0) instanceof UnmodifiableRegion);
+        checkOutput(" content", children.get(0));
+        assertNotNull(children.get(1));
+        assertTrue(children.get(1) instanceof IncludeBlockRegion);
+        assertNotNull(children.get(2));
+        assertTrue(children.get(2) instanceof UnmodifiableRegion);
+        checkOutput("content ", children.get(2));
+        actual = tested.find(content, actual.getPos());
+        assertNull("should be one result", actual);
     }
 
     private static class MockRegion implements IRegion {
