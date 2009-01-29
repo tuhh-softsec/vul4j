@@ -78,77 +78,79 @@ canon_sources = \
 
 dsig_sources = \
   ../src/dsig/DSIGKeyInfoPGPData.hpp \
+  ../src/dsig/DSIGKeyInfoPGPData.cpp \
+  ../src/dsig/DSIGReferenceList.hpp \
   ../src/dsig/DSIGReferenceList.cpp \
   ../src/dsig/DSIGKeyInfoValue.hpp \
+  ../src/dsig/DSIGKeyInfoValue.cpp \
   ../src/dsig/DSIGXPathHere.hpp \
+  ../src/dsig/DSIGXPathHere.cpp \
+  ../src/dsig/DSIGAlgorithmHandlerDefault.hpp \
   ../src/dsig/DSIGAlgorithmHandlerDefault.cpp \
   ../src/dsig/DSIGXPathFilterExpr.hpp \
+  ../src/dsig/DSIGXPathFilterExpr.cpp \
   ../src/dsig/DSIGKeyInfoMgmtData.hpp \
-  ../src/dsig/DSIGTransformXPathFilter.hpp \
   ../src/dsig/DSIGKeyInfoMgmtData.cpp \
-  ../src/dsig/DSIGKeyInfoPGPData.cpp \
+  ../src/dsig/DSIGTransformXPathFilter.hpp \
+  ../src/dsig/DSIGTransformXPathFilter.cpp \
+  ../src/dsig/DSIGSignedInfo.hpp \
   ../src/dsig/DSIGSignedInfo.cpp \
   ../src/dsig/DSIGKeyInfoList.hpp \
-  ../src/dsig/DSIGConstants.cpp \
-  ../src/dsig/DSIGReferenceList.hpp \
-  ../src/dsig/DSIGSignature.hpp \
-  ../src/dsig/DSIGKeyInfoValue.cpp \
-  ../src/dsig/DSIGTransformXSL.hpp \
-  ../src/dsig/DSIGObject.cpp \
-  ../src/dsig/DSIGAlgorithmHandlerDefault.hpp \
-  ../src/dsig/DSIGTransformXSL.cpp \
-  ../src/dsig/DSIGTransformXPath.hpp \
-  ../src/dsig/DSIGTransformEnvelope.cpp \
-  ../src/dsig/DSIGKeyInfoName.hpp \
-  ../src/dsig/DSIGObject.hpp \
-  ../src/dsig/DSIGTransformBase64.hpp \
-  ../src/dsig/DSIGTransformXPath.cpp \
-  ../src/dsig/DSIGXPathFilterExpr.cpp \
-  ../src/dsig/DSIGReference.hpp \
-  ../src/dsig/DSIGSignature.cpp \
-  ../src/dsig/DSIGKeyInfoSPKIData.cpp \
-  ../src/dsig/DSIGTransformEnvelope.hpp \
-  ../src/dsig/DSIGKeyInfo.hpp \
-  ../src/dsig/DSIGTransformList.hpp \
-  ../src/dsig/DSIGTransformBase64.cpp \
-  ../src/dsig/DSIGKeyInfoX509.hpp \
-  ../src/dsig/DSIGReference.cpp \
   ../src/dsig/DSIGKeyInfoList.cpp \
   ../src/dsig/DSIGConstants.hpp \
+  ../src/dsig/DSIGConstants.cpp \
+  ../src/dsig/DSIGSignature.hpp \
+  ../src/dsig/DSIGSignature.cpp \
+  ../src/dsig/DSIGTransformXSL.hpp \
+  ../src/dsig/DSIGTransformXSL.cpp \
+  ../src/dsig/DSIGObject.hpp \
+  ../src/dsig/DSIGObject.cpp \
+  ../src/dsig/DSIGTransformXPath.hpp \
+  ../src/dsig/DSIGTransformXPath.cpp \
+  ../src/dsig/DSIGTransformEnvelope.hpp \
+  ../src/dsig/DSIGTransformEnvelope.cpp \
+  ../src/dsig/DSIGKeyInfoName.hpp \
+  ../src/dsig/DSIGKeyInfoName.cpp \
+  ../src/dsig/DSIGTransformBase64.hpp \
+  ../src/dsig/DSIGTransformBase64.cpp \
+  ../src/dsig/DSIGReference.hpp \
+  ../src/dsig/DSIGReference.cpp \
+  ../src/dsig/DSIGKeyInfoSPKIData.hpp \
+  ../src/dsig/DSIGKeyInfoSPKIData.cpp \
+  ../src/dsig/DSIGKeyInfo.hpp \
+  ../src/dsig/DSIGTransformList.hpp \
+  ../src/dsig/DSIGTransformList.cpp \
+  ../src/dsig/DSIGKeyInfoX509.hpp \
+  ../src/dsig/DSIGKeyInfoX509.cpp \
+  ../src/dsig/DSIGKeyInfoExt.hpp \
+  ../src/dsig/DSIGKeyInfoExt.cpp \
   ../src/dsig/DSIGTransform.hpp \
   ../src/dsig/DSIGTransform.cpp \
-  ../src/dsig/DSIGKeyInfoSPKIData.hpp \
   ../src/dsig/DSIGTransformC14n.hpp \
-  ../src/dsig/DSIGKeyInfoName.cpp \
-  ../src/dsig/DSIGTransformList.cpp \
-  ../src/dsig/DSIGSignedInfo.hpp \
-  ../src/dsig/DSIGKeyInfoX509.cpp \
-  ../src/dsig/DSIGXPathHere.cpp \
-  ../src/dsig/DSIGTransformXPathFilter.cpp \
   ../src/dsig/DSIGTransformC14n.cpp
 
 # Main Crypto interface routines
 
 enc_sources = \
   ../src/enc/XSECCryptoX509.hpp \
+  ../src/enc/XSECCryptoX509.cpp \
   ../src/enc/XSECKeyInfoResolverDefault.hpp \
+  ../src/enc/XSECKeyInfoResolverDefault.cpp \
   ../src/enc/XSECCryptoKeyHMAC.hpp \
   ../src/enc/XSECCryptoHash.hpp \
   ../src/enc/XSECCryptoKeyRSA.hpp \
+  ../src/enc/XSECCryptoUtils.hpp \
   ../src/enc/XSECCryptoUtils.cpp \
-  ../src/enc/XSECCryptoBase64.cpp \
   ../src/enc/XSECCryptoBase64.hpp \
+  ../src/enc/XSECCryptoBase64.cpp \
   ../src/enc/XSECCryptoKey.hpp \
-  ../src/enc/XSECKeyInfoResolverDefault.cpp \
   ../src/enc/XSCrypt/XSCryptCryptoBase64.hpp \
   ../src/enc/XSCrypt/XSCryptCryptoBase64.cpp \
-  ../src/enc/XSECCryptoUtils.hpp \
   ../src/enc/XSECCryptoKeyDSA.hpp \
-  ../src/enc/XSECCryptoException.hpp \
-  ../src/enc/XSECCryptoX509.cpp \
   ../src/enc/XSECCryptoProvider.hpp \
   ../src/enc/XSECKeyInfoResolver.hpp \
   ../src/enc/XSECCryptoSymmetricKey.hpp \
+  ../src/enc/XSECCryptoException.hpp \
   ../src/enc/XSECCryptoException.cpp
 
 # Framework files

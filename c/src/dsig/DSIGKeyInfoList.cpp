@@ -33,6 +33,7 @@
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
 #include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
+#include <xsec/dsig/DSIGKeyInfoExt.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
@@ -86,7 +87,7 @@ DSIGKeyInfo * DSIGKeyInfoList::item(size_type index) {
 
 	if (index < m_keyInfoList.size())
 		return m_keyInfoList[index];
-	
+
 	return NULL;
 
 }
@@ -95,7 +96,7 @@ const DSIGKeyInfo * DSIGKeyInfoList::item(size_type index) const {
 
 	if (index < m_keyInfoList.size())
 		return m_keyInfoList[index];
-	
+
 	return NULL;
 
 }
@@ -156,24 +157,24 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 	else if (strEquals(getDSIGLocalName(ki), "SPKIData")) {
 
 		XSECnew(k, DSIGKeyInfoSPKIData(mp_env, ki));
-		
+
 	}
 
 	else if (strEquals(getDSIGLocalName(ki), "MgmtData")) {
 
 		XSECnew(k, DSIGKeyInfoMgmtData(mp_env, ki));
-		
+
 	}
 
 	else if (strEquals(getXENCLocalName(ki), "EncryptedKey")) {
 
 		XSECnew(k, XENCEncryptedKeyImpl(mp_env, (DOMElement *) ki));
-		
+
 	}
 
 	else {
 
-		return false;
+	    XSECnew(k, DSIGKeyInfoExt(mp_env, ki));
 
 	}
 
@@ -207,7 +208,7 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 	}
 
 	DOMNode *tmpKI = findFirstChildOfType(node, DOMNode::ELEMENT_NODE);
-	
+
 	while (tmpKI != 0) {
 
 		// Find out what kind of KeyInfo child it is
@@ -324,7 +325,7 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 				}
 
 				// Find out the type of the final transform and process accordingly
-				
+
 				TXFMBase::nodeType type = chain->getLastTxfm()->getNodeType();
 
 				XSECXPathNodeList lst;
@@ -379,13 +380,8 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 
 		else {
             // This used to check the return value, and throw if the child was unknown.
-            // For now, just ignore unknown children and pretend they don't exist.
-            // TBD: add new classes to expose them
+            // Now, should handle all cases.
             addXMLKeyInfo(tmpKI);
-            /*
-			throw XSECException(XSECException::KeyInfoError,
-				"Unknown KeyInfo element found");
-            */
 		}
 
 		if (tmpKI != NULL)
@@ -418,19 +414,19 @@ DOMElement * DSIGKeyInfoList::createKeyInfo(void) {
 	mp_keyInfoNode = ret;
 	mp_env->doPrettyPrint(mp_keyInfoNode);
 
-	return ret;	
+	return ret;
 
 }
 
 
-DSIGKeyInfoValue * DSIGKeyInfoList::appendDSAKeyValue(const XMLCh * P, 
-						   const XMLCh * Q, 
-						   const XMLCh * G, 
+DSIGKeyInfoValue * DSIGKeyInfoList::appendDSAKeyValue(const XMLCh * P,
+						   const XMLCh * Q,
+						   const XMLCh * G,
 						   const XMLCh * Y) {
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create DSAKeyValue before creating KeyInfo");
 
 	}
@@ -449,12 +445,12 @@ DSIGKeyInfoValue * DSIGKeyInfoList::appendDSAKeyValue(const XMLCh * P,
 
 }
 
-DSIGKeyInfoValue * DSIGKeyInfoList::appendRSAKeyValue(const XMLCh * modulus, 
+DSIGKeyInfoValue * DSIGKeyInfoList::appendRSAKeyValue(const XMLCh * modulus,
 						   const XMLCh * exponent) {
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create RSAKeyValue before creating KeyInfo");
 
 	}
@@ -478,7 +474,7 @@ DSIGKeyInfoX509 * DSIGKeyInfoList::appendX509Data(void) {
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create X509Data before creating KeyInfo");
 
 	}
@@ -501,7 +497,7 @@ DSIGKeyInfoName * DSIGKeyInfoList::appendKeyName(const XMLCh * name, bool isDNam
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create KeyName before creating KeyInfo");
 
 	}
@@ -524,7 +520,7 @@ DSIGKeyInfoPGPData * DSIGKeyInfoList::appendPGPData(const XMLCh * id, const XMLC
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create PGPData before creating KeyInfo");
 
 	}
@@ -546,7 +542,7 @@ DSIGKeyInfoSPKIData * DSIGKeyInfoList::appendSPKIData(const XMLCh * sexp) {
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create SPKIData before creating KeyInfo");
 
 	}
@@ -568,7 +564,7 @@ DSIGKeyInfoMgmtData * DSIGKeyInfoList::appendMgmtData(const XMLCh * data) {
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create MgmtData before creating KeyInfo");
 
 	}
@@ -594,7 +590,7 @@ void DSIGKeyInfoList::addAndInsertKeyInfo(DSIGKeyInfo * ref) {
 
 	if (mp_keyInfoNode == NULL) {
 
-		throw XSECException(XSECException::KeyInfoError, 
+		throw XSECException(XSECException::KeyInfoError,
 			"KeyInfoList - Attempt to create MgmtData before creating KeyInfo");
 
 	}

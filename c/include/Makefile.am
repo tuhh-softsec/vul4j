@@ -88,6 +88,7 @@ lib_includes += \
   xsec/dsig/DSIGTransformXSL.hpp \
   xsec/dsig/DSIGKeyInfo.hpp \
   xsec/dsig/DSIGKeyInfoPGPData.hpp \
+  xsec/dsig/DSIGKeyInfoExt.hpp \
   xsec/dsig/DSIGObject.hpp \
   xsec/dsig/DSIGTransformList.hpp \
   xsec/dsig/DSIGTransform.hpp \

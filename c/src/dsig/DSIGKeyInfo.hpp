@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2009 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,17 +61,17 @@ class DSIG_EXPORT DSIGKeyInfo {
 
 public:
 
-	/** 
+	/**
 	 * \brief List of potential KeyInfo types
 	 *
 	 * The keyIntoType enumerated type defines the KeyInfo types known by
 	 * the XML-Security-C library.
 	 *
 	 */
-	 
+
 
 	enum keyInfoType {
-
+        KEYINFO_EXTENSION       = 0,            // Extension type unknown to library
 		KEYINFO_NOTSET			= 1,			// Empty key type
 		KEYINFO_X509			= 2,			// X509 Certificate (with embedded key)
 		KEYINFO_VALUE_DSA		= 3,			// DSA Key
@@ -80,8 +80,7 @@ public:
 		KEYINFO_PGPDATA			= 6,			// A PGP key
 		KEYINFO_SPKIDATA		= 7,
 		KEYINFO_MGMTDATA		= 8,			// Management data
-		KEYINFO_ENCRYPTEDKEY	= 9				// XML Encryption - Encrypted Key
-
+		KEYINFO_ENCRYPTEDKEY	= 9 			// XML Encryption - Encrypted Key
 	};
 
 public:
@@ -119,10 +118,10 @@ public:
 	virtual keyInfoType getKeyInfoType(void) const = 0;
 
 	/**
-	 * \brief Return the DOMNode that heads up this DOMNode
+	 * \brief Return the DOMNode that heads up this KeyInfo child
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getKeyInfoDOMNode() 
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getKeyInfoDOMNode()
 		{return mp_keyInfoDOMNode;}
 
 	/**

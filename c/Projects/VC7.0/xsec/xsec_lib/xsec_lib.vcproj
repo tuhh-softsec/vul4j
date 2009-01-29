@@ -314,6 +314,12 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 			<File
 				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoX509.hpp">
 			</File>
+            <File
+                RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp">
+            </File>
+            <File
+                RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp">
+            </File>
 			<File
 				RelativePath="..\..\..\..\src\dsig\DSIGObject.cpp">
 			</File>

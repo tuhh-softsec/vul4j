@@ -17,8 +17,7 @@
 /*
  * XSEC
  *
- * DSIGKeyInfoX509 := A "Super" key that defines a certificate with a sub-key that defines
- *                the signing key
+ * DSIGKeyInfoName := References a key by name.
  *
  * $Id$
  *
@@ -120,7 +119,7 @@ public:
 
 	/**@name Create and set functions */
 	//@{
-	
+
 	/**
 	 * \brief Create a new KeyName element in the current document.
 	 *
@@ -151,11 +150,11 @@ public:
 
 	/** @name Information Functions */
 	//@{
-	
+
 	/**
 	 * \brief Return type of this KeyInfo element
 	 */
-	
+
 	virtual keyInfoType getKeyInfoType(void) const {return DSIGKeyInfo::KEYINFO_NAME;}
 
 	//@}
@@ -166,7 +165,7 @@ private:
 
 	const XMLCh			* mp_name;				// The Data stored in the XML file
 	XMLCh				* mp_decodedDName;		// When this is a DName that needs decoding
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode				
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
 						* mp_keyNameTextNode;	// Text node containing the name
 
 };

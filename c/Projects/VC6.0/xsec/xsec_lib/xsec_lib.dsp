@@ -258,6 +258,14 @@ SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoX509.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\dsig\DSIGObject.cpp
 # End Source File
 # Begin Source File
