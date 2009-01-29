@@ -31,6 +31,15 @@ The aggregator is a servlet that has to be configured in the web.xml file.
 <h2>Including a block</h2>
 <p>Use the "includeblock" directives with the name of the provider, the page and the name of the block to retrieve. If no block name, the complete page is retrieved.</p>
 <img src="aggregator_includeblock.jpg" />
+<h2>Including page via &lt;esi:include&gt; directive</h2>
+<p>Use the "&lt;esi:include&gt;" directive to include complete page into aggregated output. Directive supports following attributes:
+<ul>
+<li>src - specifies page and provider which should be used for retrieving (in a "$PROVIDER({'provider-id'})/)/page" format)</li>
+</ul>
+</p>
+<h2>Processing &lt;!--esi --&gt; comments</h2>
+<p>Aggregator supports processing of esi-style comments (normal comments with 'esi' added: '&lt;!--esi').
+If esi-style comment is encountered in aggregtion page then comment definition is stripped and data inside comment is processed as usual data.</p>
 <h2>Defining a template</h2>
 <p>Use the "begintemplate" and "endtemplate" directives with the name of the template. Use the "beginparam" and "endparam" directives to delimit params (variable parts that can be replaced inside the template)</p>
 <img src="aggregator_template.jpg" />
