@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -43,7 +43,7 @@ import org.codehaus.plexus.util.IOUtil;
  * @version $Id$
  */
 public class GZipArchiverTest
-    extends PlexusTestCase
+    extends BasePlexusArchiverTest
 {
     public void testCreateArchive()
         throws Exception
@@ -86,5 +86,41 @@ public class GZipArchiverTest
         archivePom.close();
         pom.close();
         juZipFile.close();
+    }
+    
+    /**
+     * Tests the .gzip archiver is forced set to true, and after that
+     * tests the behavior when the forced is set to false.
+     * 
+     * @throws Exception
+     */
+    public void testTarGzIsForcedBehaviour() throws Exception
+    {
+        GZipArchiver gZipArchiver = (GZipArchiver) createArchiver( "gzip" );
+        
+        assertTrue( gZipArchiver.isSupportingForced() );
+        gZipArchiver.createArchive();
+        
+        final long creationTime = gZipArchiver.getDestFile().lastModified();
+        
+        waitUntilNewTimestamp( gZipArchiver.getDestFile(), creationTime );
+       
+        gZipArchiver = (GZipArchiver) createArchiver( "gzip" );
+
+        gZipArchiver.setForced( true );
+        gZipArchiver.createArchive();
+        
+        final long firstRunTime = gZipArchiver.getDestFile().lastModified();
+
+        assertFalse( creationTime==firstRunTime );
+        
+        gZipArchiver = (GZipArchiver) createArchiver( "gzip" );
+
+        gZipArchiver.setForced( false );
+        gZipArchiver.createArchive();
+        
+        final long secondRunTime = gZipArchiver.getDestFile().lastModified();
+        
+        assertEquals( firstRunTime,secondRunTime );
     }
 }

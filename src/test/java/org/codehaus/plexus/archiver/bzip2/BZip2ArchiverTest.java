@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -43,7 +43,7 @@ import org.codehaus.plexus.util.IOUtil;
  * @version $Id$
  */
 public class BZip2ArchiverTest
-    extends PlexusTestCase
+    extends BasePlexusArchiverTest
 {
     public void testCreateArchive()
         throws Exception
@@ -86,5 +86,41 @@ public class BZip2ArchiverTest
         archivePom.close();
         pom.close();
         juZipFile.close();
+    }
+    
+    /**
+     * Tests the .bzip2 archiver is forced set to true, and after that
+     * tests the behavior when the forced is set to false.
+     * 
+     * @throws Exception
+     */
+    public void testBz2IsForcedBehaviour() throws Exception
+    {
+        BZip2Archiver bZip2Archiver = (BZip2Archiver) createArchiver( "bzip2" );
+        
+        assertTrue( bZip2Archiver.isSupportingForced() );
+        bZip2Archiver.createArchive();
+        
+        final long creationTime = bZip2Archiver.getDestFile().lastModified();
+        
+        waitUntilNewTimestamp( bZip2Archiver.getDestFile(), creationTime );
+       
+        bZip2Archiver = (BZip2Archiver) createArchiver( "bzip2" );
+
+        bZip2Archiver.setForced( true );
+        bZip2Archiver.createArchive();
+        
+        final long firstRunTime = bZip2Archiver.getDestFile().lastModified();
+
+        assertFalse( creationTime==firstRunTime );
+        
+        bZip2Archiver = (BZip2Archiver) createArchiver( "bzip2" );
+
+        bZip2Archiver.setForced( false );
+        bZip2Archiver.createArchive();
+        
+        final long secondRunTime = bZip2Archiver.getDestFile().lastModified();
+        
+        assertEquals( firstRunTime,secondRunTime );
     }
 }

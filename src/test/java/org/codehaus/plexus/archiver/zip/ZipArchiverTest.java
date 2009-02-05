@@ -28,9 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -39,7 +39,7 @@ import org.codehaus.plexus.util.FileUtils;
  * @version $Id$
  */
 public class ZipArchiverTest
-    extends PlexusTestCase
+    extends BasePlexusArchiverTest
 {
     public void testCreateArchive()
         throws Exception
@@ -119,33 +119,6 @@ public class ZipArchiverTest
         }
     }
 
-    /**
-     * Ensure that when a new file is created at the specified location that the timestamp of
-     * that file will be greater than the one specified as a reference.
-     * 
-     * Warning: Runs in a busy loop creating a file until the output file is newer than the reference timestamp.
-     * This should be better than sleeping for a race condition time out value.
-     * 
-     * @param outputFile the file to be created
-     * @param timestampReference the created file will have a newer timestamp than this reference timestamp.
-     * @throws Exception failures
-     */
-    private void waitUntilNewTimestamp( File outputFile, long timestampReference ) throws Exception
-    {
-        File tmpFile = File.createTempFile( "ZipArchiverTest.waitUntilNewTimestamp", null );
-        // slurp the file into a temp file and then copy the temp back over the top until it is newer.
-        FileUtils.copyFile( outputFile, tmpFile );
-        
-        FileUtils.copyFile( tmpFile, outputFile );       
-        while ( timestampReference >= outputFile.lastModified() )
-        {
-            FileUtils.copyFile( tmpFile, outputFile );
-            Thread.yield();
-        }
-        
-        tmpFile.delete();
-    }    
-    
     public void testForced()
         throws Exception
     {
@@ -173,6 +146,7 @@ public class ZipArchiverTest
         assertTrue( archiver.isSupportingForced() );
         archiver.setForced( false );
         assertFalse( archiver.isForced() );
+
         createArchive( archiver );
         long l3 = f.lastModified();
         assertTrue( f.exists() );
