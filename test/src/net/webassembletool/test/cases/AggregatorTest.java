@@ -64,4 +64,13 @@ public class AggregatorTest extends HttpTestCase {
         assertBodyEqualsLocalFile("aggregator/utf8.jsp");
     }
 
+    public void testRawPost() throws Exception {
+        doPost("aggregator/post_raw.jsp", "Hello smile!".getBytes());
+        assertBodyMatch("^Posted body data : Hello smile!$");
+    }
+
+    public void testRawPostWithQueryString() throws Exception {
+        doPost("aggregator/post_raw.jsp?param=smile", "Hello !".getBytes());
+        assertBodyMatch("^Posted body data : Hello !smile$");
+    }
 }
