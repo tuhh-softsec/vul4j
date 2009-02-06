@@ -67,7 +67,7 @@ public class AggregateRendererRegionParser implements IRegionParser {
         if (position >= content.length()) {
             return null;
         }
-        // TODO [stas]: esi parsing
+        // esi parsing
         // 1. look for {<!--esi,-->} template
         // 2. look for {<esi:include,/>} template
         // 3. look for {<!--$,-->} template
