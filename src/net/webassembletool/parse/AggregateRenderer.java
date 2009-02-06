@@ -43,39 +43,39 @@ public class AggregateRenderer implements Renderer {
     private final HttpServletRequest request;
 
     public AggregateRenderer(HttpServletResponse response,
-	    HttpServletRequest request) {
-	this.response = response;
-	this.request = request;
+            HttpServletRequest request) {
+        this.response = response;
+        this.request = request;
     }
 
     /** {@inheritDoc} */
-    public void render(StringOutput stringOutput, Map<String, String> unused)
-	    throws IOException, RenderingException {
-	if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
-		|| stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-	    response.setStatus(stringOutput.getStatusCode());
-	    response.setHeader("location", stringOutput.getLocation());
-	    return;
-	}
-	stringOutput.copyHeaders(response);
-	String content = stringOutput.toString();
-	if (content == null)
-	    return;
-	response.setCharacterEncoding(stringOutput.getCharsetName());
-	Writer writer = response.getWriter();
+    public void render(StringOutput stringOutput, Writer unised1,
+            Map<String, String> unused2) throws IOException, RenderingException {
+        if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
+                || stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
+            response.setStatus(stringOutput.getStatusCode());
+            response.setHeader("location", stringOutput.getLocation());
+            return;
+        }
+        stringOutput.copyHeaders(response);
+        String content = stringOutput.toString();
+        if (content == null)
+            return;
+        response.setCharacterEncoding(stringOutput.getCharsetName());
+        Writer writer = response.getWriter();
 
-	IRegionParser parser = createParser();
-	List<IRegion> parsed = parser.parse(content);
-	for (IRegion region : parsed) {
-	    try {
-		region.process(writer, request);
-	    } catch (RetrieveException e) {
-		writer.append(e.getStatusCode() + " " + e.getStatusMessage());
-	    }
-	}
+        IRegionParser parser = createParser();
+        List<IRegion> parsed = parser.parse(content);
+        for (IRegion region : parsed) {
+            try {
+                region.process(writer, request);
+            } catch (RetrieveException e) {
+                writer.append(e.getStatusCode() + " " + e.getStatusMessage());
+            }
+        }
     }
 
     protected IRegionParser createParser() {
-	return new AggregateRendererRegionParser();
+        return new AggregateRendererRegionParser();
     }
 }

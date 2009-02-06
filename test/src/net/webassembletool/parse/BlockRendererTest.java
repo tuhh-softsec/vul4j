@@ -27,9 +27,9 @@ public class BlockRendererTest extends TestCase {
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
         expectedOutput.setStatusMessage("abc");
 
-        BlockRenderer tested = new BlockRenderer(null, null, null);
+        BlockRenderer tested = new BlockRenderer(null, null);
         try {
-            tested.render(expectedOutput, null);
+            tested.render(expectedOutput, null, null);
             fail("should throw RetrieveException");
         } catch (RetrieveException e) {
             assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
@@ -46,9 +46,9 @@ public class BlockRendererTest extends TestCase {
             }
         };
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        BlockRenderer tested = new BlockRenderer(null, null, null);
+        BlockRenderer tested = new BlockRenderer(null, null);
 
-        tested.render(expectedOutput, null);
+        tested.render(expectedOutput, null, null);
     }
 
     public void testRenderBlock() throws IOException, RetrieveException {
@@ -61,14 +61,14 @@ public class BlockRendererTest extends TestCase {
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Writer out = new StringWriter();
 
-        BlockRenderer tested = new BlockRenderer("A", out, null);
-        tested.render(expectedOutput, null);
+        BlockRenderer tested = new BlockRenderer("A", null);
+        tested.render(expectedOutput, out, null);
         assertEquals("some text goes here", out.toString());
 
         // null name means whole page
         out = new StringWriter();
-        tested = new BlockRenderer(null, out, null);
-        tested.render(expectedOutput, null);
+        tested = new BlockRenderer(null, null);
+        tested.render(expectedOutput, out, null);
         assertEquals(expectedOutput.toString(), out.toString());
     }
 

@@ -26,17 +26,16 @@ public class BlockRenderer implements Renderer {
 
     private final String page;
     private final String name;
-    private final Writer out;
 
-    public BlockRenderer(String name, Writer out, String page) {
+    public BlockRenderer(String name, String page) {
         this.name = name;
-        this.out = out;
         this.page = page;
     }
 
     /** {@inheritDoc} */
-    public void render(StringOutput src, Map<String, String> replaceRules)
-            throws IOException, RetrieveException {
+    public void render(StringOutput src, Writer out,
+            Map<String, String> replaceRules) throws IOException,
+            RetrieveException {
         if (src.getStatusCode() != HttpServletResponse.SC_OK) {
             throw new RetrieveException(src.getStatusCode(), src
                     .getStatusMessage(), src.toString());

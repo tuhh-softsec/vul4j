@@ -35,68 +35,66 @@ public class TemplateRenderer implements Renderer {
 
     private final String page;
     private final String name;
-    private final Writer out;
     private final Map<String, String> params;
 
-    public TemplateRenderer(String name, Map<String, String> params,
-	    Writer out, String page) {
-	this.name = name;
-	this.params = params;
-	this.out = out;
-	this.page = page;
+    public TemplateRenderer(String name, Map<String, String> params, String page) {
+        this.name = name;
+        this.params = params;
+        this.page = page;
     }
 
     /** {@inheritDoc} */
-    public void render(StringOutput src, Map<String, String> replaceRules)
-	    throws IOException, RetrieveException {
-	if (src.getStatusCode() != HttpServletResponse.SC_OK) {
-	    throw new RetrieveException(src.getStatusCode(), src
-		    .getStatusMessage(), src.toString());
-	}
-	String content = src.toString();
-	StringBuilder sb = new StringBuilder();
-	if (content != null) {
-	    if (name != null) {
-		Tag openTag = Tag.find("begintemplate$" + name, content);
-		Tag closeTag = Tag.find("endtemplate$" + name, content);
-		if (openTag == null || closeTag == null) {
-		    log.warn("Template not found: page=" + page + " template="
-			    + name);
-		} else {
-		    log.debug("Serving template: page=" + page + " template="
-			    + name);
-		    sb.append(content, openTag.getEndIndex(), closeTag
-			    .getBeginIndex());
-		}
-	    } else {
-		log.debug("Serving template: page=" + page);
-		sb.append(content);
-	    }
-	    if (params != null) {
-		for (Entry<String, String> param : params.entrySet()) {
-		    String key = param.getKey();
-		    String value = param.getValue();
-		    Tag openTag = Tag.find("beginparam$" + key, sb);
-		    Tag closeTag = Tag.find("endparam$" + key, sb);
-		    while (openTag != null && closeTag != null) {
-			sb.replace(openTag.getBeginIndex(), closeTag
-				.getEndIndex(), value);
-			openTag = Tag.findNext("beginparam$" + key, sb,
-				closeTag);
-			closeTag = Tag
-				.findNext("endparam$" + key, sb, closeTag);
-		    }
-		}
-	    }
+    public void render(StringOutput src, Writer out,
+            Map<String, String> replaceRules) throws IOException,
+            RetrieveException {
+        if (src.getStatusCode() != HttpServletResponse.SC_OK) {
+            throw new RetrieveException(src.getStatusCode(), src
+                    .getStatusMessage(), src.toString());
+        }
+        String content = src.toString();
+        StringBuilder sb = new StringBuilder();
+        if (content != null) {
+            if (name != null) {
+                Tag openTag = Tag.find("begintemplate$" + name, content);
+                Tag closeTag = Tag.find("endtemplate$" + name, content);
+                if (openTag == null || closeTag == null) {
+                    log.warn("Template not found: page=" + page + " template="
+                            + name);
+                } else {
+                    log.debug("Serving template: page=" + page + " template="
+                            + name);
+                    sb.append(content, openTag.getEndIndex(), closeTag
+                            .getBeginIndex());
+                }
+            } else {
+                log.debug("Serving template: page=" + page);
+                sb.append(content);
+            }
+            if (params != null) {
+                for (Entry<String, String> param : params.entrySet()) {
+                    String key = param.getKey();
+                    String value = param.getValue();
+                    Tag openTag = Tag.find("beginparam$" + key, sb);
+                    Tag closeTag = Tag.find("endparam$" + key, sb);
+                    while (openTag != null && closeTag != null) {
+                        sb.replace(openTag.getBeginIndex(), closeTag
+                                .getEndIndex(), value);
+                        openTag = Tag.findNext("beginparam$" + key, sb,
+                                closeTag);
+                        closeTag = Tag
+                                .findNext("endparam$" + key, sb, closeTag);
+                    }
+                }
+            }
 
-	} else {
-	    if (params != null) {
-		for (String value : params.values()) {
-		    sb.append(value);
-		}
-	    }
-	}
-	out.append(StringUtils.replace(sb, replaceRules));
+        } else {
+            if (params != null) {
+                for (String value : params.values()) {
+                    sb.append(value);
+                }
+            }
+        }
+        out.append(StringUtils.replace(sb, replaceRules));
     }
 
 }
