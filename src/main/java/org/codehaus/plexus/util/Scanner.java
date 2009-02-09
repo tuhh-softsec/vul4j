@@ -1,5 +1,7 @@
 package org.codehaus.plexus.util;
 
+import java.io.File;
+
 /*
  * Copyright The Codehaus Foundation.
  *
@@ -84,4 +86,11 @@ public interface Scanner
      */
     String[] getIncludedDirectories();
 
+    /**
+     * Returns the base directory to be scanned.
+     * This is the directory which is scanned recursively.
+     *
+     * @return the base directory to be scanned
+     */
+    File getBasedir();
 }
