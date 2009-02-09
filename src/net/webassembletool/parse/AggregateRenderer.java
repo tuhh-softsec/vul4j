@@ -41,11 +41,13 @@ import net.webassembletool.ouput.StringOutput;
 public class AggregateRenderer implements Renderer {
     private final HttpServletResponse response;
     private final HttpServletRequest request;
+    private final boolean propagateJsessionId;
 
     public AggregateRenderer(HttpServletResponse response,
-            HttpServletRequest request) {
+            HttpServletRequest request, boolean propagateJsessionId) {
         this.response = response;
         this.request = request;
+        this.propagateJsessionId = propagateJsessionId;
     }
 
     /** {@inheritDoc} */
@@ -76,6 +78,6 @@ public class AggregateRenderer implements Renderer {
     }
 
     protected IRegionParser createParser() {
-        return new AggregateRendererRegionParser();
+        return new AggregateRendererRegionParser(propagateJsessionId);
     }
 }

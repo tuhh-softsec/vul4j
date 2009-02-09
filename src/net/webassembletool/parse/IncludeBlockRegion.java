@@ -20,14 +20,16 @@ import net.webassembletool.RenderingException;
  */
 public class IncludeBlockRegion extends AbstractIncludeRegion {
 
-    public IncludeBlockRegion(String provider, String page, String name) {
-	super(provider, page, name);
+    public IncludeBlockRegion(String provider, String page, String name,
+            boolean propagateJsessionId) {
+        super(provider, page, name, propagateJsessionId);
     }
 
     /** {@inheritDoc} */
     public void process(Writer out, HttpServletRequest request)
-	    throws IOException, RenderingException {
-	getDriver().renderBlock(page, name, out, request, null, null);
+            throws IOException, RenderingException {
+        getDriver().renderBlock(page, name, out, request, null, null,
+                propagateJsessionId);
     }
 
 }

@@ -36,6 +36,11 @@ import net.webassembletool.parse.Tag.Template;
 public class AggregateRendererRegionParser implements IRegionParser {
     private static final Template LAST = new Template(Integer.MAX_VALUE,
             Integer.MAX_VALUE, null);
+    private final boolean propagateJsessionId;
+
+    public AggregateRendererRegionParser(boolean propagateJsessionId) {
+        this.propagateJsessionId = propagateJsessionId;
+    }
 
     /** {@inheritDoc} */
     public List<IRegion> parse(String content)
@@ -102,7 +107,8 @@ public class AggregateRendererRegionParser implements IRegionParser {
             // <esi:include... />
             EsiIncludeTag esiTag = new EsiIncludeTag(first);
             return new Result(new IncludeBlockRegion(esiTag.getProvider(),
-                    esiTag.getPage(), null), esiTag.getEnd());
+                    esiTag.getPage(), null, propagateJsessionId), esiTag
+                    .getEnd());
         } else { // wat == first
             // <!--$include...-->
             // look for includeBlock or includeTemplate markers
@@ -121,14 +127,16 @@ public class AggregateRendererRegionParser implements IRegionParser {
                     closeTag = openTag;
                 }
                 return new Result(new IncludeBlockRegion(provider, page,
-                        blockOrTemplate), closeTag.getEndIndex());
+                        blockOrTemplate, propagateJsessionId), closeTag
+                        .getEndIndex());
             } else if ("includetemplate".equals(openTag.getToken(0))) {
                 Tag closeTag = Tag.findNext("endincludetemplate", content,
                         openTag);
                 return new Result(new IncludeTemplateRegion(provider, page,
-                        blockOrTemplate, content.substring(openTag
-                                .getEndIndex(), closeTag.getBeginIndex())),
-                        closeTag.getEndIndex());
+                        blockOrTemplate, propagateJsessionId, content
+                                .substring(openTag.getEndIndex(), closeTag
+                                        .getBeginIndex())), closeTag
+                        .getEndIndex());
             } else {
                 // False alert, wrong tag
                 throw new AggregationSyntaxException("Unknown tag: " + openTag);

@@ -101,6 +101,11 @@ public class Driver {
         return config.getBaseURL();
     }
 
+    /** Indicates whether 'jsessionid' filtering enabled */
+    public boolean isFilterJsessionid() {
+        return config.isFilterJsessionid();
+    }
+
     /**
      * TODO [stas]: add javadoc
      * 
@@ -145,10 +150,10 @@ public class Driver {
      */
     public void renderBlock(String page, String name, Writer writer,
             HttpServletRequest originalRequest,
-            Map<String, String> replaceRules, Map<String, String> parameters)
-            throws IOException, RenderingException {
+            Map<String, String> replaceRules, Map<String, String> parameters,
+            boolean propagateJsessionId) throws IOException, RenderingException {
         RequestContext target = new RequestContext(this, page, parameters,
-                originalRequest);
+                originalRequest, propagateJsessionId);
         StringOutput stringOutput = getResourceAsString(target);
 
         Renderer renderer = new BlockRenderer(name, page);
@@ -179,10 +184,10 @@ public class Driver {
      */
     public void renderTemplate(String page, String name, Writer writer,
             HttpServletRequest originalRequest, Map<String, String> params,
-            Map<String, String> replaceRules, Map<String, String> parameters)
-            throws IOException, RenderingException {
+            Map<String, String> replaceRules, Map<String, String> parameters,
+            boolean propagateJsessionId) throws IOException, RenderingException {
         RequestContext target = new RequestContext(this, page, params,
-                originalRequest);
+                originalRequest, propagateJsessionId);
         StringOutput stringOutput = getResourceAsString(target);
 
         Renderer renderer = new TemplateRenderer(name, params, page);
@@ -200,10 +205,10 @@ public class Driver {
      * @throws IOException If an IOException occurs while rendering the response
      */
     public final void proxy(String relUrl, HttpServletRequest request,
-            HttpServletResponse response, Map<String, String> parameters)
-            throws IOException {
+            HttpServletResponse response, Map<String, String> parameters,
+            boolean propagateJsessionId) throws IOException {
         RequestContext requestContext = new RequestContext(this, relUrl,
-                parameters, request);
+                parameters, request, propagateJsessionId);
         request.setCharacterEncoding(config.getUriEncoding());
         requestContext.setProxyMode(true);
         renderResource(requestContext, new ResponseOutput(request, response));
@@ -242,15 +247,16 @@ public class Driver {
      * @throws RenderingException If the page contains incorrect tags
      */
     public final void aggregate(String relUrl, HttpServletRequest request,
-            HttpServletResponse response) throws IOException,
-            RenderingException {
-        RequestContext target = new RequestContext(this, relUrl, null, request);
+            HttpServletResponse response, boolean propagateJsessionId)
+            throws IOException, RenderingException {
+        RequestContext target = new RequestContext(this, relUrl, null, request,
+                propagateJsessionId);
         request.setCharacterEncoding(config.getUriEncoding());
         target.setProxyMode(true);
         StringOutput stringOutput = getResourceAsString(target);
 
         Renderer renderer = new AggregateRenderer(response, target
-                .getOriginalRequest());
+                .getOriginalRequest(), propagateJsessionId);
         renderer.render(stringOutput, null, null);
     }
 

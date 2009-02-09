@@ -28,9 +28,9 @@ public class IncludeTemplateRegion extends AbstractIncludeRegion {
     private final String templateBody;
 
     public IncludeTemplateRegion(String provider, String page, String name,
-	    String templateBody) {
-	super(provider, page, name);
-	this.templateBody = templateBody;
+            boolean propagateJsessionId, String templateBody) {
+        super(provider, page, name, propagateJsessionId);
+        this.templateBody = templateBody;
     }
 
     /**
@@ -40,10 +40,10 @@ public class IncludeTemplateRegion extends AbstractIncludeRegion {
      *             template
      */
     public void process(Writer out, HttpServletRequest request)
-	    throws IOException, RenderingException {
-	Map<String, String> params = parseParameters(templateBody);
-	getDriver()
-		.renderTemplate(page, name, out, request, params, null, null);
+            throws IOException, RenderingException {
+        Map<String, String> params = parseParameters(templateBody);
+        getDriver().renderTemplate(page, name, out, request, params, null,
+                null, propagateJsessionId);
     }
 
     /**
@@ -56,23 +56,23 @@ public class IncludeTemplateRegion extends AbstractIncludeRegion {
      * </ul>
      */
     protected Map<String, String> parseParameters(String content)
-	    throws AggregationSyntaxException {
-	Map<String, String> result = new HashMap<String, String>();
-	Tag openTag = Tag.find("beginput", content);
-	while (openTag != null) {
-	    if (openTag.countTokens() != 2)
-		throw new AggregationSyntaxException("Invalid syntax: "
-			+ openTag);
-	    Tag closeTag = Tag.findNext("endput", content, openTag);
-	    if (closeTag == null)
-		throw new AggregationSyntaxException("Tag not closed: "
-			+ openTag);
-	    String paramName = openTag.getToken(1);
-	    result.put(paramName, content.substring(openTag.getEndIndex(),
-		    closeTag.getBeginIndex()));
-	    openTag = Tag.findNext("beginput", content, closeTag);
-	}
-	return result;
+            throws AggregationSyntaxException {
+        Map<String, String> result = new HashMap<String, String>();
+        Tag openTag = Tag.find("beginput", content);
+        while (openTag != null) {
+            if (openTag.countTokens() != 2)
+                throw new AggregationSyntaxException("Invalid syntax: "
+                        + openTag);
+            Tag closeTag = Tag.findNext("endput", content, openTag);
+            if (closeTag == null)
+                throw new AggregationSyntaxException("Tag not closed: "
+                        + openTag);
+            String paramName = openTag.getToken(1);
+            result.put(paramName, content.substring(openTag.getEndIndex(),
+                    closeTag.getBeginIndex()));
+            openTag = Tag.findNext("beginput", content, closeTag);
+        }
+        return result;
     }
 
 }

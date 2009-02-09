@@ -8,97 +8,106 @@ import java.util.Properties;
  * @author François-Xavier Bonnet
  */
 class DriverConfiguration {
-    private String instanceName;
-    private String baseURL;
+    private final String instanceName;
+    private final String baseURL;
     private String uriEncoding = "ISO-8859-1";
     private int maxConnectionsPerHost = 20;
     private int timeout = 1000;
     private boolean useCache = true;
     private int cacheRefreshDelay = 0;
     private int cacheMaxFileSize = 0;
-    private String localBase;
+    private final String localBase;
     private boolean putInCache = false;
     private String proxyHost;
     private int proxyPort = 0;
+    private boolean filterJsessionid = true;
 
     public DriverConfiguration(String instanceName, Properties props) {
-	this.instanceName = instanceName;
-	// Remote application settings
-	baseURL = props.getProperty("remoteUrlBase");
-	if (props.getProperty("uriEncoding") != null)
-	    uriEncoding = props.getProperty("uriEncoding");
-	if (props.getProperty("maxConnectionsPerHost") != null)
-	    maxConnectionsPerHost = Integer.parseInt(props
-		    .getProperty("maxConnectionsPerHost"));
-	if (props.getProperty("timeout") != null)
-	    timeout = Integer.parseInt(props.getProperty("timeout"));
-	// Cache settings
-	if (props.getProperty("cacheRefreshDelay") != null)
-	    cacheRefreshDelay = Integer.parseInt(props
-		    .getProperty("cacheRefreshDelay"));
-	if (props.getProperty("cacheMaxFileSize") != null)
-	    cacheMaxFileSize = Integer.parseInt(props
-		    .getProperty("cacheMaxFileSize"));
-	// Local file system settings
-	localBase = props.getProperty("localBase");
-	if (props.getProperty("putInCache") != null)
-	    putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
-	// proxy settings
-	if (props.getProperty("proxyHost") != null
-		&& props.getProperty("proxyPort") != null) {
-	    proxyHost = props.getProperty("proxyHost");
-	    proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
-	}
-	if (props.getProperty("useCache") != null)
-	    useCache = Boolean.parseBoolean(props.getProperty("useCache"));
+        this.instanceName = instanceName;
+        // Remote application settings
+        baseURL = props.getProperty("remoteUrlBase");
+        if (props.getProperty("uriEncoding") != null)
+            uriEncoding = props.getProperty("uriEncoding");
+        if (props.getProperty("maxConnectionsPerHost") != null)
+            maxConnectionsPerHost = Integer.parseInt(props
+                    .getProperty("maxConnectionsPerHost"));
+        if (props.getProperty("timeout") != null)
+            timeout = Integer.parseInt(props.getProperty("timeout"));
+        // Cache settings
+        if (props.getProperty("cacheRefreshDelay") != null)
+            cacheRefreshDelay = Integer.parseInt(props
+                    .getProperty("cacheRefreshDelay"));
+        if (props.getProperty("cacheMaxFileSize") != null)
+            cacheMaxFileSize = Integer.parseInt(props
+                    .getProperty("cacheMaxFileSize"));
+        // Local file system settings
+        localBase = props.getProperty("localBase");
+        if (props.getProperty("putInCache") != null)
+            putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
+        // proxy settings
+        if (props.getProperty("proxyHost") != null
+                && props.getProperty("proxyPort") != null) {
+            proxyHost = props.getProperty("proxyHost");
+            proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
+        }
+        if (props.getProperty("useCache") != null)
+            useCache = Boolean.parseBoolean(props.getProperty("useCache"));
+        if (props.getProperty("filterJsessionid") != null)
+            filterJsessionid = Boolean.parseBoolean(props
+                    .getProperty("filterJsessionid"));
     }
 
     public String getInstanceName() {
-	return instanceName;
+        return instanceName;
     }
 
     public String getBaseURL() {
-	return baseURL;
+        return baseURL;
     }
 
     public int getMaxConnectionsPerHost() {
-	return maxConnectionsPerHost;
+        return maxConnectionsPerHost;
     }
 
     public int getTimeout() {
-	return timeout;
+        return timeout;
     }
 
     public boolean isUseCache() {
-	return useCache;
+        return useCache;
     }
 
     public int getCacheRefreshDelay() {
-	return cacheRefreshDelay;
+        return cacheRefreshDelay;
     }
 
     public int getCacheMaxFileSize() {
-	return cacheMaxFileSize;
+        return cacheMaxFileSize;
     }
 
     public String getLocalBase() {
-	return localBase;
+        return localBase;
     }
 
     public boolean isPutInCache() {
-	return putInCache;
+        return putInCache;
     }
 
     public String getProxyHost() {
-	return proxyHost;
+        return proxyHost;
     }
 
     public int getProxyPort() {
-	return proxyPort;
+        return proxyPort;
     }
 
     public String getUriEncoding() {
-	return uriEncoding;
+        return uriEncoding;
+    }
+
+    public boolean isFilterJsessionid() {
+        // TODO Raccord de méthode auto-généré
+        return filterJsessionid;
     }
 
 }

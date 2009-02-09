@@ -1,5 +1,6 @@
 package net.webassembletool.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,13 +16,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.RequestContext;
 import net.webassembletool.ouput.Output;
+import net.webassembletool.ouput.StringOutput;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.NameValuePair;
@@ -218,17 +222,23 @@ public class HttpResource extends Resource {
         }
     }
 
+    protected void copyHeaders(HttpMethod src, Output dest, String... headers) {
+        for (String name : headers) {
+            Header header = src.getResponseHeader(name);
+            if (header != null) {
+                dest.addHeader(header.getName(), header.getValue());
+            }
+        }
+    }
+
     @Override
     public void render(Output output) throws IOException {
         output.setStatus(statusCode, statusText);
-        Header header = httpMethod.getResponseHeader("Content-Type");
-        if (header != null)
-            output.addHeader(header.getName(), header.getValue());
-        header = httpMethod.getResponseHeader("Content-Length");
-        if (header != null)
-            output.addHeader(header.getName(), header.getValue());
+
+        copyHeaders(httpMethod, output, "Content-Type", "Content-Length",
+                "Last-Modified", "ETag");
         // TODO refactor this
-        header = httpMethod.getResponseHeader("Location");
+        Header header = httpMethod.getResponseHeader("Location");
         if (header != null) {
             // Location header rewriting
             String location = header.getValue();
@@ -245,12 +255,6 @@ public class HttpResource extends Resource {
                     originalBase);
             output.addHeader(header.getName(), location);
         }
-        header = httpMethod.getResponseHeader("Last-Modified");
-        if (header != null)
-            output.addHeader(header.getName(), header.getValue());
-        header = httpMethod.getResponseHeader("ETag");
-        if (header != null)
-            output.addHeader(header.getName(), header.getValue());
         String charset = httpMethod.getResponseCharSet();
         if (charset != null)
             output.setCharsetName(charset);
@@ -259,21 +263,46 @@ public class HttpResource extends Resource {
             if (exception != null) {
                 output.write(statusText);
             } else {
-                byte[] buffer = new byte[1024];
-                InputStream inputStream = httpMethod.getResponseBodyAsStream();
-                if (inputStream != null) {
-                    try {
-                        OutputStream out = output.getOutputStream();
-                        for (int len = -1; (len = inputStream.read(buffer)) != -1;) {
-                            out.write(buffer, 0, len);
-                        }
-                    } finally {
-                        inputStream.close();
-                    }
-                }
+                Handler handler = createHandler();
+                handler.handle(httpMethod.getResponseBodyAsStream(), output);
             }
         } finally {
             output.close();
+        }
+    }
+
+    protected Handler createHandler() {
+        String jsessionid = null;
+        if (target.getUserContext() != null && target.isFilterJsessionid()) {
+            Cookie[] cookies = target.getUserContext().getHttpState()
+                    .getCookies();
+            for (Cookie cookie : cookies) {
+                if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
+                    jsessionid = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        boolean textContentType = false;
+        Header contentTypeHeader = httpMethod.getResponseHeader("Content-Type");
+        if (contentTypeHeader != null) {
+            String contentType = contentTypeHeader.getValue().toLowerCase();
+            // may contain encoding (e.g. 'text/html; charset=UTF-8'
+            if (contentType.startsWith("text/html")
+                    || contentType.startsWith("application/xhtml+xml")) {
+                textContentType = true;
+            }
+        }
+
+        if (jsessionid == null || !textContentType) {
+            return new OldHandler();
+        } else {
+            String charset = httpMethod.getResponseCharSet();
+            if (target.isPropagateJsessionId()) {
+                return new ReplaceCookieHandler(charset, jsessionid);
+            } else {
+                return new RemoveCookieHandler(charset, jsessionid);
+            }
         }
     }
 
@@ -303,5 +332,81 @@ public class HttpResource extends Resource {
         if (target.getUserContext() != null)
             result.append(target.getUserContext().toString());
         return result.toString();
+    }
+
+    private interface Handler {
+        void handle(InputStream src, Output dest) throws IOException;
+    }
+
+    private static final class ReplaceCookieHandler extends CookieHandler {
+
+        public ReplaceCookieHandler(String charset, String jsessionid) {
+            super(charset, jsessionid);
+        }
+
+        @Override
+        protected String parseContent(String content) {
+            // TODO Raccord de méthode auto-généré
+            return content;
+        }
+    }
+
+    private static final class RemoveCookieHandler extends CookieHandler {
+
+        public RemoveCookieHandler(String charset, String jsessionid) {
+            super(charset, jsessionid);
+        }
+
+        @Override
+        protected String parseContent(String content) {
+            // TODO Raccord de méthode auto-généré
+            return content;
+        }
+    }
+
+    private static abstract class CookieHandler implements Handler {
+        private final Handler defaultHandler = new OldHandler();
+        private final String charset;
+        protected final String jsessionid;
+
+        protected CookieHandler(String charset, String jsessionid) {
+            this.charset = charset;
+            this.jsessionid = jsessionid;
+        }
+
+        public void handle(InputStream src, Output dest) throws IOException {
+            StringOutput out = new StringOutput();
+            out.setCharsetName(charset);
+            defaultHandler.handle(src, out);
+
+            // parse content;
+            String parsed = parseContent(out.toString());
+            // put parsed content to destination
+            defaultHandler.handle(new ByteArrayInputStream(parsed
+                    .getBytes(charset)), dest);
+        }
+
+        protected abstract String parseContent(String content);
+
+    }
+
+    private static final class OldHandler implements Handler {
+        public OldHandler() {
+        }
+
+        public void handle(InputStream src, Output dest) throws IOException {
+            byte[] buffer = new byte[1024];
+            if (src != null) {
+                try {
+                    OutputStream out = dest.getOutputStream();
+                    for (int len = -1; (len = src.read(buffer)) != -1;) {
+                        out.write(buffer, 0, len);
+                    }
+                } finally {
+                    src.close();
+                }
+            }
+        }
+
     }
 }

@@ -23,56 +23,73 @@ public class RequestContext {
      * @return driver.
      */
     public Driver getDriver() {
-	return driver;
+        return driver;
     }
 
     private final String relUrl;
     private final HttpServletRequest originalRequest;
     private final Map<String, String> parameters;
     private boolean proxyMode = false;
+    private final boolean propagateJsessionId;
 
     public void setProxyMode(boolean proxyMode) {
-	this.proxyMode = proxyMode;
+        this.proxyMode = proxyMode;
     }
 
     public RequestContext(Driver driver, String relUrl,
-	    Map<String, String> parameters, HttpServletRequest originalRequest) {
-	this.driver = driver;
-	this.relUrl = relUrl;
-	if (parameters != null)
-	    this.parameters = parameters;
-	else
-	    this.parameters = new HashMap<String, String>();
-	this.originalRequest = originalRequest;
+            Map<String, String> parameters, HttpServletRequest originalRequest) {
+        this(driver, relUrl, parameters, originalRequest, false);
+    }
+
+    public RequestContext(Driver driver, String relUrl,
+            Map<String, String> parameters, HttpServletRequest originalRequest,
+            boolean propagateJsessionId) {
+        this.driver = driver;
+        this.relUrl = relUrl;
+        this.propagateJsessionId = propagateJsessionId;
+        if (parameters != null)
+            this.parameters = parameters;
+        else
+            this.parameters = new HashMap<String, String>();
+        this.originalRequest = originalRequest;
     }
 
     public String getMethod() {
-	if (originalRequest != null)
-	    return originalRequest.getMethod();
-	return "GET";
+        if (originalRequest != null)
+            return originalRequest.getMethod();
+        return "GET";
     }
 
     public String getRelUrl() {
-	return relUrl;
+        return relUrl;
     }
 
     public HttpServletRequest getOriginalRequest() {
-	return originalRequest;
+        return originalRequest;
     }
 
     public Map<String, String> getParameters() {
-	return parameters;
+        return parameters;
     }
 
     public boolean isProxyMode() {
-	return proxyMode;
+        return proxyMode;
     }
 
     public boolean isCacheable() {
-	return !proxyMode && "GET".equalsIgnoreCase(getMethod());
+        return !proxyMode && "GET".equalsIgnoreCase(getMethod());
     }
 
     public UserContext getUserContext() {
-	return driver.getContext(originalRequest);
+        return driver.getContext(originalRequest);
+    }
+
+    /** Indicates whether 'jsessionid' filtering enabled */
+    public boolean isFilterJsessionid() {
+        return driver.isFilterJsessionid();
+    }
+
+    public boolean isPropagateJsessionId() {
+        return propagateJsessionId;
     }
 }

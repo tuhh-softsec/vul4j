@@ -23,20 +23,22 @@ public class AggregatorServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request,
-	    HttpServletResponse response) throws ServletException, IOException {
-	String relUrl = request.getServletPath();
-	if (request.getPathInfo() != null)
-	    relUrl += request.getPathInfo();
-	try {
-	    DriverFactory.getInstance(provider).aggregate(relUrl, request,
-		    response);
-	} catch (RenderingException e) {
-	    throw new ServletException(e);
-	}
+            HttpServletResponse response) throws ServletException, IOException {
+        String relUrl = request.getServletPath();
+        if (request.getPathInfo() != null)
+            relUrl += request.getPathInfo();
+        boolean propagateJsessionId = response.encodeURL("/").contains(
+                "jsessionid");
+        try {
+            DriverFactory.getInstance(provider).aggregate(relUrl, request,
+                    response, propagateJsessionId);
+        } catch (RenderingException e) {
+            throw new ServletException(e);
+        }
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-	provider = config.getInitParameter("provider");
+        provider = config.getInitParameter("provider");
     }
 }

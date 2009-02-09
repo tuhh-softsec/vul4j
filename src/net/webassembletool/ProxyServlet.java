@@ -20,16 +20,18 @@ public class ProxyServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request,
-	    HttpServletResponse response) throws ServletException, IOException {
-	String relUrl = request.getServletPath();
-	if (request.getPathInfo() != null)
-	    relUrl += request.getPathInfo();
-	DriverFactory.getInstance(provider).proxy(relUrl, request, response,
-		null);
+            HttpServletResponse response) throws ServletException, IOException {
+        String relUrl = request.getServletPath();
+        if (request.getPathInfo() != null)
+            relUrl += request.getPathInfo();
+        boolean propagateJsessionId = response.encodeURL("/").contains(
+                "jsessionid");
+        DriverFactory.getInstance(provider).proxy(relUrl, request, response,
+                null, propagateJsessionId);
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-	provider = config.getInitParameter("provider");
+        provider = config.getInitParameter("provider");
     }
 }

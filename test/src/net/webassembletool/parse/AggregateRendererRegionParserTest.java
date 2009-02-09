@@ -15,7 +15,8 @@ import net.webassembletool.parse.AggregateRendererRegionParser.Result;
 public class AggregateRendererRegionParserTest extends TestCase {
 
     public void testParse1() throws AggregationSyntaxException {
-        AggregateRendererRegionParser tested = new AggregateRendererRegionParser() {
+        AggregateRendererRegionParser tested = new AggregateRendererRegionParser(
+                false) {
             @Override
             protected Result find(String content, int pos) {
                 assertEquals("content", content);
@@ -37,7 +38,8 @@ public class AggregateRendererRegionParserTest extends TestCase {
     }
 
     public void testParse() throws IOException, RenderingException {
-        AggregateRendererRegionParser tested = new AggregateRendererRegionParser();
+        AggregateRendererRegionParser tested = new AggregateRendererRegionParser(
+                false);
         String content = "content<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->"
                 + "content<!--$includetemplate$token1$token2--> some text <!--$endincludetemplate-->"
                 + "content<!--$includeblock$token1$token2-->content"
@@ -106,7 +108,8 @@ public class AggregateRendererRegionParserTest extends TestCase {
     }
 
     public void testFind() throws IOException, RenderingException {
-        AggregateRendererRegionParser tested = new AggregateRendererRegionParser();
+        AggregateRendererRegionParser tested = new AggregateRendererRegionParser(
+                false);
         String content = "content";
 
         Result actual = tested.find(content, Integer.MAX_VALUE);
