@@ -334,37 +334,38 @@ public class HttpResource extends Resource {
         return result.toString();
     }
 
-    private interface Handler {
+    interface Handler {
         void handle(InputStream src, Output dest) throws IOException;
     }
 
-    private static final class ReplaceCookieHandler extends CookieHandler {
+    static final class ReplaceCookieHandler extends CookieHandler {
 
         public ReplaceCookieHandler(String charset, String jsessionid) {
             super(charset, jsessionid);
         }
 
+        /** Replaces <code>jsessionid</code>'s some value with new one */
         @Override
         protected String parseContent(String content) {
-            // TODO Raccord de méthode auto-généré
-            return content;
+            String replacement = "jsessionid=" + jsessionid;
+            return content.replaceAll("jsessionid=([^?#&'\"]+)", replacement);
         }
     }
 
-    private static final class RemoveCookieHandler extends CookieHandler {
+    static final class RemoveCookieHandler extends CookieHandler {
 
         public RemoveCookieHandler(String charset, String jsessionid) {
             super(charset, jsessionid);
         }
 
+        /** Replaces <code>jsessionid</code>'s some value with new one */
         @Override
         protected String parseContent(String content) {
-            // TODO Raccord de méthode auto-généré
-            return content;
+            return content.replaceAll("jsessionid=([^?#&'\"]+)", "");
         }
     }
 
-    private static abstract class CookieHandler implements Handler {
+    static abstract class CookieHandler implements Handler {
         private final Handler defaultHandler = new OldHandler();
         private final String charset;
         protected final String jsessionid;
@@ -390,7 +391,7 @@ public class HttpResource extends Resource {
 
     }
 
-    private static final class OldHandler implements Handler {
+    static final class OldHandler implements Handler {
         public OldHandler() {
         }
 
