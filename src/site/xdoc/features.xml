@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Features</title>
+		<author email="francois-xavier.bonnet@smile.fr">Francois-Xavier Bonnet</author>
+	</properties>
+	<body>
+		<section name="Features">
+			<subsection name="Blocks and templates">
+				<p>
+					Any web application can be used as a provider. The master
+					application will be
+					able to use blocks and templates delimited with special HTML comments.
+				</p>
+			</subsection>
+			<subsection name="Cross technologies">
+				<p>
+					As we only use HTML comments inside provider applications, a
+					provider application
+					may have been developed with any technology,
+					including Java, PHP on .NET.
+	</p>
+			</subsection>
+			<subsection name="Reverse proxy">
+				<p>
+					The kit contains a reverse-proxy servlet that can be used to
+					retrieve static contents
+					from the provider applications (images, css,
+					js...). For better performance, you may
+					prefer to use Apache mod_proxy
+					powerfull module but the reverse-proxy servlet may as
+					well be used in a
+					production environment with good performance.
+	</p>
+			</subsection>
+			<subsection name="Aggregator">
+				<p>
+					The aggregator is a reverse-proxy servlet that can parse the pages
+					on the fly and process
+					inclusion instructions inserted in the pages by
+					the applications as tags.
+	</p>
+			</subsection>
+			<subsection name="Cache">
+				<p>
+					In order to improve performance, the tool can be configured to use a
+					cache (the underlying cache
+					implementation is the open source library OsCache). Cached entries may be
+					long-lived
+					or short-lived
+					depending on your needs and depending on the provider
+					application.
+	</p>
+			</subsection>
+			<subsection name="User context">
+				<p>
+					While calling the provider application, you may want to send
+					informations about
+					the currently connected user for personalization.
+					The tool lets you transfer the
+					user id, user locale and any key/value
+					list. These informations will be automatically
+					appended as request
+					parameters to the http request.
+	</p>
+			</subsection>
+			<subsection name="Single Sign On with CAS">
+				<p>
+					The kit supports CAS protocol using the
+					<a
+						href="http://www.ja-sig.org/products/cas/overview/proxy_auth/index.html">proxy authentication mode</a>
+					and the JA-SIG CAS client.
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>

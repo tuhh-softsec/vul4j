@@ -1,58 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="webassembletool" default="build" basedir=".">
+<project name="webassembletool" default="release" basedir=".">
 	<loadproperties srcfile="build.properties" />
-	<macrodef name="deploy-wat-classes">
-		<attribute name="webapp-root" />
-		<sequential>
-			<copy todir="@{webapp-root}/WEB-INF/classes">
-				<fileset dir="classes" />
-			</copy>
-			<copy todir="@{webapp-root}/WEB-INF/lib">
-				<fileset dir="lib">
-					<exclude name="jsp-api.jar" />
-					<exclude name="servlet-api.jar" />
-				</fileset>
-			</copy>
-			<copy todir="@{webapp-root}/WEB-INF" file="tld/webassembletool.tld" />
-		</sequential>
-	</macrodef>
-	<target name="clean">
-		<delete dir="bin" />
-		<mkdir dir="bin" />
-		<unwar src="test/cas/cas-server-webapp-3.3.1.war" dest="bin/webapps/cas" />
-		<touch datetime="01/01/1980 0:00 am">
-			<fileset dir="bin/webapps/cas" />
-		</touch>
-	</target>
-	<target name="build">
-		<copy todir="bin/webapps">
-			<fileset dir="test/webapps" />
-		</copy>
-		<deploy-wat-classes webapp-root="bin/webapps/master" />
-		<deploy-wat-classes webapp-root="bin/webapps/provider" />
-		<deploy-wat-classes webapp-root="bin/webapps/aggregator" />
-		<deploy-wat-classes webapp-root="bin/webapps/casified_agregator" />
-	</target>
-	<target name="javadoc">
-		<delete>
-			<fileset file="bin/javadoc" />
-		</delete>
-		<javadoc destdir="bin/doc/javadoc" sourcepath="src" charset="ISO-8859-1" windowtitle="Website assembling toolkit" Doctitle="Website assembling toolkit">
-			<classpath>
-				<fileset dir="lib">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-			<bottom>&lt;a href="http://sourceforge.net"&gt;&lt;img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;amp;type=2" width="125" height="37" border="0" alt="SourceForge.net" /&gt;&lt;/a&gt;</bottom>
-		</javadoc>
-	</target>
-	<target name="release" depends="build,doc,javadoc">
+	<target name="release">
 		<tstamp />
 		<delete quiet="true">
-			<fileset file="bin/webassembletool*.jar" />
-			<fileset dir="bin/samples" />
+			<fileset file="target/webassembletool*.jar" />
+			<fileset dir="target/samples" />
 		</delete>
-		<jar destfile="bin/webassembletool_${current.version}.jar" basedir="classes" includes="net/">
+		<jar destfile="target/webassembletool_${current.version}.jar" basedir="target/classes" includes="net/">
 			<metainf file="tld/webassembletool.tld" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
@@ -62,38 +17,39 @@
 				</section>
 			</manifest>
 		</jar>
-		<mkdir dir="bin/samples" />
-		<war destfile="bin/samples/aggregated1.war" basedir="bin/webapps/aggregated1" needxmlfile="false" />
-		<war destfile="bin/samples/aggregated2.war" basedir="bin/webapps/aggregated2" needxmlfile="false" />
-		<war destfile="bin/samples/aggregator.war" basedir="bin/webapps/aggregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
-			<lib file="bin/webassembletool_${current.version}.jar" />
+		<mkdir dir="target/samples" />
+		<war destfile="target/samples/aggregated1.war" basedir="target/webapps/aggregated1" needxmlfile="false" />
+		<war destfile="target/samples/aggregated2.war" basedir="target/webapps/aggregated2" needxmlfile="false" />
+		<war destfile="target/samples/aggregator.war" basedir="target/webapps/aggregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
-		<war destfile="bin/samples/cas.war" basedir="bin/webapps/cas" />
-		<war destfile="bin/samples/casified_agregated1.war" basedir="bin/webapps/casified_agregated1" />
-		<war destfile="bin/samples/casified_agregated2.war" basedir="bin/webapps/casified_agregated2" />
-		<war destfile="bin/samples/casified_agregator.war" basedir="bin/webapps/casified_agregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
-			<lib file="bin/webassembletool_${current.version}.jar" />
+		<war destfile="target/samples/cas.war" basedir="target/webapps/cas" />
+		<war destfile="target/samples/casified_agregated1.war" basedir="target/webapps/casified_agregated1" />
+		<war destfile="target/samples/casified_agregated2.war" basedir="target/webapps/casified_agregated2" />
+		<war destfile="target/samples/casified_agregator.war" basedir="target/webapps/casified_agregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
-		<war destfile="bin/samples/master.war" basedir="bin/webapps/master" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
-			<lib file="bin/webassembletool_${current.version}.jar" />
+		<war destfile="target/samples/master.war" basedir="target/webapps/master" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
-		<war destfile="bin/samples/provider.war" basedir="bin/webapps/provider" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
-			<lib file="bin/webassembletool_${current.version}.jar" />
+		<war destfile="target/samples/provider.war" basedir="target/webapps/provider" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
-		<zip destfile="bin/webassembletool_${current.version}.zip">
-			<fileset dir="." includes="lib/, bin/webassembletool_${current.version}.jar, src/" excludes="lib/servlet-api.jar,lib/jsp-api.jar" />
-			<fileset dir="bin" includes="doc/, samples/" />
+		<zip destfile="target/webassembletool_${current.version}.zip">
+			<fileset dir="." includes="src/, pom.xml" />
+			<fileset dir="target" includes="samples/, webassembletool_${current.version}.jar" />
 		</zip>
 	</target>
-	<target name="doc">
-		<delete quiet="true">
-			<fileset dir="bin/doc" />
-		</delete>
-		<xslt style="doc/stylesheet.xsl" destdir="bin" includes="doc/*.xml" excludes="doc/menu.xml,doc/sitemap.xml">
-		</xslt>
-		<copy todir="bin/doc">
-			<fileset dir="doc" excludes="*.xml,*.xsl,schemas.ppt" />
-			<fileset file="doc/sitemap.xml" />
-		</copy>
+	<target name="run">
+		<java fork="true" classname="net.webassembletool.test.jetty.JettyRunner" >
+			<classpath path="target/test-classes">
+				<fileset dir="target/dependency/test">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<arg value="target/webapps"/>
+			<arg value="8080"/>
+		</java>
 	</target>
+
 </project>
