@@ -6,11 +6,11 @@ import javax.servlet.jsp.tagext.TagSupport;
 import net.webassembletool.RenderingException;
 
 /**
- * Retrieves an HTML fragment from the provider application and inserts it into
- * the page. Extends AbstractReplaceableTag, so a ReplaceTag can be used inside
- * this tag.
+ * Retrieves an XML fragment from the provider application and inserts it into
+ * the page. May optionally evaluate XPath expressions and apply XSLT templates
+ * on retrieved fragment before insert.
  * 
- * @author Fran§ois-Xavier Bonnet
+ * @author Stanislav Bernatskyi
  * 
  */
 public class IncludeXmlTag extends TagSupport {
