@@ -106,7 +106,6 @@ class DriverConfiguration {
     }
 
     public boolean isFilterJsessionid() {
-        // TODO Raccord de méthode auto-généré
         return filterJsessionid;
     }
 

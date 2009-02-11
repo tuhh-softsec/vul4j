@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import net.webassembletool.cache.Cache;
@@ -130,11 +131,15 @@ public class Driver {
         StringOutput stringOutput = getResourceAsString(target);
 
         try {
-            Renderer renderer = XsltRenderer.builder().xpath(xpath).result();
+            Renderer renderer = XsltRenderer.builder().xpath(xpath).template(
+                    template, ctx).result();
             renderer.render(stringOutput, out, null);
         } catch (XPathExpressionException e) {
             throw new ProcessingFailedException(
                     "failed to compile XPath expression", e);
+        } catch (TransformerConfigurationException e) {
+            throw new ProcessingFailedException(
+                    "failed to create XSLT template", e);
         }
     }
 

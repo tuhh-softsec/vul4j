@@ -1,15 +1,23 @@
 package net.webassembletool.parse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -32,31 +40,20 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * TODO Type javadoc
+ * XML renderer.
+ * <p>
+ * Applies optional XPath evaluation and XSLT transformation to the retrieved
+ * data.
  * 
- * @author satyr
+ * @author Stanislav Bernatskyi
  */
 public class XsltRenderer implements Renderer {
     private final XPathExpression expr;
     private final Transformer transformer;
 
-    public XsltRenderer(XPathExpression expr) {
+    public XsltRenderer(XPathExpression expr, Transformer transformer) {
         this.expr = expr;
-        this.transformer = null;
-
-        // TODO [stas]: add xslt support
-        // TransformerFactory tFactory = TransformerFactory.newInstance();
-        // if (template != null) {
-        // InputStream templateStream = ctx.getResourceAsStream(template);
-        // try {
-        // transformer = tFactory.newTransformer(new StreamSource(
-        // templateStream));
-        // } finally {
-        // templateStream.close();
-        // }
-        // } else {
-        // transformer = null;
-        // }
+        this.transformer = transformer;
     }
 
     /** {@inheritDoc} */
@@ -76,17 +73,21 @@ public class XsltRenderer implements Renderer {
                 xpathed = document;
             }
 
-            // if (transformer != null) {
-            // transformer
-            // .transform(new DOMSource(xpathed), new StreamResult(out));
-            // } else {
+            Node transformed;
+            if (transformer != null) {
+                DOMResult result = new DOMResult();
+                transformer.transform(new DOMSource(xpathed), result);
+                transformed = result.getNode();
+            } else {
+                transformed = xpathed;
+            }
+
             Properties props = OutputPropertiesFactory
                     .getDefaultMethodProperties(Method.HTML);
             Serializer ser = SerializerFactory.getSerializer(props);
             ser.setWriter(out);
             DOMSerializer dSer = ser.asDOMSerializer();
-            dSer.serialize(xpathed);
-            // }
+            dSer.serialize(transformed);
         } catch (SAXException e) {
             throw new ProcessingFailedException("unable to parse source", e);
         } catch (ParserConfigurationException e) {
@@ -95,6 +96,8 @@ public class XsltRenderer implements Renderer {
         } catch (XPathExpressionException e) {
             throw new ProcessingFailedException(
                     "failed to evaluate XPath expression", e);
+        } catch (TransformerException e) {
+            throw new ProcessingFailedException("failed to transform source", e);
         }
     }
 
@@ -110,10 +113,10 @@ public class XsltRenderer implements Renderer {
 
     public static class XsltRendererBuilder {
         private XPathExpression expr;
-
-        // private Transformer transformer;
+        private Transformer transformer;
 
         XsltRendererBuilder() {
+            // default constructor
         }
 
         public XsltRendererBuilder xpath(String xpath)
@@ -128,8 +131,25 @@ public class XsltRenderer implements Renderer {
             return this;
         }
 
+        public XsltRendererBuilder template(String template, ServletContext ctx)
+                throws TransformerConfigurationException, IOException {
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+            if (template != null) {
+                InputStream templateStream = ctx.getResourceAsStream(template);
+                try {
+                    transformer = tFactory.newTransformer(new StreamSource(
+                            templateStream));
+                } finally {
+                    templateStream.close();
+                }
+            } else {
+                transformer = null;
+            }
+            return this;
+        }
+
         public XsltRenderer result() {
-            return new XsltRenderer(expr);
+            return new XsltRenderer(expr, transformer);
         }
     }
 }
