@@ -153,6 +153,13 @@
 		<extensions>
 		</extensions>
 	</build>
+	<repositories>
+	   <repository>
+	       <id>jasig-repository</id>
+	       <name>JA-SIG Maven2 Repository</name>
+	       <url>http://developer.ja-sig.org/maven2</url>
+       </repository>
+    </repositories>
 	<dependencies>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -186,6 +193,10 @@
 					<artifactId>commons-logging</artifactId>
 					<groupId>commons-logging</groupId>
 				</exclusion>
+                <exclusion>
+                    <artifactId>jms</artifactId>
+                    <groupId>javax.jms</groupId>
+                </exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
