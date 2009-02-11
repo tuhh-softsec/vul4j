@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 import net.webassembletool.RetrieveException;
 import net.webassembletool.output.StringOutput;
+import net.webassembletool.util.MockStringOutput;
 
 /**
  * TODO Type javadoc
@@ -18,12 +19,7 @@ import net.webassembletool.output.StringOutput;
 public class BlockRendererTest extends TestCase {
 
     public void testRenderBlockError() throws IOException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return "expected";
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput("expected");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
         expectedOutput.setStatusMessage("abc");
 
@@ -39,12 +35,7 @@ public class BlockRendererTest extends TestCase {
     }
 
     public void testRenderBlockNull() throws IOException, RetrieveException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return null;
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         BlockRenderer tested = new BlockRenderer(null, null);
 
@@ -52,12 +43,8 @@ public class BlockRendererTest extends TestCase {
     }
 
     public void testRenderBlock() throws IOException, RetrieveException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello";
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(
+                "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Writer out = new StringWriter();
 

@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.xpath.XPathExpressionException;
 
 import net.webassembletool.cache.Cache;
 import net.webassembletool.cache.MemoryOutput;
@@ -24,6 +25,7 @@ import net.webassembletool.parse.AggregateRenderer;
 import net.webassembletool.parse.BlockRenderer;
 import net.webassembletool.parse.Renderer;
 import net.webassembletool.parse.TemplateRenderer;
+import net.webassembletool.parse.XsltRenderer;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.ResourceUtils;
 
@@ -120,15 +122,20 @@ public class Driver {
      * @throws RenderingException If an Exception occurs while retrieving the
      *             block
      */
-    public void renderXslt(String source, String xpath, String template,
+    public void renderXml(String source, String xpath, String template,
             Writer out, HttpServletRequest originalRequest, ServletContext ctx)
             throws IOException, RenderingException {
         RequestContext target = new RequestContext(this, source, null,
                 originalRequest);
         StringOutput stringOutput = getResourceAsString(target);
 
-        // Renderer renderer = new XsltRenderer(xpath, template, ctx);
-        // renderer.render(stringOutput, out, null);
+        try {
+            Renderer renderer = XsltRenderer.builder().xpath(xpath).result();
+            renderer.render(stringOutput, out, null);
+        } catch (XPathExpressionException e) {
+            throw new ProcessingFailedException(
+                    "failed to compile XPath expression", e);
+        }
     }
 
     /**

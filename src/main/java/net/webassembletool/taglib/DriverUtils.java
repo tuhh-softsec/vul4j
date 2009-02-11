@@ -58,4 +58,18 @@ public class DriverUtils {
             throw new JspException(e);
         }
     }
+
+    public final static void renderXml(String provider, String source,
+            String xpath, String template, PageContext pageContext)
+            throws JspException, RenderingException {
+
+        try {
+            Driver driver = DriverFactory.getInstance(provider);
+            driver.renderXml(source, xpath, template, pageContext.getOut(),
+                    (HttpServletRequest) pageContext.getRequest(), pageContext
+                            .getServletContext());
+        } catch (IOException e) {
+            throw new JspException(e);
+        }
+    }
 }

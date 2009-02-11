@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 import net.webassembletool.output.StringOutput;
+import net.webassembletool.util.MockStringOutput;
 
 /**
  * TODO Type javadoc
@@ -19,12 +20,7 @@ import net.webassembletool.output.StringOutput;
 public class DriverTest extends TestCase {
 
     public void testRenderBlockError() throws IOException, RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return "expected";
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput("expected");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
         expectedOutput.setStatusMessage("abc");
         Driver tested = new MockDriver("tested", new Properties(),
@@ -41,12 +37,7 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderBlockNull() throws IOException, RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return null;
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
@@ -55,12 +46,8 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderBlock() throws IOException, RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello";
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(
+                "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
@@ -73,12 +60,7 @@ public class DriverTest extends TestCase {
 
     public void testRenderTemplateError() throws IOException,
             RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return "expected";
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput("expected");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
         expectedOutput.setStatusMessage("abc");
         Driver tested = new MockDriver("tested", new Properties(),
@@ -97,12 +79,7 @@ public class DriverTest extends TestCase {
 
     public void testRenderTemplateNull1() throws IOException,
             RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return null;
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
@@ -114,12 +91,7 @@ public class DriverTest extends TestCase {
 
     public void testRenderTemplateNull2() throws IOException,
             RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return null;
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
@@ -137,12 +109,8 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderTemplate1() throws IOException, RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return "some <!--$beginparam$key-->some hidden text goes here<!--$endparam$key--> printed";
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(
+                "some <!--$beginparam$key-->some hidden text goes here<!--$endparam$key--> printed");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
@@ -161,12 +129,8 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderTemplate2() throws IOException, RenderingException {
-        final StringOutput expectedOutput = new StringOutput() {
-            @Override
-            public String toString() {
-                return "abc some<!--$begintemplate$A-->some text goes here<!--$endtemplate$A--> cdf hello";
-            }
-        };
+        final StringOutput expectedOutput = new MockStringOutput(
+                "abc some<!--$begintemplate$A-->some text goes here<!--$endtemplate$A--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
