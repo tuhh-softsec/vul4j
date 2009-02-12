@@ -11,11 +11,6 @@ import net.webassembletool.RetrieveException;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.util.MockStringOutput;
 
-/**
- * TODO Type javadoc
- * 
- * @author satyr
- */
 public class BlockRendererTest extends TestCase {
 
     public void testRenderBlockError() throws IOException {

@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import net.webassembletool.RenderingException;
 
 /**
- * TODO Type javadoc
+ * Represents a region composed of several sub-regions.
  * 
- * @author satyr
+ * @author Stanislav Bernatskyi
  */
 public class CompositeRegion implements IRegion {
     private final List<IRegion> children = new LinkedList<IRegion>();

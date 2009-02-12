@@ -15,11 +15,6 @@ import junit.framework.TestCase;
 import net.webassembletool.Driver;
 import net.webassembletool.RenderingException;
 
-/**
- * TODO Type javadoc
- * 
- * @author satyr
- */
 public class IncludeBlockRegionTest extends TestCase {
 
     public void testProcess() throws IOException, RenderingException {

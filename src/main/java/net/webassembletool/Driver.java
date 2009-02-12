@@ -110,7 +110,9 @@ public class Driver {
     }
 
     /**
-     * TODO [stas]: add javadoc
+     * Retrieves a page from the provider application, evaluates XPath
+     * expression if exists, applies XSLT transformation and writes result to a
+     * Writer.
      * 
      * @param source external page used for inclusion
      * @param xpath XPath expression (may be <code>null</code>)

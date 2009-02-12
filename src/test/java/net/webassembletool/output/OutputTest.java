@@ -7,11 +7,6 @@ import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
 
-/**
- * TODO Type javadoc
- * 
- * @author satyr
- */
 public class OutputTest extends TestCase {
 
     public void testCopyHeaders() {

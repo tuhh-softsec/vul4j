@@ -12,11 +12,6 @@ import junit.framework.TestCase;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.util.MockStringOutput;
 
-/**
- * TODO Type javadoc
- * 
- * @author satyr
- */
 public class DriverTest extends TestCase {
 
     public void testRenderBlockError() throws IOException, RenderingException {

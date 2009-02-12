@@ -11,11 +11,6 @@ import net.webassembletool.RetrieveException;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.util.MockStringOutput;
 
-/**
- * TODO Type javadoc
- * 
- * @author satyr
- */
 public class TemplateRendererTest extends TestCase {
 
     public void testRenderTemplateError() throws IOException {
