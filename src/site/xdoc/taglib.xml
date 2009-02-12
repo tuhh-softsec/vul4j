@@ -6,28 +6,30 @@
 	</properties>
 	<body>
 		<section name="Tag the block on the provider application">
-			<p>
-				The block has to be tagged using special HTML comments.
-	</p>
+			<p>The block has to be tagged using special HTML comments.</p>
 			<img src="block.jpg" />
 		</section>
-		<section
-			name="Retrieve the block inside a page of the master application
-		">
-			<p>
-				If using JSP, you can use the tag library. If not, the tool can be
-				used as well directly using java code.
-	</p>
-			<p>
-				Suppose the block you want to include is inside a page
-				http://localhost:8080/provider/mypage.php
-	</p>
+		<section name="Retrieve the block inside a page of the master application">
+			<p>If using JSP, you can use the tag library. If not, the tool can be
+				used as well directly using java code.</p>
+			<p>Suppose the block you want to include is inside a page
+				http://localhost:8080/provider/mypage.php</p>
 			<img src="includeblock.jpg" />
-			<p>
-				NOTE: do not forget to add the taglib declaration at the beging of
-				the page.
-	</p>
+            <p><i><b>NOTE</b>: do not forget to add the taglib declaration at the beging of the page.</i></p>
 		</section>
+        <section name="Include XML fragment from master application">
+            <p>If using JSP, you can use library's '<code>include-xml</code>' tag.</p>
+            <p>Tag should be used when some XML content from master site needs to be included in page.
+                Tag allows further modification of retrived data by XPath evaluation and applying XSLT template.</p>
+            <p>Following attributes are supported:
+            <ul>
+                <li><b>source</b> external page used for inclusion</li>
+                <li><b>xpath</b> XPath expression (optional)</li>
+                <li><b>template</b> path to the XSLT template (optional) will be evaluated against current
+                    web application context</li>
+            </ul></p>
+            <p><i><b>NOTE</b>: do not forget to add the taglib declaration at the beging of the page.</i></p>
+        </section>
 		<section name="Complete tag list">
 			<p>
 				<table>
@@ -41,10 +43,8 @@
 					</tr>
 					<tr>
 						<td>includeBase</td>
-						<td>Generates a html "base" tag with the URL of the
-							remote
-							page in order for links and resources in the HTML code to work
-					</td>
+						<td>Generates a html "base" tag with the URL of the remote
+							page in order for links and resources in the HTML code to work</td>
 					</tr>
 					<tr>
 						<td>includeTemplate</td>
@@ -58,6 +58,10 @@
 							value of its own body. This tag can only be used inside a
 							includeTemplate tag</td>
 					</tr>
+                    <tr>
+                        <td>include-xml</td>
+                        <td>Include some XML fragment/page from another application</td>
+                    </tr>
 					<tr>
 						<td>block</td>
 						<td>Generates a tag in the page to delimit a block</td>
@@ -95,8 +99,7 @@
 					</tr>
 					<tr>
 						<td>defaultError</td>
-						<td>In the case of an error while retrieving the resource,
-							display
+						<td>In the case of an error while retrieving the resource, display
 							the content of its body instead of the error message</td>
 					</tr>
 				</table>
