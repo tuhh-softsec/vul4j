@@ -118,6 +118,13 @@
 					<td>No</td>
 					<td>-</td>
 				</tr>
+                <tr>
+                    <td>filterJsessionid</td>
+                    <td>Instructs driver to replace all <code>jsessionid</code>
+                        occurencies inside generated URL's with correct ones retrived from remote site</td>
+                    <td>No</td>
+                    <td>true</td>
+                </tr>
 			</table>
 
 		</section>
