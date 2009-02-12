@@ -52,11 +52,7 @@ public class HttpResource extends Resource {
 
     private Exception exception;
 
-    /**
-     * This method builds post request adding WAT specific parameters TODO
-     * Method javadoc
-     * 
-     */
+    /** This method builds post request adding WAT specific parameters */
     private void buildFormPostMethod() {
         url = ResourceUtils.getHttpUrl(target);
         PostMethod postMethod = new PostMethod(url);
@@ -92,7 +88,7 @@ public class HttpResource extends Resource {
 
     /**
      * This builds a postMethod forwarding content and content type without
-     * modification. TODO Method javadoc
+     * modification.
      * 
      * @throws IOException if problem getting the request
      * 
@@ -163,7 +159,7 @@ public class HttpResource extends Resource {
         }
     }
 
-    // TODO handle multipart POST requests
+    // TODO: handle multipart POST requests
     public HttpResource(HttpClient httpClient, RequestContext target) {
         this.target = target;
         // Retrieve session and other cookies
@@ -237,7 +233,7 @@ public class HttpResource extends Resource {
 
         copyHeaders(httpMethod, output, "Content-Type", "Content-Length",
                 "Last-Modified", "ETag");
-        // TODO refactor this
+        // TODO: refactor this
         Header header = httpMethod.getResponseHeader("Location");
         if (header != null) {
             // Location header rewriting
@@ -393,6 +389,7 @@ public class HttpResource extends Resource {
 
     static final class OldHandler implements Handler {
         public OldHandler() {
+            // no op constructor
         }
 
         public void handle(InputStream src, Output dest) throws IOException {

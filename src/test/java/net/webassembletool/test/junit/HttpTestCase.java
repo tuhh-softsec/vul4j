@@ -131,7 +131,7 @@ public abstract class HttpTestCase extends TestCase {
     }
 
     /**
-     * Emit post request with RAW data as body TODO Method javadoc
+     * Emit post request with RAW data as body
      * 
      * @param relativeURL The url to post to
      * @param body the binary data to send
@@ -142,7 +142,7 @@ public abstract class HttpTestCase extends TestCase {
     }
 
     /**
-     * Emit post request with RAW data as body TODO Method javadoc
+     * Emit post request with RAW data as body
      * 
      * @param relativeURL The url to post to
      * @param contentType the content type to set

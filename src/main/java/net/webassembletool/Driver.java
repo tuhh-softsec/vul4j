@@ -44,8 +44,9 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
  * 
  */
 public class Driver {
-    // TODO write a tokenizer class to avoid String.indexOf usage in the driver.
-    // TODO proxy mode option for taglibs, aggregator and proxy, recursive or
+    // TODO: write a tokenizer class to avoid String.indexOf usage in the
+    // driver.
+    // TODO: proxy mode option for taglibs, aggregator and proxy, recursive or
     // not for aggregator
     private final DriverConfiguration config;
     private final Cache cache;
