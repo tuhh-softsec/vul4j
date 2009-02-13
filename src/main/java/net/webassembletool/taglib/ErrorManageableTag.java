@@ -3,7 +3,7 @@ package net.webassembletool.taglib;
 import java.util.Map;
 
 /**
- * TODO Type javadoc
+ * Interface for JSP tags which are capable of error management.
  * 
  * @author Cedric BRANDES
  */

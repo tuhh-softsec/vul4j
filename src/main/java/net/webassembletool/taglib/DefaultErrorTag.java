@@ -4,7 +4,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * TODO Type javadoc
+ * 'defaultError' JSP tag.
+ * <p>
+ * Displays the body's content of retrieved resource instead of the error
+ * message in case when error happens while retrieving resource.
  * 
  * @author Cedric BRANDES
  */
@@ -14,9 +17,9 @@ public class DefaultErrorTag extends BodyTagSupport {
 
     @Override
     public int doAfterBody() throws JspException {
-	ErrorManageableTag parent = (ErrorManageableTag) getParent();
-	String value = getBodyContent().getString();
-	parent.setDefaultMessage(value);
-	return SKIP_BODY;
+        ErrorManageableTag parent = (ErrorManageableTag) getParent();
+        String value = getBodyContent().getString();
+        parent.setDefaultMessage(value);
+        return SKIP_BODY;
     }
 }
