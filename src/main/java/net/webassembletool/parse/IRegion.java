@@ -19,7 +19,10 @@ public interface IRegion {
      * 
      * @param out - output for data presessed by the region
      * @param request - contains information about user request
+     * @throws IOException if I/O error happens
+     * @throws RenderingException if error happens during local processing of
+     *             result
      */
     void process(Writer out, HttpServletRequest request) throws IOException,
-	    RenderingException;
+            RenderingException;
 }

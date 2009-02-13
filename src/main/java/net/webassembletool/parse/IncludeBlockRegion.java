@@ -15,7 +15,7 @@ import net.webassembletool.RenderingException;
  * <code>&lt;!--$includeblock...$--></code> tag.
  * 
  * @see Driver#renderBlock(String, String, Writer, HttpServletRequest,
- *      java.util.Map, java.util.Map)
+ *      java.util.Map, java.util.Map, boolean)
  * @author Stanislav Bernatskyi
  */
 public class IncludeBlockRegion extends AbstractIncludeRegion {

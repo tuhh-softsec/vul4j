@@ -84,7 +84,12 @@ public class RequestContext {
         return driver.getContext(originalRequest);
     }
 
-    /** Indicates whether 'jsessionid' filtering enabled */
+    /**
+     * Indicates whether 'jsessionid' filtering enabled
+     * 
+     * @return flag indicating whether 'filterJsessionid' option is turned on in
+     *         driver configuration for this request
+     */
     public boolean isFilterJsessionid() {
         return driver.isFilterJsessionid();
     }

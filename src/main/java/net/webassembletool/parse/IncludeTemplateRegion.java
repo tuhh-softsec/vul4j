@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.AggregationSyntaxException;
+import net.webassembletool.Driver;
 import net.webassembletool.RenderingException;
 import net.webassembletool.RetrieveException;
 
@@ -22,6 +23,8 @@ import net.webassembletool.RetrieveException;
  * <li>&lt;!--$endput$--&gt;</li>
  * </ul>
  * 
+ * @see Driver#renderTemplate(String, String, Writer, HttpServletRequest, Map,
+ *      Map, Map, boolean)
  * @author Stanislav Bernatskyi
  */
 public class IncludeTemplateRegion extends AbstractIncludeRegion {

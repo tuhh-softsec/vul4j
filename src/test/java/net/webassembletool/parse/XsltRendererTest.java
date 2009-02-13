@@ -96,6 +96,7 @@ public class XsltRendererTest extends TestCase {
         Document expDocument = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder().parse(
                         new InputSource(new StringReader(src.toString())));
+        @SuppressWarnings("synthetic-access")
         Transformer expTransformer = new MockTransformer() {
             @Override
             public void transform(Source xmlSource, Result outputTarget) {

@@ -135,7 +135,7 @@ public abstract class HttpTestCase extends TestCase {
      * 
      * @param relativeURL The url to post to
      * @param body the binary data to send
-     * @throws Exception
+     * @throws Exception if any error happens
      */
     public void doPost(String relativeURL, byte[] body) throws Exception {
         doPost(relativeURL, null, body);
@@ -147,9 +147,8 @@ public abstract class HttpTestCase extends TestCase {
      * @param relativeURL The url to post to
      * @param contentType the content type to set
      * @param body the binary data to send
-     * @throws Exception
+     * @throws Exception if any error happens
      */
-
     public void doPost(String relativeURL, String contentType, byte[] body)
             throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);

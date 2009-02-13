@@ -105,7 +105,12 @@ public class Driver {
         return config.getBaseURL();
     }
 
-    /** Indicates whether 'jsessionid' filtering enabled */
+    /**
+     * Indicates whether 'jsessionid' filtering enabled
+     * 
+     * @return flag indicating whether 'filterJsessionid' option is turned on in
+     *         configuration
+     */
     public boolean isFilterJsessionid() {
         return config.isFilterJsessionid();
     }
@@ -159,6 +164,8 @@ public class Driver {
      * @param originalRequest original client request
      * @param replaceRules the replace rules to be applied on the block
      * @param parameters Additional parameters
+     * @param propagateJsessionId indicates whether <code>jsessionid</code>
+     *            should be propagated or just removed from generated output
      * @throws IOException If an IOException occurs while writing to the writer
      * @throws RenderingException If an Exception occurs while retrieving the
      *             block
@@ -189,10 +196,12 @@ public class Driver {
      * @param page Address of the page containing the template
      * @param name Template name
      * @param writer Writer where to write the result
-     * @param context User context
+     * @param originalRequest originating request object
      * @param params Blocks to replace inside the template
      * @param replaceRules The replace rules to be applied on the block
-     * @param parameters Parameters to be added to the request
+     * @param parameters Parameters to be added to the request (TODO: unused???)
+     * @param propagateJsessionId indicates whether <code>jsessionid</code>
+     *            should be propagated or just removed from generated output
      * @throws IOException If an IOException occurs while writing to the writer
      * @throws RenderingException If an Exception occurs while retrieving the
      *             template
@@ -217,6 +226,8 @@ public class Driver {
      * @param request the request
      * @param response the response
      * @param parameters Additional parameters that will be added to the request
+     * @param propagateJsessionId indicates whether <code>jsessionid</code>
+     *            should be propagated or just removed from generated output
      * @throws IOException If an IOException occurs while rendering the response
      */
     public final void proxy(String relUrl, HttpServletRequest request,
@@ -257,6 +268,8 @@ public class Driver {
      * @param relUrl the relative URL to the resource
      * @param request the request
      * @param response the response
+     * @param propagateJsessionId indicates whether <code>jsessionid</code>
+     *            should be propagated or just removed from generated output
      * @throws IOException If an IOException occurs while writing to the
      *             response
      * @throws RenderingException If the page contains incorrect tags
