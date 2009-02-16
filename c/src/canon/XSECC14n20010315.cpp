@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2009 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -735,6 +735,10 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 	// If XPath and node not selected, then never print
 	if (m_XPathSelection && ! m_XPathMap.hasNode(a))
 		return false;
+
+    // BUGFIX: we need to skip xmlns:xml if the value is http://www.w3.org/XML/1998/namespace
+    if (strEquals(a->getLocalName(), "xml") && strEquals(a->getNodeValue(), "http://www.w3.org/XML/1998/namespace"))
+        return false;
 
 	// First - are we exclusive?
 
