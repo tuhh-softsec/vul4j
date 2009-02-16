@@ -58,6 +58,17 @@ public class AggregatorTest extends HttpTestCase {
         assertBodyEqualsLocalFile("aggregator/template.html");
     }
 
+    public void testTemplateWithParams() throws Exception {
+        /*
+         * Ensure aggregator "template" params are not forwarded to the backend
+         * template like it is the case for master/provider since these params
+         * are processed aggregator-side.
+         */
+        doGet("aggregator/templatewithparams.html");
+        assertStatus(HttpServletResponse.SC_OK);
+        assertBodyEqualsLocalFile("aggregator/templatewithparams.html");
+    }
+
     public void testUtf8() throws Exception {
         doGet("aggregator/utf8.jsp");
         assertStatus(HttpServletResponse.SC_OK);

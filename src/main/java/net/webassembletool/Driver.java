@@ -154,8 +154,7 @@ public class Driver {
     /**
      * Retrieves a block from the provider application and writes it to a
      * Writer. Block can be defined in the provider application using HTML
-     * comments.<br />
-     * eg: a block name "myblock" should be delimited with
+     * comments.<br /> eg: a block name "myblock" should be delimited with
      * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
      * 
      * @param page Page containing the block
@@ -185,12 +184,12 @@ public class Driver {
     /**
      * Retrieves a template from the provider application and renders it to the
      * writer replacing the parameters with the given map. If "name" param is
-     * null, the whole page will be used as the template.<br />
-     * eg: The template "mytemplate" can be delimited in the provider page by
-     * comments "&lt;!--$begintemplate$mytemplate$--&gt;" and
-     * "&lt;!--$endtemplate$mytemplate$--&gt;".<br />
-     * Inside the template, the parameters can be defined by comments.<br />
-     * eg: parameter named "myparam" should be delimited by comments
+     * null, the whole page will be used as the template.<br /> eg: The template
+     * "mytemplate" can be delimited in the provider page by comments
+     * "&lt;!--$begintemplate$mytemplate$--&gt;" and
+     * "&lt;!--$endtemplate$mytemplate$--&gt;".<br /> Inside the template, the
+     * parameters can be defined by comments.<br /> eg: parameter named
+     * "myparam" should be delimited by comments
      * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
      * 
      * @param page Address of the page containing the template
@@ -210,7 +209,7 @@ public class Driver {
             HttpServletRequest originalRequest, Map<String, String> params,
             Map<String, String> replaceRules, Map<String, String> parameters,
             boolean propagateJsessionId) throws IOException, RenderingException {
-        RequestContext target = new RequestContext(this, page, params,
+        RequestContext target = new RequestContext(this, page, parameters,
                 originalRequest, propagateJsessionId);
         StringOutput stringOutput = getResourceAsString(target);
 
