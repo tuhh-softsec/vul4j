@@ -79,7 +79,7 @@ BEGIN
 #else
             VALUE "InternalName", "xsec_1_5\0"
 #endif
-            VALUE "LegalCopyright", "Copyright © 2002-2008 The Apache Software Foundation\0"
+            VALUE "LegalCopyright", "Copyright © 2002-2009 The Apache Software Foundation\0"
             VALUE "LegalTrademarks", "\0"
 #ifdef _DEBUG
             VALUE "OriginalFilename", "xsec_1_5D.dll\0"

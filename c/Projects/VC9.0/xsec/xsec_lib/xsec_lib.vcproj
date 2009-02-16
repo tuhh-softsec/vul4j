@@ -421,7 +421,6 @@
 				OutputFile="$(OutDir)/xsec_1_5D.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/xsec_lib.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -507,7 +506,6 @@
 				OutputFile="$(OutDir)/xsec_1_5D.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/xsec_lib.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -767,6 +765,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoList.cpp"
 				>
 			</File>
@@ -822,14 +828,6 @@
 				RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoX509.hpp"
 				>
 			</File>
-            <File
-                RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.cpp"
-                >
-            </File>
-            <File
-                RelativePath="..\..\..\..\src\dsig\DSIGKeyInfoExt.hpp"
-                >
-            </File>
 			<File
 				RelativePath="..\..\..\..\src\dsig\DSIGObject.cpp"
 				>

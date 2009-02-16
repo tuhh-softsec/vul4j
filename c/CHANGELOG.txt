@@ -5,6 +5,7 @@ Changes since 1.4
 * Fix memory leak in OpenSSL RSA/DSA key cloning (SC)
 * Finish port to Xerces 3.0 (SC)
 * 64-bit API changes (SC)
+* Add VC9 build files (SC)
 * Expose KeyInfo extensions via DOM (SC)
 * Fix c14n to omit standard xmlns:xml declarations (SC)
 
