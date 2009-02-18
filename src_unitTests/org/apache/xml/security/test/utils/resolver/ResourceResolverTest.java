@@ -92,7 +92,6 @@ public class ResourceResolverTest extends TestCase {
 	Attr uriAttr = doc.createAttribute("URI");
 	String basedir = System.getProperty("basedir");
 	String file = new File(basedir, "build.xml").toURI().toString();
-        System.out.println("file uri:"+file);
 	uriAttr.setValue(file);
 	ResourceResolver res = ResourceResolver.getInstance(uriAttr, file);
 	try {
