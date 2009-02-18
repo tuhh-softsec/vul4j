@@ -21,6 +21,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.io.File;
 import javax.xml.parsers.*;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -90,7 +91,8 @@ public class ResourceResolverTest extends TestCase {
         DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 	Attr uriAttr = doc.createAttribute("URI");
 	String basedir = System.getProperty("basedir");
-	String file = "file:" + basedir + "/build.xml";
+	String file = new File(basedir, "build.xml").toURI().toString();
+        System.out.println("file uri:"+file);
 	uriAttr.setValue(file);
 	ResourceResolver res = ResourceResolver.getInstance(uriAttr, file);
 	try {
