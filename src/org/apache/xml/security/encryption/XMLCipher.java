@@ -1,5 +1,5 @@
 /*
- * Copyright  2003-2004 The Apache Software Foundation.
+ * Copyright 2003-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  *
  */
 package org.apache.xml.security.encryption;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -67,7 +66,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 
 /**
  * <code>XMLCipher</code> encrypts and decrypts the contents of
@@ -3514,8 +3512,8 @@ public class XMLCipher {
                             _contextDocument.createTextNode(
                                 new String(oaepParams))));
                 }
-                if (!encryptionMethodInformation.isEmpty()) {
-                    Iterator itr = encryptionMethodInformation.iterator();
+                Iterator itr = encryptionMethodInformation.iterator();
+                while (itr.hasNext()) {
                     result.appendChild((Element) itr.next());
                 }
 
