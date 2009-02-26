@@ -13,6 +13,14 @@
 			<param-value>aggregated2</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+		<servlet-name>rawhttpserver</servlet-name>
+		<servlet-class>net.webassembletool.aggregator.AggregatorServlet</servlet-class>
+		<init-param>
+			<param-name>provider</param-name>
+			<param-value>rawhttpserver</param-value>
+		</init-param>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>aggregator1</servlet-name>
 		<url-pattern>/*</url-pattern>
@@ -20,5 +28,9 @@
 	<servlet-mapping>
 		<servlet-name>aggregator2</servlet-name>
 		<url-pattern>/ag2/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>rawhttpserver</servlet-name>
+		<url-pattern>/raw/*</url-pattern>
 	</servlet-mapping>
 </web-app>

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.test.junit.HttpTestCase;
+import net.webassembletool.test.junit.RawHttpServer;
 
 /**
  * Tests for aggregator webapp
@@ -83,5 +84,25 @@ public class AggregatorTest extends HttpTestCase {
     public void testRawPostWithQueryString() throws Exception {
         doPost("aggregator/post_raw.jsp?param=smile", "Hello !".getBytes());
         assertBodyMatch("^Posted body data : Hello !smile$");
+    }
+
+    public void testChunkedEncoding() throws Exception {
+        /* Start raw http server to serve chunked content */
+        HashMap<String, String> h = new HashMap<String, String>();
+        h.put("Transfer-Encoding", "chunked");
+        RawHttpServer rhs = new RawHttpServer(RawHttpServer.buildHTTPBody(200,
+                h, "8;\r\nBonjour \r\n" + "7;\r\nMonde !\r\n" + "0;\r\n\r\n" +
+                // This is "end of transfer" trailing content should be ignored
+                        "4;\r\nSome\r\n"), 8888);
+        rhs.start();
+        doGet("aggregator/raw/rawrequest");
+        rhs.join();
+        assertStatus(200);
+        assertBodyMatch("^Bonjour Monde !$");
+    }
+
+    public void testZipDownload() throws Exception {
+        doGet("/aggregator/export_ContentContainer_55.zip");
+        assertBodyEqualsLocalFile("aggregator/export_ContentContainer_55.zip");
     }
 }
