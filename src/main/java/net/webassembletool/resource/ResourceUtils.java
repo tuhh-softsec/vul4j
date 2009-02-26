@@ -45,6 +45,24 @@ public class ResourceUtils {
     }
 
     /**
+     * Check wether the given content-type value corresponds to "parsable" text.
+     * "Parsable" text is actually html/xhtml
+     * 
+     * @param contentType the value of http header Content-Type
+     * @return true if this represents text or false if not
+     */
+    public static boolean isTextContentType(String contentType) {
+        if (contentType == null)
+            return false;
+        contentType = contentType.toLowerCase();
+        if (contentType.startsWith("text/html")
+                || contentType.startsWith("application/xhtml+xml"))
+            return true;
+        else
+            return false;
+    }
+
+    /**
      * Removes <code>;jsessionid=value</code> sequence from the provided string
      * source
      */

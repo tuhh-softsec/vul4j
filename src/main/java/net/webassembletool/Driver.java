@@ -22,6 +22,7 @@ import net.webassembletool.http.ResponseOutput;
 import net.webassembletool.output.MultipleOutput;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
+import net.webassembletool.output.TextOnlyStringOutput;
 import net.webassembletool.parse.AggregateRenderer;
 import net.webassembletool.parse.BlockRenderer;
 import net.webassembletool.parse.Renderer;
@@ -33,6 +34,8 @@ import net.webassembletool.resource.ResourceUtils;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Main class used to retrieve data from a provider application using HTTP
@@ -48,6 +51,7 @@ public class Driver {
     // driver.
     // TODO: proxy mode option for taglibs, aggregator and proxy, recursive or
     // not for aggregator
+    private static final Log LOG = LogFactory.getLog(Driver.class);
     private final DriverConfiguration config;
     private final Cache cache;
     private final HttpClient httpClient;
@@ -280,11 +284,24 @@ public class Driver {
                 propagateJsessionId);
         request.setCharacterEncoding(config.getUriEncoding());
         target.setProxyMode(true);
-        StringOutput stringOutput = getResourceAsString(target);
+
+        // Directly stream out non text data
+        TextOnlyStringOutput textOutput = new TextOnlyStringOutput(
+                new ResponseOutput(request, response));
+        renderResource(target, textOutput);
+
+        // If data was binary, no text buffer is available and no rendering is
+        // needed.
+        if (!textOutput.hasTextBuffer()) {
+            LOG.debug("'" + relUrl
+                    + "' is binary : was forwarded without aggregation.");
+            return;
+        }
+        LOG.debug("'" + relUrl + "' is text : will be aggregated.");
 
         Renderer renderer = new AggregateRenderer(response, target
                 .getOriginalRequest(), propagateJsessionId);
-        renderer.render(stringOutput, null, null);
+        renderer.render(textOutput, null, null);
     }
 
     private final void renderResource(RequestContext target, Output output)

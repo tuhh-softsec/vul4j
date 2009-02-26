@@ -43,7 +43,7 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
  * 
  */
 public class HttpResource extends Resource {
-    private final static Log LOG = LogFactory.getLog(Resource.class);
+    private final static Log LOG = LogFactory.getLog(HttpResource.class);
     private HttpMethodBase httpMethod;
     private int statusCode;
     private String statusText;
@@ -282,12 +282,8 @@ public class HttpResource extends Resource {
         boolean textContentType = false;
         Header contentTypeHeader = httpMethod.getResponseHeader("Content-Type");
         if (contentTypeHeader != null) {
-            String contentType = contentTypeHeader.getValue().toLowerCase();
-            // may contain encoding (e.g. 'text/html; charset=UTF-8'
-            if (contentType.startsWith("text/html")
-                    || contentType.startsWith("application/xhtml+xml")) {
-                textContentType = true;
-            }
+            textContentType = ResourceUtils.isTextContentType(contentTypeHeader
+                    .getValue());
         }
 
         if (jsessionid == null || !textContentType) {
