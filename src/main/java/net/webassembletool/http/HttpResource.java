@@ -218,7 +218,7 @@ public class HttpResource extends Resource {
         }
     }
 
-    protected void copyHeaders(HttpMethod src, Output dest, String... headers) {
+    private void copyHeaders(HttpMethod src, Output dest, String... headers) {
         for (String name : headers) {
             Header header = src.getResponseHeader(name);
             if (header != null) {
@@ -267,7 +267,7 @@ public class HttpResource extends Resource {
         }
     }
 
-    protected Handler createHandler() {
+    private Handler createHandler() {
         String jsessionid = null;
         if (target.getUserContext() != null && target.isFilterJsessionid()) {
             Cookie[] cookies = target.getUserContext().getHttpState()
