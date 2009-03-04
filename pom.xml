@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>webassembletool</groupId>
+	<groupId>net.sourceforge.webassembletool</groupId>
 	<artifactId>webassembletool</artifactId>
 	<name>webassembletool</name>
 	<version>2.0-SNAPSHOT</version>
@@ -291,6 +291,12 @@
 			<type>war</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+			<version>6.1.12</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
@@ -306,9 +312,20 @@
 		</dependencies>
 	</dependencyManagement>
 	<distributionManagement>
-		<site>
+    <repository> 
+      <id>webassembletool-sourceforge</id> 
+      <name>webassembletool Repository</name> 
+      <url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/repository</url> 
+    </repository> 
+    <snapshotRepository> 
+      <id>webassembletool-sourceforge-snapshots</id> 
+      <name>webassembletool Snapshot Repository</name> 
+      <url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/snapshots</url> 
+    </snapshotRepository> 
+ 		<site>
+ 			<id>webassembletool-site</id>
 			<name>Website Assembling Toolkit</name>
-			<url>http://webassembletool.sourceforge.net/</url>
+			<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
 		</site>
 	</distributionManagement>
 </project>
