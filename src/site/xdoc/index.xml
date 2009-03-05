@@ -5,55 +5,54 @@
 		<author email="francois-xavier.bonnet@smile.fr">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<section name="What can i do with it?">
+		<section name="Website Assembling Toolkit: build your portal without limit">
 			<p>
 				This toolkit was developped to help developpers to integrate
-				existing web applications and make them visible to the users as
-				a
-				single website.
-	</p>
+				existing web applications and aggregate them as
+				a single website.
+			</p>
+		</section>
+		<section name="Reverse proxy and ESI processor">
 			<p>
-				This way of agregating contents extracted from other web sites
-				is
-				usually called
-				<a href="http://en.wikipedia.org/wiki/Web_scraping">web scraping</a>
-				.
+				The Website Assembling Toolkit can be used as a reverse proxy.
+				Proxied pages can parsed in order
+				to process inclusion instructions
+				that the applications insert.
+			</p>
+			<p>
+				Two different syntax are supported:
+			</p>
+			<ul>
+				<li>a custom syntax using HTML comments</li>
+				<li>ESI syntax (partial support)</li>
+			</ul>
+			<p>
+				Both syntax enable to retrieve blocks of contents but custom syntax is
+				much more powerfull as you can retrieve pages and use them as a template
+				retrieve blocks from xpath expressions and apply xslt transformations.
 			</p>
 		</section>
 		<section name="Taglib">
 			<p>
 				The Website Assembling Toolkit offers a taglib that can be used in
 				any JSP-based java web application.
-	</p>
+			</p>
 			<p>
 				Basically, the taglib looks like Tiles
 				tag library except that it enables you to include contents and use
 				templates coming from
 				other applications that may have been written
-				using any technology en deployed on other
+				using any technology and deployed on other
 				servers.
-	</p>
-		</section>
-		<section name="Reverse proxy">
-			<p>
-				The Website Assembling Toolkit can also be used as a reverse proxy.
-				Proxied pages are parsed in order
-				to process inclusion instructions
-				that the applications insert.
-	</p>
-			<p>
-				It is similar to an ESI processor that would process ESI tags inside
-				the pages. Future plans include ESI
-				tags support but for now we use proprietary tags.
-	</p>
+			</p>
 		</section>
 		<section name="Other uses">
 			<p>
 				Any functionality used by the taglib or the reverse proxy can be
 				used through a simple API.
-	</p>
+			</p>
 		</section>
-		<section name="How does it work?">
+		<section name="How it works">
 			<img src="overview.jpg" />
 			<p>
 				HTML pages are fetched from the provider server using regular HTTP
@@ -63,15 +62,15 @@
 				The blocks are then agregated and sent to the
 				browser as a single
 				HTML page.
-	</p>
+			</p>
 		</section>
 		<section name="Related technologies">
 			<ul>
 				<li>Portlets (JSR 168)</li>
 				<li>Server Side Include</li>
-				<li>Edge Side Include</li>
+				<li><a href="http://en.wikipedia.org/wiki/Edge_Side_Includes">Edge Side Include</a></li>
 				<li>Mashup</li>
-				<li>Web scraping</li>
+				<li><a href="http://en.wikipedia.org/wiki/Web_scraping">Web scraping</a></li>
 				<li>Web clipping</li>
 				<li>Reverse proxy</li>
 			</ul>

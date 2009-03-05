@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Maven</title>
+		<author email="francois-xavier.bonnet@smile.fr">Francois-Xavier Bonnet</author>
+	</properties>
+	<body>
+		<section name="Using the Website Assembling Toolkit in a Maven project">
+			<p>
+				The Website Assembling Toolkit has not been deployed yet on Maven central 
+				repository. You have to add the Website Assembling Toolkit repository to
+				your pom.xml
+			</p>
+			<source>
+&lt;repository&gt;
+	&lt;id&gt;webassembletool-repository&lt;/id&gt;
+	&lt;name&gt;Website Assembling Toolkit repository&lt;/name&gt;
+	&lt;url&gt;http://webassembletool.sourceforge.net/maven/repository&lt;/url&gt;
+&lt;/repository&gt;
+			</source>
+			<p>
+				Then you can add the dependency.
+			</p>
+			<source>
+&lt;dependency&gt;
+	&lt;groupId&gt;net.sourceforge.webassembletool&lt;/groupId&gt;
+	&lt;artifactId&gt;webassembletool&lt;/artifactId&gt;
+	&lt;version&gt;2.0&lt;/version&gt;
+&lt;/dependency&gt;
+			</source>
+		</section>
+	</body>
+</document>

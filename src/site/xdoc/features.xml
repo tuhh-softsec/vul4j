@@ -41,6 +41,19 @@
 					the applications as tags.
 	</p>
 			</subsection>
+			<subsection name="ESI 1.0 specification support">
+				<p>
+					In addition to its native syntax using HTML comments, the Website Assembling
+					Toolkit partially supports ESI specification (for now, only esi:include and
+					esi comments are supported).
+	</p>
+			</subsection>
+			<subsection name="Xpath expressions and XSLT">
+				<p>
+					One of the latest features is the possibility to retrieve elements using xpath
+					expressions and to apply on-the-fly XSLT transformations to retrieved elements.
+	</p>
+			</subsection>
 			<subsection name="Cache">
 				<p>
 					In order to improve performance, the tool can be configured to use a

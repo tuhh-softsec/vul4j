@@ -23,6 +23,7 @@
 			<item href="aggregator.html" name="Using the aggregator" />
 			<item href="cas.html" name="SSO with CAS" />
 			<item href="sample.html" name="Sample applications" />
+			<item href="maven.html" name="Maven" />
 		</menu>
 		<menu name="Community">
 			<item href="http://webassembletool.wiki.sourceforge.net/" name="FAQ (Wiki)" />
