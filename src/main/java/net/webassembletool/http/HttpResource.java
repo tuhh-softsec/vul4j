@@ -389,12 +389,15 @@ public class HttpResource extends Resource {
         }
 
         public void handle(InputStream src, Output dest) throws IOException {
-            byte[] buffer = new byte[1024];
             if (src != null) {
                 try {
                     OutputStream out = dest.getOutputStream();
-                    for (int len = -1; (len = src.read(buffer)) != -1;) {
-                        out.write(buffer, 0, len);
+                    if (out!=null) {
+                    	// out may be null when NOT_MODIFIED return code
+                    	byte[] buffer = new byte[1024];
+                    	for (int len = -1; (len = src.read(buffer)) != -1;) {
+                    		out.write(buffer, 0, len);
+                    	}
                     }
                 } finally {
                     src.close();

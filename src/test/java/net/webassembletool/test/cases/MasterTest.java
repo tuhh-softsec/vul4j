@@ -1,6 +1,8 @@
 package net.webassembletool.test.cases;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,9 +40,17 @@ public class MasterTest extends HttpTestCase {
     }
 
     public void testProxy() throws Exception {
-        doGet("/master/proxy.jsp");
+        doGet("/master/images/smile.jpg");
         assertStatus(HttpServletResponse.SC_OK);
-        assertBodyEqualsLocalFile("/master/proxy.jsp");
+        assertHeaderEquals("Content-type", "image/jpeg");
+    }
+
+    public void testProxyIfmodifiedsince() throws Exception {
+        doGet("/master/images/smile.jpg");
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("if-modified-since", getResponseHeader("Last-modified"));
+        doGet("/master/images/smile.jpg",headers);
+        assertStatus(HttpServletResponse.SC_NOT_MODIFIED);
     }
 
     public void testReplaceBlock() throws Exception {

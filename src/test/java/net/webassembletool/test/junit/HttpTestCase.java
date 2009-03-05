@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -88,10 +89,16 @@ public abstract class HttpTestCase extends TestCase {
         httpClient = null;
     }
 
-    public void doGet(String relativeURL) throws Exception {
+    public void doGet(String relativeURL, Map<String, String> headers) throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);
         log.info("GET " + absoluteUrl);
         httpMethod = new GetMethod(absoluteUrl);
+        if (headers!=null) {
+	        for (Iterator<Map.Entry<String, String>> headersIterator = headers.entrySet().iterator(); headersIterator.hasNext();) {
+	            Map.Entry<String, String> header = headersIterator.next();
+	            httpMethod.addRequestHeader(header.getKey(), header.getValue());
+	        }
+        }
         httpMethod.setFollowRedirects(false);
         try {
             httpClient.executeMethod(httpMethod);
@@ -99,6 +106,10 @@ public abstract class HttpTestCase extends TestCase {
         } finally {
             httpMethod.releaseConnection();
         }
+    }
+
+    public void doGet(String relativeURL) throws Exception {
+    	doGet(relativeURL, null);
     }
 
     public void doPost(String relativeURL, Map<String, String> params)
@@ -291,5 +302,8 @@ public abstract class HttpTestCase extends TestCase {
         assertEquals("Header \"" + name + "\" must be equal to \"" + value
                 + "\" actual value is \"" + actualValue + "\"", actualValue,
                 value);
+    }
+    public String getResponseHeader(String name) {
+    	return httpMethod.getResponseHeader(name).getValue();
     }
 }
