@@ -2,8 +2,9 @@
 <project name="Website Assembling Toolkit">
 	<bannerLeft>
 		<name>Website Assembling Toolkit</name>
-		<src>http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;type=2</src>
-		<href>http://webassembletool.sourceforge.net/</href>
+		<src>http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;type=16</src>
+		<href>http://sourceforge.net/projects/webassembletool</href>
+		<alt>Get Website assembling toolkit at SourceForge.net. Fast, secure and Free Open Source software downloads</alt>
 	</bannerLeft>
 	<body>
 		<menu name="About">
