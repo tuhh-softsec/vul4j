@@ -17,11 +17,12 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.cancel;
 
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -29,62 +30,88 @@ import org.apache.directory.shared.asn1.codec.EncoderException;
 
 
 /**
- * An extended operation to proceed a graceful shutdown
+ * An extended operation to proceed a Cancel operation, as described 
+ * in RFC 3909
  * 
  * <pre>
- *   GracefulShutdown ::= SEQUENCE
- *   {
- *       timeOffline     INTEGER (0..720) DEFAULT 0,
- *       delay       [0] INTEGER (0..86400) DEFAULT 0, 
+ *   cancelRequestValue ::= SEQUENCE {
+ *       cancelID        MessageID
+ *                       -- MessageID is as defined in [RFC2251]
  *   }
  * </pre>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 687720 $, $Date: 2008-08-21 14:05:50 +0200 (Thu, 21 Aug 2008) $, 
  */
-public class GracefulShutdown extends GracefulAction
+public class Cancel extends AbstractAsn1Object
 {
+	/** The Id of the the message to cancel */
+	private int cancelId;
+	
     /** Length of the sequence */
-    private int gracefulSequenceLength;
+    private int cancelSequenceLength;
 
     /**
-     * @see Asn1Object#Asn1Object
+     * Create a Cancel object, with a messageId
+     * 
+     * @param cancelId The Id of the request to cancel
      */
-    public GracefulShutdown()
+    public Cancel( int cancelId )
+    {
+        this.cancelId = cancelId;
+    }
+
+
+    /**
+     * Default constructor.
+     */
+    public Cancel()
     {
         super();
     }
 
+
     /**
-     * Compute the GracefulShutdown length 
-     * 0x30 L1 
-     *   | 
-     *   +--> [0x02 0x0(1-4) [0..720] ] 
-     *   +--> [0x80 0x0(1-3) [0..86400] ] 
-     *   
-     * L1 will always be &lt 11.
+     * Get the message Id of the request to cancel
+     * 
+     * @return The id of the request to cancel
      */
-    public int computeLength()
+    public int getCancelId()
     {
-        int gracefulLength = 1 + 1;
-        gracefulSequenceLength = 0;
-
-        if ( timeOffline != 0 )
-        {
-            gracefulSequenceLength += 1 + 1 + Value.getNbBytes( timeOffline );
-        }
-
-        if ( delay != 0 )
-        {
-            gracefulSequenceLength += 1 + 1 + Value.getNbBytes( delay );
-        }
-
-        return gracefulLength + gracefulSequenceLength;
+        return cancelId;
     }
 
 
     /**
-     * Encodes the gracefulShutdown extended operation.
+     * Set the cancelId
+     * 
+     * @param cancelId The Id of the request to cancel
+     */
+    public void setCancelId( int cancelId )
+    {
+        this.cancelId = cancelId;
+    }
+
+
+    /**
+     * Compute the Cancel length 
+     * 
+     * 0x30 L1 
+     *   | 
+     *   +--> 0x02 0x0(1-4) [0..2^31-1] 
+     */
+    public int computeLength()
+    {
+        // The messageId length
+        cancelSequenceLength = 1 + 1 + Value.getNbBytes( cancelId );
+
+        // Add the sequence and the length
+        return 1 + 1 + cancelSequenceLength;
+    }
+
+
+    /**
+     * Encodes the cancel extended operation.
      * 
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
@@ -95,34 +122,26 @@ public class GracefulShutdown extends GracefulAction
         // Allocate the bytes buffer.
         ByteBuffer bb = ByteBuffer.allocate( computeLength() );
 
+        // The sequence
         bb.put( UniversalTag.SEQUENCE_TAG );
-        bb.put( TLV.getBytes( gracefulSequenceLength ) );
+        bb.put( TLV.getBytes( cancelSequenceLength ) );
 
-        if ( timeOffline != 0 )
-        {
-            Value.encode( bb, timeOffline );
-        }
+        // The messageId
+        Value.encode( bb, cancelId );
 
-        if ( delay != 0 )
-        {
-            bb.put( ( byte ) GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG );
-            bb.put( ( byte ) Value.getNbBytes( delay ) );
-            bb.put( Value.getBytes( delay ) );
-        }
         return bb;
     }
 
 
     /**
-     * Return a string representation of the graceful shutdown
+     * Return a string representation of the cancel
      */
     public String toString()
     {
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "Graceful Shutdown extended operation" );
-        sb.append( "    TimeOffline : " ).append( timeOffline ).append( '\n' );
-        sb.append( "    Delay : " ).append( delay ).append( '\n' );
+        sb.append( "Cancel extended operation" );
+        sb.append( "    cancelId : " ).append( cancelId ).append( '\n' );
 
         return sb.toString();
     }

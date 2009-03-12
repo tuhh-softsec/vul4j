@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
@@ -25,25 +25,26 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
 
 
 /**
- * This class store the GracefulDisconnect's grammar constants. It is also used
+ * This class store the GracefulShutdown's grammar constants. It is also used
  * for debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class GracefulDisconnectStatesEnum implements IStates
+public class GracefulShutdownStatesEnum implements IStates
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
     // =========================================================================
-    // GracefulDisconnect grammar states
+    // GracefulShutdown grammar states
     // =========================================================================
+
     /** Initial state */
     public static final int START_STATE = 0;
 
     /** Sequence */
-    public static final int GRACEFUL_DISCONNECT_SEQUENCE_STATE = 1;
+    public static final int GRACEFUL_SHUTDOWN_SEQUENCE_STATE = 1;
 
     /** Time offline */
     public static final int TIME_OFFLINE_STATE = 2;
@@ -51,31 +52,23 @@ public class GracefulDisconnectStatesEnum implements IStates
     /** Delay */
     public static final int DELAY_STATE = 3;
 
-    /** Replicated contexts */
-    public static final int REPLICATED_CONTEXTS_STATE = 4;
-
-    /** Referral */
-    public static final int REFERRAL_STATE = 5;
-
     /** terminal state */
-    public static final int LAST_GRACEFUL_DISCONNECT_STATE = 6;
+    public static final int LAST_GRACEFUL_SHUTDOWN_STATE = 4;
 
     // =========================================================================
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] GracefulDisconnectString = new String[]
+    private static String[] GracefulShutdownString = new String[]
         { 
-        "START_STATE", 
-        "GRACEFUL_DISCONNECT_SEQUENCE_STATE",
+        "START_STATE",
+        "GRACEFUL_SHUTDOWN_SEQUENCE_STATE", 
         "TIME_OFFLINE_STATE", 
-        "DELAY_STATE", 
-        "REPLICATED_CONTEXTS_STATE",
-        "REFERRAL_STATE"
+        "DELAY_STATE" 
         };
 
     /** The instance */
-    private static GracefulDisconnectStatesEnum instance = new GracefulDisconnectStatesEnum();
+    private static GracefulShutdownStatesEnum instance = new GracefulShutdownStatesEnum();
 
 
     // ~ Constructors
@@ -84,7 +77,7 @@ public class GracefulDisconnectStatesEnum implements IStates
     /**
      * This is a private constructor. This class is a singleton
      */
-    private GracefulDisconnectStatesEnum()
+    private GracefulShutdownStatesEnum()
     {
     }
 
@@ -111,7 +104,7 @@ public class GracefulDisconnectStatesEnum implements IStates
      */
     public String getGrammarName( int grammar )
     {
-        return "GRACEFUL_DISCONNECT_GRAMMAR";
+        return "GRACEFUL_SHUTDOWN_GRAMMAR";
     }
 
 
@@ -123,9 +116,9 @@ public class GracefulDisconnectStatesEnum implements IStates
      */
     public String getGrammarName( IGrammar grammar )
     {
-        if ( grammar instanceof GracefulDisconnectGrammar )
+        if ( grammar instanceof GracefulShutdownGrammar )
         {
-            return "GRACEFUL_DISCONNECT_GRAMMAR";
+            return "GRACEFUL_SHUTDOWN_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -140,6 +133,6 @@ public class GracefulDisconnectStatesEnum implements IStates
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_DISCONNECT_END_STATE" : GracefulDisconnectString[state] );
+        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_SHUTDOWN_END_STATE" : GracefulShutdownString[state] );
     }
 }

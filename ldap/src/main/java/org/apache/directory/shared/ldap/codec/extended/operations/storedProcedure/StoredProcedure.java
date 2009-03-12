@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure;
 
 
 import java.nio.BufferOverflowException;

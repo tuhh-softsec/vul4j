@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.cancel;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.IGrammar;
@@ -25,50 +25,45 @@ import org.apache.directory.shared.asn1.ber.grammar.IStates;
 
 
 /**
- * This class store the GracefulShutdown's grammar constants. It is also used
+ * This class store the Cancel's grammar constants. It is also used
  * for debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
+ * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $, 
  */
-public class GracefulShutdownStatesEnum implements IStates
+public class CancelStatesEnum implements IStates
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
     // =========================================================================
-    // GracefulShutdown grammar states
+    // Cancel grammar states
     // =========================================================================
-
     /** Initial state */
     public static final int START_STATE = 0;
 
     /** Sequence */
-    public static final int GRACEFUL_SHUTDOWN_SEQUENCE_STATE = 1;
+    public static final int CANCEL_SEQUENCE_STATE = 1;
 
-    /** Time offline */
-    public static final int TIME_OFFLINE_STATE = 2;
-
-    /** Delay */
-    public static final int DELAY_STATE = 3;
+    /** cancelId */
+    public static final int CANCEL_ID_STATE = 2;
 
     /** terminal state */
-    public static final int LAST_GRACEFUL_SHUTDOWN_STATE = 4;
+    public static final int LAST_CANCEL_STATE = 3;
 
     // =========================================================================
     // States debug strings
     // =========================================================================
     /** A string representation of all the states */
-    private static String[] GracefulShutdownString = new String[]
+    private static String[] CancelString = new String[]
         { 
-        "START_STATE",
-        "GRACEFUL_SHUTDOWN_SEQUENCE_STATE", 
-        "TIME_OFFLINE_STATE", 
-        "DELAY_STATE" 
+        "START_STATE", 
+        "CANCEL_SEQUENCE_STATE",
+        "CANCEL_ID_STATE" 
         };
 
     /** The instance */
-    private static GracefulShutdownStatesEnum instance = new GracefulShutdownStatesEnum();
+    private static CancelStatesEnum instance = new CancelStatesEnum();
 
 
     // ~ Constructors
@@ -77,7 +72,7 @@ public class GracefulShutdownStatesEnum implements IStates
     /**
      * This is a private constructor. This class is a singleton
      */
-    private GracefulShutdownStatesEnum()
+    private CancelStatesEnum()
     {
     }
 
@@ -104,7 +99,7 @@ public class GracefulShutdownStatesEnum implements IStates
      */
     public String getGrammarName( int grammar )
     {
-        return "GRACEFUL_SHUTDOWN_GRAMMAR";
+        return "CANCEL_GRAMMAR";
     }
 
 
@@ -116,9 +111,9 @@ public class GracefulShutdownStatesEnum implements IStates
      */
     public String getGrammarName( IGrammar grammar )
     {
-        if ( grammar instanceof GracefulShutdownGrammar )
+        if ( grammar instanceof CancelGrammar )
         {
-            return "GRACEFUL_SHUTDOWN_GRAMMAR";
+            return "CANCEL_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -133,6 +128,6 @@ public class GracefulShutdownStatesEnum implements IStates
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_SHUTDOWN_END_STATE" : GracefulShutdownString[state] );
+        return ( ( state == GRAMMAR_END ) ? "CANCEL_END_STATE" : CancelString[state] );
     }
 }

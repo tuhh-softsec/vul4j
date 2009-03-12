@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect;
 
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
+import org.apache.directory.shared.ldap.codec.extended.operations.GracefulActionConstants;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;

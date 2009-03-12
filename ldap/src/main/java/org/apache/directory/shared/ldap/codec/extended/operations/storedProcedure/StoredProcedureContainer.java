@@ -17,64 +17,68 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+
+package org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
 
 /**
- * A container for the GracefulDisconnect codec.
+ * A container for the StoredProcedure codec
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class GracefulDisconnectContainer extends AbstractContainer
+public class StoredProcedureContainer extends AbstractContainer
 {
-    /** GracefulShutdown */
-    private GracefulDisconnect gracefulDisconnect;
+    // ~ Instance fields
+    // ----------------------------------------------------------------------------
+
+    /** StoredProcedure */
+    private StoredProcedure storedProcedure;
 
 
-    /**
-     * Creates a new GracefulDisconnectContainer object. We will store one
-     * grammar, it's enough ...
-     */
-    public GracefulDisconnectContainer()
+    // ~ Constructors
+    // -------------------------------------------------------------------------------
+
+    public StoredProcedureContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = GracefulDisconnectGrammar.getInstance();
-        states = GracefulDisconnectStatesEnum.getInstance();
+        grammar = StoredProcedureGrammar.getInstance();
+        states = StoredProcedureStatesEnum.getInstance();
     }
 
 
+    // ~ Methods
+    // ------------------------------------------------------------------------------------
     /**
-     * @return Returns the Graceful Shutdown object.
+     * @return Returns the ldapMessage.
      */
-    public GracefulDisconnect getGracefulDisconnect()
+    public StoredProcedure getStoredProcedure()
     {
-        return gracefulDisconnect;
+        return storedProcedure;
     }
 
 
     /**
-     * Set a GracefulDisconnect Object into the container. It will be completed
-     * by the ldapDecoder.
+     * Set a StoredProcedure object into the container. It will be completed by the
+     * ldapDecoder.
      * 
-     * @param gracefulDisconnect the GracefulShutdown to set.
+     * @param ldapMessage
+     *            The ldapMessage to set.
      */
-    public void setGracefulDisconnect( GracefulDisconnect gracefulDisconnect )
+    public void setStoredProcedure( StoredProcedure storedProcedure )
     {
-        this.gracefulDisconnect = gracefulDisconnect;
+        this.storedProcedure = storedProcedure;
     }
 
 
-    /**
-     * Clean the container for the next decoding.
-     */
     public void clean()
     {
         super.clean();
-        gracefulDisconnect = null;
+
+        storedProcedure = null;
     }
 }

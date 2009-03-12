@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown;
 
 
 import java.nio.ByteBuffer;
@@ -28,35 +28,35 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
 /**
- * A decoder for GracefulDisconnects.
+ * A decoder for GracefulShutdowns.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class GracefulDisconnectDecoder extends Asn1Decoder
+public class GracefulShutdownDecoder extends Asn1Decoder
 {
     /** The decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
 
     /**
-     * Decode a PDU which must contain a GracefulDisconnect extended operation.
+     * Decode a PDU which must contain a GracefulShutdown extended operation.
      * Note that the stream of bytes much contain a full PDU, not a partial one.
      * 
      * @param stream The bytes to be decoded
-     * @return An GracefulDisconnect object
+     * @return An GracefulShutdown object
      * @throws DecoderException If the decoding failed
      */
     public Asn1Object decode( byte[] stream ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( stream );
-        GracefulDisconnectContainer container = new GracefulDisconnectContainer();
+        GracefulShutdownContainer container = new GracefulShutdownContainer();
         decoder.decode( bb, container );
-        GracefulDisconnect gracefulDisconnect = container.getGracefulDisconnect();
+        GracefulShutdown gracefulShutdown = container.getGracefulShutdown();
 
         // Clean the container for the next decoding
         container.clean();
 
-        return gracefulDisconnect;
+        return gracefulShutdown;
     }
 }

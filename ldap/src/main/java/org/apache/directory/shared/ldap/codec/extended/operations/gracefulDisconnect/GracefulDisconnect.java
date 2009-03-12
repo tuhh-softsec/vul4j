@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect;
 
 
 import java.nio.ByteBuffer;
@@ -28,6 +28,8 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.ldap.codec.extended.operations.GracefulAction;
+import org.apache.directory.shared.ldap.codec.extended.operations.GracefulActionConstants;
 import org.apache.directory.shared.ldap.util.LdapURL;
 
 

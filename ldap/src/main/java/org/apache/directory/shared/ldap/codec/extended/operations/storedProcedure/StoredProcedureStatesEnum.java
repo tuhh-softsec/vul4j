@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.IGrammar;

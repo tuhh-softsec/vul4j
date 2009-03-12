@@ -17,55 +17,55 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.cancel;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
 
 /**
- * A container for the GracefulShutdown codec.
+ * A container for the Cancel codec.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$, 
+ * @version $Rev: 664290 $, $Date: 2008-06-07 08:28:06 +0200 (Sat, 07 Jun 2008) $, 
  */
-public class GracefulShutdownContainer extends AbstractContainer
+public class CancelContainer extends AbstractContainer
 {
-    /** GracefulShutdown */
-    private GracefulShutdown gracefulShutdown;
+    /** Cancel */
+    private Cancel cancel;
 
 
     /**
-     * Creates a new GracefulShutdownContainer object. We will store one
+     * Creates a new CancelContainer object. We will store one
      * grammar, it's enough ...
      */
-    public GracefulShutdownContainer()
+    public CancelContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = GracefulShutdownGrammar.getInstance();
-        states = GracefulShutdownStatesEnum.getInstance();
+        grammar = CancelGrammar.getInstance();
+        states = CancelStatesEnum.getInstance();
     }
 
 
     /**
-     * @return Returns the Graceful Shutdown object.
+     * @return Returns the Cancel object.
      */
-    public GracefulShutdown getGracefulShutdown()
+    public Cancel getCancel()
     {
-        return gracefulShutdown;
+        return cancel;
     }
 
 
     /**
-     * Set a GracefulShutdown Object into the container. It will be completed by
-     * the ldapDecoder.
+     * Set a Cancel Object into the container. It will be completed
+     * by the ldapDecoder.
      * 
-     * @param gracefulShutdown the GracefulShutdown to set.
+     * @param cancel the Cancel to set.
      */
-    public void setGracefulShutdown( GracefulShutdown gracefulShutdown )
+    public void setCancel( Cancel cancel )
     {
-        this.gracefulShutdown = gracefulShutdown;
+        this.cancel = cancel;
     }
 
 
@@ -75,6 +75,6 @@ public class GracefulShutdownContainer extends AbstractContainer
     public void clean()
     {
         super.clean();
-        gracefulShutdown = null;
+        cancel = null;
     }
 }

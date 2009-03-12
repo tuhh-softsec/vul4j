@@ -30,7 +30,10 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.extended.operations.StoredProcedure.StoredProcedureParameter;
+import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure;
+import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureContainer;
+import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureDecoder;
+import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 

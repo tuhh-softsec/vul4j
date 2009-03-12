@@ -17,54 +17,55 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.extended.operations;
+package org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown;
+
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
+
 /**
+ * A container for the GracefulShutdown codec.
  * 
- * A container for certificate generation request codec.
- *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
+ * @version $Rev$, $Date$, 
  */
-public class CertGenerationContainer extends AbstractContainer
+public class GracefulShutdownContainer extends AbstractContainer
 {
-    /** CertGenerationObject */
-    private CertGenerationObject certGenObj;
+    /** GracefulShutdown */
+    private GracefulShutdown gracefulShutdown;
 
 
     /**
-     * Creates a new CertGenContainer object. We will store one
+     * Creates a new GracefulShutdownContainer object. We will store one
      * grammar, it's enough ...
      */
-    public CertGenerationContainer()
+    public GracefulShutdownContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = CertGenerationGrammar.getInstance();
-        states = CertGenerationStatesEnum.getInstance();
+        grammar = GracefulShutdownGrammar.getInstance();
+        states = GracefulShutdownStatesEnum.getInstance();
     }
 
 
     /**
-     * @return Returns the CertGenerationObject instance.
+     * @return Returns the Graceful Shutdown object.
      */
-    public CertGenerationObject getCertGenerationObject()
+    public GracefulShutdown getGracefulShutdown()
     {
-        return certGenObj;
+        return gracefulShutdown;
     }
 
 
     /**
-     * Set a CertGenerationObject Object into the container. It will be completed by
+     * Set a GracefulShutdown Object into the container. It will be completed by
      * the ldapDecoder.
      * 
-     * @param certGenObj the CertGenerationObject to set.
+     * @param gracefulShutdown the GracefulShutdown to set.
      */
-    public void setCertGenerationObject( CertGenerationObject certGenObj )
+    public void setGracefulShutdown( GracefulShutdown gracefulShutdown )
     {
-        this.certGenObj = certGenObj;
+        this.gracefulShutdown = gracefulShutdown;
     }
 
 
@@ -74,6 +75,6 @@ public class CertGenerationContainer extends AbstractContainer
     public void clean()
     {
         super.clean();
-        certGenObj = null;
+        gracefulShutdown = null;
     }
 }
