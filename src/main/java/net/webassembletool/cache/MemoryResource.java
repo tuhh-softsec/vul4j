@@ -82,8 +82,8 @@ public class MemoryResource extends Resource {
 	return stale;
     }
 
-    public void setStale(boolean stale) {
-	this.stale = stale;
+    public void setStale() {
+	this.stale = true;
     }
 
 }

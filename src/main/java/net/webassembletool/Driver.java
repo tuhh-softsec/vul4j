@@ -67,6 +67,7 @@ public class Driver {
             httpClient.getParams().setSoTimeout(config.getTimeout());
             httpClient.getHttpConnectionManager().getParams()
                     .setConnectionTimeout(config.getTimeout());
+            httpClient.getParams().setConnectionManagerTimeout(config.getTimeout());
         } else {
             httpClient = null;
         }

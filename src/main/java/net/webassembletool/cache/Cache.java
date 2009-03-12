@@ -18,11 +18,6 @@ public class Cache {
     private GeneralCacheAdministrator cache;
     private int expirationDelay;
 
-    @SuppressWarnings("unused")
-    private Cache() {
-        // Not to be used
-    }
-
     public Cache(int expirationDelay) {
         cache = new GeneralCacheAdministrator();
         this.expirationDelay = expirationDelay;
@@ -32,16 +27,19 @@ public class Cache {
         cache.putInCache(key, resource);
     }
 
+    /**
+     * Returns a cache entry.
+     */
     public MemoryResource get(String key) {
         MemoryResource memoryResource = null;
         try {
             memoryResource = (MemoryResource) cache.getFromCache(key);
-            memoryResource.setStale(true);
             memoryResource = (MemoryResource) cache.getFromCache(key,
                     expirationDelay);
-            memoryResource.setStale(false);
         } catch (NeedsRefreshException e1) {
             // Not in cache
+        	if (memoryResource!=null)
+        		memoryResource.setStale();
         }
         return memoryResource;
     }
