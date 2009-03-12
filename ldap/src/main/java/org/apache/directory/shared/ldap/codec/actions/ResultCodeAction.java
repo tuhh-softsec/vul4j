@@ -79,12 +79,12 @@ public class ResultCodeAction extends GrammarAction
 
         try
         {
-            resultCode = ResultCodeEnum.getResultCode( IntegerDecoder.parse( value, 0, 90 ) );
+            resultCode = ResultCodeEnum.getResultCode( IntegerDecoder.parse( value, 0, ResultCodeEnum.UNKNOWN.getResultCode() ) );
         }
         catch ( IntegerDecoderException ide )
         {
             log.error( "The result code " + StringTools.dumpBytes( value.getData() ) + " is invalid : "
-                + ide.getMessage() + ". The result code must be between (0 .. 90)" );
+                + ide.getMessage() + ". The result code must be between (0 .. 121)" );
 
             throw new DecoderException( ide.getMessage() );
         }
@@ -129,6 +129,10 @@ public class ResultCodeAction extends GrammarAction
             case NOT_ALLOWED_ON_RDN:
             case ENTRY_ALREADY_EXISTS:
             case AFFECTS_MULTIPLE_DSAS:
+            case CANCELED:
+            case CANNOT_CANCEL:
+            case TOO_LATE:
+            case NO_SUCH_OPERATION:
                 ldapResult.setResultCode( resultCode );
                 break;
 

@@ -60,11 +60,11 @@ public class LdapResult extends AbstractAsn1Object
      * authMethodNotSupported                   (7),
      * strongAuthRequired                       (8), 
      *                                          -- 9 reserved -- 
-     * referral                                 (10), -- new 
-     * adminLimitExceeded                       (11), -- new 
-     * unavailableCriticalExtension             (12), -- new 
-     * confidentialityRequired                  (13), -- new 
-     * saslBindInProgress                       (14), -- new
+     * referral                                 (10), 
+     * adminLimitExceeded                       (11), 
+     * unavailableCriticalExtension             (12), 
+     * confidentialityRequired                  (13), 
+     * saslBindInProgress                       (14),
      * noSuchAttribute                          (16), 
      * undefinedAttributeType                   (17), 
      * inappropriateMatching                    (18), 
@@ -95,8 +95,9 @@ public class LdapResult extends AbstractAsn1Object
      *                                          -- 70 reserved for CLDAP --
      * affectsMultipleDSAs                      (71), -- new 
      *                                          -- 72-79 unused -- 
-     * other                                    (80) 
-     * }                                        -- 81-90 reserved for APIs --
+     * other                                    (80),
+     * ...
+     * }
      */
     private ResultCodeEnum resultCode;
 
