@@ -34,8 +34,11 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -43,11 +46,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedResponseTest extends TestCase
+public class ExtendedResponseTest
 {
     /**
      * Test the decoding of a full ExtendedResponse
      */
+    @Test
     public void testDecodeExtendedResponseSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -123,6 +127,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of a full ExtendedResponse with controls
      */
+    @Test
     public void testDecodeExtendedResponseSuccessWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -217,6 +222,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of a ExtendedRequest with no name
      */
+    @Test
     public void testDecodeExtendedRequestNoName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -288,6 +294,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of a ExtendedRequest with no name and a control
      */
+    @Test
     public void testDecodeExtendedRequestNoNameWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -370,6 +377,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of an empty ExtendedResponse
      */
+    @Test
     public void testDecodeExtendedResponseEmpty()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -404,6 +412,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of an ExtendedResponse with an empty ResponseName
      */
+    @Test
     public void testDecodeExtendedResponseEmptyResponseName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -447,6 +456,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of an ExtendedResponse with a bad responseName
      */
+    @Test
     public void testDecodeExtendedResponseBadOIDResponseName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -490,6 +500,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of an ExtendedResponse with no response
      */
+    @Test
     public void testDecodeExtendedResponseNoResponse()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -563,6 +574,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of an ExtendedResponse with no response with controls
      */
+    @Test
     public void testDecodeExtendedResponseNoResponseWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -648,6 +660,7 @@ public class ExtendedResponseTest extends TestCase
     /**
      * Test the decoding of an ExtendedResponse with an empty response
      */
+    @Test
     public void testDecodeExtendedResponseEmptyResponse()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -723,6 +736,7 @@ public class ExtendedResponseTest extends TestCase
      * Test the decoding of an ExtendedResponse with an empty response with
      * controls
      */
+    @Test
     public void testDecodeExtendedResponseEmptyResponseWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

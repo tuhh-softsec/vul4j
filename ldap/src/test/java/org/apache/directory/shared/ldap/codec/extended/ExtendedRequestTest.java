@@ -33,8 +33,11 @@ import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.extended.ExtendedRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -42,11 +45,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestTest extends TestCase
+public class ExtendedRequestTest
 {
     /**
      * Test the decoding of a full ExtendedRequest
      */
+    @Test
     public void testDecodeExtendedRequestSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -113,6 +117,7 @@ public class ExtendedRequestTest extends TestCase
     /**
      * Test the decoding of a full ExtendedRequest with controls
      */
+    @Test
     public void testDecodeExtendedRequestWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -194,6 +199,7 @@ public class ExtendedRequestTest extends TestCase
      * Test the decoding of a full ExtendedRequest with no value and with
      * controls
      */
+    @Test
     public void testDecodeExtendedRequestNoValueWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -274,6 +280,7 @@ public class ExtendedRequestTest extends TestCase
     /**
      * Test the decoding of an empty ExtendedRequest
      */
+    @Test
     public void testDecodeExtendedRequestEmpty()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -309,6 +316,7 @@ public class ExtendedRequestTest extends TestCase
     /**
      * Test the decoding of an empty OID
      */
+    @Test
     public void testDecodeEmptyOID()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -344,6 +352,7 @@ public class ExtendedRequestTest extends TestCase
     /**
      * Test the decoding of a bad name 
      */
+    @Test
     public void testDecodeExtendedBadRequestName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -381,6 +390,7 @@ public class ExtendedRequestTest extends TestCase
     /**
      * Test the decoding of a name only ExtendedRequest
      */
+    @Test
     public void testDecodeExtendedRequestName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -445,6 +455,7 @@ public class ExtendedRequestTest extends TestCase
     /**
      * Test the decoding of an empty name ExtendedRequest
      */
+    @Test
     public void testDecodeExtendedRequestEmptyName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
