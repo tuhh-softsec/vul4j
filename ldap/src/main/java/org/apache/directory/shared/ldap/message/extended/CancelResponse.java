@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.message.extended;
 
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.util.StringTools;
 /**
  * 
  * The response sent back from the server after the Cancel extended operation is performed.
@@ -73,14 +74,14 @@ public class CancelResponse extends ExtendedResponseImpl
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
     /**
-     * Gets the reponse OID specific encoded response values. It's a null
+     * Gets the response OID specific encoded response values. It's a null
      * value for a CancelResponse
      * 
      * @return the response specific encoded response values.
      */
     public byte[] getResponse()
     {
-        return null;
+    	return StringTools.EMPTY_BYTES;
     }
 
 
@@ -92,7 +93,7 @@ public class CancelResponse extends ExtendedResponseImpl
      */
     public String getResponseName()
     {
-        return null;
+        return "";
     }
 
 
