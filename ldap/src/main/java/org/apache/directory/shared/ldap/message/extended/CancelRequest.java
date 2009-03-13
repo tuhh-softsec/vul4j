@@ -48,6 +48,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CancelRequest extends ExtendedRequestImpl
 {
+	/** The serial version UUID */
+	private static final long serialVersionUID = 1L;
+
 	/** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( CancelRequest.class );
 
@@ -157,7 +160,7 @@ public class CancelRequest extends ExtendedRequestImpl
     {
         if ( response == null )
         {
-            //response = new CancelResponse( getCancelId() );
+            response = new CancelResponse( cancelId );
         }
 
         return response;

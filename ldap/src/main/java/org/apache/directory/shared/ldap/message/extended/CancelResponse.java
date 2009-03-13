@@ -21,31 +21,34 @@ package org.apache.directory.shared.ldap.message.extended;
 
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
 /**
  * 
- * The response sent back from the server after the CertGeneration extended operation is performed.
+ * The response sent back from the server after the Cancel extended operation is performed.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class CertGenerationResponse extends ExtendedResponseImpl
+public class CancelResponse extends ExtendedResponseImpl
 {
 	/** The serial version UUID */
 	private static final long serialVersionUID = 1L;
-	
-	/** The CertGenerationResponse OID */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.7";
 
-    public CertGenerationResponse(int messageId, ResultCodeEnum rcode)
+	/**
+	 * Create a new CancelResponse object
+	 * @param messageId The messageId
+	 * @param rcode the result code
+	 */
+    public CancelResponse( int messageId, ResultCodeEnum rcode )
     {
-        super( messageId, EXTENSION_OID );
+        super( messageId, null );
 
         switch ( rcode )
         {
             case SUCCESS :
-            case OPERATIONS_ERROR :
-            case INSUFFICIENT_ACCESS_RIGHTS :
+            case CANCELED:
+            case CANNOT_CANCEL :
+            case NO_SUCH_OPERATION :
+            case TOO_LATE :
                 break;
             
             default:
@@ -58,9 +61,9 @@ public class CertGenerationResponse extends ExtendedResponseImpl
     }
 
 
-    public CertGenerationResponse(int messageId)
+    public CancelResponse( int messageId )
     {
-        super( messageId, EXTENSION_OID );
+        super( messageId, null );
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
     }
@@ -69,55 +72,33 @@ public class CertGenerationResponse extends ExtendedResponseImpl
     // ------------------------------------------------------------------------
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
-
     /**
-     * Gets the reponse OID specific encoded response values.
+     * Gets the reponse OID specific encoded response values. It's a null
+     * value for a CancelResponse
      * 
      * @return the response specific encoded response values.
      */
     public byte[] getResponse()
     {
-        return StringTools.EMPTY_BYTES;
-    }
-
-
-    /**
-     * Sets the response OID specific encoded response values.
-     * 
-     * @param value
-     *            the response specific encoded response values.
-     */
-    public void setResponse( byte[] value )
-    {
-        // do nothing here instead
+        return null;
     }
 
 
     /**
      * Gets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
+     * name). It's a null value for the Cancel response
      * 
      * @return the OID of the extended response type.
      */
     public String getResponseName()
     {
-        return EXTENSION_OID;
+        return null;
     }
 
 
     /**
-     * Sets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
-     * 
-     * @param oid
-     *            the OID of the extended response type.
+     * @see Object#equals(Object)
      */
-    public void setResponseName( String oid )
-    {
-        throw new UnsupportedOperationException( "the OID is fixed: " + EXTENSION_OID );
-    }
-
-
     public boolean equals( Object obj )
     {
         if ( obj == this )
@@ -125,7 +106,7 @@ public class CertGenerationResponse extends ExtendedResponseImpl
             return true;
         }
 
-        if ( obj instanceof CertGenerationResponse )
+        if ( obj instanceof CancelResponse )
         {
             return true;
         }

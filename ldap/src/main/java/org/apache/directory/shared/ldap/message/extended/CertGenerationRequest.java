@@ -43,7 +43,10 @@ import org.slf4j.LoggerFactory;
  */
 public class CertGenerationRequest extends ExtendedRequestImpl
 {
-    private CertGenerationObject certGenObj;
+	/** The serial version UUID */
+	private static final long serialVersionUID = 1L;
+
+	private CertGenerationObject certGenObj;
 
     private static final Logger LOG = LoggerFactory.getLogger( CertGenerationRequest.class );
 
