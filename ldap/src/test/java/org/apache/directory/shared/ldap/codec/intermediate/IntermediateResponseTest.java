@@ -32,8 +32,10 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -41,11 +43,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class IntermediateResponseTest extends TestCase
+public class IntermediateResponseTest
 {
     /**
      * Test the decoding of a full IntermediateResponse
      */
+    @Test
     public void testDecodeIntermediateResponseSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -112,6 +115,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of a full IntermediateResponse with controls
      */
+    @Test
     public void testDecodeIntermediateResponseWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -193,6 +197,7 @@ public class IntermediateResponseTest extends TestCase
      * Test the decoding of a full IntermediateResponse with no value and with
      * controls
      */
+    @Test
     public void testDecodeIntermediateResponseNoValueWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -273,6 +278,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of an empty IntermediateResponse
      */
+    @Test
     public void testDecodeIntermediateResponseEmpty()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -308,6 +314,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of an empty OID
      */
+    @Test
     public void testDecodeEmptyOID()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -343,6 +350,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of a bad name 
      */
+    @Test
     public void testDecodeExtendedBadRequestName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -380,6 +388,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of a name only IntermediateResponse
      */
+    @Test
     public void testDecodeIntermediateResponseName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -444,6 +453,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of an empty value IntermediateResponse
      */
+    @Test
     public void testDecodeIntermediateResponseEmptyValue()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -510,6 +520,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of an IntermediateResponse without name
      */
+    @Test
     public void testDecodeIntermediateResponseNoName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -574,6 +585,7 @@ public class IntermediateResponseTest extends TestCase
     /**
      * Test the decoding of an IntermediateResponse with no value
      */
+    @Test
     public void testDecodeIntermediateResponseNoValue()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

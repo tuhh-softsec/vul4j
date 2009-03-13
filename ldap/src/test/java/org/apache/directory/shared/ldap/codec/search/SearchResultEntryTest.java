@@ -37,8 +37,10 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -46,11 +48,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultEntryTest extends TestCase
+public class SearchResultEntryTest
 {
     /**
      * Test the decoding of a SearchResultEntry
      */
+    @Test
     public void testDecodeSearchResultEntrySuccess() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -139,6 +142,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of a SearchResultEntry
      */
+    @Test
     public void testDecodeSearchResultEntry2AttrsSuccess() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -236,6 +240,7 @@ public class SearchResultEntryTest extends TestCase
      * Test the decoding of a SearchResultEntry with more bytes to be decoded at
      * the end
      */
+    @Test
     public void testDecodeSearchResultEntrySuccessWithFollowingMessage() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -345,6 +350,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of an empty SearchResultEntry
      */
+    @Test
     public void testDecodeSearchResultEntryEmpty()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -382,6 +388,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of an SearchResultEntry with an empty object name
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyObjectName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -421,6 +428,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of an SearchResultEntry with an object name alone
      */
+    @Test
     public void testDecodeSearchResultEntryObjectNameAlone()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -461,6 +469,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of an SearchResultEntry with an empty attributes
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyAttributes()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -529,6 +538,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of an SearchResultEntry with an empty attributes list
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyAttributeList()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -571,6 +581,7 @@ public class SearchResultEntryTest extends TestCase
      * Test the decoding of an SearchResultEntry with an empty attributes list
      * with controls
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyAttributeListWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -620,6 +631,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of a SearchResultEntry with an empty type
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyType()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -665,6 +677,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of a SearchResultEntry with a type alone
      */
+    @Test
     public void testDecodeSearchResultEntryTypeAlone()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -710,6 +723,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of a SearchResultEntry with an empty vals
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyVals() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -790,6 +804,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of a SearchResultEntry with two empty vals
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyVals2() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -872,6 +887,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of a SearchResultEntry with an empty vals with controls
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyValsWithControls() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -965,6 +981,7 @@ public class SearchResultEntryTest extends TestCase
     /**
      * Test the decoding of a SearchResultEntry with an empty attribute value
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyAttributeValue() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -1049,6 +1066,7 @@ public class SearchResultEntryTest extends TestCase
      * Test the decoding of a SearchResultEntry with an empty attribute value
      * with controls
      */
+    @Test
     public void testDecodeSearchResultEntryEmptyAttributeValueWithControls() throws NamingException
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

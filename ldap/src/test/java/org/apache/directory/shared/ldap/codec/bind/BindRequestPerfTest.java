@@ -35,19 +35,22 @@ import org.apache.directory.shared.ldap.codec.bind.BindRequest;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindRequestPerfTest extends TestCase
+public class BindRequestPerfTest
 {
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls
      */
+    @Test
     public void testDecodeBindRequestSimpleNoControlsPerf()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -147,6 +150,7 @@ public class BindRequestPerfTest extends TestCase
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls
      */
+    @Test
     public void testEncodeBindRequestPerf() throws Exception
     {
         LdapDN name = new LdapDN( "uid=akarasulu,dc=example,dc=com" );

@@ -34,8 +34,10 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -43,12 +45,13 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultDoneTest extends TestCase
+public class SearchResultDoneTest
 {
 
     /**
      * Test the decoding of a SearchResultDone
      */
+    @Test
     public void testDecodeSearchResultDoneSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -117,6 +120,7 @@ public class SearchResultDoneTest extends TestCase
     /**
      * Test the decoding of a SearchResultDone with controls
      */
+    @Test
     public void testDecodeSearchResultDoneSuccessWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -198,6 +202,7 @@ public class SearchResultDoneTest extends TestCase
     /**
      * Test the decoding of a SearchResultDone with no LdapResult
      */
+    @Test
     public void testDecodeSearchResultDoneEmptyResult()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

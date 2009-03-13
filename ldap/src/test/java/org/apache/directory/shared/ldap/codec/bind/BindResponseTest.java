@@ -35,20 +35,23 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.bind.BindResponse;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.control.PagedSearchControl;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindResponseTest extends TestCase
+public class BindResponseTest
 {
     /**
      * Test the decoding of a BindResponse
      */
+    @Test
     public void testDecodeBindResponseSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -120,6 +123,7 @@ public class BindResponseTest extends TestCase
     /**
      * Test the decoding of a BindResponse with a control
      */
+    @Test
     public void testDecodeBindResponseWithControlSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -217,6 +221,7 @@ public class BindResponseTest extends TestCase
     /**
      * Test the decoding of a BindResponse with an empty credentials
      */
+    @Test
     public void testDecodeBindResponseServerSASLEmptyCredentials()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -291,6 +296,7 @@ public class BindResponseTest extends TestCase
      * Test the decoding of a BindResponse with an empty credentials with
      * controls
      */
+    @Test
     public void testDecodeBindResponseServerSASLEmptyCredentialsWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -375,6 +381,7 @@ public class BindResponseTest extends TestCase
     /**
      * Test the decoding of a BindResponse with a credentials
      */
+    @Test
     public void testDecodeBindResponseServerSASL()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -448,6 +455,7 @@ public class BindResponseTest extends TestCase
     /**
      * Test the decoding of a BindResponse with no LdapResult
      */
+    @Test
     public void testDecodeAddResponseEmptyResult()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

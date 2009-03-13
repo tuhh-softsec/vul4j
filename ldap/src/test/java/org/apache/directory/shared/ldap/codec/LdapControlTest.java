@@ -28,14 +28,19 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
-import junit.framework.TestCase;
 
-public class LdapControlTest extends TestCase
+public class LdapControlTest
 {
     /**
      * Test the decoding of a Request with controls
      */
+	@Test
     public void testDecodeRequestWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -145,6 +150,7 @@ public class LdapControlTest extends TestCase
     /**
      * Test the decoding of a Request with null OID controls
      */
+	@Test
     public void testDecodeRequestWithControlsNullOID()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -188,6 +194,7 @@ public class LdapControlTest extends TestCase
     /**
      * Test the decoding of a Request with bad OID controls
      */
+	@Test
     public void testDecodeRequestWithControlsBadOID()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -231,6 +238,7 @@ public class LdapControlTest extends TestCase
     /**
      * Test the decoding of a Request with bad criticality
      */
+	@Test
     public void testDecodeRequestWithControlsBadCriticality()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

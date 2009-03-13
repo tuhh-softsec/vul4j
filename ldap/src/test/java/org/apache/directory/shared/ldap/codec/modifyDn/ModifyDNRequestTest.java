@@ -37,8 +37,10 @@ import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -46,11 +48,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDNRequestTest extends TestCase
+public class ModifyDNRequestTest
 {
     /**
      * Test the decoding of a full ModifyDNRequest
      */
+    @Test
     public void testDecodeModifyDNRequestSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -124,6 +127,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a bad DN ModifyDNRequest
      */
+    @Test
     public void testDecodeModifyDNRequestBadDN()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -174,6 +178,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a bad RDN ModifyDNRequest
      */
+    @Test
     public void testDecodeModifyDNRequestBadRDN()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -224,6 +229,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a bad RDN ModifyDNRequest
      */
+    @Test
     public void testDecodeModifyDNRequestBadNewSuperior()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -274,6 +280,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a full ModifyDNRequest with controls
      */
+    @Test
     public void testDecodeModifyDNRequestSuccessWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -360,6 +367,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a ModifyDNRequest without a superior
      */
+    @Test
     public void testDecodeModifyDNRequestWithoutSuperior()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -431,6 +439,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a ModifyDNRequest without a superior with controls
      */
+    @Test
     public void testDecodeModifyDNRequestWithoutSuperiorWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -516,6 +525,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a ModifyDNRequest with an empty body
      */
+    @Test
     public void testDecodeModifyDNRequestEmptyBody()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -551,6 +561,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a ModifyDNRequest with an empty entry
      */
+    @Test
     public void testDecodeModifyDNRequestEmptyEntry()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -586,6 +597,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a ModifyDNRequest with an empty newRdn
      */
+    @Test
     public void testDecodeModifyDNRequestEmptyNewRdn()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -625,6 +637,7 @@ public class ModifyDNRequestTest extends TestCase
     /**
      * Test the decoding of a ModifyDNRequest with an empty deleteOldRdn
      */
+    @Test
     public void testDecodeModifyDNRequestEmptyDeleteOldRdnn()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

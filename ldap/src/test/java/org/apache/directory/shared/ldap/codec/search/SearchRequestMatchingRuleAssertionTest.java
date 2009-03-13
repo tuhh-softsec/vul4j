@@ -42,8 +42,12 @@ import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 
 /**
@@ -51,15 +55,13 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchRequestMatchingRuleAssertionTest extends TestCase
+public class SearchRequestMatchingRuleAssertionTest
 {
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
 
     @BeforeClass
-    protected void setUp() throws Exception
+    public static void setUp() throws Exception
     {
-        super.setUp();
-
         oids.put( "dc", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
         oids.put( "domaincomponent", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
         oids.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );

@@ -34,8 +34,10 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.del.DelResponse;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -43,11 +45,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DelResponseTest extends TestCase
+public class DelResponseTest
 {
     /**
      * Test the decoding of a DelResponse
      */
+    @Test
     public void testDecodeDelResponseSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -120,6 +123,7 @@ public class DelResponseTest extends TestCase
     /**
      * Test the decoding of a DelResponse with no LdapResult
      */
+    @Test
     public void testDecodeDelResponseEmptyResult()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -155,6 +159,7 @@ public class DelResponseTest extends TestCase
     /**
      * Test the decoding of a DelResponse with controls
      */
+    @Test
     public void testDecodeDelResponseSuccessWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

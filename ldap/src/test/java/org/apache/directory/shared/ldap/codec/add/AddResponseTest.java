@@ -34,18 +34,21 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.add.AddResponse;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseTest extends TestCase
+public class AddResponseTest
 {
     /**
      * Test the decoding of a AddResponse
      */
+    @Test
     public void testDecodeAddResponseSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -115,6 +118,7 @@ public class AddResponseTest extends TestCase
     /**
      * Test the decoding of a AddResponse with no LdapResult
      */
+    @Test
     public void testDecodeAddResponseEmptyResult()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -150,6 +154,7 @@ public class AddResponseTest extends TestCase
     /**
      * Test the decoding of a AddResponse with a control
      */
+    @Test
     public void testDecodeAddResponseSuccessWithControl()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -161,17 +166,17 @@ public class AddResponseTest extends TestCase
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x69, 0x07, // CHOICE { ..., addResponse AddResponse, ...
                 // AddResponse ::= [APPLICATION 9] LDAPResult
-                0x0A, 0x01, 0x00,// LDAPResult ::= SEQUENCE {
+                  0x0A, 0x01, 0x00,// LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
                 // success (0), ...
                 // },
-                0x04, 0x00, // matchedDN LDAPDN,
-                0x04, 0x00, // errorMessage LDAPString,
+                  0x04, 0x00, // matchedDN LDAPDN,
+                  0x04, 0x00, // errorMessage LDAPString,
                 // referral [3] Referral OPTIONAL }
                 // }
                 ( byte ) 0xA0, 0x1B, // A control
-                0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
+                  0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
+                  0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
         stream.flip();

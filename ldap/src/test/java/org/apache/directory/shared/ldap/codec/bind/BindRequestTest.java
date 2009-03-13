@@ -39,20 +39,24 @@ import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindRequestTest extends TestCase
+public class BindRequestTest
 {
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls
      */
     /* Not used in unit tests
+    @Test
     public void testDecodeBindRequestSimpleNoControlsPerf()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -150,6 +154,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with Simple authentication and
      * controls
      */
+    @Test
     public void testDecodeBindRequestSimpleWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -222,6 +227,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with Simple authentication and
      * controls
      */
+    @Test
     public void testDecodeBindRequestBadDN()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -270,6 +276,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with Simple authentication, no name
      * and no controls
      */
+    @Test
     public void testDecodeBindRequestSimpleNoName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -312,6 +319,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with Simple authentication, empty name
      * (an anonymous bind) and no controls
      */
+    @Test
     public void testDecodeBindRequestSimpleEmptyName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -384,6 +392,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with Sasl authentication, no
      * credentials and no controls
      */
+    @Test
     public void testDecodeBindRequestSaslNoCredsNoControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -460,6 +469,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with Sasl authentication, a
      * credentials and no controls
      */
+    @Test
     public void testDecodeBindRequestSaslCredsNoControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -545,6 +555,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with Sasl authentication, no name, a
      * credentials and no controls
      */
+    @Test
     public void testDecodeBindRequestSaslNoNameCredsNoControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -627,6 +638,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty body
      */
+    @Test
     public void testDecodeBindRequestEmptyBody()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -662,6 +674,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty version
      */
+    @Test
     public void testDecodeBindRequestEmptyVersion()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -698,6 +711,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with a bad version (0)
      */
+    @Test
     public void testDecodeBindRequestBadVersion0()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -734,6 +748,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with a bad version (4)
      */
+    @Test
     public void testDecodeBindRequestBadVersion4()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -770,6 +785,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with a bad version (128)
      */
+    @Test
     public void testDecodeBindRequestBadVersion128()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -807,6 +823,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with no name
      */
+    @Test
     public void testDecodeBindRequestNoName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -843,6 +860,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty name
      */
+    @Test
     public void testDecodeBindRequestEmptyName()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -879,6 +897,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty simple
      */
+    @Test
     public void testDecodeBindRequestEmptysimple()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -942,6 +961,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty sasl
      */
+    @Test
     public void testDecodeBindRequestEmptySasl()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -983,6 +1003,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty mechanism
      */
+    @Test
     public void testDecodeBindRequestEmptyMechanism()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -1050,6 +1071,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with an bad mechanism
      */
     /* This test is not valid. I don't know how to generate a UnsupportedEncodingException ...
+    @Test
     public void testDecodeBindRequestBadMechanism()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -1092,6 +1114,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty credentials
      */
+    @Test
     public void testDecodeBindRequestEmptyCredentials()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -1160,6 +1183,7 @@ public class BindRequestTest extends TestCase
      * Test the decoding of a BindRequest with an empty credentials with
      * controls
      */
+    @Test
     public void testDecodeBindRequestEmptyCredentialsWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -1240,6 +1264,7 @@ public class BindRequestTest extends TestCase
     /**
      * Test the decoding of a BindRequest with an empty mechanisms with controls
      */
+    @Test
     public void testDecodeBindRequestEmptyMechanismWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -1320,6 +1345,7 @@ public class BindRequestTest extends TestCase
      * controls
      */
     /* No used by unit tests
+    @Test
     public void testPerf() throws Exception
     {
         LdapDN name = new LdapDN( "uid=akarasulu,dc=example,dc=com" );

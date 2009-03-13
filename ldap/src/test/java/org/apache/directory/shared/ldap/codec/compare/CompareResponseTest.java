@@ -34,8 +34,10 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponse;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -43,11 +45,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseTest extends TestCase
+public class CompareResponseTest
 {
     /**
      * Test the decoding of a CompareResponse
      */
+    @Test
     public void testDecodeCompareResponseSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -119,6 +122,7 @@ public class CompareResponseTest extends TestCase
     /**
      * Test the decoding of a CompareResponse with controls
      */
+    @Test
     public void testDecodeCompareResponseSuccessWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -201,6 +205,7 @@ public class CompareResponseTest extends TestCase
     /**
      * Test the decoding of a CompareResponse with no LdapResult
      */
+    @Test
     public void testDecodeCompareResponseEmptyResult()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

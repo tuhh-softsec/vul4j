@@ -37,8 +37,10 @@ import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -46,12 +48,13 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestTest extends TestCase
+public class CompareRequestTest
 {
 
     /**
      * Test the decoding of a full CompareRequest
      */
+    @Test
     public void testDecodeCompareRequestSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -125,6 +128,7 @@ public class CompareRequestTest extends TestCase
     /**
      * Test the decoding of an empty CompareRequest
      */
+    @Test
     public void testDecodeCompareRequestEmptyRequest()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -160,6 +164,7 @@ public class CompareRequestTest extends TestCase
     /**
      * Test the decoding of an empty entry CompareRequest
      */
+    @Test
     public void testDecodeCompareRequestEmptyEntry()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -202,6 +207,7 @@ public class CompareRequestTest extends TestCase
     /**
      * Test the decoding of an empty ava
      */
+    @Test
     public void testDecodeCompareRequestEmptyAVA()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -242,6 +248,7 @@ public class CompareRequestTest extends TestCase
     /**
      * Test the decoding of an empty ava
      */
+    @Test
     public void testDecodeCompareRequestInvalidDN()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -287,6 +294,7 @@ public class CompareRequestTest extends TestCase
     /**
      * Test the decoding of an empty attributeDesc ava
      */
+    @Test
     public void testDecodeCompareRequestEmptyAttributeDesc()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -333,6 +341,7 @@ public class CompareRequestTest extends TestCase
     /**
      * Test the decoding of an empty attributeValue ava
      */
+    @Test
     public void testDecodeCompareRequestEmptyAttributeValue()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -406,6 +415,7 @@ public class CompareRequestTest extends TestCase
     /**
      * Test the decoding of an compare request with controls
      */
+    @Test
     public void testDecodeCompareRequestWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

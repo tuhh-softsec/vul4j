@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import junit.framework.TestCase;
-
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -30,15 +28,20 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
+
 
 /**
  * A global Ldap Decoder test
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapMessageTest extends TestCase
+public class LdapMessageTest
 {
     // ~ Methods
     // ------------------------------------------------------------------------------------
@@ -46,6 +49,7 @@ public class LdapMessageTest extends TestCase
     /**
      * Test the decoding of null length messageId
      */
+    @Test
     public void testDecodeMessageLengthNull()
     {
 
@@ -80,6 +84,7 @@ public class LdapMessageTest extends TestCase
     /**
      * Test the decoding of null length messageId
      */
+    @Test
     public void testDecodeMessageIdLengthNull()
     {
 
@@ -115,6 +120,7 @@ public class LdapMessageTest extends TestCase
     /**
      * Test the decoding of null length messageId
      */
+    @Test
     public void testDecodeMessageIdMinusOne()
     {
 
@@ -150,6 +156,7 @@ public class LdapMessageTest extends TestCase
     /**
      * Test the decoding of messageId which value is -1
      */
+    @Test
     public void testDecodeMessageIdMaxInt()
     {
 
@@ -186,6 +193,7 @@ public class LdapMessageTest extends TestCase
     /**
      * Test the decoding of a message with a wrong protocol operation
      */
+    @Test
     public void testDecodeWrongProtocolOpMaxInt()
     {
 
@@ -269,6 +277,7 @@ public class LdapMessageTest extends TestCase
     /**
      * Test the decoding of a LdapMessage with a large MessageId
      */
+    @Test
     public void testDecodeUnBindRequestNoControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

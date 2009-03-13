@@ -37,8 +37,10 @@ import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -46,11 +48,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultReferenceTest extends TestCase
+public class SearchResultReferenceTest
 {
     /**
      * Test the decoding of a SearchResultReference
      */
+    @Test
     public void testDecodeSearchResultReferenceSuccess()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -170,6 +173,7 @@ public class SearchResultReferenceTest extends TestCase
     /**
      * Test the decoding of a SearchResultReference with controls
      */
+    @Test
     public void testDecodeSearchResultReferenceSuccessWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -311,6 +315,7 @@ public class SearchResultReferenceTest extends TestCase
     /**
      * Test the decoding of a SearchResultReference with no reference
      */
+    @Test
     public void testDecodeSearchResultReferenceNoReference()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -350,6 +355,7 @@ public class SearchResultReferenceTest extends TestCase
     /**
      * Test the decoding of a SearchResultReference with one reference
      */
+    @Test
     public void testDecodeSearchResultReferenceOneReference()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

@@ -33,8 +33,11 @@ import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
 
 /**
@@ -42,11 +45,12 @@ import junit.framework.TestCase;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonRequestTest extends TestCase
+public class AbandonRequestTest
 {
     /**
      * Test the decoding of a AbandonRequest with controls
      */
+	@Test
     public void testDecodeAbandonRequestWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -155,6 +159,7 @@ public class AbandonRequestTest extends TestCase
     /**
      * Test the decoding of a AbandonRequest with no controls
      */
+	@Test
     public void testDecodeAbandonRequestNoControlsHighMessageId()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -217,6 +222,7 @@ public class AbandonRequestTest extends TestCase
     /**
      * Test the decoding of a AbandonRequest with a null messageId
      */
+	@Test
     public void testDecodeAbandonRequestNoMessageId()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -252,6 +258,7 @@ public class AbandonRequestTest extends TestCase
     /**
      * Test the decoding of a AbandonRequest with a bad Message Id
      */
+	@Test
     public void testDecodeAbandonRequestBadMessageId()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();

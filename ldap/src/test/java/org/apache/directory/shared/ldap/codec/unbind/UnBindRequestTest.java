@@ -32,18 +32,21 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class UnBindRequestTest extends TestCase
+public class UnBindRequestTest
 {
     /**
      * Test the decoding of a UnBindRequest with no controls
      */
+    @Test
     public void testDecodeUnBindRequestNoControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -99,6 +102,7 @@ public class UnBindRequestTest extends TestCase
     /**
      * Test the decoding of a UnBindRequest with controls
      */
+    @Test
     public void testDecodeUnBindRequestWithControls()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
@@ -168,6 +172,7 @@ public class UnBindRequestTest extends TestCase
     /**
      * Test the decoding of a UnBindRequest with a not null body
      */
+    @Test
     public void testDecodeUnBindRequestNotNull()
     {
         Asn1Decoder ldapDecoder = new LdapDecoder();
