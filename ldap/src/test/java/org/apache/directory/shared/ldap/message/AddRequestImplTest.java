@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +39,9 @@ import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.LdapDN;
+import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -49,7 +50,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public class AddRequestImplTest extends TestCase
+public class AddRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
     
@@ -97,6 +98,7 @@ public class AddRequestImplTest extends TestCase
     /**
      * Tests the same object referrence for equality.
      */
+    @Test
     public void testEqualsSameObj()
     {
         AddRequestImpl req = new AddRequestImpl( 5 );
@@ -107,6 +109,7 @@ public class AddRequestImplTest extends TestCase
     /**
      * Tests for equality using exact copies.
      */
+    @Test
     public void testEqualsExactCopy() throws InvalidNameException, NamingException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
@@ -124,6 +127,7 @@ public class AddRequestImplTest extends TestCase
     /**
      * Test for inequality when only the IDs are different.
      */
+    @Test
     public void testNotEqualDiffId() throws InvalidNameException, NamingException
     {
         AddRequestImpl req0 = new AddRequestImpl( 7 );
@@ -141,6 +145,7 @@ public class AddRequestImplTest extends TestCase
     /**
      * Test for inequality when only the DN names are different.
      */
+    @Test
     public void testNotEqualDiffName() throws InvalidNameException, NamingException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
@@ -158,6 +163,7 @@ public class AddRequestImplTest extends TestCase
     /**
      * Test for inequality when only the DN names are different.
      */
+    @Test
     public void testNotEqualDiffAttributes() throws InvalidNameException, NamingException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
@@ -185,6 +191,7 @@ public class AddRequestImplTest extends TestCase
     /**
      * Tests for equality even when another BindRequest implementation is used.
      */
+    @Test
     public void testEqualsDiffImpl()
     {
         AddRequest req0 = new AddRequest()

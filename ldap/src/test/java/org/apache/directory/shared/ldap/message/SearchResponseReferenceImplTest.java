@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +31,9 @@ import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseReference;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
+import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -41,7 +42,7 @@ import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public class SearchResponseReferenceImplTest extends TestCase
+public class SearchResponseReferenceImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
@@ -53,7 +54,7 @@ public class SearchResponseReferenceImplTest extends TestCase
      *            the parent lockable
      * @return the newly created referral for testing
      */
-    public Referral getReferral( SearchResponseReference resp )
+    private Referral getReferral( SearchResponseReference resp )
     {
         ReferralImpl ref = new ReferralImpl();
         resp.setReferral( ref );
@@ -67,6 +68,7 @@ public class SearchResponseReferenceImplTest extends TestCase
     /**
      * Tests for equality when the same object referrence is used.
      */
+    @Test
     public void testEqualsSameObject()
     {
         SearchResponseReferenceImpl resp = new SearchResponseReferenceImpl( 5 );
@@ -78,6 +80,7 @@ public class SearchResponseReferenceImplTest extends TestCase
     /**
      * Tests for equality when an exact copy is compared.
      */
+    @Test
     public void testEqualsExactCopy()
     {
         SearchResponseReferenceImpl resp0 = new SearchResponseReferenceImpl( 5 );
@@ -93,6 +96,7 @@ public class SearchResponseReferenceImplTest extends TestCase
     /**
      * Tests for equality when a different implementation is used.
      */
+    @Test
     public void testEqualsDiffImpl()
     {
         SearchResponseReference resp0 = new SearchResponseReference()
@@ -170,6 +174,7 @@ public class SearchResponseReferenceImplTest extends TestCase
     /**
      * Tests for inequality when the urls are not the same.
      */
+    @Test
     public void testNotEqualDiffUrls()
     {
         SearchResponseReferenceImpl resp0 = new SearchResponseReferenceImpl( 5 );

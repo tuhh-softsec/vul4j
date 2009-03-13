@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +35,9 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchResponseDone;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.name.LdapDN;
+import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -45,7 +46,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  *         $Rev$
  */
-public class SearchResponseDoneImplTest extends TestCase
+public class SearchResponseDoneImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
 
@@ -82,6 +83,7 @@ public class SearchResponseDoneImplTest extends TestCase
     /**
      * Tests for equality using the same object.
      */
+    @Test
     public void testEqualsSameObj()
     {
         SearchResponseDoneImpl resp = createStub();
@@ -92,6 +94,7 @@ public class SearchResponseDoneImplTest extends TestCase
     /**
      * Tests for equality using an exact copy.
      */
+    @Test
     public void testEqualsExactCopy()
     {
         SearchResponseDoneImpl resp0 = createStub();
@@ -104,6 +107,7 @@ public class SearchResponseDoneImplTest extends TestCase
     /**
      * Tests for equality using different stub implementations.
      */
+    @Test
     public void testEqualsDiffImpl()
     {
         SearchResponseDoneImpl resp0 = createStub();
@@ -191,6 +195,7 @@ public class SearchResponseDoneImplTest extends TestCase
     /**
      * Tests inequality when messageIds are different.
      */
+    @Test
     public void testNotEqualsDiffIds()
     {
         SearchResponseDoneImpl resp0 = new SearchResponseDoneImpl( 3 );

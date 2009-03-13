@@ -23,8 +23,9 @@ package org.apache.directory.shared.ldap.message;
 import org.apache.directory.shared.ldap.message.AbstractMessage;
 import org.apache.directory.shared.ldap.message.MutableControl;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -33,11 +34,12 @@ import junit.framework.TestCase;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  *         $Rev$
  */
-public class AbstractMessageTest extends TestCase
+public class AbstractMessageTest
 {
     /**
      * Tests to see the same object returns true.
      */
+    @Test
     public void testEqualsSameObj()
     {
         AbstractMessage msg;
@@ -52,6 +54,7 @@ public class AbstractMessageTest extends TestCase
     /**
      * Tests to see the same exact copy returns true.
      */
+    @Test
     public void testEqualsExactCopy()
     {
         AbstractMessage msg0;
@@ -72,6 +75,7 @@ public class AbstractMessageTest extends TestCase
     /**
      * Tests to make sure changes in the id result in inequality.
      */
+    @Test
     public void testNotEqualsDiffId()
     {
         AbstractMessage msg0;
@@ -92,6 +96,7 @@ public class AbstractMessageTest extends TestCase
     /**
      * Tests to make sure changes in the type result in inequality.
      */
+    @Test
     public void testNotEqualsDiffType()
     {
         AbstractMessage msg0;
@@ -112,6 +117,7 @@ public class AbstractMessageTest extends TestCase
     /**
      * Tests to make sure changes in the controls result in inequality.
      */
+    @Test
     public void testNotEqualsDiffControls()
     {
         AbstractMessage msg0;

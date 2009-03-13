@@ -30,8 +30,9 @@ import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
-
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -40,11 +41,12 @@ import junit.framework.TestCase;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public class AbstractResultResponseTest extends TestCase
+public class AbstractResultResponseTest
 {
     /**
      * Tests to see the same object returns true.
      */
+    @Test
     public void testEqualsSameObj()
     {
         AbstractResultResponse msg;
@@ -59,6 +61,7 @@ public class AbstractResultResponseTest extends TestCase
     /**
      * Tests to see the same exact copy returns true.
      */
+    @Test
     public void testEqualsExactCopy() throws InvalidNameException
     {
         AbstractResultResponse msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
@@ -97,6 +100,7 @@ public class AbstractResultResponseTest extends TestCase
     /**
      * Tests to see the same exact copy returns true.
      */
+    @Test
     public void testNotEqualsDiffResult() throws InvalidNameException
     {
         AbstractResultResponse msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
@@ -135,6 +139,7 @@ public class AbstractResultResponseTest extends TestCase
     /**
      * Tests to make sure changes in the id result in inequality.
      */
+    @Test
     public void testNotEqualsDiffId()
     {
         AbstractResultResponse msg0;
@@ -155,6 +160,7 @@ public class AbstractResultResponseTest extends TestCase
     /**
      * Tests to make sure changes in the type result in inequality.
      */
+    @Test
     public void testNotEqualsDiffType()
     {
         AbstractResultResponse msg0;
@@ -175,6 +181,7 @@ public class AbstractResultResponseTest extends TestCase
     /**
      * Tests to make sure changes in the controls result in inequality.
      */
+    @Test
     public void testNotEqualsDiffControls()
     {
         AbstractResultResponse msg0;
