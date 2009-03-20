@@ -40,7 +40,6 @@ public class ResponseOutput extends Output {
 		    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 		} else {
 			response.setStatus(getStatusCode());
-			response.setCharacterEncoding(getCharsetName());
 			try {
 				copyHeaders();
 				outputStream = response.getOutputStream();
@@ -63,8 +62,7 @@ public class ResponseOutput extends Output {
         for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
                 .entrySet().iterator(); headersIterator.hasNext();) {
             Map.Entry<Object, Object> entry = headersIterator.next();
-             if (!"content-length".equalsIgnoreCase(entry.getKey().toString()))
-            	    response.setHeader(entry.getKey().toString(), entry.getValue().toString());
+       	    response.setHeader(entry.getKey().toString(), entry.getValue().toString());
         }
     }
 

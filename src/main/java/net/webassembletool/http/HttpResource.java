@@ -240,9 +240,8 @@ public class HttpResource extends Resource {
 	@Override
 	public void render(Output output) throws IOException {
 		output.setStatus(statusCode, statusText);
-
 		copyHeaders(httpMethod, output, "Content-Type", "Content-Length",
-				"Last-Modified", "ETag");
+				"Last-Modified", "ETag", "Expires", "Cache-control", "Content-length");
 		// TODO: refactor this
 		Header header = httpMethod.getResponseHeader("Location");
 		if (header != null) {
@@ -384,6 +383,9 @@ public class HttpResource extends Resource {
 
 			// parse content;
 			String parsed = parseContent(out.toString());
+			// update content-length header
+			if (dest.getHeader("Content-length")!=null)
+				dest.setHeader("Content-length", Integer.toString(parsed.length()));
 			// put parsed content to destination
 			defaultHandler.handle(new ByteArrayInputStream(parsed
 					.getBytes(charset)), dest);

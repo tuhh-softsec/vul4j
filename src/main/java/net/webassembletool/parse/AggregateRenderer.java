@@ -1,6 +1,8 @@
 package net.webassembletool.parse;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +65,9 @@ public class AggregateRenderer implements Renderer {
         String content = stringOutput.toString();
         if (content == null)
             return;
-        response.setCharacterEncoding(stringOutput.getCharsetName());
-        Writer writer = response.getWriter();
+
+        OutputStream out = response.getOutputStream();
+        Writer writer = new OutputStreamWriter(out, stringOutput.getCharsetName());
 
         IRegionParser parser = createParser();
         List<IRegion> parsed = parser.parse(content);
@@ -75,6 +78,8 @@ public class AggregateRenderer implements Renderer {
                 writer.append(e.getStatusCode() + " " + e.getStatusMessage());
             }
         }
+        // Don't forget to flush the buffer as it is a home made writer, it is not flushed automatically.
+        writer.flush();
     }
 
     protected IRegionParser createParser() {
