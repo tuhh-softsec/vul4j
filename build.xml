@@ -20,19 +20,19 @@
 		<mkdir dir="target/samples" />
 		<war destfile="target/samples/aggregated1.war" basedir="target/webapps/aggregated1" needxmlfile="false" />
 		<war destfile="target/samples/aggregated2.war" basedir="target/webapps/aggregated2" needxmlfile="false" />
-		<war destfile="target/samples/aggregator.war" basedir="target/webapps/aggregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+		<war destfile="target/samples/aggregator.war" basedir="target/webapps/aggregator" includes="**/driver.properties, **/web.xml, **/*.jar">
 			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
 		<war destfile="target/samples/cas.war" basedir="target/webapps/cas" />
 		<war destfile="target/samples/casified_agregated1.war" basedir="target/webapps/casified_agregated1" />
 		<war destfile="target/samples/casified_agregated2.war" basedir="target/webapps/casified_agregated2" />
-		<war destfile="target/samples/casified_agregator.war" basedir="target/webapps/casified_agregator" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+		<war destfile="target/samples/casified_agregator.war" basedir="target/webapps/casified_agregator" includes="**/driver.properties, **/web.xml, **/*.jar, **/*.jsp">
 			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
-		<war destfile="target/samples/master.war" basedir="target/webapps/master" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+		<war destfile="target/samples/master.war" basedir="target/webapps/master" includes="**/driver.properties, **/web.xml, **/*.jar, **/*.jsp, **/*.xslt">
 			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
-		<war destfile="target/samples/provider.war" basedir="target/webapps/provider" excludes="WEB-INF/classes/net/, WEB-INF/classes/META-INF/, WEB-INF/webassembletool.tld">
+		<war destfile="target/samples/provider.war" basedir="target/webapps/provider" includes="**/driver.properties, **/*.xml, **/*.jar, images/">
 			<lib file="target/webassembletool_${current.version}.jar" />
 		</war>
 		<zip destfile="target/webassembletool_${current.version}.zip">
