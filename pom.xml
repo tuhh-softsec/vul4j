@@ -51,8 +51,8 @@
 		</developer>
 	</developers>
 	<scm>
-		<tag>trunk</tag>
-		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool</connection>
+		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
+		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</developerConnection>
 		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/</url>
 	</scm>
 	<build>
