@@ -87,7 +87,7 @@ public class FoldRight<T> implements UnaryFunction<Generator<T>, T>, BinaryFunct
     private BinaryFunction<? super T, ? super T, ? extends T> function;
 
     /**
-     * Create a new FoldLeft.
+     * Create a new FoldRight.
      * @param function {@link BinaryFunction} to apply to each (seed, next)
      */
     public FoldRight(BinaryFunction<? super T, ? super T, ? extends T> function) {
