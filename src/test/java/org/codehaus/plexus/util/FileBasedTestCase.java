@@ -19,9 +19,13 @@ package org.codehaus.plexus.util;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
 
@@ -59,7 +63,7 @@ public abstract class FileBasedTestCase
 
         byte[] data = generateTestData( size );
 
-        final BufferedOutputStream output = new BufferedOutputStream( new java.io.FileOutputStream( file ) );
+        final BufferedOutputStream output = new BufferedOutputStream( new FileOutputStream( file ) );
 
         try
         {
@@ -81,7 +85,9 @@ public abstract class FileBasedTestCase
             Process process = Runtime.getRuntime().exec( args );
             process.waitFor();
             if ( 0 != process.exitValue() )
+            {
                 return false;
+            }
         }
         catch ( Exception e )
         {
@@ -142,13 +148,11 @@ public abstract class FileBasedTestCase
     {
         try
         {
-            new java.io.PrintStream( output ).write( 0 );
+            new PrintStream( output ).write( 0 );
         }
         catch ( final Throwable t )
         {
-            throw new AssertionFailedError(
-                "The copy() method closed the stream "
-                + "when it shouldn't have. "
+            throw new AssertionFailedError( "The copy() method closed the stream " + "when it shouldn't have. "
                 + t.getMessage() );
         }
     }
@@ -157,13 +161,11 @@ public abstract class FileBasedTestCase
     {
         try
         {
-            new java.io.PrintWriter( output ).write( 'a' );
+            new PrintWriter( output ).write( 'a' );
         }
         catch ( final Throwable t )
         {
-            throw new AssertionFailedError(
-                "The copy() method closed the stream "
-                + "when it shouldn't have. "
+            throw new AssertionFailedError( "The copy() method closed the stream " + "when it shouldn't have. "
                 + t.getMessage() );
         }
     }
@@ -191,10 +193,10 @@ public abstract class FileBasedTestCase
                     " have differing file sizes (" + f0.length() +
                     " vs " + f1.length() + ")", ( f0.length() == f1.length() ) );
         */
-        final InputStream is0 = new java.io.FileInputStream( f0 );
+        final InputStream is0 = new FileInputStream( f0 );
         try
         {
-            final InputStream is1 = new java.io.FileInputStream( f1 );
+            final InputStream is1 = new FileInputStream( f1 );
             try
             {
                 final byte[] buf0 = new byte[1024];
@@ -229,7 +231,7 @@ public abstract class FileBasedTestCase
     protected void assertEqualContent( final byte[] b0, final File file )
         throws IOException
     {
-        final InputStream is = new java.io.FileInputStream( file );
+        final InputStream is = new FileInputStream( file );
         try
         {
             byte[] b1 = new byte[b0.length];

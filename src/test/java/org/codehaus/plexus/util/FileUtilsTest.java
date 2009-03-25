@@ -243,7 +243,7 @@ public final class FileUtilsTest
         final String resourceName = "/java/lang/Object.class";
         FileUtils.copyURLToFile( getClass().getResource( resourceName ), file );
 
-        // Tests that resuorce was copied correctly
+        // Tests that resource was copied correctly
         final FileInputStream fis = new FileInputStream( file );
         try
         {
@@ -905,9 +905,7 @@ public final class FileUtilsTest
         throws Exception
     {
         File compareFile = new File( getTestDirectory(), "compare.txt" );
-        OutputStream compareStream = new FileOutputStream( compareFile );
-        compareStream.write( "This is a test.  Test sample text\n".getBytes() );
-        compareStream.flush();
+        FileUtils.fileWrite( compareFile.getAbsolutePath(), "UTF-8", "This is a test.  Test sample text\n" );
 
         File destFile = new File( getTestDirectory(), "target.txt" );
 
@@ -924,11 +922,9 @@ public final class FileUtilsTest
         }};
 
         File srcFile = new File( getTestDirectory(), "root.txt" );
-        OutputStream os = new FileOutputStream( srcFile );
-        os.write( ( "This is a test.  Test ${s}\n" ).getBytes() );
-        os.flush();
+        FileUtils.fileWrite( srcFile.getAbsolutePath(), "UTF-8", "This is a test.  Test ${s}\n" );
 
-        FileUtils.copyFile( srcFile, destFile, System.getProperty( "file.encoding" ), wrappers1 );
+        FileUtils.copyFile( srcFile, destFile, "UTF-8", wrappers1 );
         assertTrue( "Files should be equal.", FileUtils.contentEquals( compareFile, destFile ) );
 
         srcFile.delete();
@@ -941,9 +937,7 @@ public final class FileUtilsTest
     {
         String content = "This is a test.";
         File sourceFile = new File( getTestDirectory(), "source.txt" );
-        OutputStream contentStream = new FileOutputStream( sourceFile );
-        contentStream.write( content.getBytes() );
-        contentStream.flush();
+        FileUtils.fileWrite( sourceFile.getAbsolutePath(), "UTF-8", content );
 
         File destFile = new File( getTestDirectory(), "target.txt" );
         if ( destFile.exists() )
@@ -951,20 +945,18 @@ public final class FileUtilsTest
             destFile.delete();
         }
         FileUtils.copyFile( sourceFile, destFile, null, null );
-        assertEqualContent( content.getBytes(), destFile );
+        assertEqualContent( content.getBytes( "UTF-8" ), destFile );
 
         String newercontent = "oldercontent";
         File olderFile = new File( getTestDirectory(), "oldersource.txt" );
 
-        OutputStream olderContentStream = new FileOutputStream( olderFile );
-        olderContentStream.write( newercontent.getBytes() );
-        olderContentStream.flush();
+        FileUtils.fileWrite( olderFile.getAbsolutePath(), "UTF-8", newercontent );
 
         // very old file ;-)
         olderFile.setLastModified( 1 );
         destFile = new File( getTestDirectory(), "target.txt" );
         FileUtils.copyFile( olderFile, destFile, null, null );
-        String destFileContent = IOUtil.toString( new FileInputStream( destFile ) );
+        String destFileContent = FileUtils.fileRead( destFile, "UTF-8" );
         assertEquals( content, destFileContent );
 
     }
@@ -975,9 +967,7 @@ public final class FileUtilsTest
     {
         String content = "This is a test.";
         File sourceFile = new File( getTestDirectory(), "source.txt" );
-        OutputStream contentStream = new FileOutputStream( sourceFile );
-        contentStream.write( content.getBytes() );
-        contentStream.flush();
+        FileUtils.fileWrite( sourceFile.getAbsolutePath(), "UTF-8", content );
 
         File destFile = new File( getTestDirectory(), "target.txt" );
         if ( destFile.exists() )
@@ -985,20 +975,18 @@ public final class FileUtilsTest
             destFile.delete();
         }
         FileUtils.copyFile( sourceFile, destFile, null, null );
-        assertEqualContent( content.getBytes(), destFile );
+        assertEqualContent( content.getBytes( "UTF-8" ), destFile );
 
         String newercontent = "oldercontent";
         File olderFile = new File( getTestDirectory(), "oldersource.txt" );
 
-        OutputStream olderContentStream = new FileOutputStream( olderFile );
-        olderContentStream.write( newercontent.getBytes() );
-        olderContentStream.flush();
+        FileUtils.fileWrite( olderFile.getAbsolutePath(), "UTF-8", newercontent );
 
         // very old file ;-)
         olderFile.setLastModified( 1 );
         destFile = new File( getTestDirectory(), "target.txt" );
         FileUtils.copyFile( olderFile, destFile, null, null, true );
-        String destFileContent = IOUtil.toString( new FileInputStream( destFile ) );
+        String destFileContent = FileUtils.fileRead( destFile, "UTF-8" );
         assertEquals( newercontent, destFileContent );
 
     }

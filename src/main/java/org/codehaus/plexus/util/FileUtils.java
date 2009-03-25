@@ -468,7 +468,8 @@ public class FileUtils
         try
         {
             out = new FileOutputStream( fileName );
-            if ( encoding != null ) {
+            if ( encoding != null )
+            {
                 out.write( data.getBytes( encoding ) );
             }
             else
