@@ -30,19 +30,36 @@ import java.util.Comparator;
  */
 public class SingletonCursor<E> extends AbstractCursor<E>
 {
+    /** A flag set to true to a*/
     private boolean beforeFirst = true;
     private boolean afterLast;
     private boolean onSingleton;
+    
+    /** The comparator used for this cursor. */
     private final Comparator<E> comparator;
+    
+    /** The unique element stored in the cursor */
     private final E singleton;
 
 
+    /**
+     * Creates a new instance of SingletonCursor.
+     *
+     * @param singleton The unique element to store into this cursor
+     */
     public SingletonCursor( E singleton )
     {
         this( singleton, null );
     }
 
 
+    /**
+     * Creates a new instance of SingletonCursor, with its associated
+     * conmparator
+     *
+     * @param singleton The unique element to store into this cursor
+     * @param comparator The associated comparator
+     */
     public SingletonCursor( E singleton, Comparator<E> comparator )
     {
         this.singleton = singleton;
@@ -50,12 +67,18 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean available()
     {
         return onSingleton;
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
     public void before( E element ) throws Exception
     {
         checkNotClosed( "before()" );
@@ -79,6 +102,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void after( E element ) throws Exception
     {
         checkNotClosed( "after()" );
@@ -102,6 +128,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void beforeFirst() throws Exception
     {
         checkNotClosed( "()" );
@@ -111,6 +140,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void afterLast() throws Exception
     {
         checkNotClosed( "()" );
@@ -120,6 +152,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean first() throws Exception
     {
         checkNotClosed( "()" );
@@ -130,6 +165,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean last() throws Exception
     {
         checkNotClosed( "()" );
@@ -140,6 +178,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isFirst() throws Exception
     {
         checkNotClosed( "()" );
@@ -147,6 +188,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isLast() throws Exception
     {
         checkNotClosed( "()" );
@@ -154,6 +198,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isAfterLast() throws Exception
     {
         checkNotClosed( "()" );
@@ -161,6 +208,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isBeforeFirst() throws Exception
     {
         checkNotClosed( "()" );
@@ -168,9 +218,13 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean previous() throws Exception
     {
         checkNotClosed( "()" );
+        
         if ( beforeFirst )
         {
             return false;
@@ -192,9 +246,13 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean next() throws Exception
     {
         checkNotClosed( "()" );
+        
         if ( beforeFirst )
         {
             beforeFirst = false;
@@ -216,9 +274,13 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public E get() throws Exception
     {
         checkNotClosed( "()" );
+        
         if ( onSingleton )
         {
             return singleton;
@@ -235,6 +297,9 @@ public class SingletonCursor<E> extends AbstractCursor<E>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isElementReused()
     {
         return true;
