@@ -32,11 +32,11 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequest;
+import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddRequest;
 import org.apache.directory.shared.ldap.codec.add.AddResponse;
-import org.apache.directory.shared.ldap.codec.bind.BindRequest;
-import org.apache.directory.shared.ldap.codec.bind.BindResponse;
+import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
+import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequest;
 import org.apache.directory.shared.ldap.codec.compare.CompareResponse;
 import org.apache.directory.shared.ldap.codec.del.DelRequest;
@@ -301,9 +301,9 @@ public class LdapMessage extends AbstractAsn1Object
      * 
      * @return Returns the AbandonRequest ldapObject.
      */
-    public AbandonRequest getAbandonRequest()
+    public AbandonRequestCodec getAbandonRequest()
     {
-        return ( AbandonRequest ) protocolOp;
+        return ( AbandonRequestCodec ) protocolOp;
     }
 
 
@@ -337,9 +337,9 @@ public class LdapMessage extends AbstractAsn1Object
      * 
      * @return Returns the BindRequest ldapObject.
      */
-    public BindRequest getBindRequest()
+    public BindRequestCodec getBindRequest()
     {
-        return ( BindRequest ) protocolOp;
+        return ( BindRequestCodec ) protocolOp;
     }
 
 
@@ -349,9 +349,9 @@ public class LdapMessage extends AbstractAsn1Object
      * 
      * @return Returns the BindResponse ldapObject.
      */
-    public BindResponse getBindResponse()
+    public BindResponseCodec getBindResponse()
     {
-        return ( BindResponse ) protocolOp;
+        return ( BindResponseCodec ) protocolOp;
     }
 
 

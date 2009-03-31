@@ -38,7 +38,7 @@ import org.apache.directory.shared.asn1.util.BooleanDecoder;
 import org.apache.directory.shared.asn1.util.BooleanDecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequest;
+import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
 import org.apache.directory.shared.ldap.codec.actions.ControlValueAction;
 import org.apache.directory.shared.ldap.codec.actions.ControlsInitAction;
@@ -73,8 +73,8 @@ import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleActio
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.add.AddRequest;
 import org.apache.directory.shared.ldap.codec.add.AddResponse;
-import org.apache.directory.shared.ldap.codec.bind.BindRequest;
-import org.apache.directory.shared.ldap.codec.bind.BindResponse;
+import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
+import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequest;
@@ -450,7 +450,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                         // Ok, the Message ID is correct. We have to store it
                         // in the AbandonRequest Object
-                        AbandonRequest abandonRequest = new AbandonRequest();
+                        AbandonRequestCodec abandonRequest = new AbandonRequestCodec();
                         abandonRequest.setAbandonedMessageId( abandonnedMessageId );
                         ldapMessage.setProtocolOP( abandonRequest );
 
@@ -516,7 +516,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // Now, we can allocate the BindRequest Object
-                    ldapMessage.setProtocolOP( new BindRequest() );
+                    ldapMessage.setProtocolOP( new BindRequestCodec() );
                 }
             } );
 
@@ -536,7 +536,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    BindRequest bindRequestMessage = ldapMessageContainer.getLdapMessage().getBindRequest();
+                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getLdapMessage().getBindRequest();
 
                     // The current TLV should be a integer between 1 and 127
                     // We get it and store it in Version
@@ -585,7 +585,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessage ldapMessage = ldapMessageContainer.getLdapMessage();
-                    BindRequest bindRequestMessage = ldapMessage.getBindRequest();
+                    BindRequestCodec bindRequestMessage = ldapMessage.getBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -646,7 +646,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    BindRequest bindRequestMessage = ldapMessageContainer.getLdapMessage().getBindRequest();
+                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getLdapMessage().getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Allocate the Authentication Object
@@ -710,7 +710,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessage ldapMessage = ldapMessageContainer.getLdapMessage();
-                    BindRequest bindRequestMessage = ldapMessage.getBindRequest();
+                    BindRequestCodec bindRequestMessage = ldapMessage.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We will check that the sasl is not null
@@ -757,7 +757,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessage ldapMessage = ldapMessageContainer.getLdapMessage();
-                    BindRequest bindRequestMessage = ldapMessage.getBindRequest();
+                    BindRequestCodec bindRequestMessage = ldapMessage.getBindRequest();
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Get the SaslCredentials Object
@@ -802,7 +802,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    BindRequest bindRequestMessage = ldapMessageContainer.getLdapMessage().getBindRequest();
+                    BindRequestCodec bindRequestMessage = ldapMessageContainer.getLdapMessage().getBindRequest();
 
                     // Get the Value and store it in the BindRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -870,7 +870,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                     LdapMessage ldapMessage = ldapMessageContainer.getLdapMessage();
 
                     // Now, we can allocate the BindRequest Object
-                    BindResponse bindResponse = new BindResponse();
+                    BindResponseCodec bindResponse = new BindResponseCodec();
 
                     // As this is a new Constructed object, we have to init its
                     // length

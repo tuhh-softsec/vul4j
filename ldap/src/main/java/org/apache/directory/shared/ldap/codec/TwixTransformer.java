@@ -29,11 +29,11 @@ import javax.naming.InvalidNameException;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequest;
+import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.add.AddRequest;
 import org.apache.directory.shared.ldap.codec.add.AddResponse;
-import org.apache.directory.shared.ldap.codec.bind.BindRequest;
-import org.apache.directory.shared.ldap.codec.bind.BindResponse;
+import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
+import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequest;
@@ -154,7 +154,7 @@ public class TwixTransformer
     public static Message transformAbandonRequest( LdapMessage twixMessage, int messageId )
     {
         AbandonRequestImpl snickersMessage = new AbandonRequestImpl( messageId );
-        AbandonRequest abandonRequest = twixMessage.getAbandonRequest();
+        AbandonRequestCodec abandonRequest = twixMessage.getAbandonRequest();
 
         // Twix : int abandonnedMessageId -> Snickers : int abandonId
         snickersMessage.setAbandoned( abandonRequest.getAbandonedMessageId() );
@@ -195,7 +195,7 @@ public class TwixTransformer
     public static Message transformBindRequest( LdapMessage twixMessage, int messageId )
     {
         BindRequestImpl snickersMessage = new BindRequestImpl( messageId );
-        BindRequest bindRequest = twixMessage.getBindRequest();
+        BindRequestCodec bindRequest = twixMessage.getBindRequest();
 
         // Twix : int version -> Snickers : boolean isVersion3
         snickersMessage.setVersion3( bindRequest.isLdapV3() );
@@ -238,7 +238,7 @@ public class TwixTransformer
     public static Message transformBindResponse( LdapMessage twixMessage, int messageId )
     {
         BindResponseImpl snickersMessage = new BindResponseImpl( messageId );
-        BindResponse bindResponse = twixMessage.getBindResponse();
+        BindResponseCodec bindResponse = twixMessage.getBindResponse();
 
         // Twix : byte[] serverSaslcreds -> Snickers : byte[] serverSaslCreds
         snickersMessage.setServerSaslCreds( bindResponse.getServerSaslCreds() );
@@ -1160,7 +1160,7 @@ public class TwixTransformer
     {
         BindResponseImpl snickersBindResponse = ( BindResponseImpl ) snickersMessage;
 
-        BindResponse bindResponse = new BindResponse();
+        BindResponseCodec bindResponse = new BindResponseCodec();
 
         // Snickers : byte [] serverSaslCreds -> Twix : OctetString
         // serverSaslCreds
@@ -1189,7 +1189,7 @@ public class TwixTransformer
     {
         BindRequestImpl snickersBindRequest = ( BindRequestImpl ) snickersMessage;
 
-        BindRequest bindRequest = new BindRequest();
+        BindRequestCodec bindRequest = new BindRequestCodec();
         
         if ( snickersBindRequest.isSimple() )
         {
