@@ -28,7 +28,7 @@ import javax.naming.ldap.Control;
 
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.AbandonListener;
-import org.apache.directory.shared.ldap.message.CompareRequest;
+import org.apache.directory.shared.ldap.message.InternalCompareRequest;
 import org.apache.directory.shared.ldap.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
@@ -147,7 +147,7 @@ public class CompareRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        CompareRequest req0 = new CompareRequest()
+        InternalCompareRequest req0 = new InternalCompareRequest()
         {
             public Value<?> getAssertionValue()
             {

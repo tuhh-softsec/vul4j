@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.Control;
 
-import org.apache.directory.shared.ldap.message.BindRequest;
+import org.apache.directory.shared.ldap.message.InternalBindRequest;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
@@ -196,7 +196,7 @@ public class BindRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        BindRequest req0 = new BindRequest()
+        InternalBindRequest req0 = new InternalBindRequest()
         {
             public boolean isSimple()
             {

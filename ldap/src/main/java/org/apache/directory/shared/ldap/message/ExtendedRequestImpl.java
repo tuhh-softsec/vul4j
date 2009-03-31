@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest
+public class ExtendedRequestImpl extends AbstractRequest implements InternalExtendedRequest
 {
     static final long serialVersionUID = 7916990159044177480L;
 
@@ -181,12 +181,12 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
             return false;
         }
         
-        if ( !( obj instanceof ExtendedRequest ) )
+        if ( !( obj instanceof InternalExtendedRequest ) )
         {
             return false;
         }
 
-        ExtendedRequest req = ( ExtendedRequest ) obj;
+        InternalExtendedRequest req = ( InternalExtendedRequest ) obj;
         if ( oid != null && req.getOid() == null )
         {
             return false;

@@ -21,31 +21,13 @@ package org.apache.directory.shared.ldap.message;
 
 
 /**
- * Abandon protocol operation request to terminate an operation already in
- * progress.
+ * Unbind protocol request message used to end a client session.
  * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public interface AbandonRequest extends Request
+public interface InternalUnbindRequest extends Request
 {
-    /** Ldap abandon request type code */
-    MessageTypeEnum TYPE = MessageTypeEnum.ABANDON_REQUEST;
-
-
-    /**
-     * Gets the id of the request operation to terminate.
-     * 
-     * @return the id of the request message to abandon
-     */
-    int getAbandoned();
-
-
-    /**
-     * Sets the id of the request operation to terminate.
-     * 
-     * @param requestId
-     *            the sequence id of the request message to abandon
-     */
-    void setAbandoned( int requestId );
+    /** Unbind request protocol message type */
+    MessageTypeEnum TYPE = MessageTypeEnum.UNBIND_REQUEST;
 }

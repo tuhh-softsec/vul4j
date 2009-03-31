@@ -29,7 +29,7 @@ import javax.naming.ldap.Control;
 import org.apache.directory.shared.ldap.message.AbandonListener;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.message.InternalModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -198,7 +198,7 @@ public class ModifyDnRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        ModifyDnRequest req0 = new ModifyDnRequest()
+        InternalModifyDnRequest req0 = new InternalModifyDnRequest()
         {
             public LdapDN getName()
             {

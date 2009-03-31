@@ -27,7 +27,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.Control;
 
 import org.apache.directory.shared.ldap.message.AbandonListener;
-import org.apache.directory.shared.ldap.message.DeleteRequest;
+import org.apache.directory.shared.ldap.message.InternalDeleteRequest;
 import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
@@ -114,7 +114,7 @@ public class DeleteRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        DeleteRequest req0 = new DeleteRequest()
+        InternalDeleteRequest req0 = new InternalDeleteRequest()
         {
             public LdapDN getName()
             {

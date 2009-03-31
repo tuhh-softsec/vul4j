@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.message.AbandonListener;
-import org.apache.directory.shared.ldap.message.AddRequest;
+import org.apache.directory.shared.ldap.message.InternalAddRequest;
 import org.apache.directory.shared.ldap.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
@@ -194,7 +194,7 @@ public class AddRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        AddRequest req0 = new AddRequest()
+        InternalAddRequest req0 = new InternalAddRequest()
         {
             public Entry getEntry()
             {

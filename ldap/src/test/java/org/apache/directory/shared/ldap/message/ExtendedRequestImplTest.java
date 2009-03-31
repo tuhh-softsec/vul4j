@@ -27,7 +27,7 @@ import javax.naming.NamingException;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.ExtendedResponse;
 
-import org.apache.directory.shared.ldap.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.message.InternalExtendedRequest;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
@@ -136,7 +136,7 @@ public class ExtendedRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        ExtendedRequest req0 = new ExtendedRequest()
+        InternalExtendedRequest req0 = new InternalExtendedRequest()
         {
             private static final long serialVersionUID = 1L;
 

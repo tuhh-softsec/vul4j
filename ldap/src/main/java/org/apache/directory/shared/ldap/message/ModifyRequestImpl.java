@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ModifyRequestImpl extends AbstractAbandonableRequest implements ModifyRequest
+public class ModifyRequestImpl extends AbstractAbandonableRequest implements InternalModifyRequest
 {
     static final long serialVersionUID = -505803669028990304L;
 
@@ -188,7 +188,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
             return false;
         }
 
-        ModifyRequest req = ( ModifyRequest ) obj;
+        InternalModifyRequest req = ( InternalModifyRequest ) obj;
 
         if ( name != null && req.getName() == null )
         {

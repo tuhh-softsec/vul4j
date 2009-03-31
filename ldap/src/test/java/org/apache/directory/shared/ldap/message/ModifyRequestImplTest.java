@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.message.AbandonListener;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.ModifyRequest;
+import org.apache.directory.shared.ldap.message.InternalModifyRequest;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -263,7 +263,7 @@ public class ModifyRequestImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        ModifyRequest req0 = new ModifyRequest()
+        InternalModifyRequest req0 = new InternalModifyRequest()
         {
             public Collection<Modification> getModificationItems()
             {

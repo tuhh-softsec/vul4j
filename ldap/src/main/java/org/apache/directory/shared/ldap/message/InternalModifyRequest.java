@@ -95,7 +95,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  *  @version $Revision$
  * 
  */
-public interface ModifyRequest extends SingleReplyRequest, AbandonableRequest
+public interface InternalModifyRequest extends SingleReplyRequest, AbandonableRequest
 {
     /** Modify request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_REQUEST;

@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public class BindRequestImpl extends AbstractRequest implements BindRequest
+public class BindRequestImpl extends AbstractRequest implements InternalBindRequest
 {
     static final long serialVersionUID = 7945504184130380071L;
 
@@ -313,7 +313,7 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof BindRequest ) )
+        if ( ( obj == null ) || !( obj instanceof InternalBindRequest ) )
         {
             return false;
         }
@@ -323,7 +323,7 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
             return false;
         }
 
-        BindRequest req = ( BindRequest ) obj;
+        InternalBindRequest req = ( InternalBindRequest ) obj;
 
         if ( req.isSimple() != isSimple() )
         {
