@@ -45,7 +45,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements I
     /** PDU's <b>deleteOldRdn</b> flag */
     private boolean deleteOldRdn = false;
 
-    private ModifyDnResponse response;
+    private InternalModifyDnResponse response;
 
 
     // -----------------------------------------------------------------------

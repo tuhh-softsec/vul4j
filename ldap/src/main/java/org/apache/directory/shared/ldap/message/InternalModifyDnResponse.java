@@ -21,14 +21,14 @@ package org.apache.directory.shared.ldap.message;
 
 
 /**
- * Compare protocol response message used to confirm the results of a compare
- * request message.
+ * Modify DN protocol response message used to confirm the results of a modify
+ * DN request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface CompareResponse extends ResultResponse
+public interface InternalModifyDnResponse extends ResultResponse
 {
-    /** Compare response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.COMPARE_RESPONSE;
+    /** Modify DN response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.MOD_DN_RESPONSE;
 }

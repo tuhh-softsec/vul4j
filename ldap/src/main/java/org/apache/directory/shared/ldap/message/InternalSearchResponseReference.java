@@ -22,14 +22,31 @@ package org.apache.directory.shared.ldap.message;
 
 
 /**
- * Add protocol response message used to confirm the results of a add request
- * message.
+ * Search reference protocol response message used to return referrals to the
+ * client in response to a search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface AddResponse extends ResultResponse
+public interface InternalSearchResponseReference extends Response
 {
-    /** Add response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.ADD_RESPONSE;
+    /** Search reference response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_REF;
+
+
+    /**
+     * Gets the sequence of LdapUrls as a Referral instance.
+     * 
+     * @return the sequence of LdapUrls
+     */
+    Referral getReferral();
+
+
+    /**
+     * Sets the sequence of LdapUrls as a Referral instance.
+     * 
+     * @param a_referral
+     *            the sequence of LdapUrls
+     */
+    void setReferral( Referral a_referral );
 }

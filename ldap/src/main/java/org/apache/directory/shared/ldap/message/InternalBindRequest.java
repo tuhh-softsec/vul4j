@@ -35,7 +35,7 @@ public interface InternalBindRequest extends SingleReplyRequest
     MessageTypeEnum TYPE = MessageTypeEnum.BIND_REQUEST;
 
     /** Bind response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = BindResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = InternalBindResponse.TYPE;
 
 
     /**

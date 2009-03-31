@@ -71,7 +71,7 @@ public interface InternalModifyDnRequest extends SingleReplyRequest, Abandonable
     MessageTypeEnum TYPE = MessageTypeEnum.MOD_DN_REQUEST;
 
     /** Modify DN response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = ModifyDnResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = InternalModifyDnResponse.TYPE;
 
 
     /**

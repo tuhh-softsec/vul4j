@@ -27,7 +27,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface DeleteResponse extends ResultResponse
+public interface InternalDeleteResponse extends ResultResponse
 {
     /** Delete response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.DEL_RESPONSE;

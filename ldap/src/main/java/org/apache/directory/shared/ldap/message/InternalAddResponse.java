@@ -17,18 +17,19 @@
  *  under the License. 
  *  
  */
+
 package org.apache.directory.shared.ldap.message;
 
 
 /**
- * Search done protocol response message used to indicate the completion of a
- * search request message.
+ * Add protocol response message used to confirm the results of a add request
+ * message.
  * 
- * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
- *         $Rev$
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @version $Revision$
  */
-public interface SearchResponseDone extends ResultResponse
+public interface InternalAddResponse extends ResultResponse
 {
-    /** Search done response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_DONE;
+    /** Add response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.ADD_RESPONSE;
 }

@@ -101,7 +101,7 @@ public interface InternalModifyRequest extends SingleReplyRequest, AbandonableRe
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_REQUEST;
 
     /** Modify response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = ModifyResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = InternalModifyResponse.TYPE;
 
 
     /**

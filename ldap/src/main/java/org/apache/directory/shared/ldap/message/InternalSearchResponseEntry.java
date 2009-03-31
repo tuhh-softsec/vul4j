@@ -17,54 +17,55 @@
  *  under the License. 
  *  
  */
+
 package org.apache.directory.shared.ldap.message;
 
 
+import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.name.LdapDN;
+
+
 /**
- * Extended protocol response message used to confirm the results of a extended
- * request message.
+ * Search entry protocol response message used to return non referral entries to
+ * the client in response to a search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface ExtendedResponse extends ResultResponse, javax.naming.ldap.ExtendedResponse
+public interface InternalSearchResponseEntry extends Response
 {
-    /** Extended response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_RESP;
+    /** Search entry response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_ENTRY;
 
 
     /**
-     * Gets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
+     * Gets the distinguished name of the entry object returned.
      * 
-     * @return the OID of the extended response type.
+     * @return the Dn of the entry returned.
      */
-    String getResponseName();
+    LdapDN getObjectName();
 
 
     /**
-     * Sets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
+     * Sets the distinguished name of the entry object returned.
      * 
-     * @param oid
-     *            the OID of the extended response type.
+     * @param dn the Dn of the entry returned.
      */
-    void setResponseName( String oid );
+    void setObjectName( LdapDN dn );
 
 
     /**
-     * Gets the reponse OID specific encoded response values.
+     * Gets the entry.
      * 
-     * @return the response specific encoded response values.
+     * @return the entry
      */
-    byte[] getResponse();
+    Entry getEntry();
 
 
     /**
-     * Sets the reponse OID specific encoded response values.
+     * Sets an entry
      * 
-     * @param value
-     *            the response specific encoded response values.
+     * @param entry the entry
      */
-    void setResponse( byte[] value );
+    void setEntry( Entry entry );
 }

@@ -37,7 +37,7 @@ public interface InternalAddRequest extends SingleReplyRequest, AbandonableReque
     MessageTypeEnum TYPE = MessageTypeEnum.ADD_REQUEST;
 
     /** LDAPv3 add response type enum code */
-    MessageTypeEnum RESP_TYPE = AddResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = InternalAddResponse.TYPE;
 
 
     /**

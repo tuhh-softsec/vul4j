@@ -39,7 +39,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
     /** A MultiMap of the new entry's attributes and their values */
     private Entry entry;
 
-    private AddResponse response;
+    private InternalAddResponse response;
 
 
     // ------------------------------------------------------------------------

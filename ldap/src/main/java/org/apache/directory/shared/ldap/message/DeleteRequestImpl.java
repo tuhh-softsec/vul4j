@@ -35,7 +35,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Int
     /** The distinguished name of the entry to delete */
     private LdapDN name;
 
-    private DeleteResponse response;
+    private InternalDeleteResponse response;
 
 
     // ------------------------------------------------------------------------

@@ -17,36 +17,18 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.ldap.message;
 
 
 /**
- * Search reference protocol response message used to return referrals to the
- * client in response to a search request message.
+ * Search done protocol response message used to indicate the completion of a
+ * search request message.
  * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
+ * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ *         $Rev$
  */
-public interface SearchResponseReference extends Response
+public interface InternalSearchResponseDone extends ResultResponse
 {
-    /** Search reference response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_REF;
-
-
-    /**
-     * Gets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @return the sequence of LdapUrls
-     */
-    Referral getReferral();
-
-
-    /**
-     * Sets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @param a_referral
-     *            the sequence of LdapUrls
-     */
-    void setReferral( Referral a_referral );
+    /** Search done response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_DONE;
 }

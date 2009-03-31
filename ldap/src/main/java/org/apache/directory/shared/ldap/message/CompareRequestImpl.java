@@ -46,7 +46,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
     /** The value of the attribute used in the comparison */
     private Value<?> attrVal;
 
-    private CompareResponse response;
+    private InternalCompareResponse response;
 
 
     // ------------------------------------------------------------------------

@@ -52,7 +52,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
     /** Sequence of modifications or PDU's <b>modification</b> seqence field */
     private List<Modification> mods = new ArrayList<Modification>();
 
-    private ModifyResponse response;
+    private InternalModifyResponse response;
 
 
     // ------------------------------------------------------------------------

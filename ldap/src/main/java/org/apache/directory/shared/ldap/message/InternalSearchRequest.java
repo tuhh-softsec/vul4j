@@ -45,7 +45,7 @@ public interface InternalSearchRequest extends ManyReplyRequest, AbandonableRequ
      * @see #getResponseTypes()
      */
     MessageTypeEnum[] RESPONSE_TYPES =
-        { SearchResponseDone.TYPE, SearchResponseEntry.TYPE, SearchResponseReference.TYPE, ExtendedResponse.TYPE };
+        { InternalSearchResponseDone.TYPE, InternalSearchResponseEntry.TYPE, InternalSearchResponseReference.TYPE, InternalExtendedResponse.TYPE };
 
 
     /**

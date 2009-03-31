@@ -36,7 +36,7 @@ public interface InternalCompareRequest extends SingleReplyRequest, AbandonableR
     MessageTypeEnum TYPE = MessageTypeEnum.COMPARE_REQUEST;
 
     /** Compare response message type enum code */
-    MessageTypeEnum RESP_TYPE = CompareResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = InternalCompareResponse.TYPE;
 
 
     /**

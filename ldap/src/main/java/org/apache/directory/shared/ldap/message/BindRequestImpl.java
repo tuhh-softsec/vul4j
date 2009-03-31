@@ -58,7 +58,7 @@ public class BindRequestImpl extends AbstractRequest implements InternalBindRequ
     /** Bind behavoir exhibity by protocol version */
     private boolean isVersion3 = true;
 
-    public BindResponse response;
+    public InternalBindResponse response;
 
 
     // ------------------------------------------------------------------------

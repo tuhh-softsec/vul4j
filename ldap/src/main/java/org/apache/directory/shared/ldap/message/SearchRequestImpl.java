@@ -67,7 +67,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Int
     private List<String> attributes = new ArrayList<String>();
 
     /** The final result containing SearchResponseDone response */
-    private SearchResponseDone response;
+    private InternalSearchResponseDone response;
 
 
     // ------------------------------------------------------------------------

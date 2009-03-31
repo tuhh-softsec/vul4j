@@ -35,7 +35,7 @@ public interface InternalDeleteRequest extends SingleReplyRequest, AbandonableRe
     MessageTypeEnum TYPE = MessageTypeEnum.DEL_REQUEST;
 
     /** Delete response message type enumeration value */
-    MessageTypeEnum RESP_TYPE = DeleteResponse.TYPE;
+    MessageTypeEnum RESP_TYPE = InternalDeleteResponse.TYPE;
 
 
     /**

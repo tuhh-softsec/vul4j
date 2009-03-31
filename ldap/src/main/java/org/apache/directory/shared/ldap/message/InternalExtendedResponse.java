@@ -17,55 +17,54 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.name.LdapDN;
-
-
 /**
- * Search entry protocol response message used to return non referral entries to
- * the client in response to a search request message.
+ * Extended protocol response message used to confirm the results of a extended
+ * request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface SearchResponseEntry extends Response
+public interface InternalExtendedResponse extends ResultResponse, javax.naming.ldap.ExtendedResponse
 {
-    /** Search entry response message type enumeration value */
-    MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_ENTRY;
+    /** Extended response message type enumeration value */
+    MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_RESP;
 
 
     /**
-     * Gets the distinguished name of the entry object returned.
+     * Gets the OID uniquely identifying this extended response (a.k.a. its
+     * name).
      * 
-     * @return the Dn of the entry returned.
+     * @return the OID of the extended response type.
      */
-    LdapDN getObjectName();
+    String getResponseName();
 
 
     /**
-     * Sets the distinguished name of the entry object returned.
+     * Sets the OID uniquely identifying this extended response (a.k.a. its
+     * name).
      * 
-     * @param dn the Dn of the entry returned.
+     * @param oid
+     *            the OID of the extended response type.
      */
-    void setObjectName( LdapDN dn );
+    void setResponseName( String oid );
 
 
     /**
-     * Gets the entry.
+     * Gets the reponse OID specific encoded response values.
      * 
-     * @return the entry
+     * @return the response specific encoded response values.
      */
-    Entry getEntry();
+    byte[] getResponse();
 
 
     /**
-     * Sets an entry
+     * Sets the reponse OID specific encoded response values.
      * 
-     * @param entry the entry
+     * @param value
+     *            the response specific encoded response values.
      */
-    void setEntry( Entry entry );
+    void setResponse( byte[] value );
 }
