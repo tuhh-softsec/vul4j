@@ -61,10 +61,27 @@
       <artifactId>shared-ldap-constants</artifactId>
       <version>${pom.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>org.apache.directory.shared</groupId>
+      <artifactId>shared-ldap</artifactId>
+      <version>${pom.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.directory.shared</groupId>
+      <artifactId>shared-cursor</artifactId>
+      <version>${pom.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.mina</groupId>
+      <artifactId>mina-core</artifactId>
     </dependency>
   </dependencies>
 
