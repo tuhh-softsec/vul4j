@@ -37,6 +37,8 @@ import org.apache.directory.shared.ldap.client.api.exception.InvalidConnectionEx
 import org.apache.directory.shared.ldap.client.api.exception.LdapException;
 import org.apache.directory.shared.ldap.client.api.listeners.BindListener;
 import org.apache.directory.shared.ldap.client.api.listeners.SearchListener;
+import org.apache.directory.shared.ldap.client.api.messages.AbandonRequest;
+import org.apache.directory.shared.ldap.client.api.messages.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequest;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequestImpl;
 import org.apache.directory.shared.ldap.client.api.protocol.LdapProtocolCodecFactory;
@@ -44,6 +46,7 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.LdapResponse;
+import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.LdapAuthentication;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
@@ -228,6 +231,27 @@ public class LdapConnection  extends IoHandlerAdapter
         }
     }
     
+    
+    /**
+     * Inject the client Controls into the message
+     */
+    private void setControls( Map<String, Control> controls, LdapMessage message )
+    {
+        // Add the controls
+        if ( controls != null )
+        {
+            for ( Control control:controls.values() )
+            {
+                org.apache.directory.shared.ldap.codec.Control ctrl = 
+                    new org.apache.directory.shared.ldap.codec.Control();
+                
+                ctrl.setControlType( control.getID() );
+                ctrl.setControlValue( control.getEncodedValue() );
+                
+                message.addControl( ctrl );
+            }
+        }
+    }
 
     //------------------------- The constructors --------------------------//
     /**
@@ -519,6 +543,63 @@ public class LdapConnection  extends IoHandlerAdapter
     */
     
     //------------------------ The LDAP operations ------------------------//
+    // Abandon operations                                                  //
+    //  The Abandon request just have one parameter : the MessageId to     //
+    // abandon. We also have to allow controls and a client timeout.       //
+    // The abandonRequest is always non-blocking, because no response is   //
+    // expected                                                            //
+    //---------------------------------------------------------------------//
+    /**
+     * A simple abandon request. 
+     */
+    public void abandon( int messageId ) throws LdapException
+    {
+        AbandonRequest abandonRequest = new AbandonRequestImpl();
+        abandonRequest.setAbandonedMessageId( messageId );
+        
+        abandonInternal( abandonRequest );
+    }
+
+    
+    /**
+     * An abandon request with potentially some controls and timeout. 
+     */
+    public void abandon( AbandonRequest abandonRequest ) throws LdapException
+    {
+        abandonInternal( abandonRequest );
+    }
+    
+    
+    /**
+     * Internal AbandonRequest handling
+     */
+    private void abandonInternal( AbandonRequest abandonRequest )
+    {
+        // Create the new message and update the messageId
+        LdapMessage message = new LdapMessage();
+        message.setMessageId( messageId++ );
+
+        // Create the inner abandonRequest
+        AbandonRequestCodec request = new AbandonRequestCodec();
+        
+        // Inject the data into the request
+        request.setAbandonedMessageId( abandonRequest.getAbandonedMessageId() );
+        
+        // Inject the request into the message
+        message.setProtocolOP( request );
+        
+        // Inject the controls
+        setControls( abandonRequest.getControls(), message );
+        
+        LOG.debug( "-----------------------------------------------------------------" );
+        LOG.debug( "Sending request \n{}", message );
+
+        // Send the request to the server
+        ldapSession.write( message );
+    }
+    
+    
+    //------------------------ The LDAP operations ------------------------//
     // Bind operations                                                     //
     //---------------------------------------------------------------------//
     /**
@@ -526,7 +607,7 @@ public class LdapConnection  extends IoHandlerAdapter
      *
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponse bind()  throws LdapException
+    public LdapResponse bind() throws LdapException
     {
         return bind( (String)null, (byte[])null );
     }
@@ -539,23 +620,10 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param name The name we use to authenticate the user. It must be a 
      * valid DN
      * @return The BindResponse LdapResponse 
-     *
+     */
     public LdapResponse bind( String name ) throws Exception
     {
-        LOG.debug( "Anonymous bind" );
-        
-        LdapResponse response = bind( name, (byte[])null );
-        
-        if (response.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
-        {
-            LOG.debug( "Anonymous bind successfull" );
-        }
-        else
-        {
-            LOG.debug( "Anonymous bind failure {}", response );
-        }
-        
-        return response;
+        return bind( name, (byte[])null );
     }
 
     
@@ -614,17 +682,29 @@ public class LdapConnection  extends IoHandlerAdapter
      */
     public LdapResponse bind( BindRequest bindRequest ) throws LdapException
     {
-        return bind( bindRequest, null );
+        return bindInternal( bindRequest, null );
     }
         
 
+    /**
+     * Do a non-blocking bind non-blocking
+     *
+     * @param bindRequest The BindRequest to send
+     * @param listener The listener 
+     */
+    public void bind( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
+    {
+        bindInternal( bindRequest, bindListener );
+    }
+    
+    
     /**
      * Do the bind blocking or non-blocking, depending on the listener value.
      *
      * @param bindRequest The BindRequest to send
      * @param listener The listener (Can be null) 
      */
-    public LdapResponse bind( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
+    private LdapResponse bindInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
     {
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
@@ -633,7 +713,7 @@ public class LdapConnection  extends IoHandlerAdapter
         // running at the same time
         lock();
         
-        // Encode the request
+        // Create the new message and update the messageId
         LdapMessage message = new LdapMessage();
         message.setMessageId( messageId++ );
         
@@ -679,25 +759,8 @@ public class LdapConnection  extends IoHandlerAdapter
         message.setProtocolOP( request );
         
         // Add the controls
-        Map<String, Control> controls = bindRequest.getControls();
-        
-        if ( controls != null )
-        {
-            for ( Control control:controls.values() )
-            {
-                org.apache.directory.shared.ldap.codec.Control ctrl = 
-                    new org.apache.directory.shared.ldap.codec.Control();
-                
-                ctrl.setControlType( control.getID() );
-                ctrl.setControlValue( control.getEncodedValue() );
-                
-                message.addControl( ctrl );
-            }
-        }
+        setControls( bindRequest.getControls(), message );
 
-        // Set the message ID now
-        message.setMessageId( messageId++ );
-        
         LOG.debug( "-----------------------------------------------------------------" );
         LOG.debug( "Sending request \n{}", message );
 
