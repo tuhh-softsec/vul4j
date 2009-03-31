@@ -56,7 +56,7 @@ public class BindRequestImpl implements BindRequest
     private Map<String, Control> controls;
     
     /** The client request timeout */
-    private int timeout = 0;
+    private long timeout = 0;
 
 
     /**
@@ -209,7 +209,7 @@ public class BindRequestImpl implements BindRequest
     /**
      * {@inheritDoc}
      */
-    public int getTimeout()
+    public long getTimeout()
     {
         return timeout;
     }
@@ -239,7 +239,7 @@ public class BindRequestImpl implements BindRequest
     /**
      * {@inheritDoc}
      */
-    public void setTimeout( int timeout )
+    public void setTimeout( long timeout )
     {
         this.timeout = timeout;
     }

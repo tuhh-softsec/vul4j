@@ -25,18 +25,18 @@ package org.apache.directory.shared.ldap.client.api.exception;
  * on a closed connection
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InvalidConnectionException extends LdapException
+public class LdapException extends Exception
 {
     static final long serialVersionUID = 1L;
 
 
-    public InvalidConnectionException()
+    public LdapException()
     {
         super();
     }
 
 
-    public InvalidConnectionException(String explanation)
+    public LdapException(String explanation)
     {
         super( explanation );
     }

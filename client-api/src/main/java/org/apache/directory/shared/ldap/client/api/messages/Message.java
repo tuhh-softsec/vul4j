@@ -40,16 +40,16 @@ public interface Message
      *
      * @return The timeout
      */
-    int getTimeout();
+    long getTimeout();
     
     
     /**
      * Set a request client timeout. When this timeout is reached, the request 
      * will be canceled. If <= 0, then we wait for the response forever.  
      *
-     * @param timeout The new timeout.
+     * @param timeout The new timeout, expressed in milliseconds
      */
-    void setTimeout( int timeout );
+    void setTimeout( long timeout );
     
     
     /**
