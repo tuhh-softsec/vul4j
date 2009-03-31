@@ -19,12 +19,6 @@
  */
 package org.apache.directory.shared.ldap.client.api.messages;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.ldap.message.MessageException;
 
 /**
  * A client implementation of the client BindRequest LDAP message.
@@ -32,7 +26,7 @@ import org.apache.directory.shared.ldap.message.MessageException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class BindRequestImpl implements BindRequest
+public class BindRequestImpl extends AbstractRequest implements BindRequest
 {
     /**
      * Distinguished name identifying the name of the authenticating subject -
@@ -51,12 +45,6 @@ public class BindRequestImpl implements BindRequest
 
     /** Returns the protocol version */
     private int version = 3;
-    
-    /** The set of controls */
-    private Map<String, Control> controls;
-    
-    /** The client request timeout */
-    private long timeout = 0;
 
 
     /**
@@ -163,84 +151,5 @@ public class BindRequestImpl implements BindRequest
     public void setVersion( int version )
     {
         this.version = version;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void add( Control control ) throws MessageException
-    {
-        if ( controls == null )
-        {
-            controls = new HashMap<String, Control>();
-        }
-        
-        controls.put( control.getID(), control );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addAll( Control[] controls ) throws MessageException
-    {
-        if ( controls == null )
-        {
-            this.controls = new HashMap<String, Control>();
-        }
-        
-        for ( Control control:controls )
-        {
-            this.controls.put( control.getID(), control );
-        }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Map<String, Control> getControls()
-    {
-        return controls;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public long getTimeout()
-    {
-        return timeout;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasControl( String oid )
-    {
-        return ( controls != null ) && ( controls.size() > 0 );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void remove( Control control ) throws MessageException
-    {
-        if ( controls != null )
-        {
-            controls.remove( control.getID() );
-        }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setTimeout( long timeout )
-    {
-        this.timeout = timeout;
     }
 }
