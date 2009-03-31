@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.Control;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.bind.BindResponse;
+import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -93,7 +93,7 @@ public class BindResponseTest
 
         // Check the decoded BindResponse
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponse br = message.getBindResponse();
+        BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
@@ -177,7 +177,7 @@ public class BindResponseTest
 
         // Check the decoded BindResponse
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponse br = message.getBindResponse();
+        BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
@@ -264,7 +264,7 @@ public class BindResponseTest
 
         // Check the decoded BindResponse
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponse br = message.getBindResponse();
+        BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
@@ -341,7 +341,7 @@ public class BindResponseTest
 
         // Check the decoded BindResponse
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponse br = message.getBindResponse();
+        BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );
@@ -424,7 +424,7 @@ public class BindResponseTest
 
         // Check the decoded BindResponse
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindResponse br = message.getBindResponse();
+        BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, br.getLdapResult().getResultCode() );

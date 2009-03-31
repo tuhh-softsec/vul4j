@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.Control;
 
-import org.apache.directory.shared.ldap.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.message.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
@@ -113,7 +113,7 @@ public class ExtendedResponseImplTest
     public void testEqualsDiffImpl()
     {
         ExtendedResponseImpl resp0 = createStub();
-        ExtendedResponse resp1 = new ExtendedResponse()
+        InternalExtendedResponse resp1 = new InternalExtendedResponse()
         {
             private static final long serialVersionUID = 5297000474419901408L;
 

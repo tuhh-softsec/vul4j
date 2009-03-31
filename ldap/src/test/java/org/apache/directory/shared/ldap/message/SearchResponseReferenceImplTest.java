@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.SearchResponseReference;
+import org.apache.directory.shared.ldap.message.InternalSearchResponseReference;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
@@ -54,7 +54,7 @@ public class SearchResponseReferenceImplTest
      *            the parent lockable
      * @return the newly created referral for testing
      */
-    private Referral getReferral( SearchResponseReference resp )
+    private Referral getReferral( InternalSearchResponseReference resp )
     {
         ReferralImpl ref = new ReferralImpl();
         resp.setReferral( ref );
@@ -99,7 +99,7 @@ public class SearchResponseReferenceImplTest
     @Test
     public void testEqualsDiffImpl()
     {
-        SearchResponseReference resp0 = new SearchResponseReference()
+        InternalSearchResponseReference resp0 = new InternalSearchResponseReference()
         {
             public Referral getReferral()
             {

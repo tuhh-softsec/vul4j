@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.Control;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.bind.BindRequest;
+import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -109,7 +109,7 @@ public class BindRequestPerfTest
 
         // Check the decoded BindRequest
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        BindRequest br = message.getBindRequest();
+        BindRequestCodec br = message.getBindRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( 3, br.getVersion() );
@@ -163,7 +163,7 @@ public class BindRequestPerfTest
             LdapMessage message = new LdapMessage();
             message.setMessageId( 1 );
             
-            BindRequest br = new BindRequest();
+            BindRequestCodec br = new BindRequestCodec();
             br.setName( name );
             
             Control control = new Control();

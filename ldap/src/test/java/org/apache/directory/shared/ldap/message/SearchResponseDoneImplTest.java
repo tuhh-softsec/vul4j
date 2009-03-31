@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.SearchResponseDone;
+import org.apache.directory.shared.ldap.message.InternalSearchResponseDone;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.junit.Test;
@@ -111,7 +111,7 @@ public class SearchResponseDoneImplTest
     public void testEqualsDiffImpl()
     {
         SearchResponseDoneImpl resp0 = createStub();
-        SearchResponseDone resp1 = new SearchResponseDone()
+        InternalSearchResponseDone resp1 = new InternalSearchResponseDone()
         {
             public LdapResult getLdapResult()
             {

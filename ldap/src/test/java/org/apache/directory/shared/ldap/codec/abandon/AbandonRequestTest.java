@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.Control;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessage;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.abandon.AbandonRequest;
+import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -106,7 +106,7 @@ public class AbandonRequestTest
 
         // Check that everything is OK
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AbandonRequest abandonRequest = message.getAbandonRequest();
+        AbandonRequestCodec abandonRequest = message.getAbandonRequest();
 
         assertEquals( 3, message.getMessageId() );
         assertEquals( 2, abandonRequest.getAbandonedMessageId() );
@@ -194,7 +194,7 @@ public class AbandonRequestTest
 
         // Check that everything is OK
         LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AbandonRequest abandonRequest = message.getAbandonRequest();
+        AbandonRequestCodec abandonRequest = message.getAbandonRequest();
 
         assertEquals( 32787, message.getMessageId() );
         assertEquals( 2, abandonRequest.getAbandonedMessageId() );
