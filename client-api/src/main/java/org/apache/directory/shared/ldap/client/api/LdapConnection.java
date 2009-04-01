@@ -43,10 +43,11 @@ import org.apache.directory.shared.ldap.client.api.messages.BindRequest;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequestImpl;
 import org.apache.directory.shared.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponse;
+import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
+import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.LdapAuthentication;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
@@ -63,8 +64,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.message.AddResponse;
-import org.apache.directory.shared.ldap.message.BindResponse;
+import org.apache.directory.shared.ldap.message.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -139,31 +139,31 @@ public class LdapConnection  extends IoHandlerAdapter
     private int messageId;
     
     /** A queue used to store the incoming add responses */
-    private BlockingQueue<LdapMessage> addResponseQueue;
+    private BlockingQueue<LdapMessageCodec> addResponseQueue;
     
     /** A queue used to store the incoming bind responses */
-    private BlockingQueue<LdapMessage> bindResponseQueue;
+    private BlockingQueue<LdapMessageCodec> bindResponseQueue;
     
     /** A queue used to store the incoming compare responses */
-    private BlockingQueue<LdapMessage> compareResponseQueue;
+    private BlockingQueue<LdapMessageCodec> compareResponseQueue;
     
     /** A queue used to store the incoming delete responses */
-    private BlockingQueue<LdapMessage> deleteResponseQueue;
+    private BlockingQueue<LdapMessageCodec> deleteResponseQueue;
     
     /** A queue used to store the incoming extended responses */
-    private BlockingQueue<LdapMessage> extendedResponseQueue;
+    private BlockingQueue<LdapMessageCodec> extendedResponseQueue;
     
     /** A queue used to store the incoming modify responses */
-    private BlockingQueue<LdapMessage> modifyResponseQueue;
+    private BlockingQueue<LdapMessageCodec> modifyResponseQueue;
     
     /** A queue used to store the incoming modifyDN responses */
-    private BlockingQueue<LdapMessage> modifyDNResponseQueue;
+    private BlockingQueue<LdapMessageCodec> modifyDNResponseQueue;
     
     /** A queue used to store the incoming search responses */
-    private BlockingQueue<LdapMessage> searchResponseQueue;
+    private BlockingQueue<LdapMessageCodec> searchResponseQueue;
     
     /** A queue used to store the incoming intermediate responses */
-    private BlockingQueue<LdapMessage> intermediateResponseQueue;
+    private BlockingQueue<LdapMessageCodec> intermediateResponseQueue;
     
     
     /** An operation mutex to guarantee the operation order */
@@ -204,9 +204,9 @@ public class LdapConnection  extends IoHandlerAdapter
      *
      * @return The last request response
      */
-    public LdapMessage getResponse()
+    public LdapMessageCodec getResponse()
     {
-        return (LdapMessage)ldapSession.getAttribute( LDAP_RESPONSE );
+        return (LdapMessageCodec)ldapSession.getAttribute( LDAP_RESPONSE );
     }
     
     
@@ -235,15 +235,15 @@ public class LdapConnection  extends IoHandlerAdapter
     /**
      * Inject the client Controls into the message
      */
-    private void setControls( Map<String, Control> controls, LdapMessage message )
+    private void setControls( Map<String, Control> controls, LdapMessageCodec message )
     {
         // Add the controls
         if ( controls != null )
         {
             for ( Control control:controls.values() )
             {
-                org.apache.directory.shared.ldap.codec.Control ctrl = 
-                    new org.apache.directory.shared.ldap.codec.Control();
+                org.apache.directory.shared.ldap.codec.ControlCodec ctrl = 
+                    new org.apache.directory.shared.ldap.codec.ControlCodec();
                 
                 ctrl.setControlType( control.getID() );
                 ctrl.setControlValue( control.getEncodedValue() );
@@ -414,15 +414,15 @@ public class LdapConnection  extends IoHandlerAdapter
         ldapSession.setAttribute( "LDAP-Container", ldapMessageContainer );
         
         // Create the responses queues
-        addResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        bindResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        compareResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        deleteResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        extendedResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        modifyResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        modifyDNResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        searchResponseQueue = new LinkedBlockingQueue<LdapMessage>();
-        intermediateResponseQueue = new LinkedBlockingQueue<LdapMessage>();
+        addResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        bindResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        compareResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        deleteResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        extendedResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        modifyResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        modifyDNResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        searchResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        intermediateResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
         
         // And return
         return true;
@@ -576,7 +576,7 @@ public class LdapConnection  extends IoHandlerAdapter
     private void abandonInternal( AbandonRequest abandonRequest )
     {
         // Create the new message and update the messageId
-        LdapMessage message = new LdapMessage();
+        LdapMessageCodec message = new LdapMessageCodec();
         message.setMessageId( messageId++ );
 
         // Create the inner abandonRequest
@@ -607,7 +607,7 @@ public class LdapConnection  extends IoHandlerAdapter
      *
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponse bind() throws LdapException
+    public LdapResponseCodec bind() throws LdapException
     {
         return bind( (String)null, (byte[])null );
     }
@@ -621,7 +621,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * valid DN
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponse bind( String name ) throws Exception
+    public LdapResponseCodec bind( String name ) throws Exception
     {
         return bind( name, (byte[])null );
     }
@@ -635,7 +635,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password. It can't be null 
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponse bind( String name, String credentials ) throws LdapException
+    public LdapResponseCodec bind( String name, String credentials ) throws LdapException
     {
         return bind( name, StringTools.getBytesUtf8( credentials ) );
     }
@@ -649,7 +649,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password.
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponse bind( String name, byte[] credentials )  throws LdapException
+    public LdapResponseCodec bind( String name, byte[] credentials )  throws LdapException
     {
         LOG.debug( "Bind request : {}", name );
 
@@ -658,7 +658,7 @@ public class LdapConnection  extends IoHandlerAdapter
         bindRequest.setName( name );
         bindRequest.setCredentials( credentials );
         
-        LdapResponse response = bind( bindRequest );
+        LdapResponseCodec response = bind( bindRequest );
 
         if ( response.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
         {
@@ -680,7 +680,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * parameters 
      * @return A LdapResponse containing the result
      */
-    public LdapResponse bind( BindRequest bindRequest ) throws LdapException
+    public LdapResponseCodec bind( BindRequest bindRequest ) throws LdapException
     {
         return bindInternal( bindRequest, null );
     }
@@ -704,7 +704,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param bindRequest The BindRequest to send
      * @param listener The listener (Can be null) 
      */
-    private LdapResponse bindInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
+    private LdapResponseCodec bindInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
     {
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
@@ -714,12 +714,11 @@ public class LdapConnection  extends IoHandlerAdapter
         lock();
         
         // Create the new message and update the messageId
-        LdapMessage message = new LdapMessage();
+        LdapMessageCodec message = new LdapMessageCodec();
         message.setMessageId( messageId++ );
         
         // Create a new codec BindRequest object
-        org.apache.directory.shared.ldap.codec.bind.BindRequest request = 
-            new org.apache.directory.shared.ldap.codec.bind.BindRequest();
+        BindRequestCodec request =  new BindRequestCodec();
         
         // Set the name
         try
@@ -772,13 +771,13 @@ public class LdapConnection  extends IoHandlerAdapter
             // Read the response, waiting for it if not available immediately
             try
             {
-                LdapMessage response = bindResponseQueue.poll( bindRequest.getTimeout(), TimeUnit.MILLISECONDS );
+                LdapMessageCodec response = bindResponseQueue.poll( bindRequest.getTimeout(), TimeUnit.MILLISECONDS );
             
                 // Check that we didn't get out because of a timeout
                 if ( response == null )
                 {
-                    // TODO Send an abandon request here
-                    //abandon( message.getBindRequest().getMessageId() );
+                    // Send an abandon request
+                    abandon( message.getBindRequest().getMessageId() );
                     
                     // We didn't received anything : this is an error
                     LOG.error( "Bind failed : timeout occured" );
@@ -789,7 +788,7 @@ public class LdapConnection  extends IoHandlerAdapter
                 operationMutex.release();
                 
                 // Everything is fine, return the response
-                LdapResponse resp = response.getBindResponse();
+                LdapResponseCodec resp = response.getBindResponse();
                 
                 LOG.debug( "Bind successful : {}", resp );
                 
@@ -800,7 +799,9 @@ public class LdapConnection  extends IoHandlerAdapter
                 LOG.error( "The response queue has been emptied, no response will be find." );
                 LdapException ldapException = new LdapException();
                 ldapException.initCause( ie );
-                //abandon( message.getBindRequest().getMessageId() );
+                
+                // Send an abandon request
+                abandon( message.getBindRequest().getMessageId() );
                 throw ldapException;
             }
         }
@@ -925,7 +926,7 @@ public class LdapConnection  extends IoHandlerAdapter
         lock();
         
         // Encode the request
-        LdapMessage message = new LdapMessage();
+        LdapMessageCodec message = new LdapMessageCodec();
         message.setMessageId( messageId++ );
         message.setProtocolOP( searchRequest );
         message.addControl( searchRequest.getCurrentControl() );
@@ -1018,7 +1019,7 @@ public class LdapConnection  extends IoHandlerAdapter
         UnBindRequest unBindRequest = new UnBindRequest();
         
         // Encode the request
-        LdapMessage message = new LdapMessage();
+        LdapMessageCodec message = new LdapMessageCodec();
         message.setMessageId( messageId );
         message.setProtocolOP( unBindRequest );
         
@@ -1081,7 +1082,7 @@ public class LdapConnection  extends IoHandlerAdapter
     public void messageReceived( IoSession session, Object message) throws Exception 
     {
         // Feed the response and store it into the session
-        LdapMessage response = (LdapMessage)message;
+        LdapMessageCodec response = (LdapMessageCodec)message;
 
         LOG.debug( "-------> {} Message received <-------", response.getMessageTypeName() );
         
@@ -1095,7 +1096,7 @@ public class LdapConnection  extends IoHandlerAdapter
             case LdapConstants.BIND_RESPONSE: 
                 if ( bindListener != null )
                 {
-                    bindListener.bindCompleted( this, response.getBindResponse() );
+                    //bindListener.bindCompleted( this, response.getBindResponse() );
                 }
                 else
                 {

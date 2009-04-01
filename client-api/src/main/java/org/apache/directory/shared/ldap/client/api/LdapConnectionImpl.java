@@ -19,46 +19,30 @@
  */
 package org.apache.directory.shared.ldap.client.api;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.text.ParseException;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import javax.naming.InvalidNameException;
-import javax.net.ssl.SSLContext;
 
-import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponse;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.TwixTransformer;
-import org.apache.directory.shared.ldap.codec.bind.BindRequest;
-import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequest;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
-import org.apache.directory.shared.ldap.codec.unbind.UnBindRequest;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.filterchain.IoFilter;
-import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.ssl.SslFilter;
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +87,7 @@ public class LdapConnectionImpl extends IoHandlerAdapter
     
     /** The Ldap codec */
     private IoFilter ldapProtocolFilter = new ProtocolCodecFilter(
-            new LdapProtocolCodecFactory() );
+            null );
 
     /**  
      * The created session, created when we open a connection with
@@ -115,13 +99,13 @@ public class LdapConnectionImpl extends IoHandlerAdapter
     private int messageId;
     
     /** A queue used to store the incoming responses */
-    private BlockingQueue<LdapMessage> responseQueue;
+    private BlockingQueue<LdapMessageCodec> responseQueue;
     
     /** An operation mutex to guarantee the operation order */
     private Semaphore operationMutex;
     
     /** the agent which created this connection */
-    private ConsumerCallback consumer;
+    //private ConsumerCallback consumer;
 
     
     
@@ -131,7 +115,7 @@ public class LdapConnectionImpl extends IoHandlerAdapter
     public void search( String baseObject, String filterString ) throws Exception
     {
         // If the session has not been establish, or is closed, we get out immediately
-        checkSession();
+        //checkSession();
         
         LdapDN baseDN = null;
         Filter filter = null;
@@ -183,17 +167,17 @@ public class LdapConnectionImpl extends IoHandlerAdapter
     /**
      * {@inheritDoc}
      */
-    public void search( SearchRequest searchRequest ) throws Exception
+    private void search( SearchRequest searchRequest ) throws Exception
     {
         // First check the session
-        checkSession();
+        //checkSession();
         
         // Guarantee that for this session, we don't have more than one operation
         // running at the same time
         operationMutex.acquire();
         
         // Encode the request
-        LdapMessage message = new LdapMessage();
+        LdapMessageCodec message = new LdapMessageCodec();
         message.setMessageId( messageId++ );
         message.setProtocolOP( searchRequest );
         message.addControl( searchRequest.getCurrentControl() );
@@ -206,6 +190,8 @@ public class LdapConnectionImpl extends IoHandlerAdapter
         ldapSession.write( message );
 
         operationMutex.release();
+        
+        // The search request has been sent, we now have to wait for the result to come back.
 //        int i = 0;
 //        
 //        List<SearchResultEntry> searchResults = new ArrayList<SearchResultEntry>();
@@ -298,7 +284,7 @@ public class LdapConnectionImpl extends IoHandlerAdapter
     public void sessionClosed(IoSession session) throws Exception 
     {
         LOG.debug( "-------> Session Closed <-------" );
-        consumer.handleSessionClosed();
+        //consumer.handleSessionClosed();
     }
 
     
@@ -308,7 +294,7 @@ public class LdapConnectionImpl extends IoHandlerAdapter
     public void messageReceived( IoSession session, Object message) throws Exception 
     {
         // Feed the response and store it into the session
-        LdapMessage response = (LdapMessage)message;
+        LdapMessageCodec response = (LdapMessageCodec)message;
 
         LOG.debug( "-------> {} Message received <-------", response.getMessageTypeName() );
         
@@ -321,40 +307,31 @@ public class LdapConnectionImpl extends IoHandlerAdapter
 
             case LdapConstants.INTERMEDIATE_RESPONSE:
             
-                       consumer.handleSyncInfo( response.getIntermediateResponse().getResponseValue() );
+                       //consumer.handleSyncInfo( response.getIntermediateResponse().getResponseValue() );
                        break;
             
             case LdapConstants.SEARCH_RESULT_DONE:
             
                        SearchResultDone resDone = response.getSearchResultDone();
                        resDone.addControl( response.getCurrentControl() );
-                       consumer.handleSearchDone( resDone );
+                       //consumer.handleSearchDone( resDone );
                        break;
             
             case LdapConstants.SEARCH_RESULT_ENTRY:
             
                        SearchResultEntry sre = response.getSearchResultEntry();
                        sre.addControl( response.getCurrentControl() );
-                       consumer.handleSearchResult( sre );
+                       //consumer.handleSearchResult( sre );
                        break;
                        
             case LdapConstants.SEARCH_RESULT_REFERENCE:
             
                        SearchResultReference searchRef = response.getSearchResultReference();
                        searchRef.addControl( response.getCurrentControl() );
-                       consumer.handleSearchReference( searchRef );
+                       //consumer.handleSearchReference( searchRef );
                        break;
                        
              default: LOG.error( "~~~~~~~~~~~~~~~~~~~~~ Unknown message type {} ~~~~~~~~~~~~~~~~~~~~~", response.getMessageTypeName() );
         }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addConsumer( ConsumerCallback consumer )
-    {
-        this.consumer = consumer;
     }
 }

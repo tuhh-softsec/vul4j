@@ -17,26 +17,25 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.client.api.listeners;
+package org.apache.directory.shared.ldap.client.api.messages;
 
-import org.apache.directory.shared.ldap.client.api.LdapConnection;
-import org.apache.directory.shared.ldap.client.api.messages.BindResponse;
 
 /**
- * A listener used for asynchronous bind handling. When wanting to handle
- * bind as a non-blocking operation, simply associate a BindListener
- * to the bind operation : When the bind as been completed this listener
- * will be called. 
- *
+ * Bind protocol response message used to confirm the results of a bind request
+ * message. BindResponse consists simply of an indication from the server of the
+ * status of the client's request for authentication.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
+ * @version $Rev: 760724 $
  */
-public interface BindListener
+public interface BindResponse extends Message
 {
     /**
-     * A callback method called when the bind operation completed.
-     *
-     * @param BindResponseCodec The bind response
+     * Gets the optional property holding SASL authentication response parameters
+     * that are SASL mechanism specific. Will return null if the authentication
+     * is simple.
+     * 
+     * @return the sasl mech. specific credentials or null of auth. is simple
      */
-    void bindCompleted( LdapConnection connection, BindResponse bindResponse );
+    byte[] getServerSaslCreds();
 }

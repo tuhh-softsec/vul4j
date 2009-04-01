@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.client.api.protocol;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolEncoder;
@@ -45,9 +45,9 @@ public class LdapProtocolEncoder implements ProtocolEncoder
      */
     public void encode( IoSession session, Object request, ProtocolEncoderOutput out ) throws Exception
     {
-        if ( request instanceof LdapMessage )
+        if ( request instanceof LdapMessageCodec )
         {
-            LdapMessage ldapRequest = (LdapMessage)request;
+            LdapMessageCodec ldapRequest = (LdapMessageCodec)request;
             ByteBuffer bb = ldapRequest.encode( null );
             bb.flip();
             

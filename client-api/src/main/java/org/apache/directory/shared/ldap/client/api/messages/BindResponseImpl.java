@@ -17,30 +17,35 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.client.api;
+package org.apache.directory.shared.ldap.client.api.messages;
 
-import org.apache.directory.shared.ldap.entry.Entry;
 
 /**
- * A listener used for asynchronous search handling. When wanting to handle
- * searches as a non-blocking operation, simply associate a SearchListener
- * to the search operation : for each entry found, the listener will be
- * called back, and so will it when the search will be done.
+ * A client implementation of the client BindResponse LDAP message.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface SearchListener
+public class BindResponseImpl extends AbstractRequest implements BindResponse
 {
+    /** optional property holding SASL authentication response parameters */
+    private byte[] credentials;
+
+
     /**
-     * A callback method for each entry returned by a search operation.
-     *
-     * @param entry The found entry
+     * {@inheritDoc}
      */
-    void resultReturned( Entry entry );
+    public byte[] getServerSaslCreds()
+    {
+        return credentials;
+    }
+
     
     /**
-     * A callback method called when the search is done.
+     * {@inheritDoc}
      */
-    void searchDone();
+    public void setServerSaslCreds( byte[] credentials )
+    {
+        this.credentials = credentials;
+    }
 }

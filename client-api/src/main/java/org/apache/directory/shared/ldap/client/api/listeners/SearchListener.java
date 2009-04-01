@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.client.api.listeners;
 
 import org.apache.directory.shared.ldap.client.api.LdapConnection;
-import org.apache.directory.shared.ldap.codec.LdapResponse;
+import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
 
@@ -54,5 +54,5 @@ public interface SearchListener
     /**
      * A callback method called when the search is done.
      */
-    void searchDone( LdapConnection connection, LdapResponse searchDone );
+    void searchDone( LdapConnection connection, LdapResponseCodec searchDone );
 }
