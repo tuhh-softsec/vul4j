@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.codec.actions;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.add.AddRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -58,7 +58,7 @@ public class ValueAction extends GrammarAction
     {
 
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapMessage ldapMessage = ldapMessageContainer.getLdapMessage();
+        LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
         AddRequest addRequest = ldapMessage.getAddRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();

@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.codec.actions;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
@@ -55,7 +55,7 @@ public class InitExtensibleMatchFilterAction extends GrammarAction
     public void action( IAsn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        LdapMessage ldapMessage = ldapMessageContainer.getLdapMessage();
+        LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
         SearchRequest searchRequest = ldapMessage.getSearchRequest();
 
         // We can allocate the ExtensibleMatch Filter

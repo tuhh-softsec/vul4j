@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 
 
 /**
@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessage;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class UnBindRequest extends LdapMessage
+public class UnBindRequest extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
