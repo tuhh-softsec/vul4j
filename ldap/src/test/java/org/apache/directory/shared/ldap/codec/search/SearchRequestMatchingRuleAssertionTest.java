@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequest;
@@ -135,7 +135,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         SearchRequest sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
@@ -371,7 +371,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         SearchRequest sr = message.getSearchRequest();
 
         assertEquals( 4, message.getMessageId() );
@@ -658,7 +658,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         SearchRequest sr = message.getSearchRequest();
 
         assertEquals( 4, message.getMessageId() );

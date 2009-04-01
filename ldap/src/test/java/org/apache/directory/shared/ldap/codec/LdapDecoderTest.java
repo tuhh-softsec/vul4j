@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
@@ -89,7 +89,7 @@ public class LdapDecoderTest
         }
 
         // Check the decoded PDU
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindRequestCodec br = message.getBindRequest();
 
         assertEquals( 1, message.getMessageId() );
@@ -139,7 +139,7 @@ public class LdapDecoderTest
         assertEquals( TLVStateEnum.VALUE_STATE_PENDING, ldapMessageContainer.getState() );
 
         // Check the decoded PDU
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindRequestCodec br = message.getBindRequest();
 
         assertEquals( 1, message.getMessageId() );
@@ -212,7 +212,7 @@ public class LdapDecoderTest
         assertEquals( ldapMessageContainer.getState(), TLVStateEnum.PDU_DECODED );
 
         // Check the decoded PDU
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindRequestCodec br = message.getBindRequest();
 
         assertEquals( 1, message.getMessageId() );

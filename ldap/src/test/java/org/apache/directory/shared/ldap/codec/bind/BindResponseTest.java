@@ -28,9 +28,9 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.Control;
+import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlCodec;
@@ -92,7 +92,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
@@ -176,7 +176,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
@@ -188,11 +188,11 @@ public class BindResponseTest
         assertEquals( 0x3C, message.computeLength() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<ControlCodec> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        ControlCodec control = message.getControls( 0 );
         assertEquals( "1.2.840.113556.1.4.319", control.getControlType() );
         assertTrue( control.getControlValue() instanceof PagedSearchControlCodec );
         
@@ -263,7 +263,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
@@ -340,7 +340,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );
@@ -350,11 +350,11 @@ public class BindResponseTest
         assertEquals( "", StringTools.utf8ToString( br.getServerSaslCreds() ) );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<ControlCodec> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        ControlCodec control = message.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getControlType() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
 
@@ -423,7 +423,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         BindResponseCodec br = message.getBindResponse();
 
         assertEquals( 1, message.getMessageId() );

@@ -27,9 +27,9 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
-import org.apache.directory.shared.ldap.codec.Control;
+import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessage;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.compare.CompareRequest;
@@ -97,7 +97,7 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         CompareRequest compareRequest = message.getCompareRequest();
 
         assertEquals( 1, message.getMessageId() );
@@ -384,7 +384,7 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         CompareRequest compareRequest = message.getCompareRequest();
 
         assertEquals( 1, message.getMessageId() );
@@ -461,7 +461,7 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        LdapMessage message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
+        LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
         CompareRequest compareRequest = message.getCompareRequest();
 
         assertEquals( 1, message.getMessageId() );
@@ -470,11 +470,11 @@ public class CompareRequestTest
         assertEquals( "value", compareRequest.getAssertionValue().toString() );
 
         // Check the Control
-        List<Control> controls = message.getControls();
+        List<ControlCodec> controls = message.getControls();
 
         assertEquals( 1, controls.size() );
 
-        Control control = message.getControls( 0 );
+        ControlCodec control = message.getControls( 0 );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getControlType() );
         assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getControlValue() ) );
 
