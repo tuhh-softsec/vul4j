@@ -49,7 +49,7 @@ public interface Message
      *
      * @param timeout The new timeout, expressed in milliseconds
      */
-    void setTimeout( long timeout );
+    Message setTimeout( long timeout );
     
     
     /**
@@ -79,16 +79,7 @@ public interface Message
      *             if controls cannot be added to this Message or the control is
      *             not known etc.
      */
-    void add( Control control ) throws MessageException;
-
-
-    /**
-     * Adds an array of controls to this Message.
-     * 
-     * @param controls the controls to add.
-     * @throws MessageException if controls cannot be added to this Message or they are not known etc.
-     */
-    void addAll( Control[] controls ) throws MessageException;
+    Message add( Control... control ) throws MessageException;
 
 
     /**
@@ -99,5 +90,5 @@ public interface Message
      *             if controls cannot be added to this Message or the control is
      *             not known etc.
      */
-    void remove( Control control ) throws MessageException;
+    Message remove( Control... control ) throws MessageException;
 }

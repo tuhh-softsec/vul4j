@@ -53,8 +53,10 @@ public class AbandonRequestImpl extends AbstractRequest implements AbandonReques
      * 
      * @param abandonedMessageId The abandoned messageID to set.
      */
-    public void setAbandonedMessageId( int abandonedMessageId )
+    public AbandonRequest setAbandonedMessageId( int abandonedMessageId )
     {
         this.abandonedMessageId = abandonedMessageId;
+        
+        return this;
     }
 }

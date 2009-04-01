@@ -44,31 +44,22 @@ public class AbstractRequest implements Message
     /**
      * {@inheritDoc}
      */
-    public void add( Control control ) throws MessageException
+    public Message add( Control... controls ) throws MessageException
     {
-        if ( controls == null )
-        {
-            controls = new HashMap<String, Control>();
-        }
-        
-        controls.put( control.getID(), control );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addAll( Control[] controls ) throws MessageException
-    {
-        if ( controls == null )
+        if ( this.controls == null )
         {
             this.controls = new HashMap<String, Control>();
         }
         
-        for ( Control control:controls )
+        if ( controls != null )
         {
-            this.controls.put( control.getID(), control );
+            for ( Control control:controls )
+            {
+                this.controls.put( control.getID(), control );
+            }
         }
+        
+        return this;
     }
 
 
@@ -102,20 +93,33 @@ public class AbstractRequest implements Message
     /**
      * {@inheritDoc}
      */
-    public void remove( Control control ) throws MessageException
+    public Message remove( Control... controls ) throws MessageException
     {
+        if ( this.controls == null )
+        {
+            // We don't have any controls, so we can just exit
+            return this;
+        }
+        
         if ( controls != null )
         {
-            controls.remove( control.getID() );
+            for ( Control ctrl:controls )
+            {
+                this.controls.remove( ctrl.getID() );
+            }
         }
+        
+        return this;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void setTimeout( long timeout )
+    public Message setTimeout( long timeout )
     {
         this.timeout = timeout;
+        
+        return this;
     }
 }

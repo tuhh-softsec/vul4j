@@ -38,6 +38,7 @@ public interface AbandonRequest extends Message
      * Set the abandoned message ID
      * 
      * @param abandonedMessageId The abandoned messageID to set.
+     * @return The object itself, to allow chaining
      */
-    void setAbandonedMessageId( int abandonedMessageId );
+    AbandonRequest setAbandonedMessageId( int abandonedMessageId );
 }

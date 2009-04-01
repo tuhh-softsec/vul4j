@@ -67,9 +67,31 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
     /**
      * {@inheritDoc}
      */
+    public BindRequest setCredentials( byte[] credentials )
+    {
+        this.credentials = credentials;
+        
+        return this;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
     public String getName()
     {
         return name;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BindRequest setName( String name )
+    {
+        this.name = name;
+        
+        return this;
     }
 
     
@@ -85,9 +107,31 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
     /**
      * {@inheritDoc}
      */
+    public BindRequest setSaslMechanism( String saslMechanism )
+    {
+        this.saslMechanism = saslMechanism;
+        
+        return this;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
     public int getVersion()
     {
         return version;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BindRequest setVersion( int version )
+    {
+        this.version = version;
+        
+        return this;
     }
 
     
@@ -107,49 +151,15 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
     {
         return version == 3;
     }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void setCredentials( byte[] credentials )
-    {
-        this.credentials = credentials;
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void setName( String name )
-    {
-        this.name = name;
-    }
     
 
     /**
      * {@inheritDoc}
      */
-    public void setSasl()
+    public BindRequest setSasl()
     {
         isSimple = false;
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void setSaslMechanism( String saslMechanism )
-    {
-        this.saslMechanism = saslMechanism;
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void setVersion( int version )
-    {
-        this.version = version;
+        
+        return this;
     }
 }

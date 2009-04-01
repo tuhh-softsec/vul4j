@@ -38,8 +38,9 @@ public interface BindRequest extends Message
 
     /**
      * Sets the authentication mechanism to SASL
+     * @return The object itself, to allow chaining
      */
-    void setSasl();
+    BindRequest setSasl();
 
 
     /**
@@ -55,10 +56,10 @@ public interface BindRequest extends Message
      * Sets the simple credentials associated with a simple authentication
      * attempt ignored if this request uses SASL authentication mechanisms.
      * 
-     * @param credentials
-     *            the credentials if authentication is simple, null otherwise
+     * @param credentials the credentials if authentication is simple, null otherwise
+     * @return The object itself, to allow chaining
      */
-    void setCredentials( byte[] credentials );
+    BindRequest setCredentials( byte[] credentials );
 
 
     /**
@@ -82,8 +83,9 @@ public interface BindRequest extends Message
      * 
      * @param name the DN of the authenticating user - leave null for annonymous
      * user.
+     * @return The object itself, to allow chaining
      */
-    void setName( String name );
+    BindRequest setName( String name );
 
 
     /**
@@ -124,8 +126,9 @@ public interface BindRequest extends Message
      * then we shall convert the return type to a type safe enumeration.
      * 
      * @param version The version. Should be 3 or 2
+     * @return The object itself, to allow chaining
      */
-    void setVersion( int version );
+    BindRequest setVersion( int version );
 
 
     /**
@@ -141,8 +144,8 @@ public interface BindRequest extends Message
      * Sets the SASL mechanism String associated with this BindRequest if the
      * bind operation is using SASL.
      * 
-     * @param saslMechanism
-     *            the SASL mechanism
+     * @param saslMechanism the SASL mechanism
+     * @return The object itself, to allow chaining
      */
-    void setSaslMechanism( String saslMechanism );
+    BindRequest setSaslMechanism( String saslMechanism );
 }
