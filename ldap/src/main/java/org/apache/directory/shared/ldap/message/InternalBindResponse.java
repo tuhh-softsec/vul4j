@@ -35,7 +35,7 @@ public interface InternalBindResponse extends ResultResponse
 
 
     /**
-     * Gets the optional property holding SASL authentication response paramters
+     * Gets the optional property holding SASL authentication response parameters
      * that are SASL mechanism specific. Will return null if the authentication
      * is simple.
      * 
