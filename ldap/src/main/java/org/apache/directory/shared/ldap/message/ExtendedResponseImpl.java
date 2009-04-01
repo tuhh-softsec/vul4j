@@ -28,7 +28,7 @@ import java.util.Arrays;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public class ExtendedResponseImpl extends AbstractResultResponse implements InternalExtendedResponse
+public class ExtendedResponseImpl extends InternalAbstractResultResponse implements InternalExtendedResponse
 {
     static final long serialVersionUID = -6646752766410531060L;
 

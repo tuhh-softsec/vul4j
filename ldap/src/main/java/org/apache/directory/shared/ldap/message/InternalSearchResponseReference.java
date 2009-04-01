@@ -28,7 +28,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface InternalSearchResponseReference extends Response
+public interface InternalSearchResponseReference extends InternalResponse
 {
     /** Search reference response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_REF;

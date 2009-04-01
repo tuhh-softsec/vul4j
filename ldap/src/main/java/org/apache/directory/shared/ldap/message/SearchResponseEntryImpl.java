@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class SearchResponseEntryImpl extends AbstractResponse implements InternalSearchResponseEntry
+public class SearchResponseEntryImpl extends InternalAbstractResponse implements InternalSearchResponseEntry
 {
     static final long serialVersionUID = -8357316233060886637L;
 

@@ -27,7 +27,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  *         $Rev$
  */
-public interface InternalSearchResponseDone extends ResultResponse
+public interface InternalSearchResponseDone extends InternalResultResponse
 {
     /** Search done response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_DONE;

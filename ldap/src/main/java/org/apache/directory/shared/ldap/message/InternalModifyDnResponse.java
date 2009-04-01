@@ -27,7 +27,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface InternalModifyDnResponse extends ResultResponse
+public interface InternalModifyDnResponse extends InternalResultResponse
 {
     /** Modify DN response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MOD_DN_RESPONSE;

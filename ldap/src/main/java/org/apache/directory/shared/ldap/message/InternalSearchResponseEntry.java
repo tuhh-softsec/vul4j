@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface InternalSearchResponseEntry extends Response
+public interface InternalSearchResponseEntry extends InternalResponse
 {
     /** Search entry response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.SEARCH_RES_ENTRY;

@@ -17,23 +17,27 @@
  *  under the License. 
  *  
  */
+
 package org.apache.directory.shared.ldap.message;
 
 
 /**
- * A request who's one or more responses contains an LdapResult.
+ * Super interface used as a marker for all protocol response type messages.
+ * Note that only 2 response interfaces directly extend this interfaces. They
+ * are listed below:
+ * <ul>
+ * <li> SearchResponseEntry </li>
+ * <li> SearchResponseReference </li>
+ * </ul>
+ * <br>
+ * All other responses derive from the ResultResponse interface. These responses
+ * unlike the three above have an LdapResult component. The ResultResponse
+ * interface takes this into account providing a Response with an LdapResult
+ * property.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Revision$
  */
-public interface ResultResponseRequest extends Request
+public interface InternalResponse extends InternalMessage
 {
-    /**
-     * If called for the first time, this methohd creates a result containing
-     * response object for this request.
-     * 
-     * @return a result containing response with defaults and the messageId set
-     *         in response to this specific request
-     */
-    ResultResponse getResultResponse();
 }

@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public class BindResponseImpl extends AbstractResultResponse implements InternalBindResponse
+public class BindResponseImpl extends InternalAbstractResultResponse implements InternalBindResponse
 {
     static final long serialVersionUID = -5146809476518669755L;
 

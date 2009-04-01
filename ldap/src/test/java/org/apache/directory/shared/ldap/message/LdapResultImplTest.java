@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
@@ -88,7 +88,7 @@ public class LdapResultImplTest
     public void testEqualsDiffImpl()
     {
         LdapResultImpl r0 = new LdapResultImpl();
-        LdapResult r1 = new LdapResult()
+        InternalLdapResult r1 = new InternalLdapResult()
         {
             public ResultCodeEnum getResultCode()
             {

@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.message;
  * 
  * @version $Rev$
  */
-public class ModifyResponseImpl extends AbstractResultResponse implements InternalModifyResponse
+public class ModifyResponseImpl extends InternalAbstractResultResponse implements InternalModifyResponse
 {
 
     // ------------------------------------------------------------------------

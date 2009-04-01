@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public interface InternalUnbindRequest extends Request
+public interface InternalUnbindRequest extends InternalRequest
 {
     /** Unbind request protocol message type */
     MessageTypeEnum TYPE = MessageTypeEnum.UNBIND_REQUEST;

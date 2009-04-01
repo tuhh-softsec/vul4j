@@ -34,7 +34,7 @@ import javax.naming.ldap.Control;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public abstract class AbstractMessage implements Message
+public abstract class InternalAbstractMessage implements InternalMessage
 {
     static final long serialVersionUID = 7601738291101182094L;
 
@@ -59,7 +59,7 @@ public abstract class AbstractMessage implements Message
      * @param type
      *            the type of the message
      */
-    protected AbstractMessage( final int id, final MessageTypeEnum type )
+    protected InternalAbstractMessage( final int id, final MessageTypeEnum type )
     {
         this.id = id;
         this.type = type;
@@ -95,7 +95,7 @@ public abstract class AbstractMessage implements Message
 
     
     /**
-     * @see org.apache.directory.shared.ldap.message.Message#hasControl(java.lang.String)
+     * @see org.apache.directory.shared.ldap.message.InternalMessage#hasControl(java.lang.String)
      */
     public boolean hasControl( String oid )
     {
@@ -199,12 +199,12 @@ public abstract class AbstractMessage implements Message
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof Message ) )
+        if ( ( obj == null ) || !( obj instanceof InternalMessage ) )
         {
             return false;
         }
 
-        Message msg = ( Message ) obj;
+        InternalMessage msg = ( InternalMessage ) obj;
 
         if ( msg.getMessageId() != id )
         {

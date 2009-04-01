@@ -21,17 +21,19 @@ package org.apache.directory.shared.ldap.message;
 
 
 /**
- * Ldap protocol request messages derive from this super interface.
+ * A request who's one or more responses contains an LdapResult.
  * 
- * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface Request extends Message
+public interface InternalResultResponseRequest extends InternalRequest
 {
     /**
-     * Tests to see if this Request produces one or more response types.
+     * If called for the first time, this methohd creates a result containing
+     * response object for this request.
      * 
-     * @return true if a response can be expected, false otherwise.
+     * @return a result containing response with defaults and the messageId set
+     *         in response to this specific request
      */
-    boolean hasResponse();
+    InternalResultResponse getResultResponse();
 }

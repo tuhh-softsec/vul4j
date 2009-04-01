@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class AbstractRequest extends AbstractMessage implements Request
+public class InternalAbstractRequest extends InternalAbstractMessage implements InternalRequest
 {
     static final long serialVersionUID = -4511116249089399040L;
 
@@ -44,7 +44,7 @@ public class AbstractRequest extends AbstractMessage implements Request
      * @param hasResponse
      *            flag indicating if this request generates a response
      */
-    protected AbstractRequest(final int id, final MessageTypeEnum type, boolean hasResponse)
+    protected InternalAbstractRequest(final int id, final MessageTypeEnum type, boolean hasResponse)
     {
         super( id, type );
 

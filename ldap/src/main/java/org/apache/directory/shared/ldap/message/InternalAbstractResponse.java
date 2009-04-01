@@ -21,17 +21,28 @@ package org.apache.directory.shared.ldap.message;
 
 
 /**
- * An LDAP Response that contains an LDAPResult structure within it.
+ * Abstract base for a Lockable Response message.
  * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Revision$
+ * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ * @version $Rev$
  */
-public interface ResultResponse extends Response
+public abstract class InternalAbstractResponse extends InternalAbstractMessage implements InternalResponse
 {
+    // ------------------------------------------------------------------------
+    // Response Interface Method Implementations
+    // ------------------------------------------------------------------------
+
     /**
-     * Gets the LdapResult components of this Response.
+     * Allows subclasses based on the abstract type to create a response to a
+     * request.
      * 
-     * @return the LdapResult for this Response.
+     * @param id
+     *            the response eliciting this Request
+     * @param type
+     *            the message type of the response
      */
-    LdapResult getLdapResult();
+    protected InternalAbstractResponse(final int id, final MessageTypeEnum type)
+    {
+        super( id, type );
+    }
 }

@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
@@ -136,7 +136,7 @@ public class SearchRequestMatchingRuleAssertionTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "dc=example,dc=com", sr.getBaseObject().toString() );
@@ -372,7 +372,7 @@ public class SearchRequestMatchingRuleAssertionTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 4, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -659,7 +659,7 @@ public class SearchRequestMatchingRuleAssertionTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 4, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );

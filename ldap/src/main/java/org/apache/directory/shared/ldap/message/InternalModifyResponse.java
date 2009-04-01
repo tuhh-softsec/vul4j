@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.message;
  * 
  * @version $Revision$
  */
-public interface InternalModifyResponse extends ResultResponse
+public interface InternalModifyResponse extends InternalResultResponse
 {
     /** Modify response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFY_RESPONSE;

@@ -49,7 +49,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class SearchRequest extends LdapMessageCodec
+public class SearchRequestCodec extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ public class SearchRequest extends LdapMessageCodec
     /**
      * Creates a new SearchRequest object.
      */
-    public SearchRequest()
+    public SearchRequestCodec()
     {
         super();
     }

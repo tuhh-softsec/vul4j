@@ -128,7 +128,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements Intern
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public InternalResultResponse getResultResponse()
     {
         if ( response == null )
         {

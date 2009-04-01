@@ -181,7 +181,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements In
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public InternalResultResponse getResultResponse()
     {
         if ( response == null )
         {

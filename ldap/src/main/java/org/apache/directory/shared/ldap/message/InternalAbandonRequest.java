@@ -27,7 +27,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface InternalAbandonRequest extends Request
+public interface InternalAbandonRequest extends InternalRequest
 {
     /** Ldap abandon request type code */
     MessageTypeEnum TYPE = MessageTypeEnum.ABANDON_REQUEST;

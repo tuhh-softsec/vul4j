@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.message.AbstractMessage;
+import org.apache.directory.shared.ldap.message.InternalAbstractMessage;
 import org.apache.directory.shared.ldap.message.MutableControl;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.junit.Test;
@@ -42,8 +42,8 @@ public class AbstractMessageTest
     @Test
     public void testEqualsSameObj()
     {
-        AbstractMessage msg;
-        msg = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractMessage msg;
+        msg = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -57,13 +57,13 @@ public class AbstractMessageTest
     @Test
     public void testEqualsExactCopy()
     {
-        AbstractMessage msg0;
-        AbstractMessage msg1;
-        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractMessage msg0;
+        InternalAbstractMessage msg1;
+        msg0 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg1 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -78,13 +78,13 @@ public class AbstractMessageTest
     @Test
     public void testNotEqualsDiffId()
     {
-        AbstractMessage msg0;
-        AbstractMessage msg1;
-        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractMessage msg0;
+        InternalAbstractMessage msg1;
+        msg0 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg1 = new AbstractMessage( 6, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new InternalAbstractMessage( 6, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -99,13 +99,13 @@ public class AbstractMessageTest
     @Test
     public void testNotEqualsDiffType()
     {
-        AbstractMessage msg0;
-        AbstractMessage msg1;
-        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractMessage msg0;
+        InternalAbstractMessage msg1;
+        msg0 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg1 = new AbstractMessage( 5, MessageTypeEnum.UNBIND_REQUEST )
+        msg1 = new InternalAbstractMessage( 5, MessageTypeEnum.UNBIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -120,9 +120,9 @@ public class AbstractMessageTest
     @Test
     public void testNotEqualsDiffControls()
     {
-        AbstractMessage msg0;
-        AbstractMessage msg1;
-        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractMessage msg0;
+        InternalAbstractMessage msg1;
+        msg0 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -158,7 +158,7 @@ public class AbstractMessageTest
                 return null;
             }
         } );
-        msg1 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new InternalAbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };

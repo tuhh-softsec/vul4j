@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public class InitAttributeDescFilterAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-        SearchRequest searchRequest = ldapMessage.getSearchRequest();
+        SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

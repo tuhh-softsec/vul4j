@@ -89,7 +89,7 @@ import org.apache.directory.shared.ldap.codec.modify.ModifyResponse;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequest;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponse;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
@@ -3687,7 +3687,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the SearchRequest
                     // And we associate it to the ldapMessage Object
-                    ldapMessage.setProtocolOP( new SearchRequest() );
+                    ldapMessage.setProtocolOP( new SearchRequestCodec() );
                 }
             } );
 
@@ -3708,7 +3708,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-                    SearchRequest searchRequest = ldapMessage.getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3768,7 +3768,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3833,7 +3833,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3897,7 +3897,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3945,7 +3945,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3994,7 +3994,7 @@ public class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessageContainer.getLdapMessage().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -5142,7 +5142,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-                    SearchRequest searchRequest = ldapMessage.getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -5216,7 +5216,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-                    SearchRequest searchRequest = ldapMessage.getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -6137,7 +6137,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-                    SearchRequest searchRequest = ldapMessage.getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -6264,7 +6264,7 @@ public class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-                    SearchRequest searchRequest = ldapMessage.getSearchRequest();
+                    SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 

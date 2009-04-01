@@ -157,7 +157,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Int
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public InternalResultResponse getResultResponse()
     {
         if ( response == null )
         {

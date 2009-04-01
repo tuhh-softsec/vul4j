@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public class LdapResultImpl implements LdapResult
+public class LdapResultImpl implements InternalLdapResult
 {
     static final long serialVersionUID = -1446626887394613213L;
 
@@ -186,13 +186,13 @@ public class LdapResultImpl implements LdapResult
         }
 
         // return false if object does not implement interface
-        if ( !( obj instanceof LdapResult ) )
+        if ( !( obj instanceof InternalLdapResult ) )
         {
             return false;
         }
 
         // compare all the like elements of the two LdapResult objects
-        LdapResult result = ( LdapResult ) obj;
+        InternalLdapResult result = ( InternalLdapResult ) obj;
 
         if ( referral == null && result.getReferral() != null )
         {

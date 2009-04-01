@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class InitLessOrEqualFilterAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-        SearchRequest searchRequest = ldapMessage.getSearchRequest();
+        SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
         // We can allocate the Attribute Value Assertion
         Filter filter = new AttributeValueAssertionFilter( 

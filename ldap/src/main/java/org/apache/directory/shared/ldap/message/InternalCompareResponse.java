@@ -27,7 +27,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface InternalCompareResponse extends ResultResponse
+public interface InternalCompareResponse extends InternalResultResponse
 {
     /** Compare response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.COMPARE_RESPONSE;

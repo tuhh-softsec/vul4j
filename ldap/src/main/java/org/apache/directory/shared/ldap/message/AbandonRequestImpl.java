@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class AbandonRequestImpl extends AbstractRequest implements InternalAbandonRequest
+public class AbandonRequestImpl extends InternalAbstractRequest implements InternalAbandonRequest
 {
     static final long serialVersionUID = -4688193359792740969L;
 

@@ -28,7 +28,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public interface InternalAddResponse extends ResultResponse
+public interface InternalAddResponse extends InternalResultResponse
 {
     /** Add response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.ADD_RESPONSE;

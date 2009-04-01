@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequest;
-import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.message.InternalMessage;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -166,7 +166,7 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            Message response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ((ResponseCarryingException)de).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((ModifyDnResponseImpl)response).getLdapResult().getResultCode() );
             return;
@@ -217,7 +217,7 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            Message response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ((ResponseCarryingException)de).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((ModifyDnResponseImpl)response).getLdapResult().getResultCode() );
             return;
@@ -268,7 +268,7 @@ public class ModifyDNRequestTest
         catch ( DecoderException de )
         {
             assertTrue( de instanceof ResponseCarryingException );
-            Message response = ((ResponseCarryingException)de).getResponse();
+            InternalMessage response = ((ResponseCarryingException)de).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
             assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ((ModifyDnResponseImpl)response).getLdapResult().getResultCode() );
             return;

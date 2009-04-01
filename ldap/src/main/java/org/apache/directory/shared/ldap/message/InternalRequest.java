@@ -21,28 +21,17 @@ package org.apache.directory.shared.ldap.message;
 
 
 /**
- * Abstract base for a Lockable Response message.
+ * Ldap protocol request messages derive from this super interface.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  * @version $Rev$
  */
-public abstract class AbstractResponse extends AbstractMessage implements Response
+public interface InternalRequest extends InternalMessage
 {
-    // ------------------------------------------------------------------------
-    // Response Interface Method Implementations
-    // ------------------------------------------------------------------------
-
     /**
-     * Allows subclasses based on the abstract type to create a response to a
-     * request.
+     * Tests to see if this Request produces one or more response types.
      * 
-     * @param id
-     *            the response eliciting this Request
-     * @param type
-     *            the message type of the response
+     * @return true if a response can be expected, false otherwise.
      */
-    protected AbstractResponse(final int id, final MessageTypeEnum type)
-    {
-        super( id, type );
-    }
+    boolean hasResponse();
 }

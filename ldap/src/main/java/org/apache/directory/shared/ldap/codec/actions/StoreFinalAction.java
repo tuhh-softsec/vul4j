@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -60,7 +60,7 @@ public class StoreFinalAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-        SearchRequest searchRequest = ldapMessage.getSearchRequest();
+        SearchRequestCodec searchRequest = ldapMessage.getSearchRequest();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

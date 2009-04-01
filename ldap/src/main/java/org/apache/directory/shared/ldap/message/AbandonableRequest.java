@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface AbandonableRequest extends Request
+public interface AbandonableRequest extends InternalRequest
 {
     /**
      * Abandons this request.

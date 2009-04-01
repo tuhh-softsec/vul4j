@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.Control;
 
-import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
@@ -59,7 +59,7 @@ public class SearchResponseDoneImplTest
     {
         // Construct the Search response to test with results and referrals
         SearchResponseDoneImpl response = new SearchResponseDoneImpl( 45 );
-        LdapResult result = response.getLdapResult();
+        InternalLdapResult result = response.getLdapResult();
         
         try
         {
@@ -113,7 +113,7 @@ public class SearchResponseDoneImplTest
         SearchResponseDoneImpl resp0 = createStub();
         InternalSearchResponseDone resp1 = new InternalSearchResponseDone()
         {
-            public LdapResult getLdapResult()
+            public InternalLdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
                 

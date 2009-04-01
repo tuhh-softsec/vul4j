@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.filter.SearchScope;
@@ -142,7 +142,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -259,7 +259,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -383,7 +383,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -501,7 +501,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -620,7 +620,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -738,7 +738,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -850,7 +850,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -969,7 +969,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -1087,7 +1087,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );
@@ -1207,7 +1207,7 @@ public class SearchRequestSubstringTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchRequest sr = message.getSearchRequest();
+        SearchRequestCodec sr = message.getSearchRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", sr.getBaseObject().toString() );

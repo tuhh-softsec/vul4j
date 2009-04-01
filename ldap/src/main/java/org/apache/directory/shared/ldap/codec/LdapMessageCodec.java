@@ -48,7 +48,7 @@ import org.apache.directory.shared.ldap.codec.modify.ModifyRequest;
 import org.apache.directory.shared.ldap.codec.modify.ModifyResponse;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequest;
 import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponse;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
 import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
 import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
@@ -493,9 +493,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the SearchRequest ldapObject.
      */
-    public SearchRequest getSearchRequest()
+    public SearchRequestCodec getSearchRequest()
     {
-        return ( SearchRequest ) protocolOp;
+        return ( SearchRequestCodec ) protocolOp;
     }
 
 

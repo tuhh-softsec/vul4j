@@ -31,7 +31,7 @@ import javax.naming.ldap.Control;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface Message
+public interface InternalMessage
 {
     /**
      * Gets the LDAP message type code associated with this Message. Each

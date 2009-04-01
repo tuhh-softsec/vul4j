@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public class SearchResponseReferenceImpl extends AbstractResponse implements InternalSearchResponseReference
+public class SearchResponseReferenceImpl extends InternalAbstractResponse implements InternalSearchResponseReference
 {
     static final long serialVersionUID = 7423807019951309810L;
 

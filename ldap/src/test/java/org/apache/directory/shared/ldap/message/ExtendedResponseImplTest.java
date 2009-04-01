@@ -28,7 +28,7 @@ import javax.naming.ldap.Control;
 
 import org.apache.directory.shared.ldap.message.InternalExtendedResponse;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
-import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
@@ -61,7 +61,7 @@ public class ExtendedResponseImplTest
         ExtendedResponseImpl response = new ExtendedResponseImpl( 45 );
         response.setResponse( "Hello World!".getBytes() );
         response.setResponseName( "1.1.1.1" );
-        LdapResult result = response.getLdapResult();
+        InternalLdapResult result = response.getLdapResult();
         
         try
         {
@@ -140,7 +140,7 @@ public class ExtendedResponseImplTest
             }
 
 
-            public LdapResult getLdapResult()
+            public InternalLdapResult getLdapResult()
             {
                 LdapResultImpl result = new LdapResultImpl();
                 

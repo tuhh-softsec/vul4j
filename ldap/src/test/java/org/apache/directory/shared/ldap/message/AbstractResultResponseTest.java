@@ -22,9 +22,9 @@ package org.apache.directory.shared.ldap.message;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.directory.shared.ldap.message.AbstractResultResponse;
+import org.apache.directory.shared.ldap.message.InternalAbstractResultResponse;
 import org.apache.directory.shared.ldap.message.MutableControl;
-import org.apache.directory.shared.ldap.message.LdapResult;
+import org.apache.directory.shared.ldap.message.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
@@ -49,8 +49,8 @@ public class AbstractResultResponseTest
     @Test
     public void testEqualsSameObj()
     {
-        AbstractResultResponse msg;
-        msg = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg;
+        msg = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -64,16 +64,16 @@ public class AbstractResultResponseTest
     @Test
     public void testEqualsExactCopy() throws InvalidNameException
     {
-        AbstractResultResponse msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        AbstractResultResponse msg1 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg1 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        LdapResult r0 = msg0.getLdapResult();
-        LdapResult r1 = msg1.getLdapResult();
+        InternalLdapResult r0 = msg0.getLdapResult();
+        InternalLdapResult r1 = msg1.getLdapResult();
 
         r0.setErrorMessage( "blah blah blah" );
         r1.setErrorMessage( "blah blah blah" );
@@ -103,16 +103,16 @@ public class AbstractResultResponseTest
     @Test
     public void testNotEqualsDiffResult() throws InvalidNameException
     {
-        AbstractResultResponse msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        AbstractResultResponse msg1 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg1 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        LdapResult r0 = msg0.getLdapResult();
-        LdapResult r1 = msg1.getLdapResult();
+        InternalLdapResult r0 = msg0.getLdapResult();
+        InternalLdapResult r1 = msg1.getLdapResult();
 
         r0.setErrorMessage( "blah blah blah" );
         r1.setErrorMessage( "blah blah blah" );
@@ -142,13 +142,13 @@ public class AbstractResultResponseTest
     @Test
     public void testNotEqualsDiffId()
     {
-        AbstractResultResponse msg0;
-        AbstractResultResponse msg1;
-        msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg0;
+        InternalAbstractResultResponse msg1;
+        msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg1 = new AbstractResultResponse( 6, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new InternalAbstractResultResponse( 6, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -163,13 +163,13 @@ public class AbstractResultResponseTest
     @Test
     public void testNotEqualsDiffType()
     {
-        AbstractResultResponse msg0;
-        AbstractResultResponse msg1;
-        msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg0;
+        InternalAbstractResultResponse msg1;
+        msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg1 = new AbstractResultResponse( 5, MessageTypeEnum.UNBIND_REQUEST )
+        msg1 = new InternalAbstractResultResponse( 5, MessageTypeEnum.UNBIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -184,9 +184,9 @@ public class AbstractResultResponseTest
     @Test
     public void testNotEqualsDiffControls()
     {
-        AbstractResultResponse msg0;
-        AbstractResultResponse msg1;
-        msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        InternalAbstractResultResponse msg0;
+        InternalAbstractResultResponse msg1;
+        msg0 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -222,7 +222,7 @@ public class AbstractResultResponseTest
                 return null;
             }
         } );
-        msg1 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new InternalAbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };

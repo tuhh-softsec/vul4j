@@ -26,10 +26,10 @@ package org.apache.directory.shared.ldap.message;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public abstract class AbstractResultResponse extends AbstractResponse implements ResultResponse
+public abstract class InternalAbstractResultResponse extends InternalAbstractResponse implements InternalResultResponse
 {
     /** Response result components */
-    private LdapResult result = new LdapResultImpl();
+    private InternalLdapResult result = new LdapResultImpl();
 
 
     // ------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public abstract class AbstractResultResponse extends AbstractResponse implements
      * @param type
      *            the message type of the response
      */
-    protected AbstractResultResponse(final int id, final MessageTypeEnum type)
+    protected InternalAbstractResultResponse(final int id, final MessageTypeEnum type)
     {
         super( id, type );
     }
@@ -60,7 +60,7 @@ public abstract class AbstractResultResponse extends AbstractResponse implements
      * 
      * @return the LdapResult for this Response.
      */
-    public LdapResult getLdapResult()
+    public InternalLdapResult getLdapResult()
     {
         return result;
     }
@@ -90,12 +90,12 @@ public abstract class AbstractResultResponse extends AbstractResponse implements
             return false;
         }
 
-        if ( !( obj instanceof ResultResponse ) )
+        if ( !( obj instanceof InternalResultResponse ) )
         {
             return false;
         }
 
-        ResultResponse resp = ( ResultResponse ) obj;
+        InternalResultResponse resp = ( InternalResultResponse ) obj;
 
         if ( getLdapResult() != null && resp.getLdapResult() == null )
         {
