@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface InternalBindRequest extends SingleReplyRequest
+public interface InternalBindRequest extends SingleReplyRequest, InternalAbandonableRequest
 {
     /** Bind request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.BIND_REQUEST;

@@ -332,6 +332,22 @@ public class BindRequestImplTest
             {
                 return false;
             }
+
+
+            public void abandon()
+            {
+            }
+
+
+            public void addAbandonListener( AbandonListener listener )
+            {
+            }
+
+
+            public boolean isAbandoned()
+            {
+                return false;
+            }
         };
 
         BindRequestImpl req1 = new BindRequestImpl( 5 );
