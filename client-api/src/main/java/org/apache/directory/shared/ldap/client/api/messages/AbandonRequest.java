@@ -20,11 +20,11 @@
 package org.apache.directory.shared.ldap.client.api.messages;
 
 /**
- * Abandon protocol operation request. It abandon the given message.
+ * Abandon protocol operation request. It abandons the given message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface AbandonRequest extends Message
+public interface AbandonRequest extends Request
 {
     /**
      * Get the abandoned message ID

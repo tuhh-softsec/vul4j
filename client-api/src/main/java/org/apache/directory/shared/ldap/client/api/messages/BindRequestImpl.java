@@ -52,6 +52,7 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
      */
     public BindRequestImpl()
     {
+        super();
     }
     
     

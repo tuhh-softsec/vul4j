@@ -26,11 +26,17 @@ package org.apache.directory.shared.ldap.client.api.messages;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class BindResponseImpl extends AbstractRequest implements BindResponse
+public class BindResponseImpl extends AbstractResponseWithResult implements BindResponse
 {
     /** optional property holding SASL authentication response parameters */
     private byte[] credentials;
 
+    
+    public BindResponseImpl()
+    {
+        super();
+    }
+    
 
     /**
      * {@inheritDoc}

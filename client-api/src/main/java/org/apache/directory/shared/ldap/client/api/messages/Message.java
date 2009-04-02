@@ -24,7 +24,7 @@ import java.util.Map;
 
 import javax.naming.ldap.Control;
 
-import org.apache.directory.shared.ldap.message.MessageException;
+import org.apache.directory.shared.ldap.client.api.exception.LdapException;
 
 
 /**
@@ -35,21 +35,19 @@ import org.apache.directory.shared.ldap.message.MessageException;
 public interface Message
 {
     /**
-     * Get the client message timeout. When the timeout is reached, the 
-     * request is canceled. 
+     * Get the request messageId
      *
-     * @return The timeout
+     * @return The request message ID
      */
-    long getTimeout();
+    int getMessageId();
     
     
     /**
-     * Set a request client timeout. When this timeout is reached, the request 
-     * will be canceled. If <= 0, then we wait for the response forever.  
+     * Set the request message ID
      *
-     * @param timeout The new timeout, expressed in milliseconds
+     * @param messageId The request message ID
      */
-    Message setTimeout( long timeout );
+    void setMessageId( int messageId );
     
     
     /**
@@ -71,24 +69,21 @@ public interface Message
     
 
     /**
-     * Adds a control to this Message.
+     * Adds controls to this Message.
      * 
-     * @param control
-     *            the control to add.
-     * @throws MessageException
-     *             if controls cannot be added to this Message or the control is
-     *             not known etc.
+     * @param controls the controls to add.
+     * @throws MessageException if controls cannot be added to this Message 
+     * or the control is not known etc.
      */
-    Message add( Control... control ) throws MessageException;
+    Message add( Control... controls ) throws LdapException;
 
 
     /**
-     * Deletes a control removing it from this Message.
+     * Deletes controls, removing them from this Message.
      * 
-     * @param control the control to remove.
-     * @throws MessageException
-     *             if controls cannot be added to this Message or the control is
-     *             not known etc.
+     * @param controls the controls to remove.
+     * @throws LdapException if controls cannot be added to this Message 
+     * or the control is not known etc.
      */
-    Message remove( Control... control ) throws MessageException;
+    Message remove( Control... control ) throws LdapException;
 }

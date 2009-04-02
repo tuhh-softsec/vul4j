@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.client.api.messages;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface BindRequest extends Message
+public interface BindRequest extends AbandonableRequest, RequestWithResponse
 {
     /**
      * Checks to see if the authentication mechanism is simple and not SASL

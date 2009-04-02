@@ -38,6 +38,16 @@ public class AbandonRequestImpl extends AbstractRequest implements AbandonReques
     
     
     /**
+     * 
+     * Creates a new instance of AbandonRequestImpl.
+     */
+    public AbandonRequestImpl()
+    {
+        super();
+    }
+    
+    
+    /**
      * Get the abandoned message ID
      * 
      * @return Returns the abandoned MessageId.

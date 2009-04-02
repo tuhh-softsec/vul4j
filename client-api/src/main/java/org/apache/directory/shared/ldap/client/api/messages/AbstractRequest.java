@@ -19,97 +19,33 @@
  */
 package org.apache.directory.shared.ldap.client.api.messages;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.ldap.message.MessageException;
-
 /**
  * An abstract class containing the Controls and timeout for all the requests.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class AbstractRequest implements Message
+public class AbstractRequest extends AbstractMessage implements Request
 {
-    /** The set of controls */
-    private Map<String, Control> controls;
-    
     /** The client request timeout */
     private long timeout = 0;
-
-
+    
+    
     /**
-     * {@inheritDoc}
+     * Creates a new instance of AbstractRequest.
      */
-    public Message add( Control... controls ) throws MessageException
+    protected AbstractRequest()
     {
-        if ( this.controls == null )
-        {
-            this.controls = new HashMap<String, Control>();
-        }
-        
-        if ( controls != null )
-        {
-            for ( Control control:controls )
-            {
-                this.controls.put( control.getID(), control );
-            }
-        }
-        
-        return this;
+        super();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public Map<String, Control> getControls()
-    {
-        return controls;
-    }
-
-
+    
     /**
      * {@inheritDoc}
      */
     public long getTimeout()
     {
         return timeout;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasControl( String oid )
-    {
-        return ( controls != null ) && ( controls.size() > 0 );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Message remove( Control... controls ) throws MessageException
-    {
-        if ( this.controls == null )
-        {
-            // We don't have any controls, so we can just exit
-            return this;
-        }
-        
-        if ( controls != null )
-        {
-            for ( Control ctrl:controls )
-            {
-                this.controls.remove( ctrl.getID() );
-            }
-        }
-        
-        return this;
     }
 
 

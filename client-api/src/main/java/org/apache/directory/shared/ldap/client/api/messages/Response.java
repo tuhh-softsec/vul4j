@@ -21,27 +21,10 @@ package org.apache.directory.shared.ldap.client.api.messages;
 
 
 /**
- * Bind protocol response message used to confirm the results of a bind request
- * message. BindResponse consists simply of an indication from the server of the
- * status of the client's request for authentication.
+ * Super interface used as a marker for all protocol response type messages.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 760724 $
  */
-public interface BindResponse extends ResponseWithResult
+public interface Response extends Message
 {
-    /**
-     * Gets the optional property holding SASL authentication response parameters
-     * that are SASL mechanism specific. Will return null if the authentication
-     * is simple.
-     * 
-     * @return the sasl mech. specific credentials or null of auth. is simple
-     */
-    byte[] getServerSaslCreds();
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    void setServerSaslCreds( byte[] credentials );
 }

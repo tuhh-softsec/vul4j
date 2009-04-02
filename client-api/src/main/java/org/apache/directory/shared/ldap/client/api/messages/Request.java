@@ -21,27 +21,27 @@ package org.apache.directory.shared.ldap.client.api.messages;
 
 
 /**
- * Bind protocol response message used to confirm the results of a bind request
- * message. BindResponse consists simply of an indication from the server of the
- * status of the client's request for authentication.
+ * Ldap protocol request messages derive from this super interface.
  * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 760724 $
+ * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ * @version $Rev: 760984 $
  */
-public interface BindResponse extends ResponseWithResult
+public interface Request extends Message
 {
     /**
-     * Gets the optional property holding SASL authentication response parameters
-     * that are SASL mechanism specific. Will return null if the authentication
-     * is simple.
-     * 
-     * @return the sasl mech. specific credentials or null of auth. is simple
+     * Get the client message timeout. When the timeout is reached, the 
+     * request is canceled. 
+     *
+     * @return The timeout
      */
-    byte[] getServerSaslCreds();
+    long getTimeout();
     
     
     /**
-     * {@inheritDoc}
+     * Set a request client timeout. When this timeout is reached, the request 
+     * will be canceled. If <= 0, then we wait for the response forever.  
+     *
+     * @param timeout The new timeout, expressed in milliseconds
      */
-    void setServerSaslCreds( byte[] credentials );
+    Message setTimeout( long timeout );
 }

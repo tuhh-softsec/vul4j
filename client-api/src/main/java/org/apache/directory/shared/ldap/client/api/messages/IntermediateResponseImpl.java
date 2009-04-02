@@ -21,27 +21,38 @@ package org.apache.directory.shared.ldap.client.api.messages;
 
 
 /**
- * Bind protocol response message used to confirm the results of a bind request
- * message. BindResponse consists simply of an indication from the server of the
- * status of the client's request for authentication.
+ * An interface for Intermediate responses.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 760724 $
  */
-public interface BindResponse extends ResponseWithResult
+public class IntermediateResponseImpl extends AbstractMessage implements IntermediateResponse
 {
-    /**
-     * Gets the optional property holding SASL authentication response parameters
-     * that are SASL mechanism specific. Will return null if the authentication
-     * is simple.
-     * 
-     * @return the sasl mech. specific credentials or null of auth. is simple
-     */
-    byte[] getServerSaslCreds();
+    /** The Response OID */
+    private String responseName;
+
+    /** The response value */
+    private byte[] responseValue;
+    
+    public String getResponseName()
+    {
+        return responseName;
+    }
     
     
-    /**
-     * {@inheritDoc}
-     */
-    void setServerSaslCreds( byte[] credentials );
+    public void setResponseName( String responseName )
+    {
+        this.responseName = responseName;
+    }
+    
+    
+    public byte[] getResponseValue()
+    {
+        return responseValue;
+    }
+
+    
+    public void setResponseValue( byte[] responseValue )
+    {
+        this.responseValue = responseValue;
+    }
 }
