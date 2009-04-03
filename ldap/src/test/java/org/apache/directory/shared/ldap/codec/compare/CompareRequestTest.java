@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequest;
+import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.message.InternalMessage;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -98,7 +98,7 @@ public class CompareRequestTest
 
         // Ceck the decoded CompareRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareRequest compareRequest = message.getCompareRequest();
+        CompareRequestCodec compareRequest = message.getCompareRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
@@ -385,7 +385,7 @@ public class CompareRequestTest
 
         // Ceck the decoded CompareRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareRequest compareRequest = message.getCompareRequest();
+        CompareRequestCodec compareRequest = message.getCompareRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );
@@ -462,7 +462,7 @@ public class CompareRequestTest
 
         // Ceck the decoded CompareRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareRequest compareRequest = message.getCompareRequest();
+        CompareRequestCodec compareRequest = message.getCompareRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getEntry().toString() );

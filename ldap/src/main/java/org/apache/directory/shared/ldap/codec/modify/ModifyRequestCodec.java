@@ -71,13 +71,13 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class ModifyRequest extends LdapMessageCodec
+public class ModifyRequestCodec extends LdapMessageCodec
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( ModifyRequest.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ModifyRequestCodec.class );
 
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -116,7 +116,7 @@ public class ModifyRequest extends LdapMessageCodec
     /**
      * Creates a new ModifyRequest object.
      */
-    public ModifyRequest()
+    public ModifyRequestCodec()
     {
         super();
     }

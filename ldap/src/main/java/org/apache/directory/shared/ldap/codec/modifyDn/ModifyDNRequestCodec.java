@@ -44,7 +44,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class ModifyDNRequest extends LdapMessageCodec
+public class ModifyDNRequestCodec extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ public class ModifyDNRequest extends LdapMessageCodec
     /**
      * Creates a new ModifyDNRequest object.
      */
-    public ModifyDNRequest()
+    public ModifyDNRequestCodec()
     {
         super();
     }

@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
+import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         LdapMessageCodec ldapMessage = ldapMessageContainer.getLdapMessage();
-        SearchResultEntry searchResultEntry = ldapMessage.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = ldapMessage.getSearchResultEntry();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 

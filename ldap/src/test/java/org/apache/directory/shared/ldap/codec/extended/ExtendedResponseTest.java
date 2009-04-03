@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponse;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -95,7 +95,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -181,7 +181,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -264,7 +264,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -338,7 +338,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -542,7 +542,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -619,7 +619,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -703,7 +703,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -781,7 +781,7 @@ public class ExtendedResponseTest
 
         // Check the decoded ExtendedResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedResponse extendedResponse = message.getExtendedResponse();
+        ExtendedResponseCodec extendedResponse = message.getExtendedResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );

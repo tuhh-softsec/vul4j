@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.add;
+package org.apache.directory.shared.ldap.codec.modifyDn;
 
 
 import java.nio.BufferOverflowException;
@@ -30,29 +30,26 @@ import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 
 
 /**
- * An AddResponse Message. Its syntax is : 
+ * An ModifyDNResponse Message. Its syntax is : 
  * 
- * AddResponse ::= [APPLICATION 9] LDAPResult
+ * ModifyDNResponse ::= [APPLICATION 13] LDAPResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class AddResponse extends LdapResponseCodec
+public class ModifyDNResponseCodec extends LdapResponseCodec
 {
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     /**
-     * Creates a new AddResponse object.
+     * Creates a new ModifyDNResponse object.
      */
-    public AddResponse()
+    public ModifyDNResponseCodec()
     {
         super();
     }
 
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
 
     /**
      * Get the message type
@@ -61,22 +58,20 @@ public class AddResponse extends LdapResponseCodec
      */
     public int getMessageType()
     {
-        return LdapConstants.ADD_RESPONSE;
+        return LdapConstants.MODIFYDN_RESPONSE;
     }
 
 
     /**
-     * Compute the AddResponse length 
+     * Compute the ModifyDNResponse length 
      * 
-     * AddResponse : 
-     * 
-     * 0x69 L1
-     *  |
-     *  +--> LdapResult
-     * 
-     * L1 = Length(LdapResult)
-     * 
-     * Length(AddResponse) = Length(0x69) + Length(L1) + L1
+     * ModifyDNResponse : 
+     * 0x6D L1 
+     *   | 
+     *   +--> LdapResult 
+     *   
+     * L1 = Length(LdapResult) 
+     * Length(ModifyDNResponse) = Length(0x6D) + Length(L1) + L1
      */
     public int computeLength()
     {
@@ -87,7 +82,7 @@ public class AddResponse extends LdapResponseCodec
 
 
     /**
-     * Encode the AddResponse message to a PDU.
+     * Encode the ModifyDNResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
@@ -102,7 +97,7 @@ public class AddResponse extends LdapResponseCodec
         try
         {
             // The tag
-            buffer.put( LdapConstants.ADD_RESPONSE_TAG );
+            buffer.put( LdapConstants.MODIFY_DN_RESPONSE_TAG );
             buffer.put( TLV.getBytes( getLdapResponseLength() ) );
         }
         catch ( BufferOverflowException boe )
@@ -116,16 +111,16 @@ public class AddResponse extends LdapResponseCodec
 
 
     /**
-     * Get a String representation of an AddResponse
+     * Get a String representation of a ModifyDNResponse
      * 
-     * @return An AddResponse String
+     * @return A ModifyDNResponse String
      */
     public String toString()
     {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "    Add Response\n" );
+        sb.append( "    Modify DN Response\n" );
         sb.append( super.toString() );
 
         return sb.toString();

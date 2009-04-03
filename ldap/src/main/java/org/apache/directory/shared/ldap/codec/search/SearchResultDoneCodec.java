@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.del;
+package org.apache.directory.shared.ldap.codec.search;
 
 
 import java.nio.BufferOverflowException;
@@ -30,22 +30,24 @@ import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 
 
 /**
- * An DelResponse Message. Its syntax is : 
+ * A SearchResultDone Message. Its syntax is : 
  * 
- * DelResponse ::= [APPLICATION 11] LDAPResult
+ * SearchResultDone ::= [APPLICATION 5] 
+ * 
+ * LDAPResult It's a Response, so it inherites from LdapResponse.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class DelResponse extends LdapResponseCodec
+public class SearchResultDoneCodec extends LdapResponseCodec
 {
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     /**
-     * Creates a new DelResponse object.
+     * Creates a new SearchResultDone object.
      */
-    public DelResponse()
+    public SearchResultDoneCodec()
     {
         super();
     }
@@ -58,22 +60,20 @@ public class DelResponse extends LdapResponseCodec
      */
     public int getMessageType()
     {
-        return LdapConstants.DEL_RESPONSE;
+        return LdapConstants.SEARCH_RESULT_DONE;
     }
 
 
     /**
-     * Compute the DelResponse length 
+     * Compute the SearchResultDone length 
      * 
-     * DelResponse :
-     * 
-     * 0x6B L1
-     *  |
-     *  +--> LdapResult
-     * 
-     * L1 = Length(LdapResult)
-     * 
-     * Length(DelResponse) = Length(0x6B) + Length(L1) + L1
+     * SearchResultDone : 
+     * 0x65 L1 
+     *   | 
+     *   +--> LdapResult 
+     *   
+     * L1 = Length(LdapResult) 
+     * Length(SearchResultDone) = Length(0x65) + Length(L1) + L1
      */
     public int computeLength()
     {
@@ -84,7 +84,7 @@ public class DelResponse extends LdapResponseCodec
 
 
     /**
-     * Encode the DelResponse message to a PDU.
+     * Encode the SearchResultDone message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
@@ -99,7 +99,7 @@ public class DelResponse extends LdapResponseCodec
         try
         {
             // The tag
-            buffer.put( LdapConstants.DEL_RESPONSE_TAG );
+            buffer.put( LdapConstants.SEARCH_RESULT_DONE_TAG );
             buffer.put( TLV.getBytes( getLdapResponseLength() ) );
         }
         catch ( BufferOverflowException boe )
@@ -113,16 +113,16 @@ public class DelResponse extends LdapResponseCodec
 
 
     /**
-     * Get a String representation of a DelResponse
+     * Get a String representation of a SearchResultDone
      * 
-     * @return A DelResponse String
+     * @return A SearchResultDone String
      */
     public String toString()
     {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "    Del Response\n" );
+        sb.append( "    Search Result Done\n" );
         sb.append( super.toString() );
 
         return sb.toString();

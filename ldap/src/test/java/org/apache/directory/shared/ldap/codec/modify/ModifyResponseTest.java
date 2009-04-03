@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.modify.ModifyResponse;
+import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -91,7 +91,7 @@ public class ModifyResponseTest
 
         // Check the decoded ModifyResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyResponse modifyResponse = message.getModifyResponse();
+        ModifyResponseCodec modifyResponse = message.getModifyResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );
@@ -164,7 +164,7 @@ public class ModifyResponseTest
 
         // Check the decoded ModifyResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyResponse modifyResponse = message.getModifyResponse();
+        ModifyResponseCodec modifyResponse = message.getModifyResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );

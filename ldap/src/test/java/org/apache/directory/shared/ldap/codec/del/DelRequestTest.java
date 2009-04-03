@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.del.DelRequest;
+import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.message.InternalMessage;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -90,7 +90,7 @@ public class DelRequestTest
 
         // Check the decoded DelRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        DelRequest delRequest = message.getDelRequest();
+        DelRequestCodec delRequest = message.getDelRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getEntry().toString() );
@@ -237,7 +237,7 @@ public class DelRequestTest
 
         // Check the decoded DelRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        DelRequest delRequest = message.getDelRequest();
+        DelRequestCodec delRequest = message.getDelRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getEntry().toString() );

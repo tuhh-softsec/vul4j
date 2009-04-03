@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.compare;
+package org.apache.directory.shared.ldap.codec.add;
 
 
 import java.nio.BufferOverflowException;
@@ -30,22 +30,22 @@ import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 
 
 /**
- * An CompareResponse Message. Its syntax is : 
+ * An AddResponse Message. Its syntax is : 
  * 
- * CompareResponse ::= [APPLICATION 15] LDAPResult
+ * AddResponse ::= [APPLICATION 9] LDAPResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class CompareResponse extends LdapResponseCodec
+public class AddResponseCodec extends LdapResponseCodec
 {
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     /**
-     * Creates a new CompareResponse object.
+     * Creates a new AddResponse object.
      */
-    public CompareResponse()
+    public AddResponseCodec()
     {
         super();
     }
@@ -61,22 +61,22 @@ public class CompareResponse extends LdapResponseCodec
      */
     public int getMessageType()
     {
-        return LdapConstants.COMPARE_RESPONSE;
+        return LdapConstants.ADD_RESPONSE;
     }
 
 
     /**
-     * Compute the CompareResponse length 
+     * Compute the AddResponse length 
      * 
-     * CompareResponse :
+     * AddResponse : 
      * 
-     * 0x6F L1
+     * 0x69 L1
      *  |
      *  +--> LdapResult
      * 
      * L1 = Length(LdapResult)
      * 
-     * Length(CompareResponse) = Length(0x6F) + Length(L1) + L1
+     * Length(AddResponse) = Length(0x69) + Length(L1) + L1
      */
     public int computeLength()
     {
@@ -87,7 +87,7 @@ public class CompareResponse extends LdapResponseCodec
 
 
     /**
-     * Encode the CompareResponse message to a PDU.
+     * Encode the AddResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
@@ -102,7 +102,7 @@ public class CompareResponse extends LdapResponseCodec
         try
         {
             // The tag
-            buffer.put( LdapConstants.COMPARE_RESPONSE_TAG );
+            buffer.put( LdapConstants.ADD_RESPONSE_TAG );
             buffer.put( TLV.getBytes( getLdapResponseLength() ) );
         }
         catch ( BufferOverflowException boe )
@@ -116,16 +116,16 @@ public class CompareResponse extends LdapResponseCodec
 
 
     /**
-     * Get a String representation of an CompareResponse
+     * Get a String representation of an AddResponse
      * 
-     * @return An CompareResponse String
+     * @return An AddResponse String
      */
     public String toString()
     {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "    Compare Response\n" );
+        sb.append( "    Add Response\n" );
         sb.append( super.toString() );
 
         return sb.toString();

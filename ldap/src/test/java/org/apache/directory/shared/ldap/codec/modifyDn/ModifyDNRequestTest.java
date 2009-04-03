@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequest;
+import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
 import org.apache.directory.shared.ldap.message.InternalMessage;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -97,7 +97,7 @@ public class ModifyDNRequestTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequest modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
@@ -327,7 +327,7 @@ public class ModifyDNRequestTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequest modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
@@ -409,7 +409,7 @@ public class ModifyDNRequestTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequest modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );
@@ -484,7 +484,7 @@ public class ModifyDNRequestTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyDNRequest modifyDNRequest = message.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = message.getModifyDNRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDNRequest.getEntry().toString() );

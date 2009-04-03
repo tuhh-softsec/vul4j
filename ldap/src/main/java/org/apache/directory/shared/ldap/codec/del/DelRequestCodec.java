@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search;
+package org.apache.directory.shared.ldap.codec.del;
 
 
 import java.nio.BufferOverflowException;
@@ -26,32 +26,43 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
+import org.apache.directory.shared.ldap.name.LdapDN;
 
 
 /**
- * A SearchResultDone Message. Its syntax is : 
+ * A DelRequest Message. 
  * 
- * SearchResultDone ::= [APPLICATION 5] 
+ * Its syntax is : 
  * 
- * LDAPResult It's a Response, so it inherites from LdapResponse.
+ * DelRequest ::= [APPLICATION 10] LDAPDN
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class SearchResultDone extends LdapResponseCodec
+public class DelRequestCodec extends LdapMessageCodec
 {
+    // ~ Instance fields
+    // ----------------------------------------------------------------------------
+
+    /** The entry to be deleted */
+    private LdapDN entry;
+
+
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     /**
-     * Creates a new SearchResultDone object.
+     * Creates a new DelRequest object.
      */
-    public SearchResultDone()
+    public DelRequestCodec()
     {
         super();
     }
 
+
+    // ~ Methods
+    // ------------------------------------------------------------------------------------
 
     /**
      * Get the message type
@@ -60,31 +71,53 @@ public class SearchResultDone extends LdapResponseCodec
      */
     public int getMessageType()
     {
-        return LdapConstants.SEARCH_RESULT_DONE;
+        return LdapConstants.DEL_REQUEST;
     }
 
 
     /**
-     * Compute the SearchResultDone length 
+     * Get the entry to be deleted
      * 
-     * SearchResultDone : 
-     * 0x65 L1 
-     *   | 
-     *   +--> LdapResult 
-     *   
-     * L1 = Length(LdapResult) 
-     * Length(SearchResultDone) = Length(0x65) + Length(L1) + L1
+     * @return Returns the entry.
+     */
+    public LdapDN getEntry()
+    {
+        return entry;
+    }
+
+
+    /**
+     * Set the entry to be deleted
+     * 
+     * @param entry The entry to set.
+     */
+    public void setEntry( LdapDN entry )
+    {
+        this.entry = entry;
+    }
+
+
+    /**
+     * Compute the DelRequest length 
+     * 
+     * DelRequest : 
+     * 0x4A L1 entry 
+     * 
+     * L1 = Length(entry) 
+     * Length(DelRequest) = Length(0x4A) + Length(L1) + L1
      */
     public int computeLength()
     {
-        int ldapResponseLength = super.computeLength();
-
-        return 1 + TLV.getNbBytes( ldapResponseLength ) + ldapResponseLength;
+        // The entry
+        return 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry );
     }
 
 
     /**
-     * Encode the SearchResultDone message to a PDU.
+     * Encode the DelRequest message to a PDU. 
+     * 
+     * DelRequest : 
+     * 0x4A LL entry
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
@@ -98,32 +131,34 @@ public class SearchResultDone extends LdapResponseCodec
 
         try
         {
-            // The tag
-            buffer.put( LdapConstants.SEARCH_RESULT_DONE_TAG );
-            buffer.put( TLV.getBytes( getLdapResponseLength() ) );
+            // The DelRequest Tag
+            buffer.put( LdapConstants.DEL_REQUEST_TAG );
+
+            // The entry
+            buffer.put( TLV.getBytes( LdapDN.getNbBytes( entry ) ) );
+            buffer.put( LdapDN.getBytes( entry ) );
         }
         catch ( BufferOverflowException boe )
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
 
-        // The ldapResult
-        return super.encode( buffer );
+        return buffer;
     }
 
 
     /**
-     * Get a String representation of a SearchResultDone
+     * Return a String representing a DelRequest
      * 
-     * @return A SearchResultDone String
+     * @return A DelRequest String
      */
     public String toString()
     {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "    Search Result Done\n" );
-        sb.append( super.toString() );
+        sb.append( "    Del request\n" );
+        sb.append( "        Entry : '" ).append( entry ).append( "'\n" );
 
         return sb.toString();
     }

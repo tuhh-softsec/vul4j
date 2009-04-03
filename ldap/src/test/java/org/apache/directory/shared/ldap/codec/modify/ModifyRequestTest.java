@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequest;
+import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.InternalMessage;
@@ -118,7 +118,7 @@ public class ModifyRequestTest
 
         // Check the decoded PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequest modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = message.getModifyRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
@@ -288,7 +288,7 @@ public class ModifyRequestTest
 
         // Check the decoded PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequest modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = message.getModifyRequest();
 
         assertEquals( 21, message.getMessageId() );
         assertEquals( "cn=Tori Amos,ou=playground,dc=apache,dc=org", modifyRequest.getObject().toString() );
@@ -412,7 +412,7 @@ public class ModifyRequestTest
 
         // Check the decoded PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequest modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = message.getModifyRequest();
 
         assertEquals( 49, message.getMessageId() );
         assertEquals( "cn=Tori Amos,ou=playground,dc=apache,dc=org", modifyRequest.getObject().toString() );
@@ -544,7 +544,7 @@ public class ModifyRequestTest
 
         // Check the decoded PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequest modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = message.getModifyRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
@@ -1087,7 +1087,7 @@ public class ModifyRequestTest
 
         // Check the decoded PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequest modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = message.getModifyRequest();
 
         assertEquals( 49, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
@@ -1171,7 +1171,7 @@ public class ModifyRequestTest
 
         // Check the decoded PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequest modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = message.getModifyRequest();
 
         assertEquals( 49, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );
@@ -1263,7 +1263,7 @@ public class ModifyRequestTest
 
         // Check the decoded PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ModifyRequest modifyRequest = message.getModifyRequest();
+        ModifyRequestCodec modifyRequest = message.getModifyRequest();
 
         assertEquals( 49, message.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyRequest.getObject().toString() );

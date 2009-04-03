@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.del.DelResponse;
+import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -93,7 +93,7 @@ public class DelResponseTest
 
         // Check the decoded DelResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        DelResponse delResponse = message.getDelResponse();
+        DelResponseCodec delResponse = message.getDelResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );
@@ -206,7 +206,7 @@ public class DelResponseTest
 
         // Check the decoded DelResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        DelResponse delResponse = message.getDelResponse();
+        DelResponseCodec delResponse = message.getDelResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );

@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
+import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -118,7 +118,7 @@ public class SearchResultReferenceTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultReference searchResultReference = message.getSearchResultReference();
+        SearchResultReferenceCodec searchResultReference = message.getSearchResultReference();
 
         assertEquals( 1, message.getMessageId() );
 
@@ -251,7 +251,7 @@ public class SearchResultReferenceTest
         stream.flip();
         
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultReference searchResultReference = message.getSearchResultReference();
+        SearchResultReferenceCodec searchResultReference = message.getSearchResultReference();
 
         assertEquals( 1, message.getMessageId() );
 
@@ -395,7 +395,7 @@ public class SearchResultReferenceTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultReference searchResultReference = message.getSearchResultReference();
+        SearchResultReferenceCodec searchResultReference = message.getSearchResultReference();
 
         assertEquals( 1, message.getMessageId() );
 

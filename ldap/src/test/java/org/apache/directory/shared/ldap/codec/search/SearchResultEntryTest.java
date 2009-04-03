@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
+import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -100,7 +100,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -195,7 +195,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -295,7 +295,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 2, message.getMessageId() );
         assertEquals( "uid=admin,ou=system", searchResultEntry.getObjectName().toString() );
@@ -506,7 +506,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -764,7 +764,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -847,7 +847,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -931,7 +931,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -1024,7 +1024,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -1111,7 +1111,7 @@ public class SearchResultEntryTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultEntry searchResultEntry = message.getSearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = message.getSearchResultEntry();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );

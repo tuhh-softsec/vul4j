@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.add;
+package org.apache.directory.shared.ldap.codec.search;
 
 
 import java.nio.BufferOverflowException;
@@ -31,79 +31,75 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.client.ClientBinaryValue;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.util.StringTools;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
- * An AddRequest Message. Its syntax is : 
- *   AddRequest ::= [APPLICATION 8] SEQUENCE {
- *              entry           LDAPDN,
- *              attributes      AttributeList }
- *
- *   AttributeList ::= SEQUENCE OF SEQUENCE {
- *              type    AttributeDescription,
- *              vals    SET OF AttributeValue }
+ * A SearchResultEntry Message. Its syntax is :
+ *   SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
+ *       objectName      LDAPDN,
+ *       attributes      PartialAttributeList }
+ * 
+ *   PartialAttributeList ::= SEQUENCE OF SEQUENCE {
+ *       type    AttributeDescription,
+ *       vals    SET OF AttributeValue }
+ * 
+ *   AttributeDescription ::= LDAPString
  * 
  *   AttributeValue ::= OCTET STRING
+ * 
+ * It contains an entry, with all its attributes, and all the attributes
+ * values. If a search request is submited, all the results are sent one
+ * by one, followed by a searchResultDone message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class AddRequest extends LdapMessageCodec
+public class SearchResultEntryCodec extends LdapMessageCodec
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
-
-    /** The logger */
-    private static final Logger log = LoggerFactory.getLogger( AddRequest.class );
-
-    /** Speedup for logs */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
-
     // ~ Instance fields
     // ----------------------------------------------------------------------------
 
-    /** The attributes list. */
-    private Entry entry;
+    /** A temporary storage for the byte[] representing the objectName */
+    private byte[] objectNameBytes;
+
+    /** The entry */
+    private Entry entry = new DefaultClientEntry();
 
     /** The current attribute being decoded */
-    private EntryAttribute currentAttribute;
+    private EntryAttribute currentAttributeValue;
 
-    /** The add request length */
-    private int addRequestLength;
+    /** The search result entry length */
+    private int searchResultEntryLength;
 
-    /** The attributes length */
+    /** The partial attributes length */
     private int attributesLength;
 
     /** The list of all attributes length */
     private List<Integer> attributeLength;
 
     /** The list of all vals length */
-    private List<Integer> valuesLength;
+    private List<Integer> valsLength;
 
 
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     /**
-     * Creates a new AddRequest object.
+     * Creates a new SearchResultEntry object.
      */
-    public AddRequest()
+    public SearchResultEntryCodec()
     {
         super();
-        entry = new DefaultClientEntry();
     }
 
 
@@ -117,23 +113,36 @@ public class AddRequest extends LdapMessageCodec
      */
     public int getMessageType()
     {
-        return LdapConstants.ADD_REQUEST;
+        return LdapConstants.SEARCH_RESULT_ENTRY;
     }
 
 
     /**
-     * Initialize the Entry.
-     */
-    public void initEntry()
-    {
-        entry = new DefaultClientEntry();
-    }
-
-
-    /**
-     * Get the entry to be added
+     * Get the entry DN
      * 
-     * @return Returns the entry.
+     * @return Returns the objectName.
+     */
+    public LdapDN getObjectName()
+    {
+        return entry.getDn();
+    }
+
+
+    /**
+     * Set the entry DN.
+     * 
+     * @param objectName The objectName to set.
+     */
+    public void setObjectName( LdapDN objectName )
+    {
+        entry.setDn( objectName );
+    }
+
+
+    /**
+     * Get the entry.
+     * 
+     * @return Returns the entry
      */
     public Entry getEntry()
     {
@@ -156,74 +165,52 @@ public class AddRequest extends LdapMessageCodec
     /**
      * Create a new attributeValue
      * 
-     * @param type The attribute's name (called 'type' in the grammar)
+     * @param type The attribute's name
      */
-    public void addAttributeType( String type ) throws NamingException
+    public void addAttributeValues( String type )
     {
-        // do not create a new attribute if we have seen this attributeType before
-        if ( entry.get( type ) != null )
-        {
-            currentAttribute = entry.get( type );
-            return;
-        }
+        currentAttributeValue = new DefaultClientAttribute( type );
 
-        // fix this to use AttributeImpl(type.getString().toLowerCase())
-        currentAttribute = new DefaultClientAttribute( type );
-        entry.put( currentAttribute );
+        try
+        {
+            entry.put( currentAttributeValue );
+        }
+        catch ( NamingException ne )
+        {
+            // Too bad... But there is nothing we can do.
+        }
     }
 
 
     /**
      * Add a new value to the current attribute
      * 
-     * @param value The value to be added
+     * @param value
      */
     public void addAttributeValue( Object value )
     {
         if ( value instanceof String )
         {
-            currentAttribute.add( ( String ) value );
+            currentAttributeValue.add( ( String ) value );
         }
         else
         {
-            currentAttribute.add( ( byte[] ) value );
+            currentAttributeValue.add( ( byte[] ) value );
         }
     }
 
 
     /**
-     * Get the added DN
+     * Compute the SearchResultEntry length
      * 
-     * @return Returns the entry DN.
-     */
-    public LdapDN getEntryDn()
-    {
-        return entry.getDn();
-    }
-
-
-    /**
-     * Set the added DN.
+     * SearchResultEntry :
      * 
-     * @param entry The DN to set.
-     */
-    public void setEntryDn( LdapDN entryDn )
-    {
-        entry.setDn( entryDn );
-    }
-
-
-    /**
-     * Compute the AddRequest length
-     * 
-     * AddRequest :
-     * 
-     * 0x68 L1
+     * 0x64 L1
      *  |
-     *  +--> 0x04 L2 entry
+     *  +--> 0x04 L2 objectName
      *  +--> 0x30 L3 (attributes)
      *        |
-     *        +--> 0x30 L4-1 (attribute)
+     *        +--> 0x30 L4-1 (partial attributes list)
      *        |     |
      *        |     +--> 0x04 L5-1 type
      *        |     +--> 0x31 L6-1 (values)
@@ -232,7 +219,7 @@ public class AddRequest extends LdapMessageCodec
      *        |           +--> ...
      *        |           +--> 0x04 L7-1-n value
      *        |
-     *        +--> 0x30 L4-2 (attribute)
+     *        +--> 0x30 L4-2 (partial attributes list)
      *        |     |
      *        |     +--> 0x04 L5-2 type
      *        |     +--> 0x31 L6-2 (values)
@@ -243,7 +230,7 @@ public class AddRequest extends LdapMessageCodec
      *        |
      *        +--> ...
      *        |
-     *        +--> 0x30 L4-m (attribute)
+     *        +--> 0x30 L4-m (partial attributes list)
      *              |
      *              +--> 0x04 L5-m type
      *              +--> 0x31 L6-m (values)
@@ -251,11 +238,14 @@ public class AddRequest extends LdapMessageCodec
      *                    +--> 0x04 L7-m-1 value
      *                    +--> ...
      *                    +--> 0x04 L7-m-n value
+     * 
      */
     public int computeLength()
     {
+        objectNameBytes = StringTools.getBytesUtf8( entry.getDn().getUpName() );
+
         // The entry
-        addRequestLength = 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry.getDn() ) ) + LdapDN.getNbBytes( entry.getDn() );
+        searchResultEntryLength = 1 + TLV.getNbBytes( objectNameBytes.length ) + objectNameBytes.length;
 
         // The attributes sequence
         attributesLength = 0;
@@ -263,7 +253,7 @@ public class AddRequest extends LdapMessageCodec
         if ( ( entry != null ) && ( entry.size() != 0 ) )
         {
             attributeLength = new LinkedList<Integer>();
-            valuesLength = new LinkedList<Integer>();
+            valsLength = new LinkedList<Integer>();
 
             // Compute the attributes length
             for ( EntryAttribute attribute : entry )
@@ -275,68 +265,81 @@ public class AddRequest extends LdapMessageCodec
                 int idLength = attribute.getId().getBytes().length;
                 localAttributeLength = 1 + TLV.getNbBytes( idLength ) + idLength;
 
-                // The values
                 if ( attribute.size() != 0 )
                 {
-                    localValuesLength = 0;
-
-                    for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                    // The values
+                    if ( attribute.size() > 0 )
                     {
-                        if ( value instanceof ClientStringValue )
-                        {
-                            int valueLength = StringTools.getBytesUtf8( ( String ) value.get() ).length;
-                            localValuesLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
-                        }
-                        else
-                        {
-                            int valueLength = ( ( byte[] ) value.get() ).length;
-                            localValuesLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
-                        }
-                    }
+                        localValuesLength = 0;
 
-                    localAttributeLength += 1 + TLV.getNbBytes( localValuesLength ) + localValuesLength;
+                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                        {
+                            if ( value instanceof ClientStringValue )
+                            {
+                                String stringValue = ( String ) value.get();
+
+                                int stringLength = StringTools.getBytesUtf8( stringValue ).length;
+                                localValuesLength += 1 + TLV.getNbBytes( stringLength ) + stringLength;
+                            }
+                            else
+                            {
+                                byte[] binaryValue = ( byte[] ) value.get();
+                                localValuesLength += 1 + TLV.getNbBytes( binaryValue.length ) + binaryValue.length;
+                            }
+
+                        }
+
+                        localAttributeLength += 1 + TLV.getNbBytes( localValuesLength ) + localValuesLength;
+                    }
+                    else
+                    {
+                        // We have to deal with the special wase where
+                        // we don't have a value.
+                        // It will be encoded as an empty OCTETSTRING,
+                        // so it will be two byte slong (0x04 0x00)
+                        localAttributeLength += 1 + 1;
+                    }
+                }
+                else
+                {
+                    // We have no values. We will just have an empty SET OF :
+                    // 0x31 0x00
+                    localAttributeLength += 1 + 1;
                 }
 
                 // add the attribute length to the attributes length
                 attributesLength += 1 + TLV.getNbBytes( localAttributeLength ) + localAttributeLength;
 
                 attributeLength.add( localAttributeLength );
-                valuesLength.add( localValuesLength );
+                valsLength.add( localValuesLength );
             }
         }
 
-        addRequestLength += 1 + TLV.getNbBytes( attributesLength ) + attributesLength;
+        searchResultEntryLength += 1 + TLV.getNbBytes( attributesLength ) + attributesLength;
 
         // Return the result.
-        int result = 1 + TLV.getNbBytes( addRequestLength ) + addRequestLength;
-
-        if ( IS_DEBUG )
-        {
-            log.debug( "AddRequest PDU length = {}", Integer.valueOf( result ) );
-        }
-
-        return result;
+        return 1 + TLV.getNbBytes( searchResultEntryLength ) + searchResultEntryLength;
     }
 
 
     /**
-     * Encode the AddRequest message to a PDU. 
+     * Encode the SearchResultEntry message to a PDU.
      * 
-     * AddRequest :
+     * SearchResultEntry :
      * 
-     * 0x68 LL
-     *   0x04 LL entry
-     *   0x30 LL attributesList
-     *     0x30 LL attributeList
-     *       0x04 LL attributeDescription
-     *       0x31 LL attributeValues
+     * 0x64 LL
+     *   0x04 LL objectName
+     *   0x30 LL attributes
+     *     0x30 LL partialAttributeList
+     *       0x04 LL type
+     *       0x31 LL vals
      *         0x04 LL attributeValue
      *         ... 
      *         0x04 LL attributeValue
      *     ... 
-     *     0x30 LL attributeList
-     *       0x04 LL attributeDescription
-     *       0x31 LL attributeValue
+     *     0x30 LL partialAttributeList
+     *       0x04 LL type
+     *       0x31 LL vals
      *         0x04 LL attributeValue
      *         ... 
      *         0x04 LL attributeValue 
@@ -353,12 +356,12 @@ public class AddRequest extends LdapMessageCodec
 
         try
         {
-            // The AddRequest Tag
-            buffer.put( LdapConstants.ADD_REQUEST_TAG );
-            buffer.put( TLV.getBytes( addRequestLength ) );
+            // The SearchResultEntry Tag
+            buffer.put( LdapConstants.SEARCH_RESULT_ENTRY_TAG );
+            buffer.put( TLV.getBytes( searchResultEntryLength ) );
 
-            // The entry
-            Value.encode( buffer, LdapDN.getBytes( entry.getDn() ) );
+            // The objectName
+            Value.encode( buffer, objectNameBytes );
 
             // The attributes sequence
             buffer.put( UniversalTag.SEQUENCE_TAG );
@@ -372,30 +375,33 @@ public class AddRequest extends LdapMessageCodec
                 // Compute the attributes length
                 for ( EntryAttribute attribute : entry )
                 {
-                    // The attributes list sequence
+                    // The partial attribute list sequence
                     buffer.put( UniversalTag.SEQUENCE_TAG );
                     int localAttributeLength = attributeLength.get( attributeNumber );
                     buffer.put( TLV.getBytes( localAttributeLength ) );
 
                     // The attribute type
-                    Value.encode( buffer, attribute.getId() );
+                    Value.encode( buffer, Asn1StringUtils.asciiStringToByte( attribute.getUpId() ) );
 
                     // The values
                     buffer.put( UniversalTag.SET_TAG );
-                    int localValuesLength = valuesLength.get( attributeNumber );
+                    int localValuesLength = valsLength.get( attributeNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 
                     if ( attribute.size() != 0 )
                     {
-                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                        if ( attribute.size() > 0 )
                         {
-                            if ( value instanceof ClientBinaryValue )
+                            for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
                             {
-                                Value.encode( buffer, ( byte[] ) value.get() );
-                            }
-                            else
-                            {
-                                Value.encode( buffer, ( String ) value.get() );
+                                if ( value instanceof ClientStringValue )
+                                {
+                                    Value.encode( buffer, ( String ) value.get() );
+                                }
+                                else
+                                {
+                                    Value.encode( buffer, ( byte[] ) value.get() );
+                                }
                             }
                         }
                     }
@@ -410,32 +416,26 @@ public class AddRequest extends LdapMessageCodec
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
 
-        if ( IS_DEBUG )
-        {
-            log.debug( "AddRequest encoding : {}", StringTools.dumpBytes( buffer.array() ) );
-            log.debug( "AddRequest initial value : {}", toString() );
-        }
-
         return buffer;
     }
 
 
     /**
-     * Return a String representing an AddRequest
+     * Returns the Search Result Entry string
      * 
-     * @return A String representing the AddRequest
+     * @return The Search Result Entry string
      */
     public String toString()
     {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append( "    Add Request\n" );
-        sb.append( "        Attributes\n" );
+        sb.append( "    Search Result Entry\n" );
+        sb.append( "        entry\n" );
 
-        if ( entry == null )
+        if ( ( entry == null ) || ( entry.size() == 0 ) )
         {
-            sb.append( "            No attributes\n" );
+            sb.append( "            No entry\n" );
         }
         else
         {
@@ -447,10 +447,10 @@ public class AddRequest extends LdapMessageCodec
 
 
     /**
-     * @return Returns the currentAttribute type.
+     * @return Returns the currentAttributeValue.
      */
-    public String getCurrentAttributeType()
+    public String getCurrentAttributeValueType()
     {
-        return currentAttribute.getId();
+        return currentAttributeValue.getId();
     }
 }

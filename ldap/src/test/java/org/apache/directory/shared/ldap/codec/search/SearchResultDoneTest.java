@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
+import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -90,7 +90,7 @@ public class SearchResultDoneTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultDone searchResultDone = message.getSearchResultDone();
+        SearchResultDoneCodec searchResultDone = message.getSearchResultDone();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, searchResultDone.getLdapResult().getResultCode() );
@@ -163,7 +163,7 @@ public class SearchResultDoneTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        SearchResultDone searchResultDone = message.getSearchResultDone();
+        SearchResultDoneCodec searchResultDone = message.getSearchResultDone();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, searchResultDone.getLdapResult().getResultCode() );

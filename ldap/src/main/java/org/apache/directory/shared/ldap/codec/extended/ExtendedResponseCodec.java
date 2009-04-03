@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class ExtendedResponse extends LdapResponseCodec
+public class ExtendedResponseCodec extends LdapResponseCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public class ExtendedResponse extends LdapResponseCodec
     /**
      * Creates a new ExtendedResponse object.
      */
-    public ExtendedResponse()
+    public ExtendedResponseCodec()
     {
         super();
     }

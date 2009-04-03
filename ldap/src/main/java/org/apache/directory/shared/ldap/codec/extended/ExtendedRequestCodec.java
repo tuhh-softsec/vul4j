@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class ExtendedRequest extends LdapMessageCodec
+public class ExtendedRequestCodec extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ public class ExtendedRequest extends LdapMessageCodec
     /**
      * Creates a new ExtendedRequest object.
      */
-    public ExtendedRequest()
+    public ExtendedRequestCodec()
     {
         super();
     }

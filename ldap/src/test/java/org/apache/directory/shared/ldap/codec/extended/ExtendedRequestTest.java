@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequest;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
 
@@ -88,7 +88,7 @@ public class ExtendedRequestTest
 
         // Check the decoded ExtendedRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequest extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -160,7 +160,7 @@ public class ExtendedRequestTest
 
         // Check the decoded ExtendedRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequest extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -242,7 +242,7 @@ public class ExtendedRequestTest
 
         // Check the decoded ExtendedRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequest extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -427,7 +427,7 @@ public class ExtendedRequestTest
 
         // Check the decoded ExtendedRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequest extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -493,7 +493,7 @@ public class ExtendedRequestTest
 
         // Check the decoded ExtendedRequest PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        ExtendedRequest extendedRequest = message.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = message.getExtendedRequest();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );

@@ -33,26 +33,26 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
-import org.apache.directory.shared.ldap.codec.add.AddRequest;
-import org.apache.directory.shared.ldap.codec.add.AddResponse;
+import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
+import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequest;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponse;
-import org.apache.directory.shared.ldap.codec.del.DelRequest;
-import org.apache.directory.shared.ldap.codec.del.DelResponse;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequest;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponse;
-import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponse;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequest;
-import org.apache.directory.shared.ldap.codec.modify.ModifyResponse;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequest;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponse;
+import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
+import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
+import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
+import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
+import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
+import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
+import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
+import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
+import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
-import org.apache.directory.shared.ldap.codec.unbind.UnBindRequest;
+import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
+import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 
 
 /**
@@ -313,9 +313,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the AddRequest ldapObject.
      */
-    public AddRequest getAddRequest()
+    public AddRequestCodec getAddRequest()
     {
-        return ( AddRequest ) protocolOp;
+        return ( AddRequestCodec ) protocolOp;
     }
 
 
@@ -325,9 +325,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the AddResponse ldapObject.
      */
-    public AddResponse getAddResponse()
+    public AddResponseCodec getAddResponse()
     {
-        return ( AddResponse ) protocolOp;
+        return ( AddResponseCodec ) protocolOp;
     }
 
 
@@ -361,9 +361,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the CompareRequest ldapObject.
      */
-    public CompareRequest getCompareRequest()
+    public CompareRequestCodec getCompareRequest()
     {
-        return ( CompareRequest ) protocolOp;
+        return ( CompareRequestCodec ) protocolOp;
     }
 
 
@@ -373,9 +373,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the CompareResponse ldapObject.
      */
-    public CompareResponse getCompareResponse()
+    public CompareResponseCodec getCompareResponse()
     {
-        return ( CompareResponse ) protocolOp;
+        return ( CompareResponseCodec ) protocolOp;
     }
 
 
@@ -385,9 +385,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the DelRequest ldapObject.
      */
-    public DelRequest getDelRequest()
+    public DelRequestCodec getDelRequest()
     {
-        return ( DelRequest ) protocolOp;
+        return ( DelRequestCodec ) protocolOp;
     }
 
 
@@ -397,9 +397,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the DelResponse ldapObject.
      */
-    public DelResponse getDelResponse()
+    public DelResponseCodec getDelResponse()
     {
-        return ( DelResponse ) protocolOp;
+        return ( DelResponseCodec ) protocolOp;
     }
 
 
@@ -409,9 +409,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the ExtendedRequest ldapObject.
      */
-    public ExtendedRequest getExtendedRequest()
+    public ExtendedRequestCodec getExtendedRequest()
     {
-        return ( ExtendedRequest ) protocolOp;
+        return ( ExtendedRequestCodec ) protocolOp;
     }
 
 
@@ -421,9 +421,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the ExtendedResponse ldapObject.
      */
-    public ExtendedResponse getExtendedResponse()
+    public ExtendedResponseCodec getExtendedResponse()
     {
-        return ( ExtendedResponse ) protocolOp;
+        return ( ExtendedResponseCodec ) protocolOp;
     }
 
 
@@ -433,9 +433,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the IntermediateResponse ldapObject.
      */
-    public IntermediateResponse getIntermediateResponse()
+    public IntermediateResponseCodec getIntermediateResponse()
     {
-        return ( IntermediateResponse ) protocolOp;
+        return ( IntermediateResponseCodec ) protocolOp;
     }
 
 
@@ -445,9 +445,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the ModifyDNRequest ldapObject.
      */
-    public ModifyDNRequest getModifyDNRequest()
+    public ModifyDNRequestCodec getModifyDNRequest()
     {
-        return ( ModifyDNRequest ) protocolOp;
+        return ( ModifyDNRequestCodec ) protocolOp;
     }
 
 
@@ -457,9 +457,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the ModifyDNResponse ldapObject.
      */
-    public ModifyDNResponse getModifyDNResponse()
+    public ModifyDNResponseCodec getModifyDNResponse()
     {
-        return ( ModifyDNResponse ) protocolOp;
+        return ( ModifyDNResponseCodec ) protocolOp;
     }
 
 
@@ -469,9 +469,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the ModifyRequest ldapObject.
      */
-    public ModifyRequest getModifyRequest()
+    public ModifyRequestCodec getModifyRequest()
     {
-        return ( ModifyRequest ) protocolOp;
+        return ( ModifyRequestCodec ) protocolOp;
     }
 
 
@@ -481,9 +481,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the ModifyResponse ldapObject.
      */
-    public ModifyResponse getModifyResponse()
+    public ModifyResponseCodec getModifyResponse()
     {
-        return ( ModifyResponse ) protocolOp;
+        return ( ModifyResponseCodec ) protocolOp;
     }
 
 
@@ -505,9 +505,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the SearchRequestDone ldapObject.
      */
-    public SearchResultDone getSearchResultDone()
+    public SearchResultDoneCodec getSearchResultDone()
     {
-        return ( SearchResultDone ) protocolOp;
+        return ( SearchResultDoneCodec ) protocolOp;
     }
 
 
@@ -517,9 +517,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the SearchResultEntry ldapObject.
      */
-    public SearchResultEntry getSearchResultEntry()
+    public SearchResultEntryCodec getSearchResultEntry()
     {
-        return ( SearchResultEntry ) protocolOp;
+        return ( SearchResultEntryCodec ) protocolOp;
     }
 
 
@@ -529,9 +529,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the SearchResultReference ldapObject.
      */
-    public SearchResultReference getSearchResultReference()
+    public SearchResultReferenceCodec getSearchResultReference()
     {
-        return ( SearchResultReference ) protocolOp;
+        return ( SearchResultReferenceCodec ) protocolOp;
     }
 
 
@@ -541,9 +541,9 @@ public class LdapMessageCodec extends AbstractAsn1Object
      * 
      * @return Returns the UnBindRequest ldapObject.
      */
-    public UnBindRequest getUnBindRequest()
+    public UnBindRequestCodec getUnBindRequest()
     {
-        return ( UnBindRequest ) protocolOp;
+        return ( UnBindRequestCodec ) protocolOp;
     }
 
 

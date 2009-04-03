@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.del;
+package org.apache.directory.shared.ldap.codec.compare;
 
 
 import java.nio.BufferOverflowException;
@@ -26,36 +26,26 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
-import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 
 
 /**
- * A DelRequest Message. 
+ * An CompareResponse Message. Its syntax is : 
  * 
- * Its syntax is : 
- * 
- * DelRequest ::= [APPLICATION 10] LDAPDN
+ * CompareResponse ::= [APPLICATION 15] LDAPResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class DelRequest extends LdapMessageCodec
+public class CompareResponseCodec extends LdapResponseCodec
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
-    /** The entry to be deleted */
-    private LdapDN entry;
-
-
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     /**
-     * Creates a new DelRequest object.
+     * Creates a new CompareResponse object.
      */
-    public DelRequest()
+    public CompareResponseCodec()
     {
         super();
     }
@@ -71,53 +61,33 @@ public class DelRequest extends LdapMessageCodec
      */
     public int getMessageType()
     {
-        return LdapConstants.DEL_REQUEST;
+        return LdapConstants.COMPARE_RESPONSE;
     }
 
 
     /**
-     * Get the entry to be deleted
+     * Compute the CompareResponse length 
      * 
-     * @return Returns the entry.
-     */
-    public LdapDN getEntry()
-    {
-        return entry;
-    }
-
-
-    /**
-     * Set the entry to be deleted
+     * CompareResponse :
      * 
-     * @param entry The entry to set.
-     */
-    public void setEntry( LdapDN entry )
-    {
-        this.entry = entry;
-    }
-
-
-    /**
-     * Compute the DelRequest length 
+     * 0x6F L1
+     *  |
+     *  +--> LdapResult
      * 
-     * DelRequest : 
-     * 0x4A L1 entry 
+     * L1 = Length(LdapResult)
      * 
-     * L1 = Length(entry) 
-     * Length(DelRequest) = Length(0x4A) + Length(L1) + L1
+     * Length(CompareResponse) = Length(0x6F) + Length(L1) + L1
      */
     public int computeLength()
     {
-        // The entry
-        return 1 + TLV.getNbBytes( LdapDN.getNbBytes( entry ) ) + LdapDN.getNbBytes( entry );
+        int ldapResponseLength = super.computeLength();
+
+        return 1 + TLV.getNbBytes( ldapResponseLength ) + ldapResponseLength;
     }
 
 
     /**
-     * Encode the DelRequest message to a PDU. 
-     * 
-     * DelRequest : 
-     * 0x4A LL entry
+     * Encode the CompareResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
@@ -131,34 +101,32 @@ public class DelRequest extends LdapMessageCodec
 
         try
         {
-            // The DelRequest Tag
-            buffer.put( LdapConstants.DEL_REQUEST_TAG );
-
-            // The entry
-            buffer.put( TLV.getBytes( LdapDN.getNbBytes( entry ) ) );
-            buffer.put( LdapDN.getBytes( entry ) );
+            // The tag
+            buffer.put( LdapConstants.COMPARE_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( getLdapResponseLength() ) );
         }
         catch ( BufferOverflowException boe )
         {
             throw new EncoderException( "The PDU buffer size is too small !" );
         }
 
-        return buffer;
+        // The ldapResult
+        return super.encode( buffer );
     }
 
 
     /**
-     * Return a String representing a DelRequest
+     * Get a String representation of an CompareResponse
      * 
-     * @return A DelRequest String
+     * @return An CompareResponse String
      */
     public String toString()
     {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "    Del request\n" );
-        sb.append( "        Entry : '" ).append( entry ).append( "'\n" );
+        sb.append( "    Compare Response\n" );
+        sb.append( super.toString() );
 
         return sb.toString();
     }

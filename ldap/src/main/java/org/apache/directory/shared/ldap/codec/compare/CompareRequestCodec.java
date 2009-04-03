@@ -50,7 +50,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class CompareRequest extends LdapMessageCodec
+public class CompareRequestCodec extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ public class CompareRequest extends LdapMessageCodec
     /**
      * Creates a new CompareRequest object.
      */
-    public CompareRequest()
+    public CompareRequestCodec()
     {
         super();
     }

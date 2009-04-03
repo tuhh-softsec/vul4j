@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.util.LdapURL;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class SearchResultReference extends LdapMessageCodec
+public class SearchResultReferenceCodec extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ public class SearchResultReference extends LdapMessageCodec
     /**
      * Creates a new SearchResultEntry object.
      */
-    public SearchResultReference()
+    public SearchResultReferenceCodec()
     {
         super();
     }

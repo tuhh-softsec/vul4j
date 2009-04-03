@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponse;
+import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Test;
@@ -92,7 +92,7 @@ public class CompareResponseTest
 
         // Check the decoded CompareResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareResponse compareResponse = message.getCompareResponse();
+        CompareResponseCodec compareResponse = message.getCompareResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, compareResponse.getLdapResult().getResultCode() );
@@ -166,7 +166,7 @@ public class CompareResponseTest
 
         // Check the decoded CompareResponse PDU
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        CompareResponse compareResponse = message.getCompareResponse();
+        CompareResponseCodec compareResponse = message.getCompareResponse();
 
         assertEquals( 1, message.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, compareResponse.getLdapResult().getResultCode() );

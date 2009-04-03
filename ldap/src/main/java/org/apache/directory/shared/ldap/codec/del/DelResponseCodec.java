@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.modify;
+package org.apache.directory.shared.ldap.codec.del;
 
 
 import java.nio.BufferOverflowException;
@@ -30,22 +30,22 @@ import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
 
 
 /**
- * An ModifyResponse Message. Its syntax is : 
+ * An DelResponse Message. Its syntax is : 
  * 
- * ModifyResponse ::= [APPLICATION 7] LDAPResult
+ * DelResponse ::= [APPLICATION 11] LDAPResult
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class ModifyResponse extends LdapResponseCodec
+public class DelResponseCodec extends LdapResponseCodec
 {
     // ~ Constructors
     // -------------------------------------------------------------------------------
 
     /**
-     * Creates a new ModifyResponse object.
+     * Creates a new DelResponse object.
      */
-    public ModifyResponse()
+    public DelResponseCodec()
     {
         super();
     }
@@ -58,20 +58,22 @@ public class ModifyResponse extends LdapResponseCodec
      */
     public int getMessageType()
     {
-        return LdapConstants.MODIFY_RESPONSE;
+        return LdapConstants.DEL_RESPONSE;
     }
 
 
     /**
-     * Compute the ModifyResponse length 
+     * Compute the DelResponse length 
      * 
-     * ModifyResponse : 
-     * 0x67 L1 
-     *   | 
-     *   +--> LdapResult 
-     *   
-     * L1 = Length(LdapResult) 
-     * Length(ModifyResponse) = Length(0x67) + Length(L1) + L1
+     * DelResponse :
+     * 
+     * 0x6B L1
+     *  |
+     *  +--> LdapResult
+     * 
+     * L1 = Length(LdapResult)
+     * 
+     * Length(DelResponse) = Length(0x6B) + Length(L1) + L1
      */
     public int computeLength()
     {
@@ -82,7 +84,7 @@ public class ModifyResponse extends LdapResponseCodec
 
 
     /**
-     * Encode the ModifyResponse message to a PDU.
+     * Encode the DelResponse message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
@@ -97,7 +99,7 @@ public class ModifyResponse extends LdapResponseCodec
         try
         {
             // The tag
-            buffer.put( LdapConstants.MODIFY_RESPONSE_TAG );
+            buffer.put( LdapConstants.DEL_RESPONSE_TAG );
             buffer.put( TLV.getBytes( getLdapResponseLength() ) );
         }
         catch ( BufferOverflowException boe )
@@ -111,16 +113,16 @@ public class ModifyResponse extends LdapResponseCodec
 
 
     /**
-     * Get a String representation of a ModifyResponse
+     * Get a String representation of a DelResponse
      * 
-     * @return A ModifyResponse String
+     * @return A DelResponse String
      */
     public String toString()
     {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "    Modify Response\n" );
+        sb.append( "    Del Response\n" );
         sb.append( super.toString() );
 
         return sb.toString();

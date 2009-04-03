@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$, 
  */
-public class UnBindRequest extends LdapMessageCodec
+public class UnBindRequestCodec extends LdapMessageCodec
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ public class UnBindRequest extends LdapMessageCodec
     /**
      * Creates a new BindRequest object.
      */
-    public UnBindRequest()
+    public UnBindRequestCodec()
     {
         super();
     }

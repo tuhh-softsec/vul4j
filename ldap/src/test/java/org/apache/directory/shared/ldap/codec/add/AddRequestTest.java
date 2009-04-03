@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.add.AddRequest;
+import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
@@ -115,7 +115,7 @@ public class AddRequestTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddRequest addRequest = message.getAddRequest();
+        AddRequestCodec addRequest = message.getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, message.getMessageId() );
@@ -607,7 +607,7 @@ public class AddRequestTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddRequest addRequest = message.getAddRequest();
+        AddRequestCodec addRequest = message.getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, message.getMessageId() );
@@ -696,7 +696,7 @@ public class AddRequestTest
         }
 
         LdapMessageCodec message = ( ( LdapMessageContainer ) ldapMessageContainer ).getLdapMessage();
-        AddRequest addRequest = message.getAddRequest();
+        AddRequestCodec addRequest = message.getAddRequest();
 
         // Check the decoded message
         assertEquals( 1, message.getMessageId() );

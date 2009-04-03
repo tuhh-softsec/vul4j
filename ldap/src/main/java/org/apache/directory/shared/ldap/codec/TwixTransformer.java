@@ -30,26 +30,26 @@ import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
-import org.apache.directory.shared.ldap.codec.add.AddRequest;
-import org.apache.directory.shared.ldap.codec.add.AddResponse;
+import org.apache.directory.shared.ldap.codec.add.AddRequestCodec;
+import org.apache.directory.shared.ldap.codec.add.AddResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
-import org.apache.directory.shared.ldap.codec.compare.CompareRequest;
-import org.apache.directory.shared.ldap.codec.compare.CompareResponse;
+import org.apache.directory.shared.ldap.codec.compare.CompareRequestCodec;
+import org.apache.directory.shared.ldap.codec.compare.CompareResponseCodec;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlCodec;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlCodec;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlCodec;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlCodec;
-import org.apache.directory.shared.ldap.codec.del.DelRequest;
-import org.apache.directory.shared.ldap.codec.del.DelResponse;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedRequest;
-import org.apache.directory.shared.ldap.codec.extended.ExtendedResponse;
-import org.apache.directory.shared.ldap.codec.modify.ModifyRequest;
-import org.apache.directory.shared.ldap.codec.modify.ModifyResponse;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequest;
-import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponse;
+import org.apache.directory.shared.ldap.codec.del.DelRequestCodec;
+import org.apache.directory.shared.ldap.codec.del.DelResponseCodec;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedRequestCodec;
+import org.apache.directory.shared.ldap.codec.extended.ExtendedResponseCodec;
+import org.apache.directory.shared.ldap.codec.modify.ModifyRequestCodec;
+import org.apache.directory.shared.ldap.codec.modify.ModifyResponseCodec;
+import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNRequestCodec;
+import org.apache.directory.shared.ldap.codec.modifyDn.ModifyDNResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
@@ -59,9 +59,9 @@ import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
+import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.codec.search.controls.pSearch.PSearchControlCodec;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedSearchControlCodec;
@@ -173,7 +173,7 @@ public class TwixTransformer
     public static InternalMessage transformAddRequest( LdapMessageCodec twixMessage, int messageId )
     {
         AddRequestImpl snickersMessage = new AddRequestImpl( messageId );
-        AddRequest addRequest = twixMessage.getAddRequest();
+        AddRequestCodec addRequest = twixMessage.getAddRequest();
 
         // Twix : LdapDN entry -> Snickers : String name
         snickersMessage.setEntry( addRequest.getEntry() );
@@ -302,7 +302,7 @@ public class TwixTransformer
     public static InternalMessage transformCompareRequest( LdapMessageCodec twixMessage, int messageId )
     {
         CompareRequestImpl snickersMessage = new CompareRequestImpl( messageId );
-        CompareRequest compareRequest = twixMessage.getCompareRequest();
+        CompareRequestCodec compareRequest = twixMessage.getCompareRequest();
 
         // Twix : LdapDN entry -> Snickers : private LdapDN
         snickersMessage.setName( compareRequest.getEntry() );
@@ -334,7 +334,7 @@ public class TwixTransformer
     public static InternalMessage transformDelRequest( LdapMessageCodec twixMessage, int messageId )
     {
         DeleteRequestImpl snickersMessage = new DeleteRequestImpl( messageId );
-        DelRequest delRequest = twixMessage.getDelRequest();
+        DelRequestCodec delRequest = twixMessage.getDelRequest();
 
         // Twix : LdapDN entry -> Snickers : LdapDN
         snickersMessage.setName( delRequest.getEntry() );
@@ -353,7 +353,7 @@ public class TwixTransformer
      */
     public static InternalMessage transformExtendedRequest( LdapMessageCodec twixMessage, int messageId )
     {
-        ExtendedRequest extendedRequest = twixMessage.getExtendedRequest();
+        ExtendedRequestCodec extendedRequest = twixMessage.getExtendedRequest();
         ExtendedRequestImpl snickersMessage;
 
         if ( extendedRequest.getRequestName().equals( GracefulShutdownRequest.EXTENSION_OID ) )
@@ -386,7 +386,7 @@ public class TwixTransformer
     public static InternalMessage transformModifyDNRequest( LdapMessageCodec twixMessage, int messageId )
     {
         ModifyDnRequestImpl snickersMessage = new ModifyDnRequestImpl( messageId );
-        ModifyDNRequest modifyDNRequest = twixMessage.getModifyDNRequest();
+        ModifyDNRequestCodec modifyDNRequest = twixMessage.getModifyDNRequest();
 
         // Twix : LdapDN entry -> Snickers : LdapDN m_name
         snickersMessage.setName( modifyDNRequest.getEntry() );
@@ -414,7 +414,7 @@ public class TwixTransformer
     public static InternalMessage transformModifyRequest( LdapMessageCodec twixMessage, int messageId )
     {
         ModifyRequestImpl snickersMessage = new ModifyRequestImpl( messageId );
-        ModifyRequest modifyRequest = twixMessage.getModifyRequest();
+        ModifyRequestCodec modifyRequest = twixMessage.getModifyRequest();
 
         // Twix : LdapDN object -> Snickers : String name
         snickersMessage.setName( modifyRequest.getObject() );
@@ -1140,7 +1140,7 @@ public class TwixTransformer
     {
         AddResponseImpl snickersAddResponse = ( AddResponseImpl ) snickersMessage;
 
-        AddResponse addResponse = new AddResponse();
+        AddResponseCodec addResponse = new AddResponseCodec();
 
         // Transform the ldapResult
         addResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) snickersAddResponse.getLdapResult() ) );
@@ -1224,7 +1224,7 @@ public class TwixTransformer
     {
         CompareResponseImpl snickersCompareResponse = ( CompareResponseImpl ) snickersMessage;
 
-        CompareResponse compareResponse = new CompareResponse();
+        CompareResponseCodec compareResponse = new CompareResponseCodec();
 
         // Transform the ldapResult
         compareResponse
@@ -1245,7 +1245,7 @@ public class TwixTransformer
     {
         DeleteResponseImpl snickersDelResponse = ( DeleteResponseImpl ) snickersMessage;
 
-        DelResponse delResponse = new DelResponse();
+        DelResponseCodec delResponse = new DelResponseCodec();
 
         // Transform the ldapResult
         delResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) snickersDelResponse.getLdapResult() ) );
@@ -1264,7 +1264,7 @@ public class TwixTransformer
     public static void transformExtendedResponse( LdapMessageCodec twixMessage, InternalMessage snickersMessage )
     {
         ExtendedResponseImpl snickersExtendedResponse = ( ExtendedResponseImpl ) snickersMessage;
-        ExtendedResponse extendedResponse = new ExtendedResponse();
+        ExtendedResponseCodec extendedResponse = new ExtendedResponseCodec();
 
         // Snickers : String oid -> Twix : OID responseName
         try
@@ -1299,7 +1299,7 @@ public class TwixTransformer
     {
         ModifyResponseImpl snickersModifyResponse = ( ModifyResponseImpl ) snickersMessage;
 
-        ModifyResponse modifyResponse = new ModifyResponse();
+        ModifyResponseCodec modifyResponse = new ModifyResponseCodec();
 
         // Transform the ldapResult
         modifyResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) snickersModifyResponse.getLdapResult() ) );
@@ -1319,7 +1319,7 @@ public class TwixTransformer
     {
         ModifyDnResponseImpl snickersModifyDNResponse = ( ModifyDnResponseImpl ) snickersMessage;
 
-        ModifyDNResponse modifyDNResponse = new ModifyDNResponse();
+        ModifyDNResponseCodec modifyDNResponse = new ModifyDNResponseCodec();
 
         // Transform the ldapResult
         modifyDNResponse.setLdapResult( transformLdapResult( ( LdapResultImpl ) snickersModifyDNResponse
@@ -1339,7 +1339,7 @@ public class TwixTransformer
     public static void transformSearchResultDone( LdapMessageCodec twixMessage, InternalMessage snickersMessage )
     {
         SearchResponseDoneImpl snickersSearchResponseDone = ( SearchResponseDoneImpl ) snickersMessage;
-        SearchResultDone searchResultDone = new SearchResultDone();
+        SearchResultDoneCodec searchResultDone = new SearchResultDoneCodec();
 
         // Transform the ldapResult
         searchResultDone.setLdapResult( transformLdapResult( ( LdapResultImpl ) snickersSearchResponseDone
@@ -1359,7 +1359,7 @@ public class TwixTransformer
     public static void transformSearchResultEntry( LdapMessageCodec twixMessage, InternalMessage snickersMessage )
     {
         SearchResponseEntryImpl snickersSearchResultResponse = ( SearchResponseEntryImpl ) snickersMessage;
-        SearchResultEntry searchResultEntry = new SearchResultEntry();
+        SearchResultEntryCodec searchResultEntry = new SearchResultEntryCodec();
 
         // Snickers : LdapDN dn -> Twix : LdapDN objectName
         searchResultEntry.setObjectName( snickersSearchResultResponse.getObjectName() );
@@ -1383,7 +1383,7 @@ public class TwixTransformer
     public static void transformSearchResultReference( LdapMessageCodec twixMessage, InternalMessage snickersMessage )
     {
         SearchResponseReferenceImpl snickersSearchResponseReference = ( SearchResponseReferenceImpl ) snickersMessage;
-        SearchResultReference searchResultReference = new SearchResultReference();
+        SearchResultReferenceCodec searchResultReference = new SearchResultReferenceCodec();
 
         // Snickers : Referral m_referral -> Twix: ArrayList
         // searchResultReferences
