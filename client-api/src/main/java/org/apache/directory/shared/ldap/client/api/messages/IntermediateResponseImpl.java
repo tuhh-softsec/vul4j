@@ -33,24 +33,45 @@ public class IntermediateResponseImpl extends AbstractMessage implements Interme
     /** The response value */
     private byte[] responseValue;
     
+    /**
+     * Creates a new instance of IntermediateResponseImpl.
+     */
+    public IntermediateResponseImpl()
+    {
+        super();
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
     public String getResponseName()
     {
         return responseName;
     }
     
     
+    /**
+     * {@inheritDoc}
+     */
     public void setResponseName( String responseName )
     {
         this.responseName = responseName;
     }
     
     
+    /**
+     * {@inheritDoc}
+     */
     public byte[] getResponseValue()
     {
         return responseValue;
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public void setResponseValue( byte[] responseValue )
     {
         this.responseValue = responseValue;

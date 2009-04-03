@@ -32,6 +32,9 @@ public class BindResponseImpl extends AbstractResponseWithResult implements Bind
     private byte[] credentials;
 
     
+    /**
+     * Creates a new instance of BindResponseImpl.
+     */
     public BindResponseImpl()
     {
         super();

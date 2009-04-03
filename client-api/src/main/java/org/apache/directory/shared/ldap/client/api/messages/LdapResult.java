@@ -20,9 +20,7 @@
 
 package org.apache.directory.shared.ldap.client.api.messages;
 
-import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.LdapDN;
 
 
 /**
@@ -77,17 +75,16 @@ public interface LdapResult
      * 
      * @return the Dn of the lowest matched entry.
      */
-    LdapDN getMatchedDn();
+    String getMatchedDn();
 
 
     /**
      * Sets the lowest entry in the directory that was matched.
      * 
      * @see #getMatchedDn()
-     * @param dn
-     *            the Dn of the lowest matched entry.
+     * @param dn the Dn of the lowest matched entry.
      */
-    void setMatchedDn( LdapDN dn );
+    void setMatchedDn( String dn );
 
 
     /**
@@ -124,7 +121,7 @@ public interface LdapResult
      * 
      * @return the referral on REFERRAL errors, null on all others.
      */
-    InternalReferral getReferral();
+    Referral getReferral();
 
 
     /**
@@ -133,8 +130,7 @@ public interface LdapResult
      * will result in a true return from isReferral and the resultCode should be
      * set to REFERRAL.
      * 
-     * @param referral
-     *            optional referral on REFERRAL errors.
+     * @param referral optional referral on REFERRAL errors.
      */
-    void setReferral( InternalReferral referral );
+    void setReferral( Referral referral );
 }

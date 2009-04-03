@@ -29,13 +29,18 @@ package org.apache.directory.shared.ldap.client.api.messages;
 public interface ResponseWithResult extends Response
 {
     /**
-     * If called for the first time, this method creates a result containing
-     * response object for this request.
+     * Returns the response's result
      * 
      * @return a result containing response with defaults and the messageId set
      * in response to this specific request
      */
     LdapResult getLdapResult();
     
+    
+    /**
+     * Sets the result into the response.
+     * 
+     * @param ldapResult The LdapResult instance associated with this response
+     */
     void setLdapResult( LdapResult ldapResult );
 }

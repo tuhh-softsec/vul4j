@@ -28,11 +28,11 @@ package org.apache.directory.shared.ldap.client.api.messages;
  */
 public abstract class AbstractResponseWithResult extends AbstractMessage implements ResponseWithResult
 {
+    /** The result */
     private LdapResult ldapResult;
     
     /**
-     * If called for the first time, this method creates a result containing
-     * response object for this request.
+     * Returns the response's result
      * 
      * @return a result containing response with defaults and the messageId set
      * in response to this specific request
@@ -43,6 +43,11 @@ public abstract class AbstractResponseWithResult extends AbstractMessage impleme
     }
     
     
+    /**
+     * Sets the result into the response.
+     * 
+     * @param ldapResult The LdapResult instance associated with this response
+     */
     public void setLdapResult( LdapResult ldapResult )
     {
         this.ldapResult = ldapResult;

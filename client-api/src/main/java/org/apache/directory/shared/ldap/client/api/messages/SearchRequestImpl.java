@@ -75,26 +75,7 @@ public class SearchRequestImpl extends AbstractRequest implements SearchRequest
     // SearchRequest Interface Method Implementations
     // ------------------------------------------------------------------------
     /**
-     * Gets a list of the attributes to be returned from each entry which
-     * matches the search filter. There are two special values which may be
-     * used: an empty list with no attributes, and the attribute description
-     * string "*". Both of these signify that all user attributes are to be
-     * returned. (The "*" allows the client to request all user attributes in
-     * addition to specific operational attributes). Attributes MUST be named at
-     * most once in the list, and are returned at most once in an entry. If
-     * there are attribute descriptions in the list which are not recognized,
-     * they are ignored by the server. If the client does not want any
-     * attributes returned, it can specify a list containing only the attribute
-     * with OID "1.1". This OID was chosen arbitrarily and does not correspond
-     * to any attribute in use. Client implementors should note that even if all
-     * user attributes are requested, some attributes of the entry may not be
-     * included in search results due to access control or other restrictions.
-     * Furthermore, servers will not return operational attributes, such as
-     * objectClasses or attributeTypes, unless they are listed by name, since
-     * there may be extremely large number of values for certain operational
-     * attributes.
-     * 
-     * @return the collection of attributes to return for each entry
+     * {@inheritDoc}
      */
     public Set<String> getAttributes()
     {

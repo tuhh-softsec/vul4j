@@ -27,11 +27,34 @@ package org.apache.directory.shared.ldap.client.api.messages;
  */
 public interface IntermediateResponse extends Message
 {
+    /**
+     * Get the original response OID.
+     *
+     * @return The response OID
+     */
     String getResponseName();
     
+    
+    /**
+     * Sets the original response OID
+     *
+     * @param responseName The response OID
+     */
     void setResponseName( String responseName );
     
+    
+    /**
+     * Get the associated response value
+     *
+     * @return The response value
+     */
     byte[] getResponseValue();
     
+    
+    /**
+     * Sets the response's value
+     *
+     * @param responseValue The associated response's value
+     */
     void setResponseValue( byte[] responseValue );
 }
