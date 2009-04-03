@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.client.api.listeners;
 
 import org.apache.directory.shared.ldap.client.api.LdapConnection;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultDone;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultEntry;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultReference;
 
 /**
  * A listener used for asynchronous search handling. When wanting to handle
@@ -38,6 +38,7 @@ public interface SearchListener
     /**
      * A callback method for each entry returned by a search operation.
      *
+     * @param connection
      * @param searchResultEntry The found entry
      */
     void entryFound( LdapConnection connection, SearchResultEntry searchResultEntry );
@@ -46,13 +47,17 @@ public interface SearchListener
     /**
      * A callback method for each referral returned by a search operation.
      *
-     * @param referrals The referral message
+     * @param connection
+     * @param searchResultReference The referral message
      */
-    void referralFound( LdapConnection connection, SearchResultReference referrals );
+    void referralFound( LdapConnection connection, SearchResultReference searchResultReference );
 
     
     /**
      * A callback method called when the search is done.
+     * 
+     * @param connection
+     * @param searchResultDone
      */
-    void searchDone( LdapConnection connection, LdapResponseCodec searchDone );
+    void searchDone( LdapConnection connection, SearchResultDone searchResultDone );
 }

@@ -30,15 +30,15 @@ import org.apache.directory.shared.ldap.util.LdapURL;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision: 760984 $
  */
-public class SearchRefResponseImpl extends AbstractMessage implements SearchRefResponse
+public class SearchResultReferenceImpl extends AbstractMessage implements SearchResultReference
 {
     /** The list of LdapURL referrals */
     private Referral referral;
     
     /**
-     * Creates a new instance of SearchRefResponseImpl.
+     * Creates a new instance of SearchResultReferenceImpl.
      */
-    public SearchRefResponseImpl()
+    public SearchResultReferenceImpl()
     {
         super();
     }

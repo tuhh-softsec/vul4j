@@ -22,11 +22,16 @@ package org.apache.directory.shared.ldap.client.api;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.Control;
@@ -41,32 +46,47 @@ import org.apache.directory.shared.ldap.client.api.messages.AbandonRequest;
 import org.apache.directory.shared.ldap.client.api.messages.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequest;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequestImpl;
+import org.apache.directory.shared.ldap.client.api.messages.BindResponse;
+import org.apache.directory.shared.ldap.client.api.messages.BindResponseImpl;
+import org.apache.directory.shared.ldap.client.api.messages.LdapResult;
+import org.apache.directory.shared.ldap.client.api.messages.LdapResultImpl;
+import org.apache.directory.shared.ldap.client.api.messages.Referral;
+import org.apache.directory.shared.ldap.client.api.messages.ReferralImpl;
+import org.apache.directory.shared.ldap.client.api.messages.SearchRequest;
+import org.apache.directory.shared.ldap.client.api.messages.SearchRequestImpl;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResponse;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultDone;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultDoneImpl;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultEntry;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultEntryImpl;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultReference;
+import org.apache.directory.shared.ldap.client.api.messages.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.LdapResponseCodec;
+import org.apache.directory.shared.ldap.codec.LdapResultCodec;
+import org.apache.directory.shared.ldap.codec.TwixTransformer;
 import org.apache.directory.shared.ldap.codec.abandon.AbandonRequestCodec;
 import org.apache.directory.shared.ldap.codec.bind.BindRequestCodec;
+import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.LdapAuthentication;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
-import org.apache.directory.shared.ldap.codec.unbind.UnBindRequest;
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
+import org.apache.directory.shared.ldap.codec.unbind.UnBindRequestCodec;
 import org.apache.directory.shared.ldap.cursor.Cursor;
 import org.apache.directory.shared.ldap.cursor.ListCursor;
-import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.message.InternalAddResponse;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.util.LdapURL;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.future.ConnectFuture;
@@ -79,6 +99,9 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO : implement a pool
+// TODO : handle the MessageId for an abandonRequest
+// TODO : return the created request, instead of an LdapResponse
 
 /**
  * 
@@ -136,7 +159,7 @@ public class LdapConnection  extends IoHandlerAdapter
     private IoSession ldapSession;
     
     /** A Message ID which is incremented for each operation */
-    private int messageId;
+    private AtomicInteger messageId;
     
     /** A queue used to store the incoming add responses */
     private BlockingQueue<LdapMessageCodec> addResponseQueue;
@@ -213,7 +236,7 @@ public class LdapConnection  extends IoHandlerAdapter
     /**
      * Handle the lock mechanism on session
      */
-    private void lock() throws LdapException
+    private void lockSession() throws LdapException
     {
         try
         {
@@ -230,7 +253,16 @@ public class LdapConnection  extends IoHandlerAdapter
             throw ldapException;
         }
     }
+
     
+    /**
+     * Unlock the session
+     */
+    private void unlockSession()
+    {
+        operationMutex.release();
+    }
+
     
     /**
      * Inject the client Controls into the message
@@ -252,6 +284,125 @@ public class LdapConnection  extends IoHandlerAdapter
             }
         }
     }
+    
+    
+    /**
+     * Get the smallest timeout from the client timeout and the connection
+     * timeout.
+     */
+    private long getTimeout( long clientTimeOut )
+    {
+        if ( clientTimeOut <= 0 )
+        {
+            return ( timeOut <= 0 ) ? Long.MAX_VALUE : timeOut;
+        }
+        else if ( timeOut <= 0 )
+        {
+            return clientTimeOut;
+        }
+        else
+        {
+            return timeOut < clientTimeOut ? timeOut : clientTimeOut; 
+        }
+    }
+    
+    
+    /**
+     * Convert a BindResponseCodec to a BindResponse message
+     */
+    private BindResponse convert( BindResponseCodec bindResponseCodec )
+    {
+        BindResponse bindResponse = new BindResponseImpl();
+        
+        bindResponse.setMessageId( bindResponseCodec.getMessageId() );
+        bindResponse.setServerSaslCreds( bindResponseCodec.getServerSaslCreds() );
+        bindResponse.setLdapResult( convert( bindResponseCodec.getLdapResult() ) );
+
+        return bindResponse;
+    }
+
+
+    /**
+     * Convert a LdapResultCodec to a LdapResult message
+     */
+    private LdapResult convert( LdapResultCodec ldapResultCodec )
+    {
+        LdapResult ldapResult = new LdapResultImpl();
+        
+        ldapResult.setErrorMessage( ldapResultCodec.getErrorMessage() );
+        ldapResult.setMatchedDn( ldapResultCodec.getMatchedDN() );
+        
+        // Loop on the referrals
+        Referral referral = new ReferralImpl();
+        
+        if (ldapResultCodec.getReferrals() != null )
+        {
+            for ( LdapURL url:ldapResultCodec.getReferrals() )
+            {
+                referral.addLdapUrls( url );
+            }
+        }
+        
+        ldapResult.setReferral( referral );
+        ldapResult.setResultCode( ldapResultCodec.getResultCode() );
+
+        return ldapResult;
+    }
+
+
+    /**
+     * Convert a SearchResultEntryCodec to a SearchResultEntry message
+     */
+    private SearchResultEntry convert( SearchResultEntryCodec searchEntryResultCodec )
+    {
+        SearchResultEntry searchResultEntry = new SearchResultEntryImpl();
+        
+        searchResultEntry.setMessageId( searchEntryResultCodec.getMessageId() );
+        searchResultEntry.setEntry( searchEntryResultCodec.getEntry() );
+        
+        return searchResultEntry;
+    }
+
+
+    /**
+     * Convert a SearchResultDoneCodec to a SearchResultDone message
+     */
+    private SearchResultDone convert( SearchResultDoneCodec searchResultDoneCodec )
+    {
+        SearchResultDone searchResultDone = new SearchResultDoneImpl();
+        
+        searchResultDone.setMessageId( searchResultDoneCodec.getMessageId() );
+        searchResultDone.setLdapResult( convert( searchResultDoneCodec.getLdapResult() ) );
+        
+        return searchResultDone;
+    }
+
+
+    /**
+     * Convert a SearchResultReferenceCodec to a SearchResultReference message
+     */
+    private SearchResultReference convert( SearchResultReferenceCodec searchEntryReferenceCodec )
+    {
+        SearchResultReference searchResultReference = new SearchResultReferenceImpl();
+        
+        searchResultReference.setMessageId( searchEntryReferenceCodec.getMessageId() );
+
+        // Loop on the referrals
+        Referral referral = new ReferralImpl();
+        
+        if (searchEntryReferenceCodec.getSearchResultReferences() != null )
+        {
+            for ( LdapURL url:searchEntryReferenceCodec.getSearchResultReferences() )
+            {
+                referral.addLdapUrls( url );
+            }
+        }
+        
+        searchResultReference.setReferral( referral );
+
+        return searchResultReference;
+    }
+
 
     //------------------------- The constructors --------------------------//
     /**
@@ -263,7 +414,7 @@ public class LdapConnection  extends IoHandlerAdapter
         useSsl = false;
         ldapPort = DEFAULT_LDAP_PORT;
         ldapHost = DEFAULT_LDAP_HOST;
-        messageId = 1;
+        messageId = new AtomicInteger();
         operationMutex = new Semaphore(1);
     }
     
@@ -279,7 +430,7 @@ public class LdapConnection  extends IoHandlerAdapter
         this.useSsl = useSsl;
         ldapPort = ( useSsl ? DEFAULT_LDAPS_PORT : DEFAULT_LDAP_PORT );
         ldapHost = DEFAULT_LDAP_HOST;
-        messageId = 1;
+        messageId = new AtomicInteger();
         operationMutex = new Semaphore(1);
     }
     
@@ -295,7 +446,7 @@ public class LdapConnection  extends IoHandlerAdapter
         useSsl = false;
         ldapPort = DEFAULT_LDAP_PORT;
         ldapHost = server;
-        messageId = 1;
+        messageId = new AtomicInteger();
         operationMutex = new Semaphore(1);
     }
     
@@ -313,7 +464,7 @@ public class LdapConnection  extends IoHandlerAdapter
         this.useSsl = useSsl;
         ldapPort = ( useSsl ? DEFAULT_LDAPS_PORT : DEFAULT_LDAP_PORT );
         ldapHost = DEFAULT_LDAP_HOST;
-        messageId = 1;
+        messageId = new AtomicInteger();
         operationMutex = new Semaphore(1);
     }
     
@@ -330,7 +481,7 @@ public class LdapConnection  extends IoHandlerAdapter
         useSsl = false;
         ldapPort = port;
         ldapHost = server;
-        messageId = 1;
+        messageId = new AtomicInteger();
         operationMutex = new Semaphore(1);
     }
     
@@ -349,7 +500,7 @@ public class LdapConnection  extends IoHandlerAdapter
         this.useSsl = useSsl;
         ldapPort = port;
         ldapHost = server;
-        messageId = 1;
+        messageId = new AtomicInteger();
         operationMutex = new Semaphore(1);
     }
 
@@ -493,7 +644,7 @@ public class LdapConnection  extends IoHandlerAdapter
 
         // Guarantee that for this session, we don't have more than one operation
         // running at the same time
-        lock();
+        lockSession();
         
         // Create the AddRequest
         LdapDN dn = new LdapDN( name );
@@ -527,7 +678,7 @@ public class LdapConnection  extends IoHandlerAdapter
         {
             // We didn't received anything : this is an error
             LOG.error( "Bind failed : timeout occured" );
-            operationMutex.release();
+            unlockSession();
             throw new Exception( "TimeOut occured" );
         }
         
@@ -577,7 +728,12 @@ public class LdapConnection  extends IoHandlerAdapter
     {
         // Create the new message and update the messageId
         LdapMessageCodec message = new LdapMessageCodec();
-        message.setMessageId( messageId++ );
+
+        // Creates the messageID and stores it into the 
+        // initial message and the transmitted message.
+        int newId = messageId.incrementAndGet();
+        abandonRequest.setMessageId( newId );
+        message.setMessageId( newId );
 
         // Create the inner abandonRequest
         AbandonRequestCodec request = new AbandonRequestCodec();
@@ -607,7 +763,7 @@ public class LdapConnection  extends IoHandlerAdapter
      *
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponseCodec bind() throws LdapException
+    public BindResponse bind() throws LdapException
     {
         return bind( (String)null, (byte[])null );
     }
@@ -621,7 +777,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * valid DN
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponseCodec bind( String name ) throws Exception
+    public BindResponse bind( String name ) throws Exception
     {
         return bind( name, (byte[])null );
     }
@@ -635,7 +791,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password. It can't be null 
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponseCodec bind( String name, String credentials ) throws LdapException
+    public BindResponse bind( String name, String credentials ) throws LdapException
     {
         return bind( name, StringTools.getBytesUtf8( credentials ) );
     }
@@ -649,7 +805,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param credentials The password.
      * @return The BindResponse LdapResponse 
      */
-    public LdapResponseCodec bind( String name, byte[] credentials )  throws LdapException
+    public BindResponse bind( String name, byte[] credentials )  throws LdapException
     {
         LOG.debug( "Bind request : {}", name );
 
@@ -658,7 +814,7 @@ public class LdapConnection  extends IoHandlerAdapter
         bindRequest.setName( name );
         bindRequest.setCredentials( credentials );
         
-        LdapResponseCodec response = bind( bindRequest );
+        BindResponse response = bind( bindRequest );
 
         if ( response.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
         {
@@ -680,7 +836,7 @@ public class LdapConnection  extends IoHandlerAdapter
      * parameters 
      * @return A LdapResponse containing the result
      */
-    public LdapResponseCodec bind( BindRequest bindRequest ) throws LdapException
+    public BindResponse bind( BindRequest bindRequest ) throws LdapException
     {
         return bindInternal( bindRequest, null );
     }
@@ -704,18 +860,23 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param bindRequest The BindRequest to send
      * @param listener The listener (Can be null) 
      */
-    private LdapResponseCodec bindInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
+    private BindResponse bindInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
     {
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
         // Guarantee that for this session, we don't have more than one operation
         // running at the same time
-        lock();
+        lockSession();
         
         // Create the new message and update the messageId
-        LdapMessageCodec message = new LdapMessageCodec();
-        message.setMessageId( messageId++ );
+        LdapMessageCodec bindMessage = new LdapMessageCodec();
+
+        // Creates the messageID and stores it into the 
+        // initial message and the transmitted message.
+        int newId = messageId.incrementAndGet();
+        bindRequest.setMessageId( newId );
+        bindMessage.setMessageId( newId );
         
         // Create a new codec BindRequest object
         BindRequestCodec request =  new BindRequestCodec();
@@ -731,6 +892,7 @@ public class LdapConnection  extends IoHandlerAdapter
             LOG.error( "The given dn '{}' is not valid", bindRequest.getName() );
             LdapException ldapException = new LdapException();
             ldapException.initCause( ine );
+            unlockSession();
             throw ldapException;
         }
         
@@ -755,53 +917,59 @@ public class LdapConnection  extends IoHandlerAdapter
         request.setAuthentication( authentication );
         
         // Stores the BindRequest into the message
-        message.setProtocolOP( request );
+        bindMessage.setProtocolOP( request );
         
         // Add the controls
-        setControls( bindRequest.getControls(), message );
+        setControls( bindRequest.getControls(), bindMessage );
 
         LOG.debug( "-----------------------------------------------------------------" );
-        LOG.debug( "Sending request \n{}", message );
+        LOG.debug( "Sending request \n{}", bindMessage );
 
         // Send the request to the server
-        ldapSession.write( message );
+        ldapSession.write( bindMessage );
 
         if ( bindListener == null )
         {
             // Read the response, waiting for it if not available immediately
             try
             {
-                LdapMessageCodec response = bindResponseQueue.poll( bindRequest.getTimeout(), TimeUnit.MILLISECONDS );
+                long timeout = getTimeout( bindRequest.getTimeout() );
+
+                LdapMessageCodec response = bindResponseQueue.poll( timeout, TimeUnit.MILLISECONDS );
             
                 // Check that we didn't get out because of a timeout
                 if ( response == null )
                 {
                     // Send an abandon request
-                    abandon( message.getBindRequest().getMessageId() );
+                    abandon( bindMessage.getBindRequest().getMessageId() );
                     
                     // We didn't received anything : this is an error
                     LOG.error( "Bind failed : timeout occured" );
-                    operationMutex.release();
+                    unlockSession();
                     throw new LdapException( "TimeOut occured" );
                 }
                 
-                operationMutex.release();
+                // Release the session lock
+                unlockSession();
                 
                 // Everything is fine, return the response
-                LdapResponseCodec resp = response.getBindResponse();
+                BindResponse bindResponse = new BindResponseImpl();
+                bindResponse.setServerSaslCreds( response.getBindResponse().getServerSaslCreds() );
+                response.getLdapResponse();
                 
-                LOG.debug( "Bind successful : {}", resp );
+                LOG.debug( "Bind successful : {}", response.getBindResponse() );
                 
-                return resp;
+                return bindResponse;
             }
             catch ( InterruptedException ie )
             {
                 LOG.error( "The response queue has been emptied, no response will be find." );
                 LdapException ldapException = new LdapException();
                 ldapException.initCause( ie );
+                unlockSession();
                 
                 // Send an abandon request
-                abandon( message.getBindRequest().getMessageId() );
+                abandon( bindMessage.getBindRequest().getMessageId() );
                 throw ldapException;
             }
         }
@@ -826,66 +994,25 @@ public class LdapConnection  extends IoHandlerAdapter
      * Attributes : all the user's attributes.
      * This method is blocking.
      * 
-     * @param baseObject The base for the search. It must be a valid
+     * @param baseDn The base for the search. It must be a valid
      * DN, and can't be emtpy
      * @param filterString The filter to use for this search. It can't be empty
+     * @param scope The sarch scope : OBJECT, ONELEVEL or SUBTREE 
      * @return A cursor on the result. 
-     *
-    public Cursor<Entry> search( String baseObject, String filterString ) throws Exception
+     */
+    public Cursor<SearchResponse> search( String baseDn, String filter, SearchScope scope, 
+        String... attributes ) throws LdapException
     {
-        // If the session has not been establish, or is closed, we get out immediately
-        checkSession();
+        // Create a new SearchRequest object
+        SearchRequest searchRequest = new SearchRequestImpl();
         
-        LdapDN baseDN = null;
-        Filter filter = null;
-        
-        // Check that the baseObject is not null or empty, 
-        // and is a valid DN
-        if ( StringTools.isEmpty( baseObject ) )
-        {
-            throw new Exception( "Cannot search on RootDSE when the scope is not BASE" );
-        }
-        
-        try
-        {
-            baseDN = new LdapDN( baseObject );
-        }
-        catch ( InvalidNameException ine )
-        {
-            throw new Exception( "The baseObject is not a valid DN" );
-        }
-        
-        // Check that the filter is valid
-        try
-        {
-            ExprNode filterNode = FilterParser.parse( filterString );
-            
-            filter = TwixTransformer.transformFilter( filterNode );
-        }
-        catch ( ParseException pe )
-        {
-            throw new Exception( "The filter is invalid" );
-        }
-        
-        // Create the searchRequest
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setBaseObject( baseDN );
+        searchRequest.setBaseDn( baseDn );
         searchRequest.setFilter( filter );
+        searchRequest.setScope( scope );
+        searchRequest.addAttributes( attributes );
         
-        // Fill the default values
-        searchRequest.setSizeLimit( 0 );
-        searchRequest.setTimeLimit( 0 );
-        searchRequest.setDerefAliases( LdapConstants.DEREF_ALWAYS );
-        searchRequest.setScope( SearchScope.ONELEVEL );
-        searchRequest.setTypesOnly( false );
-        searchRequest.addAttribute( SchemaConstants.ALL_USER_ATTRIBUTES );
-
-        // Send the search request
-        search( searchRequest );
-        
-        // We now have to create the cursor around the response, and return it.
-        Cursor<LdapResponse> searchCursor = new ListCursor<LdapResponse>();
-        
+        // Process the request in blocking mode
+        return searchInternal( searchRequest, null );
     }
     
     
@@ -907,98 +1034,181 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param filter The filter to use for this search. It can't be empty
      * @return A cursor on the result. 
      */
-    public void search( SearchListener listener, String baseObject, String filter ) throws Exception
+    public void search( SearchRequest searchRequest, SearchListener listener ) throws LdapException
     {
-        
+        searchInternal( searchRequest, listener );
     }
     
     
     /**
      * {@inheritDoc}
      */
-    private void search( SearchRequest searchRequest ) throws Exception
+    public Cursor<SearchResponse> search( SearchRequest searchRequest ) throws LdapException
     {
-        // First check the session
+        return searchInternal( searchRequest, null );
+    }
+
+    
+    private Cursor<SearchResponse> searchInternal( SearchRequest searchRequest, SearchListener searchListener )
+        throws LdapException
+    {
+        // If the session has not been establish, or is closed, we get out immediately
         checkSession();
-        
+    
         // Guarantee that for this session, we don't have more than one operation
         // running at the same time
-        lock();
+        lockSession();
         
-        // Encode the request
-        LdapMessageCodec message = new LdapMessageCodec();
-        message.setMessageId( messageId++ );
-        message.setProtocolOP( searchRequest );
-        message.addControl( searchRequest.getCurrentControl() );
+        // Create the new message and update the messageId
+        LdapMessageCodec searchMessage = new LdapMessageCodec();
         
-        LOG.debug( "-----------------------------------------------------------------" );
-        LOG.debug( "Sending request \n{}", message );
-    
-        // Loop and get all the responses
-        // Send the request to the server
-        ldapSession.write( message );
-
-        operationMutex.release();
-//        int i = 0;
-//        
-//        List<SearchResultEntry> searchResults = new ArrayList<SearchResultEntry>();
+        // Creates the messageID and stores it into the 
+        // initial message and the transmitted message.
+        int newId = messageId.incrementAndGet();
+        searchRequest.setMessageId( newId );
+        searchMessage.setMessageId( newId );
         
-        // Now wait for the responses
-        // Loop until we got all the responses
+        // Create a new codec SearchRequest object
+        SearchRequestCodec request =  new SearchRequestCodec();
         
-/*        do
+        // Set the name
+        try
         {
-            // If we get out before the timeout, check that the response 
-            // is there, and get it
-            LdapMessage response = responseQueue.poll( timeOut, TimeUnit.MILLISECONDS );
+            LdapDN dn = new LdapDN( searchRequest.getBaseDn() );
+            request.setBaseObject( dn );
+        }
+        catch ( InvalidNameException ine )
+        {
+            LOG.error( "The given dn '{}' is not valid", searchRequest.getBaseDn() );
+            LdapException ldapException = new LdapException();
+            ldapException.initCause( ine );
+            unlockSession();
+            throw ldapException;
+        }
+        
+        // Set the scope
+        request.setScope( searchRequest.getScope() );
+        
+        // Set the typesOnly flag
+        request.setDerefAliases( searchRequest.getDerefAliases().getValue() );
+        
+        // Set the timeLimit
+        request.setTimeLimit( searchRequest.getTimeLimit() );
+        
+        // Set the sizeLimit
+        request.setSizeLimit( searchRequest.getSizeLimit() );
+        
+        // Set the typesOnly flag
+        request.setTypesOnly( searchRequest.getTypesOnly() );
+    
+        // Set the filter
+        Filter filter = null;
+        
+        try
+        {
+            ExprNode filterNode = FilterParser.parse( searchRequest.getFilter() );
             
-            if ( response == null )
+            filter = TwixTransformer.transformFilter( filterNode );
+        }
+        catch ( ParseException pe )
+        {
+            LOG.error( "The given filter '{}' is not valid", searchRequest.getFilter() );
+            LdapException ldapException = new LdapException();
+            ldapException.initCause( pe );
+            unlockSession();
+            throw ldapException;
+        }
+        
+        request.setFilter( filter );
+        
+        // Set the attributes
+        Set<String> attributes = searchRequest.getAttributes();
+        
+        if ( attributes != null )
+        {
+            for ( String attribute:attributes )
             {
-                // No response, get out
-                operationMutex.release();
-                
-                // We didn't received anything : this is an error
-                throw new Exception( "TimeOut occured" );
-            }
-            
-            i++;
-
-            // Print the response
-//            System.out.println( "Result[" + i + "]" + response );
-            
-            if( response.getMessageType() == LdapConstants.INTERMEDIATE_RESPONSE )
-            {
-                consumer.handleSyncInfo( response.getIntermediateResponse().getResponseValue() );
-            }
-            
-            if ( response.getMessageType() == LdapConstants.SEARCH_RESULT_DONE )
-            {
-                SearchResultDone resDone = response.getSearchResultDone();
-                resDone.addControl( response.getCurrentControl() );
-                
-                operationMutex.release();
-                consumer.handleSearchDone( resDone );
-                
-                return;
-            }
-       
-            if( response.getMessageType() == LdapConstants.SEARCH_RESULT_ENTRY )
-            {
-                SearchResultEntry sre = response.getSearchResultEntry();
-                sre.addControl( response.getCurrentControl() );
-                consumer.handleSearchResult( sre );
-            }
-            
-            if( response.getMessageType() == LdapConstants.SEARCH_RESULT_REFERENCE )
-            {
-                SearchResultReference searchRef = response.getSearchResultReference();
-                searchRef.addControl( response.getCurrentControl() );
-                
-                consumer.handleSearchReference( searchRef );
+                request.addAttribute( attribute );
             }
         }
-        while ( true );
-*/    }
+        
+        // Stores the SearchRequest into the message
+        searchMessage.setProtocolOP( request );
+        
+        // Add the controls
+        setControls( searchRequest.getControls(), searchMessage );
+    
+        LOG.debug( "-----------------------------------------------------------------" );
+        LOG.debug( "Sending request \n{}", searchMessage );
+    
+        // Send the request to the server
+        ldapSession.write( searchMessage );
+    
+        if ( searchListener == null )
+        {
+            // Read the response, waiting for it if not available immediately
+            try
+            {
+                long timeout = getTimeout( searchRequest.getTimeout() );
+                LdapMessageCodec response = null;
+                List<SearchResponse> searchResponses = new ArrayList<SearchResponse>();
+
+                // We may have more than one response, so loop on the queue
+                do 
+                {
+                    response = searchResponseQueue.poll( timeout, TimeUnit.MILLISECONDS );
+
+                    // Check that we didn't get out because of a timeout
+                    if ( response == null )
+                    {
+                        // Send an abandon request
+                        abandon( searchMessage.getBindRequest().getMessageId() );
+                        
+                        // We didn't received anything : this is an error
+                        LOG.error( "Bind failed : timeout occured" );
+                        unlockSession();
+                        throw new LdapException( "TimeOut occured" );
+                    }
+                    else
+                    {
+                        if ( response instanceof SearchResultEntryCodec )
+                        {
+                            searchResponses.add( convert( (SearchResultEntryCodec)response ) );
+                        }
+                        else if ( response instanceof SearchResultReference )
+                        {
+                            searchResponses.add( convert( (SearchResultReferenceCodec)response ) );
+                        }
+                    }
+                }
+                while ( !( response instanceof SearchResultDone ) );
+
+                // Release the session lock
+                unlockSession();
+                
+                LOG.debug( "Search successful, {} elements found", searchResponses.size() );
+                
+                return new ListCursor<SearchResponse>( searchResponses );
+            }
+            catch ( InterruptedException ie )
+            {
+                LOG.error( "The response queue has been emptied, no response will be find." );
+                LdapException ldapException = new LdapException();
+                ldapException.initCause( ie );
+                
+                // Send an abandon request
+                abandon( searchMessage.getBindRequest().getMessageId() );
+                throw ldapException;
+            }
+        }
+        else
+        {
+            // The listener will be called on a MessageReceived event,
+            // no need to create a cursor
+            return null;
+        }
+    }
+
     
     //------------------------ The LDAP operations ------------------------//
     // Unbind operations                                                   //
@@ -1013,25 +1223,28 @@ public class LdapConnection  extends IoHandlerAdapter
         
         // Guarantee that for this session, we don't have more than one operation
         // running at the same time
-        lock();
+        lockSession();
         
-        // Create the UnBindRequest
-        UnBindRequest unBindRequest = new UnBindRequest();
+        // Create the UnbindRequest
+        UnBindRequestCodec unbindRequest = new UnBindRequestCodec();
         
         // Encode the request
-        LdapMessageCodec message = new LdapMessageCodec();
-        message.setMessageId( messageId );
-        message.setProtocolOP( unBindRequest );
+        LdapMessageCodec unbindMessage = new LdapMessageCodec();
+
+        // Creates the messageID and stores it into the 
+        // initial message and the transmitted message.
+        int newId = messageId.incrementAndGet();
+        unbindRequest.setMessageId( newId );
+        unbindMessage.setMessageId( newId );
+
+        unbindMessage.setProtocolOP( unbindRequest );
         
         LOG.debug( "-----------------------------------------------------------------" );
-        LOG.debug( "Sending Unbind request \n{}", message );
+        LOG.debug( "Sending Unbind request \n{}", unbindMessage );
         
         // Send the request to the server
-        ldapSession.write( message );
+        ldapSession.write( unbindMessage );
 
-        // We don't have to wait for a response. Reset the messageId counter to 0
-        messageId = 0;
-        
         // We also have to reset the response queues
         bindResponseQueue.clear();
         
@@ -1094,14 +1307,18 @@ public class LdapConnection  extends IoHandlerAdapter
                 break;
                 
             case LdapConstants.BIND_RESPONSE: 
+                // Store the response into the responseQueue
+                BindResponseCodec bindResponse = response.getBindResponse();
+                bindResponse.addControl( response.getCurrentControl() );
+                
                 if ( bindListener != null )
                 {
-                    //bindListener.bindCompleted( this, response.getBindResponse() );
+                    bindListener.bindCompleted( this, convert( bindResponse ) );
                 }
                 else
                 {
                     // Store the response into the responseQueue
-                    bindResponseQueue.add( response.getBindResponse() );
+                    bindResponseQueue.add( bindResponse );
                 }
                 
                 break;
@@ -1137,28 +1354,28 @@ public class LdapConnection  extends IoHandlerAdapter
                 
             case LdapConstants.SEARCH_RESULT_DONE:
                 // Store the response into the responseQueue
-                SearchResultDone resDone = response.getSearchResultDone();
-                resDone.addControl( response.getCurrentControl() );
+                SearchResultDoneCodec searchResultDone = response.getSearchResultDone();
+                searchResultDone.addControl( response.getCurrentControl() );
                 
                 if ( searchListener != null )
                 {
-                    searchListener.searchDone( this, response.getLdapResponse() );
+                    searchListener.searchDone( this, convert( searchResultDone ) );
                 }
                 else
                 {
-                    searchResponseQueue.add( resDone );
+                    searchResponseQueue.add( searchResultDone );
                 }
                 
                 break;
             
             case LdapConstants.SEARCH_RESULT_ENTRY:
                 // Store the response into the responseQueue
-                SearchResultEntry searchResultEntry = response.getSearchResultEntry();
+                SearchResultEntryCodec searchResultEntry = response.getSearchResultEntry();
                 searchResultEntry.addControl( response.getCurrentControl() );
                 
                 if ( searchListener != null )
                 {
-                    searchListener.entryFound( this, searchResultEntry );
+                    searchListener.entryFound( this, convert( searchResultEntry ) );
                 }
                 else
                 {
@@ -1169,16 +1386,16 @@ public class LdapConnection  extends IoHandlerAdapter
                        
             case LdapConstants.SEARCH_RESULT_REFERENCE:
                 // Store the response into the responseQueue
-                SearchResultReference searchRef = response.getSearchResultReference();
-                searchRef.addControl( response.getCurrentControl() );
+                SearchResultReferenceCodec searchResultReference = response.getSearchResultReference();
+                searchResultReference.addControl( response.getCurrentControl() );
 
                 if ( searchListener != null )
                 {
-                    searchListener.referralFound( this, searchRef );
+                    searchListener.referralFound( this, convert( searchResultReference ) );
                 }
                 else
                 {
-                    searchResponseQueue.add( searchRef );
+                    searchResponseQueue.add( searchResultReference );
                 }
 
                 break;

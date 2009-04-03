@@ -36,6 +36,7 @@ public interface BindListener
     /**
      * A callback method called when the bind operation completed.
      *
+     * @param connection
      * @param BindResponseCodec The bind response
      */
     void bindCompleted( LdapConnection connection, BindResponse bindResponse );

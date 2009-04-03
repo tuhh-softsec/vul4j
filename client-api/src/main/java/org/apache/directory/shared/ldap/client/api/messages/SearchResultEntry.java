@@ -32,50 +32,28 @@ import org.apache.directory.shared.ldap.name.LdapDN;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision: 760984 $
  */
-public class SearchEntryResponseImpl extends AbstractMessage implements SearchEntryResponse
+public interface SearchResultEntry extends SearchResponse
 {
-    /** The found entry */
-    private Entry entry;
-    
     /**
-     * Creates a new instance of SearchEntryResponseImpl.
+     * Gets the distinguished name of the entry object returned.
+     * 
+     * @return the Dn of the entry returned.
      */
-    public SearchEntryResponseImpl()
-    {
-        super();
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public LdapDN getObjectName()
-    {
-        if ( entry != null )
-        {
-            return entry.getDn();
-        }
-        else
-        {
-            return LdapDN.EMPTY_LDAPDN;
-        }
-    }
+    LdapDN getObjectName();
 
 
     /**
-     * {@inheritDoc}
+     * Gets the entry.
+     * 
+     * @return the entry
      */
-    public Entry getEntry()
-    {
-        return entry;
-    }
+    Entry getEntry();
 
 
     /**
-     * {@inheritDoc}
+     * Sets an entry
+     * 
+     * @param entry the entry
      */
-    public void setEntry( Entry entry )
-    {
-        this.entry = entry;
-    }
+    void setEntry( Entry entry );
 }

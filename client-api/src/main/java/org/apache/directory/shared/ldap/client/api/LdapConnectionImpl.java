@@ -29,10 +29,10 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageCodec;
 import org.apache.directory.shared.ldap.codec.TwixTransformer;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.SearchRequest;
-import org.apache.directory.shared.ldap.codec.search.SearchResultDone;
-import org.apache.directory.shared.ldap.codec.search.SearchResultEntry;
-import org.apache.directory.shared.ldap.codec.search.SearchResultReference;
+import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultEntryCodec;
+import org.apache.directory.shared.ldap.codec.search.SearchResultReferenceCodec;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
@@ -148,7 +148,7 @@ public class LdapConnectionImpl extends IoHandlerAdapter
             throw new Exception( "The filter is invalid" );
         }
         
-        SearchRequest searchRequest = new SearchRequest();
+        SearchRequestCodec searchRequest = new SearchRequestCodec();
         searchRequest.setBaseObject( baseDN );
         searchRequest.setFilter( filter );
         
@@ -167,7 +167,7 @@ public class LdapConnectionImpl extends IoHandlerAdapter
     /**
      * {@inheritDoc}
      */
-    private void search( SearchRequest searchRequest ) throws Exception
+    private void search( SearchRequestCodec searchRequest ) throws Exception
     {
         // First check the session
         //checkSession();
@@ -312,21 +312,21 @@ public class LdapConnectionImpl extends IoHandlerAdapter
             
             case LdapConstants.SEARCH_RESULT_DONE:
             
-                       SearchResultDone resDone = response.getSearchResultDone();
+                       SearchResultDoneCodec resDone = response.getSearchResultDone();
                        resDone.addControl( response.getCurrentControl() );
                        //consumer.handleSearchDone( resDone );
                        break;
             
             case LdapConstants.SEARCH_RESULT_ENTRY:
             
-                       SearchResultEntry sre = response.getSearchResultEntry();
+                       SearchResultEntryCodec sre = response.getSearchResultEntry();
                        sre.addControl( response.getCurrentControl() );
                        //consumer.handleSearchResult( sre );
                        break;
                        
             case LdapConstants.SEARCH_RESULT_REFERENCE:
             
-                       SearchResultReference searchRef = response.getSearchResultReference();
+                       SearchResultReferenceCodec searchRef = response.getSearchResultReference();
                        searchRef.addControl( response.getCurrentControl() );
                        //consumer.handleSearchReference( searchRef );
                        break;

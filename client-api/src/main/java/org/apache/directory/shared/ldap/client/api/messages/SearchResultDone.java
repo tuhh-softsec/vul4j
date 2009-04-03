@@ -22,17 +22,10 @@ package org.apache.directory.shared.ldap.client.api.messages;
 
 /**
  * Search done protocol response message used to indicate the completion of a
- * search request message. It's an empty class, just created for completeness.
+ * search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
-public class SearchDoneResponseImpl extends AbstractResponseWithResult implements SearchDoneResponse
+public interface SearchResultDone extends ResponseWithResult
 {
-    /**
-     * Creates a new instance of SearchDoneResponseImpl.
-     */
-    public SearchDoneResponseImpl()
-    {
-        super();
-    }
 }
