@@ -38,7 +38,7 @@ public interface SearchListener
     /**
      * A callback method for each entry returned by a search operation.
      *
-     * @param connection
+     * @param connection The LdapConnection
      * @param searchResultEntry The found entry
      */
     void entryFound( LdapConnection connection, SearchResultEntry searchResultEntry );
@@ -47,7 +47,7 @@ public interface SearchListener
     /**
      * A callback method for each referral returned by a search operation.
      *
-     * @param connection
+     * @param connection The LdapConnection
      * @param searchResultReference The referral message
      */
     void referralFound( LdapConnection connection, SearchResultReference searchResultReference );
@@ -56,8 +56,8 @@ public interface SearchListener
     /**
      * A callback method called when the search is done.
      * 
-     * @param connection
-     * @param searchResultDone
+     * @param connection The LdapConnection
+     * @param searchResultDone The searchResultDone response
      */
     void searchDone( LdapConnection connection, SearchResultDone searchResultDone );
 }
