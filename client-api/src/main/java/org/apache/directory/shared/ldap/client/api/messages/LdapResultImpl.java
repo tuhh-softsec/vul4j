@@ -20,7 +20,7 @@
 
 package org.apache.directory.shared.ldap.client.api.messages;
 
-import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 
@@ -37,7 +37,7 @@ public class LdapResultImpl implements LdapResult
     private LdapDN matchedDn;
 
     /** Referral associated with this LdapResult if the errorCode is REFERRAL */
-    private Referral referral;
+    private InternalReferral referral;
 
     /** Decriptive error message - defaults to empty string */
     private String errorMessage;
@@ -140,7 +140,7 @@ public class LdapResultImpl implements LdapResult
      * 
      * @return the referral on REFERRAL errors, null on all others.
      */
-    public Referral getReferral()
+    public InternalReferral getReferral()
     {
         return referral;
     }
@@ -167,7 +167,7 @@ public class LdapResultImpl implements LdapResult
      * @param referral
      *            optional referral on REFERRAL errors.
      */
-    public void setReferral( Referral referral )
+    public void setReferral( InternalReferral referral )
     {
         this.referral = referral;
     }

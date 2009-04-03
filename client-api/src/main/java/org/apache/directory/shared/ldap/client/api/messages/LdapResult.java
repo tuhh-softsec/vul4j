@@ -20,7 +20,7 @@
 
 package org.apache.directory.shared.ldap.client.api.messages;
 
-import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 
@@ -124,7 +124,7 @@ public interface LdapResult
      * 
      * @return the referral on REFERRAL errors, null on all others.
      */
-    Referral getReferral();
+    InternalReferral getReferral();
 
 
     /**
@@ -136,5 +136,5 @@ public interface LdapResult
      * @param referral
      *            optional referral on REFERRAL errors.
      */
-    void setReferral( Referral referral );
+    void setReferral( InternalReferral referral );
 }
