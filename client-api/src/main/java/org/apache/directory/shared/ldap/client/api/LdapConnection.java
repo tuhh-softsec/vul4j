@@ -41,6 +41,7 @@ import org.apache.directory.shared.asn1.ber.IAsn1Container;
 import org.apache.directory.shared.ldap.client.api.exception.InvalidConnectionException;
 import org.apache.directory.shared.ldap.client.api.exception.LdapException;
 import org.apache.directory.shared.ldap.client.api.listeners.BindListener;
+import org.apache.directory.shared.ldap.client.api.listeners.IntermediateResponseListener;
 import org.apache.directory.shared.ldap.client.api.listeners.SearchListener;
 import org.apache.directory.shared.ldap.client.api.messages.AbandonRequest;
 import org.apache.directory.shared.ldap.client.api.messages.AbandonRequestImpl;
@@ -48,6 +49,8 @@ import org.apache.directory.shared.ldap.client.api.messages.BindRequest;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequestImpl;
 import org.apache.directory.shared.ldap.client.api.messages.BindResponse;
 import org.apache.directory.shared.ldap.client.api.messages.BindResponseImpl;
+import org.apache.directory.shared.ldap.client.api.messages.IntermediateResponse;
+import org.apache.directory.shared.ldap.client.api.messages.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.client.api.messages.LdapResult;
 import org.apache.directory.shared.ldap.client.api.messages.LdapResultImpl;
 import org.apache.directory.shared.ldap.client.api.messages.Referral;
@@ -73,6 +76,7 @@ import org.apache.directory.shared.ldap.codec.bind.BindResponseCodec;
 import org.apache.directory.shared.ldap.codec.bind.LdapAuthentication;
 import org.apache.directory.shared.ldap.codec.bind.SaslCredentials;
 import org.apache.directory.shared.ldap.codec.bind.SimpleAuthentication;
+import org.apache.directory.shared.ldap.codec.intermediate.IntermediateResponseCodec;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.SearchRequestCodec;
 import org.apache.directory.shared.ldap.codec.search.SearchResultDoneCodec;
@@ -195,6 +199,7 @@ public class LdapConnection  extends IoHandlerAdapter
     /** The listeners used to get results back */
     private SearchListener searchListener;
     private BindListener bindListener;
+    private IntermediateResponseListener intermediateResponseListener;
 
     //--------------------------- Helper methods ---------------------------//
     /**
@@ -319,6 +324,21 @@ public class LdapConnection  extends IoHandlerAdapter
         bindResponse.setLdapResult( convert( bindResponseCodec.getLdapResult() ) );
 
         return bindResponse;
+    }
+
+
+    /**
+     * Convert a IntermediateResponseCodec to a IntermediateResponse message
+     */
+    private IntermediateResponse convert( IntermediateResponseCodec intermediateResponseCodec )
+    {
+        IntermediateResponse intermediateResponse = new IntermediateResponseImpl();
+        
+        intermediateResponse.setMessageId( intermediateResponseCodec.getMessageId() );
+        intermediateResponse.setResponseName( intermediateResponseCodec.getResponseName() );
+        intermediateResponse.setResponseValue( intermediateResponseCodec.getResponseValue() );
+
+        return intermediateResponse;
     }
 
 
@@ -1308,17 +1328,17 @@ public class LdapConnection  extends IoHandlerAdapter
                 
             case LdapConstants.BIND_RESPONSE: 
                 // Store the response into the responseQueue
-                BindResponseCodec bindResponse = response.getBindResponse();
-                bindResponse.addControl( response.getCurrentControl() );
+                BindResponseCodec bindResponseCodec = response.getBindResponse();
+                bindResponseCodec.addControl( response.getCurrentControl() );
                 
                 if ( bindListener != null )
                 {
-                    bindListener.bindCompleted( this, convert( bindResponse ) );
+                    bindListener.bindCompleted( this, convert( bindResponseCodec ) );
                 }
                 else
                 {
                     // Store the response into the responseQueue
-                    bindResponseQueue.add( bindResponse );
+                    bindResponseQueue.add( bindResponseCodec );
                 }
                 
                 break;
@@ -1339,7 +1359,22 @@ public class LdapConnection  extends IoHandlerAdapter
                 break;
                 
             case LdapConstants.INTERMEDIATE_RESPONSE:
-                //consumer.handleSyncInfo( response.getIntermediateResponse().getResponseValue() );
+                // Store the response into the responseQueue
+                IntermediateResponseCodec intermediateResponseCodec = 
+                    response.getIntermediateResponse();
+                intermediateResponseCodec.addControl( response.getCurrentControl() );
+                
+                if ( intermediateResponseListener != null )
+                {
+                    intermediateResponseListener.responseReceived( this, 
+                        convert( intermediateResponseCodec ) );
+                }
+                else
+                {
+                    // Store the response into the responseQueue
+                    intermediateResponseQueue.add( intermediateResponseCodec );
+                }
+                
                 break;
      
             case LdapConstants.MODIFY_RESPONSE :
@@ -1354,48 +1389,51 @@ public class LdapConnection  extends IoHandlerAdapter
                 
             case LdapConstants.SEARCH_RESULT_DONE:
                 // Store the response into the responseQueue
-                SearchResultDoneCodec searchResultDone = response.getSearchResultDone();
-                searchResultDone.addControl( response.getCurrentControl() );
+                SearchResultDoneCodec searchResultDoneCodec = 
+                    response.getSearchResultDone();
+                searchResultDoneCodec.addControl( response.getCurrentControl() );
                 
                 if ( searchListener != null )
                 {
-                    searchListener.searchDone( this, convert( searchResultDone ) );
+                    searchListener.searchDone( this, convert( searchResultDoneCodec ) );
                 }
                 else
                 {
-                    searchResponseQueue.add( searchResultDone );
+                    searchResponseQueue.add( searchResultDoneCodec );
                 }
                 
                 break;
             
             case LdapConstants.SEARCH_RESULT_ENTRY:
                 // Store the response into the responseQueue
-                SearchResultEntryCodec searchResultEntry = response.getSearchResultEntry();
-                searchResultEntry.addControl( response.getCurrentControl() );
+                SearchResultEntryCodec searchResultEntryCodec = 
+                    response.getSearchResultEntry();
+                searchResultEntryCodec.addControl( response.getCurrentControl() );
                 
                 if ( searchListener != null )
                 {
-                    searchListener.entryFound( this, convert( searchResultEntry ) );
+                    searchListener.entryFound( this, convert( searchResultEntryCodec ) );
                 }
                 else
                 {
-                    searchResponseQueue.add( searchResultEntry );
+                    searchResponseQueue.add( searchResultEntryCodec );
                 }
                 
                 break;
                        
             case LdapConstants.SEARCH_RESULT_REFERENCE:
                 // Store the response into the responseQueue
-                SearchResultReferenceCodec searchResultReference = response.getSearchResultReference();
-                searchResultReference.addControl( response.getCurrentControl() );
+                SearchResultReferenceCodec searchResultReferenceCodec = 
+                    response.getSearchResultReference();
+                searchResultReferenceCodec.addControl( response.getCurrentControl() );
 
                 if ( searchListener != null )
                 {
-                    searchListener.referralFound( this, convert( searchResultReference ) );
+                    searchListener.referralFound( this, convert( searchResultReferenceCodec ) );
                 }
                 else
                 {
-                    searchResponseQueue.add( searchResultReference );
+                    searchResponseQueue.add( searchResultReferenceCodec );
                 }
 
                 break;
