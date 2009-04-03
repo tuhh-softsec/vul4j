@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.util.LdapURL;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision: 760984 $
  */
-public interface SearchReferenceResponse extends SearchResponse
+public interface SearchRefResponse extends SearchResponse
 {
     /**
      * Gets the sequence of LdapUrls as a Referral instance.
@@ -45,7 +45,7 @@ public interface SearchReferenceResponse extends SearchResponse
      * 
      * @param referrals the sequence of LdapUrls
      */
-    void setReferral( Referral referrals );
+    void setReferral( Referral referral );
 
 
     /**
