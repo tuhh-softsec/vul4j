@@ -30,15 +30,22 @@ import org.apache.directory.shared.ldap.util.LdapURL;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision: 760984 $
  */
-public class SearchRefResponseImpl extends AbstractMessage implements SearchResponse
+public class SearchRefResponseImpl extends AbstractMessage implements SearchRefResponse
 {
     /** The list of LdapURL referrals */
     private Referral referral;
     
     /**
-     * Gets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @return the sequence of LdapUrls
+     * Creates a new instance of SearchRefResponseImpl.
+     */
+    public SearchRefResponseImpl()
+    {
+        super();
+    }
+
+    
+    /**
+     * {@inheritDoc}
      */
     public Referral getReferrals()
     {
@@ -47,9 +54,7 @@ public class SearchRefResponseImpl extends AbstractMessage implements SearchResp
 
 
     /**
-     * Sets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @param referral the sequence of LdapUrls
+     * {@inheritDoc}
      */
     public void setReferral( Referral referral )
     {
@@ -58,50 +63,57 @@ public class SearchRefResponseImpl extends AbstractMessage implements SearchResp
 
 
     /**
-     * Sets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @param referrals the sequence of LdapUrls
+     * {@inheritDoc}
      */
-    public void addReferrals( LdapURL... referrals )
+    public void addReferrals( LdapURL... urls )
     {
         if ( referral == null )
         {
             referral = new ReferralImpl();
         }
         
-        
+        referral.addLdapUrls( urls );
     }
 
 
     /**
-     * Sets the sequence of LdapUrls as a Referral instance.
-     * 
-     * @param referrals the sequence of LdapUrls
+     * {@inheritDoc}
      */
-    public void addReferrals( String... referrals )
+    public void addReferrals( String... urls )
     {
+        if ( referral == null )
+        {
+            referral = new ReferralImpl();
+        }
         
+        referral.addLdapUrls( urls );
     }
 
 
     /**
-     * Removes the sequence of LdapUrls from the Referral instance.
-     * 
-     * @param referrals the sequence of LdapUrls
+     * {@inheritDoc}
      */
-    public void removeReferrals( LdapURL... referrals )
+    public void removeReferrals( LdapURL... urls )
     {
+        if ( referral == null )
+        {
+            referral = new ReferralImpl();
+        }
         
+        referral.removeLdapUrl( urls );
     }
 
 
     /**
-     * Removes the sequence of LdapUrls from the Referral instance.
-     * 
-     * @param referrals the sequence of LdapUrls
+     * {@inheritDoc}
      */
-    public void removeReferrals( String... referrals )
+    public void removeReferrals( String... urls )
     {
+        if ( referral == null )
+        {
+            referral = new ReferralImpl();
+        }
         
+        referral.removeLdapUrl( urls );
     }
 }

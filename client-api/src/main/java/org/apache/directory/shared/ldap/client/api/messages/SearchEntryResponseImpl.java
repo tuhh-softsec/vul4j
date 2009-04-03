@@ -17,48 +17,65 @@
  *  under the License. 
  *  
  */
+
 package org.apache.directory.shared.ldap.client.api.messages;
 
 
+import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.name.LdapDN;
+
+
 /**
- * A request who's one or more responses contains an LdapResult.
+ * Search entry protocol response message used to return non referral entries to
+ * the client in response to a search request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev: 760984 $
+ * @version $Revision: 760984 $
  */
-public abstract class AbstractResponseWithResult extends AbstractMessage implements ResponseWithResult
+public class SearchEntryResponseImpl extends AbstractMessage implements SearchEntryResponse
 {
-    /** The result */
-    private LdapResult ldapResult;
+    /** The found entry */
+    private Entry entry;
     
     /**
-     * Creates a new instance of AbstractResponseWithResult.
+     * Creates a new instance of SearchEntryResponseImpl.
      */
-    public AbstractResponseWithResult()
+    public SearchEntryResponseImpl()
     {
         super();
     }
 
     
     /**
-     * Returns the response's result
-     * 
-     * @return a result containing response with defaults and the messageId set
-     * in response to this specific request
+     * {@inheritDoc}
      */
-    public LdapResult getLdapResult()
+    public LdapDN getObjectName()
     {
-        return ldapResult;
+        if ( entry != null )
+        {
+            return entry.getDn();
+        }
+        else
+        {
+            return LdapDN.EMPTY_LDAPDN;
+        }
     }
-    
-    
+
+
     /**
-     * Sets the result into the response.
-     * 
-     * @param ldapResult The LdapResult instance associated with this response
+     * {@inheritDoc}
      */
-    public void setLdapResult( LdapResult ldapResult )
+    public Entry getEntry()
     {
-        this.ldapResult = ldapResult;
+        return entry;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEntry( Entry entry )
+    {
+        this.entry = entry;
     }
 }

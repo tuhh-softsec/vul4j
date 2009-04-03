@@ -51,31 +51,31 @@ public interface SearchRefResponse extends SearchResponse
     /**
      * Sets the sequence of LdapUrls as a Referral instance.
      * 
-     * @param referrals the sequence of LdapUrls
+     * @param urls the sequence of LdapUrls
      */
-    void addReferrals( LdapURL... referrals );
+    void addReferrals( LdapURL... urls );
 
 
     /**
      * Sets the sequence of LdapUrls as a Referral instance.
      * 
-     * @param referrals the sequence of LdapUrls
+     * @param urls the sequence of LdapUrls
      */
-    void addReferrals( String... referrals );
+    void addReferrals( String... urls );
 
 
     /**
      * Removes the sequence of LdapUrls from the Referral instance.
      * 
-     * @param referrals the sequence of LdapUrls
+     * @param urls the sequence of LdapUrls
      */
-    void removeReferrals( LdapURL... referrals );
+    void removeReferrals( LdapURL... urls );
 
 
     /**
      * Removes the sequence of LdapUrls from the Referral instance.
      * 
-     * @param referrals the sequence of LdapUrls
+     * @param urls the sequence of LdapUrls
      */
-    void removeReferrals( String... referrals );
+    void removeReferrals( String... urls );
 }
