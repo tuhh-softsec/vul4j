@@ -31,7 +31,7 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
     static final long serialVersionUID = 7423807019951309810L;
 
     /** Referral holding the reference urls */
-    private Referral referral;
+    private InternalReferral referral;
 
 
     // ------------------------------------------------------------------------
@@ -60,7 +60,7 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
      * 
      * @return the sequence of LdapUrls
      */
-    public Referral getReferral()
+    public InternalReferral getReferral()
     {
         return this.referral;
     }
@@ -72,7 +72,7 @@ public class SearchResponseReferenceImpl extends InternalAbstractResponse implem
      * @param referral
      *            the sequence of LdapUrls
      */
-    public void setReferral( Referral referral )
+    public void setReferral( InternalReferral referral )
     {
         this.referral = referral;
     }

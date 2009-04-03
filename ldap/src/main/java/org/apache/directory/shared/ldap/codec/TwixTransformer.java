@@ -101,7 +101,7 @@ import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
-import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
@@ -1387,7 +1387,7 @@ public class TwixTransformer
 
         // Snickers : Referral m_referral -> Twix: ArrayList
         // searchResultReferences
-        Referral referrals = snickersSearchResponseReference.getReferral();
+        InternalReferral referrals = snickersSearchResponseReference.getReferral();
 
         // Loop on all referals
         if ( referrals != null )

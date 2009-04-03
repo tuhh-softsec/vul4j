@@ -27,7 +27,7 @@ import javax.naming.ldap.Control;
 
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.InternalSearchResponseReference;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
@@ -54,7 +54,7 @@ public class SearchResponseReferenceImplTest
      *            the parent lockable
      * @return the newly created referral for testing
      */
-    private Referral getReferral( InternalSearchResponseReference resp )
+    private InternalReferral getReferral( InternalSearchResponseReference resp )
     {
         ReferralImpl ref = new ReferralImpl();
         resp.setReferral( ref );
@@ -101,13 +101,13 @@ public class SearchResponseReferenceImplTest
     {
         InternalSearchResponseReference resp0 = new InternalSearchResponseReference()
         {
-            public Referral getReferral()
+            public InternalReferral getReferral()
             {
                 return SearchResponseReferenceImplTest.this.getReferral( this );
             }
 
 
-            public void setReferral( Referral a_referral )
+            public void setReferral( InternalReferral a_referral )
             {
             }
 

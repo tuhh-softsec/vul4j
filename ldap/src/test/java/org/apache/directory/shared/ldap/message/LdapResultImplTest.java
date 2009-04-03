@@ -24,7 +24,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.ldap.message.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
-import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -129,13 +129,13 @@ public class LdapResultImplTest
             }
 
 
-            public Referral getReferral()
+            public InternalReferral getReferral()
             {
                 return null;
             }
 
 
-            public void setReferral( Referral a_referral )
+            public void setReferral( InternalReferral a_referral )
             {
             }
         };
@@ -163,11 +163,11 @@ public class LdapResultImplTest
         r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
         r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
 
-        Referral refs0 = new ReferralImpl();
+        InternalReferral refs0 = new ReferralImpl();
         refs0.addLdapUrl( "ldap://someserver.com" );
         refs0.addLdapUrl( "ldap://anotherserver.org" );
 
-        Referral refs1 = new ReferralImpl();
+        InternalReferral refs1 = new ReferralImpl();
         refs1.addLdapUrl( "ldap://someserver.com" );
         refs1.addLdapUrl( "ldap://anotherserver.org" );
 
@@ -194,11 +194,11 @@ public class LdapResultImplTest
         r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
         r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
 
-        Referral refs0 = new ReferralImpl();
+        InternalReferral refs0 = new ReferralImpl();
         refs0.addLdapUrl( "ldap://someserver.com" );
         refs0.addLdapUrl( "ldap://anotherserver.org" );
 
-        Referral refs1 = new ReferralImpl();
+        InternalReferral refs1 = new ReferralImpl();
         refs1.addLdapUrl( "ldap://someserver.com" );
         refs1.addLdapUrl( "ldap://anotherserver.org" );
 
@@ -225,11 +225,11 @@ public class LdapResultImplTest
         r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
         r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
 
-        Referral refs0 = new ReferralImpl();
+        InternalReferral refs0 = new ReferralImpl();
         refs0.addLdapUrl( "ldap://someserver.com" );
         refs0.addLdapUrl( "ldap://anotherserver.org" );
 
-        Referral refs1 = new ReferralImpl();
+        InternalReferral refs1 = new ReferralImpl();
         refs1.addLdapUrl( "ldap://someserver.com" );
         refs1.addLdapUrl( "ldap://anotherserver.org" );
 
@@ -256,11 +256,11 @@ public class LdapResultImplTest
         r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
         r1.setResultCode( ResultCodeEnum.SIZE_LIMIT_EXCEEDED );
 
-        Referral refs0 = new ReferralImpl();
+        InternalReferral refs0 = new ReferralImpl();
         refs0.addLdapUrl( "ldap://someserver.com" );
         refs0.addLdapUrl( "ldap://anotherserver.org" );
 
-        Referral refs1 = new ReferralImpl();
+        InternalReferral refs1 = new ReferralImpl();
         refs1.addLdapUrl( "ldap://someserver.com" );
         refs1.addLdapUrl( "ldap://anotherserver.org" );
 
@@ -287,12 +287,12 @@ public class LdapResultImplTest
         r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
         r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
 
-        Referral refs0 = new ReferralImpl();
+        InternalReferral refs0 = new ReferralImpl();
         r0.setReferral( refs0 );
         refs0.addLdapUrl( "ldap://someserver.com" );
         refs0.addLdapUrl( "ldap://anotherserver.org" );
 
-        Referral refs1 = new ReferralImpl();
+        InternalReferral refs1 = new ReferralImpl();
         r1.setReferral( refs1 );
         refs1.addLdapUrl( "ldap://abc.com" );
         refs1.addLdapUrl( "ldap://anotherserver.org" );

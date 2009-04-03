@@ -24,7 +24,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapResultImpl;
-import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -114,11 +114,11 @@ public class BindResponseImplTest
         r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
         r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
 
-        Referral refs0 = new ReferralImpl();
+        InternalReferral refs0 = new ReferralImpl();
         refs0.addLdapUrl( "ldap://someserver.com" );
         refs0.addLdapUrl( "ldap://anotherserver.org" );
 
-        Referral refs1 = new ReferralImpl();
+        InternalReferral refs1 = new ReferralImpl();
         refs1.addLdapUrl( "ldap://someserver.com" );
         refs1.addLdapUrl( "ldap://anotherserver.org" );
 

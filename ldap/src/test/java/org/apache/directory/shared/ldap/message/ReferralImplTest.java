@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.directory.shared.ldap.message.Referral;
+import org.apache.directory.shared.ldap.message.InternalReferral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
@@ -137,7 +137,7 @@ public class ReferralImplTest
     @Test
     public void testEqualsDifferentImpls()
     {
-        Referral refs0 = new Referral()
+        InternalReferral refs0 = new InternalReferral()
         {
             public Collection<String> getLdapUrls()
             {

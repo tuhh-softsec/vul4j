@@ -39,7 +39,7 @@ public interface InternalSearchResponseReference extends InternalResponse
      * 
      * @return the sequence of LdapUrls
      */
-    Referral getReferral();
+    InternalReferral getReferral();
 
 
     /**
@@ -48,5 +48,5 @@ public interface InternalSearchResponseReference extends InternalResponse
      * @param a_referral
      *            the sequence of LdapUrls
      */
-    void setReferral( Referral a_referral );
+    void setReferral( InternalReferral a_referral );
 }
