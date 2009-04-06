@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InvalidNameException;
+import javax.naming.ldap.Control;
 import javax.net.ssl.SSLContext;
 
 import org.apache.directory.shared.asn1.ber.IAsn1Container;
@@ -48,7 +49,6 @@ import org.apache.directory.shared.ldap.client.api.messages.BindRequest;
 import org.apache.directory.shared.ldap.client.api.messages.BindRequestImpl;
 import org.apache.directory.shared.ldap.client.api.messages.BindResponse;
 import org.apache.directory.shared.ldap.client.api.messages.BindResponseImpl;
-import org.apache.directory.shared.ldap.client.api.messages.Control;
 import org.apache.directory.shared.ldap.client.api.messages.IntermediateResponse;
 import org.apache.directory.shared.ldap.client.api.messages.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.client.api.messages.LdapResult;

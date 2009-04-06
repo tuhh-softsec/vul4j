@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.client.api.messages;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.client.api.exception.LdapException;
+import javax.naming.ldap.Control;
 
 
 /**
