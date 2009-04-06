@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.client.api.messages;
 
 import java.util.Map;
 
-import javax.naming.ldap.Control;
-
 import org.apache.directory.shared.ldap.client.api.exception.LdapException;
 
 
@@ -54,7 +52,7 @@ public interface Message
      * Gets the controls associated with this message mapped by OID.
      * 
      * @return Map of OID strings to Control object instances.
-     * @see MutableControl
+     * @see Control
      */
     Map<String, Control> getControls();
 

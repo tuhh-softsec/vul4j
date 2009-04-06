@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.client.api.messages;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.ldap.Control;
-
 import org.apache.directory.shared.ldap.client.api.exception.LdapException;
 
 
