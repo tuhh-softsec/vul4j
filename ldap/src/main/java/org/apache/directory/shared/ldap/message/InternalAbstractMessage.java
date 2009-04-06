@@ -86,7 +86,7 @@ public abstract class InternalAbstractMessage implements InternalMessage
      * Gets the controls associated with this message mapped by OID.
      * 
      * @return Map of OID strings to Control object instances.
-     * @see MutableControl
+     * @see InternalControl
      */
     public Map<String, Control> getControls()
     {

@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message;
 import javax.naming.InvalidNameException;
 
 import org.apache.directory.shared.ldap.message.InternalAbstractResultResponse;
-import org.apache.directory.shared.ldap.message.MutableControl;
+import org.apache.directory.shared.ldap.message.InternalControl;
 import org.apache.directory.shared.ldap.message.InternalLdapResult;
 import org.apache.directory.shared.ldap.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.InternalReferral;
@@ -190,7 +190,7 @@ public class AbstractResultResponseTest
         {
             private static final long serialVersionUID = 1L;
         };
-        msg0.add( new MutableControl()
+        msg0.add( new InternalControl()
         {
             private static final long serialVersionUID = 1L;
 

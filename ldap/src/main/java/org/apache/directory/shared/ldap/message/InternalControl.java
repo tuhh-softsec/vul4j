@@ -30,23 +30,21 @@ import javax.naming.ldap.Control;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface MutableControl extends Control
+public interface InternalControl extends Control
 {
     /**
      * Sets the OID of the Control to identify the control type.
      * 
-     * @param oid
-     *            the OID of this Control.
+     * @param oid the OID of this Control.
      */
     void setID( String oid );
 
     /**
-     * Sets the criticil flag which determines whether or not this control is
+     * Sets the critical flag which determines whether or not this control is
      * critical for the correct operation of a request or response message. The
      * default for this value should be false.
      * 
-     * @param isCritical
-     *            true if the control is critical false otherwise.
+     * @param isCritical true if the control is critical false otherwise.
      */
     void setCritical( boolean isCritical );
 }

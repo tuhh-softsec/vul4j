@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.message.control;
 
-import org.apache.directory.shared.ldap.message.MutableControl;
+import org.apache.directory.shared.ldap.message.InternalControl;
 
 
 /**
@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.message.MutableControl;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public abstract class AbstractMutableControlImpl implements MutableControl
+public abstract class InternalAbstractControl implements InternalControl
 {
     /** Unique object identifier for this control */
     private String oid;

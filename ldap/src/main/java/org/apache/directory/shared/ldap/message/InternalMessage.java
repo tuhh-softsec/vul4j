@@ -47,7 +47,7 @@ public interface InternalMessage
      * Gets the controls associated with this message mapped by OID.
      * 
      * @return Map of OID strings to Control object instances.
-     * @see MutableControl
+     * @see InternalControl
      */
     Map<String, Control> getControls();
 

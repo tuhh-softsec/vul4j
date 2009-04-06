@@ -108,7 +108,7 @@ import org.apache.directory.shared.ldap.message.SearchResponseDoneImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseEntryImpl;
 import org.apache.directory.shared.ldap.message.SearchResponseReferenceImpl;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.message.control.AbstractMutableControlImpl;
+import org.apache.directory.shared.ldap.message.control.InternalAbstractControl;
 import org.apache.directory.shared.ldap.message.control.CascadeControl;
 import org.apache.directory.shared.ldap.message.control.PagedSearchControl;
 import org.apache.directory.shared.ldap.message.control.PersistentSearchControl;
@@ -923,7 +923,7 @@ public class TwixTransformer
         {
             for ( final ControlCodec twixControl:twixControls )
             {
-                AbstractMutableControlImpl neutralControl = null;
+                InternalAbstractControl neutralControl = null;
 
                 if ( twixControl.getControlValue() instanceof 
                     org.apache.directory.shared.ldap.codec.controls.CascadeControlCodec )
@@ -1041,7 +1041,7 @@ public class TwixTransformer
                 }
                 else if ( twixControl.getControlValue() instanceof byte[] )
                 {
-                    neutralControl = new AbstractMutableControlImpl()
+                    neutralControl = new InternalAbstractControl()
                     {
                         public byte[] getEncodedValue()
                         {
@@ -1058,7 +1058,7 @@ public class TwixTransformer
                 }
                 else if ( twixControl.getControlValue() == null )
                 {
-                    neutralControl = new AbstractMutableControlImpl()
+                    neutralControl = new InternalAbstractControl()
                     {
                         public byte[] getEncodedValue()
                         {
