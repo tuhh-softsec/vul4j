@@ -277,7 +277,7 @@ public class Driver {
      *             If the page contains incorrect tags
      */
     public final void aggregate(String relUrl, HttpServletRequest request, HttpServletResponse response, boolean propagateJsessionId) throws IOException, RenderingException {
-        RequestContext target = new RequestContext(this, relUrl, null, request, propagateJsessionId);
+        RequestContext target = new RequestContext(this, relUrl, null, request, propagateJsessionId, true);
         request.setCharacterEncoding(config.getUriEncoding());
         target.setProxyMode(true);
         // Directly stream out non text data
