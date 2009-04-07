@@ -12,6 +12,8 @@ import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import net.webassembletool.test.jetty.JettyRunner;
+
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
@@ -259,10 +261,14 @@ public abstract class HttpTestCase extends TestCase {
         stream.close();
         byte[] data = baos.toByteArray();
         if (!Arrays.equals(httpMethod.getResponseBody(), data)) {
-            String expected = new String(data, "ISO-8859-1");
-            expected = expected.replaceAll("\r", "");
-            String actual = new String(httpMethod.getResponseBody(), "ISO-8859-1");
-            actual = actual.replaceAll("\r", "");
+        	String charset;
+        	Header contentType = httpMethod.getRequestHeaders("Content-type")[0];
+        	if (contentType!=null && contentType.getValue().toLowerCase().contains("utf-8"))
+        		charset = "UTF-8";
+        	else
+        		charset = "ISO-8859-1";
+            String expected = new String(data, charset);
+            String actual = new String(httpMethod.getResponseBody(), charset);
             int index = 0;
             int size = Math.min(expected.length(), actual.length());
             int line = 1;
