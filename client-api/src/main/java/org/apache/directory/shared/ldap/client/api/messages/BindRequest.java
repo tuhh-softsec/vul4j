@@ -63,6 +63,16 @@ public interface BindRequest extends AbandonableRequest, RequestWithResponse
 
 
     /**
+     * Sets the simple credentials associated with a simple authentication
+     * attempt ignored if this request uses SASL authentication mechanisms.
+     * 
+     * @param credentials the credentials if authentication is simple, null otherwise
+     * @return The object itself, to allow chaining
+     */
+    BindRequest setCredentials( String credentials );
+
+
+    /**
      * Gets the distinguished name of the subject in this authentication
      * request. This field may take on a null value (a zero length string) for
      * the purposes of anonymous binds, when authentication has been performed

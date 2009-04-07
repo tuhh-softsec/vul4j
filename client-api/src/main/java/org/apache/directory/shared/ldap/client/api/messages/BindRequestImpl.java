@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.client.api.messages;
 
+import org.apache.directory.shared.ldap.util.StringTools;
+
 
 /**
  * A client implementation of the client BindRequest LDAP message.
@@ -71,6 +73,17 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
     public BindRequest setCredentials( byte[] credentials )
     {
         this.credentials = credentials;
+        
+        return this;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BindRequest setCredentials( String credentials )
+    {
+        this.credentials = StringTools.getBytesUtf8( credentials );
         
         return this;
     }
