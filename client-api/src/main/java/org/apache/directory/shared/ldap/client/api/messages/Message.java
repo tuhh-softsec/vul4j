@@ -59,6 +59,15 @@ public interface Message
 
     
     /**
+     * Gets the control with a specific OID.
+     * 
+     * @return The Control with the specified OID
+     * @see Control
+     */
+    Control getControl( String oid );
+
+    
+    /**
      * Checks whether or not this message has the specified control.
      *
      * @param oid the OID of the control

@@ -108,6 +108,17 @@ public abstract class AbstractMessage implements Message
 
 
     /**
+     * Gets the control with a specific OID.
+     * 
+     * @return The Control with the specified OID
+     */
+    public Control getControl( String oid )
+    {
+        return controls.get( oid );
+    }
+
+    
+    /**
      * {@inheritDoc}
      */
     public boolean hasControl( String oid )
