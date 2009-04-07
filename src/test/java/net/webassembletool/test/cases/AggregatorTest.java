@@ -1,9 +1,7 @@
 package net.webassembletool.test.cases;
 
 import java.util.HashMap;
-
 import javax.servlet.http.HttpServletResponse;
-
 import net.webassembletool.test.junit.HttpTestCase;
 import net.webassembletool.test.junit.RawHttpServer;
 
@@ -13,7 +11,6 @@ import net.webassembletool.test.junit.RawHttpServer;
  * @author FRBON
  */
 public class AggregatorTest extends HttpTestCase {
-
     public void testBlock() throws Exception {
         doGet("aggregator/block.html");
         assertStatus(HttpServletResponse.SC_OK);
@@ -28,7 +25,7 @@ public class AggregatorTest extends HttpTestCase {
 
     public void testPost() throws Exception {
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("myField", "é");
+        params.put("myField", "Ã©");
         doPost("aggregator/post.jsp", params, "UTF-8");
         assertStatus(HttpServletResponse.SC_OK);
         assertBodyEqualsLocalFile("aggregator/post.jsp");
@@ -49,8 +46,7 @@ public class AggregatorTest extends HttpTestCase {
     public void testRedirect() throws Exception {
         doGet("aggregator/redirect.jsp");
         assertStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-        assertHeaderEquals("location",
-                "http://localhost:8080/aggregator/redirected.jsp");
+        assertHeaderEquals("location", "http://localhost:8080/aggregator/redirected.jsp");
     }
 
     public void testTemplate() throws Exception {
@@ -61,9 +57,7 @@ public class AggregatorTest extends HttpTestCase {
 
     public void testTemplateWithParams() throws Exception {
         /*
-         * Ensure aggregator "template" params are not forwarded to the backend
-         * template like it is the case for master/provider since these params
-         * are processed aggregator-side.
+         * Ensure aggregator "template" params are not forwarded to the backend template like it is the case for master/provider since these params are processed aggregator-side.
          */
         doGet("aggregator/templatewithparams.html");
         assertStatus(HttpServletResponse.SC_OK);
@@ -90,10 +84,9 @@ public class AggregatorTest extends HttpTestCase {
         /* Start raw http server to serve chunked content */
         HashMap<String, String> h = new HashMap<String, String>();
         h.put("Transfer-Encoding", "chunked");
-        RawHttpServer rhs = new RawHttpServer(RawHttpServer.buildHTTPBody(200,
-                h, "8;\r\nBonjour \r\n" + "7;\r\nMonde !\r\n" + "0;\r\n\r\n" +
-                // This is "end of transfer" trailing content should be ignored
-                        "4;\r\nSome\r\n"), 8888);
+        RawHttpServer rhs = new RawHttpServer(RawHttpServer.buildHTTPBody(200, h, "8;\r\nBonjour \r\n" + "7;\r\nMonde !\r\n" + "0;\r\n\r\n" +
+        // This is "end of transfer" trailing content should be ignored
+                "4;\r\nSome\r\n"), 8888);
         rhs.start();
         doGet("aggregator/raw/rawrequest");
         rhs.join();

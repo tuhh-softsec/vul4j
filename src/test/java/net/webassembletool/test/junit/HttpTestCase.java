@@ -4,15 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-
+import net.webassembletool.test.jetty.JettyRunner;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
@@ -38,7 +37,8 @@ public abstract class HttpTestCase extends TestCase {
     /**
      * Safely read method URI
      * 
-     * @param m the method whos URI is extracted
+     * @param m
+     *            the method whos URI is extracted
      * @return a string of the URL of the method
      * @throws URIException
      */
@@ -49,55 +49,56 @@ public abstract class HttpTestCase extends TestCase {
     /**
      * Converts a relative url to a url on the test server.
      * 
-     * @param relativeURL the relative URL to append to server name
+     * @param relativeURL
+     *            the relative URL to append to server name
      * @return returns the absolute URL as a string
      */
     private String getAbsoluteURL(String relativeURL) {
-        return SERVER_BASE
-                + (relativeURL.startsWith("/") ? relativeURL.substring(1)
-                        : relativeURL);
+        return HttpTestCase.SERVER_BASE + (relativeURL.startsWith("/") ? relativeURL.substring(1) : relativeURL);
     }
 
     /**
-     * Gets absolute path to reference data for given relative path relative is
-     * merged with reference prefix.
+     * Gets absolute path to reference data for given relative path relative is merged with reference prefix.
      * 
-     * @param relativePath relative path
+     * @param relativePath
+     *            relative path
      */
-
     private String getReferenceFilePath(String relativePath) {
-        return referenceFilesPath
-                + (relativePath.startsWith(File.separator) ? relativePath
-                        .substring(1) : relativePath);
+        return referenceFilesPath + (relativePath.startsWith(File.separator) ? relativePath.substring(1) : relativePath);
     }
 
     @Override
     public void setUp() {
         httpMethod = null;
-        referenceFilesPath = System.getenv("referenceFilesPath");
+        // referenceFilesPath = System.getenv("referenceFilesPath");
+        URL url = HttpTestCase.class.getResource("/ref_outputs/");
+        referenceFilesPath = url.getPath();
         if (!referenceFilesPath.endsWith(File.separator))
             referenceFilesPath += File.separator;
         httpClient = new HttpClient();
+        try {
+            JettyRunner.startJetty();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void tearDown() throws Exception {
         httpMethod = null;
-        ((SimpleHttpConnectionManager) httpClient.getHttpConnectionManager())
-                .shutdown();
+        ((SimpleHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
         httpClient = null;
+        JettyRunner.stopJetty();
     }
 
     public void doGet(String relativeURL, Map<String, String> headers) throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);
-        log.info("GET " + absoluteUrl);
+        HttpTestCase.log.info("GET " + absoluteUrl);
         httpMethod = new GetMethod(absoluteUrl);
-        if (headers!=null) {
-	        for (Iterator<Map.Entry<String, String>> headersIterator = headers.entrySet().iterator(); headersIterator.hasNext();) {
-	            Map.Entry<String, String> header = headersIterator.next();
-	            httpMethod.addRequestHeader(header.getKey(), header.getValue());
-	        }
-        }
+        if (headers != null)
+            for (Entry<String, String> header : headers.entrySet())
+                httpMethod.addRequestHeader(header.getKey(), header.getValue());
         httpMethod.setFollowRedirects(false);
         try {
             httpClient.executeMethod(httpMethod);
@@ -108,26 +109,22 @@ public abstract class HttpTestCase extends TestCase {
     }
 
     public void doGet(String relativeURL) throws Exception {
-    	doGet(relativeURL, null);
+        doGet(relativeURL, null);
     }
 
-    public void doPost(String relativeURL, Map<String, String> params)
-            throws Exception {
+    public void doPost(String relativeURL, Map<String, String> params) throws Exception {
         doPost(relativeURL, params, "ISO-8859-1");
     }
 
-    public void doPost(String relativeURL, Map<String, String> params,
-            String charset) throws Exception {
+    public void doPost(String relativeURL, Map<String, String> params, String charset) throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);
-        log.info("GET " + absoluteUrl);
+        HttpTestCase.log.info("GET " + absoluteUrl);
         httpMethod = new PostMethod(absoluteUrl);
         httpMethod.setFollowRedirects(false);
         httpMethod.getParams().setContentCharset(charset);
         String paramName;
         String paramValue;
-        for (Iterator<Entry<String, String>> iterator = params.entrySet()
-                .iterator(); iterator.hasNext();) {
-            Entry<String, String> entry = iterator.next();
+        for (Entry<String, String> entry : params.entrySet()) {
             paramName = entry.getKey();
             paramValue = entry.getValue();
             ((PostMethod) httpMethod).addParameter(paramName, paramValue);
@@ -143,9 +140,12 @@ public abstract class HttpTestCase extends TestCase {
     /**
      * Emit post request with RAW data as body
      * 
-     * @param relativeURL The url to post to
-     * @param body the binary data to send
-     * @throws Exception if any error happens
+     * @param relativeURL
+     *            The url to post to
+     * @param body
+     *            the binary data to send
+     * @throws Exception
+     *             if any error happens
      */
     public void doPost(String relativeURL, byte[] body) throws Exception {
         doPost(relativeURL, null, body);
@@ -154,19 +154,21 @@ public abstract class HttpTestCase extends TestCase {
     /**
      * Emit post request with RAW data as body
      * 
-     * @param relativeURL The url to post to
-     * @param contentType the content type to set
-     * @param body the binary data to send
-     * @throws Exception if any error happens
+     * @param relativeURL
+     *            The url to post to
+     * @param contentType
+     *            the content type to set
+     * @param body
+     *            the binary data to send
+     * @throws Exception
+     *             if any error happens
      */
-    public void doPost(String relativeURL, String contentType, byte[] body)
-            throws Exception {
+    public void doPost(String relativeURL, String contentType, byte[] body) throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);
-        log.info("POST " + absoluteUrl);
+        HttpTestCase.log.info("POST " + absoluteUrl);
         httpMethod = new PostMethod(absoluteUrl);
         httpMethod.setFollowRedirects(false);
-        ((PostMethod) httpMethod).setRequestEntity(new ByteArrayRequestEntity(
-                body, contentType));
+        ((PostMethod) httpMethod).setRequestEntity(new ByteArrayRequestEntity(body, contentType));
         try {
             httpClient.executeMethod(httpMethod);
             httpMethod.getResponseBody();
@@ -176,73 +178,77 @@ public abstract class HttpTestCase extends TestCase {
     }
 
     /**
-     * Ensures the given method responds the given status Assertion on
-     * HttpClient's HttpMethod objects.
+     * Ensures the given method responds the given status Assertion on HttpClient's HttpMethod objects.
      * 
-     * @param status the requested status
-     * @throws Exception In case of a problem
+     * @param status
+     *            the requested status
+     * @throws Exception
+     *             In case of a problem
      */
     public void assertStatus(int status) throws Exception {
-        Assert.assertEquals("Http status for " + getMethodURI() + ":", status,
-                httpMethod.getStatusCode());
+        Assert.assertEquals("Http status for " + getMethodURI() + ":", status, httpMethod.getStatusCode());
     }
 
     /**
      * Ensures response body matches the given regex
      * 
-     * @param regex the regex to check
-     * @throws Exception In case of a problem
+     * @param regex
+     *            the regex to check
+     * @throws Exception
+     *             In case of a problem
      */
     public void assertBodyMatch(String regex) throws Exception {
-        Assert.assertTrue("Body of " + getMethodURI() + " must match : "
-                + regex, httpMethod.getResponseBodyAsString().matches(regex));
+        Assert.assertTrue("Body of " + getMethodURI() + " must match : " + regex, httpMethod.getResponseBodyAsString().matches(regex));
     }
 
     /**
      * Ensures response body does not match the given regex
      * 
-     * @param regex the regex to check
-     * @throws Exception In case of a problem
+     * @param regex
+     *            the regex to check
+     * @throws Exception
+     *             In case of a problem
      */
     public void assertBodyNotMatch(String regex) throws Exception {
-        Assert.assertFalse("Body of " + getMethodURI() + " must not match : "
-                + regex, httpMethod.getResponseBodyAsString().matches(regex));
+        Assert.assertFalse("Body of " + getMethodURI() + " must not match : " + regex, httpMethod.getResponseBodyAsString().matches(regex));
     }
 
     /**
      * Ensures response body does contain the given string
      * 
-     * @param fragment the fragment to check
-     * @throws Exception In case of a problem
+     * @param fragment
+     *            the fragment to check
+     * @throws Exception
+     *             In case of a problem
      */
     public void assertBodyContains(String fragment) throws Exception {
-        Assert.assertTrue("Body of " + getMethodURI()
-                + " must contain fragment ", httpMethod
-                .getResponseBodyAsString().indexOf(fragment) >= 0);
+        Assert.assertTrue("Body of " + getMethodURI() + " must contain fragment ", httpMethod.getResponseBodyAsString().indexOf(fragment) >= 0);
     }
 
     /**
      * Ensures response body does not contain the given string
      * 
-     * @param fragment the fragment to check
-     * @throws Exception In case of a problem
+     * @param fragment
+     *            the fragment to check
+     * @throws Exception
+     *             In case of a problem
      */
     public void assertBodyNotContains(String fragment) throws Exception {
-        Assert.assertFalse("Body of " + getMethodURI()
-                + "  must not contain fragment ", httpMethod
-                .getResponseBodyAsString().indexOf(fragment) >= 0);
+        Assert.assertFalse("Body of " + getMethodURI() + "  must not contain fragment ", httpMethod.getResponseBodyAsString().indexOf(fragment) >= 0);
     }
 
     /**
      * Compares a response to a file
      * 
-     * @param relativePath Relative path of a folder on the server
-     * @throws Exception In case of a problem
+     * @param relativePath
+     *            Relative path of a folder on the server
+     * @throws Exception
+     *             In case of a problem
      */
     public void assertBodyEqualsLocalFile(String relativePath) throws Exception {
         String directoryPrefix = getReferenceFilePath(relativePath);
         File file = new File(directoryPrefix);
-        log.info("Open file " + file.getPath());
+        HttpTestCase.log.info("Open file " + file.getPath());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         InputStream stream = new FileInputStream(file);
         byte[] buffer = new byte[1024];
@@ -254,8 +260,7 @@ public abstract class HttpTestCase extends TestCase {
         byte[] data = baos.toByteArray();
         if (!Arrays.equals(httpMethod.getResponseBody(), data)) {
             String expected = new String(data, "ISO-8859-1");
-            String actual = new String(httpMethod.getResponseBody(),
-                    "ISO-8859-1");
+            String actual = new String(httpMethod.getResponseBody(), "ISO-8859-1");
             int index = 0;
             int size = Math.min(expected.length(), actual.length());
             int line = 1;
@@ -263,8 +268,7 @@ public abstract class HttpTestCase extends TestCase {
             String expectedLine = "";
             String actualLine = "";
             while (index < size) {
-                if (expected.charAt(index) == '\n'
-                        && actual.charAt(index) == '\n') {
+                if ((expected.charAt(index) == '\n' || expected.charAt(index) == '\r') && (actual.charAt(index) == '\n' || actual.charAt(index) == '\r')) {
                     line++;
                     character = 1;
                     expectedLine = "";
@@ -274,15 +278,12 @@ public abstract class HttpTestCase extends TestCase {
                     expectedLine += expected.charAt(index);
                     actualLine += actual.charAt(index);
                 }
-                if (expected.charAt(index) != actual.charAt(index)) {
-                    String message = "Body of " + getMethodURI()
-                            + " must be equal to reference\n";
-                    message += "Error line " + line + " character " + character
-                            + "\n";
+                if (expected.charAt(index) == '\n' && expected.charAt(index) == '\r' && expected.charAt(index) != actual.charAt(index)) {
+                    String message = "Body of " + getMethodURI() + " must be equal to reference\n";
+                    message += "Error line " + line + " character " + character + "\n";
                     // Read to end of line
                     index++;
-                    while (expected.charAt(index) != '\n'
-                            && actual.charAt(index) != '\n' && index < size) {
+                    while (expected.charAt(index) != '\n' && actual.charAt(index) != '\n' && index < size) {
                         expectedLine += expected.charAt(index);
                         actualLine += actual.charAt(index);
                         index++;
@@ -298,11 +299,10 @@ public abstract class HttpTestCase extends TestCase {
 
     public void assertHeaderEquals(String name, String value) {
         String actualValue = httpMethod.getResponseHeader(name).getValue();
-        assertEquals("Header \"" + name + "\" must be equal to \"" + value
-                + "\" actual value is \"" + actualValue + "\"", actualValue,
-                value);
+        Assert.assertEquals("Header \"" + name + "\" must be equal to \"" + value + "\" actual value is \"" + actualValue + "\"", actualValue, value);
     }
+
     public String getResponseHeader(String name) {
-    	return httpMethod.getResponseHeader(name).getValue();
+        return httpMethod.getResponseHeader(name).getValue();
     }
 }
