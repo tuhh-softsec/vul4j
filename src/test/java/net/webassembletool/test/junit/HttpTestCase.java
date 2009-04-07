@@ -260,7 +260,9 @@ public abstract class HttpTestCase extends TestCase {
         byte[] data = baos.toByteArray();
         if (!Arrays.equals(httpMethod.getResponseBody(), data)) {
             String expected = new String(data, "ISO-8859-1");
+            expected = expected.replaceAll("\r", "");
             String actual = new String(httpMethod.getResponseBody(), "ISO-8859-1");
+            actual = actual.replaceAll("\r", "");
             int index = 0;
             int size = Math.min(expected.length(), actual.length());
             int line = 1;
@@ -268,7 +270,7 @@ public abstract class HttpTestCase extends TestCase {
             String expectedLine = "";
             String actualLine = "";
             while (index < size) {
-                if ((expected.charAt(index) == '\n' || expected.charAt(index) == '\r') && (actual.charAt(index) == '\n' || actual.charAt(index) == '\r')) {
+                if (expected.charAt(index) == '\n' && actual.charAt(index) == '\n') {
                     line++;
                     character = 1;
                     expectedLine = "";
@@ -278,7 +280,7 @@ public abstract class HttpTestCase extends TestCase {
                     expectedLine += expected.charAt(index);
                     actualLine += actual.charAt(index);
                 }
-                if (expected.charAt(index) == '\n' && expected.charAt(index) == '\r' && expected.charAt(index) != actual.charAt(index)) {
+                if (expected.charAt(index) != actual.charAt(index)) {
                     String message = "Body of " + getMethodURI() + " must be equal to reference\n";
                     message += "Error line " + line + " character " + character + "\n";
                     // Read to end of line
