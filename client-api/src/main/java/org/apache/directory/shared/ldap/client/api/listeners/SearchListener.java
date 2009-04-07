@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.client.api.listeners;
 
 import org.apache.directory.shared.ldap.client.api.LdapConnection;
+import org.apache.directory.shared.ldap.client.api.exception.LdapException;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultDone;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultEntry;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultReference;
@@ -41,7 +42,7 @@ public interface SearchListener
      * @param connection The LdapConnection
      * @param searchResultEntry The found entry
      */
-    void entryFound( LdapConnection connection, SearchResultEntry searchResultEntry );
+    void entryFound( LdapConnection connection, SearchResultEntry searchResultEntry ) throws LdapException;
     
     
     /**
@@ -50,7 +51,7 @@ public interface SearchListener
      * @param connection The LdapConnection
      * @param searchResultReference The referral message
      */
-    void referralFound( LdapConnection connection, SearchResultReference searchResultReference );
+    void referralFound( LdapConnection connection, SearchResultReference searchResultReference ) throws LdapException;
 
     
     /**
@@ -59,5 +60,5 @@ public interface SearchListener
      * @param connection The LdapConnection
      * @param searchResultDone The searchResultDone response
      */
-    void searchDone( LdapConnection connection, SearchResultDone searchResultDone );
+    void searchDone( LdapConnection connection, SearchResultDone searchResultDone ) throws LdapException;
 }

@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.client.api.listeners;
 
 import org.apache.directory.shared.ldap.client.api.LdapConnection;
+import org.apache.directory.shared.ldap.client.api.exception.LdapException;
 import org.apache.directory.shared.ldap.client.api.messages.BindResponse;
 
 /**
@@ -39,5 +40,5 @@ public interface BindListener
      * @param connection
      * @param BindResponseCodec The bind response
      */
-    void bindCompleted( LdapConnection connection, BindResponse bindResponse );
+    void bindCompleted( LdapConnection connection, BindResponse bindResponse ) throws LdapException;
 }
