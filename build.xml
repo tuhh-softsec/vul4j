@@ -2,8 +2,13 @@
 <project name="webassembletool" default="release" basedir=".">
 	<loadproperties srcfile="build.properties" />
 	<target name="release">
+		<exec executable="${mvn}" failonerror="true">
+			<arg value="clean" />
+			<arg value="compile" />
+			<arg value="test" />
+		</exec>
 		<tstamp />
-		<delete quiet="true">
+		<delete failonerror="false">
 			<fileset file="target/webassembletool*.jar" />
 			<fileset dir="target/samples" />
 		</delete>
