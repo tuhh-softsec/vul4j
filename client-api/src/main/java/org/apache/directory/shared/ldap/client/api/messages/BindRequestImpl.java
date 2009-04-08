@@ -176,4 +176,41 @@ public class BindRequestImpl extends AbstractRequest implements BindRequest
         
         return this;
     }
+    
+    
+    /**
+     * Get a String representation of a BindRequest
+     * 
+     * @return A BindRequest String
+     */
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append( super.toString() );
+        sb.append( "    BindRequest\n" );
+        sb.append( "        Version : '" ).append( version ).append( "'\n" );
+
+        if ( ( null == name ) || StringTools.isEmpty( name.toString() ) )
+        {
+            sb.append( "        Name : anonymous\n" );
+        }
+        else
+        {
+            sb.append( "        Name : '" ).append( name ).append( "'\n" );
+
+            if ( isSimple )
+            {
+                sb.append( "        Simple authentication : '" ).append( StringTools.utf8ToString( credentials ) ).append( "'\n" );
+            }
+            else
+            {
+                sb.append( "        Sasl authentication : \n" );
+                sb.append( "            mechanism : '" ).append(  saslMechanism ).append( "'\n" );
+                sb.append( "            credentials : '" ).append( StringTools.utf8ToString( credentials ) ).append( "'\n" );
+            }
+        }
+        
+        return sb.toString();
+    }
 }

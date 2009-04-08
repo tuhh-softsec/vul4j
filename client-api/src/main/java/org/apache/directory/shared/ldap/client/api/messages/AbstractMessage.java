@@ -148,4 +148,28 @@ public abstract class AbstractMessage implements Message
         
         return this;
     }
+    
+    
+    /**
+     * Get a String representation of a LdapMessage
+     * 
+     * @return A LdapMessage String
+     */
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "LdapMessage\n" );
+        sb.append( "    message Id : " ).append( messageId ).append( '\n' );
+
+        if ( controls != null )
+        {
+            for ( Control control:controls.values() )
+            {
+                sb.append( control );
+            }
+        }
+
+        return sb.toString();
+    }
 }
