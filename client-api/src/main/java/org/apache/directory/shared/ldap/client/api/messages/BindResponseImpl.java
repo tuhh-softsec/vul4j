@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.client.api.messages;
 
+import org.apache.directory.shared.ldap.util.StringTools;
+
 
 /**
  * A client implementation of the client BindResponse LDAP message.
@@ -56,5 +58,28 @@ public class BindResponseImpl extends AbstractResponseWithResult implements Bind
     public void setServerSaslCreds( byte[] credentials )
     {
         this.credentials = credentials;
+    }
+
+
+    /**
+     * Get a String representation of a BindResponse
+     * 
+     * @return A BindResponse String
+     */
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( super.toString() );
+        sb.append( "    BindResponse\n" );
+
+        if ( credentials != null )
+        {
+            sb.append( "        Server sasl credentials : '" ).
+                append( StringTools.utf8ToString( credentials ) ).
+                append( "'\n" );
+        }
+
+        return sb.toString();
     }
 }
