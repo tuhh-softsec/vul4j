@@ -31,6 +31,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InvalidNameException;
@@ -64,6 +65,7 @@ import org.apache.directory.shared.ldap.client.api.messages.SearchResultEntry;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultReference;
 import org.apache.directory.shared.ldap.client.api.messages.SearchResultReferenceImpl;
+import org.apache.directory.shared.ldap.client.api.messages.future.BindFuture;
 import org.apache.directory.shared.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.codec.ControlCodec;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
@@ -170,7 +172,7 @@ public class LdapConnection  extends IoHandlerAdapter
     private BlockingQueue<LdapMessageCodec> addResponseQueue;
     
     /** A queue used to store the incoming bind responses */
-    private BlockingQueue<LdapMessageCodec> bindResponseQueue;
+    private BlockingQueue<BindResponse> bindResponseQueue;
     
     /** A queue used to store the incoming compare responses */
     private BlockingQueue<LdapMessageCodec> compareResponseQueue;
@@ -586,7 +588,7 @@ public class LdapConnection  extends IoHandlerAdapter
         
         // Create the responses queues
         addResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
-        bindResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
+        bindResponseQueue = new LinkedBlockingQueue<BindResponse>();
         compareResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
         deleteResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
         extendedResponseQueue = new LinkedBlockingQueue<LdapMessageCodec>();
@@ -858,7 +860,7 @@ public class LdapConnection  extends IoHandlerAdapter
      */
     public BindResponse bind( BindRequest bindRequest ) throws LdapException
     {
-        return bindInternal( bindRequest, null );
+        return bindInternal( bindRequest );
     }
         
 
@@ -868,9 +870,9 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param bindRequest The BindRequest to send
      * @param listener The listener 
      */
-    public void bind( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
+    public BindFuture bind( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
     {
-        bindInternal( bindRequest, bindListener );
+        return bindAsyncInternal( bindRequest, bindListener );
     }
     
     
@@ -880,7 +882,59 @@ public class LdapConnection  extends IoHandlerAdapter
      * @param bindRequest The BindRequest to send
      * @param listener The listener (Can be null) 
      */
-    private BindResponse bindInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
+    private BindResponse bindInternal( BindRequest bindRequest ) throws LdapException 
+    {
+        // Create the future to get the result
+        BindFuture bindFuture = bindAsyncInternal( bindRequest, null );
+        
+        try
+        {
+            // Read the response, waiting for it if not available immediately
+            long timeout = getTimeout( bindRequest.getTimeout() );
+            
+            // Get the response, blocking
+            BindResponse bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+
+            // Release the session lock
+            unlockSession();
+            
+            // Everything is fine, return the response
+            LOG.debug( "Bind successful : {}", bindResponse );
+            
+            return bindResponse;
+        }
+        catch ( TimeoutException te )
+        {
+            // Send an abandon request
+            abandon( bindRequest.getMessageId() );
+            
+            // We didn't received anything : this is an error
+            LOG.error( "Bind failed : timeout occured" );
+            unlockSession();
+            throw new LdapException( "TimeOut occured" );
+        }
+        catch ( Exception ie )
+        {
+            // Catch all other exceptions
+            LOG.error( "The response queue has been emptied, no response will be find." );
+            LdapException ldapException = new LdapException();
+            ldapException.initCause( ie );
+            unlockSession();
+            
+            // Send an abandon request
+            abandon( bindRequest.getMessageId() );
+            throw ldapException;
+        }
+    }
+
+    
+    /**
+     * Do the bind non-blocking
+     *
+     * @param bindRequest The BindRequest to send
+     * @param listener The listener (Can be null) 
+     */
+    private BindFuture bindAsyncInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
     {
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
@@ -900,6 +954,9 @@ public class LdapConnection  extends IoHandlerAdapter
         
         // Create a new codec BindRequest object
         BindRequestCodec request =  new BindRequestCodec();
+        
+        // Set the version
+        request.setVersion( LDAP_V3 );
         
         // Set the name
         try
@@ -948,58 +1005,11 @@ public class LdapConnection  extends IoHandlerAdapter
         // Send the request to the server
         ldapSession.write( bindMessage );
 
-        if ( bindListener == null )
-        {
-            // Read the response, waiting for it if not available immediately
-            try
-            {
-                long timeout = getTimeout( bindRequest.getTimeout() );
-
-                LdapMessageCodec response = bindResponseQueue.poll( timeout, TimeUnit.MILLISECONDS );
-            
-                // Check that we didn't get out because of a timeout
-                if ( response == null )
-                {
-                    // Send an abandon request
-                    abandon( bindMessage.getBindRequest().getMessageId() );
-                    
-                    // We didn't received anything : this is an error
-                    LOG.error( "Bind failed : timeout occured" );
-                    unlockSession();
-                    throw new LdapException( "TimeOut occured" );
-                }
-                
-                // Release the session lock
-                unlockSession();
-                
-                // Everything is fine, return the response
-                BindResponse bindResponse = new BindResponseImpl();
-                bindResponse.setServerSaslCreds( response.getBindResponse().getServerSaslCreds() );
-                response.getLdapResponse();
-                
-                LOG.debug( "Bind successful : {}", response.getBindResponse() );
-                
-                return bindResponse;
-            }
-            catch ( InterruptedException ie )
-            {
-                LOG.error( "The response queue has been emptied, no response will be find." );
-                LdapException ldapException = new LdapException();
-                ldapException.initCause( ie );
-                unlockSession();
-                
-                // Send an abandon request
-                abandon( bindMessage.getBindRequest().getMessageId() );
-                throw ldapException;
-            }
-        }
-        else
-        {
-            // The listener will be called on a MessageReceived event
-            return null;
-        }
+        // Return the associated future
+        return new BindFuture( bindResponseQueue );
     }
     
+
     //------------------------ The LDAP operations ------------------------//
     // Search operations                                                   //
     //---------------------------------------------------------------------//
@@ -1330,15 +1340,16 @@ public class LdapConnection  extends IoHandlerAdapter
                 // Store the response into the responseQueue
                 BindResponseCodec bindResponseCodec = response.getBindResponse();
                 bindResponseCodec.addControl( response.getCurrentControl() );
+                BindResponse bindResponse = convert( bindResponseCodec );
                 
                 if ( bindListener != null )
                 {
-                    bindListener.bindCompleted( this, convert( bindResponseCodec ) );
+                    bindListener.bindCompleted( this, bindResponse );
                 }
                 else
                 {
                     // Store the response into the responseQueue
-                    bindResponseQueue.add( bindResponseCodec );
+                    bindResponseQueue.add( bindResponse );
                 }
                 
                 break;
