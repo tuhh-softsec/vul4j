@@ -61,4 +61,24 @@ public abstract class AbstractResponseWithResult extends AbstractMessage impleme
     {
         this.ldapResult = ldapResult;
     }
+
+
+    /**
+     * Get a String representation of an Response
+     * 
+     * @return An Response String
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append( super.toString() );
+        
+        if ( ldapResult != null )
+        {
+            sb.append( ldapResult );
+        }
+        
+        return sb.toString();
+    }
 }

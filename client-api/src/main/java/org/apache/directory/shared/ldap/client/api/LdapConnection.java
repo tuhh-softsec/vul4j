@@ -194,8 +194,7 @@ public class LdapConnection  extends IoHandlerAdapter
     
     /** A queue used to store the incoming intermediate responses */
     private BlockingQueue<LdapMessageCodec> intermediateResponseQueue;
-    
-    
+
     /** An operation mutex to guarantee the operation order */
     private Semaphore operationMutex;
     
@@ -532,13 +531,13 @@ public class LdapConnection  extends IoHandlerAdapter
      * Connect to the remote LDAP server.
      *
      * @return <code>true</code> if the connection is established, false otherwise
-     * @throws IOException if some I/O error occurs
+     * @throws LdapException if some error has occured
      */
-    public boolean connect() throws IOException
+    private boolean connect() throws LdapException
     {
         if ( ( ldapSession != null ) && ldapSession.isConnected() ) 
         {
-            throw new IllegalStateException( "Already connected. Disconnect first." );
+            return true;
         }
 
         // Create the connector if needed
@@ -836,7 +835,7 @@ public class LdapConnection  extends IoHandlerAdapter
         bindRequest.setName( name );
         bindRequest.setCredentials( credentials );
         
-        BindResponse response = bind( bindRequest );
+        BindResponse response = bindInternal( bindRequest );
 
         if ( response.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
         {
@@ -936,6 +935,9 @@ public class LdapConnection  extends IoHandlerAdapter
      */
     private BindFuture bindAsyncInternal( BindRequest bindRequest, BindListener bindListener ) throws LdapException 
     {
+        // First try to connect, if we aren't already connected.
+        connect();
+        
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
@@ -1244,10 +1246,13 @@ public class LdapConnection  extends IoHandlerAdapter
     // Unbind operations                                                   //
     //---------------------------------------------------------------------//
     /**
-     * UnBind from a server
+     * UnBind from a server. this is a request which expect no response.
      */
     public void unBind() throws Exception
     {
+        // First try to connect, if we aren't already connected.
+        connect();
+        
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
         
@@ -1275,10 +1280,10 @@ public class LdapConnection  extends IoHandlerAdapter
         // Send the request to the server
         ldapSession.write( unbindMessage );
 
-        // We also have to reset the response queues
-        bindResponseQueue.clear();
-        
+        // Release the LdapSession
         operationMutex.release();
+        
+        // And get out
         LOG.debug( "Unbind successful" );
     }
     

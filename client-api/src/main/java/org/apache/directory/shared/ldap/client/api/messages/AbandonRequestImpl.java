@@ -69,4 +69,22 @@ public class AbandonRequestImpl extends AbstractRequest implements AbandonReques
         
         return this;
     }
+    
+    
+    /**
+     * Return a String representing an AbandonRequest
+     * 
+     * @return A String representing the AbandonRequest
+     */
+    public String toString()
+    {
+
+        StringBuffer sb = new StringBuffer();
+
+        sb.append(  super.toString() );
+        sb.append( "    Abandon Request :\n" );
+        sb.append( "        Message Id : " ).append( abandonedMessageId ).append( '\n' );
+
+        return sb.toString();
+    }
 }

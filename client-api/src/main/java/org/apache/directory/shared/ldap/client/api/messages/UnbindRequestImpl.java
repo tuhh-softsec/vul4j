@@ -35,4 +35,20 @@ public class UnbindRequestImpl extends AbstractRequest implements UnbindRequest
     {
         super();
     }
+    
+    
+    /**
+     * Get a String representation of a UnBindRequest
+     * 
+     * @return A UnBindRequest String
+     */
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( super.toString() );
+        sb.append( "    UnBind Request\n" );
+
+        return sb.toString();
+    }
 }
