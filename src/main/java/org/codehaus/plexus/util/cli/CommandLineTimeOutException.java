@@ -22,7 +22,7 @@ package org.codehaus.plexus.util.cli;
 /**
  * 
  * @author <a href="mailto:olamy@apache.org">olamy</a>
- *
+ * @since 1.5.9
  * @version $Id$
  */
 public class CommandLineTimeOutException
