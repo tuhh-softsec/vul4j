@@ -97,6 +97,15 @@ public abstract class CommandLineUtils
         return executeCommandLine( cl, systemIn, systemOut, systemErr, 0 );
     }
 
+    /**
+     * @param cl
+     * @param systemIn
+     * @param systemOut
+     * @param systemErr
+     * @param timeoutInSeconds
+     * @return
+     * @throws CommandLineException or CommandLineTimeOutException if time out occurs
+     */
     public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut, StreamConsumer systemErr, int timeoutInSeconds )
         throws CommandLineException
     {
@@ -188,7 +197,7 @@ public abstract class CommandLineUtils
         catch ( InterruptedException ex )
         {
             killProcess( cl.getPid() );
-            throw new CommandLineException( "Error while executing external command, process killed.", ex );
+            throw new CommandLineTimeOutException( "Error while executing external command, process killed.", ex );
         }
         finally
         {
