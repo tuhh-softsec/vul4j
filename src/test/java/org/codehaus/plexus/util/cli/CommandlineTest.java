@@ -493,6 +493,40 @@ public class CommandlineTest
         executeCommandLine( cmd );
     }
 
+    public void testTimeOutException() throws Exception
+    {
+        File javaHome = new File( System.getProperty( "java.home" ) );
+        File java;
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
+        {
+            java = new File( javaHome, "/bin/java.exe" );
+        }
+        else
+        {
+            java = new File( javaHome, "/bin/java" );
+        }
+
+        if ( !java.exists() )
+        {
+            throw new IOException( java.getAbsolutePath() + " doesn't exist" );
+        }
+        
+        Commandline cli = new Commandline();
+        cli.setExecutable( java.getAbsolutePath() );
+        cli.createArg().setLine( "-version" );
+        CommandLineUtils.StringStreamConsumer err = new CommandLineUtils.StringStreamConsumer();
+        try
+        {
+            // if the os is faster than 1s to execute java -version the unit will fail :-)
+            CommandLineUtils.executeCommandLine( cli, new DefaultConsumer(), err, 1 );
+        }
+        catch ( CommandLineTimeOutException e )
+        {
+            // it works
+        }
+        
+    }
+    
     /**
      * Make the file executable for Unix box.
      *
