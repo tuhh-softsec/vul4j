@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
@@ -120,7 +121,7 @@ public abstract class HttpTestCase extends TestCase {
 
     public void doPost(String relativeURL, Map<String, String> params, String charset) throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);
-        HttpTestCase.log.info("GET " + absoluteUrl);
+        HttpTestCase.log.info("POST " + absoluteUrl);
         httpMethod = new PostMethod(absoluteUrl);
         httpMethod.setFollowRedirects(false);
         httpMethod.getParams().setContentCharset(charset);

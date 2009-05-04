@@ -1,7 +1,9 @@
 package net.webassembletool.test.cases;
 
 import java.util.HashMap;
+
 import javax.servlet.http.HttpServletResponse;
+
 import net.webassembletool.test.junit.HttpTestCase;
 import net.webassembletool.test.junit.RawHttpServer;
 
@@ -25,8 +27,13 @@ public class AggregatorTest extends HttpTestCase {
 
     public void testPost() throws Exception {
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("myField", "é");
-        doPost("aggregator/post.jsp", params, "UTF-8");
+        // e with acute accent in UTF-8 is C3A9
+        // putting this explicitly avoids issues related to source code
+        // encoding.
+        String eacute = new String(new byte[] { (byte) 0xC3, (byte) 0xA9 },
+                "UTF-8");
+        params.put("myField", eacute);
+        doPost("aggregated1/post.jsp", params, "UTF-8");
         assertStatus(HttpServletResponse.SC_OK);
         assertBodyEqualsLocalFile("aggregator/post.jsp");
     }
