@@ -10,13 +10,16 @@ import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.webassembletool.RequestContext;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
+
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.ConnectionPoolTimeoutException;
 import org.apache.commons.httpclient.Cookie;
@@ -77,9 +80,7 @@ public class HttpResource extends Resource {
      *             if problem getting the request
      */
     private void buildRawPostMethod() throws IOException {
-        url = ResourceUtils.getHttpUrl(target);
-        if (target.getOriginalRequest().getQueryString() != null)
-            url = url + '?' + target.getOriginalRequest().getQueryString();
+        url = ResourceUtils.getHttpUrlWithQueryString(target);
         PostMethod postMethod = new PostMethod(url);
         HttpServletRequest req = target.getOriginalRequest();
         postMethod.setRequestEntity(new InputStreamRequestEntity(req.getInputStream(), req.getContentLength(), req.getContentType()));

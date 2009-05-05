@@ -105,4 +105,17 @@ public class AggregatorTest extends HttpTestCase {
         doGet("/aggregator/export_ContentContainer_55.zip");
         assertBodyEqualsLocalFile("aggregator/export_ContentContainer_55.zip");
     }
+    
+    public void testSpaceInUrl() throws Exception {
+        doGet("/aggregator/ressource%20with%20spaces.html");
+        assertStatus(200);
+        assertBodyEqualsLocalFile("aggregator/ressource_with_spaces.html");
+    }
+    
+    public void testBarInUrlParam() throws Exception {
+        doGet("/aggregator/ressource%20with%20spaces.html?bar=foo%7Cfoo%26bar");
+        assertStatus(200);
+        assertBodyEqualsLocalFile("aggregator/ressource_with_spaces.html");
+    }
+    
 }

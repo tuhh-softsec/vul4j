@@ -263,8 +263,9 @@ public abstract class HttpTestCase extends TestCase {
         byte[] data = baos.toByteArray();
         if (!Arrays.equals(httpMethod.getResponseBody(), data)) {
         	String charset;
-        	Header contentType = httpMethod.getRequestHeaders("Content-type")[0];
-        	if (contentType!=null && contentType.getValue().toLowerCase().contains("utf-8"))
+        	Header[] contentTypes = httpMethod
+                    .getRequestHeaders("Content-type");
+        	if (contentTypes.length > 0 && contentTypes[0].getValue().toLowerCase().contains("utf-8"))
         		charset = "UTF-8";
         	else
         		charset = "ISO-8859-1";

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.webassembletool.RequestContext;
 import net.webassembletool.UserContext;
 
@@ -23,6 +24,7 @@ public class ResourceUtils {
             String qs = target.getOriginalRequest().getQueryString();
             if (target.isOriginalRequestParameters())
                 if (qs != null && !qs.equals(""))
+                    // Should encode parameters here !
                     queryString.append(qs).append("&");
             if (qs != null && qs.length() > 0)
                 // queryString.append(qs).append("&");
@@ -93,19 +95,30 @@ public class ResourceUtils {
             url.append(baseUrl).append(relUrl);
         return url.toString();
     }
+    
+    private final static String encodeSpecialChars(String input) {
+        // One might think that we should URL-encode everything, this could have
+        // been done in getHttpUrlWithQueryString; Actually, we have encountred
+        // cases of tools that do not like url encodings for all characters (in
+        // some jahia servlets !)! Thus, only special chars not accepted by
+        // javax.net.URI ar urlencoded for HTTPClient.
+        return input.replaceAll(" ", "%20").replaceAll("\\|", "%7C");
+    }
 
     public final static String getHttpUrlWithQueryString(RequestContext target) {
-        String url = ResourceUtils.concatUrl(target.getDriver().getBaseURL(), target.getRelUrl());
+        
+        String url = concatUrl(target.getDriver().getBaseURL(), target
+                .getRelUrl());
         String queryString = ResourceUtils.buildQueryString(target);
         if (queryString.length() == 0)
-            return url;
+            return encodeSpecialChars(url);
         else
-            return url + "?" + queryString;
+            return encodeSpecialChars(url + "?" + queryString);
     }
 
     public final static String getHttpUrl(RequestContext target) {
         String url = ResourceUtils.concatUrl(target.getDriver().getBaseURL(), target.getRelUrl());
-        return url;
+        return encodeSpecialChars(url);
     }
 
     public final static String getFileUrl(String localBase, RequestContext target) {
