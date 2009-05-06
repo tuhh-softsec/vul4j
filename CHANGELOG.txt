@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 New in v ...
+    Fixed bug 47097: Reusing XMLSignature for signing and verifying fails on same thread. Thanks to Bruno Harbulot.
     Fixed bug 46732: Failed to add more than one child element to EncryptionMethod.
     Fixed bug 46101: org.apache.xml.security.utils.IdResolver is not thread safe
     Fixed bug 45961: verify with own canonicalization method. Thanks to Anton Kosyakov.

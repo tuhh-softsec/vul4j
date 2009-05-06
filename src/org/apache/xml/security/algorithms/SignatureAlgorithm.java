@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.algorithms;
 
-
 import java.security.Key;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
@@ -30,7 +29,6 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 
 /**
  * Allows selection of digital signature's algorithm, private keys, other 
@@ -95,9 +93,6 @@ public class SignatureAlgorithm extends Algorithm {
 
     private void initializeAlgorithm(boolean isForSigning) 
         throws XMLSignatureException {
-        if (_signatureAlgorithm!=null) {
-	   return;
-        }
         _signatureAlgorithm=isForSigning ? getInstanceForSigning(algorithmURI) :
             getInstanceForVerify(algorithmURI);	   
 	this._signatureAlgorithm
