@@ -76,6 +76,14 @@ import java.util.Vector;
 public final class SelectorUtils
 {
 
+    public static final String PATTERN_HANDLER_PREFIX = "[";
+    
+    public static final String PATTERN_HANDLER_SUFFIX = "]";
+    
+    public static final String REGEX_HANDLER_PREFIX = "%regex" + PATTERN_HANDLER_PREFIX;
+    
+    public static final String ANT_HANDLER_PREFIX = "%ant" + PATTERN_HANDLER_PREFIX;
+    
     private static SelectorUtils instance = new SelectorUtils();
 
     /**
@@ -134,6 +142,28 @@ public final class SelectorUtils
      */
     public static boolean matchPatternStart( String pattern, String str,
                                              boolean isCaseSensitive )
+    {
+        if ( pattern.length() > ( REGEX_HANDLER_PREFIX.length() + PATTERN_HANDLER_SUFFIX.length() + 1 )
+            && pattern.startsWith( REGEX_HANDLER_PREFIX ) && pattern.endsWith( PATTERN_HANDLER_SUFFIX ) )
+        {
+            // FIXME: ICK! But we can't do partial matches for regex, so we have to reserve judgement until we have
+            // a file to deal with, or we can definitely say this is an exclusion...
+            return true;
+        }
+        else
+        {
+            if ( pattern.length() > ( ANT_HANDLER_PREFIX.length() + PATTERN_HANDLER_SUFFIX.length() + 1 )
+                && pattern.startsWith( ANT_HANDLER_PREFIX ) && pattern.endsWith( PATTERN_HANDLER_SUFFIX ) )
+            {
+                pattern =
+                    pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
+            }
+
+            return matchAntPathPatternStart( pattern, str, isCaseSensitive );
+        }
+    }
+    
+    public static boolean matchAntPathPatternStart( String pattern, String str, boolean isCaseSensitive )
     {
         // When str starts with a File.separator, pattern has to start with a
         // File.separator.
@@ -219,6 +249,27 @@ public final class SelectorUtils
      */
     public static boolean matchPath( String pattern, String str,
                                      boolean isCaseSensitive )
+    {
+        if ( pattern.length() > ( REGEX_HANDLER_PREFIX.length() + PATTERN_HANDLER_SUFFIX.length() + 1 )
+            && pattern.startsWith( REGEX_HANDLER_PREFIX ) && pattern.endsWith( PATTERN_HANDLER_SUFFIX ) )
+        {
+            return str.matches( pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
+                - PATTERN_HANDLER_SUFFIX.length() ) );
+        }
+        else
+        {
+            if ( pattern.length() > ( ANT_HANDLER_PREFIX.length() + PATTERN_HANDLER_SUFFIX.length() + 1 )
+                && pattern.startsWith( ANT_HANDLER_PREFIX ) && pattern.endsWith( PATTERN_HANDLER_SUFFIX ) )
+            {
+                pattern =
+                    pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
+            }
+
+            return matchAntPathPattern( pattern, str, isCaseSensitive );
+        }
+    }
+    
+    public static boolean matchAntPathPattern( String pattern, String str, boolean isCaseSensitive )
     {
         // When str starts with a File.separator, pattern has to start with a
         // File.separator.
