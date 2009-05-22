@@ -286,6 +286,7 @@ public final class SelectorUtils
                 }
             }
             
+            System.out.println( "Matches? " + result );
             return result;
         }
         else
