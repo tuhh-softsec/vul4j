@@ -115,6 +115,8 @@ public class DirectoryScannerTest
     public void testAntExcludesOverrideIncludes()
         throws IOException
     {
+        printTestHeader();
+        
         File dir = new File( testDir, "regex-dir" );
         dir.mkdirs();
 
@@ -147,6 +149,8 @@ public class DirectoryScannerTest
     public void testAntExcludesOverrideIncludesWithExplicitAntPrefix()
         throws IOException
     {
+        printTestHeader();
+        
         File dir = new File( testDir, "regex-dir" );
         dir.mkdirs();
 
@@ -180,6 +184,8 @@ public class DirectoryScannerTest
     public void testRegexIncludeWithExcludedPrefixDirs()
         throws IOException
     {
+        printTestHeader();
+        
         File dir = new File( testDir, "regex-dir" );
         dir.mkdirs();
 
@@ -212,6 +218,8 @@ public class DirectoryScannerTest
     public void testRegexExcludeWithNegativeLookahead()
         throws IOException
     {
+        printTestHeader();
+        
         File dir = new File( testDir, "regex-dir" );
         dir.mkdirs();
 
@@ -240,10 +248,22 @@ public class DirectoryScannerTest
 
         assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
     }
+    
+    private void printTestHeader()
+    {
+        StackTraceElement ste = new Throwable().getStackTrace()[1];
+        System.out.println( "Test: " + ste.getMethodName() );
+    }
 
     private void assertInclusionsAndExclusions( String[] files, String[] excludedPaths, String[] includedPaths )
     {
         Arrays.sort( files );
+        
+        System.out.println( "Included files: " );
+        for ( int i = 0; i < files.length; i++ )
+        {
+            System.out.println( files[i] );
+        }
 
         List failedToExclude = new ArrayList();
         for ( int i = 0; i < excludedPaths.length; i++ )
