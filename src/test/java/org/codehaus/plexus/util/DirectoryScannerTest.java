@@ -130,8 +130,8 @@ public class DirectoryScannerTest
 
         DirectoryScanner ds = new DirectoryScanner();
 
-        String[] includes = { "**/target/**" };
-        String[] excludes = { "target/**" };
+        String[] includes = { "**/target/*" };
+        String[] excludes = { "target/*" };
 
         // This doesn't work, since excluded patterns refine included ones, meaning they operate on
         // the list of paths that passed the included patterns, and can override them.
