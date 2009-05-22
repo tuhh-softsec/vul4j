@@ -221,6 +221,14 @@ public class DirectoryScannerTest
         printTestHeader();
         
         File dir = new File( testDir, "regex-dir" );
+        try
+        {
+            FileUtils.deleteDirectory( dir );
+        }
+        catch ( IOException e )
+        {
+        }
+        
         dir.mkdirs();
 
         String[] excludedPaths = { "target/foo.txt" };
@@ -232,14 +240,10 @@ public class DirectoryScannerTest
         createFiles( dir, includedPaths );
 
         String regex = "(?!.*src/).*target.*";
-        System.out.println( "Testing src/main/resources/target/foo.txt: "
-            + ( "src/main/resources/target/foo.txt".matches( regex ) ) );
-        System.out.println( "Testing target/foo.txt: " + ( "target/foo.txt".matches( regex ) ) );
-
+        
         DirectoryScanner ds = new DirectoryScanner();
 
         String excludeExpr = SelectorUtils.REGEX_HANDLER_PREFIX + regex + SelectorUtils.PATTERN_HANDLER_SUFFIX;
-        System.out.println( "Excluding expression:\n" + excludeExpr );
 
         String[] excludes = { excludeExpr };
         ds.setExcludes( excludes );

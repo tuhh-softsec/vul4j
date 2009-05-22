@@ -267,7 +267,7 @@ public final class SelectorUtils
             boolean result;
             try
             {
-                result = str.matches( pattern );
+                result = altStr.matches( pattern );
             }
             catch( PatternSyntaxException e )
             {
@@ -278,7 +278,7 @@ public final class SelectorUtils
             {
                 try
                 {
-                    result = altStr.matches( pattern );
+                    result = str.matches( pattern );
                 }
                 catch( PatternSyntaxException e )
                 {
