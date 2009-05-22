@@ -198,14 +198,10 @@ public class DirectoryScannerTest
         createFiles( dir, includedPaths );
 
         String regex = ".+/target.*";
-        System.out.println( "Testing src/main/resources/target/foo.txt: "
-            + ( "src/main/resources/target/foo.txt".matches( regex ) ) );
-        System.out.println( "Testing src/main/foo.txt: " + ( "src/main/foo.txt".matches( regex ) ) );
 
         DirectoryScanner ds = new DirectoryScanner();
 
         String includeExpr = SelectorUtils.REGEX_HANDLER_PREFIX + regex + SelectorUtils.PATTERN_HANDLER_SUFFIX;
-        System.out.println( "Including expression:\n" + includeExpr );
 
         String[] includes = { includeExpr };
         ds.setIncludes( includes );

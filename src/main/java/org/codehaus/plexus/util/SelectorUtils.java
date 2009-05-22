@@ -260,53 +260,12 @@ public final class SelectorUtils
             pattern = pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
                                          - PATTERN_HANDLER_SUFFIX.length() );
 
-            char[] pChars = pattern.toCharArray();
-            char[] aChars = new char[ pChars.length ];
-            for ( int i = 0; i < pChars.length; i++ )
-            {
-                char c = pChars[i];
-                if ( c == '\\' )
-                {
-                    if ( ( i > 0 && pChars[i-1] == '\\' ) || ( i+1 < pChars.length && pChars[i+1] == '\\' ) )
-                    {
-                        aChars[i] = '/';
-                    }
-                    else
-                    {
-                        aChars[i] = c;
-                    }
-                }
-                else
-                {
-                    aChars[i] = c;
-                }
-            }
+            String pat = pattern.replaceAll( "/", "[\\\\\\\\/]" );
+            pat = pat.replaceAll( "\\\\\\\\", "[\\\\\\\\/]" );
             
-            String altPattern = String.valueOf( aChars );
+            System.out.println( "Checking whether regex pattern: '" + pat + " matches: " + str );
             
-            System.out.println( "Checking whether regex pattern: '" + pattern + "' \nor regex pattern: " + altPattern + "\nmatches: " + str );
-            
-            boolean result;
-            try
-            {
-                result = str.matches( altPattern );
-            }
-            catch( PatternSyntaxException e )
-            {
-                return false;
-            }
-
-            if ( !result && !pattern.equals( altPattern ) )
-            {
-                try
-                {
-                    result = str.matches( pattern );
-                }
-                catch( PatternSyntaxException e )
-                {
-                    return false;
-                }
-            }
+            boolean result = str.matches( pat );
             
             System.out.println( "Matches? " + result );
             return result;
