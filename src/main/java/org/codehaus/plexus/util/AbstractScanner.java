@@ -283,7 +283,7 @@ public abstract class AbstractScanner
             this.includes = new String[includes.length];
             for ( int i = 0; i < includes.length; i++ )
             {
-                String pattern = includes[i];
+                String pattern = includes[i].trim();
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
@@ -316,7 +316,7 @@ public abstract class AbstractScanner
             this.excludes = new String[excludes.length];
             for ( int i = 0; i < excludes.length; i++ )
             {
-                String pattern = excludes[i];
+                String pattern = excludes[i].trim();
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
@@ -401,8 +401,7 @@ public abstract class AbstractScanner
         }
         for ( int i = 0; i < DEFAULTEXCLUDES.length; i++ )
         {
-            newExcludes[i + excludesLength] = DEFAULTEXCLUDES[i].replace( '/',
-                                                                          File.separatorChar ).replace( '\\', File.separatorChar );
+            newExcludes[i + excludesLength] = DEFAULTEXCLUDES[i];
         }
         excludes = newExcludes;
     }
