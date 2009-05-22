@@ -27,7 +27,7 @@ limitations under the License.
   </parent>
 
   <artifactId>plexus-utils</artifactId>
-  <version>1.5.11-SNAPSHOT</version>
+  <version>1.5.10-SNAPSHOT</version>
 
   <name>Plexus Common Utilities</name>
   <description>A collection of various utility classes to ease working with strings, files, command lines, XML and more.</description>
