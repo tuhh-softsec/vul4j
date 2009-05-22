@@ -269,6 +269,7 @@ public class DirectoryScannerTest
         for ( int i = 0; i < excludedPaths.length; i++ )
         {
             String alt = excludedPaths[i].replace( '/', '\\' );
+            System.out.println( "Searching for exclusion as: " + excludedPaths[i] + "\nor: " + alt );
             if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 || Arrays.binarySearch( files, alt ) > -1)
             {
                 failedToExclude.add( excludedPaths[i] );
@@ -278,7 +279,8 @@ public class DirectoryScannerTest
         List failedToInclude = new ArrayList();
         for ( int i = 0; i < includedPaths.length; i++ )
         {
-            String alt = excludedPaths[i].replace( '/', '\\' );
+            String alt = includedPaths[i].replace( '/', '\\' );
+            System.out.println( "Searching for inclusion as: " + includedPaths[i] + "\nor: " + alt );
             if ( Arrays.binarySearch( files, includedPaths[i] ) < 0 && Arrays.binarySearch( files, alt ) < 0 )
             {
                 failedToInclude.add( includedPaths[i] );
