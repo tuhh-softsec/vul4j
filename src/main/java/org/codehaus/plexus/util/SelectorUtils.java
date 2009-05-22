@@ -57,8 +57,6 @@ package org.codehaus.plexus.util;
 import java.io.File;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * <p>This is a utility class used by selectors and DirectoryScanner. The
@@ -161,27 +159,27 @@ public final class SelectorUtils
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
 
-            String altPattern = normalizePathForMatching( pattern );
+            String altPattern = pattern.replace( '\\', '/' );
             
-            return matchAntPathPatternStart( pattern, str, isCaseSensitive )
-                || matchAntPathPatternStart( altPattern, str, isCaseSensitive );
+            return matchAntPathPatternStart( pattern, str, File.separator, isCaseSensitive )
+                || matchAntPathPatternStart( altPattern, str, "/", isCaseSensitive );
         }
     }
     
-    public static boolean matchAntPathPatternStart( String pattern, String str, boolean isCaseSensitive )
+    private static boolean matchAntPathPatternStart( String pattern, String str, String separator, boolean isCaseSensitive )
     {
         // When str starts with a File.separator, pattern has to start with a
         // File.separator.
         // When pattern starts with a File.separator, str has to start with a
         // File.separator.
-        if ( str.startsWith( File.separator ) !=
-            pattern.startsWith( File.separator ) )
+        if ( str.startsWith( separator ) !=
+            pattern.startsWith( separator ) )
         {
             return false;
         }
 
-        Vector patDirs = tokenizePath( pattern );
-        Vector strDirs = tokenizePath( str );
+        Vector patDirs = tokenizePath( pattern, separator );
+        Vector strDirs = tokenizePath( str, File.separator );
 
         int patIdxStart = 0;
         int patIdxEnd = patDirs.size() - 1;
@@ -261,7 +259,7 @@ public final class SelectorUtils
             pattern = pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
                                          - PATTERN_HANDLER_SUFFIX.length() );
 
-            String altPattern = normalizePathForMatching( pattern );
+            String altPattern = StringUtils.replace( pattern, "\\\\", "/" );
             
             return str.matches( pattern ) || str.matches( altPattern );
         }
@@ -274,62 +272,27 @@ public final class SelectorUtils
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
 
-            String altPattern = normalizePathForMatching( pattern );
+            String altPattern = pattern.replace( '\\', '/' );
             
-            return matchAntPathPatternStart( pattern, str, isCaseSensitive )
-                || matchAntPathPatternStart( altPattern, str, isCaseSensitive );
+            return matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
+                || matchAntPathPattern( altPattern, str, "/", isCaseSensitive );
         }
-    }
-    
-    private static String normalizePathForMatching( String pattern )
-    {
-        char[] pChars = pattern.toCharArray();
-        char[] aChars = new char[ pChars.length ];
-        for ( int i = 0; i < pChars.length; i++ )
-        {
-            char c = pChars[i];
-            
-            if ( c == '\\' )
-            {
-                if ( i > 0 && pChars[i-1] == '\\' )
-                {
-                    // don't change it.
-                    aChars[i] = c;
-                }
-                else if ( i + 1 < pChars.length && pChars[i+1] == '\\' )
-                {
-                    // don't change it.
-                    aChars[i] = c;
-                }
-                else
-                {
-                    aChars[i] = '/';
-                }
-            }
-            else
-            {
-                // don't change it.
-                aChars[i] = c;
-            }
-        }
-        
-        return String.valueOf( aChars );
     }
 
-    public static boolean matchAntPathPattern( String pattern, String str, boolean isCaseSensitive )
+    private static boolean matchAntPathPattern( String pattern, String str, String separator, boolean isCaseSensitive )
     {
         // When str starts with a File.separator, pattern has to start with a
         // File.separator.
         // When pattern starts with a File.separator, str has to start with a
         // File.separator.
-        if ( str.startsWith( File.separator ) !=
-            pattern.startsWith( File.separator ) )
+        if ( str.startsWith( separator ) !=
+            pattern.startsWith( separator ) )
         {
             return false;
         }
 
-        Vector patDirs = tokenizePath( pattern );
-        Vector strDirs = tokenizePath( str );
+        Vector patDirs = tokenizePath( pattern, separator );
+        Vector strDirs = tokenizePath( str, File.separator );
 
         int patIdxStart = 0;
         int patIdxEnd = patDirs.size() - 1;
@@ -695,8 +658,13 @@ public final class SelectorUtils
      */
     public static Vector tokenizePath( String path )
     {
+        return tokenizePath( path, File.separator );
+    }
+    
+    public static Vector tokenizePath( String path, String separator )
+    {
         Vector ret = new Vector();
-        StringTokenizer st = new StringTokenizer( path, File.separator );
+        StringTokenizer st = new StringTokenizer( path, separator );
         while ( st.hasMoreTokens() )
         {
             ret.addElement( st.nextToken() );

@@ -141,50 +141,7 @@ public class DirectoryScannerTest
         ds.setBasedir( dir );
         ds.scan();
 
-        String[] files = ds.getIncludedFiles();
-        Arrays.sort( files );
-
-        List failedToExclude = new ArrayList();
-        for ( int i = 0; i < excludedPaths.length; i++ )
-        {
-            if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 )
-            {
-                failedToExclude.add( excludedPaths[i] );
-            }
-        }
-
-        List failedToInclude = new ArrayList();
-        for ( int i = 0; i < includedPaths.length; i++ )
-        {
-            if ( Arrays.binarySearch( files, includedPaths[i] ) < 0 )
-            {
-                failedToInclude.add( includedPaths[i] );
-            }
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        if ( !failedToExclude.isEmpty() )
-        {
-            buffer.append( "Should NOT have included:\n" ).append(
-                                                                   StringUtils.join( failedToExclude.iterator(),
-                                                                                     "\n\t- " ) );
-        }
-
-        if ( !failedToInclude.isEmpty() )
-        {
-            if ( buffer.length() > 0 )
-            {
-                buffer.append( "\n\n" );
-            }
-
-            buffer.append( "Should have included:\n" )
-                  .append( StringUtils.join( failedToInclude.iterator(), "\n\t- " ) );
-        }
-
-        if ( buffer.length() > 0 )
-        {
-            fail( buffer.toString() );
-        }
+        assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
     }
 
     public void testAntExcludesOverrideIncludesWithExplicitAntPrefix()
@@ -217,50 +174,7 @@ public class DirectoryScannerTest
         ds.setBasedir( dir );
         ds.scan();
 
-        String[] files = ds.getIncludedFiles();
-        Arrays.sort( files );
-
-        List failedToExclude = new ArrayList();
-        for ( int i = 0; i < excludedPaths.length; i++ )
-        {
-            if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 )
-            {
-                failedToExclude.add( excludedPaths[i] );
-            }
-        }
-
-        List failedToInclude = new ArrayList();
-        for ( int i = 0; i < includedPaths.length; i++ )
-        {
-            if ( Arrays.binarySearch( files, includedPaths[i] ) < 0 )
-            {
-                failedToInclude.add( includedPaths[i] );
-            }
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        if ( !failedToExclude.isEmpty() )
-        {
-            buffer.append( "Should NOT have included:\n" ).append(
-                                                                   StringUtils.join( failedToExclude.iterator(),
-                                                                                     "\n\t- " ) );
-        }
-
-        if ( !failedToInclude.isEmpty() )
-        {
-            if ( buffer.length() > 0 )
-            {
-                buffer.append( "\n\n" );
-            }
-
-            buffer.append( "Should have included:\n" )
-                  .append( StringUtils.join( failedToInclude.iterator(), "\n\t- " ) );
-        }
-
-        if ( buffer.length() > 0 )
-        {
-            fail( buffer.toString() );
-        }
+        assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
     }
 
     public void testRegexIncludeWithExcludedPrefixDirs()
@@ -292,50 +206,7 @@ public class DirectoryScannerTest
         ds.setBasedir( dir );
         ds.scan();
 
-        String[] files = ds.getIncludedFiles();
-        Arrays.sort( files );
-
-        List failedToExclude = new ArrayList();
-        for ( int i = 0; i < excludedPaths.length; i++ )
-        {
-            if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 )
-            {
-                failedToExclude.add( excludedPaths[i] );
-            }
-        }
-
-        List failedToInclude = new ArrayList();
-        for ( int i = 0; i < includedPaths.length; i++ )
-        {
-            if ( Arrays.binarySearch( files, includedPaths[i] ) < 0 )
-            {
-                failedToInclude.add( includedPaths[i] );
-            }
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        if ( !failedToExclude.isEmpty() )
-        {
-            buffer.append( "Should NOT have included:\n" ).append(
-                                                                   StringUtils.join( failedToExclude.iterator(),
-                                                                                     "\n\t- " ) );
-        }
-
-        if ( !failedToInclude.isEmpty() )
-        {
-            if ( buffer.length() > 0 )
-            {
-                buffer.append( "\n\n" );
-            }
-
-            buffer.append( "Should have included:\n" )
-                  .append( StringUtils.join( failedToInclude.iterator(), "\n\t- " ) );
-        }
-
-        if ( buffer.length() > 0 )
-        {
-            fail( buffer.toString() );
-        }
+        assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
     }
 
     public void testRegexExcludeWithNegativeLookahead()
@@ -367,13 +238,18 @@ public class DirectoryScannerTest
         ds.setBasedir( dir );
         ds.scan();
 
-        String[] files = ds.getIncludedFiles();
+        assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
+    }
+
+    private void assertInclusionsAndExclusions( String[] files, String[] excludedPaths, String[] includedPaths )
+    {
         Arrays.sort( files );
 
         List failedToExclude = new ArrayList();
         for ( int i = 0; i < excludedPaths.length; i++ )
         {
-            if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 )
+            String alt = excludedPaths[i].replace( '/', '\\' );
+            if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 || Arrays.binarySearch( files, alt ) > -1)
             {
                 failedToExclude.add( excludedPaths[i] );
             }
@@ -382,7 +258,8 @@ public class DirectoryScannerTest
         List failedToInclude = new ArrayList();
         for ( int i = 0; i < includedPaths.length; i++ )
         {
-            if ( Arrays.binarySearch( files, includedPaths[i] ) < 0 )
+            String alt = excludedPaths[i].replace( '/', '\\' );
+            if ( Arrays.binarySearch( files, includedPaths[i] ) < 0 && Arrays.binarySearch( files, alt ) < 0 )
             {
                 failedToInclude.add( includedPaths[i] );
             }
