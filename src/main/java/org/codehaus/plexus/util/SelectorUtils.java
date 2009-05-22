@@ -57,6 +57,7 @@ package org.codehaus.plexus.util;
 import java.io.File;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * <p>This is a utility class used by selectors and DirectoryScanner. The
@@ -159,10 +160,10 @@ public final class SelectorUtils
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
 
-            String altPattern = pattern.replace( '\\', '/' );
+            String altStr = str.replace( '\\', '/' );
             
             return matchAntPathPatternStart( pattern, str, File.separator, isCaseSensitive )
-                || matchAntPathPatternStart( altPattern, str, "/", isCaseSensitive );
+                || matchAntPathPatternStart( pattern, altStr, "/", isCaseSensitive );
         }
     }
     
@@ -259,9 +260,31 @@ public final class SelectorUtils
             pattern = pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
                                          - PATTERN_HANDLER_SUFFIX.length() );
 
-            String altPattern = StringUtils.replace( pattern, "\\\\", "/" );
+            String altStr = str.replace( '\\', '/' );
             
-            return str.matches( pattern ) || str.matches( altPattern );
+            boolean result = false;
+            try
+            {
+                result = str.matches( pattern );
+            }
+            catch( PatternSyntaxException e )
+            {
+                result = false;
+            }
+
+            if ( !result && !str.equals( altStr ) )
+            {
+                try
+                {
+                    result = altStr.matches( pattern );
+                }
+                catch( PatternSyntaxException e )
+                {
+                    result = false;
+                }
+            }
+            
+            return result;
         }
         else
         {
@@ -272,10 +295,10 @@ public final class SelectorUtils
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
 
-            String altPattern = pattern.replace( '\\', '/' );
+            String altStr = str.replace( '\\', '/' );
             
             return matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
-                || matchAntPathPattern( altPattern, str, "/", isCaseSensitive );
+                || matchAntPathPattern( pattern, altStr, "/", isCaseSensitive );
         }
     }
 
