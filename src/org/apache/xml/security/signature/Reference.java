@@ -1,6 +1,5 @@
-
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  *
  */
 package org.apache.xml.security.signature;
-
-
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -50,7 +47,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
-
 
 /**
  * Handles <code>&lt;ds:Reference&gt;</code> elements.
@@ -761,7 +757,7 @@ private Element digestValueElement;
          log.warn("Expected Digest: " + Base64.encode(elemDig));
          log.warn("Actual Digest: " + Base64.encode(calcDig));
       } else {
-         log.info("Verification successful for URI \"" + this.getURI() + "\"");
+         log.debug("Verification successful for URI \"" + this.getURI() + "\"");
       }
 
       return equal;
