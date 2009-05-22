@@ -263,12 +263,7 @@ public final class SelectorUtils
             String pat = pattern.replaceAll( "/", "[\\\\\\\\/]" );
             pat = pat.replaceAll( "\\\\\\\\", "[\\\\\\\\/]" );
             
-            System.out.println( "Checking whether regex pattern: '" + pat + " matches: " + str );
-            
-            boolean result = str.matches( pat );
-            
-            System.out.println( "Matches? " + result );
-            return result;
+            return str.matches( pat );
         }
         else
         {
@@ -281,13 +276,8 @@ public final class SelectorUtils
 
             String altStr = str.replace( '\\', '/' );
             
-            System.out.println( "Checking whether ant pattern: '" + pattern + "' matches\neither: " + str + "\nor: " + altStr );
-            
-            boolean result = matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
+            return matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
                 || matchAntPathPattern( pattern, altStr, "/", isCaseSensitive );
-            
-            System.out.println( "Matches? " + result );
-            return result;
         }
     }
 
