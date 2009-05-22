@@ -271,7 +271,7 @@ public final class SelectorUtils
             }
             catch( PatternSyntaxException e )
             {
-                result = false;
+                return false;
             }
 
             if ( !result && !str.equals( altStr ) )
@@ -282,7 +282,7 @@ public final class SelectorUtils
                 }
                 catch( PatternSyntaxException e )
                 {
-                    result = false;
+                    return false;
                 }
             }
             
@@ -300,8 +300,13 @@ public final class SelectorUtils
 
             String altStr = str.replace( '\\', '/' );
             
-            return matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
+            System.out.println( "Checking whether regex pattern: '" + pattern + "' matches\neither: " + str + "\nor: " + altStr );
+            
+            boolean result = matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
                 || matchAntPathPattern( pattern, altStr, "/", isCaseSensitive );
+            
+            System.out.println( "Matches? " + result );
+            return result;
         }
     }
 
