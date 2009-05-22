@@ -57,6 +57,8 @@ package org.codehaus.plexus.util;
 import java.io.File;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>This is a utility class used by selectors and DirectoryScanner. The
@@ -159,7 +161,10 @@ public final class SelectorUtils
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
 
-            return matchAntPathPatternStart( pattern, str, isCaseSensitive );
+            String altPattern = normalizePathForMatching( pattern );
+            
+            return matchAntPathPatternStart( pattern, str, isCaseSensitive )
+                || matchAntPathPatternStart( altPattern, str, isCaseSensitive );
         }
     }
     
@@ -253,8 +258,12 @@ public final class SelectorUtils
         if ( pattern.length() > ( REGEX_HANDLER_PREFIX.length() + PATTERN_HANDLER_SUFFIX.length() + 1 )
             && pattern.startsWith( REGEX_HANDLER_PREFIX ) && pattern.endsWith( PATTERN_HANDLER_SUFFIX ) )
         {
-            return str.matches( pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
-                - PATTERN_HANDLER_SUFFIX.length() ) );
+            pattern = pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
+                                         - PATTERN_HANDLER_SUFFIX.length() );
+
+            String altPattern = normalizePathForMatching( pattern );
+            
+            return str.matches( pattern ) || str.matches( altPattern );
         }
         else
         {
@@ -265,10 +274,48 @@ public final class SelectorUtils
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
 
-            return matchAntPathPattern( pattern, str, isCaseSensitive );
+            String altPattern = normalizePathForMatching( pattern );
+            
+            return matchAntPathPatternStart( pattern, str, isCaseSensitive )
+                || matchAntPathPatternStart( altPattern, str, isCaseSensitive );
         }
     }
     
+    private static String normalizePathForMatching( String pattern )
+    {
+        char[] pChars = pattern.toCharArray();
+        char[] aChars = new char[ pChars.length ];
+        for ( int i = 0; i < pChars.length; i++ )
+        {
+            char c = pChars[i];
+            
+            if ( c == '\\' )
+            {
+                if ( i > 0 && pChars[i-1] == '\\' )
+                {
+                    // don't change it.
+                    aChars[i] = c;
+                }
+                else if ( i + 1 < pChars.length && pChars[i+1] == '\\' )
+                {
+                    // don't change it.
+                    aChars[i] = c;
+                }
+                else
+                {
+                    aChars[i] = '/';
+                }
+            }
+            else
+            {
+                // don't change it.
+                aChars[i] = c;
+            }
+        }
+        
+        return String.valueOf( aChars );
+    }
+
     public static boolean matchAntPathPattern( String pattern, String str, boolean isCaseSensitive )
     {
         // When str starts with a File.separator, pattern has to start with a
