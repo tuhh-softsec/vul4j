@@ -343,6 +343,7 @@ public abstract class AbstractScanner
     {
         for ( int i = 0; i < includes.length; i++ )
         {
+            System.out.println( "Checking inclusion pattern: '" + includes[i] + "'." );
             if ( matchPath( includes[i], name, isCaseSensitive ) )
             {
                 return true;
@@ -383,6 +384,7 @@ public abstract class AbstractScanner
     {
         for ( int i = 0; i < excludes.length; i++ )
         {
+            System.out.println( "Checking exclusion pattern: '" + excludes[i] + "'." );
             if ( matchPath( excludes[i], name, isCaseSensitive ) )
             {
                 return true;
