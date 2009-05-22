@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-
 /**
  * Implementation of MIME's Base64 encoding and decoding conversions.
  * Optimized code. (raw version taken from oreilly.jonathan.util, 
@@ -41,7 +40,6 @@ import org.w3c.dom.Text;
  * @see org.apache.xml.security.transforms.implementations.TransformBase64Decode
  */
 public class Base64 {
-
 
    /** Field BASE64DEFAULTLENGTH */
    public static final int BASE64DEFAULTLENGTH = 76;
@@ -78,23 +76,22 @@ public class Base64 {
          return bigBytes;
       }
 
-         // some copying needed
-         int startSrc = 0;    // no need to skip anything
-         int bigLen = bigBytes.length;    //valid length of the string
+      // some copying needed
+      int startSrc = 0;    // no need to skip anything
+      int bigLen = bigBytes.length;    //valid length of the string
 
-         if ((big.bitLength() % 8) == 0) {    // correct values
-            startSrc = 1;    // skip sign bit
+      if ((big.bitLength() % 8) == 0) {    // correct values
+         startSrc = 1;    // skip sign bit
 
-            bigLen--;    // valid length of the string
-         }
+         bigLen--;    // valid length of the string
+      }
 
-         int startDst = bitlen / 8 - bigLen;    //pad with leading nulls
-         byte[] resizedBytes = new byte[bitlen / 8];
+      int startDst = bitlen / 8 - bigLen;    //pad with leading nulls
+      byte[] resizedBytes = new byte[bitlen / 8];
 
-         System.arraycopy(bigBytes, startSrc, resizedBytes, startDst, bigLen);
+      System.arraycopy(bigBytes, startSrc, resizedBytes, startDst, bigLen);
 
-         return resizedBytes;
-      
+      return resizedBytes;
    }
 
    /**
@@ -135,23 +132,22 @@ public class Base64 {
          return bigBytes;
       }
 
-         // some copying needed
-         int startSrc = 0;    // no need to skip anything
-         int bigLen = bigBytes.length;    //valid length of the string
+      // some copying needed
+      int startSrc = 0;    // no need to skip anything
+      int bigLen = bigBytes.length;    //valid length of the string
 
-         if ((big.bitLength() % 8) == 0) {    // correct values
-            startSrc = 1;    // skip sign bit
+      if ((big.bitLength() % 8) == 0) {    // correct values
+         startSrc = 1;    // skip sign bit
 
-            bigLen--;    // valid length of the string
-         }
+         bigLen--;    // valid length of the string
+      }
 
-         int startDst = bitlen / 8 - bigLen;    //pad with leading nulls
-         byte[] resizedBytes = new byte[bitlen / 8];
+      int startDst = bitlen / 8 - bigLen;    //pad with leading nulls
+      byte[] resizedBytes = new byte[bitlen / 8];
 
-         System.arraycopy(bigBytes, startSrc, resizedBytes, startDst, bigLen);
+      System.arraycopy(bigBytes, startSrc, resizedBytes, startDst, bigLen);
 
-         return resizedBytes;
-      
+      return resizedBytes;
    }
 
    /**
@@ -190,7 +186,7 @@ public class Base64 {
 
       String encodedInt = encode(biginteger);
 
-      if (encodedInt.length() > 76) {
+      if (!XMLUtils.ignoreLineBreaks() && encodedInt.length() > BASE64DEFAULTLENGTH) {
          encodedInt = "\n" + encodedInt + "\n";
       }
 
@@ -251,7 +247,6 @@ public class Base64 {
    /**
     * Method decode
     *
-    *
     * @param base64
     * @return the UTF bytes of the base64
     * @throws Base64DecodingException
@@ -260,8 +255,6 @@ public class Base64 {
    public final static byte[] decode(byte[] base64) throws Base64DecodingException  {   	   
          return decodeInternal(base64, -1);
    }
-
-
 
    /**
     * Encode a byte array and fold lines at the standard 76th character unless 
@@ -279,7 +272,6 @@ public class Base64 {
    /**
     * Base64 decode the lines from the reader and return an InputStream
     * with the bytes.
-    *
     *
     * @param reader
     * @return InputStream with the decoded bytes
@@ -352,7 +344,6 @@ public class Base64 {
    protected static final boolean isPad(byte octect) {
        return (octect == PAD);
    }
-
 
    /**
     * Encodes hex octects into Base64
@@ -484,11 +475,11 @@ public class Base64 {
     public final static byte[] decode(String encoded) throws Base64DecodingException {
 
     	if (encoded == null)
-    		return null;
+   	    return null;
     	byte []bytes=new byte[encoded.length()];
     	int len=getBytesInternal(encoded, bytes);
     	return decodeInternal(bytes, len);
-	}
+    }
 
     protected static final int getBytesInternal(String s,byte[] result) {
     	int length=s.length();
@@ -500,12 +491,12 @@ public class Base64 {
                 result[newSize++] = dataS;
         }
     	return newSize;
-    	
     }
-   protected final static byte[] decodeInternal(byte[] base64Data, int len) throws Base64DecodingException {
+
+    protected final static byte[] decodeInternal(byte[] base64Data, int len) throws Base64DecodingException {
        // remove white spaces
-	   if (len==-1)
-          len = removeWhiteSpace(base64Data);
+       if (len==-1)
+           len = removeWhiteSpace(base64Data);
        
        if (len%FOURBYTE != 0) {
            throw new Base64DecodingException("decoding.divisible.four");
@@ -584,6 +575,7 @@ public class Base64 {
        }            
        return decodedData;
    }
+
    /**
     * Decodes Base64 data into  outputstream
     *
@@ -598,6 +590,7 @@ public class Base64 {
 	   int len=getBytesInternal(base64Data, bytes);
 	   decode(bytes,os,len);
    }
+
    /**
     * Decodes Base64 data into  outputstream
     *
@@ -610,6 +603,7 @@ public class Base64 {
         OutputStream os) throws Base64DecodingException, IOException {	    
 	    decode(base64Data,os,-1);
    }
+
    protected final static void decode(byte[] base64Data,
 		        OutputStream os,int len) throws Base64DecodingException, IOException {	    
 		   
@@ -766,6 +760,7 @@ public class Base64 {
     
     return ;
    }
+
    /**
     * remove WhiteSpace from MIME containing encoded Base64 data.
     * 
