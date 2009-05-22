@@ -262,7 +262,9 @@ public final class SelectorUtils
 
             String altStr = str.replace( '\\', '/' );
             
-            boolean result = false;
+            System.out.println( "Checking whether regex pattern: '" + pattern + "' matches\neither: " + str + "\nor: " + altStr );
+            
+            boolean result;
             try
             {
                 result = str.matches( pattern );
