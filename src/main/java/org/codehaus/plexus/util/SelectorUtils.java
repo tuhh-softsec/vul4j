@@ -260,21 +260,43 @@ public final class SelectorUtils
             pattern = pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
                                          - PATTERN_HANDLER_SUFFIX.length() );
 
-            String altStr = str.replace( '\\', '/' );
+            char[] pChars = pattern.toCharArray();
+            char[] aChars = new char[ pChars.length ];
+            for ( int i = 0; i < pChars.length; i++ )
+            {
+                char c = pChars[i];
+                if ( c == '\\' )
+                {
+                    if ( ( i > 0 && pChars[i-1] == '\\' ) || ( i+1 < pChars.length && pChars[i+1] == '\\' ) )
+                    {
+                        aChars[i] = '/';
+                    }
+                    else
+                    {
+                        aChars[i] = c;
+                    }
+                }
+                else
+                {
+                    aChars[i] = c;
+                }
+            }
             
-            System.out.println( "Checking whether regex pattern: '" + pattern + "' matches\neither: " + str + "\nor: " + altStr );
+            String altPattern = String.valueOf( aChars );
+            
+            System.out.println( "Checking whether regex pattern: '" + pattern + "' \nor regex pattern: " + altPattern + "\nmatches: " + str );
             
             boolean result;
             try
             {
-                result = altStr.matches( pattern );
+                result = str.matches( altPattern );
             }
             catch( PatternSyntaxException e )
             {
                 return false;
             }
 
-            if ( !result && !str.equals( altStr ) )
+            if ( !result && !pattern.equals( altPattern ) )
             {
                 try
                 {
