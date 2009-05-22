@@ -300,7 +300,7 @@ public final class SelectorUtils
 
             String altStr = str.replace( '\\', '/' );
             
-            System.out.println( "Checking whether regex pattern: '" + pattern + "' matches\neither: " + str + "\nor: " + altStr );
+            System.out.println( "Checking whether ant pattern: '" + pattern + "' matches\neither: " + str + "\nor: " + altStr );
             
             boolean result = matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
                 || matchAntPathPattern( pattern, altStr, "/", isCaseSensitive );
