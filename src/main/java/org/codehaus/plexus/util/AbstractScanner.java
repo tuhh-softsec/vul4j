@@ -283,9 +283,7 @@ public abstract class AbstractScanner
             this.includes = new String[includes.length];
             for ( int i = 0; i < includes.length; i++ )
             {
-                String pattern;
-                pattern = includes[i].trim().replace( '/', File.separatorChar ).replace(
-                    '\\', File.separatorChar );
+                String pattern = includes[i];
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
@@ -318,9 +316,7 @@ public abstract class AbstractScanner
             this.excludes = new String[excludes.length];
             for ( int i = 0; i < excludes.length; i++ )
             {
-                String pattern;
-                pattern = excludes[i].trim().replace( '/', File.separatorChar ).replace(
-                    '\\', File.separatorChar );
+                String pattern = excludes[i];
                 if ( pattern.endsWith( File.separator ) )
                 {
                     pattern += "**";
@@ -343,7 +339,6 @@ public abstract class AbstractScanner
     {
         for ( int i = 0; i < includes.length; i++ )
         {
-            System.out.println( "Checking inclusion pattern: '" + includes[i] + "'." );
             if ( matchPath( includes[i], name, isCaseSensitive ) )
             {
                 return true;
@@ -384,7 +379,6 @@ public abstract class AbstractScanner
     {
         for ( int i = 0; i < excludes.length; i++ )
         {
-            System.out.println( "Checking exclusion pattern: '" + excludes[i] + "'." );
             if ( matchPath( excludes[i], name, isCaseSensitive ) )
             {
                 return true;
