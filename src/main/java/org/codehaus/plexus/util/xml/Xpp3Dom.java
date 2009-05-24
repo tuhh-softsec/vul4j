@@ -86,7 +86,15 @@ public class Xpp3Dom
      */
     public Xpp3Dom( Xpp3Dom src )
     {
-        this( src.getName() );
+        this( src, src.getName() );
+    }
+
+    /**
+     * Copy constructor with alternative name.
+     */
+    public Xpp3Dom( Xpp3Dom src, String name )
+    {
+        this( name );
         setValue( src.getValue() );
 
         String[] attributeNames = src.getAttributeNames();
