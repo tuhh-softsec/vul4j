@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+
 import net.webassembletool.cache.Cache;
 import net.webassembletool.cache.MemoryOutput;
 import net.webassembletool.cache.MemoryResource;
@@ -28,6 +30,7 @@ import net.webassembletool.parse.TemplateRenderer;
 import net.webassembletool.parse.XsltRenderer;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.ResourceUtils;
+
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -60,6 +63,8 @@ public class Driver {
             httpClient.getParams().setSoTimeout(config.getTimeout());
             httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(config.getTimeout());
             httpClient.getParams().setConnectionManagerTimeout(config.getTimeout());
+            httpClient.getParams().setBooleanParameter(
+                    "http.protocol.allow-circular-redirects", true);
         } else
             httpClient = null;
         // Proxy settings

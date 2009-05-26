@@ -118,4 +118,9 @@ public class AggregatorTest extends HttpTestCase {
         assertBodyEqualsLocalFile("aggregator/ressource_with_spaces.html");
     }
     
+    public void testCircularRedirect() throws Exception {
+        doGet("/aggregator/blockwithredirect.jsp?count=10");
+        assertStatus(200);
+        assertBodyEqualsLocalFile("aggregator/blockwithredirect.jsp.html");
+    }
 }
