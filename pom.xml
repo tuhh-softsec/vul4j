@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>plexus-archiver</artifactId>
-  <version>1.0-alpha-12</version>
+  <version>1.0-alpha-13-SNAPSHOT</version>
 
   <name>Plexus Archiver Component</name>
 
@@ -38,10 +38,4 @@
       <version>1.0-alpha-4</version>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.0-alpha-12</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-components/tags/plexus-archiver-1.0-alpha-12</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-components/tags/plexus-archiver-1.0-alpha-12</url>
-  </scm>
 </project>
