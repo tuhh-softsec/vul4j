@@ -19,7 +19,7 @@ public final class ArchiveEntryUtils
     public static void chmod( File file, int mode, Logger logger )
         throws ArchiverException
     {
-        if ( !Os.isFamily( "unix" ) )
+        if ( !Os.isFamily( Os.FAMILY_UNIX ) )
         {
             return;
         }
@@ -34,11 +34,11 @@ public final class ArchiveEntryUtils
 
             commandline.setExecutable( "chmod" );
 
-            commandline.createArgument().setValue( m );
+            commandline.createArg().setValue( m );
 
             String path = file.getAbsolutePath();
 
-            commandline.createArgument().setValue( path );
+            commandline.createArg().setValue( path );
 
             // commenting this debug statement, since it can produce VERY verbose output...
             // this method is called often during archive creation.
