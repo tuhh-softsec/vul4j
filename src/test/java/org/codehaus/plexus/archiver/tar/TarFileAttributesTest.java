@@ -270,7 +270,7 @@ public class TarFileAttributesTest
         assertEquals( 0660, fileAttributes.getOctalMode() );
     }
 
-    public void testOverrideDetectedFileAttributesUsingDefaultFileMode()
+    public void testOverrideDetectedFileAttributesUsingFileMode()
         throws Exception
     {
         printTestHeader();
@@ -303,7 +303,7 @@ public class TarFileAttributesTest
         toDelete.add( tempTarFile );
 
         tarArchiver.setDestFile( tempTarFile );
-        tarArchiver.setDefaultFileMode( 0660 );
+        tarArchiver.setFileMode( 0660 );
         tarArchiver.addFile( tempFile, tempFile.getName() );
 
         tarArchiver.createArchive();

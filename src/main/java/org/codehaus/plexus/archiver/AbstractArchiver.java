@@ -42,10 +42,10 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
-import org.codehaus.plexus.components.io.resources.PlexusIoProxyResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
+import org.codehaus.plexus.components.io.resources.proxy.PlexusIoProxyResourceCollection;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -79,9 +79,13 @@ public abstract class AbstractArchiver
      */
     private List resources = new ArrayList();
 
-    private int defaultFileMode = -1;
-
     private boolean includeEmptyDirs = true;
+
+    private int fileMode = -1;
+
+    private int directoryMode = -1;
+
+    private int defaultFileMode = -1;
 
     private int defaultDirectoryMode = -1;
 
@@ -114,44 +118,90 @@ public abstract class AbstractArchiver
         this.duplicateBehavior = duplicate;
     }
 
-    public void setDefaultFileMode( int mode )
+    public final void setFileMode( int mode )
+    {
+        fileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
+    }
+    
+    public final void setDefaultFileMode( int mode )
     {
         defaultFileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
     }
-
-    public int getDefaultFileMode()
+    
+    public final int getOverrideFileMode()
     {
-        if ( defaultFileMode == -1 )
+        return fileMode;
+    }
+    
+    public final int getFileMode()
+    {
+        if ( fileMode < 0 )
         {
-            return DEFAULT_FILE_MODE;
+            if ( defaultFileMode < 0 )
+            {
+                return DEFAULT_FILE_MODE;
+            }
+            
+            return defaultFileMode;
         }
         
+        return fileMode;
+    }
+
+    public final int getDefaultFileMode()
+    {
         return defaultFileMode;
     }
     
-    public int getRawDefaultFileMode()
+    /**
+     * @deprecated Use {@link Archiver#getDefaultFileMode()}.
+     */
+    public final int getRawDefaultFileMode()
     {
-        return defaultFileMode;
+        return getDefaultFileMode();
     }
-
-    public void setDefaultDirectoryMode( int mode )
+    
+    public final void setDirectoryMode( int mode )
+    {
+        directoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
+    }
+    
+    public final void setDefaultDirectoryMode( int mode )
     {
         defaultDirectoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
     }
-
-    public int getDefaultDirectoryMode()
+    
+    public final int getOverrideDirectoryMode()
     {
-        if ( defaultDirectoryMode == -1 )
+        return directoryMode;
+    }
+    
+    public final int getDirectoryMode()
+    {
+        if ( directoryMode < 0 )
         {
-            return DEFAULT_DIR_MODE;
+            if ( defaultDirectoryMode < 0 )
+            {
+                return DEFAULT_DIR_MODE;
+            }
+            
+            return defaultDirectoryMode;
         }
         
+        return directoryMode;
+    }
+
+    public final int getDefaultDirectoryMode()
+    {
         return defaultDirectoryMode;
     }
     
-    public int getRawDefaultDirectoryMode()
+    /**
+     * @deprecated Use {@link Archiver#getDefaultDirectoryMode()}.
+     */
+    public final int getRawDefaultDirectoryMode()
     {
-        return defaultDirectoryMode;
+        return getDefaultDirectoryMode();
     }
 
     public boolean getIncludeEmptyDirs()
@@ -219,9 +269,14 @@ public abstract class AbstractArchiver
         collection.setCaseSensitive( fileSet.isCaseSensitive() );
         collection.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
         
-        if ( defaultDirectoryMode > -1 || defaultFileMode > -1 )
+        if ( getOverrideDirectoryMode() > -1 || getOverrideFileMode() > -1 )
         {
-            collection.setOverrideAttributes( -1, null, -1, null, defaultFileMode, defaultDirectoryMode );
+            collection.setOverrideAttributes( -1, null, -1, null, getOverrideFileMode(), getOverrideDirectoryMode() );
+        }
+        
+        if ( getDefaultDirectoryMode() > -1 || getDefaultFileMode() > -1 )
+        {
+            collection.setDefaultAttributes( -1, null, -1, null, getDefaultFileMode(), getDefaultDirectoryMode() );
         }
         
         addResources( collection );
@@ -230,9 +285,9 @@ public abstract class AbstractArchiver
     public void addFile( File inputFile, String destFileName )
         throws ArchiverException
     {
-        int rawDefaultFileMode = getRawDefaultFileMode();
+        int fileMode = getOverrideFileMode();
         
-        addFile( inputFile, destFileName, rawDefaultFileMode );
+        addFile( inputFile, destFileName, fileMode );
     }
 
     protected ArchiveEntry asArchiveEntry( PlexusIoResource resource, String destFileName, int permissions )
@@ -242,6 +297,7 @@ public abstract class AbstractArchiver
         {
             throw new ArchiverException( resource.getName() + " not found." );
         }
+        
         if ( resource.isFile() )
         {
             return ArchiveEntry.createFileEntry( destFileName, resource, permissions );
@@ -296,6 +352,11 @@ public abstract class AbstractArchiver
 
         destFileName = destFileName.replace( '\\', '/' );
 
+        if ( permissions < 0 )
+        {
+            permissions = getOverrideFileMode();
+        }
+        
         try
         {
             // do a null check here, to avoid creating a file stream if there are no filters...
@@ -549,9 +610,14 @@ public abstract class AbstractArchiver
         proxy.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
         proxy.setFileSelectors( fileSet.getFileSelectors() );
         
-        if ( defaultDirectoryMode > -1 || defaultFileMode > -1 )
+        if ( getOverrideDirectoryMode() > -1 || getOverrideFileMode() > -1 )
         {
-            proxy.setOverrideAttributes( -1, null, -1, null, defaultFileMode, defaultDirectoryMode );
+            proxy.setOverrideAttributes( -1, null, -1, null, getOverrideFileMode(), getOverrideDirectoryMode() );
+        }
+        
+        if ( getDefaultDirectoryMode() > -1 || getDefaultFileMode() > -1 )
+        {
+            proxy.setDefaultAttributes( -1, null, -1, null, getDefaultFileMode(), getDefaultDirectoryMode() );
         }
         
         return proxy;

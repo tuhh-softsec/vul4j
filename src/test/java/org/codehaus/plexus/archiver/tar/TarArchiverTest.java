@@ -50,14 +50,14 @@ public class TarArchiverTest
     {
         TarArchiver archiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
 
-        archiver.setDefaultDirectoryMode( 0500 );
+        archiver.setDirectoryMode( 0500 );
         archiver.getOptions().setDirMode( 0500 );
 
-        archiver.setDefaultFileMode( 0400 );
+        archiver.setFileMode( 0400 );
         archiver.getOptions().setMode( 0400 );
 
         archiver.addDirectory( getTestFile( "src" ) );
-        archiver.setDefaultFileMode( 0640 );
+        archiver.setFileMode( 0640 );
         archiver.getOptions().setMode( 0640 );
 
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );

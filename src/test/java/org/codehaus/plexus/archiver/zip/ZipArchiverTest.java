@@ -52,21 +52,21 @@ public class ZipArchiverTest
     private ZipArchiver newArchiver( String name ) throws Exception {
         ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
 
-        archiver.setDefaultDirectoryMode( 0500 );
-        archiver.setDefaultFileMode( 0400 );
-        archiver.addDirectory( getTestFile( "src" ) );
-
-        archiver.setDefaultFileMode( 0640 );
+        archiver.setFileMode( 0640 );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt", 0664 );
 
         // reset default file mode for files included from now on
-        archiver.setDefaultFileMode( 0400 );
-        archiver.setDefaultDirectoryMode( 0777 );
+        archiver.setFileMode( 0400 );
+        archiver.setDirectoryMode( 0777 );
         archiver.addDirectory( getTestFile( "src/test/resources/world-writable/" ), "worldwritable/" );
 
-        archiver.setDefaultDirectoryMode( 0070 );
+        archiver.setDirectoryMode( 0070 );
         archiver.addDirectory( getTestFile( "src/test/resources/group-writable/" ), "groupwritable/" );
+
+        archiver.setDirectoryMode( 0500 );
+        archiver.setFileMode( 0400 );
+        archiver.addDirectory( getTestFile( "src" ) );
 
         archiver.setDestFile( getTestFile( "target/output/" + name ) );
 

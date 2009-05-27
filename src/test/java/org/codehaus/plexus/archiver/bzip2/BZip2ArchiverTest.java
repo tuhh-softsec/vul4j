@@ -70,6 +70,8 @@ public class BZip2ArchiverTest
         bzip2Archiver.addFile( pomFile, "pom.xml" );
         FileUtils.removePath( bz2File.getPath() );
         bzip2Archiver.createArchive();
+        
+        System.out.println( "Created: " + bz2File.getAbsolutePath() );
 
         final File zipFile = new File( "target/output/pom.zip" );
         ZipArchiver zipArchiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
@@ -82,6 +84,7 @@ public class BZip2ArchiverTest
         final ZipEntry zipEntry = juZipFile.getEntry( "prfx/target/output/pom.xml" );
         final InputStream archivePom = juZipFile.getInputStream( zipEntry );
         final InputStream pom = new FileInputStream( pomFile );
+        
         assertTrue( Arrays.equals( IOUtil.toByteArray( pom ), IOUtil.toByteArray( archivePom ) ) );
         archivePom.close();
         pom.close();

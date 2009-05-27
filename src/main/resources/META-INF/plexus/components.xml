@@ -237,14 +237,14 @@
       <role-hint>tar</role-hint>
       <implementation>org.codehaus.plexus.archiver.tar.PlexusIoTarFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
-    </component>
+    </component><!--
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>zip</role-hint>
       <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
-    <component>
+    --><component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>jar</role-hint>
       <!-- there is no implementation of PlexusIoJarFileResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
@@ -342,5 +342,12 @@
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
       
+    <component>
+      <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
+      <role-hint>zip</role-hint>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    
       </components>
 </component-set>

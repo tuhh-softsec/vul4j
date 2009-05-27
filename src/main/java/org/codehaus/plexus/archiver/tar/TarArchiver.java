@@ -85,29 +85,29 @@ public class TarArchiver
         setDefaultDirectoryMode( options.getMode() );
     }
 
-    /**
-     * Override AbstractArchiver.setDefaultFileMode to
-     * update TarOptions.
-     */
-    public void setDefaultFileMode( int mode )
-    {
-        super.setDefaultFileMode( mode );
-
-        options.setMode( mode );
-    }
-
-    /**
-     * Override AbstractArchiver.setDefaultDirectoryMode to
-     * update TarOptions.
-     */
-    public void setDefaultDirectoryMode( int mode )
-    {
-        super.setDefaultDirectoryMode( mode );
-
-        options.setDirMode( mode );
-    }
-
-
+//    /**
+//     * Override AbstractArchiver.setDefaultFileMode to
+//     * update TarOptions.
+//     */
+//    public void setDefaultFileMode( int mode )
+//    {
+//        super.setDefaultFileMode( mode );
+//
+//        options.setMode( mode );
+//    }
+//
+//    /**
+//     * Override AbstractArchiver.setDefaultDirectoryMode to
+//     * update TarOptions.
+//     */
+//    public void setDefaultDirectoryMode( int mode )
+//    {
+//        super.setDefaultDirectoryMode( mode );
+//
+//        options.setDirMode( mode );
+//    }
+//
+//
     /**
      * Set how to handle long files, those with a path&gt;100 chars.
      * Optional, default=warn.
@@ -278,6 +278,7 @@ public class TarArchiver
             {
                 final long size = entry.getResource().getSize();
                 te.setSize( size == PlexusIoResource.UNKNOWN_RESOURCE_SIZE ? 0 : size );
+                
                 te.setMode( entry.getMode() );
             }
             else

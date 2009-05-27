@@ -154,46 +154,46 @@ public abstract class AbstractZipArchiver
         return doUpdate;
     }
 
-    /**
-     * A 3 digit octal string, specify the user, group and
-     * other modes in the standard Unix fashion;
-     * optional, default=0644
-     *
-     * @deprecated use AbstractArchiver.setDefaultFileMode(int) instead.
-     */
-    public void setFileMode( String octalString )
-    {
-        setDefaultFileMode( Integer.parseInt( octalString, 8 ) );
-    }
-
-    /**
-     * @deprecated use AbstractArchiver.getDefaultFileMode() instead.
-     */
-    public int getFileMode()
-    {
-        return getDefaultFileMode();
-    }
-
-    /**
-     * A 3 digit octal string, specify the user, group and
-     * other modes in the standard Unix fashion;
-     * optional, default=0755
-     *
-     * @deprecated use AbstractArchiver.setDefaultDirectoryMode(int).
-     */
-    public void setDirMode( String octalString )
-    {
-        setDefaultDirectoryMode( Integer.parseInt( octalString, 8 ) );
-    }
-
-    /**
-     * @deprecated use AbstractArchiver.getDefaultDirectoryMode() instead.
-     */
-    public int getDirMode()
-    {
-        return getDefaultDirectoryMode();
-    }
-
+//    /**
+//     * A 3 digit octal string, specify the user, group and
+//     * other modes in the standard Unix fashion;
+//     * optional, default=0644
+//     *
+//     * @deprecated use AbstractArchiver.setDefaultFileMode(int) instead.
+//     */
+//    public void setFileMode( String octalString )
+//    {
+//        setDefaultFileMode( Integer.parseInt( octalString, 8 ) );
+//    }
+//
+//    /**
+//     * @deprecated use AbstractArchiver.getDefaultFileMode() instead.
+//     */
+//    public int getFileMode()
+//    {
+//        return getDefaultFileMode();
+//    }
+//
+//    /**
+//     * A 3 digit octal string, specify the user, group and
+//     * other modes in the standard Unix fashion;
+//     * optional, default=0755
+//     *
+//     * @deprecated use AbstractArchiver.setDefaultDirectoryMode(int).
+//     */
+//    public void setDirMode( String octalString )
+//    {
+//        setDefaultDirectoryMode( Integer.parseInt( octalString, 8 ) );
+//    }
+//
+//    /**
+//     * @deprecated use AbstractArchiver.getDefaultDirectoryMode() instead.
+//     */
+//    public int getDirMode()
+//    {
+//        return getDefaultDirectoryMode();
+//    }
+//
     /**
      * If true, emulate Sun's jar utility by not adding parent directories;
      * optional, defaults to false.

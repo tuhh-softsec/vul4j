@@ -148,10 +148,22 @@ public interface Archiver
     File getDestFile();
 
     void setDestFile( File destFile );
+    
+    void setFileMode( int mode );
+    
+    int getFileMode();
+    
+    int getOverrideFileMode();
 
     void setDefaultFileMode( int mode );
 
     int getDefaultFileMode();
+    
+    void setDirectoryMode( int mode );
+    
+    int getDirectoryMode();
+    
+    int getOverrideDirectoryMode();
 
     void setDefaultDirectoryMode( int mode );
 
