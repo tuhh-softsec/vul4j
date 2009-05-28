@@ -38,16 +38,16 @@
       </SVNRepository>
     </repository>
     <release>
-      <revision>
+      <Version>
         <name>common-digester</name>
         <created>2006-12-04</created>
-        <version>1.8</version>
-      </revision>
-      <revision>
+        <revision>1.8</revision>
+      </Version>
+      <Version>
         <name>common-digester</name>
         <created>2005-06-11</created>
-        <version>1.7</version>
-      </revision>
+        <revision>1.7</revision>
+      </Version>
     </release>
     <mailing-list rdf:resource="http://commons.apache.org/mail-lists.html"/>
   </Project>
