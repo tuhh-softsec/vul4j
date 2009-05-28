@@ -16,9 +16,6 @@ package org.codehaus.plexus.util.cli;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +28,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
@@ -85,13 +85,15 @@ public abstract class CommandLineUtils
         return executeCommandLine( cl, null, systemOut, systemErr, 0 );
     }
 
-    public static int executeCommandLine( Commandline cl, StreamConsumer systemOut, StreamConsumer systemErr, int timeoutInSeconds )
+    public static int executeCommandLine( Commandline cl, StreamConsumer systemOut, StreamConsumer systemErr,
+                                          int timeoutInSeconds )
         throws CommandLineException
     {
         return executeCommandLine( cl, null, systemOut, systemErr, timeoutInSeconds );
     }
 
-    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut, StreamConsumer systemErr )
+    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
+                                          StreamConsumer systemErr )
         throws CommandLineException
     {
         return executeCommandLine( cl, systemIn, systemOut, systemErr, 0 );
@@ -106,7 +108,8 @@ public abstract class CommandLineUtils
      * @return
      * @throws CommandLineException or CommandLineTimeOutException if time out occurs
      */
-    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut, StreamConsumer systemErr, int timeoutInSeconds )
+    public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
+                                          StreamConsumer systemErr, int timeoutInSeconds )
         throws CommandLineException
     {
         if ( cl == null )
@@ -209,6 +212,13 @@ public abstract class CommandLineUtils
             outputPumper.close();
 
             errorPumper.close();
+
+            p.destroy();
+
+            if ( processes.get( new Long( cl.getPid() ) ) != null )
+            {
+                processes.remove( new Long( cl.getPid() ) );
+            }
         }
     }
 
@@ -240,60 +250,70 @@ public abstract class CommandLineUtils
     {
         Process p = null;
 
-        Properties envVars = new Properties();
-
-        Runtime r = Runtime.getRuntime();
-
-        //If this is windows set the shell to command.com or cmd.exe with correct arguments.
-        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
+        try
         {
-            if ( Os.isFamily( Os.FAMILY_WIN9X ) )
+            Properties envVars = new Properties();
+
+            Runtime r = Runtime.getRuntime();
+
+            //If this is windows set the shell to command.com or cmd.exe with correct arguments.
+            if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
             {
-                p = r.exec( "command.com /c set" );
+                if ( Os.isFamily( Os.FAMILY_WIN9X ) )
+                {
+                    p = r.exec( "command.com /c set" );
+                }
+                else
+                {
+                    p = r.exec( "cmd.exe /c set" );
+                }
             }
             else
             {
-                p = r.exec( "cmd.exe /c set" );
+                p = r.exec( "env" );
             }
-        }
-        else
-        {
-            p = r.exec( "env" );
-        }
 
-        BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+            BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
 
-        String line;
+            String line;
 
-        String lastKey = null;
-        String lastVal = null;
+            String lastKey = null;
+            String lastVal = null;
 
-        while ( ( line = br.readLine() ) != null )
-        {
-            int idx = line.indexOf( '=' );
-
-            if ( idx > 0 )
+            while ( ( line = br.readLine() ) != null )
             {
-                lastKey = line.substring( 0, idx );
+                int idx = line.indexOf( '=' );
 
-                if ( !caseSensitive )
+                if ( idx > 0 )
                 {
-                    lastKey = lastKey.toUpperCase( Locale.ENGLISH );
+                    lastKey = line.substring( 0, idx );
+
+                    if ( !caseSensitive )
+                    {
+                        lastKey = lastKey.toUpperCase( Locale.ENGLISH );
+                    }
+
+                    lastVal = line.substring( idx + 1 );
+
+                    envVars.setProperty( lastKey, lastVal );
                 }
+                else if ( lastKey != null )
+                {
+                    lastVal += "\n" + line;
 
-                lastVal = line.substring( idx + 1 );
-
-                envVars.setProperty( lastKey, lastVal );
+                    envVars.setProperty( lastKey, lastVal );
+                }
             }
-            else if ( lastKey != null )
-            {
-                lastVal += "\n" + line;
 
-                envVars.setProperty( lastKey, lastVal );
+            return envVars;
+        }
+        finally
+        {
+            if ( p != null )
+            {
+                p.destroy();
             }
         }
-
-        return envVars;
     }
 
     /**
@@ -309,7 +329,7 @@ public abstract class CommandLineUtils
         if ( p != null )
         {
             p.destroy();
-            System.out.println( "killed." );
+            System.out.println( "Process " + pid + " is killed." );
             processes.remove( new Long( pid ) );
         }
         else
@@ -323,12 +343,20 @@ public abstract class CommandLineUtils
         return ( processes.get( new Long( pid ) ) != null );
     }
 
-    public static boolean isAlive( Process p ) {
+    public static boolean isAlive( Process p )
+    {
+        if ( p == null )
+        {
+            return false;
+        }
+
         try
         {
             p.exitValue();
             return false;
-        } catch (IllegalThreadStateException e) {
+        }
+        catch ( IllegalThreadStateException e )
+        {
             return true;
         }
     }
@@ -424,10 +452,9 @@ public abstract class CommandLineUtils
      *
      * @throws CommandLineException if the argument contains both, single
      *                              and double quotes.
-     *
      * @deprecated Use {@link StringUtils#quoteAndEscape(String, char, char[], char[], char, boolean)},
-     * {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
-     * {@link StringUtils#quoteAndEscape(String, char)} instead.
+     *             {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
+     *             {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
     public static String quote( String argument )
         throws CommandLineException
@@ -443,10 +470,9 @@ public abstract class CommandLineUtils
      *
      * @throws CommandLineException if the argument contains both, single
      *                              and double quotes.
-     *
      * @deprecated Use {@link StringUtils#quoteAndEscape(String, char, char[], char[], char, boolean)},
-     * {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
-     * {@link StringUtils#quoteAndEscape(String, char)} instead.
+     *             {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
+     *             {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
     public static String quote( String argument, boolean wrapExistingQuotes )
         throws CommandLineException
@@ -456,8 +482,8 @@ public abstract class CommandLineUtils
 
     /**
      * @deprecated Use {@link StringUtils#quoteAndEscape(String, char, char[], char[], char, boolean)},
-     * {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
-     * {@link StringUtils#quoteAndEscape(String, char)} instead.
+     *             {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
+     *             {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
     public static String quote( String argument, boolean escapeSingleQuotes, boolean escapeDoubleQuotes,
                                 boolean wrapExistingQuotes )
