@@ -107,6 +107,28 @@ public class MXParserTest
         assertEquals( XmlPullParser.END_TAG, parser.next() );
     }
 
+    public void testUnicodeEntities()
+        throws Exception
+    {
+        MXParser parser = new MXParser();
+        String input = "<root>&#x1d7ed;</root>";
+        parser.setInput( new StringReader( input ) );
+
+        assertEquals( XmlPullParser.START_TAG, parser.nextToken() );
+        assertEquals( XmlPullParser.ENTITY_REF, parser.nextToken() );
+        assertEquals( "\uD835\uDFED", parser.getText() );
+        assertEquals( XmlPullParser.END_TAG, parser.nextToken() );
+
+        parser = new MXParser();
+        input = "<root>&#x159;</root>";
+        parser.setInput( new StringReader( input ) );
+
+        assertEquals( XmlPullParser.START_TAG, parser.nextToken() );
+        assertEquals( XmlPullParser.ENTITY_REF, parser.nextToken() );
+        assertEquals( "\u0159", parser.getText() );
+        assertEquals( XmlPullParser.END_TAG, parser.nextToken() );
+    }
+
     public void testProcessingInstruction()
         throws Exception
     {

@@ -2159,6 +2159,7 @@ public class MXParser
         entityRefName = null;
         posStart = pos;
         char ch = more();
+        StringBuffer sb = new StringBuffer();
         if(ch == '#') {
             // parse character reference
             char charRef = 0;
@@ -2169,10 +2170,13 @@ public class MXParser
                     ch = more();
                     if(ch >= '0' && ch <= '9') {
                         charRef = (char)(charRef * 16 + (ch - '0'));
+                        sb.append( ch );
                     } else if(ch >= 'a' && ch <= 'f') {
                         charRef = (char)(charRef * 16 + (ch - ('a' - 10)));
+                        sb.append( ch );
                     } else if(ch >= 'A' && ch <= 'F') {
                         charRef = (char)(charRef * 16 + (ch - ('A' - 10)));
+                        sb.append( ch );
                     } else if(ch == ';') {
                         break;
                     } else {
@@ -2197,6 +2201,16 @@ public class MXParser
                 }
             }
             posEnd = pos - 1;
+            if ( sb.length() > 0 )
+            {
+                char[] tmp = toChars( Integer.parseInt( sb.toString(), 16 ) );
+                charRefOneCharBuf = tmp;
+                if ( tokenize )
+                {
+                    text = newString( charRefOneCharBuf, 0, charRefOneCharBuf.length );
+                }
+                return charRefOneCharBuf;
+            }
             charRefOneCharBuf[0] = charRef;
             if(tokenize) {
                 text = newString(charRefOneCharBuf, 0, 1);
@@ -3219,6 +3233,66 @@ public class MXParser
         }
         s = buf.toString();
         return s;
+    }
+
+//
+// Imported code from ASF Harmony project rev 770909
+// http://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk/modules/luni/src/main/java/java/lang/Character.java
+//
+
+    private static int toCodePoint( char high, char low )
+    {
+        // See RFC 2781, Section 2.2
+        // http://www.faqs.org/rfcs/rfc2781.html
+        int h = ( high & 0x3FF ) << 10;
+        int l = low & 0x3FF;
+        return ( h | l ) + 0x10000;
+    }
+
+    private static final char MIN_HIGH_SURROGATE = '\uD800';
+    private static final char MAX_HIGH_SURROGATE = '\uDBFF';
+
+    private static boolean isHighSurrogate( char ch )
+    {
+        return ( MIN_HIGH_SURROGATE <= ch && MAX_HIGH_SURROGATE >= ch );
+    }
+
+    private static final int MIN_CODE_POINT = 0x000000;
+    private static final int MAX_CODE_POINT = 0x10FFFF;
+    private static final int MIN_SUPPLEMENTARY_CODE_POINT = 0x10000;
+
+    private static boolean isValidCodePoint( int codePoint )
+    {
+        return ( MIN_CODE_POINT <= codePoint && MAX_CODE_POINT >= codePoint );
+    }
+
+    private static boolean isSupplementaryCodePoint( int codePoint )
+    {
+        return ( MIN_SUPPLEMENTARY_CODE_POINT <= codePoint && MAX_CODE_POINT >= codePoint );
+    }
+
+    /**
+     * TODO add javadoc
+     *
+     * @param codePoint
+     * @return
+     */
+    public static char[] toChars( int codePoint )
+    {
+        if ( !isValidCodePoint( codePoint ) )
+        {
+            throw new IllegalArgumentException();
+        }
+
+        if ( isSupplementaryCodePoint( codePoint ) )
+        {
+            int cpPrime = codePoint - 0x10000;
+            int high = 0xD800 | ( ( cpPrime >> 10 ) & 0x3FF );
+            int low = 0xDC00 | ( cpPrime & 0x3FF );
+            return new char[] { (char) high, (char) low };
+        }
+
+        return new char[] { (char) codePoint };
     }
 }
 
