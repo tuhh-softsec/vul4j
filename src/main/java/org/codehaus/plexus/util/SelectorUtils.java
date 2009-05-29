@@ -260,8 +260,9 @@ public final class SelectorUtils
             pattern = pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
                                          - PATTERN_HANDLER_SUFFIX.length() );
 
-            String pat = pattern.replaceAll( "/", "[\\\\\\\\/]" );
-            pat = pat.replaceAll( "\\\\\\\\", "[\\\\\\\\/]" );
+            String pat = pattern;
+            pat = pat.replaceAll( "/", "[\\\\\\\\/]" );
+//            pat = pat.replaceAll( "\\\\\\\\", "[\\\\\\\\/]" );
             
             return str.matches( pat );
         }
