@@ -262,7 +262,6 @@ public final class SelectorUtils
 
             String pat = pattern;
             pat = pat.replaceAll( "/", "[\\\\\\\\/]" );
-//            pat = pat.replaceAll( "\\\\\\\\", "[\\\\\\\\/]" );
             
             return str.matches( pat );
         }
