@@ -47,7 +47,7 @@ limitations under the License.
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-interpolation</artifactId>
-      <version>1.8</version>
+      <version>1.9-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.plexus</groupId>
