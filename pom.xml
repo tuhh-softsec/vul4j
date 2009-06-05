@@ -45,9 +45,17 @@ limitations under the License.
 
   <dependencies>
     <dependency>
+      <!-- NOTE: plexus-interpolation is SHADED INTO plexus-utils.
+           This is done to provide a migration path from the old
+           interpolation classes in plexus-utils to the current
+           implementation, which was broken out into plexus-interpolation.
+           The old classes still exist in plexus-utils, but are 
+           DEPRECATED.
+      -->
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-interpolation</artifactId>
-      <version>1.9-SNAPSHOT</version>
+      <version>1.8.1</version>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.plexus</groupId>
