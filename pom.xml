@@ -27,7 +27,7 @@ limitations under the License.
   </parent>
 
   <artifactId>plexus-utils</artifactId>
-  <version>1.5.14-SNAPSHOT</version>
+  <version>1.5.13-SNAPSHOT</version>
 
   <name>Plexus Common Utilities</name>
   <description>A collection of various utility classes to ease working with strings, files, command lines, XML and more.</description>
@@ -54,7 +54,7 @@ limitations under the License.
       -->
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-interpolation</artifactId>
-      <version>1.9</version>
+      <version>1.10</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
