@@ -40,25 +40,43 @@ public abstract class CommandLineUtils
 {
     private static Map processes = Collections.synchronizedMap( new HashMap() );
 
+    private static Thread shutdownHook = new Thread( "CommandlineUtil shutdown" )
+    {
+        public void run()
+        {
+            if ( ( processes != null ) && ( processes.size() > 0 ) )
+            {
+                System.err.println( "Destroying " + processes.size() + " processes" );
+                for ( Iterator it = processes.values().iterator(); it.hasNext(); )
+                {
+                    System.err.println( "Destroying process.." );
+                    ( (Process) it.next() ).destroy();
+
+                }
+                System.err.println( "Destroyed " + processes.size() + " processes" );
+            }
+        }
+    };
+
     static
     {
-        Runtime.getRuntime().addShutdownHook( new Thread( "CommandlineUtil shutdown" )
-        {
-            public void run()
-            {
-                if ( ( processes != null ) && ( processes.size() > 0 ) )
-                {
-                    System.err.println( "Destroying " + processes.size() + " processes" );
-                    for ( Iterator it = processes.values().iterator(); it.hasNext(); )
-                    {
-                        System.err.println( "Destroying process.." );
-                        ( (Process) it.next() ).destroy();
+        shutdownHook.setContextClassLoader( null );
+        addShutdownHook();
+    }
 
-                    }
-                    System.err.println( "Destroyed " + processes.size() + " processes" );
-                }
-            }
-        } );
+    public static void addShutdownHook()
+    {
+        Runtime.getRuntime().addShutdownHook( shutdownHook );
+    }
+
+    public static void removeShutdownHook( boolean execute )
+    {
+        Runtime.getRuntime().removeShutdownHook( shutdownHook );
+
+        if ( execute )
+        {
+            shutdownHook.run();
+        }
     }
 
     public static class StringStreamConsumer
