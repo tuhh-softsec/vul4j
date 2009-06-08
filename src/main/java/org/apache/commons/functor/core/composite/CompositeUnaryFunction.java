@@ -107,7 +107,6 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
          */
         @Override
         public String toString() {
-            // TODO Auto-generated method stub
             return following.toString() + " of " + preceding.toString();
         }
     }
