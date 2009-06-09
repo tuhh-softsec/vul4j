@@ -73,30 +73,30 @@ XERCES_CPP_NAMESPACE_USE
 
 static const XMLCh  s_unicodeStrURI[] =
 {
-        XERCES_CPP_NAMESPACE_QUALIFIER chLatin_U, 
-		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_R, 
-		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_I, 
+        XERCES_CPP_NAMESPACE_QUALIFIER chLatin_U,
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_R,
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_I,
 		XERCES_CPP_NAMESPACE_QUALIFIER chNull
 };
 
 static const XMLCh  s_unicodeStrxpointer[] =
 {
-        XERCES_CPP_NAMESPACE_QUALIFIER chLatin_x, 
-		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_p, 
+        XERCES_CPP_NAMESPACE_QUALIFIER chLatin_x,
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_p,
 		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_o,
-		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_i, 
-		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_n, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_i,
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_n,
 		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_t,
-		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_e, 
-		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_r, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_e,
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_r,
 		XERCES_CPP_NAMESPACE_QUALIFIER chNull
 };
 
 static const XMLCh s_unicodeStrRootNode[] =
 {
-		XERCES_CPP_NAMESPACE_QUALIFIER chOpenParen, 
-		XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash, 
-		XERCES_CPP_NAMESPACE_QUALIFIER chCloseParen, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chOpenParen,
+		XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash,
+		XERCES_CPP_NAMESPACE_QUALIFIER chCloseParen,
 		XERCES_CPP_NAMESPACE_QUALIFIER chNull
 };
 
@@ -112,7 +112,7 @@ DSIGReference::DSIGReference(const XSECEnv * env, DOMNode *dom) {
 
 	// Should throw an exception if the node is not a REFERENCE element
 
-	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
+	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes,
 												XMLFormatter::UnRep_CharRef));
 
 	mp_preHash = NULL;
@@ -133,7 +133,7 @@ DSIGReference::DSIGReference(const XSECEnv * env) {
 	mp_transformsNode = NULL;
 	mp_transformList = NULL;
 
-	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
+	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes,
 											XMLFormatter::UnRep_CharRef));
 
 	mp_preHash = NULL;		// By default no "special" transform
@@ -176,7 +176,7 @@ void DSIGReference::createTransformList(void) {
 	DOMDocument *doc = mp_env->getParentDocument();
 
 	prefix = mp_env->getDSIGNSPrefix();
-	
+
 	if (mp_transformsNode == NULL) {
 
 		// Need to create a transforms node
@@ -261,17 +261,17 @@ DSIGTransformC14n * DSIGReference::appendCanonicalizationTransform(canonicalizat
 
 	return txfm;
 
-}	
+}
 
 DSIGTransformC14n * DSIGReference::appendCanonicalizationTransform(
 		const XMLCh * canonicalizationAlgorithmURI) {
-	
+
 	canonicalizationMethod cm;
 	XSECmapURIToCanonicalizationMethod(canonicalizationAlgorithmURI, cm);
 
 	return appendCanonicalizationTransform(cm);
 
-}	
+}
 
 DSIGTransformXPath * DSIGReference::appendXPathTransform(const char * expr) {
 
@@ -323,12 +323,12 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 
 }
 
-DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, 
-												const XMLCh * hashAlgorithmURI, 
+DOMElement *DSIGReference::createBlankReference(const XMLCh * URI,
+												const XMLCh * hashAlgorithmURI,
 												const XMLCh * type) {
 
 	// Reset this Reference just in case
-	
+
 	m_isManifest = false;
 	mp_preHash = NULL;
 	mp_manifestList = NULL;
@@ -367,11 +367,11 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI,
 	ret->appendChild(digestMethod);
 	mp_env->doPrettyPrint(ret);
 
-	digestMethod->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm, 
+	digestMethod->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm,
 		hashAlgorithmURI);
 
 	// Retrieve the attribute value for later use
-	mp_algorithmURI = 
+	mp_algorithmURI =
 		digestMethod->getAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm);
 
 
@@ -382,7 +382,7 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI,
 	ret->appendChild(mp_hashValueNode);
 	mp_env->doPrettyPrint(ret);
 	mp_hashValueNode->appendChild(doc->createTextNode(MAKE_UNICODE_STRING("Not yet calculated")));
-	
+
 	m_loaded = true;
 	return ret;
 
@@ -424,7 +424,7 @@ const XMLCh * DSIGReference::getURI() {
 // --------------------------------------------------------------------------------
 
 DSIGReferenceList * DSIGReference::getManifestReferenceList() {
-	
+
 	return mp_manifestList;
 
 }
@@ -433,13 +433,13 @@ DSIGReferenceList * DSIGReference::getManifestReferenceList() {
 //           getURIBaseTransform
 // --------------------------------------------------------------------------------
 
-TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc, 
+TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 										 const XMLCh * URI,
 										 const XSECEnv * env) {
 
 	// Determine if this is a full URL or a pointer to a URL
 
-	if (URI == NULL || (URI[0] != 0 && 
+	if (URI == NULL || (URI[0] != 0 &&
 		URI[0] != XERCES_CPP_NAMESPACE_QUALIFIER chPound)) {
 
 		TXFMURL * retTransform;
@@ -447,7 +447,7 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 		// Have a URL!
 
 		XSECnew(retTransform, TXFMURL(doc, env->getURIResolver()));
-			
+
 		try {
 			((TXFMURL *) retTransform)->setInput(URI);
 		}
@@ -467,70 +467,70 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 	XSECnew(to, TXFMDocObject(doc));
 	Janitor<TXFMDocObject> j_to(to);
 	to->setEnv(env);
-	
+
 	// Find out what sort of object pointer this is.
-	
+
 	if (URI[0] == 0) {
-		
+
 		// empty pointer - use the document itself
 		to->setInput(doc);
 		to->stripComments();
-		
+
 	}
-	
+
 	else if (XMLString::compareNString(&URI[1], s_unicodeStrxpointer, 8) == 0) {
-		
+
 		// Have an xpointer
 		if (strEquals(s_unicodeStrRootNode, &URI[9]) == true) {
 			// Root node
 			to->setInput(doc);
-			
+
 		}
-		
+
 		else if (URI[9] == XERCES_CPP_NAMESPACE_QUALIFIER chOpenParen &&
 			     URI[10] == XERCES_CPP_NAMESPACE_QUALIFIER chLatin_i &&
 				 URI[11] == XERCES_CPP_NAMESPACE_QUALIFIER chLatin_d &&
 				 URI[12] == XERCES_CPP_NAMESPACE_QUALIFIER chOpenParen &&
 				 URI[13] == XERCES_CPP_NAMESPACE_QUALIFIER chSingleQuote) {
-			
+
 			xsecsize_t len = XMLString::stringLen(&URI[14]);
 
 			XMLCh tmp[512];
 
 			if (len > 511)
 				len = 511;
-			
+
 			xsecsize_t j = 14, i = 0;
-			
+
 			// Have an ID
 			while (URI[j] != '\'') {
 				tmp[i++] = URI[j++];
 			}
 			tmp[i] = XERCES_CPP_NAMESPACE_QUALIFIER chNull;
-			
+
 			to->setInput(doc, tmp);
-			
+
 		}
-		
+
 		else {
-			
+
 			throw XSECException(XSECException::UnsupportedXpointerExpr);
-			
+
 		}
-		
+
 		// Keep comments in these situations
 		to->activateComments();
 	}
-	
+
 	else {
-		
+
 		to->setInput(doc, &URI[1]);
-		
+
 		// Remove comments
 		to->stripComments();
-		
+
 	}
-	
+
 	j_to.release();
 	return to;
 
@@ -590,7 +590,7 @@ void DSIGReference::load(void) {
 				//tmp.sbStrcpyIn("Unknown attribute in <Reference> Element : ");
 				//tmp.sbStrcatIn(error);
 
-				throw XSECException(XSECException::UnknownDSIGAttribute, 
+				throw XSECException(XSECException::UnknownDSIGAttribute,
 					"Unknown attribute in <Reference> Element");
 
 			}
@@ -608,7 +608,7 @@ void DSIGReference::load(void) {
 
 	if (tmpElt == 0) {
 
-			throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 					"Expected <Transforms> or <DigestMethod> within <Reference>");
 
 	}
@@ -628,13 +628,13 @@ void DSIGReference::load(void) {
 
 
 	} /* if tmpElt node type = transforms */
-	else 
+	else
 		mp_transformList = NULL;
-			
+
 
 	if (tmpElt == NULL || !strEquals(getDSIGLocalName(tmpElt), "DigestMethod")) {
 
-		throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 							"Expected <DigestMethod> element");
 
 	}
@@ -644,13 +644,13 @@ void DSIGReference::load(void) {
 	atts = tmpElt->getAttributes();
 	unsigned int i;
 
-	for (i = 0; i < atts->getLength() && 
+	for (i = 0; i < atts->getLength() &&
 		!strEquals(atts->item(i)->getNodeName(), DSIGConstants::s_unicodeStrAlgorithm); ++i);
-		
+
 
 	if (i == atts->getLength()) {
 
-		throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 							"Expected 'Algorithm' attribute in <DigestMethod>");
 
 	}
@@ -669,7 +669,7 @@ void DSIGReference::load(void) {
 
 	if (tmpElt == 0) {
 
-		throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 			"Expected <DigestValue> within <Reference>");
 
 	}
@@ -684,7 +684,7 @@ void DSIGReference::load(void) {
 		TXFMBase				* docObject;
 		DOMNode					* manifestNode, * referenceNode;
 
-		docObject = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI, 
+		docObject = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI,
 			mp_env);
 
 		manifestNode = docObject->getFragmentNode();
@@ -694,7 +694,7 @@ void DSIGReference::load(void) {
 		if (manifestNode == 0 || manifestNode->getNodeType() != DOMNode::ELEMENT_NODE ||
 			(!strEquals(getDSIGLocalName(manifestNode), "Object") && !strEquals(getDSIGLocalName(manifestNode), "Manifest"))) {
 
-			throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 				"Expected <Manifest> or <Object> URI for Manifest Type <Reference>");
 
 		}
@@ -707,7 +707,7 @@ void DSIGReference::load(void) {
 				manifestNode = manifestNode->getNextSibling();
 
 			if (manifestNode == 0 || !strEquals(getDSIGLocalName(manifestNode), "Manifest"))
-				throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+				throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 				"Expected <Manifest> as child of <Object> for Manifest Type <Reference>");
 
 		}
@@ -719,7 +719,7 @@ void DSIGReference::load(void) {
 			referenceNode = referenceNode->getNextSibling();
 
 		if (referenceNode == 0)
-			throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 			"Expected <Reference> as child of <Manifest>");
 
 		// Have reference node, so lets create a list!
@@ -737,7 +737,7 @@ void DSIGReference::load(void) {
 
 DSIGReferenceList *DSIGReference::loadReferenceListFromXML(const XSECEnv * env, DOMNode *firstReference) {
 
-	// Have the first reference element in the document, 
+	// Have the first reference element in the document,
 	// so want to find and load them all
 
 	DOMNode *tmpRef = firstReference;
@@ -754,7 +754,7 @@ DSIGReferenceList *DSIGReference::loadReferenceListFromXML(const XSECEnv * env, 
 		if (tmpRef->getNodeType() != DOMNode::ELEMENT_NODE ||
 			!strEquals(getDSIGLocalName(tmpRef), "Reference")) {
 
-			throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 				"Expected <Reference> as child of <SignedInfo>");
 
 		}
@@ -773,7 +773,7 @@ DSIGReferenceList *DSIGReference::loadReferenceListFromXML(const XSECEnv * env, 
 			tmpRef = tmpRef->getNextSibling();
 
 	}
-	
+
 	j_refList.release();
 	return refList;
 
@@ -791,9 +791,9 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 
 	if (m_loaded == false) {
 
-		throw XSECException(XSECException::NotLoaded, 
+		throw XSECException(XSECException::NotLoaded,
 			"calculateHash() called in DSIGReference before load()");
-	
+
 	}
 
 	// Find base transform
@@ -804,11 +804,11 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 
 	txfmChain = createTXFMChainFromList(currentTxfm, mp_transformList);
 	Janitor<TXFMChain> j_txfmChain(txfmChain);
-			
+
 	DOMDocument *d = mp_referenceNode->getOwnerDocument();
 
 	// All transforms done.  If necessary, change the type from nodes to bytes
-	
+
 	if (txfmChain->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
 
 		TXFMC14n * c14n;
@@ -851,19 +851,19 @@ void DSIGReference::hashReferenceList(DSIGReferenceList *lst, bool interlocking)
 	do {
 
 		for (int j = 0; j < i; ++j) {
-			
+
 			r = lst->item(j);
 
 			// If this is a manifest we need to set all the references in the manifest as well
-			
+
 			if (r->isManifest())
 				hashReferenceList(r->getManifestReferenceList());
-			
+
 			// Re-ordered as per suggestion by Peter Gubis to make it more likely
 			// that hashes are correct on first pass when manifests are involved
 
 			r->setHash();
-		
+
 		}
 
 	} while (interlocking && !DSIGReference::verifyReferenceList(lst, errStr) && i-- >= 0);
@@ -935,7 +935,7 @@ bool DSIGReference::verifyReferenceList(DSIGReferenceList * lst, safeBuffer &err
 //           processTransforms
 // --------------------------------------------------------------------------------
 
-TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input, 
+TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input,
 							DSIGTransformList * lst) {
 
 	TXFMChain * ret;
@@ -955,7 +955,7 @@ TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input,
 		// Iterate through the list
 
 		for (i = 0; i < size; ++i) {
-		
+
 			lst->item(i)->appendTransformer(ret);
 
 		}
@@ -971,7 +971,7 @@ TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input,
 //           loadTransforms
 // --------------------------------------------------------------------------------
 
-DSIGTransformList * DSIGReference::loadTransforms( 
+DSIGTransformList * DSIGReference::loadTransforms(
 							DOMNode *transformsNode,
 							XSECSafeBufferFormatter * formatter,
 							const XSECEnv * env) {
@@ -982,7 +982,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 	if (transformsNode == 0 || (!strEquals(getDSIGLocalName(transformsNode), "Transforms") &&
 		!strEquals(getXENCLocalName(transformsNode), "Transforms"))) {
 
-			throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 					"Expected <Transforms> in function DSIGReference::processTransforms");
 
 	}
@@ -993,55 +993,55 @@ DSIGTransformList * DSIGReference::loadTransforms(
 	Janitor<DSIGTransformList> j_lst(lst);
 
 	// Find First transform
-	
+
 	DOMNode * transforms = transformsNode->getFirstChild();
 	while (transforms != NULL && transforms->getNodeType() != DOMNode::ELEMENT_NODE)
 		transforms = transforms->getNextSibling();
-	
+
 	while (transforms != NULL) {
-		
+
 		// Process each transform in turn
 		if (!strEquals(getDSIGLocalName(transforms), "Transform")) {
-			
+
 			// Not what we expected to see!
 			safeBuffer tmp, error;
-			
+
 			error << (*formatter << getDSIGLocalName(transforms));
 			tmp.sbStrcpyIn("Unknown attribute in <Transforms> - Expected <Transform> found ");
 			tmp.sbStrcatIn(error);
 			tmp.sbStrcatIn(">.");
-			
+
 			throw XSECException(XSECException::ExpectedDSIGChildNotFound, error.rawCharBuffer());
-			
+
 		}
-		
+
 		DOMNamedNodeMap * transformAtts = transforms->getAttributes();
-		
+
 		unsigned int i;
 
-		for (i = 0; i < transformAtts->getLength() && 
+		for (i = 0; i < transformAtts->getLength() &&
 				!strEquals(transformAtts->item(i)->getNodeName(), DSIGConstants::s_unicodeStrAlgorithm); ++i);
 
 		if (i == transformAtts->getLength()) {
-			
+
 			throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 				"Algorithm attribute not found in <Transform> element");
-			
+
 		}
-		
+
 		safeBuffer algorithm;
 		algorithm << (*formatter << transformAtts->item(i)->getNodeValue());
-		
+
 		// Determine what the transform is
-		
+
 		if (algorithm.sbStrcmp(URI_ID_BASE64) == 0) {
-			
+
 			DSIGTransformBase64 * b;
 			XSECnew(b, DSIGTransformBase64(env, transforms));
 			lst->addTransform(b);
 			b->load();
 		}
-		
+
 		else if (algorithm.sbStrcmp(URI_ID_XPATH) == 0) {
 
 			DSIGTransformXPath * x;
@@ -1059,7 +1059,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 			xpf->load();
 
 		}
-		
+
 		else if (algorithm.sbStrcmp(URI_ID_ENVELOPE) == 0) {
 
 			DSIGTransformEnvelope * e;
@@ -1069,7 +1069,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 		}
 
 		else if (algorithm.sbStrcmp(URI_ID_XSLT) == 0) {
-			
+
 			DSIGTransformXSL * x;
 			XSECnew(x, DSIGTransformXSL(env, transforms));
 			lst->addTransform(x);
@@ -1077,39 +1077,41 @@ DSIGTransformList * DSIGReference::loadTransforms(
 
 		}
 
-		
+
 		else if (algorithm.sbStrcmp(URI_ID_C14N_COM) == 0 ||
 			     algorithm.sbStrcmp(URI_ID_C14N_NOC) == 0 ||
+			     algorithm.sbStrcmp(URI_ID_C14N11_COM) == 0 ||
+                 algorithm.sbStrcmp(URI_ID_C14N11_NOC) == 0 ||
 				 algorithm.sbStrcmp(URI_ID_EXC_C14N_COM) == 0 ||
 				 algorithm.sbStrcmp(URI_ID_EXC_C14N_NOC) == 0) {
-			
+
 			DSIGTransformC14n * c;
 			XSECnew(c, DSIGTransformC14n(env, transforms));
 			lst->addTransform(c);
 			c->load();
 
 		}
-		
+
 		else {
-			
+
 			// Not what we expected to see!
 			safeBuffer tmp;
-			
+
 			tmp.sbStrcpyIn("Unknown transform : ");
 			tmp.sbStrcatIn(algorithm);
 			tmp.sbStrcatIn(" found.");
-			
+
 			throw XSECException(XSECException::UnknownTransform, tmp.rawCharBuffer());
 		}
-		
+
 		// Now find next element
-		
+
 		transforms = transforms->getNextSibling();
 		while (transforms != NULL && transforms->getNodeType() != DOMNode::ELEMENT_NODE)
 			transforms = transforms->getNextSibling();
-		
+
 	} /* while (transforms != NULL) */
-			
+
 	j_lst.release();
 	return lst;
 }
@@ -1134,7 +1136,7 @@ void DSIGReference::setHash(void) {
 
 	if (!b64) {
 
-		throw XSECException(XSECException::CryptoProviderError, 
+		throw XSECException(XSECException::CryptoProviderError,
 				"Error requesting Base64 object from Crypto Provider");
 
 	}
@@ -1142,9 +1144,9 @@ void DSIGReference::setHash(void) {
 	Janitor<XSECCryptoBase64> j_b64(b64);
 
 	b64->encodeInit();
-	base64HashLen = b64->encode(calculatedHashVal, 
-								calculatedHashLen, 
-								base64Hash, 
+	base64HashLen = b64->encode(calculatedHashVal,
+								calculatedHashLen,
+								base64Hash,
 								CRYPTO_MAX_HASH_SIZE * 2);
 	base64HashLen += b64->encodeFinish(&base64Hash[base64HashLen],
 										(CRYPTO_MAX_HASH_SIZE * 2) - base64HashLen);
@@ -1203,9 +1205,9 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	if (m_loaded == false) {
 
-		throw XSECException(XSECException::NotLoaded, 
+		throw XSECException(XSECException::NotLoaded,
 			"calculateHash() called in DSIGReference before load()");
-	
+
 	}
 
 	// Find base transform
@@ -1218,11 +1220,11 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	chain = createTXFMChainFromList(currentTxfm, mp_transformList);
 	Janitor<TXFMChain> j_chain(chain);
-	
+
 	DOMDocument *d = mp_referenceNode->getOwnerDocument();
 
 	// All transforms done.  If necessary, change the type from nodes to bytes
-	
+
 	if (chain->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
 
 		TXFMC14n * c14n;
@@ -1230,7 +1232,7 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 		chain->appendTxfm(c14n);
 
 	}
-	
+
 	// Check to see if there is a final "application" transform prior to the hash
 
 	if (mp_preHash != NULL) {
@@ -1247,10 +1249,10 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 	chain->(of);
 #endif
 
-	
+
 	// Get the mapping for the hash transform
 
-	XSECAlgorithmHandler * handler = 
+	XSECAlgorithmHandler * handler =
 		XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(mp_algorithmURI);
 
 	if (handler == NULL) {
@@ -1323,7 +1325,7 @@ unsigned int DSIGReference::readHash(XMLByte *toFill, unsigned int maxToFill) {
 	b64HashVal << (*mp_formatter << tmpElt->getNodeValue());
 
 	// Now have the value of the string - create a transform around it
-	
+
 	XSECnew(nextInput, TXFMSB(d));
 	((TXFMSB *) nextInput)->setInput(b64HashVal);
 
@@ -1336,7 +1338,7 @@ unsigned int DSIGReference::readHash(XMLByte *toFill, unsigned int maxToFill) {
 
 	XSECnew(nextInput, TXFMBase64(d));
 	chain->appendTxfm(nextInput);
-	
+
 	// Now get the value
 
 	size = chain->getLastTxfm()->readBytes(toFill, maxToFill);
@@ -1344,7 +1346,7 @@ unsigned int DSIGReference::readHash(XMLByte *toFill, unsigned int maxToFill) {
 	// Clear any documentat modifications
 
 	chain->getLastTxfm()->deleteExpandedNameSpaces();
-	
+
 	return size;
 
 }
@@ -1357,7 +1359,7 @@ unsigned int DSIGReference::readHash(XMLByte *toFill, unsigned int maxToFill) {
 
 bool DSIGReference::checkHash() {
 
-	// Determine the hash value of the element and check if matches that stored in the 
+	// Determine the hash value of the element and check if matches that stored in the
 	// DigestValue part of the element
 
 	// First set up for input
