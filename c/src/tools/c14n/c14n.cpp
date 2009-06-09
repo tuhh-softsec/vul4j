@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2009 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,29 +56,31 @@ using std::cerr;
 
 void printUsage(void) {
 
-	cerr << "\nUsage: c14n [-n] <input file name>\n";
-	cerr << "       -n = No comments\n\n";
+	cerr << "\nUsage: c14n [-n] [-id ID] <input file name>\n";
+	cerr << "       -n = No comments\n";
+	cerr << "       -id ID = References node to canonicalize by ID\n\n";
 
 }
 
 int main(int argc, char **argv) {
 
+    const char* id = NULL;
 	bool printComments = true;		// By default print comments
 
 	// Check arguments
 
 	if (argc < 2) {
-
 		printUsage();
 		exit (1);
 	}
 
 	if (argc > 2) {
-
 		for (int i = 1; i < argc - 1; ++i) {
 
 			if (!strcmp(argv[i], "-n") || !strcmp(argv[i], "-N"))
 				printComments = false;
+            else if (!strcmp(argv[i], "-id") && argc > i + 1)
+                id = argv[++i];
 			else {
 				cerr << "Unknown option %s\n\n";
 				printUsage();
@@ -109,7 +111,7 @@ int main(int argc, char **argv) {
 
 	XercesDOMParser * parser = new XercesDOMParser;
 	parser->setDoNamespaces(true);
-	parser->setValidationScheme(XercesDOMParser::Val_Never);
+    parser->setValidationScheme(XercesDOMParser::Val_Never);
 	parser->setDoSchema(false);
 	parser->setCreateEntityReferenceNodes(false);
 
@@ -153,30 +155,46 @@ int main(int argc, char **argv) {
 
 	*/
 	
-	DOMNode *doc;		// The document that we parsed
-
-	doc = parser->getDocument();
+	DOMNode *subtree = NULL;
 	DOMDocument *theDOM = parser->getDocument();
+    if (id) {
+        XMLCh* temp = XMLString::transcode(id);
+        subtree = theDOM->getElementById(temp);
+        XMLString::release(&temp);
+        if (!subtree) {
+            cerr << "ID reference did not resolve" << endl;
+            exit(1);
+        }
+    }
 
-	// Creat the canonicalizer
+	// Create the canonicalizer
+    XSECC14n20010315* canon=NULL;
+    if (subtree)
+	    canon = new XSECC14n20010315(theDOM, subtree);
+    else
+        canon = new XSECC14n20010315(theDOM);
+	canon->setCommentsProcessing(printComments);
+	canon->setUseNamespaceStack(true);
 
-	XSECC14n20010315 canon(theDOM);
-	canon.setCommentsProcessing(printComments);
-	canon.setUseNamespaceStack(true);
-
-	// canon.XPathSelectNodes("(/descendant-or-self::node() | /descendant-or-self::node()/attribute::* | /descendant-or-self::node()/namespace::*)[ self::ietf:e1 or (parent::ietf:e1 and not(self::text() or self::e2)) or count (id(\"E3\") | ancestor-or-self::node()) = count (ancestor-or-self::node())]");
+	// canon->XPathSelectNodes("(/descendant-or-self::node() | /descendant-or-self::node()/attribute::* | /descendant-or-self::node()/namespace::*)[ self::ietf:e1 or (parent::ietf:e1 and not(self::text() or self::e2)) or count (id(\"E3\") | ancestor-or-self::node()) = count (ancestor-or-self::node())]");
 
 	char buffer[512];
-	xsecsize_t res = canon.outputBuffer((unsigned char *) buffer, 128);
+	xsecsize_t res = canon->outputBuffer((unsigned char *) buffer, 128);
 
 
 	while (res != 0) {
 		buffer[res] = '\0';
 		cout << buffer;
-		res = canon.outputBuffer((unsigned char *) buffer, 128);
+		res = canon->outputBuffer((unsigned char *) buffer, 128);
 	}
 
 	cout << endl;
-	
+
+    delete canon;
+    delete parser;
+
+    XSECPlatformUtils::Terminate();
+	XMLPlatformUtils::Terminate();
+
 	return 0;
 }
