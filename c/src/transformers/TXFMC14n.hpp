@@ -38,7 +38,7 @@ class DSIG_EXPORT TXFMC14n : public TXFMBase {
 private:
 
 	XSECC14n20010315		* mp_c14n;			// The actual canonicaliser
-	
+
 public:
 
 	TXFMC14n(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
@@ -47,7 +47,7 @@ public:
 	// Methods to set the inputs
 
 	void setInput(TXFMBase *newInput);
-	
+
 	// Methods to get tranform output type and input requirement
 
 	virtual TXFMBase::ioType getInputType(void);
@@ -61,13 +61,16 @@ public:
 	virtual void setExclusive();
 	virtual void setExclusive(safeBuffer & NSList);
 
+	// Set inclusive 1.1
+	virtual void setInclusive11();
+
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
-	
+
 private:
 	TXFMC14n();
 };

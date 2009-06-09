@@ -76,6 +76,8 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_ENVELOPE			"http://www.w3.org/2000/09/xmldsig#enveloped-signature"
 #define URI_ID_C14N_NOC			"http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
 #define URI_ID_C14N_COM			"http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"
+#define URI_ID_C14N11_NOC       "http://www.w3.org/2006/12/xml-c14n11"
+#define URI_ID_C14N11_COM       "http://www.w3.org/2006/12/xml-c14n11#WithComments"
 #define URI_ID_EXC_C14N_NOC		"http://www.w3.org/2001/10/xml-exc-c14n#"
 #define URI_ID_EXC_C14N_COM		"http://www.w3.org/2001/10/xml-exc-c14n#WithComments"
 #define XPATH_EXPR_ENVELOPE		"count(ancestor-or-self::dsig:Signature | \
@@ -133,7 +135,9 @@ enum canonicalizationMethod {
 	CANON_C14N_NOC				= 1,			// C14n without comments
 	CANON_C14N_COM				= 2, 			// C14n with comments
 	CANON_C14NE_NOC				= 3,			// C14n Exclusive (without comments)
-	CANON_C14NE_COM				= 4				// C14n Exlusive (with Comments
+	CANON_C14NE_COM				= 4,			// C14n Exlusive (with Comments
+	CANON_C14N11_NOC            = 5,            // C14n 1.1 without comments
+	CANON_C14N11_COM            = 6             // C14n 1.1 with comments
 };
 
 enum signatureMethod {
@@ -160,12 +164,12 @@ enum transformType {
 
 	TRANSFORM_BASE64,
 	TRANSFORM_C14N,
+    TRANSFORM_C14N11,
 	TRANSFORM_EXC_C14N,
 	TRANSFORM_ENVELOPED_SIGNATURE,
 	TRANSFORM_XPATH,
 	TRANSFORM_XSLT,
 	TRANSFORM_XPATH_FILTER
-
 };
 
 enum xpathFilterType {
@@ -221,6 +225,16 @@ bool canonicalizationMethod2URI(safeBuffer &uri, canonicalizationMethod cm) {
 
 		uri = URI_ID_EXC_C14N_COM;
 		break;
+
+    case (CANON_C14N11_NOC) :
+
+        uri = URI_ID_C14N11_NOC;
+        break;
+
+    case (CANON_C14N11_COM) :
+
+        uri = URI_ID_C14N11_COM;
+        break;
 
 	default :
 		return false;		// Unknown type
@@ -399,12 +413,12 @@ bool encryptionMethod2URI(safeBuffer &uri, encryptionMethod em) {
 
 		uri = URI_ID_RSA_1_5;
 		break;
-		
+
 	case (ENCRYPT_RSA_OAEP_MGFP1) :
 
 		uri = URI_ID_RSA_OAEP_MGFP1;
 		break;
-	
+
 	default:
 
 		return false;
@@ -455,6 +469,8 @@ public:
 	static const XMLCh * s_unicodeStrURIENVELOPE;
 	static const XMLCh * s_unicodeStrURIC14N_NOC;
 	static const XMLCh * s_unicodeStrURIC14N_COM;
+    static const XMLCh * s_unicodeStrURIC14N11_NOC;
+    static const XMLCh * s_unicodeStrURIC14N11_COM;
 	static const XMLCh * s_unicodeStrURIEXC_C14N_NOC;
 	static const XMLCh * s_unicodeStrURIEXC_C14N_COM;
 	static const XMLCh * s_unicodeStrURIDSA_SHA1;
@@ -471,15 +487,15 @@ public:
 	static const XMLCh * s_unicodeStrURIHMAC_SHA256;
 	static const XMLCh * s_unicodeStrURIHMAC_SHA384;
 	static const XMLCh * s_unicodeStrURIHMAC_SHA512;
-	
+
 	static const XMLCh * s_unicodeStrURIXMLNS;
 	static const XMLCh * s_unicodeStrURIMANIFEST;
 
 	// URIs for Encryption
 	static const XMLCh * s_unicodeStrURI3DES_CBC;
-	static const XMLCh * s_unicodeStrURIAES128_CBC;	
-	static const XMLCh * s_unicodeStrURIAES192_CBC;	
-	static const XMLCh * s_unicodeStrURIAES256_CBC;	
+	static const XMLCh * s_unicodeStrURIAES128_CBC;
+	static const XMLCh * s_unicodeStrURIAES192_CBC;
+	static const XMLCh * s_unicodeStrURIAES256_CBC;
 	static const XMLCh * s_unicodeStrURIKW_AES128;
 	static const XMLCh * s_unicodeStrURIKW_AES192;
 	static const XMLCh * s_unicodeStrURIKW_AES256;
@@ -541,18 +557,18 @@ const XMLCh * canonicalizationMethod2UNICODEURI(canonicalizationMethod cm) {
 // --------------------------------------------------------------------------------
 
 /* Map URIs to internal enums, if the URIs are known to the library.
-   If they aren't, all these calls will set the Method variables to 
+   If they aren't, all these calls will set the Method variables to
    *_NONE, signifying we don't know them.  Note this is not necessarily
    an error - the calling application may have installed handlers to handle
    these URIs, it's just we don't have an internal enum mapping
 */
 
-bool DSIG_EXPORT XSECmapURIToSignatureMethods(const XMLCh * URI, 
-												  signatureMethod & sm, 
+bool DSIG_EXPORT XSECmapURIToSignatureMethods(const XMLCh * URI,
+												  signatureMethod & sm,
 												  hashMethod & hm);
-bool DSIG_EXPORT XSECmapURIToHashMethod(const XMLCh * URI, 
+bool DSIG_EXPORT XSECmapURIToHashMethod(const XMLCh * URI,
 												  hashMethod & hm);
-bool DSIG_EXPORT XSECmapURIToCanonicalizationMethod(const XMLCh * URI, 
+bool DSIG_EXPORT XSECmapURIToCanonicalizationMethod(const XMLCh * URI,
 							canonicalizationMethod & cm);
 
 #endif /* DSIGCONSTANTS_HEADER */

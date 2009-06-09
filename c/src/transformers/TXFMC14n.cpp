@@ -109,7 +109,7 @@ void TXFMC14n::setInput(TXFMBase *newInput) {
 	mp_c14n->setUseNamespaceStack(!input->nameSpacesExpanded());
 
 }
-	
+
 void TXFMC14n::activateComments(void) {
 
 	if (input != NULL)
@@ -133,6 +133,13 @@ void TXFMC14n::setExclusive(safeBuffer & NSList) {
 
 	if (mp_c14n != NULL)
 		mp_c14n->setExclusive((char *) NSList.rawBuffer());
+
+}
+
+void TXFMC14n::setInclusive11() {
+
+    if (mp_c14n != NULL)
+        mp_c14n->setInclusive11();
 
 }
 

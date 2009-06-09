@@ -3,11 +3,12 @@ Changes since 1.4
 * Make SHA-1 the implicit default DigestMethod for RSA-OAEP
   key transport, allowing for interop until broken impls are fixed (SC) 
 * Fix memory leak in OpenSSL RSA/DSA key cloning (SC)
+* Expose KeyInfo extensions via DOM (SC)
+* Fix c14n to omit standard xmlns:xml declarations (SC)
+* Add partial support for Inclusive C14N 1.1 with regard to xml:id but not xml:base (SC)
 * Finish port to Xerces 3.0 (SC)
 * 64-bit API changes (SC)
 * Add VC9 build files (SC)
-* Expose KeyInfo extensions via DOM (SC)
-* Fix c14n to omit standard xmlns:xml declarations (SC)
 
 Changes between version 1.3.1 and 1.4
 =====================================

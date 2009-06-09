@@ -100,27 +100,27 @@ XSECNodeListElt * insertNodeIntoList(XSECNodeListElt * lst, XSECNodeListElt *toI
 	XSECNodeListElt *tmp, *last;
 
 	if (lst == NULL) {
-		
+
 		// Goes at start
 		toIns->next = NULL;
 		toIns->last = NULL;
-		
+
 		return toIns;
-		
+
 	} /* if mp_attributes == NULL */
-	
+
 	// Need to run through start of list
-	
+
 	tmp = lst;
 	last = NULL;
 	int res = -1;   // Used to remove a gcc warning
-	
+
 	while ((tmp != NULL) &&
 		((res = toIns->sortString.sbStrcmp(tmp->sortString)) >= 0)) {
-		
+
 		last = tmp;
 		tmp = tmp->next;
-		
+
 	} /* while */
 
 	if (res ==0) {
@@ -130,42 +130,42 @@ XSECNodeListElt * insertNodeIntoList(XSECNodeListElt * lst, XSECNodeListElt *toI
 		return lst;
 
 	}
-	
+
 	if (last == NULL) {
-		
+
 		// It sits before first element
-		
+
 		toIns->next = lst;
 		toIns->last = NULL;
 		lst->last = tmp;
-				
+
 		return toIns;
-		
+
 	} /* if last == NULL */
-	
+
 	// We have found where it goes
-	
+
 	toIns->next = tmp;
 	toIns->last = last;
-	
+
 	if (tmp != NULL)
 		tmp->last = toIns;
-	
+
 	last->next = toIns;
-	
+
 	return lst;
-	
+
 }
-							
+
 // --------------------------------------------------------------------------------
 //           Exclusive Canonicalisation Methods
 // --------------------------------------------------------------------------------
-		
+
 
 bool visiblyUtilises(DOMNode *node, safeBuffer &ns) {
 
 	// Test whether the node uses the name space passed in
-	
+
 	if (strEquals(node->getPrefix(), (char *) ns.rawBuffer()))
 		return true;
 
@@ -206,11 +206,17 @@ bool XSECC14n20010315::inNonExclNSList(safeBuffer &ns) {
 
 }
 
+void XSECC14n20010315::setInclusive11(void) {
+    m_incl11 = true;
+    m_exclusive = false;
+    m_exclusiveDefault = false;
+}
+
 void XSECC14n20010315::setExclusive(void) {
 
 	m_exclusive = true;
 	m_exclusiveDefault = true;
-
+	m_incl11 = false;
 }
 
 void XSECC14n20010315::setExclusive(char * xmlnsList) {
@@ -222,7 +228,7 @@ void XSECC14n20010315::setExclusive(char * xmlnsList) {
 	// Set up the define non-exclusive prefixes
 
 	nsBuf = new char [strlen(xmlnsList) + 1];
-	
+
 	if (nsBuf == NULL) {
 
 		throw XSECException (XSECException::MemoryAllocationFail,
@@ -238,7 +244,7 @@ void XSECC14n20010315::setExclusive(char * xmlnsList) {
 
 		while (xmlnsList[i] == ' ' ||
 			   xmlnsList[i] == '\0' ||
-			   xmlnsList[i] == '\t' || 
+			   xmlnsList[i] == '\t' ||
 			   xmlnsList[i] == '\r' ||
 			   xmlnsList[i] == '\n')
 
@@ -247,7 +253,7 @@ void XSECC14n20010315::setExclusive(char * xmlnsList) {
 		j = 0;
 		while (!(xmlnsList[i] == ' ' ||
 			   xmlnsList[i] == '\0' ||
-			   xmlnsList[i] == '\t' || 
+			   xmlnsList[i] == '\t' ||
 			   xmlnsList[i] == '\r' ||
 			   xmlnsList[i] == '\n'))
 
@@ -277,7 +283,7 @@ void XSECC14n20010315::setExclusive(char * xmlnsList) {
 
 
 
-		
+
 
 // --------------------------------------------------------------------------------
 //           XSECC14n20010315 methods
@@ -298,7 +304,7 @@ void XSECC14n20010315::stackInit(DOMNode * n) {
 
 	if (tmpAtts != NULL)
 		size = tmpAtts->getLength();
-	else 
+	else
 		size = 0;
 
 	XMLSize_t i;
@@ -313,8 +319,8 @@ void XSECC14n20010315::stackInit(DOMNode * n) {
 	}
 
 }
-			
-	
+
+
 // Constructors
 
 void XSECC14n20010315::init() {
@@ -323,13 +329,13 @@ void XSECC14n20010315::init() {
 
 	// Set up the Xerces formatter
 
-	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
+	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes,
 												XMLFormatter::UnRep_CharRef));
 
 	// Set up for first attribute list
 
 	mp_attributes = mp_currentAttribute = mp_firstNonNsAttribute = NULL;
-	
+
 	// By default process comments
 	m_processComments = true;
 
@@ -349,6 +355,9 @@ void XSECC14n20010315::init() {
 	m_exclusive = false;
 	m_exclusiveDefault = false;
 
+	// Default to 1.0 mode
+	m_incl11 = false;
+
 	// Namespace handling
 	m_useNamespaceStack = true;
 
@@ -365,10 +374,10 @@ XSECC14n20010315::XSECC14n20010315(DOMDocument *newDoc) : XSECCanon(newDoc) {
 
 	// Just call the init function;
 
-	init();	
+	init();
 
 };
-XSECC14n20010315::XSECC14n20010315(DOMDocument *newDoc, 
+XSECC14n20010315::XSECC14n20010315(DOMDocument *newDoc,
 								   DOMNode *newStartNode) : XSECCanon(newDoc, newStartNode) {
 
 	// Just call the init function
@@ -440,7 +449,7 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 	XPathEvaluator::initialize();
 
 	// We use Xalan to process the Xerces DOM tree and get the XPath nodes
-	
+
 	XercesDOMSupport theDOMSupport;
 #if defined XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
 	XercesParserLiaison theParserLiaison(theDOMSupport);
@@ -458,7 +467,7 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 	xe->setAttribute(/*XalanDOMString(""), */XalanDOMString("xmlns:ietf"), XalanDOMString("http://www.ietf.org"));
 
 	// Set up the XPath evaluator
-	
+
 	XPathEvaluator	theEvaluator;
 
 	// OK, let's find the context node...
@@ -476,16 +485,16 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 
 	if (theContextNode == 0)
 	{
-		
+
 		// No appropriate nodes.
 		return 0;
-	
+
 	}
 	// OK, let's evaluate the expression...
 
 	XalanDOMString ed = XalanDOMString(XPathExpr);
 	const XalanDOMChar * expr = ed.c_str();
- 
+
 #if defined XSEC_SELECTNODELIST_REQS_NODEREFLIST
 
 	NodeRefList output;
@@ -508,16 +517,16 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 		xe));
 		//theDoc->getDocumentElement()));
 #endif
-		
+
 	//XercesDocumentBridge *theBridge = theParserLiaison.mapDocument(theDoc);
 	XercesDocumentWrapper *theWrapper = theParserLiaison.mapDocumentToWrapper(theDoc);
 	XercesWrapperNavigator theWrapperNavigator(theWrapper);
 
 	int size = (int) theResult.getLength();
 	const DOMNode *item;
-	
+
 	for (int i = 0; i < size; ++ i) {
-		
+
 		item = theWrapperNavigator.mapNode(theResult.item(i));
 		m_XPathMap.addNode(item);
 		//tmp->element = theBridgeNavigator.mapNode(theResult.item(i));
@@ -567,7 +576,7 @@ safeBuffer c14nCleanText(safeBuffer &input) {
 
 		switch (c) {
 
-		case '&' : 
+		case '&' :
 
 			ret[j++] = '&';
 			ret[j++] = 'a';
@@ -585,7 +594,7 @@ safeBuffer c14nCleanText(safeBuffer &input) {
 			ret[j++] = ';';
 
 			break;
-			
+
 		case '>' :
 
 			ret[j++] = '&';
@@ -594,7 +603,7 @@ safeBuffer c14nCleanText(safeBuffer &input) {
 			ret[j++] = ';';
 
 			break;
-			
+
 		case 0xD :
 
 			ret[j++] = '&';
@@ -678,7 +687,7 @@ safeBuffer c14nCleanAttribute(safeBuffer &input) {
 			ret[j++] = ';';
 
 			break;
-				
+
 		case 0x9 :
 
 			ret[j++] = '&';
@@ -688,7 +697,7 @@ safeBuffer c14nCleanAttribute(safeBuffer &input) {
 			ret[j++] = ';';
 
 			break;
-	
+
 		case 0xA :
 
 			ret[j++] = '&';
@@ -698,7 +707,7 @@ safeBuffer c14nCleanAttribute(safeBuffer &input) {
 			ret[j++] = ';';
 
 			break;
-	
+
 		case 0xD :
 
 			ret[j++] = '&';
@@ -782,7 +791,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 		while (parent != NULL) {
 
 			if (!m_XPathSelection || m_XPathMap.hasNode(parent)) {
-				
+
 				// An output ancestor
 				if (visiblyUtilises(parent, localName)) {
 
@@ -826,7 +835,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 		return true;
 
 	}
-	
+
 	// Either we are now in non-exclusive mode, or the name space in question
 	// Is to be treated as non-exclusive
 
@@ -846,7 +855,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 
 	if (m_useNamespaceStack) {
 
-		// In this case, we need to go up until we find the namespace definition 
+		// In this case, we need to go up until we find the namespace definition
 		// in question
 
 		parent = e->getParentNode();
@@ -965,7 +974,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 			// All done!
 			m_allNodesDone = true;
-			
+
 			return 0;
 
 		}
@@ -980,7 +989,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 			// Empty document?
 			m_allNodesDone = true;
-			
+
 		}
 
 		mp_nextNode = next;
@@ -998,30 +1007,30 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 		if (processNode) {
 			if ((mp_nextNode->getParentNode() == mp_doc) && m_firstElementProcessed) {
-				
+
 				// this is a top level node and first element done
 				m_buffer.sbStrcpyIn("\x00A<?");
-				
+
 			}
 			else
 				m_buffer.sbStrcpyIn("<?");
-			
+
 			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
 			m_buffer.sbStrcatIn(m_formatBuffer);
-			
+
 			m_formatBuffer << (*mp_formatter << ((DOMProcessingInstruction *) mp_nextNode)->getData());
 			if (m_formatBuffer.sbStrlen() > 0) {
 				m_buffer.sbStrcatIn(" ");
 				m_buffer.sbStrcatIn(m_formatBuffer);
 			}
-			
+
 			m_buffer.sbStrcatIn("?>");
-			
+
 			if ((mp_nextNode->getParentNode() == mp_doc) && !m_firstElementProcessed) {
-				
+
 				// this is a top level node and first element done
 				m_buffer.sbStrcatIn("\x00A");
-				
+
 			}
 		}
 
@@ -1035,27 +1044,27 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 		if (processNode && m_processComments) {
 			if ((mp_nextNode->getParentNode() == mp_doc) && m_firstElementProcessed) {
-				
+
 				// this is a top level node and first element done
 				m_buffer.sbStrcpyIn("\x00A<!--");
-				
+
 			}
 			else
 				m_buffer.sbStrcpyIn("<!--");
-			
+
 			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeValue());
 
 			if (m_formatBuffer.sbStrlen() > 0) {
 				m_buffer.sbStrcatIn(m_formatBuffer);
 			}
-			
+
 			m_buffer.sbStrcatIn("-->");
-			
+
 			if ((mp_nextNode->getParentNode() == mp_doc) && !m_firstElementProcessed) {
-				
+
 				// this is a top level node and first element done
 				m_buffer.sbStrcatIn("\x00A");
-				
+
 			}
 		}
 
@@ -1084,7 +1093,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 		// If we are going "up" then we simply close off the element
 
 		if (m_returnedFromChild) {
-			if (processNode) {		
+			if (processNode) {
 				m_buffer.sbStrcpyIn ("</");
 				m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
 				m_buffer.sbStrcatIn(m_formatBuffer);
@@ -1097,7 +1106,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 			break;
 		}
 
-		if (processNode) {	
+		if (processNode) {
 
 			m_buffer.sbStrcpyIn("<");
 			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
@@ -1123,7 +1132,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 			if (tmpAtts != NULL)
 				size = tmpAtts->getLength();
-			else 
+			else
 				size = 0;
 
 			XSECNodeListElt *toIns;
@@ -1136,7 +1145,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 				currentValue << (*mp_formatter << tmpAtts->item(i)->getNodeValue());
 
 				// Build the string used to sort this node
-				
+
 				if ((next == mp_nextNode) && currentName.sbStrncmp("xmlns", 5) == 0) {
 
 					// Are we using the namespace stack?  If so - store this for later
@@ -1156,34 +1165,35 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 						if (checkRenderNameSpaceNode(mp_nextNode, tmpAtts->item(i))) {
 
 							// Add to the list
-					
+
 							m_formatBuffer << (*mp_formatter << tmpAtts->item(i)->getNodeName());
 							if (m_formatBuffer[5] == ':')
 								currentName.sbStrcpyIn((char *) &m_formatBuffer[6]);
 							else
 								currentName.sbStrcpyIn("");
-					
+
 							toIns = new XSECNodeListElt;
 							toIns->element = tmpAtts->item(i);
-					
+
 							// Build and insert name space node
 							toIns->sortString.sbStrcpyIn(XMLNS_PREFIX);
 							toIns->sortString.sbStrcatIn(currentName);
-					
+
 							// Insert node
 							mp_attributes = insertNodeIntoList(mp_attributes, toIns);
-					
+
 						}
 					}
 
 				}
 
 				else {
-					
+
 					// A "normal" attribute - only process if selected or no XPath or is an
 					// XML node from a previously un-printed Element node
 
-					bool XMLElement = (next != mp_nextNode) && !m_exclusive && !currentName.sbStrncmp("xml:", 4);
+					bool XMLElement = (next != mp_nextNode) && (!m_exclusive) && !currentName.sbStrncmp("xml:", 4) &&
+                        (!m_incl11 || currentName.sbStrcmp("xml:id"));
 
 					// If we have an XML element, make sure it was not printed between this
 					// node and the node currently  being worked on
@@ -1206,12 +1216,12 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 								if (ta != NULL)
 									sz = ta->getLength();
-								else 
+								else
 									sz = 0;
 
 								for (XMLSize_t j = 0; j < sz; ++j) {
 
-									if (strEquals(ta->item(j)->getNodeName(), 
+									if (strEquals(ta->item(j)->getNodeName(),
 										tmpAtts->item(i)->getNodeName()) == true) {
 
 										XMLElement = false;
@@ -1229,20 +1239,20 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 					}
 
-						 
-					
-					if ((!m_XPathSelection && next == mp_nextNode) || XMLElement || ((next == mp_nextNode) && m_XPathMap.hasNode(tmpAtts->item(i)))) { 
-						
+
+
+					if ((!m_XPathSelection && next == mp_nextNode) || XMLElement || ((next == mp_nextNode) && m_XPathMap.hasNode(tmpAtts->item(i)))) {
+
 						toIns = new XSECNodeListElt;
 						toIns->element = tmpAtts->item(i);
-						
+
 						// First the correct prefix to ensure will be sorted
 						// in correct placing against XMLNS nodes
 
 						toIns->sortString.sbStrcpyIn(ATTRIBUTE_PREFIX);
-						
+
 						// Find the namespace URI
-						const XMLCh * nsURI = 
+						const XMLCh * nsURI =
 							tmpAtts->item(i)->getNamespaceURI();
 
 						if (nsURI == NULL) {
@@ -1264,7 +1274,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 						// Insert node
 						mp_attributes = insertNodeIntoList(mp_attributes, toIns);
-						
+
 					} /* else (sbStrCmp xmlns) */
 				}
 			} /* for */
@@ -1305,26 +1315,26 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 					// Add to the list
 					XSECNodeListElt *toIns;
-			
+
 					m_formatBuffer << (*mp_formatter << nsnode->getNodeName());
 					if (m_formatBuffer[5] == ':')
 						currentName.sbStrcpyIn((char *) &m_formatBuffer[6]);
 					else
 						currentName.sbStrcpyIn("");
-			
+
 					toIns = new XSECNodeListElt;
 					toIns->element = nsnode;
-			
+
 					// Build and insert name space node
 					toIns->sortString.sbStrcpyIn(XMLNS_PREFIX);
 					toIns->sortString.sbStrcatIn(currentName);
-			
+
 					// Insert node
 					mp_attributes = insertNodeIntoList(mp_attributes, toIns);
 
 					// Mark as printed in the NS Stack
 					m_nsStack.printNamespace(nsnode, mp_nextNode);
-			
+
 				}
 				nsnode = m_nsStack.getNextNamespace();
 			}
@@ -1350,7 +1360,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 						if (!m_XPathSelection || m_useNamespaceStack || m_XPathMap.hasNode(next)) {
 
 							DOMNode *tmpAtt;
-				
+
 							// An output ancestor
 							if (visiblyUtilises(next, sbLocalName)) {
 								DOMNode * nextAttParent = next;
@@ -1405,7 +1415,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 					XMLSize_t size;
 					if (next != NULL)
 						tmpAtts = next->getAttributes();
-					
+
 					if (next != NULL && tmpAtts != NULL)
 						size = tmpAtts->getLength();
 					else
@@ -1430,24 +1440,24 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 					}
 					if (m_useNamespaceStack && next != NULL)
 						next = next->getParentNode();
-					else 
+					else
 						next = NULL;
 				}
 			}
 
 			// Did we find a non empty namespace?
 			if (xmlnsFound) {
-				
+
 				currentName.sbStrcpyIn("");		// Don't include xmlns prefix
 				XSECNodeListElt * toIns;
-		
+
 				toIns = new XSECNodeListElt;
 				toIns->element = NULL;		// To trigger the state engine
-		
+
 				// Build and insert name space node
 				toIns->sortString.sbStrcpyIn(XMLNS_PREFIX);
 				toIns->sortString.sbStrcatIn(currentName);
-		
+
 				// Insert node
 				mp_attributes = insertNodeIntoList(mp_attributes, toIns);
 			}
@@ -1467,11 +1477,11 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 			return m_bufferLength;
 
 		} /* attrributes != NULL */
-		
+
 
 		if (processNode)
 			m_buffer.sbStrcatIn(">");
-	
+
 		// Fall through to find next node
 
 		break;
@@ -1480,20 +1490,20 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 		// Always process an attribute node as we have already checked they should
 		// be printed
-		
+
 		m_buffer.sbStrcpyIn(" ");
 
 		if (mp_nextNode != 0) {
-			
+
 			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
 			m_buffer.sbStrcatIn(m_formatBuffer);
-				
+
 			m_buffer.sbStrcatIn("=\"");
-				
+
 			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeValue());
 			sbWork = c14nCleanAttribute(m_formatBuffer);
 			m_buffer.sbStrcatIn(sbWork);
-				
+
 			m_buffer.sbStrcatIn("\"");
 		}
 		else {
@@ -1501,7 +1511,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 			m_buffer.sbStrcatIn("=\"");
 			m_buffer.sbStrcatIn("\"");
 		}
-	
+
 
 		// Now see if next node is an attribute
 
@@ -1532,7 +1542,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 		mp_nextNode = mp_attributeParent;
 
 		// End the element definition
-		if (!m_XPathSelection || (m_XPathMap.hasNode(mp_nextNode))) 
+		if (!m_XPathSelection || (m_XPathMap.hasNode(mp_nextNode)))
 			m_buffer.sbStrcatIn(">");
 
 		m_returnedFromChild = false;
@@ -1550,9 +1560,9 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 	m_bufferLength = m_buffer.sbStrlen();;
 	m_bufferPoint = 0;
-	
+
 	// Firstly, was the last piece of processing because we "came up" from a child node?
-	
+
 	if (m_returnedFromChild) {
 
 		if (mp_nextNode == mp_startNode) {
@@ -1567,9 +1577,9 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 
 			// we have closed off the main mp_doc elt
 			m_firstElementProcessed = true;
-			
+
 		}
-		
+
 	}
 
 	else {
@@ -1580,7 +1590,7 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 		if (next != NULL)
 
 			mp_nextNode = next;
-			
+
 		else
 
 			// No children, so need to close this node off!

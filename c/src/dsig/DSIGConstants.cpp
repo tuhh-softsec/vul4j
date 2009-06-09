@@ -167,6 +167,8 @@ const XMLCh * DSIGConstants::s_unicodeStrURIXSLT;
 const XMLCh * DSIGConstants::s_unicodeStrURIENVELOPE;
 const XMLCh * DSIGConstants::s_unicodeStrURIC14N_NOC;
 const XMLCh * DSIGConstants::s_unicodeStrURIC14N_COM;
+const XMLCh * DSIGConstants::s_unicodeStrURIC14N11_NOC;
+const XMLCh * DSIGConstants::s_unicodeStrURIC14N11_COM;
 const XMLCh * DSIGConstants::s_unicodeStrURIEXC_C14N_NOC;
 const XMLCh * DSIGConstants::s_unicodeStrURIEXC_C14N_COM;
 const XMLCh * DSIGConstants::s_unicodeStrURIDSA_SHA1;
@@ -241,6 +243,8 @@ void DSIGConstants::create() {
 	s_unicodeStrURIENVELOPE = XMLString::transcode(URI_ID_ENVELOPE);
 	s_unicodeStrURIC14N_NOC = XMLString::transcode(URI_ID_C14N_NOC);
 	s_unicodeStrURIC14N_COM = XMLString::transcode(URI_ID_C14N_COM);
+    s_unicodeStrURIC14N11_NOC = XMLString::transcode(URI_ID_C14N11_NOC);
+    s_unicodeStrURIC14N11_COM = XMLString::transcode(URI_ID_C14N11_COM);
 	s_unicodeStrURIEXC_C14N_NOC = XMLString::transcode(URI_ID_EXC_C14N_NOC);
 	s_unicodeStrURIEXC_C14N_COM = XMLString::transcode(URI_ID_EXC_C14N_COM);
 	s_unicodeStrURIDSA_SHA1 = XMLString::transcode(URI_ID_DSA_SHA1);
@@ -311,6 +315,8 @@ void DSIGConstants::destroy() {
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIENVELOPE);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIC14N_NOC);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIC14N_COM);
+    XSEC_RELEASE_XMLCH(s_unicodeStrURIC14N11_NOC);
+    XSEC_RELEASE_XMLCH(s_unicodeStrURIC14N11_COM);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIEXC_C14N_NOC);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIEXC_C14N_COM);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIDSA_SHA1);
@@ -343,7 +349,7 @@ void DSIGConstants::destroy() {
 
 	XSEC_RELEASE_XMLCH(s_unicodeStrPROVOpenSSL);
 	XSEC_RELEASE_XMLCH(s_unicodeStrPROVWinCAPI);
-  XSEC_RELEASE_XMLCH(s_unicodeStrPROVNSS);
+	XSEC_RELEASE_XMLCH(s_unicodeStrPROVNSS);
 
 }
 
@@ -514,6 +520,12 @@ bool XSECmapURIToCanonicalizationMethod(const XMLCh * URI,
 	else if (strEquals(URI, DSIGConstants::s_unicodeStrURIEXC_C14N_NOC)) {
 		cm = CANON_C14NE_NOC;
 	}
+	else if (strEquals(URI, DSIGConstants::s_unicodeStrURIC14N11_NOC)) {
+        cm = CANON_C14N11_NOC;
+    }
+    else if (strEquals(URI, DSIGConstants::s_unicodeStrURIC14N11_COM)) {
+        cm = CANON_C14N11_COM;
+    }
 
 	else {
 

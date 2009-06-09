@@ -46,7 +46,7 @@ DSIGTransform(env, node) {
 	mp_inclNSNode = NULL;
 	mp_inclNSStr = NULL;
 }
-	
+
 
 DSIGTransformC14n::DSIGTransformC14n(const XSECEnv * env) :
 DSIGTransform(env) {
@@ -56,18 +56,19 @@ DSIGTransform(env) {
 	mp_inclNSStr = NULL;
 
 }
-		  
+
 DSIGTransformC14n::~DSIGTransformC14n() {};
 
 // --------------------------------------------------------------------------------
 //           Interface Methods
 // --------------------------------------------------------------------------------
-	
+
 transformType DSIGTransformC14n::getTransformType() {
 
 	if ((m_cMethod == CANON_C14NE_NOC) || (m_cMethod == CANON_C14NE_COM))
 		return TRANSFORM_EXC_C14N;
-
+	else if ((m_cMethod == CANON_C14N11_NOC) || (m_cMethod == CANON_C14N11_COM))
+        return TRANSFORM_C14N11;
 	return TRANSFORM_C14N;
 
 }
@@ -75,17 +76,19 @@ transformType DSIGTransformC14n::getTransformType() {
 void DSIGTransformC14n::appendTransformer(TXFMChain * input) {
 
 	TXFMC14n * c;
-	
+
 	XSECnew(c, TXFMC14n(mp_txfmNode->getOwnerDocument()));
 	input->appendTxfm(c);
 
 	switch (m_cMethod) {
 
 	case (CANON_C14N_NOC) :
+	case (CANON_C14N11_NOC) :
 	case (CANON_C14NE_NOC) :
 		c->stripComments();
 		break;
 	case (CANON_C14N_COM) :
+    case (CANON_C14N11_COM) :
 	case (CANON_C14NE_COM) :
 		c->activateComments();
 		break;
@@ -93,7 +96,7 @@ void DSIGTransformC14n::appendTransformer(TXFMChain * input) {
 		break;
 	}
 
-	// Check for exclusive
+	// Check for exclusive and 1.1
 	if (m_cMethod == CANON_C14NE_COM || m_cMethod == CANON_C14NE_NOC) {
 
 		if (mp_inclNSStr == NULL) {
@@ -110,6 +113,9 @@ void DSIGTransformC14n::appendTransformer(TXFMChain * input) {
 		}
 
 	}
+	else if (m_cMethod == CANON_C14N11_COM || m_cMethod == CANON_C14N11_NOC) {
+	    c->setInclusive11();
+	}
 
 }
 
@@ -121,7 +127,7 @@ DOMElement * DSIGTransformC14n::createBlankTransform(DOMDocument * parentDoc) {
 	DOMDocument *doc = mp_env->getParentDocument();
 
 	prefix = mp_env->getDSIGNSPrefix();
-	
+
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
 	ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
@@ -151,7 +157,7 @@ void DSIGTransformC14n::load(void) {
 
 	atts = mp_txfmNode->getAttributes();
 
-	if (atts == NULL || 
+	if (atts == NULL ||
 		((att = atts->getNamedItem(DSIGConstants::s_unicodeStrAlgorithm)) == NULL)) {
 
 		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
@@ -167,6 +173,12 @@ void DSIGTransformC14n::load(void) {
 	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIC14N_NOC)) {
 		m_cMethod = CANON_C14N_NOC;
 	}
+	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIC14N11_COM)) {
+        m_cMethod = CANON_C14N11_COM;
+    }
+    else if (strEquals(uri, DSIGConstants::s_unicodeStrURIC14N11_NOC)) {
+        m_cMethod = CANON_C14N11_NOC;
+    }
 	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIEXC_C14N_COM)) {
 		m_cMethod = CANON_C14NE_COM;
 	}
@@ -185,7 +197,7 @@ void DSIGTransformC14n::load(void) {
 		// Exclusive, so there may be an InclusiveNamespaces node
 
 		DOMNode * inclNSNode = mp_txfmNode->getFirstChild();
-		
+
 		while (inclNSNode != NULL && (inclNSNode->getNodeType() != DOMNode::ELEMENT_NODE ||
 			!strEquals(getECLocalName(inclNSNode), "InclusiveNamespaces")))
 				inclNSNode = inclNSNode->getNextSibling();
@@ -226,10 +238,10 @@ void DSIGTransformC14n::setCanonicalizationMethod(canonicalizationMethod method)
 
 	}
 
-	if (method == CANON_C14N_NOC || method == CANON_C14N_COM) {
+	if (method == CANON_C14N_NOC || method == CANON_C14N_COM || method == CANON_C14N11_NOC || method == CANON_C14N11_COM) {
 
 		if (m_cMethod == CANON_C14NE_NOC || m_cMethod == CANON_C14NE_COM) {
-	
+
 			if (mp_inclNSNode != 0) {
 
 				mp_txfmNode->removeChild(mp_inclNSNode);
@@ -288,8 +300,8 @@ void DSIGTransformC14n::createInclusiveNamespaceNode(void) {
 		str.sbXMLChCat(prefix);
 	}
 
-	mp_inclNSNode->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
-							str.rawXMLChBuffer(), 
+	mp_inclNSNode->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS,
+							str.rawXMLChBuffer(),
 							DSIGConstants::s_unicodeStrURIEC);
 }
 

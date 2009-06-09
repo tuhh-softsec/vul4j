@@ -98,7 +98,7 @@ public:
 	// Constructors
 	XSECC14n20010315();
 	XSECC14n20010315(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newDoc);
-	XSECC14n20010315(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newDoc, 
+	XSECC14n20010315(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newDoc,
 					 XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *newStartNode);
 	virtual ~XSECC14n20010315();
 
@@ -115,6 +115,9 @@ public:
 	void setExclusive(void);
 	void setExclusive(char * xmlnsList);
 
+	// Inclusive 1.1 processing
+    void setInclusive11(void);
+
 	// Namespace processing
 	void setUseNamespaceStack(bool flag) {m_useNamespaceStack = flag;}
 
@@ -129,7 +132,7 @@ protected:
 private:
 
 	void init();
-	bool checkRenderNameSpaceNode(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *e, 
+	bool checkRenderNameSpaceNode(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *e,
 								  XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *a);
 	void stackInit(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
 
@@ -158,6 +161,9 @@ private:
 	CharListVectorType		m_exclNSList;
 	bool					m_exclusive;
 	bool					m_exclusiveDefault;
+
+	// For Inclusive 1.1 support
+	bool                    m_incl11;
 
 	// How do we handle namespaces?
 	// Use the namespace stack if name space expansion has not been run on the document.
