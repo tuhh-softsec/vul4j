@@ -21,7 +21,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = m4/acx_pthread.m4 Projects xml-security-c.spec \
     src/framework/resource.h \
-    src/framework/version.rc
+    src/framework/version.rc \
+    src/tools/threadTest/threadtest.cpp
 
 dist-hook:
 	rm -rf `find $(distdir)/Projects -name .svn`
