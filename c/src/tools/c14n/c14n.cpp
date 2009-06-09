@@ -56,8 +56,10 @@ using std::cerr;
 
 void printUsage(void) {
 
-	cerr << "\nUsage: c14n [-n] [-id ID] <input file name>\n";
+	cerr << "\nUsage: c14n [-n] [-x] [-1.1] [-id ID] <input file name>\n";
 	cerr << "       -n = No comments\n";
+    cerr << "       -1.1 = Use c14n 1.1\n";
+    cerr << "       -x = Use exclusive c14n\n";
 	cerr << "       -id ID = References node to canonicalize by ID\n\n";
 
 }
@@ -65,7 +67,9 @@ void printUsage(void) {
 int main(int argc, char **argv) {
 
     const char* id = NULL;
-	bool printComments = true;		// By default print comments
+	bool printComments = true;
+    bool exclusive = false;
+    bool inclusive11 = false;
 
 	// Check arguments
 
@@ -79,6 +83,10 @@ int main(int argc, char **argv) {
 
 			if (!strcmp(argv[i], "-n") || !strcmp(argv[i], "-N"))
 				printComments = false;
+            else if (!strcmp(argv[i], "-x") || !strcmp(argv[i], "-X"))
+                exclusive = true;
+            else if (!strcmp(argv[i], "-1.1"))
+                inclusive11 = true;
             else if (!strcmp(argv[i], "-id") && argc > i + 1)
                 id = argv[++i];
 			else {
@@ -175,6 +183,10 @@ int main(int argc, char **argv) {
         canon = new XSECC14n20010315(theDOM);
 	canon->setCommentsProcessing(printComments);
 	canon->setUseNamespaceStack(true);
+    if (inclusive11)
+        canon->setInclusive11();
+    else if (exclusive)
+        canon->setExclusive();
 
 	// canon->XPathSelectNodes("(/descendant-or-self::node() | /descendant-or-self::node()/attribute::* | /descendant-or-self::node()/namespace::*)[ self::ietf:e1 or (parent::ietf:e1 and not(self::text() or self::e2)) or count (id(\"E3\") | ancestor-or-self::node()) = count (ancestor-or-self::node())]");
 
