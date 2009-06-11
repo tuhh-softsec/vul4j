@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.URL;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.deployer.ContextDeployer;
 import org.mortbay.jetty.deployer.WebAppDeployer;
 import org.mortbay.jetty.handler.ContextHandlerCollection;
 import org.mortbay.jetty.handler.DefaultHandler;
