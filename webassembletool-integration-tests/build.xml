@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="webassembletool" default="default" basedir=".">
+	<target name="default">
+		<copy todir="target/webapps" failonerror="true" file="../webassembletool-app-aggregated1/target/webassembletool-app-aggregated1.war" />
+		<copy todir="target/webapps" failonerror="true" file="../webassembletool-app-aggregated2/target/webassembletool-app-aggregated2.war" />
+		<copy todir="target/webapps" failonerror="true" file="../webassembletool-app-aggregator/target/webassembletool-app-aggregator.war" />
+		<copy todir="target/webapps" failonerror="true" file="../webassembletool-app-master/target/webassembletool-app-master.war" />
+		<copy todir="target/webapps" failonerror="true" file="../webassembletool-app-provider/target/webassembletool-app-provider.war" />
+	</target>
+</project>

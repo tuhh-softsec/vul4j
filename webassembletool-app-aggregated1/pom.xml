@@ -1,0 +1,17 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.sourceforge.webassembletool</groupId>
+	<artifactId>webassembletool-app-aggregated1</artifactId>
+	<packaging>war</packaging>
+	<name>webassembletool-app-aggregated1</name>
+	<version>2.2_SNAPSHOT</version>
+	<parent>
+		<artifactId>webassembletool-pom</artifactId>
+		<groupId>net.sourceforge.webassembletool</groupId>
+		<version>2.2_SNAPSHOT</version>
+	</parent>
+	<build>
+		<finalName>webassembletool-app-aggregated1</finalName>
+	</build>
+</project>

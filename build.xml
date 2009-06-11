@@ -1,60 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="webassembletool" default="release" basedir=".">
-	<loadproperties srcfile="build.properties" />
 	<target name="release">
-		<exec executable="${mvn}" failonerror="true">
-			<arg value="clean" />
-			<arg value="compile" />
-			<arg value="test" />
-		</exec>
-		<tstamp />
-		<delete failonerror="false">
-			<fileset file="target/webassembletool*.jar" />
-			<fileset dir="target/samples" />
-		</delete>
-		<jar destfile="target/webassembletool_${current.version}.jar" basedir="target/classes" includes="net/">
-			<metainf file="tld/webassembletool.tld" />
-			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
-				<section name="net/webassembletool">
-					<attribute name="Package-Title" value="Website Assembling Toolkit" />
-					<attribute name="Implementation-Version" value="${current.version} ${TODAY}" />
-				</section>
-			</manifest>
-		</jar>
-		<mkdir dir="target/samples" />
-		<war destfile="target/samples/aggregated1.war" basedir="target/webapps/aggregated1" needxmlfile="false" />
-		<war destfile="target/samples/aggregated2.war" basedir="target/webapps/aggregated2" needxmlfile="false" />
-		<war destfile="target/samples/aggregator.war" basedir="target/webapps/aggregator" includes="**/driver.properties, **/web.xml, **/*.jar">
-			<lib file="target/webassembletool_${current.version}.jar" />
-		</war>
-		<war destfile="target/samples/cas.war" basedir="target/webapps/cas" />
-		<war destfile="target/samples/casified_agregated1.war" basedir="target/webapps/casified_agregated1" />
-		<war destfile="target/samples/casified_agregated2.war" basedir="target/webapps/casified_agregated2" />
-		<war destfile="target/samples/casified_agregator.war" basedir="target/webapps/casified_agregator" includes="**/driver.properties, **/web.xml, **/*.jar, **/*.jsp">
-			<lib file="target/webassembletool_${current.version}.jar" />
-		</war>
-		<war destfile="target/samples/master.war" basedir="target/webapps/master" includes="**/driver.properties, **/web.xml, **/*.jar, **/*.jsp, **/*.xslt">
-			<lib file="target/webassembletool_${current.version}.jar" />
-		</war>
-		<war destfile="target/samples/provider.war" basedir="target/webapps/provider" includes="**/driver.properties, **/*.xml, **/*.jar, images/">
-			<lib file="target/webassembletool_${current.version}.jar" />
-		</war>
-		<zip destfile="target/webassembletool_${current.version}.zip">
-			<fileset dir="." includes="src/, pom.xml" />
-			<fileset dir="target" includes="samples/, webassembletool_${current.version}.jar" />
-		</zip>
+		<delete dir="target/tmp/" />
+		<copy todir="target/tmp/bin" flatten="true">
+			<fileset dir="." includes="*/target/*.jar" excludes="*inegration*" />
+		</copy>
+		<copy todir="target/tmp/webapps" flatten="true">
+			<fileset dir="." includes="*/target/*.war" />
+		</copy>
+		<copy todir="target/tmp/src">
+			<fileset dir="." includes="*/src/"  />
+		</copy>
 	</target>
-	<target name="run">
-		<java fork="true" classname="net.webassembletool.test.jetty.JettyRunner" >
-			<classpath path="target/test-classes">
-				<fileset dir="target/dependency/test">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-			<arg value="target/webapps"/>
-			<arg value="8080"/>
-		</java>
-	</target>
-
 </project>
