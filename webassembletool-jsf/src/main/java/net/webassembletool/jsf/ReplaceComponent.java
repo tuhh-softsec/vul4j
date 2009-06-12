@@ -4,10 +4,6 @@ import java.io.IOException;
 
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-
-import org.apache.myfaces.custom.buffer.HtmlBufferResponseWriterWrapper;
-import org.apache.myfaces.renderkit.RendererUtils;
 
 public class ReplaceComponent extends UIComponentBase {
 	private String expression;
@@ -15,13 +11,7 @@ public class ReplaceComponent extends UIComponentBase {
 
 	@Override
 	public void encodeChildren(FacesContext context) throws IOException {
-		ResponseWriter initialWriter = context.getResponseWriter();
-		ResponseWriter newWriter = HtmlBufferResponseWriterWrapper
-				.getInstance(initialWriter);
-		context.setResponseWriter(newWriter);
-		RendererUtils.renderChildren(context, this);
-		value = newWriter.toString();
-		context.setResponseWriter(initialWriter);
+		value = UIComponentUtils.renderChildrenToString(context, this);
 	}
 
 	public String getValue() {

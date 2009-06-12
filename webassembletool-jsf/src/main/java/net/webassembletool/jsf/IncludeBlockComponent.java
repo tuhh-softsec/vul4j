@@ -15,8 +15,6 @@ import net.webassembletool.DriverFactory;
 import net.webassembletool.RenderingException;
 import net.webassembletool.taglib.ReplaceableTag;
 
-import org.apache.myfaces.renderkit.RendererUtils;
-
 public class IncludeBlockComponent extends UIComponentBase implements
 		ReplaceableTag {
 	private String name;
@@ -81,7 +79,7 @@ public class IncludeBlockComponent extends UIComponentBase implements
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()) {
 			UIComponent child = (UIComponent) it.next();
-			RendererUtils.renderChild(context, child);
+			UIComponentUtils.renderChild(context, child);
 			if (child instanceof ReplaceComponent) {
 				ReplaceComponent rc = (ReplaceComponent) child;
 				replaceRules.put(rc.getExpression(), rc.getValue());
