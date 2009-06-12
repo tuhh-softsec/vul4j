@@ -2,7 +2,6 @@ package net.webassembletool.parse;
 
 import java.util.List;
 
-import net.webassembletool.AggregationSyntaxException;
 
 /**
  * Implementations are intended to parse retrived content into

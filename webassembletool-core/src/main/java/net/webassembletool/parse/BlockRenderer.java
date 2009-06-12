@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.RetrieveException;
-import net.webassembletool.StringUtils;
 import net.webassembletool.output.StringOutput;
 
 import org.apache.commons.logging.Log;

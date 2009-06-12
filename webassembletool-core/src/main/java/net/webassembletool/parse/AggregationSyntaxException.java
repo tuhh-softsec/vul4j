@@ -1,4 +1,6 @@
-package net.webassembletool;
+package net.webassembletool.parse;
+
+import net.webassembletool.RenderingException;
 
 /**
  * Exception thrown when an HTML document contains WAT tags with invalid

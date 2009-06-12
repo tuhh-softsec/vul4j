@@ -1,4 +1,4 @@
-package net.webassembletool;
+package net.webassembletool.parse;
 
 import java.util.Map;
 import java.util.Map.Entry;

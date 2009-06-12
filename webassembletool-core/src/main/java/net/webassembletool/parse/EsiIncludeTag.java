@@ -1,6 +1,5 @@
 package net.webassembletool.parse;
 
-import net.webassembletool.AggregationSyntaxException;
 import net.webassembletool.parse.Tag.Template;
 
 class EsiIncludeTag {

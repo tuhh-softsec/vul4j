@@ -3,7 +3,6 @@ package net.webassembletool.parse;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.webassembletool.AggregationSyntaxException;
 import net.webassembletool.parse.Tag.Template;
 
 /**

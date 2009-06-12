@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.webassembletool.AggregationSyntaxException;
 import net.webassembletool.Driver;
 import net.webassembletool.RenderingException;
 import net.webassembletool.RetrieveException;

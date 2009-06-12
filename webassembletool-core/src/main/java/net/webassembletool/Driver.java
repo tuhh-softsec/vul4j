@@ -9,8 +9,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
 
 import net.webassembletool.cache.Cache;
 import net.webassembletool.cache.MemoryOutput;
@@ -133,18 +131,16 @@ public class Driver {
      * @throws RenderingException
      *             If an Exception occurs while retrieving the block
      */
-    public void renderXml(String source, String xpath, String template, Writer out, HttpServletRequest originalRequest, ServletContext ctx) throws IOException, RenderingException {
-        RequestContext target = new RequestContext(this, source, null, originalRequest);
-        StringOutput stringOutput = getResourceAsString(target);
-        try {
-            Renderer renderer = XsltRenderer.builder().xpath(xpath).template(template, ctx).result();
-            renderer.render(stringOutput, out, null);
-        } catch (XPathExpressionException e) {
-            throw new ProcessingFailedException("failed to compile XPath expression", e);
-        } catch (TransformerConfigurationException e) {
-            throw new ProcessingFailedException("failed to create XSLT template", e);
-        }
-    }
+	public void renderXml(String source, String xpath, String template,
+			Writer out, HttpServletRequest originalRequest, ServletContext ctx)
+			throws IOException, RenderingException {
+		RequestContext target = new RequestContext(this, source, null,
+				originalRequest);
+		StringOutput stringOutput = getResourceAsString(target);
+		Renderer renderer = XsltRenderer.builder().xpath(xpath).template(
+				template, ctx).result();
+		renderer.render(stringOutput, out, null);
+	}
 
     /**
      * Retrieves a block from the provider application and writes it to a Writer. Block can be defined in the provider application using HTML comments.<br />

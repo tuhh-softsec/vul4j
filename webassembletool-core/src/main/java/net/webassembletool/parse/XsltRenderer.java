@@ -24,7 +24,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import net.webassembletool.ProcessingFailedException;
 import net.webassembletool.RenderingException;
 import net.webassembletool.RetrieveException;
 import net.webassembletool.output.StringOutput;
@@ -119,11 +118,14 @@ public class XsltRenderer implements Renderer {
             // default constructor
         }
 
-        public XsltRendererBuilder xpath(String xpath)
-                throws XPathExpressionException {
+        public XsltRendererBuilder xpath(String xpath) throws ProcessingFailedException {
             if (xpath != null) {
                 XPath xpathObj = XPathFactory.newInstance().newXPath();
-                expr = xpathObj.compile(xpath);
+                try {
+					expr = xpathObj.compile(xpath);
+				} catch (XPathExpressionException e) {
+		            throw new ProcessingFailedException("failed to compile XPath expression", e);
+				}
             } else {
                 expr = null;
             }
@@ -131,15 +133,19 @@ public class XsltRenderer implements Renderer {
             return this;
         }
 
-        public XsltRendererBuilder template(String template, ServletContext ctx)
-                throws TransformerConfigurationException, IOException {
+        public XsltRendererBuilder template(String template, ServletContext ctx) throws IOException, ProcessingFailedException
+                 {
             TransformerFactory tFactory = TransformerFactory.newInstance();
             if (template != null) {
                 InputStream templateStream = ctx.getResourceAsStream(template);
                 try {
-                    transformer = tFactory.newTransformer(new StreamSource(
-                            templateStream));
-                } finally {
+                    try {
+						transformer = tFactory.newTransformer(new StreamSource(
+						        templateStream));
+                    } catch (TransformerConfigurationException e) {
+                        throw new ProcessingFailedException("failed to create XSLT template", e);
+                    }
+               } finally {
                     templateStream.close();
                 }
             } else {

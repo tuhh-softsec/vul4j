@@ -13,7 +13,6 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
-import net.webassembletool.AggregationSyntaxException;
 import net.webassembletool.Driver;
 import net.webassembletool.RenderingException;
 

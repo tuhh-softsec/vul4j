@@ -8,7 +8,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
-import net.webassembletool.AggregationSyntaxException;
 import net.webassembletool.RenderingException;
 import net.webassembletool.parse.AggregateRendererRegionParser.Result;
 

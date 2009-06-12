@@ -1,4 +1,6 @@
-package net.webassembletool;
+package net.webassembletool.parse;
+
+import net.webassembletool.RenderingException;
 
 /**
  * Indicates that processing during rendering failed due to some reason
