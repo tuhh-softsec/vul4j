@@ -48,20 +48,20 @@
         <attribute>
             <name>addQuery</name>
             <required>false</required>
-            <type>boolean</type>
             <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
         <attribute>
             <name>displayErrorPage</name>
             <required>false</required>
-            <type>boolean</type>
             <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
         <attribute>
             <name>parseAbsoluteUrl</name>
             <required>false</required>
-            <type>boolean</type>
             <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
     </tag>
 	<tag>
@@ -139,8 +139,8 @@
 		<attribute>
 			<name>errorCode</name>
 			<required>true</required>
-			<type>java.lang.Integer</type>
 			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Integer</type>
 		</attribute>
 	</tag>
 	<tag>
