@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-import net.webassembletool.test.jetty.JettyRunner;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -79,12 +78,6 @@ public abstract class HttpTestCase extends TestCase {
         if (!referenceFilesPath.endsWith(File.separator))
             referenceFilesPath += File.separator;
         httpClient = new HttpClient();
-        try {
-            JettyRunner.startJetty();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -92,8 +85,7 @@ public abstract class HttpTestCase extends TestCase {
         httpMethod = null;
         ((SimpleHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
         httpClient = null;
-        JettyRunner.stopJetty();
-    }
+     }
 
     public void doGet(String relativeURL, Map<String, String> headers) throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);

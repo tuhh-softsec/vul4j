@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure id="Server" class="org.mortbay.jetty.Server">
+	<Set name="handler">
+		<New id="Handlers" class="org.mortbay.jetty.handler.HandlerCollection">
+			<Set name="handlers">
+				<Array type="org.mortbay.jetty.Handler">
+					<Item>
+						<New class="org.mortbay.jetty.webapp.WebAppContext">
+							<Set name="contextPath">/webassembletool-app-master</Set>
+							<Set name="war">../webassembletool-app-master/target/webassembletool-app-master.war</Set>
+						</New>
+					</Item>
+					<Item>
+						<New class="org.mortbay.jetty.webapp.WebAppContext">
+							<Set name="contextPath">/webassembletool-app-provider</Set>
+							<Set name="war">../webassembletool-app-provider/target/webassembletool-app-provider.war</Set>
+						</New>
+					</Item>
+					<Item>
+						<New class="org.mortbay.jetty.webapp.WebAppContext">
+							<Set name="contextPath">/webassembletool-app-aggregator</Set>
+							<Set name="war">../webassembletool-app-aggregator/target/webassembletool-app-aggregator.war</Set>
+						</New>
+					</Item>
+					<Item>
+						<New class="org.mortbay.jetty.webapp.WebAppContext">
+							<Set name="contextPath">/webassembletool-app-aggregated1</Set>
+							<Set name="war">../webassembletool-app-aggregated1/target/webassembletool-app-aggregated1.war</Set>
+						</New>
+					</Item>
+					<Item>
+						<New class="org.mortbay.jetty.webapp.WebAppContext">
+							<Set name="contextPath">/webassembletool-app-aggregated2</Set>
+							<Set name="war">../webassembletool-app-aggregated2/target/webassembletool-app-aggregated2.war</Set>
+						</New>
+					</Item>
+				</Array>
+			</Set>
+		</New>
+	</Set>
+</Configure>  

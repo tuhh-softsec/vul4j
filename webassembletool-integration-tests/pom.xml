@@ -12,69 +12,9 @@
 	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>6.1.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl104-over-slf4j</artifactId>
-			<version>1.3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>tomcat</groupId>
-			<artifactId>jasper-runtime</artifactId>
-			<version>5.5.15</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>tomcat</groupId>
-			<artifactId>jasper-compiler</artifactId>
-			<version>5.5.15</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>tomcat</groupId>
-			<artifactId>jasper-compiler-jdt</artifactId>
-			<version>5.5.15</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.6.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xmlParserAPIs</artifactId>
-			<version>2.6.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>2.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<version>6.1.12</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -84,57 +24,55 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.sourceforge.webassembletool</groupId>
-			<artifactId>webassembletool-app-master</artifactId>
-			<version>2.2_SNAPSHOT</version>
-			<type>war</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.webassembletool</groupId>
-			<artifactId>webassembletool-app-provider</artifactId>
-			<version>2.2_SNAPSHOT</version>
-			<type>war</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.webassembletool</groupId>
-			<artifactId>webassembletool-app-aggregator</artifactId>
-			<version>2.2_SNAPSHOT</version>
-			<type>war</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.webassembletool</groupId>
-			<artifactId>webassembletool-app-aggregated1</artifactId>
-			<version>2.2_SNAPSHOT</version>
-			<type>war</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.webassembletool</groupId>
-			<artifactId>webassembletool-app-aggregated2</artifactId>
-			<version>2.2_SNAPSHOT</version>
-			<type>war</type>
-			<scope>test</scope>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.12</version>
 				<executions>
 					<execution>
-						<id>copy-webapps</id>
-						<phase>process-test-resources</phase>
+						<id>jetty-start</id>
+						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks name="copy">
-								<ant />
-							</tasks>
+							<daemon>true</daemon>
+							<jettyConfig>jetty.xml</jettyConfig>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jetty-stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skipTests>false</skipTests>
 						</configuration>
 					</execution>
 				</executions>
