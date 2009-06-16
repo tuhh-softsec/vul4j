@@ -41,7 +41,7 @@ limitations under the License.
 		All distributions are provided with signature <em>.asc</em> files.
 		These contain PGP signatures for the related distribution.
 		You should validate these using the keys found in the
-		<jump href="http://www.apache.org/dist/xml/security/KEYS">
+		<jump href="http://santuario.apache.org/dist/KEYS">
 		  key file</jump> downloaded from the Apache site.
 	  </p>
 	  <p/>
