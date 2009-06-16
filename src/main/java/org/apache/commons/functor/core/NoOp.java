@@ -98,4 +98,24 @@ public final class NoOp implements Procedure, UnaryProcedure<Object>, BinaryProc
         return INSTANCE;
     }
 
+    /**
+     * Get a typed NoOp {@link UnaryProcedure}.
+     * @param <A> type
+     * @return <code>UnaryProcedure&lt;A&gt;</code>
+     */
+    @SuppressWarnings("unchecked")
+    public static <A> UnaryProcedure<A> unaryInstance() {
+        return (UnaryProcedure<A>) INSTANCE;
+    }
+
+    /**
+     * Get a typed NoOp {@link BinaryProcedure}.
+     * @param <L> left type
+     * @param <R> right type
+     * @return <code>BinaryProcedure&lt;L, R&gt;</code>
+     */
+    @SuppressWarnings("unchecked")
+    public static <L, R> BinaryProcedure<L, R> binaryInstance() {
+        return (BinaryProcedure<L, R>) INSTANCE;
+    }
 }
