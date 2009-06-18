@@ -8,49 +8,26 @@
 <title>Exemple d'inclusion d'un bloc</title>
 </head>
 <body style="background-color: yellow">
-<p>Page servie par l'application</p>
 <p>Fragment below was retrieved from 'provider' source using following code:<br />
-<code>&lt;assemble:include-xml source="xml-page.xml" /&gt;</code><br />
-<div style="border: 1px solid red">
+<code>&lt;assemble:include-xml source="xml-page.xml" xpath="//DIV/DIV" /&gt;</code><br />
+<DIV style="background-color: aqua">
 
-<div style="background-color: aqua">
+<UL>
 
-<ul>
+<LI>Item 1</LI>
 
-<li>Item 1</li>
+<LI>Item 2</LI>
 
-<li>Item 2</li>
+<LI>Item 3</LI>
 
-<li>Item 3</li>
+</UL>
 
-</ul>
-
-</div>
-
-</div>
-
-<b>NB</b>: You should see bulleted list with aqua background color and red border.</p>
-
-<p>Fragment below was retrieved from 'provider' source using following code:<br />
-<code>&lt;assemble:include-xml source="xml-page.xml" xpath="/div/div" /&gt;</code><br />
-<div style="background-color: aqua">
-
-<ul>
-
-<li>Item 1</li>
-
-<li>Item 2</li>
-
-<li>Item 3</li>
-
-</ul>
-
-</div>
+</DIV>
 
 <b>NB</b>: You should see bulleted list with aqua background color without any border.</p>
 
 <p>Fragment below was retrieved from 'provider' source using following code:<br />
-<code>&lt;assemble:include-xml source="xml-page.xml" xpath="/div/div/ul" template="/WEB-INF/xml-template.xslt" /&gt;</code><br />
+<code>&lt;assemble:include-xml source="xml-page.xml" xpath="//DIV/DIV/UL" template="/WEB-INF/xml-template.xslt" /&gt;</code><br />
 <div style="background-color: blue">
 <ol>
 <li>updated: Item 1</li>
