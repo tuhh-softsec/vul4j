@@ -1,4 +1,4 @@
-package net.webassembletool.util;
+package net.webassembletool.output;
 
 import net.webassembletool.output.StringOutput;
 
@@ -9,7 +9,7 @@ public final class MockStringOutput extends StringOutput {
         this.content = content;
     }
 
-    @Override
+	@Override
     public String toString() {
         return content;
     }

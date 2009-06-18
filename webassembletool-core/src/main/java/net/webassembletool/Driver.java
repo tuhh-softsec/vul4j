@@ -131,14 +131,13 @@ public class Driver {
      * @throws RenderingException
      *             If an Exception occurs while retrieving the block
      */
-	public void renderXml(String source, String xpath, String template,
+	public final void renderXml(String source, String xpath, String template,
 			Writer out, HttpServletRequest originalRequest, ServletContext ctx)
 			throws IOException, RenderingException {
 		RequestContext target = new RequestContext(this, source, null,
 				originalRequest);
 		StringOutput stringOutput = getResourceAsString(target);
-		Renderer renderer = XsltRenderer.builder().xpath(xpath).template(
-				template, ctx).result();
+		Renderer renderer = new XsltRenderer(xpath,	template, ctx);
 		renderer.render(stringOutput, out, null);
 	}
 

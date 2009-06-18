@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 import net.webassembletool.RetrieveException;
+import net.webassembletool.output.MockStringOutput;
 import net.webassembletool.output.StringOutput;
-import net.webassembletool.util.MockStringOutput;
 
 public class TemplateRendererTest extends TestCase {
 

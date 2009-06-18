@@ -82,5 +82,10 @@
 			<version>2.5</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.12</version>
+		</dependency>
 	</dependencies>
 </project>

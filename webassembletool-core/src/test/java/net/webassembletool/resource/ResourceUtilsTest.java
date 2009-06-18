@@ -2,7 +2,7 @@ package net.webassembletool.resource;
 
 import junit.framework.TestCase;
 
-public class TestResourceUtils extends TestCase {
+public class ResourceUtilsTest extends TestCase {
 
     public void testRemoveJsessionId() {
         String expected[] = { "/base/path/?param=pvalue", "/base/path/",
