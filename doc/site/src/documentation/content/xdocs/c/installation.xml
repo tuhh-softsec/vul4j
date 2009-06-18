@@ -32,8 +32,8 @@ limitations under the License.
 		is also required if XPath and/or XSLT transformations are required.
       </p>
 	  <p>
-		Version 1.4.0 of the library has been tested with version 2.8 
-        of Xerces-C, and Version 0.9.7 (and above) of OpenSSL.
+		Version 1.5.0 of the library has been tested with versions 3.0.1 and
+        2.8.0 of Xerces-C, and Version 0.9.7 (and above) of OpenSSL.
 	  </p>
     </section>
 
@@ -144,9 +144,10 @@ limitations under the License.
 	  <title>Building for Windows</title>
 	  <p>
 		XML-Security-C has been built and tested on Microsoft's Visual C++ 6.0
-		and 2005 compilers. The following subsections briefly describe how to 
+		and 2005/2008 compilers. The following subsections briefly describe how to 
 		rebuild the library, tools and samples using the supplied workspaces.
-		The specific information is for VC6, but the process for 2005 is similar.
+		The specific information is for VC6, but the process for 2005 or 2008
+        is similar.
 	  </p>
 	  <note>
 		As of version 0.2, the library can be built without OpenSSL on a

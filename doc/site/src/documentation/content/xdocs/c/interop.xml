@@ -27,7 +27,7 @@ limitations under the License.
     <section> 
       <title>Interoperability</title>
       <p>
-        The C++ library is designed to be fully inter-operable with any
+        The C++ library is designed to be fully interoperable with any
         other implementation of the W3C XML Digital Signature standard, such
         as the Apache XML-Security Java library.
       </p>

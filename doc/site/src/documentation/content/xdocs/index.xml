@@ -23,6 +23,18 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>      
+        <title>June 2009</title>
+    <p>
+      Version 1.5.0 of the C++ library has been released. This is mainly
+          a bugfix release and a port to Xerces 3.x. Incomplete support
+          for XML Canonicalization 1.1 is also added. 
+        </p>
+    <p>
+      Please see <link href="site:changes">changelog</link> for more 
+          information.
+    </p>
+      </section>
+      <section>      
       	<title>June 2008</title>
 	<p>
 	  Version 1.4.2 of the Java library has been released. This is mainly

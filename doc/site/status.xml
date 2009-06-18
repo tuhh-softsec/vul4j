@@ -34,6 +34,31 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
 
+    <release version="C++ 1.5.0" date="June 2009">
+      <action dev="SC" type="update" context="c_rel">
+        Make SHA-1 the implicit default DigestMethod for RSA-OAEP
+        key transport, allowing for interop until broken impls are fixed
+      </action>
+      <action dev="SC" type="fix" context="c_rel">
+        Fix memory leak in OpenSSL RSA/DSA key cloning
+      </action>
+      <action dev="SC" type="add" context="c_rel">
+        Expose KeyInfo extensions via DOM
+      </action>
+      <action dev="SC" type="fix" context="c_rel">
+        Fix c14n to omit standard xmlns:xml declarations
+      </action>
+      <action dev="SC" type="add" context="c_rel">
+        Add partial support for Inclusive C14N 1.1 with regard to xml:id but not xml:base
+      </action>
+      <action dev="SC" type="update" context="c_rel">
+        Finish port to Xerces 3.x and 64-bit API changes
+      </action>
+      <action dev="SC" type="add" context="c_rel">
+        Add VC9 build files
+      </action>
+    </release>
+
     <release version="Java 1.4.2" date="June 2008">    
       <action dev="SM" type="fix" fixes-bug="44999" context="java_general" 
 	due-to="Giedrius Noreikis">
