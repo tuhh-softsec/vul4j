@@ -48,13 +48,6 @@
 							<jettyConfig>jetty.xml</jettyConfig>
 						</configuration>
 					</execution>
-					<execution>
-						<id>jetty-stop</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>
