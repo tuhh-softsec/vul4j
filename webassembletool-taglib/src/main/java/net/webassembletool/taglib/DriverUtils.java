@@ -23,11 +23,6 @@ public class DriverUtils {
         return DriverFactory.getInstance(provider).getBaseURL();
     }
 
-    public final static void renderBlock(String provider, String page, String name, PageContext pageContext, Map<String, String> replaceRules, Map<String, String> parameters) throws JspException,
-            RenderingException {
-        DriverUtils.renderBlock(provider, page, name, pageContext, replaceRules, parameters, false);
-    }
-
     public final static void renderBlock(String provider, String page, String name, PageContext pageContext, Map<String, String> replaceRules, Map<String, String> parameters,
             boolean copyOriginalRequestParameters) throws JspException, RenderingException {
         try {
