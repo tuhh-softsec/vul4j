@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.webassembletool.RequestContext;
-import net.webassembletool.UserContext;
 
 /**
  * Utility class to generate URL and path for Resources
@@ -15,7 +14,6 @@ import net.webassembletool.UserContext;
  */
 public class ResourceUtils {
     private final static String buildQueryString(RequestContext target) {
-        UserContext context = target.getUserContext();
         try {
             StringBuilder queryString = new StringBuilder();
             String charset = target.getOriginalRequest().getCharacterEncoding();
@@ -30,8 +28,6 @@ public class ResourceUtils {
                 // queryString.append(qs).append("&");
                 // remove jsessionid from request if it is present
                 ResourceUtils.removeJsessionId(queryString);
-            if (context != null)
-                ResourceUtils.appendParameters(queryString, charset, context.getParameterMap());
             if (target.getParameters() != null)
                 ResourceUtils.appendParameters(queryString, charset, target.getParameters());
             if (queryString.length() == 0)
@@ -43,7 +39,7 @@ public class ResourceUtils {
     }
 
     /**
-     * Check wether the given content-type value corresponds to "parsable" text. "Parsable" text is actually html/xhtml
+     * Check whether the given content-type value corresponds to "parsable" text. "Parsable" text is actually html/xhtml
      * 
      * @param contentType
      *            the value of http header Content-Type

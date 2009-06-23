@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.RequestContext;
+import net.webassembletool.UserContext;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.resource.Resource;
@@ -57,9 +58,6 @@ public class HttpResource extends Resource {
         PostMethod postMethod = new PostMethod(url);
         postMethod.getParams().setContentCharset(target.getOriginalRequest().getCharacterEncoding());
         Map<String, String> parameters = target.getParameters();
-        if (target.getUserContext() != null)
-            for (Map.Entry<String, String> temp : target.getUserContext().getParameterMap().entrySet())
-                postMethod.addParameter(new NameValuePair(temp.getKey(), temp.getValue()));
         if (parameters != null)
             for (Map.Entry<String, String> temp : parameters.entrySet())
                 postMethod.addParameter(new NameValuePair(temp.getKey(), temp.getValue()));
@@ -131,6 +129,9 @@ public class HttpResource extends Resource {
             httpMethod.setFollowRedirects(false);
         else
             httpMethod.setFollowRedirects(true);
+        UserContext userContext = target.getUserContext();
+		if (userContext != null && userContext.getUser() != null)
+			httpMethod.addRequestHeader("X_REMOTE_USER", userContext.getUser());
     }
 
     public HttpResource(HttpClient httpClient, RequestContext target) {
