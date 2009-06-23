@@ -236,15 +236,11 @@ public class Driver {
      * @throws IOException
      *             If an IOException occurs while rendering the response
      */
-    public final void proxy(String relUrl, HttpServletRequest request, HttpServletResponse response, Map<String, String> parameters, boolean propagateJsessionId) throws IOException {
-        RequestContext requestContext = new RequestContext(this, relUrl, parameters, request, propagateJsessionId);
+    public final void proxy(String relUrl, HttpServletRequest request, HttpServletResponse response, boolean propagateJsessionId) throws IOException {
+        RequestContext requestContext = new RequestContext(this, relUrl, null, request, propagateJsessionId);
         request.setCharacterEncoding(config.getUriEncoding());
         requestContext.setProxyMode(true);
         renderResource(requestContext, new ResponseOutput(request, response));
-    }
-
-    public final void proxy(String relUrl, HttpServletRequest request, HttpServletResponse response, Map<String, String> parameters) throws IOException {
-        proxy(relUrl, request, response, parameters, false);
     }
 
     /**
