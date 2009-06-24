@@ -10,6 +10,6 @@
 <body style="background-color: yellow">
 Nothing should appear bellow as the included block does not work at all
 <br />
-500 Internal Server Error
+500 Internal_Server_Error
 </body>
 </html>

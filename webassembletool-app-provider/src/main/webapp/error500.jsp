@@ -8,7 +8,7 @@
 </head>
 <body style="background-color: aqua">
 <% 
-response.setStatus(500);
+response.setStatus(500, "Internal_Server_Error");
 %>
 This is an error page !
 </body>
