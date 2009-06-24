@@ -28,18 +28,10 @@ public class RequestContext {
     private final Map<String, String> parameters;
     private boolean proxyMode = false;
     private final boolean propagateJsessionId;
-    private boolean originalRequestParameters = false;
+    private boolean copyParameters = false;
 
     public void setProxyMode(boolean proxyMode) {
         this.proxyMode = proxyMode;
-    }
-
-    public RequestContext(Driver driver, String relUrl, Map<String, String> parameters, HttpServletRequest originalRequest) {
-        this(driver, relUrl, parameters, originalRequest, false, false);
-    }
-
-    public RequestContext(Driver driver, String relUrl, Map<String, String> parameters, HttpServletRequest originalRequest, boolean propagateJsessionId) {
-        this(driver, relUrl, parameters, originalRequest, propagateJsessionId, false);
     }
 
     public RequestContext(Driver driver, String relUrl, Map<String, String> parameters, HttpServletRequest originalRequest, boolean propagateJsessionId, boolean copyOriginalRequestParameters) {
@@ -51,7 +43,7 @@ public class RequestContext {
         else
             this.parameters = new HashMap<String, String>();
         this.originalRequest = originalRequest;
-        originalRequestParameters = copyOriginalRequestParameters;
+        copyParameters = copyOriginalRequestParameters;
     }
 
     public String getMethod() {
@@ -98,10 +90,6 @@ public class RequestContext {
     }
 
     public boolean isOriginalRequestParameters() {
-        return originalRequestParameters;
-    }
-
-    public void setOriginalRequestParameters(boolean originalRequestParameters) {
-        this.originalRequestParameters = originalRequestParameters;
+        return copyParameters;
     }
 }

@@ -67,7 +67,8 @@ public class IncludeBlockComponent extends UIComponentBase implements
 				.getExternalContext().getRequest();
 		try {
 			DriverFactory.getInstance(getProvider()).renderBlock(getPage(),
-					getName(), writer, request, replaceRules, null);
+					getName(), writer, request, replaceRules, null, false,
+					false);
 		} catch (RenderingException re) {
 			if (isDisplayErrorPage())
 				writer.write(re.getMessage());

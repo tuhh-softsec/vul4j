@@ -29,7 +29,7 @@ public class IncludeBlockRegion extends AbstractIncludeRegion {
     public void process(Writer out, HttpServletRequest request)
             throws IOException, RenderingException {
         getDriver().renderBlock(page, name, out, request, null, null,
-                propagateJsessionId);
+                propagateJsessionId, false);
     }
 
 }

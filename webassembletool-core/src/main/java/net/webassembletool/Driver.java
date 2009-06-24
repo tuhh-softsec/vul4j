@@ -135,7 +135,7 @@ public class Driver {
 			Writer out, HttpServletRequest originalRequest, ServletContext ctx)
 			throws IOException, RenderingException {
 		RequestContext target = new RequestContext(this, source, null,
-				originalRequest);
+				originalRequest, false, false);
 		StringOutput stringOutput = getResourceAsString(target);
 		Renderer renderer = new XsltRenderer(xpath,	template, ctx);
 		renderer.render(stringOutput, out, null);
@@ -174,16 +174,6 @@ public class Driver {
         renderer.render(stringOutput, writer, replaceRules);
     }
 
-    public void renderBlock(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> replaceRules, Map<String, String> parameters, boolean propagateJsessionId)
-            throws IOException, RenderingException {
-        renderBlock(page, name, writer, originalRequest, replaceRules, parameters, propagateJsessionId, false);
-    }
-
-    public void renderBlock(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> replaceRules, Map<String, String> parameters) throws IOException,
-            RenderingException {
-        renderBlock(page, name, writer, originalRequest, replaceRules, parameters, false, false);
-    }
-
     /**
      * Retrieves a template from the provider application and renders it to the writer replacing the parameters with the given map. If "name" param is null, the whole page will be used as the
      * template.<br />
@@ -214,7 +204,7 @@ public class Driver {
      */
     public void renderTemplate(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> params, Map<String, String> replaceRules,
             Map<String, String> parameters, boolean propagateJsessionId) throws IOException, RenderingException {
-        RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId);
+        RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, false);
         StringOutput stringOutput = getResourceAsString(target);
         Renderer renderer = new TemplateRenderer(name, params, page);
         renderer.render(stringOutput, writer, replaceRules);
@@ -237,7 +227,7 @@ public class Driver {
      *             If an IOException occurs while rendering the response
      */
     public final void proxy(String relUrl, HttpServletRequest request, HttpServletResponse response, boolean propagateJsessionId) throws IOException {
-        RequestContext requestContext = new RequestContext(this, relUrl, null, request, propagateJsessionId);
+        RequestContext requestContext = new RequestContext(this, relUrl, null, request, propagateJsessionId, false);
         request.setCharacterEncoding(config.getUriEncoding());
         requestContext.setProxyMode(true);
         renderResource(requestContext, new ResponseOutput(request, response));

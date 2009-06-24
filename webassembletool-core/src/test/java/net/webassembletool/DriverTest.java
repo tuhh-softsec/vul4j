@@ -22,7 +22,7 @@ public class DriverTest extends TestCase {
                 expectedOutput);
 
         try {
-            tested.renderBlock(null, null, null, null, null, null, false);
+            tested.renderBlock(null, null, null, null, null, null, false, false);
             fail("should throw RenderException");
         } catch (RetrieveException e) {
             assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
@@ -37,7 +37,7 @@ public class DriverTest extends TestCase {
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
 
-        tested.renderBlock(null, null, null, null, null, null, false);
+        tested.renderBlock(null, null, null, null, null, null, false, false);
     }
 
     public void testRenderBlock() throws IOException, RenderingException {
@@ -49,7 +49,7 @@ public class DriverTest extends TestCase {
 
         Writer out = new StringWriter();
         tested.renderBlock(null, "A", out, null, new HashMap<String, String>(),
-                null, false);
+                null, false, false);
         assertEquals("some text goes here", out.toString());
     }
 
