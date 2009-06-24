@@ -1,4 +1,8 @@
-Changes since 1.4
+Changes since 1.5
+=====================================
+* Fix Sparc compilation bug (SC)
+
+Changes between version 1.4 and 1.5
 =====================================
 * Make SHA-1 the implicit default DigestMethod for RSA-OAEP
   key transport, allowing for interop until broken impls are fixed (SC) 
