@@ -193,7 +193,7 @@ public abstract class HttpTestCase extends TestCase {
      *             In case of a problem
      */
     public void assertBodyMatch(String regex) throws Exception {
-        Assert.assertTrue("Body of " + getMethodURI() + " must match : " + regex, httpMethod.getResponseBodyAsString().matches(regex));
+        Assert.assertTrue("Body of " + getMethodURI() + " must match: " + regex + " actual value: " + httpMethod.getResponseBodyAsString(), httpMethod.getResponseBodyAsString().matches(regex));
     }
 
     /**

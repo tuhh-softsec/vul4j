@@ -5,7 +5,6 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.test.junit.HttpTestCase;
-import net.webassembletool.test.junit.RawHttpServer;
 
 /**
  * Tests for aggregator webapp
@@ -90,15 +89,7 @@ public class AggregatorTest extends HttpTestCase {
     }
 
     public void testChunkedEncoding() throws Exception {
-        /* Start raw http server to serve chunked content */
-        HashMap<String, String> h = new HashMap<String, String>();
-        h.put("Transfer-Encoding", "chunked");
-        RawHttpServer rhs = new RawHttpServer(RawHttpServer.buildHTTPBody(200, h, "8;\r\nBonjour \r\n" + "7;\r\nMonde !\r\n" + "0;\r\n\r\n" +
-        // This is "end of transfer" trailing content should be ignored
-                "4;\r\nSome\r\n"), 8888);
-        rhs.start();
-        doGet(APPLICATION_PATH + "raw/rawrequest");
-        rhs.join();
+        doGet(APPLICATION_PATH + "ChunkedEncodingServlet");
         assertStatus(200);
         assertBodyMatch("^Bonjour Monde !$");
     }
