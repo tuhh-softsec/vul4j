@@ -66,6 +66,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <errno.h>
+#include <limits.h>
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp>
