@@ -11,11 +11,11 @@ public class ReplaceComponent extends UIComponentBase {
 
 	@Override
 	public void encodeChildren(FacesContext context) throws IOException {
-		value = UIComponentUtils.renderChildrenToString(context, this);
+		value = UIComponentUtils.renderChildrenToString(this);
 	}
 
 	public String getValue() {
-		return value;
+		return UIComponentUtils.getParam(this, "value", value);
 	}
 
 	public void setValue(String value) {
@@ -28,7 +28,7 @@ public class ReplaceComponent extends UIComponentBase {
 	}
 
 	public String getExpression() {
-		return expression;
+		return UIComponentUtils.getParam(this, "expression", expression);
 	}
 
 	public void setExpression(String expression) {

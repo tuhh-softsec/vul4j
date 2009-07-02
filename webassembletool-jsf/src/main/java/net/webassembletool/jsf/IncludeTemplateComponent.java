@@ -25,7 +25,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 	private Map<String, String> params = new HashMap<String, String>();
 
 	public String getName() {
-		return name;
+		return UIComponentUtils.getParam(this, "name", name);
 	}
 
 	public void setName(String name) {
@@ -33,7 +33,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 	}
 
 	public String getPage() {
-		return page;
+		return UIComponentUtils.getParam(this, "page", page);
 	}
 
 	public void setPage(String page) {
@@ -41,7 +41,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 	}
 
 	public String getProvider() {
-		return provider;
+		return UIComponentUtils.getParam(this, "provider", provider);
 	}
 
 	public void setProvider(String provider) {
@@ -49,7 +49,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 	}
 
 	public boolean isDisplayErrorPage() {
-		return displayErrorPage;
+		return UIComponentUtils.getParam(this, "displayErrorPage", displayErrorPage);
 	}
 
 	public void setDisplayErrorPage(boolean displayErrorPage) {
@@ -78,10 +78,11 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 
 	@Override
 	public void encodeChildren(FacesContext context) throws IOException {
+		@SuppressWarnings("unchecked")
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()) {
 			UIComponent child = (UIComponent) it.next();
-			UIComponentUtils.renderChild(context, child);
+			UIComponentUtils.renderChild(child);
 			if (child instanceof ReplaceComponent) {
 				ReplaceComponent rc = (ReplaceComponent) child;
 				replaceRules.put(rc.getExpression(), rc.getValue());

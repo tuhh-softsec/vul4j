@@ -11,11 +11,11 @@ public class IncludeParamComponent extends UIComponentBase {
 
 	@Override
 	public void encodeChildren(FacesContext context) throws IOException {
-		value = UIComponentUtils.renderChildrenToString(context, this);
+		value = UIComponentUtils.renderChildrenToString(this);
 	}
 
 	public String getValue() {
-		return value;
+		return UIComponentUtils.getParam(this, "value", value);
 	}
 
 	public void setValue(String value) {
@@ -28,7 +28,7 @@ public class IncludeParamComponent extends UIComponentBase {
 	}
 
 	public String getName() {
-		return name;
+		return UIComponentUtils.getParam(this, "name", name);
 	}
 
 	public void setName(String name) {
