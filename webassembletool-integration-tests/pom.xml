@@ -19,16 +19,17 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
+			<groupId>net.sourceforge.jwebunit</groupId>
+			<artifactId>jwebunit-core</artifactId>
+			<version>2.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-			<scope>provided</scope>
+			<groupId>net.sourceforge.jwebunit</groupId>
+			<artifactId>jwebunit-htmlunit-plugin</artifactId>
+			<version>2.2</version>
+			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.webassembletool</groupId>
@@ -61,6 +62,13 @@
 		<dependency>
 			<groupId>net.sourceforge.webassembletool</groupId>
 			<artifactId>webassembletool-app-aggregated2</artifactId>
+			<version>2.2_SNAPSHOT</version>
+			<type>war</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.webassembletool</groupId>
+			<artifactId>webassembletool-app-facelet</artifactId>
 			<version>2.2_SNAPSHOT</version>
 			<type>war</type>
 			<scope>provided</scope>
@@ -140,6 +148,12 @@
 								<artifactId>webassembletool-app-aggregated2</artifactId>
 								<properties>
 									<context>webassembletool-app-aggregated2</context>
+								</properties>
+							</deployable>
+							<deployable>
+								<artifactId>webassembletool-app-facelet</artifactId>
+								<properties>
+									<context>webassembletool-app-facelet</context>
 								</properties>
 							</deployable>
 						</deployables>

@@ -107,10 +107,6 @@ public abstract class HttpTestCase extends TestCase {
         doGet(relativeURL, null);
     }
 
-    public void doPost(String relativeURL, Map<String, String> params) throws Exception {
-        doPost(relativeURL, params, "ISO-8859-1");
-    }
-
     public void doPost(String relativeURL, Map<String, String> params, String charset) throws Exception {
         String absoluteUrl = getAbsoluteURL(relativeURL);
         HttpTestCase.log.info("POST " + absoluteUrl);
@@ -194,42 +190,6 @@ public abstract class HttpTestCase extends TestCase {
      */
     public void assertBodyMatch(String regex) throws Exception {
         Assert.assertTrue("Body of " + getMethodURI() + " must match: " + regex + " actual value: " + httpMethod.getResponseBodyAsString(), httpMethod.getResponseBodyAsString().matches(regex));
-    }
-
-    /**
-     * Ensures response body does not match the given regex
-     * 
-     * @param regex
-     *            the regex to check
-     * @throws Exception
-     *             In case of a problem
-     */
-    public void assertBodyNotMatch(String regex) throws Exception {
-        Assert.assertFalse("Body of " + getMethodURI() + " must not match : " + regex, httpMethod.getResponseBodyAsString().matches(regex));
-    }
-
-    /**
-     * Ensures response body does contain the given string
-     * 
-     * @param fragment
-     *            the fragment to check
-     * @throws Exception
-     *             In case of a problem
-     */
-    public void assertBodyContains(String fragment) throws Exception {
-        Assert.assertTrue("Body of " + getMethodURI() + " must contain fragment ", httpMethod.getResponseBodyAsString().indexOf(fragment) >= 0);
-    }
-
-    /**
-     * Ensures response body does not contain the given string
-     * 
-     * @param fragment
-     *            the fragment to check
-     * @throws Exception
-     *             In case of a problem
-     */
-    public void assertBodyNotContains(String fragment) throws Exception {
-        Assert.assertFalse("Body of " + getMethodURI() + "  must not contain fragment ", httpMethod.getResponseBodyAsString().indexOf(fragment) >= 0);
     }
 
     /**
