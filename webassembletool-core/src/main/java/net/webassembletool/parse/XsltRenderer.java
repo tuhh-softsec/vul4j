@@ -94,7 +94,6 @@ public class XsltRenderer implements Renderer {
 
 		try {
 			Document document = createSourceDocument(src);
-			System.out.println(document.toString());
 			Node xpathed;
 			if (expr != null) {
 				xpathed = (Node) expr.evaluate(document, XPathConstants.NODE);
