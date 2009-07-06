@@ -30,7 +30,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -213,11 +216,11 @@ public class Config {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbf.newDocumentBuilder();
 		Document doc = builder.parse(filename);
-		createHighlighters(main, doc.getDocumentElement().getElementsByTagName(
-		        "highlighter"));
-		// backwards compatibility
-		createHighlighters(main, doc.getDocumentElement().getElementsByTagName(
-		        "wholehighlighter"));
+		Set<String> tagNames = new HashSet<String>();
+		tagNames.add("highlighter");
+		tagNames.add("wholehighlighter");
+		createHighlighters(main, new FilteredElementIterator(doc
+		        .getDocumentElement(), tagNames));
 		return main;
 	}
 
@@ -225,11 +228,12 @@ public class Config {
 	 * Creates the defined highlighters
 	 * 
 	 * @param main
-	 * @param list
+	 * @param elements
 	 */
-	protected void createHighlighters(MainHighlighter main, NodeList list) {
-		for (int i = 0; i < list.getLength(); i++) {
-			Element hl = (Element) list.item(i);
+	protected void createHighlighters(MainHighlighter main,
+	        Iterator<Element> elements) {
+		while (elements.hasNext()) {
+			Element hl = elements.next();
 			Params params = new Params(hl);
 			String type = hl.getAttribute("type");
 			try {
