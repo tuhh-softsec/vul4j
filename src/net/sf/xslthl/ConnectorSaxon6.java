@@ -47,122 +47,122 @@ import com.icl.saxon.tree.AttributeCollection;
  */
 public class ConnectorSaxon6 {
 
-    private static void blockToSaxon6Node(Block b, Builder builder,
-	    NamePool pool, Config config) throws Exception {
-	if (b.isStyled()) {
-	    AttributeCollection emptyAtts = new AttributeCollection(pool);
-	    int elemId = pool.allocate(config.prefix, config.uri,
-		    ((StyledBlock) b).getStyle());
-	    builder.startElement(elemId, emptyAtts, new int[0], 0);
-	    builder.characters(b.getText().toCharArray(), 0, b.getText()
-		    .length());
-	    builder.endElement(elemId);
-	} else {
-	    builder.characters(b.getText().toCharArray(), 0, b.getText()
-		    .length());
-	}
-    }
-
-    /**
-     * Highlight the nodes using the standard configuration file
-     * 
-     * @param context
-     * @param hlCode
-     * @param nodes
-     * @return
-     * @throws Exception
-     */
-    public static NodeEnumeration highlight(Context context, String hlCode,
-	    NodeEnumeration nodes) throws Exception {
-	return highlight(context, hlCode, nodes, null);
-    }
-
-    /**
-     * highlight the nodes using a specific interface
-     * 
-     * @param context
-     * @param hlCode
-     * @param nodes
-     * @param configFilename
-     * @return
-     * @throws Exception
-     */
-    public static NodeEnumeration highlight(Context context, String hlCode,
-	    NodeEnumeration nodes, String configFilename) throws Exception {
-	try {
-	    Config c = Config.getInstance(configFilename);
-	    MainHighlighter hl = c.getMainHighlighter(hlCode);
-
-	    NamePool pool = context.getController().getNamePool();
-
-	    List<NodeInfo> resultNodes = new ArrayList<NodeInfo>();
-
-	    while (nodes.hasMoreElements()) {
-		NodeInfo ni = nodes.nextElement();
-		AxisEnumeration ae = ni.getEnumeration(Axis.CHILD, AnyNodeTest
-			.getInstance());
-		while (ae.hasMoreElements()) {
-		    NodeInfo n2i = ae.nextElement();
-		    if (n2i.getNodeType() == NodeInfo.TEXT) {
-			if (hl != null) {
-			    Builder builder = context.getController()
-				    .makeBuilder();
-			    builder.startDocument();
-			    List<Block> l = hl.highlight(n2i.getStringValue());
-			    for (Block b : l) {
-				blockToSaxon6Node(b, builder, pool, c);
-			    }
-			    builder.endDocument();
-			    DocumentInfo doc = builder.getCurrentDocument();
-			    NodeEnumeration elms = doc.getEnumeration(
-				    Axis.CHILD, AnyNodeTest.getInstance());
-			    while (elms.hasMoreElements()) {
-				resultNodes.add(elms.nextElement());
-			    }
-			} else {
-			    resultNodes.add(n2i);
-			}
-		    } else {
-			// deepCopy(builder, pool, n2i);
-			resultNodes.add(n2i);
-		    }
+	private static void blockToSaxon6Node(Block b, Builder builder,
+	        NamePool pool, Config config) throws Exception {
+		if (b.isStyled()) {
+			AttributeCollection emptyAtts = new AttributeCollection(pool);
+			int elemId = pool.allocate(config.prefix, config.uri,
+			        ((StyledBlock) b).getStyle());
+			builder.startElement(elemId, emptyAtts, new int[0], 0);
+			builder.characters(b.getText().toCharArray(), 0, b.getText()
+			        .length());
+			builder.endElement(elemId);
+		} else {
+			builder.characters(b.getText().toCharArray(), 0, b.getText()
+			        .length());
 		}
-	    }
-	    return new NodeEnumerationIterator(resultNodes.iterator());
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    return null;
-	}
-    }
-
-    static class NodeEnumerationIterator implements NodeEnumeration {
-
-	protected Iterator<NodeInfo> it;
-
-	NodeEnumerationIterator(Iterator<NodeInfo> useit) {
-	    it = useit;
 	}
 
-	public boolean hasMoreElements() {
-	    return it.hasNext();
+	/**
+	 * Highlight the nodes using the standard configuration file
+	 * 
+	 * @param context
+	 * @param hlCode
+	 * @param nodes
+	 * @return
+	 * @throws Exception
+	 */
+	public static NodeEnumeration highlight(Context context, String hlCode,
+	        NodeEnumeration nodes) throws Exception {
+		return highlight(context, hlCode, nodes, null);
 	}
 
-	public boolean isPeer() {
-	    return true;
+	/**
+	 * highlight the nodes using a specific interface
+	 * 
+	 * @param context
+	 * @param hlCode
+	 * @param nodes
+	 * @param configFilename
+	 * @return
+	 * @throws Exception
+	 */
+	public static NodeEnumeration highlight(Context context, String hlCode,
+	        NodeEnumeration nodes, String configFilename) throws Exception {
+		try {
+			Config c = Config.getInstance(configFilename);
+			MainHighlighter hl = c.getMainHighlighter(hlCode);
+
+			NamePool pool = context.getController().getNamePool();
+
+			List<NodeInfo> resultNodes = new ArrayList<NodeInfo>();
+
+			while (nodes.hasMoreElements()) {
+				NodeInfo ni = nodes.nextElement();
+				AxisEnumeration ae = ni.getEnumeration(Axis.CHILD, AnyNodeTest
+				        .getInstance());
+				while (ae.hasMoreElements()) {
+					NodeInfo n2i = ae.nextElement();
+					if (n2i.getNodeType() == NodeInfo.TEXT) {
+						if (hl != null) {
+							Builder builder = context.getController()
+							        .makeBuilder();
+							builder.startDocument();
+							List<Block> l = hl.highlight(n2i.getStringValue());
+							for (Block b : l) {
+								blockToSaxon6Node(b, builder, pool, c);
+							}
+							builder.endDocument();
+							DocumentInfo doc = builder.getCurrentDocument();
+							NodeEnumeration elms = doc.getEnumeration(
+							        Axis.CHILD, AnyNodeTest.getInstance());
+							while (elms.hasMoreElements()) {
+								resultNodes.add(elms.nextElement());
+							}
+						} else {
+							resultNodes.add(n2i);
+						}
+					} else {
+						// deepCopy(builder, pool, n2i);
+						resultNodes.add(n2i);
+					}
+				}
+			}
+			return new NodeEnumerationIterator(resultNodes.iterator());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	public boolean isReverseSorted() {
-	    return false;
-	}
+	static class NodeEnumerationIterator implements NodeEnumeration {
 
-	public boolean isSorted() {
-	    return true;
-	}
+		protected Iterator<NodeInfo> it;
 
-	public NodeInfo nextElement() throws XPathException {
-	    return it.next();
-	}
+		NodeEnumerationIterator(Iterator<NodeInfo> useit) {
+			it = useit;
+		}
 
-    }
+		public boolean hasMoreElements() {
+			return it.hasNext();
+		}
+
+		public boolean isPeer() {
+			return true;
+		}
+
+		public boolean isReverseSorted() {
+			return false;
+		}
+
+		public boolean isSorted() {
+			return true;
+		}
+
+		public NodeInfo nextElement() throws XPathException {
+			return it.next();
+		}
+
+	}
 
 }

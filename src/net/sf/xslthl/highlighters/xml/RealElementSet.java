@@ -36,31 +36,31 @@ import net.sf.xslthl.Highlighter.IgnoreCaseComparator;
  * Override the style for given elements (whole name)
  */
 public class RealElementSet extends ElementSet {
-    /**
-     * The tags names
-     */
-    private Collection<String> tagNames;
+	/**
+	 * The tags names
+	 */
+	private Collection<String> tagNames;
 
-    public RealElementSet(Params params)
-	    throws HighlighterConfigurationException {
-	super(params);
-	boolean ignoreCase = params.isSet("ignoreCase");
-	if (ignoreCase) {
-	    tagNames = new TreeSet<String>(new IgnoreCaseComparator());
-	} else {
-	    tagNames = new TreeSet<String>();
+	public RealElementSet(Params params)
+	        throws HighlighterConfigurationException {
+		super(params);
+		boolean ignoreCase = params.isSet("ignoreCase");
+		if (ignoreCase) {
+			tagNames = new TreeSet<String>(new IgnoreCaseComparator());
+		} else {
+			tagNames = new TreeSet<String>();
+		}
+		params.getMutliParams("element", tagNames);
 	}
-	params.getMutliParams("element", tagNames);
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.highlighters.XMLHighlighter.ElementSet#matches(java
-     * .lang.String)
-     */
-    @Override
-    public boolean matches(String tagName) {
-	return tagNames.contains(tagName);
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.highlighters.XMLHighlighter.ElementSet#matches(java
+	 * .lang.String)
+	 */
+	@Override
+	public boolean matches(String tagName) {
+		return tagNames.contains(tagName);
+	}
 }

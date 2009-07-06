@@ -35,44 +35,44 @@ import org.junit.Test;
  * 
  */
 public class VersionTest {
-    /**
-     * Test method for {@link net.sf.xslthl.Version#getVersion()}.
-     */
-    @Test
-    public void testGetVersion() {
-	assertNotNull(Version.getVersion());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Version#getVersion()}.
+	 */
+	@Test
+	public void testGetVersion() {
+		assertNotNull(Version.getVersion());
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Version#getMajor()}.
-     */
-    @Test
-    public void testGetMajor() {
-	assertTrue(Version.getMajor() >= 0);
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Version#getMajor()}.
+	 */
+	@Test
+	public void testGetMajor() {
+		assertTrue(Version.getMajor() >= 0);
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Version#getMinor()}.
-     */
-    @Test
-    public void testGetMinor() {
-	assertTrue(Version.getMinor() >= 0);
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Version#getMinor()}.
+	 */
+	@Test
+	public void testGetMinor() {
+		assertTrue(Version.getMinor() >= 0);
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Version#getRevision()}.
-     */
-    @Test
-    public void testGetRevision() {
-	assertTrue(Version.getRevision() >= 0);
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Version#getRevision()}.
+	 */
+	@Test
+	public void testGetRevision() {
+		assertTrue(Version.getRevision() >= 0);
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Version#getReleaseType()}.
-     */
-    @Test
-    public void testGetReleaseType() {
-	Version.getReleaseType();
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Version#getReleaseType()}.
+	 */
+	@Test
+	public void testGetReleaseType() {
+		Version.getReleaseType();
+	}
 
 }

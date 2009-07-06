@@ -52,94 +52,94 @@ import net.sf.xslthl.Params;
  */
 public class StringHighlighter extends Highlighter {
 
-    /**
-     * The start token and the escape token.
-     */
-    private String start, end, escape;
-    /**
-     * If set the double occurance of start escapes it.
-     */
-    private boolean doubleEscapes;
-    /**
-     * If set newlines are ignored in string parsing.
-     */
-    private boolean spansNewLines;
+	/**
+	 * The start token and the escape token.
+	 */
+	private String start, end, escape;
+	/**
+	 * If set the double occurance of start escapes it.
+	 */
+	private boolean doubleEscapes;
+	/**
+	 * If set newlines are ignored in string parsing.
+	 */
+	private boolean spansNewLines;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
-     */
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-	start = params.getParam("string");
-	end = params.getParam("endString", start);
-	escape = params.getParam("escape");
-	doubleEscapes = params.isSet("doubleEscapes");
-	spansNewLines = params.isSet("spanNewLines");
-	if (start == null || start.length() == 0) {
-	    throw new HighlighterConfigurationException(
-		    "Required parameter 'start' is not set.");
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
-     */
-    @Override
-    public boolean startsWith(CharIter in) {
-	if (in.startsWith(start)) {
-	    return true;
-	}
-	return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
-     * java.util.List)
-     */
-    @Override
-    public boolean highlight(CharIter in, List<Block> out) {
-	in.moveNext(start.length()); // skip start
-	boolean wasEscape = false;
-	while (!in.finished()) {
-	    if (!spansNewLines && isNewLine(in.current())) {
-		break;
-	    }
-	    if (in.startsWith(end) && !wasEscape) {
-		if (doubleEscapes && in.startsWith(end, end.length())) {
-		    in.moveNext();
-		} else {
-		    in.moveNext(end.length()-1);
-		    break;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
+	 */
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
+		start = params.getParam("string");
+		end = params.getParam("endString", start);
+		escape = params.getParam("escape");
+		doubleEscapes = params.isSet("doubleEscapes");
+		spansNewLines = params.isSet("spanNewLines");
+		if (start == null || start.length() == 0) {
+			throw new HighlighterConfigurationException(
+			        "Required parameter 'start' is not set.");
 		}
-	    } else if (escape != null && in.startsWith(escape) && !wasEscape) {
-		wasEscape = true;
-	    } else {
-		wasEscape = false;
-	    }
-	    in.moveNext();
 	}
-	if (!in.finished()) {
-	    in.moveNext();
-	}
-	out.add(in.markedToStyledBlock(styleName));
-	return true;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
-     */
-    @Override
-    public String getDefaultStyle() {
-	return "string";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+	 */
+	@Override
+	public boolean startsWith(CharIter in) {
+		if (in.startsWith(start)) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+	 * java.util.List)
+	 */
+	@Override
+	public boolean highlight(CharIter in, List<Block> out) {
+		in.moveNext(start.length()); // skip start
+		boolean wasEscape = false;
+		while (!in.finished()) {
+			if (!spansNewLines && isNewLine(in.current())) {
+				break;
+			}
+			if (in.startsWith(end) && !wasEscape) {
+				if (doubleEscapes && in.startsWith(end, end.length())) {
+					in.moveNext();
+				} else {
+					in.moveNext(end.length() - 1);
+					break;
+				}
+			} else if (escape != null && in.startsWith(escape) && !wasEscape) {
+				wasEscape = true;
+			} else {
+				wasEscape = false;
+			}
+			in.moveNext();
+		}
+		if (!in.finished()) {
+			in.moveNext();
+		}
+		out.add(in.markedToStyledBlock(styleName));
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+	 */
+	@Override
+	public String getDefaultStyle() {
+		return "string";
+	}
 
 }

@@ -46,69 +46,69 @@ import net.sf.xslthl.Params;
  */
 public class KeywordsHighlighter extends Highlighter {
 
-    /**
-     * the keywords this highligher accepts
-     */
-    protected Collection<String> keywords;
+	/**
+	 * the keywords this highligher accepts
+	 */
+	protected Collection<String> keywords;
 
-    /**
-     * Ignore case of the keywords.
-     */
-    protected boolean ignoreCase = false;
+	/**
+	 * Ignore case of the keywords.
+	 */
+	protected boolean ignoreCase = false;
 
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-	ignoreCase = params.isSet("ignoreCase");
-	if (ignoreCase) {
-	    keywords = new TreeSet<String>(new IgnoreCaseComparator());
-	} else {
-	    keywords = new TreeSet<String>();
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
+		ignoreCase = params.isSet("ignoreCase");
+		if (ignoreCase) {
+			keywords = new TreeSet<String>(new IgnoreCaseComparator());
+		} else {
+			keywords = new TreeSet<String>();
+		}
+		params.getMutliParams("keyword", keywords);
 	}
-	params.getMutliParams("keyword", keywords);
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
-     */
-    @Override
-    public boolean startsWith(CharIter in) {
-	if (Character.isJavaIdentifierStart(in.current())
-		&& (in.prev() == null || !Character.isJavaIdentifierPart(in
-			.prev()))) {
-	    return true;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+	 */
+	@Override
+	public boolean startsWith(CharIter in) {
+		if (Character.isJavaIdentifierStart(in.current())
+		        && (in.prev() == null || !Character.isJavaIdentifierPart(in
+		                .prev()))) {
+			return true;
+		}
+		return false;
 	}
-	return false;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
-     * java.util.List)
-     */
-    @Override
-    public boolean highlight(CharIter in, List<Block> out) {
-	while (!in.finished() && Character.isJavaIdentifierPart(in.current())) {
-	    in.moveNext();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+	 * java.util.List)
+	 */
+	@Override
+	public boolean highlight(CharIter in, List<Block> out) {
+		while (!in.finished() && Character.isJavaIdentifierPart(in.current())) {
+			in.moveNext();
+		}
+		if (keywords.contains(in.getMarked())) {
+			out.add(in.markedToStyledBlock(styleName));
+			return true;
+		}
+		return false;
 	}
-	if (keywords.contains(in.getMarked())) {
-	    out.add(in.markedToStyledBlock(styleName));
-	    return true;
-	}
-	return false;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
-     */
-    @Override
-    public String getDefaultStyle() {
-	return "keyword";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+	 */
+	@Override
+	public String getDefaultStyle() {
+		return "keyword";
+	}
 
 }

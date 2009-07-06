@@ -34,105 +34,105 @@ import java.util.List;
  */
 public class MainHighlighter {
 
-    /**
-     * Normal highlighter
-     */
-    protected List<Highlighter> highlighters = new ArrayList<Highlighter>();
+	/**
+	 * Normal highlighter
+	 */
+	protected List<Highlighter> highlighters = new ArrayList<Highlighter>();
 
-    /**
+	/**
      * 
      */
-    protected List<WholeHighlighter> wholehighlighters = new ArrayList<WholeHighlighter>();
+	protected List<WholeHighlighter> wholehighlighters = new ArrayList<WholeHighlighter>();
 
-    public void add(Highlighter h) {
-	if (h instanceof WholeHighlighter) {
-	    wholehighlighters.add((WholeHighlighter) h);
-	} else {
-	    highlighters.add(h);
+	public void add(Highlighter h) {
+		if (h instanceof WholeHighlighter) {
+			wholehighlighters.add((WholeHighlighter) h);
+		} else {
+			highlighters.add(h);
+		}
 	}
-    }
 
-    @Deprecated
-    public void addWhole(WholeHighlighter h) {
-	add(h);
-    }
+	@Deprecated
+	public void addWhole(WholeHighlighter h) {
+		add(h);
+	}
 
-    /**
-     * Convert the input string into a collection of text blocks
-     * 
-     * @param source
-     * @return
-     */
-    public List<Block> highlight(String source) {
-	CharIter in = new CharIter(source);
-	List<Block> out = new ArrayList<Block>();
+	/**
+	 * Convert the input string into a collection of text blocks
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public List<Block> highlight(String source) {
+		CharIter in = new CharIter(source);
+		List<Block> out = new ArrayList<Block>();
 
-	if (highlighters.size() > 0) {
-	    while (!in.finished()) {
-		boolean found = false;
+		if (highlighters.size() > 0) {
+			while (!in.finished()) {
+				boolean found = false;
+				for (Highlighter h : highlighters) {
+					if (h.startsWith(in)) {
+						int pos = in.getPosition();
+						int oldMark = -2;
+						Block preBlock = null;
+						if (in.isMarked()) {
+							oldMark = in.getMark();
+							preBlock = in.markedToBlock();
+							out.add(preBlock);
+						}
+						found = h.highlight(in, out);
+						if (found) {
+							break;
+						} else {
+							// undo last action when it was a false positive
+							in.moveNext(pos - in.getPosition());
+							if (preBlock != null) {
+								out.remove(preBlock);
+							}
+							if (oldMark != -2) {
+								in.setMark(oldMark);
+							}
+						}
+					}
+				}
+				if (!found) {
+					in.moveNext();
+				}
+			}
+		} else {
+			in.moveToEnd();
+		}
+
+		if (in.isMarked()) {
+			out.add(in.markedToBlock());
+		}
+
+		if (wholehighlighters.size() > 0) {
+			for (WholeHighlighter h : wholehighlighters) {
+				List<Block> oldout = out;
+				out = new LinkedList<Block>();
+				for (Block b : oldout) {
+					if (b.isStyled()
+					        && (h.appliesOnAllStyles() || h
+					                .appliesOnStyle(((StyledBlock) b)
+					                        .getStyle())) || !b.isStyled()
+					        && h.appliesOnEmptyStyle()) {
+						h.highlight(new CharIter(b.getText()), out);
+					} else {
+						out.add(b);
+					}
+				}
+			}
+		}
+
 		for (Highlighter h : highlighters) {
-		    if (h.startsWith(in)) {
-			int pos = in.getPosition();
-			int oldMark = -2;
-			Block preBlock = null;
-			if (in.isMarked()) {
-			    oldMark = in.getMark();
-			    preBlock = in.markedToBlock();
-			    out.add(preBlock);
-			}
-			found = h.highlight(in, out);
-			if (found) {
-			    break;
-			} else {
-			    // undo last action when it was a false positive
-			    in.moveNext(pos - in.getPosition());
-			    if (preBlock != null) {
-				out.remove(preBlock);
-			    }
-			    if (oldMark != -2) {
-				in.setMark(oldMark);
-			    }
-			}
-		    }
+			h.reset();
 		}
-		if (!found) {
-		    in.moveNext();
+		for (WholeHighlighter h : wholehighlighters) {
+			h.reset();
 		}
-	    }
-	} else {
-	    in.moveToEnd();
-	}
 
-	if (in.isMarked()) {
-	    out.add(in.markedToBlock());
+		return out;
 	}
-
-	if (wholehighlighters.size() > 0) {
-	    for (WholeHighlighter h : wholehighlighters) {
-		List<Block> oldout = out;
-		out = new LinkedList<Block>();
-		for (Block b : oldout) {
-		    if (b.isStyled()
-			    && (h.appliesOnAllStyles() || h
-				    .appliesOnStyle(((StyledBlock) b)
-					    .getStyle())) || !b.isStyled()
-			    && h.appliesOnEmptyStyle()) {
-			h.highlight(new CharIter(b.getText()), out);
-		    } else {
-			out.add(b);
-		    }
-		}
-	    }
-	}
-
-	for (Highlighter h : highlighters) {
-	    h.reset();
-	}
-	for (WholeHighlighter h : wholehighlighters) {
-	    h.reset();
-	}
-
-	return out;
-    }
 
 }

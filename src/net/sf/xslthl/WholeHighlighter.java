@@ -32,44 +32,44 @@ import java.util.HashSet;
  * 
  */
 public abstract class WholeHighlighter extends Highlighter {
-    private Collection<String> styles = new HashSet<String>();
-    private boolean emptyStyle = true;
-    private boolean allStyles = false;
+	private Collection<String> styles = new HashSet<String>();
+	private boolean emptyStyle = true;
+	private boolean allStyles = false;
 
-    void loadStyles(Params params) {
-	if (!params.isSet("empty")) {
-	    emptyStyle = false;
+	void loadStyles(Params params) {
+		if (!params.isSet("empty")) {
+			emptyStyle = false;
+		}
+		if (params.isSet("all")) {
+			allStyles = true;
+			return;
+		}
+		params.getMutliParams("style", styles);
 	}
-	if (params.isSet("all")) {
-	    allStyles = true;
-	    return;
+
+	boolean appliesOnEmptyStyle() {
+		return emptyStyle;
 	}
-	params.getMutliParams("style", styles);
-    }
 
-    boolean appliesOnEmptyStyle() {
-	return emptyStyle;
-    }
-
-    boolean appliesOnAllStyles() {
-	return allStyles;
-    }
-
-    boolean appliesOnStyle(String style) {
-	return styles.contains(style);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
-     */
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-	if (params != null && params.isSet("applyOnStyles")) {
-	    loadStyles(params.getParams("applyOnStyles"));
+	boolean appliesOnAllStyles() {
+		return allStyles;
 	}
-    }
+
+	boolean appliesOnStyle(String style) {
+		return styles.contains(style);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
+	 */
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
+		if (params != null && params.isSet("applyOnStyles")) {
+			loadStyles(params.getParams("applyOnStyles"));
+		}
+	}
 
 }

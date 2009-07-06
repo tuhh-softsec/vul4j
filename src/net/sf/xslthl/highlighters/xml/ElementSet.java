@@ -32,25 +32,25 @@ import net.sf.xslthl.Params;
  * Style overrides for various elements
  */
 public abstract class ElementSet {
-    /**
-     * The overridden stylename
-     */
-    protected String style;
+	/**
+	 * The overridden stylename
+	 */
+	protected String style;
 
-    public ElementSet(Params params) throws HighlighterConfigurationException {
-	style = params.getParam("style");
-    }
+	public ElementSet(Params params) throws HighlighterConfigurationException {
+		style = params.getParam("style");
+	}
 
-    /**
-     * @param tagName
-     * @return true if it matches an overridden style
-     */
-    public abstract boolean matches(String tagName);
+	/**
+	 * @param tagName
+	 * @return true if it matches an overridden style
+	 */
+	public abstract boolean matches(String tagName);
 
-    /**
-     * @return the style
-     */
-    public String getStyle() {
-	return style;
-    }
+	/**
+	 * @return the style
+	 */
+	public String getStyle() {
+		return style;
+	}
 }

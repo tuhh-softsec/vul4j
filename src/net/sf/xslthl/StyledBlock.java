@@ -29,72 +29,72 @@ package net.sf.xslthl;
  * A block with a style
  */
 public class StyledBlock extends Block {
-    /**
-     * Do not add a style, just "block" it
-     */
-    public static final String NO_STYLE = "none";
+	/**
+	 * Do not add a style, just "block" it
+	 */
+	public static final String NO_STYLE = "none";
 
-    /**
-     * Remove this part from the result
-     */
-    public static final String HIDDEN_STYLE = "hidden";
+	/**
+	 * Remove this part from the result
+	 */
+	public static final String HIDDEN_STYLE = "hidden";
 
-    /**
-     * The style name
-     */
-    protected String style;
+	/**
+	 * The style name
+	 */
+	protected String style;
 
-    public StyledBlock(String text, String style) {
-	super(text);
-	this.style = style;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Block#toString()
-     */
-    @Override
-    public String toString() {
-	if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style)) {
-	    return "";
-	}
-	if (StyledBlock.NO_STYLE.equalsIgnoreCase(style)) {
-	    return getText();
-	}
-	return String.format("<%s>%s</%s>", getStyle(), getText(), getStyle());
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Block#getText()
-     */
-    @Override
-    public String getText() {
-	if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style)) {
-	    return "";
+	public StyledBlock(String text, String style) {
+		super(text);
+		this.style = style;
 	}
 
-	return super.getText();
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Block#toString()
+	 */
+	@Override
+	public String toString() {
+		if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style)) {
+			return "";
+		}
+		if (StyledBlock.NO_STYLE.equalsIgnoreCase(style)) {
+			return getText();
+		}
+		return String.format("<%s>%s</%s>", getStyle(), getText(), getStyle());
+	}
 
-    /**
-     * @return the style name
-     */
-    public String getStyle() {
-	return style;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Block#getText()
+	 */
+	@Override
+	public String getText() {
+		if (StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style)) {
+			return "";
+		}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Block#isStyled()
-     */
-    @Override
-    public boolean isStyled() {
-	return style != null && !StyledBlock.NO_STYLE.equalsIgnoreCase(style)
-		&& !StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style);
-    }
+		return super.getText();
+	}
+
+	/**
+	 * @return the style name
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Block#isStyled()
+	 */
+	@Override
+	public boolean isStyled() {
+		return style != null && !StyledBlock.NO_STYLE.equalsIgnoreCase(style)
+		        && !StyledBlock.HIDDEN_STYLE.equalsIgnoreCase(style);
+	}
 
 }

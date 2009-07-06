@@ -45,93 +45,93 @@ import org.w3c.dom.NodeList;
  * @author Michiel Hendriks
  */
 public class ConnectorXalan {
-    protected static NodeList highlight(ExpressionContext c, String source,
-	    MainHighlighter hl, Config config) throws Exception {
-	NodeSet list = new NodeSet();
-	List<Block> l = hl.highlight(source);
-	for (Block b : l) {
-	    Node elm;
-	    if (b.isStyled()) {
-		elm = DocumentInstance.doc.createElementNS(config.uri,
-			((StyledBlock) b).getStyle());
-		elm.setTextContent(b.getText());
-	    } else {
-		elm = DocumentInstance.doc.createTextNode(b.getText());
-	    }
-
-	    list.addElement(elm);
-	}
-	return list;
-    }
-
-    /**
-     * highlight the given nodes using the standard configuration
-     * 
-     * @param context
-     * @param hlCode
-     * @param nodes
-     * @return
-     */
-    public static final NodeList highlight(ExpressionContext context,
-	    String hlCode, NodeList nodes) {
-	return highlight(context, hlCode, nodes, null);
-    }
-
-    /**
-     * highlight the given nodes
-     * 
-     * @param context
-     * @param hlCode
-     * @param nodes
-     * @param configFilename
-     * @return
-     */
-    public static final NodeList highlight(ExpressionContext context,
-	    String hlCode, NodeList nodes, String configFilename) {
-	try {
-	    Config c = Config.getInstance(configFilename);
-	    MainHighlighter hl = c.getMainHighlighter(hlCode);
-	    NodeSet list = new NodeSet();
-	    for (int i = 0; i < nodes.getLength(); i++) {
-		Node n = nodes.item(i);
-		NodeList childs = n.getChildNodes();
-		for (int j = 0; j < childs.getLength(); j++) {
-		    Node m = childs.item(j);
-		    if (m.getNodeType() == Node.TEXT_NODE) {
-			if (hl != null) {
-			    list.addNodes(highlight(context, m.getNodeValue(),
-				    hl, c));
+	protected static NodeList highlight(ExpressionContext c, String source,
+	        MainHighlighter hl, Config config) throws Exception {
+		NodeSet list = new NodeSet();
+		List<Block> l = hl.highlight(source);
+		for (Block b : l) {
+			Node elm;
+			if (b.isStyled()) {
+				elm = DocumentInstance.doc.createElementNS(config.uri,
+				        ((StyledBlock) b).getStyle());
+				elm.setTextContent(b.getText());
 			} else {
-			    list.addNode(DocumentInstance.doc.createTextNode(m
-				    .getNodeValue()));
+				elm = DocumentInstance.doc.createTextNode(b.getText());
 			}
-		    } else {
-			list.addNode(m);
-		    }
+
+			list.addElement(elm);
 		}
-	    }
-	    return list;
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    return null;
+		return list;
 	}
-    }
 
-    /**
-     * Used for note construction. (lazy loading)
-     */
-    private static class DocumentInstance {
-	private static final Document doc;
-	static {
-	    try {
-		doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-			.newDocument();
-	    }
-
-	    catch (ParserConfigurationException e) {
-		throw new RuntimeException(e);
-	    }
-
+	/**
+	 * highlight the given nodes using the standard configuration
+	 * 
+	 * @param context
+	 * @param hlCode
+	 * @param nodes
+	 * @return
+	 */
+	public static final NodeList highlight(ExpressionContext context,
+	        String hlCode, NodeList nodes) {
+		return highlight(context, hlCode, nodes, null);
 	}
-    }
+
+	/**
+	 * highlight the given nodes
+	 * 
+	 * @param context
+	 * @param hlCode
+	 * @param nodes
+	 * @param configFilename
+	 * @return
+	 */
+	public static final NodeList highlight(ExpressionContext context,
+	        String hlCode, NodeList nodes, String configFilename) {
+		try {
+			Config c = Config.getInstance(configFilename);
+			MainHighlighter hl = c.getMainHighlighter(hlCode);
+			NodeSet list = new NodeSet();
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node n = nodes.item(i);
+				NodeList childs = n.getChildNodes();
+				for (int j = 0; j < childs.getLength(); j++) {
+					Node m = childs.item(j);
+					if (m.getNodeType() == Node.TEXT_NODE) {
+						if (hl != null) {
+							list.addNodes(highlight(context, m.getNodeValue(),
+							        hl, c));
+						} else {
+							list.addNode(DocumentInstance.doc.createTextNode(m
+							        .getNodeValue()));
+						}
+					} else {
+						list.addNode(m);
+					}
+				}
+			}
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Used for note construction. (lazy loading)
+	 */
+	private static class DocumentInstance {
+		private static final Document doc;
+		static {
+			try {
+				doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				        .newDocument();
+			}
+
+			catch (ParserConfigurationException e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+	}
 }

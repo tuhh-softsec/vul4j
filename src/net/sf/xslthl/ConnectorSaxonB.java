@@ -45,101 +45,101 @@ import net.sf.saxon.type.Type;
  */
 public class ConnectorSaxonB {
 
-    private static void blockToSaxon6Node(Block b, Builder builder,
-	    NamePool pool, Config config) throws Exception {
-	if (b.isStyled()) {
-	    int elemId = pool.allocate(config.prefix, config.uri,
-		    ((StyledBlock) b).getStyle());
-	    builder.startElement(elemId, -1, 0, 0);
-	    builder.characters(b.getText(), 0, b.getText().length());
-	    builder.endElement();
-	} else {
-	    builder.characters(b.getText(), 0, b.getText().length());
-	}
-    }
-
-    /**
-     * Highlight the nodes using the standard configuration file
-     * 
-     * @param context
-     * @param hlCode
-     * @param nodes
-     * @return
-     * @throws Exception
-     */
-    public static SequenceIterator highlight(XPathContext context,
-	    String hlCode, SequenceIterator nodes) throws Exception {
-	return highlight(context, hlCode, nodes, null);
-    }
-
-    /**
-     * highlight the nodes using a specific interface
-     * 
-     * @param context
-     * @param hlCode
-     * @param seq
-     * @param configFilename
-     * @return
-     * @throws Exception
-     */
-    public static SequenceIterator highlight(XPathContext context,
-	    String hlCode, SequenceIterator seq, String configFilename)
-	    throws Exception {
-	try {
-	    Config c = Config.getInstance(configFilename);
-	    MainHighlighter hl = c.getMainHighlighter(hlCode);
-
-	    NamePool pool = context.getController().getNamePool();
-
-	    List<Item> resultNodes = new ArrayList<Item>();
-	    while (seq.next() != null) {
-		Item itm = seq.current();
-		if (itm instanceof NodeInfo) {
-		    NodeInfo ni = (NodeInfo) itm;
-		    SequenceIterator ae = ni.iterateAxis(Axis.CHILD,
-			    AnyNodeTest.getInstance());
-		    while (ae.next() != null) {
-			Item itm2 = ae.current();
-			if (itm2 instanceof NodeInfo) {
-			    NodeInfo n2i = (NodeInfo) itm2;
-			    if (n2i.getNodeKind() == Type.TEXT) {
-				if (hl != null) {
-				    Builder builder = context.getController()
-					    .makeBuilder();
-				    builder.open();
-				    builder.startDocument(0);
-				    List<Block> l = hl.highlight(n2i
-					    .getStringValue());
-				    for (Block b : l) {
-					blockToSaxon6Node(b, builder, pool, c);
-				    }
-				    builder.endDocument();
-				    builder.close();
-				    NodeInfo doc = builder.getCurrentRoot();
-				    AxisIterator elms = doc.iterateAxis(
-					    Axis.CHILD, AnyNodeTest
-						    .getInstance());
-				    while (elms.next() != null) {
-					resultNodes.add(elms.current());
-				    }
-				} else {
-				    resultNodes.add(n2i);
-				}
-			    } else {
-				resultNodes.add(n2i);
-			    }
-			} else {
-			    resultNodes.add(itm2);
-			}
-		    }
+	private static void blockToSaxon6Node(Block b, Builder builder,
+	        NamePool pool, Config config) throws Exception {
+		if (b.isStyled()) {
+			int elemId = pool.allocate(config.prefix, config.uri,
+			        ((StyledBlock) b).getStyle());
+			builder.startElement(elemId, -1, 0, 0);
+			builder.characters(b.getText(), 0, b.getText().length());
+			builder.endElement();
 		} else {
-		    resultNodes.add(itm);
+			builder.characters(b.getText(), 0, b.getText().length());
 		}
-	    }
-	    return new ListIterator(resultNodes);
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    return null;
 	}
-    }
+
+	/**
+	 * Highlight the nodes using the standard configuration file
+	 * 
+	 * @param context
+	 * @param hlCode
+	 * @param nodes
+	 * @return
+	 * @throws Exception
+	 */
+	public static SequenceIterator highlight(XPathContext context,
+	        String hlCode, SequenceIterator nodes) throws Exception {
+		return highlight(context, hlCode, nodes, null);
+	}
+
+	/**
+	 * highlight the nodes using a specific interface
+	 * 
+	 * @param context
+	 * @param hlCode
+	 * @param seq
+	 * @param configFilename
+	 * @return
+	 * @throws Exception
+	 */
+	public static SequenceIterator highlight(XPathContext context,
+	        String hlCode, SequenceIterator seq, String configFilename)
+	        throws Exception {
+		try {
+			Config c = Config.getInstance(configFilename);
+			MainHighlighter hl = c.getMainHighlighter(hlCode);
+
+			NamePool pool = context.getController().getNamePool();
+
+			List<Item> resultNodes = new ArrayList<Item>();
+			while (seq.next() != null) {
+				Item itm = seq.current();
+				if (itm instanceof NodeInfo) {
+					NodeInfo ni = (NodeInfo) itm;
+					SequenceIterator ae = ni.iterateAxis(Axis.CHILD,
+					        AnyNodeTest.getInstance());
+					while (ae.next() != null) {
+						Item itm2 = ae.current();
+						if (itm2 instanceof NodeInfo) {
+							NodeInfo n2i = (NodeInfo) itm2;
+							if (n2i.getNodeKind() == Type.TEXT) {
+								if (hl != null) {
+									Builder builder = context.getController()
+									        .makeBuilder();
+									builder.open();
+									builder.startDocument(0);
+									List<Block> l = hl.highlight(n2i
+									        .getStringValue());
+									for (Block b : l) {
+										blockToSaxon6Node(b, builder, pool, c);
+									}
+									builder.endDocument();
+									builder.close();
+									NodeInfo doc = builder.getCurrentRoot();
+									AxisIterator elms = doc.iterateAxis(
+									        Axis.CHILD, AnyNodeTest
+									                .getInstance());
+									while (elms.next() != null) {
+										resultNodes.add(elms.current());
+									}
+								} else {
+									resultNodes.add(n2i);
+								}
+							} else {
+								resultNodes.add(n2i);
+							}
+						} else {
+							resultNodes.add(itm2);
+						}
+					}
+				} else {
+					resultNodes.add(itm);
+				}
+			}
+			return new ListIterator(resultNodes);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

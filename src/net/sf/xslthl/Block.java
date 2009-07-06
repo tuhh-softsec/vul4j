@@ -30,56 +30,56 @@ package net.sf.xslthl;
  */
 public class Block {
 
-    /**
-     * The content of this block
-     */
-    protected String text;
+	/**
+	 * The content of this block
+	 */
+	protected String text;
 
-    public Block(String text) {
-	this.text = text;
-    }
-
-    /**
-     * @return the text within this block
-     */
-    public String getText() {
-	return text;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-	return getText();
-    }
-
-    /**
-     * @return true if this block contains style information
-     */
-    public boolean isStyled() {
-	return false;
-    }
-
-    /**
-     * @return true if this block as no content
-     * @deprecated Use {@link #isEmpty()} instead
-     */
-    @Deprecated
-    public boolean empty() {
-	return isEmpty();
-    }
-
-    /**
-     * @return true if this block as no content
-     */
-    public boolean isEmpty() {
-	if (text == null || text.length() == 0) {
-	    return true;
+	public Block(String text) {
+		this.text = text;
 	}
-	return false;
-    }
+
+	/**
+	 * @return the text within this block
+	 */
+	public String getText() {
+		return text;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getText();
+	}
+
+	/**
+	 * @return true if this block contains style information
+	 */
+	public boolean isStyled() {
+		return false;
+	}
+
+	/**
+	 * @return true if this block as no content
+	 * @deprecated Use {@link #isEmpty()} instead
+	 */
+	@Deprecated
+	public boolean empty() {
+		return isEmpty();
+	}
+
+	/**
+	 * @return true if this block as no content
+	 */
+	public boolean isEmpty() {
+		if (text == null || text.length() == 0) {
+			return true;
+		}
+		return false;
+	}
 
 }

@@ -36,43 +36,43 @@ import net.sf.xslthl.Params;
  * Just like the multiline comment highlighter, but accepts nesting of comments.
  */
 public class NestedMultilineCommentHighlighter extends
-	MultilineCommentHighlighter {
+        MultilineCommentHighlighter {
 
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * net.sf.xslthl.MultilineCommentHighlighter#highlight(net.sf.xslthl.CharIter
-     * , java.util.List)
-     */
-    @Override
-    public boolean highlight(CharIter in, List<Block> out) {
-	in.moveNext(start.length()); // skip start
-
-	int depth = 1;
-	while (!in.finished()) {
-	    if (in.startsWith(end)) {
-		in.moveNext(end.length());
-		if (depth == 1) {
-		    break;
-		} else {
-		    depth--;
-		}
-	    } else if (in.startsWith(start)) {
-		depth++;
-		in.moveNext(start.length());
-	    } else {
-		in.moveNext();
-	    }
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
 	}
 
-	out.add(in.markedToStyledBlock(styleName));
-	return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.sf.xslthl.MultilineCommentHighlighter#highlight(net.sf.xslthl.CharIter
+	 * , java.util.List)
+	 */
+	@Override
+	public boolean highlight(CharIter in, List<Block> out) {
+		in.moveNext(start.length()); // skip start
+
+		int depth = 1;
+		while (!in.finished()) {
+			if (in.startsWith(end)) {
+				in.moveNext(end.length());
+				if (depth == 1) {
+					break;
+				} else {
+					depth--;
+				}
+			} else if (in.startsWith(start)) {
+				depth++;
+				in.moveNext(start.length());
+			} else {
+				in.moveNext();
+			}
+		}
+
+		out.add(in.markedToStyledBlock(styleName));
+		return true;
+	}
 
 }

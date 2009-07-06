@@ -62,311 +62,311 @@ import net.sf.xslthl.highlighters.xml.RealElementSet;
  */
 public class XMLHighlighter extends WholeHighlighter {
 
-    final static Character APOSTROPHE = '\'';
-    final static Character EQUALS = '=';
-    final static Character EXCLAMATION_MARK = '!';
-    final static Character GREATER_THAN = '>';
-    final static Character HYPHEN = '-';
-    final static Character LESS_THAN = '<';
-    final static Character QUESTION_MARK = '?';
-    final static Character QUOTE = '"';
-    final static Character SLASH = '/';
+	final static Character APOSTROPHE = '\'';
+	final static Character EQUALS = '=';
+	final static Character EXCLAMATION_MARK = '!';
+	final static Character GREATER_THAN = '>';
+	final static Character HYPHEN = '-';
+	final static Character LESS_THAN = '<';
+	final static Character QUESTION_MARK = '?';
+	final static Character QUOTE = '"';
+	final static Character SLASH = '/';
 
-    /**
-     * Overriden styles
-     */
-    protected Collection<ElementSet> elementSets = new HashSet<ElementSet>();
+	/**
+	 * Overriden styles
+	 */
+	protected Collection<ElementSet> elementSets = new HashSet<ElementSet>();
 
-    /**
-     * Style to use for elements
-     */
-    protected String styleElement = "tag";
+	/**
+	 * Style to use for elements
+	 */
+	protected String styleElement = "tag";
 
-    /**
-     * The style for attributes
-     */
-    protected String styleAttribute = "attribute";
+	/**
+	 * The style for attributes
+	 */
+	protected String styleAttribute = "attribute";
 
-    /**
-     * The style for attribute values
-     */
-    protected String styleValue = "value";
+	/**
+	 * The style for attribute values
+	 */
+	protected String styleValue = "value";
 
-    /**
-     * The style for processing instructions
-     */
-    protected String stylePi = "directive";
+	/**
+	 * The style for processing instructions
+	 */
+	protected String stylePi = "directive";
 
-    /**
-     * The style for comments
-     */
-    protected String styleComment = "comment";
+	/**
+	 * The style for comments
+	 */
+	protected String styleComment = "comment";
 
-    /**
-     * Style to use for the doctype part
-     */
-    protected String styleDoctype = "doctype";
+	/**
+	 * Style to use for the doctype part
+	 */
+	protected String styleDoctype = "doctype";
 
-    /**
-     * @param tagName
-     * @return
-     */
-    protected String getStyleForTagName(String tagName) {
-	for (ElementSet es : elementSets) {
-	    if (es.matches(tagName)) {
-		return es.getStyle();
-	    }
-	}
-	return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.WholeHighlighter#init(net.sf.xslthl.Params)
-     */
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-	if (params != null) {
-
-	    styleAttribute = params.getParam("styleAttribute", styleAttribute);
-	    styleComment = params.getParam("styleComment", styleComment);
-	    styleDoctype = params.getParam("styleDoctype", styleDoctype);
-	    styleElement = params.getParam("styleElement", styleElement);
-	    stylePi = params.getParam("stylePi", stylePi);
-	    styleValue = params.getParam("styleValue", styleValue);
-
-	    params.getMultiParams("elementSet", elementSets,
-		    new Params.ParamsLoader<RealElementSet>() {
-			public RealElementSet load(Params params)
-				throws HighlighterConfigurationException {
-			    return new RealElementSet(params);
+	/**
+	 * @param tagName
+	 * @return
+	 */
+	protected String getStyleForTagName(String tagName) {
+		for (ElementSet es : elementSets) {
+			if (es.matches(tagName)) {
+				return es.getStyle();
 			}
-		    });
-	    params.getMultiParams("elementPrefix", elementSets,
-		    new Params.ParamsLoader<ElementPrefix>() {
-			public ElementPrefix load(Params params)
-				throws HighlighterConfigurationException {
-			    return new ElementPrefix(params);
-			}
-		    });
-	}
-    }
-
-    /**
-     * @param in
-     * @param out
-     */
-    void readTagContent(CharIter in, List<Block> out) {
-	while (!in.finished()
-		&& !XMLHighlighter.GREATER_THAN.equals(in.current())
-		&& !XMLHighlighter.SLASH.equals(in.current())) {
-	    if (!Character.isWhitespace(in.current())) {
-		if (in.isMarked()) {
-		    out.add(in.markedToBlock());
 		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.WholeHighlighter#init(net.sf.xslthl.Params)
+	 */
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
+		if (params != null) {
+
+			styleAttribute = params.getParam("styleAttribute", styleAttribute);
+			styleComment = params.getParam("styleComment", styleComment);
+			styleDoctype = params.getParam("styleDoctype", styleDoctype);
+			styleElement = params.getParam("styleElement", styleElement);
+			stylePi = params.getParam("stylePi", stylePi);
+			styleValue = params.getParam("styleValue", styleValue);
+
+			params.getMultiParams("elementSet", elementSets,
+			        new Params.ParamsLoader<RealElementSet>() {
+				        public RealElementSet load(Params params)
+				                throws HighlighterConfigurationException {
+					        return new RealElementSet(params);
+				        }
+			        });
+			params.getMultiParams("elementPrefix", elementSets,
+			        new Params.ParamsLoader<ElementPrefix>() {
+				        public ElementPrefix load(Params params)
+				                throws HighlighterConfigurationException {
+					        return new ElementPrefix(params);
+				        }
+			        });
+		}
+	}
+
+	/**
+	 * @param in
+	 * @param out
+	 */
+	void readTagContent(CharIter in, List<Block> out) {
 		while (!in.finished()
-			&& !XMLHighlighter.EQUALS.equals(in.current())
-			&& !Character.isWhitespace(in.current())) {
-		    in.moveNext();
-		}
-		out.add(in.markedToStyledBlock(styleAttribute));
-		while (!in.finished() && Character.isWhitespace(in.current())) {
-		    in.moveNext();
-		}
-		if (in.finished()
-			|| !XMLHighlighter.EQUALS.equals(in.current())) { // HTML
-		    // no-value
-		    // attributes
-		    continue;
-		}
-		in.moveNext(); // skip '='
-		while (!in.finished() && Character.isWhitespace(in.current())) {
-		    in.moveNext();
-		}
-		out.add(in.markedToBlock());
-		if (XMLHighlighter.QUOTE.equals(in.current())
-			|| XMLHighlighter.APOSTROPHE.equals(in.current())) {
-		    Character boundary = in.current();
-		    in.moveNext();
-		    while (!in.finished() && !boundary.equals(in.current())) {
-			in.moveNext();
-		    }
-		    if (!in.finished()) {
-			in.moveNext();
-		    }
-		    out.add(in.markedToStyledBlock(styleValue));
-		} else {
-		    while (!in.finished()
-			    && !XMLHighlighter.GREATER_THAN
-				    .equals(in.current())
-			    && !XMLHighlighter.SLASH.equals(in.current())
-			    && !Character.isWhitespace(in.current())) {
-			in.moveNext();
-		    }
-		    out.add(in.markedToStyledBlock(styleValue));
-		}
-	    } else {
-		in.moveNext();
-	    }
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
-     * java.util.List)
-     */
-    @Override
-    public boolean highlight(CharIter in, List<Block> out) {
-	while (!in.finished()) {
-	    if (XMLHighlighter.LESS_THAN.equals(in.current())) {
-		out.add(in.markedToBlock());
-		in.moveNext(); // skip <
-		if (XMLHighlighter.SLASH.equals(in.current())) {
-		    // closing tag -> tag
-		    while (!in.finished()
-			    && !XMLHighlighter.GREATER_THAN
-				    .equals(in.current())) {
-			in.moveNext();
-		    }
-		    String style = getStyleForTagName(in.getMarked().trim()
-			    .substring(2));
-		    // </dfsdf > trims to </dfsdf> and than to <dfsdf>
-		    in.moveNext(); // get >
-		    if (style != null) {
-			out.add(in.markedToStyledBlock(style));
-		    } else {
-			out.add(in.markedToStyledBlock(styleElement));
-		    }
-		} else if (XMLHighlighter.QUESTION_MARK.equals(in.current())) {
-		    // processing instruction -> directive
-		    while (!in.finished()
-			    && !(XMLHighlighter.GREATER_THAN.equals(in
-				    .current()) && XMLHighlighter.QUESTION_MARK
-				    .equals(in.prev()))) {
-			in.moveNext();
-		    }
-		    in.moveNext();
-		    out.add(in.markedToStyledBlock(stylePi));
-		} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
-			&& XMLHighlighter.HYPHEN.equals(in.next())
-			&& XMLHighlighter.HYPHEN.equals(in.next(2))) {
-		    // comment
-		    while (!in.finished()
-			    && !(XMLHighlighter.GREATER_THAN.equals(in
-				    .current())
-				    && XMLHighlighter.HYPHEN.equals(in.prev()) && XMLHighlighter.HYPHEN
-				    .equals(in.prev(2)))) {
-			in.moveNext();
-		    }
-		    in.moveNext();
-		    out.add(in.markedToStyledBlock(styleComment));
-		} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
-			&& in.startsWith("[CDATA[", 1)) {
-		    // CDATA section
-		    in.moveNext(8);
-		    out.add(in.markedToStyledBlock(styleElement));
-		    int idx = in.indexOf("]]>");
-		    if (idx == -1) {
-			in.moveToEnd();
-		    } else {
-			in.moveNext(idx);
-		    }
-		    out.add(in.markedToBlock());
-		    if (idx != -1) {
-			in.moveNext(3);
-			out.add(in.markedToStyledBlock(styleElement));
-		    }
-		} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
-			&& in.startsWith("DOCTYPE", 1)) {
-		    // doctype... just ignore most of it
-		    int cnt = 1;
-		    while (!in.finished() && cnt > 0) {
-			if (in.current().equals(GREATER_THAN)) {
-			    --cnt;
-			} else if (in.current().equals(LESS_THAN)) {
-			    ++cnt;
-			}
-			in.moveNext();
-		    }
-		    out.add(in.markedToStyledBlock(styleDoctype));
-		} else {
-		    // normal tag
-		    while (!in.finished()
-			    && !XMLHighlighter.GREATER_THAN
-				    .equals(in.current())
-			    && !XMLHighlighter.SLASH.equals(in.current())
-			    && !Character.isWhitespace(in.current())) {
-			in.moveNext();
-		    }
-		    String style = getStyleForTagName(in.getMarked().trim()
-			    .substring(1));
-
-		    // find short tag
-		    boolean shortTag = false;
-		    int cnt = 0;
-		    while (!in.finished()
-			    && !XMLHighlighter.GREATER_THAN
-				    .equals(in.current())
-			    && !XMLHighlighter.SLASH.equals(in.current())
-			    && Character.isWhitespace(in.current())) {
-			in.moveNext();
-			++cnt;
-		    }
-		    if (XMLHighlighter.SLASH.equals(in.current())) {
-			in.moveNext();
-			++cnt;
-		    }
-		    if (XMLHighlighter.GREATER_THAN.equals(in.current())) {
-			in.moveNext();
-			shortTag = true;
-		    } else {
-			in.moveNext(-cnt);
-		    }
-
-		    if (style != null) {
-			out.add(in.markedToStyledBlock(style));
-		    } else {
-			out.add(in.markedToStyledBlock(styleElement));
-		    }
-		    if (!shortTag && !in.finished()
-			    && Character.isWhitespace(in.current())) {
-			readTagContent(in, out);
-
-			if (!in.finished()) {
-			    if (XMLHighlighter.SLASH.equals(in.current())) {
+		        && !XMLHighlighter.GREATER_THAN.equals(in.current())
+		        && !XMLHighlighter.SLASH.equals(in.current())) {
+			if (!Character.isWhitespace(in.current())) {
+				if (in.isMarked()) {
+					out.add(in.markedToBlock());
+				}
+				while (!in.finished()
+				        && !XMLHighlighter.EQUALS.equals(in.current())
+				        && !Character.isWhitespace(in.current())) {
+					in.moveNext();
+				}
+				out.add(in.markedToStyledBlock(styleAttribute));
+				while (!in.finished() && Character.isWhitespace(in.current())) {
+					in.moveNext();
+				}
+				if (in.finished()
+				        || !XMLHighlighter.EQUALS.equals(in.current())) { // HTML
+					// no-value
+					// attributes
+					continue;
+				}
+				in.moveNext(); // skip '='
+				while (!in.finished() && Character.isWhitespace(in.current())) {
+					in.moveNext();
+				}
+				out.add(in.markedToBlock());
+				if (XMLHighlighter.QUOTE.equals(in.current())
+				        || XMLHighlighter.APOSTROPHE.equals(in.current())) {
+					Character boundary = in.current();
+					in.moveNext();
+					while (!in.finished() && !boundary.equals(in.current())) {
+						in.moveNext();
+					}
+					if (!in.finished()) {
+						in.moveNext();
+					}
+					out.add(in.markedToStyledBlock(styleValue));
+				} else {
+					while (!in.finished()
+					        && !XMLHighlighter.GREATER_THAN
+					                .equals(in.current())
+					        && !XMLHighlighter.SLASH.equals(in.current())
+					        && !Character.isWhitespace(in.current())) {
+						in.moveNext();
+					}
+					out.add(in.markedToStyledBlock(styleValue));
+				}
+			} else {
 				in.moveNext();
-			    }
-			    in.moveNext();
-			    if (style != null) {
-				out.add(in.markedToStyledBlock(style));
-			    } else {
-				out.add(in.markedToStyledBlock(styleElement));
-			    }
 			}
-		    }
 		}
-	    } else {
-		in.moveNext();
-	    }
 	}
-	if (in.isMarked()) {
-	    out.add(in.markedToBlock());
-	}
-	return false;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
-     */
-    @Override
-    public String getDefaultStyle() {
-	// not really used, just here to prevent an error to pop up
-	return "xml";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+	 * java.util.List)
+	 */
+	@Override
+	public boolean highlight(CharIter in, List<Block> out) {
+		while (!in.finished()) {
+			if (XMLHighlighter.LESS_THAN.equals(in.current())) {
+				out.add(in.markedToBlock());
+				in.moveNext(); // skip <
+				if (XMLHighlighter.SLASH.equals(in.current())) {
+					// closing tag -> tag
+					while (!in.finished()
+					        && !XMLHighlighter.GREATER_THAN
+					                .equals(in.current())) {
+						in.moveNext();
+					}
+					String style = getStyleForTagName(in.getMarked().trim()
+					        .substring(2));
+					// </dfsdf > trims to </dfsdf> and than to <dfsdf>
+					in.moveNext(); // get >
+					if (style != null) {
+						out.add(in.markedToStyledBlock(style));
+					} else {
+						out.add(in.markedToStyledBlock(styleElement));
+					}
+				} else if (XMLHighlighter.QUESTION_MARK.equals(in.current())) {
+					// processing instruction -> directive
+					while (!in.finished()
+					        && !(XMLHighlighter.GREATER_THAN.equals(in
+					                .current()) && XMLHighlighter.QUESTION_MARK
+					                .equals(in.prev()))) {
+						in.moveNext();
+					}
+					in.moveNext();
+					out.add(in.markedToStyledBlock(stylePi));
+				} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+				        && XMLHighlighter.HYPHEN.equals(in.next())
+				        && XMLHighlighter.HYPHEN.equals(in.next(2))) {
+					// comment
+					while (!in.finished()
+					        && !(XMLHighlighter.GREATER_THAN.equals(in
+					                .current())
+					                && XMLHighlighter.HYPHEN.equals(in.prev()) && XMLHighlighter.HYPHEN
+					                .equals(in.prev(2)))) {
+						in.moveNext();
+					}
+					in.moveNext();
+					out.add(in.markedToStyledBlock(styleComment));
+				} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+				        && in.startsWith("[CDATA[", 1)) {
+					// CDATA section
+					in.moveNext(8);
+					out.add(in.markedToStyledBlock(styleElement));
+					int idx = in.indexOf("]]>");
+					if (idx == -1) {
+						in.moveToEnd();
+					} else {
+						in.moveNext(idx);
+					}
+					out.add(in.markedToBlock());
+					if (idx != -1) {
+						in.moveNext(3);
+						out.add(in.markedToStyledBlock(styleElement));
+					}
+				} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+				        && in.startsWith("DOCTYPE", 1)) {
+					// doctype... just ignore most of it
+					int cnt = 1;
+					while (!in.finished() && cnt > 0) {
+						if (in.current().equals(GREATER_THAN)) {
+							--cnt;
+						} else if (in.current().equals(LESS_THAN)) {
+							++cnt;
+						}
+						in.moveNext();
+					}
+					out.add(in.markedToStyledBlock(styleDoctype));
+				} else {
+					// normal tag
+					while (!in.finished()
+					        && !XMLHighlighter.GREATER_THAN
+					                .equals(in.current())
+					        && !XMLHighlighter.SLASH.equals(in.current())
+					        && !Character.isWhitespace(in.current())) {
+						in.moveNext();
+					}
+					String style = getStyleForTagName(in.getMarked().trim()
+					        .substring(1));
+
+					// find short tag
+					boolean shortTag = false;
+					int cnt = 0;
+					while (!in.finished()
+					        && !XMLHighlighter.GREATER_THAN
+					                .equals(in.current())
+					        && !XMLHighlighter.SLASH.equals(in.current())
+					        && Character.isWhitespace(in.current())) {
+						in.moveNext();
+						++cnt;
+					}
+					if (XMLHighlighter.SLASH.equals(in.current())) {
+						in.moveNext();
+						++cnt;
+					}
+					if (XMLHighlighter.GREATER_THAN.equals(in.current())) {
+						in.moveNext();
+						shortTag = true;
+					} else {
+						in.moveNext(-cnt);
+					}
+
+					if (style != null) {
+						out.add(in.markedToStyledBlock(style));
+					} else {
+						out.add(in.markedToStyledBlock(styleElement));
+					}
+					if (!shortTag && !in.finished()
+					        && Character.isWhitespace(in.current())) {
+						readTagContent(in, out);
+
+						if (!in.finished()) {
+							if (XMLHighlighter.SLASH.equals(in.current())) {
+								in.moveNext();
+							}
+							in.moveNext();
+							if (style != null) {
+								out.add(in.markedToStyledBlock(style));
+							} else {
+								out.add(in.markedToStyledBlock(styleElement));
+							}
+						}
+					}
+				}
+			} else {
+				in.moveNext();
+			}
+		}
+		if (in.isMarked()) {
+			out.add(in.markedToBlock());
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+	 */
+	@Override
+	public String getDefaultStyle() {
+		// not really used, just here to prevent an error to pop up
+		return "xml";
+	}
 }

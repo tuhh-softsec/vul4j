@@ -47,101 +47,101 @@ import net.sf.xslthl.Params;
  */
 public class OnelineCommentHighlighter extends Highlighter {
 
-    /**
-     * The start of the comment highlighter
-     */
-    protected String start;
+	/**
+	 * The start of the comment highlighter
+	 */
+	protected String start;
 
-    /**
-     * String used to escape a newline
-     */
-    protected String lineBreakEscape;
+	/**
+	 * String used to escape a newline
+	 */
+	protected String lineBreakEscape;
 
-    protected boolean solitary;
+	protected boolean solitary;
 
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-	if (params.isSet("start")) {
-	    start = params.getParam("start");
-	    lineBreakEscape = params.getParam("lineBreakEscape");
-	} else {
-	    // legacy format
-	    start = params.getParam();
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
+		if (params.isSet("start")) {
+			start = params.getParam("start");
+			lineBreakEscape = params.getParam("lineBreakEscape");
+		} else {
+			// legacy format
+			start = params.getParam();
+		}
+		if (start == null || start.length() == 0) {
+			throw new HighlighterConfigurationException(
+			        "Required parameter 'start' is not set.");
+		}
+		solitary = params.isSet("solitary");
 	}
-	if (start == null || start.length() == 0) {
-	    throw new HighlighterConfigurationException(
-		    "Required parameter 'start' is not set.");
-	}
-	solitary = params.isSet("solitary");
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
-     */
-    @Override
-    public boolean startsWith(CharIter in) {
-	if (in.startsWith(start)) {
-	    if (solitary) {
-		int i = 1;
-		while (i < in.getPosition()
-			&& Character.isWhitespace(in.prev(i))) {
-		    if (isNewLine(in.prev(i))) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+	 */
+	@Override
+	public boolean startsWith(CharIter in) {
+		if (in.startsWith(start)) {
+			if (solitary) {
+				int i = 1;
+				while (i < in.getPosition()
+				        && Character.isWhitespace(in.prev(i))) {
+					if (isNewLine(in.prev(i))) {
+						return true;
+					}
+					++i;
+				}
+				return false;
+			}
 			return true;
-		    }
-		    ++i;
 		}
 		return false;
-	    }
-	    return true;
 	}
-	return false;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
-     * java.util.List)
-     */
-    @Override
-    public boolean highlight(CharIter in, List<Block> out) {
-	in.moveNext(start.length()); // skip start
-	int endIndex;
-	do {
-	    endIndex = in.indexOf("\n");
-	    int cnt = 1;
-	    if (endIndex == -1) {
-		in.moveToEnd();
-	    } else {
-		in.moveNext(endIndex);
-		if (in.prev().equals('\r')) {
-		    in.moveNext(-1);
-		    ++cnt;
-		}
-	    }
-	    if (lineBreakEscape == null || lineBreakEscape.length() == 0) {
-		break;
-	    }
-	    if (!in.startsWith(lineBreakEscape, -1 * lineBreakEscape.length())) {
-		break;
-	    }
-	    in.moveNext(cnt);
-	} while (endIndex != -1);
-	out.add(in.markedToStyledBlock(styleName));
-	return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+	 * java.util.List)
+	 */
+	@Override
+	public boolean highlight(CharIter in, List<Block> out) {
+		in.moveNext(start.length()); // skip start
+		int endIndex;
+		do {
+			endIndex = in.indexOf("\n");
+			int cnt = 1;
+			if (endIndex == -1) {
+				in.moveToEnd();
+			} else {
+				in.moveNext(endIndex);
+				if (in.prev().equals('\r')) {
+					in.moveNext(-1);
+					++cnt;
+				}
+			}
+			if (lineBreakEscape == null || lineBreakEscape.length() == 0) {
+				break;
+			}
+			if (!in.startsWith(lineBreakEscape, -1 * lineBreakEscape.length())) {
+				break;
+			}
+			in.moveNext(cnt);
+		} while (endIndex != -1);
+		out.add(in.markedToStyledBlock(styleName));
+		return true;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
-     */
-    @Override
-    public String getDefaultStyle() {
-	return "comment";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+	 */
+	@Override
+	public String getDefaultStyle() {
+		return "comment";
+	}
 
 }

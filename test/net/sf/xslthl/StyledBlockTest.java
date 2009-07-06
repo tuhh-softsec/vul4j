@@ -37,85 +37,85 @@ import org.junit.Test;
  */
 public class StyledBlockTest {
 
-    static final String BLOCK_CONTENT = "Foo bar quux.";
-    static final String STYLE = "FooBarQuux";
-    StyledBlock block;
+	static final String BLOCK_CONTENT = "Foo bar quux.";
+	static final String STYLE = "FooBarQuux";
+	StyledBlock block;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	block = new StyledBlock(BLOCK_CONTENT, STYLE);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		block = new StyledBlock(BLOCK_CONTENT, STYLE);
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-	block = null;
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		block = null;
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.StyledBlock#getText()}.
-     */
-    @Test
-    public void testGetText() {
-	assertEquals(BLOCK_CONTENT, block.getText());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.StyledBlock#getText()}.
+	 */
+	@Test
+	public void testGetText() {
+		assertEquals(BLOCK_CONTENT, block.getText());
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.StyledBlock#toString()}.
-     */
-    @Test
-    public void testToString() {
-	assertEquals("<" + STYLE + ">" + BLOCK_CONTENT + "</" + STYLE + ">",
-		block.toString());
-	block = new StyledBlock(BLOCK_CONTENT, StyledBlock.NO_STYLE);
-	assertEquals(BLOCK_CONTENT, block.toString());
-	block = new StyledBlock(BLOCK_CONTENT, StyledBlock.HIDDEN_STYLE);
-	assertEquals("", block.toString());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.StyledBlock#toString()}.
+	 */
+	@Test
+	public void testToString() {
+		assertEquals("<" + STYLE + ">" + BLOCK_CONTENT + "</" + STYLE + ">",
+		        block.toString());
+		block = new StyledBlock(BLOCK_CONTENT, StyledBlock.NO_STYLE);
+		assertEquals(BLOCK_CONTENT, block.toString());
+		block = new StyledBlock(BLOCK_CONTENT, StyledBlock.HIDDEN_STYLE);
+		assertEquals("", block.toString());
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.StyledBlock#isStyled()}.
-     */
-    @Test
-    public void testIsStyled() {
-	assertTrue(block.isStyled());
-	block = new StyledBlock(BLOCK_CONTENT, StyledBlock.NO_STYLE);
-	assertFalse(block.isStyled());
-	block = new StyledBlock(BLOCK_CONTENT, StyledBlock.HIDDEN_STYLE);
-	assertFalse(block.isStyled());
-	block = new StyledBlock(BLOCK_CONTENT, null);
-	assertFalse(block.isStyled());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.StyledBlock#isStyled()}.
+	 */
+	@Test
+	public void testIsStyled() {
+		assertTrue(block.isStyled());
+		block = new StyledBlock(BLOCK_CONTENT, StyledBlock.NO_STYLE);
+		assertFalse(block.isStyled());
+		block = new StyledBlock(BLOCK_CONTENT, StyledBlock.HIDDEN_STYLE);
+		assertFalse(block.isStyled());
+		block = new StyledBlock(BLOCK_CONTENT, null);
+		assertFalse(block.isStyled());
+	}
 
-    /**
-     * Test method for
-     * {@link net.sf.xslthl.StyledBlock#StyledBlock(java.lang.String, java.lang.String)}
-     * .
-     */
-    @Test
-    public void testStyledBlock() {
-	new StyledBlock(null, null);
-	new StyledBlock("foo", null);
-	new StyledBlock(null, "foo");
-    }
+	/**
+	 * Test method for
+	 * {@link net.sf.xslthl.StyledBlock#StyledBlock(java.lang.String, java.lang.String)}
+	 * .
+	 */
+	@Test
+	public void testStyledBlock() {
+		new StyledBlock(null, null);
+		new StyledBlock("foo", null);
+		new StyledBlock(null, "foo");
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.StyledBlock#getStyle()}.
-     */
-    @Test
-    public void testGetStyle() {
-	assertEquals(STYLE, block.getStyle());
-	block = new StyledBlock(BLOCK_CONTENT, StyledBlock.NO_STYLE);
-	assertEquals(StyledBlock.NO_STYLE, block.getStyle());
-	block = new StyledBlock(BLOCK_CONTENT, StyledBlock.HIDDEN_STYLE);
-	assertEquals(StyledBlock.HIDDEN_STYLE, block.getStyle());
-	block = new StyledBlock(BLOCK_CONTENT, null);
-	assertNull(block.getStyle());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.StyledBlock#getStyle()}.
+	 */
+	@Test
+	public void testGetStyle() {
+		assertEquals(STYLE, block.getStyle());
+		block = new StyledBlock(BLOCK_CONTENT, StyledBlock.NO_STYLE);
+		assertEquals(StyledBlock.NO_STYLE, block.getStyle());
+		block = new StyledBlock(BLOCK_CONTENT, StyledBlock.HIDDEN_STYLE);
+		assertEquals(StyledBlock.HIDDEN_STYLE, block.getStyle());
+		block = new StyledBlock(BLOCK_CONTENT, null);
+		assertNull(block.getStyle());
+	}
 
 }

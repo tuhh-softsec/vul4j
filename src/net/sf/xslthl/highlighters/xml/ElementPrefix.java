@@ -36,31 +36,31 @@ import net.sf.xslthl.Params;
  */
 public class ElementPrefix extends ElementSet {
 
-    /**
-     * The prefixex to highlight
-     */
-    private Set<String> prefix;
+	/**
+	 * The prefixex to highlight
+	 */
+	private Set<String> prefix;
 
-    public ElementPrefix(Params params)
-	    throws HighlighterConfigurationException {
-	super(params);
-	prefix = new HashSet<String>();
-	params.getMutliParams("prefix", prefix);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.highlighters.XMLHighlighter.ElementSet#matches(java
-     * .lang.String)
-     */
-    @Override
-    public boolean matches(String tagName) {
-	for (String pf : prefix) {
-	    if (tagName.startsWith(pf)) {
-		return true;
-	    }
+	public ElementPrefix(Params params)
+	        throws HighlighterConfigurationException {
+		super(params);
+		prefix = new HashSet<String>();
+		params.getMutliParams("prefix", prefix);
 	}
-	return false;
-    }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.highlighters.XMLHighlighter.ElementSet#matches(java
+	 * .lang.String)
+	 */
+	@Override
+	public boolean matches(String tagName) {
+		for (String pf : prefix) {
+			if (tagName.startsWith(pf)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

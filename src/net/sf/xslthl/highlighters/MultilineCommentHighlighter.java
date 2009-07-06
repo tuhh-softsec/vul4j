@@ -44,66 +44,66 @@ import net.sf.xslthl.Params;
  */
 public class MultilineCommentHighlighter extends Highlighter {
 
-    /**
-     * The start and end token
-     */
-    protected String start, end;
+	/**
+	 * The start and end token
+	 */
+	protected String start, end;
 
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-	start = params.getParam("start");
-	end = params.getParam("end");
-	if (start == null || start.length() == 0) {
-	    throw new HighlighterConfigurationException(
-		    "Required parameter 'start' is not set.");
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
+		start = params.getParam("start");
+		end = params.getParam("end");
+		if (start == null || start.length() == 0) {
+			throw new HighlighterConfigurationException(
+			        "Required parameter 'start' is not set.");
+		}
+		if (end == null || end.length() == 0) {
+			throw new HighlighterConfigurationException(
+			        "Required parameter 'end' is not set.");
+		}
 	}
-	if (end == null || end.length() == 0) {
-	    throw new HighlighterConfigurationException(
-		    "Required parameter 'end' is not set.");
-	}
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
-     */
-    @Override
-    public boolean startsWith(CharIter in) {
-	if (in.startsWith(start)) {
-	    return true;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+	 */
+	@Override
+	public boolean startsWith(CharIter in) {
+		if (in.startsWith(start)) {
+			return true;
+		}
+		return false;
 	}
-	return false;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
-     * java.util.List)
-     */
-    @Override
-    public boolean highlight(CharIter in, List<Block> out) {
-	in.moveNext(start.length()); // skip start
-	int endIndex = in.indexOf(end);
-	if (endIndex == -1) {
-	    in.moveToEnd();
-	} else {
-	    in.moveNext(endIndex + end.length());
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+	 * java.util.List)
+	 */
+	@Override
+	public boolean highlight(CharIter in, List<Block> out) {
+		in.moveNext(start.length()); // skip start
+		int endIndex = in.indexOf(end);
+		if (endIndex == -1) {
+			in.moveToEnd();
+		} else {
+			in.moveNext(endIndex + end.length());
+		}
+		out.add(in.markedToStyledBlock(styleName));
+		return true;
 	}
-	out.add(in.markedToStyledBlock(styleName));
-	return true;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
-     */
-    @Override
-    public String getDefaultStyle() {
-	return "comment";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+	 */
+	@Override
+	public String getDefaultStyle() {
+		return "comment";
+	}
 
 }

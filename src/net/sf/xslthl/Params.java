@@ -36,127 +36,127 @@ import org.w3c.dom.NodeList;
  */
 public class Params {
 
-    public interface ParamsLoader<T> {
-	T load(Params params) throws HighlighterConfigurationException;
-    }
-
-    protected Element paramElem;
-
-    public Params(Element paramElem) {
-	this.paramElem = paramElem;
-    }
-
-    /**
-     * Return the text content for the given element. This is different from the
-     * Element.getTextContect() function in a way that normal text nodes are
-     * trimmed and CDATA is used AS IS
-     * 
-     * @param elm
-     * @return
-     */
-    protected String getTextContent(Node elm) {
-	if (elm == null) {
-	    return "";
+	public interface ParamsLoader<T> {
+		T load(Params params) throws HighlighterConfigurationException;
 	}
-	StringBuilder sb = new StringBuilder();
-	NodeList list = elm.getChildNodes();
-	for (int i = 0; i < list.getLength(); i++) {
-	    Node n = list.item(i);
-	    if (sb.length() > 0) {
-		sb.append(' ');
-	    }
-	    if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
-		sb.append(n.getTextContent());
-	    } else {
-		sb.append(n.getTextContent().trim());
-	    }
+
+	protected Element paramElem;
+
+	public Params(Element paramElem) {
+		this.paramElem = paramElem;
 	}
-	return sb.toString();
-    }
 
-    /**
-     * Get the current element as value
-     * 
-     * @return
-     */
-    public String getParam() {
-	return getTextContent(paramElem);
-    }
-
-    /**
-     * Get a single parameter. Returns null when the parameter doesn't exist.
-     * 
-     * @param name
-     * @return
-     */
-    public String getParam(String name) {
-	return getParam(name, null);
-    }
-
-    /**
-     * Get a single parameter with a default value.
-     * 
-     * @param name
-     * @param defaultValue
-     * @return
-     */
-    public String getParam(String name, String defaultValue) {
-	NodeList nodes = paramElem.getElementsByTagName(name);
-	if (nodes.getLength() == 0) {
-	    return defaultValue;
+	/**
+	 * Return the text content for the given element. This is different from the
+	 * Element.getTextContect() function in a way that normal text nodes are
+	 * trimmed and CDATA is used AS IS
+	 * 
+	 * @param elm
+	 * @return
+	 */
+	protected String getTextContent(Node elm) {
+		if (elm == null) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		NodeList list = elm.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node n = list.item(i);
+			if (sb.length() > 0) {
+				sb.append(' ');
+			}
+			if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
+				sb.append(n.getTextContent());
+			} else {
+				sb.append(n.getTextContent().trim());
+			}
+		}
+		return sb.toString();
 	}
-	return getTextContent(nodes.item(0));
-    }
 
-    /**
-     * @param name
-     * @return
-     */
-    public Params getParams(String name) {
-	return new Params((Element) paramElem.getElementsByTagName(name)
-		.item(0));
-    }
-
-    /**
-     * Return true if a parameter with the given name exists.
-     * 
-     * @param name
-     * @return
-     */
-    public boolean isSet(String name) {
-	return paramElem.getElementsByTagName(name).getLength() > 0;
-    }
-
-    /**
-     * Load multiple parameters into a list
-     * 
-     * @param name
-     * @param list
-     */
-    public void getMutliParams(String name, Collection<String> list) {
-	NodeList nodes = paramElem.getElementsByTagName(name);
-	for (int i = 0; i < nodes.getLength(); i++) {
-	    Element elem = (Element) nodes.item(i);
-	    list.add(getTextContent(elem));
+	/**
+	 * Get the current element as value
+	 * 
+	 * @return
+	 */
+	public String getParam() {
+		return getTextContent(paramElem);
 	}
-    }
 
-    /**
-     * Get the parameters using a specialized loader
-     * 
-     * @param <T>
-     * @param name
-     * @param list
-     * @param loader
-     * @throws HighlighterConfigurationException
-     */
-    public <T> void getMultiParams(String name, Collection<T> list,
-	    ParamsLoader<? extends T> loader)
-	    throws HighlighterConfigurationException {
-	NodeList nodes = paramElem.getElementsByTagName(name);
-	for (int i = 0; i < nodes.getLength(); i++) {
-	    Element elem = (Element) nodes.item(i);
-	    list.add(loader.load(new Params(elem)));
+	/**
+	 * Get a single parameter. Returns null when the parameter doesn't exist.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public String getParam(String name) {
+		return getParam(name, null);
 	}
-    }
+
+	/**
+	 * Get a single parameter with a default value.
+	 * 
+	 * @param name
+	 * @param defaultValue
+	 * @return
+	 */
+	public String getParam(String name, String defaultValue) {
+		NodeList nodes = paramElem.getElementsByTagName(name);
+		if (nodes.getLength() == 0) {
+			return defaultValue;
+		}
+		return getTextContent(nodes.item(0));
+	}
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	public Params getParams(String name) {
+		return new Params((Element) paramElem.getElementsByTagName(name)
+		        .item(0));
+	}
+
+	/**
+	 * Return true if a parameter with the given name exists.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean isSet(String name) {
+		return paramElem.getElementsByTagName(name).getLength() > 0;
+	}
+
+	/**
+	 * Load multiple parameters into a list
+	 * 
+	 * @param name
+	 * @param list
+	 */
+	public void getMutliParams(String name, Collection<String> list) {
+		NodeList nodes = paramElem.getElementsByTagName(name);
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Element elem = (Element) nodes.item(i);
+			list.add(getTextContent(elem));
+		}
+	}
+
+	/**
+	 * Get the parameters using a specialized loader
+	 * 
+	 * @param <T>
+	 * @param name
+	 * @param list
+	 * @param loader
+	 * @throws HighlighterConfigurationException
+	 */
+	public <T> void getMultiParams(String name, Collection<T> list,
+	        ParamsLoader<? extends T> loader)
+	        throws HighlighterConfigurationException {
+		NodeList nodes = paramElem.getElementsByTagName(name);
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Element elem = (Element) nodes.item(i);
+			list.add(loader.load(new Params(elem)));
+		}
+	}
 }

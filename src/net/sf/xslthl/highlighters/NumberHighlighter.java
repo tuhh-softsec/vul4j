@@ -38,157 +38,157 @@ import net.sf.xslthl.Params;
  */
 public class NumberHighlighter extends Highlighter {
 
-    /**
-     * The decimal point
-     */
-    protected String decimalPoint;
+	/**
+	 * The decimal point
+	 */
+	protected String decimalPoint;
 
-    /**
-     * Thousand seperator
-     */
-    protected String thousandSep;
+	/**
+	 * Thousand seperator
+	 */
+	protected String thousandSep;
 
-    /**
-     * The character to use to start the exponent
-     */
-    protected String exponent;
+	/**
+	 * The character to use to start the exponent
+	 */
+	protected String exponent;
 
-    /**
-     * Opional suffixes
-     */
-    protected List<String> suffix;
+	/**
+	 * Opional suffixes
+	 */
+	protected List<String> suffix;
 
-    /**
-     * Required prefix
-     */
-    protected String prefix;
+	/**
+	 * Required prefix
+	 */
+	protected String prefix;
 
-    /**
-     * Ignore case when looking for exponent and flags
-     */
-    protected boolean ignoreCase;
+	/**
+	 * Ignore case when looking for exponent and flags
+	 */
+	protected boolean ignoreCase;
 
-    /**
-     * If true a number can start with the decimal point
-     */
-    protected boolean pointStarts;
+	/**
+	 * If true a number can start with the decimal point
+	 */
+	protected boolean pointStarts;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
-     */
-    @Override
-    public void init(Params params) throws HighlighterConfigurationException {
-	super.init(params);
-	decimalPoint = params.getParam("point");
-	thousandSep = params.getParam("thousands");
-	exponent = params.getParam("exponent");
-	pointStarts = decimalPoint != null && params.isSet("pointStarts");
-	ignoreCase = params.isSet("ignoreCase");
-	suffix = new ArrayList<String>();
-	params.getMutliParams("suffix", suffix);
-	prefix = params.getParam("prefix");
-    }
-
-    /**
-     * Return true if it is an ascii digit
-     * 
-     * @param ch
-     * @return
-     */
-    protected boolean isDigit(char ch) {
-	return ch >= '0' && ch <= '9';
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#getDefaultStyle()
-     */
-    @Override
-    public String getDefaultStyle() {
-	return "number";
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
-     */
-    @Override
-    public boolean startsWith(CharIter in) {
-	if (in.getPosition() > 0 && Character.isLetter(in.prev())) {
-	    return false;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#init(net.sf.xslthl.Params)
+	 */
+	@Override
+	public void init(Params params) throws HighlighterConfigurationException {
+		super.init(params);
+		decimalPoint = params.getParam("point");
+		thousandSep = params.getParam("thousands");
+		exponent = params.getParam("exponent");
+		pointStarts = decimalPoint != null && params.isSet("pointStarts");
+		ignoreCase = params.isSet("ignoreCase");
+		suffix = new ArrayList<String>();
+		params.getMutliParams("suffix", suffix);
+		prefix = params.getParam("prefix");
 	}
-	if (prefix != null) {
-	    return in.startsWith(prefix, ignoreCase)
-		    && isDigit(in.next(prefix.length()));
-	}
-	if (pointStarts && in.startsWith(decimalPoint, ignoreCase)
-		&& isDigit(in.next(decimalPoint.length()))) {
-	    return true;
-	}
-	return isDigit(in.current());
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
-     * java.util.List)
-     */
-    @Override
-    public boolean highlight(CharIter in, List<Block> out) {
-	boolean hadPoint = false;
-	boolean hadExponent = false;
-	if (prefix != null && in.startsWith(prefix, ignoreCase)) {
-	    in.moveNext(prefix.length());
+	/**
+	 * Return true if it is an ascii digit
+	 * 
+	 * @param ch
+	 * @return
+	 */
+	protected boolean isDigit(char ch) {
+		return ch >= '0' && ch <= '9';
 	}
-	if (pointStarts && in.startsWith(decimalPoint, ignoreCase)) {
-	    in.moveNext(decimalPoint.length());
-	    hadPoint = true;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#getDefaultStyle()
+	 */
+	@Override
+	public String getDefaultStyle() {
+		return "number";
 	}
-	while (!in.finished()) {
-	    if (!hadPoint) {
-		if (decimalPoint != null
-			&& in.startsWith(decimalPoint, ignoreCase)) {
-		    hadPoint = true;
-		    in.moveNext(decimalPoint.length());
-		    continue;
-		} else if (thousandSep != null
-			&& in.startsWith(thousandSep, ignoreCase)) {
-		    in.moveNext(thousandSep.length());
-		    continue;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#startsWith(net.sf.xslthl.CharIter)
+	 */
+	@Override
+	public boolean startsWith(CharIter in) {
+		if (in.getPosition() > 0 && Character.isLetter(in.prev())) {
+			return false;
 		}
-	    }
-	    if (!hadExponent) {
-		if (exponent != null && in.startsWith(exponent, ignoreCase)) {
-		    hadPoint = true;
-		    hadExponent = true;
-		    in.moveNext(exponent.length());
-		    if (in.current().equals('-') || in.current().equals('+')) {
+		if (prefix != null) {
+			return in.startsWith(prefix, ignoreCase)
+			        && isDigit(in.next(prefix.length()));
+		}
+		if (pointStarts && in.startsWith(decimalPoint, ignoreCase)
+		        && isDigit(in.next(decimalPoint.length()))) {
+			return true;
+		}
+		return isDigit(in.current());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.xslthl.Highlighter#highlight(net.sf.xslthl.CharIter,
+	 * java.util.List)
+	 */
+	@Override
+	public boolean highlight(CharIter in, List<Block> out) {
+		boolean hadPoint = false;
+		boolean hadExponent = false;
+		if (prefix != null && in.startsWith(prefix, ignoreCase)) {
+			in.moveNext(prefix.length());
+		}
+		if (pointStarts && in.startsWith(decimalPoint, ignoreCase)) {
+			in.moveNext(decimalPoint.length());
+			hadPoint = true;
+		}
+		while (!in.finished()) {
+			if (!hadPoint) {
+				if (decimalPoint != null
+				        && in.startsWith(decimalPoint, ignoreCase)) {
+					hadPoint = true;
+					in.moveNext(decimalPoint.length());
+					continue;
+				} else if (thousandSep != null
+				        && in.startsWith(thousandSep, ignoreCase)) {
+					in.moveNext(thousandSep.length());
+					continue;
+				}
+			}
+			if (!hadExponent) {
+				if (exponent != null && in.startsWith(exponent, ignoreCase)) {
+					hadPoint = true;
+					hadExponent = true;
+					in.moveNext(exponent.length());
+					if (in.current().equals('-') || in.current().equals('+')) {
+						in.moveNext();
+					}
+					continue;
+				}
+			}
+			if (!isDigit(in.current())) {
+				break;
+			}
 			in.moveNext();
-		    }
-		    continue;
 		}
-	    }
-	    if (!isDigit(in.current())) {
-		break;
-	    }
-	    in.moveNext();
+		for (String suf : suffix) {
+			if (in.startsWith(suf, ignoreCase)) {
+				in.moveNext(suf.length());
+				break;
+			}
+		}
+		if (!in.finished() && Character.isLetter(in.current())) {
+			return false;
+		}
+		out.add(in.markedToStyledBlock(styleName));
+		return true;
 	}
-	for (String suf : suffix) {
-	    if (in.startsWith(suf, ignoreCase)) {
-		in.moveNext(suf.length());
-		break;
-	    }
-	}
-	if (!in.finished() && Character.isLetter(in.current())) {
-	    return false;
-	}
-	out.add(in.markedToStyledBlock(styleName));
-	return true;
-    }
 
 }

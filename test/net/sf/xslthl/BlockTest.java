@@ -37,70 +37,70 @@ import org.junit.Test;
  */
 public class BlockTest {
 
-    static final String BLOCK_CONTENT = "Foo bar quux.";
-    Block block;
+	static final String BLOCK_CONTENT = "Foo bar quux.";
+	Block block;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	block = new Block(BLOCK_CONTENT);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		block = new Block(BLOCK_CONTENT);
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-	block = null;
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		block = null;
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Block#Block(java.lang.String)}.
-     */
-    @Test
-    public void testBlock() {
-	new Block(null);
-	new Block("");
-	new Block(BLOCK_CONTENT);
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Block#Block(java.lang.String)}.
+	 */
+	@Test
+	public void testBlock() {
+		new Block(null);
+		new Block("");
+		new Block(BLOCK_CONTENT);
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Block#getText()}.
-     */
-    @Test
-    public void testGetText() {
-	assertEquals(BLOCK_CONTENT, block.getText());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Block#getText()}.
+	 */
+	@Test
+	public void testGetText() {
+		assertEquals(BLOCK_CONTENT, block.getText());
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Block#toString()}.
-     */
-    @Test
-    public void testToString() {
-	assertEquals(BLOCK_CONTENT, block.toString());
-	assertEquals(block.getText(), block.toString());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Block#toString()}.
+	 */
+	@Test
+	public void testToString() {
+		assertEquals(BLOCK_CONTENT, block.toString());
+		assertEquals(block.getText(), block.toString());
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Block#isStyled()}.
-     */
-    @Test
-    public void testIsStyled() {
-	assertFalse(block.isStyled());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Block#isStyled()}.
+	 */
+	@Test
+	public void testIsStyled() {
+		assertFalse(block.isStyled());
+	}
 
-    /**
-     * Test method for {@link net.sf.xslthl.Block#isEmpty()}.
-     */
-    @Test
-    public void testEmpty() {
-	assertFalse(block.isEmpty());
-	Block empty = new Block(null);
-	assertTrue(empty.isEmpty());
-	empty = new Block("");
-	assertTrue(empty.isEmpty());
-    }
+	/**
+	 * Test method for {@link net.sf.xslthl.Block#isEmpty()}.
+	 */
+	@Test
+	public void testEmpty() {
+		assertFalse(block.isEmpty());
+		Block empty = new Block(null);
+		assertTrue(empty.isEmpty());
+		empty = new Block("");
+		assertTrue(empty.isEmpty());
+	}
 
 }
