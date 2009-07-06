@@ -1,5 +1,6 @@
-Changelog for "Apache xml-security" <http://xml.apache.org/security/>
+Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v ...
+    Fixed Bug 47483: Remove JDK 1.5 API dependencies
     Fixed bug 47057: Downgrade signature verification logging from "info". Thanks to Colm O hEigeartaigh.
     Fixed bug 42061: Method to disable XMLUtils.addReturnToElement (reopened): changed Base64 code to ignore line breaks, if enabled. Thanks to Colm O hEigeartaigh.
     Fixed bug 47097: Reusing XMLSignature for signing and verifying fails on same thread. Thanks to Bruno Harbulot.
