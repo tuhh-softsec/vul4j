@@ -239,6 +239,9 @@ public class Config {
 			try {
 				Class<? extends Highlighter> hlClass = highlighterClasses
 				        .get(type);
+				if (hlClass == null && type.startsWith("java:")) {
+					// TODO: try plugin loading
+				}
 				if (hlClass != null) {
 					Highlighter hlinstance = hlClass.newInstance();
 					hlinstance.init(params);
