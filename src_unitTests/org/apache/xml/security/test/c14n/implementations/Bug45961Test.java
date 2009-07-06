@@ -32,7 +32,6 @@ public class Bug45961Test extends TestCase {
 	private static final String ALIAS = "mullan";
 	private DocumentBuilder _builder;
 
-	@Override
 	protected void setUp() throws Exception {
 		Init.init();
 		Canonicalizer.register(MOCK_CANONICALIZATION_METHOD,
