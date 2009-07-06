@@ -56,9 +56,9 @@ public class SignatureTest extends TestCase {
 
     public PublicKey getPublicKey() throws Exception {
 	KeyStore keyStore = getKeyStore();
-	Enumeration<String> aliases = keyStore.aliases();
+	Enumeration aliases = keyStore.aliases();
 	while (aliases.hasMoreElements()) {
-	    String alias = aliases.nextElement();
+	    String alias = (String) aliases.nextElement();
 	    if (keyStore.isKeyEntry(alias)) {
 		return keyStore.getCertificate(alias).getPublicKey();
 	    }
@@ -68,9 +68,9 @@ public class SignatureTest extends TestCase {
 
     public PrivateKey getPrivateKey() throws Exception {
 	KeyStore keyStore = getKeyStore();
-	Enumeration<String> aliases = keyStore.aliases();
+	Enumeration aliases = keyStore.aliases();
 	while (aliases.hasMoreElements()) {
- 	    String alias = aliases.nextElement();
+ 	    String alias = (String) aliases.nextElement();
 	    if (keyStore.isKeyEntry(alias)) {
 		return (PrivateKey) keyStore.getKey(alias, KEYSTORE_PASSWORD);
 	    }

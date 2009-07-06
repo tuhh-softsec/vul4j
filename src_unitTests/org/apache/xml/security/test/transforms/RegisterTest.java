@@ -30,8 +30,8 @@ public class RegisterTest extends TestCase {
         URLClassLoader ucl = new URLClassLoader(urls);
         Class c = ucl.loadClass
             ("org.apache.xml.security.test.transforms.SampleTransform");
-        Constructor cons = c.getConstructor();
-        Object o = cons.newInstance();
+        Constructor cons = c.getConstructor(new Class[0]);
+        Object o = cons.newInstance(new Object[0]);
         // Apache code swallows the ClassNotFoundExc, so we need to
         // check if the Transform has already been registered by registering
         // it again and catching an AlgorithmAlreadyRegisteredExc
