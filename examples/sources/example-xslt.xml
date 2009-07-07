@@ -1,7 +1,7 @@
 <?xml version='1.0' ?>
 <example-document>
 	<header>Example XML document</header>
-	<para>This uses the a hgihlighter by filename</para>
+	<para>This uses the a highlighter by filename</para>
 	<code language="examples/sources/xslt-hl.xml">
 <![CDATA[
 <?xml version="1.0"?>

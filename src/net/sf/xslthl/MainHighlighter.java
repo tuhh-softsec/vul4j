@@ -34,6 +34,9 @@ import java.util.List;
  */
 public class MainHighlighter {
 
+	protected String id;
+	protected String filename;
+
 	/**
 	 * Normal highlighter
 	 */
@@ -43,6 +46,29 @@ public class MainHighlighter {
      * 
      */
 	protected List<WholeHighlighter> wholehighlighters = new ArrayList<WholeHighlighter>();
+
+	public MainHighlighter(String highlighterId, String configFilename) {
+		id = highlighterId;
+		filename = configFilename;
+	}
+
+	/**
+	 * The highlighter identifier
+	 * 
+	 * @return
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * The configuration filename, can be null
+	 * 
+	 * @return
+	 */
+	public String getFilename() {
+		return filename;
+	}
 
 	public void add(Highlighter h) {
 		if (h instanceof WholeHighlighter) {

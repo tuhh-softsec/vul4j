@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<highlighters>
+	<highlighter type="java:net.sf.xslthl.highlighters.OnelineCommentHighlighter">//</highlighter>
+	<!-- classpath is 'URL relative' to this config file -->
+	<highlighter type="java:net.sf.xslthl.plugins.AltOnelineComment" classpath="plugins/plugins.jar">##</highlighter>
+</highlighters>

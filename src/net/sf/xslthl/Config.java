@@ -26,12 +26,16 @@
 package net.sf.xslthl;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,6 +88,8 @@ public class Config {
 	 * Registered highlighter classes
 	 */
 	public static final Map<String, Class<? extends Highlighter>> highlighterClasses = new HashMap<String, Class<? extends Highlighter>>();
+
+	public static final String PLUGIN_PREFIX = "java:";
 
 	static {
 		highlighterClasses.put("multiline-comment",
@@ -190,7 +196,7 @@ public class Config {
 				}
 				if (uri != null) {
 					try {
-						MainHighlighter hl = loadHl(uri);
+						MainHighlighter hl = loadHl(id, uri);
 						highlighters.put(id, hl);
 						return hl;
 					} catch (Exception e) {
@@ -211,8 +217,9 @@ public class Config {
 	 * @return
 	 * @throws Exception
 	 */
-	protected MainHighlighter loadHl(String filename) throws Exception {
-		MainHighlighter main = new MainHighlighter();
+	protected MainHighlighter loadHl(String id, String filename)
+	        throws Exception {
+		MainHighlighter main = new MainHighlighter(id, filename);
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbf.newDocumentBuilder();
 		Document doc = builder.parse(filename);
@@ -239,8 +246,9 @@ public class Config {
 			try {
 				Class<? extends Highlighter> hlClass = highlighterClasses
 				        .get(type);
-				if (hlClass == null && type.startsWith("java:")) {
-					// TODO: try plugin loading
+				if (hlClass == null && type.startsWith(PLUGIN_PREFIX)) {
+					hlClass = loadPlugin(main, type, hl
+					        .getAttribute("classpath"));
 				}
 				if (hlClass != null) {
 					Highlighter hlinstance = hlClass.newInstance();
@@ -264,6 +272,60 @@ public class Config {
 				                .getMessage()));
 			}
 		}
+	}
+
+	/**
+	 * Load a plugin highlighter
+	 * 
+	 * @param type
+	 * @param classpath
+	 * @return
+	 */
+	protected Class<? extends Highlighter> loadPlugin(MainHighlighter main,
+	        String type, String classpath) {
+		ClassLoader cl = Config.class.getClassLoader();
+		if (classpath != null && classpath.length() > 0) {
+			String[] paths = classpath.split(";");
+			List<URL> urls = new ArrayList<URL>();
+			for (String path : paths) {
+				path = path.trim();
+				if (path.length() == 0) {
+					continue;
+				}
+				try {
+					URL url;
+					if (main.getFilename() == null) {
+						url = new URL(path);
+					} else {
+						URL base = new URL(main.getFilename());
+						url = new URL(base, path);
+					}
+					urls.add(url);
+				} catch (MalformedURLException e) {
+					System.err.println(String.format(
+					        "Invalid classpath entry %s: %s", path, e
+					                .getMessage()));
+				}
+			}
+			if (urls.size() > 0) {
+				cl = new URLClassLoader(urls.toArray(new URL[urls.size()]), cl);
+			}
+		}
+		try {
+			String className = type.substring(PLUGIN_PREFIX.length());
+			Class<?> tmp = cl.loadClass(className);
+			if (Highlighter.class.isAssignableFrom(tmp)) {
+				return tmp.asSubclass(Highlighter.class);
+			} else {
+				System.err.println(String.format(
+				        "Class %s is not a subclass of %s", tmp.getName(),
+				        Highlighter.class.getName()));
+			}
+		} catch (ClassNotFoundException e) {
+			System.err.println(String.format(
+			        "Unable to resolve highlighter class: %s", e.getMessage()));
+		}
+		return null;
 	}
 
 	protected Config() {
@@ -325,7 +387,7 @@ public class Config {
 					        + absFilename + "...");
 				}
 				try {
-					MainHighlighter mhl = loadHl(absFilename);
+					MainHighlighter mhl = loadHl(id, absFilename);
 					highlighters.put(id, mhl);
 					if (verbose) {
 						System.out.println(" OK");
@@ -354,7 +416,7 @@ public class Config {
 
 		if (!highlighters.containsKey("xml")) {
 			// add the built-in XML highlighting if it wasn't overloaded
-			MainHighlighter xml = new MainHighlighter();
+			MainHighlighter xml = new MainHighlighter("xml", null);
 			xml.add(new XMLHighlighter());
 			highlighters.put("xml", xml);
 		}

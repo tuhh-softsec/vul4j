@@ -1,0 +1,14 @@
+<?xml version='1.0' ?>
+<example-document>
+	<header>Example document</header>
+	<para>This example uses a highlighter configuration which makes use
+		of the plugin infrastructure present in Xslthl 2.1</para>
+	<code language="examples/sources/plugins-hl.xml">
+<![CDATA[
+The example highlighter recognizes single line comments,
+like this: // this is a line comment
+
+This comment is different ## should be highlighted as doccomment
+]]>
+	</code>
+</example-document>
