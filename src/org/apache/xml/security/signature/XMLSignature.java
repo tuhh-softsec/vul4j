@@ -493,20 +493,24 @@ public final class XMLSignature extends SignatureElementProxy {
             //Create a SignatureAlgorithm object
        	    SignedInfo si = this.getSignedInfo();
             SignatureAlgorithm sa = si.getSignatureAlgorithm();               
-            // initialize SignatureAlgorithm for signing
-            sa.initSign(signingKey);            
-
-            // generate digest values for all References in this SignedInfo
-            si.generateDigestValues();
-            OutputStream so = 
-                new UnsyncBufferedOutputStream(new SignerOutputStream(sa));
             try {
+                // initialize SignatureAlgorithm for signing
+                sa.initSign(signingKey);            
+    
+                // generate digest values for all References in this SignedInfo
+                si.generateDigestValues();
+                OutputStream so = new UnsyncBufferedOutputStream(new SignerOutputStream(sa));
+                // get the canonicalized bytes from SignedInfo
+                si.signInOctectStream(so);
+                
                 so.close();
-            } catch (IOException e) {
-                //Imposible
+            } catch (IOException ex) {
+                // Impossible...but clear the signature cache anyway
+                sa.clearSignatureCache();
+            } catch (XMLSecurityException ex) {
+                sa.clearSignatureCache();
+                throw ex;
             }
-            // get the canonicalized bytes from SignedInfo
-            si.signInOctectStream(so);
 
             // set them on the SignatureValue element
             this.setSignatureValueElement(sa.sign());
@@ -590,32 +594,37 @@ public final class XMLSignature extends SignatureElementProxy {
             //SignedInfo. This is used to validate the signature.
             SignatureAlgorithm sa = si.getSignatureAlgorithm();               
             if (log.isDebugEnabled()) {
-         	log.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
-         	log.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
-         	log.debug("jceSigProvider     = " + sa.getJCEProviderName());
-         	log.debug("PublicKey = " + pk);
+                log.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
+                log.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
+                log.debug("jceSigProvider     = " + sa.getJCEProviderName());
+                log.debug("PublicKey = " + pk);
             }
-            sa.initVerify(pk);
-
-            // Get the canonicalized (normalized) SignedInfo
-            SignerOutputStream so = new SignerOutputStream(sa);
-            OutputStream bos = new UnsyncBufferedOutputStream(so);
-            si.signInOctectStream(bos);
+            byte sigBytes[] = null;
             try {
-		bos.close();
-	    } catch (IOException e) {
-		//Imposible
-	    }
+                sa.initVerify(pk);
 
-            //retrieve the byte[] from the stored signature
-            byte sigBytes[] = this.getSignatureValue();
+                // Get the canonicalized (normalized) SignedInfo
+                SignerOutputStream so = new SignerOutputStream(sa);
+                OutputStream bos = new UnsyncBufferedOutputStream(so);
+                
+                si.signInOctectStream(bos);
+    		    bos.close();
+    		    // retrieve the byte[] from the stored signature
+    		    sigBytes = this.getSignatureValue();
+    	    } catch (IOException ex) {
+     	        // Impossible...but clear the verification cache anyway
+    	        sa.clearVerificationCache();
+    	    } catch (XMLSecurityException ex) {
+    	        sa.clearVerificationCache();
+    	        throw ex;
+    	    }
 
             // have SignatureAlgorithm sign the input bytes and compare them to 
             // the bytes that were stored in the signature.
             if (!sa.verify(sigBytes)) {
                 log.warn("Signature verification failed.");
-	        return false;
-	    }
+                return false;
+            }
 
             return si.verify(this._followManifestsDuringValidation);
         } catch (XMLSecurityException ex) {

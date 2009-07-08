@@ -334,6 +334,26 @@ public class SignatureAlgorithm extends Algorithm {
         map.put(this.algorithmURI,verificationKey);
         this._signatureAlgorithm.engineInitVerify(verificationKey);
     }
+    
+    /**
+     * Clear the verification caches keysVerify and instancesVerify.
+     */
+    public void clearVerificationCache() {
+        Map keysMap = (Map)keysVerify.get();
+        keysMap.clear();
+        Map instancesMap = (Map)instancesVerify.get();
+        instancesMap.clear();
+    }
+    
+    /**
+     * Clear the signature caches keysSigning and instancesSigning.
+     */
+    public void clearSignatureCache() {
+        Map keysMap = (Map)keysSigning.get();
+        keysMap.clear();
+        Map instancesMap = (Map)instancesSigning.get();
+        instancesMap.clear();
+    }
 
     /**
      * Proxy method for {@link java.security.Signature#verify(byte[])}
