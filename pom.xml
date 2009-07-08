@@ -1,0 +1,273 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.santuario</groupId>
+    <artifactId>xmlsec</artifactId>
+    <packaging>bundle</packaging>
+    <name>XML Security</name>
+    <version>1.4.3-SNAPSHOT</version>
+    <description>
+        Apache XML Security supports XML-Signature Syntax and Processing,
+        W3C Recommendation 12 February 2002, and XML Encryption Syntax and
+        Processing, W3C Recommendation 10 December 2002. As of version 1.4,
+        the Java library supports the standard Java API JSR-105: XML Digital
+        Signature APIs.
+    </description>
+    <url>http://santuario.apache.org/</url>
+    <issueManagement>
+        <system>Bugzilla</system>
+        <url>http://issues.apache.org/bugzilla</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>XML Security Developer List</name>
+            <subscribe>security-dev-subscribe@xml.apache.org</subscribe>
+            <unsubscribe>
+                security-dev-unsubscribe@xml.apache.org
+            </unsubscribe>
+            <post>security-dev@xml.apache.org</post>
+            <archive>
+                http://news.gmane.org/thread.php?group=gmane.text.xml.security.devel 
+            </archive>
+        </mailingList>
+    </mailingLists>
+    <inceptionYear>2000</inceptionYear>
+    <!-- who the developers are for the project -->
+    <developers>
+        <developer>
+            <name>Sean Mullan</name>
+            <email>sean.mullan@sun.com</email>
+        </developer>
+        <developer>
+            <name>Berin Lautenbach</name>
+            <email>berin@ozemail.com.au</email>
+        </developer>
+        <developer>
+            <name>Axl Mattheus</name>
+            <email>amattheu@apache.org</email>
+        </developer>
+        <developer>
+            <name>Erwin van der Koog</name>
+            <email>erwin@koogh.com</email>
+        </developer>
+        <developer>
+            <name>Raul Benito Garcia</name>
+            <email>raul-info@r-bg.com</email>
+        </developer>
+        <developer>
+            <name>Vishal Mahajan</name>
+            <email>vmahajan@amberpoint.com</email>
+        </developer>
+        <developer>
+            <name>Milan Tomic</name>
+            <email>milan@setcce.org</email>
+        </developer>
+        <developer>
+            <name>Colm O hEigeartaigh</name>
+            <email>coheigea@apache.org</email>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>
+            scm:svn:http://svn.apache.org/repos/asf/xml/security/trunk
+        </connection>
+        <developerConnection>
+            scm:svn:https://svn.apache.org/repos/asf/xml/security/trunk
+        </developerConnection>
+        <url>http://svn.apache.org/viewvc/xml/security/trunk</url>
+    </scm>
+    <organization>
+        <name>The Apache Software Foundation</name>
+        <url>http://www.apache.org/</url>
+    </organization>
+
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>src_unitTests</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src</directory>
+                <includes>
+                    <include>org/**/*.properties</include>
+                    <include>org/**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src_unitTests</directory>
+                <includes>
+                    <include>org/**/*.zip</include>
+                </includes>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.4</source>
+                    <target>1.4</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>1.0.0</Bundle-Version>
+                        <Bundle-Name>org.apache.santuario.xmlsec</Bundle-Name>
+                        <Bundle-Vendor>Apache Software Foundation</Bundle-Vendor>
+                        <Bundle-Description>${pom.artifactId}</Bundle-Description>
+                        <Bundle-SymbolicName>org.apache.santuario.xmlsec</Bundle-SymbolicName>
+                        <Export-Package>
+                              org.apache.xml.security.*; version=1.4.3-SNAPSHOT,
+                              javax.xml.crypto.*; version=1.4.3-SNAPSHOT,
+                              org.jcp.xml.dsig.internal.*; version=1.4.3-SNAPSHOT,
+                        </Export-Package>
+                        <Import-Package>
+                              !org.apache.xml.security.*,
+                              !org.jcp.xml.dsig.internal.*,
+                              *;resolution:=optional
+                        </Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.0.4</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <reportFormat>brief</reportFormat>
+                        <useFile>false</useFile>
+                        <forkMode>pertest</forkMode>
+                        <childDelegation>false</childDelegation>
+                        <includes>
+                            <include>org/apache/xml/security/test/AllTests.java</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+  
+            </plugins>
+        </pluginManagement>
+
+        <defaultGoal>install</defaultGoal>
+    </build>
+
+
+    <profiles>
+        <profile>
+            <id>jdk14</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <jdk>1.4</jdk>
+            </activation>
+        </profile>
+        <profile>
+            <id>jdk15</id>
+            <activation>
+                <jdk>1.5</jdk>
+            </activation>
+        </profile>
+        <profile>
+            <id>fastinstall</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
+
+    <properties>
+        <xml.apis.version>1.3.03</xml.apis.version>
+        <commons.logging.version>1.1</commons.logging.version>
+        <xalan.version>2.7.1</xalan.version>
+        <xerces.version>2.9.1</xerces.version>
+        <junit.version>3.8.1</junit.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons.logging.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>${xalan.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>${xerces.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>${xml.apis.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>
