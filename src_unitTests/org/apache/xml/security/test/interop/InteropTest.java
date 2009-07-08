@@ -147,8 +147,6 @@ public class InteropTest extends TestCase {
          throw new RuntimeException("Did not find a KeyInfo");
       }
       if (!result) {
-    	  StringBuffer sb = new StringBuffer();
-
           for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
              boolean refVerify =
                 signature.getSignedInfo().getVerificationResult(i);             
@@ -156,11 +154,8 @@ public class InteropTest extends TestCase {
              if (refVerify) {
                 log.debug("Reference " + i + " was OK");
              } else {
-                sb.append(i + " ");
-                JavaUtils.writeBytesToFilename(filename + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());                
-                
-                
-                log.debug("Reference " + i );
+                // JavaUtils.writeBytesToFilename(filename + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());                
+                log.debug("Reference " + i + " was not OK");
              }
           }
           //throw new RuntimeException("Falle:"+sb.toString());

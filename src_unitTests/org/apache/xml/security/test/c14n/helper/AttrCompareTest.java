@@ -156,7 +156,7 @@ public class AttrCompareTest extends TestCase {
       Attr attr0 = doc.createAttributeNS(null, "foo");
       Attr attr1 = doc.createAttributeNS("http://goo", "goo:foo");
 
-      System.out.println("Attr1: " + attr1 + " (" + attr1.getLocalName()  +")");
+      // System.out.println("Attr1: " + attr1 + " (" + attr1.getLocalName()  +")");
 
 
       AttrCompare attrCompare = new AttrCompare();

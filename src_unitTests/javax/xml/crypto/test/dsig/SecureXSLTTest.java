@@ -38,7 +38,7 @@ public class SecureXSLTTest extends TestCase {
         File f = new File("doc.xml");
         for (int i=0; i<signatures.length; i++) {
 	    String signature = signatures[i];
-            System.out.println("Validating " + signature);
+            // System.out.println("Validating " + signature);
             Document doc = dbf.newDocumentBuilder().parse
                 (new FileInputStream(new File(baseDir, signature)));
 
@@ -74,6 +74,6 @@ public class SecureXSLTTest extends TestCase {
                     ("Test FAILED: doc.xml was successfully created");
             }
         }
-        System.out.println("Test PASSED");
+        // System.out.println("Test PASSED");
     }
 }

@@ -40,6 +40,10 @@ public class SignatureTest extends TestCase {
         super(test);
     }
 
+    public static Test suite() {
+       return new TestSuite(SignatureTest.class);
+    }
+
     /**
      * Loads the 'localhost' keystore from the test keystore.
      * 

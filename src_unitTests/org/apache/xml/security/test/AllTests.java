@@ -51,6 +51,7 @@ public class AllTests extends TestCase {
       //J-
       suite.addTest(org.apache.xml.security.test.ModuleTest.suite());
       suite.addTest(org.apache.xml.security.test.InteropTest.suite());
+      suite.addTest(org.apache.xml.security.test.EncryptionTest.suite());
       //J+
 
       return suite;

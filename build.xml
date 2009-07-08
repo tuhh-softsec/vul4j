@@ -362,14 +362,7 @@
 	        <formatter type="plain" usefile="false"/>
 	        <batchtest fork="yes" todir="${dir.build.junit.xml}">
 	            <fileset dir="${dir.src.test}">
-	                <include name="**/*Test*.java"/>
-	                <include name="org/apache/xml/security/test/c14n/implementations/ExclusiveC14NInterop.java"/>
-	                <exclude name="org/apache/xml/security/test/TestUtils.java"/>
-	                <exclude name="org/apache/xml/security/test/interop/InteropTest.java"/>
-	                <exclude name="**/TestVectorResolver.java"/>
-	                <exclude name="**/IBMTest.java"/>
-	                <exclude name="javax/xml/crypto/test/dsig/TestUtils.java"/>
-                        <exclude name="javax/xml/crypto/test/dsig/InteropC14nTest.java"/>
+	                <include name="org/apache/xml/security/test/AllTests.java"/>
 	             </fileset>
 	        </batchtest>
 	        <test if="ibm.available" name="org.apache.xml.security.test.interop.IBMTest" todir="${dir.build.junit.xml}"/>

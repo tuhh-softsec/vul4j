@@ -10,6 +10,7 @@ public class AllTests {
 				"Test for org.apache.xml.security.test.transforms.implementations");
 		//$JUnit-BEGIN$
 		suite.addTest(TransformBase64DecodeTest.suite());
+		suite.addTest(TransformXSLTTest.suite());
 		suite.addTest(Xpath2TransformationTest.suite());
 		//$JUnit-END$
 		return suite;

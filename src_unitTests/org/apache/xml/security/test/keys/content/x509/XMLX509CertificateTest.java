@@ -67,6 +67,6 @@ public class XMLX509CertificateTest extends TestCase {
 	XMLX509Certificate xmlCert = 
 	    new XMLX509Certificate((Element) nl.item(0), "");
 	X509Certificate cert = xmlCert.getX509Certificate();
-	System.out.println(cert);
+	// System.out.println(cert);
     }
 }

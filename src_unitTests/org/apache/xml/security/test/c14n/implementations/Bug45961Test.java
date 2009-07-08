@@ -22,7 +22,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class Bug45961Test extends TestCase {
 
@@ -31,6 +33,10 @@ public class Bug45961Test extends TestCase {
 	private static final char[] PASSWORD = "changeit".toCharArray();
 	private static final String ALIAS = "mullan";
 	private DocumentBuilder _builder;
+	
+	public static Test suite() {
+		return new TestSuite(Bug45961Test.class);
+	}
 
 	protected void setUp() throws Exception {
 		Init.init();

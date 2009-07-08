@@ -140,7 +140,7 @@ public class C14N11Test extends TestCase {
     private void test_c14n11(String test) throws Exception {
 	for (int i=0; i<vendors.length; i++) {
 	    String file = test + "-" + vendors[i] + ".xml";
-	    System.out.println("Validating " + file);
+	    // System.out.println("Validating " + file);
             boolean coreValidity = validator.validate(file, sks);
             assertTrue(file + " failed core validation", coreValidity);
 	}
@@ -149,7 +149,7 @@ public class C14N11Test extends TestCase {
     private void test_c14n11(String test, String[] vendors) throws Exception {
 	for (int i=0; i<vendors.length; i++) {
 	    String file = test + "-" + vendors[i] + ".xml";
-	    System.out.println("Validating " + file);
+	    // System.out.println("Validating " + file);
             boolean coreValidity = validator.validate(file, sks);
             assertTrue(file + " failed core validation", coreValidity);
 	}

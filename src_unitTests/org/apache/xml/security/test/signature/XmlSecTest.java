@@ -42,7 +42,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * Tests creating and validating an XML Signature with an XPath Transform.
@@ -55,6 +57,10 @@ public class XmlSecTest extends TestCase {
     static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog
             (XmlSecTest.class.getName());
+
+    public static Test suite() {
+       return new TestSuite(XmlSecTest.class);
+    }
 
     public void testCheckXmlSignatureSoftwareStack() throws Exception {
 	checkXmlSignatureSoftwareStack(false);
@@ -131,9 +137,9 @@ public class XmlSecTest extends TestCase {
 
 	signature.sign(privateKey);
 
-	TransformerFactory tf = TransformerFactory.newInstance();
-	Transformer t = tf.newTransformer();
-	t.transform(new DOMSource(testDocument), new StreamResult(System.out));
+	// TransformerFactory tf = TransformerFactory.newInstance();
+	// Transformer t = tf.newTransformer();
+	// t.transform(new DOMSource(testDocument), new StreamResult(System.out));
 
 	NodeList signatureElems = XPathAPI.selectNodeList(testDocument,
 				"//ds:Signature", nsElement);

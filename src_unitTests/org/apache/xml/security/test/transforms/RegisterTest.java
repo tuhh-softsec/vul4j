@@ -7,7 +7,9 @@ import java.net.URLClassLoader;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.transforms.Transform;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * RegisterTest tests registering a custom Transform implementation loaded
@@ -19,6 +21,10 @@ public class RegisterTest extends TestCase {
 
     public RegisterTest(String name) {
         super(name);
+    }
+
+    public static Test suite() {
+       return new TestSuite(RegisterTest.class);
     }
 
     public static void test() throws Exception {

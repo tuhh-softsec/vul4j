@@ -39,7 +39,7 @@ public class UtfHelperTest extends TestCase {
 		String str=new String(chs);
 		byte a[]=UtfHelpper.getStringInUtf8(str);
 		try {
-			System.out.println("chunk:"+j);
+			// System.out.println("chunk:"+j);
 			byte correct[]=str.getBytes("UTF8");
 			assertTrue("UtfHelper.getStringInUtf8 failse",Arrays.equals(correct, a));
 			assertTrue("UtfHelper.getStringInUtf8 failse",Arrays.equals(correct, charByCharOs.toByteArray()));

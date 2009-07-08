@@ -98,7 +98,7 @@ public class EncryptContentTest extends TestCase {
 	// child should be EncryptedData, if not throw exception
 	Element childElem = (Element) child;
 	if (!childElem.getLocalName().equals("EncryptedData")) {
-	    t.transform(new DOMSource(doc), new StreamResult(System.out));
+	    // t.transform(new DOMSource(doc), new StreamResult(System.out));
 	    throw new Exception("Element content not replaced");
 	}
 	// there shouldn't be any more children elements
@@ -107,10 +107,10 @@ public class EncryptContentTest extends TestCase {
             sibling = sibling.getNextSibling();
         }
 	if (sibling != null) {
-	    t.transform(new DOMSource(doc), new StreamResult(System.out));
+	    // t.transform(new DOMSource(doc), new StreamResult(System.out));
 	    throw new Exception("Sibling element content not replaced");
 	}
 
-	t.transform(new DOMSource(doc), new StreamResult(System.out));
+	// t.transform(new DOMSource(doc), new StreamResult(System.out));
     }
 }

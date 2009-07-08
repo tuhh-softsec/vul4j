@@ -44,15 +44,22 @@ public class ModuleTest extends TestCase {
 
       //J-
       suite.addTest(org.apache.xml.security.test.c14n.helper.C14nHelperTest.suite());
+      suite.addTest(org.apache.xml.security.test.c14n.helper.AttrCompareTest.suite());
       suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315Test.suite());
       suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315ExclusiveTest.suite());
+      suite.addTest(org.apache.xml.security.test.c14n.implementations.ExclusiveC14NInterop.suite());
+      suite.addTest(org.apache.xml.security.test.c14n.implementations.Bug45961Test.suite());
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.XalanBug1425Test.suite());
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.AttributeAncestorOrSelfTest.suite());
       suite.addTest(org.apache.xml.security.test.signature.AllTests.suite());      
       suite.addTest(org.apache.xml.security.test.utils.AllTests.suite());
       suite.addTest(org.apache.xml.security.c14n.implementations.AllTests.suite());
       suite.addTest(org.apache.xml.security.test.transforms.implementations.AllTests.suite());
+      suite.addTest(org.apache.xml.security.test.transforms.RegisterTest.suite());
       suite.addTest(org.apache.xml.security.test.algorithms.AllTests.suite());
+      suite.addTest(org.apache.xml.security.test.keys.content.x509.XMLX509SKITest.suite());
+      suite.addTest(org.apache.xml.security.test.keys.content.x509.XMLX509IssuerSerialTest.suite());
+      suite.addTest(org.apache.xml.security.test.keys.content.x509.XMLX509CertificateTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
       //J+

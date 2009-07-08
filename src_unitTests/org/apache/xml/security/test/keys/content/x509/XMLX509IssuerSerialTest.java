@@ -57,10 +57,10 @@ public class XMLX509IssuerSerialTest extends TestCase {
 	XMLX509IssuerSerial is = 
 	    new XMLX509IssuerSerial(doc, issuer, 0);
 	assertEquals(issuer, is.getIssuerName());
-	System.out.println(is.getIssuerName());
+	// System.out.println(is.getIssuerName());
 	issuer = "CN=#abc123";
 	is = new XMLX509IssuerSerial(doc, issuer, 0);
 	assertEquals("CN=\\#abc123", is.getIssuerName());
-	System.out.println(is.getIssuerName());
+	// System.out.println(is.getIssuerName());
     }
 }

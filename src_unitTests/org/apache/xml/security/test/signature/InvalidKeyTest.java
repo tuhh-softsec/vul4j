@@ -12,7 +12,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * Test case contributed by Matthias Germann for testing that bug 43239 is
@@ -23,6 +25,10 @@ public class InvalidKeyTest extends TestCase {
 
     static {
 	Init.init();
+    }
+
+    public static Test suite() {
+       return new TestSuite(InvalidKeyTest.class);
     }
 
     private static final String BASEDIR = System.getProperty("basedir");
@@ -36,8 +42,9 @@ public class InvalidKeyTest extends TestCase {
         
 	try {
             validate(trustStore.getCertificate("bedag-test").getPublicKey());
+            throw new Exception("Failure expected on a DSA key");
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    // e.printStackTrace();
 	}
         validate(trustStore.getCertificate("a70-garaio-frontend-u").getPublicKey());
     }
@@ -56,6 +63,6 @@ public class InvalidKeyTest extends TestCase {
         XMLSignature si = new XMLSignature((Element)n,"");
         si.checkSignatureValue(pk);
 
-       	System.out.println("VALIDATION OK" );
+       	// System.out.println("VALIDATION OK" );
     }
 }

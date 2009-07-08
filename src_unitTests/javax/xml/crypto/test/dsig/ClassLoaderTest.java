@@ -88,7 +88,7 @@ public class ClassLoaderTest extends TestCase {
         long end = System.currentTimeMillis();
         long elapsed = end-start;
         System.out.println("Elapsed:"+elapsed);
-        System.out.println("dsig succeeded");
+        // System.out.println("dsig succeeded");
     }
 
     public void test_provider_multiple_loaders_two() throws Exception {

@@ -26,6 +26,7 @@ import javax.xml.crypto.*;
 
 import junit.framework.*;
 
+import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -53,6 +54,7 @@ public class IaikCoreFeaturesTest extends TestCase {
 	validator = new SignatureValidator(new File
 	    (base, "coreFeatures/signatures"));
     }
+    
     public void test_anonymousReferenceSignature() throws Exception {
         String file = "anonymousReferenceSignature.xml";
 
@@ -61,6 +63,7 @@ public class IaikCoreFeaturesTest extends TestCase {
 	     new NullURIDereferencer(base));
 	assertTrue("Signature failed core validation", coreValidity);
     }
+    
     public void test_manifestSignature() throws Exception {
         String file = "manifestSignature.xml";
 
@@ -68,13 +71,16 @@ public class IaikCoreFeaturesTest extends TestCase {
 	    (file, new KeySelectors.KeyValueKeySelector());
 	assertTrue("Signature failed core validation", coreValidity);
     }
+    
     public void test_signatureTypesSignature() throws Exception {
         String file = "signatureTypesSignature.xml";
 
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
+	    (file, new KeySelectors.KeyValueKeySelector(),
+	            new OfflineDereferencer());
 	assertTrue("Signature failed core validation", coreValidity);
     }
+    
     public static void main(String[] args) throws Exception {
         IaikCoreFeaturesTest it = new IaikCoreFeaturesTest("");
 	it.test_anonymousReferenceSignature();
@@ -101,5 +107,35 @@ public class IaikCoreFeaturesTest extends TestCase {
 
 	    return osd;
 	}
+    }
+    
+    private static class OfflineDereferencer implements URIDereferencer {
+        private String w3cRec;
+        private URIDereferencer defaultDereferencer;
+
+        OfflineDereferencer() throws Exception {
+            String fs = System.getProperty("file.separator");
+            String base = System.getProperty("basedir") == null ? "./" : 
+                System.getProperty("basedir");
+            w3cRec = base + fs + "data" + fs + "org" + fs + "w3c" + fs + "www" + 
+                fs + "TR" + fs + "2000";
+            defaultDereferencer =
+                XMLSignatureFactory.getInstance().getURIDereferencer();
+        }
+
+        public Data dereference(URIReference uriReference, 
+                XMLCryptoContext context) throws URIReferenceException {
+
+            try {
+                if ("http://www.w3.org/TR/2000/REC-xml-20001006".equals(uriReference.getURI())) {
+                    File content = new File(w3cRec, "REC-xml-20001006");
+                    return new OctetStreamData(new FileInputStream(content));
+                } else {
+                    return defaultDereferencer.dereference(uriReference, context);
+                }
+            } catch (java.io.FileNotFoundException ex) {
+                throw new URIReferenceException(ex.getMessage(), ex);
+            }
+        }
     }
 }
