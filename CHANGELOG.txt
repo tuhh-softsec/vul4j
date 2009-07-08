@@ -53,7 +53,7 @@ New in v1.4.2beta1
 	attributes correctly
     Fixed bug 38668: Add XMLCipher.encryptData method that takes serialized 
 	data as parameter. Thanks to Vladimir Ionescu.
-    Fixed bug 42866: Error when removing encrypted content in 1.4.1. Thanks to
+    Fixed bug 42886: Error when removing encrypted content in 1.4.1. Thanks to
 	Julien Taupin and Daniele Gagliardi.
     Fixed bug 42820: ClassLoader issue causing NoSuchAlgorithmException loading 
 	Provider Implementation. Thanks to James Washington.

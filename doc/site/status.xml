@@ -121,7 +121,7 @@ limitations under the License.
         No installed provider supports this key when checking a RSA signature 
         against a DSA key before RSA key.
       </action>
-      <action dev="SM" type="fix" fixes-bug="43597" context="java_general"
+      <action dev="SM" type="fix" fixes-bug="42597" context="java_general"
 	due-to="Brent Putnam">
         Unnecessary namespace declarations on Signature children.
       </action>
@@ -133,7 +133,7 @@ limitations under the License.
 	due-to="Frank Cornelis">
         Problem with empty BaseURI in ResolverLocalFilesystem.
       </action>
-      <action dev="SM" type="fix" fixes-bug="42230" context="java_general">
+      <action dev="SM" type="fix" fixes-bug="43230" context="java_general">
         Inclusive C14n doesn't always handle xml:space and xml:lang
         attributes correctly
       </action>
@@ -142,7 +142,7 @@ limitations under the License.
         Add XMLCipher.encryptData method that takes serialized
         data as parameter.
       </action>
-      <action dev="SM" type="fix" fixes-bug="42866" context="java_general"
+      <action dev="SM" type="fix" fixes-bug="42886" context="java_general"
 	due-to="Julien Taupin, Daniele Gagliardi">
         Error when removing encrypted content in 1.4.1.
       </action>
