@@ -1,5 +1,8 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v ...
+    Fixed Bug 44335: Can't validate after invalid validation.
+    Fixed Bug 47260: Improve Java unit testing.
+    Fixed Bug 47265: Some website updates.
     Fixed Bug 45388: We need a POM file added to the Maven repository.
     Fixed Bug 47483: Remove JDK 1.5 API dependencies
     Fixed bug 47057: Downgrade signature verification logging from "info". Thanks to Colm O hEigeartaigh.
