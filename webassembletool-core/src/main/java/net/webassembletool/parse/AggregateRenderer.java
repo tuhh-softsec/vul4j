@@ -55,9 +55,9 @@ public class AggregateRenderer implements Renderer {
     /** {@inheritDoc} */
     public void render(StringOutput stringOutput, Writer unised1,
             Map<String, String> unused2) throws IOException, RenderingException {
+        response.setStatus(stringOutput.getStatusCode());
         if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
                 || stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-            response.setStatus(stringOutput.getStatusCode());
             response.setHeader("location", stringOutput.getLocation());
             return;
         }

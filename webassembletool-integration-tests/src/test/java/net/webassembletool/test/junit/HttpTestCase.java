@@ -252,6 +252,7 @@ public abstract class HttpTestCase extends TestCase {
                     }
                     message += "Expected: " + expectedLine + "\n";
                     message += "Actual:   " + actualLine + "\n";
+                    message += actual;
                     throw new AssertionFailedError(message);
                 }
                 index++;

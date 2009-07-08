@@ -14,20 +14,22 @@ import javax.servlet.http.HttpServletResponse;
  * @author François-Xavier Bonnet
  */
 public class ProxyServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private String provider;
+	private static final long serialVersionUID = 1L;
+	private String provider;
 
-    @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String relUrl = request.getServletPath();
-        if (request.getPathInfo() != null)
-            relUrl += request.getPathInfo();
-        boolean propagateJsessionId = response.encodeURL("/").contains("jsessionid");
-        DriverFactory.getInstance(provider).proxy(relUrl, request, response, propagateJsessionId);
-    }
+	@Override
+	protected void service(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String relUrl = request.getRequestURI();
+		relUrl = relUrl.substring(request.getContextPath().length());
+		boolean propagateJsessionId = response.encodeURL("/").contains(
+				"jsessionid");
+		DriverFactory.getInstance(provider).proxy(relUrl, request, response,
+				propagateJsessionId);
+	}
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        provider = config.getInitParameter("provider");
-    }
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		provider = config.getInitParameter("provider");
+	}
 }
