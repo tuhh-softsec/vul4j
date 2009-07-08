@@ -25,6 +25,9 @@ public class AggregatorServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String relUrl = request.getRequestURI();
 		relUrl = relUrl.substring(request.getContextPath().length());
+		if (request.getServletPath() != null) {
+			relUrl = relUrl.substring(request.getServletPath().length());
+		}
 		boolean propagateJsessionId = response.encodeURL("/").contains(
 				"jsessionid");
 		try {
