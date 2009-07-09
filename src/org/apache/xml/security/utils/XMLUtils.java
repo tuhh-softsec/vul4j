@@ -256,6 +256,35 @@ public class XMLUtils {
       return doc.createElementNS(Constants.SignatureSpecNS, namePrefix);
    }
 
+   static  String xencPrefix=null;
+   /**
+    * Creates an Element in the XML Encryption specification namespace.
+    *
+    * @param doc the factory Document
+    * @param elementName the local name of the Element
+    * @return the Element
+    */
+   public static Element createElementInEncryptionSpace(Document doc,
+           String elementName) {
+
+      if (doc == null) {
+         throw new RuntimeException("Document is null");
+      }
+     
+      if ((xencPrefix == null) || (xencPrefix.length() == 0)) {
+         return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, elementName);
+      } 
+      String namePrefix=(String) namePrefixes.get(elementName);
+      if (namePrefix==null) {
+    	  StringBuffer tag=new StringBuffer(xencPrefix);
+    	  tag.append(':');
+    	  tag.append(elementName);
+    	  namePrefix=tag.toString();
+    	  namePrefixes.put(elementName,namePrefix);
+      }
+      return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, namePrefix);
+   }
+
    /**
     * Returns true if the element is in XML Signature namespace and the local
     * name equals the supplied one.

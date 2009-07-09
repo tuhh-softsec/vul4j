@@ -1281,7 +1281,7 @@ public class XMLCipher {
 
 		String jceKeyAlgorithm =
 			JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
-		System.out.println("keyAlg:"+jceKeyAlgorithm);
+		logger.debug("JCE Key Algorithm: " + jceKeyAlgorithm);
 
 		Cipher c;
 		if (_contextCipher == null) {
@@ -1290,7 +1290,6 @@ public class XMLCipher {
 			String jceAlgorithm =
 				JCEMapper.translateURItoJCEID(
 					encryptedKey.getEncryptionMethod().getAlgorithm());
-		        System.out.println("jcekeyAlg:"+jceAlgorithm);
 
 			logger.debug("JCE Algorithm = " + jceAlgorithm);
 
@@ -1481,7 +1480,7 @@ public class XMLCipher {
 
 		String jceAlgorithm = 
 			JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod().getAlgorithm());
-		System.out.println("alg:"+jceAlgorithm);
+		logger.debug("JCE Algorithm = " + jceAlgorithm);
 
 		Cipher c;
 		try {
@@ -2478,7 +2477,6 @@ public class XMLCipher {
                     EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_OAEPPARAMS).item(0);
             if (null != oaepParamsElement) {
-		System.out.println("OAEPParams");
                 result.setOAEPparams(
                     oaepParamsElement.getNodeValue().getBytes());
             }
@@ -2814,17 +2812,16 @@ public class XMLCipher {
             //     <attribute name="Algorithm" type="anyURI" use="required"/>
             // </complexType>
             Element toElement() {
-                Element result = ElementProxy.createElementForFamily(
+                Element result =
+                   XMLUtils.createElementInEncryptionSpace(
                     _contextDocument, 
-                    EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_AGREEMENTMETHOD);
                 result.setAttributeNS(
                     null, EncryptionConstants._ATT_ALGORITHM, algorithmURI);
                 if (null != kaNonce) {
                     result.appendChild(
-                        ElementProxy.createElementForFamily(
+                        XMLUtils.createElementInEncryptionSpace(
                             _contextDocument, 
-                            EncryptionConstants.EncryptionSpecNS, 
                             EncryptionConstants._TAG_KA_NONCE)).appendChild(
                             _contextDocument.createTextNode(new String(kaNonce)));
                 }
@@ -2914,10 +2911,8 @@ public class XMLCipher {
             //     </choice>
             // </complexType>
             Element toElement() {
-                Element result = ElementProxy.createElementForFamily(
-                    _contextDocument, 
-                    EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_CIPHERDATA);
+                Element result = XMLUtils.createElementInEncryptionSpace(
+                    _contextDocument, EncryptionConstants._TAG_CIPHERDATA);
                 if (cipherType == VALUE_TYPE) {
                     result.appendChild(
                         ((CipherValueImpl) cipherValue).toElement());
@@ -2989,10 +2984,8 @@ public class XMLCipher {
             //     <attribute name='URI' type='anyURI' use='required'/>
             // </complexType>
             Element toElement() {
-                Element result = ElementProxy.createElementForFamily(
-                    _contextDocument, 
-                    EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_CIPHERREFERENCE);
+                Element result = XMLUtils.createElementInEncryptionSpace(
+                    _contextDocument, EncryptionConstants._TAG_CIPHERREFERENCE);
                 result.setAttributeNS(
                     null, EncryptionConstants._ATT_URI, referenceURI);
                 if (null != referenceTransforms) {
@@ -3035,9 +3028,8 @@ public class XMLCipher {
             }
 
             Element toElement() {
-                Element result = ElementProxy.createElementForFamily(
-                    _contextDocument, EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_CIPHERVALUE);
+                Element result = XMLUtils.createElementInEncryptionSpace(
+                    _contextDocument, EncryptionConstants._TAG_CIPHERVALUE);
                 result.appendChild(_contextDocument.createTextNode(
                     cipherValue));
 
@@ -3496,23 +3488,20 @@ public class XMLCipher {
             //     <attribute name='Algorithm' type='anyURI' use='required'/>
             // </complexType>
             Element toElement() {
-                Element result = ElementProxy.createElementForFamily(
-                    _contextDocument, EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_ENCRYPTIONMETHOD);
+                Element result = XMLUtils.createElementInEncryptionSpace(
+                    _contextDocument, EncryptionConstants._TAG_ENCRYPTIONMETHOD);
                 result.setAttributeNS(null, EncryptionConstants._ATT_ALGORITHM, 
                     algorithm);
                 if (keySize > 0) {
                     result.appendChild(
-                        ElementProxy.createElementForFamily(_contextDocument, 
-                            EncryptionConstants.EncryptionSpecNS, 
+                        XMLUtils.createElementInEncryptionSpace(_contextDocument,
                             EncryptionConstants._TAG_KEYSIZE).appendChild(
                             _contextDocument.createTextNode(
                                 String.valueOf(keySize))));
                 }
                 if (null != oaepParams) {
                     result.appendChild(
-                        ElementProxy.createElementForFamily(_contextDocument, 
-                            EncryptionConstants.EncryptionSpecNS, 
+                        XMLUtils.createElementInEncryptionSpace(_contextDocument,
                             EncryptionConstants._TAG_OAEPPARAMS).appendChild(
                             _contextDocument.createTextNode(
                                 new String(oaepParams))));
@@ -3572,9 +3561,8 @@ public class XMLCipher {
             //     <attribute name='Id' type='ID' use='optional'/>
             // </complexType>
             Element toElement() {
-                Element result = ElementProxy.createElementForFamily(
-                    _contextDocument, EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_ENCRYPTIONPROPERTIES);
+                Element result = XMLUtils.createElementInEncryptionSpace(
+                    _contextDocument, EncryptionConstants._TAG_ENCRYPTIONPROPERTIES);
                 if (null != id) {
                     result.setAttributeNS(null, EncryptionConstants._ATT_ID, id);
                 }
@@ -3675,9 +3663,8 @@ public class XMLCipher {
             //     <anyAttribute namespace="http://www.w3.org/XML/1998/namespace"/>
             // </complexType>
             Element toElement() {
-                Element result = ElementProxy.createElementForFamily(
-                    _contextDocument, EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_ENCRYPTIONPROPERTY);
+                Element result = XMLUtils.createElementInEncryptionSpace(
+                    _contextDocument, EncryptionConstants._TAG_ENCRYPTIONPROPERTY);
                 if (null != target) {
                     result.setAttributeNS(null, EncryptionConstants._ATT_TARGET,
                         target);

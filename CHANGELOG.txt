@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v ...
+    Fixed Bug 47029: Unnecessary namespace declarations on EncryptedData children.
     Fixed Bug 44335: Can't validate after invalid validation.
     Fixed Bug 47260: Improve Java unit testing.
     Fixed Bug 47265: Some website updates.

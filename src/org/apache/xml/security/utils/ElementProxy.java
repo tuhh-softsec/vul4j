@@ -514,6 +514,9 @@ public abstract class ElementProxy {
    	if (Constants.SignatureSpecNS.equals(namespace)) {
    	    XMLUtils.dsPrefix=prefix;
    	}
+   	if (EncryptionConstants.EncryptionSpecNS.equals(namespace)) {
+   	    XMLUtils.xencPrefix=prefix;
+   	}
         ElementProxy._prefixMappings.put(namespace, prefix.intern());
 	if (prefix.length() == 0) {
             ElementProxy._prefixMappingsBindings.put(namespace, "xmlns");
