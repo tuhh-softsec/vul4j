@@ -4,21 +4,13 @@
 	<servlet>
 		<servlet-name>proxy</servlet-name>
 		<servlet-class>net.webassembletool.ProxyServlet</servlet-class>
+		<init-param>
+			<param-name>provider</param-name>
+			<param-value>proxy2</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>proxy</servlet-name>
 		<url-pattern>/images/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>proxy</servlet-name>
-		<url-pattern>/smile.jpg</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>proxy</servlet-name>
-		<url-pattern>/redirect.jsp</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>proxy</servlet-name>
-		<url-pattern>/redirected.jsp</url-pattern>
 	</servlet-mapping>
 </web-app>
