@@ -279,7 +279,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 	   Element e=null;
 	   while (it.hasNext()) {
 		   Node currentNode=(Node)it.next();
-		   if (currentNode instanceof Element) {
+		   if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType()) {
 			   e=(Element)currentNode;
 			   break;
 		   }
@@ -291,7 +291,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
   		do {
   			parents.add(e);
   			Node n=e.getParentNode();
-  			if (!(n instanceof Element )) {
+  			if (n == null || Node.ELEMENT_NODE != n.getNodeType()) {
   				break;
   			}
   			e=(Element)n;

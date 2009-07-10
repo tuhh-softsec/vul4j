@@ -198,7 +198,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         try {
          NameSpaceSymbTable ns=new NameSpaceSymbTable();
          int nodeLevel=NODE_BEFORE_DOCUMENT_ELEMENT;
-         if (rootNode instanceof Element) {
+         if (rootNode != null && Node.ELEMENT_NODE == rootNode.getNodeType()) {
          	//Fills the nssymbtable with the definitions of the parent of the root subnode
          	getParentNameSpaces((Element)rootNode,ns);
          	nodeLevel=NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
@@ -327,8 +327,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			if (parentNode==endnode)
     				return;
     			sibling=parentNode.getNextSibling();
-    			parentNode=parentNode.getParentNode();   
-    			if (!(parentNode instanceof Element)) {
+    			parentNode=parentNode.getParentNode();
+    			if (parentNode == null || Node.ELEMENT_NODE != parentNode.getNodeType()) {
     				documentLevel=NODE_AFTER_DOCUMENT_ELEMENT;
     				parentNode=null;
     			}    			
@@ -384,7 +384,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 		return;
 	boolean currentNodeIsVisible = false;	  
 	NameSpaceSymbTable ns=new  NameSpaceSymbTable();
-	if (currentNode instanceof Element)
+	if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType())
 		getParentNameSpaces((Element)currentNode,ns);
   	Node sibling=null;
 	Node parentNode=null;	
@@ -505,7 +505,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				return;
 			sibling=parentNode.getNextSibling();
 			parentNode=parentNode.getParentNode();   
-			if (!(parentNode instanceof Element)) {
+			if (parentNode == null || Node.ELEMENT_NODE != parentNode.getNodeType()) {
 				parentNode=null;
 				documentLevel=NODE_AFTER_DOCUMENT_ELEMENT;
 			}    			
@@ -587,7 +587,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    	final void getParentNameSpaces(Element el,NameSpaceSymbTable ns)  {
    		List parents=new ArrayList(10);
    		Node n1=el.getParentNode();
-   		if (!(n1 instanceof Element)) {
+   		if (n1 == null || Node.ELEMENT_NODE != n1.getNodeType()) {
    			return;
    		}
    		//Obtain all the parents of the elemnt
@@ -595,7 +595,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    		while (parent!=null) {
    			parents.add(parent);
    			Node n=parent.getParentNode();
-   			if (!(n instanceof Element )) {
+   			if (n == null || Node.ELEMENT_NODE != n.getNodeType()) {
    				break;
    			}
    			parent=(Element)n;

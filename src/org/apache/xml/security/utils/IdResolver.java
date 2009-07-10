@@ -219,7 +219,7 @@ public class IdResolver {
     	} while (sibling==null  && parentNode!=null) {    		      		      			
     			sibling=parentNode.getNextSibling();
     			parentNode=parentNode.getParentNode();   
-    			if (!(parentNode instanceof Element)) {
+    			if (parentNode != null && Node.ELEMENT_NODE != parentNode.getNodeType()) {
     				parentNode=null;
     			}    			
     		}      
