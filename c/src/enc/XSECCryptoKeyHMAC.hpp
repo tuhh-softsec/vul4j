@@ -17,7 +17,7 @@
 /*
  * XSEC
  *
- * XSECCryptoKeyDSA := DSA Keys
+ * XSECCryptoKeyHMAC := HMAC Keys
  *
  * Author(s): Berin Lautenbach
  *
