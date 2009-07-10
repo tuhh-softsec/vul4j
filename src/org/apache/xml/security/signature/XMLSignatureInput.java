@@ -605,7 +605,7 @@ public class XMLSignatureInput implements Cloneable {
 
             Document doc = db.parse(this.getOctetStream());
            
-            this._subNode=doc.getDocumentElement();                    
+            this._subNode=doc;
         } catch (SAXException ex) {
 
             // if a not-wellformed nodeset exists, put a container around it...
