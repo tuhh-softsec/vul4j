@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v ...
+    Fixed Bug 47525: Fix checkstyle problems with source and tests.
     Fixed Bug 42239: ECDSA signature value interopability patch.
     Fixed Bug 45744: XPath transform and xml-stylesheet.
     Fixed Bug 42986: The </#document> node inserted at the end of SOAPEnvelope.
