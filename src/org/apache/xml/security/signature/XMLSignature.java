@@ -513,6 +513,8 @@ public final class XMLSignature extends SignatureElementProxy {
 
             // set them on the SignatureValue element
             this.setSignatureValueElement(sa.sign());
+        } catch (XMLSignatureException ex) {
+            throw ex;
         } catch (CanonicalizationException ex) {
             throw new XMLSignatureException("empty", ex);
         } catch (InvalidCanonicalizerException ex) {
@@ -626,6 +628,8 @@ public final class XMLSignature extends SignatureElementProxy {
             }
 
             return si.verify(this._followManifestsDuringValidation);
+        } catch (XMLSignatureException ex) {
+            throw ex;
         } catch (XMLSecurityException ex) {
             throw new XMLSignatureException("empty", ex);
         } 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package javax.xml.crypto.test.dsig;
 
 import java.io.File;
 import java.security.Security;
+import javax.xml.crypto.dsig.XMLSignatureException;
 
 import junit.framework.*;
 
@@ -67,9 +68,14 @@ public class IaikSignatureAlgosTest extends TestCase {
     public void test_hmacShortSignature() throws Exception {
         String file = "hMACShortSignature.xml";
 
-	boolean coreValidity = validator.validate(file, new 
-	    KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
-	assertTrue("Signature failed core validation", coreValidity);
+        try {
+	    boolean coreValidity = validator.validate(file, new 
+	        KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
+            fail("Expected HMACOutputLength Exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
     }
     public void test_hmacSignature() throws Exception {
         String file = "hMACSignature.xml";

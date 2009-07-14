@@ -94,8 +94,13 @@ public class PhaosXMLDSig3Test extends TestCase {
         
 	KeySelector ks = new KeySelectors.SecretKeySelector
 	    ("test".getBytes("ASCII") );
-	boolean coreValidity = validator.validate(file, ks);
-	assertTrue("Signature failed core validation", coreValidity);
+        try {
+	    boolean coreValidity = validator.validate(file, ks);
+            fail("Expected HMACOutputLength Exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
     }
     public void test_signature_hmac_sha1_40_exclusive_c14n_comments_detached() 
 	throws Exception {
@@ -103,8 +108,13 @@ public class PhaosXMLDSig3Test extends TestCase {
         
 	KeySelector ks = new KeySelectors.SecretKeySelector
 	    ("test".getBytes("ASCII") );
-	boolean coreValidity = validator.validate(file, ks);
-	assertTrue("Signature failed core validation", coreValidity);
+        try {
+	    boolean coreValidity = validator.validate(file, ks);
+            fail("Expected HMACOutputLength Exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
     }
     public void test_signature_hmac_sha1_exclusive_c14n_comments_detached() 
 	throws Exception {

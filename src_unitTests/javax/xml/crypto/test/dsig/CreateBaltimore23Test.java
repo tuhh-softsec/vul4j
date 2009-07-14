@@ -164,8 +164,14 @@ public class CreateBaltimore23Test extends TestCase {
 	throws Exception {
 	SignatureMethod hmacSha1 = fac.newSignatureMethod
 	    (SignatureMethod.HMAC_SHA1, new HMACParameterSpec(40));
-        test_create_signature_enveloping(hmacSha1, null,
-	    TestUtils.getSecretKey("secret".getBytes("ASCII")), sks, false);
+        try {
+            test_create_signature_enveloping(hmacSha1, null,
+	        TestUtils.getSecretKey("secret".getBytes("ASCII")), sks, false);
+            fail("Expected HMACOutputLength Exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
     }
 
     public void test_create_signature_enveloping_hmac_sha1()

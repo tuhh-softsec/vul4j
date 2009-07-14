@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.Security;
 import javax.xml.crypto.KeySelector;
+import javax.xml.crypto.dsig.XMLSignatureException;
 
 import junit.framework.*;
 
@@ -118,8 +119,13 @@ public class Baltimore23Test extends TestCase {
         
 	KeySelector ks = new KeySelectors.SecretKeySelector
 	    ("secret".getBytes("ASCII") );
-	boolean coreValidity = validator.validate(file, ks);
-	assertTrue("Signature failed core validation", coreValidity);
+        try {
+	    boolean coreValidity = validator.validate(file, ks);
+            fail("Expected HMACOutputLength exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
     }
 
     public void test_signature_keyname() throws Exception {

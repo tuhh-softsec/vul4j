@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.URIReference;
 import javax.xml.crypto.URIReferenceException;
 import javax.xml.crypto.XMLCryptoContext;
+import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
@@ -92,6 +93,31 @@ public class ValidateSignatureTest extends TestCase {
 	    new KeySelectors.KeyValueKeySelector(), ud);
 	assertFalse("Invalid signature should fail!", coreValidity);
 	assertTrue("References validated before signature", ud.dereferenced);
+    }
+
+    public void test_signature_enveloping_hmac_sha1_trunclen_0() throws Exception {
+        try {
+            boolean coreValidity = validator.validate
+                ("signature-enveloping-hmac-sha1-trunclen-0-attack.xml", 
+                new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
+            fail("Expected HMACOutputLength exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
+    }
+
+    public void test_signature_enveloping_hmac_sha1_trunclen_8() throws Exception {
+   
+        try {
+            boolean coreValidity = validator.validate
+                ("signature-enveloping-hmac-sha1-trunclen-8-attack.xml", 
+                new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
+            fail("Expected HMACOutputLength exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
     }
 
     /**

@@ -36,6 +36,7 @@ public class AllTests {
 	suite.addTest(ProcessingInstructionTest.suite());
 	suite.addTest(ECDSASignatureTest.suite());
 	suite.addTest(NoKeyInfoTest.suite());
+	suite.addTest(HMACOutputLengthTest.suite());
 	//$JUnit-END$
 	return suite;
     }

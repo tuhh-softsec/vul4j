@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,15 +16,13 @@
  */
 package org.apache.xml.security.test.interop;
 
-
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.xml.security.test.utils.resolver.OfflineResolver;
+import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.security.utils.resolver.implementations.ResolverAnonymous;
-
 
 /**
  * This test is to ensure interoperability with the examples provided by the IAIK
@@ -94,17 +92,17 @@ public class IAIKTest extends InteropTest {
 
       try {
          verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+         fail("HMACOutputLength Exception not caught");
       } catch (RuntimeException ex) {
          log.error("Verification crashed for " + filename);
-
          throw ex;
+      } catch (XMLSignatureException ex) {
+         if (ex.getMsgID().equals("algorithms.HMACOutputLengthMin")) {
+             // succeed
+         } else {
+             fail(ex.getMessage());
+         }
       }
-
-      if (!verify) {
-         log.error("Verification failed for " + filename);
-      }
-
-      assertTrue(filename, verify);
    }
 
    /**

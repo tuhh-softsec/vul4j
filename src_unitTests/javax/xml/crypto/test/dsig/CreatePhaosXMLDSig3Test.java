@@ -66,7 +66,13 @@ public class CreatePhaosXMLDSig3Test extends TestCase {
 
     public void test_create_hmac_sha1_40_exclusive_c14n_comments_detached() 
 	throws Exception {
-        test_create_hmac_sha1_exclusive_c14n_comments_detached(true);
+        try {
+            test_create_hmac_sha1_exclusive_c14n_comments_detached(true);
+            fail("Expected HMACOutputLength Exception");
+        } catch (XMLSignatureException xse) {
+            System.out.println(xse.getMessage());
+            // pass
+        }
     } 
 
     private void test_create_hmac_sha1_exclusive_c14n_comments_detached(boolean fortyBit) 
