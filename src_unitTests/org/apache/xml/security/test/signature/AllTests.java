@@ -18,6 +18,7 @@ public class AllTests {
 	suite.addTest(UnknownAlgoSignatureTest.suite());
 	suite.addTest(KeyValueTest.suite());
 	suite.addTest(ProcessingInstructionTest.suite());
+	suite.addTest(ECDSASignatureTest.suite());
 	suite.addTest(NoKeyInfoTest.suite());
 	//$JUnit-END$
 	return suite;

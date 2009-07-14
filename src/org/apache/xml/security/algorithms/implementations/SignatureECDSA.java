@@ -80,17 +80,24 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
       for (j = sLength;
               (j > 0) && (asn1Bytes[(6 + rLength + sLength) - j] == 0); j--);
 
+      int rawLen = ((i+7)/8)*8;
+      
+      int tmp = ((j+7)/8)*8;
+      
+      if (tmp > rawLen)
+          rawLen = tmp;
+      
       if ((asn1Bytes[0] != 48) || (asn1Bytes[1] != asn1Bytes.length - 2)
-              || (asn1Bytes[2] != 2) || (i > 24)
-              || (asn1Bytes[4 + rLength] != 2) || (j > 24)) {
+              || (asn1Bytes[2] != 2) || rawLen < 24
+              || (asn1Bytes[4 + rLength] != 2)     ) {
          throw new IOException("Invalid ASN.1 format of ECDSA signature");
       } 
-      byte xmldsigBytes[] = new byte[48];
+      byte xmldsigBytes[] = new byte[2*rawLen];
 
-      System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, 24 - i,
+      System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, rawLen - i,
                           i);
       System.arraycopy(asn1Bytes, (6 + rLength + sLength) - j, xmldsigBytes,
-                          48 - j, j);
+                       2*rawLen - j, j);
 
        return xmldsigBytes;      
    }
@@ -111,27 +118,29 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
    private static byte[] convertXMLDSIGtoASN1(byte xmldsigBytes[])
            throws IOException {
 
-      if (xmldsigBytes.length != 48) {
+      if (xmldsigBytes.length < 48) {
          throw new IOException("Invalid XMLDSIG format of ECDSA signature");
       }
 
+      int rawLen = xmldsigBytes.length/2;
+      
       int i;
 
-      for (i = 24; (i > 0) && (xmldsigBytes[24 - i] == 0); i--);
+      for (i = rawLen; (i > 0) && (xmldsigBytes[rawLen - i] == 0); i--);
 
       int j = i;
 
-      if (xmldsigBytes[24 - i] < 0) {
+      if (xmldsigBytes[rawLen - i] < 0) {
          j += 1;
       }
 
       int k;
 
-      for (k = 24; (k > 0) && (xmldsigBytes[48 - k] == 0); k--);
+      for (k = rawLen; (k > 0) && (xmldsigBytes[2*rawLen - k] == 0); k--);
 
       int l = k;
 
-      if (xmldsigBytes[48 - k] < 0) {
+      if (xmldsigBytes[2*rawLen - k] < 0) {
          l += 1;
       }
 
@@ -142,12 +151,12 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
       asn1Bytes[2] = 2;
       asn1Bytes[3] = (byte) j;
 
-      System.arraycopy(xmldsigBytes, 24 - i, asn1Bytes, (4 + j) - i, i);
+      System.arraycopy(xmldsigBytes, rawLen - i, asn1Bytes, (4 + j) - i, i);
 
       asn1Bytes[4 + j] = 2;
       asn1Bytes[5 + j] = (byte) l;
 
-      System.arraycopy(xmldsigBytes, 48 - k, asn1Bytes, (6 + j + l) - k, k);
+      System.arraycopy(xmldsigBytes, 2*rawLen - k, asn1Bytes, (6 + j + l) - k, k);
 
       return asn1Bytes;
    }

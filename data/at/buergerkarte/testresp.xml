@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><dsig:Signature Id="signature-20070418142710935-6555091641353629364" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/><dsig:Reference Id="signed-data-reference-0-20070418142710935-6555091641353629364" URI="#signed-data-object-0-20070418142710935-6555091641353629364"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf2:XPath Filter="intersect" xmlns:xpf2="http://www.w3.org/2002/06/xmldsig-filter2">//*[@Id='signed-data-object-0-20070418142710935-6555091641353629364']/node()</xpf2:XPath></dsig:Transform><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#base64"/><dsig:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"><xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<!--
+  xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
+  xmlns:date="http://exslt.org/dates-and-times"
+  xmlns:dyn="http://exslt.org/dynamic"
+  xmlns:exsl="http://exslt.org/common"  --> 
+<xsl:output method="xml"/>
+<xsl:template match="/org.clazzes.tapestry.sl.test.data.TestObject">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head><title>Objektliste</title><style type="text/css"/></head>
+  <body>
+    <h2>Objekte</h2> 
+    <table>
+      <tr>
+        <th>Code</th> 
+        <th>Name</th> 
+        <th>from</th> 
+        <th>to</th> 
+      </tr>
+      <tr>
+        <td><xsl:value-of select="code"/></td>
+        <td><xsl:value-of select="name"/></td>
+        <td><xsl:value-of select="fromKm"/></td>
+        <td><xsl:value-of select="toKm"/></td>
+      </tr>
+  </table>
+  </body>
+  </html>
+</xsl:template>
+
+</xsl:stylesheet></dsig:Transform><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>ZvBPjlGyC2r8NzmfCLjvPwI47yQ=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="etsi-data-reference-1-20070418142710935-6555091641353629364" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#xmlns(etsi=http://uri.etsi.org/01903/v1.1.1%23)%20xpointer(id('etsi-data-object-1-20070418142710935-6555091641353629364')/child::etsi:QualifyingProperties/child::etsi:SignedProperties)"><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>3XTXxNKDqPOGcRDrk2u09NuwLhQ=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>7oi4kPJ9co9jfDD6HkVNRKloY10wjDhsh2U8z8/WOIcB9fOhkQ7FKTGERmBmyxLt</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIEjTCCA3WgAwIBAgIDAxChMA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQGEwJBVDFIMEYGA1UE
+Cgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVy
+a2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJlbWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2ln
+bi1QcmVtaXVtLVNpZy0wMjAeFw0wNzAzMjMwODE1NDVaFw0xMTAzMjMwODE1NDVaMGwxCzAJBgNV
+BAYTAkFUMRYwFAYDVQQDDA1Xb2xmZ2FuZyBHbGFzMQ0wCwYDVQQEDARHbGFzMREwDwYDVQQqDAhX
+b2xmZ2FuZzEVMBMGA1UEBRMMNDY5MjkxMDk4ODY4MQwwCgYDVQQMDANEci4wSTATBgcqhkjOPQIB
+BggqhkjOPQMBAQMyAAT7gEPYqwvFHYgev7WGnBcmg9RNSeaUWk5pNRGrK+lgewClDkuxGhzCBngk
+UPPRt66jggHlMIIB4TATBgNVHSMEDDAKgAhN3+H/S9nJ3zAnBggrBgEFBQcBAwEB/wQYMBYwCAYG
+BACORgEBMAoGCCsGAQUFBwsBMHsGCCsGAQUFBwEBBG8wbTBCBggrBgEFBQcwAoY2aHR0cDovL3d3
+dy5hLXRydXN0LmF0L2NlcnRzL2Etc2lnbi1QcmVtaXVtLVNpZy0wMmEuY3J0MCcGCCsGAQUFBzAB
+hhtodHRwOi8vb2NzcC5hLXRydXN0LmF0L29jc3AwWQYDVR0gBFIwUDBEBgYqKAARAQswOjA4Bggr
+BgEFBQcCARYsaHR0cDovL3d3dy5hLXRydXN0LmF0L2RvY3MvY3AvYS1zaWduLVByZW1pdW0wCAYG
+BACLMAEBMIGaBgNVHR8EgZIwgY8wgYyggYmggYaGgYNsZGFwOi8vbGRhcC5hLXRydXN0LmF0L291
+PWEtc2lnbi1QcmVtaXVtLVNpZy0wMixvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRp
+b25saXN0P2Jhc2U/b2JqZWN0Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTARBgNVHQ4E
+CgQIRGl7fFO8rawwDgYDVR0PAQH/BAQDAgbAMAkGA1UdEwQCMAAwDQYJKoZIhvcNAQEFBQADggEB
+AC8Cmjr0T8Fk3tQ9VeHnliG7iYEx6NymrRGNnrEfSyLx/d2UtlgOEzpW6hlZWO/2TvOF7ZUZVAub
+hbSDVWJurTRlsWeMIwIfDP6KVTooSorPaIK1p8mgDqhkW5usGYG+n0MBH1aMM3WnOylp4G5qh6bJ
+fSzWLjcI2gfPoqsDkCx9rPN5sOEAcpwHt/fA1vqjozI24j3K1tvbc6Z7w2pYfqLk/LZKi0QrhmPD
+BnRLj6pnej9fxCkHndfd4S2rAGdWM5T4heSq47X8Ns/VfeZFvAXK6cV4EtVjVNe6dBQfKmLKjJzo
+DSr1O8T/oYExuQRup78GOVk9+CF97oF7hXu2WgI=</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="signed-data-object-0-20070418142710935-6555091641353629364">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48b3JnLmNsYXp6ZXMudGFwZXN0
+cnkuc2wudGVzdC5kYXRhLlRlc3RPYmplY3Q+CiAgPGNvZGU+Y29kZTE8L2NvZGU+CiAgPG5hbWU+
+VGVzdDE8L25hbWU+CiAgPGZyb21LbT40NC40NDwvZnJvbUttPgogIDx0b0ttPjc3Ljc3PC90b0tt
+Pgo8L29yZy5jbGF6emVzLnRhcGVzdHJ5LnNsLnRlc3QuZGF0YS5UZXN0T2JqZWN0Pg==</dsig:Object><dsig:Object Id="etsi-data-object-1-20070418142710935-6555091641353629364"><etsi:QualifyingProperties Target="#signature-20070418142710935-6555091641353629364" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#"><etsi:SignedProperties><etsi:SignedSignatureProperties><etsi:SigningTime>2007-04-18T14:27:00Z</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><etsi:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><etsi:DigestValue>VoH1/KR6R+FRsOTiOO7ptHrVRDY=</etsi:DigestValue></etsi:CertDigest><etsi:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>200865</dsig:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyImplied/></etsi:SignaturePolicyIdentifier></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#signed-data-reference-0-20070418142710935-6555091641353629364"><etsi:MimeType>application/xhtml+xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></dsig:Object></dsig:Signature>
