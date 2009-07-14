@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,17 +19,12 @@
  */
 package javax.xml.crypto.test.dsig;
 
-import java.io.*;
 import java.security.*;
 import java.util.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.*;
-import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.*;
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
 
 import junit.framework.*;
@@ -175,10 +170,4 @@ public class CreatePhaosXMLDSig3Test extends TestCase {
         assertTrue(sig2.validate(dvc));
     }
 
-    private void dumpDocument(Document doc, Writer w) throws Exception {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer trans = tf.newTransformer();
-//        trans.setOutputProperty(OutputKeys.INDENT, "yes");
-        trans.transform(new DOMSource(doc), new StreamResult(w));
-    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
  */
 package javax.xml.crypto.test.dsig;
 
-import java.io.*;
 import java.util.*;
 import java.security.*;
 import javax.xml.crypto.dsig.*;
@@ -27,20 +26,9 @@ import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.transform.*;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import junit.framework.*;
 
@@ -260,10 +248,4 @@ public class XMLSignatureTest extends TestCase {
 	}
     }
 
-    private void dumpDocument(Document doc, Writer w) throws Exception {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer trans = tf.newTransformer();
-//      trans.setOutputProperty(OutputKeys.INDENT, "yes");
-        trans.transform(new DOMSource(doc), new StreamResult(w));
-    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2007 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.security.cert.*;
 import java.util.Collection;
 import java.util.Collections;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
-import org.apache.xml.security.utils.Base64;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

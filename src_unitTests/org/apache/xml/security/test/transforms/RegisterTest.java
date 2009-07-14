@@ -1,3 +1,20 @@
+/*
+ * Copyright  1999-2009 The Apache Software Foundation.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.apache.xml.security.test.transforms;
 
 import java.io.File;
@@ -37,7 +54,7 @@ public class RegisterTest extends TestCase {
         Class c = ucl.loadClass
             ("org.apache.xml.security.test.transforms.SampleTransform");
         Constructor cons = c.getConstructor(new Class[0]);
-        Object o = cons.newInstance(new Object[0]);
+        cons.newInstance(new Object[0]);
         // Apache code swallows the ClassNotFoundExc, so we need to
         // check if the Transform has already been registered by registering
         // it again and catching an AlgorithmAlreadyRegisteredExc

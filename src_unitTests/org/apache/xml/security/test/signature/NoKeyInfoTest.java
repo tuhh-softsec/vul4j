@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 The Apache Software Foundation.
+ * Copyright 2008-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.apache.xml.security.test.signature;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.security.PublicKey;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;

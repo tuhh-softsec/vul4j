@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import org.w3c.dom.Node;
 
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
-import org.apache.xml.security.utils.XMLUtils;
 
 /**
  * DOM-based implementation of SignedInfo.
@@ -185,7 +184,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 	DOMSubTreeData subTree = new DOMSubTreeData(localSiElem, true);
 
 	try {
-	    Data data = ((DOMCanonicalizationMethod) 
+	    ((DOMCanonicalizationMethod) 
 		canonicalizationMethod).canonicalize(subTree, context, os);
 	} catch (TransformException te) {
 	    throw new XMLSignatureException(te);

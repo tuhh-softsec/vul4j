@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,10 +20,7 @@
 package javax.xml.crypto.test.dsig.dom;
 
 import java.io.*;
-import java.util.*;
-import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.crypto.dsig.XMLValidateContext;
 
 import junit.framework.*;
 
@@ -60,9 +57,8 @@ public class DOMValidateContextTest extends TestCase {
 
     public void testConstructor() throws Exception {
 	assertNotNull(domVC);
-	DOMValidateContext vc;
 	try {
-	    vc = new DOMValidateContext(TestUtils.getPublicKey("RSA"), null);
+	    new DOMValidateContext(TestUtils.getPublicKey("RSA"), null);
 	    fail("Should throw a NPE for null node");
 	} catch (NullPointerException npe) {
 	} catch (Exception ex) {

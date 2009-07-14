@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,18 +20,13 @@
 package javax.xml.crypto.test.dsig;
 
 import java.io.File;
-import java.math.BigInteger;
-import java.util.*;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
-import java.security.KeyException;
-import java.security.PublicKey;
 import java.security.Security;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.crypto.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -67,19 +62,17 @@ public class XMLSignatureFactoryTest extends TestCase {
 
     public void testgetInstance() {
 	try {
-	    XMLSignatureFactory fac = 
-		XMLSignatureFactory.getInstance("non-existent");
+	    XMLSignatureFactory.getInstance("non-existent");
 	    fail("Should throw NoSuchMechanismException if no impl found");
 	} catch (NoSuchMechanismException ex) {}
 
 	try {
-	    XMLSignatureFactory fac = XMLSignatureFactory.getInstance(null);
+	    XMLSignatureFactory.getInstance(null);
 	    fail("Should raise a NPE for null mechanismType"); 
 	} catch (NullPointerException npe) {}
 
 	try {
-	    XMLSignatureFactory fac = 
-		XMLSignatureFactory.getInstance("DOM", "non-existent");
+	    XMLSignatureFactory.getInstance("DOM", "non-existent");
 	    fail("Should throw NoSuchProviderException if specified " +
 		 "provider is not found");
 	} catch (NoSuchProviderException nspe) {
@@ -89,13 +82,12 @@ public class XMLSignatureFactoryTest extends TestCase {
 	}
 
 	try {
-	    XMLSignatureFactory fac = XMLSignatureFactory.getInstance(null);
+	    XMLSignatureFactory.getInstance(null);
 	    fail("Should raise a NPE for null mechanismType"); 
 	} catch (NullPointerException npe) {}
 
 	try {
-	    XMLSignatureFactory fac = 
-		XMLSignatureFactory.getInstance("DOM", (Provider) null);
+	    XMLSignatureFactory.getInstance("DOM", (Provider) null);
 	    fail("Should raise a NPE for null provider"); 
 	} catch (NullPointerException npe) {}
     }

@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,13 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -38,14 +31,6 @@ import junit.framework.TestSuite;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -180,53 +165,6 @@ public class XMLSignatureInputTest extends TestCase {
    static final int _nodeSetInput3NodesWithComments = _nodeSetInput3Nodes + 1;
    //J+
 
-   /**
-    * Method getNodeSet1
-    *
-    *
-    * @throws ParserConfigurationException
-    * @throws TransformerException
-    */
-   private static Set getNodeSet1()
-           throws ParserConfigurationException, TransformerException {
-
-      // This should build
-      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
-      dfactory.setValidating(false);
-      dfactory.setNamespaceAware(true);
-
-      DocumentBuilder db = dfactory.newDocumentBuilder();
-      Document doc = db.newDocument();
-      Comment c1 = doc.createComment("Small Comment Test");
-
-      doc.appendChild(c1);
-
-      Element root = doc.createElementNS(null, "RootElement");
-      Element e1 = doc.createElementNS(null, "Element1");
-      Element e2 = doc.createElementNS(null, "Element2");
-      Element e3 = doc.createElementNS(null, "Element3");
-      Text e3t = doc.createTextNode("Text in Element3");
-
-      e3.appendChild(e3t);
-      root.appendChild(e1);
-      root.appendChild(e2);
-      root.appendChild(e3);
-      doc.appendChild(root);
-
-      String s1 =
-         "<!--Small Comment Test--><RootElement><Element1/><Element2/><Element3>Text in Element3</Element3></RootElement>";
-
-      //XMLUtils.circumventBug2650(doc);
-
-      CachedXPathAPI cXPathAPI = new CachedXPathAPI();
-      NodeList nl = cXPathAPI.selectNodeList(doc,
-                                             "(//. | //@* | //namespace::*)");
-
-      return XMLUtils.convertNodelistToSet(nl);
-   }
-
-
 
    /**
     * Method testIsInitialized
@@ -269,12 +207,6 @@ public class XMLSignatureInputTest extends TestCase {
 
       assertTrue("Input is not node set", !input.isNodeSet());
    }
-
-
-
-
-
-
 
    static {
       org.apache.xml.security.Init.init();

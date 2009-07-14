@@ -1,5 +1,5 @@
 /*
- * Copyright  2008 The Apache Software Foundation.
+ * Copyright  2008-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.apache.xml.security.test.keys.content.x509;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.security.cert.X509Certificate;
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,7 +65,7 @@ public class XMLX509CertificateTest extends TestCase {
 		(Constants.SignatureSpecNS, "X509Certificate");
 	XMLX509Certificate xmlCert = 
 	    new XMLX509Certificate((Element) nl.item(0), "");
-	X509Certificate cert = xmlCert.getX509Certificate();
+	xmlCert.getX509Certificate();
 	// System.out.println(cert);
     }
 }

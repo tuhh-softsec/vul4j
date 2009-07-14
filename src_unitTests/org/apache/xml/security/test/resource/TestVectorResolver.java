@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,13 +18,10 @@
 package org.apache.xml.security.test.resource;
 
 
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -121,27 +118,6 @@ public class TestVectorResolver implements EntityResolver {
 
       log.debug("this._firstEntitySystemIdDirectory = "
                 + this._firstEntitySystemIdDirectory);
-   }
-
-   /**
-    * Method getInputSource
-    *
-    * @param systemId
-    *
-    */
-   private InputStream getInputStream(String systemId) {
-
-      log.debug("getInputStream(" + systemId + ")");
-
-      // we don't use the file system but the ZIP resource
-      // return new InputSource(new FileInputStream(systemId));
-      byte result[] = (byte[]) TestVectorResolver.vectors.get(systemId);
-
-      if (result == null) {
-         log.fatal("requested " + systemId + " resulted in null");
-      }
-
-      return new ByteArrayInputStream(result);
    }
 
    /**

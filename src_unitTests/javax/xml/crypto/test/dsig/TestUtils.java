@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.util.*;
 import javax.crypto.SecretKey;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.*;
@@ -52,11 +51,6 @@ public class TestUtils {
     private static final String RSA_MOD = "010800185049102889923150759252557522305032794699952150943573164381936603255999071981574575044810461362008102247767482738822150129277490998033971789476107463";
     private static final String RSA_PUB = "065537";
     private static final String RSA_PRIV = "0161169735844219697954459962296126719476357984292128166117072108359155865913405986839960884870654387514883422519600695753920562880636800379454345804879553";
-    private static final String RSA_P = "0115424415723722114324966978423259908612124678699162475636761464258454949949323";
-    private static final String RSA_Q = "0102758196571776648976474223306363419966067908877619912985851335233169851905977";
-    private static final String RSA_PE = "046029221736415726351267405909515200750383424291661371450734102390935198695783";
-    private static final String RSA_QE = "044015259993025528938883140770194453900658533927591226289558855038612449192129";
-    private static final String RSA_COEFF = "039865059011857370650977286999500339769808774456169959084951368761860263797695";
 
     private TestUtils() {}
     

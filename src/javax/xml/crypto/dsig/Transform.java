@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.security.spec.AlgorithmParameterSpec;
 import javax.xml.crypto.AlgorithmMethod;
 import javax.xml.crypto.Data;
-import javax.xml.crypto.OctetStreamData;
 import javax.xml.crypto.XMLCryptoContext;
 import javax.xml.crypto.XMLStructure;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;

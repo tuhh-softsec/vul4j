@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,13 +22,11 @@ package javax.xml.crypto.test.dsig;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import java.security.*;
 import java.util.*;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
 
 import junit.framework.*;
@@ -158,7 +156,7 @@ public class DetachedTest extends TestCase {
     	        Iterator i = signature.getSignedInfo().getReferences().iterator();
     	        for (int j=0; i.hasNext(); j++) {
 		    Reference reference = (Reference) i.next();
-    		    boolean refValid = reference.validate(vc);
+    		    reference.validate(vc);
     	        }
     	        fail("Signature failed core validation");
     	    }

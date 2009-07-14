@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -142,8 +142,7 @@ public class PhaosXMLDSig3Test extends TestCase {
 	String file = "signature-rsa-detached-xslt-transform-bad-retrieval-method.xml";
 
 	try {
-	    boolean coreValidity = 
-	        validator.validate(file, 
+	    validator.validate(file, 
 			       new KeySelectors.CollectionKeySelector(base));
 	    fail("Should throw XMLSignatureException for using DSA key with " +
 		 "RSA algorithm");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.security.cert.X509CRL;
 import java.util.*;
 import javax.xml.parsers.*;
@@ -297,7 +296,7 @@ public class CreateBaltimore23Test extends TestCase {
           + "	   id('notaries')) =				 " + "\n"
           + " count(ancestor-or-self::node())			 " + "\n";
 
-	XPathFilterParameterSpec xfp = new XPathFilterParameterSpec(expr,
+	new XPathFilterParameterSpec(expr,
 	    Collections.singletonMap("dsig", XMLSignature.XMLNS));
 //        refs.add(fac.newReference("", sha1, Collections.singletonList
 //	    (fac.newTransform(Transform.XPATH, xfp)),

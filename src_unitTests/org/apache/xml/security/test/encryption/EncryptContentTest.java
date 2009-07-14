@@ -1,5 +1,5 @@
 /*
- * Copyright  2007 The Apache Software Foundation.
+ * Copyright  2007-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,10 +22,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,7 +47,6 @@ public class EncryptContentTest extends TestCase {
 	"</users>\n";
 
     private DocumentBuilder db;
-    private Transformer t;
     private SecretKey secretKey;
 
     public static Test suite() throws Exception {
@@ -74,7 +70,7 @@ public class EncryptContentTest extends TestCase {
         secretKey = keyFactory.generateSecret(keySpec);
 
 	TransformerFactory tf = TransformerFactory.newInstance();
-	t = tf.newTransformer();
+	tf.newTransformer();
     }
 
     public void testContentRemoved() throws Exception {

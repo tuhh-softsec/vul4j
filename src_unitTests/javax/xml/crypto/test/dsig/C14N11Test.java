@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 The Apache Software Foundation.
+ * Copyright 2008-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 package javax.xml.crypto.test.dsig;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.security.KeyStore;
 import java.security.Security;
 import javax.xml.crypto.KeySelector;
 

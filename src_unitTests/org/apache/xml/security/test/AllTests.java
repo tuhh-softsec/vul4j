@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -94,8 +94,6 @@ public class AllTests extends TestCase {
          // System.out.println(counter + " full tests took " + java.text.DecimalFormat.getInstance().format(delta / 1000.) + " seconds");
 
       } else {
-         String[] testCaseName = { "-noloading", AllTests.class.getName() };
-
          try {
             String lookAndFeelClass =
                "com.incors.plaf.kunststoff.KunststoffLookAndFeel";

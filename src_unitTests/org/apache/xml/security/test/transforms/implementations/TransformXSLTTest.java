@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2007 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -102,8 +102,7 @@ public class TransformXSLTTest extends TestCase {
 	Transform transform = Transform.getInstance
 	    (doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
 
-	XMLSignatureInput output = 
-	    transform.performTransform(new XMLSignatureInput(doc2));
+	transform.performTransform(new XMLSignatureInput(doc2));
     }
 
     static {

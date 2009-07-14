@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.implementations.TransformBase64Decode;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -108,21 +107,6 @@ public class TransformBase64DecodeTest extends TestCase {
    }
 
    /**
-    * Method createElement
-    *
-    *
-    * @throws ParserConfigurationException
-    */
-   private static Element createElement() throws ParserConfigurationException {
-
-      Document doc = TransformBase64DecodeTest.createDocument();
-
-      Element element = XMLUtils.createElementInSignatureSpace(doc, Constants._TAG_TRANSFORMS);
-
-      return element;
-   }
-
-   /**
     * Method test1
     *
     * @throws CanonicalizationException
@@ -147,10 +131,6 @@ public class TransformBase64DecodeTest extends TestCase {
          "VGhlIFVSSSBvZiB0aGUgdHJhbnNmb3JtIGlzIGh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1s\n"
          + "ZHNpZyNiYXNlNjQ=";
 
-      // base64 encoded twice
-      String s2 =
-         "VkdobElGVlNTU0J2WmlCMGFHVWdkSEpoYm5ObWIzSnRJR2x6SUdoMGRIQTZMeTkzZDNjdWR6TXVi\n"
-         + "M0puTHpJd01EQXZNRGt2ZUcxcwpaSE5wWnlOaVlYTmxOalE9";
       Document doc = TransformBase64DecodeTest.createDocument();
       Transforms t = new Transforms(doc);
       doc.appendChild(t.getElement());

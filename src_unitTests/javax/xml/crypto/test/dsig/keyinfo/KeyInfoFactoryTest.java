@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import java.security.KeyException;
 import java.security.PublicKey;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.*;
-import javax.xml.crypto.dsig.*;
-import javax.xml.crypto.dom.*;
 
 import junit.framework.*;
 
@@ -53,12 +51,12 @@ public class KeyInfoFactoryTest extends TestCase {
 
     public void testgetInstance() {
 	try {
-	    KeyInfoFactory fac = KeyInfoFactory.getInstance("non-existent");
+	    KeyInfoFactory.getInstance("non-existent");
 	    fail("Should throw NoSuchMechanismException if no impl found");
 	} catch (NoSuchMechanismException ex) {}
 
 	try {
-	    KeyInfoFactory fac = KeyInfoFactory.getInstance(null);
+	    KeyInfoFactory.getInstance(null);
 	    fail("Should raise a NPE for null xmltype"); 
 	} catch (NullPointerException npe) {}
     }
@@ -119,7 +117,7 @@ public class KeyInfoFactoryTest extends TestCase {
 	} catch (KeyException ke) { }
   
 	try {
-	    KeyValue kv = factory.newKeyValue((PublicKey) null); 
+	    factory.newKeyValue((PublicKey) null); 
 	    fail("Should raise a NPE for null key"); 
 	} catch (KeyException ke) {
 	    fail("Should raise a NPE for null key"); 

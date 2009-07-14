@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright  1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -110,13 +109,6 @@ public class XalanBug1425Test extends TestCase {
 
       // Serialize the found nodes to System.out.
       // System.out.println("<output>");
-      String[] nodeTypeString = new String[]{ "", "ELEMENT", "ATTRIBUTE",
-                                              "TEXT_NODE", "CDATA_SECTION",
-                                              "ENTITY_REFERENCE", "ENTITY",
-                                              "PROCESSING_INSTRUCTION",
-                                              "COMMENT", "DOCUMENT",
-                                              "DOCUMENT_TYPE",
-                                              "DOCUMENT_FRAGMENT", "NOTATION" };
       Node n;
 
       while ((n = nl.nextNode()) != null) {

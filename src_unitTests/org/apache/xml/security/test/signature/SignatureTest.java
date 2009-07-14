@@ -1,3 +1,19 @@
+/*
+ * Copyright  1999-2009 The Apache Software Foundation.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.apache.xml.security.test.signature;
 
 import java.io.InputStream;
@@ -9,11 +25,6 @@ import java.util.Enumeration;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignature;
@@ -94,16 +105,6 @@ public class SignatureTest extends TestCase {
 	doc.appendChild(rootElement);
 
 	return doc;
-    }
-
-    private void displayDocument(Document doc) throws Throwable {
-	TransformerFactory tFactory = TransformerFactory.newInstance();
-	Transformer t = tFactory.newTransformer();
-	Source xmlSource = new DOMSource(doc);
-	StreamResult streamResult = new StreamResult(System.out);
-	t.transform(xmlSource, streamResult);
-	System.out.println();
-	System.out.println();
     }
 
     public XMLSignature signDocument(Document doc) throws Throwable {
