@@ -38,7 +38,7 @@
 
 #define XSEC_VERSION_MAJOR   1
 #define XSEC_VERSION_MEDIUM  5
-#define XSEC_VERSION_MINOR   0
+#define XSEC_VERSION_MINOR   1
 
 /*
  * Because we don't have a configure script, we need to rely on version

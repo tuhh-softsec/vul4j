@@ -1042,6 +1042,13 @@ bool DSIGSignature::verifySignatureOnlyInternal(void) {
 
 	}
 
+	// FIX: CVE-2009-0217
+
+	if (mp_signedInfo->getHMACOutputLength() > 0 && mp_signedInfo->getHMACOutputLength() < 80) {
+	    throw XSECException(XSECException::SigVfyError,
+            "DSIGSignature::verify() - HMACOutputLength is unsafe");
+	}
+
 	// Try to find a key
 	if (mp_signingKey == NULL) {
 

@@ -1,6 +1,7 @@
 Changes since 1.5
 =====================================
 * Fix Sparc compilation bug (SC)
+* Fix for CVE-2009-0217 (SC)
 
 Changes between version 1.4 and 1.5
 =====================================
