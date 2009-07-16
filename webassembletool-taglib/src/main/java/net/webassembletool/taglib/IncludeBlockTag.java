@@ -3,12 +3,13 @@ package net.webassembletool.taglib;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
+
 import net.webassembletool.DriverFactory;
-import net.webassembletool.RenderingException;
-import net.webassembletool.RetrieveException;
+import net.webassembletool.HttpErrorPage;
 
 /**
  * Retrieves an HTML fragment from the provider application and inserts it into the page. Extends AbstractReplaceableTag, so a ReplaceTag can be used inside this tag.
@@ -74,7 +75,7 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, P
         }
         try {
             DriverUtils.renderBlock(provider, page, name, pageContext, replaceRules, parameters, addQuery);
-        } catch (RetrieveException re) {
+        } catch (HttpErrorPage re) {
             if (displayErrorPage)
                 try {
                     pageContext.getOut().append(re.getErrorPageContent());
@@ -99,8 +100,6 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, P
                 } catch (IOException e) {
                     throw new JspException(e);
                 }
-        } catch (RenderingException e) {
-            throw new JspException(e);
         }
         name = null;
         page = null;

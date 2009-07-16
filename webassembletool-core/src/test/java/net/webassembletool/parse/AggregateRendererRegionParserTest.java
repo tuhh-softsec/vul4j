@@ -8,7 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.parse.AggregateRendererRegionParser.Result;
 
 public class AggregateRendererRegionParserTest extends TestCase {
@@ -36,7 +36,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
         assertTrue(actual.get(0) instanceof MockRegion);
     }
 
-    public void testParse() throws IOException, RenderingException {
+    public void testParse() throws IOException, HttpErrorPage {
         AggregateRendererRegionParser tested = new AggregateRendererRegionParser(
                 false);
         String content = "content<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->"
@@ -100,13 +100,13 @@ public class AggregateRendererRegionParserTest extends TestCase {
     }
 
     private void checkOutput(String expected, IRegion region)
-            throws IOException, RenderingException {
+            throws IOException, HttpErrorPage {
         StringWriter out = new StringWriter();
         region.process(out, null);
         assertEquals(expected, out.toString());
     }
 
-    public void testFind() throws IOException, RenderingException {
+    public void testFind() throws IOException, HttpErrorPage {
         AggregateRendererRegionParser tested = new AggregateRendererRegionParser(
                 false);
         String content = "content";

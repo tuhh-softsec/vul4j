@@ -11,10 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.OutputException;
 
+import org.apache.commons.io.output.NullOutputStream;
+
 /**
  * Output implementation that simply writes to an HttpServletResponse.
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  * 
  */
 public class ResponseOutput extends Output {
@@ -38,6 +40,8 @@ public class ResponseOutput extends Output {
 			|| (ifNoneMatch != null && ifNoneMatch
 				.equals(getHeader("ETag")))) {
 		    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+		    // FIXME in order to avoid NullpointerException when sending a not_modified response
+		    outputStream = new NullOutputStream();
 		} else {
 			response.setStatus(getStatusCode());
 			try {

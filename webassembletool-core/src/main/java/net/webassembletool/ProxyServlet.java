@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Servlet used to proxy requests from a remote application.
  * 
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ProxyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+    private static final Log LOG = LogFactory.getLog(ProxyServlet.class);
 	private String provider;
 
 	@Override
@@ -25,8 +29,10 @@ public class ProxyServlet extends HttpServlet {
 		if (request.getServletPath() != null) {
 			relUrl = relUrl.substring(request.getServletPath().length());
 		}
+		LOG.debug("Proxying " + relUrl);
 		boolean propagateJsessionId = response.encodeURL("/").contains(
 				"jsessionid");
+
 		DriverFactory.getInstance(provider).proxy(relUrl, request, response,
 				propagateJsessionId);
 	}

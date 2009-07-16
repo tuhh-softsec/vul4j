@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Strings manipulation utility
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  */
 public class StringUtils {
 
@@ -22,15 +22,16 @@ public class StringUtils {
      * 
      * @return the result of the replace rules
      */
-    public final static CharSequence replace(CharSequence charSequence,
-	    Map<String, String> replaceRules) {
-	if (replaceRules != null && replaceRules.size() > 0) {
-	    for (Entry<String, String> replaceRule : replaceRules.entrySet()) {
-		charSequence = Pattern.compile(replaceRule.getKey()).matcher(
-			charSequence).replaceAll(replaceRule.getValue());
-	    }
+	public final static CharSequence replace(CharSequence charSequence,
+			Map<String, String> replaceRules) {
+		CharSequence result = charSequence;
+		if (replaceRules != null && replaceRules.size() > 0) {
+			for (Entry<String, String> replaceRule : replaceRules.entrySet()) {
+				result = Pattern.compile(replaceRule.getKey()).matcher(result)
+						.replaceAll(replaceRule.getValue());
+			}
+		}
+		return result;
 	}
-	return charSequence;
-    }
 
 }

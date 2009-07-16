@@ -40,17 +40,19 @@ public class IncludeParamComponent extends UIComponentBase {
 		return IncludeParamComponent.class.getPackage().toString();
 	}
 
+	@Override
 	public void restoreState(FacesContext context, Object state) {
 		Object[] values = (Object[]) state;
 		super.restoreState(context, values[0]);
 		name = (String) values[1];
 	}
 
+	@Override
 	public Object saveState(FacesContext context) {
 		Object[] values = new Object[2];
 		values[0] = super.saveState(context);
 		values[1] = name;
-		return ((Object) (values));
+		return values;
 	}
 
 }

@@ -14,24 +14,7 @@ import net.webassembletool.output.StringOutput;
 
 public class DriverTest extends TestCase {
 
-    public void testRenderBlockError() throws IOException, RenderingException {
-        final StringOutput expectedOutput = new MockStringOutput("expected");
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
-        expectedOutput.setStatusMessage("abc");
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
-
-        try {
-            tested.renderBlock(null, null, null, null, null, null, false, false);
-            fail("should throw RenderException");
-        } catch (RetrieveException e) {
-            assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
-            assertEquals("abc", e.getStatusMessage());
-            assertEquals("expected", e.getErrorPageContent());
-        }
-    }
-
-    public void testRenderBlockNull() throws IOException, RenderingException {
+    public void testRenderBlockNull() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
@@ -40,7 +23,7 @@ public class DriverTest extends TestCase {
         tested.renderBlock(null, null, null, null, null, null, false, false);
     }
 
-    public void testRenderBlock() throws IOException, RenderingException {
+    public void testRenderBlock() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
                 "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
@@ -53,27 +36,8 @@ public class DriverTest extends TestCase {
         assertEquals("some text goes here", out.toString());
     }
 
-    public void testRenderTemplateError() throws IOException,
-            RenderingException {
-        final StringOutput expectedOutput = new MockStringOutput("expected");
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
-        expectedOutput.setStatusMessage("abc");
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
-
-        try {
-            tested.renderTemplate(null, null, null, null, null, null, null,
-                    false);
-            fail("should throw RenderException");
-        } catch (RetrieveException e) {
-            assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
-            assertEquals("abc", e.getStatusMessage());
-            assertEquals("expected", e.getErrorPageContent());
-        }
-    }
-
     public void testRenderTemplateNull1() throws IOException,
-            RenderingException {
+    HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
@@ -85,7 +49,7 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderTemplateNull2() throws IOException,
-            RenderingException {
+    HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
@@ -103,7 +67,7 @@ public class DriverTest extends TestCase {
         assertTrue(out.toString().contains("'another value'"));
     }
 
-    public void testRenderTemplate1() throws IOException, RenderingException {
+    public void testRenderTemplate1() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
                 "some <!--$beginparam$key-->some hidden text goes here<!--$endparam$key--> printed");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
@@ -123,7 +87,7 @@ public class DriverTest extends TestCase {
         assertEquals("some 'value' printed", out.toString());
     }
 
-    public void testRenderTemplate2() throws IOException, RenderingException {
+    public void testRenderTemplate2() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
                 "abc some<!--$begintemplate$A-->some text goes here<!--$endtemplate$A--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);

@@ -96,13 +96,14 @@ public class DriverFactory {
 	if (INSTANCIES.isEmpty())
 	    throw new ConfigurationException(
 		    "Driver has not been configured and driver.properties file was not found");
-	if (instanceName == null)
-	    instanceName = DEFAULT_INSTANCE;
-	Driver instance = INSTANCIES.get(instanceName);
+	String effectiveInstanceName = instanceName;
+	if (effectiveInstanceName == null)
+		effectiveInstanceName = DEFAULT_INSTANCE;
+	Driver instance = INSTANCIES.get(effectiveInstanceName);
 	if (instance == null)
 	    throw new ConfigurationException(
 		    "No configuration properties found for factory : "
-			    + instanceName);
+			    + effectiveInstanceName);
 	return instance;
     }
 }

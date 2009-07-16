@@ -12,7 +12,7 @@ import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.DriverFactory;
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.taglib.ReplaceableTag;
 
 public class IncludeBlockComponent extends UIComponentBase implements
@@ -69,7 +69,7 @@ public class IncludeBlockComponent extends UIComponentBase implements
 			DriverFactory.getInstance(getProvider()).renderBlock(getPage(),
 					getName(), writer, request, replaceRules, null, false,
 					false);
-		} catch (RenderingException re) {
+		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage())
 				writer.write(re.getMessage());
 		}
@@ -98,6 +98,7 @@ public class IncludeBlockComponent extends UIComponentBase implements
 		return true;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void restoreState(FacesContext context, Object state) {
 		Object[] values = (Object[]) state;
@@ -109,6 +110,7 @@ public class IncludeBlockComponent extends UIComponentBase implements
 		replaceRules = (HashMap<String, String>) values[5];
 	}
 
+	@Override
 	public Object saveState(FacesContext context) {
 		Object[] values = new Object[6];
 		values[0] = super.saveState(context);
@@ -117,7 +119,7 @@ public class IncludeBlockComponent extends UIComponentBase implements
 		values[3] = provider;
 		values[4] = displayErrorPage;
 		values[5] = replaceRules;
-		return ((Object) (values));
+		return values;
 	}
 
 }

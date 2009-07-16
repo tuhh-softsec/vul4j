@@ -40,17 +40,19 @@ public class ReplaceComponent extends UIComponentBase {
 		return ReplaceComponent.class.getPackage().toString();
 	}
 
+	@Override
 	public void restoreState(FacesContext context, Object state) {
 		Object[] values = (Object[]) state;
 		super.restoreState(context, values[0]);
 		expression = (String) values[1];
 	}
 
+	@Override
 	public Object saveState(FacesContext context) {
 		Object[] values = new Object[2];
 		values[0] = super.saveState(context);
 		values[1] = expression;
-		return ((Object) (values));
+		return values;
 	}
 
 }

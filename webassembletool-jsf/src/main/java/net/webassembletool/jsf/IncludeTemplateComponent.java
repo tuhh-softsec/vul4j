@@ -12,7 +12,7 @@ import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.DriverFactory;
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.taglib.ReplaceableTag;
 
 public class IncludeTemplateComponent extends UIComponentBase implements
@@ -70,7 +70,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(),
 					getName(), writer, request, params, replaceRules, null,
 					false);
-		} catch (RenderingException re) {
+		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage())
 				writer.write(re.getMessage());
 		}
@@ -104,6 +104,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 		return true;
 	}
 
+	@Override
 	public void restoreState(FacesContext context, Object state) {
 		Object[] values = (Object[]) state;
 		super.restoreState(context, values[0]);
@@ -113,6 +114,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 		displayErrorPage = (Boolean) values[4];
 	}
 
+	@Override
 	public Object saveState(FacesContext context) {
 		Object[] values = new Object[5];
 		values[0] = super.saveState(context);
@@ -120,7 +122,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 		values[2] = name;
 		values[3] = provider;
 		values[4] = displayErrorPage;
-		return ((Object) (values));
+		return values;
 	}
 
 }

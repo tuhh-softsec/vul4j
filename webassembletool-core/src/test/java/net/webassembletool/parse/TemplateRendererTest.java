@@ -7,29 +7,13 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
-import net.webassembletool.RetrieveException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.output.MockStringOutput;
 import net.webassembletool.output.StringOutput;
 
 public class TemplateRendererTest extends TestCase {
 
-    public void testRenderTemplateError() throws IOException {
-        final StringOutput expectedOutput = new MockStringOutput("expected");
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
-        expectedOutput.setStatusMessage("abc");
-
-        TemplateRenderer tested = new TemplateRenderer(null, null, null);
-        try {
-            tested.render(expectedOutput, null, null);
-            fail("should throw RetrieveException");
-        } catch (RetrieveException e) {
-            assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
-            assertEquals("abc", e.getStatusMessage());
-            assertEquals("expected", e.getErrorPageContent());
-        }
-    }
-
-    public void testRenderTemplateNull1() throws IOException, RetrieveException {
+    public void testRenderTemplateNull1() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         StringWriter out = new StringWriter();
@@ -39,7 +23,7 @@ public class TemplateRendererTest extends TestCase {
         assertEquals(0, out.toString().length());
     }
 
-    public void testRenderTemplateNull2() throws IOException, RetrieveException {
+    public void testRenderTemplateNull2() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
 
@@ -58,7 +42,7 @@ public class TemplateRendererTest extends TestCase {
         assertTrue(out.toString().contains("'another value'"));
     }
 
-    public void testRenderTemplate1() throws IOException, RetrieveException {
+    public void testRenderTemplate1() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
                 "some <!--$beginparam$key-->some hidden text goes here<!--$endparam$key--> printed");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
@@ -78,7 +62,7 @@ public class TemplateRendererTest extends TestCase {
         assertEquals("some 'value' printed", out.toString());
     }
 
-    public void testRenderTemplate2() throws IOException, RetrieveException {
+    public void testRenderTemplate2() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
                 "abc some<!--$begintemplate$A-->some text goes here<!--$endtemplate$A--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);

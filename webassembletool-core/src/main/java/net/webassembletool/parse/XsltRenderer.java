@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -23,8 +21,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import net.webassembletool.RenderingException;
-import net.webassembletool.RetrieveException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.output.StringOutput;
 
 import org.apache.xml.serializer.DOMSerializer;
@@ -32,7 +29,6 @@ import org.apache.xml.serializer.Method;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.SerializerFactory;
-import org.cyberneko.html.parsers.DOMFragmentParser;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -52,7 +48,7 @@ public class XsltRenderer implements Renderer {
 	private final Transformer transformer;
 
 	public XsltRenderer(String xpath, String template, ServletContext ctx)
-			throws ProcessingFailedException, IOException {
+			throws IOException {
 		if (xpath != null) {
 			XPath xpathObj = XPathFactory.newInstance().newXPath();
 			try {
@@ -86,12 +82,7 @@ public class XsltRenderer implements Renderer {
 
 	/** {@inheritDoc} */
 	public void render(StringOutput src, Writer out, Map<String, String> unused)
-			throws IOException, RenderingException {
-		if (src.getStatusCode() != HttpServletResponse.SC_OK) {
-			throw new RetrieveException(src.getStatusCode(), src
-					.getStatusMessage(), src.toString());
-		}
-
+			throws IOException, HttpErrorPage {
 		try {
 			Document document = createSourceDocument(src);
 			Node xpathed;
@@ -118,9 +109,6 @@ public class XsltRenderer implements Renderer {
 			dSer.serialize(transformed);
 		} catch (SAXException e) {
 			throw new ProcessingFailedException("unable to parse source", e);
-		} catch (ParserConfigurationException e) {
-			throw new ProcessingFailedException("unable to create DOM builder",
-					e);
 		} catch (XPathExpressionException e) {
 			throw new ProcessingFailedException(
 					"failed to evaluate XPath expression", e);
@@ -130,7 +118,7 @@ public class XsltRenderer implements Renderer {
 	}
 
 	private Document createSourceDocument(StringOutput src)
-			throws SAXException, IOException, ParserConfigurationException {
+			throws SAXException, IOException {
 		DOMParser domParser = new DOMParser();
 		domParser.parse(new InputSource(new StringReader(src.toString())));
 		return domParser.getDocument();

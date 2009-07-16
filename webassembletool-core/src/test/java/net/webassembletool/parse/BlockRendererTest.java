@@ -7,29 +7,13 @@ import java.io.Writer;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
-import net.webassembletool.RetrieveException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.output.MockStringOutput;
 import net.webassembletool.output.StringOutput;
 
 public class BlockRendererTest extends TestCase {
 
-    public void testRenderBlockError() throws IOException {
-        final StringOutput expectedOutput = new MockStringOutput("expected");
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK + 1);
-        expectedOutput.setStatusMessage("abc");
-
-        BlockRenderer tested = new BlockRenderer(null, null);
-        try {
-            tested.render(expectedOutput, null, null);
-            fail("should throw RetrieveException");
-        } catch (RetrieveException e) {
-            assertEquals(HttpServletResponse.SC_OK + 1, e.getStatusCode());
-            assertEquals("abc", e.getStatusMessage());
-            assertEquals("expected", e.getErrorPageContent());
-        }
-    }
-
-    public void testRenderBlockNull() throws IOException, RetrieveException {
+    public void testRenderBlockNull() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         BlockRenderer tested = new BlockRenderer(null, null);
@@ -37,7 +21,7 @@ public class BlockRendererTest extends TestCase {
         tested.render(expectedOutput, null, null);
     }
 
-    public void testRenderBlock() throws IOException, RetrieveException {
+    public void testRenderBlock() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
                 "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);

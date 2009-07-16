@@ -11,7 +11,7 @@ import net.webassembletool.resource.Resource;
  * Resource implementation that keeps the contents inside a byte array. A
  * MemoryResource can be reused and kept in cache.
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  * 
  */
 public class MemoryResource extends Resource {
@@ -21,7 +21,6 @@ public class MemoryResource extends Resource {
     private final int statusCode;
     private final String statusMessage;
     private boolean stale = false;
-    private final boolean empty;
 
     public MemoryResource(byte[] byteArray, String charset, Properties headers,
 	    int statusCode, String statusMessage) {
@@ -30,12 +29,11 @@ public class MemoryResource extends Resource {
 	this.charset = charset;
 	this.statusCode = statusCode;
 	this.statusMessage = statusMessage;
-	this.empty = false;
     }
 
-    public boolean isEmpty() {
-	return empty;
-    }
+	public boolean isEmpty() {
+		return byteArray == null;
+	}
 
     public MemoryResource() {
 	// Used to crate an empty resource
@@ -44,7 +42,6 @@ public class MemoryResource extends Resource {
 	this.charset = null;
 	this.statusCode = 0;
 	this.statusMessage = null;
-	this.empty = true;
     }
 
     @Override

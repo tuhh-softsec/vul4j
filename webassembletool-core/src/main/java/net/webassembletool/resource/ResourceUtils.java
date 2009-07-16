@@ -48,8 +48,8 @@ public class ResourceUtils {
     public static boolean isTextContentType(String contentType) {
         if (contentType == null)
             return false;
-        contentType = contentType.toLowerCase();
-        if (contentType.startsWith("text/html") || contentType.startsWith("application/xhtml+xml"))
+        String lowerContentType = contentType.toLowerCase();
+        if (lowerContentType.startsWith("text/html") || lowerContentType.startsWith("application/xhtml+xml"))
             return true;
         else
             return false;

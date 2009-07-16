@@ -3,7 +3,7 @@ package net.webassembletool.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 
 /**
  * Retrieves an XML fragment from the provider application and inserts it into
@@ -26,7 +26,7 @@ public class IncludeXmlTag extends TagSupport {
             DriverUtils.renderXml(provider, source, xpath, template,
                     pageContext);
             return EVAL_BODY_INCLUDE;
-        } catch (RenderingException e) {
+        } catch (HttpErrorPage e) {
             throw new JspException(e);
         }
     }

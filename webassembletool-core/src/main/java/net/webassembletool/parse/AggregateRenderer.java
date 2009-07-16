@@ -10,8 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.webassembletool.RenderingException;
-import net.webassembletool.RetrieveException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.output.StringOutput;
 
 /**
@@ -53,8 +52,8 @@ public class AggregateRenderer implements Renderer {
     }
 
     /** {@inheritDoc} */
-    public void render(StringOutput stringOutput, Writer unised1,
-            Map<String, String> unused2) throws IOException, RenderingException {
+    public void render(StringOutput stringOutput, Writer unused1,
+            Map<String, String> unused2) throws IOException, HttpErrorPage {
         response.setStatus(stringOutput.getStatusCode());
         if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
                 || stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
@@ -74,7 +73,7 @@ public class AggregateRenderer implements Renderer {
         for (IRegion region : parsed) {
             try {
                 region.process(writer, request);
-            } catch (RetrieveException e) {
+            } catch (HttpErrorPage e) {
                 writer.append(e.getStatusCode() + " " + e.getStatusMessage());
             }
         }
@@ -82,7 +81,7 @@ public class AggregateRenderer implements Renderer {
         writer.flush();
     }
 
-    protected IRegionParser createParser() {
+    private IRegionParser createParser() {
         return new AggregateRendererRegionParser(propagateJsessionId);
     }
 }

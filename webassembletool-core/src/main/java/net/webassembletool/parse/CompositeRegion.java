@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 
 /**
  * Represents a region composed of several sub-regions.
@@ -24,7 +24,7 @@ public class CompositeRegion implements IRegion {
      * {@linkplain IRegion#process(Writer, HttpServletRequest)} on them.
      */
     public void process(Writer out, HttpServletRequest request)
-            throws IOException, RenderingException {
+            throws IOException, HttpErrorPage {
         for (IRegion child : children) {
             child.process(out, request);
         }

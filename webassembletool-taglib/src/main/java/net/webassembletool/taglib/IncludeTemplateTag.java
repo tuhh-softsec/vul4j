@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
-import net.webassembletool.RenderingException;
-import net.webassembletool.RetrieveException;
+
+import net.webassembletool.HttpErrorPage;
 
 /**
  * Retrieves a template from the provider application and inserts it into the page replacing the parameters. Extends AbstractReplaceableTag, so a ReplaceTag can be used inside this tag.
@@ -32,7 +33,7 @@ public class IncludeTemplateTag extends BodyTagSupport implements ReplaceableTag
     public int doEndTag() throws JspException {
         try {
             DriverUtils.renderTemplate(provider, page, name, pageContext, params, replaceRules, parameters);
-        } catch (RetrieveException e) {
+        } catch (HttpErrorPage e) {
             if (displayErrorPage)
                 try {
                     pageContext.getOut().append(e.getErrorPageContent());
@@ -57,8 +58,6 @@ public class IncludeTemplateTag extends BodyTagSupport implements ReplaceableTag
                 } catch (IOException e1) {
                     throw new JspException(e1);
                 }
-        } catch (RenderingException e) {
-            throw new JspException(e);
         }
         name = null;
         page = null;

@@ -69,7 +69,7 @@ public class RequestContext {
     }
 
     public boolean isCacheable() {
-        return !proxyMode && "GET".equalsIgnoreCase(getMethod());
+        return "GET".equalsIgnoreCase(getMethod());
     }
 
     public UserContext getUserContext() {

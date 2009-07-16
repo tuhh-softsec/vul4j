@@ -6,7 +6,7 @@ import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.Driver;
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 
 /**
  * Represents a <code>template</code> region which is located between either
@@ -27,7 +27,7 @@ public class IncludeBlockRegion extends AbstractIncludeRegion {
 
     /** {@inheritDoc} */
     public void process(Writer out, HttpServletRequest request)
-            throws IOException, RenderingException {
+            throws IOException, HttpErrorPage {
         getDriver().renderBlock(page, name, out, request, null, null,
                 propagateJsessionId, false);
     }

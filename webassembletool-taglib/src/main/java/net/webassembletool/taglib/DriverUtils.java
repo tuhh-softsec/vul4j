@@ -5,13 +5,15 @@ package net.webassembletool.taglib;
 
 import java.io.IOException;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
 import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 
 /**
  * Utility class used by all tags to access to the Driver
@@ -24,7 +26,7 @@ public class DriverUtils {
     }
 
     public final static void renderBlock(String provider, String page, String name, PageContext pageContext, Map<String, String> replaceRules, Map<String, String> parameters,
-            boolean copyOriginalRequestParameters) throws JspException, RenderingException {
+            boolean copyOriginalRequestParameters) throws JspException, HttpErrorPage {
         try {
             Driver driver = DriverFactory.getInstance(provider);
             boolean propagateJsessionId = ((HttpServletResponse) pageContext.getResponse()).encodeURL("/").contains("jsessionid");
@@ -35,7 +37,7 @@ public class DriverUtils {
     }
 
     public final static void renderTemplate(String provider, String page, String name, PageContext pageContext, Map<String, String> params, Map<String, String> replaceRules,
-            Map<String, String> parameters) throws JspException, RenderingException {
+            Map<String, String> parameters) throws JspException, HttpErrorPage {
         try {
             Driver driver = DriverFactory.getInstance(provider);
             boolean propagateJsessionId = ((HttpServletResponse) pageContext.getResponse()).encodeURL("/").contains("jsessionid");
@@ -45,7 +47,7 @@ public class DriverUtils {
         }
     }
 
-    public final static void renderXml(String provider, String source, String xpath, String template, PageContext pageContext) throws JspException, RenderingException {
+    public final static void renderXml(String provider, String source, String xpath, String template, PageContext pageContext) throws JspException, HttpErrorPage {
         try {
             Driver driver = DriverFactory.getInstance(provider);
             driver.renderXml(source, xpath, template, pageContext.getOut(), (HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext());

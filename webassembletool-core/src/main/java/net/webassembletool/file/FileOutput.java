@@ -12,11 +12,11 @@ import net.webassembletool.output.OutputException;
  * Output implementation that saves the file and headers into two distinct
  * files.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class FileOutput extends Output {
-    private File file;
+    private final File file;
     private final File headerFile;
     private FileOutputStream fileOutputStream;
 
@@ -55,7 +55,6 @@ public class FileOutput extends Output {
 	    if (fileOutputStream != null)
 		fileOutputStream.close();
 	    fileOutputStream = null;
-	    file = null;
 	} catch (IOException e) {
 	    throw new OutputException("Could not close file: " + file.toURI(),
 		    e);
@@ -69,5 +68,10 @@ public class FileOutput extends Output {
 	    throw new OutputException("Could write to file: "
 		    + headerFile.toURI(), e);
 	}
+    }
+    
+    public void delete() {
+    	file.delete();
+    	headerFile.delete();
     }
 }

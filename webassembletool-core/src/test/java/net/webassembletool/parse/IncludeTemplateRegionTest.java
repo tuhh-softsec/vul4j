@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 import net.webassembletool.Driver;
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 
 public class IncludeTemplateRegionTest extends TestCase {
 
-    public void testProcess() throws IOException, RenderingException {
+    public void testProcess() throws IOException, HttpErrorPage {
         final List<String> calls = new LinkedList<String>();
         final Writer mockWriter = new StringWriter();
         final Driver mockDriver = new Driver("mock", new Properties()) {

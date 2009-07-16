@@ -10,7 +10,7 @@ import net.webassembletool.output.OutputException;
 /**
  * Output implementation that stores the file and headers to a MemoryResource.
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  * @see MemoryResource
  * 
  */
@@ -66,14 +66,14 @@ public class MemoryOutput extends Output {
 
         /** {@inheritDoc} */
         @Override
-        public void write(int b) {
+        public synchronized void write(int b) {
             byte buf[] = new byte[] { (byte) b };
             write(buf, 0, 1);
         }
 
         /** {@inheritDoc} */
         @Override
-        public void write(byte[] b, int off, int len) {
+        public synchronized void write(byte[] b, int off, int len) {
             if (!tooBig) {
                 if ((count + len) > maxSize) {
                     tooBig = true;

@@ -128,12 +128,12 @@ public class Driver {
      *            hosting web application context
      * @throws IOException
      *             If an IOException occurs while writing to the writer
-     * @throws RenderingException
+     * @throws HttpErrorPage 
      *             If an Exception occurs while retrieving the block
      */
 	public final void renderXml(String source, String xpath, String template,
 			Writer out, HttpServletRequest originalRequest, ServletContext ctx)
-			throws IOException, RenderingException {
+			throws IOException, HttpErrorPage {
 		RequestContext target = new RequestContext(this, source, null,
 				originalRequest, false, false);
 		StringOutput stringOutput = getResourceAsString(target);
@@ -163,11 +163,11 @@ public class Driver {
      *            indicates whether the original request parameters should be copied in the new request
      * @throws IOException
      *             If an IOException occurs while writing to the writer
-     * @throws RenderingException
+     * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the block
      */
     public void renderBlock(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> replaceRules, Map<String, String> parameters, boolean propagateJsessionId,
-            boolean copyOriginalRequestParameters) throws IOException, RenderingException {
+            boolean copyOriginalRequestParameters) throws IOException, HttpErrorPage {
         RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, copyOriginalRequestParameters);
         StringOutput stringOutput = getResourceAsString(target);
         Renderer renderer = new BlockRenderer(name, page);
@@ -199,11 +199,11 @@ public class Driver {
      *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
      * @throws IOException
      *             If an IOException occurs while writing to the writer
-     * @throws RenderingException
+     * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the template
      */
     public void renderTemplate(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> params, Map<String, String> replaceRules,
-            Map<String, String> parameters, boolean propagateJsessionId) throws IOException, RenderingException {
+            Map<String, String> parameters, boolean propagateJsessionId) throws IOException, HttpErrorPage {
         RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, false);
         StringOutput stringOutput = getResourceAsString(target);
         Renderer renderer = new TemplateRenderer(name, params, page);
@@ -259,10 +259,10 @@ public class Driver {
      *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
      * @throws IOException
      *             If an IOException occurs while writing to the response
-     * @throws RenderingException
+     * @throws HttpErrorPage
      *             If the page contains incorrect tags
      */
-    public final void aggregate(String relUrl, HttpServletRequest request, HttpServletResponse response, boolean propagateJsessionId) throws IOException, RenderingException {
+    public final void aggregate(String relUrl, HttpServletRequest request, HttpServletResponse response, boolean propagateJsessionId) throws IOException, HttpErrorPage {
         RequestContext target = new RequestContext(this, relUrl, null, request, propagateJsessionId, true);
         request.setCharacterEncoding(config.getUriEncoding());
         target.setProxyMode(true);
@@ -280,7 +280,7 @@ public class Driver {
         renderer.render(textOutput, null, null);
     }
 
-    private final void renderResource(RequestContext target, Output output) throws IOException {
+    private final void renderResource(RequestContext target, Output output) {
         String httpUrl = ResourceUtils.getHttpUrlWithQueryString(target);
         MultipleOutput multipleOutput = new MultipleOutput();
         multipleOutput.addOutput(output);
@@ -288,6 +288,7 @@ public class Driver {
         HttpResource httpResource = null;
         FileResource fileResource = null;
         MemoryOutput memoryOutput = null;
+        FileOutput fileOutput = null;
         try {
             if (config.isUseCache() && target.isCacheable()) {
                 // Try to load the resource from cache
@@ -310,8 +311,10 @@ public class Driver {
             // Try to load it from HTTP
             if (config.getBaseURL() != null && (cachedResource == null || cachedResource.isStale() || cachedResource.isEmpty())) {
                 // Prepare a FileOutput to store the result on the file system
-                if (config.isPutInCache() && target.isCacheable())
-                    multipleOutput.addOutput(new FileOutput(ResourceUtils.getFileUrl(config.getLocalBase(), target)));
+                if (config.isPutInCache() && target.isCacheable()) {
+                	fileOutput = new FileOutput(ResourceUtils.getFileUrl(config.getLocalBase(), target));
+                    multipleOutput.addOutput(fileOutput);
+                }
                 httpResource = new HttpResource(httpClient, target);
                 if (!httpResource.isError()) {
                     httpResource.render(multipleOutput);
@@ -347,6 +350,19 @@ public class Driver {
             } else
                 // Resource could not be loaded at all
                 new NullResource().render(multipleOutput);
+        } catch (Throwable t) {
+			// In case there was a problem during rendering (client abort for
+			// exemple), all the output
+			// should have been gracefully closed in the render method but we
+			// must discard the entry inside the cache or the file system
+			// because it is not complete
+            if (memoryOutput != null) {
+                cache.cancelUpdate(httpUrl);
+                memoryOutput = null;
+            }
+            if (fileOutput !=null)
+            	fileOutput.delete();
+            throw new ResponseException(httpUrl + " could not be retrieved", t);
         } finally {
             // Free all the resources
             if (cachedResource != null)
@@ -366,13 +382,18 @@ public class Driver {
      * @param target
      *            the target resource
      * @return the content of the url
-     * @throws IOException
+     * @throws HttpErrorPage 
      */
-    protected StringOutput getResourceAsString(RequestContext target) throws IOException {
-        StringOutput stringOutput = new StringOutput();
-        renderResource(target, stringOutput);
-        return stringOutput;
-    }
+	protected StringOutput getResourceAsString(RequestContext target)
+			throws HttpErrorPage {
+		StringOutput stringOutput = new StringOutput();
+		renderResource(target, stringOutput);
+		if (stringOutput.getStatusCode() != HttpServletResponse.SC_OK) {
+			throw new HttpErrorPage(stringOutput.getStatusCode(), stringOutput
+					.getStatusMessage(), stringOutput.toString());
+		}
+		return stringOutput;
+	}
 
     private final String getContextKey() {
         return UserContext.class.getName() + "#" + config.getInstanceName();

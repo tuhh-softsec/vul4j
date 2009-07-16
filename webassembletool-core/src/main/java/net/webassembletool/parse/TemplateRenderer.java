@@ -5,9 +5,7 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletResponse;
-
-import net.webassembletool.RetrieveException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.output.StringOutput;
 
 import org.apache.commons.logging.Log;
@@ -45,11 +43,7 @@ public class TemplateRenderer implements Renderer {
     /** {@inheritDoc} */
     public void render(StringOutput src, Writer out,
             Map<String, String> replaceRules) throws IOException,
-            RetrieveException {
-        if (src.getStatusCode() != HttpServletResponse.SC_OK) {
-            throw new RetrieveException(src.getStatusCode(), src
-                    .getStatusMessage(), src.toString());
-        }
+            HttpErrorPage {
         String content = src.toString();
         StringBuilder sb = new StringBuilder();
         if (content != null) {

@@ -3,6 +3,7 @@ package net.webassembletool.test.cases;
 import net.sourceforge.jwebunit.junit.WebTestCase;
 
 public class FaceletTest extends WebTestCase {
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 		setBaseUrl("http://localhost:8080/webassembletool-app-facelet");

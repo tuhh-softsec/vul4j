@@ -15,12 +15,14 @@ import java.util.Properties;
  * Output implementations may handle the data as needed : write it to an
  * HttpServletResponse, save it to a File or a database for example.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public abstract class Output {
 
-    private String charsetName;
+	// Default charset on the web is ISO-8859-1
+	// For more details see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7.1
+    private String charsetName = "ISO-8859-1";
     private int statusCode;
     private String statusMessage;
     private final Properties headers = new Properties();

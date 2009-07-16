@@ -1,14 +1,13 @@
 package net.webassembletool.parse;
 
-import net.webassembletool.RenderingException;
 
 /**
  * Exception thrown when an HTML document contains WAT tags with invalid
  * arguments
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  */
-public class AggregationSyntaxException extends RenderingException {
+public class AggregationSyntaxException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /** @param string Error message */

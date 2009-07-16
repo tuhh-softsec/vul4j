@@ -8,8 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.Driver;
-import net.webassembletool.RenderingException;
-import net.webassembletool.RetrieveException;
+import net.webassembletool.HttpErrorPage;
 
 /**
  * Represents a <code>template</code> region which is located between
@@ -38,11 +37,11 @@ public class IncludeTemplateRegion extends AbstractIncludeRegion {
     /**
      * {@inheritDoc}
      * 
-     * @throws RetrieveException If an Exception occurs while retrieving the
+     * @throws HttpErrorPage If an Exception occurs while retrieving the
      *             template
      */
     public void process(Writer out, HttpServletRequest request)
-            throws IOException, RenderingException {
+            throws IOException, HttpErrorPage {
         Map<String, String> params = parseParameters(templateBody);
         getDriver().renderTemplate(page, name, out, request, params, null,
                 null, propagateJsessionId);

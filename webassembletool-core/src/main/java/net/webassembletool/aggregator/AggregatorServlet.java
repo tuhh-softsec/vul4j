@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.DriverFactory;
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet used to proxy requests from a remote application.
@@ -18,6 +21,7 @@ import net.webassembletool.RenderingException;
  */
 public class AggregatorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+    private static final Log LOG = LogFactory.getLog(AggregatorServlet.class);
 	private String provider;
 
 	@Override
@@ -28,14 +32,15 @@ public class AggregatorServlet extends HttpServlet {
 		if (request.getServletPath() != null) {
 			relUrl = relUrl.substring(request.getServletPath().length());
 		}
+		LOG.debug("Aggregating " + relUrl);
 		boolean propagateJsessionId = response.encodeURL("/").contains(
 				"jsessionid");
-		try {
-			DriverFactory.getInstance(provider).aggregate(relUrl, request,
-					response, propagateJsessionId);
-		} catch (RenderingException e) {
-			throw new ServletException(e);
-		}
+			try {
+				DriverFactory.getInstance(provider).aggregate(relUrl, request,
+						response, propagateJsessionId);
+			} catch (HttpErrorPage e) {
+				throw new ServletException(e);
+			}
 	}
 
 	@Override

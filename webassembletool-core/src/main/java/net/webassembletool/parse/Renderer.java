@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import net.webassembletool.RenderingException;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.output.StringOutput;
 
 /**
@@ -21,8 +21,8 @@ public interface Renderer {
      * @param out output destination
      * @param replaceRules replace rules
      * @throws IOException
-     * @throws RenderingException
+     * @throws HttpErrorPage
      */
     void render(StringOutput src, Writer out, Map<String, String> replaceRules)
-            throws IOException, RenderingException;
+            throws IOException, HttpErrorPage;
 }
