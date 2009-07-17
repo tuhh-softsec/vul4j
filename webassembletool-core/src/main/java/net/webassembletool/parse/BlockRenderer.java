@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.util.Map;
 
 import net.webassembletool.HttpErrorPage;
-import net.webassembletool.output.StringOutput;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,18 +22,18 @@ public class BlockRenderer implements Renderer {
 
     private final String page;
     private final String name;
+    private final Map<String, String> replaceRules;
 
-    public BlockRenderer(String name, String page) {
+    public BlockRenderer(String name, String page, Map<String, String> replaceRules) {
         this.name = name;
         this.page = page;
+        this.replaceRules =replaceRules;
     }
 
     /** {@inheritDoc} */
-    public void render(StringOutput src, Writer out,
-            Map<String, String> replaceRules) throws IOException,
+    public void render(String content, Writer out) throws IOException,
             HttpErrorPage {
-        String content = src.toString();
-        if (content == null)
+         if (content == null)
             return;
         if (name == null) {
             LOG.debug("Serving whole page: page=" + page);

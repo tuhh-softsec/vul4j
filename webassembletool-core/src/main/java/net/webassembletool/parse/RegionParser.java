@@ -5,18 +5,18 @@ import java.util.List;
 
 /**
  * Implementations are intended to parse retrived content into
- * {@linkplain IRegion} collection.
+ * {@linkplain Region} collection.
  * 
  * @author Stanislav Bernatskyi
  */
-public interface IRegionParser {
+public interface RegionParser {
     /**
-     * Parses provided content into {@linkplain IRegion} collection
+     * Parses provided content into {@linkplain Region} collection
      * 
      * @param content which should be parsed
-     * @return ordered collection of {@linkplain IRegion} elements
+     * @return ordered collection of {@linkplain Region} elements
      * @throws AggregationSyntaxException in case when <code>content</code>
      *             contains invalid regions
      */
-    List<IRegion> parse(String content) throws AggregationSyntaxException;
+    List<Region> parse(String content) throws AggregationSyntaxException;
 }

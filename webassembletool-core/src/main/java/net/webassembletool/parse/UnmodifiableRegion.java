@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Stanislav Bernatskyi
  */
-public class UnmodifiableRegion implements IRegion {
+public class UnmodifiableRegion implements Region {
     private final CharSequence content;
     private final int start;
     private final int end;

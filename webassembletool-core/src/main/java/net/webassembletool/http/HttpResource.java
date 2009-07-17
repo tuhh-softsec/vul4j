@@ -156,8 +156,7 @@ public class HttpResource extends Resource {
             if (currentLocation != null && currentLocation.contains("/login")) {
                 addCasAuthentication(currentLocation);
                 // We must ensure that the connection is allways released, if
-                // not
-                // the connection manager's pool may be exhausted soon !
+                // not the connection manager's pool may be exhausted soon !
                 httpMethod.releaseConnection();
                 buildHttpMethod();
                 HttpResource.LOG.debug(toString());
@@ -206,7 +205,7 @@ public class HttpResource extends Resource {
     @Override
     public void render(Output output) throws IOException {
         output.setStatus(statusCode, statusText);
-        copyHeaders(httpMethod, output, "Content-Type", "Content-Length", "Last-Modified", "ETag", "Expires", "Cache-control", "Content-length");
+        copyHeaders(httpMethod, output, "Date", "Content-Type", "Content-Length", "Last-Modified", "ETag", "Expires", "Cache-control");
         // TODO: refactor this
         Header header = httpMethod.getResponseHeader("Location");
         if (header != null) {

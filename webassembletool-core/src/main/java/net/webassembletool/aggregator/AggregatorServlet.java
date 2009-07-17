@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.parse.AggregateRenderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,12 +36,16 @@ public class AggregatorServlet extends HttpServlet {
 		LOG.debug("Aggregating " + relUrl);
 		boolean propagateJsessionId = response.encodeURL("/").contains(
 				"jsessionid");
-			try {
-				DriverFactory.getInstance(provider).aggregate(relUrl, request,
-						response, propagateJsessionId);
-			} catch (HttpErrorPage e) {
-				throw new ServletException(e);
-			}
+		try {
+			DriverFactory.getInstance(provider).proxy(
+					relUrl,
+					request,
+					response,
+					propagateJsessionId,
+					new AggregateRenderer(request, propagateJsessionId));
+		} catch (HttpErrorPage e) {
+			throw new ServletException(e);
+		}
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import org.apache.commons.io.output.NullOutputStream;
 /**
  * Output implementation that simply writes to an HttpServletResponse.
  * 
- * @author Fran�ois-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class ResponseOutput extends Output {

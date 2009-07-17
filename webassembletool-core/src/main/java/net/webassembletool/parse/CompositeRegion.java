@@ -14,31 +14,31 @@ import net.webassembletool.HttpErrorPage;
  * 
  * @author Stanislav Bernatskyi
  */
-public class CompositeRegion implements IRegion {
-    private final List<IRegion> children = new LinkedList<IRegion>();
+public class CompositeRegion implements Region {
+    private final List<Region> children = new LinkedList<Region>();
 
     /**
      * {@inheritDoc}
      * <p>
      * Processes all children by iteratively invoking
-     * {@linkplain IRegion#process(Writer, HttpServletRequest)} on them.
+     * {@linkplain Region#process(Writer, HttpServletRequest)} on them.
      */
     public void process(Writer out, HttpServletRequest request)
             throws IOException, HttpErrorPage {
-        for (IRegion child : children) {
+        for (Region child : children) {
             child.process(out, request);
         }
     }
 
-    public void add(IRegion child) {
+    public void add(Region child) {
         children.add(child);
     }
 
-    public void remove(IRegion child) {
+    public void remove(Region child) {
         children.remove(child);
     }
 
-    public List<IRegion> getChildren() {
+    public List<Region> getChildren() {
         return children;
     }
 

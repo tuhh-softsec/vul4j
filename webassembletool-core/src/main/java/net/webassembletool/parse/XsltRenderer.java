@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.Writer;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -22,7 +21,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import net.webassembletool.HttpErrorPage;
-import net.webassembletool.output.StringOutput;
 
 import org.apache.xml.serializer.DOMSerializer;
 import org.apache.xml.serializer.Method;
@@ -81,7 +79,7 @@ public class XsltRenderer implements Renderer {
 	}
 
 	/** {@inheritDoc} */
-	public void render(StringOutput src, Writer out, Map<String, String> unused)
+	public void render(String src, Writer out)
 			throws IOException, HttpErrorPage {
 		try {
 			Document document = createSourceDocument(src);
@@ -117,10 +115,10 @@ public class XsltRenderer implements Renderer {
 		}
 	}
 
-	private Document createSourceDocument(StringOutput src)
+	private Document createSourceDocument(String src)
 			throws SAXException, IOException {
 		DOMParser domParser = new DOMParser();
-		domParser.parse(new InputSource(new StringReader(src.toString())));
+		domParser.parse(new InputSource(new StringReader(src)));
 		return domParser.getDocument();
 	}
 

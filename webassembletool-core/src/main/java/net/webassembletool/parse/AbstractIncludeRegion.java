@@ -4,12 +4,12 @@ import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 
 /**
- * Base abstract class for {@linkplain IRegion} implementations like
+ * Base abstract class for {@linkplain Region} implementations like
  * {@linkplain IncludeBlockRegion} and {@linkplain IncludeTemplateRegion}
  * 
  * @author Stanislav Bernatskyi
  */
-abstract class AbstractIncludeRegion implements IRegion {
+abstract class AbstractIncludeRegion implements Region {
     private final String provider;
     protected final String page;
     protected final String name;

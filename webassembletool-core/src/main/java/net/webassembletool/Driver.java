@@ -21,7 +21,6 @@ import net.webassembletool.output.MultipleOutput;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
-import net.webassembletool.parse.AggregateRenderer;
 import net.webassembletool.parse.BlockRenderer;
 import net.webassembletool.parse.Renderer;
 import net.webassembletool.parse.TemplateRenderer;
@@ -42,10 +41,6 @@ import org.apache.commons.logging.LogFactory;
  * @author François-Xavier Bonnet
  */
 public class Driver {
-    // TODO: write a tokenizer class to avoid String.indexOf usage in the
-    // driver.
-    // TODO: proxy mode option for taglibs, aggregator and proxy, recursive or
-    // not for aggregator
     private static final Log LOG = LogFactory.getLog(Driver.class);
     private final DriverConfiguration config;
     private final Cache cache;
@@ -107,7 +102,7 @@ public class Driver {
      * 
      * @return flag indicating whether 'filterJsessionid' option is turned on in configuration
      */
-    public boolean isFilterJsessionid() {
+    public final boolean isFilterJsessionid() {
         return config.isFilterJsessionid();
     }
 
@@ -138,7 +133,7 @@ public class Driver {
 				originalRequest, false, false);
 		StringOutput stringOutput = getResourceAsString(target);
 		Renderer renderer = new XsltRenderer(xpath,	template, ctx);
-		renderer.render(stringOutput, out, null);
+		renderer.render(stringOutput.toString(), out);
 	}
 
     /**
@@ -170,8 +165,8 @@ public class Driver {
             boolean copyOriginalRequestParameters) throws IOException, HttpErrorPage {
         RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, copyOriginalRequestParameters);
         StringOutput stringOutput = getResourceAsString(target);
-        Renderer renderer = new BlockRenderer(name, page);
-        renderer.render(stringOutput, writer, replaceRules);
+        Renderer renderer = new BlockRenderer(name, page, replaceRules);
+        renderer.render(stringOutput.toString(), writer);
     }
 
     /**
@@ -206,80 +201,78 @@ public class Driver {
             Map<String, String> parameters, boolean propagateJsessionId) throws IOException, HttpErrorPage {
         RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, false);
         StringOutput stringOutput = getResourceAsString(target);
-        Renderer renderer = new TemplateRenderer(name, params, page);
-        renderer.render(stringOutput, writer, replaceRules);
+        Renderer renderer = new TemplateRenderer(name, params, page, replaceRules);
+        renderer.render(stringOutput.toString(), writer);
     }
 
-    /**
-     * Retrieves a resource from the provider application as binary data and writes it to the response.
-     * 
-     * @param relUrl
-     *            the relative URL to the resource
-     * @param request
-     *            the request
-     * @param response
-     *            the response
-     * @param parameters
-     *            Additional parameters that will be added to the request
-     * @param propagateJsessionId
-     *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
-     * @throws IOException
-     *             If an IOException occurs while rendering the response
-     */
-    public final void proxy(String relUrl, HttpServletRequest request, HttpServletResponse response, boolean propagateJsessionId) throws IOException {
-        RequestContext requestContext = new RequestContext(this, relUrl, null, request, propagateJsessionId, false);
-        request.setCharacterEncoding(config.getUriEncoding());
-        requestContext.setProxyMode(true);
-        renderResource(requestContext, new ResponseOutput(request, response));
-    }
-
-    /**
-     * Retrieves a resource from the provider application and parses it to find tags to be replaced by contents from other providers. Sample syntax used for includes :
-     * <ul>
-     * <li>&lt;!--$includeblock$provider$page$blockname$--&gt;</li>
-     * <li>&lt;!--$beginincludetemplate$provider$page$templatename$--&gt;</li>
-     * <li>&lt;!--$beginput$name$--&gt;</li>
-     * </ul>
-     * Sample syntax used inside included contents for template and block definition :
-     * <ul>
-     * <li>&lt;!--$beginblock$name$--&gt;</li>
-     * <li>&lt;!--$begintemplate$name$--&gt;</li>
-     * <li>&lt;!--$beginparam$name$--&gt;</li>
-     * </ul>
-     * Aggregation is always in "proxy mode" that means cookies or parameters from the original request are transmitted to the target server. <br/>
-     * <b>NB: Cookies and parameters are not transmitted to templates or blocks invoked by the page</b>.
-     * 
-     * @param relUrl
-     *            the relative URL to the resource
-     * @param request
-     *            the request
-     * @param response
-     *            the response
-     * @param propagateJsessionId
-     *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
-     * @throws IOException
-     *             If an IOException occurs while writing to the response
-     * @throws HttpErrorPage
-     *             If the page contains incorrect tags
-     */
-    public final void aggregate(String relUrl, HttpServletRequest request, HttpServletResponse response, boolean propagateJsessionId) throws IOException, HttpErrorPage {
-        RequestContext target = new RequestContext(this, relUrl, null, request, propagateJsessionId, true);
-        request.setCharacterEncoding(config.getUriEncoding());
-        target.setProxyMode(true);
-        // Directly stream out non text data
-        TextOnlyStringOutput textOutput = new TextOnlyStringOutput(new ResponseOutput(request, response));
-        renderResource(target, textOutput);
-        // If data was binary, no text buffer is available and no rendering is
-        // needed.
-        if (!textOutput.hasTextBuffer()) {
-            Driver.LOG.debug("'" + relUrl + "' is binary : was forwarded without aggregation.");
-            return;
-        }
-        Driver.LOG.debug("'" + relUrl + "' is text : will be aggregated.");
-        Renderer renderer = new AggregateRenderer(response, target.getOriginalRequest(), propagateJsessionId);
-        renderer.render(textOutput, null, null);
-    }
-
+	/**
+	 * Retrieves a resource from the provider application and transforms it
+	 * using the Renderer passed as a parameter.
+	 * 
+	 * On of the Renderers that can be used is the AggregateRenderer that parses
+	 * the html pages to find tags to be replaced by contents from other
+	 * providers. Sample syntax used for includes :
+	 * <ul>
+	 * <li>&lt;!--$includeblock$provider$page$blockname$--&gt;</li>
+	 * <li>&lt;!--$beginincludetemplate$provider$page$templatename$--&gt;</li>
+	 * <li>&lt;!--$beginput$name$--&gt;</li>
+	 * </ul>
+	 * Sample syntax used inside included contents for template and block
+	 * definition :
+	 * <ul>
+	 * <li>&lt;!--$beginblock$name$--&gt;</li>
+	 * <li>&lt;!--$begintemplate$name$--&gt;</li>
+	 * <li>&lt;!--$beginparam$name$--&gt;</li>
+	 * </ul>
+	 * Aggregation is always in "proxy mode" that means cookies or parameters
+	 * from the original request are transmitted to the target server. <br/>
+	 * <b>NB: Cookies and parameters are not transmitted to templates or blocks
+	 * invoked by the page</b>.
+	 * 
+	 * 
+	 * 
+	 * @param relUrl
+	 *            the relative URL to the resource
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @param propagateJsessionId
+	 *            indicates whether <code>jsessionid</code> should be propagated
+	 *            or just removed from generated output
+	 * @param renderer
+	 *            the renderer to use to transform the output or null if no transformation to apply
+	 * @throws IOException
+	 *             If an IOException occurs while writing to the response
+	 * @throws HttpErrorPage
+	 *             If the page contains incorrect tags
+	 */
+	public final void proxy(String relUrl, HttpServletRequest request,
+			HttpServletResponse response, boolean propagateJsessionId,
+			Renderer renderer) throws IOException, HttpErrorPage {
+		RequestContext requestContext = new RequestContext(this, relUrl, null,
+				request, propagateJsessionId, true);
+		request.setCharacterEncoding(config.getUriEncoding());
+		requestContext.setProxyMode(true);
+		if (renderer == null) {
+			renderResource(requestContext,
+					new ResponseOutput(request, response));
+		} else {
+			// Directly stream out non text data
+			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(request, response);
+			renderResource(requestContext, textOutput);
+			// If data was binary, no text buffer is available and no rendering
+			// is needed.
+			if (!textOutput.hasTextBuffer()) {
+				Driver.LOG.debug("'" + relUrl
+						+ "' is binary : was forwarded without aggregation.");
+				return;
+			}
+			Driver.LOG.debug("'" + relUrl + "' is text : will be aggregated.");
+			renderer.render(textOutput.toString(), response.getWriter());
+		}
+	}
+    
     private final void renderResource(RequestContext target, Output output) {
         String httpUrl = ResourceUtils.getHttpUrlWithQueryString(target);
         MultipleOutput multipleOutput = new MultipleOutput();

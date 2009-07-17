@@ -30,7 +30,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
             }
         };
 
-        List<IRegion> actual = tested.parse("content");
+        List<Region> actual = tested.parse("content");
         assertNotNull(actual);
         assertEquals(1, actual.size());
         assertTrue(actual.get(0) instanceof MockRegion);
@@ -45,7 +45,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
                 + "<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->content"
                 + "<esi:include src='$PROVIDER({something})/page' />content"
                 + "<!--esicontent-->";
-        List<IRegion> actual = tested.parse(content);
+        List<Region> actual = tested.parse(content);
         assertNotNull(actual);
         int expCount = 12;
         assertEquals(expCount, actual.size());
@@ -99,7 +99,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
         assertEquals(expCount, i);
     }
 
-    private void checkOutput(String expected, IRegion region)
+    private void checkOutput(String expected, Region region)
             throws IOException, HttpErrorPage {
         StringWriter out = new StringWriter();
         region.process(out, null);
@@ -182,7 +182,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
         assertNotNull(actual);
         assertEquals(content.length(), actual.getPos());
         assertTrue(actual.getRegion() instanceof CompositeRegion);
-        List<IRegion> children = ((CompositeRegion) actual.getRegion())
+        List<Region> children = ((CompositeRegion) actual.getRegion())
                 .getChildren();
         assertNotNull(children);
         assertEquals(3, children.size());
@@ -198,7 +198,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
         assertNull("should be one result", actual);
     }
 
-    private static class MockRegion implements IRegion {
+    private static class MockRegion implements Region {
         MockRegion() {
             // local
         }

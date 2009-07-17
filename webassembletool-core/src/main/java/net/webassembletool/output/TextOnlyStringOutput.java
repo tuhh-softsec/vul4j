@@ -1,6 +1,16 @@
 package net.webassembletool.output;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.output.NullOutputStream;
 
 import net.webassembletool.resource.ResourceUtils;
 
@@ -19,20 +29,15 @@ import net.webassembletool.resource.ResourceUtils;
  * 
  * @author Omar BENHAMID
  */
-public class TextOnlyStringOutput extends StringOutput {
-    private final Output binaryOutput;
-    private Boolean buffersText = null;
-
-    /**
-     * Creates TextOnlyStringOutput. If content at stream open time is
-     * identified as being binary, it is simply forwarded to the binaryOutput
-     * object.
-     * 
-     * @param binaryFallbackOutput binary output fallback stream
-     */
-    public TextOnlyStringOutput(Output binaryFallbackOutput) {
-        super();
-        this.binaryOutput = binaryFallbackOutput;
+public class TextOnlyStringOutput extends Output {
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private OutputStream outputStream;
+    
+    public TextOnlyStringOutput(HttpServletRequest request, HttpServletResponse response){
+    	this.request = request;
+    	this.response = response;
     }
 
     /**
@@ -46,47 +51,78 @@ public class TextOnlyStringOutput extends StringOutput {
      *             more headers.
      */
     public boolean hasTextBuffer() throws IllegalStateException {
-        if (buffersText == null)
-            throw new IllegalStateException("Stream not yet open for output.");
-        return buffersText.booleanValue();
+        return byteArrayOutputStream !=null;
     }
 
+	/** {@inheritDoc} */
+	@Override
+	public void open() {
+		String ifModifiedSince = request.getHeader("If-Modified-Since");
+		String ifNoneMatch = request.getHeader("If-None-Match");
+		if ((ifModifiedSince != null && ifModifiedSince
+				.equals(getHeader("Last-Modified")))
+				|| (ifNoneMatch != null && ifNoneMatch
+						.equals(getHeader("ETag")))) {
+			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+			// FIXME in order to avoid NullpointerException when sending a
+			// not_modified response
+			outputStream = new NullOutputStream();
+		} else {
+			response.setStatus(getStatusCode());
+			try {
+				copyHeaders();
+				if (ResourceUtils.isTextContentType(getHeader("Content-Type"))) {
+					byteArrayOutputStream = new ByteArrayOutputStream();
+				} else {
+					outputStream = response.getOutputStream();
+				}
+			} catch (IOException e) {
+				throw new OutputException(e);
+			}
+		}
+	}
+
     /**
-     * @see net.webassembletool.output.StringOutput#open()
+     * Copy all the headers to the response
      */
-    @Override
-    public void open() {
-        if (ResourceUtils.isTextContentType(getHeader("Content-Type"))) {
-            buffersText = Boolean.TRUE;
-            super.open();
-        } else {
-            buffersText = Boolean.FALSE;
-            binaryOutput.setStatus(getStatusCode(), getStatusMessage());
-            copyHeaders(binaryOutput);
-            binaryOutput.open();
+    private void copyHeaders() {
+        for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
+                .entrySet().iterator(); headersIterator.hasNext();) {
+            Map.Entry<Object, Object> entry = headersIterator.next();
+            if (!"content-length".equalsIgnoreCase((String)(entry.getKey())))
+       	    response.setHeader(entry.getKey().toString(), entry.getValue().toString());
         }
     }
 
-    /**
-     * @see net.webassembletool.output.StringOutput#close()
-     */
+    /** {@inheritDoc} */
     @Override
     public void close() {
-        if (hasTextBuffer())
-            super.close();
-        else
-            binaryOutput.close();
-    }
+		if (outputStream != null)
+			try {
+				outputStream.close();
+			} catch (IOException e) {
+				throw new OutputException(e);
+			}
+	}
 
-    /**
-     * @see net.webassembletool.output.StringOutput#getOutputStream()
-     */
-    @Override
-    public OutputStream getOutputStream() {
-        if (hasTextBuffer())
-            return super.getOutputStream();
-        else
-            return binaryOutput.getOutputStream();
-    }
+	/**
+	 * @see net.webassembletool.output.StringOutput#getOutputStream()
+	 */
+	@Override
+	public OutputStream getOutputStream() {
+		if (byteArrayOutputStream != null)
+			return byteArrayOutputStream;
+		else
+			return outputStream;
+	}
+
+	@Override
+	public String toString() {
+		try {
+			return byteArrayOutputStream.toString(getCharsetName());
+		} catch (UnsupportedEncodingException e) {
+			throw new OutputException(e);
+		}
+	}
 
 }

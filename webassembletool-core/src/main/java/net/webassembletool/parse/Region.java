@@ -12,7 +12,7 @@ import net.webassembletool.HttpErrorPage;
  * 
  * @author Stanislav Bernatskyi
  */
-public interface IRegion {
+public interface Region {
     /**
      * Processes region and writes result to the provided output. Optionally may
      * use provided <code>request</code> to get information about user request.

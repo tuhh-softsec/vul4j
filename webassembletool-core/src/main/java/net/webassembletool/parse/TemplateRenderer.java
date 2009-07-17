@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.webassembletool.HttpErrorPage;
-import net.webassembletool.output.StringOutput;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,18 +32,19 @@ public class TemplateRenderer implements Renderer {
     private final String page;
     private final String name;
     private final Map<String, String> params;
+    private final Map<String, String> replaceRules;
 
-    public TemplateRenderer(String name, Map<String, String> params, String page) {
-        this.name = name;
-        this.params = params;
-        this.page = page;
-    }
+	public TemplateRenderer(String name, Map<String, String> params,
+			String page, Map<String, String> replaceRules) {
+		this.name = name;
+		this.params = params;
+		this.page = page;
+		this.replaceRules = replaceRules;
+	}
 
-    /** {@inheritDoc} */
-    public void render(StringOutput src, Writer out,
-            Map<String, String> replaceRules) throws IOException,
-            HttpErrorPage {
-        String content = src.toString();
+	/** {@inheritDoc} */
+	public void render(String content, Writer out) throws IOException,
+			HttpErrorPage {
         StringBuilder sb = new StringBuilder();
         if (content != null) {
             if (name != null) {

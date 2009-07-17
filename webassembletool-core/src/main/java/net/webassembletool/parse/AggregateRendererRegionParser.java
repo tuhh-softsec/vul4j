@@ -6,7 +6,7 @@ import java.util.List;
 import net.webassembletool.parse.Tag.Template;
 
 /**
- * {@linkplain IRegionParser} parser implementation used internally in
+ * {@linkplain RegionParser} parser implementation used internally in
  * {@linkplain AggregateRenderer}.
  * <p>
  * Parses content to find tags to be replaced by contents from other providers.
@@ -32,7 +32,7 @@ import net.webassembletool.parse.Tag.Template;
  * 
  * @author Stanislav Bernatskyi
  */
-public class AggregateRendererRegionParser implements IRegionParser {
+public class AggregateRendererRegionParser implements RegionParser {
     private static final Template LAST = new Template(Integer.MAX_VALUE,
             Integer.MAX_VALUE, null);
     private final boolean propagateJsessionId;
@@ -42,14 +42,14 @@ public class AggregateRendererRegionParser implements IRegionParser {
     }
 
     /** {@inheritDoc} */
-    public List<IRegion> parse(String content)
+    public List<Region> parse(String content)
             throws AggregationSyntaxException {
         return doParse(content);
     }
 
-    protected List<IRegion> doParse(String content)
+    protected List<Region> doParse(String content)
             throws AggregationSyntaxException {
-        List<IRegion> result = new LinkedList<IRegion>();
+        List<Region> result = new LinkedList<Region>();
         Result found = find(content, 0);
         while (found != null) {
             result.add(found.getRegion());
@@ -59,10 +59,10 @@ public class AggregateRendererRegionParser implements IRegionParser {
     }
 
     /**
-     * Finds next {@linkplain IRegion} in content starting from provided
+     * Finds next {@linkplain Region} in content starting from provided
      * <code>position</code>.
      * 
-     * @return {@linkplain Result} object with next found {@linkplain IRegion}
+     * @return {@linkplain Result} object with next found {@linkplain Region}
      *         and its end position for further parsing or <code>null</code> if
      *         no more regions could not be found.
      */
@@ -96,9 +96,9 @@ public class AggregateRendererRegionParser implements IRegionParser {
             String inner = first.getContent();
             inner = inner.substring("<!--esi".length(), inner.length()
                     - Tag.WAT_END.length());
-            List<IRegion> parsed = doParse(inner);
+            List<Region> parsed = doParse(inner);
             CompositeRegion result = new CompositeRegion();
-            for (IRegion child : parsed) {
+            for (Region child : parsed) {
                 result.add(child);
             }
             return new Result(result, first.getEnd());
@@ -154,15 +154,15 @@ public class AggregateRendererRegionParser implements IRegionParser {
     }
 
     protected static class Result {
-        private final IRegion region;
+        private final Region region;
         private final int pos;
 
-        public Result(IRegion region, int pos) {
+        public Result(Region region, int pos) {
             this.region = region;
             this.pos = pos;
         }
 
-        public IRegion getRegion() {
+        public Region getRegion() {
             return region;
         }
 

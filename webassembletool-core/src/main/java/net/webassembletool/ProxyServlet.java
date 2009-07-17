@@ -32,9 +32,12 @@ public class ProxyServlet extends HttpServlet {
 		LOG.debug("Proxying " + relUrl);
 		boolean propagateJsessionId = response.encodeURL("/").contains(
 				"jsessionid");
-
-		DriverFactory.getInstance(provider).proxy(relUrl, request, response,
-				propagateJsessionId);
+		try {
+			DriverFactory.getInstance(provider).proxy(relUrl, request, response,
+					propagateJsessionId, null);
+		} catch (HttpErrorPage e) {
+			throw new ServletException(e);
+		}
 	}
 
 	@Override

@@ -1,17 +1,12 @@
 package net.webassembletool.parse;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.HttpErrorPage;
-import net.webassembletool.output.StringOutput;
 
 /**
  * Retrieves a resource from the provider application and parses it to find tags
@@ -40,37 +35,23 @@ import net.webassembletool.output.StringOutput;
  * @author Stanislav Bernatskyi
  */
 public class AggregateRenderer implements Renderer {
-    private final HttpServletResponse response;
     private final HttpServletRequest request;
     private final boolean propagateJsessionId;
 
-    public AggregateRenderer(HttpServletResponse response,
-            HttpServletRequest request, boolean propagateJsessionId) {
-        this.response = response;
+	public AggregateRenderer(HttpServletRequest request,
+			boolean propagateJsessionId) {
         this.request = request;
         this.propagateJsessionId = propagateJsessionId;
     }
 
     /** {@inheritDoc} */
-    public void render(StringOutput stringOutput, Writer unused1,
-            Map<String, String> unused2) throws IOException, HttpErrorPage {
-        response.setStatus(stringOutput.getStatusCode());
-        if (stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
-                || stringOutput.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-            response.setHeader("location", stringOutput.getLocation());
-            return;
-        }
-        stringOutput.copyHeaders(response);
-        String content = stringOutput.toString();
+	public void render(String content, Writer writer)
+			throws IOException, HttpErrorPage {
         if (content == null)
             return;
-
-        OutputStream out = response.getOutputStream();
-        Writer writer = new OutputStreamWriter(out, stringOutput.getCharsetName());
-
-        IRegionParser parser = createParser();
-        List<IRegion> parsed = parser.parse(content);
-        for (IRegion region : parsed) {
+        RegionParser parser = createParser();
+        List<Region> parsed = parser.parse(content);
+        for (Region region : parsed) {
             try {
                 region.process(writer, request);
             } catch (HttpErrorPage e) {
@@ -81,7 +62,7 @@ public class AggregateRenderer implements Renderer {
         writer.flush();
     }
 
-    private IRegionParser createParser() {
+    private RegionParser createParser() {
         return new AggregateRendererRegionParser(propagateJsessionId);
     }
 }
