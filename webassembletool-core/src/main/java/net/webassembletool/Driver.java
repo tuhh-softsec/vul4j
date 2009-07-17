@@ -1,6 +1,7 @@
 package net.webassembletool;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
@@ -264,12 +265,22 @@ public class Driver {
 			// If data was binary, no text buffer is available and no rendering
 			// is needed.
 			if (!textOutput.hasTextBuffer()) {
-				Driver.LOG.debug("'" + relUrl
+				LOG.debug("'" + relUrl
 						+ "' is binary : was forwarded without aggregation.");
 				return;
 			}
-			Driver.LOG.debug("'" + relUrl + "' is text : will be aggregated.");
-			renderer.render(textOutput.toString(), response.getWriter());
+			LOG.debug("'" + relUrl + "' is text : will be aggregated.");
+			String charsetName = textOutput.getCharsetName();
+			Writer writer;
+			if (charsetName == null)
+				// No charset was specified in the response, let the browser
+				// guess!
+				writer = new OutputStreamWriter(response.getOutputStream());
+			else
+				writer = new OutputStreamWriter(response.getOutputStream(),
+						charsetName);
+			renderer.render(textOutput.toString(), writer);
+			writer.flush();
 		}
 	}
     

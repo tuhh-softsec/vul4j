@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * StringOutput should be used only for text responses such as HTML and not for
  * binary data such as images.
  * 
- * @author François-Xavier Bonnet
+ * @author Franï¿½ois-Xavier Bonnet
  * 
  */
 public class StringOutput extends Output {
@@ -60,13 +60,16 @@ public class StringOutput extends Output {
         }
     }
 
-    @Override
-    public String toString() {
-        try {
-            return byteArrayOutputStream.toString(getCharsetName());
-        } catch (UnsupportedEncodingException e) {
-            throw new OutputException(e);
-        }
-    }
+	@Override
+	public String toString() {
+		String charsetName = getCharsetName();
+		if (charsetName ==null) 
+			charsetName = "ISO-8859-1";
+		try {
+			return byteArrayOutputStream.toString(charsetName);
+		} catch (UnsupportedEncodingException e) {
+			throw new OutputException(e);
+		}
+	}
 
 }

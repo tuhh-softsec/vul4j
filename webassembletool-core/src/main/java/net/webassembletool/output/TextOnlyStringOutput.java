@@ -85,14 +85,15 @@ public class TextOnlyStringOutput extends Output {
     /**
      * Copy all the headers to the response
      */
-    private void copyHeaders() {
-        for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
-                .entrySet().iterator(); headersIterator.hasNext();) {
-            Map.Entry<Object, Object> entry = headersIterator.next();
-            if (!"content-length".equalsIgnoreCase((String)(entry.getKey())))
-       	    response.setHeader(entry.getKey().toString(), entry.getValue().toString());
-        }
-    }
+	private void copyHeaders() {
+		for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
+				.entrySet().iterator(); headersIterator.hasNext();) {
+			Map.Entry<Object, Object> entry = headersIterator.next();
+			if (!"content-length".equalsIgnoreCase((String) (entry.getKey())))
+				response.setHeader(entry.getKey().toString(), entry.getValue()
+						.toString());
+		}
+	}
 
     /** {@inheritDoc} */
     @Override
@@ -118,8 +119,11 @@ public class TextOnlyStringOutput extends Output {
 
 	@Override
 	public String toString() {
+		String charsetName = getCharsetName();
+		if (charsetName ==null) 
+			charsetName = "ISO-8859-1";
 		try {
-			return byteArrayOutputStream.toString(getCharsetName());
+			return byteArrayOutputStream.toString(charsetName);
 		} catch (UnsupportedEncodingException e) {
 			throw new OutputException(e);
 		}
