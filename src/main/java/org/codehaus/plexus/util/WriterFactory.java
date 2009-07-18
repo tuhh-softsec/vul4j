@@ -172,6 +172,6 @@ public class WriterFactory
     public static Writer newWriter( File file, String encoding )
     throws UnsupportedEncodingException, FileNotFoundException
     {
-        return newWriter( new FileOutputStream(file), encoding );
+        return newWriter( new FileOutputStream( file ), encoding );
     }
 }
