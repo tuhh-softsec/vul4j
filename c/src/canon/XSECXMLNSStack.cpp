@@ -201,7 +201,8 @@ void XSECXMLNSStack::printNamespace(DOMNode * ns, DOMNode * elt) {
 
 	while (it != m_currentNS.end()) {
 		t = (*it);
-		if (t->mp_ns == ns  && t->m_isDefault == false) {
+		// Fix for bug#47353, go ahead and track printing of default namespaces.
+		if (t->mp_ns == ns) { //  && t->m_isDefault == false) {
 			t->mp_printed = elt;
 			break;
 		}
@@ -241,4 +242,16 @@ DOMNode * XSECXMLNSStack::getNextNamespace(void) {
 
 	return (*m_currentNSIterator)->mp_ns;
 
+}
+
+// Fix for bug#47353, explicit check for non-empty default NS decl.
+bool XSECXMLNSStack::isNonEmptyDefaultNS(void) {
+    for (XSECNSHolderVectorType::iterator it = m_currentNS.begin(); it != m_currentNS.end(); ++it) {
+        if ((*it)->m_isDefault) {
+            const XMLCh* val = (*it)->mp_ns->getNodeValue();
+            if (val && *val)
+                return true;
+        }
+    }
+    return false;
 }

@@ -1,5 +1,6 @@
 Changes since 1.5
 =====================================
+* Fix for bug#47353 in c14n of default namespaces (SC)
 * Fix Sparc compilation bug (SC)
 * Fix for CVE-2009-0217 (SC)
 

@@ -82,6 +82,8 @@ public:
 	// Mark the namespace as printed
 	void printNamespace(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * ns, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * elt);
+	// Return whether the stack includes xmlns="something"
+	bool isNonEmptyDefaultNS(void);
 
 private:
 

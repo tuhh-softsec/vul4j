@@ -1338,6 +1338,11 @@ xsecsize_t XSECC14n20010315::processNextNode() {
 				}
 				nsnode = m_nsStack.getNextNamespace();
 			}
+
+			// Fix for bug#47353, make sure we set xmlnsFound regardless of what the printing process saw.
+	        if (!xmlnsFound)
+	            xmlnsFound = m_nsStack.isNonEmptyDefaultNS();
+
 		} /* if (m_useNamespaceStack) */
 
 
