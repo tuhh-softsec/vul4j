@@ -1,6 +1,6 @@
-XML Security v1.4.2 Released
+XML Security v1.4.3 Released
 ---------------------
-  We are proud to announce the 1.4.2 final
+  We are proud to announce the 1.4.3 final
   release of the XML Security package.
 
 About XML Security
@@ -33,16 +33,16 @@ http://www.w3.org/Encryption/
 
 ---------------------------------------------------------
 
-Downloads for XML Security v1.4.2 are available at
-http://xml.apache.org/security/dist/java-library/
+Downloads for XML Security v1.4.3 are available at
+http://santuario.apache.org/dist/java-library/
 
 The source distibution is available at
-http://xml.apache.org/security/dist/xml-security-src-1_4_2.zip
-http://xml.apache.org/security/dist/xml-security-src-1_4_2.zip.sig
+http://santuario.apache.org/dist/java-library/xml-security-src-1_4_3.zip
+http://santuario.apache.org/dist/java-library/xml-security-src-1_4_3.zip.asc
 
 The binary distibution is available at
-http://xml.apache.org/security/dist/xml-security-bin-1_4_2.zip
-http://xml.apache.org/security/dist/xml-security-bin-1_4_2.zip.sig
+http://santuario.apache.org/dist/java-library/xml-security-bin-1_4_3.zip
+http://santuario.apache.org/dist/java-library/xml-security-bin-1_4_3.zip.asc
 
 ---------------------------------------------------------
 
