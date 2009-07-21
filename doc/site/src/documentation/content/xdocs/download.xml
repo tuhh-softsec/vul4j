@@ -30,8 +30,8 @@ limitations under the License.
 	  <p>
 		Source and binary distributions for both the Java and C++ libraries
 		are available from from the 
-		<jump href="http://xml.apache.org/security/dist/">
-		  XML project site</jump> only.  Current
+		<jump href="http://santuario.apache.org/dist/">
+		  project site</jump> only.  Current
 		distributions are <em>not</em> available from the mirrors.
 	  </p>
 	</section>
@@ -57,13 +57,13 @@ limitations under the License.
 	  </p>
 	  <source>
 % pgpk -a KEYS
-% pgpv xml-security-bin-1_4_2.zip.asc
+% pgpv xml-security-bin-1_4_3.zip.asc
   <em>or</em>
 % pgp -ka KEYS
-% pgp xml-security-bin-1_4_2.zip.asc
+% pgp xml-security-bin-1_4_3.zip.asc
   <em>or</em>
 % gpg --import KEYS
-% gpg --verify xml-security-bin-1_4_2.zip.asc
+% gpg --verify xml-security-bin-1_4_3.zip.asc
 	  </source>
 	</section>
     <section>
