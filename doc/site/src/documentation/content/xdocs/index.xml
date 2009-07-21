@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
 <!--
-Copyright 2003-2004 The Apache Software Foundation
+Copyright 2003-2009 The Apache Software Foundation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,6 +22,16 @@ limitations under the License.
   <body> 
     <section>
       <title>News</title>
+      <section>      
+        <title>July 2009</title>
+        <p>
+         The Apache XML Security team are pleased to announce the release
+         of version 1.4.3 of the Java xml-security library. This release
+         provides many bug fixes and a fix for the recently announced
+         HMAC vulnerability in the XML Signature specification. You should
+         upgrade to this release as soon as possible.
+        </p>
+      </section
       <section>      
         <title>June 2009</title>
     <p>
