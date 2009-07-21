@@ -284,7 +284,7 @@ public abstract class AbstractScanner
             for ( int i = 0; i < includes.length; i++ )
             {
                 String pattern = includes[i].trim();
-                if ( !pattern.startsWith( SelectorUtils.PATTERN_HANDLER_PREFIX ) )
+                if ( !pattern.startsWith( SelectorUtils.REGEX_HANDLER_PREFIX ) )
                 {
                     pattern = pattern.replace( File.separatorChar == '/' ? '\\' : '/', File.separatorChar );
                 }
@@ -323,7 +323,7 @@ public abstract class AbstractScanner
             for ( int i = 0; i < excludes.length; i++ )
             {
                 String pattern = excludes[i].trim();
-                if ( !pattern.startsWith( SelectorUtils.PATTERN_HANDLER_PREFIX ) )
+                if ( !pattern.startsWith( SelectorUtils.REGEX_HANDLER_PREFIX ) )
                 {
                     pattern = pattern.replace( File.separatorChar == '/' ? '\\' : '/', File.separatorChar );
                 }
