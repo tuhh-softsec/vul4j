@@ -35,12 +35,24 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
 
+    <release version="C++ 1.5.1" date="July 2009">
+      <action dev="SC" type="fix" fixes-bug="47353" context="c_rel">
+        Fix for c14n of default namespaces
+      </action>
+      <action dev="SC" type="fix" context="c_rel">
+        Fix Sparc compilation bug
+      </action>
+      <action dev="SC" type="fix" fixes-bug="47527" context="c_rel">
+        Fix for CVE-2009-0217
+      </action>
+    </release>
+
     <release version="C++ 1.5.0" date="June 2009">
       <action dev="SC" type="update" context="c_rel">
         Make SHA-1 the implicit default DigestMethod for RSA-OAEP
         key transport, allowing for interop until broken impls are fixed
       </action>
-      <action dev="SC" type="fix" context="c_rel">
+      <action dev="SC" type="fix" fixes-bug="45828" context="c_rel">
         Fix memory leak in OpenSSL RSA/DSA key cloning
       </action>
       <action dev="SC" type="add" context="c_rel">
