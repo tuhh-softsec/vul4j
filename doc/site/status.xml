@@ -35,6 +35,84 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
 
+    <release version="Java 1.4.3" date="July 2009">    
+      <action dev="SM" type="fix" fixes-bug="47526" context="java_general" 
+	due-to="Sean Mullan">
+        XML signature HMAC truncation authentication bypass
+      </action>
+      <action dev="CO" type="fix" fixes-bug="47525" context="java_general">
+        Fix checkstyle problems with source and tests.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="42239" context="java_general">
+        ECDSA signature value interopability patch.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="45744" context="java_general">
+        XPath transform and xml-stylesheet.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="42986" context="java_general">
+        The </#document> node inserted at the end of SOAPEnvelope.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="47029" context="java_general">
+        Unnecessary namespace declarations on EncryptedData children.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="44335" context="java_general">
+        Can't validate after invalid validation.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="47260" context="java_general">
+        Improve Java unit testing.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="47265" context="java_general">
+        Some website updates.
+      </action>
+      <action dev="CO" type="fix" fixes-bug="45388" context="java_general">
+        We need a POM file added to the Maven repository.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="47483" context="java_general">
+        Remove JDK 1.5 API dependencies
+      </action>
+      <action dev="SM" type="fix" fixes-bug="47057" context="java_general"
+	due-to="Colm O hEigeartaigh">
+        Downgrade signature verification logging from "info".
+      </action>
+      <action dev="SM" type="fix" fixes-bug="42061" context="java_general" 
+	due-to="Colm O hEigeartaigh">
+        Method to disable XMLUtils.addReturnToElement (reopened): changed Base64 code to ignore line breaks, if enabled.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="47097" context="java_general" 
+	due-to="Bruno Harbulot">
+        Reusing XMLSignature for signing and verifying fails on same thread.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="46732" context="java_general">
+        Failed to add more than one child element to EncryptionMethod.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="46101" context="java_general">
+        org.apache.xml.security.utils.IdResolver is not thread safe
+      </action>
+      <action dev="SM" type="fix" fixes-bug="45961" context="java_general" 
+	due-to="Anton Kosyakov">
+        verify with own canonicalization method.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="45475" context="java_general">
+        XMLSignature::getKeyInfo method modifies document
+      </action>
+      <action dev="SM" type="fix" fixes-bug="45811" context="java_general">
+        Fix XMLSec 1.4.2 problems reported by findbugs
+      </action>
+      <action dev="SM" type="fix" fixes-bug="45706" context="java_general">
+        Transform.register class loading and recursive instantiation problems
+      </action>
+      <action dev="SM" type="fix" fixes-bug="45664" context="java_general">
+        Some calls should be wrapped in AccessController.doPrivileged
+      </action>
+      <action dev="SM" type="fix" fixes-bug="45634" context="java_general">
+        Restore XMLUtils.createDSctx method.
+      </action>
+      <action dev="SM" type="fix" fixes-bug="45095" context="java_general" 
+	due-to="Joachim Rousseau">
+        log4j.properties in xmlsec sources and builds has side effects in production environment. 
+      </action>
+    </release>
+
     <release version="C++ 1.5.1" date="July 2009">
       <action dev="SC" type="fix" fixes-bug="47353" context="c_rel">
         Fix for c14n of default namespaces
