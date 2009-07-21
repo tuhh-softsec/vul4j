@@ -50,7 +50,7 @@ limitations under the License.
         XPath transform and xml-stylesheet.
       </action>
       <action dev="CO" type="fix" fixes-bug="42986" context="java_general">
-        The </#document> node inserted at the end of SOAPEnvelope.
+        The &lt;/#document node&gt; inserted at the end of SOAPEnvelope.
       </action>
       <action dev="CO" type="fix" fixes-bug="47029" context="java_general">
         Unnecessary namespace declarations on EncryptedData children.
