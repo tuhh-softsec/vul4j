@@ -18,11 +18,12 @@ package org.codehaus.plexus.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Base class for testcases doing tests with files.
@@ -33,6 +34,68 @@ public class DirectoryScannerTest
     extends FileBasedTestCase
 {
     private static String testDir = getTestDirectory().getPath();
+
+    public void testCrossPlatformIncludesString()
+        throws IOException, URISyntaxException
+    {
+        DirectoryScanner ds = new DirectoryScanner();
+        ds.setBasedir( new File( getTestResourcesDir() + File.separator + "directory-scanner" ).getCanonicalFile() );
+
+        String fs;
+        if ( File.separatorChar == '/' )
+        {
+            fs = "\\";
+        }
+        else
+        {
+            fs = "/";
+        }
+
+        ds.setIncludes( new String[] { "foo" + fs } );
+        ds.scan();
+
+        String[] files = ds.getIncludedFiles();
+        assertEquals( 1, files.length );
+    }
+
+    public void testCrossPlatformExcludesString()
+        throws IOException, URISyntaxException
+    {
+        DirectoryScanner ds = new DirectoryScanner();
+        ds.setBasedir( new File( getTestResourcesDir() + File.separator + "directory-scanner" ).getCanonicalFile() );
+        ds.setIncludes( new String[] { "**" } );
+
+        String fs;
+        if ( File.separatorChar == '/' )
+        {
+            fs = "\\";
+        }
+        else
+        {
+            fs = "/";
+        }
+
+        ds.setExcludes( new String[] { "foo" + fs } );
+        ds.scan();
+
+        String[] files = ds.getIncludedFiles();
+        assertEquals( 0, files.length );
+    }
+
+    private String getTestResourcesDir()
+        throws URISyntaxException
+    {
+        ClassLoader cloader = Thread.currentThread().getContextClassLoader();
+        URL resource = cloader.getResource( "test.txt" );
+        if ( resource == null )
+        {
+            fail( "Cannot locate test-resources directory containing 'test.txt' in the classloader." );
+        }
+
+        File file = new File( new URI( resource.toExternalForm() ).normalize().getPath() );
+
+        return file.getParent();
+    }
 
     private void createTestFiles()
         throws IOException
@@ -116,7 +179,7 @@ public class DirectoryScannerTest
         throws IOException
     {
         printTestHeader();
-        
+
         File dir = new File( testDir, "regex-dir" );
         dir.mkdirs();
 
@@ -150,7 +213,7 @@ public class DirectoryScannerTest
         throws IOException
     {
         printTestHeader();
-        
+
         File dir = new File( testDir, "regex-dir" );
         dir.mkdirs();
 
@@ -185,7 +248,7 @@ public class DirectoryScannerTest
         throws IOException
     {
         printTestHeader();
-        
+
         File dir = new File( testDir, "regex-dir" );
         dir.mkdirs();
 
@@ -215,7 +278,7 @@ public class DirectoryScannerTest
         throws IOException
     {
         printTestHeader();
-        
+
         File dir = new File( testDir, "regex-dir" );
         try
         {
@@ -224,7 +287,7 @@ public class DirectoryScannerTest
         catch ( IOException e )
         {
         }
-        
+
         dir.mkdirs();
 
         String[] excludedPaths = { "target/foo.txt" };
@@ -236,7 +299,7 @@ public class DirectoryScannerTest
         createFiles( dir, includedPaths );
 
         String regex = "(?!.*src/).*target.*";
-        
+
         DirectoryScanner ds = new DirectoryScanner();
 
         String excludeExpr = SelectorUtils.REGEX_HANDLER_PREFIX + regex + SelectorUtils.PATTERN_HANDLER_SUFFIX;
@@ -248,7 +311,7 @@ public class DirectoryScannerTest
 
         assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
     }
-    
+
     private void printTestHeader()
     {
         StackTraceElement ste = new Throwable().getStackTrace()[1];
@@ -258,7 +321,7 @@ public class DirectoryScannerTest
     private void assertInclusionsAndExclusions( String[] files, String[] excludedPaths, String[] includedPaths )
     {
         Arrays.sort( files );
-        
+
         System.out.println( "Included files: " );
         for ( int i = 0; i < files.length; i++ )
         {
@@ -270,7 +333,7 @@ public class DirectoryScannerTest
         {
             String alt = excludedPaths[i].replace( '/', '\\' );
             System.out.println( "Searching for exclusion as: " + excludedPaths[i] + "\nor: " + alt );
-            if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 || Arrays.binarySearch( files, alt ) > -1)
+            if ( Arrays.binarySearch( files, excludedPaths[i] ) > -1 || Arrays.binarySearch( files, alt ) > -1 )
             {
                 failedToExclude.add( excludedPaths[i] );
             }
