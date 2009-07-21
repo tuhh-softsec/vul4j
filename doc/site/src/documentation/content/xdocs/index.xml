@@ -31,6 +31,10 @@ limitations under the License.
          HMAC vulnerability in the XML Signature specification. You should
          upgrade to this release as soon as possible.
         </p>
+        <p>
+         Please see the <link href="site:changes">changelog</link> for more 
+         information.
+        </p>
       </section>
       <section>      
         <title>June 2009</title>
