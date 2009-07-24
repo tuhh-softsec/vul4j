@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Servlet used to proxy requests from a remote application.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class AggregatorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

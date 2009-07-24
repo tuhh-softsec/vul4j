@@ -37,15 +37,21 @@
 				provider
 				application.
 	</p>
-			<code>
-				remoteUrlBase=http://localhost:8080/provider/
-	</code>
+<source>
+remoteUrlBase=http://localhost:8080/provider/
+</source>
 		</section>
 		<section name="Tag the block on the provider application">
 			<p>
 				The block has to be tagged using special HTML comments.
 	</p>
-			<img src="block.jpg" />
+<source>
+Some HTML
+<strong>&lt;!-- $beginblock$myblock$--&gt;</strong>
+	My block HTML content
+<strong>&lt;!-- $endblock$myblock$--&gt;</strong>
+Some other HTML
+</source>
 		</section>
 		<section
 			name="Retrieve the block inside a page of the master application
@@ -58,7 +64,24 @@
 				Suppose the block you want to include is inside a page
 				http://localhost:8080/provider/mypage.php
 	</p>
-			<img src="includeblock.jpg" />
+<source>
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+&lt;%@page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%&gt;
+<strong>&lt;%@taglib uri="http://www.sourceforge.net/webassembletool" prefix="w"%&gt;</strong>
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /&gt;
+&lt;title&gt;Include block exemple&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style="background-color: yellow"&gt;
+...
+<strong>&lt;www:includeblock page="mypage.php" name="myblock" /&gt;</strong>
+...
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
 			<p>
 				NOTE: do not forget to add the taglib declaration at the beging of
 				the page.

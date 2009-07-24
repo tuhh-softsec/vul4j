@@ -10,7 +10,7 @@ import net.webassembletool.RequestContext;
 /**
  * Utility class to generate URL and path for Resources
  * 
- * @author Fran�ois-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class ResourceUtils {
     private final static String buildQueryString(RequestContext target) {

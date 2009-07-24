@@ -19,8 +19,6 @@ public interface Renderer {
 	 *            source to be rendered
 	 * @param out
 	 *            output destination
-	 * @param replaceRules
-	 *            replace rules
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */

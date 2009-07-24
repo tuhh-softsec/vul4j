@@ -27,7 +27,68 @@
 				application
 				MUST be in HTTPS!
 	</p>
-			<img src="cas_aggregator.jpg" />
+<source>
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080/webassembletool-app-cas/login&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;serverName&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+	&lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter&lt;/filter-class&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080/webassembletool-app-cas&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;serverName&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;proxyCallbackUrl&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080/webassembletool-app-casified-aggregator/proxy/receptor&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;proxyReceptorUrl&lt;/param-name&gt;
+		&lt;param-value&gt;/proxy/receptor&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;redirectAfterValidation&lt;/param-name&gt;
+		&lt;param-value&gt;true&lt;/param-value&gt;
+	&lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS HttpServletRequest Wrapper Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.util.HttpServletRequestWrapperFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS Assertion Thread Local Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.util.AssertionThreadLocalFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS HttpServletRequest Wrapper Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS Assertion Thread Local Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</source>
 		</section>
 		<section
 			name="Configuring CAS on the aggregated or provider
@@ -36,7 +97,64 @@
 				Aggregated applications can use any CAS client but must be
 				configured to accept proxy chains.
 	</p>
-			<img src="cas_aggregated.jpg" />
+<source>
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080/webassembletool-app-cas/login&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;serverName&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+	&lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter&lt;/filter-class&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080/webassembletool-app-cas&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;serverName&lt;/param-name&gt;
+		&lt;param-value&gt;http://localhost:8080&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;redirectAfterValidation&lt;/param-name&gt;
+		&lt;param-value&gt;true&lt;/param-value&gt;
+	&lt;/init-param&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;acceptAnyProxy&lt;/param-name&gt;
+		&lt;param-value&gt;true&lt;/param-value&gt;
+	&lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS HttpServletRequest Wrapper Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.util.HttpServletRequestWrapperFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter&gt;
+	&lt;filter-name&gt;CAS Assertion Thread Local Filter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.jasig.cas.client.util.AssertionThreadLocalFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS Validation Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS Authentication Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS HttpServletRequest Wrapper Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;CAS Assertion Thread Local Filter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</source>
 		</section>
 	</body>
 </document>

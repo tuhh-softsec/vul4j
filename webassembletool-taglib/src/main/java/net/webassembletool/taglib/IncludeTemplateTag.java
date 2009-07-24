@@ -14,7 +14,7 @@ import net.webassembletool.HttpErrorPage;
 /**
  * Retrieves a template from the provider application and inserts it into the page replacing the parameters. Extends AbstractReplaceableTag, so a ReplaceTag can be used inside this tag.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class IncludeTemplateTag extends BodyTagSupport implements ReplaceableTag, ParametrizableTag, ErrorManageableTag {
     private static final long serialVersionUID = 1L;

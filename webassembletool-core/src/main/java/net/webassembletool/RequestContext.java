@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * Represents the location of a requested resource with all the necessary parameters. When proxyMode is set to true, the resource should not be cached and any cookie or parameter coming from the
  * original request should be forwarded to the target server.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class RequestContext {
     private final Driver driver;

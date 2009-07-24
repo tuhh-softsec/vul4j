@@ -3,7 +3,7 @@ package net.webassembletool;
 /**
  * Exception thrown when an error occurred retrieving a resource
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class HttpErrorPage extends Exception {
 	private static final long serialVersionUID = 1L;

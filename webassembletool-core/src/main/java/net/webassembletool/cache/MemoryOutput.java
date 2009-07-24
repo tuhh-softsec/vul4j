@@ -10,7 +10,7 @@ import net.webassembletool.output.OutputException;
 /**
  * Output implementation that stores the file and headers to a MemoryResource.
  * 
- * @author Fran�ois-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * @see MemoryResource
  * 
  */

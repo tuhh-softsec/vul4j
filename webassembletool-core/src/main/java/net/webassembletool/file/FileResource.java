@@ -17,7 +17,7 @@ import net.webassembletool.resource.ResourceUtils;
 /**
  * Resource implementation pointing to a file on the local FileSystem.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class FileResource extends Resource {

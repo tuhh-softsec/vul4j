@@ -8,7 +8,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * This tag generates HTML comments to define the position of a block.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class BlockTag extends BodyTagSupport {

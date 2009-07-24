@@ -10,7 +10,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This tag generates HTML comments to define the position of a parameter inside
  * a template.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class ParamTag extends BodyTagSupport {

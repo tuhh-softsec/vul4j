@@ -18,7 +18,7 @@ import net.webassembletool.HttpErrorPage;
 /**
  * Utility class used by all tags to access to the Driver
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class DriverUtils {
     public final static String getBaseUrl(String provider) {

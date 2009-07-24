@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * Wrapper to the response used inside the servlet filter to override some of
  * the methods of the request.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class FilteredRequest extends HttpServletRequestWrapper {
 	public FilteredRequest(HttpServletRequest request) {

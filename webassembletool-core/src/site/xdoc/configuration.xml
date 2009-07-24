@@ -136,15 +136,15 @@
 				default applications, the other ones are called "appli1" and
 				"appli2":
 			</p>
-			<source>
-				remoteUrlBase=http://localhost:8080/appli0/
+<source>
+remoteUrlBase=http://localhost:8080/appli0/
 
-				appli1.remoteUrlBase=http://localhost:8080/appli1/
-				appli1.uriEncoding=UTF-8
+appli1.remoteUrlBase=http://localhost:8080/appli1/
+appli1.uriEncoding=UTF-8
 
-				appli2.remoteUrlBase=http://localhost:8080/appli2/
-				appli2.uriEncoding=UTF-8
-		</source>
+appli2.remoteUrlBase=http://localhost:8080/appli2/
+appli2.uriEncoding=UTF-8
+</source>
 		</section>
 	</body>
 </document>

@@ -34,20 +34,68 @@
 				driver.properties file. See configuration chapter for more details.
 				Eg for 2 applications:
 		</p>
-			<img src="aggregator_conf.jpg" />
+<source>
+remoteUrlBase=http://localhost:8080/webassembletool-app-aggregated1/
+uriEncoding=UTF-8
+aggregated2.remoteUrlBase=http://localhost:8080/webassembletool-app-aggregated2/
+</source>
 			<p>
 				The aggregator is a servlet that has to be configured in the
 				web.xml
 				file.
 		</p>
-			<img src="aggregator.jpg" />
+<source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+&lt;web-app&gt;
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;net.webassembletool.aggregator.AggregatorServlet&lt;/servlet-class&gt;
+	&lt;/servlet&gt;
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;aggregator2&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;net.webassembletool.aggregator.AggregatorServlet&lt;/servlet-class&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;provider&lt;/param-name&gt;
+			&lt;param-value&gt;aggregated2&lt;/param-value&gt;
+		&lt;/init-param&gt;
+	&lt;/servlet&gt;
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;aggregator2&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/ag2/*&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</source>
 		</section>
 		<section name="Syntax">
 			<subsection name="Defining a block">
 				<p>Use the "beginblock" and "endblock" directives with the name
 					of
 					the block.</p>
-				<img src="aggregator_block.jpg" />
+<source>
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /&gt;
+&lt;title&gt;Page containing blocks&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style="background-color: aqua"&gt;
+&lt;div&gt;Begin page&lt;/div&gt;
+&lt;div style="border: 1px solid red"&gt;
+
+<strong>&lt;!--$beginblock$myblock$--&gt;</strong>
+	&lt;div style="background-color: aqua"&gt;
+	This is a block from aggregated2
+	&lt;/div&gt;
+<strong>&lt;!--$endblock$myblock$--&gt;</strong>
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
 			</subsection>
 			<subsection name="Including a block">
 				<p>Use the "includeblock" directives with the name of the
@@ -56,7 +104,21 @@
 					block
 					name, the
 					complete page is retrieved.</p>
-				<img src="aggregator_includeblock.jpg" />
+<source>
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /&gt;
+&lt;title&gt;Block example&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style="background-color: yellow"&gt;
+Page from aggregated1
+&lt;br /&gt;
+<strong>&lt;!--$includeblock$aggregated2$block.html$myblock$--&gt;</strong>
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
 			</subsection>
 			<subsection name="Including page via &lt;esi:include&gt; directive">
 				<p>Use
@@ -76,14 +138,35 @@
 			<p>
 				Use the "begintemplate" and "endtemplate" directives with the name of the template. Use the "beginparam" and "endparam" directives to delimit params (variable parts that can be replaced inside the template)
 			</p>
-			<img src="aggregator_template.jpg" />
+<source>
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /&gt;
+<strong>&lt;!--$beginparam$title$--&gt;</strong>&lt;title&gt;Title to be replaced&lt;/title&gt;<strong>&lt;!--$endparam$title$--&gt;</strong>
+&lt;/head&gt;
+&lt;body style="background-color: aqua"&gt;
+Template from aggregated2
+<strong>&lt;!--$beginparam$content$--&gt;</strong>Block to be replaced<strong>&lt;!--$endparam$content$--&gt;</strong>
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
 		</subsection>
 		<subsection name="Including a block">
 			<p>
 				Use the "includetemplate" directives with the name of the provider, the page and the name of the template to retrieve. If no template name, the complete page is retrieved.
 				Use directives "beginput" and "endput" to replace params inside the template.
 			</p>
-			<img src="aggregator_includetemplate.jpg" />
+<source>
+<strong>&lt;!--$includetemplate$aggregated2$template.html$--&gt;</strong>&#160;
+<strong>&lt;!--$beginput$title$--&gt;</strong>&lt;title&gt;Template exemple&lt;/title&gt;<strong>&lt;!--$endput$--&gt;</strong>&#160;
+<strong>&lt;!--$beginput$content$--&gt;</strong>
+&lt;div style="background-color: yellow"&gt;
+Some text from aggregated1
+&lt;/div&gt;
+<strong>&lt;!--$endput$--&gt;</strong>&#160;
+<strong>&lt;!--$endincludetemplate$--&gt;</strong>
+</source>
 		</subsection>
 	</section>
 	</body>

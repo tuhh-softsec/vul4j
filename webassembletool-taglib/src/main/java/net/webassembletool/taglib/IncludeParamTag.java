@@ -7,7 +7,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Replaces a parameter in a template by the content of its body. This tag can
  * only be used inside an IncludeTemplate tag.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class IncludeParamTag extends BodyTagSupport {

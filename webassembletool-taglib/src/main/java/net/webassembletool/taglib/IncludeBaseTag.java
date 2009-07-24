@@ -10,7 +10,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Generates an HTML "base" tag pointing to a page inside the provider
  * application.<br /> This tag is an alternative to using the ProxyServlet.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class IncludeBaseTag extends TagSupport {

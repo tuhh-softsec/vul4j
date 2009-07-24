@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Strings manipulation utility
  * 
- * @author Fran�ois-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class StringUtils {
 

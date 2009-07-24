@@ -11,7 +11,7 @@ import net.webassembletool.resource.Resource;
  * Resource implementation that keeps the contents inside a byte array. A
  * MemoryResource can be reused and kept in cache.
  * 
- * @author Fran�ois-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class MemoryResource extends Resource {

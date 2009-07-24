@@ -10,7 +10,7 @@ import java.util.List;
  * Output implementation that forwards data received to several Outputs at the
  * same time.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class MultipleOutput extends Output {

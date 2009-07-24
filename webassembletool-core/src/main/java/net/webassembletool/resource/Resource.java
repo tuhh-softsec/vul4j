@@ -12,7 +12,7 @@ import net.webassembletool.output.Output;
  * request but also from a cache or a file.<br /> A resource must be released
  * after using it in ordre to release open files or network connections.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public abstract class Resource {

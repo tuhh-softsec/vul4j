@@ -8,7 +8,7 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
  * <p>
  * Currently only opensimphony's OScache is supported.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 /*
  * TODO: Rewrite a caching system that will not depend on Oscache, non blocking
@@ -27,9 +27,13 @@ public class Cache {
         cache.putInCache(key, resource);
     }
 
-    /**
-     * Returns a cache entry.
-     */
+	/**
+	 * Returns a cache entry.
+	 * 
+	 * @param key
+	 *            key of the cache entry
+	 * @return the cache entry if any
+	 */
     public MemoryResource get(String key) {
         MemoryResource memoryResource = null;
         try {

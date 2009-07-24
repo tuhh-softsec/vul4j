@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  * overrides getRemoteUser and getLocale methods from the request in order for
  * the application to retrieve them.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class ConnectorFilter implements Filter {
     public void destroy() {

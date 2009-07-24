@@ -5,7 +5,6 @@ import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.webassembletool.Driver;
 import net.webassembletool.HttpErrorPage;
 
 /**
@@ -14,8 +13,6 @@ import net.webassembletool.HttpErrorPage;
  * <code>&lt;!--$endincludeblock$--></code> tags or by single
  * <code>&lt;!--$includeblock...$--></code> tag.
  * 
- * @see Driver#renderBlock(String, String, Writer, HttpServletRequest,
- *      java.util.Map, java.util.Map, boolean)
  * @author Stanislav Bernatskyi
  */
 public class IncludeBlockRegion extends AbstractIncludeRegion {
@@ -29,7 +26,7 @@ public class IncludeBlockRegion extends AbstractIncludeRegion {
     public void process(Writer out, HttpServletRequest request)
             throws IOException, HttpErrorPage {
         getDriver().renderBlock(page, name, out, request, null, null,
-                propagateJsessionId, false);
-    }
+				propagateJsessionId, false);
+	}
 
 }

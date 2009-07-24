@@ -3,7 +3,7 @@ package net.webassembletool.http;
 /**
  * Exception thrown when an unsupported HTTP method is called
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class UnsupportedHttpMethodException extends RuntimeException {
     private static final long serialVersionUID = 1L;

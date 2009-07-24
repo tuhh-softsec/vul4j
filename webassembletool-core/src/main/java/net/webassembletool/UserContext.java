@@ -8,7 +8,7 @@ import org.apache.commons.httpclient.HttpState;
  * id. This context will be transmitted to the provider applications.<br />
  * There is one instance of user context associated with each session.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class UserContext {

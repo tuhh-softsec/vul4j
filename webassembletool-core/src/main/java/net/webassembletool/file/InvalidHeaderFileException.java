@@ -3,7 +3,7 @@ package net.webassembletool.file;
 /**
  * Exception to be thrown when a problem occurs with a resource.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class InvalidHeaderFileException extends RuntimeException {

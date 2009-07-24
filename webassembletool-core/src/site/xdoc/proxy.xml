@@ -17,7 +17,20 @@
 				The reverse proxy is a servlet that has to be configured in the web.xml
 				file.
 </p>
-			<img src="proxy.jpg" />
+<source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+&lt;web-app&gt;
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;net.webassembletool.ProxyServlet&lt;/servlet-class&gt;
+	&lt;/servlet&gt;
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</source>
 		</section>
 		<section name="Other reverse proxy solutions">
 			<p>

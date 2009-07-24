@@ -8,7 +8,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * This tag generates HTML comments to define a template.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class TemplateTag extends BodyTagSupport {

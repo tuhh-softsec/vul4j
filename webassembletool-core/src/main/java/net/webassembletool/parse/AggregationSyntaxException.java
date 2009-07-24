@@ -5,7 +5,7 @@ package net.webassembletool.parse;
  * Exception thrown when an HTML document contains WAT tags with invalid
  * arguments
  * 
- * @author Fran�ois-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class AggregationSyntaxException extends RuntimeException {
     private static final long serialVersionUID = 1L;

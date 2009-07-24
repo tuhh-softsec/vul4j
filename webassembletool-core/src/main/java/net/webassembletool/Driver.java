@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
  * Main class used to retrieve data from a provider application using HTTP requests. Data can be retrieved as binary streams or as String for text data. To improve performance, the Driver uses a cache
  * that can be configured depending on the needs.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class Driver {
     private static final Log LOG = LogFactory.getLog(Driver.class);

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * StringOutput should be used only for text responses such as HTML and not for
  * binary data such as images.
  * 
- * @author Fran�ois-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class StringOutput extends Output {

@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
  * or without parameters. Begin and end index are relative to the original
  * String it was found in.
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 public class Tag {
     public static final String WAT_START = "<!--$";

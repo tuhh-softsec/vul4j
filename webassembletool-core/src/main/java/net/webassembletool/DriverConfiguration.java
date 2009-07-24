@@ -5,7 +5,7 @@ import java.util.Properties;
 /**
  * Driver configuration parameters
  * 
- * @author François-Xavier Bonnet
+ * @author Francois-Xavier Bonnet
  */
 class DriverConfiguration {
     private final String instanceName;
