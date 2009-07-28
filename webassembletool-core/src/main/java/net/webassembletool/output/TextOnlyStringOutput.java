@@ -119,6 +119,7 @@ public class TextOnlyStringOutput extends Output {
 
 	@Override
 	public String toString() {
+		if(byteArrayOutputStream == null) return "<Unparsed binary data: Content-Type=" + getHeader("Content-Type") + " >";
 		String charsetName = getCharsetName();
 		if (charsetName ==null) 
 			charsetName = "ISO-8859-1";

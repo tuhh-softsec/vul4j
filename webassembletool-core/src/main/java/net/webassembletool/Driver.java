@@ -1,5 +1,6 @@
 package net.webassembletool;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -250,12 +251,13 @@ public class Driver {
 	 */
 	public final void proxy(String relUrl, HttpServletRequest request,
 			HttpServletResponse response, boolean propagateJsessionId,
-			Renderer renderer) throws IOException, HttpErrorPage {
+			Renderer... renderers) throws IOException, HttpErrorPage {
+		
 		RequestContext requestContext = new RequestContext(this, relUrl, null,
 				request, propagateJsessionId, true);
 		request.setCharacterEncoding(config.getUriEncoding());
 		requestContext.setProxyMode(true);
-		if (renderer == null) {
+		if (renderers.length == 0) {
 			renderResource(requestContext,
 					new ResponseOutput(request, response));
 		} else {
@@ -267,22 +269,40 @@ public class Driver {
 			if (!textOutput.hasTextBuffer()) {
 				LOG.debug("'" + relUrl
 						+ "' is binary : was forwarded without aggregation.");
+				if(renderers != null){
+					LOG.warn("Renderers were ignored because ressource '" + relUrl + "' is binary");
+				}
 				return;
 			}
 			LOG.debug("'" + relUrl + "' is text : will be aggregated.");
 			String charsetName = textOutput.getCharsetName();
+			String currentValue = textOutput.toString();
+			ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
 			Writer writer;
 			if (charsetName == null)
 				// No charset was specified in the response, let the browser
 				// guess!
-				writer = new OutputStreamWriter(response.getOutputStream());
+				writer = new OutputStreamWriter(outBuffer);
 			else
-				writer = new OutputStreamWriter(response.getOutputStream(),
-						charsetName);
-			renderer.render(textOutput.toString(), writer);
-			writer.flush();
+				writer = new OutputStreamWriter(outBuffer,charsetName);
+			
+			for(Renderer renderer : renderers){
+				outBuffer.reset();
+				renderer.render(currentValue, writer);
+				
+				writer.flush();//Ensure everything is written down before reading the content of byte array
+				
+				//Fetch content as string respecting the encoding used by the writer
+				if(charsetName == null)
+					currentValue = outBuffer.toString();
+				else
+					currentValue = outBuffer.toString(charsetName); 
+			}
+			//Directly write the last byte buffer which is __normally__ in the right encoding
+			response.getOutputStream().write(outBuffer.toByteArray());
 		}
 	}
+	
     
     private final void renderResource(RequestContext target, Output output) {
         String httpUrl = ResourceUtils.getHttpUrlWithQueryString(target);
