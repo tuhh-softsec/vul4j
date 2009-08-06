@@ -1,69 +1,129 @@
 Name:           xml-security-c
 Version:        1.5.1
 Release:        1
-Summary:        C++ XML security library
+Summary:        Apache XML security C++ library
 
 Group:          System Environment/Libraries
 License:        Apache Software License
-URL:            http://xml.apache.org/security/c/
-Source0:        http://xml.apache.org/security/dist/c-library/%{name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+URL:            http://santuario.apache.org/c/
+Source:         %{name}-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %if 0%{?suse_version} > 1030
-BuildRequires:  libXerces-c-devel >= 2.8.0
+BuildRequires:  libXerces-c-devel >= 2.8
+%{?_with_xalan:BuildRequires: Xalan-c-devel >= 1.6}
 %else
-BuildRequires:  xerces%{?xercesver}-c-devel >= 2.3
-%endif
-BuildRequires:  openssl-devel
+BuildRequires:  xerces%{?xercesver}-c-devel >= 2.8
 %{?_with_xalan:BuildRequires: xalan-c-devel >= 1.6}
+%endif
+BuildRequires:  openssl-devel gcc-c++ pkgconfig
 
 %description
-The Apache %{summary}.
+The xml-security-c library is a C++ implementation of the XML Digital Signature
+and Encryption specifications. The library makes use of the Apache XML project's
+Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
+XPath and XSLT transforms.
 
-Non-default rpmbuild options:
-"--with xalan":   use the Xalan XSLT processor.
+%if 0%{?suse_version} > 1030
+%package -n libxml-security-c15
+Summary:    Apache XML security C++ library
+Group:      Development/Libraries
+Provides:   xml-security-c = %{version}
 
+%description -n libxml-security-c15
+The xml-security-c library is a C++ implementation of the XML Digital Signature
+and Encryption specifications. The library makes use of the Apache XML project's
+Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
+XPath and XSLT transforms.
+
+This package contains just the shared library.
+%endif
+
+%if 0%{?suse_version} > 1030
+%package -n libxml-security-c-devel
+Summary:        Development files for the Apache C++ XML security library
+Group:          Development/Libraries
+Requires:       libxml-security-c15 = %{version}
+Requires:       libXerces-c-devel openssl-devel
+%{?_with_xalan:Requires: Xalan-c-devel}
+
+%description -n libxml-security-c-devel
+The xml-security-c library is a C++ implementation of the XML Digital Signature
+and Encryption specifications. The library makes use of the Apache XML project's
+Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
+XPath and XSLT transforms.
+
+This package includes files needed for development with xml-security-c.
+%else
 %package        devel
 Summary:        Development files for the Apache C++ XML security library
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
+Requires:       xerces%{?xercesver}-c-devel openssl-devel
+%{?_with_xalan:Requires: xalan-c-devel}
 
 %description    devel
-%{summary}.
+The xml-security-c library is a C++ implementation of the XML Digital Signature
+and Encryption specifications. The library makes use of the Apache XML project's
+Xerces-C XML Parser and Xalan-C XSLT processor. The latter is used for processing
+XPath and XSLT transforms.
+
+This package includes files needed for development with xml-security-c.
+%endif
 
 %prep
-%setup0 -q
+%setup -q
 
 %build
 %configure %{!?_with_xalan: --without-xalan}
-%{__make} # %{?_smp_mflags} # fails as of 1.[01].0.
+%{__make}
 
 %install
-%{__rm} -rf $RPM_BUILD_ROOT
-%{__mkdir} -pm 755 $RPM_BUILD_ROOT%{_libdir} # FIXME in Makefiles
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
 
 
+%ifnos solaris2.8 solaris2.9 solaris2.10
+%if 0%{?suse_version} > 1030
+%post -n libxml-security-c15 -p /sbin/ldconfig
+%else
 %post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%endif
+%endif
 
+%ifnos solaris2.8 solaris2.9 solaris2.10
+%if 0%{?suse_version} > 1030
+%postun -n libxml-security-c15 -p /sbin/ldconfig
+%else
+%postun -p /sbin/ldconfig
+%endif
+%endif
 
 %files
 %defattr(-,root,root,-)
+%{_bindir}/*
+%if 0%{?suse_version} > 1030
+%files -n libxml-security-c15
+%defattr(-,root,root,-)
+%endif
 %{_libdir}/*.so.*
+
+%if 0%{?suse_version} > 1030
+%files -n libxml-security-c-devel
+%else
+%files devel
+%endif
+%defattr(-,root,root,-)
+%{_includedir}/*
+%{_libdir}/*.so
 %{_libdir}/*.a
 %exclude %{_libdir}/*.la
-%{_bindir}/*
-
-%files devel
-%defattr(-,root,root,-)
-%{_includedir}/xsec
-%{_libdir}/*.so
 
 %changelog
+* Wed Aug 5 2009   Scott Cantor  <cantor.2@osu.edu> 1.5.1-1
+- update to 1.5.1 and add SuSE conventions
 * Sat Dec 6 2008   Scott Cantor  <cantor.2@osu.edu> 1.5-1
 - update to 1.5
 - fix Xerces dependency name on SUSE
