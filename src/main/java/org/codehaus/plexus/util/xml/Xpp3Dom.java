@@ -43,6 +43,8 @@ public class Xpp3Dom
 
     protected Xpp3Dom parent;
 
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     private static final Xpp3Dom[] EMPTY_DOM_ARRAY = new Xpp3Dom[0];
 
     public static final String CHILDREN_COMBINATION_MODE_ATTRIBUTE = "combine.children";
@@ -94,7 +96,13 @@ public class Xpp3Dom
      */
     public Xpp3Dom( Xpp3Dom src, String name )
     {
-        this( name );
+        this.name = name;
+
+        int childCount = src.getChildCount();
+
+        childList = new ArrayList( childCount );
+        childMap = new HashMap( childCount << 1 );
+
         setValue( src.getValue() );
 
         String[] attributeNames = src.getAttributeNames();
@@ -104,10 +112,9 @@ public class Xpp3Dom
             setAttribute( attributeName, src.getAttribute( attributeName ) );
         }
 
-        Xpp3Dom[] children = src.getChildren();
-        for ( int i = 0; i < children.length; i++ )
+        for ( int i = 0; i < childCount; i++ )
         {
-            addChild( new Xpp3Dom( children[i] ) );
+            addChild( new Xpp3Dom( src.getChild( i ) ) );
         }
     }
 
@@ -140,13 +147,13 @@ public class Xpp3Dom
 
     public String[] getAttributeNames()
     {
-        if ( null == attributes )
+        if ( null == attributes || attributes.isEmpty() )
         {
-            return new String[0];
+            return EMPTY_STRING_ARRAY;
         }
         else
         {
-            return (String[]) attributes.keySet().toArray( new String[0] );
+            return (String[]) attributes.keySet().toArray( new String[attributes.size()] );
         }
     }
 
@@ -199,13 +206,13 @@ public class Xpp3Dom
 
     public Xpp3Dom[] getChildren()
     {
-        if ( null == childList )
+        if ( null == childList || childList.isEmpty() )
         {
             return EMPTY_DOM_ARRAY;
         }
         else
         {
-            return (Xpp3Dom[]) childList.toArray( EMPTY_DOM_ARRAY );
+            return (Xpp3Dom[]) childList.toArray( new Xpp3Dom[childList.size()] );
         }
     }
 
@@ -229,7 +236,7 @@ public class Xpp3Dom
                 }
             }
 
-            return (Xpp3Dom[]) children.toArray( EMPTY_DOM_ARRAY );
+            return (Xpp3Dom[]) children.toArray( new Xpp3Dom[children.size()] );
         }
     }
 
@@ -334,7 +341,7 @@ public class Xpp3Dom
 
         String selfMergeMode = dominant.getAttribute( SELF_COMBINATION_MODE_ATTRIBUTE );
 
-        if ( isNotEmpty( selfMergeMode ) && SELF_COMBINATION_OVERRIDE.equals( selfMergeMode ) )
+        if ( SELF_COMBINATION_OVERRIDE.equals( selfMergeMode ) )
         {
             mergeSelf = false;
         }
@@ -367,31 +374,32 @@ public class Xpp3Dom
             {
                 String childMergeMode = dominant.getAttribute( CHILDREN_COMBINATION_MODE_ATTRIBUTE );
 
-                if ( isNotEmpty( childMergeMode ) && CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
+                if ( CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
                 {
                     mergeChildren = false;
                 }
             }
 
-            Xpp3Dom[] dominantChildren = dominant.getChildren();
+            Xpp3Dom[] dominantChildren = null;
             if ( !mergeChildren )
             {
+                dominantChildren = dominant.getChildren();
                 // remove these now, so we can append them to the recessive list later.
                 dominant.childList.clear();
             }
 
-            Xpp3Dom[] children = recessive.getChildren();
-            for ( int i = 0; i < children.length; i++ )
+            int recessiveChildCount = recessive.getChildCount();
+            for ( int i = 0; i < recessiveChildCount; i++ )
             {
-                Xpp3Dom child = children[i];
-                Xpp3Dom childDom = dominant.getChild( child.getName() );
-                if ( mergeChildren && ( childDom != null ) )
+                Xpp3Dom recessiveChild = recessive.getChild( i );
+                Xpp3Dom dominantChild = dominant.getChild( recessiveChild.getName() );
+                if ( mergeChildren && ( dominantChild != null ) )
                 {
-                    mergeIntoXpp3Dom( childDom, child, childMergeOverride );
+                    mergeIntoXpp3Dom( dominantChild, recessiveChild, childMergeOverride );
                 }
                 else
                 {
-                    dominant.addChild( new Xpp3Dom( child ) );
+                    dominant.addChild( new Xpp3Dom( recessiveChild ) );
                 }
             }
 
