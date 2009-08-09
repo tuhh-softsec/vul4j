@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sf.xslthl</groupId>
     <artifactId>xslthl</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <name>XSLT syntax highlighting</name>
     <description>This is an implementation of syntax highlighting as an extension module for XSLT processors, so if you
         have e.g. article about programming written in DocBook, code examples can be automatically syntax highlighted
