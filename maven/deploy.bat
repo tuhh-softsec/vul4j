@@ -1,4 +1,4 @@
-set VERSION=1.3.0
+set VERSION=2.0.0
 set REPO_URL=sftp://web.sourceforge.net/home/groups/x/xs/xslthl/htdocs/maven/repository
 set REPO_ID=xslthl-sourceforge
 
