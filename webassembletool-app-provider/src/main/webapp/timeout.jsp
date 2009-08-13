@@ -9,7 +9,13 @@
 <title>Timeout test</title>
 </head>
 <body style="background-color: aqua">
-<% Thread.sleep(5000); %>
+<% 
+	try {
+		Thread.sleep(5000);
+	} catch (InterruptedException e) {
+		// Nothing to do
+	}
+%>
 <div>If you read this, you must have been waiting 5 s</div>
 <div style="border: 1px solid red"><assemble:block name="block1">
 	<div style="background-color: aqua">Content Block</div>
