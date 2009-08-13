@@ -11,7 +11,7 @@ public class TemplateRendererTest extends TestCase {
 
     public void testRenderTemplateNull1() throws IOException, HttpErrorPage {
         StringWriter out = new StringWriter();
-        TemplateRenderer tested = new TemplateRenderer(null, null, null, null);
+        TemplateRenderer tested = new TemplateRenderer(null, null, null);
         tested.render(null, out);
         assertEquals(0, out.toString().length());
     }
@@ -22,7 +22,7 @@ public class TemplateRendererTest extends TestCase {
         params.put("some other key", "'another value'");
         StringWriter out = new StringWriter();
 
-        TemplateRenderer tested = new TemplateRenderer(null, params, null, null);
+        TemplateRenderer tested = new TemplateRenderer(null, params, null);
         tested.render(null, out);
 
         assertFalse(out.toString().contains("key"));
@@ -37,7 +37,7 @@ public class TemplateRendererTest extends TestCase {
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
         StringWriter out = new StringWriter();
-        TemplateRenderer tested = new TemplateRenderer(null, params, null, null);
+        TemplateRenderer tested = new TemplateRenderer(null, params, null);
         tested.render(expectedOutput, out);
 
         assertFalse(out.toString().contains("key"));
@@ -50,7 +50,7 @@ public class TemplateRendererTest extends TestCase {
     public void testRenderTemplate2() throws IOException, HttpErrorPage {
         final String expectedOutput = "abc some<!--$begintemplate$A-->some text goes here<!--$endtemplate$A--> cdf hello";
         StringWriter out = new StringWriter();
-        TemplateRenderer tested = new TemplateRenderer("A", null, null, null);
+        TemplateRenderer tested = new TemplateRenderer("A", null, null);
         tested.render(expectedOutput, out);
         assertEquals("some text goes here", out.toString());
     }

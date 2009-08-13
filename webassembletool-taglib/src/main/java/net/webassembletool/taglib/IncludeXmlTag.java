@@ -20,16 +20,22 @@ public class IncludeXmlTag extends TagSupport {
     private String template;
     private String provider;
 
-    @Override
-    public int doStartTag() throws JspException {
-        try {
-            DriverUtils.renderXml(provider, source, xpath, template,
-                    pageContext);
-            return EVAL_BODY_INCLUDE;
-        } catch (HttpErrorPage e) {
-            throw new JspException(e);
-        }
-    }
+	@Override
+	public int doStartTag() throws JspException {
+		try {
+			if (xpath != null && template == null) {
+				DriverUtils.renderXpath(provider, source, xpath, pageContext);
+			} else if (template != null && xpath == null) {
+				DriverUtils.renderXml(provider, source, template, pageContext);
+			} else {
+				throw new JspException(
+						"One and only one of the attributes \"xpath\" or \"template\" must be defined");
+			}
+			return EVAL_BODY_INCLUDE;
+		} catch (HttpErrorPage e) {
+			throw new JspException(e);
+		}
+	}
 
     public String getProvider() {
         return provider;

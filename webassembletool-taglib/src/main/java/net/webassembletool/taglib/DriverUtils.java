@@ -47,10 +47,18 @@ public class DriverUtils {
         }
     }
 
-    public final static void renderXml(String provider, String source, String xpath, String template, PageContext pageContext) throws JspException, HttpErrorPage {
+    public final static void renderXml(String provider, String source, String template, PageContext pageContext) throws JspException, HttpErrorPage {
         try {
             Driver driver = DriverFactory.getInstance(provider);
-            driver.renderXml(source, xpath, template, pageContext.getOut(), (HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext());
+            driver.renderXml(source, template, pageContext.getOut(), (HttpServletRequest) pageContext.getRequest());
+        } catch (IOException e) {
+            throw new JspException(e);
+        }
+    }
+    public final static void renderXpath(String provider, String source, String xpath, PageContext pageContext) throws JspException, HttpErrorPage {
+        try {
+            Driver driver = DriverFactory.getInstance(provider);
+            driver.renderXpath(source, xpath, pageContext.getOut(), (HttpServletRequest) pageContext.getRequest());
         } catch (IOException e) {
             throw new JspException(e);
         }

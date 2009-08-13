@@ -1,13 +1,11 @@
 package net.webassembletool;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -25,7 +23,9 @@ import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
 import net.webassembletool.parse.BlockRenderer;
 import net.webassembletool.parse.Renderer;
+import net.webassembletool.parse.ReplaceRenderer;
 import net.webassembletool.parse.TemplateRenderer;
+import net.webassembletool.parse.XpathRenderer;
 import net.webassembletool.parse.XsltRenderer;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.ResourceUtils;
@@ -113,29 +113,45 @@ public class Driver {
      * 
      * @param source
      *            external page used for inclusion
-     * @param xpath
-     *            XPath expression (may be <code>null</code>)
      * @param template
      *            path to the XSLT template (may be <code>null</code>) will be evaluated against current web application context
      * @param out
      *            Writer to write the block to
      * @param originalRequest
      *            original client request
-     * @param ctx
-     *            hosting web application context
      * @throws IOException
      *             If an IOException occurs while writing to the writer
      * @throws HttpErrorPage 
      *             If an Exception occurs while retrieving the block
      */
-	public final void renderXml(String source, String xpath, String template,
-			Writer out, HttpServletRequest originalRequest, ServletContext ctx)
+	public final void renderXml(String source, String template,
+			Writer out, HttpServletRequest originalRequest)
 			throws IOException, HttpErrorPage {
-		RequestContext target = new RequestContext(this, source, null,
-				originalRequest, false, false);
-		StringOutput stringOutput = getResourceAsString(target);
-		Renderer renderer = new XsltRenderer(xpath,	template, ctx);
-		renderer.render(stringOutput.toString(), out);
+		render(source, null, out, originalRequest, false, new XsltRenderer(
+				template, originalRequest.getSession().getServletContext()));
+	}
+
+    /**
+     * Retrieves a page from the provider application, evaluates XPath expression if exists, applies XSLT transformation and writes result to a Writer.
+     * 
+     * @param source
+     *            external page used for inclusion
+     * @param xpath
+     *            XPath expression (may be <code>null</code>)
+     * @param out
+     *            Writer to write the block to
+     * @param originalRequest
+     *            original client request
+     * @throws IOException
+     *             If an IOException occurs while writing to the writer
+     * @throws HttpErrorPage 
+     *             If an Exception occurs while retrieving the block
+     */
+	public final void renderXpath(String source, String xpath, Writer out,
+			HttpServletRequest originalRequest)
+			throws IOException, HttpErrorPage {
+		render(source, null, out, originalRequest, false, new XpathRenderer(
+				xpath));
 	}
 
     /**
@@ -165,10 +181,7 @@ public class Driver {
      */
     public void renderBlock(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> replaceRules, Map<String, String> parameters, boolean propagateJsessionId,
             boolean copyOriginalRequestParameters) throws IOException, HttpErrorPage {
-        RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, copyOriginalRequestParameters);
-        StringOutput stringOutput = getResourceAsString(target);
-        Renderer renderer = new BlockRenderer(name, page, replaceRules);
-        renderer.render(stringOutput.toString(), writer);
+        render(page, parameters, writer, originalRequest, propagateJsessionId, new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
     }
 
     /**
@@ -191,7 +204,7 @@ public class Driver {
      * @param replaceRules
      *            The replace rules to be applied on the block
      * @param parameters
-     *            Parameters to be added to the request (TODO: unused???)
+     *            Parameters to be added to the request
      * @param propagateJsessionId
      *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
      * @throws IOException
@@ -201,11 +214,39 @@ public class Driver {
      */
     public void renderTemplate(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> params, Map<String, String> replaceRules,
             Map<String, String> parameters, boolean propagateJsessionId) throws IOException, HttpErrorPage {
+		render(page, parameters, writer, originalRequest, propagateJsessionId,
+				new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
+    }
+
+	/**
+	 * @param page
+	 *            Address of the page containing the template
+	 * @param parameters
+	 *            parameters to be added to the request
+	 * @param writer
+	 *            Writer where to write the result
+	 * @param originalRequest
+	 *            originating request object
+     * @param propagateJsessionId
+     *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
+	 * @param renderers
+	 *            the renderers to use to transform the output
+     * @throws IOException
+     *             If an IOException occurs while writing to the writer
+     * @throws HttpErrorPage
+     *             If an Exception occurs while retrieving the template
+	 */
+	public void render(String page, Map<String, String> parameters, Writer writer, HttpServletRequest originalRequest, boolean propagateJsessionId, Renderer... renderers) throws IOException, HttpErrorPage {
         RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, false);
         StringOutput stringOutput = getResourceAsString(target);
-        Renderer renderer = new TemplateRenderer(name, params, page, replaceRules);
-        renderer.render(stringOutput.toString(), writer);
-    }
+		String currentValue = stringOutput.toString();
+		for(Renderer renderer : renderers){
+			StringWriter stringWriter = new StringWriter();
+			renderer.render(currentValue, stringWriter);
+			currentValue = stringWriter.toString();
+		}
+		writer.write(currentValue);
+	}
 
 	/**
 	 * Retrieves a resource from the provider application and transforms it
@@ -242,8 +283,8 @@ public class Driver {
 	 * @param propagateJsessionId
 	 *            indicates whether <code>jsessionid</code> should be propagated
 	 *            or just removed from generated output
-	 * @param renderer
-	 *            the renderer to use to transform the output or null if no transformation to apply
+	 * @param renderers 
+	 *            the renderers to use to transform the output
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the response
 	 * @throws HttpErrorPage
@@ -252,7 +293,6 @@ public class Driver {
 	public final void proxy(String relUrl, HttpServletRequest request,
 			HttpServletResponse response, boolean propagateJsessionId,
 			Renderer... renderers) throws IOException, HttpErrorPage {
-		
 		RequestContext requestContext = new RequestContext(this, relUrl, null,
 				request, propagateJsessionId, true);
 		request.setCharacterEncoding(config.getUriEncoding());
@@ -268,38 +308,33 @@ public class Driver {
 			// is needed.
 			if (!textOutput.hasTextBuffer()) {
 				LOG.debug("'" + relUrl
-						+ "' is binary : was forwarded without aggregation.");
-				if(renderers != null){
-					LOG.warn("Renderers were ignored because ressource '" + relUrl + "' is binary");
-				}
+						+ "' is binary : was forwarded without modification.");
 				return;
 			}
-			LOG.debug("'" + relUrl + "' is text : will be aggregated.");
-			String charsetName = textOutput.getCharsetName();
+			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
 			String currentValue = textOutput.toString();
-			ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
-			Writer writer;
-			if (charsetName == null)
-				// No charset was specified in the response, let the browser
-				// guess!
-				writer = new OutputStreamWriter(outBuffer);
-			else
-				writer = new OutputStreamWriter(outBuffer,charsetName);
-			
 			for(Renderer renderer : renderers){
-				outBuffer.reset();
-				renderer.render(currentValue, writer);
-				
-				writer.flush();//Ensure everything is written down before reading the content of byte array
-				
-				//Fetch content as string respecting the encoding used by the writer
-				if(charsetName == null)
-					currentValue = outBuffer.toString();
-				else
-					currentValue = outBuffer.toString(charsetName); 
+				StringWriter stringWriter = new StringWriter();
+				renderer.render(currentValue, stringWriter);
+				currentValue = stringWriter.toString();
 			}
-			//Directly write the last byte buffer which is __normally__ in the right encoding
-			response.getOutputStream().write(outBuffer.toByteArray());
+			// Write the result to the OutpuStream
+			String charsetName = textOutput.getCharsetName();
+			if (charsetName == null) {
+				// No charset was specified in the response, we assume this is
+				// ISO-8859-1
+				charsetName = "ISO-8859-1";
+				// We do not use the Writer because the container may add some
+				// unwanted headers like default content-type that may not be
+				// consistent with the original response
+				response.getOutputStream().write(
+						currentValue.getBytes(charsetName));
+			} else
+				// Even if Content-type header has been set, some containers like
+				// Jetty need the charsetName to be set, if not it will take
+				// default value ISO-8859-1
+				response.setCharacterEncoding(charsetName);
+				response.getWriter().write(currentValue);
 		}
 	}
 	

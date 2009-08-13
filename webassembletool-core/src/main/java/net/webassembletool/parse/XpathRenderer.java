@@ -1,19 +1,15 @@
 package net.webassembletool.parse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import net.webassembletool.HttpErrorPage;
 
@@ -36,43 +32,38 @@ import org.xml.sax.SAXException;
  * 
  * @author Stanislav Bernatskyi
  */
-public class XsltRenderer implements Renderer {
-	private final Transformer transformer;
+public class XpathRenderer implements Renderer {
+	private final XPathExpression expr;
 
-	public XsltRenderer(String template, ServletContext ctx) throws IOException {
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-		InputStream templateStream = ctx.getResourceAsStream(template);
+	public XpathRenderer(String xpath) {
+		XPath xpathObj = XPathFactory.newInstance().newXPath();
 		try {
-			transformer = tFactory.newTransformer(new StreamSource(
-					templateStream));
-		} catch (TransformerConfigurationException e) {
+			expr = xpathObj.compile(xpath);
+		} catch (XPathExpressionException e) {
 			throw new ProcessingFailedException(
-					"failed to create XSLT template", e);
-		} finally {
-			templateStream.close();
+					"failed to compile XPath expression", e);
 		}
 	}
 
 	/** {@inheritDoc} */
-	public void render(String src, Writer out) throws IOException,
-			HttpErrorPage {
+	public void render(String src, Writer out)
+			throws IOException, HttpErrorPage {
 		try {
 			DOMParser domParser = new DOMParser();
 			domParser.parse(new InputSource(new StringReader(src)));
 			Document document = domParser.getDocument();
-			DOMResult result = new DOMResult();
-			transformer.transform(new DOMSource(document), result);
-			Node transformed = result.getNode();
+			Node xpathed = (Node) expr.evaluate(document, XPathConstants.NODE);
 			Properties props = OutputPropertiesFactory
 					.getDefaultMethodProperties(Method.HTML);
 			Serializer ser = SerializerFactory.getSerializer(props);
 			ser.setWriter(out);
 			DOMSerializer dSer = ser.asDOMSerializer();
-			dSer.serialize(transformed);
+			dSer.serialize(xpathed);
 		} catch (SAXException e) {
 			throw new ProcessingFailedException("unable to parse source", e);
-		} catch (TransformerException e) {
-			throw new ProcessingFailedException("failed to transform source", e);
+		} catch (XPathExpressionException e) {
+			throw new ProcessingFailedException(
+					"failed to evaluate XPath expression", e);
 		}
 	}
 }

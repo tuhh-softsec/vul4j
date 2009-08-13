@@ -16,20 +16,20 @@ public class BlockRendererTest extends TestCase {
     public void testRenderBlockNull() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(null);
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        BlockRenderer tested = new BlockRenderer(null, null, null);
+        BlockRenderer tested = new BlockRenderer(null, null);
         tested.render(null, null);
     }
 
     public void testRenderBlock() throws IOException, HttpErrorPage {
         final String expectedOutput = "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello";
         Writer out = new StringWriter();
-        BlockRenderer tested = new BlockRenderer("A", null, null);
+        BlockRenderer tested = new BlockRenderer("A", null);
         tested.render(expectedOutput, out);
         assertEquals("some text goes here", out.toString());
 
         // null name means whole page
         out = new StringWriter();
-        tested = new BlockRenderer(null, null, null);
+        tested = new BlockRenderer(null, null);
         tested.render(expectedOutput, out);
         assertEquals(expectedOutput, out.toString());
     }

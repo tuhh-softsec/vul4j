@@ -32,14 +32,12 @@ public class TemplateRenderer implements Renderer {
     private final String page;
     private final String name;
     private final Map<String, String> params;
-    private final Map<String, String> replaceRules;
 
 	public TemplateRenderer(String name, Map<String, String> params,
-			String page, Map<String, String> replaceRules) {
+			String page) {
 		this.name = name;
 		this.params = params;
 		this.page = page;
-		this.replaceRules = replaceRules;
 	}
 
 	/** {@inheritDoc} */
@@ -87,7 +85,7 @@ public class TemplateRenderer implements Renderer {
                 }
             }
         }
-        out.append(StringUtils.replace(sb, replaceRules));
+        out.append(sb);
     }
 
 }

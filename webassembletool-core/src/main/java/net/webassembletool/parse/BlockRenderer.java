@@ -2,7 +2,6 @@ package net.webassembletool.parse;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 import net.webassembletool.HttpErrorPage;
 
@@ -22,12 +21,10 @@ public class BlockRenderer implements Renderer {
 
     private final String page;
     private final String name;
-    private final Map<String, String> replaceRules;
 
-    public BlockRenderer(String name, String page, Map<String, String> replaceRules) {
+    public BlockRenderer(String name, String page) {
         this.name = name;
         this.page = page;
-        this.replaceRules =replaceRules;
     }
 
     /** {@inheritDoc} */
@@ -37,7 +34,7 @@ public class BlockRenderer implements Renderer {
             return;
         if (name == null) {
             LOG.debug("Serving whole page: page=" + page);
-            out.append(StringUtils.replace(content, replaceRules));
+            out.append(content);
         } else {
             Tag openTag = Tag.find("beginblock$" + name, content);
             Tag closeTag = Tag.find("endblock$" + name, content);
@@ -45,9 +42,8 @@ public class BlockRenderer implements Renderer {
                 LOG.warn("Block not found: page=" + page + " block=" + name);
             } else {
                 LOG.debug("Serving block: page=" + page + " block=" + name);
-                out.append(StringUtils
-                        .replace(content.substring(openTag.getEndIndex(),
-                                closeTag.getBeginIndex()), replaceRules));
+				out.append(content.substring(openTag.getEndIndex(), closeTag
+						.getBeginIndex()));
             }
         }
     }

@@ -20,7 +20,9 @@ public class DriverTest extends TestCase {
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
 
-        tested.renderBlock(null, null, null, null, null, null, false, false);
+        StringWriter out = new StringWriter();
+        tested.renderBlock(null, null, out, null, null, null, false, false);
+        assertEquals(0, out.toString().length());
     }
 
     public void testRenderBlock() throws IOException, HttpErrorPage {

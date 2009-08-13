@@ -16,7 +16,7 @@
 
 <p>Fragment below was retrieved from 'provider' source using following code:<br />
 <code>&lt;assemble:include-xml source="xml-page.xml" xpath="//DIV/DIV/UL" template="/WEB-INF/xml-template.xslt" /&gt;</code><br />
-<assemble:include-xml source="xml-page.xml" xpath="//DIV/DIV/UL" template="/WEB-INF/xml-template.xslt" />
+<assemble:include-xml source="xml-page.xml" template="/WEB-INF/xml-template.xslt" />
 <b>NB</b>: You should see numbered list with blue background color without any border, each list item should have 'updated: ' prefix.</p>
 </body>
 </html>
