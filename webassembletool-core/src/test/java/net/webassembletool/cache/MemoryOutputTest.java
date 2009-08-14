@@ -2,6 +2,11 @@ package net.webassembletool.cache;
 
 import junit.framework.TestCase;
 
+/**
+ * Test class for net.webassembletool.cache.MemoryOutput.
+ * 
+ * @author nricheton
+ */
 public class MemoryOutputTest extends TestCase {
 
 	final static String CONTENT = "My content";
