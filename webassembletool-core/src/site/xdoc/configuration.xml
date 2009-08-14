@@ -80,7 +80,7 @@
 				</tr>
 				<tr>
 					<td>cacheMaxFileSize</td>
-					<td>Maximum size of a cache entry. If 0, no size limit.
+					<td>Maximum size of a cache entry (bytes). If 0, no size limit.
 						This
 						directive can be used to avoid excessive memory usage</td>
 					<td>No</td>
