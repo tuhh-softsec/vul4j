@@ -49,6 +49,7 @@ public class Bug45961Test extends TestCase {
 	private static final char[] PASSWORD = "changeit".toCharArray();
 	private static final String ALIAS = "mullan";
 	private DocumentBuilder _builder;
+	private ObjectContainer object;
 	
 	public static Test suite() {
 		return new TestSuite(Bug45961Test.class);
@@ -103,7 +104,7 @@ public class Bug45961Test extends TestCase {
 
 		Element root2 = document.createElementNS("", "RootElement");
 		root2.appendChild(document.createTextNode("Some simple test\n"));
-		ObjectContainer object = new ObjectContainer(document);
+		object = new ObjectContainer(document);
 		object.appendChild(root2);
 		object.setId(OBJECT_ID);
 
