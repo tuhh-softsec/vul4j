@@ -73,7 +73,7 @@
 				</tr>
 				<tr>
 					<td>cacheRefreshDelay</td>
-					<td>Time to live of any cached page. If 0, cache entries will
+					<td>Time to live (seconds) of any cached page. If 0, cache entries will
 						never expire</td>
 					<td>No</td>
 					<td>0</td>
