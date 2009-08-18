@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.webassembletool</groupId>
-	<artifactId>webassembletool-pom</artifactId>
+	<artifactId>webassembletool</artifactId>
 	<packaging>pom</packaging>
-	<name>webassembletool-pom</name>
-	<version>2.3_SNAPSHOT</version>
+	<name>webassembletool</name>
+	<version>2.3-SNAPSHOT</version>
 	<inceptionYear>2008</inceptionYear>
 	<mailingLists>
 		<mailingList>
@@ -64,6 +64,26 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-4</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.0.1</version>
+				<configuration>
+					<moduleExcludes>
+						<moduleType>war</moduleType>
+					</moduleExcludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<modules>
@@ -82,7 +102,6 @@
 		<module>webassembletool-app-provider</module>
 		<module>webassembletool-app-facelet</module>
 		<module>webassembletool-integration-tests</module>
-		<module>webassembletool-assembly</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -91,6 +110,20 @@
 			<url>http://developer.jasig.org/repo/content/repositories/m2</url>
 		</repository>
 	</repositories>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.1.2</version>
+			</plugin>
+		</plugins>
+	</reporting>
 	<distributionManagement>
 		<repository>
 			<id>webassembletool-sourceforge</id>
