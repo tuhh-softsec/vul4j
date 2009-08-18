@@ -14,7 +14,7 @@ public class MemoryOutputTest extends TestCase {
 
 	/**
 	 * Ensure 'cacheMaxFileSize' from configuration works as expected.
-	 * @see  https://sourceforge.net/tracker/?func=detail&aid=2837564&group_id=209844&atid=1011350
+	 * @see  "https://sourceforge.net/tracker/?func=detail&aid=2837564&group_id=209844&atid=1011350"
 	 */
 	public void testCacheMaxFileSize() {
 		
