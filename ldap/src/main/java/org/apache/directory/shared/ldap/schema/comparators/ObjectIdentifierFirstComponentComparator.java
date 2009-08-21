@@ -52,7 +52,7 @@ public class ObjectIdentifierFirstComponentComparator extends LdapComparator<Str
      * The ObjectIdentifierFirstComponentComparator constructor. Its OID is the 
      * ObjectIdentifierFirstComponentMatch matching rule OID.
      */
-    protected ObjectIdentifierFirstComponentComparator()
+    public ObjectIdentifierFirstComponentComparator()
     {
         super( SchemaConstants.OBJECT_IDENTIFIER_FIRST_COMPONENT_MATCH_MR_OID );
     }

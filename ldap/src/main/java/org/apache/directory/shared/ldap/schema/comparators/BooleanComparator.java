@@ -48,7 +48,7 @@ public class BooleanComparator extends LdapComparator<String>
      * The BooleanComparator constructor. Its OID is the BooleanMatch matching
      * rule OID.
      */
-    protected BooleanComparator()
+    public BooleanComparator()
     {
         super( SchemaConstants.BOOLEAN_MATCH_MR_OID );
     }

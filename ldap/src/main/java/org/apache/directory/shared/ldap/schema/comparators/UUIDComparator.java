@@ -51,7 +51,7 @@ public class UUIDComparator extends LdapComparator<byte[]>
      * The UUIDComparator constructor. Its OID is the UUIDMatch matching
      * rule OID.
      */
-    protected UUIDComparator()
+    public UUIDComparator()
     {
         super( SchemaConstants.UUID_MATCH_MR_OID );
     }

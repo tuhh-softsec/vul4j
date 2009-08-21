@@ -52,7 +52,7 @@ public class CsnSidComparator extends LdapComparator<String>
      * The CsnSidComparator constructor. Its OID is the CsnSidMatch matching
      * rule OID.
      */
-    protected CsnSidComparator()
+    public CsnSidComparator()
     {
         super( SchemaConstants.CSN_SID_MATCH_MR_OID );
     }

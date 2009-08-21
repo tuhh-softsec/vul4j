@@ -50,7 +50,7 @@ public class ByteArrayComparator extends LdapComparator<byte[]>
      * The ByteArrayComparator constructor. Its OID is the OctetStringMatch matching
      * rule OID.
      */
-    protected ByteArrayComparator()
+    public ByteArrayComparator()
     {
         super( SchemaConstants.OCTET_STRING_MATCH_MR_OID );
     }

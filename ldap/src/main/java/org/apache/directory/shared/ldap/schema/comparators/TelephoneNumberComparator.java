@@ -53,7 +53,7 @@ public class TelephoneNumberComparator extends LdapComparator<String>
      * The TelephoneNumberComparator constructor. Its OID is the TelephoneNumberMatch matching
      * rule OID.
      */
-    protected TelephoneNumberComparator()
+    public TelephoneNumberComparator()
     {
         super( SchemaConstants.TELEPHONE_NUMBER_MATCH_MR_OID );
     }

@@ -51,7 +51,7 @@ public class ObjectIdentifierComparator extends LdapComparator<Object>
      * The ObjectIdentifierComparator constructor. Its OID is the ObjectIdentifierMatch matching
      * rule OID.
      */
-    protected ObjectIdentifierComparator()
+    public ObjectIdentifierComparator()
     {
         super( SchemaConstants.OBJECT_IDENTIFIER_MATCH_MR_OID );
     }

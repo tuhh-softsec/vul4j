@@ -49,7 +49,7 @@ public class IntegerOrderingComparator extends LdapComparator<String>
      * The IntegerOrderingComparator constructor. Its OID is the IntegerOrderingMatch matching
      * rule OID.
      */
-    protected IntegerOrderingComparator()
+    public IntegerOrderingComparator()
     {
         super( SchemaConstants.INTEGER_ORDERING_MATCH_MR_OID );
     }

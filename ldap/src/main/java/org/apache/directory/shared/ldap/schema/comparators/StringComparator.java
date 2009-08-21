@@ -49,7 +49,7 @@ public class StringComparator extends LdapComparator<String>
      * The StringComparator constructor. Its OID is the StringMatch matching
      * rule OID.
      */
-    protected StringComparator()
+    public StringComparator()
     {
         super( SchemaConstants.CASE_EXACT_MATCH_MR_OID );
     }
