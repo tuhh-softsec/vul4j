@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.schema.parsers.ComparatorDescription;
+import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.apache.directory.shared.ldap.schema.parsers.DITContentRuleDescription;
 import org.apache.directory.shared.ldap.schema.parsers.DITStructureRuleDescription;
 import org.apache.directory.shared.ldap.schema.parsers.LdapSyntaxDescription;
@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
 import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescription;
 import org.apache.directory.shared.ldap.schema.parsers.ObjectClassDescription;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
-import org.apache.directory.shared.ldap.schema.syntaxes.OpenLdapObjectIdentifierMacro;
+import org.apache.directory.shared.ldap.schema.syntaxChecker.OpenLdapObjectIdentifierMacro;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 
@@ -773,7 +773,7 @@ nameFormDescription returns [NameFormDescription nfd = new NameFormDescription()
      * against element ordering.
      *
      * <pre>
-     * ComparatorDescription = LPAREN WSP
+     * LdapComparator = LPAREN WSP
      *       numericoid                           ; object identifier
      *       [ SP "DESC" SP qdstring ]            ; description
      *       SP "FQCN" SP fqcn                    ; fully qualified class name
@@ -786,24 +786,24 @@ nameFormDescription returns [NameFormDescription nfd = new NameFormDescription()
      * fqcnComponent = ???
      * </pre>
     */
-comparatorDescription returns [ComparatorDescription cd = new ComparatorDescription()]
+ldapComparator returns [LdapComparatorDescription lcd]
     {
-        matchedProduction( "comparatorDescription()" );
+        matchedProduction( "ldapComparator()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { cd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { lcd = new LdapComparatorDescription(numericoid(oid.getText())); } )
     (
-        ( desc:DESC { et.track("DESC", desc); cd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); lcd.setDescription(qdstring(desc.getText())); } )
         |
-        ( fqcn:FQCN { et.track("FQCN", fqcn); cd.setFqcn(fqcn.getText()); } )
+        ( fqcn:FQCN { et.track("FQCN", fqcn); lcd.setFqcn(fqcn.getText()); } )
         |
-        ( bytecode:BYTECODE { et.track("BYTECODE", bytecode); cd.setBytecode(bytecode.getText()); } )
+        ( bytecode:BYTECODE { et.track("BYTECODE", bytecode); lcd.setBytecode(bytecode.getText()); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            cd.addExtension(ex.key, ex.values); 
+            lcd.addExtension(ex.key, ex.values); 
          } )
     )*
     RPAR
@@ -816,7 +816,7 @@ comparatorDescription returns [ComparatorDescription cd = new ComparatorDescript
             }
         
             // semantic check: length should be divisible by 4
-            if( cd.getBytecode() != null && ( cd.getBytecode().length() % 4 != 0 ) ) {
+            if( ( lcd.getBytecode() != null ) && ( lcd.getBytecode().length() % 4 != 0 ) ) {
                 throw new SemanticException( "BYTECODE must be divisible by 4", null, 0, 0 );
             }
         }

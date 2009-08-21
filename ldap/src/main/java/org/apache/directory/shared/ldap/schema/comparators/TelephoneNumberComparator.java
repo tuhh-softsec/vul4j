@@ -22,6 +22,11 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 import java.util.Comparator;
 
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * A comparator for TelephoneNumber.
@@ -32,11 +37,27 @@ import java.util.Comparator;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class TelephoneNumberComparator implements Comparator<String>
+public class TelephoneNumberComparator extends LdapComparator<String>
 {
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( TelephoneNumberComparator.class );
+
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
     /** A static instance of this comparator */
     public static final Comparator<String> INSTANCE = new TelephoneNumberComparator();
     
+    
+    /**
+     * The TelephoneNumberComparator constructor. Its OID is the TelephoneNumberMatch matching
+     * rule OID.
+     */
+    protected TelephoneNumberComparator()
+    {
+        super( SchemaConstants.TELEPHONE_NUMBER_MATCH_MR_OID );
+    }
+
     
     /**
      * Remove all spaces and '-' from the telephone number
@@ -65,10 +86,11 @@ public class TelephoneNumberComparator implements Comparator<String>
      */
     public int compare( String telephoneNumber1, String telephoneNumber2 )
     {
+        LOG.debug( "comparing TelephoneNumber objects '{}' with '{}'", telephoneNumber1, telephoneNumber2 );
+
         // -------------------------------------------------------------------
         // Handle some basis cases
         // -------------------------------------------------------------------
-
         if ( telephoneNumber1 == null )
         {
             return ( telephoneNumber2 == null ) ? 0 : -1;
@@ -82,9 +104,9 @@ public class TelephoneNumberComparator implements Comparator<String>
         // -------------------------------------------------------------------
         // Remove all spaces and '-'
         // -------------------------------------------------------------------
-        telephoneNumber1 = strip( telephoneNumber1 );
-        telephoneNumber2 = strip( telephoneNumber2 );
+        String strippedTelephoneNumber1 = strip( telephoneNumber1 );
+        String strippedTelephoneNumber2 = strip( telephoneNumber2 );
         
-        return ( telephoneNumber1.compareToIgnoreCase( telephoneNumber2 ) );
+        return ( strippedTelephoneNumber1.compareToIgnoreCase( strippedTelephoneNumber2 ) );
     }
 }

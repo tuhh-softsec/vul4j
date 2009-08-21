@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.List;
+
 import javax.naming.NamingException;
 
 
@@ -67,7 +69,7 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface ObjectClass extends SchemaObject
+public class ObjectClass extends SchemaObject
 {
     /**
      * Gets the superclasses of this ObjectClass.
@@ -85,6 +87,14 @@ public interface ObjectClass extends SchemaObject
      * @return the ObjectClass type as an enum
      */
     ObjectClassTypeEnum getType();
+    
+    
+    /**
+     * Set the ObjectClass type, one of ABSTRACT, AUXILIARY or STRUCTURAL.
+     * 
+     * @param type The ObjectClassType value
+     */
+    void setType( ObjectClassTypeEnum type );
     
     
     /**
@@ -112,25 +122,67 @@ public interface ObjectClass extends SchemaObject
 
 
     /**
-     * Gets the AttributeTypes whose attributes must be present within an entry
+     * Gets the AttributeTypes OIDs whose attributes must be present within an entry
      * of this ObjectClass.
      * 
-     * @return the AttributeTypes of attributes that must be within entries of
+     * @return the OIDs of attributes that must be within entries of
      *         this ObjectClass
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * @throws NamingException if there is a failure resolving the object
      */
-    AttributeType[] getMustList() throws NamingException;
+    List<String> getMustOids() throws NamingException;
 
 
     /**
-     * Gets the AttributeTypes whose attributes may be present within an entry
+     * Gets the AttributeTypes whose attributes must be present within an entry
      * of this ObjectClass.
      * 
-     * @return the AttributeTypes of attributes that may be within entries of
+     * @return the AttributeTypes that must be within entries of
+     *         this ObjectClass
+     * @throws NamingException if there is a failure resolving the object
+     */
+    List<AttributeType> getMustATs() throws NamingException;
+    
+    
+    /**
+     * Sets the attributeTypes' OID which must be present within an entry
+     * of this ObjectClass
+     * 
+     * @param oids The list of OIDs representing the MUST AttributeTypes
+     * @throws NamingException If the addition failed
+     */
+    void setMustOids( List<String> oids ) throws NamingException;
+
+
+    /**
+     * Gets the AttributeType OIDs whose attributes may be present within an entry
+     * of this ObjectClass.
+     * 
+     * @return the OIDs of attributes that may be within entries of
      *         this ObjectClass
      * @throws NamingException
      *             if there is a failure resolving the object
      */
-    AttributeType[] getMayList() throws NamingException;
+    List<String> getMayOids() throws NamingException;
+
+
+    /**
+     * Gets the AttributeType whose attributes may be present within an entry
+     * of this ObjectClass.
+     * 
+     * @return the AttributeTypes that may be within entries of
+     *         this ObjectClass
+     * @throws NamingException
+     *             if there is a failure resolving the object
+     */
+    List<AttributeType> getMayATs() throws NamingException;
+    
+    
+    /**
+     * Sets the attributeTypes' OID which may be present within an entry
+     * of this ObjectClass
+     * 
+     * @param oids The list of OIDs representing the MAY AttributeTypes
+     * @throws NamingException If the addition failed
+     */
+    void setMayOids( List<String> oids ) throws NamingException;
 }

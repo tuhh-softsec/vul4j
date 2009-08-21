@@ -41,5 +41,7 @@ public abstract class AbstractMatchingRule extends AbstractSchemaObject implemen
     protected AbstractMatchingRule( String oid )
     {
         super( oid );
+        
+        objectType = SchemaObjectType.MATCHING_RULE;
     }
 }

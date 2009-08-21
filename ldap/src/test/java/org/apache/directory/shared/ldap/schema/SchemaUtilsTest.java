@@ -114,31 +114,6 @@ public class SchemaUtilsTest
     }
 
 
-    public ObjectClass[] getObjectClasses()
-    {
-        /*
-         * objectclass ( 2.5.6.2 NAME 'country' DESC 'RFC2256: a country' SUP
-         * top STRUCTURAL MUST c MAY ( searchGuide $ description ) )
-         */
-
-        DefaultObjectClass[] ocs = new DefaultObjectClass[2];
-        ocs[0] = new DefaultObjectClass( "1.1" );
-        ocs[0].setNames( new String[]
-            { "oc1" } );
-        ocs[0].setDescription( "object class #1" );
-        ocs[0].setObsolete( false );
-        ocs[0].setType( ObjectClassTypeEnum.ABSTRACT );
-
-        /*
-         * objectclass ( 2.5.6.6 NAME 'person' DESC 'RFC2256: a person' SUP top
-         * STRUCTURAL MUST ( sn $ cn ) MAY ( userPassword $ telephoneNumber $
-         * seeAlso $ description ) )
-         */
-
-        return ocs;
-    }
-
-
     /**
      * Tests rendering operations on qdescrs render method. Both overloaded
      * operations {@link SchemaUtils#render(StringBuffer, String[])} and
@@ -174,7 +149,7 @@ public class SchemaUtilsTest
     }
 
 
-    static class SyntaxImpl extends AbstractSyntax
+    static class SyntaxImpl extends AbstractLdapSyntax
     {
         private static final long serialVersionUID = 1L;
         

@@ -35,12 +35,12 @@ import antlr.TokenStreamException;
  */
 public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
 {
-
     /**
      * Creates a schema parser instance.
      */
     public ObjectClassDescriptionSchemaParser()
     {
+        // Nothing to do
     }
 
 
@@ -72,7 +72,6 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized ObjectClassDescription parseObjectClassDescription( String objectClassDescription )
         throws ParseException
     {
-
         if ( objectClassDescription == null )
         {
             throw new ParseException( "Null", 0 );

@@ -31,6 +31,9 @@ import org.apache.directory.shared.ldap.util.ArrayUtils;
  */
 public abstract class AbstractSchemaObject implements SchemaObject
 {
+    /** The serialVersionUID */
+    public static final long serialVersionUID = 1L;
+    
     /** a numeric object identifier */
     protected final String oid;
     
@@ -40,6 +43,9 @@ public abstract class AbstractSchemaObject implements SchemaObject
     /** whether or not this SchemaObject is active */
     protected boolean isObsolete;
 
+    /** whether or not this SchemaObject is enabled */
+    protected boolean isEnabled;
+
     /** a human readable identifiers for this SchemaObject */
     protected String[] names = ArrayUtils.EMPTY_STRING_ARRAY;
 
@@ -48,6 +54,10 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
     /** the name of the schema this object is associated with */
     protected String schema;
+    
+    /** The SchemaObjectType */
+    protected SchemaObjectType objectType;
+    
 
     // ------------------------------------------------------------------------
     // C O N S T R U C T O R S
@@ -56,8 +66,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
     /**
      * Creates an abstract SchemaObject.
      * 
-     * @param oid
-     *            the numeric object identifier (OID)
+     * @param oid the numeric object identifier (OID)
      * @see SchemaObject#getOid()
      * @see MatchingRuleUse
      * @throws NullPointerException
@@ -164,7 +173,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
         {
             throw new NullPointerException( "oid cannot be null" );
         }
-
+        
         this.oid = oid;
         this.isObsolete = isObsolete;
         this.description = description;
@@ -176,6 +185,9 @@ public abstract class AbstractSchemaObject implements SchemaObject
         }
 
         hash = oid.hashCode();
+        
+        // Default to disabled
+        isEnabled = true;
     }
 
 
@@ -215,12 +227,11 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
-     * @see SchemaObject#getSchema()
-     * @return the name of the schema associated with this schemaObject
+     * {@inheritDoc}
      */
-    public String getSchema()
+    public SchemaObjectType getObjectType()
     {
-        return schema;
+        return objectType;
     }
     
     
@@ -235,41 +246,17 @@ public abstract class AbstractSchemaObject implements SchemaObject
     }
 
 
-    /**
-     * @see SchemaObject#getDescription()
-     * @return a short description about this SchemaObject
-     */
-    public String getDescription()
-    {
-        return description;
-    }
-
-
     // ------------------------------------------------------------------------
     // P R O T E C T E D M U T A T O R S
     // ------------------------------------------------------------------------
-
-    
     /**
      * Sets whether or not this SchemaObject is inactived.
      * 
-     * @param obsolete
-     *            true if this object is inactive, false if it is in use
+     * @param obsolete true if this object is inactive, false if it is in use
      */
     protected void setObsolete( boolean obsolete )
     {
         isObsolete = obsolete;
-    }
-
-
-    /**
-     * Sets schema name this schema object is associated with.
-     * 
-     * @param schema the name of the schema this object is associated with
-     */
-    public void setSchema( String schema )
-    {
-        this.schema = schema;
     }
 
 
@@ -283,18 +270,6 @@ public abstract class AbstractSchemaObject implements SchemaObject
     {
         this.names = new String[names.length];
         System.arraycopy( names, 0, this.names, 0, names.length );
-    }
-
-
-    /**
-     * Sets the brief description for this SchemaObject.
-     * 
-     * @param description
-     *            the brief description for this SchemaObject
-     */
-    protected void setDescription( String description )
-    {
-        this.description = description;
     }
 
 
@@ -338,7 +313,7 @@ public abstract class AbstractSchemaObject implements SchemaObject
         return false;
     }
 
-
+    
     /**
      * Gets the String for the OID of this SchmeaObject.
      * 

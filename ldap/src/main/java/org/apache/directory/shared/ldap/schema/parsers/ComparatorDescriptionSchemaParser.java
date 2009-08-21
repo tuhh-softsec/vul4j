@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,12 +38,15 @@ import antlr.TokenStreamException;
  */
 public class ComparatorDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( ComparatorDescriptionSchemaParser.class );
 
     /**
      * Creates a schema parser instance.
      */
     public ComparatorDescriptionSchemaParser()
     {
+        super();
     }
 
 
@@ -68,42 +74,55 @@ public class ComparatorDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed ComparatorDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized ComparatorDescription parseComparatorDescription( String comparatorDescription )
+    public LdapComparatorDescription parseComparatorDescription( String comparatorDescription )
         throws ParseException
     {
-
+        LOG.debug( "Parsing a Comparator : {}", comparatorDescription );
+        
         if ( comparatorDescription == null )
         {
+            LOG.error( "Cannot parse a null string" );
             throw new ParseException( "Null", 0 );
         }
 
-        reset( comparatorDescription ); // reset and initialize the parser / lexer pair
-
-        try
+        synchronized ( parser )
         {
-            ComparatorDescription cd = parser.comparatorDescription();
-            return cd;
+            reset( comparatorDescription ); // reset and initialize the parser / lexer pair
+    
+            try
+            {
+                LdapComparatorDescription ldapComparatorDescription = parser.ldapComparator();
+                LOG.debug( "Parsed a LdapComparator : {}", ldapComparatorDescription );
+                
+                return ldapComparatorDescription;
+            }
+            catch ( RecognitionException re )
+            {
+                String msg = "Parser failure on comparator description:\n\t" + comparatorDescription +
+                    "\nAntlr message: " + re.getMessage() +
+                    "\nAntlr column: " + re.getColumn();
+                LOG.error( msg );
+                throw new ParseException( msg, re.getColumn() );
+            }
+            catch ( TokenStreamException tse )
+            {
+                String msg = "Parser failure on comparator description:\n\t" + comparatorDescription +
+                    "\nAntlr message: " + tse.getMessage();
+                LOG.error( msg );
+                throw new ParseException( msg, 0 );
+            }
         }
-        catch ( RecognitionException re )
-        {
-            String msg = "Parser failure on comparator description:\n\t" + comparatorDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
-            throw new ParseException( msg, re.getColumn() );
-        }
-        catch ( TokenStreamException tse )
-        {
-            String msg = "Parser failure on comparator description:\n\t" + comparatorDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
-            throw new ParseException( msg, 0 );
-        }
-
     }
 
 
-    public AbstractSchemaDescription parse( String schemaDescription ) throws ParseException
+    /**
+     * Parses a LdapComparator description
+     * 
+     * @param The LdapComparator description to parse
+     * @return An instance of LdapComparator
+     */
+    public LdapComparatorDescription parse( String schemaDescription ) throws ParseException
     {
         return parseComparatorDescription( schemaDescription );
     }
-
 }

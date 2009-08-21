@@ -432,6 +432,21 @@ public interface SchemaConstants
     //-------------------------------------------------------------------------
     // ---- Syntaxes ----------------------------------------------------------
     //-------------------------------------------------------------------------
+    String NAME_OR_NUMERIC_ID_SYNTAX              = "1.3.6.1.4.1.18060.0.4.0.0.0";
+    
+    String OBJECT_CLASS_TYPE_SYNTAX               = "1.3.6.1.4.1.18060.0.4.0.0.1";
+    
+    String NUMERIC_OID_SYNTAX                     = "1.3.6.1.4.1.18060.0.4.0.0.2";
+    
+    String ATTRIBUTE_TYPE_USAGE_SYNTAX            = "1.3.6.1.4.1.18060.0.4.0.0.3";
+        
+    // RFC 4517, par. 3.3.23
+    String NUMBER_SYNTAX                          = "1.3.6.1.4.1.18060.0.4.0.0.4";
+    
+    String OID_LEN_SYNTAX                         = "1.3.6.1.4.1.18060.0.4.0.0.5";
+    
+    String OBJECT_NAME_SYNTAX                     = "1.3.6.1.4.1.18060.0.4.0.0.6";
+
     // RFC 2252, removed in RFC 4517
     String ACI_ITEM_SYNTAX                        = "1.3.6.1.4.1.1466.115.121.1.1";
 

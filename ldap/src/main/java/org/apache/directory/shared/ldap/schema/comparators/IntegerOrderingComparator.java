@@ -22,19 +22,45 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 import java.util.Comparator;
 
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A class for the IntegerOrderingComparator matchingRule (RFC 4517, par. 4.2.20)
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public class IntegerOrderingComparator implements Comparator<Object>
+public class IntegerOrderingComparator extends LdapComparator<String>
 {
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( IntegerOrderingComparator.class );
+
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** A static instance of this comparator */
+    public static final Comparator<String> INSTANCE = new IntegerOrderingComparator();
+    
+
+    /**
+     * The IntegerOrderingComparator constructor. Its OID is the IntegerOrderingMatch matching
+     * rule OID.
+     */
+    protected IntegerOrderingComparator()
+    {
+        super( SchemaConstants.INTEGER_ORDERING_MATCH_MR_OID );
+    }
+
     /**
      * Implementation of the Compare method
      */
-    public int compare( Object backendValue, Object assertValue ) 
+    public int compare( String backendValue, String assertValue ) 
     {
+        LOG.debug( "comparing IntegerOrdering objects '{}' with '{}'", backendValue, assertValue );
+
         // First, shortcut the process by comparing
         // references. If they are equals, then o1 and o2
         // reference the same object
@@ -54,8 +80,8 @@ public class IntegerOrderingComparator implements Comparator<Object>
         // Both object must be stored as String for boolean
         // values. If this is not the case, we have a pb...
         // However, the method will then throw a ClassCastException
-        int b1 = Integer.parseInt( (String)backendValue );
-        int b2 = Integer.parseInt( (String)assertValue );
+        int b1 = Integer.parseInt( backendValue );
+        int b2 = Integer.parseInt( assertValue );
         
         if ( b1 == b2 )
         {

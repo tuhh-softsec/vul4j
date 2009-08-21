@@ -19,8 +19,13 @@
  */
 package org.apache.directory.shared.ldap.schema.comparators;
 
-
 import java.util.Comparator;
+
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * A class for the BooleanComparator matchingRule (RFC 4517, par. 4.2.2)
@@ -28,17 +33,37 @@ import java.util.Comparator;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public class BooleanComparator implements Comparator<Object>
+public class BooleanComparator extends LdapComparator<String>
 {
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( BooleanComparator.class );
+
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** A static instance of this comparator */
+    public static final Comparator<String> INSTANCE = new BooleanComparator();
+
+    /**
+     * The BooleanComparator constructor. Its OID is the BooleanMatch matching
+     * rule OID.
+     */
+    protected BooleanComparator()
+    {
+        super( SchemaConstants.BOOLEAN_MATCH_MR_OID );
+    }
+
     /**
      * Implementation of the Compare method
      */
-    public int compare( Object backendValue, Object assertValue ) 
+    public int compare( String b1, String b2 ) 
     {
+        LOG.debug( "comparing boolean objects '{}' with '{}'", b1, b2 );
+        
         // First, shortcut the process by comparing
         // references. If they are equals, then o1 and o2
         // reference the same object
-        if ( backendValue == assertValue )
+        if ( b1 == b2 )
         {
             return 0;
         }
@@ -46,15 +71,10 @@ public class BooleanComparator implements Comparator<Object>
         // Then, deal with one of o1 or o2 being null
         // Both can't be null, because then they would 
         // have been catched by the previous test
-        if ( ( backendValue == null ) || ( assertValue == null ) )
+        if ( ( b1 == null ) || ( b2 == null ) )
         {
-            return ( backendValue == null ? -1 : 1 );
+            return ( b1 == null ? -1 : 1 );
         }
-
-        // Both object must be stored as String for boolean
-        // values. If this is not the case, we have a pb...
-        // However, the method will then throw a ClassCastException
-        String b1 = (String)backendValue;
 
         // The boolean should have been stored as 'TRUE' or 'FALSE'
         // into the server, and the compare method will be called

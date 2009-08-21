@@ -23,6 +23,8 @@ package org.apache.directory.shared.ldap.schema.parsers;
 import java.io.StringReader;
 import java.text.ParseException;
 
+import org.apache.directory.shared.ldap.schema.SchemaObject;
+
 
 
 /**
@@ -101,6 +103,6 @@ public abstract class AbstractSchemaParser
     }
 
 
-    public abstract AbstractSchemaDescription parse( String schemaDescription ) throws ParseException;
+    public abstract SchemaObject parse( String schemaDescription ) throws ParseException;
 
 }

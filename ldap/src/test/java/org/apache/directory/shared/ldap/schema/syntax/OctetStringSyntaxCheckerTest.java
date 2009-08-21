@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema.syntax;
 
 
-import org.apache.directory.shared.ldap.schema.syntaxes.OctetStringSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxChecker.OctetStringSyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 import org.junit.Test;

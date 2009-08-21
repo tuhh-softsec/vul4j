@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 import java.util.Comparator;
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +36,19 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class NormalizingComparator implements Comparator
+public class NormalizingComparator
 {
-    private static final Logger log = LoggerFactory.getLogger( NormalizingComparator.class );
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( NormalizingComparator.class );
+
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
 
     /** the Normalizer to normalize values with before comparing */
     private Normalizer normalizer;
 
     /** the underlying comparator to use for comparisons */
-    private Comparator<Object> comparator;
+    private Comparator<String> comparator;
 
 
     /**
@@ -53,7 +57,7 @@ public class NormalizingComparator implements Comparator
      * @param normalizer the Normalizer to normalize values with before comparing
      * @param comparator the underlying comparator to use for comparisons
      */
-    public NormalizingComparator( Normalizer normalizer, Comparator<Object> comparator )
+    public NormalizingComparator( Normalizer normalizer, LdapComparator<String> comparator )
     {
         this.normalizer = normalizer;
         this.comparator = comparator;
@@ -66,28 +70,28 @@ public class NormalizingComparator implements Comparator
      * 
      * @see Comparator#compare(Object, Object)
      */
-    public int compare( Object o1, Object o2 )
+    public int compare( String o1, String o2 )
     {
-        Object n1;
-        Object n2;
+        String n1;
+        String n2;
 
         try
         {
-            n1 = normalizer.normalize( (String)o1 );
+            n1 = normalizer.normalize( o1 );
         }
         catch ( NamingException e )
         {
-            log.warn( "Failed to normalize: " + o1, e );
+            LOG.warn( "Failed to normalize: " + o1, e );
             n1 = o1;
         }
 
         try
         {
-            n2 = normalizer.normalize( (String)o2 );
+            n2 = normalizer.normalize( o2 );
         }
         catch ( NamingException e )
         {
-            log.warn( "Failed to normalize: " + o2, e );
+            LOG.warn( "Failed to normalize: " + o2, e );
             n2 = o2;
         }
 

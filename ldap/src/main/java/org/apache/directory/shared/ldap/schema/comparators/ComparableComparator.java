@@ -20,8 +20,11 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.io.Serializable;
 import java.util.Comparator;
+
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,10 +33,31 @@ import java.util.Comparator;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ComparableComparator implements Comparator, Serializable
+public class ComparableComparator extends LdapComparator<Object>
 {
-    private static final long serialVersionUID = -5295278271807198471L;
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( ComparableComparator.class );
 
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The ComparableComparator constructor. The OID has to be created later.
+     */
+    public ComparableComparator()
+    {
+        super( null );
+    }
+
+    
+    /**
+     * The BooleanComparator constructor. Its OID is the BooleanMatch matching
+     * rule OID.
+     */
+    public ComparableComparator( String oid )
+    {
+        super( oid );
+    }
 
     /**
      * Compares two objects taking into account that one may be a Comparable. If
@@ -47,12 +71,14 @@ public class ComparableComparator implements Comparator, Serializable
      */
     public int compare( Object o1, Object o2 )
     {
+        LOG.debug( "comparing objects '{}' with '{}'", o1, o2 );
+        
         if ( ( o1 == null ) && ( o2 == null ) )
         {
             return 0;
         }
         
-        if ( o1 instanceof Comparable )
+        if ( o1 instanceof Comparable<?> )
         {
             if ( o2 == null )
             {
@@ -68,7 +94,7 @@ public class ComparableComparator implements Comparator, Serializable
         {
             return 1;
         }
-        else if ( o2 instanceof Comparable )
+        else if ( o2 instanceof Comparable<?> )
         {
             if ( o1 == null )
             {

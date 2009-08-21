@@ -410,6 +410,12 @@ public class StringTools
         {};
 
     /**
+     * The empty String[]
+     */
+    public static final String[] EMPTY_STRINGS = new String[]
+        {};
+
+    /**
      * Trims several consecutive characters into one.
      * 
      * @param str

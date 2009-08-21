@@ -22,6 +22,10 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,12 +39,15 @@ import antlr.TokenStreamException;
  */
 public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( SyntaxCheckerDescriptionSchemaParser.class );
 
     /**
      * Creates a schema parser instance.
      */
     public SyntaxCheckerDescriptionSchemaParser()
     {
+        super();
     }
 
 
@@ -68,7 +75,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed SyntaxCheckerDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized SyntaxCheckerDescription parseSyntaxCheckerDescription( String syntaxCheckerDescription )
+    public synchronized SyntaxChecker parseSyntaxCheckerDescription( String syntaxCheckerDescription )
         throws ParseException
     {
 
@@ -81,27 +88,35 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-            SyntaxCheckerDescription scd = parser.syntaxCheckerDescription();
-            return scd;
+            SyntaxChecker syntaxChecker = parser.syntaxCheckerDescription();
+            return syntaxChecker;
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on syntax checker description:\n\t" + syntaxCheckerDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
+            String msg = "Parser failure on syntax checker description:\n\t" + syntaxCheckerDescription +
+                "\nAntlr message: " + re.getMessage() +
+                "\nAntlr column: " + re.getColumn();
+            LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on syntax checker description:\n\t" + syntaxCheckerDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
+            String msg = "Parser failure on syntax checker description:\n\t" + syntaxCheckerDescription +
+                "\nAntlr message: " + tse.getMessage();
+            LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
 
     }
 
 
-    public AbstractSchemaDescription parse( String schemaDescription ) throws ParseException
+    /**
+     * Parses a SyntaxChecker description
+     * 
+     * @param The SyntaxChecker description to parse
+     * @return An instance of SyntaxChecker
+     */
+    public SyntaxChecker parse( String schemaDescription ) throws ParseException
     {
         return parseSyntaxCheckerDescription( schemaDescription );
     }

@@ -66,6 +66,8 @@ public abstract class AbstractAttributeType extends AbstractSchemaObject impleme
     protected AbstractAttributeType( String oid )
     {
         super( oid );
+        
+        objectType = SchemaObjectType.ATTRIBUTE_TYPE;
     }
 
 

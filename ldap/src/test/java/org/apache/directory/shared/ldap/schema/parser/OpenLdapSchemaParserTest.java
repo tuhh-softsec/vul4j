@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeLiteral;
 import org.apache.directory.shared.ldap.schema.parsers.ObjectClassLiteral;
 import org.apache.directory.shared.ldap.schema.parsers.OpenLdapSchemaParser;
-import org.apache.directory.shared.ldap.schema.syntaxes.OpenLdapObjectIdentifierMacro;
+import org.apache.directory.shared.ldap.schema.syntaxChecker.OpenLdapObjectIdentifierMacro;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

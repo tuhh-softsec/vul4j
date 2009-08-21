@@ -20,8 +20,12 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.io.Serializable;
 import java.util.Comparator;
+
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,13 +34,39 @@ import java.util.Comparator;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ObjectIdentifierComparator implements Comparator, Serializable
+public class ObjectIdentifierComparator extends LdapComparator<Object>
 {
-    private static final long serialVersionUID = -2374941241008282707L;
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( ObjectIdentifierComparator.class );
+
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
 
 
+    /** A static instance of this comparator */
+    public static final Comparator<Object> INSTANCE = new ObjectIdentifierComparator();
+    
+    
+    /**
+     * The ObjectIdentifierComparator constructor. Its OID is the ObjectIdentifierMatch matching
+     * rule OID.
+     */
+    protected ObjectIdentifierComparator()
+    {
+        super( SchemaConstants.OBJECT_IDENTIFIER_MATCH_MR_OID );
+    }
+
+    
+    /**
+     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     */
     public int compare( Object o1, Object o2 )
     {
+        LOG.debug( "comparing ObjectIdentifier objects '{}' with '{}'", o1, o2 );
+
+        // -------------------------------------------------------------------
+        // Handle some basis cases
+        // -------------------------------------------------------------------
         if ( o1 == null )
         {
             return ( o2 == null ) ? 0 : -1;

@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.schema;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+
 
 /**
  * Used to validate values of a particular syntax. This interface does not
@@ -31,14 +34,20 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface SyntaxChecker
+public abstract class SyntaxChecker extends LoadableSchemaObject
 {
+    /** The serialversionUID */
+    private static final long serialVersionUID = 1L;
+
     /**
-     * Gets the OID of the attribute syntax.
-     * 
-     * @return the object identifier of the Syntax this SyntaxChecker validates
+     * The SyntaxChecker base constructor
+     * @param objectType
+     * @param oid The associated OID
      */
-    String getSyntaxOid();
+    protected SyntaxChecker( String oid )
+    {
+        super( SchemaObjectType.SYNTAX_CHECKER, oid );
+    }
 
 
     /**
@@ -47,7 +56,7 @@ public interface SyntaxChecker
      * @param value the value of some attribute with the syntax
      * @return true if the value is in the valid syntax, false otherwise
      */
-    boolean isValidSyntax( Object value );
+    public abstract boolean isValidSyntax( Object value );
 
 
     /**
@@ -57,5 +66,11 @@ public interface SyntaxChecker
      * @param value the value of some attribute with the syntax
      * @throws NamingException if the value does not conform to the attribute syntax.
      */
-    void assertSyntax( Object value ) throws NamingException;
+    public void assertSyntax( Object value ) throws NamingException
+    {
+        if ( !isValidSyntax( value ) )
+        {
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+        }
+    }
 }
