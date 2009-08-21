@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
-import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +74,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed SyntaxCheckerDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized SyntaxChecker parseSyntaxCheckerDescription( String syntaxCheckerDescription )
+    public synchronized SyntaxCheckerDescription parseSyntaxCheckerDescription( String syntaxCheckerDescription )
         throws ParseException
     {
 
@@ -88,7 +87,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-            SyntaxChecker syntaxChecker = parser.syntaxCheckerDescription();
+        	SyntaxCheckerDescription syntaxChecker = parser.syntaxCheckerDescription();
             return syntaxChecker;
         }
         catch ( RecognitionException re )
@@ -114,9 +113,9 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
      * Parses a SyntaxChecker description
      * 
      * @param The SyntaxChecker description to parse
-     * @return An instance of SyntaxChecker
+     * @return An instance of SyntaxCheckerDescription
      */
-    public SyntaxChecker parse( String schemaDescription ) throws ParseException
+    public SyntaxCheckerDescription parse( String schemaDescription ) throws ParseException
     {
         return parseSyntaxCheckerDescription( schemaDescription );
     }
