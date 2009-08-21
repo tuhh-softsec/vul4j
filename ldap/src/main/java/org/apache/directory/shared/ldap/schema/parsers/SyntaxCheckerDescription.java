@@ -20,6 +20,9 @@
 
 package org.apache.directory.shared.ldap.schema.parsers;
 
+import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+
 
 /**
  * An ApacheDS specific schema description for a SyntaxChecker.
@@ -27,7 +30,16 @@ package org.apache.directory.shared.ldap.schema.parsers;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyntaxCheckerDescription extends AbstractAdsSchemaDescription
+public class SyntaxCheckerDescription extends LoadableSchemaObject
 {
+	/** SerialVersionUID */
+	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Default constructor for a SyntaxCheckerDecription
+	 * @param oid The SyntaxChecker OID
+	 */
+	protected SyntaxCheckerDescription(String oid) {
+		super( SchemaObjectType.SYNTAX_CHECKER, oid);
+	}
 }
