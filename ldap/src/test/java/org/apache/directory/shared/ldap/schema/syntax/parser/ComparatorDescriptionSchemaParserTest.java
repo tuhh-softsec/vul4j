@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.schema.syntax.parser;
 
 import java.text.ParseException;
 
-import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.parsers.ComparatorDescriptionSchemaParser;
+import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,13 +74,13 @@ public class ComparatorDescriptionSchemaParserTest
     public void testFqcn() throws ParseException
     {
         String value = null;
-        LdapComparator<?> lc = null;
+        LdapComparatorDescription ldapComparatorDescription = null;
 
         // FQCN simple
         value = "( 1.1 FQCN org.apache.directory.SimpleComparator )";
-        lc = parser.parseComparatorDescription( value );
-        assertNotNull( lc.getFqcn() );
-        assertEquals( "org.apache.directory.SimpleComparator", lc.getFqcn() );
+        ldapComparatorDescription = parser.parseComparatorDescription( value );
+        assertNotNull( ldapComparatorDescription.getFqcn() );
+        assertEquals( "org.apache.directory.SimpleComparator", ldapComparatorDescription.getFqcn() );
     }
 
 
@@ -88,25 +88,28 @@ public class ComparatorDescriptionSchemaParserTest
     public void testBytecode() throws ParseException
     {
         String value = null;
-        LdapComparator<?> lc= null;
+        LdapComparatorDescription ldapComparatorDescription = null;
 
         // FQCN simple p
         value = "( 1.1 FQCN org.apache.directory.SimpleComparator BYTECODE ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789==== )";
-        lc = parser.parseComparatorDescription( value );
-        assertNotNull( lc.getBytecode() );
-        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", lc.getBytecode() );
+        ldapComparatorDescription = parser.parseComparatorDescription( value );
+        assertNotNull( ldapComparatorDescription.getBytecode() );
+        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", 
+        		ldapComparatorDescription.getBytecode() );
 
         // FQCN simple, no spaces
         value = "(1.1 FQCNorg.apache.directory.SimpleComparator BYTECODEABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====)";
-        lc = parser.parseComparatorDescription( value );
-        assertNotNull( lc.getBytecode() );
-        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", lc.getBytecode() );
+        ldapComparatorDescription = parser.parseComparatorDescription( value );
+        assertNotNull( ldapComparatorDescription.getBytecode() );
+        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", 
+        		ldapComparatorDescription.getBytecode() );
 
         // FQCN simple, tabs
         value = "\t(\t1.1\tFQCN\torg.apache.directory.SimpleComparator\tBYTECODE\tABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====\t)\t";
-        lc = parser.parseComparatorDescription( value );
-        assertNotNull( lc.getBytecode() );
-        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", lc.getBytecode() );
+        ldapComparatorDescription = parser.parseComparatorDescription( value );
+        assertNotNull( ldapComparatorDescription.getBytecode() );
+        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", 
+        		ldapComparatorDescription.getBytecode() );
     }
 
 
