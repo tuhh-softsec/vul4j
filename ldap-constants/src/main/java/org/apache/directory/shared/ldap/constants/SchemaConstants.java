@@ -820,9 +820,21 @@ public interface SchemaConstants
     String CSN_SID_MATCH_MR                               = "csnSidMatch"; 
     String CSN_SID_MATCH_MR_OID                           = "1.3.6.1.4.1.4203.666.11.2.5"; 
     
+    // ExactDnAsStringMatch
+    String EXACT_DN_AS_STRING_MATCH_MR                    = "exactDnAsStringMatch"; 
+    String EXACT_DN_AS_STRING_MATCH_MR_OID                = "1.3.6.1.4.1.18060.0.4.1.1.1"; 
+    
+    // BigIntegerMatch
+    String BIG_INTEGER_MATCH_MR                           = "bigIntegerMatch"; 
+    String BIG_INTEGER_MATCH_MR_OID                       = "1.3.6.1.4.1.18060.0.4.1.1.2"; 
+    
+    // JdbmStringMatch
+    String JDBM_STRING_MATCH_MR                           = "jdbmStringMatch"; 
+    String JDBM_STRING_MATCH_MR_OID                       = "1.3.6.1.4.1.18060.0.4.1.1.3"; 
+    
     // ComparatorMatch
     String COMPARATOR_MATCH_MR                            = "comparatorMatch"; 
-    String COMPARATOR_MATCH_MR_OID                        = "1.3.6.1.4.1.18060.0.4.1.1.5"; 
+    String COMPARATOR_MATCH_MR_OID                        = "1.3.6.1.4.1.18060.0.4.1.1.5";
     
     // NormalizerMatch
     String NORMALIZER_MATCH_MR                            = "normalizerMatch"; 
