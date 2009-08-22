@@ -37,6 +37,7 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.schema.normalizers.DefaultStringNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
