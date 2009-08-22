@@ -119,5 +119,4 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
     {
         return parseSyntaxCheckerDescription( schemaDescription );
     }
-
 }

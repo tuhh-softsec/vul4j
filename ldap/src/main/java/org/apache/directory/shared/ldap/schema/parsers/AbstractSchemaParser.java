@@ -103,6 +103,12 @@ public abstract class AbstractSchemaParser
     }
 
 
+    /**
+     * Parse a SchemaObject description and returns back an instance of SchemaObject.
+     * 
+     * @param schemaDescription The SchemaObject description
+     * @return A SchemaObject instance
+     * @throws ParseException If the parsing failed
+     */
     public abstract SchemaObject parse( String schemaDescription ) throws ParseException;
-
 }

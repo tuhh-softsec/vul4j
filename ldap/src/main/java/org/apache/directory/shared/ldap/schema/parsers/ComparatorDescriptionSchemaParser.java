@@ -119,7 +119,7 @@ public class ComparatorDescriptionSchemaParser extends AbstractSchemaParser
      * Parses a LdapComparator description
      * 
      * @param The LdapComparator description to parse
-     * @return An instance of LdapComparator
+     * @return An instance of LdapComparatorDescription
      */
     public LdapComparatorDescription parse( String schemaDescription ) throws ParseException
     {
