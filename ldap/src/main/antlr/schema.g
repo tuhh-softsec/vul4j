@@ -476,13 +476,13 @@ attributeTypeDescription returns [AttributeTypeDescription atd = new AttributeTy
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-ldapSyntaxDescription returns [LdapSyntaxDescription lsd = new LdapSyntaxDescription()]
+ldapSyntaxDescription returns [LdapSyntaxDescription lsd]
     {
         matchedProduction( "ldapSyntaxDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { lsd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { lsd = new LdapSyntaxDescription(oid.getText()); } )
     (
         ( name:NAME { et.track("NAME", name); lsd.setNames(qdescrs(name.getText())); } )
         |
