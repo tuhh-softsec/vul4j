@@ -214,7 +214,7 @@ public interface SchemaConstants
     String SEARCHGUIDE_AT = "searchguide";
     String SEARCHGUIDE_AT_OID = "2.5.4.14";
 
-    // Ou
+    // O
     String O_AT = "o";
     String ORGANIZATION_NAME_AT = "organizationName";
     String O_AT_OID = "2.5.4.10";
@@ -428,6 +428,11 @@ public interface SchemaConstants
     // subordinateCount, by Novell
     String SUBORDINATE_COUNT_AT = "subordinateCount";
     // no official OID in RFCs
+    
+    // DomainComponent
+    String DC_AT = "dc";
+    String DOMAIN_COMPONENT_AT = "domainComponent";
+    String DOMAIN_COMPONENT_AT_OID = "0.9.2342.19200300.100.1.25";
     
     //-------------------------------------------------------------------------
     // ---- Syntaxes ----------------------------------------------------------
