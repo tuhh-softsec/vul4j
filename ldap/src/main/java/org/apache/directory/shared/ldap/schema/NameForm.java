@@ -88,8 +88,26 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface NameForm extends SchemaObject
+public class NameForm extends SchemaObject
 {
+    /** A reference to all the registries */
+    private final Registries registries;
+    
+    /** The ObjectClass OID on which this NameForm is applied */
+    private String objectClassOid;
+
+    /** The list of MAY AttributeTypes OIDs */
+    private String[] mayUseOids = StringTools.EMPTY_STRINGS;
+    
+    /** The list of MAY AttributeTypes for this NameForm */
+    private AttributeType[] mayUse = EMPTY_ATTR_ARRAY;
+    
+    /** The list of MUST AttributeTypes OIDs */
+    private String[] mustUseOids = StringTools.EMPTY_STRINGS;
+
+    /** The list of MUST AttributeTypes for this NameForm */
+    private AttributeType[] mustUse = EMPTY_ATTR_ARRAY;
+
     /**
      * Gets the STRUCTURAL ObjectClass this name form specifies naming
      * attributes for.
@@ -98,7 +116,10 @@ public interface NameForm extends SchemaObject
      * @throws NamingException
      *             if there is a failure resolving the object
      */
-    ObjectClass getObjectClass() throws NamingException;
+    public ObjectClass getObjectClass() throws NamingException
+    {
+        
+    }
 
 
     /**

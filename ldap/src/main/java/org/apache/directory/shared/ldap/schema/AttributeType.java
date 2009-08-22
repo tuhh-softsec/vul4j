@@ -181,7 +181,7 @@ public interface AttributeType extends SchemaObject
      * @throws NamingException
      *             if there is a failure to resolve the syntax
      */
-    Syntax getSyntax() throws NamingException;
+    LdapSyntax getSyntax() throws NamingException;
 
 
     /**

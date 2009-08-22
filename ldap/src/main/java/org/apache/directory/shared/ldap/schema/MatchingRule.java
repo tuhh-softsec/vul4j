@@ -84,7 +84,7 @@ public interface MatchingRule extends SchemaObject
      * @throws NamingException
      *             if there is a failure resolving the object
      */
-    Syntax getSyntax() throws NamingException;
+    LdapSyntax getSyntax() throws NamingException;
 
 
     /**

@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SchemaUtilsTest
 {
-    public static Syntax[] getSyntaxes()
+    public static LdapSyntax[] getSyntaxes()
     {
         SyntaxImpl[] syntaxes = new SyntaxImpl[3];
         syntaxes[0] = new SyntaxImpl( "1.3.6.1.4.1.1466.115.121.1.12", "DN syntax", true );
@@ -187,7 +187,7 @@ public class SchemaUtilsTest
     {
         private static final long serialVersionUID = 1L;
 
-        Syntax syntax;
+        LdapSyntax syntax;
 
         AttributeType sup;
 
@@ -210,7 +210,7 @@ public class SchemaUtilsTest
         }
 
 
-        public Syntax getSyntax() throws NamingException
+        public LdapSyntax getSyntax() throws NamingException
         {
             return syntax;
         }
@@ -250,17 +250,17 @@ public class SchemaUtilsTest
     {
         private static final long serialVersionUID = 1L;
 
-        Syntax syntax;
+        LdapSyntax syntax;
 
 
-        protected MatchingRuleImpl(String oid, Syntax syntax)
+        protected MatchingRuleImpl(String oid, LdapSyntax syntax)
         {
             super( oid );
             this.syntax = syntax;
         }
 
 
-        public Syntax getSyntax() throws NamingException
+        public LdapSyntax getSyntax() throws NamingException
         {
             return syntax;
         }

@@ -661,7 +661,7 @@ public class DescriptionUtils
      *            the Syntax to generate a description for
      * @return the description in the SyntaxDescription syntax
      */
-    public static String getDescription( Syntax syntax )
+    public static String getDescription( LdapSyntax syntax )
     {
         StringBuffer buf = new StringBuffer( "( " );
         buf.append( syntax.getOid() );

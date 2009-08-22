@@ -848,7 +848,7 @@ public class SchemaUtils
      * @param syntax the Syntax to render the description for
      * @return the StringBuffer containing the rendered syntax description
      */
-    public static StringBuffer render( Syntax syntax )
+    public static StringBuffer render( LdapSyntax syntax )
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "( " ).append( syntax.getOid() ).append( " " );

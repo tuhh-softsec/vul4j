@@ -67,7 +67,7 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public interface Syntax extends SchemaObject
+public interface LdapSyntax extends SchemaObject
 {
     /**
      * Gets whether or not the Syntax is human readable.

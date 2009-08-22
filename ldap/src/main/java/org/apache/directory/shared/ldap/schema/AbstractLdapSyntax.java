@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.schema;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 664290 $
  */
-public abstract class AbstractLdapSyntax extends AbstractSchemaObject implements Syntax
+public abstract class AbstractLdapSyntax extends AbstractSchemaObject implements LdapSyntax
 {
     /** the human readable flag */
     private boolean isHumanReadable = false;
@@ -106,7 +106,7 @@ public abstract class AbstractLdapSyntax extends AbstractSchemaObject implements
     // ------------------------------------------------------------------------
 
     /**
-     * @see org.apache.directory.shared.ldap.schema.Syntax#isHumanReadable()
+     * @see org.apache.directory.shared.ldap.schema.LdapSyntax#isHumanReadable()
      * @return true if the syntax can be interpreted by humans, false otherwise
      */
     public final boolean isHumanReadable()
@@ -161,7 +161,7 @@ public abstract class AbstractLdapSyntax extends AbstractSchemaObject implements
             return false;
         }
 
-        if ( obj instanceof Syntax )
+        if ( obj instanceof LdapSyntax )
         {
             return true;
         }
