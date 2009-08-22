@@ -842,13 +842,13 @@ ldapComparator returns [LdapComparatorDescription lcd]
      * fqcnComponent = ???
      * </pre>
     */
-normalizerDescription returns [NormalizerDescription nd = new NormalizerDescription()]
+normalizerDescription returns [NormalizerDescription nd]
     {
         matchedProduction( "normalizerDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { nd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { nd = new NormalizerDescription(numericoid(oid.getText())); } )
     (
         ( desc:DESC { et.track("DESC", desc); nd.setDescription(qdstring(desc.getText())); } )
         |
@@ -898,13 +898,13 @@ normalizerDescription returns [NormalizerDescription nd = new NormalizerDescript
      * fqcnComponent = ???
      * </pre>
     */
-syntaxCheckerDescription returns [SyntaxCheckerDescription scd = new SyntaxCheckerDescription()]
+syntaxCheckerDescription returns [SyntaxCheckerDescription scd]
     {
         matchedProduction( "syntaxCheckerDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { scd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { scd = new SyntaxCheckerDescription(numericoid(oid.getText())); } )
     (
         ( desc:DESC { et.track("DESC", desc); scd.setDescription(qdstring(desc.getText())); } )
         |

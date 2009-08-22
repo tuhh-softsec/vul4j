@@ -39,7 +39,17 @@ public class SyntaxCheckerDescription extends LoadableSchemaObject
 	 * Default constructor for a SyntaxCheckerDecription
 	 * @param oid The SyntaxChecker OID
 	 */
-	public SyntaxCheckerDescription( String oid ) {
-		super( SchemaObjectType.SYNTAX_CHECKER, oid);
+	public SyntaxCheckerDescription( String oid ) 
+	{
+		super( SchemaObjectType.SYNTAX_CHECKER, oid );
 	}
+
+    
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return "SyntaxChecker description : " + getDescription();
+    }
 }

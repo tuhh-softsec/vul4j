@@ -31,16 +31,31 @@ import org.apache.directory.shared.ldap.entry.Value;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface Normalizer extends SchemaObject
+public abstract class Normalizer extends LoadableSchemaObject
 {
+    /** The serialversionUID */
+    private static final long serialVersionUID = 1L;
+
     /**
+     * The Normalizer base constructor. We use it's MR OID to
+     * initialize the SchemaObject instance
+     * 
+     * @param oid The associated OID. It's the element's MR OID
+     */
+    protected Normalizer( String oid )
+    {
+        super( SchemaObjectType.NORMALIZER, oid );
+    }
+
+
+	/**
      * Gets the normalized value.
      * 
      * @param value the value to normalize. It must *not* be null !
      * @return the normalized form for a value
      * @throws NamingException if an error results during normalization
      */
-    Value<?> normalize( Value<?> value ) throws NamingException;
+    public abstract Value<?> normalize( Value<?> value ) throws NamingException;
 
     /**
      * Gets the normalized value.
@@ -49,5 +64,5 @@ public interface Normalizer extends SchemaObject
      * @return the normalized form for a value
      * @throws NamingException if an error results during normalization
      */
-    String normalize( String value ) throws NamingException;
+    public abstract String normalize( String value ) throws NamingException;
 }

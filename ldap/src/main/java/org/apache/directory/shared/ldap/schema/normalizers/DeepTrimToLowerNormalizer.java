@@ -39,10 +39,21 @@ import org.apache.directory.shared.ldap.schema.PrepareString;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class DeepTrimToLowerNormalizer implements Normalizer
+public class DeepTrimToLowerNormalizer extends Normalizer
 {
-    // The serial UID
-    private static final long serialVersionUID = 1L;
+    /** The serial UID */
+    public static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance of DeepTrimToLowerNormalizer.
+     * 
+     * @param oid The MR OID to use with this Normalizer
+     */
+    protected DeepTrimToLowerNormalizer( String oid )
+    {
+        super( oid );
+    }
+
 
     /**
      * {@inheritDoc}
