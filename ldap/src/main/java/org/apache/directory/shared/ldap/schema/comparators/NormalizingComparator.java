@@ -48,7 +48,7 @@ public class NormalizingComparator
     private Normalizer normalizer;
 
     /** the underlying comparator to use for comparisons */
-    private Comparator<String> comparator;
+    private LdapComparator<String> comparator;
 
 
     /**
