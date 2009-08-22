@@ -42,7 +42,7 @@ public class ObjectIdentifierNormalizer extends Normalizer
     /**
      * Creates a new instance of ObjectIdentifierNormalizer.
      */
-    protected ObjectIdentifierNormalizer()
+    public ObjectIdentifierNormalizer()
     {
         super( SchemaConstants.OBJECT_IDENTIFIER_MATCH_MR_OID );
     }

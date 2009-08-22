@@ -44,7 +44,7 @@ public class NumericNormalizer extends Normalizer
     /**
      * Creates a new instance of NumericNormalizer.
      */
-    protected NumericNormalizer()
+    public NumericNormalizer()
     {
         super( SchemaConstants.NUMERIC_STRING_MATCH_MR_OID );
     }

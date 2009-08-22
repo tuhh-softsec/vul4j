@@ -44,7 +44,7 @@ public class TelephoneNumberNormalizer extends Normalizer
     /**
      * Creates a new instance of TelephoneNumberNormalizer.
      */
-    protected TelephoneNumberNormalizer()
+    public TelephoneNumberNormalizer()
     {
         super( SchemaConstants.TELEPHONE_NUMBER_MATCH_MR_OID );
     }

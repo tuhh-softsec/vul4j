@@ -50,7 +50,7 @@ public class GeneralizedTimeNormalizer extends Normalizer
     /**
      * Creates a new instance of GeneralizedTimeNormalizer.
      */
-    protected GeneralizedTimeNormalizer()
+    public GeneralizedTimeNormalizer()
     {
         super( SchemaConstants.GENERALIZED_TIME_MATCH_MR_OID );
     }

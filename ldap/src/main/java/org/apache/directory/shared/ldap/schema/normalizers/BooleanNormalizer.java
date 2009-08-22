@@ -43,7 +43,7 @@ public class BooleanNormalizer extends Normalizer
     /**
      * Creates a new instance of BooleanNormalizer.
      */
-    protected BooleanNormalizer()
+    public BooleanNormalizer()
     {
         super( SchemaConstants.BOOLEAN_MATCH_MR_OID );
     }

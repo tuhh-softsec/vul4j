@@ -48,7 +48,7 @@ public class DeepTrimNormalizer extends Normalizer
      * 
      * @param oid The MR OID to use with this Normalizer
      */
-    protected DeepTrimNormalizer( String oid )
+    public DeepTrimNormalizer( String oid )
     {
         super( oid );
     }
