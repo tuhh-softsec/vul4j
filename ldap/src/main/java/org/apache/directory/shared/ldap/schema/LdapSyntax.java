@@ -67,15 +67,47 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public interface LdapSyntax extends SchemaObject
+public abstract class LdapSyntax extends SchemaObject
 {
+    /** The serialVersionUID */
+    public static final long serialVersionUID = 1L;
+    
+    /** the human readable flag */
+    private boolean isHumanReadable = false;
+
+    
+    /**
+     * Creates a Syntax object using a unique OID.
+     * 
+     * @param oid the OID for this Syntax
+     */
+    protected LdapSyntax( String oid )
+    {
+        super( SchemaObjectType.LDAP_SYNTAX, oid );
+    }
+
+
     /**
      * Gets whether or not the Syntax is human readable.
      * 
-     * @return true if the syntax can be interpretted by humans, false otherwise
+     * @return true if the syntax can be interpreted by humans, false otherwise
      */
-    boolean isHumanReadable();
+    protected boolean isHumanReadable()
+    {
+        return isHumanReadable;
+    }
 
+    
+    /**
+     * Sets the human readable flag value.
+     * 
+     * @param isHumanReadable the human readable flag value to set
+     */
+    protected void setHumanReadable( boolean isHumanReadable )
+    {
+        this.isHumanReadable = isHumanReadable;
+    }
+    
 
     /**
      * Gets the SyntaxChecker used to validate values in accordance with this
@@ -83,5 +115,5 @@ public interface LdapSyntax extends SchemaObject
      * 
      * @return the SyntaxChecker
      */
-    SyntaxChecker getSyntaxChecker() throws NamingException;
+    public abstract SyntaxChecker getSyntaxChecker() throws NamingException;
 }
