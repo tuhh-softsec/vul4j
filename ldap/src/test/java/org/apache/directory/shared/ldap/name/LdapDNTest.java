@@ -41,6 +41,7 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.LdapDnParser;
 import org.apache.directory.shared.ldap.name.Rdn;
@@ -77,25 +78,32 @@ public class LdapDNTest
     {
         oids = new HashMap<String, OidNormalizer>();
 
-        oids.put( "dc", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "domaincomponent", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
+        // DC normalizer
+        OidNormalizer dcOidNormalizer = new OidNormalizer( "dc",
+            new DeepTrimToLowerNormalizer( SchemaConstants.DOMAIN_COMPONENT_AT_OID ) );
+        
+        oids.put( "dc", dcOidNormalizer );
+        oids.put( "domaincomponent", dcOidNormalizer );
+        oids.put( "0.9.2342.19200300.100.1.25", dcOidNormalizer );
 
-        oids.put( "ou", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "organizationalUnitName", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "2.5.4.11", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
+        // OU normalizer
+        OidNormalizer ouOidNormalizer = new OidNormalizer( "ou",
+            new DeepTrimToLowerNormalizer( SchemaConstants.OU_AT_OID ) );
+        
+        oids.put( "ou", ouOidNormalizer );
+        oids.put( "organizationalUnitName", ouOidNormalizer );
+        oids.put( "2.5.4.11", ouOidNormalizer );
 
         // Another map where we store OIDs instead of names.
         oidOids = new HashMap<String, OidNormalizer>();
 
-        oidOids.put( "dc", new OidNormalizer( "0.9.2342.19200300.100.1.25", new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "domaincomponent", new OidNormalizer( "0.9.2342.19200300.100.1.25",
-            new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "0.9.2342.19200300.100.1.25",
-            new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "ou", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "organizationalUnitName", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "2.5.4.11", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
+        oidOids.put( "dc", dcOidNormalizer );
+        oidOids.put( "domaincomponent", dcOidNormalizer );
+        oidOids.put( "0.9.2342.19200300.100.1.25", dcOidNormalizer );
+
+        oidOids.put( "ou", ouOidNormalizer );
+        oidOids.put( "organizationalUnitName", ouOidNormalizer );
+        oidOids.put( "2.5.4.11", ouOidNormalizer );
     }
 
 
