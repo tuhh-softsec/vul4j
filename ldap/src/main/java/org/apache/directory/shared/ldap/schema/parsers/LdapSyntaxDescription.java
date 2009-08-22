@@ -21,8 +21,8 @@
 package org.apache.directory.shared.ldap.schema.parsers;
 
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
@@ -31,37 +31,16 @@ import java.util.List;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class LdapSyntaxDescription extends AbstractSchemaDescription
+public class LdapSyntaxDescription extends LoadableSchemaObject
 {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates a new instance of LdapSyntaxDescription with empty string values.
      */
-    public LdapSyntaxDescription()
+    public LdapSyntaxDescription( String oid )
     {
-        this.numericOid = "";
-        description = "";
-        extensions = new LinkedHashMap<String, List<String>>();
-    }
-
-
-    /**
-     * LDAP Syntax Descriptions do not support the OBSOLETE keyword.
-     * 
-     * @throws UnsupportedOperationException every time
-     */
-    public boolean isObsolete()
-    {
-        throw new UnsupportedOperationException( "Not supported by LdapSyntaxDescription" );
-    }
-
-
-    /**
-     * LDAP Syntax Descriptions do not support the OBSOLETE keyword.
-     * 
-     * @throws UnsupportedOperationException every time
-     */
-    public void setObsolete( boolean isObsolete )
-    {
-        throw new UnsupportedOperationException( "Not supported by LdapSyntaxDescription" );
+        super(  SchemaObjectType.LDAP_SYNTAX, oid );
     }
 }

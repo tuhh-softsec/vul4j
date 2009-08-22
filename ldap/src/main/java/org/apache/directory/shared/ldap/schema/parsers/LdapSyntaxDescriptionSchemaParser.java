@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,6 +38,8 @@ import antlr.TokenStreamException;
  */
 public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( LdapSyntaxDescriptionSchemaParser.class );
 
     /**
      * Creates a schema parser instance.
@@ -64,6 +69,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( ldapSyntaxDescription == null )
         {
+            LOG.error( "Cannot parse a null LdapSyntax" );
             throw new ParseException( "Null", 0 );
         }
 
@@ -76,24 +82,30 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on LDAP syntay description:\n\t" + ldapSyntaxDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
+            String msg = "Parser failure on LDAP syntay description:\n\t" + ldapSyntaxDescription +
+                "\nAntlr message: " + re.getMessage() +
+                "\nAntlr column: " + re.getColumn();
+            LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on LDAP syntay description:\n\t" + ldapSyntaxDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
+            String msg = "Parser failure on LDAP syntay description:\n\t" + ldapSyntaxDescription +
+                "\nAntlr message: " + tse.getMessage();
+            LOG.error(  msg  );
             throw new ParseException( msg, 0 );
         }
-
     }
 
 
-    public AbstractSchemaDescription parse( String schemaDescription ) throws ParseException
+    /**
+     * Parses a LdapSyntax description
+     * 
+     * @param The LdapSyntax description to parse
+     * @return An instance of LdapSyntaxDescription
+     */
+    public LdapSyntaxDescription parse( String schemaDescription ) throws ParseException
     {
         return parseLdapSyntaxDescription( schemaDescription );
     }
-
 }

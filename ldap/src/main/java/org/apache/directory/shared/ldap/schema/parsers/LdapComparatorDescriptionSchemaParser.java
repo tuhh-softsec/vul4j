@@ -36,15 +36,15 @@ import antlr.TokenStreamException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ComparatorDescriptionSchemaParser extends AbstractSchemaParser
+public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( ComparatorDescriptionSchemaParser.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( LdapComparatorDescriptionSchemaParser.class );
 
     /**
      * Creates a schema parser instance.
      */
-    public ComparatorDescriptionSchemaParser()
+    public LdapComparatorDescriptionSchemaParser()
     {
         super();
     }

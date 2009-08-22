@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.syntax.parser;
 
 import java.text.ParseException;
 
-import org.apache.directory.shared.ldap.schema.parsers.ComparatorDescriptionSchemaParser;
+import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescriptionSchemaParser;
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.junit.After;
 import org.junit.Before;
@@ -39,13 +39,13 @@ import static org.junit.Assert.assertNotNull;
 public class ComparatorDescriptionSchemaParserTest
 {
     /** the parser instance */
-    private ComparatorDescriptionSchemaParser parser;
+    private LdapComparatorDescriptionSchemaParser parser;
 
 
     @Before
     public void setUp() throws Exception
     {
-        parser = new ComparatorDescriptionSchemaParser();
+        parser = new LdapComparatorDescriptionSchemaParser();
     }
 
 
