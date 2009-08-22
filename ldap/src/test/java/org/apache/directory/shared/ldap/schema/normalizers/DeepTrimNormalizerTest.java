@@ -17,11 +17,12 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.schema;
+package org.apache.directory.shared.ldap.schema.normalizers;
 
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimNormalizer;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testDeepTrimNormalizerNull() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( ( String ) null ) );
     }
 
@@ -46,7 +47,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testDeepTrimNormalizerEmpty() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( "" ) );
     }
 
@@ -54,7 +55,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testDeepTrimNormalizerOneSpace() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( " " ) );
     }
 
@@ -62,7 +63,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testDeepTrimNormalizerTwoSpaces() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( "  " ) );
     }
 
@@ -70,7 +71,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testDeepTrimNormalizerNSpaces() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "", normalizer.normalize( "      " ) );
     }
 
@@ -78,7 +79,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testInsignifiantSpacesStringOneChar() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "a", normalizer.normalize( "a" ) );
     }
 
@@ -86,7 +87,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testInsignifiantSpacesStringTwoChars() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "aa", normalizer.normalize( "aa" ) );
     }
 
@@ -94,7 +95,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testInsignifiantSpacesStringNChars() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "aaaaa", normalizer.normalize( "aaaaa" ) );
     }
 
@@ -102,7 +103,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testInsignifiantSpacesStringOneCombining() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[]
             { ' ', 0x0310 };
         char[] expected = new char[]
@@ -114,7 +115,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testInsignifiantSpacesStringNCombining() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[]
             { ' ', 0x0310, ' ', 0x0311, ' ', 0x0312 };
         char[] expected = new char[]
@@ -126,7 +127,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testInsignifiantSpacesStringCharsSpaces() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "a", normalizer.normalize( " a" ) );
         assertEquals( "a", normalizer.normalize( "a " ) );
         assertEquals( "a", normalizer.normalize( " a " ) );
@@ -142,7 +143,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testNormalizeCharsCombiningSpaces() throws NamingException
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[]
             { ' ', 0x0310, 'a', 'a', ' ', ' ', 0x0311, ' ', ' ', 'a', 0x0311, 0x0312 };
         char[] expected = new char[]
@@ -154,7 +155,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testNormalizeString() throws Exception
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         assertEquals( "abcd", normalizer.normalize( "abcd" ) );
     }
 
@@ -162,7 +163,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testMapToSpace() throws Exception
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[]
             { 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0085, 0x00A0, 0x1680, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005,
                 0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F };
@@ -173,7 +174,7 @@ public class DeepTrimNormalizerTest
     @Test
     public void testNormalizeIgnore() throws Exception
     {
-        Normalizer normalizer = new DeepTrimNormalizer();
+        Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
         char[] chars = new char[58];
 
         int pos = 0;

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema;
+package org.apache.directory.shared.ldap.schema.normalizers;
 
 
 import org.apache.directory.shared.ldap.entry.Value;
