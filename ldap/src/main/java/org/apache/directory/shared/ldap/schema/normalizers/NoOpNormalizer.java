@@ -40,7 +40,7 @@ public class NoOpNormalizer extends Normalizer
      * 
      * @param oid The MR OID to use with this Normalizer
      */
-    protected NoOpNormalizer( String oid )
+    public NoOpNormalizer( String oid )
     {
         super( oid );
     }
