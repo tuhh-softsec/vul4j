@@ -149,7 +149,7 @@ public class SchemaUtilsTest
     }
 
 
-    static class SyntaxImpl extends AbstractLdapSyntax
+    static class SyntaxImpl extends LdapSyntax
     {
         private static final long serialVersionUID = 1L;
         
@@ -159,21 +159,25 @@ public class SchemaUtilsTest
         }
 
 
-        protected SyntaxImpl(String oid, boolean isHumanReadable)
+        protected SyntaxImpl( String oid, boolean isHumanReadable )
         {
-            super( oid, isHumanReadable );
+            super( oid );
+            setHumanReadable( isHumanReadable );
         }
 
 
         protected SyntaxImpl(String oid, String description)
         {
-            super( oid, description );
+            super( oid );
+            setDescription( description );
         }
 
 
         protected SyntaxImpl(String oid, String description, boolean isHumanReadable)
         {
-            super( oid, description, isHumanReadable );
+            super( oid );
+            setDescription( description );
+            setHumanReadable( isHumanReadable );
         }
 
 

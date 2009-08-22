@@ -859,7 +859,7 @@ public class SchemaUtils
         }
 
         buf.append( " X-SCHEMA '" );
-        buf.append( syntax.getSchema() );
+        buf.append( syntax.getSchemaName() );
 
         if ( syntax.isHumanReadable() )
         {

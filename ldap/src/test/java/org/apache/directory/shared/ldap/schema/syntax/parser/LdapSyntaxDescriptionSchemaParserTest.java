@@ -118,7 +118,7 @@ public class LdapSyntaxDescriptionSchemaParserTest
         value = "( 1.2.3.4.5.6.7.8.9.0 DESC 'Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577' X-TEST-a ('test1-1' 'test1-2') X-TEST-b ('test2-1' 'test2-2') )";
         lsd = parser.parseLdapSyntaxDescription( value );
 
-        assertEquals( "1.2.3.4.5.6.7.8.9.0", lsd.getNumericOid() );
+        assertEquals( "1.2.3.4.5.6.7.8.9.0", lsd.getOid() );
         assertEquals( "Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577", lsd.getDescription() );
         assertEquals( 2, lsd.getExtensions().size() );
         assertNotNull( lsd.getExtensions().get( "X-TEST-a" ) );
@@ -156,7 +156,7 @@ public class LdapSyntaxDescriptionSchemaParserTest
         String value = "( 1.3.6.1.4.1.1466.115.121.1.5 DESC 'Binary' X-NOT-HUMAN-READABLE 'TRUE' )";
         LdapSyntaxDescription lsd = parser.parseLdapSyntaxDescription( value );
 
-        assertEquals( "1.3.6.1.4.1.1466.115.121.1.5", lsd.getNumericOid() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.5", lsd.getOid() );
         assertEquals( "Binary", lsd.getDescription() );
         assertEquals( 1, lsd.getExtensions().size() );
         assertNotNull( lsd.getExtensions().get( "X-NOT-HUMAN-READABLE" ) );
@@ -173,7 +173,7 @@ public class LdapSyntaxDescriptionSchemaParserTest
     {
         String substrate = "( 1.3.6.1.4.1.18060.0.4.0.2.10000 DESC 'bogus description' X-SCHEMA 'blah' X-IS-HUMAN-READABLE 'true' )";
         LdapSyntaxDescription desc = parser.parseLdapSyntaxDescription( substrate );
-        assertEquals( "1.3.6.1.4.1.18060.0.4.0.2.10000", desc.getNumericOid() );
+        assertEquals( "1.3.6.1.4.1.18060.0.4.0.2.10000", desc.getOid() );
         assertEquals( "bogus description", desc.getDescription() );
         assertNotNull( desc.getExtensions().get( "X-IS-HUMAN-READABLE" ) );
     }

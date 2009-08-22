@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.schema;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
+
 
 
 /**
@@ -67,23 +69,50 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public abstract class LdapSyntax extends SchemaObject
+public class LdapSyntax extends SchemaObject
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
     
     /** the human readable flag */
-    private boolean isHumanReadable = false;
-
+    protected boolean isHumanReadable = false;
+    
+    /** The associated SyntaxChecker */
+    protected SyntaxChecker syntaxChecker;
     
     /**
      * Creates a Syntax object using a unique OID.
      * 
      * @param oid the OID for this Syntax
      */
-    protected LdapSyntax( String oid )
+    public LdapSyntax( String oid )
     {
         super( SchemaObjectType.LDAP_SYNTAX, oid );
+    }
+
+
+    /**
+     * Creates a Syntax object using a unique OID.
+     * 
+     * @param oid the OID for this Syntax
+     */
+    public LdapSyntax( String oid, String description )
+    {
+        super( SchemaObjectType.LDAP_SYNTAX, oid );
+        this.description = description;
+    }
+
+
+    /**
+     * Creates a Syntax object using a unique OID.
+     * 
+     * @param oid the OID for this Syntax
+     */
+    public LdapSyntax( String oid, String description, boolean isHumanReadable  )
+    {
+        super( SchemaObjectType.LDAP_SYNTAX, oid );
+        this.description = description;
+        this.isHumanReadable = isHumanReadable;
     }
 
 
@@ -92,7 +121,7 @@ public abstract class LdapSyntax extends SchemaObject
      * 
      * @return true if the syntax can be interpreted by humans, false otherwise
      */
-    protected boolean isHumanReadable()
+    public boolean isHumanReadable()
     {
         return isHumanReadable;
     }
@@ -103,9 +132,12 @@ public abstract class LdapSyntax extends SchemaObject
      * 
      * @param isHumanReadable the human readable flag value to set
      */
-    protected void setHumanReadable( boolean isHumanReadable )
+    public void setHumanReadable( boolean isHumanReadable )
     {
-        this.isHumanReadable = isHumanReadable;
+        if ( ! isReadOnly )
+        {
+            this.isHumanReadable = isHumanReadable;
+        }
     }
     
 
@@ -115,5 +147,22 @@ public abstract class LdapSyntax extends SchemaObject
      * 
      * @return the SyntaxChecker
      */
-    public abstract SyntaxChecker getSyntaxChecker() throws NamingException;
+    public SyntaxChecker getSyntaxChecker() throws NamingException
+    {
+        return syntaxChecker;
+    }
+    
+    
+    /**
+     * Sets the associated SyntaxChecker
+     *
+     * @param syntaxChecker The associated SyntaxChecker
+     */
+    public void setSyntaxChecker( SyntaxChecker syntaxChecker )
+    {
+        if ( ! isReadOnly )
+        {
+            this.syntaxChecker = syntaxChecker;
+        }
+    }
 }

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
+
 
 
 /**
@@ -213,41 +215,41 @@ public class ParserDescriptionUtils
      * not compared because doing so would raise an exception since syntax 
      * descriptions do not support the OBSOLETE flag.
      * 
-     * @param asd0 the first schema description to compare 
-     * @param asd1 the second schema description to compare 
+     * @param lsd0 the first schema description to compare 
+     * @param lsd1 the second schema description to compare 
      * @return true if the descriptions match exactly, false otherwise
      */
-    public static boolean descriptionsMatch( AbstractSchemaDescription asd0, AbstractSchemaDescription asd1 )
+    public static boolean descriptionsMatch( LoadableSchemaObject lsd0, LoadableSchemaObject lsd1 )
     {
         // check that the OID matches
-        if ( ! asd0.getNumericOid().equals( asd1.getNumericOid() ) )
+        if ( ! lsd0.getOid().equals( lsd1.getOid() ) )
         {
             return false;
         }
         
         // check that the obsolete flag is equal but not for syntaxes
-        if ( ( asd0 instanceof LdapSyntaxDescription ) || ( asd1 instanceof LdapSyntaxDescription ) )
+        if ( ( lsd0 instanceof LdapSyntaxDescription ) || ( lsd1 instanceof LdapSyntaxDescription ) )
         {
-            if ( asd0.isObsolete() != asd1.isObsolete() )
+            if ( lsd0.isObsolete() != lsd1.isObsolete() )
             {
                 return false;
             }
         }
         
         // check that the description matches
-        if ( ! asd0.getDescription().equals( asd1.getDescription() ) )
+        if ( ! lsd0.getDescription().equals( lsd1.getDescription() ) )
         {
             return false;
         }
         
         // check alias names for exact match
-        if ( ! aliasNamesMatch( asd0, asd1 ) )
+        if ( ! aliasNamesMatch( lsd0, lsd1 ) )
         {
             return false;
         }
         
         // check extensions for exact match
-        if ( ! extensionsMatch( asd0, asd1 ) )
+        if ( ! extensionsMatch( lsd0, lsd1 ) )
         {
             return false;
         }
@@ -261,23 +263,23 @@ public class ParserDescriptionUtils
      * description.  The order of the extension values must match for a true
      * return.
      *
-     * @param asd0 the first schema description to compare the extensions of
-     * @param asd1 the second schema description to compare the extensions of
+     * @param lsd0 the first schema description to compare the extensions of
+     * @param lsd1 the second schema description to compare the extensions of
      * @return true if the extensions match exactly, false otherwise
      */
-    public static boolean extensionsMatch( AbstractSchemaDescription asd0, AbstractSchemaDescription asd1 )
+    public static boolean extensionsMatch( LoadableSchemaObject lsd0, LoadableSchemaObject lsd1 )
     {
         // check sizes first
-        if ( asd0.getExtensions().size() != asd1.getExtensions().size() )
+        if ( lsd0.getExtensions().size() != lsd1.getExtensions().size() )
         {
             return false;
         }
         
         // check contents and order of extension values must match
-        for ( String key : asd0.getExtensions().keySet() )
+        for ( String key : lsd0.getExtensions().keySet() )
         {
-            List<String> values0 = asd0.getExtensions().get( key );
-            List<String> values1 = asd1.getExtensions().get( key );
+            List<String> values0 = lsd0.getExtensions().get( key );
+            List<String> values1 = lsd1.getExtensions().get( key );
             
             // if the key is not present in asd1
             if ( values1 == null )
@@ -306,7 +308,7 @@ public class ParserDescriptionUtils
      * @param asd1 the schema description to compare
      * @return true if alias names match exactly, false otherwise
      */
-    public static boolean aliasNamesMatch( AbstractSchemaDescription asd0, AbstractSchemaDescription asd1 )
+    public static boolean aliasNamesMatch( LoadableSchemaObject asd0, LoadableSchemaObject asd1 )
     {
         // check sizes first
         if ( asd0.getNames().size() != asd1.getNames().size() )

@@ -262,7 +262,7 @@ public class AttributeUtils
         }
         else
         {
-            normalizer = new NoOpNormalizer();
+            normalizer = new NoOpNormalizer( matchingRule.getOid() );
         }
 
         if ( type.getSyntax().isHumanReadable() )
