@@ -21,7 +21,7 @@
 package org.apache.directory.shared.ldap.schema.parsers;
 
 
-import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class LdapSyntaxDescription extends LoadableSchemaObject
+public class LdapSyntaxDescription extends SchemaObject
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
