@@ -19,16 +19,24 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.schema.parsers.LdapSyntaxDescription;
 
 
 /**
- * Manages the lookup and registration of Syntaxes within the system by OID.
+ * Manages the lookup and registration of LdapSyntaxes within the system by OID.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>
+public class LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax, LdapSyntaxDescription>
 {
+    /**
+     * Creates a new default LdapSyntaxRegistry instance.
+     */
+    public LdapSyntaxRegistry()
+    {
+        super( SchemaObjectType.LDAP_SYNTAX );
+    }
 }

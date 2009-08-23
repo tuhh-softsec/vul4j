@@ -20,11 +20,9 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleDescription;
 
 
 /**
@@ -33,36 +31,13 @@ import org.apache.directory.shared.ldap.schema.MatchingRule;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>
+public class MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule, MatchingRuleDescription>
 {
     /**
-     * Registers a MatchingRule with this registry.
-     * 
-     * @param matchingRule the MatchingRule to register
-     * @throws NamingException if the matchingRule is already registered or the 
-     * registration operation is not supported
+     * Creates a new default MatchingRuleRegistry instance.
      */
-    void register( MatchingRule matchingRule ) throws NamingException;
-
-
-    /**
-     * Looks up a MatchingRule by its unique Object Identifier or by name.
-     * 
-     * @param id the object identifier or the name identifier
-     * @return the MatchingRule for the id
-     * @throws NamingException if there is a backing store failure or the 
-     * MatchingRule does not exist.
-     */
-    MatchingRule lookup( String id ) throws NamingException;
-
-
-    /**
-     * Checks to see if a MatchingRule exists.  Backing store failures simply 
-     * return false.
-     * 
-     * @param oid the object identifier
-     * @return true if a MatchingRule definition exists for the oid, false 
-     * otherwise
-     */
-    boolean hasMatchingRule( String oid );
+    public MatchingRuleRegistry()
+    {
+        super( SchemaObjectType.MATCHING_RULE );
+    }
 }

@@ -20,56 +20,24 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 
 
 /**
- * Comparator registry component's service interface.
+ * Comparator registry component's service class.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>>
+public class ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>, LdapComparatorDescription>
 {
     /**
-     * Registers a Comparator with this registry.
-     * 
-     * @param description the comparatorDescription for the comparator to register
-     * @param comparator the Comparator to register
-     * @throws NamingException if the Comparator is already registered or the 
-     *      registration operation is not supported
+     * Creates a new default ComparatorRegistry instance.
      */
-    void register( LdapComparatorDescription description, LdapComparator<?> comparator ) throws NamingException;
-
-
-    /**
-     * Iterates over the numeric OID strings of this registry.
-     * 
-     * @return Iterator of numeric OID strings 
-     */
-    Iterator<LdapComparatorDescription> ldapComparatorDescriptionIterator();
-
-    
-    /**
-     * Unregisters comparators from this registry associated with a schema.
-     *
-     * @param schemaName the name of the schema whose comparators are removed 
-     * from this registry
-     */
-    void unregisterSchemaElements( String schemaName );
-    
-    
-    /**
-     * Renames the schemaName associated with entities within this 
-     * registry to a new schema name.
-     * 
-     * @param originalSchemaName the original schema name
-     * @param newSchemaName the new name to give to the schema
-     */
-    void renameSchema( String originalSchemaName, String newSchemaName );
+    public ComparatorRegistry()
+    {
+        super( SchemaObjectType.COMPARATOR );
+    }
 }

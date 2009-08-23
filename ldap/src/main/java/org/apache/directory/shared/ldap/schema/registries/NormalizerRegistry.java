@@ -20,55 +20,24 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 
 
 /**
- * Normalizer registry service interface.
+ * Normalizer registry service class.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface NormalizerRegistry extends SchemaObjectRegistry<Normalizer>
+public class NormalizerRegistry extends SchemaObjectRegistry<Normalizer, NormalizerDescription>
 {
     /**
-     * Registers a Normalizer with this registry.
-     * 
-     * @param normalizer the Normalizer to register
-     * @throws NamingException if the Normalizer is already registered or the
-     *      registration operation is not supported
+     * Creates a new default NormalizerRegistry instance.
      */
-    void register( NormalizerDescription description, Normalizer normalizer ) throws NamingException;
-
-
-    /**
-     * Used to iterate through all normalizerDescriptions.
-     *  
-     * @return an Iterator over the set of NormalizerDescriptions in this registry
-     */
-    Iterator<NormalizerDescription> normalizerDescriptionIterator();
-
-    
-    /**
-     * Unregisters normalizers from this registry associated with a schema.
-     *
-     * @param schemaName the name of the schema whose normalizers are 
-     * removed from this registry
-     */
-    void unregisterSchemaElements( String schemaName );
-
-    
-    /**
-     * Renames the schemaName associated with entities within this 
-     * registry to a new schema name.
-     * 
-     * @param originalSchemaName the original schema name
-     * @param newSchemaName the new name to give to the schema
-     */
-    void renameSchema( String originalSchemaName, String newSchemaName );
+    public NormalizerRegistry()
+    {
+        super( SchemaObjectType.NORMALIZER );
+    }
 }

@@ -20,10 +20,7 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 
@@ -34,42 +31,13 @@ import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface SyntaxCheckerRegistry extends SchemaObjectRegistry<SyntaxChecker>
+public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker, SyntaxCheckerDescription>
 {
     /**
-     * Registers a SyntaxChecker with this registry.
-     * 
-     * @param description the syntaxCheckerDescription for this syntaxChecker
-     * @param syntaxChecker the SyntaxChecker to register
-     * @throws NamingException if the SyntaxChecker is already registered or the
-     *      registration operation is not supported
+     * Creates a new default SyntaxCheckerRegistry instance.
      */
-    void register( SyntaxCheckerDescription description, SyntaxChecker syntaxChecker ) throws NamingException;
-
-
-    /**
-     * Get's an iterator over all the syntaxCheckerDescriptions associated with this registry.
-     * 
-     * @return an Iterator over all the syntaxCheckerDescriptions
-     */
-    Iterator<SyntaxCheckerDescription> syntaxCheckerDescriptionIterator();
-
-
-    /**
-     * Unregisters all syntaxCheckers defined for a specific schema from
-     * this registry.
-     * 
-     * @param schemaName the name of the schema whose syntaxCheckers will be removed
-     */
-    void unregisterSchemaElements( String schemaName );
-
-
-    /**
-     * Renames the schemaName associated with entities within this 
-     * registry to a new schema name.
-     * 
-     * @param originalSchemaName the original schema name
-     * @param newSchemaName the new name to give to the schema
-     */
-    void renameSchema( String originalSchemaName, String newSchemaName );
+    public SyntaxCheckerRegistry()
+    {
+        super( SchemaObjectType.SYNTAX_CHECKER );
+    }
 }
