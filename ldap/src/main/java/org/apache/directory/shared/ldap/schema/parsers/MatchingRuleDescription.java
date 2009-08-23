@@ -20,6 +20,9 @@
 
 package org.apache.directory.shared.ldap.schema.parsers;
 
+import org.apache.directory.shared.ldap.schema.SchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+
 
 /**
  * RFC 4512 - 4.1.3. Matching Rule Description
@@ -27,20 +30,20 @@ package org.apache.directory.shared.ldap.schema.parsers;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class MatchingRuleDescription extends AbstractSchemaDescription
+public class MatchingRuleDescription extends SchemaObject
 {
-    /** The matching rule's description */
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** The matching rule's Syntax element */
     private String syntax;
 
-
     /**
-     * 
-     * Creates a new instance of MatchingRuleDescription.
-     *
+     * Creates a new instance of MatcfhingRuleDescription
      */
-    public MatchingRuleDescription()
+    public MatchingRuleDescription( String oid )
     {
-        syntax = null;
+        super(  SchemaObjectType.MATCHING_RULE, oid );
     }
 
 
@@ -62,5 +65,4 @@ public class MatchingRuleDescription extends AbstractSchemaDescription
     {
         this.syntax = syntax;
     }
-
 }

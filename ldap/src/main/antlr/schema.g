@@ -513,13 +513,13 @@ ldapSyntaxDescription returns [LdapSyntaxDescription lsd]
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-matchingRuleDescription returns [MatchingRuleDescription mrd = new MatchingRuleDescription()]
+matchingRuleDescription returns [MatchingRuleDescription mrd]
     {
         matchedProduction( "matchingRuleDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { mrd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { mrd = new MatchingRuleDescription(numericoid(oid.getText())); } )
     (
         ( name:NAME { et.track("NAME", name); mrd.setNames(qdescrs(name.getText())); } )
         |
