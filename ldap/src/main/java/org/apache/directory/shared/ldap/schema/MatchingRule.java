@@ -21,7 +21,8 @@ package org.apache.directory.shared.ldap.schema;
 
 
 import javax.naming.NamingException;
-import java.util.Comparator;
+
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
 /**
@@ -75,36 +76,95 @@ import java.util.Comparator;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface MatchingRule extends SchemaObject
+public class MatchingRule extends SchemaObject
 {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** The associated LdapSyntax registry */
+    //private final LdapSyntaxRegistry ldapSyntaxRegistry;
+    
+    /** The associated Comparator registry */
+    //private final ComparatorRegistry comparatorRegistry;
+
+    /** The associated Normalizer registry */
+    //private final NormalizerRegistry normalizerRegistry;
+    
+    /** The associated Comparator */
+    private LdapComparator<?> ldapComparator;
+
+    /** The associated Normalizer */
+    private Normalizer normalizer;
+
+    /** The associated LdapSyntax */
+    private LdapSyntax ldapSyntax;
+    
     /**
-     * Gets the SyntaxImpl used by this MatchingRule.
-     * 
-     * @return the SyntaxImpl of this MatchingRule
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * Creates a new instance of MatchingRule.
+     *
+     * @param oid The MatchingRule OID
+     * @param registries The Registries reference
      */
-    LdapSyntax getSyntax() throws NamingException;
+    protected MatchingRule( String oid, Registries registries )
+    {
+        super( SchemaObjectType.MATCHING_RULE, oid );
+        
+        //ldapSyntaxRegistry = registries.getLdapSyntaxRegistry();
+        //normalizerRegistry = registries.getNormalizerRegistry();
+        //comparatorRegistry = registries.getComparatorRegistry();
+
+        try
+        {
+            // Gets the associated C 
+            ldapComparator = registries.getComparatorRegistry().lookup( oid );
+
+            // Gets the associated N 
+            normalizer = registries.getNormalizerRegistry().lookup( oid );
+
+            // Gets the associated SC 
+            ldapSyntax = registries.getLdapSyntaxRegistry().lookup( oid );
+        }
+        catch ( NamingException ne )
+        {
+            // What can we do here ???
+        }
+    }
 
 
     /**
-     * Gets the Comparator enabling the use of this MatchingRule for ORDERING
+     * Gets the LdapSyntax used by this MatchingRule.
+     * 
+     * @return the LdapSyntax of this MatchingRule
+     * @throws NamingException if there is a failure resolving the object
+     */
+    LdapSyntax getLdapSyntax() throws NamingException
+    {
+        return ldapSyntax;
+    }
+
+
+    /**
+     * Gets the LdapComparator enabling the use of this MatchingRule for ORDERING
      * and sorted indexing.
      * 
-     * @return the ordering Comparator
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * @return the ordering LdapComparator
+     * @throws NamingException if there is a failure resolving the object
      */
-    Comparator getComparator() throws NamingException;
+    public LdapComparator<?> getLdapComparator() throws NamingException
+    {
+        return ldapComparator;
+    }
 
 
     /**
      * Gets the Normalizer enabling the use of this MatchingRule for EQUALITY
      * matching and indexing.
      * 
-     * @return the ordering Comparator
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * @return the associated normalizer
+     * @throws NamingException if there is a failure resolving the object
      */
-    Normalizer getNormalizer() throws NamingException;
+    public Normalizer getNormalizer() throws NamingException
+    {
+        return normalizer;
+    }
 }
