@@ -24,7 +24,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -33,7 +32,6 @@ import static junit.framework.Assert.assertFalse;
 
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.parsers.AbstractSchemaParser;
-import org.junit.Test;
 
 
 /**
@@ -218,14 +216,14 @@ public class SchemaParserTestUtils
         value = "( " + oid + " " + required + " NAME 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )";
         asd = parser.parse( value );
         assertEquals( 1, asd.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", asd.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", asd.getNames().get( 0 ) );
 
         // alpha-num-hypen
         value = "( " + oid + " " + required
             + " NAME 'abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789' )";
         asd = parser.parse( value );
         assertEquals( 1, asd.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", asd.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-0123456789", asd.getNames().get( 0 ) );
 
         // with parentheses
         value = "( " + oid + " " + required + " NAME ( 'a-z-0-9' ) )";
@@ -443,7 +441,7 @@ public class SchemaParserTestUtils
         // no extension
         value = "( " + oid + " " + required + " )";
         asd = parser.parse( value );
-        assertNull( asd.getExtensions() );
+        assertEquals( 0, asd.getExtensions().size() );
 
         // single extension with one value
         value = "( " + oid + " " + required + " X-TEST 'test' )";

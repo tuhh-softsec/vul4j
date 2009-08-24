@@ -91,7 +91,7 @@ public class MatchingRule extends SchemaObject
     //private final NormalizerRegistry normalizerRegistry;
     
     /** The associated Comparator */
-    private LdapComparator<?> ldapComparator;
+    private LdapComparator<? super Object> ldapComparator;
 
     /** The associated Normalizer */
     private Normalizer normalizer;
@@ -116,7 +116,7 @@ public class MatchingRule extends SchemaObject
         try
         {
             // Gets the associated C 
-            ldapComparator = registries.getComparatorRegistry().lookup( oid );
+            ldapComparator = (LdapComparator<? super Object>)registries.getComparatorRegistry().lookup( oid );
 
             // Gets the associated N 
             normalizer = registries.getNormalizerRegistry().lookup( oid );
@@ -150,7 +150,7 @@ public class MatchingRule extends SchemaObject
      * @return the ordering LdapComparator
      * @throws NamingException if there is a failure resolving the object
      */
-    public LdapComparator<?> getLdapComparator() throws NamingException
+    public LdapComparator<? super Object> getLdapComparator() throws NamingException
     {
         return ldapComparator;
     }

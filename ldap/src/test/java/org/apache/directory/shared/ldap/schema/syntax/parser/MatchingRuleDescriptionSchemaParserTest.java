@@ -171,9 +171,9 @@ public class MatchingRuleDescriptionSchemaParserTest
         value = "( 1.2.3.4.5.6.7.8.9.0 NAME ( 'abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789' 'test' ) DESC 'Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577' OBSOLETE SYNTAX 0.1.2.3.4.5.6.7.8.9 X-TEST-a ('test1-1' 'test1-2') X-TEST-b ('test2-1' 'test2-2') )";
         mrd = parser.parseMatchingRuleDescription( value );
 
-        assertEquals( "1.2.3.4.5.6.7.8.9.0", mrd.getNumericOid() );
+        assertEquals( "1.2.3.4.5.6.7.8.9.0", mrd.getOid() );
         assertEquals( 2, mrd.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", mrd.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-0123456789", mrd.getNames().get( 0 ) );
         assertEquals( "test", mrd.getNames().get( 1 ) );
         assertEquals( "Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577", mrd.getDescription() );
         assertTrue( mrd.isObsolete() );
@@ -247,9 +247,9 @@ public class MatchingRuleDescriptionSchemaParserTest
         String value = "( 2.5.13.5 NAME 'caseExactMatch' SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )";
         MatchingRuleDescription mrd = parser.parseMatchingRuleDescription( value );
 
-        assertEquals( "2.5.13.5", mrd.getNumericOid() );
+        assertEquals( "2.5.13.5", mrd.getOid() );
         assertEquals( 1, mrd.getNames().size() );
-        assertEquals( "caseExactMatch", mrd.getNames().get( 0 ) );
+        assertEquals( "caseexactmatch", mrd.getNames().get( 0 ) );
         assertNull( mrd.getDescription() );
         assertFalse( mrd.isObsolete() );
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", mrd.getSyntax() );
@@ -263,9 +263,9 @@ public class MatchingRuleDescriptionSchemaParserTest
         String value = "( 2.5.13.5 NAME 'caseExactMatch' DESC 'Case Exact Matching on Directory String [defined in X.520]' SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )";
         MatchingRuleDescription mrd = parser.parseMatchingRuleDescription( value );
 
-        assertEquals( "2.5.13.5", mrd.getNumericOid() );
+        assertEquals( "2.5.13.5", mrd.getOid() );
         assertEquals( 1, mrd.getNames().size() );
-        assertEquals( "caseExactMatch", mrd.getNames().get( 0 ) );
+        assertEquals( "caseexactmatch", mrd.getNames().get( 0 ) );
         assertEquals( "Case Exact Matching on Directory String [defined in X.520]", mrd.getDescription() );
         assertFalse( mrd.isObsolete() );
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", mrd.getSyntax() );
@@ -296,9 +296,9 @@ public class MatchingRuleDescriptionSchemaParserTest
         else
         {
             MatchingRuleDescription mrd = parser.parseMatchingRuleDescription( value );
-            assertEquals( "1.3.6.1.4.1.42.2.27.9.4.34.3.6", mrd.getNumericOid() );
+            assertEquals( "1.3.6.1.4.1.42.2.27.9.4.34.3.6", mrd.getOid() );
             assertEquals( 1, mrd.getNames().size() );
-            assertEquals( "caseExactSubstringMatch-2.16.840.1.113730.3.3.2.11.3", mrd.getNames().get( 0 ) );
+            assertEquals( "caseexactsubstringmatch-2.16.840.1.113730.3.3.2.11.3", mrd.getNames().get( 0 ) );
             assertEquals( "en", mrd.getDescription() );
             assertFalse( mrd.isObsolete() );
             assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", mrd.getSyntax() );

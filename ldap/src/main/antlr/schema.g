@@ -482,7 +482,7 @@ ldapSyntaxDescription returns [LdapSyntaxDescription lsd]
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { lsd = new LdapSyntaxDescription(oid.getText()); } )
+    ( oid:STARTNUMERICOID { lsd = new LdapSyntaxDescription(numericoid(oid.getText())); } )
     (
         ( name:NAME { et.track("NAME", name); lsd.setNames(qdescrs(name.getText())); } )
         |

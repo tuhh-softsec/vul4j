@@ -111,6 +111,7 @@ public class SchemaObject implements Serializable
         this.oid = oid;
         isEnabled = true;
         isReadOnly = false;
+        extensions = new HashMap<String, List<String>>();
     }
     
     
@@ -350,11 +351,6 @@ public class SchemaObject implements Serializable
     {
         if ( !isReadOnly )
         {
-            if ( extensions == null )
-            {
-                extensions = new HashMap<String, List<String>>();
-            }
-            
             extensions.put( key, values );
         }
     }
@@ -459,20 +455,17 @@ public class SchemaObject implements Serializable
         }
         
         // The extensions, if any
-        if ( extensions != null )
+        for ( String key : extensions.keySet() )
         {
-            for ( String key : extensions.keySet() )
+            h += h*17 + key.hashCode();
+            
+            List<String> values = extensions.get( key );
+            
+            if ( values != null )
             {
-                h += h*17 + key.hashCode();
-                
-                List<String> values = extensions.get( key );
-                
-                if ( values != null )
+                for ( String value:values )
                 {
-                    for ( String value:values )
-                    {
-                        h += h*17 + value.hashCode();
-                    }
+                    h += h*17 + value.hashCode();
                 }
             }
         }

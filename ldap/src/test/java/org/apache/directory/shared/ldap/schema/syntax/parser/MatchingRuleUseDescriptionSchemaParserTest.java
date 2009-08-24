@@ -31,6 +31,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -258,9 +259,9 @@ public class MatchingRuleUseDescriptionSchemaParserTest
         value = "( 1.2.3.4.5.6.7.8.9.0 NAME ( 'abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789' 'test' ) DESC 'Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577' OBSOLETE APPLIES ( 0.1.2.3.4.5.6.7.8.9 $ abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789 ) X-TEST-a ('test1-1' 'test1-2') X-TEST-b ('test2-1' 'test2-2') )";
         mrud = parser.parseMatchingRuleUseDescription( value );
 
-        assertEquals( "1.2.3.4.5.6.7.8.9.0", mrud.getNumericOid() );
+        assertEquals( "1.2.3.4.5.6.7.8.9.0", mrud.getOid() );
         assertEquals( 2, mrud.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", mrud.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-0123456789", mrud.getNames().get( 0 ) );
         assertEquals( "test", mrud.getNames().get( 1 ) );
         assertEquals( "Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577", mrud.getDescription() );
         assertTrue( mrud.isObsolete() );
@@ -337,10 +338,10 @@ public class MatchingRuleUseDescriptionSchemaParserTest
         String value = "( 2.5.13.17 NAME 'octetStringMatch' APPLIES ( javaSerializedData $ userPassword ) )";
         MatchingRuleUseDescription mrud = parser.parseMatchingRuleUseDescription( value );
 
-        assertEquals( "2.5.13.17", mrud.getNumericOid() );
+        assertEquals( "2.5.13.17", mrud.getOid() );
         assertEquals( 1, mrud.getNames().size() );
-        assertEquals( "octetStringMatch", mrud.getNames().get( 0 ) );
-        assertEquals( "", mrud.getDescription() );
+        assertEquals( "octetstringmatch", mrud.getNames().get( 0 ) );
+        assertNull( mrud.getDescription() );
         assertFalse( mrud.isObsolete() );
         assertEquals( 2, mrud.getApplicableAttributes().size() );
         assertEquals( "javaSerializedData", mrud.getApplicableAttributes().get( 0 ) );
