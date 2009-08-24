@@ -29,7 +29,6 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.parsers.DITStructureRuleDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureRule, DITStructureRuleDescription>
+public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureRule>
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( DITStructureRuleRegistry.class );
@@ -51,9 +50,6 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
     /** a map of DITStructureRule looked up by RuleId */
     protected final Map<Integer, DITStructureRule> byRuleId;
     
-    /** maps an RuleId to a DITStructureRuleDescription Description */
-    private final Map<Integer, DITStructureRuleDescription> ruleIdToDescription;
-    
     /**
      * Creates a new default NormalizerRegistry instance.
      */
@@ -61,7 +57,6 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
     {
         super( SchemaObjectType.DIT_STRUCTURE_RULE );
         byRuleId = new ConcurrentHashMap<Integer, DITStructureRule>();
-        ruleIdToDescription = new ConcurrentHashMap<Integer, DITStructureRuleDescription>();
     }
 
 
@@ -76,17 +71,6 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
     public boolean contains( int ruleId )
     {
         return byRuleId.containsKey( ruleId );
-    }
-
-    
-    /**
-     * Gets an iterator over the registered descriptions in the registry.
-     *
-     * @return an Iterator of descriptions
-     */
-    public Iterator<DITStructureRuleDescription> descriptionsIterator()
-    {
-        return ruleIdToDescription.values().iterator();
     }
 
     
@@ -162,44 +146,6 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
 
     
     /**
-     * Registers a new DITStructureRule with this registry.
-     *
-     * @param ditStructureRuleDescription the DITStructureRuleDescription to register
-     * @param ditStructureRule the DITStructureRule to register
-     * @throws NamingException if the DITStructureRule is already registered or
-     * the registration operation is not supported
-     */
-    public void register( DITStructureRuleDescription ditStructureRuleDescription, DITStructureRule ditStructureRule ) throws NamingException
-    {
-        int ruleId = ditStructureRule.getRuleId();
-        
-        if ( byRuleId.containsKey( ruleId ) )
-        {
-            String msg = "DITStructureRule with RuleId " + ruleId + " already registered!";
-            LOG.warn( msg );
-            throw new NamingException( msg );
-        }
-
-        byRuleId.put( ruleId, ditStructureRule );
-        
-        // Stores the description
-        ruleIdToDescription.put( ruleId, ditStructureRuleDescription );
-
-        if ( LOG.isDebugEnabled() )
-        {
-            LOG.debug( "registered {} with ruleId {}", ditStructureRuleDescription, ruleId );
-        }
-    }
-
-
-    
-    
-    
-    
-    
-    
-    
-    /**
      * Looks up an dITStructureRule by its unique Object IDentifier or by its
      * name.
      * 
@@ -237,8 +183,6 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
     {
         DITStructureRule ditStructureRule = byRuleId.remove( ruleId );
         
-        ruleIdToDescription.remove( ruleId );
-
         if ( DEBUG )
         {
             LOG.debug( "Removed {} with ruleId {} from the registry", ditStructureRule, ruleId );
@@ -268,9 +212,6 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
                 int ruleId = ditStructureRule.getRuleId();
                 SchemaObject removed = byRuleId.remove( ruleId );
                 
-                // Also remove the description if any
-                ruleIdToDescription.remove( ruleId );
-
                 if ( DEBUG )
                 {
                     LOG.debug( "Removed {} with ruleId {} from the registry", removed, ruleId );
@@ -295,12 +236,6 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
             if ( originalSchemaName.equalsIgnoreCase( ditStructureRule.getSchemaName() ) )
             {
                 ditStructureRule.setSchemaName( newSchemaName );
-                SchemaObject description = ruleIdToDescription.get( ditStructureRule.getRuleId() );
-                
-                if ( description != null )
-                {
-                    description.setSchemaName( newSchemaName );
-                }
 
                 if ( DEBUG )
                 {

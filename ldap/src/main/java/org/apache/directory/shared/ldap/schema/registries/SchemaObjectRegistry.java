@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject> implements Iterable<T>
+public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( SchemaObjectRegistry.class );
@@ -49,9 +49,6 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
     
     /** a map of SchemaObject looked up by OID or Name */
     protected final Map<String, T> byOid;
-    
-    /** maps an OID to a SchemaObject specification */
-    private final Map<String, U> oidToSpecification;
     
     /** The SchemaObject type */
     protected SchemaObjectType type;
@@ -63,7 +60,6 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
     protected SchemaObjectRegistry( SchemaObjectType schemaObjectType )
     {
         byOid = new ConcurrentHashMap<String, T>();
-        oidToSpecification = new ConcurrentHashMap<String, U>();
         type = schemaObjectType;
     }
     
@@ -126,13 +122,7 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
             if ( originalSchemaName.equalsIgnoreCase( schemaObject.getSchemaName() ) )
             {
                 schemaObject.setSchemaName( newSchemaName );
-                SchemaObject description = oidToSpecification.get( schemaObject.getOid() );
                 
-                if ( description != null )
-                {
-                    description.setSchemaName( newSchemaName );
-                }
-
                 if ( DEBUG )
                 {
                     LOG.debug( "Renamed {} schemaName to {}", schemaObject, newSchemaName );
@@ -161,17 +151,6 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
     public Iterator<String> oidsIterator()
     {
         return byOid.keySet().iterator();
-    }
-
-    
-    /**
-     * Gets an iterator over the registered descriptions in the registry.
-     *
-     * @return an Iterator of descriptions
-     */
-    public Iterator<U> specificationsIterator()
-    {
-        return oidToSpecification.values().iterator();
     }
 
     
@@ -230,47 +209,6 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
 
 
     /**
-     * Registers a new SchemaObject with this registry.
-     *
-     * @param schemaObjectSpecification The SchemaObject description to register
-     * @param schemaObject the SchemaObject to register
-     * @throws NamingException if the SchemaObject is already registered or
-     * the registration operation is not supported
-     */
-    public void register( U schemaObjectSpecification, T schemaObject ) throws NamingException
-    {
-        String oid = schemaObject.getOid();
-        
-        if ( byOid.containsKey( oid ) )
-        {
-            String msg = type.name() + " already registered for OID " + oid;
-            LOG.warn( msg );
-            throw new NamingException( msg );
-        }
-
-        byOid.put( oid, schemaObject );
-        
-        // Register the name -> schemaObject couples.
-        // We will also add the oid -> schemaObject into this map
-        if ( schemaObject.getNames() != null )
-        {
-            for ( String name : schemaObject.getNames() )
-            {
-                byOid.put( name, schemaObject );
-            }
-        }
-        
-        // And register the description too
-        oidToSpecification.put( oid, schemaObjectSpecification );
-        
-        if ( DEBUG )
-        {
-            LOG.debug( "registered {} with oid: {}", type.name(), oid );
-        }
-    }
-
-
-    /**
      * Removes the SchemaObject registered with this registry, using its
      * numeric OID.
      * 
@@ -288,9 +226,6 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
 
         SchemaObject schemaObject = byOid.remove( numericOid );
         
-        // Also remove the description, if any
-        oidToSpecification.remove( numericOid );
-
         if ( DEBUG )
         {
             LOG.debug( "Removed {} with oid {} from the registry", schemaObject, numericOid );
@@ -320,9 +255,6 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
                 String oid = schemaObject.getOid();
                 SchemaObject removed = byOid.remove( oid );
                 
-                // Also remove the description if any
-                oidToSpecification.remove( oid );
-
                 if ( DEBUG )
                 {
                     LOG.debug( "Removed {} with oid {} from the registry", removed, oid );

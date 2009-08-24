@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 
 
 /**
@@ -31,7 +30,7 @@ import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class NormalizerRegistry extends SchemaObjectRegistry<Normalizer, NormalizerDescription>
+public class NormalizerRegistry extends SchemaObjectRegistry<Normalizer>
 {
     /**
      * Creates a new default NormalizerRegistry instance.

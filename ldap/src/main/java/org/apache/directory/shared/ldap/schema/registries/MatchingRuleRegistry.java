@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleDescription;
 
 
 /**
@@ -31,7 +30,7 @@ import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleDescription;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule, MatchingRuleDescription>
+public class MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>
 {
     /**
      * Creates a new default MatchingRuleRegistry instance.

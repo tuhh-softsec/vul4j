@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 
 
 /**
@@ -31,7 +30,7 @@ import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>, LdapComparatorDescription>
+public class ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>>
 {
     /**
      * Creates a new default ComparatorRegistry instance.

@@ -25,6 +25,10 @@ import java.util.Iterator;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.DITContentRule;
+import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.schema.parsers.DITContentRuleDescription;
+import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 
 
 /**
@@ -33,34 +37,13 @@ import org.apache.directory.shared.ldap.schema.DITContentRule;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface DITContentRuleRegistry extends SchemaObjectRegistry<DITContentRule>
+public class DITContentRuleRegistry extends SchemaObjectRegistry<DITContentRule>
 {
     /**
-     * Registers a DITContentRule with this registry.
-     * 
-     * @param dITContentRule the DITContentRule to register
-     * @throws NamingException if the DITContentRule is already registered or
-     * the registration operation is not supported
+     * Creates a new default NormalizerRegistry instance.
      */
-    void register( DITContentRule dITContentRule ) throws NamingException;
-
-
-    /**
-     * Looks up a DITContentRule by its object identifier or by its name.
-     * 
-     * @param id the object identifier or name of the DITContentRule
-     * @return the DITContentRule instance for the id
-     * @throws NamingException if the DITContentRule does not exist
-     */
-    DITContentRule lookup( String id ) throws NamingException;
-
-
-    /**
-     * Checks to see if a DITContentRule exists.
-     * 
-     * @param id the object identifier or name of the DITContentRule
-     * @return true if a DITContentRule definition exists for the id, false
-     * otherwise
-     */
-    boolean hasDITContentRule( String id );
+    public DITContentRuleRegistry()
+    {
+        super( SchemaObjectType.DIT_CONTENT_RULE );
+    }
 }

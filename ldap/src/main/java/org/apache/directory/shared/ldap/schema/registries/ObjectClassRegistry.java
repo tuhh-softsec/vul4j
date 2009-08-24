@@ -24,7 +24,11 @@ import java.util.Iterator;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
+import org.apache.directory.shared.ldap.schema.parsers.ObjectClassDescription;
 
 
 /**
@@ -33,42 +37,13 @@ import org.apache.directory.shared.ldap.schema.ObjectClass;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
+public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass, ObjectClassDescription>
 {
     /**
-     * Registers an ObjectClass with this registry.
-     *
-     * @param objectClass the objectClass to register
-     * @throws NamingException if the ObjectClass is already registered or the
-     * registration operation is not supported
+     * Creates a new default ObjectClassRegistry instance.
      */
-    void register( ObjectClass objectClass ) throws NamingException;
-
-
-    /**
-     * Looks up an objectClass by its unique Object Identifier or by name.
-     *
-     * @param id the object identifier or name
-     * @return the ObjectClass instance for the id
-     * @throws NamingException if the ObjectClass does not exist
-     */
-    ObjectClass lookup( String id ) throws NamingException;
-
-
-    /**
-     * Checks to see if an objectClass exists.
-     *
-     * @param id the object identifier or name
-     * @return true if an objectClass definition exists for the id, false
-     * otherwise
-     */
-    boolean hasObjectClass( String id );
-
-
-    /**
-     * Gets an Iterator over the ObjectClasses within this ObjectClassRegistry.
-     *
-     * @return an iterator over all ObjectClasses in registry
-     */
-    Iterator<ObjectClass> iterator();
+    public ObjectClassRegistry()
+    {
+        super( SchemaObjectType.OBJECT_CLASS );
+    }
 }

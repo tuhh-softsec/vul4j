@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 
 
 /**
@@ -31,7 +30,7 @@ import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker, SyntaxCheckerDescription>
+public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker>
 {
     /**
      * Creates a new default SyntaxCheckerRegistry instance.

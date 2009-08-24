@@ -20,11 +20,8 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.schema.NameForm;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
@@ -33,42 +30,13 @@ import org.apache.directory.shared.ldap.schema.NameForm;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface NameFormRegistry extends SchemaObjectRegistry<NameForm>
+public class NameFormRegistry extends SchemaObjectRegistry<NameForm>
 {
     /**
-     * Registers a NameForm with this registry.
-     * 
-     * @param nameForm the nameForm to register
-     * @throws NamingException if the NameForm is already registered or the
-     * registration operation is not supported
+     * Creates a new default NameFormRegistry instance.
      */
-    void register( NameForm nameForm ) throws NamingException;
-
-
-    /**
-     * Looks up a nameForm by its unique Object Identifier or by name.
-     * 
-     * @param id the object identifier or name
-     * @return the NameForm instance for the id
-     * @throws NamingException if the NameForm does not exist
-     */
-    NameForm lookup( String id ) throws NamingException;
-
-
-    /**
-     * Checks to see if an nameForm exists.
-     * 
-     * @param id the object identifier or name
-     * @return true if an nameForm definition exists for the oid, false
-     * otherwise
-     */
-    boolean hasNameForm( String id );
-
-
-    /**
-     * Lists all the NameForms within this registry.
-     *
-     * @return an Iterator over all the NameForms within this registry
-     */
-    Iterator<NameForm> iterator();
+    public NameFormRegistry()
+    {
+        super( SchemaObjectType.NAME_FORM );
+    }
 }

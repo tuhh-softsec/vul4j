@@ -21,7 +21,11 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescription;
+import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 
 import javax.naming.NamingException;
 import java.util.Iterator;
@@ -34,39 +38,17 @@ import java.util.Map;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
+public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
 {
     /**
-     * Registers a new AttributeType with this registry.
-     *
-     * @param attributeType the AttributeType to register
-     * @throws NamingException if the AttributeType is already registered or
-     * the registration operation is not supported
+     * Creates a new default AttributeTypeRegistry instance.
      */
-    void register( AttributeType attributeType ) throws NamingException;
-
-
-    /**
-     * Looks up an AttributeType by its unique Object Identifier or by its
-     * unique name.
-     * 
-     * @param id the object identifier or name of the AttributeType
-     * @return the AttributeType instance for the oid
-     * @throws NamingException if the AttributeType does not exist
-     */
-    AttributeType lookup( String id ) throws NamingException;
-
-
-    /**
-     * Checks to see if an AttributeType exists.
-     * 
-     * @param id the object identifier or name of the AttributeType
-     * @return true if an AttributeType definition exists for the oid, false
-     * otherwise
-     */
-    boolean hasAttributeType( String id );
-
-
+    public AttributeTypeRegistry()
+    {
+        super( SchemaObjectType.ATTRIBUTE_TYPE );
+    }
+    
+    
     /**
      * Gets an oid/name to normalizer mapping used to normalize distinguished 
      * names.

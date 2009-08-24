@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.parsers.LdapSyntaxDescription;
 
 
 /**
@@ -30,7 +29,7 @@ import org.apache.directory.shared.ldap.schema.parsers.LdapSyntaxDescription;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax, LdapSyntaxDescription>
+public class LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>
 {
     /**
      * Creates a new default LdapSyntaxRegistry instance.
