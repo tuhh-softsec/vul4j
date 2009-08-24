@@ -56,7 +56,7 @@ public class OidRegistry
     /**
      * Tells if the given OID is present on this registry
      * 
-     * @param OID The OID to lookup
+     * @param oid The OID to lookup
      * @return true if the OID alreadyexists
      */
     public boolean hasOid( String oid )
@@ -122,7 +122,6 @@ public class OidRegistry
      * name certain things within the server internally.  If there is more than
      * one name then the first name is taken to be the primary.
      * 
-     * @param type The SchemaObjectType the oid belongs to
      * @param oid the OID for which we return the set of common names
      * @return a sorted set of names
      * @throws NamingException if oid does not exist
