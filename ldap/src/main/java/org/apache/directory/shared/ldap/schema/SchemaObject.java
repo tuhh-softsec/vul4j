@@ -89,6 +89,9 @@ public class SchemaObject implements Serializable
     /** A short description of this SchemaObject */
     protected String description;
 
+    /** The SchemaObject specification */
+    protected String specification;
+
     /** The name of the schema this object is associated with */
     protected String schemaName;
     
@@ -215,13 +218,12 @@ public class SchemaObject implements Serializable
             
             for ( String name:names )
             {
-                String normalizedName = StringTools.trim( name ).toLowerCase();
-                
-                this.names.add( normalizedName );
+                this.names.add( name );
             }
         }
     }
 
+    
     /**
      * Gets a short description about this SchemaObject.
      * 
@@ -243,6 +245,31 @@ public class SchemaObject implements Serializable
         if ( !isReadOnly )
         {
             this.description = description;
+        }
+    }
+
+    
+    /**
+     * Gets the SchemaObject specification.
+     * 
+     * @return the SchemaObject specification
+     */
+    public String getSpecification()
+    {
+        return specification;
+    }
+    
+    
+    /**
+     * Sets the SchemaObject's specification
+     * 
+     * @param specification The SchemaObject's specification
+     */
+    public void setSpecification( String specification )
+    {
+        if ( !isReadOnly )
+        {
+            this.specification = specification;
         }
     }
     
