@@ -21,9 +21,10 @@
 package org.apache.directory.shared.ldap.schema.parsers;
 
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.apache.directory.shared.ldap.schema.SchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
@@ -32,31 +33,40 @@ import java.util.List;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class MatchingRuleUseDescription extends AbstractSchemaDescription
+public class MatchingRuleUseDescription extends SchemaObject
 {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** The list of attributes types the matching rule applies to */
     private List<String> applicableAttributes;
 
 
-    public MatchingRuleUseDescription()
+    /**
+     * Creates a new instance of MatchingRuleUseDescription
+     */
+    public MatchingRuleUseDescription( String oid )
     {
-        numericOid = "";
-        names = new ArrayList<String>();
-        description = "";
-        isObsolete = false;
-        applicableAttributes = new ArrayList<String>();
-        extensions = new LinkedHashMap<String, List<String>>();
+        super(  SchemaObjectType.MATCHING_RULE_USE, oid );
     }
+    
 
-
+    /**
+     * @return The matchingRule's list of Attribute types the MRU applies to
+     */
     public List<String> getApplicableAttributes()
     {
         return applicableAttributes;
     }
 
 
+    /**
+     * Set the matchingRule's Attribute types the MRU applies to. description
+     *
+     * @param applicableAttributes The Attribute types list
+     */
     public void setApplicableAttributes( List<String> applicableAttributes )
     {
         this.applicableAttributes = applicableAttributes;
     }
-
 }

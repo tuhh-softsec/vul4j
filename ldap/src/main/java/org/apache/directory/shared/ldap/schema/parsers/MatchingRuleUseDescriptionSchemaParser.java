@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,6 +38,9 @@ import antlr.TokenStreamException;
  */
 public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( MatchingRuleUseDescriptionSchemaParser.class );
+
 
     /**
      * Creates a schema parser instance.
@@ -70,6 +76,7 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( matchingRuleUseDescription == null )
         {
+            LOG.error( "Cannot parse a null MatchingRuleUse" );
             throw new ParseException( "Null", 0 );
         }
 
@@ -82,24 +89,31 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on matching rule description:\n\t" + matchingRuleUseDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
+            String msg = "Parser failure on matching rule description:\n\t" + matchingRuleUseDescription +
+                "\nAntlr message: " + re.getMessage() +
+                "\nAntlr column: " + re.getColumn();
+            LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on matching rule description:\n\t" + matchingRuleUseDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
+            String msg = "Parser failure on matching rule description:\n\t" + matchingRuleUseDescription +
+                "\nAntlr message: " + tse.getMessage();
+            LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
 
     }
 
 
-    public AbstractSchemaDescription parse( String schemaDescription ) throws ParseException
+    /**
+     * Parses a MatchingRuleUse description
+     * 
+     * @param The MatchingRuleUse description to parse
+     * @return An instance of MatchingRuleUseDescription
+     */
+    public MatchingRuleUseDescription parse( String schemaDescription ) throws ParseException
     {
         return parseMatchingRuleUseDescription( schemaDescription );
     }
-
 }

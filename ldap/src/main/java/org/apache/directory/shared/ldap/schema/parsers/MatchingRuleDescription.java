@@ -39,7 +39,7 @@ public class MatchingRuleDescription extends SchemaObject
     private String syntax;
 
     /**
-     * Creates a new instance of MatcfhingRuleDescription
+     * Creates a new instance of MatchingRuleDescription
      */
     public MatchingRuleDescription( String oid )
     {

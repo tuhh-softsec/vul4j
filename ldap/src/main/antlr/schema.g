@@ -562,13 +562,13 @@ matchingRuleDescription returns [MatchingRuleDescription mrd]
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-matchingRuleUseDescription returns [MatchingRuleUseDescription mrud = new MatchingRuleUseDescription()]
+matchingRuleUseDescription returns [MatchingRuleUseDescription mrud]
     {
         matchedProduction( "matchingRuleUseDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { mrud.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { mrud = new MatchingRuleUseDescription(numericoid(oid.getText())); } )
     (
         ( name:NAME { et.track("NAME", name); mrud.setNames(qdescrs(name.getText())); } )
         |
