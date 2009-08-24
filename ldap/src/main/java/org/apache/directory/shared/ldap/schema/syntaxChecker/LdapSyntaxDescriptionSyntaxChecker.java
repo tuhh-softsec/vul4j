@@ -52,7 +52,7 @@ public class LdapSyntaxDescriptionSyntaxChecker extends SyntaxChecker
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** The schema parser used to parse the LdapSyntaxDescription Syntax */
+    /** The schema parser used to parse the LdapSyntax description Syntax */
     private LdapSyntaxDescriptionSchemaParser schemaParser = new LdapSyntaxDescriptionSchemaParser();
 
 
