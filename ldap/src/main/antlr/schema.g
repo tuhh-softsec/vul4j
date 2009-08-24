@@ -29,10 +29,10 @@ import java.util.Map;
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.apache.directory.shared.ldap.schema.parsers.DITContentRuleDescription;
 import org.apache.directory.shared.ldap.schema.parsers.DITStructureRuleDescription;
-import org.apache.directory.shared.ldap.schema.parsers.LdapSyntaxDescription;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleDescription;
 import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleUseDescription;
-import org.apache.directory.shared.ldap.schema.parsers.NameFormDescription;
+import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
 import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescription;
@@ -41,6 +41,7 @@ import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 import org.apache.directory.shared.ldap.schema.syntaxChecker.OpenLdapObjectIdentifierMacro;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 }
 
@@ -476,22 +477,22 @@ attributeTypeDescription returns [AttributeTypeDescription atd = new AttributeTy
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-ldapSyntaxDescription returns [LdapSyntaxDescription lsd]
+ldapSyntaxDescription returns [LdapSyntax ldapSyntax]
     {
         matchedProduction( "ldapSyntaxDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { lsd = new LdapSyntaxDescription(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { ldapSyntax = new LdapSyntax(numericoid(oid.getText())); } )
     (
-        ( name:NAME { et.track("NAME", name); lsd.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); ldapSyntax.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); lsd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); ldapSyntax.setDescription(qdstring(desc.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            lsd.addExtension(ex.key, ex.values); 
+            ldapSyntax.addExtension(ex.key, ex.values); 
          } )
     )*
     RPAR
@@ -718,30 +719,30 @@ ditStructureRuleDescription returns [DITStructureRuleDescription dsrd]
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-nameFormDescription returns [NameFormDescription nfd = new NameFormDescription()]
+nameFormDescription [Registries registries] returns [NameForm nameForm]
     {
         matchedProduction( "nameFormDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { nfd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { nameForm = new NameForm(numericoid(oid.getText()), registries); } )
     (
-        ( name:NAME { et.track("NAME", name); nfd.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); nameForm.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); nfd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); nameForm.setDescription(qdstring(desc.getText())); } )
         |
-        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); nfd.setObsolete( true ); } )
+        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); nameForm.setObsolete( true ); } )
         |
-        ( oc:OC { et.track("OC", oc); nfd.setStructuralObjectClass(oid(oc.getText())); } )
+        ( oc:OC { et.track("OC", oc); nameForm.setStructuralObjectClass(oid(oc.getText())); } )
         |
-        ( must:MUST { et.track("MUST", must); nfd.setMustAttributeTypes(oids(must.getText())); } )
+        ( must:MUST { et.track("MUST", must); nameForm.setMustAttributeTypes(oids(must.getText())); } )
         |
-        ( may:MAY { et.track("MAY", may); nfd.setMayAttributeTypes(oids(may.getText())); } )
+        ( may:MAY { et.track("MAY", may); nameForm.setMayAttributeTypes(oids(may.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            nfd.addExtension(ex.key, ex.values); 
+            nameForm.addExtension(ex.key, ex.values); 
          } )
     )*
     RPAR
