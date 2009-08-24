@@ -22,7 +22,9 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 
 
 
@@ -199,13 +201,13 @@ public class ParserDescriptionUtils
     /**
      * Checks to see if two syntax descriptions match exactly.
      *
-     * @param lsd0 the first syntax description to compare
-     * @param lsd1 the second syntax description to compare
+     * @param ldapSyntax0 the first ldapSyntax to compare
+     * @param ldapSyntax1 the second ldapSyntax to compare
      * @return true if the syntaxes match exactly, false otherwise
      */
-    public static boolean syntaxesMatch( LdapSyntaxDescription lsd0, LdapSyntaxDescription lsd1 )
+    public static boolean syntaxesMatch( LdapSyntax ldapSyntax0, LdapSyntax ldapSyntax1 )
     {
-        return descriptionsMatch( lsd0, lsd1 );
+        return descriptionsMatch( ldapSyntax0, ldapSyntax1 );
     }
     
     
@@ -219,37 +221,37 @@ public class ParserDescriptionUtils
      * @param lsd1 the second schema description to compare 
      * @return true if the descriptions match exactly, false otherwise
      */
-    public static boolean descriptionsMatch( LoadableSchemaObject lsd0, LoadableSchemaObject lsd1 )
+    public static boolean descriptionsMatch( SchemaObject so0, SchemaObject so1 )
     {
         // check that the OID matches
-        if ( ! lsd0.getOid().equals( lsd1.getOid() ) )
+        if ( ! so0.getOid().equals( so1.getOid() ) )
         {
             return false;
         }
         
         // check that the obsolete flag is equal but not for syntaxes
-        if ( ( lsd0 instanceof LdapSyntaxDescription ) || ( lsd1 instanceof LdapSyntaxDescription ) )
+        if ( ( so0 instanceof LdapSyntax ) || ( so1 instanceof LdapSyntax ) )
         {
-            if ( lsd0.isObsolete() != lsd1.isObsolete() )
+            if ( so0.isObsolete() != so1.isObsolete() )
             {
                 return false;
             }
         }
         
         // check that the description matches
-        if ( ! lsd0.getDescription().equals( lsd1.getDescription() ) )
+        if ( ! so0.getDescription().equals( so1.getDescription() ) )
         {
             return false;
         }
         
         // check alias names for exact match
-        if ( ! aliasNamesMatch( lsd0, lsd1 ) )
+        if ( ! aliasNamesMatch( so0, so1 ) )
         {
             return false;
         }
         
         // check extensions for exact match
-        if ( ! extensionsMatch( lsd0, lsd1 ) )
+        if ( ! extensionsMatch( so0, so1 ) )
         {
             return false;
         }
