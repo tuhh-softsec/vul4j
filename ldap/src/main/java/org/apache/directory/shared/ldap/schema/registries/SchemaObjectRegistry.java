@@ -47,12 +47,11 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
     /** A speedup for debug */
     private static final boolean DEBUG = LOG.isDebugEnabled();
     
-    /** a map of Normalizers looked up by OID or Name */
+    /** a map of SchemaObject looked up by OID or Name */
     protected final Map<String, T> byOid;
     
     /** maps an OID to a SchemaObject specification */
     private final Map<String, U> oidToSpecification;
-
     
     /** The SchemaObject type */
     protected SchemaObjectType type;
@@ -288,6 +287,9 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
         }
 
         SchemaObject schemaObject = byOid.remove( numericOid );
+        
+        // Also remove the description, if any
+        oidToSpecification.remove( numericOid );
 
         if ( DEBUG )
         {
@@ -297,10 +299,10 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
     
     
     /**
-     * Unregisters all syntaxCheckers defined for a specific schema from
+     * Unregisters all SchemaObjects defined for a specific schema from
      * this registry.
      * 
-     * @param schemaName the name of the schema whose syntaxCheckers will be removed
+     * @param schemaName the name of the schema whose SchemaObjects will be removed from
      */
     public void unregisterSchemaElements( String schemaName )
     {
@@ -317,6 +319,9 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
             {
                 String oid = schemaObject.getOid();
                 SchemaObject removed = byOid.remove( oid );
+                
+                // Also remove the description if any
+                oidToSpecification.remove( oid );
 
                 if ( DEBUG )
                 {
