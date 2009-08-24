@@ -50,21 +50,21 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
     /** a map of Normalizers looked up by OID or Name */
     protected final Map<String, T> byOid;
     
-    /** maps an OID to a SchemaObject Description */
-    private final Map<String, U> oidToDescription;
+    /** maps an OID to a SchemaObject specification */
+    private final Map<String, U> oidToSpecification;
 
     
     /** The SchemaObject type */
     protected SchemaObjectType type;
-    
-    
+
+
     /**
      * Creates a new SchemaObjectRegistry instance.
      */
     protected SchemaObjectRegistry( SchemaObjectType schemaObjectType )
     {
         byOid = new ConcurrentHashMap<String, T>();
-        oidToDescription = new ConcurrentHashMap<String, U>();
+        oidToSpecification = new ConcurrentHashMap<String, U>();
         type = schemaObjectType;
     }
     
@@ -127,7 +127,7 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
             if ( originalSchemaName.equalsIgnoreCase( schemaObject.getSchemaName() ) )
             {
                 schemaObject.setSchemaName( newSchemaName );
-                SchemaObject description = oidToDescription.get( schemaObject.getOid() );
+                SchemaObject description = oidToSpecification.get( schemaObject.getOid() );
                 
                 if ( description != null )
                 {
@@ -170,9 +170,9 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
      *
      * @return an Iterator of descriptions
      */
-    public Iterator<U> descriptionsIterator()
+    public Iterator<U> specificationsIterator()
     {
-        return oidToDescription.values().iterator();
+        return oidToSpecification.values().iterator();
     }
 
     
@@ -233,12 +233,12 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
     /**
      * Registers a new SchemaObject with this registry.
      *
-     * @param schemaObjectDescription The SchemaObject description to register
+     * @param schemaObjectSpecification The SchemaObject description to register
      * @param schemaObject the SchemaObject to register
      * @throws NamingException if the SchemaObject is already registered or
      * the registration operation is not supported
      */
-    public void register( U schemaObjectDescription, T schemaObject ) throws NamingException
+    public void register( U schemaObjectSpecification, T schemaObject ) throws NamingException
     {
         String oid = schemaObject.getOid();
         
@@ -262,7 +262,7 @@ public class SchemaObjectRegistry<T extends SchemaObject, U extends SchemaObject
         }
         
         // And register the description too
-        oidToDescription.put( oid, schemaObjectDescription );
+        oidToSpecification.put( oid, schemaObjectSpecification );
         
         if ( DEBUG )
         {
