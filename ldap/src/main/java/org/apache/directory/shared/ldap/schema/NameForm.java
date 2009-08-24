@@ -20,7 +20,15 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.naming.NamingException;
+
+import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
 /**
@@ -90,35 +98,70 @@ import javax.naming.NamingException;
  */
 public class NameForm extends SchemaObject
 {
-    /** A reference to all the registries */
-    private final Registries registries;
-    
-    /** The ObjectClass OID on which this NameForm is applied */
-    private String objectClassOid;
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
 
-    /** The list of MAY AttributeTypes OIDs */
-    private String[] mayUseOids = StringTools.EMPTY_STRINGS;
+    /** The structural object class this rule applies to */
+    private String structuralObjectClass;
     
-    /** The list of MAY AttributeTypes for this NameForm */
-    private AttributeType[] mayUse = EMPTY_ATTR_ARRAY;
-    
-    /** The list of MUST AttributeTypes OIDs */
-    private String[] mustUseOids = StringTools.EMPTY_STRINGS;
+    /** The set of required attributes for this name form */
+    private List<String> mustAttributeTypes;
 
-    /** The list of MUST AttributeTypes for this NameForm */
-    private AttributeType[] mustUse = EMPTY_ATTR_ARRAY;
+    /** The set of allowed attributes for this name form */
+    private List<String> mayAttributeTypes;
+    
+    /** The associated AttributeType registry */
+    private AttributeTypeRegistry atRegistry;
+    
+    /** The associated ObjectClass registry */
+    private ObjectClassRegistry ocRegistry;
+    
+
+    /**
+     * Creates a new instance of MatchingRule.
+     *
+     * @param oid The MatchingRule OID
+     * @param registries The Registries reference
+     */
+    public NameForm( String oid, Registries registries )
+    {
+        super( SchemaObjectType.NAME_FORM, oid );
+        
+        mustAttributeTypes = new ArrayList<String>();
+        mayAttributeTypes = new ArrayList<String>();
+        
+        if ( registries != null )
+        {
+            atRegistry = registries.getAttributeTypeRegistry();
+            ocRegistry = registries.getObjectClassRegistry();
+        }
+    }
+
 
     /**
      * Gets the STRUCTURAL ObjectClass this name form specifies naming
      * attributes for.
      * 
-     * @return the ObjectClass this NameForm is for
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * @return the ObjectClass's oid this NameForm is for
+     * @throws NamingException If the structuralObjectClass is invalid
      */
-    public ObjectClass getObjectClass() throws NamingException
+    public String getStructuralObjectClass() throws NamingException
     {
-        
+        return structuralObjectClass;
+    }
+
+
+    /**
+     * Sets the structural object class this rule applies to
+     * 
+     * @param structuralObjectClass the structural object class to set
+     */
+    public void setStructuralObjectClass( String structuralObjectClass )
+    {
+        if ( !isReadOnly )
+        {
+            this.structuralObjectClass = structuralObjectClass;
+        }
     }
 
 
@@ -128,20 +171,112 @@ public class NameForm extends SchemaObject
      * Rdn.
      * 
      * @return the AttributeTypes of the must use attributes
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * @throws NamingException if there is a failure resolving one AttributeTyoe
      */
-    AttributeType[] getMustUse() throws NamingException;
+    public List<String> getMustAttributeTypes() throws NamingException
+    {
+        return Collections.unmodifiableList( mustAttributeTypes );
+        
+        /*
+        if ( mustAttributeTypes != null )
+        {
+            List<AttributeType> must = new ArrayList<AttributeType>();
+            
+            for ( String oid : mustAttributeTypes )
+            {
+                must.add( atRegistry.lookup( oid ) );
+            }
+            
+            return must;
+        }
+        
+        return null;
+        */
+    }
 
 
+    /**
+     * Sets the list of required AttributeTypes
+     *
+     * @param mustAttributeTypes the list of required AttributeTypes
+     */
+    public void setMustAttributeTypes( List<String> mustAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mustAttributeTypes = mustAttributeTypes;
+        }
+    }
+
+
+    /**
+     * Add a required AttribyuteType
+     *
+     * @param oid The attributeType oid
+     */
+    public void addMustAttributeType( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            mustAttributeTypes.add( oid );
+        }
+    }
+
+    
     /**
      * Gets all the AttributeTypes of the attribute this NameForm specifies as
      * being useable without requirement in the given objectClass for naming: as
      * part of the Rdn.
      * 
      * @return the AttributeTypes of the may use attributes
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * @throws NamingException if there is a failure resolving one AttributeTyoe
      */
-    AttributeType[] getMayUse() throws NamingException;
+    public List<String> getMayAttributeTypes() throws NamingException
+    {
+        return Collections.unmodifiableList( mayAttributeTypes );
+        
+        /*
+        if ( mayAttributeTypes != null )
+        {
+            List<AttributeType> may = new ArrayList<AttributeType>();
+            
+            for ( String oid : mayAttributeTypes )
+            {
+                may.add( atRegistry.lookup( oid ) );
+            }
+            
+            return may;
+        }
+        
+        return null;
+        */
+    }
+    
+    
+    /**
+     * Sets the list of allowed AttributeTypes
+     *
+     * @param mustAttributeTypes the list of allowed AttributeTypes
+     */
+    public void setMayAttributeTypes( List<String> mayAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mayAttributeTypes = mayAttributeTypes;
+        }
+    }
+    
+    
+    /**
+     * Add an allowed AttribyuteType
+     *
+     * @param oid The attributeType oid
+     */
+    public void addMayAttributeType( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            mayAttributeTypes.add( oid );
+        }
+    }
 }
