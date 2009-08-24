@@ -63,7 +63,7 @@ public class DITStructureRuleDescription extends SchemaObject
 
 
     /**
-     *  @return The associated NameForm' OID
+     *  @return The associated NameForm's OID
      */
     public String getForm()
     {

@@ -21,10 +21,17 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.schema.parsers.DITStructureRuleDescription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -33,32 +40,165 @@ import org.apache.directory.shared.ldap.schema.DITStructureRule;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureRule>
+public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureRule, DITStructureRuleDescription>
 {
+    /** static class logger */
+    private static final Logger LOG = LoggerFactory.getLogger( DITStructureRuleRegistry.class );
+
+    /** A speedup for debug */
+    private static final boolean DEBUG = LOG.isDebugEnabled();
+    
+    /** a map of DITStructureRule looked up by RuleId */
+    protected final Map<Integer, DITStructureRule> byRuleId;
+    
+    /** maps an RuleId to a DITStructureRuleDescription Description */
+    private final Map<Integer, DITStructureRuleDescription> ruleIdToDescription;
+    
     /**
-     * Registers a DITStructureRule with this registry.
-     * 
-     * @param dITStructureRule the dITStructureRule to register
-     * @throws NamingException if the DITStructureRule is already registered
-     * or the registration operation is not supported
+     * Creates a new default NormalizerRegistry instance.
      */
-    void register( DITStructureRule dITStructureRule ) throws NamingException;
+    public DITStructureRuleRegistry()
+    {
+        super( SchemaObjectType.DIT_STRUCTURE_RULE );
+        byRuleId = new ConcurrentHashMap<Integer, DITStructureRule>();
+        ruleIdToDescription = new ConcurrentHashMap<Integer, DITStructureRuleDescription>();
+    }
 
 
     /**
-     * Looks up an dITStructureRule using a composite key composed of the
-     * nameForm object identifier with a DOT and the rule id of the 
-     * DITStructureRule appended to it.  If the name form object identifier
-     * is 1.2.3.4 and the rule identifier is 5 then the OID used for the 
-     * lookup is 1.2.3.4.5.
+     * Checks to see if an DITStructureRule exists in the registry, by its
+     * ruleId. 
      * 
-     * @param id the nameForm object identifier with rule identifier appended
-     * @return the DITStructureRule instance for the id
-     * @throws NamingException if the DITStructureRule does not exist
+     * @param oid the object identifier or name of the DITStructureRule
+     * @return true if a DITStructureRule definition exists for the ruleId, false
+     * otherwise
      */
-    DITStructureRule lookup( String id ) throws NamingException;
+    public boolean contains( int ruleId )
+    {
+        return byRuleId.containsKey( ruleId );
+    }
+
+    
+    /**
+     * Gets an iterator over the registered descriptions in the registry.
+     *
+     * @return an Iterator of descriptions
+     */
+    public Iterator<DITStructureRuleDescription> descriptionsIterator()
+    {
+        return ruleIdToDescription.values().iterator();
+    }
+
+    
+    /**
+     * Gets an iterator over the registered descriptions in the registry.
+     *
+     * @return an Iterator of descriptions
+     */
+    public Iterator<DITStructureRule> iterator()
+    {
+        return byRuleId.values().iterator();
+    }
+    
+    
+    /**
+     * Gets an iterator over the registered ruleId in the registry.
+     *
+     * @return an Iterator of ruleId
+     */
+    public Iterator<Integer> ruleIdIterator()
+    {
+        return byRuleId.keySet().iterator();
+    }
+    
+    
+    /**
+     * Gets the name of the schema this schema object is associated with.
+     *
+     * @param id the object identifier or the name
+     * @return the schema name
+     * @throws NamingException if the schema object does not exist
+     */
+    public String getSchemaName( int ruleId ) throws NamingException
+    {
+        DITStructureRule ditStructureRule = byRuleId.get( ruleId );
+
+        if ( ditStructureRule != null )
+        {
+            return ditStructureRule.getSchemaName();
+        }
+        
+        String msg = "RuleId " + ruleId + " not found in ruleId to schema name map!";
+        LOG.warn( msg );
+        throw new NamingException( msg );
+    }
+
+    
+    /**
+     * Registers a new DITStructureRule with this registry.
+     *
+     * @param ditStructureRule the DITStructureRule to register
+     * @throws NamingException if the DITStructureRule is already registered or
+     * the registration operation is not supported
+     */
+    public void register( DITStructureRule ditStructureRule ) throws NamingException
+    {
+        int ruleId = ditStructureRule.getRuleId();
+        
+        if ( byRuleId.containsKey( ruleId ) )
+        {
+            String msg = "DITStructureRule with RuleId " + ruleId + " already registered!";
+            LOG.warn( msg );
+            throw new NamingException( msg );
+        }
+
+        byRuleId.put( ruleId, ditStructureRule );
+        
+        if ( LOG.isDebugEnabled() )
+        {
+            LOG.debug( "registered {} for OID {}", ditStructureRule, ruleId );
+        }
+    }
+
+    
+    /**
+     * Registers a new DITStructureRule with this registry.
+     *
+     * @param ditStructureRuleDescription the DITStructureRuleDescription to register
+     * @param ditStructureRule the DITStructureRule to register
+     * @throws NamingException if the DITStructureRule is already registered or
+     * the registration operation is not supported
+     */
+    public void register( DITStructureRuleDescription ditStructureRuleDescription, DITStructureRule ditStructureRule ) throws NamingException
+    {
+        int ruleId = ditStructureRule.getRuleId();
+        
+        if ( byRuleId.containsKey( ruleId ) )
+        {
+            String msg = "DITStructureRule with RuleId " + ruleId + " already registered!";
+            LOG.warn( msg );
+            throw new NamingException( msg );
+        }
+
+        byRuleId.put( ruleId, ditStructureRule );
+        
+        // Stores the description
+        ruleIdToDescription.put( ruleId, ditStructureRuleDescription );
+
+        if ( LOG.isDebugEnabled() )
+        {
+            LOG.debug( "registered {} with ruleId {}", ditStructureRuleDescription, ruleId );
+        }
+    }
 
 
+    
+    
+    
+    
+    
+    
+    
     /**
      * Looks up an dITStructureRule by its unique Object IDentifier or by its
      * name.
@@ -67,45 +207,106 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
      * @return the DITStructureRule instance for rule identifier
      * @throws NamingException if the DITStructureRule does not exist
      */
-    DITStructureRule lookup( Integer ruleId ) throws NamingException;
+    public DITStructureRule lookup( int ruleId ) throws NamingException
+    {
+        DITStructureRule ditStructureRule = byRuleId.get( ruleId );
+
+        if ( ditStructureRule == null )
+        {
+            String msg = "DITStructureRule for ruleId " + ruleId + " does not exist!";
+            LOG.debug( msg );
+            throw new NamingException( msg );
+        }
+
+        if ( DEBUG )
+        {
+            LOG.debug( "Found {} with ruleId: {}", ditStructureRule, ruleId );
+        }
+        
+        return ditStructureRule;
+    }
 
 
-    /**
-     * Checks to see if an dITStructureRule exists using the object identifier
-     * of the nameForm appended with the rule identifier of the DITStructureRule.
-     * 
-     * @param id the object identifier of the nameForm with the rule Id appended
-     * @return true if an dITStructureRule definition exists for the id, false
-     * otherwise
-     */
-    boolean hasDITStructureRule( String id );
-
-
-    /**
-     * Checks to see if an dITStructureRule exists using the rule identifier.
-     * 
-     * @param ruleId the rule identifier for the DITStructureRule.
-     * @return true if an dITStructureRule definition exists for the id, false
-     * otherwise
-     */
-    boolean hasDITStructureRule( Integer ruleId );
-
-    
     /**
      * Unregisters a DITStructureRule using it's rule identifier. 
      * 
      * @param ruleId the rule identifier for the DITStructureRule to unregister
      * @throws NamingException if no such DITStructureRule exists
      */
-    void unregister( Integer ruleId ) throws NamingException;
+    public void unregister( int ruleId ) throws NamingException
+    {
+        DITStructureRule ditStructureRule = byRuleId.remove( ruleId );
+        
+        ruleIdToDescription.remove( ruleId );
+
+        if ( DEBUG )
+        {
+            LOG.debug( "Removed {} with ruleId {} from the registry", ditStructureRule, ruleId );
+        }
+    }
     
     
     /**
-     * Gets the schema name for a DITStructureRule using the rule identifier. 
+     * Unregisters all DITStructureRules defined for a specific schema from
+     * this registry.
      * 
-     * @param ruleId the rule identifier for the DITStructureRule
-     * @return the schema name for the DITStructureRule
-     * @throws NamingException if no such rule could be found
+     * @param schemaName the name of the schema whose syntaxCheckers will be removed from
      */
-    String getSchemaName( Integer ruleId ) throws NamingException;
+    public void unregisterSchemaElements( String schemaName )
+    {
+        if ( schemaName == null )
+        {
+            return;
+        }
+        
+        // Loop on all the SchemaObjects stored and remove those associated
+        // with the give schemaName
+        for ( DITStructureRule ditStructureRule : this )
+        {
+            if ( schemaName.equalsIgnoreCase( ditStructureRule.getSchemaName() ) )
+            {
+                int ruleId = ditStructureRule.getRuleId();
+                SchemaObject removed = byRuleId.remove( ruleId );
+                
+                // Also remove the description if any
+                ruleIdToDescription.remove( ruleId );
+
+                if ( DEBUG )
+                {
+                    LOG.debug( "Removed {} with ruleId {} from the registry", removed, ruleId );
+                }
+            }
+        }
+    }
+
+    
+    /**
+     * Modify all the DITStructureRule using a schemaName when this name changes.
+     *
+     * @param originalSchemaName The original Schema name
+     * @param newSchemaName The new Schema name
+     */
+    public void renameSchema( String originalSchemaName, String newSchemaName )
+    {
+        // Loop on all the SchemaObjects stored and remove those associated
+        // with the give schemaName
+        for ( DITStructureRule ditStructureRule : this )
+        {
+            if ( originalSchemaName.equalsIgnoreCase( ditStructureRule.getSchemaName() ) )
+            {
+                ditStructureRule.setSchemaName( newSchemaName );
+                SchemaObject description = ruleIdToDescription.get( ditStructureRule.getRuleId() );
+                
+                if ( description != null )
+                {
+                    description.setSchemaName( newSchemaName );
+                }
+
+                if ( DEBUG )
+                {
+                    LOG.debug( "Renamed {} schemaName to {}", ditStructureRule, newSchemaName );
+                }
+            }
+        }
+    }
 }

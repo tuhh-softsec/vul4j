@@ -20,7 +20,10 @@
 package org.apache.directory.shared.ldap.schema;
 
 
-import javax.naming.NamingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.directory.shared.ldap.NotImplementedException;
 
 
 /**
@@ -77,35 +80,108 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface DITStructureRule extends SchemaObject
+public class DITStructureRule extends SchemaObject
 {
-    /**
-     * Gets the rule identifier for this DITStructureRule.
-     * 
-     * @return the rule identifier 
-     */
-    Integer getRuleId();
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** The rule ID. A DSR does not have an OID */
+    private int ruleId;
     
-    
+    /** The associated NameForm */
+    private String form;
+
+    /** The list of superiors rules */
+    private List<Integer> superRules;
+
     /**
-     * The nameForm associating this ditStructureRule with a structural
-     * objectClass.
-     * 
-     * @return the nameForm for the structural objectClass
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * Creates a new instance of DITStructureRule
      */
-    NameForm getNameForm() throws NamingException;
+    public DITStructureRule( int ruleId )
+    {
+        super(  SchemaObjectType.DIT_STRUCTURE_RULE, null );
+        this.ruleId = ruleId;
+        form = null;
+        superRules = new ArrayList<Integer>();
+    }
 
 
     /**
-     * Gets a collection of all the superior StructureRules. The difference with
-     * getSuperClass is this method will resolve the entire superior class
-     * chain.
-     * 
-     * @return the chain of StructureRules
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     *  @return The associated NameForm's OID
      */
-    DITStructureRule[] getSuperClasses() throws NamingException;
+    public String getForm()
+    {
+        return form;
+    }
+
+
+    /**
+     * Sets the associated NameForm's OID
+     *
+     * @param form The NameForm's OID
+     */
+    public void setForm( String form )
+    {
+        this.form = form;
+    }
+
+
+    /**
+     * @return The Rule ID
+     */
+    public int getRuleId()
+    {
+        return ruleId;
+    }
+
+
+    /**
+     * Sets the rule identifier of this DIT structure rule;
+     *
+     * @param ruleId the rule identifier of this DIT structure rule;
+     */
+    public void setRuleId( int ruleId )
+    {
+        this.ruleId = ruleId;
+    }
+
+
+    /**
+     * @return The list of superiors RuleIDs
+     */
+    public List<Integer> getSuperRules()
+    {
+        return superRules;
+    }
+
+
+    /**
+     * Sets the list of superior RuleIds
+     * 
+     * @param superRules the list of superior RuleIds
+     */
+    public void setSuperRules( List<Integer> superRules )
+    {
+        this.superRules = superRules;
+    }
+
+
+    /**
+     * Adds a new superior RuleId
+     *
+     * @param superRule The superior RuleID to add
+     */
+    public void addSuperRule( Integer superRule )
+    {
+        superRules.add( superRule );
+    }
+    
+    
+    /**
+     * The DSR does not have an OID, so throw an exception
+     */
+    public String getOid()
+    {
+        throw new NotImplementedException(); 
+    }
 }

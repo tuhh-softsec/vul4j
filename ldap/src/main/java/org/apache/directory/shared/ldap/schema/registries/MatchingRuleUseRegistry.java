@@ -20,11 +20,9 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleUseDescription;
 
 
 /**
@@ -35,34 +33,13 @@ import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface MatchingRuleUseRegistry extends SchemaObjectRegistry<MatchingRuleUse>
+public class MatchingRuleUseRegistry extends SchemaObjectRegistry<MatchingRuleUse, MatchingRuleUseDescription>
 {
     /**
-     * Registers a MatchingRuleUse with this registry.
-     *
-     * @param matchingRuleUse the matchingRuleUse to register
-     * @throws NamingException if the MatchingRuleUse is already registered or
-     * the registration operation is not supported
+     * Creates a new default MatchingRuleUseRegistry instance.
      */
-    void register( MatchingRuleUse matchingRuleUse ) throws NamingException;
-
-
-    /**
-     * Looks up an matchingRuleUse by its name.
-     * 
-     * @param name the name of the matchingRuleUse
-     * @return the MatchingRuleUse instance for the name
-     * @throws NamingException if the MatchingRuleUse does not exist
-     */
-    MatchingRuleUse lookup( String name ) throws NamingException;
-
-    
-    /**
-     * Checks to see if an matchingRuleUse exists.
-     * 
-     * @param name the name of the matchingRuleUse
-     * @return true if an matchingRuleUse definition exists for the name, false
-     * otherwise
-     */
-    boolean hasMatchingRuleUse( String name );
+    public MatchingRuleUseRegistry()
+    {
+        super( SchemaObjectType.MATCHING_RULE_USE );
+    }
 }
