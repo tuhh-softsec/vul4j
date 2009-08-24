@@ -96,17 +96,17 @@ public class DITStructureRuleDescriptionSchemaParserTest
         // simple
         value = "( 1 FORM 1.1 )";
         dsrd = parser.parseDITStructureRuleDescription( value );
-        assertEquals( new Integer( 1 ), dsrd.getRuleId() );
+        assertEquals( 1, dsrd.getRuleId() );
 
         // simple
         value = "( 1234567890 FORM 1.1 )";
         dsrd = parser.parseDITStructureRuleDescription( value );
-        assertEquals( new Integer( 1234567890 ), dsrd.getRuleId() );
+        assertEquals( 1234567890, dsrd.getRuleId() );
 
         // simple with spaces
         value = "(      1234567890   FORM   1.1     )";
         dsrd = parser.parseDITStructureRuleDescription( value );
-        assertEquals( new Integer( 1234567890 ), dsrd.getRuleId() );
+        assertEquals( 1234567890, dsrd.getRuleId() );
 
         // non-numeric not allowed
         value = "( test FORM 1.1 )";
@@ -359,9 +359,9 @@ public class DITStructureRuleDescriptionSchemaParserTest
         value = "( 1234567890 NAME ( 'abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789' 'test' ) DESC 'Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577' OBSOLETE FORM 2.3.4.5.6.7.8.9.0.1 SUP ( 1 1234567890 5 ) X-TEST-a ('test1-1' 'test1-2') X-TEST-b ('test2-1' 'test2-2') )";
         dsrd = parser.parseDITStructureRuleDescription( value );
 
-        assertEquals( new Integer( 1234567890 ), dsrd.getRuleId() );
+        assertEquals( 1234567890, dsrd.getRuleId() );
         assertEquals( 2, dsrd.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", dsrd.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-0123456789", dsrd.getNames().get( 0 ) );
         assertEquals( "test", dsrd.getNames().get( 1 ) );
         assertEquals( "Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577", dsrd.getDescription() );
         assertTrue( dsrd.isObsolete() );

@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,12 +38,16 @@ import antlr.TokenStreamException;
  */
 public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( NormalizerDescriptionSchemaParser.class );
+
 
     /**
      * Creates a schema parser instance.
      */
     public NormalizerDescriptionSchemaParser()
     {
+        super();
     }
 
 
@@ -74,6 +81,7 @@ public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
 
         if ( normalizerDescription == null )
         {
+            LOG.error( "Cannot parse a null Normalizer description" );
             throw new ParseException( "Null", 0 );
         }
 
@@ -86,15 +94,17 @@ public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on normalizer description:\n\t" + normalizerDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
+            String msg = "Parser failure on normalizer description:\n\t" + normalizerDescription +
+                "\nAntlr message: " + re.getMessage() +
+                "\nAntlr column: " + re.getColumn();
+            LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on normalizer description:\n\t" + normalizerDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
+            String msg = "Parser failure on normalizer description:\n\t" + normalizerDescription +
+                "\nAntlr message: " + tse.getMessage();
+            LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
 

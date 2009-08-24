@@ -665,13 +665,13 @@ ditContentRuleDescription returns [DITContentRuleDescription dcrd = new DITConte
      * ruleid = number
      * </pre>
     */
-ditStructureRuleDescription returns [DITStructureRuleDescription dsrd = new DITStructureRuleDescription()]
+ditStructureRuleDescription returns [DITStructureRuleDescription dsrd]
     {
         matchedProduction( "ditStructureRuleDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( ruleid:STARTNUMERICOID { dsrd.setRuleId(ruleid(ruleid.getText())); } )
+    ( ruleid:STARTNUMERICOID { dsrd = new DITStructureRuleDescription(ruleid(ruleid.getText())); } )
     (
         ( name:NAME { et.track("NAME", name); dsrd.setNames(qdescrs(name.getText())); } )
         |

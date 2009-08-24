@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,12 +38,16 @@ import antlr.TokenStreamException;
  */
 public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( DITStructureRuleDescriptionSchemaParser.class );
+
 
     /**
      * Creates a schema parser instance.
      */
     public DITStructureRuleDescriptionSchemaParser()
     {
+        super();
     }
 
 
@@ -72,6 +79,7 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
 
         if ( ditStructureRuleDescription == null )
         {
+            LOG.error( "Cannot parse a null DITStructureRule description" );
             throw new ParseException( "Null", 0 );
         }
 
@@ -84,24 +92,31 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on DIT structure rule description:\n\t" + ditStructureRuleDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
+            String msg = "Parser failure on DIT structure rule description:\n\t" + ditStructureRuleDescription +
+                "\nAntlr message: " + re.getMessage() +
+                "\nAntlr column: " + re.getColumn();
+            LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on DIT structure rule description:\n\t" + ditStructureRuleDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
+            String msg = "Parser failure on DIT structure rule description:\n\t" + ditStructureRuleDescription +
+                "\nAntlr message: " + tse.getMessage();
+            LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
 
     }
 
 
-    public AbstractSchemaDescription parse( String schemaDescription ) throws ParseException
+    /**
+     * Parses a DITStructureRule description
+     * 
+     * @param The DITStructureRule description to parse
+     * @return An instance of SyntaxCheckerDescription
+     */
+    public DITStructureRuleDescription parse( String schemaDescription ) throws ParseException
     {
         return parseDITStructureRuleDescription( schemaDescription );
     }
-
 }

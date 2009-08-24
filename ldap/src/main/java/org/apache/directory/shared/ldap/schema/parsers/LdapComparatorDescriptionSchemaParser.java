@@ -81,7 +81,7 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
         
         if ( comparatorDescription == null )
         {
-            LOG.error( "Cannot parse a null string" );
+            LOG.error( "Cannot parse a null LdapComparator description" );
             throw new ParseException( "Null", 0 );
         }
 
