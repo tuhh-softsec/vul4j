@@ -361,7 +361,7 @@ public class DITStructureRuleDescriptionSchemaParserTest
 
         assertEquals( 1234567890, dsrd.getRuleId() );
         assertEquals( 2, dsrd.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-0123456789", dsrd.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", dsrd.getNames().get( 0 ) );
         assertEquals( "test", dsrd.getNames().get( 1 ) );
         assertEquals( "Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577", dsrd.getDescription() );
         assertTrue( dsrd.isObsolete() );
