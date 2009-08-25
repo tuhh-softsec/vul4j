@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.schema.parsers;
 import java.text.ParseException;
 
 import org.apache.directory.shared.ldap.schema.NameForm;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,13 +69,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed NameForm bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized NameForm parseNameFormDescription( String nameFormDescription )
-        throws ParseException
-    {
-        return parseNameFormDescription( nameFormDescription, null );
-    }
-
-    public synchronized NameForm parseNameFormDescription( String nameFormDescription, Registries registries )
+    public synchronized NameForm parseNameFormDescription( String nameFormDescription)
         throws ParseException
     {
 
@@ -90,8 +83,8 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-            NameForm nf = parser.nameFormDescription( registries );
-            return nf;
+            NameForm nameForm = parser.nameFormDescription();
+            return nameForm;
         }
         catch ( RecognitionException re )
         {
@@ -117,20 +110,8 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
      * @param The NameForm description to parse
      * @return An instance of NameForm
      */
-    public NameForm parse( String schemaDescription, Registries registries ) throws ParseException
-    {
-        return parseNameFormDescription( schemaDescription, registries );
-    }
-
-
-    /**
-     * Parses a NameForm description
-     * 
-     * @param The NameForm description to parse
-     * @return An instance of NameForm
-     */
     public NameForm parse( String schemaDescription ) throws ParseException
     {
-        return parseNameFormDescription( schemaDescription, null );
+        return parseNameFormDescription( schemaDescription );
     }
 }
