@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
-import org.apache.directory.shared.ldap.schema.parsers.DITContentRuleDescription;
+import org.apache.directory.shared.ldap.schema.DITContentRule;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -615,32 +615,32 @@ matchingRuleUseDescription returns [MatchingRuleUse matchingRuleUse]
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-ditContentRuleDescription returns [DITContentRuleDescription dcrd = new DITContentRuleDescription()]
+ditContentRuleDescription returns [DITContentRule ditContentRule]
     {
         matchedProduction( "ditContentRuleDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { dcrd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { ditContentRule = new DITContentRule(numericoid(oid.getText())); } )
     (
-        ( name:NAME { et.track("NAME", name); dcrd.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); ditContentRule.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); dcrd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); ditContentRule.setDescription(qdstring(desc.getText())); } )
         |
-        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); dcrd.setObsolete( true ); } )
+        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); ditContentRule.setObsolete( true ); } )
         |
-        ( aux:AUX { et.track("AUX", aux); dcrd.setAuxiliaryObjectClasses(oids(aux.getText())); } )
+        ( aux:AUX { et.track("AUX", aux); ditContentRule.setAuxObjectClassOids(oids(aux.getText())); } )
         |
-        ( must:MUST { et.track("MUST", must); dcrd.setMustAttributeTypes(oids(must.getText())); } )
+        ( must:MUST { et.track("MUST", must); ditContentRule.setMustAttributeTypeOids(oids(must.getText())); } )
         |
-        ( may:MAY { et.track("MAY", may); dcrd.setMayAttributeTypes(oids(may.getText())); } )
+        ( may:MAY { et.track("MAY", may); ditContentRule.setMayAttributeTypeOids(oids(may.getText())); } )
         |
-        ( not:NOT { et.track("NOT", not); dcrd.setNotAttributeTypes(oids(not.getText())); } )
+        ( not:NOT { et.track("NOT", not); ditContentRule.setNotAttributeTypeOids(oids(not.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            dcrd.addExtension(ex.key, ex.values); 
+            ditContentRule.addExtension(ex.key, ex.values); 
          } )
     )*
     RPAR
