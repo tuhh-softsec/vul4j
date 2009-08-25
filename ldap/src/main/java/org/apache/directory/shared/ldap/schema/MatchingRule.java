@@ -111,7 +111,7 @@ public class MatchingRule extends SchemaObject
      *
      * @param registries The Registries
      */
-    public void setRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( Registries registries ) throws NamingException
     {
         if ( registries != null )
         {

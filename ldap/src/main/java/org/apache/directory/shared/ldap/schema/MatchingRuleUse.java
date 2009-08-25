@@ -20,7 +20,13 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.naming.NamingException;
+
+import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
 /**
@@ -84,38 +90,78 @@ public class MatchingRuleUse extends SchemaObject
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** The list of attributes types the matching rule applies to */
-    private List<String> applicableAttributes;
+    /** The list of attributes types OID the matching rule applies to */
+    private List<String> applicableAttributeOids;
 
+    /** The list of attributes types the matching rule applies to */
+    private List<AttributeType> applicableAttributes;
+    
     /**
      * Creates a new instance of MatchingRuleUseDescription
      */
     public MatchingRuleUse( String oid )
     {
         super(  SchemaObjectType.MATCHING_RULE_USE, oid );
+        
+        applicableAttributeOids = new ArrayList<String>();
     }
     
 
+
+
     /**
-     * @return The matchingRule's list of Attribute types the MRU applies to
+     * Inject the registries into this Object, updating the references to
+     * other SchemaObject
+     *
+     * @param registries The Registries
      */
-    public List<String> getApplicableAttributes()
+    public void applyRegistries( Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
+            
+            if ( applicableAttributeOids != null )
+            {
+                applicableAttributes = new ArrayList<AttributeType>( applicableAttributeOids.size() );
+                
+                for ( String oid : applicableAttributeOids )
+                {
+                    applicableAttributes.add( atRegistry.lookup( oid ) );
+                }
+            }
+        }
+    }
+
+    
+    /**
+     * @return The matchingRule's list of AttributeType OIDs the MRU applies to
+     */
+    public List<String> getApplicableAttributeOids()
+    {
+        return applicableAttributeOids;
+    }
+
+
+    /**
+     * @return The matchingRule's list of AttributeType OIDs the MRU applies to
+     */
+    public List<AttributeType> getApplicableAttributes()
     {
         return applicableAttributes;
     }
 
 
     /**
-     * Set the matchingRule's Attribute types the MRU applies to. description
+     * Set the matchingRule's AttributeType OIDs the MRU applies to. description
      *
-     * @param applicableAttributes The Attribute types list
+     * @param applicableAttributes The AttributeType OIDs list
      */
-    public void setApplicableAttributes( List<String> applicableAttributes )
+    public void setApplicableAttributeOids( List<String> applicableAttributeOids )
     {
         if ( !isReadOnly )
         {
-            this.applicableAttributes = applicableAttributes;
+            this.applicableAttributeOids = applicableAttributeOids;
         }
     }
-    
 }

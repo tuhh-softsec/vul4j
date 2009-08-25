@@ -22,6 +22,11 @@ package org.apache.directory.shared.ldap.schema;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.registries.LdapSyntaxRegistry;
+import org.apache.directory.shared.ldap.schema.registries.MatchingRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
+
 
 /**
  * An attributeType specification. attributeType specifications describe the
@@ -129,97 +134,410 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface AttributeType extends SchemaObject
+public class AttributeType extends SchemaObject
 {
+    /** The serialVersionUID */
+    public static final long serialVersionUID = 1L;
+    
+    /** The syntax OID associated with this AttributeType */
+    private String syntaxOid;
+    
+    /** The syntax associated with the syntaxID */
+    private LdapSyntax syntax;
+    
+    /** The equality OID associated with this AttributeType */
+    private String equalityOid;
+
+    /** The equality MatchingRule associated with the equalityID */
+    private MatchingRule equality;
+    
+    /** The substring OID associated with this AttributeType */
+    private String substrOid;
+
+    /** The substring MatchingRule associated with the substringID */
+    private MatchingRule substr;
+    
+    /** The ordering OID associated with this AttributeType */
+    private String orderingOid;
+    
+    /** The ordering MatchingRule associated with the orderingID */
+    private MatchingRule ordering;
+    
+    /** The superior AttributeType OID */
+    private String supOid;
+    
+    /** The superior AttributeType */
+    private AttributeType sup;
+    
+    /** whether or not this type is single valued */
+    private boolean isSingleValue = false;
+
+    /** whether or not this type is a collective attribute */
+    private boolean isCollective = false;
+
+    /** whether or not this type can be modified by directory users */
+    private boolean canUserModify = true;
+
+    /** the usage for this attributeType */
+    private UsageEnum usage = UsageEnum.USER_APPLICATIONS;
+
+    /** the length of this attribute in bytes */
+    private int length = -1;
+    
+    /**
+     * Creates a AttributeType object using a unique OID.
+     * 
+     * @param oid the OID for this AttributeType
+     */
+    public AttributeType( String oid )
+    {
+        super( SchemaObjectType.ATTRIBUTE_TYPE, oid );
+    }
+    
+    
+    /**
+     * Inject the registries into this Object, updating the references to
+     * other SchemaObject
+     *
+     * @param registries The Registries
+     */
+    public void applyRegistries( Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
+            
+            sup = atRegistry.lookup( supOid );
+            
+            MatchingRuleRegistry mrRegistry = registries.getMatchingRuleRegistry();
+            
+            equality = mrRegistry.lookup( equalityOid );
+            ordering = mrRegistry.lookup( orderingOid );
+            substr = mrRegistry.lookup( substrOid );
+            
+            LdapSyntaxRegistry lsRegistry = registries.getLdapSyntaxRegistry();
+            
+            syntax = lsRegistry.lookup( syntaxOid );
+            
+        }
+    }
+    
+    
     /**
      * Gets whether or not this AttributeType is single-valued.
      * 
      * @return true if only one value can exist for this AttributeType, false
      *         otherwise
      */
-    boolean isSingleValue();
+    public boolean isSingleValue()
+    {
+        return isSingleValue;
+    }
 
 
+    /**
+     * Tells if this AttributeType is SIngle Valued or not
+     *
+     * @param singleValue True if the AttributeType is single-vlaued
+     */
+    public void setSingleValue( boolean singleValue )
+    {
+        if ( !isReadOnly )
+        {
+            this.isSingleValue = singleValue;
+        }
+    }
+
+    
     /**
      * Gets whether or not this AttributeType can be modified by a user.
      * 
      * @return true if users can modify it, false if only the directory can.
      */
-    boolean isCanUserModify();
+    public boolean isCanUserModify()
+    {
+        return canUserModify;
+    }
 
+    
+    /**
+     * Tells if this AttributeType can be modified by a user or not
+     *
+     * @param canUserModify The flag to set
+     */
+    public void setCanUserModify( boolean canUserModify )
+    {
+        if ( !isReadOnly )
+        {
+            this.canUserModify = canUserModify;
+        }
+    }
+    
+    
 
     /**
      * Gets whether or not this AttributeType is a collective attribute.
      * 
      * @return true if the attribute is collective, false otherwise
      */
-    boolean isCollective();
+    public boolean isCollective()
+    {
+        return isCollective;
+    }
 
 
+    /**
+     * Tells if this AttributeType is a collective attribute or not
+     *
+     * @param collective True if the AttributeType is collective
+     */
+    public void setCollective( boolean collective )
+    {
+        if ( !isReadOnly )
+        {
+            this.isCollective = collective;
+        }
+    }
+    
+    
     /**
      * Determines the usage for this AttributeType.
      * 
      * @return a type safe UsageEnum
      */
-    UsageEnum getUsage();
+    public UsageEnum getUsage()
+    {
+        return usage;
+    }
 
 
     /**
-     * Gets the name of the superior class for this AttributeType.
-     * 
-     * @return the super class for this AttributeType
-     * @throws NamingException
-     *             if there is a failure to resolve the superior
+     * Sets the AttributeType usage, one of :<br>
+     * <li>USER_APPLICATIONS
+     * <li>DIRECTORY_OPERATION
+     * <li>DISTRIBUTED_OPERATION
+     * <li>DSA_OPERATION
+     * <br>
+     * @see UsageEnum
+     * @param usage The AttributeType usage
      */
-    AttributeType getSuperior() throws NamingException, NamingException;
-
-
-    /**
-     * The Syntax for this AttributeType's values.
-     * 
-     * @return the value syntax
-     * @throws NamingException
-     *             if there is a failure to resolve the syntax
-     */
-    LdapSyntax getSyntax() throws NamingException;
-
+    public void setUsage( UsageEnum usage )
+    {
+        if ( !isReadOnly )
+        {
+            this.usage = usage;
+        }
+    }
+    
 
     /**
      * Gets a length limit for this AttributeType.
      * 
      * @return the length of the attribute
      */
-    int getLength();
+    public int getLength()
+    {
+        return length;
+    }
+    
+    
+    /**
+     * Sets the length limit of this AttributeType based on its associated
+     * syntax.
+     * 
+     * @param length the new length to set
+     */
+    public void setLength( int length )
+    {
+        if ( !isReadOnly )
+        {
+            this.length = length;
+        }
+    }
+    
+    
+    /**
+     * Gets the the superior AttributeType of this AttributeType.
+     * 
+     * @return the superior AttributeType for this AttributeType
+     */
+    public AttributeType getSup()
+    {
+        return sup;
+    }
+
+    
+    /**
+     * Gets the OID of the superior AttributeType for this AttributeType.
+     * 
+     * @return The OID of the superior AttributeType for this AttributeType.
+     */
+    public String getSupOid()
+    {
+        return supOid;
+    }
+
+    
+    /**
+     * Sets the superior AttributeType OID of this AttributeType
+     *
+     * @param superiorOid The superior AttributeType OID of this AttributeType
+     */
+    public void setSuperiorOid( String superiorOid ) throws NamingException
+    {
+        if ( !isReadOnly )
+        {
+            this.supOid = superiorOid;
+        }
+    }
 
 
+    /**
+     * Gets the Syntax for this AttributeType's values.
+     * 
+     * @return the value syntax
+     */
+    public LdapSyntax getSyntax()
+    {
+        return syntax;
+    }
+
+
+    /**
+     * Gets the Syntax OID for this AttributeType's values.
+     * 
+     * @return the value syntax's OID
+     */
+    public String getSyntaxOid()
+    {
+        return syntaxOid;
+    }
+
+
+    /**
+     * Sets the Syntax OID for this AttributeType
+     *
+     * @param superiorOid The syntax OID for this AttributeType
+     * @throws NamingException if there is a failure to resolve the matchingRule
+     */
+    public void setSyntaxOid( String syntaxOid ) throws NamingException
+    {
+        if ( !isReadOnly )
+        {
+            this.syntaxOid = syntaxOid;
+        }
+    }
+
+    
     /**
      * Gets the MatchingRule for this AttributeType used for equality matching.
      * 
      * @return the equality matching rule
-     * @throws NamingException
-     *             if there is a failure to resolve the matchingRule
      */
-    MatchingRule getEquality() throws NamingException;
+    public MatchingRule getEquality()
+    {
+        return equality;
+    }
 
 
     /**
-     * Gets the MatchingRule for this AttributeType used for ordering.
+     * Gets the Equality OID for this AttributeType's values.
      * 
-     * @return the ordering matching rule
-     * @throws NamingException
-     *             if there is a failure to resolve the matchingRule
+     * @return the value Equality's OID
      */
-    MatchingRule getOrdering() throws NamingException;
+    public String getEqualityOid()
+    {
+        return equalityOid;
+    }
 
 
     /**
-     * Gets the MatchingRule for this AttributeType used for substring matching.
-     * 
-     * @return the substring matching rule
-     * @throws NamingException
-     *             if there is a failure to resolve the matchingRule
+     * Sets the Equality OID for this AttributeType
+     *
+     * @param equalityOid The Equality OID for this AttributeType
+     * @throws NamingException if there is a failure to resolve the matchingRule
      */
-    MatchingRule getSubstr() throws NamingException;
+    public void setEqualityOid( String equalityOid ) throws NamingException
+    {
+        if ( !isReadOnly )
+        {
+            this.equalityOid = equalityOid;
+        }
+    }
+    
+
+    /**
+     * Gets the MatchingRule for this AttributeType used for Ordering matching.
+     * 
+     * @return the Ordering matching rule
+     */
+    public MatchingRule getOrdering()
+    {
+        return ordering;
+    }
+
+
+    /**
+     * Gets the Ordering OID for this AttributeType's values.
+     * 
+     * @return the value Equality's OID
+     */
+    public String getOrderingOid()
+    {
+        return orderingOid;
+    }
+
+
+    /**
+     * Sets the Ordering OID for this AttributeType
+     *
+     * @param orderingOid The Ordering OID for this AttributeType
+     * @throws NamingException if there is a failure to resolve the matchingRule
+     */
+    public void setOrderingOid( String orderingOid ) throws NamingException
+    {
+        if ( !isReadOnly )
+        {
+            this.orderingOid = orderingOid;
+        }
+    }
+
+    
+    /**
+     * Gets the MatchingRule for this AttributeType used for Substr matching.
+     * 
+     * @return the Substr matching rule
+     */
+    public MatchingRule getSubstr()
+    {
+        return substr;
+    }
+
+
+    /**
+     * Gets the Substr OID for this AttributeType's values.
+     * 
+     * @return the value Substr's OID
+     */
+    public String getSubstrOid()
+    {
+        return substrOid;
+    }
+
+
+    /**
+     * Sets the Substr OID for this AttributeType
+     *
+     * @param substrOid The Substr OID for this AttributeType
+     * @throws NamingException if there is a failure to resolve the matchingRule
+     */
+    public void setSubstrOid( String substrOid ) throws NamingException
+    {
+        if ( !isReadOnly )
+        {
+            this.substrOid = substrOid;
+        }
+    }
 
 
     /**
@@ -230,9 +548,17 @@ public interface AttributeType extends SchemaObject
      * @return true if the descendant is truely a derived from this AttributeType
      * @throws NamingException if there are problems resolving superior types
      */
-    boolean isAncestorOf( AttributeType descendant ) throws NamingException;
+    public boolean isAncestorOf( AttributeType descendant ) throws NamingException
+    {
+        if ( ( descendant == null ) || this.equals( descendant ) )
+        {
+            return false;
+        }
 
+        return isAncestorOrEqual( this, descendant );
+    }
 
+    
     /**
      * Checks to see if this AttributeType is the descendant of another
      * attributeType.
@@ -241,5 +567,41 @@ public interface AttributeType extends SchemaObject
      * @return true if this AttributeType truely descends from the ancestor
      * @throws NamingException if there are problems resolving superior types
      */
-    boolean isDescendantOf( AttributeType ancestor ) throws NamingException;
+    public boolean isDescendantOf( AttributeType ancestor ) throws NamingException
+    {
+        if ( ( ancestor == null ) || equals( ancestor ) )
+        {
+            return false;
+        }
+
+        return isAncestorOrEqual( ancestor, this );
+    }
+
+
+    
+    
+    /**
+     * Recursive method which checks to see if a descendant is really an ancestor or if the two
+     * are equal.
+     *
+     * @param ancestor the possible ancestor of the descendant
+     * @param descendant the possible descendant of the ancestor
+     * @return true if the ancestor equals the descendant or if the descendant is really
+     * a subtype of the ancestor. otherwise false
+     * @throws NamingException if there are issues with superior attribute resolution
+     */
+    private boolean isAncestorOrEqual( AttributeType ancestor, AttributeType descendant ) throws NamingException
+    {
+        if ( ( ancestor == null ) || ( descendant == null ) )
+        {
+            return false;
+        }
+
+        if ( ancestor.equals( descendant ) )
+        {
+            return true;
+        }
+
+        return isAncestorOrEqual( ancestor, descendant.getSup() );
+    }
 }

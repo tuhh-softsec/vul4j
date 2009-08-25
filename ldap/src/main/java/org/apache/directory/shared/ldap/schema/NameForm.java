@@ -27,7 +27,6 @@ import java.util.List;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -119,12 +118,6 @@ public class NameForm extends SchemaObject
     /** The set of allowed AttributeTypes for this name form */
     private List<AttributeType> mayAttributeTypes;
     
-    /** The associated AttributeType registry */
-    private AttributeTypeRegistry atRegistry;
-    
-    /** The associated ObjectClass registry */
-    private ObjectClassRegistry ocRegistry;
-    
 
     /**
      * Creates a new instance of MatchingRule.
@@ -151,9 +144,9 @@ public class NameForm extends SchemaObject
     {
         if ( registries != null )
         {
-            atRegistry = registries.getAttributeTypeRegistry();
-            ocRegistry = registries.getObjectClassRegistry();
-            structuralObjectClass = ocRegistry.lookup( structuralObjectClassOid );
+            AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
+
+            structuralObjectClass = registries.getObjectClassRegistry().lookup( structuralObjectClassOid );
             
             if ( mayAttributeTypeOids != null )
             {

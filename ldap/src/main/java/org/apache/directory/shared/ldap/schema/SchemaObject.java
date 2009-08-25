@@ -141,7 +141,10 @@ public class SchemaObject implements Serializable
      */
     public void changeOid( String oid )
     {
-        this.oid = oid;
+        if ( !isReadOnly )
+        {
+            this.oid = oid;
+        }
     }
     
     

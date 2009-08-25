@@ -122,7 +122,10 @@ public class DITStructureRule extends SchemaObject
      */
     public void setForm( String form )
     {
-        this.form = form;
+        if ( !isReadOnly )
+        {
+            this.form = form;
+        }
     }
 
 
@@ -142,7 +145,10 @@ public class DITStructureRule extends SchemaObject
      */
     public void setRuleId( int ruleId )
     {
-        this.ruleId = ruleId;
+        if ( !isReadOnly )
+        {
+            this.ruleId = ruleId;
+        }
     }
 
 
@@ -162,7 +168,10 @@ public class DITStructureRule extends SchemaObject
      */
     public void setSuperRules( List<Integer> superRules )
     {
-        this.superRules = superRules;
+        if ( !isReadOnly )
+        {
+            this.superRules = superRules;
+        }
     }
 
 
