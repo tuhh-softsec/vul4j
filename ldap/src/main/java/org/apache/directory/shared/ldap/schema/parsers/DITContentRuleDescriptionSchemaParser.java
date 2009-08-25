@@ -22,6 +22,10 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.ldap.schema.DITContentRule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,6 +39,9 @@ import antlr.TokenStreamException;
  */
 public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( DITContentRuleDescriptionSchemaParser.class );
+
 
     /**
      * Creates a schema parser instance.
@@ -64,12 +71,13 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed DITContentRuleDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized DITContentRuleDescription parseDITContentRuleDescription( String ditContentRuleDescription )
+    public synchronized DITContentRule parseDITContentRuleDescription( String ditContentRuleDescription )
         throws ParseException
     {
 
         if ( ditContentRuleDescription == null )
         {
+            LOG.error( "Cannot parse a null DITContentRule" );
             throw new ParseException( "Null", 0 );
         }
 
@@ -77,27 +85,35 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-            DITContentRuleDescription dcrd = parser.ditContentRuleDescription();
-            return dcrd;
+            DITContentRule ditContentRule = parser.ditContentRuleDescription();
+            return ditContentRule;
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on DIT content rule description:\n\t" + ditContentRuleDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
+            String msg = "Parser failure on DIT content rule description:\n\t" + ditContentRuleDescription +
+                "\nAntlr message: " + re.getMessage() +
+                "\nAntlr column: " + re.getColumn();
+            LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on DIT content rule description:\n\t" + ditContentRuleDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
+            String msg = "Parser failure on DIT content rule description:\n\t" + ditContentRuleDescription +
+                "\nAntlr message: " + tse.getMessage();
+            LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
 
     }
 
 
-    public AbstractSchemaDescription parse( String schemaDescription ) throws ParseException
+    /**
+     * Parses a DITContentRule description
+     * 
+     * @param The DITContentRule description to parse
+     * @return An instance of DITContentRule
+     */
+    public DITContentRule parse( String schemaDescription ) throws ParseException
     {
         return parseDITContentRuleDescription( schemaDescription );
     }

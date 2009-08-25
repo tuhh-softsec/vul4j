@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,7 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
      * @return the parsed DITStructureRuleDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized DITStructureRuleDescription parseDITStructureRuleDescription( String ditStructureRuleDescription )
+    public synchronized DITStructureRule parseDITStructureRuleDescription( String ditStructureRuleDescription )
         throws ParseException
     {
 
@@ -87,8 +88,8 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
 
         try
         {
-            DITStructureRuleDescription dsrd = parser.ditStructureRuleDescription();
-            return dsrd;
+            DITStructureRule ditStructureRule = parser.ditStructureRuleDescription();
+            return ditStructureRule;
         }
         catch ( RecognitionException re )
         {
@@ -113,9 +114,9 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
      * Parses a DITStructureRule description
      * 
      * @param The DITStructureRule description to parse
-     * @return An instance of SyntaxCheckerDescription
+     * @return An instance of DITStructureRule
      */
-    public DITStructureRuleDescription parse( String schemaDescription ) throws ParseException
+    public DITStructureRule parse( String schemaDescription ) throws ParseException
     {
         return parseDITStructureRuleDescription( schemaDescription );
     }

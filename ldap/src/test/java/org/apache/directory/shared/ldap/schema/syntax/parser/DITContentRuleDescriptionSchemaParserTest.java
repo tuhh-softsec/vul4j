@@ -482,7 +482,7 @@ public class DITContentRuleDescriptionSchemaParserTest
 
     /**
      * Tests the multithreaded use of a single parser.
-     */
+     *
     @Test
     public void testMultiThreaded() throws ParseException
     {
