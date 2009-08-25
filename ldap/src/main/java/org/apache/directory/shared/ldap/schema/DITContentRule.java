@@ -169,6 +169,38 @@ public class DITContentRule extends SchemaObject
         return auxObjectClassOids;
     }
 
+    
+    /**
+     * Add an Auxiliary ObjectClass Oid
+     *
+     * @param oid The ObjectClass oid
+     */
+    public void addAuxObjectClassOidOids( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            auxObjectClassOids.add( oid );
+        }
+    }
+
+
+    /**
+     * Add an Auxiliary ObjectClass
+     *
+     * @param oid The ObjectClass
+     */
+    public void addAuxObjectClasses( ObjectClass objectClass )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! auxObjectClassOids.contains( objectClass.getOid() ) )
+            {
+                auxObjectClasses.add( objectClass );
+                auxObjectClassOids.add( objectClass.getOid() );
+            }
+        }
+    }
+    
 
     /**
      * @param auxObjectClassOids the auxObjectClassOids to set
@@ -182,6 +214,26 @@ public class DITContentRule extends SchemaObject
     }
 
 
+    /**
+     * @param auxObjectClasses the auxObjectClasses to set
+     */
+    public void setAuxObjectClasses( List<ObjectClass> auxObjectClasses )
+    {
+        if ( !isReadOnly )
+        {
+            this.auxObjectClasses = auxObjectClasses;
+            
+            // update the OIDS now
+            auxObjectClassOids.clear();
+            
+            for ( ObjectClass oc : auxObjectClasses )
+            {
+                auxObjectClassOids.add( oc.getOid() );
+            }
+        }
+    }
+    
+    
     /**
      * @return the auxObjectClasses
      */
@@ -201,6 +253,38 @@ public class DITContentRule extends SchemaObject
 
 
     /**
+     * Add an allowed AttributeType
+     *
+     * @param oid The attributeType oid
+     */
+    public void addMayAttributeTypeOids( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            mayAttributeTypeOids.add( oid );
+        }
+    }
+
+
+    /**
+     * Add an allowed AttributeType
+     *
+     * @param attributeType The attributeType
+     */
+    public void addMayAttributeTypes( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! mayAttributeTypeOids.contains( attributeType.getOid() ) )
+            {
+                mayAttributeTypes.add( attributeType );
+                mayAttributeTypeOids.add( attributeType.getOid() );
+            }
+        }
+    }
+
+    
+    /**
      * @param mayAttributeTypeOids the mayAttributeTypeOids to set
      */
     public void setMayAttributeTypeOids( List<String> mayAttributeTypeOids )
@@ -208,6 +292,28 @@ public class DITContentRule extends SchemaObject
         if ( !isReadOnly )
         {
             this.mayAttributeTypeOids = mayAttributeTypeOids;
+        }
+    }
+    
+    
+    /**
+     * Sets the list of allowed AttributeTypes
+     *
+     * @param mayAttributeTypes the list of allowed AttributeTypes
+     */
+    public void setMayAttributeTypes( List<AttributeType> mayAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mayAttributeTypes = mayAttributeTypes;
+            
+            // update the OIDS now
+            mayAttributeTypeOids.clear();
+            
+            for ( AttributeType may : mayAttributeTypes )
+            {
+                mayAttributeTypeOids.add( may.getOid() );
+            }
         }
     }
 
@@ -229,6 +335,38 @@ public class DITContentRule extends SchemaObject
         return mustAttributeTypeOids;
     }
 
+    
+    /**
+     * Add a required AttributeType OID
+     *
+     * @param oid The attributeType OID
+     */
+    public void addMustAttributeTypeOids( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            mustAttributeTypeOids.add( oid );
+        }
+    }
+
+
+    /**
+     * Add a required AttributeType
+     *
+     * @param attributeType The attributeType
+     */
+    public void addMustAttributeTypes( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! mustAttributeTypeOids.contains( attributeType.getOid() ) )
+            {
+                mustAttributeTypes.add( attributeType );
+                mustAttributeTypeOids.add( attributeType.getOid() );
+            }
+        }
+    }
+
 
     /**
      * @param mustAttributeTypeOids the mustAttributeTypeOids to set
@@ -238,6 +376,28 @@ public class DITContentRule extends SchemaObject
         if ( !isReadOnly )
         {
             this.mustAttributeTypeOids = mustAttributeTypeOids;
+        }
+    }
+
+    
+    /**
+     * Sets the list of required AttributeTypes
+     *
+     * @param mayAttributeTypes the list of required AttributeTypes
+     */
+    public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mustAttributeTypes = mustAttributeTypes;
+            
+            // update the OIDS now
+            mustAttributeTypeOids.clear();
+            
+            for ( AttributeType may : mustAttributeTypes )
+            {
+                mustAttributeTypeOids.add( may.getOid() );
+            }
         }
     }
 
@@ -261,6 +421,38 @@ public class DITContentRule extends SchemaObject
 
 
     /**
+     * Add a precluded AttributeType
+     *
+     * @param oid The attributeType oid
+     */
+    public void addNotAttributeTypeOids( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            notAttributeTypeOids.add( oid );
+        }
+    }
+
+
+    /**
+     * Add a precluded AttributeType
+     *
+     * @param attributeType The attributeType
+     */
+    public void addNotAttributeTypes( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! notAttributeTypeOids.contains( attributeType.getOid() ) )
+            {
+                notAttributeTypes.add( attributeType );
+                notAttributeTypeOids.add( attributeType.getOid() );
+            }
+        }
+    }
+
+
+    /**
      * @param notAttributeTypeOids the notAttributeTypeOids to set
      */
     public void setNotAttributeTypeOids( List<String> notAttributeTypeOids )
@@ -268,6 +460,28 @@ public class DITContentRule extends SchemaObject
         if ( !isReadOnly )
         {
             this.notAttributeTypeOids = notAttributeTypeOids;
+        }
+    }
+
+    
+    /**
+     * Sets the list of precluded AttributeTypes
+     *
+     * @param mayAttributeTypes the list of precluded AttributeTypes
+     */
+    public void setNotAttributeTypes( List<AttributeType> notAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.notAttributeTypes = notAttributeTypes;
+            
+            // update the OIDS now
+            notAttributeTypeOids.clear();
+            
+            for ( AttributeType not : notAttributeTypes )
+            {
+                notAttributeTypeOids.add( not.getOid() );
+            }
         }
     }
 

@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
 import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
-import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescription;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.parsers.ObjectClassDescription;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 import org.apache.directory.shared.ldap.schema.syntaxChecker.OpenLdapObjectIdentifierMacro;
@@ -246,7 +246,7 @@ options    {
 
 openLdapSchema returns [List<Object> list = new ArrayList<Object>()]
     {
-        AttributeTypeDescription atd = null;
+        AttributeType attributeType = null;
         ObjectClassDescription ocd = null;
         OpenLdapObjectIdentifierMacro oloid = null;
     }
@@ -254,7 +254,7 @@ openLdapSchema returns [List<Object> list = new ArrayList<Object>()]
     (
         oloid = openLdapObjectIdentifier { list.add( oloid ); }
         |
-        atd = openLdapAttributeType { list.add( atd ); }
+        attributeType = openLdapAttributeType { list.add( attributeType ); }
         |
         ocd = openLdapObjectClass { list.add( ocd ); }
     )*
@@ -289,14 +289,14 @@ openLdapObjectClass returns [ObjectClassDescription ocd]
     ;
     
     
-openLdapAttributeType returns [AttributeTypeDescription atd]
+openLdapAttributeType returns [AttributeType attributeType]
     {
         matchedProduction( "openLdapAttributeType()" );
     }
     :
     (
         ATTRIBUTETYPE
-        ( atd=attributeTypeDescription )
+        ( attributeType=attributeTypeDescription )
     )
     ;
 
@@ -390,54 +390,54 @@ objectClassDescription returns [ObjectClassDescription ocd = new ObjectClassDesc
      * xstring = "X" HYPHEN 1*( ALPHA / HYPHEN / USCORE ) 
      * </pre>
     */
-attributeTypeDescription returns [AttributeTypeDescription atd = new AttributeTypeDescription()]
+attributeTypeDescription returns [AttributeType attributeType]
     {
         matchedProduction( "attributeTypeDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { atd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { attributeType = new AttributeType(numericoid(oid.getText())); } )
     (
-        ( name:NAME { et.track("NAME", name); atd.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); attributeType.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); atd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); attributeType.setDescription(qdstring(desc.getText())); } )
         |
-        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); atd.setObsolete( true ); } )
+        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); attributeType.setObsolete( true ); } )
         |
-        ( sup:SUP { et.track("SUP", sup); atd.setSuperType(oid(sup.getText())); } )
+        ( sup:SUP { et.track("SUP", sup); attributeType.setSuperiorOid(oid(sup.getText())); } )
         |
-        ( equality:EQUALITY { et.track("EQUALITY", equality); atd.setEqualityMatchingRule(oid(equality.getText())); } )
+        ( equality:EQUALITY { et.track("EQUALITY", equality); attributeType.setEqualityOid(oid(equality.getText())); } )
         |
-        ( ordering:ORDERING { et.track("ORDERING", ordering); atd.setOrderingMatchingRule(oid(ordering.getText())); } )
+        ( ordering:ORDERING { et.track("ORDERING", ordering); attributeType.setOrderingOid(oid(ordering.getText())); } )
         |
-        ( substr:SUBSTR { et.track("SUBSTR", substr); atd.setSubstringsMatchingRule(oid(substr.getText())); } )
+        ( substr:SUBSTR { et.track("SUBSTR", substr); attributeType.setSubstrOid(oid(substr.getText())); } )
         |
         ( syntax:SYNTAX { 
            et.track("SYNTAX", syntax); 
             NoidLen noidlen = noidlen(syntax.getText());
-            atd.setSyntax(noidlen.noid); 
-            atd.setSyntaxLength(noidlen.len);
+            attributeType.setSyntaxOid(noidlen.noid); 
+            attributeType.setLength(noidlen.len);
           } )
         |
-        ( singleValue:SINGLE_VALUE { et.track("SINGLE_VALUE", singleValue); atd.setSingleValued( true ); } )
+        ( singleValue:SINGLE_VALUE { et.track("SINGLE_VALUE", singleValue); attributeType.setSingleValue( true ); } )
         |
-        ( collective:COLLECTIVE { et.track("COLLECTIVE", collective); atd.setCollective( true ); } )
+        ( collective:COLLECTIVE { et.track("COLLECTIVE", collective); attributeType.setCollective( true ); } )
         |
-        ( noUserModification:NO_USER_MODIFICATION { et.track("NO_USER_MODIFICATION", noUserModification); atd.setUserModifiable( false ); } )
+        ( noUserModification:NO_USER_MODIFICATION { et.track("NO_USER_MODIFICATION", noUserModification); attributeType.setCanUserModify( false ); } )
         |
-        ( usage1:USAGE (WHSP)* USER_APPLICATIONS { et.track("USAGE", usage1); atd.setUsage( UsageEnum.USER_APPLICATIONS ); }
+        ( usage1:USAGE (WHSP)* USER_APPLICATIONS { et.track("USAGE", usage1); attributeType.setUsage( UsageEnum.USER_APPLICATIONS ); }
           |
-          usage2:USAGE DIRECTORY_OPERATION { et.track("USAGE", usage2); atd.setUsage( UsageEnum.DIRECTORY_OPERATION ); }
+          usage2:USAGE DIRECTORY_OPERATION { et.track("USAGE", usage2); attributeType.setUsage( UsageEnum.DIRECTORY_OPERATION ); }
           |
-          usage3:USAGE DISTRIBUTED_OPERATION { et.track("USAGE", usage3); atd.setUsage( UsageEnum.DISTRIBUTED_OPERATION ); } 
+          usage3:USAGE DISTRIBUTED_OPERATION { et.track("USAGE", usage3); attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION ); } 
           |
-          usage4:USAGE DSA_OPERATION { et.track("USAGE", usage4); atd.setUsage( UsageEnum.DSA_OPERATION ); } 
+          usage4:USAGE DSA_OPERATION { et.track("USAGE", usage4); attributeType.setUsage( UsageEnum.DSA_OPERATION ); } 
         )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            atd.addExtension(ex.key, ex.values); 
+            attributeType.addExtension(ex.key, ex.values); 
          } )
     )*    
     RPAR
@@ -451,13 +451,13 @@ attributeTypeDescription returns [AttributeTypeDescription atd = new AttributeTy
             }
         
             // COLLECTIVE requires USAGE userApplications
-            if ( atd.isCollective() && ( atd.getUsage() != UsageEnum.USER_APPLICATIONS ) )
+            if ( attributeType.isCollective() && ( attributeType.getUsage() != UsageEnum.USER_APPLICATIONS ) )
             {
                 throw new SemanticException( "COLLECTIVE requires USAGE userApplications", null, 0, 0 );
             }
         
             // NO-USER-MODIFICATION requires an operational USAGE.
-            if ( !atd.isUserModifiable() && ( atd.getUsage() == UsageEnum.USER_APPLICATIONS ) )
+            if ( !attributeType.isCanUserModify() && ( attributeType.getUsage() == UsageEnum.USER_APPLICATIONS ) )
             {
                 throw new SemanticException( "NO-USER-MODIFICATION requires an operational USAGE", null, 0, 0 );
             }
@@ -577,7 +577,7 @@ matchingRuleUseDescription returns [MatchingRuleUse matchingRuleUse]
         |
         ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); matchingRuleUse.setObsolete( true ); } )
         |
-        ( applies:APPLIES { et.track("APPLIES", applies); matchingRuleUse.setApplicableAttributes(oids(applies.getText())); } )
+        ( applies:APPLIES { et.track("APPLIES", applies); matchingRuleUse.setApplicableAttributeOids(oids(applies.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
@@ -733,7 +733,7 @@ nameFormDescription returns [NameForm nameForm]
         |
         ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); nameForm.setObsolete( true ); } )
         |
-        ( oc:OC { et.track("OC", oc); nameForm.setStructuralObjectClass(oid(oc.getText())); } )
+        ( oc:OC { et.track("OC", oc); nameForm.setStructuralObjectClassOid(oid(oc.getText())); } )
         |
         ( must:MUST { et.track("MUST", must); nameForm.setMustAttributeTypeOids(oids(must.getText())); } )
         |

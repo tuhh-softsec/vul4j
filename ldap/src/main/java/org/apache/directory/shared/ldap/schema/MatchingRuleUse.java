@@ -107,8 +107,6 @@ public class MatchingRuleUse extends SchemaObject
     }
     
 
-
-
     /**
      * Inject the registries into this Object, updating the references to
      * other SchemaObject
@@ -153,7 +151,7 @@ public class MatchingRuleUse extends SchemaObject
 
 
     /**
-     * Set the matchingRule's AttributeType OIDs the MRU applies to. description
+     * Set the matchingRule's AttributeType OIDs the MRU applies to.
      *
      * @param applicableAttributes The AttributeType OIDs list
      */
@@ -164,4 +162,62 @@ public class MatchingRuleUse extends SchemaObject
             this.applicableAttributeOids = applicableAttributeOids;
         }
     }
+    
+    
+    /**
+     * Set the matchingRule's AttributeType the MRU applies to.
+     *
+     * @param applicableAttributes The AttributeType list
+     */
+    public void setApplicableAttributes( List<AttributeType> applicableAttributes )
+    {
+        if ( !isReadOnly )
+        {
+            this.applicableAttributes = applicableAttributes;
+            
+            // update the OIDS now
+            applicableAttributeOids.clear();
+            
+            for ( AttributeType at : applicableAttributes )
+            {
+                applicableAttributeOids.add( at.getOid() );
+            }
+        }
+    }
+    
+    
+    /**
+     * Add a matchingRule's AttributeType OIDs the MRU applies to.
+     *
+     * @param oid A matchingRule's AttributeType OIDs the MRU applies to
+     */
+    public void addApplicableAttributeOids( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            if ( !applicableAttributeOids.contains( oid ) )
+            {
+                applicableAttributeOids.add( oid );
+            }
+        }
+    }
+
+
+    /**
+     * Add a matchingRule's AttributeType the MRU applies to.
+     *
+     * @param oid A matchingRule's AttributeType the MRU applies to
+     */
+    public void addApplicableAttribute( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! applicableAttributeOids.contains( attributeType.getOid() ) )
+            {
+                applicableAttributes.add( attributeType );
+                applicableAttributeOids.add( attributeType.getOid() );
+            }
+        }
+    }
+    
 }

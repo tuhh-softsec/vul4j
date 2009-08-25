@@ -164,6 +164,22 @@ public class MatchingRule extends SchemaObject
         }
     }
 
+    
+    /**
+     * Sets the Syntax
+     *
+     * @param oid The Syntax
+     */
+    public void setSyntax( LdapSyntax ldapSyntax )
+    {
+        if ( !isReadOnly )
+        {
+            this.ldapSyntax = ldapSyntax;
+            this.ldapSyntaxOid = ldapSyntax.getOid();
+        }
+    }
+
+
     /**
      * Gets the LdapComparator enabling the use of this MatchingRule for ORDERING
      * and sorted indexing.
@@ -178,6 +194,20 @@ public class MatchingRule extends SchemaObject
 
 
     /**
+     * Sets the LdapComparator
+     *
+     * @param oid The LdapComparator
+     */
+    public void setLdapComparator( LdapComparator<? super Object> ldapComparator )
+    {
+        if ( !isReadOnly )
+        {
+            this.ldapComparator = ldapComparator;
+        }
+    }
+
+
+    /**
      * Gets the Normalizer enabling the use of this MatchingRule for EQUALITY
      * matching and indexing.
      * 
@@ -188,4 +218,20 @@ public class MatchingRule extends SchemaObject
     {
         return normalizer;
     }
+
+
+    /**
+     * Sets the Normalizer
+     *
+     * @param oid The Normalizer
+     */
+    public void setNormalizer( Normalizer normalizer )
+    {
+        if ( !isReadOnly )
+        {
+            this.normalizer = normalizer;
+        }
+    }
+
+
 }

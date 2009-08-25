@@ -182,7 +182,7 @@ public class AttributeType extends SchemaObject
     private UsageEnum usage = UsageEnum.USER_APPLICATIONS;
 
     /** the length of this attribute in bytes */
-    private int length = -1;
+    private int length = 0;
     
     /**
      * Creates a AttributeType object using a unique OID.
@@ -383,11 +383,26 @@ public class AttributeType extends SchemaObject
      *
      * @param superiorOid The superior AttributeType OID of this AttributeType
      */
-    public void setSuperiorOid( String superiorOid ) throws NamingException
+    public void setSuperiorOid( String superiorOid )
     {
         if ( !isReadOnly )
         {
             this.supOid = superiorOid;
+        }
+    }
+    
+
+    /**
+     * Sets the superior for this AttributeType
+     *
+     * @param superior The superior for this AttributeType
+     */
+    public void setSuperior( AttributeType superior )
+    {
+        if ( !isReadOnly )
+        {
+            this.sup = superior;
+            this.supOid = superior.getOid();
         }
     }
 
@@ -418,13 +433,27 @@ public class AttributeType extends SchemaObject
      * Sets the Syntax OID for this AttributeType
      *
      * @param superiorOid The syntax OID for this AttributeType
-     * @throws NamingException if there is a failure to resolve the matchingRule
      */
-    public void setSyntaxOid( String syntaxOid ) throws NamingException
+    public void setSyntaxOid( String syntaxOid )
     {
         if ( !isReadOnly )
         {
             this.syntaxOid = syntaxOid;
+        }
+    }
+    
+
+    /**
+     * Sets the Syntax for this AttributeType
+     *
+     * @param syntax The Syntax for this AttributeType
+     */
+    public void setSyntax( LdapSyntax syntax )
+    {
+        if ( !isReadOnly )
+        {
+            this.syntax = syntax;
+            this.syntaxOid = syntax.getOid();
         }
     }
 
@@ -455,13 +484,27 @@ public class AttributeType extends SchemaObject
      * Sets the Equality OID for this AttributeType
      *
      * @param equalityOid The Equality OID for this AttributeType
-     * @throws NamingException if there is a failure to resolve the matchingRule
      */
-    public void setEqualityOid( String equalityOid ) throws NamingException
+    public void setEqualityOid( String equalityOid )
     {
         if ( !isReadOnly )
         {
             this.equalityOid = equalityOid;
+        }
+    }
+    
+
+    /**
+     * Sets the Equality MR for this AttributeType
+     *
+     * @param equality The Equality MR for this AttributeType
+     */
+    public void setEquality( MatchingRule equality )
+    {
+        if ( !isReadOnly )
+        {
+            this.equality = equality;
+            this.equalityOid = equality.getOid();
         }
     }
     
@@ -492,13 +535,27 @@ public class AttributeType extends SchemaObject
      * Sets the Ordering OID for this AttributeType
      *
      * @param orderingOid The Ordering OID for this AttributeType
-     * @throws NamingException if there is a failure to resolve the matchingRule
      */
-    public void setOrderingOid( String orderingOid ) throws NamingException
+    public void setOrderingOid( String orderingOid )
     {
         if ( !isReadOnly )
         {
             this.orderingOid = orderingOid;
+        }
+    }
+    
+
+    /**
+     * Sets the Ordering MR for this AttributeType
+     *
+     * @param ordering The Ordering MR for this AttributeType
+     */
+    public void setOrdering( MatchingRule ordering )
+    {
+        if ( !isReadOnly )
+        {
+            this.ordering = ordering;
+            this.orderingOid = ordering.getOid();
         }
     }
 
@@ -529,13 +586,27 @@ public class AttributeType extends SchemaObject
      * Sets the Substr OID for this AttributeType
      *
      * @param substrOid The Substr OID for this AttributeType
-     * @throws NamingException if there is a failure to resolve the matchingRule
      */
-    public void setSubstrOid( String substrOid ) throws NamingException
+    public void setSubstrOid( String substrOid )
     {
         if ( !isReadOnly )
         {
             this.substrOid = substrOid;
+        }
+    }
+    
+
+    /**
+     * Sets the Substr MR for this AttributeType
+     *
+     * @param substr The Substr MR for this AttributeType
+     */
+    public void setSubstr( MatchingRule substr )
+    {
+        if ( !isReadOnly )
+        {
+            this.substr = substr;
+            this.substrOid = substr.getOid();
         }
     }
 
@@ -545,10 +616,9 @@ public class AttributeType extends SchemaObject
      * attributeType.
      *
      * @param descendant the perspective descendant to check
-     * @return true if the descendant is truely a derived from this AttributeType
-     * @throws NamingException if there are problems resolving superior types
+     * @return true if the descendant is truly a derived from this AttributeType
      */
-    public boolean isAncestorOf( AttributeType descendant ) throws NamingException
+    public boolean isAncestorOf( AttributeType descendant )
     {
         if ( ( descendant == null ) || this.equals( descendant ) )
         {
@@ -564,10 +634,9 @@ public class AttributeType extends SchemaObject
      * attributeType.
      *
      * @param ancestor the perspective ancestor to check
-     * @return true if this AttributeType truely descends from the ancestor
-     * @throws NamingException if there are problems resolving superior types
+     * @return true if this AttributeType truly descends from the ancestor
      */
-    public boolean isDescendantOf( AttributeType ancestor ) throws NamingException
+    public boolean isDescendantOf( AttributeType ancestor )
     {
         if ( ( ancestor == null ) || equals( ancestor ) )
         {
@@ -588,9 +657,8 @@ public class AttributeType extends SchemaObject
      * @param descendant the possible descendant of the ancestor
      * @return true if the ancestor equals the descendant or if the descendant is really
      * a subtype of the ancestor. otherwise false
-     * @throws NamingException if there are issues with superior attribute resolution
      */
-    private boolean isAncestorOrEqual( AttributeType ancestor, AttributeType descendant ) throws NamingException
+    private boolean isAncestorOrEqual( AttributeType ancestor, AttributeType descendant )
     {
         if ( ( ancestor == null ) || ( descendant == null ) )
         {

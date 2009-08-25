@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -102,70 +103,70 @@ public class ParserDescriptionUtils
      * @param atd1 the second attributeType description to compare
      * @return true if both attributeType descriptions match exactly, false otherwise
      */
-    public static boolean attributeTypesMatch( AttributeTypeDescription atd0, AttributeTypeDescription atd1 )
+    public static boolean attributeTypesMatch( AttributeType at0, AttributeType at1 )
     {
         // compare all common description parameters
-        if ( ! descriptionsMatch( atd0, atd1 ) )
+        if ( ! descriptionsMatch( at0, at1 ) )
         {
             return false;
         }
 
         // check that the same super type is being used for both attributes
-        if ( ! atd0.getSuperType().equals( atd1.getSuperType() ) )
+        if ( ! at0.getSupOid().equals( at1.getSupOid() ) )
         {
             return false;
         }
         
         // check that the same matchingRule is used by both ATs for EQUALITY
-        if ( ! atd0.getEqualityMatchingRule().equals( atd1.getEqualityMatchingRule() ) )
+        if ( ! at0.getEqualityOid().equals( at1.getEqualityOid() ) )
         {
             return false;
         }
         
         // check that the same matchingRule is used by both ATs for SUBSTRING
-        if ( ! atd0.getSubstringsMatchingRule().equals( atd1.getSubstringsMatchingRule() ) )
+        if ( ! at0.getSubstrOid().equals( at1.getSubstrOid() ) )
         {
             return false;
         }
         
         // check that the same matchingRule is used by both ATs for ORDERING
-        if ( ! atd0.getOrderingMatchingRule().equals( atd1.getOrderingMatchingRule() ) )
+        if ( ! at0.getOrderingOid().equals( at1.getOrderingOid() ) )
         {
             return false;
         }
         
         // check that the same syntax is used by both ATs
-        if ( ! atd0.getSyntax().equals( atd1.getSyntax() ) )
+        if ( ! at0.getSyntaxOid().equals( at1.getSyntaxOid() ) )
         {
             return false;
         }
         
         // check that the syntax length constraint is the same for both
-        if ( atd0.getSyntaxLength() != atd1.getSyntaxLength() )
+        if ( at0.getLength() != at1.getLength() )
         {
             return false;
         }
         
         // check that the ATs have the same single valued flag value
-        if ( atd0.isSingleValued() != atd1.isSingleValued() )
+        if ( at0.isSingleValue() != at1.isSingleValue() )
         {
             return false;
         }
         
         // check that the ATs have the same collective flag value
-        if ( atd0.isCollective() != atd1.isCollective() )
+        if ( at0.isCollective() != at1.isCollective() )
         {
             return false;
         }
         
         // check that the ATs have the same user modifiable flag value
-        if ( atd0.isUserModifiable() != atd1.isUserModifiable() )
+        if ( at0.isCanUserModify() != at1.isCanUserModify() )
         {
             return false;
         }
         
         // check that the ATs have the same USAGE
-        if ( atd0.getUsage() != atd1.getUsage() )
+        if ( at0.getUsage() != at1.getUsage() )
         {
             return false;
         }

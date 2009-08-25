@@ -202,11 +202,26 @@ public class NameForm extends SchemaObject
      * 
      * @param structuralObjectClass the structural object class to set
      */
-    public void setStructuralObjectClass( String structuralObjectClassOid )
+    public void setStructuralObjectClassOid( String structuralObjectClassOid )
     {
         if ( !isReadOnly )
         {
             this.structuralObjectClassOid = structuralObjectClassOid;
+        }
+    }
+
+
+    /**
+     * Sets the structural object class this rule applies to
+     * 
+     * @param structuralObjectClass the structural object class to set
+     */
+    public void setStructuralObjectClass( ObjectClass structuralObjectClass )
+    {
+        if ( !isReadOnly )
+        {
+            this.structuralObjectClass = structuralObjectClass;
+            this.structuralObjectClassOid = structuralObjectClass.getOid();
         }
     }
 
@@ -252,7 +267,29 @@ public class NameForm extends SchemaObject
         }
     }
 
+    
+    /**
+     * Sets the list of required AttributeTypes
+     *
+     * @param mayAttributeTypes the list of required AttributeTypes
+     */
+    public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mustAttributeTypes = mustAttributeTypes;
+            
+            // update the OIDS now
+            mustAttributeTypeOids.clear();
+            
+            for ( AttributeType may : mustAttributeTypes )
+            {
+                mustAttributeTypeOids.add( may.getOid() );
+            }
+        }
+    }
 
+    
     /**
      * Add a required AttributeType OID
      *
@@ -266,6 +303,24 @@ public class NameForm extends SchemaObject
         }
     }
 
+
+    /**
+     * Add a required AttributeType
+     *
+     * @param attributeType The attributeType
+     */
+    public void addMustAttributeTypes( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! mustAttributeTypeOids.contains( attributeType.getOid() ) )
+            {
+                mustAttributeTypes.add( attributeType );
+                mustAttributeTypeOids.add( attributeType.getOid() );
+            }
+        }
+    }
+    
     
     /**
      * Gets all the AttributeTypes OIDs of the attribute this NameForm specifies as
@@ -310,7 +365,29 @@ public class NameForm extends SchemaObject
     
     
     /**
-     * Add an allowed AttribyuteType
+     * Sets the list of allowed AttributeTypes
+     *
+     * @param mayAttributeTypes the list of allowed AttributeTypes
+     */
+    public void setMayAttributeTypes( List<AttributeType> mayAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mayAttributeTypes = mayAttributeTypes;
+            
+            // update the OIDS now
+            mayAttributeTypeOids.clear();
+            
+            for ( AttributeType may : mayAttributeTypes )
+            {
+                mayAttributeTypeOids.add( may.getOid() );
+            }
+        }
+    }
+    
+    
+    /**
+     * Add an allowed AttributeType
      *
      * @param oid The attributeType oid
      */
@@ -319,6 +396,24 @@ public class NameForm extends SchemaObject
         if ( !isReadOnly )
         {
             mayAttributeTypeOids.add( oid );
+        }
+    }
+
+
+    /**
+     * Add an allowed AttributeType
+     *
+     * @param attributeType The attributeType
+     */
+    public void addMayAttributeTypes( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! mayAttributeTypeOids.contains( attributeType.getOid() ) )
+            {
+                mayAttributeTypes.add( attributeType );
+                mayAttributeTypeOids.add( attributeType.getOid() );
+            }
         }
     }
 }
