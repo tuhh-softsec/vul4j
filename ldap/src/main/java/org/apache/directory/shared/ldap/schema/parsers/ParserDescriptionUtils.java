@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 
 
@@ -180,16 +181,16 @@ public class ParserDescriptionUtils
      * @param mrd1 the second matchingRule description to compare
      * @return true if the matchingRules match exactly, false otherwise
      */
-    public static boolean matchingRulesMatch( MatchingRuleDescription mrd0, MatchingRuleDescription mrd1 )
+    public static boolean matchingRulesMatch( MatchingRule matchingRule0, MatchingRule matchingRule1 )
     {
         // compare all common description parameters
-        if ( ! descriptionsMatch( mrd0, mrd1 ) )
+        if ( ! descriptionsMatch( matchingRule0, matchingRule1 ) )
         {
             return false;
         }
 
         // check that the syntaxes of the matchingRules match
-        if ( ! mrd0.getSyntax().equals( mrd1.getSyntax() ) )
+        if ( ! matchingRule0.getSyntaxOid().equals( matchingRule1.getSyntaxOid() ) )
         {
             return false;
         }

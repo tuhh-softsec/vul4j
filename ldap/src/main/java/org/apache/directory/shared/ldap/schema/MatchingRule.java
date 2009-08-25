@@ -145,7 +145,7 @@ public class MatchingRule extends SchemaObject
      * @return the LdapSyntax of this MatchingRule
      * @throws NamingException if there is a failure resolving the object
      */
-    public String getSyntaxOid() throws NamingException
+    public String getSyntaxOid()
     {
         return ldapSyntaxOid;
     }

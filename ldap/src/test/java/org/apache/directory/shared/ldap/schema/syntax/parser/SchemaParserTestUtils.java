@@ -216,14 +216,14 @@ public class SchemaParserTestUtils
         value = "( " + oid + " " + required + " NAME 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )";
         asd = parser.parse( value );
         assertEquals( 1, asd.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", asd.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", asd.getNames().get( 0 ) );
 
         // alpha-num-hypen
         value = "( " + oid + " " + required
             + " NAME 'abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789' )";
         asd = parser.parse( value );
         assertEquals( 1, asd.getNames().size() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-0123456789", asd.getNames().get( 0 ) );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", asd.getNames().get( 0 ) );
 
         // with parentheses
         value = "( " + oid + " " + required + " NAME ( 'a-z-0-9' ) )";
