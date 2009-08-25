@@ -20,15 +20,8 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
-import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
-import org.apache.directory.shared.ldap.schema.parsers.ObjectClassDescription;
 
 
 /**
@@ -37,7 +30,7 @@ import org.apache.directory.shared.ldap.schema.parsers.ObjectClassDescription;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass, ObjectClassDescription>
+public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
 {
     /**
      * Creates a new default ObjectClassRegistry instance.
