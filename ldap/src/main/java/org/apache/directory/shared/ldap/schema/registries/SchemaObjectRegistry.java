@@ -262,4 +262,23 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
             }
         }
     }
+    
+    
+    /**
+     * Gets the numericOid associated to a name, if any
+     *
+     * @param name The name we are looking the oid for
+     * @return The numericOID associated with this name
+     */
+    public String getOid( String name )
+    {
+        T schemaObject = byOid.get( name );
+        
+        if ( schemaObject != null )
+        {
+            return schemaObject.getOid();
+        }
+        
+        return null;
+    }
 }
