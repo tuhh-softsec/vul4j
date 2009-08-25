@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed MatchingRuleUseDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized MatchingRuleUseDescription parseMatchingRuleUseDescription( String matchingRuleUseDescription )
+    public synchronized MatchingRuleUse parseMatchingRuleUseDescription( String matchingRuleUseDescription )
         throws ParseException
     {
 
@@ -84,8 +85,8 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-            MatchingRuleUseDescription mrud = parser.matchingRuleUseDescription();
-            return mrud;
+            MatchingRuleUse matchingRuleUse = parser.matchingRuleUseDescription();
+            return matchingRuleUse;
         }
         catch ( RecognitionException re )
         {
@@ -110,9 +111,9 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
      * Parses a MatchingRuleUse description
      * 
      * @param The MatchingRuleUse description to parse
-     * @return An instance of MatchingRuleUseDescription
+     * @return An instance of MatchingRuleUse
      */
-    public MatchingRuleUseDescription parse( String schemaDescription ) throws ParseException
+    public MatchingRuleUse parse( String schemaDescription ) throws ParseException
     {
         return parseMatchingRuleUseDescription( schemaDescription );
     }
