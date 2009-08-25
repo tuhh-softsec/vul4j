@@ -28,10 +28,10 @@ import java.util.Map;
 
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.apache.directory.shared.ldap.schema.parsers.DITContentRuleDescription;
-import org.apache.directory.shared.ldap.schema.parsers.DITStructureRuleDescription;
+import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleDescription;
-import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleUseDescription;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
 import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
@@ -514,26 +514,26 @@ ldapSyntaxDescription returns [LdapSyntax ldapSyntax]
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-matchingRuleDescription returns [MatchingRuleDescription mrd]
+matchingRuleDescription returns [MatchingRule matchingRule]
     {
         matchedProduction( "matchingRuleDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { mrd = new MatchingRuleDescription(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { matchingRule = new MatchingRule(numericoid(oid.getText())); } )
     (
-        ( name:NAME { et.track("NAME", name); mrd.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); matchingRule.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); mrd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); matchingRule.setDescription(qdstring(desc.getText())); } )
         |
-        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); mrd.setObsolete( true ); } )
+        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); matchingRule.setObsolete( true ); } )
         |
-        ( syntax:SYNTAX { et.track("SYNTAX", syntax); mrd.setSyntax(numericoid(syntax.getText())); } )
+        ( syntax:SYNTAX { et.track("SYNTAX", syntax); matchingRule.setSyntaxOid(numericoid(syntax.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            mrd.addExtension(ex.key, ex.values); 
+            matchingRule.addExtension(ex.key, ex.values); 
          } )
     )*
     RPAR
@@ -563,26 +563,26 @@ matchingRuleDescription returns [MatchingRuleDescription mrd]
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-matchingRuleUseDescription returns [MatchingRuleUseDescription mrud]
+matchingRuleUseDescription returns [MatchingRuleUse matchingRuleUse]
     {
         matchedProduction( "matchingRuleUseDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { mrud = new MatchingRuleUseDescription(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { matchingRuleUse = new MatchingRuleUse(numericoid(oid.getText())); } )
     (
-        ( name:NAME { et.track("NAME", name); mrud.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); matchingRuleUse.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); mrud.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); matchingRuleUse.setDescription(qdstring(desc.getText())); } )
         |
-        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); mrud.setObsolete( true ); } )
+        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); matchingRuleUse.setObsolete( true ); } )
         |
-        ( applies:APPLIES { et.track("APPLIES", applies); mrud.setApplicableAttributes(oids(applies.getText())); } )
+        ( applies:APPLIES { et.track("APPLIES", applies); matchingRuleUse.setApplicableAttributes(oids(applies.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            mrud.addExtension(ex.key, ex.values); 
+            matchingRuleUse.addExtension(ex.key, ex.values); 
          } )
     )*
     RPAR
@@ -666,28 +666,28 @@ ditContentRuleDescription returns [DITContentRuleDescription dcrd = new DITConte
      * ruleid = number
      * </pre>
     */
-ditStructureRuleDescription returns [DITStructureRuleDescription dsrd]
+ditStructureRuleDescription returns [DITStructureRule ditStructureRule]
     {
         matchedProduction( "ditStructureRuleDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( ruleid:STARTNUMERICOID { dsrd = new DITStructureRuleDescription(ruleid(ruleid.getText())); } )
+    ( ruleid:STARTNUMERICOID { ditStructureRule = new DITStructureRule(ruleid(ruleid.getText())); } )
     (
-        ( name:NAME { et.track("NAME", name); dsrd.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); ditStructureRule.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); dsrd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); ditStructureRule.setDescription(qdstring(desc.getText())); } )
         |
-        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); dsrd.setObsolete( true ); } )
+        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); ditStructureRule.setObsolete( true ); } )
         |
-        ( form:FORM { et.track("FORM", form); dsrd.setForm(oid(form.getText())); } )
+        ( form:FORM { et.track("FORM", form); ditStructureRule.setForm(oid(form.getText())); } )
         |
-        ( sup:SUP { et.track("SUP", sup); dsrd.setSuperRules(ruleids(sup.getText())); } )
+        ( sup:SUP { et.track("SUP", sup); ditStructureRule.setSuperRules(ruleids(sup.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            dsrd.addExtension(ex.key, ex.values); 
+            ditStructureRule.addExtension(ex.key, ex.values); 
          } )
     )*
     RPAR
@@ -719,13 +719,13 @@ ditStructureRuleDescription returns [DITStructureRuleDescription dsrd]
      *    extensions WSP RPAREN      ; extensions
      * </pre>
     */
-nameFormDescription [Registries registries] returns [NameForm nameForm]
+nameFormDescription returns [NameForm nameForm]
     {
         matchedProduction( "nameFormDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { nameForm = new NameForm(numericoid(oid.getText()), registries); } )
+    ( oid:STARTNUMERICOID { nameForm = new NameForm(numericoid(oid.getText())); } )
     (
         ( name:NAME { et.track("NAME", name); nameForm.setNames(qdescrs(name.getText())); } )
         |
@@ -735,9 +735,9 @@ nameFormDescription [Registries registries] returns [NameForm nameForm]
         |
         ( oc:OC { et.track("OC", oc); nameForm.setStructuralObjectClass(oid(oc.getText())); } )
         |
-        ( must:MUST { et.track("MUST", must); nameForm.setMustAttributeTypes(oids(must.getText())); } )
+        ( must:MUST { et.track("MUST", must); nameForm.setMustAttributeTypeOids(oids(must.getText())); } )
         |
-        ( may:MAY { et.track("MAY", may); nameForm.setMayAttributeTypes(oids(may.getText())); } )
+        ( may:MAY { et.track("MAY", may); nameForm.setMayAttributeTypeOids(oids(may.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());

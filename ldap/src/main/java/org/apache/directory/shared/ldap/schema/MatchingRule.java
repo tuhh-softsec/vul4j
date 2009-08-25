@@ -81,15 +81,6 @@ public class MatchingRule extends SchemaObject
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** The associated LdapSyntax registry */
-    //private final LdapSyntaxRegistry ldapSyntaxRegistry;
-    
-    /** The associated Comparator registry */
-    //private final ComparatorRegistry comparatorRegistry;
-
-    /** The associated Normalizer registry */
-    //private final NormalizerRegistry normalizerRegistry;
-    
     /** The associated Comparator */
     private LdapComparator<? super Object> ldapComparator;
 
@@ -99,21 +90,30 @@ public class MatchingRule extends SchemaObject
     /** The associated LdapSyntax */
     private LdapSyntax ldapSyntax;
     
+    /** The associated LdapSyntax OID */
+    private String ldapSyntaxOid;
+    
     /**
      * Creates a new instance of MatchingRule.
      *
      * @param oid The MatchingRule OID
      * @param registries The Registries reference
      */
-    protected MatchingRule( String oid, Registries registries )
+    public MatchingRule( String oid )
     {
         super( SchemaObjectType.MATCHING_RULE, oid );
-        
-        //ldapSyntaxRegistry = registries.getLdapSyntaxRegistry();
-        //normalizerRegistry = registries.getNormalizerRegistry();
-        //comparatorRegistry = registries.getComparatorRegistry();
+    }
 
-        try
+
+    /**
+     * Inject the registries into this Object, updating the references to
+     * other SchemaObject
+     *
+     * @param registries The Registries
+     */
+    public void setRegistries( Registries registries ) throws NamingException
+    {
+        if ( registries != null )
         {
             // Gets the associated C 
             ldapComparator = (LdapComparator<? super Object>)registries.getComparatorRegistry().lookup( oid );
@@ -124,24 +124,45 @@ public class MatchingRule extends SchemaObject
             // Gets the associated SC 
             ldapSyntax = registries.getLdapSyntaxRegistry().lookup( oid );
         }
-        catch ( NamingException ne )
-        {
-            // What can we do here ???
-        }
     }
-
-
+    
+    
     /**
      * Gets the LdapSyntax used by this MatchingRule.
      * 
      * @return the LdapSyntax of this MatchingRule
      * @throws NamingException if there is a failure resolving the object
      */
-    LdapSyntax getLdapSyntax() throws NamingException
+    public LdapSyntax getSyntax() throws NamingException
     {
         return ldapSyntax;
     }
 
+    
+    /**
+     * Gets the LdapSyntax OID used by this MatchingRule.
+     * 
+     * @return the LdapSyntax of this MatchingRule
+     * @throws NamingException if there is a failure resolving the object
+     */
+    public String getSyntaxOid() throws NamingException
+    {
+        return ldapSyntaxOid;
+    }
+
+    
+    /**
+     * Sets the Syntax's OID
+     *
+     * @param oid The Syntax's OID
+     */
+    public void setSyntaxOid( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            this.ldapSyntaxOid = oid;
+        }
+    }
 
     /**
      * Gets the LdapComparator enabling the use of this MatchingRule for ORDERING

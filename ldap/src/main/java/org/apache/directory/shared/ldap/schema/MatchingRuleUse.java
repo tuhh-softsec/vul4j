@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema;
 
 
-import javax.naming.NamingException;
+import java.util.List;
 
 
 /**
@@ -79,25 +79,43 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface MatchingRuleUse extends SchemaObject
+public class MatchingRuleUse extends SchemaObject
 {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** The list of attributes types the matching rule applies to */
+    private List<String> applicableAttributes;
+
     /**
-     * Gets the matchingRule this MatchingRuleUse definition applies to.
-     * 
-     * @return the matchingRule
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * Creates a new instance of MatchingRuleUseDescription
      */
-    public MatchingRule getMatchingRule() throws NamingException;
+    public MatchingRuleUse( String oid )
+    {
+        super(  SchemaObjectType.MATCHING_RULE_USE, oid );
+    }
+    
+
+    /**
+     * @return The matchingRule's list of Attribute types the MRU applies to
+     */
+    public List<String> getApplicableAttributes()
+    {
+        return applicableAttributes;
+    }
 
 
     /**
-     * Gets the the attributes which can be used with the matching rule in an
-     * extensible match assertion.
-     * 
-     * @return the applicable attributes
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * Set the matchingRule's Attribute types the MRU applies to. description
+     *
+     * @param applicableAttributes The Attribute types list
      */
-    public AttributeType[] getApplicableAttributes() throws NamingException;
+    public void setApplicableAttributes( List<String> applicableAttributes )
+    {
+        if ( !isReadOnly )
+        {
+            this.applicableAttributes = applicableAttributes;
+        }
+    }
+    
 }
