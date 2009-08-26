@@ -22,10 +22,12 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 
 
@@ -39,54 +41,54 @@ import org.apache.directory.shared.ldap.schema.SchemaObject;
 public class ParserDescriptionUtils
 {
     /**
-     * Checks two schema objectClass descriptions for an exact match.
+     * Checks two schema objectClasses for an exact match.
      *
-     * @param ocd0 the first objectClass description to compare
-     * @param ocd1 the second objectClass description to compare
-     * @return true if both objectClasss descriptions match exactly, false otherwise
+     * @param ocd0 the first objectClass to compare
+     * @param ocd1 the second objectClass to compare
+     * @return true if both objectClasses match exactly, false otherwise
      */
-    public static boolean objectClassesMatch( ObjectClassDescription ocd0, ObjectClassDescription ocd1 )
+    public static boolean objectClassesMatch( ObjectClass oc0, ObjectClass oc1 ) throws NamingException
     {
         // compare all common description parameters
-        if ( ! descriptionsMatch( ocd0, ocd1 ) )
+        if ( ! descriptionsMatch( oc0, oc1 ) )
         {
             return false;
         }
 
         // compare the objectClass type (AUXILIARY, STRUCTURAL, ABSTRACT)
-        if ( ocd0.getKind() != ocd1.getKind() )
+        if ( oc0.getType() != oc1.getType() )
         {
             return false;
         }
         
         // compare the superior objectClasses (sizes must match)
-        if ( ocd0.getSuperiorObjectClasses().size() != ocd1.getSuperiorObjectClasses().size() )
+        if ( oc0.getSuperiorOids().size() != oc1.getSuperiorOids().size() )
         {
             return false;
         }
 
         // compare the superior objectClasses (sizes must match)
-        for ( int ii = 0; ii < ocd0.getSuperiorObjectClasses().size(); ii++ )
+        for ( int i = 0; i < oc0.getSuperiorOids().size(); i++ )
         {
-            if ( ! ocd0.getSuperiorObjectClasses().get( ii ).equals( ocd1.getSuperiorObjectClasses().get( ii ) ) )
+            if ( ! oc0.getSuperiorOids().get( i ).equals( oc1.getSuperiorOids().get( i ) ) )
             {
                 return false;
             }
         }
         
         // compare the must attributes (sizes must match)
-        for ( int ii = 0; ii < ocd0.getMustAttributeTypes().size(); ii++ )
+        for ( int i = 0; i < oc0.getMustAttributeTypeOids().size(); i++ )
         {
-            if ( ! ocd0.getMustAttributeTypes().get( ii ).equals( ocd1.getMustAttributeTypes().get( ii ) ) )
+            if ( ! oc0.getMustAttributeTypeOids().get( i ).equals( oc1.getMustAttributeTypeOids().get( i ) ) )
             {
                 return false;
             }
         }
         
         // compare the may attributes (sizes must match)
-        for ( int ii = 0; ii < ocd0.getMayAttributeTypes().size(); ii++ )
+        for ( int i = 0; i < oc0.getMayAttributeTypeOids().size(); i++ )
         {
-            if ( ! ocd0.getMayAttributeTypes().get( ii ).equals( ocd1.getMayAttributeTypes().get( ii ) ) )
+            if ( ! oc0.getMayAttributeTypeOids().get( i ).equals( oc1.getMayAttributeTypeOids().get( i ) ) )
             {
                 return false;
             }
@@ -97,11 +99,11 @@ public class ParserDescriptionUtils
     
     
     /**
-     * Checks two schema attributeType descriptions for an exact match.
+     * Checks two schema attributeTypes for an exact match.
      *
-     * @param atd0 the first attributeType description to compare
-     * @param atd1 the second attributeType description to compare
-     * @return true if both attributeType descriptions match exactly, false otherwise
+     * @param atd0 the first attributeType to compare
+     * @param atd1 the second attributeType to compare
+     * @return true if both attributeTypes match exactly, false otherwise
      */
     public static boolean attributeTypesMatch( AttributeType at0, AttributeType at1 )
     {
@@ -176,10 +178,10 @@ public class ParserDescriptionUtils
     
     
     /**
-     * Checks to see if two matchingRule descriptions match exactly.
+     * Checks to see if two matchingRule match exactly.
      *
-     * @param mrd0 the first matchingRule description to compare
-     * @param mrd1 the second matchingRule description to compare
+     * @param mrd0 the first matchingRule to compare
+     * @param mrd1 the second matchingRule to compare
      * @return true if the matchingRules match exactly, false otherwise
      */
     public static boolean matchingRulesMatch( MatchingRule matchingRule0, MatchingRule matchingRule1 )
@@ -201,7 +203,7 @@ public class ParserDescriptionUtils
     
     
     /**
-     * Checks to see if two syntax descriptions match exactly.
+     * Checks to see if two syntax match exactly.
      *
      * @param ldapSyntax0 the first ldapSyntax to compare
      * @param ldapSyntax1 the second ldapSyntax to compare
@@ -271,7 +273,7 @@ public class ParserDescriptionUtils
      * @param lsd1 the second schema description to compare the extensions of
      * @return true if the extensions match exactly, false otherwise
      */
-    public static boolean extensionsMatch( LoadableSchemaObject lsd0, LoadableSchemaObject lsd1 )
+    public static boolean extensionsMatch( SchemaObject lsd0, SchemaObject lsd1 )
     {
         // check sizes first
         if ( lsd0.getExtensions().size() != lsd1.getExtensions().size() )
@@ -291,9 +293,9 @@ public class ParserDescriptionUtils
                 return false;
             }
             
-            for ( int ii = 0; ii < values0.size(); ii++ )
+            for ( int i = 0; i < values0.size(); i++ )
             {
-                if ( ! values0.get( ii ).equals( values1.get( ii ) ) )
+                if ( ! values0.get( i ).equals( values1.get( i ) ) )
                 {
                     return false;
                 }
@@ -312,18 +314,18 @@ public class ParserDescriptionUtils
      * @param asd1 the schema description to compare
      * @return true if alias names match exactly, false otherwise
      */
-    public static boolean aliasNamesMatch( LoadableSchemaObject asd0, LoadableSchemaObject asd1 )
+    public static boolean aliasNamesMatch( SchemaObject so0, SchemaObject so1 )
     {
         // check sizes first
-        if ( asd0.getNames().size() != asd1.getNames().size() )
+        if ( so0.getNames().size() != so1.getNames().size() )
         {
             return false;
         }
         
         // check contents and order must match too
-        for ( int ii = 0; ii < asd0.getNames().size(); ii++ )
+        for ( int i = 0; i < so0.getNames().size(); i++ )
         {
-            if ( ! asd0.getNames().get( ii ).equals( asd1.getNames().get( ii ) ) )
+            if ( ! so0.getNames().get( i ).equals( so1.getNames().get( i ) ) )
             {
                 return false;
             }
