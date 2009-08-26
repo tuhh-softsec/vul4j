@@ -34,9 +34,11 @@ public class NameFormRegistry extends SchemaObjectRegistry<NameForm>
 {
     /**
      * Creates a new default NameFormRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public NameFormRegistry()
+    public NameFormRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.NAME_FORM );
+        super( SchemaObjectType.NAME_FORM, oidRegistry );
     }
 }

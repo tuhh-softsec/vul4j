@@ -34,9 +34,11 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
 {
     /**
      * Creates a new default ObjectClassRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public ObjectClassRegistry()
+    public ObjectClassRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.OBJECT_CLASS );
+        super( SchemaObjectType.OBJECT_CLASS, oidRegistry );
     }
 }

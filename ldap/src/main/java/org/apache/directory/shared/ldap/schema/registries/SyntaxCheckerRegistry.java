@@ -34,9 +34,11 @@ public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker>
 {
     /**
      * Creates a new default SyntaxCheckerRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public SyntaxCheckerRegistry()
+    public SyntaxCheckerRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.SYNTAX_CHECKER );
+        super( SchemaObjectType.SYNTAX_CHECKER, oidRegistry );
     }
 }

@@ -52,10 +52,12 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
     
     /**
      * Creates a new default NormalizerRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public DITStructureRuleRegistry()
+    public DITStructureRuleRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.DIT_STRUCTURE_RULE );
+        super( SchemaObjectType.DIT_STRUCTURE_RULE, oidRegistry );
         byRuleId = new ConcurrentHashMap<Integer, DITStructureRule>();
     }
 

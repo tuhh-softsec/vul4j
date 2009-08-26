@@ -20,14 +20,8 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.Iterator;
-
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.ldap.schema.DITContentRule;
-import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 
 
 /**
@@ -40,9 +34,11 @@ public class DITContentRuleRegistry extends SchemaObjectRegistry<DITContentRule>
 {
     /**
      * Creates a new default NormalizerRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public DITContentRuleRegistry()
+    public DITContentRuleRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.DIT_CONTENT_RULE );
+        super( SchemaObjectType.DIT_CONTENT_RULE, oidRegistry );
     }
 }

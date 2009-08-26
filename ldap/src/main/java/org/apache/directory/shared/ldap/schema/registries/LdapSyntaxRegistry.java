@@ -33,9 +33,11 @@ public class LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>
 {
     /**
      * Creates a new default LdapSyntaxRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public LdapSyntaxRegistry()
+    public LdapSyntaxRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.LDAP_SYNTAX );
+        super( SchemaObjectType.LDAP_SYNTAX, oidRegistry );
     }
 }

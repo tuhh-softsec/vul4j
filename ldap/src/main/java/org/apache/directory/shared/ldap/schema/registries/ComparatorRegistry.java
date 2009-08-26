@@ -34,9 +34,11 @@ public class ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>>
 {
     /**
      * Creates a new default ComparatorRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public ComparatorRegistry()
+    public ComparatorRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.COMPARATOR );
+        super( SchemaObjectType.COMPARATOR, oidRegistry );
     }
 }

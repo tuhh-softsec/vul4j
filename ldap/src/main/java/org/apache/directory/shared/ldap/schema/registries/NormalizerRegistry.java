@@ -34,9 +34,11 @@ public class NormalizerRegistry extends SchemaObjectRegistry<Normalizer>
 {
     /**
      * Creates a new default NormalizerRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public NormalizerRegistry()
+    public NormalizerRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.NORMALIZER );
+        super( SchemaObjectType.NORMALIZER, oidRegistry );
     }
 }

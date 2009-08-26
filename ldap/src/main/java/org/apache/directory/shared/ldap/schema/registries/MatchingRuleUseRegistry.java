@@ -36,9 +36,11 @@ public class MatchingRuleUseRegistry extends SchemaObjectRegistry<MatchingRuleUs
 {
     /**
      * Creates a new default MatchingRuleUseRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public MatchingRuleUseRegistry()
+    public MatchingRuleUseRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.MATCHING_RULE_USE );
+        super( SchemaObjectType.MATCHING_RULE_USE, oidRegistry );
     }
 }

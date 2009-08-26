@@ -104,17 +104,17 @@ public class Registries
         });
         
         oidRegistry = registry;
-        normalizerRegistry = new NormalizerRegistry();
-        comparatorRegistry = new ComparatorRegistry();
-        syntaxCheckerRegistry = new SyntaxCheckerRegistry();
-        ldapSyntaxRegistry = new LdapSyntaxRegistry();
-        matchingRuleRegistry = new MatchingRuleRegistry();
+        normalizerRegistry = new NormalizerRegistry( oidRegistry );
+        comparatorRegistry = new ComparatorRegistry( oidRegistry );
+        syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
+        ldapSyntaxRegistry = new LdapSyntaxRegistry( oidRegistry );
+        matchingRuleRegistry = new MatchingRuleRegistry( oidRegistry );
         attributeTypeRegistry = new AttributeTypeRegistry( oidRegistry );
-        objectClassRegistry = new ObjectClassRegistry();
-        ditContentRuleRegistry = new DITContentRuleRegistry();
-        ditStructureRuleRegistry = new DITStructureRuleRegistry();
-        matchingRuleUseRegistry = new MatchingRuleUseRegistry();
-        nameFormRegistry = new NameFormRegistry();
+        objectClassRegistry = new ObjectClassRegistry( oidRegistry );
+        ditContentRuleRegistry = new DITContentRuleRegistry( oidRegistry );
+        ditStructureRuleRegistry = new DITStructureRuleRegistry( oidRegistry );
+        matchingRuleUseRegistry = new MatchingRuleUseRegistry( oidRegistry );
+        nameFormRegistry = new NameFormRegistry( oidRegistry );
     }
     
     

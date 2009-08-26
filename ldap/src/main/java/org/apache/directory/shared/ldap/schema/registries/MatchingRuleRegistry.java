@@ -34,9 +34,11 @@ public class MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>
 {
     /**
      * Creates a new default MatchingRuleRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    public MatchingRuleRegistry()
+    public MatchingRuleRegistry( OidRegistry oidRegistry )
     {
-        super( SchemaObjectType.MATCHING_RULE );
+        super( SchemaObjectType.MATCHING_RULE, oidRegistry );
     }
 }

@@ -53,14 +53,18 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     /** The SchemaObject type */
     protected SchemaObjectType type;
 
+    /** the global OID Registry */
+    protected final OidRegistry oidRegistry;
+    
 
     /**
      * Creates a new SchemaObjectRegistry instance.
      */
-    protected SchemaObjectRegistry( SchemaObjectType schemaObjectType )
+    protected SchemaObjectRegistry( SchemaObjectType schemaObjectType, OidRegistry oidRegistry )
     {
         byOid = new ConcurrentHashMap<String, T>();
         type = schemaObjectType;
+        this.oidRegistry = oidRegistry;
     }
     
     
@@ -205,6 +209,9 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
         {
             LOG.debug( "registered {} for OID {}", schemaObject, oid );
         }
+        
+        // And register the oid -> schemaObject relation
+        oidRegistry.register( schemaObject );
     }
 
 
@@ -226,6 +233,9 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
 
         SchemaObject schemaObject = byOid.remove( numericOid );
         
+        // And remove the SchemaObject from the oidRegistry
+        oidRegistry.unregister( numericOid );
+        
         if ( DEBUG )
         {
             LOG.debug( "Removed {} with oid {} from the registry", schemaObject, numericOid );
@@ -239,7 +249,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
      * 
      * @param schemaName the name of the schema whose SchemaObjects will be removed from
      */
-    public void unregisterSchemaElements( String schemaName )
+    public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
         if ( schemaName == null )
         {
@@ -254,6 +264,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
             {
                 String oid = schemaObject.getOid();
                 SchemaObject removed = byOid.remove( oid );
+                oidRegistry.unregister( oid );
                 
                 if ( DEBUG )
                 {
