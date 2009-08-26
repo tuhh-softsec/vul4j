@@ -73,6 +73,7 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized MatchingRule parseMatchingRuleDescription( String matchingRuleDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing a MatchingRule : {}", matchingRuleDescription );
 
         if ( matchingRuleDescription == null )
         {

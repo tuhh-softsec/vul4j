@@ -77,6 +77,7 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized SyntaxCheckerDescription parseSyntaxCheckerDescription( String syntaxCheckerDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing a SyntaxChecker : {}", syntaxCheckerDescription );
 
         if ( syntaxCheckerDescription == null )
         {

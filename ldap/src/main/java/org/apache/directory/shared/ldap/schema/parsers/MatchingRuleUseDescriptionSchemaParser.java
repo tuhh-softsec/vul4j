@@ -74,6 +74,7 @@ public class MatchingRuleUseDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized MatchingRuleUse parseMatchingRuleUseDescription( String matchingRuleUseDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing a MatchingRuleUse : {}", matchingRuleUseDescription );
 
         if ( matchingRuleUseDescription == null )
         {

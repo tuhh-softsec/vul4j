@@ -88,6 +88,8 @@ public class AttributeTypeDescriptionSchemaParser extends AbstractSchemaParser
         throws ParseException
     {
 
+        LOG.debug( "Parsing an AttributeType : {}", attributeTypeDescription );
+
         if ( attributeTypeDescription == null )
         {
             LOG.error( "Cannot parse a null AttributeType" );

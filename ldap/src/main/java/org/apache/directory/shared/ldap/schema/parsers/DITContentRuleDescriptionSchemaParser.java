@@ -73,6 +73,7 @@ public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized DITContentRule parseDITContentRuleDescription( String ditContentRuleDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing a DITContentRule : {}", ditContentRuleDescription );
 
         if ( ditContentRuleDescription == null )
         {

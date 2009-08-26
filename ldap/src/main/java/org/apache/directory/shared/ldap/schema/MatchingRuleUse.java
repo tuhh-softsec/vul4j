@@ -104,6 +104,7 @@ public class MatchingRuleUse extends SchemaObject
         super(  SchemaObjectType.MATCHING_RULE_USE, oid );
         
         applicableAttributeOids = new ArrayList<String>();
+        applicableAttributes = new ArrayList<AttributeType>();
     }
     
 

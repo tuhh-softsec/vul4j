@@ -22,6 +22,10 @@ package org.apache.directory.shared.ldap.schema.parsers;
 
 import java.text.ParseException;
 
+import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -35,6 +39,10 @@ import antlr.TokenStreamException;
  */
 public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
 {
+    /** The LoggerFactory used by this class */
+    protected static final Logger LOG = LoggerFactory.getLogger( ObjectClassDescriptionSchemaParser.class );
+
+
     /**
      * Creates a schema parser instance.
      */
@@ -69,11 +77,14 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
      * @return the parsed ObjectClassDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized ObjectClassDescription parseObjectClassDescription( String objectClassDescription )
+    public synchronized ObjectClass parseObjectClassDescription( String objectClassDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing an ObjectClass : {}", objectClassDescription );
+
         if ( objectClassDescription == null )
         {
+            LOG.error( "Cannot parse a null LdapComparator description" );
             throw new ParseException( "Null", 0 );
         }
 
@@ -81,27 +92,29 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-            ObjectClassDescription ocd = parser.objectClassDescription();
-            return ocd;
+            ObjectClass objectClass = parser.objectClassDescription();
+            return objectClass;
         }
         catch ( RecognitionException re )
         {
-            String msg = "Parser failure on object class description:\n\t" + objectClassDescription;
-            msg += "\nAntlr message: " + re.getMessage();
-            msg += "\nAntlr column: " + re.getColumn();
+            String msg = "Parser failure on object class description:\n\t" + objectClassDescription +
+                "\nAntlr message: " + re.getMessage()+
+                "\nAntlr column: " + re.getColumn();
+            LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = "Parser failure on object class description:\n\t" + objectClassDescription;
-            msg += "\nAntlr message: " + tse.getMessage();
+            String msg = "Parser failure on object class description:\n\t" + objectClassDescription +
+                "\nAntlr message: " + tse.getMessage();
+            LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
 
     }
 
 
-    public AbstractSchemaDescription parse( String schemaDescription ) throws ParseException
+    public ObjectClass parse( String schemaDescription ) throws ParseException
     {
         return parseObjectClassDescription( schemaDescription );
     }

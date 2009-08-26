@@ -36,12 +36,11 @@ import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
 import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.parsers.ObjectClassDescription;
+import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 import org.apache.directory.shared.ldap.schema.syntaxChecker.OpenLdapObjectIdentifierMacro;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 }
 
@@ -247,7 +246,7 @@ options    {
 openLdapSchema returns [List<Object> list = new ArrayList<Object>()]
     {
         AttributeType attributeType = null;
-        ObjectClassDescription ocd = null;
+        ObjectClass objectClass = null;
         OpenLdapObjectIdentifierMacro oloid = null;
     }
     :
@@ -256,7 +255,7 @@ openLdapSchema returns [List<Object> list = new ArrayList<Object>()]
         |
         attributeType = openLdapAttributeType { list.add( attributeType ); }
         |
-        ocd = openLdapObjectClass { list.add( ocd ); }
+        objectClass = openLdapObjectClass { list.add( objectClass ); }
     )*
     ;
 
@@ -277,14 +276,14 @@ openLdapObjectIdentifier returns [OpenLdapObjectIdentifierMacro oloid]
     ;
     
 
-openLdapObjectClass returns [ObjectClassDescription ocd]
+openLdapObjectClass returns [ObjectClass objectClass]
     {
         matchedProduction( "openLdapObjectClass()" );
     }
     :
     (
         OBJECTCLASS
-        ( ocd=objectClassDescription )
+        ( objectClass=objectClassDescription )
     )
     ;
     
@@ -323,37 +322,37 @@ openLdapAttributeType returns [AttributeType attributeType]
      * xstring = "X" HYPHEN 1*( ALPHA / HYPHEN / USCORE ) 
      * </pre>
     */
-objectClassDescription returns [ObjectClassDescription ocd = new ObjectClassDescription()]
+objectClassDescription returns [ObjectClass objectClass]
     {
         matchedProduction( "objectClassDescription()" );
         ElementTracker et = new ElementTracker();
     }
     :
-    ( oid:STARTNUMERICOID { ocd.setNumericOid(numericoid(oid.getText())); } )
+    ( oid:STARTNUMERICOID { objectClass = new ObjectClass(numericoid(oid.getText())); } )
     (
-        ( name:NAME { et.track("NAME", name); ocd.setNames(qdescrs(name.getText())); } )
+        ( name:NAME { et.track("NAME", name); objectClass.setNames(qdescrs(name.getText())); } )
         |
-        ( desc:DESC { et.track("DESC", desc); ocd.setDescription(qdstring(desc.getText())); } )
+        ( desc:DESC { et.track("DESC", desc); objectClass.setDescription(qdstring(desc.getText())); } )
         |
-        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); ocd.setObsolete( true ); } )
+        ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); objectClass.setObsolete( true ); } )
         |
-        ( sup:SUP { et.track("SUP", sup); ocd.setSuperiorObjectClasses(oids(sup.getText())); } )
+        ( sup:SUP { et.track("SUP", sup); objectClass.setSuperiorOids(oids(sup.getText())); } )
         |
-        ( kind1:ABSTRACT { et.track("KIND", kind1); ocd.setKind( ObjectClassTypeEnum.ABSTRACT ); }
+        ( kind1:ABSTRACT { et.track("KIND", kind1); objectClass.setType( ObjectClassTypeEnum.ABSTRACT ); }
           |
-          kind2:STRUCTURAL { et.track("KIND", kind2); ocd.setKind( ObjectClassTypeEnum.STRUCTURAL ); }
+          kind2:STRUCTURAL { et.track("KIND", kind2); objectClass.setType( ObjectClassTypeEnum.STRUCTURAL ); }
           |
-          kind3:AUXILIARY { et.track("KIND", kind3); ocd.setKind( ObjectClassTypeEnum.AUXILIARY ); } 
+          kind3:AUXILIARY { et.track("KIND", kind3); objectClass.setType( ObjectClassTypeEnum.AUXILIARY ); } 
         )
         |
-        ( must:MUST { et.track("MUST", must); ocd.setMustAttributeTypes(oids(must.getText())); } )
+        ( must:MUST { et.track("MUST", must); objectClass.setMustAttributeTypeOids(oids(must.getText())); } )
         |
-        ( may:MAY { et.track("MAY", may); ocd.setMayAttributeTypes(oids(may.getText())); } )
+        ( may:MAY { et.track("MAY", may); objectClass.setMayAttributeTypeOids(oids(may.getText())); } )
         |
         ( extension:EXTENSION { 
             Extension ex = extension(extension.getText());
             et.track(ex.key, extension); 
-            ocd.addExtension(ex.key, ex.values); 
+            objectClass.addExtension(ex.key, ex.values); 
          } )
     )*    
     RPAR

@@ -64,7 +64,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  *     NameFormDescription = LPAREN WSP
  *         numericoid                ; object identifier
  *         [ SP &quot;NAME&quot; SP qdescrs ]  ; short names (descriptors)
- *         [ SP &quot;DESC&quot; SP qdstring ] ; description
+ *         [ SP &quot;DESC&quot; SP qdstring ] ;String description
  *         [ SP &quot;OBSOLETE&quot; ]         ; not active
  *         SP &quot;OC&quot; SP oid            ; structural object class
  *         SP &quot;MUST&quot; SP oids         ; attribute types
@@ -87,7 +87,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  *   shall be different.
  * </pre>
  * 
- * @see <a href="http://www.faqs.org/rfcs/rfc2252.html">RFC2252 Section 6.22</a>
+ * @see <a href="http://www.faqs.org/rfcs/rfc225String2.html">RFC2252 Section 6.22</a>
  * @see <a
  *      href="http://www.ietf.org/internet-drafts/draft-ietf-ldapbis-models-11.txt">ldapbis
  *      [MODELS]</a>
@@ -131,6 +131,9 @@ public class NameForm extends SchemaObject
         
         mustAttributeTypeOids = new ArrayList<String>();
         mayAttributeTypeOids = new ArrayList<String>();
+
+        mustAttributeTypes = new ArrayList<AttributeType>();
+        mayAttributeTypes = new ArrayList<AttributeType>();
     }
     
     

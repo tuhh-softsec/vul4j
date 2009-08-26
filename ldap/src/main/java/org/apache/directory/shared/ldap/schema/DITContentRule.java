@@ -158,6 +158,11 @@ public class DITContentRule extends SchemaObject
         mustAttributeTypeOids = new ArrayList<String>();
         notAttributeTypeOids = new ArrayList<String>();
         auxObjectClassOids = new ArrayList<String>();
+
+        mayAttributeTypes = new ArrayList<AttributeType>();
+        mustAttributeTypes = new ArrayList<AttributeType>();
+        notAttributeTypes = new ArrayList<AttributeType>();
+        auxObjectClasses = new ArrayList<ObjectClass>();
     }
 
     

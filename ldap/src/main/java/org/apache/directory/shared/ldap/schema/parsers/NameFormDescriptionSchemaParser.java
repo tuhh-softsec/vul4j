@@ -72,6 +72,7 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized NameForm parseNameFormDescription( String nameFormDescription)
         throws ParseException
     {
+        LOG.debug( "Parsing a NameForm : {}", nameFormDescription );
 
         if ( nameFormDescription == null )
         {

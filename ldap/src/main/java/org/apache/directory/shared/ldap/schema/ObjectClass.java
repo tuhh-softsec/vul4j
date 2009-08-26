@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -71,22 +72,325 @@ import javax.naming.NamingException;
  */
 public class ObjectClass extends SchemaObject
 {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
+
+    /** The ObjectClass type : ABSTRACT, AUXILIARY or STRUCTURAL */
+    private ObjectClassTypeEnum objectClassType = ObjectClassTypeEnum.STRUCTURAL;
+    
+    /** The ObjectClass superior OIDs */
+    private List<String> superiorOids;
+
+    /** The ObjectClass superiors */
+    private List<ObjectClass> superiors;
+
+    /** The list of allowed AttributeType OIDs */
+    private List<String> mayAttributeTypeOids;
+
+    /** The list of allowed AttributeTypes */
+    private List<AttributeType> mayAttributeTypes;
+
+    /** The list of required AttributeType OIDs */
+    private List<String> mustAttributeTypeOids;
+
+    /** The list of required AttributeTypes */
+    private List<AttributeType> mustAttributeTypes;
+
+    /**
+     * Creates a new instance of MatchingRuleUseDescription
+     */
+    public ObjectClass( String oid )
+    {
+        super(  SchemaObjectType.OBJECT_CLASS, oid );
+        
+        mayAttributeTypeOids = new ArrayList<String>();
+        mustAttributeTypeOids = new ArrayList<String>();
+        superiorOids = new ArrayList<String>();
+
+        mayAttributeTypes = new ArrayList<AttributeType>();
+        mustAttributeTypes = new ArrayList<AttributeType>();
+        superiors = new ArrayList<ObjectClass>();
+    }
+
+    
+    /**
+     * @return the mayAttributeTypeOids
+     */
+    public List<String> getMayAttributeTypeOids()
+    {
+        return mayAttributeTypeOids;
+    }
+
+
+    /**
+     * @return the mayAttributeTypes
+     */
+    public List<AttributeType> getMayAttributeTypes()
+    {
+        return mayAttributeTypes;
+    }
+
+    
+    /**
+     * Add an allowed AttributeType
+     *
+     * @param oid The attributeType oid
+     */
+    public void addMayAttributeTypeOids( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            mayAttributeTypeOids.add( oid );
+        }
+    }
+
+
+    /**
+     * Add an allowed AttributeType
+     *
+     * @param attributeType The attributeType
+     */
+    public void addMayAttributeTypes( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! mayAttributeTypeOids.contains( attributeType.getOid() ) )
+            {
+                mayAttributeTypes.add( attributeType );
+                mayAttributeTypeOids.add( attributeType.getOid() );
+            }
+        }
+    }
+
+    
+    /**
+     * @param mayAttributeTypeOids the mayAttributeTypeOids to set
+     */
+    public void setMayAttributeTypeOids( List<String> mayAttributeTypeOids )
+    {
+        if ( !isReadOnly )
+        {
+            this.mayAttributeTypeOids = mayAttributeTypeOids;
+        }
+    }
+    
+    
+    /**
+     * Sets the list of allowed AttributeTypes
+     *
+     * @param mayAttributeTypes the list of allowed AttributeTypes
+     */
+    public void setMayAttributeTypes( List<AttributeType> mayAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mayAttributeTypes = mayAttributeTypes;
+            
+            // update the OIDS now
+            mayAttributeTypeOids.clear();
+            
+            for ( AttributeType may : mayAttributeTypes )
+            {
+                mayAttributeTypeOids.add( may.getOid() );
+            }
+        }
+    }
+
+
+    /**
+     * @return the mustAttributeTypeOids
+     */
+    public List<String> getMustAttributeTypeOids()
+    {
+        return mustAttributeTypeOids;
+    }
+
+
+    /**
+     * @return the mustAttributeTypes
+     */
+    public List<AttributeType> getMustAttributeTypes()
+    {
+        return mustAttributeTypes;
+    }
+
+    
+    /**
+     * Add a required AttributeType OID
+     *
+     * @param oid The attributeType OID
+     */
+    public void addMustAttributeTypeOids( String oid )
+    {
+        if ( !isReadOnly )
+        {
+            mustAttributeTypeOids.add( oid );
+        }
+    }
+
+
+    /**
+     * Add a required AttributeType
+     *
+     * @param attributeType The attributeType
+     */
+    public void addMustAttributeTypes( AttributeType attributeType )
+    {
+        if ( !isReadOnly )
+        {
+            if ( ! mustAttributeTypeOids.contains( attributeType.getOid() ) )
+            {
+                mustAttributeTypes.add( attributeType );
+                mustAttributeTypeOids.add( attributeType.getOid() );
+            }
+        }
+    }
+
+
+    /**
+     * @param mustAttributeTypeOids the mustAttributeTypeOids to set
+     */
+    public void setMustAttributeTypeOids( List<String> mustAttributeTypeOids )
+    {
+        if ( !isReadOnly )
+        {
+            this.mustAttributeTypeOids = mustAttributeTypeOids;
+        }
+    }
+
+    
+    /**
+     * Sets the list of required AttributeTypes
+     *
+     * @param mayAttributeTypes the list of required AttributeTypes
+     */
+    public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
+    {
+        if ( !isReadOnly )
+        {
+            this.mustAttributeTypes = mustAttributeTypes;
+            
+            // update the OIDS now
+            mustAttributeTypeOids.clear();
+            
+            for ( AttributeType may : mustAttributeTypes )
+            {
+                mustAttributeTypeOids.add( may.getOid() );
+            }
+        }
+    }
+    
+    
     /**
      * Gets the superclasses of this ObjectClass.
      * 
      * @return the superclasses
-     * @throws NamingException
-     *             if there is a failure resolving the object
+     * @throws NamingException if there is a failure resolving the object
      */
-    ObjectClass[] getSuperClasses() throws NamingException;
+    public List<ObjectClass> getSuperiors() throws NamingException
+    {
+        return superiors;
+    }
 
+    
+    /**
+     * Gets the superclasses OIDsof this ObjectClass.
+     * 
+     * @return the superclasses OIDs
+     * @throws NamingException if there is a failure resolving the object
+     */
+    public List<String> getSuperiorOids() throws NamingException
+    {
+        return superiorOids;
+    }
+
+
+    /**
+     * Add some superior ObjectClass OIDs
+     *
+     * @param oids The superior ObjectClass OIDs
+     */
+    public void addSuperiorOids( String... oids )
+    {
+        if ( !isReadOnly )
+        {
+            for ( String oid : oids )
+            {
+                if ( !superiorOids.contains( oid ) )
+                {
+                    superiorOids.add( oid );
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Add some superior ObjectClasses
+     *
+     * @param objectClasses The superior ObjectClasses
+     */
+    public void addSuperior( ObjectClass... objectClasses )
+    {
+        if ( !isReadOnly )
+        {
+            for ( ObjectClass objectClass : objectClasses )
+            {
+                if ( !superiorOids.contains( objectClass.getOid() ) )
+                {
+                    superiorOids.add( objectClass.getOid() );
+                    superiors.add( objectClass );
+                }
+            }
+        }
+    }
+
+    
+    /**
+     * Sets the superior object classes
+     * 
+     * @param oids the object classes to set
+     */
+    public void setSuperiors( List<ObjectClass> superiors )
+    {
+        if ( !isReadOnly )
+        {
+            this.superiors = superiors;
+            
+            // update the OIDS now
+            superiorOids.clear();
+            
+            for ( ObjectClass oc : superiors )
+            {
+                superiorOids.add( oc.getOid() );
+            }
+        }
+    }
+
+    
+    /**
+     * Sets the superior object class OIDs
+     * 
+     * @param oids the object class OIDs to set
+     */
+    public void setSuperiorOids( List<String> superiorOids )
+    {
+        if ( !isReadOnly )
+        {
+            this.superiorOids = superiorOids;
+        }
+    }
+    
 
     /**
      * Gets the type of this ObjectClass as a type safe enum.
      * 
      * @return the ObjectClass type as an enum
      */
-    ObjectClassTypeEnum getType();
+    public ObjectClassTypeEnum getType()
+    {
+        return objectClassType;
+    }
     
     
     /**
@@ -94,7 +398,13 @@ public class ObjectClass extends SchemaObject
      * 
      * @param type The ObjectClassType value
      */
-    void setType( ObjectClassTypeEnum type );
+    public void setType( ObjectClassTypeEnum objectClassType )
+    {
+        if ( !isReadOnly )
+        {
+            this.objectClassType = objectClassType;
+        }
+    }
     
     
     /**
@@ -102,7 +412,10 @@ public class ObjectClass extends SchemaObject
      * 
      * @return <code>true</code> if the ObjectClass is STRUCTURAL
      */
-    boolean isStructural();
+    public boolean isStructural()
+    {
+        return objectClassType == ObjectClassTypeEnum.STRUCTURAL;
+    }
     
 
     /**
@@ -110,7 +423,10 @@ public class ObjectClass extends SchemaObject
      * 
      * @return <code>true</code> if the ObjectClass is ABSTRACT
      */
-    boolean isAbstract();
+    public boolean isAbstract()
+    {
+        return objectClassType == ObjectClassTypeEnum.ABSTRACT;
+    }
     
 
     /**
@@ -118,71 +434,8 @@ public class ObjectClass extends SchemaObject
      * 
      * @return <code>true</code> if the ObjectClass is AUXILIARY
      */
-    boolean isAuxiliary();
-
-
-    /**
-     * Gets the AttributeTypes OIDs whose attributes must be present within an entry
-     * of this ObjectClass.
-     * 
-     * @return the OIDs of attributes that must be within entries of
-     *         this ObjectClass
-     * @throws NamingException if there is a failure resolving the object
-     */
-    List<String> getMustOids() throws NamingException;
-
-
-    /**
-     * Gets the AttributeTypes whose attributes must be present within an entry
-     * of this ObjectClass.
-     * 
-     * @return the AttributeTypes that must be within entries of
-     *         this ObjectClass
-     * @throws NamingException if there is a failure resolving the object
-     */
-    List<AttributeType> getMustATs() throws NamingException;
-    
-    
-    /**
-     * Sets the attributeTypes' OID which must be present within an entry
-     * of this ObjectClass
-     * 
-     * @param oids The list of OIDs representing the MUST AttributeTypes
-     * @throws NamingException If the addition failed
-     */
-    void setMustOids( List<String> oids ) throws NamingException;
-
-
-    /**
-     * Gets the AttributeType OIDs whose attributes may be present within an entry
-     * of this ObjectClass.
-     * 
-     * @return the OIDs of attributes that may be within entries of
-     *         this ObjectClass
-     * @throws NamingException
-     *             if there is a failure resolving the object
-     */
-    List<String> getMayOids() throws NamingException;
-
-
-    /**
-     * Gets the AttributeType whose attributes may be present within an entry
-     * of this ObjectClass.
-     * 
-     * @return the AttributeTypes that may be within entries of
-     *         this ObjectClass
-     * @throws NamingException
-     *             if there is a failure resolving the object
-     */
-    List<AttributeType> getMayATs() throws NamingException;
-    
-    
-    /**
-     * Sets the attributeTypes' OID which may be present within an entry
-     * of this ObjectClass
-     * 
-     * @param oids The list of OIDs representing the MAY AttributeTypes
-     * @throws NamingException If the addition failed
-     */
-    void setMayOids( List<String> oids ) throws NamingException;
+    public boolean isAuxiliary()
+    {
+        return objectClassType == ObjectClassTypeEnum.AUXILIARY;
+    }
 }

@@ -78,6 +78,7 @@ public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized NormalizerDescription parseNormalizerDescription( String normalizerDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing a Normalizer : {}", normalizerDescription );
 
         if ( normalizerDescription == null )
         {

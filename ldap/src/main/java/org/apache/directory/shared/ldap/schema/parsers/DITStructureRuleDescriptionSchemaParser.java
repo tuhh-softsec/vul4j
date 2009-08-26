@@ -77,6 +77,7 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
     public synchronized DITStructureRule parseDITStructureRuleDescription( String ditStructureRuleDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing a DITStructureRule : {}", ditStructureRuleDescription );
 
         if ( ditStructureRuleDescription == null )
         {

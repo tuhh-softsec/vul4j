@@ -67,6 +67,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
     public synchronized LdapSyntax parseLdapSyntaxDescription( String ldapSyntaxDescription )
         throws ParseException
     {
+        LOG.debug( "Parsing a LdapSyntax : {}", ldapSyntaxDescription );
 
         if ( ldapSyntaxDescription == null )
         {
