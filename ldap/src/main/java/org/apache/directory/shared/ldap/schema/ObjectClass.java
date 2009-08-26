@@ -25,6 +25,10 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
+
 
 /**
  * An objectClass definition.
@@ -110,6 +114,52 @@ public class ObjectClass extends SchemaObject
         mayAttributeTypes = new ArrayList<AttributeType>();
         mustAttributeTypes = new ArrayList<AttributeType>();
         superiors = new ArrayList<ObjectClass>();
+    }
+    
+    
+    /**
+     * Inject the registries into this Object, updating the references to
+     * other SchemaObject
+     *
+     * @param registries The Registries
+     */
+    public void applyRegistries( Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
+            ObjectClassRegistry ocRegistry = registries.getObjectClassRegistry();
+            
+            if ( superiorOids != null )
+            {
+                superiors = new ArrayList<ObjectClass>( superiorOids.size() );
+                
+                for ( String oid : superiorOids )
+                {
+                    superiors.add( ocRegistry.lookup( oid ) );
+                }
+            }
+
+            if ( mayAttributeTypeOids != null )
+            {
+                mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
+                
+                for ( String oid : mayAttributeTypeOids )
+                {
+                    mayAttributeTypes.add( atRegistry.lookup( oid ) );
+                }
+            }
+
+            if ( mustAttributeTypeOids != null )
+            {
+                mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
+                
+                for ( String oid : mustAttributeTypeOids )
+                {
+                    mustAttributeTypes.add( atRegistry.lookup( oid ) );
+                }
+            }
+        }
     }
 
     
