@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
-import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeLiteral;
 import org.apache.directory.shared.ldap.schema.parsers.ObjectClassLiteral;
 import org.apache.directory.shared.ldap.schema.parsers.OpenLdapSchemaParser;
 import org.apache.directory.shared.ldap.schema.syntaxChecker.OpenLdapObjectIdentifierMacro;
@@ -74,25 +74,25 @@ public class OpenLdapSchemaParserTest
             + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.25 )";
 
         parser.parse( attributeTypeData );
-        List<AttributeTypeLiteral> attributeTypeList = parser.getAttributeTypes();
-        Map<String, AttributeTypeLiteral> attributeTypes = mapAttributeTypes( attributeTypeList );
-        AttributeTypeLiteral type = attributeTypes.get( "2.5.4.14" );
+        List<AttributeType> attributeTypes = parser.getAttributeTypes();
+        Map<String, AttributeType> mapAttributeTypes = mapAttributeTypes( attributeTypes );
+        AttributeType attributeType = mapAttributeTypes.get( "2.5.4.14" );
 
-        assertNotNull( type );
-        assertEquals( "2.5.4.14", type.getOid() );
-        assertEquals( "searchGuide", type.getNames()[0] );
-        assertEquals( "RFC2256: search guide, obsoleted by enhancedSearchGuide", type.getDescription() );
-        assertEquals( "1.3.6.1.4.1.1466.115.121.1.25", type.getSyntax() );
+        assertNotNull( attributeType );
+        assertEquals( "2.5.4.14", attributeType.getOid() );
+        assertEquals( "searchGuide", attributeType.getName() );
+        assertEquals( "RFC2256: search guide, obsoleted by enhancedSearchGuide", attributeType.getDescription() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.25", attributeType.getSyntaxOid() );
     }
 
 
-    private Map<String, AttributeTypeLiteral> mapAttributeTypes( List<AttributeTypeLiteral> attributeTypeList )
+    private Map<String, AttributeType> mapAttributeTypes( List<AttributeType> attributeTypes )
     {
-        Map<String, AttributeTypeLiteral> m = new HashMap<String, AttributeTypeLiteral>();
+        Map<String, AttributeType> m = new HashMap<String, AttributeType>();
 
-        for ( AttributeTypeLiteral type : attributeTypeList )
+        for ( AttributeType attributeType : attributeTypes )
         {
-            m.put( type.getOid(), type );
+            m.put( attributeType.getOid(), attributeType );
         }
 
         return m;
@@ -106,15 +106,15 @@ public class OpenLdapSchemaParserTest
             + "        DESC 'RFC2256: knowledge information'\n" + "        EQUALITY caseIgnoreMatch\n"
             + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )";
         parser.parse( attributeTypeData );
-        List<AttributeTypeLiteral> attributeTypeList = parser.getAttributeTypes();
-        Map<String, AttributeTypeLiteral> attributeTypes = mapAttributeTypes( attributeTypeList );
-        AttributeTypeLiteral type = attributeTypes.get( "2.5.4.2" );
+        List<AttributeType> attributeTypeList = parser.getAttributeTypes();
+        Map<String, AttributeType> attributeTypes = mapAttributeTypes( attributeTypeList );
+        AttributeType type = attributeTypes.get( "2.5.4.2" );
 
         assertNotNull( type );
         assertEquals( "2.5.4.2", type.getOid() );
-        assertEquals( "knowledgeInformation", type.getNames()[0] );
+        assertEquals( "knowledgeInformation", type.getName() );
         assertEquals( "RFC2256: knowledge information", type.getDescription() );
-        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntax() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntaxOid() );
         assertEquals( 32768, type.getLength() );
     }
 
@@ -126,15 +126,15 @@ public class OpenLdapSchemaParserTest
             + "        DESC 'RFC2256: \"knowledge\" information'\n" + "        EQUALITY caseIgnoreMatch\n"
             + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )";
         parser.parse( attributeTypeData );
-        List<AttributeTypeLiteral> attributeTypeList = parser.getAttributeTypes();
-        Map<String, AttributeTypeLiteral> attributeTypes = mapAttributeTypes( attributeTypeList );
-        AttributeTypeLiteral type = attributeTypes.get( "2.5.4.2" );
+        List<AttributeType> attributeTypeList = parser.getAttributeTypes();
+        Map<String, AttributeType> attributeTypes = mapAttributeTypes( attributeTypeList );
+        AttributeType type = attributeTypes.get( "2.5.4.2" );
 
         assertNotNull( type );
         assertEquals( "2.5.4.2", type.getOid() );
-        assertEquals( "knowledgeInformation", type.getNames()[0] );
+        assertEquals( "knowledgeInformation", type.getName() );
         assertEquals( "RFC2256: \"knowledge\" information", type.getDescription() );
-        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntax() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntaxOid() );
         assertEquals( 32768, type.getLength() );
     }
 
@@ -147,15 +147,15 @@ public class OpenLdapSchemaParserTest
             + "        DESC 'RFC2256: knowledge information'\n" + "        EQUALITY caseIgnoreMatch\n"
             + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )";
         parser.parse( attributeTypeData );
-        List<AttributeTypeLiteral> attributeTypeList = parser.getAttributeTypes();
-        Map<String, AttributeTypeLiteral> attributeTypes = mapAttributeTypes( attributeTypeList );
-        AttributeTypeLiteral type = attributeTypes.get( "2.5.4.2" );
+        List<AttributeType> attributeTypeList = parser.getAttributeTypes();
+        Map<String, AttributeType> attributeTypes = mapAttributeTypes( attributeTypeList );
+        AttributeType type = attributeTypes.get( "2.5.4.2" );
 
         assertNotNull( type );
         assertEquals( "2.5.4.2", type.getOid() );
-        assertEquals( "knowledgeInformation", type.getNames()[0] );
+        assertEquals( "knowledgeInformation", type.getName() );
         assertEquals( "RFC2256: knowledge information", type.getDescription() );
-        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntax() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntaxOid() );
         assertEquals( 32768, type.getLength() );
     }
 
@@ -250,7 +250,7 @@ public class OpenLdapSchemaParserTest
         InputStream input = getClass().getResourceAsStream( "core.schema" );
         parser.parse( input );
 
-        List<AttributeTypeLiteral> attributeTypes = parser.getAttributeTypes();
+        List<AttributeType> attributeTypes = parser.getAttributeTypes();
         List<ObjectClassLiteral> objectClassTypes = parser.getObjectClassTypes();
         Map<String, OpenLdapObjectIdentifierMacro> objectIdentifierMacros = parser.getObjectIdentifierMacros();
 
@@ -266,7 +266,7 @@ public class OpenLdapSchemaParserTest
         InputStream input = getClass().getResourceAsStream( "inetorgperson.schema" );
         parser.parse( input );
 
-        List<AttributeTypeLiteral> attributeTypes = parser.getAttributeTypes();
+        List<AttributeType> attributeTypes = parser.getAttributeTypes();
         List<ObjectClassLiteral> objectClassTypes = parser.getObjectClassTypes();
         Map<String, OpenLdapObjectIdentifierMacro> objectIdentifierMacros = parser.getObjectIdentifierMacros();
 
@@ -282,14 +282,14 @@ public class OpenLdapSchemaParserTest
         InputStream input = getClass().getResourceAsStream( "collective.schema" );
         parser.parse( input );
 
-        List<AttributeTypeLiteral> attributeTypes = parser.getAttributeTypes();
+        List<AttributeType> attributeTypes = parser.getAttributeTypes();
         List<ObjectClassLiteral> objectClassTypes = parser.getObjectClassTypes();
         Map<String, OpenLdapObjectIdentifierMacro> objectIdentifierMacros = parser.getObjectIdentifierMacros();
 
         assertEquals( 13, attributeTypes.size() );
         assertEquals( 0, objectClassTypes.size() );
         assertEquals( 0, objectIdentifierMacros.size() );
-        for ( AttributeTypeLiteral attributeTypeLiteral : attributeTypes )
+        for ( AttributeType attributeTypeLiteral : attributeTypes )
         {
             assertTrue( attributeTypeLiteral.isCollective() );
         }
@@ -302,7 +302,7 @@ public class OpenLdapSchemaParserTest
         InputStream input = getClass().getResourceAsStream( "dyngroup.schema" );
         parser.parse( input );
 
-        List<AttributeTypeLiteral> attributeTypes = parser.getAttributeTypes();
+        List<AttributeType> attributeTypes = parser.getAttributeTypes();
         List<ObjectClassLiteral> objectClassTypes = parser.getObjectClassTypes();
         Map<String, OpenLdapObjectIdentifierMacro> objectIdentifierMacros = parser.getObjectIdentifierMacros();
 
@@ -335,16 +335,18 @@ public class OpenLdapSchemaParserTest
                 fail( "object class 'groupOfURLs' or 'dgIdentityAux' expected" );
             }
         }
-        for ( AttributeTypeLiteral attributeTypeLiteral : attributeTypes )
+        
+        for ( AttributeType attributeType : attributeTypes )
         {
-            List<String> asList = Arrays.asList( attributeTypeLiteral.getNames() );
+            List<String> asList = attributeType.getNames();
+            
             if ( asList.contains( "memberURL" ) )
             {
-                assertEquals( "2.16.840.1.113730.3.1.198", attributeTypeLiteral.getOid() );
+                assertEquals( "2.16.840.1.113730.3.1.198", attributeType.getOid() );
             }
             else if ( asList.contains( "dgIdentity" ) )
             {
-                assertEquals( "1.3.6.1.4.1.4203.666.11.8.1.1", attributeTypeLiteral.getOid() );
+                assertEquals( "1.3.6.1.4.1.4203.666.11.8.1.1", attributeType.getOid() );
             }
             else
             {
