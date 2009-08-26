@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.List;
+
 import javax.naming.NamingException;
 
 
@@ -99,7 +101,7 @@ public class DescriptionUtils
             buf.append( '\n' );
         }
 
-        buf.append( attributeType.getSuperior().getOid() );
+        buf.append( attributeType.getSup().getOid() );
 
         if ( attributeType.getEquality() != null )
         {
@@ -202,9 +204,9 @@ public class DescriptionUtils
         }
 
         // print out all the auxiliary object class oids
-        ObjectClass[] aux = dITContentRule.getAuxObjectClasses();
+        List<ObjectClass> aux = dITContentRule.getAuxObjectClasses();
         
-        if ( aux != null && aux.length > 0 )
+        if ( ( aux != null ) && ( aux.size() > 0 ) )
         {
             buf.append( "AUX\n" );
             
@@ -216,9 +218,9 @@ public class DescriptionUtils
             }
         }
 
-        AttributeType[] must = dITContentRule.getMustNames();
+        List<AttributeType> must = dITContentRule.getMustAttributeTypes();
         
-        if ( must != null && must.length > 0 )
+        if ( ( must != null ) && ( must.size() > 0 ) )
         {
             buf.append( "MUST\n" );
             
@@ -230,9 +232,9 @@ public class DescriptionUtils
             }
         }
 
-        AttributeType[] may = dITContentRule.getMayNames();
+        List<AttributeType> may = dITContentRule.getMayAttributeTypes();
         
-        if ( may != null && may.length > 0 )
+        if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( "MAY\n" );
             
@@ -244,9 +246,9 @@ public class DescriptionUtils
             }
         }
 
-        AttributeType[] not = dITContentRule.getNotNames();
+        List<AttributeType> not = dITContentRule.getNotAttributeTypes();
         
-        if ( not != null && not.length > 0 )
+        if ( ( not != null ) && ( not.size() > 0 ) )
         {
             buf.append( "NOT\n" );
             
@@ -351,7 +353,7 @@ public class DescriptionUtils
     public static String getDescription( MatchingRuleUse matchingRuleUse ) throws NamingException
     {
         StringBuffer buf = new StringBuffer( "( " );
-        buf.append( matchingRuleUse.getMatchingRule().getOid() );
+        buf.append( matchingRuleUse.getOid() );
         buf.append( '\n' );
 
         buf.append( "NAME " );
@@ -372,21 +374,33 @@ public class DescriptionUtils
         }
 
         buf.append( "APPLIES " );
-        AttributeType[] attributeTypes = matchingRuleUse.getApplicableAttributes();
-        if ( attributeTypes.length == 1 )
+        List<AttributeType> attributeTypes = matchingRuleUse.getApplicableAttributes();
+        
+        if ( attributeTypes.size() == 1 )
         {
-            buf.append( attributeTypes[0].getOid() );
+            buf.append( attributeTypes.get( 0 ).getOid() );
         }
         else
         // for list of oids we need a parenthesis
         {
             buf.append( "( " );
-            buf.append( attributeTypes[0] );
-            for ( int ii = 1; ii < attributeTypes.length; ii++ )
+            
+            boolean isFirst = true;
+            
+            for ( AttributeType attributeType : attributeTypes )
             {
-                buf.append( " $ " );
-                buf.append( attributeTypes[ii] );
+                if ( isFirst )
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    buf.append( " $ " );
+                }
+                
+                buf.append( attributeType );
             }
+            
             buf.append( " ) " );
         }
 
@@ -443,11 +457,11 @@ public class DescriptionUtils
         }
 
         buf.append( "OC " );
-        buf.append( nameForm.getObjectClass().getOid() );
+        buf.append( nameForm.getStructuralObjectClassOid() );
         buf.append( '\n' );
 
         buf.append( "MUST\n" );
-        AttributeType[] must = nameForm.getMustUse();
+        List<AttributeType> must = nameForm.getMustAttributeTypes();
         
         for ( AttributeType attributeType:must )
         {
@@ -456,9 +470,9 @@ public class DescriptionUtils
             buf.append( '\n' );
         }
 
-        AttributeType[] may = nameForm.getMayUse();
+        List<AttributeType> may = nameForm.getMayAttributeTypes();
 
-        if ( may != null && may.length > 0 )
+        if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( "MAY\n" );
         
@@ -623,11 +637,12 @@ public class DescriptionUtils
         }
 
         buf.append( "FORM " );
-        buf.append( dITStructureRule.getNameForm().getOid() );
+        buf.append( dITStructureRule.getForm() );
         buf.append( '\n' );
 
-        DITStructureRule[] sups = dITStructureRule.getSuperClasses();
-        if ( sups != null && sups.length > 0 )
+        List<DITStructureRule> sups = dITStructureRule.getSuperRules();
+        
+        if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
             buf.append( "SUP\n" );
             

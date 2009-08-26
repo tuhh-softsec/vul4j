@@ -185,8 +185,7 @@ public abstract class AbstractAttributeType extends AbstractSchemaObject impleme
      * Sets the length limit of this AttributeType based on its associated
      * syntax.
      * 
-     * @param length
-     *            the new length to set
+     * @param length the new length to set
      */
     protected void setLength( int length )
     {
