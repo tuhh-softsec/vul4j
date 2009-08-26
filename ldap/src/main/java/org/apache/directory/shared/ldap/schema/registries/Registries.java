@@ -19,13 +19,18 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.directory.server.schema.bootstrap.Schema;
+import org.apache.directory.server.schema.registries.DefaultAttributeTypeRegistry;
+import org.apache.directory.server.schema.registries.DefaultComparatorRegistry;
+import org.apache.directory.server.schema.registries.DefaultDitContentRuleRegistry;
+import org.apache.directory.server.schema.registries.DefaultDitStructureRuleRegistry;
+import org.apache.directory.server.schema.registries.DefaultLdapSyntaxRegistry;
+import org.apache.directory.server.schema.registries.DefaultMatchingRuleRegistry;
+import org.apache.directory.server.schema.registries.DefaultMatchingRuleUseRegistry;
+import org.apache.directory.server.schema.registries.DefaultNameFormRegistry;
+import org.apache.directory.server.schema.registries.DefaultNormalizerRegistry;
+import org.apache.directory.server.schema.registries.DefaultObjectClassRegistry;
+import org.apache.directory.server.schema.registries.DefaultSyntaxCheckerRegistry;
 import org.apache.directory.server.schema.registries.SchemaLoader;
 import org.apache.directory.server.schema.registries.SchemaLoaderListener;
 
@@ -39,71 +44,49 @@ import org.apache.directory.server.schema.registries.SchemaLoaderListener;
 public class Registries
 {
     /** The AttributeType registry */
-    private AttributeTypeRegistry attributeTypeRegistry;
+    protected AttributeTypeRegistry attributeTypeRegistry;
     
     /** The ObjectClass registry */
-    private ObjectClassRegistry objectClassRegistry;
-
+    protected ObjectClassRegistry objectClassRegistry;
 
     /** The LdapSyntax registry */
-    private ComparatorRegistry comparatorRegistry;
+    protected ComparatorRegistry comparatorRegistry;
 
     /** The DitContentRule registry */
-    private DITContentRuleRegistry ditContentRuleRegistry;
+    protected DITContentRuleRegistry ditContentRuleRegistry;
 
     /** The DitStructureRule registry */
-    private DITStructureRuleRegistry ditStructureRuleRegistry;
+    protected DITStructureRuleRegistry ditStructureRuleRegistry;
 
     /** The MatchingRule registry */
-    private MatchingRuleRegistry matchingRuleRegistry;
+    protected MatchingRuleRegistry matchingRuleRegistry;
 
     /** The MatchingRuleUse registry */
-    private MatchingRuleUseRegistry matchingRuleUseRegistry;
+    protected MatchingRuleUseRegistry matchingRuleUseRegistry;
 
     /** The NameForm registry */
-    private NameFormRegistry nameFormRegistry;
+    protected NameFormRegistry nameFormRegistry;
 
     /** The Normalizer registry */
-    private NormalizerRegistry normalizerRegistry;
+    protected NormalizerRegistry normalizerRegistry;
 
     /** The OID registry */
-    private OidRegistry oidRegistry;
+    protected OidRegistry oidRegistry;
 
     /** The SyntaxChecker registry */
-    private SyntaxCheckerRegistry syntaxCheckerRegistry;
+    protected SyntaxCheckerRegistry syntaxCheckerRegistry;
 
     /** The LdapSyntax registry */
-    private LdapSyntaxRegistry ldapSyntaxRegistry;
+    protected LdapSyntaxRegistry ldapSyntaxRegistry;
     
-    //private Map<String,Schema> loadedByName = new HashMap<String, Schema>();
-    //private final SchemaLoader schemaLoader;
-    //private final String name;
-
-    //String getName();
-    
-    //Map<String, Schema> getLoadedSchemas();
-    
-    //void load( String schemaName ) throws Exception;
-    
-    //void load( String schemaName, Properties props ) throws Exception;
-
-    //void unload( String schemaName ) throws Exception;
-    
-    //SchemaLoader getSchemaLoader();
-    
-    public DefaultRegistries( String name, SchemaLoader schemaLoader, OidRegistry registry )
+    /**
+     * Creates a new instance of Registries.
+     *
+     * @param oidRegistry
+     */
+    public Registries( OidRegistry oidRegistry )
     {
-        this.name = name;
-        this.schemaLoader = schemaLoader;
-        
-        this.schemaLoader.setListener( new SchemaLoaderListener() {
-            public void schemaLoaded( Schema schema )
-            {
-                loadedByName.put( schema.getSchemaName(), schema );
-            }
-        });
-        
-        oidRegistry = registry;
+        this.oidRegistry = oidRegistry;
         normalizerRegistry = new NormalizerRegistry( oidRegistry );
         comparatorRegistry = new ComparatorRegistry( oidRegistry );
         syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
@@ -116,7 +99,7 @@ public class Registries
         matchingRuleUseRegistry = new MatchingRuleUseRegistry( oidRegistry );
         nameFormRegistry = new NameFormRegistry( oidRegistry );
     }
-    
+
     
     /**
      * @return The AttributeType registry
