@@ -103,7 +103,7 @@ public class SchemaObject implements Serializable
 
     
     /**
-     * A default constructor for a SchemaObject instance. It muts be 
+     * A default constructor for a SchemaObject instance. It must be 
      * invoked by the inherited class.
      * 
      * @param objectType The SchemaObjectType to create
@@ -115,6 +115,8 @@ public class SchemaObject implements Serializable
         isEnabled = true;
         isReadOnly = false;
         extensions = new HashMap<String, List<String>>();
+        names = new ArrayList<String>();
+        names.add( oid );
     }
     
     
@@ -191,19 +193,16 @@ public class SchemaObject implements Serializable
      * Add a new name to the list of names for this SchemaObject. The name
      * is lowercased and trimmed.
      *  
-     * @param names The name to add
+     * @param names The names to add
      */
-    public void addName( String name )
+    public void addName( String... names )
     {
         if ( ! isReadOnly )
         {
-            if ( names == null )
+            for ( String name : names )
             {
-                names = new ArrayList<String>();
+                this.names.add( name );
             }
-
-            String normalizedName = StringTools.trim( name ).toLowerCase();
-            names.add( normalizedName );
         }
     }
 

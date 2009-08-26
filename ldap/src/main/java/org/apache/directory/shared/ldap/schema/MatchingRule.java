@@ -198,11 +198,11 @@ public class MatchingRule extends SchemaObject
      *
      * @param oid The LdapComparator
      */
-    public void setLdapComparator( LdapComparator<? super Object> ldapComparator )
+    public void setLdapComparator( LdapComparator<? > ldapComparator )
     {
         if ( !isReadOnly )
         {
-            this.ldapComparator = ldapComparator;
+            this.ldapComparator = (LdapComparator<? super Object>)ldapComparator;
         }
     }
 

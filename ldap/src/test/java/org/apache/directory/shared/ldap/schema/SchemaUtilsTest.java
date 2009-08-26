@@ -20,11 +20,6 @@
 package org.apache.directory.shared.ldap.schema;
 
 
-import java.util.Comparator;
-import javax.naming.NamingException;
-
-import org.apache.directory.shared.ldap.NotImplementedException;
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -39,30 +34,32 @@ public class SchemaUtilsTest
 {
     public static LdapSyntax[] getSyntaxes()
     {
-        SyntaxImpl[] syntaxes = new SyntaxImpl[3];
-        syntaxes[0] = new SyntaxImpl( "1.3.6.1.4.1.1466.115.121.1.12", "DN syntax", true );
-        syntaxes[1] = new SyntaxImpl( SchemaConstants.DIRECTORY_STRING_SYNTAX, "Directory String syntax", true );
-        syntaxes[2] = new SyntaxImpl( "1.3.6.1.4.1.1466.115.121.1.58", "Substring assertion syntax", true );
+        LdapSyntax[] syntaxes = new LdapSyntax[3];
+        syntaxes[0] = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.12", "DN syntax", true );
+        syntaxes[1] = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.15", "Directory String syntax", true );
+        syntaxes[2] = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.58", "Substring assertion syntax", true );
+        
         return syntaxes;
     }
 
 
     public static MatchingRule[] getMatchingRules()
     {
-        MatchingRuleImpl[] mrs = new MatchingRuleImpl[3];
-        mrs[0] = new MatchingRuleImpl( "2.5.13.2", getSyntaxes()[1] );
-        mrs[0].setNames( new String[]
-            { "caseIgnoreMatch" } );
+        MatchingRule[] mrs = new MatchingRule[3];
+        
+        mrs[0] = new MatchingRule( "2.5.13.2" );
+        mrs[0].setSyntax( getSyntaxes()[1] );
+        mrs[0].addName( "caseIgnoreMatch" );
         mrs[0].setDescription( "Ignores case in strings" );
 
-        mrs[1] = new MatchingRuleImpl( "2.5.13.4", getSyntaxes()[2] );
-        mrs[1].setNames( new String[]
-            { "caseIgnoreSubstringsMatch" } );
+        mrs[1] = new MatchingRule( "2.5.13.4" );
+        mrs[0].setSyntax( getSyntaxes()[2] );
+        mrs[1].addName( "caseIgnoreSubstringsMatch" );
         mrs[1].setDescription( "Ignores case in substrings" );
 
-        mrs[2] = new MatchingRuleImpl( "2.5.13.1", getSyntaxes()[0] );
-        mrs[2].setNames( new String[]
-            { "distinguishedNameMatch" } );
+        mrs[2] = new MatchingRule( "2.5.13.1" );
+        mrs[0].setSyntax( getSyntaxes()[0] );
+        mrs[2].addName( "distinguishedNameMatch" );
         mrs[2].setDescription( "distinguishedNameMatch" );
 
         return mrs;
@@ -71,44 +68,39 @@ public class SchemaUtilsTest
 
     public AttributeType[] getAttributeTypes()
     {
-        AttributeTypeImpl[] ats = new AttributeTypeImpl[5];
+        AttributeType[] ats = new AttributeType[5];
 
-        ats[0] = new AttributeTypeImpl( "2.5.4.41" );
-        ats[0].setNames( new String[]
-            { "name" } );
-        ats[0].syntax = getSyntaxes()[1];
+        ats[0] = new AttributeType( "2.5.4.41" );
+        ats[0].addName( "name" );
+        ats[0].setSyntax(  getSyntaxes()[1] );
         ats[0].setLength( 32768 );
-        ats[0].equality = getMatchingRules()[0];
-        ats[0].substr = getMatchingRules()[1];
+        ats[0].setEquality( getMatchingRules()[0] );
+        ats[0].setSubstr( getMatchingRules()[1] );
 
         // ( 2.5.4.3 NAME 'cn' SUP name )
-        ats[1] = new AttributeTypeImpl( "2.5.4.3" );
-        ats[1].setNames( new String[]
-            { "cn", "commonName" } );
+        ats[1] = new AttributeType( "2.5.4.3" );
+        ats[1].addName( "cn", "commonName" );
 
-        ats[2] = new AttributeTypeImpl( "2.5.4.41" );
-        ats[2].setNames( new String[]
-            { "name" } );
-        ats[2].syntax = getSyntaxes()[1];
+        ats[2] = new AttributeType( "2.5.4.41" );
+        ats[2].addName( "name" );
+        ats[2].setSyntax( getSyntaxes()[1] );
         ats[2].setLength( 32768 );
-        ats[2].equality = getMatchingRules()[0];
-        ats[2].substr = getMatchingRules()[1];
+        ats[2].setEquality( getMatchingRules()[0] );
+        ats[2].setSubstr( getMatchingRules()[1] );
 
-        ats[3] = new AttributeTypeImpl( "2.5.4.41" );
-        ats[3].setNames( new String[]
-            { "name" } );
-        ats[3].syntax = getSyntaxes()[1];
+        ats[3] = new AttributeType( "2.5.4.41" );
+        ats[3].addName( "name" );
+        ats[3].setSyntax( getSyntaxes()[1] );
         ats[3].setLength( 32768 );
-        ats[3].equality = getMatchingRules()[0];
-        ats[3].substr = getMatchingRules()[1];
+        ats[3].setEquality( getMatchingRules()[0] );
+        ats[3].setSubstr( getMatchingRules()[1] );
 
-        ats[4] = new AttributeTypeImpl( "2.5.4.41" );
-        ats[4].setNames( new String[]
-            { "name" } );
-        ats[4].syntax = getSyntaxes()[1];
+        ats[4] = new AttributeType( "2.5.4.41" );
+        ats[4].addName( "name" );
+        ats[4].setSyntax( getSyntaxes()[1] );
         ats[4].setLength( 32768 );
-        ats[4].equality = getMatchingRules()[0];
-        ats[4].substr = getMatchingRules()[1];
+        ats[4].setEquality( getMatchingRules()[0] );
+        ats[4].setSubstr( getMatchingRules()[1] );
 
         return ats;
     }
@@ -146,141 +138,5 @@ public class SchemaUtilsTest
 
         assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.render( new String[]
             { "name1", "name2", "name3" } ).toString() );
-    }
-
-
-    static class SyntaxImpl extends LdapSyntax
-    {
-        private static final long serialVersionUID = 1L;
-        
-        protected SyntaxImpl(String oid)
-        {
-            super( oid );
-        }
-
-
-        protected SyntaxImpl( String oid, boolean isHumanReadable )
-        {
-            super( oid );
-            setHumanReadable( isHumanReadable );
-        }
-
-
-        protected SyntaxImpl(String oid, String description)
-        {
-            super( oid );
-            setDescription( description );
-        }
-
-
-        protected SyntaxImpl(String oid, String description, boolean isHumanReadable)
-        {
-            super( oid );
-            setDescription( description );
-            setHumanReadable( isHumanReadable );
-        }
-
-
-        public SyntaxChecker getSyntaxChecker() throws NamingException
-        {
-            return null;
-        }
-    }
-
-    static class AttributeTypeImpl extends AbstractAttributeType
-    {
-        private static final long serialVersionUID = 1L;
-
-        LdapSyntax syntax;
-
-        AttributeType sup;
-
-        MatchingRule equality;
-
-        MatchingRule ordering;
-
-        MatchingRule substr;
-
-
-        public AttributeTypeImpl(String oid)
-        {
-            super( oid );
-        }
-
-
-        public AttributeType getSuperior() throws NamingException
-        {
-            return sup;
-        }
-
-
-        public LdapSyntax getSyntax() throws NamingException
-        {
-            return syntax;
-        }
-
-
-        public MatchingRule getEquality() throws NamingException
-        {
-            return equality;
-        }
-
-
-        public MatchingRule getOrdering() throws NamingException
-        {
-            return ordering;
-        }
-
-
-        public MatchingRule getSubstr() throws NamingException
-        {
-            return substr;
-        }
-
-
-        public boolean isAncestorOf( AttributeType attributeType ) throws NamingException
-        {
-            return false;
-        }
-
-
-        public boolean isDescendantOf( AttributeType attributeType ) throws NamingException
-        {
-            return false;
-        }
-    }
-
-    static class MatchingRuleImpl extends AbstractMatchingRule
-    {
-        private static final long serialVersionUID = 1L;
-
-        LdapSyntax syntax;
-
-
-        protected MatchingRuleImpl(String oid, LdapSyntax syntax)
-        {
-            super( oid );
-            this.syntax = syntax;
-        }
-
-
-        public LdapSyntax getSyntax() throws NamingException
-        {
-            return syntax;
-        }
-
-
-        public Comparator<String> getComparator() throws NamingException
-        {
-            throw new NotImplementedException(
-                "getComparator in org.apache.ldap.common.schema.SchemaUtilsTest.MatchingRuleImpl not implemented!" );
-        }
-
-
-        public Normalizer getNormalizer() throws NamingException
-        {
-            throw new NotImplementedException(
-                "getNormalizer in org.apache.ldap.common.schema.SchemaUtilsTest.MatchingRuleImpl not implemented!" );
-        }
     }
 }
