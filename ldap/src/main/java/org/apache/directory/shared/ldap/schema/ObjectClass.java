@@ -102,6 +102,7 @@ public class ObjectClass extends SchemaObject
 
     /**
      * Creates a new instance of MatchingRuleUseDescription
+     * @param oid the OID for this objectClass
      */
     public ObjectClass( String oid )
     {
@@ -122,8 +123,10 @@ public class ObjectClass extends SchemaObject
      * other SchemaObject
      *
      * @param registries The Registries
+     * @throws Exception on failure
+     *
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( Registries registries ) throws Exception
     {
         if ( registries != null )
         {
@@ -312,7 +315,7 @@ public class ObjectClass extends SchemaObject
     /**
      * Sets the list of required AttributeTypes
      *
-     * @param mayAttributeTypes the list of required AttributeTypes
+     * @param mustAttributeTypes the list of required AttributeTypes
      */
     public void setMustAttributeTypes( List<AttributeType> mustAttributeTypes )
     {
@@ -399,7 +402,7 @@ public class ObjectClass extends SchemaObject
     /**
      * Sets the superior object classes
      * 
-     * @param oids the object classes to set
+     * @param superiors the object classes to set
      */
     public void setSuperiors( List<ObjectClass> superiors )
     {
@@ -421,7 +424,7 @@ public class ObjectClass extends SchemaObject
     /**
      * Sets the superior object class OIDs
      * 
-     * @param oids the object class OIDs to set
+     * @param superiorOids the object class OIDs to set
      */
     public void setSuperiorOids( List<String> superiorOids )
     {
@@ -446,7 +449,7 @@ public class ObjectClass extends SchemaObject
     /**
      * Set the ObjectClass type, one of ABSTRACT, AUXILIARY or STRUCTURAL.
      * 
-     * @param type The ObjectClassType value
+     * @param objectClassType The ObjectClassType value
      */
     public void setType( ObjectClassTypeEnum objectClassType )
     {

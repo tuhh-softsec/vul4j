@@ -19,21 +19,6 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-import org.apache.directory.server.schema.bootstrap.Schema;
-import org.apache.directory.server.schema.registries.DefaultAttributeTypeRegistry;
-import org.apache.directory.server.schema.registries.DefaultComparatorRegistry;
-import org.apache.directory.server.schema.registries.DefaultDitContentRuleRegistry;
-import org.apache.directory.server.schema.registries.DefaultDitStructureRuleRegistry;
-import org.apache.directory.server.schema.registries.DefaultLdapSyntaxRegistry;
-import org.apache.directory.server.schema.registries.DefaultMatchingRuleRegistry;
-import org.apache.directory.server.schema.registries.DefaultMatchingRuleUseRegistry;
-import org.apache.directory.server.schema.registries.DefaultNameFormRegistry;
-import org.apache.directory.server.schema.registries.DefaultNormalizerRegistry;
-import org.apache.directory.server.schema.registries.DefaultObjectClassRegistry;
-import org.apache.directory.server.schema.registries.DefaultSyntaxCheckerRegistry;
-import org.apache.directory.server.schema.registries.SchemaLoader;
-import org.apache.directory.server.schema.registries.SchemaLoaderListener;
-
 
 /**
  * Document this class.
@@ -79,10 +64,11 @@ public class Registries
     /** The LdapSyntax registry */
     protected LdapSyntaxRegistry ldapSyntaxRegistry;
     
+
     /**
      * Creates a new instance of Registries.
      *
-     * @param oidRegistry
+     * @param oidRegistry the OID registry
      */
     public Registries( OidRegistry oidRegistry )
     {

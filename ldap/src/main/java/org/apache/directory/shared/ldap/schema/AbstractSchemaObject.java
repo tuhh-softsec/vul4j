@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.util.ArrayUtils;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public abstract class AbstractSchemaObject implements SchemaObject
+public abstract class AbstractSchemaObject extends SchemaObject
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
