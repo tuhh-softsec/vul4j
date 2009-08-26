@@ -24,6 +24,7 @@ import java.text.ParseException;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -67,7 +68,7 @@ public class AttributeUtils
 
         if ( attr == null )
         {
-            String[] aliases = type.getNamesRef();
+            List<String> aliases = type.getNames();
 
             for ( String alias : aliases )
             {
@@ -210,9 +211,9 @@ public class AttributeUtils
         }
 
         // optimization bypass to avoid cost of the loop below
-        if ( type.getNamesRef().length == 1 )
+        if ( type.getNames().size() == 1 )
         {
-            attr = attrs.get( type.getNamesRef()[0] );
+            attr = attrs.get( type.getNames().get( 0 ) );
 
             if ( attr != null )
             {
@@ -221,7 +222,7 @@ public class AttributeUtils
         }
 
         // iterate through aliases
-        for ( String alias : type.getNamesRef() )
+        for ( String alias : type.getNames() )
         {
             attr = attrs.get( alias );
 
@@ -258,11 +259,11 @@ public class AttributeUtils
 
         if ( matchingRule != null )
         {
-            normalizer = type.getEquality().getNormalizer();
+            normalizer = matchingRule.getNormalizer();
         }
         else
         {
-            normalizer = new NoOpNormalizer( matchingRule.getOid() );
+            normalizer = new NoOpNormalizer( type.getOid() );
         }
 
         if ( type.getSyntax().isHumanReadable() )
