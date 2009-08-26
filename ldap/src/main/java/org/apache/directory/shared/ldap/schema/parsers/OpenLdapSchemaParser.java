@@ -168,11 +168,19 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
                 resolveObjectIdentifierMacro( oid );
             }
 
-            // apply object identifier macros to object classes and attribute types
+            // apply object identifier macros to object classes
             for ( ObjectClassLiteral ocl : objectClassLiterals )
             {
                 ocl.setOid( getResolveOid( ocl.getOid() ) );
             }
+            
+            // apply object identifier macros to attribute types
+            for ( AttributeType attributeType : attributeTypes )
+            {
+                attributeType.changeOid( getResolveOid( attributeType.getOid() ) );
+                attributeType.setSyntaxOid( getResolveOid( attributeType.getSyntaxOid() ) );
+            }
+            
         }
     }
 
