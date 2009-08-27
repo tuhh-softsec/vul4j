@@ -19,6 +19,17 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+import javax.naming.NamingException;
+
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.DITContentRule;
+import org.apache.directory.shared.ldap.schema.DITStructureRule;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
+import org.apache.directory.shared.ldap.schema.NameForm;
+import org.apache.directory.shared.ldap.schema.ObjectClass;
+
 
 /**
  * Document this class.
@@ -194,6 +205,114 @@ public class Registries
         return ldapSyntaxRegistry;
     }
     
+    
+    /**
+     * Get an OID from a name. As we have many possible registries, we 
+     * have to look in all of them to get the one containing the OID.
+     *
+     * @param name The name we are looking at
+     * @return The associated OID
+     */
+    public String getOid( String name )
+    {
+        // we have many possible Registries to look at.
+        // AttributeType
+        try
+        {
+            AttributeType attributeType = attributeTypeRegistry.lookup( name );
+            
+            return attributeType.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // Fall down to the next registry
+        }
+        
+        // ObjectClass
+        try
+        {
+            ObjectClass objectClass = objectClassRegistry.lookup( name );
+            
+            return objectClass.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // Fall down to the next registry
+        }
+
+        // LdapSyntax
+        try
+        {
+            LdapSyntax ldapSyntax = ldapSyntaxRegistry.lookup( name );
+            
+            return ldapSyntax.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // Fall down to the next registry
+        }
+        
+        // MatchingRule
+        try
+        {
+            MatchingRule matchingRule = matchingRuleRegistry.lookup( name );
+            
+            return matchingRule.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // Fall down to the next registry
+        }
+        
+        // MatchingRuleUse
+        try
+        {
+            MatchingRuleUse matchingRuleUse = matchingRuleUseRegistry.lookup( name );
+            
+            return matchingRuleUse.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // Fall down to the next registry
+        }
+        
+        // NameForm
+        try
+        {
+            NameForm nameForm = nameFormRegistry.lookup( name );
+            
+            return nameForm.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // Fall down to the next registry
+        }
+        
+        // DITContentRule
+        try
+        {
+            DITContentRule ditContentRule = ditContentRuleRegistry.lookup( name );
+            
+            return ditContentRule.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // Fall down to the next registry
+        }
+
+        // DITStructureRule
+        try
+        {
+            DITStructureRule ditStructureRule = ditStructureRuleRegistry.lookup( name );
+            
+            return ditStructureRule.getOid();
+        }
+        catch ( NamingException ne )
+        {
+            // No more registries to look at...
+            return null;
+        }
+    }
 
     //List<Throwable> checkRefInteg();
 
