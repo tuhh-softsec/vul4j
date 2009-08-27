@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+import java.util.Map;
+import java.util.HashMap;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -39,6 +41,12 @@ import org.apache.directory.shared.ldap.schema.ObjectClass;
  */
 public class Registries
 {
+    /**
+     * A String name to Schema object map for those schemas loaded into this
+     * registry.
+     */
+    protected Map<String, Schema> loadedSchemas = new HashMap<String, Schema>();
+
     /** The AttributeType registry */
     protected AttributeTypeRegistry attributeTypeRegistry;
     
@@ -316,7 +324,30 @@ public class Registries
 
     //List<Throwable> checkRefInteg();
 
-    //Schema getSchema( String schemaName );
+
+    /**
+     * Gets a schema that has been loaded into these registries.
+     * 
+     * @param schemaName the name of the schema to lookup
+     * @return the loaded Schema if one corresponding to the name exists
+     */
+    public Schema getLoadedSchema( String schemaName )
+    {
+        return loadedSchemas.get( schemaName );
+    }
+
+
+    /**
+     * Checks to see if a particular Schema is loaded.
+     *
+     * @param schemaName the name of the Schema to check
+     * @return true if the Schema is loaded, false otherwise
+     */
+    public boolean isSchemaLoaded( String schemaName )
+    {
+        return loadedSchemas.containsKey( schemaName );
+    }
+
 
     /**
      * Removes a schema from the loaded set without unloading the schema.

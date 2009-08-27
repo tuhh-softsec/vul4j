@@ -61,7 +61,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             listener.schemaLoaded( schema );
         }
         
-        if ( registries instanceof SchemaLoaderListener)
+        if ( registries instanceof SchemaLoaderListener )
         {
             if ( registries != listener )
             {
@@ -83,13 +83,13 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema the current schema we are attempting to load
      * @param registries the set of registries to use while loading
      * @param props to use while trying to resolve other schemas
-     * @throws NamingException if there is a cycle detected and/or another
+     * @throws Exception if there is a cycle detected and/or another
      * failure results while loading, producing and or registering schema objects
      */
     protected final void loadDepsFirst( Schema rootAncestor, Stack<String> beenthere, Map<String, Schema> notLoaded,
                                         Schema schema, Registries registries, Properties props ) throws Exception
     {
-        if ( registries.getLoadedSchemas().containsKey( schema.getSchemaName() ) )
+        if ( registries.isSchemaLoaded( schema.getSchemaName() ) )
         {
             LOG.warn( "{} schema has already been loaded" + schema.getSchemaName() );
             return;
