@@ -173,7 +173,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
                 throw new NamingException( "schema dependency cycle detected: " + beenthere );
             }
 
-            loadDepsFirst( rootAncestor, beenthere, notLoaded, dep, registries, props );
+            loadDepsFirst( rootAncestor, beenthere, notLoaded, dep, registries );
         }
 
         // We have loaded all our deps so we can load this schema
