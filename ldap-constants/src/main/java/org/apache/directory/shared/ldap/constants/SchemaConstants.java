@@ -459,7 +459,7 @@ public interface SchemaConstants
     String ACCESS_POINT_SYNTAX                      = "1.3.6.1.4.1.1466.115.121.1.2";
     
     // RFC 4517, chap 3.3.1
-    String ATTRIBUT_TYPE_DESCRIPTION_SYNTAX         = "1.3.6.1.4.1.1466.115.121.1.3";
+    String ATTRIBUTE_TYPE_DESCRIPTION_SYNTAX        = "1.3.6.1.4.1.1466.115.121.1.3";
 
     // RFC 2252, removed in RFC 4517
     String AUDIO_SYNTAX                             = "1.3.6.1.4.1.1466.115.121.1.4";
