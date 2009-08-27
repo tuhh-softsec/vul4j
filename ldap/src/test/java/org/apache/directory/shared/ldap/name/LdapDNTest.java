@@ -79,7 +79,7 @@ public class LdapDNTest
         oids = new HashMap<String, OidNormalizer>();
 
         // DC normalizer
-        OidNormalizer dcOidNormalizer = new OidNormalizer( "dc",
+        OidNormalizer dcOidNormalizer = new OidNormalizer( SchemaConstants.DOMAIN_COMPONENT_AT_OID,
             new DeepTrimToLowerNormalizer( SchemaConstants.DOMAIN_COMPONENT_AT_OID ) );
         
         oids.put( "dc", dcOidNormalizer );
@@ -87,7 +87,7 @@ public class LdapDNTest
         oids.put( "0.9.2342.19200300.100.1.25", dcOidNormalizer );
 
         // OU normalizer
-        OidNormalizer ouOidNormalizer = new OidNormalizer( "ou",
+        OidNormalizer ouOidNormalizer = new OidNormalizer( SchemaConstants.OU_AT_OID,
             new DeepTrimToLowerNormalizer( SchemaConstants.OU_AT_OID ) );
         
         oids.put( "ou", ouOidNormalizer );
@@ -2496,9 +2496,9 @@ public class LdapDNTest
 
         assertTrue( name.getUpName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
-        Name result = LdapDN.normalize( name, oids );
+        LdapDN result = LdapDN.normalize( name, oids );
 
-        assertTrue( result.toString().equals( "ou=some people,dc=example,dc=com" ) );
+        assertEquals( "2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com", result.getNormName() );
     }
 
 
