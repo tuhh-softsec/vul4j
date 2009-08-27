@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
@@ -45,9 +46,18 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( AbstractSchemaLoader.class );
     
+
     protected SchemaLoaderListener listener;
     
     
+    /** 
+     * A map of all available schema names to schema objects. This map is 
+     * populated when this class is created with all the schemas present in
+     * the LDIF based schema repository.
+     */
+    protected final Map<String,Schema> schemaMap = new HashMap<String,Schema>();
+    
+
     public void setListener( SchemaLoaderListener listener )
     {
         this.listener = listener;
@@ -73,9 +83,22 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     
     
     /**
+     * {@inheritDoc}
+     */
+    public final void loadAllEnabled( Registries registries ) throws Exception
+    {
+        for ( Schema schema : schemaMap.values() )
+        {
+            loadDepsFirst( schema, new Stack<String>(), 
+                new HashMap<String,Schema>(), schema, registries );
+        }
+    }
+    
+    
+    /**
      * Recursive method which loads schema's with their dependent schemas first
      * and tracks what schemas it has seen so the recursion does not go out of
-     * control with depenency cycle detection.
+     * control with dependency cycle detection.
      *
      * @param rootAncestor the triggering schema load request: the root ancestor of dependency chain
      * @param beenthere stack of schema names we have visited and have yet to load

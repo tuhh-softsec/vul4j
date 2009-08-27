@@ -68,6 +68,14 @@ public interface SchemaLoader
     void loadWithDependencies( Schema schema, Registries registries ) throws Exception;
     
     /**
+     * Loads all available enabled schemas.
+     *
+     * @param registries the registry to load all enabled schemas into
+     * @throws Exception if there are any failures
+     */
+    void loadAllEnabled( Registries registries ) throws Exception;
+    
+    /**
      * Loads a single schema.  Do not try to resolve dependencies while implementing this method.
      * 
      * @param schema the schema to load

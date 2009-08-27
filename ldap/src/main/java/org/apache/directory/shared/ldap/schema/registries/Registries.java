@@ -19,8 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import javax.naming.NamingException;
@@ -323,8 +323,6 @@ public class Registries
             return null;
         }
     }
-
-    //List<Throwable> checkRefInteg();
 
 
     /**
