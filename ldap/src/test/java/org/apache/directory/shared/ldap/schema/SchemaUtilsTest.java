@@ -20,6 +20,9 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -114,29 +117,29 @@ public class SchemaUtilsTest
     @Test
     public void testRenderQdescrs()
     {
-        assertEquals( "", SchemaUtils.render( ( String[] ) null ).toString() );
-        assertEquals( "", SchemaUtils.render( new String[]
-            {} ).toString() );
-        assertEquals( "'name1'", SchemaUtils.render( new String[]
-            { "name1" } ).toString() );
-        assertEquals( "( 'name1' 'name2' )", SchemaUtils.render( new String[]
-            { "name1", "name2" } ).toString() );
-        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.render( new String[]
-            { "name1", "name2", "name3" } ).toString() );
+        assertEquals( "", SchemaUtils.render( (List<String>)null ).toString() );
+        assertEquals( "", SchemaUtils.render( Arrays.asList( new String[]
+            {} ) ).toString() );
+        assertEquals( "'name1'", SchemaUtils.render( Arrays.asList( new String[]
+            { "name1" } ) ).toString() );
+        assertEquals( "( 'name1' 'name2' )", SchemaUtils.render( Arrays.asList( new String[]
+            { "name1", "name2" } ) ).toString() );
+        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.render( Arrays.asList( new String[]
+            { "name1", "name2", "name3" } ) ).toString() );
 
         StringBuffer buf = new StringBuffer();
-        assertEquals( "", SchemaUtils.render( buf, ( String[] ) null ).toString() );
+        assertEquals( "", SchemaUtils.render( buf, (List<String>)null ).toString() );
 
-        assertEquals( "", SchemaUtils.render( new String[]
-            {} ).toString() );
+        assertEquals( "", SchemaUtils.render( Arrays.asList( new String[]
+            {} ) ).toString() );
 
-        assertEquals( "'name1'", SchemaUtils.render( new String[]
-            { "name1" } ).toString() );
+        assertEquals( "'name1'", SchemaUtils.render( Arrays.asList( new String[]
+            { "name1" } ) ).toString() );
 
-        assertEquals( "( 'name1' 'name2' )", SchemaUtils.render( new String[]
-            { "name1", "name2" } ).toString() );
+        assertEquals( "( 'name1' 'name2' )", SchemaUtils.render( Arrays.asList( new String[]
+            { "name1", "name2" } ) ).toString() );
 
-        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.render( new String[]
-            { "name1", "name2", "name3" } ).toString() );
+        assertEquals( "( 'name1' 'name2' 'name3' )", SchemaUtils.render( Arrays.asList( new String[]
+            { "name1", "name2", "name3" } ) ).toString() );
     }
 }
