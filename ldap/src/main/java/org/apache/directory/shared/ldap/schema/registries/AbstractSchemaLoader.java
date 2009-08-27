@@ -87,7 +87,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * failure results while loading, producing and or registering schema objects
      */
     protected final void loadDepsFirst( Schema rootAncestor, Stack<String> beenthere, Map<String, Schema> notLoaded,
-                                        Schema schema, Registries registries, Properties props ) throws Exception
+                                        Schema schema, Registries registries ) throws Exception
     {
         if ( registries.isSchemaLoaded( schema.getSchemaName() ) )
         {
@@ -140,7 +140,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             if ( dep == null )
             {
                 // try to load dependency with the provided properties default
-                dep = getSchema( depName, props );
+                dep = getSchema( depName );
             }
 
             if ( beenthere.contains( dep.getSchemaName() ) )
