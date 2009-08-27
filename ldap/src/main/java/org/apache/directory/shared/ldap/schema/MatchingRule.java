@@ -82,13 +82,13 @@ public class MatchingRule extends SchemaObject
     private static final long serialVersionUID = 1L;
 
     /** The associated Comparator */
-    private LdapComparator<? super Object> ldapComparator;
+    protected LdapComparator<? super Object> ldapComparator;
 
     /** The associated Normalizer */
-    private Normalizer normalizer;
+    protected Normalizer normalizer;
 
     /** The associated LdapSyntax */
-    private LdapSyntax ldapSyntax;
+    protected LdapSyntax ldapSyntax;
     
     /** The associated LdapSyntax OID */
     private String ldapSyntaxOid;
@@ -198,7 +198,7 @@ public class MatchingRule extends SchemaObject
      *
      * @param oid The LdapComparator
      */
-    public void setLdapComparator( LdapComparator<? > ldapComparator )
+    public void setLdapComparator( LdapComparator<?> ldapComparator )
     {
         if ( !isReadOnly )
         {
