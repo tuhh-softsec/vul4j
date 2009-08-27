@@ -340,7 +340,7 @@ public class ObjectClass extends SchemaObject
      * @return the superclasses
      * @throws NamingException if there is a failure resolving the object
      */
-    public List<ObjectClass> getSuperiors() throws NamingException
+    public List<ObjectClass> getSuperiors()
     {
         return superiors;
     }

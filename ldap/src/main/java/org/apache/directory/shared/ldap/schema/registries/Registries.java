@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import javax.naming.NamingException;
@@ -349,6 +351,272 @@ public class Registries
     }
 
 
+    // ------------------------------------------------------------------------
+    // Code used to sanity check the resolution of entities in registries
+    // ------------------------------------------------------------------------
+    /**
+     * Attempts to resolve the dependent schema objects of all entities that
+     * refer to other objects within the registries.  Null references will be
+     * handed appropriately.
+     *
+     * @return a list of exceptions encountered while resolving entities
+     */
+    public List<Throwable> checkRefInteg()
+    {
+        ArrayList<Throwable> errors = new ArrayList<Throwable>();
+
+        // Check the ObjectClasses
+        for ( ObjectClass objectClass : objectClassRegistry )
+        {
+            resolve( objectClass, errors );
+        }
+
+        // Check the AttributeTypes
+        for ( AttributeType attributeType : attributeTypeRegistry )
+        {
+            resolve( attributeType, errors );
+        }
+
+        // Check the MatchingRules
+        for ( MatchingRule matchingRule : matchingRuleRegistry )
+        {
+            resolve( matchingRule, errors );
+        }
+
+        // Check the LdapSyntax
+        for ( LdapSyntax ldapSyntax : ldapSyntaxRegistry )
+        {
+            resolve( ldapSyntax, errors );
+        }
+
+        return errors;
+    }
+
+    
+    /**
+     * Attempts to resolve the SyntaxChecker associated with a Syntax.
+     *
+     * @param syntax the LdapSyntax to resolve the SyntaxChecker of
+     * @param errors the list of errors to add exceptions to
+     * @return true if it succeeds, false otherwise
+     */
+    private boolean resolve( LdapSyntax syntax, List<Throwable> errors )
+    {
+        if ( syntax == null )
+        {
+            return true;
+        }
+
+        try
+        {
+            syntax.getSyntaxChecker();
+            return true;
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            return false;
+        }
+    }
+
+
+    /**
+     * Check if the Normalizer and Comparator are existing for a matchingRule
+     */
+    private boolean resolve( MatchingRule mr, List<Throwable> errors )
+    {
+        boolean isSuccess = true;
+
+        if ( mr == null )
+        {
+            return true;
+        }
+
+        try
+        {
+            if ( mr.getLdapComparator() == null )
+            {
+                String schema = matchingRuleRegistry.getSchemaName( mr.getOid() );
+                errors.add( new NullPointerException( "matchingRule " + mr.getName() + " in schema " + schema
+                    + " with OID " + mr.getOid() + " has a null comparator" ) );
+                isSuccess = false;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        try
+        {
+            if ( mr.getNormalizer() == null )
+            {
+                String schema = matchingRuleRegistry.getSchemaName( mr.getOid() );
+                errors.add( new NullPointerException( "matchingRule " + mr.getName() + " in schema " + schema
+                    + " with OID " + mr.getOid() + " has a null normalizer" ) );
+                isSuccess = false;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        try
+        {
+            isSuccess &= resolve( mr.getSyntax(), errors );
+
+            if ( mr.getSyntax() == null )
+            {
+                String schema = matchingRuleRegistry.getSchemaName( mr.getOid() );
+                errors.add( new NullPointerException( "matchingRule " + mr.getName() + " in schema " + schema
+                    + " with OID " + mr.getOid() + " has a null Syntax" ) );
+                isSuccess = false;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        return isSuccess;
+    }
+
+
+    /**
+     * Check the inheritance, and the existence of MatchingRules and LdapSyntax
+     * for an attribute 
+     */
+    private boolean resolve( AttributeType at, List<Throwable> errors )
+    {
+        boolean isSuccess = true;
+
+        boolean hasMatchingRule = false;
+
+        if ( at == null )
+        {
+            return true;
+        }
+
+        try
+        {
+            isSuccess &= resolve( at.getSup(), errors );
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        try
+        {
+            isSuccess &= resolve( at.getEquality(), errors );
+
+            if ( at.getEquality() != null )
+            {
+                hasMatchingRule |= true;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        try
+        {
+            isSuccess &= resolve( at.getOrdering(), errors );
+
+            if ( at.getOrdering() != null )
+            {
+                hasMatchingRule |= true;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        try
+        {
+            isSuccess &= resolve( at.getSubstr(), errors );
+
+            if ( at.getSubstr() != null )
+            {
+                hasMatchingRule |= true;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        try
+        {
+            isSuccess &= resolve( at.getSyntax(), errors );
+
+            if ( at.getSyntax() == null )
+            {
+                String schema = attributeTypeRegistry.getSchemaName( at.getOid() );
+
+                errors.add( new NullPointerException( "attributeType " + at.getName() + " in schema " + schema
+                    + " with OID " + at.getOid() + " has a null Syntax" ) );
+
+                isSuccess = false;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
+            isSuccess = false;
+        }
+
+        return isSuccess;
+    }
+
+
+    private boolean resolve( ObjectClass oc, List<Throwable> errors )
+    {
+        boolean isSuccess = true;
+
+        if ( oc == null )
+        {
+            return true;
+        }
+
+        List<ObjectClass> superiors = oc.getSuperiors();
+
+        if ( ( superiors == null ) || ( superiors.size() == 0 ) )
+        {
+            isSuccess = false;
+        }
+        else
+        {
+            for ( ObjectClass superior : superiors )
+            {
+                isSuccess &= resolve( superior, errors );
+            }
+        }
+
+        for ( AttributeType attributeType : oc.getMayAttributeTypes() )
+        {
+            isSuccess &= resolve( attributeType, errors );
+        }
+
+        for ( AttributeType attributeType : oc.getMustAttributeTypes() )
+        {
+            isSuccess &= resolve( attributeType, errors );
+        }
+
+        return isSuccess;
+    }
+    
+    
     /**
      * Removes a schema from the loaded set without unloading the schema.
      * This should be used ONLY when an enabled schema is deleted.
