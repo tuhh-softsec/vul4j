@@ -641,16 +641,17 @@ public class DescriptionUtils
         buf.append( dITStructureRule.getForm() );
         buf.append( '\n' );
 
-        List<DITStructureRule> sups = dITStructureRule.getSuperRules();
+        // TODO : Shouldn't we get the ruleId OID ? 
+        List<Integer> sups = dITStructureRule.getSuperRules();
         
         if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
             buf.append( "SUP\n" );
             
-            for ( DITStructureRule sup:sups )
+            for ( Integer sup:sups )
             {
                 buf.append( '\t' );
-                buf.append( sup.getOid() );
+                buf.append( sup );
                 buf.append( '\n' );
             }
         }
