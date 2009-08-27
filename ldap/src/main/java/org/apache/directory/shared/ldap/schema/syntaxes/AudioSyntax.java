@@ -19,32 +19,32 @@
  */
 package org.apache.directory.shared.ldap.schema.syntaxes;
 
+
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.syntaxChecker.NumericStringSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxChecker.AcceptAllSyntaxChecker;
 
 /**
- * A Syntax for Numbers
+ * A Syntax for Audio
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class NumberSyntax extends LdapSyntax
+public class AudioSyntax extends LdapSyntax
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a Syntax object for Numbers. This is a ApacheMeta 
-     * Syntax.
+     * Creates a Syntax object for Audio. 
      */
-    public NumberSyntax()
+    public AudioSyntax()
     {
-        super( SchemaConstants.NUMBER_SYNTAX );
+        super( SchemaConstants.AUDIO_SYNTAX );
         
-        setDescription( "The syntax for number strings." );
-        setSyntaxChecker( new NumericStringSyntaxChecker() );
-        addName( "number" );
-        setSchemaName( "apacheMeta" );
+        setDescription( "A Syntax for Audio" );
+        setSyntaxChecker( new AcceptAllSyntaxChecker( SchemaConstants.AUDIO_SYNTAX ) );
+        addName( "audio" );
+        setSchemaName( "system" );
     }
 }

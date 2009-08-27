@@ -19,32 +19,32 @@
  */
 package org.apache.directory.shared.ldap.schema.syntaxes;
 
+
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.syntaxChecker.NumericStringSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxChecker.AcceptAllSyntaxChecker;
 
 /**
- * A Syntax for Numbers
+ * A Syntax for an Attribute Certificate Assertion
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class NumberSyntax extends LdapSyntax
+public class AttributeCertificateAssertionSyntax extends LdapSyntax
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a Syntax object for Numbers. This is a ApacheMeta 
-     * Syntax.
+     * Creates a Syntax object for an Attribute Certificate Assertion. 
      */
-    public NumberSyntax()
+    public AttributeCertificateAssertionSyntax()
     {
-        super( SchemaConstants.NUMBER_SYNTAX );
+        super( SchemaConstants.ATTRIBUTE_CERTIFICATE_ASSERTION_SYNTAX );
         
-        setDescription( "The syntax for number strings." );
-        setSyntaxChecker( new NumericStringSyntaxChecker() );
-        addName( "number" );
-        setSchemaName( "apacheMeta" );
+        setDescription( "A Syntax for an Attribute Certificate Assertion" );
+        setSyntaxChecker( new AcceptAllSyntaxChecker( SchemaConstants.ATTRIBUTE_CERTIFICATE_ASSERTION_SYNTAX ) );
+        addName( "attributeCertificateAssertion" );
+        setSchemaName( "system" );
     }
 }

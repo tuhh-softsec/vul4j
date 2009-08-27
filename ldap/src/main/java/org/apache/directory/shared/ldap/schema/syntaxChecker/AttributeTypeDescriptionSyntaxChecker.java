@@ -90,7 +90,7 @@ public class AttributeTypeDescriptionSyntaxChecker extends SyntaxChecker
      */
     public AttributeTypeDescriptionSyntaxChecker()
     {
-        super( SchemaConstants.ATTRIBUT_TYPE_DESCRIPTION_SYNTAX );
+        super( SchemaConstants.ATTRIBUTE_TYPE_DESCRIPTION_SYNTAX );
     }
     
     /**
