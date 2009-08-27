@@ -49,16 +49,6 @@ public interface SchemaLoader
     Schema getSchema( String schemaName ) throws Exception;
     
     /**
-     * Gets a schema object based on it's name and some properties.
-     * 
-     * @param schemaName the name of the schema to load
-     * @param schemaProperties the properties associated with that schema to facilitate locating/loading it
-     * @return the Schema object associated with the name
-     * @throws Exception if any problems while trying to find the associated Schema
-     */
-    Schema getSchema( String schemaName, Properties schemaProperties ) throws Exception;
-    
-    /**
      * Loads a collection of schemas.  A best effort should be made to load the dependended 
      * schemas that these schemas may rely on even if they are not included in the collection.
      * 
@@ -71,11 +61,11 @@ public interface SchemaLoader
     /**
      * Loads a single schema at least and possibly it's dependencies.  
      * 
-     * @param schemas the schema to load
+     * @param schema the schema to load
      * @param registries the registries to populate with these schemas
      * @throws Exception if any kind of problems are encountered during the load
      */
-    void loadWithDependencies( Schema schemas, Registries registries ) throws Exception;
+    void loadWithDependencies( Schema schema, Registries registries ) throws Exception;
     
     /**
      * Loads a single schema.  Do not try to resolve dependencies while implementing this method.
