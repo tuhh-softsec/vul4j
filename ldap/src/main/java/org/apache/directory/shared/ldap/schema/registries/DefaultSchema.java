@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+import java.util.Arrays;
+
 
 
 /**
@@ -140,5 +142,19 @@ public class DefaultSchema implements Schema
     public void enable()
     {
         this.disabled = false;
+    }
+    
+    
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( "\tSchema Name: " );
+        sb.append( this.name );
+        sb.append( "\n\t\tDisabled: " );
+        sb.append( this.disabled );
+        sb.append( "\n\t\tOwner: " );
+        sb.append( this.owner );
+        sb.append( "\n\t\tDependencies: " );
+        sb.append( Arrays.toString( dependencies ) );
+        return sb.toString();
     }
 }

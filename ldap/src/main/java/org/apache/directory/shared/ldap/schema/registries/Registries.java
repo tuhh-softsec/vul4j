@@ -326,7 +326,7 @@ public class Registries
 
 
     /**
-     * Gets a schema that has been loaded into these registries.
+     * Gets a schema that has been loaded into these Registries.
      * 
      * @param schemaName the name of the schema to lookup
      * @return the loaded Schema if one corresponding to the name exists
