@@ -538,9 +538,9 @@ public class DescriptionUtils
             buf.append( '\n' );
         }
 
-        ObjectClass[] sups = objectClass.getSuperClasses();
+        List<ObjectClass> sups = objectClass.getSuperiors();
 
-        if ( sups != null && sups.length > 0 )
+        if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
             buf.append( "SUP\n" );
             
@@ -558,8 +558,9 @@ public class DescriptionUtils
             buf.append( '\n' );
         }
 
-        AttributeType[] must = objectClass.getMustList();
-        if ( must != null && must.length > 0 )
+        List<AttributeType> must = objectClass.getMustAttributeTypes();
+        
+        if ( ( must != null ) && ( must.size() > 0 ) )
         {
             buf.append( "MUST\n" );
             
@@ -571,9 +572,9 @@ public class DescriptionUtils
             }
         }
 
-        AttributeType[] may = objectClass.getMayList();
+        List<AttributeType> may = objectClass.getMayAttributeTypes();
         
-        if ( may != null && may.length > 0 )
+        if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( "MAY\n" );
 

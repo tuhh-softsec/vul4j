@@ -17,31 +17,35 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema;
+package org.apache.directory.shared.ldap.schema.syntaxes;
 
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.syntaxChecker.NumericStringSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxChecker.ObjectClassTypeSyntaxChecker;
 
 /**
- * The default MatchingRule implementation.
- * 
+ * A Syntax for Numbers
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev$, $Date$
  */
-public abstract class AbstractMatchingRule extends AbstractSchemaObject implements MatchingRule
+public class NumberSyntax extends LdapSyntax
 {
-
-    // ------------------------------------------------------------------------
-    // C O N S T R U C T O R S
-    // ------------------------------------------------------------------------
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a MatchingRule using the minimal set of required information.
-     * 
-     * @param oid the object identifier for this matching rule
+     * Creates a Syntax object for Numbers. This is a ApacheMeta 
+     * Syntax.
      */
-    protected AbstractMatchingRule( String oid )
+    public NumberSyntax()
     {
-        super( oid );
+        super( SchemaConstants.NUMBER_SYNTAX );
         
-        objectType = SchemaObjectType.MATCHING_RULE;
+        setDescription( "The syntax for number strings." );
+        setSyntaxChecker( new NumericStringSyntaxChecker() );
+        addName( "number" );
+        setSchemaName( "apacheMeta" );
     }
 }
