@@ -91,9 +91,9 @@ public class Registries
      *
      * @param oidRegistry the OID registry
      */
-    public Registries( OidRegistry oidRegistry )
+    public Registries()
     {
-        this.oidRegistry = oidRegistry;
+        this.oidRegistry = new OidRegistry();
         normalizerRegistry = new NormalizerRegistry( oidRegistry );
         comparatorRegistry = new ComparatorRegistry( oidRegistry );
         syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );

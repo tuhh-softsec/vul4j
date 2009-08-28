@@ -280,8 +280,9 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
      *
      * @param name The name we are looking the oid for
      * @return The numericOID associated with this name
+     * @throws NamingException If the OID can't be found
      */
-    public String getOid( String name )
+    public String getOid( String name ) throws NamingException
     {
         T schemaObject = byOid.get( name );
         
@@ -290,6 +291,6 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
             return schemaObject.getOid();
         }
         
-        return null;
+        throw new NamingException( "Can't find an OID for the name " + name );
     }
 }
