@@ -56,8 +56,8 @@
     <module>ldap-schema</module>
     <module>ldap-schema-loader</module>
     <module>asn1-codec</module>
-    <module>convert</module>
-    <module>client-api</module>
+    <module>ldap-convert</module>
+    <module>ldap-client-api</module>
     <module>cursor</module>
     <module>dsml-parser</module>
   </modules>
