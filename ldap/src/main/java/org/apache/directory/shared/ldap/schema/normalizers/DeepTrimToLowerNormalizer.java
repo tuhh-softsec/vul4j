@@ -56,6 +56,15 @@ public class DeepTrimToLowerNormalizer extends Normalizer
 
 
     /**
+     * Creates a new instance of DeepTrimToLowerNormalizer where the OID is
+     * set after instantiation.
+     */
+    public DeepTrimToLowerNormalizer()
+    {
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     public Value<?> normalize( Value<?> value ) throws NamingException
