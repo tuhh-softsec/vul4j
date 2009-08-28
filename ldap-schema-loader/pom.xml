@@ -22,22 +22,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.directory.server</groupId>
-    <artifactId>apacheds-parent</artifactId>
-    <version>1.5.6-SNAPSHOT</version>
+    <groupId>org.apache.directory.shared</groupId>
+    <artifactId>shared-parent</artifactId>
+    <version>0.9.16-SNAPSHOT</version>
   </parent>
-  <artifactId>apacheds-schema-loader</artifactId>
-  <name>ApacheDS Schema Loader</name>
+  <artifactId>shared-ldap-schema-loader</artifactId>
+  <name>Apache Directory Shared LDAP Schema Loader</name>
   <packaging>jar</packaging>
 
   <description>
-    Initial schema loader used during server bootstrapping to populate 
-    registries.
+    Initial schema loader used during server bootstrapping and client startup
+    to populate hence why it's located in shared.
   </description>
   
   <dependencies>
     <dependency>
-      <artifactId>apacheds-core-constants</artifactId>
+      <artifactId>shared-ldap-constants</artifactId>
       <groupId>${pom.groupId}</groupId>
       <version>${pom.version}</version>
     </dependency>

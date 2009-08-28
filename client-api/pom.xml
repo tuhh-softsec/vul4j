@@ -26,8 +26,8 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.16-SNAPSHOT</version>
   </parent>
-  <artifactId>shared-client-api</artifactId>
-  <name>Apache Directory Protocol Ldap client API</name>
+  <artifactId>shared-ldap-client-api</artifactId>
+  <name>Apache Directory Shared LDAP Client API</name>
   <inceptionYear>2009</inceptionYear>
 
   <issueManagement>
