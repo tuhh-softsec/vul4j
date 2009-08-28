@@ -47,7 +47,7 @@ public class EnhancedGuideSyntaxChecker extends BinarySyntaxChecker
     public EnhancedGuideSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.ENHANCED_GUIDE_SYNTAX );
+        setOid( SchemaConstants.ENHANCED_GUIDE_SYNTAX );
     }
 
 

@@ -103,7 +103,7 @@ public class SchemaObject implements Serializable
 
     
     /**
-     * A default constructor for a SchemaObject instance. It must be 
+     * A constructor for a SchemaObject instance. It must be 
      * invoked by the inherited class.
      * 
      * @param objectType The SchemaObjectType to create
@@ -112,6 +112,23 @@ public class SchemaObject implements Serializable
     {
         this.objectType = objectType;
         this.oid = oid;
+        isEnabled = true;
+        isReadOnly = false;
+        extensions = new HashMap<String, List<String>>();
+        names = new ArrayList<String>();
+        names.add( oid );
+    }
+    
+    
+    /**
+     * Constructor used when a generic reusable SchemaObject is assigned an
+     * OID after being instantiated.
+     * 
+     * @param objectType The SchemaObjectType to create
+     */
+    protected SchemaObject( SchemaObjectType objectType )
+    {
+        this.objectType = objectType;
         isEnabled = true;
         isReadOnly = false;
         extensions = new HashMap<String, List<String>>();
@@ -141,12 +158,9 @@ public class SchemaObject implements Serializable
      * change it's OID
      * @param oid The new OID
      */
-    public void changeOid( String oid )
+    public void setOid( String oid )
     {
-        if ( !isReadOnly )
-        {
-            this.oid = oid;
-        }
+        this.oid = oid;
     }
     
     

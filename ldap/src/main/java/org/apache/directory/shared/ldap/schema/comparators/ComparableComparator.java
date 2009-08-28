@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ComparableComparator extends LdapComparator<Object>
+public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( ComparableComparator.class );
@@ -69,7 +69,7 @@ public class ComparableComparator extends LdapComparator<Object>
      * 
      * @see Comparator#compare(Object, Object)
      */
-    public int compare( Object o1, Object o2 )
+    public int compare( Comparable<T> o1, Comparable<T> o2 )
     {
         LOG.debug( "comparing objects '{}' with '{}'", o1, o2 );
         
@@ -86,7 +86,7 @@ public class ComparableComparator extends LdapComparator<Object>
             }
             else
             {
-                return ( ( Comparable ) o1 ).compareTo( o2 );
+                return o1.compareTo( ( T ) o2 );
             }
         }
 
@@ -102,7 +102,7 @@ public class ComparableComparator extends LdapComparator<Object>
             }
             else
             {
-                return -( ( Comparable ) o2 ).compareTo( o1 );
+                return - o2.compareTo( ( T ) o1 );
             }
         }
 

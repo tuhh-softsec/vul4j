@@ -43,14 +43,24 @@ public class DeepTrimNormalizer extends Normalizer
     /** The serial UID */
     public static final long serialVersionUID = 1L;
 
+    
     /**
-     * Creates a new instance of DeepTrimNormalizer.
+     * Creates a new instance of DeepTrimNormalizer with OID known.
      * 
      * @param oid The MR OID to use with this Normalizer
      */
     public DeepTrimNormalizer( String oid )
     {
         super( oid );
+    }
+
+
+    /**
+     * Creates a new instance of DeepTrimNormalizer when the Normalizer must be
+     * instantiated before setting the OID.
+     */
+    public DeepTrimNormalizer()
+    {
     }
 
 

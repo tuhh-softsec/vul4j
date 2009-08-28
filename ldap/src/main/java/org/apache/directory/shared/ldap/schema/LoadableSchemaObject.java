@@ -39,13 +39,28 @@ public abstract class LoadableSchemaObject extends SchemaObject
 
 
     /**
-     * The default constructor
+     * Constructor to use when the OID is known in advance.
+     * 
      * @param objectType The SchemaObject type
      * @param oid The SchemaObject OID
      */
     protected LoadableSchemaObject( SchemaObjectType objectType, String oid )
     {
         super( objectType, oid );
+
+        fqcn = "";
+        bytecode = null;
+    }
+
+
+    /**
+     * Constructor to use when the OID is not known until after instantiation.
+     * 
+     * @param objectType The SchemaObject type
+     */
+    protected LoadableSchemaObject( SchemaObjectType objectType )
+    {
+        super( objectType );
 
         fqcn = "";
         bytecode = null;

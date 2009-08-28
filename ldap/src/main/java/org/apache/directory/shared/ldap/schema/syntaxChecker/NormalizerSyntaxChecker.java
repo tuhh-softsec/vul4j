@@ -38,6 +38,6 @@ public class NormalizerSyntaxChecker extends Ia5StringSyntaxChecker
     public NormalizerSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.NORMALIZER_SYNTAX );
+        setOid( SchemaConstants.NORMALIZER_SYNTAX );
     }
 }

@@ -38,6 +38,6 @@ public class SyntaxCheckerSyntaxChecker extends Ia5StringSyntaxChecker
     public SyntaxCheckerSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.SYNTAX_CHECKER_SYNTAX );
+        setOid( SchemaConstants.SYNTAX_CHECKER_SYNTAX );
     }
 }

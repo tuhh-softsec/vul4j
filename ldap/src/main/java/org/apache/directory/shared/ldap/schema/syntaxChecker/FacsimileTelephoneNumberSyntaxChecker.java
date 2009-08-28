@@ -89,7 +89,7 @@ public class FacsimileTelephoneNumberSyntaxChecker extends TelephoneNumberSyntax
     public FacsimileTelephoneNumberSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.FACSIMILE_TELEPHONE_NUMBER_SYNTAX );
+        setOid( SchemaConstants.FACSIMILE_TELEPHONE_NUMBER_SYNTAX );
     }
 
 

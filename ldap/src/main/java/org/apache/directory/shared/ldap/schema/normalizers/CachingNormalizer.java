@@ -54,12 +54,12 @@ public class CachingNormalizer extends Normalizer
 
     /**
      * Creates a CachingNormalizer that decorates another normalizer using a
-     * default cache size.
+     * default cache size.  This Normalizer delegates 
      * 
      * @param oid The MR OID to use with this Normalizer
      * @param normalizer the underlying Normalizer being decorated
      */
-    public CachingNormalizer( String oid, Normalizer normalizer )
+    public CachingNormalizer( Normalizer normalizer )
     {
         this( normalizer, CACHE_MAX );
     }
@@ -79,6 +79,29 @@ public class CachingNormalizer extends Normalizer
         cache = new SynchronizedLRUMap( cacheSz );
     }
 
+    
+    /**
+     * Overrides default behavior by returning the OID of the wrapped 
+     * Normalizer.
+     */
+    @Override
+    public String getOid()
+    {
+        return normalizer.getOid();
+    }
+    
+    
+    /**
+     * Overrides default behavior by setting the OID of the wrapped Normalizer.
+     * 
+     * @param oid the object identifier to set
+     */
+    @Override
+    public void setOid( String oid )
+    {
+        normalizer.setOid( oid );
+    }
+    
 
     /**
      * {@inheritDoc}

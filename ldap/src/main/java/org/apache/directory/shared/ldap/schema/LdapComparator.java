@@ -42,4 +42,14 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
     {
         super( SchemaObjectType.COMPARATOR, oid );
     }
+
+    
+    /**
+     * Create a new instance of a Comparator when the OID is not known until
+     * after instantiation.
+     */
+    protected LdapComparator()
+    {
+        super( SchemaObjectType.COMPARATOR );
+    }
 }

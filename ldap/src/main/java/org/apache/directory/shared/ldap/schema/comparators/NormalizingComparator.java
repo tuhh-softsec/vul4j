@@ -20,11 +20,12 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
+import java.util.Comparator; 
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class NormalizingComparator
+public class NormalizingComparator extends LdapComparator<String>
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( NormalizingComparator.class );

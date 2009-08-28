@@ -47,7 +47,7 @@ public class FaxSyntaxChecker extends BinarySyntaxChecker
     public FaxSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.FAX_SYNTAX );
+        setOid( SchemaConstants.FAX_SYNTAX );
     }
 
 

@@ -40,6 +40,6 @@ public class ComparatorSyntaxChecker extends Ia5StringSyntaxChecker
     public ComparatorSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.COMPARATOR_SYNTAX );
+        setOid( SchemaConstants.COMPARATOR_SYNTAX );
     }
 }

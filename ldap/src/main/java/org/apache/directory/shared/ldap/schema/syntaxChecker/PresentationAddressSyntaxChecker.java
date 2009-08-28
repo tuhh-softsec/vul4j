@@ -46,7 +46,7 @@ public class PresentationAddressSyntaxChecker extends BinarySyntaxChecker
     public PresentationAddressSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.PRESENTATION_ADDRESS_SYNTAX );
+        setOid( SchemaConstants.PRESENTATION_ADDRESS_SYNTAX );
     }
 
 

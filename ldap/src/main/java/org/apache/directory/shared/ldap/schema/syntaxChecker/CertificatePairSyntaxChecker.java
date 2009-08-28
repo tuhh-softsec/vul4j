@@ -52,7 +52,7 @@ public class CertificatePairSyntaxChecker extends BinarySyntaxChecker
     public CertificatePairSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.CERTIFICATE_PAIR_SYNTAX );
+        setOid( SchemaConstants.CERTIFICATE_PAIR_SYNTAX );
     }
 
 

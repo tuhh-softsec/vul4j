@@ -47,7 +47,7 @@ public class SubstringAssertionSyntaxChecker extends BinarySyntaxChecker
     public SubstringAssertionSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.SUBSTRING_ASSERTION_SYNTAX );
+        setOid( SchemaConstants.SUBSTRING_ASSERTION_SYNTAX );
     }
 
 

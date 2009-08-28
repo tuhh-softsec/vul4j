@@ -48,6 +48,16 @@ public abstract class Normalizer extends LoadableSchemaObject
     }
 
 
+    /**
+     * Use this default constructor when the Normalizer must be instantiated
+     * before setting the OID.
+     */
+    protected Normalizer()
+    {
+        super( SchemaObjectType.NORMALIZER );
+    }
+
+
 	/**
      * Gets the normalized value.
      * 

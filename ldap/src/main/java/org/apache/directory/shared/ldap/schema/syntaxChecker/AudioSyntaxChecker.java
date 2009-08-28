@@ -50,7 +50,7 @@ public class AudioSyntaxChecker extends BinarySyntaxChecker
     public AudioSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.AUDIO_SYNTAX );
+        setOid( SchemaConstants.AUDIO_SYNTAX );
     }
 
     /**

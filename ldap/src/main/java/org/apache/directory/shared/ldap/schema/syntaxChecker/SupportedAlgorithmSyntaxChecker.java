@@ -46,7 +46,7 @@ public class SupportedAlgorithmSyntaxChecker extends BinarySyntaxChecker
     public SupportedAlgorithmSyntaxChecker()
     {
         super();
-        changeOid( SchemaConstants.SUPPORTED_ALGORITHM_SYNTAX );
+        setOid( SchemaConstants.SUPPORTED_ALGORITHM_SYNTAX );
     }
 
     
