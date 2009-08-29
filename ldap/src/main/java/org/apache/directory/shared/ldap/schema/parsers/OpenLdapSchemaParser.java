@@ -34,7 +34,7 @@ import java.util.Map;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
-import org.apache.directory.shared.ldap.schema.syntaxChecker.OpenLdapObjectIdentifierMacro;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.OpenLdapObjectIdentifierMacro;
 import org.apache.directory.shared.ldap.util.ExceptionUtils;
 
 import antlr.RecognitionException;

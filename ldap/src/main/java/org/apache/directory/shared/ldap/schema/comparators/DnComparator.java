@@ -20,12 +20,11 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
-
 import javax.naming.Name;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
@@ -36,7 +35,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class DnComparator implements Comparator
+public class DnComparator extends LdapComparator<Object>
 {
     // @TODO you'll need this to fix the way normalization is done
     private AttributeTypeRegistry attrRegistry;

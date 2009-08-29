@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.syntax;
 
-import org.apache.directory.shared.ldap.schema.syntaxChecker.MasterAndShadowAccessPointSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.MasterAndShadowAccessPointSyntaxChecker;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

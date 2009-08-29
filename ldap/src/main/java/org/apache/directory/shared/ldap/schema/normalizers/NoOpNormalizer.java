@@ -35,6 +35,7 @@ public class NoOpNormalizer extends Normalizer
     /** The serial UID */
     public static final long serialVersionUID = 1L;
 
+
     /**
      * Creates a new instance of NoOpNormalizer.
      * 
@@ -43,6 +44,15 @@ public class NoOpNormalizer extends Normalizer
     public NoOpNormalizer( String oid )
     {
         super( oid );
+    }
+
+    
+    /**
+     * Default constructor for NoOpNormalizer used when we must set the OID
+     * after instantiating the Normalizer.
+     */
+    public NoOpNormalizer()
+    {
     }
 
     

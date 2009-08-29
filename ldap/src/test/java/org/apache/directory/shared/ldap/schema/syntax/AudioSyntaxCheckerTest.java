@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.syntax;
 
-import org.apache.directory.shared.ldap.schema.syntaxChecker.AudioSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.AudioSyntaxChecker;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

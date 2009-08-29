@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.syntaxes;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.syntaxChecker.ObjectClassTypeSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.ObjectClassTypeSyntaxChecker;
 
 /**
  * A Syntax for ObjectclassType
