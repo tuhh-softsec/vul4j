@@ -7,4 +7,5 @@ objectclass: metaTop
 objectclass: top
 entrycsn: 20090818052727.039000Z#000000#000#000000
 m-oid: 1.3.6.1.4.1.1466.115.121.1.1
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxes.ACIItemSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.schema.syntaxChecker.ACIItemSyntaxCheck
+ er
