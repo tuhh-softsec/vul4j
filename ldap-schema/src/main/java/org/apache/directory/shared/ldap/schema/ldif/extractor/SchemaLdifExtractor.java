@@ -129,7 +129,7 @@ public class SchemaLdifExtractor
         String line = null;
         while ( null != ( line = in.readLine() ) )
         {
-            out.write( line );
+            out.write( line + "\n" ); 
         }
         
         in.close();

@@ -36,7 +36,7 @@ public class SchemaLdifExtractorTest extends TestCase
     public void testExtract() throws Exception
     {
         SchemaLdifExtractor extractor = new SchemaLdifExtractor( 
-            new File( "/Users/akarasulu" ) );
+            new File( System.getProperty( "workingDirectory" ) ) );
         extractor.extractOrCopy();
     }
 }

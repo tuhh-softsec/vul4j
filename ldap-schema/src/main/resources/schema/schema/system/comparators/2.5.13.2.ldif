@@ -8,4 +8,4 @@ objectclass: top
 entrycsn: 20090818052728.285000Z#000000#000#000000
 m-oid: 2.5.13.2
 m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
- ngNormalizerComparator
+ ngNormalizingComparator
