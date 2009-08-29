@@ -167,6 +167,11 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
      */
     public T lookup( String oid ) throws NamingException
     {
+        if ( oid == null )
+        {
+            return null;
+        }
+        
         T schemaObject = byOid.get( oid );
 
         if ( schemaObject == null )

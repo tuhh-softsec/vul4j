@@ -24,9 +24,11 @@ import junit.framework.TestCase;
 
 import java.io.File;
 
+import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 
-
+ 
 /**
  * Tests the LdifSchemaLoader.
  *
@@ -35,8 +37,14 @@ import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
  */
 public class LdifSchemaLoaderTest extends TestCase
 {
-    public static void testConstructor() throws Exception
+    public static void testLoader() throws Exception
     {
-        LdifSchemaLoader loader = new LdifSchemaLoader( new File( "/Users/akarasulu/schema" ) );
+        File workingDirectory = new File( System.getProperty( "workingDirectory" ) );
+        SchemaLdifExtractor extractor = new SchemaLdifExtractor( workingDirectory );
+        extractor.extractOrCopy();
+        
+        LdifSchemaLoader loader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
+        Registries registries = new Registries();
+        loader.loadAllEnabled( registries );
     }
 }

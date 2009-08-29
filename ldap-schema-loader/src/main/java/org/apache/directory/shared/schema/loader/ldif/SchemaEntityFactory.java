@@ -201,7 +201,7 @@ public class SchemaEntityFactory
     {
         LdapComparator<?> comparator = null;
         Class<?> clazz = null;
-        
+         
         if ( bytecode == null ) 
         {
             clazz = Class.forName( className );
@@ -379,8 +379,8 @@ public class SchemaEntityFactory
         MatchingRule mr = new MatchingRule( oid );
         mr.setSyntaxOid( syntaxOid );
         mr.setSchemaName( schema );
-        mr.applyRegistries( targetRegistries );
         setSchemaObjectProperties( mr, entry );
+        mr.applyRegistries( targetRegistries );
         return mr;
     }
     
@@ -407,7 +407,6 @@ public class SchemaEntityFactory
     {
         String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
         ObjectClass oc = new ObjectClass( oid );
-        oc.applyRegistries( targetRegistries );
         oc.setSchemaName( schema );
         
         if ( entry.get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT ) != null )
@@ -436,6 +435,7 @@ public class SchemaEntityFactory
         }
         
         setSchemaObjectProperties( oc, entry );
+        oc.applyRegistries( targetRegistries );
         
         return oc;
     }
@@ -446,7 +446,6 @@ public class SchemaEntityFactory
         String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
         AttributeType at = new AttributeType( oid );
         
-        at.applyRegistries( targetRegistries );
         at.setSchemaName( schema );
         setSchemaObjectProperties( at, entry );
         
@@ -498,6 +497,7 @@ public class SchemaEntityFactory
             at.setUsage( UsageEnum.getUsage( entry.get( MetaSchemaConstants.M_USAGE_AT ).getString() ) );
         }
         
+        at.applyRegistries( targetRegistries );
         return at;
     }
     

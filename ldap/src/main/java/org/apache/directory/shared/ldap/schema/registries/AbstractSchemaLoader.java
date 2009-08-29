@@ -87,10 +87,19 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public final void loadAllEnabled( Registries registries ) throws Exception
     {
+        Map<String,Schema> notloaded = new HashMap<String,Schema>( schemaMap );
+        for ( String schemaName : schemaMap.keySet() )
+        {
+            if ( registries.isSchemaLoaded( schemaName ) )
+            {
+                notloaded.remove( schemaName );
+            }
+        }
+         
         for ( Schema schema : schemaMap.values() )
         {
             loadDepsFirst( schema, new Stack<String>(), 
-                new HashMap<String,Schema>(), schema, registries );
+                notloaded, schema, registries );
         }
     }
     

@@ -24,7 +24,7 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-
+ 
 /**
  * Tests the SchemaLdifExtractor class.
  *

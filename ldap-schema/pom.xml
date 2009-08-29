@@ -31,10 +31,25 @@
   <packaging>jar</packaging>
 
   <description>
-    A special jar file that contains pre-loaded partition data with schema 
-    information.  The schema partition data is in LDIF format and so can use
-    the LDIF partition implementation to mount.  This data will be presented
-    at a fixed location in the directory information tree off of the ou=schema 
-    namingContext.  This artifact contains the LDIF files for this partition.
+    Jar bundled LDIF files containing schema data using the Apache Directory
+    specific meta schema for describing schema information using LDAP.  This
+    jar can be used by clients as well as by ApacheDS' schema partition.
   </description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>workingDirectory</name>
+              <value>${basedir}/target</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -41,5 +41,29 @@
       <groupId>${pom.groupId}</groupId>
       <version>${pom.version}</version>
     </dependency>
+
+    <dependency>
+      <artifactId>shared-ldap-schema</artifactId>
+      <groupId>${pom.groupId}</groupId>
+      <version>${pom.version}</version>
+      <scope>test</scope>
+    </dependency> 
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>workingDirectory</name>
+              <value>${basedir}/target</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

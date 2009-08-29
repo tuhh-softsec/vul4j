@@ -207,13 +207,27 @@ public class AttributeType extends SchemaObject
         {
             AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
             
-            sup = atRegistry.lookup( supOid );
+            if ( supOid != null )
+            {
+                sup = atRegistry.lookup( supOid );
+            }
             
             MatchingRuleRegistry mrRegistry = registries.getMatchingRuleRegistry();
             
-            equality = mrRegistry.lookup( equalityOid );
-            ordering = mrRegistry.lookup( orderingOid );
-            substr = mrRegistry.lookup( substrOid );
+            if ( equalityOid != null )
+            {
+                equality = mrRegistry.lookup( equalityOid );
+            }
+            
+            if ( orderingOid != null )
+            {
+                ordering = mrRegistry.lookup( orderingOid );
+            }
+            
+            if ( substrOid != null )
+            {
+                substr = mrRegistry.lookup( substrOid );
+            }
             
             LdapSyntaxRegistry lsRegistry = registries.getLdapSyntaxRegistry();
             

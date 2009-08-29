@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -185,14 +186,22 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
         for ( int ii = 0; ii < ldifFiles.length; ii++ )
         {
-            LdifReader reader = new LdifReader( new File( schemaDirectory, ldifFiles[ii] ) );
-            LdifEntry entry = reader.next();
-            Schema schema = factory.getSchema( entry.getEntry() );
-            schemaMap.put( schema.getSchemaName(), schema );
-            
-            if ( IS_DEBUG )
+            try
             {
-                LOG.debug( "Schema Initialized ... \n{}", schema );
+                LdifReader reader = new LdifReader( new File( schemaDirectory, ldifFiles[ii] ) );
+                LdifEntry entry = reader.next();
+                Schema schema = factory.getSchema( entry.getEntry() );
+                schemaMap.put( schema.getSchemaName(), schema );
+                
+                if ( IS_DEBUG )
+                {
+                    LOG.debug( "Schema Initialized ... \n{}", schema );
+                }
+            }
+            catch ( Exception e )
+            {
+                LOG.error( "Failed to load schema LDIF file " + ldifFiles[ii], e );
+                throw e;
             }
         }
     }
