@@ -396,6 +396,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifEntry entry = reader.next();
             LdapComparator<?> comparator = 
                 factory.getLdapComparator( entry.getEntry(), registries );
+            comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
             registries.getComparatorRegistry().register( comparator );
         }
     }

@@ -98,4 +98,19 @@ public class NormalizingComparator extends LdapComparator<String>
 
         return comparator.compare( n1, n2 );
     }
+    
+    
+    /**
+     * Makes sure we update the oid property of the contained normalizer and 
+     * comparator.
+     * 
+     * @param oid the object identifier
+     */
+    @Override
+    public void setOid( String oid )
+    {
+    	super.setOid( oid );
+    	normalizer.setOid( oid );
+    	comparator.setOid( oid );
+    }    
 }

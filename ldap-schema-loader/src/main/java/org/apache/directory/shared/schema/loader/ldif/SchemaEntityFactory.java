@@ -51,6 +51,8 @@ import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
 import org.apache.directory.shared.ldap.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -61,6 +63,12 @@ import org.apache.directory.shared.ldap.util.Base64;
  */
 public class SchemaEntityFactory
 {
+	/** Slf4j logger */
+	private final static Logger LOG = LoggerFactory.getLogger( SchemaEntityFactory.class );
+
+	/** for fast debug checks */
+	private static final boolean IS_DEBUG = LOG.isDebugEnabled();
+	
     /** Used for looking up the setRegistries(Registries) method */
     private final static Class<?>[] parameterTypes = new Class[] { Registries.class };
     
@@ -202,14 +210,22 @@ public class SchemaEntityFactory
         LdapComparator<?> comparator = null;
         Class<?> clazz = null;
          
-        if ( bytecode == null ) 
+        try
         {
-            clazz = Class.forName( className );
+	        if ( bytecode == null ) 
+	        {
+	            clazz = Class.forName( className );
+	        }
+	        else
+	        {
+	            classLoader.setAttribute( bytecode );
+	            clazz = classLoader.loadClass( className );
+	        }
         }
-        else
+        catch ( Exception e )
         {
-            classLoader.setAttribute( bytecode );
-            clazz = classLoader.loadClass( className );
+        	LOG.error( "Failed to load class from LDIF bytecode from schemaObject {}", oid, e );
+        	throw e;
         }
         
         comparator = ( LdapComparator<?> ) clazz.newInstance();
@@ -258,7 +274,7 @@ public class SchemaEntityFactory
         }
         
         String className = entry.get( MetaSchemaConstants.M_FQCN_AT ).get().getString();
-        return getLdapComparator( entry.get( MetaSchemaConstants.M_OID_AT ).toString(), 
+        return getLdapComparator( entry.get( MetaSchemaConstants.M_OID_AT ).getString(), 
             className, entry.get( MetaSchemaConstants.M_BYTECODE_AT ), targetRegistries );
     }
     
@@ -339,7 +355,21 @@ public class SchemaEntityFactory
      */
     private void injectRegistries( Object obj, Registries targetRegistries ) throws Exception
     {
-        Method method = obj.getClass().getMethod( "setRegistries", parameterTypes );
+        Method method = null;
+        
+        try
+        {
+        	method = obj.getClass().getMethod( "setRegistries", parameterTypes );
+        }
+        catch ( NoSuchMethodException e )
+        {
+        	if ( IS_DEBUG )
+        	{
+        		LOG.debug( obj.getClass() + " has no setRegistries() method." );
+        	}
+        	
+        	return;
+        }
         
         if ( method == null )
         {

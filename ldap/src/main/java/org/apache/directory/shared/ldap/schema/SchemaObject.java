@@ -116,7 +116,11 @@ public class SchemaObject implements Serializable
         isReadOnly = false;
         extensions = new HashMap<String, List<String>>();
         names = new ArrayList<String>();
-        names.add( oid );
+        
+        if ( oid != null )
+        {
+        	names.add( oid );
+        }
     }
     
     
@@ -133,7 +137,6 @@ public class SchemaObject implements Serializable
         isReadOnly = false;
         extensions = new HashMap<String, List<String>>();
         names = new ArrayList<String>();
-        names.add( oid );
     }
     
     
@@ -215,7 +218,10 @@ public class SchemaObject implements Serializable
         {
             for ( String name : names )
             {
-                this.names.add( name );
+            	if ( name != null )
+            	{
+            		this.names.add( name );
+            	}
             }
         }
     }
@@ -228,13 +234,21 @@ public class SchemaObject implements Serializable
      */
     public void setNames( List<String> names )
     {
+    	if ( names == null )
+    	{
+    		return;
+    	}
+    	
         if ( ! isReadOnly )
         {
             this.names = new ArrayList<String>( names.size() );
             
             for ( String name:names )
             {
-                this.names.add( name );
+            	if ( name != null )
+            	{
+            		this.names.add( name );
+            	}
             }
         }
     }

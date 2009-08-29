@@ -212,7 +212,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
         
         if ( LOG.isDebugEnabled() )
         {
-            LOG.debug( "registered {} for OID {}", schemaObject, oid );
+            LOG.debug( "registered " + schemaObject.getName() + " for OID {}", oid );
         }
         
         // And register the oid -> schemaObject relation
