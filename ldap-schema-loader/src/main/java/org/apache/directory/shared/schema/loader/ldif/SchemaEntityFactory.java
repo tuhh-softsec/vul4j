@@ -17,7 +17,8 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.server.schema.loader.ldif;
+package org.apache.directory.shared.schema.loader.ldif;
+
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.server.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;

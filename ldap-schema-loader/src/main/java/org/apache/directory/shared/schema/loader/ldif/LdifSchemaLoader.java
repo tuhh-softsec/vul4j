@@ -17,11 +17,10 @@
  *  under the License.
  *
  */
-package org.apache.directory.server.schema.loader.ldif;
+package org.apache.directory.shared.schema.loader.ldif;
 
 
-import org.apache.directory.server.constants.MetaSchemaConstants;
-import org.apache.directory.server.constants.ServerDNConstants;
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
@@ -109,6 +108,13 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     
     /** name of the directory containing matchingRuleUses */
     private static final String MATCHING_RULE_USES_DIRNAME = "matchingRuleUse";
+
+    /**
+     * the administrator DN - very ADS specific but we need some DN here for
+     * the modifiers name when the system modifies by itself enabled and 
+     * disabled schemas in the repository.
+     */
+    private static final String ADMIN_SYSTEM_DN = "uid=admin,ou=system";
 
     /** the factory that generates respective SchemaObjects from LDIF entries */
     private final SchemaEntityFactory factory = new SchemaEntityFactory();
@@ -308,8 +314,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         entry.removeAttributes( SchemaConstants.MODIFY_TIMESTAMP_AT );
         entry.removeAttributes( MetaSchemaConstants.M_DISABLED_AT );
         
-        entry.add( SchemaConstants.MODIFIERS_NAME_AT, 
-            ServerDNConstants.ADMIN_SYSTEM_DN );
+        entry.add( SchemaConstants.MODIFIERS_NAME_AT, ADMIN_SYSTEM_DN );
         entry.add( SchemaConstants.MODIFY_TIMESTAMP_AT, 
             DateUtils.getGeneralizedTime() );
         
@@ -332,8 +337,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         entry.removeAttributes( SchemaConstants.MODIFIERS_NAME_AT );
         entry.removeAttributes( SchemaConstants.MODIFY_TIMESTAMP_AT );
 
-        entry.add( SchemaConstants.MODIFIERS_NAME_AT, 
-            ServerDNConstants.ADMIN_SYSTEM_DN );
+        entry.add( SchemaConstants.MODIFIERS_NAME_AT, ADMIN_SYSTEM_DN );
         entry.add( SchemaConstants.MODIFY_TIMESTAMP_AT, 
             DateUtils.getGeneralizedTime() );
         

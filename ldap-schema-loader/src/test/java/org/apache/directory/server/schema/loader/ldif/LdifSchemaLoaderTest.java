@@ -24,6 +24,8 @@ import junit.framework.TestCase;
 
 import java.io.File;
 
+import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
+
 
 /**
  * Tests the LdifSchemaLoader.

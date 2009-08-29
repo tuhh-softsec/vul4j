@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.server.schema.loader.ldif;
+package org.apache.directory.shared.schema.loader.ldif;
 
 
 import javax.naming.NamingException;
