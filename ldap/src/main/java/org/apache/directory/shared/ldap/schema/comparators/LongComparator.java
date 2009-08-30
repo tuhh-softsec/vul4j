@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.ldap.schema.comparators;
 
-import java.io.Serializable;
-import java.util.Comparator;
+
+import org.apache.directory.shared.ldap.schema.LdapComparator;
 
 
 /**
@@ -29,7 +29,7 @@ import java.util.Comparator;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision: 437007 $
  */
-public class LongComparator implements Comparator<Object>, Serializable
+public class LongComparator extends LdapComparator<Long>
 {
     /** A instance of this comparator */
     public static final LongComparator INSTANCE = new LongComparator();
@@ -47,13 +47,11 @@ public class LongComparator implements Comparator<Object>, Serializable
      * @param obj2 Second object
      * @return 1 if obj1 > obj2, 0 if obj1 == obj2, -1 if obj1 < obj2
      */
-    public int compare( Object obj1, Object obj2 )
+    public int compare( Long obj1, Long obj2 )
     {
         try
         {
-            Long long1 = (Long)obj1;
-            Long long2 = (Long)obj2;
-            return long1.compareTo( long2 );
+            return obj1.compareTo( obj2 );
         }
         catch ( NullPointerException npe )
         {
