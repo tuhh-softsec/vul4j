@@ -39,6 +39,8 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.DateUtils;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
@@ -49,8 +51,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -543,23 +547,133 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadAttributeTypes( Schema schema, Registries registries ) throws Exception
     {
-        File attributeTypesDirectory = new File ( getSchemaDirectory( schema ), 
-            ATTRIBUTE_TYPES_DIRNAME );
-        
+    	/*
+    	 * AT's can depend on another AT via the superior relationship.  
+    	 * Because we separate each schema object into its own LDIF file and
+    	 * the file system scan producing the listing of files used to order
+    	 * the LDIF loads does not consider these dependencies we can have
+    	 * a situation where the superior may not be loaded when a dependent
+    	 * AT is loaded.
+    	 * 
+    	 * For this reason we must defer the loading of some LDIF entries 
+    	 * until their superior AT is actually loaded.  This hash stores
+    	 * LDIF entries keyed by the name of their superior AT.  When the
+    	 * superior is loaded, the deferred entries depending on that superior
+    	 * are loaded and the list of dependent entries are removed from this 
+    	 * hash map.
+    	 * 
+    	 * NOTE: Because we don't have an OID and must use a potentially 
+    	 * case varying String as the key in this map, we reduce the String to
+    	 * it's lower cased cannonical form.
+    	 */
+    	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
+
+    	// check that the attributeTypes directory exists for the schema
+        File attributeTypesDirectory = new File ( getSchemaDirectory( schema ), ATTRIBUTE_TYPES_DIRNAME );
         if ( ! attributeTypesDirectory.exists() )
         {
             return;
         }
         
+        // get list of attributeType LDIF schema files in attributeTypes
         File[] attributeTypeFiles = attributeTypesDirectory.listFiles( ldifFilter );
         for ( File ldifFile : attributeTypeFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
-            AttributeType attributeType = factory.getAttributeType( 
-                entry.getEntry(), registries, schema.getSchemaName() );
-            registries.getAttributeTypeRegistry().register( attributeType );
+            loadAttributeType( schema, deferredEntries, entry, registries );
         }
+
+        
+        if ( ! deferredEntries.isEmpty() )
+        {
+        	for ( String missingSuperior : deferredEntries.keySet() )
+        	{
+        		if ( registries.getObjectClassRegistry().containsName( missingSuperior ) )
+        		{
+        			for ( LdifEntry entry : deferredEntries.get( missingSuperior ) )
+        			{
+        				if ( loadAttributeType( schema, deferredEntries, entry, registries ) )
+        				{
+        					LOG.error( "Still failed to load schema entry: {}", entry );
+        				}
+        			}
+        		}
+        	}
+        }
+    }
+    
+    
+    /**
+     * Recursive method that loads an AT, and other deferred ATs that depend
+     * on it.  This is separated from and used by 
+     * {@link #loadAttributeTypes(Schema, Registries)} to enter into this 
+     * method.
+     * 
+     * If the AT being loaded has deferred entries waiting on it to be loaded,
+     * then the AT is loaded then it's deferred entries are loaded by making a
+     * recursive call to this method.  This begins the process a new making 
+     * sure all deferred descendants in the AT hierarchy are load.
+     * 
+     * @param schema the schema we are loading
+     * @param deferredEntries map of deferred AT LDIF entries
+     * @param entry the AT LDIF entry to load
+     * @param registries the registries the schema objects are loaded into
+     * @return true if the AT is loaded, false otherwise
+     * @throws Exception if there any failures looking up or registering
+     */
+    private boolean loadAttributeType( Schema schema, Map<String,List<LdifEntry>> deferredEntries, LdifEntry entry,
+    		Registries registries ) throws Exception
+    {
+        // get superior name and if exists check if loaded, defer if not
+        EntryAttribute superior = entry.getEntry().get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT );
+        if ( superior != null )
+        {
+        	String superiorName = superior.getString().toLowerCase();
+        	
+        	if ( ! registries.getAttributeTypeRegistry().containsName( superiorName ) )
+        	{
+        		List<LdifEntry> dependents = deferredEntries.get( superiorName );
+        		if ( dependents == null )
+        		{
+        			dependents = new ArrayList<LdifEntry>();
+        			deferredEntries.put( superiorName, dependents );
+        		}
+
+        		dependents.add( entry );
+        		return false;  // - return false if deferred, true when loaded
+        	}
+        }
+        
+        AttributeType attributeType = factory.getAttributeType( entry.getEntry(), registries, schema.getSchemaName() );
+        registries.getAttributeTypeRegistry().register( attributeType );
+
+        // after registering AT check if any deferred entries depend on it
+        if ( attributeType.getNames() != null )
+        {
+        	for ( String name : attributeType.getNames() )
+        	{
+        		if ( deferredEntries.containsKey( name.toLowerCase() ) )
+        		{
+        			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
+        			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
+        			for ( LdifEntry deferred : copiedList )
+        			{
+        				if ( loadAttributeType( schema, deferredEntries, deferred, registries ) )
+        				{
+        					deferredList.remove( deferred );
+        				}
+        			}
+        			
+        			if ( deferredList.isEmpty() )
+        			{
+        				deferredEntries.remove( name.toLowerCase() );
+        			}
+        		}
+        	}
+        }
+        
+        return true;
     }
 
 
@@ -726,22 +840,133 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadObjectClasses( Schema schema, Registries registries ) throws Exception
     {
-        File objectClassesDirectory = new File( getSchemaDirectory( schema ),
-            OBJECT_CLASSES_DIRNAME );
-        
+    	/*
+    	 * OC's can depend on other OCs via their list of superior OCs.  
+    	 * Because we separate each schema object into its own LDIF file and
+    	 * the file system scan producing the listing of files used to order
+    	 * the LDIF loads does not consider these dependencies we can have
+    	 * a situation where the superiors may not be loaded when a dependent
+    	 * OC is loaded.
+    	 * 
+    	 * For this reason we must defer the loading of some LDIF entries 
+    	 * until their superior OCs are actually loaded.  This hash stores
+    	 * LDIF entries keyed by the name of their superior OCs.  When a
+    	 * superior is loaded, the deferred entries depending on that superior
+    	 * are loaded and the list of dependent entries are removed from this 
+    	 * hash map.
+    	 * 
+    	 * NOTE: Because we don't have an OID and must use a potentially 
+    	 * case varying String as the key in this map, we reduce the String to
+    	 * it's lower cased cannonical form.
+    	 */
+    	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
+
+    	// get objectClasses directory, check if exists, return if not
+    	File objectClassesDirectory = new File( getSchemaDirectory( schema ), OBJECT_CLASSES_DIRNAME );
         if ( ! objectClassesDirectory.exists() )
         {
             return;
         }
         
+        // get list of objectClass LDIF files from directory and load
         File[] objectClassFiles = objectClassesDirectory.listFiles( ldifFilter );
         for ( File ldifFile : objectClassFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
-            ObjectClass objectClass = factory.getObjectClass( 
-                entry.getEntry(), registries, schema.getSchemaName() );
-            registries.getObjectClassRegistry().register( objectClass );
+            loadObjectClass( schema, deferredEntries, entry, registries );
         }
+        
+        if ( ! deferredEntries.isEmpty() )
+        {
+        	for ( String missingSuperior : deferredEntries.keySet() )
+        	{
+        		if ( registries.getObjectClassRegistry().containsName( missingSuperior ) )
+        		{
+        			for ( LdifEntry entry : deferredEntries.get( missingSuperior ) )
+        			{
+        				if ( loadObjectClass( schema, deferredEntries, entry, registries ) )
+        				{
+        					LOG.error( "Still failed to load schema entry: {}", entry );
+        				}
+        			}
+        		}
+        	}
+        }
+    }
+    
+    
+    /**
+     * Recursive method that loads an OC, and other deferred OCs that may
+     * depend on the initial OC loaded.  This is separated from and used by
+     * {@link #loadObjectClasses(Schema, Registries)} to enter into this 
+     * method.
+     * 
+     * If the OC being loaded has deferred entries waiting on it to be loaded,
+     * then the OC is loaded then it's deferred entries are loaded by making a
+     * recursive call to this method.  This begins the process a new making 
+     * sure all deferred descendants in the OC hierarchy are load.
+     * 
+     * @param schema the schema we are loading
+     * @param deferredEntries map of deferred OC LDIF entries
+     * @param entry the OC LDIF entry to load
+     * @param registries the registries the schema objects are loaded into
+     * @return true if the OC is loaded, false otherwise
+     * @throws Exception if there any failures looking up or registering
+     */
+    private boolean loadObjectClass( Schema schema, Map<String,List<LdifEntry>> deferredEntries, LdifEntry entry, 
+    		Registries registries ) throws Exception
+	{
+        // get superior name and if exists check if loaded, defer if not
+        EntryAttribute superiors = entry.getEntry().get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT );
+        if ( superiors != null )
+        {
+        	for ( Value<?> value : superiors )
+        	{
+        		String superiorName = value.getString().toLowerCase();
+            	if ( ! registries.getObjectClassRegistry().containsName( superiorName ) )
+            	{
+            		List<LdifEntry> dependents = deferredEntries.get( superiorName );
+            		if ( dependents == null )
+            		{
+            			dependents = new ArrayList<LdifEntry>();
+            			deferredEntries.put( superiorName, dependents );
+            		}
+
+            		dependents.add( entry );
+            		return false;  // - return false if deferred, true when loaded
+            	}
+        	}
+        }
+        
+        ObjectClass objectClass = factory.getObjectClass( entry.getEntry(), registries, schema.getSchemaName() );
+        registries.getObjectClassRegistry().register( objectClass );
+
+        // after registering AT check if any deferred entries depend on it
+        if ( objectClass.getNames() != null )
+        {
+        	for ( String name : objectClass.getNames() )
+        	{
+        		if ( deferredEntries.containsKey( name.toLowerCase() ) )
+        		{
+        			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
+        			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
+        			for ( LdifEntry deferred : copiedList )
+        			{
+        				if ( loadObjectClass( schema, deferredEntries, deferred, registries ) )
+        				{
+        					deferredList.remove( deferred );
+        				}
+        			}
+        			
+        			if ( deferredList.isEmpty() )
+        			{
+        				deferredEntries.remove( name.toLowerCase() );
+        			}
+        		}
+        	}
+        }
+        
+        return true;
     }
 }
