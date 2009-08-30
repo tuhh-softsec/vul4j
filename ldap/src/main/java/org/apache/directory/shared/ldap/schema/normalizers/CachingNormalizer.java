@@ -99,6 +99,7 @@ public class CachingNormalizer extends Normalizer
     @Override
     public void setOid( String oid )
     {
+    	super.setOid( oid );
         normalizer.setOid( oid );
     }
     

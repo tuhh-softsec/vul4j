@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtracto
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 
- 
+
 /**
  * Tests the LdifSchemaLoader.
  *

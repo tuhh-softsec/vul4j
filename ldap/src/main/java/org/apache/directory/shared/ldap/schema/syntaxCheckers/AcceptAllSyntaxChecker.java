@@ -39,6 +39,7 @@ public class AcceptAllSyntaxChecker extends SyntaxChecker
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
+
     /**
      * Creates a SyntaxChecker which accepts all values.
      * 
@@ -47,6 +48,15 @@ public class AcceptAllSyntaxChecker extends SyntaxChecker
     public AcceptAllSyntaxChecker( String oid )
     {
         super( oid );
+    }
+
+    
+    /**
+     * Creates a default SyntaxChecker which accepts all values deferring 
+     * setup of the OID until after instantiation.
+     */
+    public AcceptAllSyntaxChecker()
+    {
     }
 
     

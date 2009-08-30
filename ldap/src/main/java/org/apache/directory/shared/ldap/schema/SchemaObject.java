@@ -116,11 +116,6 @@ public class SchemaObject implements Serializable
         isReadOnly = false;
         extensions = new HashMap<String, List<String>>();
         names = new ArrayList<String>();
-        
-        if ( oid != null )
-        {
-        	names.add( oid );
-        }
     }
     
     
@@ -181,7 +176,7 @@ public class SchemaObject implements Serializable
         }
         else
         {
-            return new ArrayList<String>();
+            return Collections.emptyList();
         }
     }
 

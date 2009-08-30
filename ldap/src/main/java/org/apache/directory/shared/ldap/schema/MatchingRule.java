@@ -122,7 +122,7 @@ public class MatchingRule extends SchemaObject
             normalizer = registries.getNormalizerRegistry().lookup( oid );
 
             // Gets the associated SC 
-            ldapSyntax = registries.getLdapSyntaxRegistry().lookup( oid );
+            ldapSyntax = registries.getLdapSyntaxRegistry().lookup( ldapSyntaxOid );
         }
     }
     
@@ -232,6 +232,4 @@ public class MatchingRule extends SchemaObject
             this.normalizer = normalizer;
         }
     }
-
-
 }

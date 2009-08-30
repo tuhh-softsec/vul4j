@@ -41,12 +41,21 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
 
     /**
      * The SyntaxChecker base constructor
-     * @param objectType
      * @param oid The associated OID
      */
     protected SyntaxChecker( String oid )
     {
         super( SchemaObjectType.SYNTAX_CHECKER, oid );
+    }
+
+
+    /**
+     * The SyntaxChecker default constructor where the oid is set after 
+     * instantiation.
+     */
+    protected SyntaxChecker()
+    {
+        super( SchemaObjectType.SYNTAX_CHECKER );
     }
 
 

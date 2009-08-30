@@ -20,8 +20,11 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
@@ -47,8 +50,11 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     /** A speedup for debug */
     private static final boolean DEBUG = LOG.isDebugEnabled();
     
-    /** a map of SchemaObject looked up by OID or Name */
+    /** a map of SchemaObject looked up by OID */
     protected final Map<String, T> byOid;
+    
+    /** a map of SchemaObject looked up by name */
+    protected final Map<String, T> byName;
     
     /** The SchemaObject type */
     protected SchemaObjectType type;
@@ -63,6 +69,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     protected SchemaObjectRegistry( SchemaObjectType schemaObjectType, OidRegistry oidRegistry )
     {
         byOid = new ConcurrentHashMap<String, T>();
+        byName = new ConcurrentHashMap<String, T>();
         type = schemaObjectType;
         this.oidRegistry = oidRegistry;
     }
@@ -183,7 +190,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
 
         if ( DEBUG )
         {
-            LOG.debug( "Found {} with oid: {}", schemaObject, oid );
+    		LOG.debug( "Found {} with oid: {}", schemaObject, oid );
         }
         
         return schemaObject;
@@ -209,6 +216,16 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
         }
 
         byOid.put( oid, schemaObject );
+        
+        /*
+         * add the aliases/names to the name map along with their toLowerCase
+         * versions of the name: this is used to make sure name lookups work
+         */
+        for ( String name : schemaObject.getNames() )
+        {
+        	byName.put( name, schemaObject );
+        	byName.put( name.toLowerCase(), schemaObject );
+        }
         
         if ( LOG.isDebugEnabled() )
         {
@@ -237,6 +254,37 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
         }
 
         SchemaObject schemaObject = byOid.remove( numericOid );
+        
+        /* byName Cleanup
+         * --------------
+         * 
+         * We iterate throw all the Entry objects in the byName hash.  This
+         * costs a bit since it is a full scan of the hash but it's in memory
+         * and can up to 10K objects (well within our range) work reasonably.
+         * As we iterate we push keys to remove into the keysToRemove list to
+         * be removed later after this first iteration to prevent concurrent
+         * modification issues during iteration.
+         * 
+         * Next we loop again on the keysToRemove list and remove the entries
+         * from the byName map.  This seems elaborate however note that 
+         * because we cash different case varying permutations of the name so
+         * lookups work properly, we cannot just rely on removing entry by 
+         * key as they are in the names list.  This is why we have to scan the
+         * entire entry set and check to see if it is in fact the schema 
+         * object in question.
+         */
+        List<String> keysToRemove = new ArrayList<String>(); 
+        for ( Entry<String, T> entry : byName.entrySet() )
+        {
+        	if ( entry.getValue().equals( schemaObject ) )
+        	{
+        		keysToRemove.add( entry.getKey() );
+        	}
+        }
+        for ( String key : keysToRemove )
+        {
+        	byName.remove( key );
+        }
         
         // And remove the SchemaObject from the oidRegistry
         oidRegistry.unregister( numericOid );
@@ -281,21 +329,40 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     
     
     /**
-     * Gets the numericOid associated to a name, if any
-     *
+     * Gets the numericOid for a name/alias if one is associated.  To prevent
+     * lookup failures due to case variance in the name, a failure to lookup the
+     * OID, will trigger a lookup using a lower cased version of the name and 
+     * the name that failed to match will automatically be associated with the
+     * OID.
+     * 
      * @param name The name we are looking the oid for
      * @return The numericOID associated with this name
      * @throws NamingException If the OID can't be found
      */
-    public String getOid( String name ) throws NamingException
+    public String getOidByName( String name ) throws NamingException
     {
-        T schemaObject = byOid.get( name );
-        
-        if ( schemaObject != null )
-        {
-            return schemaObject.getOid();
-        }
-        
-        throw new NamingException( "Can't find an OID for the name " + name );
+    	if ( ! byName.containsKey( name ) )
+    	{
+    		// last resort before giving up check with lower cased version
+        	String lowerCased = name.toLowerCase();
+    		
+        	// ok this name is not for a schema object in the registry
+    		if ( ! byName.containsKey( lowerCased ) )
+    		{
+    	        throw new NamingException( "Can't find an OID for the name " + name );
+    		}
+
+    		// we found the schema object using lower cased name
+			T schemaObject = byName.get( name );
+			
+        	// provided name argument has case variance so we add it to 
+			// map in case the same lookup is attempted again in future
+			byName.put( name, schemaObject );
+			return schemaObject.getOid();
+    	}
+    	
+    	// we found the schema object by key on the first lookup attempt
+        T schemaObject = byName.get( name );
+        return schemaObject.getOid();
     }
 }

@@ -218,6 +218,6 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
 
     public String normalizeName( String attributeName ) throws NamingException
     {
-        return attributeRegistry.getOid( attributeName );
+        return attributeRegistry.getOidByName( attributeName );
     }
 }

@@ -410,7 +410,7 @@ public class SchemaEntityFactory
         mr.setSyntaxOid( syntaxOid );
         mr.setSchemaName( schema );
         setSchemaObjectProperties( mr, entry );
-        mr.applyRegistries( targetRegistries );
+    	mr.applyRegistries( targetRegistries );
         return mr;
     }
     
@@ -486,22 +486,30 @@ public class SchemaEntityFactory
         
         if ( entry.get( MetaSchemaConstants.M_EQUALITY_AT ) != null )
         {
-            at.setEqualityOid( entry.get( MetaSchemaConstants.M_EQUALITY_AT ).getString() );
+        	String mrName = entry.get( MetaSchemaConstants.M_EQUALITY_AT ).getString();
+        	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
+            at.setEqualityOid( mrOid );
         }
         
         if ( entry.get( MetaSchemaConstants.M_ORDERING_AT ) != null )
         {
-            at.setOrderingOid( entry.get( MetaSchemaConstants.M_ORDERING_AT ).getString() );
+        	String mrName = entry.get( MetaSchemaConstants.M_ORDERING_AT ).getString();
+        	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
+            at.setEqualityOid( mrOid );
         }
         
         if ( entry.get( MetaSchemaConstants.M_SUBSTR_AT ) != null )
         {
-            at.setSubstrOid( entry.get( MetaSchemaConstants.M_SUBSTR_AT ).getString() );
+        	String mrName = entry.get( MetaSchemaConstants.M_SUBSTR_AT ).getString();
+        	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
+            at.setEqualityOid( mrOid );
         }
         
         if ( entry.get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT ) != null )
         {
-            at.setSuperiorOid( entry.get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT ).getString() );
+        	String supName = entry.get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT ).getString();
+            String supOid = targetRegistries.getAttributeTypeRegistry().getOidByName( supName );
+        	at.setSuperiorOid( supOid );
         }
         
         if ( entry.get( MetaSchemaConstants.M_COLLECTIVE_AT ) != null )

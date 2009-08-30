@@ -94,7 +94,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      */
     public boolean hasDescendants( String ancestorId ) throws NamingException
     {
-        String oid = getOid( ancestorId );
+        String oid = getOidByName( ancestorId );
         Set<AttributeType> descendants = oidToDescendantSet.get( oid );
         return (descendants != null) && !descendants.isEmpty();
     }
@@ -113,7 +113,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     @SuppressWarnings("unchecked")
     public Iterator<AttributeType> descendants( String ancestorId ) throws NamingException
     {
-        String oid = getOid( ancestorId );
+        String oid = getOidByName( ancestorId );
         Set<AttributeType> descendants = oidToDescendantSet.get( oid );
         
         if ( descendants == null )

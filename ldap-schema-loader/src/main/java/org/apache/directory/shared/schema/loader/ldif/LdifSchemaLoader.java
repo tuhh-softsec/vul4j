@@ -49,7 +49,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -428,7 +427,14 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifEntry entry = reader.next();
             SyntaxChecker syntaxChecker = 
                 factory.getSyntaxChecker( entry.getEntry(), registries );
-            registries.getSyntaxCheckerRegistry().register( syntaxChecker );
+            try
+            {
+            	registries.getSyntaxCheckerRegistry().register( syntaxChecker );
+            }
+            catch ( Exception e )
+            {
+            	e.printStackTrace();
+            }
         }
     }
     
