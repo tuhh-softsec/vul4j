@@ -59,6 +59,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     /** maps OIDs to a Set of descendants for that OID */
     private final Map<String,Set<AttributeType>> oidToDescendantSet;
 
+    
     /**
      * Creates a new default AttributeTypeRegistry instance.
      */

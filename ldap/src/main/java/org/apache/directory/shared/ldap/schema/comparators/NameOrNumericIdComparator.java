@@ -60,6 +60,16 @@ public class NameOrNumericIdComparator extends LdapComparator<String>
     
     
     /**
+     * The IntegerOrderingComparator constructor. Its OID is the IntegerOrderingMatch matching
+     * rule OID.
+     */
+    public NameOrNumericIdComparator()
+    {
+        super( SchemaConstants.NAME_OR_NUMERIC_ID_MATCH_OID );
+    }
+    
+    
+    /**
      * Implementation of the Compare method
      */
     public int compare( String o1, String o2 )

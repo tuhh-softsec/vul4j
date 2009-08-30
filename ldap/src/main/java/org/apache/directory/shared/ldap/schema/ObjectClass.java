@@ -137,9 +137,13 @@ public class ObjectClass extends SchemaObject
             {
                 superiors = new ArrayList<ObjectClass>( superiorOids.size() );
                 
-                for ( String oid : superiorOids )
+                for ( String superiorName : superiorOids )
                 {
-                    superiors.add( ocRegistry.lookup( oid ) );
+                	if ( superiorName.equals( "top" ) )
+                	{
+                		continue;
+                	}
+                    superiors.add( ocRegistry.lookup( ocRegistry.getOidByName( superiorName ) ) );
                 }
             }
 
@@ -147,9 +151,9 @@ public class ObjectClass extends SchemaObject
             {
                 mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
                 
-                for ( String oid : mayAttributeTypeOids )
+                for ( String mayAttributeTypeName : mayAttributeTypeOids )
                 {
-                    mayAttributeTypes.add( atRegistry.lookup( oid ) );
+                    mayAttributeTypes.add( atRegistry.lookup( atRegistry.getOidByName( mayAttributeTypeName ) ) );
                 }
             }
 
@@ -157,9 +161,9 @@ public class ObjectClass extends SchemaObject
             {
                 mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
                 
-                for ( String oid : mustAttributeTypeOids )
+                for ( String mustAttributeTypeName : mustAttributeTypeOids )
                 {
-                    mustAttributeTypes.add( atRegistry.lookup( oid ) );
+                    mustAttributeTypes.add( atRegistry.lookup( atRegistry.getOidByName( mustAttributeTypeName ) ) );
                 }
             }
         }

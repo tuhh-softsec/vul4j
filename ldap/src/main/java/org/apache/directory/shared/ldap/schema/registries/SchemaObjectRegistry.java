@@ -365,4 +365,27 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
         T schemaObject = byName.get( name );
         return schemaObject.getOid();
     }
+
+
+    /**
+     * Checks to see if an alias/name is associated with an OID and it's 
+     * respective schema object in this registry.  Unlike the getOidByName()
+     * method this method does not throw an exception when the name is not
+     * found.
+     * 
+     * @param name The name we are looking for
+     * @return true if the name or it's cannonical form is mapped to a 
+     * schemaObject in this registry, false otherwise.
+     * @throws NamingException If the OID can't be found
+     */
+    public boolean containsName( String name ) throws NamingException
+    {
+    	if ( ! byName.containsKey( name ) )
+    	{
+    		// last resort before giving up check with lower cased version
+        	return byName.containsKey( name.toLowerCase() );
+    	}
+
+        return true;
+    }
 }
