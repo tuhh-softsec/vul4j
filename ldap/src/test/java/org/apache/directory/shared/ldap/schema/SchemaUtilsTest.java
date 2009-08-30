@@ -76,9 +76,9 @@ public class SchemaUtilsTest
         ats[0] = new AttributeType( "2.5.4.41" );
         ats[0].addName( "name" );
         ats[0].setSyntax(  getSyntaxes()[1] );
-        ats[0].setLength( 32768 );
+        ats[0].setSyntaxLength( 32768 );
         ats[0].setEquality( getMatchingRules()[0] );
-        ats[0].setSubstr( getMatchingRules()[1] );
+        ats[0].setSubstring( getMatchingRules()[1] );
 
         // ( 2.5.4.3 NAME 'cn' SUP name )
         ats[1] = new AttributeType( "2.5.4.3" );
@@ -87,23 +87,23 @@ public class SchemaUtilsTest
         ats[2] = new AttributeType( "2.5.4.41" );
         ats[2].addName( "name" );
         ats[2].setSyntax( getSyntaxes()[1] );
-        ats[2].setLength( 32768 );
+        ats[2].setSyntaxLength( 32768 );
         ats[2].setEquality( getMatchingRules()[0] );
-        ats[2].setSubstr( getMatchingRules()[1] );
+        ats[2].setSubstring( getMatchingRules()[1] );
 
         ats[3] = new AttributeType( "2.5.4.41" );
         ats[3].addName( "name" );
         ats[3].setSyntax( getSyntaxes()[1] );
-        ats[3].setLength( 32768 );
+        ats[3].setSyntaxLength( 32768 );
         ats[3].setEquality( getMatchingRules()[0] );
-        ats[3].setSubstr( getMatchingRules()[1] );
+        ats[3].setSubstring( getMatchingRules()[1] );
 
         ats[4] = new AttributeType( "2.5.4.41" );
         ats[4].addName( "name" );
         ats[4].setSyntax( getSyntaxes()[1] );
-        ats[4].setLength( 32768 );
+        ats[4].setSyntaxLength( 32768 );
         ats[4].setEquality( getMatchingRules()[0] );
-        ats[4].setSubstr( getMatchingRules()[1] );
+        ats[4].setSubstring( getMatchingRules()[1] );
 
         return ats;
     }

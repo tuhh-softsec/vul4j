@@ -119,7 +119,7 @@ FORM : ( "form" (options {greedy=true;} : WHSP)? form:VALUES ) { setText(form.ge
 OC : ( "oc" (options {greedy=true;} : WHSP)? oc:VALUES ) { setText(oc.getText()); } ;
 EQUALITY : ( "equality" (options {greedy=true;} : WHSP)? equality:VALUES ) { setText(equality.getText().trim()); } ;
 ORDERING : ( "ordering" (options {greedy=true;} : WHSP)? ordering:VALUES ) { setText(ordering.getText().trim()); } ;
-SUBSTR : ( "substr" (options {greedy=true;} : WHSP)? substr:VALUES ) { setText(substr.getText().trim()); } ;
+SUBSTR : ( "substr" (options {greedy=true;} : WHSP)? substring:VALUES ) { setText(substring.getText().trim()); } ;
 SYNTAX : ( "syntax" (options {greedy=true;} : WHSP)? syntax:VALUES (len:LEN)? ) { setText(syntax.getText().trim() + (len!=null?len.getText().trim():"")); } ;
 APPLIES : ( "applies" (options {greedy=true;} : WHSP)? applies:VALUES ) { setText(applies.getText().trim()); } ;
 EXTENSION : x:( "x-" ( options {greedy=true;} : 'a'..'z' | '-' | '_' )+ (options {greedy=true;} : WHSP)? VALUES ) ; 
@@ -403,26 +403,26 @@ attributeTypeDescription returns [AttributeType attributeType]
         |
         ( obsolete:OBSOLETE { et.track("OBSOLETE", obsolete); attributeType.setObsolete( true ); } )
         |
-        ( sup:SUP { et.track("SUP", sup); attributeType.setSuperiorOid(oid(sup.getText())); } )
+        ( superior:SUP { et.track("SUP", superior); attributeType.setSuperiorOid(oid(superior.getText())); } )
         |
         ( equality:EQUALITY { et.track("EQUALITY", equality); attributeType.setEqualityOid(oid(equality.getText())); } )
         |
         ( ordering:ORDERING { et.track("ORDERING", ordering); attributeType.setOrderingOid(oid(ordering.getText())); } )
         |
-        ( substr:SUBSTR { et.track("SUBSTR", substr); attributeType.setSubstrOid(oid(substr.getText())); } )
+        ( substring:SUBSTR { et.track("SUBSTR", substring); attributeType.setSubstringOid(oid(substring.getText())); } )
         |
         ( syntax:SYNTAX { 
            et.track("SYNTAX", syntax); 
             NoidLen noidlen = noidlen(syntax.getText());
             attributeType.setSyntaxOid(noidlen.noid); 
-            attributeType.setLength(noidlen.len);
+            attributeType.setSyntaxLength(noidlen.len);
           } )
         |
-        ( singleValue:SINGLE_VALUE { et.track("SINGLE_VALUE", singleValue); attributeType.setSingleValue( true ); } )
+        ( singleValued:SINGLE_VALUE { et.track("SINGLE_VALUE", singleValued); attributeType.setSingleValued( true ); } )
         |
         ( collective:COLLECTIVE { et.track("COLLECTIVE", collective); attributeType.setCollective( true ); } )
         |
-        ( noUserModification:NO_USER_MODIFICATION { et.track("NO_USER_MODIFICATION", noUserModification); attributeType.setCanUserModify( false ); } )
+        ( noUserModification:NO_USER_MODIFICATION { et.track("NO_USER_MODIFICATION", noUserModification); attributeType.setUserModifiable( false ); } )
         |
         ( usage1:USAGE (WHSP)* USER_APPLICATIONS { et.track("USAGE", usage1); attributeType.setUsage( UsageEnum.USER_APPLICATIONS ); }
           |
@@ -456,7 +456,7 @@ attributeTypeDescription returns [AttributeType attributeType]
             }
         
             // NO-USER-MODIFICATION requires an operational USAGE.
-            if ( !attributeType.isCanUserModify() && ( attributeType.getUsage() == UsageEnum.USER_APPLICATIONS ) )
+            if ( !attributeType.isUserModifiable() && ( attributeType.getUsage() == UsageEnum.USER_APPLICATIONS ) )
             {
                 throw new SemanticException( "NO-USER-MODIFICATION requires an operational USAGE", null, 0, 0 );
             }

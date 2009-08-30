@@ -483,9 +483,9 @@ public class SchemaUtils
             buf.append( " OBSOLETE" );
         }
 
-        if ( at.getSup() != null )
+        if ( at.getSuperior() != null )
         {
-            buf.append( " SUP " ).append( at.getSup().getName() );
+            buf.append( " SUP " ).append( at.getSuperior().getName() );
         }
 
         if ( at.getEquality() != null )
@@ -498,22 +498,22 @@ public class SchemaUtils
             buf.append( " ORDERING " ).append( at.getOrdering().getName() );
         }
 
-        if ( at.getSubstr() != null )
+        if ( at.getSubstring() != null )
         {
-            buf.append( " SUBSTR " ).append( at.getSubstr().getName() );
+            buf.append( " SUBSTR " ).append( at.getSubstring().getName() );
         }
 
         if ( at.getSyntax() != null )
         {
             buf.append( " SYNTAX " ).append( at.getSyntax().getOid() );
 
-            if ( at.getLength() > 0 )
+            if ( at.getSyntaxLength() > 0 )
             {
-                buf.append( "{" ).append( at.getLength() ).append( "}" );
+                buf.append( "{" ).append( at.getSyntaxLength() ).append( "}" );
             }
         }
 
-        if ( at.isSingleValue() )
+        if ( at.isSingleValued() )
         {
             buf.append( " SINGLE-VALUE" );
         }
@@ -523,7 +523,7 @@ public class SchemaUtils
             buf.append( " COLLECTIVE" );
         }
 
-        if ( !at.isCanUserModify() )
+        if ( !at.isUserModifiable() )
         {
             buf.append( " NO-USER-MODIFICATION" );
         }

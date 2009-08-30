@@ -495,4 +495,13 @@ public class ObjectClass extends SchemaObject
     {
         return objectClassType == ObjectClassTypeEnum.AUXILIARY;
     }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return DescriptionUtils.getDescription( this );
+    }
 }

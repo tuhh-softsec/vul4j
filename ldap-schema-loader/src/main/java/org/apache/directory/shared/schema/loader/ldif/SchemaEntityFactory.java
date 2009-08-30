@@ -521,13 +521,13 @@ public class SchemaEntityFactory
         if ( entry.get( MetaSchemaConstants.M_SINGLE_VALUE_AT ) != null )
         {
             String val = entry.get( MetaSchemaConstants.M_SINGLE_VALUE_AT ).getString();
-            at.setSingleValue( val.equalsIgnoreCase( "TRUE" ) );
+            at.setSingleValued( val.equalsIgnoreCase( "TRUE" ) );
         }
         
         if ( entry.get( MetaSchemaConstants.M_NO_USER_MODIFICATION_AT ) != null )
         {
             String val = entry.get( MetaSchemaConstants.M_NO_USER_MODIFICATION_AT ).getString();
-            at.setCanUserModify( ! val.equalsIgnoreCase( "TRUE" ) );
+            at.setUserModifiable( ! val.equalsIgnoreCase( "TRUE" ) );
         }
         
         if ( entry.get( MetaSchemaConstants.M_USAGE_AT ) != null )

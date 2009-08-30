@@ -220,5 +220,13 @@ public class MatchingRuleUse extends SchemaObject
             }
         }
     }
-    
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return DescriptionUtils.getDescription( this );
+    }
 }

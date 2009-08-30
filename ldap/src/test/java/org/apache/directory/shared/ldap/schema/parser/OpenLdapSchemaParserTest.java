@@ -114,7 +114,7 @@ public class OpenLdapSchemaParserTest
         assertEquals( "knowledgeInformation", type.getName() );
         assertEquals( "RFC2256: knowledge information", type.getDescription() );
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntaxOid() );
-        assertEquals( 32768, type.getLength() );
+        assertEquals( 32768, type.getSyntaxLength() );
     }
 
 
@@ -134,7 +134,7 @@ public class OpenLdapSchemaParserTest
         assertEquals( "knowledgeInformation", type.getName() );
         assertEquals( "RFC2256: \"knowledge\" information", type.getDescription() );
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntaxOid() );
-        assertEquals( 32768, type.getLength() );
+        assertEquals( 32768, type.getSyntaxLength() );
     }
 
 
@@ -155,7 +155,7 @@ public class OpenLdapSchemaParserTest
         assertEquals( "knowledgeInformation", type.getName() );
         assertEquals( "RFC2256: knowledge information", type.getDescription() );
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntaxOid() );
-        assertEquals( 32768, type.getLength() );
+        assertEquals( 32768, type.getSyntaxLength() );
     }
 
 

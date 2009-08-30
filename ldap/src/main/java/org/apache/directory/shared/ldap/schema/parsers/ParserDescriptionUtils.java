@@ -114,7 +114,7 @@ public class ParserDescriptionUtils
         }
 
         // check that the same super type is being used for both attributes
-        if ( ! at0.getSupOid().equals( at1.getSupOid() ) )
+        if ( ! at0.getSuperiorOid().equals( at1.getSuperiorOid() ) )
         {
             return false;
         }
@@ -126,7 +126,7 @@ public class ParserDescriptionUtils
         }
         
         // check that the same matchingRule is used by both ATs for SUBSTRING
-        if ( ! at0.getSubstrOid().equals( at1.getSubstrOid() ) )
+        if ( ! at0.getSubstringOid().equals( at1.getSubstringOid() ) )
         {
             return false;
         }
@@ -144,13 +144,13 @@ public class ParserDescriptionUtils
         }
         
         // check that the syntax length constraint is the same for both
-        if ( at0.getLength() != at1.getLength() )
+        if ( at0.getSyntaxLength() != at1.getSyntaxLength() )
         {
             return false;
         }
         
         // check that the ATs have the same single valued flag value
-        if ( at0.isSingleValue() != at1.isSingleValue() )
+        if ( at0.isSingleValued() != at1.isSingleValued() )
         {
             return false;
         }
@@ -162,7 +162,7 @@ public class ParserDescriptionUtils
         }
         
         // check that the ATs have the same user modifiable flag value
-        if ( at0.isCanUserModify() != at1.isCanUserModify() )
+        if ( at0.isUserModifiable() != at1.isUserModifiable() )
         {
             return false;
         }

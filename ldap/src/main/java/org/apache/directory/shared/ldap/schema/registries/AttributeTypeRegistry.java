@@ -141,7 +141,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         addMappingFor( attributeType );
 
         // Register this AttributeType into the Descendant map
-        registerDescendants( attributeType, attributeType.getSup() );
+        registerDescendants( attributeType, attributeType.getSuperior() );
         
         // Internally associate the OID to the registered AttributeType
         if ( IS_DEBUG )
@@ -180,7 +180,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         descendants.add( attributeType );
         
         // And recurse until we reach the top of the hierarchy
-        registerDescendants( attributeType, ancestor.getSup() );
+        registerDescendants( attributeType, ancestor.getSuperior() );
     }
     
     

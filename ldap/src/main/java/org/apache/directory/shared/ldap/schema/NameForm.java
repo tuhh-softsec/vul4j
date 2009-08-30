@@ -179,9 +179,8 @@ public class NameForm extends SchemaObject
      * attributes for.
      * 
      * @return the ObjectClass's oid this NameForm is for
-     * @throws NamingException If the structuralObjectClass is invalid
      */
-    public String getStructuralObjectClassOid() throws NamingException
+    public String getStructuralObjectClassOid()
     {
         return structuralObjectClassOid;
     }
@@ -249,9 +248,8 @@ public class NameForm extends SchemaObject
      * Rdn.
      * 
      * @return the AttributeTypes of the must use attributes
-     * @throws NamingException if there is a failure resolving one AttributeTyoe
      */
-    public List<AttributeType> getMustAttributeTypes() throws NamingException
+    public List<AttributeType> getMustAttributeTypes()
     {
         return Collections.unmodifiableList( mustAttributeTypes );
     }
@@ -345,9 +343,8 @@ public class NameForm extends SchemaObject
      * part of the Rdn.
      * 
      * @return the AttributeTypes of the may use attributes
-     * @throws NamingException if there is a failure resolving one AttributeTyoe
      */
-    public List<AttributeType> getMayAttributeTypes() throws NamingException
+    public List<AttributeType> getMayAttributeTypes()
     {
         return Collections.unmodifiableList( mayAttributeTypes );
     }
@@ -418,5 +415,14 @@ public class NameForm extends SchemaObject
                 mayAttributeTypeOids.add( attributeType.getOid() );
             }
         }
+    }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return DescriptionUtils.getDescription( this );
     }
 }

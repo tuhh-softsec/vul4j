@@ -162,4 +162,13 @@ public class LdapSyntax extends SchemaObject
             this.syntaxChecker = syntaxChecker;
         }
     }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return DescriptionUtils.getDescription( this );
+    }
 }

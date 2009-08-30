@@ -21,25 +21,26 @@ package org.apache.directory.shared.ldap.schema;
 
 
 import java.util.List;
-
-import javax.naming.NamingException;
+import java.util.Map;
 
 
 /**
  * Utility class used to generate schema object specifications. Some of the
  * latest work coming out of the LDAPBIS working body adds optional extensions
- * to these syntaxes. We have not yet added extension support to these functions
- * or the schema interfaces in this package. Descriptions can be generated for
+ * to these syntaxes. Descriptions can be generated for
  * the following objects:
  * <ul>
  * <li><a href="./AttributeType.html">AttributeType</a></li>
  * <li><a href="./DITContentRule.html">DITContentRule</a></li>
+ * <li><a href="./DITContentRule.html">DITStructureRule</a></li>
+ * <li><a href="./LdapComparator.html">Syntax</a></li>
  * <li><a href="./MatchingRule.html">MatchingRule</a></li>
  * <li><a href="./MatchingRuleUse.html">MatchingRuleUse</a></li>
  * <li><a href="./NameForm.html">NameForm</a></li>
+ * <li><a href="./Normalizer.html">Syntax</a></li>
  * <li><a href="./ObjectClass.html">ObjectClass</a></li>
- * <li><a href="./DITStructureRule.html">DITStructureRule</a></li>
- * <li><a href="./Syntax.html">Syntax</a></li>
+ * <li><a href="./LdapSyntax.html">Syntax</a></li>
+ * <li><a href="./SyntaxChecker.html">Syntax</a></li>
  * </ul>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -75,18 +76,19 @@ public class DescriptionUtils
      *            the attributeType to generate a description for
      * @return the AttributeTypeDescription Syntax for the attributeType in a
      *         pretty formated string
-     * @throws NamingException If an error is raised while accessing some of the attributeType
-     * data 
      */
-    public static String getDescription( AttributeType attributeType ) throws NamingException
+    public static String getDescription( AttributeType attributeType )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( attributeType.getOid() );
         buf.append( '\n' );
 
-        buf.append( "NAME " );
-        buf.append( attributeType.getName() );
-        buf.append( '\n' );
+        if ( attributeType.getName() != null )
+        {
+            buf.append( "NAME " );
+            buf.append( attributeType.getName() );
+            buf.append( '\n' );
+        }
 
         if ( attributeType.getDescription() != null )
         {
@@ -101,34 +103,49 @@ public class DescriptionUtils
             buf.append( '\n' );
         }
 
-        buf.append( attributeType.getSup().getOid() );
+        if ( attributeType.getSuperior() != null )
+        {
+            buf.append(  "SUP " );
+            buf.append( attributeType.getSuperiorName() );
+            buf.append( '\n' );
+        }
 
         if ( attributeType.getEquality() != null )
         {
             buf.append( "EQUALITY " );
-            buf.append( attributeType.getEquality().getOid() );
+            buf.append( attributeType.getEqualityName() );
             buf.append( '\n' );
         }
 
         if ( attributeType.getOrdering() != null )
         {
             buf.append( "ORDERING " );
-            buf.append( attributeType.getOrdering().getOid() );
+            buf.append( attributeType.getOrderingName() );
             buf.append( '\n' );
         }
 
-        if ( attributeType.getSubstr() != null )
+        if ( attributeType.getSubstring() != null )
         {
             buf.append( "SUBSTR " );
-            buf.append( attributeType.getSubstr().getOid() );
+            buf.append( attributeType.getSubstringName() );
             buf.append( '\n' );
         }
 
-        buf.append( "SYNTAX " );
-        buf.append( attributeType.getSyntax().getOid() );
-        buf.append( '\n' );
+        if ( attributeType.getSyntax() != null )
+        {
+            buf.append( "SYNTAX " );
+            
+            buf.append( attributeType.getSyntaxName() );
 
-        if ( attributeType.isSingleValue() )
+            if ( attributeType.getSyntaxLength() > 0 )
+            {
+                buf.append( '{' ).append( attributeType.getSyntaxLength() ).append( '}' );
+            }
+            
+            buf.append( '\n' );
+        }
+
+        if ( attributeType.isSingleValued() )
         {
             buf.append( "SINGLE-VALUE" );
             buf.append( '\n' );
@@ -140,7 +157,7 @@ public class DescriptionUtils
             buf.append( '\n' );
         }
 
-        if ( attributeType.isCanUserModify() )
+        if ( attributeType.isUserModifiable() )
         {
             buf.append( "NO-USER-MODIFICATION" );
             buf.append( '\n' );
@@ -148,7 +165,14 @@ public class DescriptionUtils
 
         buf.append( "USAGE " );
         buf.append( UsageEnum.render( attributeType.getUsage() ) );
-        buf.append( " ) " );
+        buf.append( '\n' );
+        
+        if ( attributeType.getExtensions() != null )
+        {
+            getExtensions( buf, attributeType.getExtensions() );
+        }
+
+        buf.append( " )\n" );
 
         return buf.toString();
     }
@@ -177,18 +201,19 @@ public class DescriptionUtils
      *            the DIT content rule specification
      * @return the specification according to the DITContentRuleDescription
      *         syntax
-     * @throws NamingException If an error is raised while accessing some of the dITConentRule
-     * data 
      */
-    public static String getDescription( DITContentRule dITContentRule ) throws NamingException
+    public static String getDescription( DITContentRule dITContentRule )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( dITContentRule.getOid() );
         buf.append( '\n' );
 
-        buf.append( "NAME " );
-        buf.append( dITContentRule.getName() );
-        buf.append( '\n' );
+        if ( dITContentRule.getName() != null )
+        {
+            buf.append( "NAME " );
+            buf.append( dITContentRule.getName() );
+            buf.append( '\n' );
+        }
 
         if ( dITContentRule.getDescription() != null )
         {
@@ -208,61 +233,44 @@ public class DescriptionUtils
         
         if ( ( aux != null ) && ( aux.size() > 0 ) )
         {
-            buf.append( "AUX\n" );
-            
-            for ( ObjectClass objectClass: aux )
-            {
-                buf.append( '\t' );
-                buf.append( objectClass.getOid() );
-                buf.append( '\n' );
-            }
+            buf.append( "AUX " );
+            getQDStrings( buf, aux );
         }
 
         List<AttributeType> must = dITContentRule.getMustAttributeTypes();
         
         if ( ( must != null ) && ( must.size() > 0 ) )
         {
-            buf.append( "MUST\n" );
-            
-            for ( AttributeType attributeType:must )
-            {
-                buf.append( '\t' );
-                buf.append( attributeType.getOid() );
-                buf.append( '\n' );
-            }
+            buf.append( "MUST " );
+            getQDStrings( buf, must );
         }
 
         List<AttributeType> may = dITContentRule.getMayAttributeTypes();
         
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
-            buf.append( "MAY\n" );
-            
-            for ( AttributeType attributeType:may )
-            {
-                buf.append( '\t' );
-                buf.append( attributeType.getOid() );
-                buf.append( '\n' );
-            }
+            buf.append( "MAY " );
+            getQDStrings( buf, may );
         }
 
         List<AttributeType> not = dITContentRule.getNotAttributeTypes();
         
         if ( ( not != null ) && ( not.size() > 0 ) )
         {
-            buf.append( "NOT\n" );
-            
-            for ( AttributeType attributeType:not )
-            {
-                buf.append( '\t' );
-                buf.append( attributeType.getOid() );
-                buf.append( '\n' );
-            }
+            buf.append( "NOT " );
+            getQDStrings( buf, not );
         }
 
-        buf.append( " )" );
+        if ( dITContentRule.getExtensions() != null )
+        {
+            getExtensions( buf, dITContentRule.getExtensions() );
+        }
+
+        buf.append( " )\n" );
         return buf.toString();
     }
+
+
 
 
     /**
@@ -284,18 +292,19 @@ public class DescriptionUtils
      * @param matchingRule
      *            the MatchingRule to generate the description for
      * @return the MatchingRuleDescription string
-     * @throws NamingException If an error is raised while accessing some of the matchingRule
-     * data 
      */
-    public static String getDescription( MatchingRule matchingRule ) throws NamingException
+    public static String getDescription( MatchingRule matchingRule )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( matchingRule.getOid() );
         buf.append( '\n' );
 
-        buf.append( "NAME " );
-        buf.append( matchingRule.getName() );
-        buf.append( '\n' );
+        if ( matchingRule.getName() != null )
+        {
+            buf.append( "NAME " );
+            buf.append( matchingRule.getName() );
+            buf.append( '\n' );
+        }
 
         if ( matchingRule.getDescription() != null )
         {
@@ -311,7 +320,14 @@ public class DescriptionUtils
         }
 
         buf.append( "SYNTAX " );
-        buf.append( matchingRule.getSyntax().getOid() );
+        buf.append( matchingRule.getSyntaxOid() );
+        buf.append( '\n' ); 
+        
+        if ( matchingRule.getExtensions() != null )
+        {
+            getExtensions( buf, matchingRule.getExtensions() );
+        }
+
         buf.append( " ) " );
         return buf.toString();
     }
@@ -347,12 +363,10 @@ public class DescriptionUtils
      * @param matchingRuleUse The matching rule from which we want to generate
      *  a MatchingRuleUseDescription.
      * @return The generated MatchingRuleUseDescription
-     * @throws NamingException If an error is raised while accessing some of the matchingRuleUse
-     * data 
      */
-    public static String getDescription( MatchingRuleUse matchingRuleUse ) throws NamingException
+    public static String getDescription( MatchingRuleUse matchingRuleUse )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( matchingRuleUse.getOid() );
         buf.append( '\n' );
 
@@ -404,7 +418,13 @@ public class DescriptionUtils
             buf.append( " ) " );
         }
 
-        buf.append( '\n' );
+        if ( matchingRuleUse.getExtensions() != null )
+        {
+            getExtensions( buf, matchingRuleUse.getExtensions() );
+        }
+
+        buf.append( " )\n" );
+        
         return buf.toString();
     }
 
@@ -430,18 +450,19 @@ public class DescriptionUtils
      * @param nameForm
      *            the NameForm to generate the description for
      * @return the NameFormDescription string
-     * @throws NamingException If an error is raised while accessing some of the nameForm
-     * data 
      */
-    public static String getDescription( NameForm nameForm ) throws NamingException
+    public static String getDescription( NameForm nameForm )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( nameForm.getOid() );
         buf.append( '\n' );
 
-        buf.append( "NAME " );
-        buf.append( nameForm.getName() );
-        buf.append( '\n' );
+        if ( nameForm.getName() != null )
+        {
+            buf.append( "NAME " );
+            buf.append( nameForm.getName() );
+            buf.append( '\n' );
+        }
 
         if ( nameForm.getDescription() != null )
         {
@@ -462,29 +483,23 @@ public class DescriptionUtils
 
         buf.append( "MUST\n" );
         List<AttributeType> must = nameForm.getMustAttributeTypes();
-        
-        for ( AttributeType attributeType:must )
-        {
-            buf.append( '\t' );
-            buf.append( attributeType.getOid() );
-            buf.append( '\n' );
-        }
+
+        getQDStrings( buf, must );
 
         List<AttributeType> may = nameForm.getMayAttributeTypes();
 
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( "MAY\n" );
-        
-            for ( AttributeType attributeType:may )
-            {
-                buf.append( '\t' );
-                buf.append( attributeType.getOid() );
-                buf.append( '\n' );
-            }
+            getQDStrings( buf, may );
         }
 
-        buf.append( " )" );
+        if ( nameForm.getExtensions() != null )
+        {
+            getExtensions( buf, nameForm.getExtensions() );
+        }
+
+        buf.append( " )\n" );
         return buf.toString();
     }
 
@@ -512,18 +527,19 @@ public class DescriptionUtils
      * @param objectClass
      *            the ObjectClass to generate a description for
      * @return the description in the ObjectClassDescription syntax
-     * @throws NamingException If an error is raised while accessing some of the objectClass
-     * data 
      */
-    public static String getDescription( ObjectClass objectClass ) throws NamingException
+    public static String getDescription( ObjectClass objectClass )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( objectClass.getOid() );
         buf.append( '\n' );
 
-        buf.append( "NAME " );
-        buf.append( objectClass.getName() );
-        buf.append( '\n' );
+        if ( objectClass.getName() != null )
+        {
+            buf.append( "NAME " );
+            buf.append( objectClass.getName() );
+            buf.append( '\n' );
+        }
 
         if ( objectClass.getDescription() != null )
         {
@@ -543,13 +559,7 @@ public class DescriptionUtils
         if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
             buf.append( "SUP\n" );
-            
-            for ( ObjectClass sup:sups )
-            {
-                buf.append( '\t' );
-                buf.append( sup.getOid() );
-                buf.append( '\n' );
-            }
+            getQDStrings( buf, sups );
         }
 
         if ( objectClass.getType() != null )
@@ -563,13 +573,7 @@ public class DescriptionUtils
         if ( ( must != null ) && ( must.size() > 0 ) )
         {
             buf.append( "MUST\n" );
-            
-            for ( AttributeType attributeType:must )
-            {
-                buf.append( '\t' );
-                buf.append( attributeType.getOid() );
-                buf.append( '\n' );
-            }
+            getQDStrings( buf, must );
         }
 
         List<AttributeType> may = objectClass.getMayAttributeTypes();
@@ -577,16 +581,15 @@ public class DescriptionUtils
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( "MAY\n" );
-
-            for ( AttributeType attributeType:may )
-            {
-                buf.append( '\t' );
-                buf.append( attributeType.getOid() );
-                buf.append( '\n' );
-            }
+            getQDStrings( buf, may );
         }
 
-        buf.append( " )" );
+        if ( objectClass.getExtensions() != null )
+        {
+            getExtensions( buf, objectClass.getExtensions() );
+        }
+
+        buf.append( " )\n" );
         return buf.toString();
     }
 
@@ -598,31 +601,33 @@ public class DescriptionUtils
      * generated: that is 'DITStructureRuleDescription = ' is not generated.
      * 
      * <pre>
-     *  DITStructureRuleDescription = &quot;(&quot; whsp
-     *      ruleidentifier whsp           ; DITStructureRule identifier
-     *      [ &quot;NAME&quot; qdescrs ]
-     *      [ &quot;DESC&quot; qdstring ]
-     *      [ &quot;OBSOLETE&quot; whsp ]
-     *      &quot;FORM&quot; woid whsp              ; NameForm
-     *      [ &quot;SUP&quot; ruleidentifiers whsp ]; superior DITStructureRules
-     *  &quot;)&quot;
+     *   DITStructureRuleDescription = &quot;(&quot; whsp
+     *       ruleid                     ; rule identifier
+     *       [ SP "NAME" SP qdescrs ]   ; short names (descriptors)
+     *       [ SP "DESC" SP qdstring ]  ; description
+     *       [ SP "OBSOLETE" ]          ; not active
+     *       SP "FORM" SP oid           ; NameForm
+     *       [ SP "SUP" ruleids ]       ; superior rules
+     *       extensions WSP             ; extensions
+     *       &quot;)&quot;
      * </pre>
      * 
      * @param dITStructureRule
      *            the DITStructureRule to generate the description for
      * @return the description in the DITStructureRuleDescription syntax
-     * @throws NamingException If an error is raised while accessing some of the dITStructureRule
-     * data 
      */
-    public static String getDescription( DITStructureRule dITStructureRule ) throws NamingException
+    public static String getDescription( DITStructureRule dITStructureRule )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( dITStructureRule.getOid() );
         buf.append( '\n' );
 
-        buf.append( "NAME " );
-        buf.append( dITStructureRule.getName() );
-        buf.append( '\n' );
+        if ( dITStructureRule.getName() != null )
+        {
+            buf.append( "NAME " );
+            buf.append( dITStructureRule.getName() );
+            buf.append( '\n' );
+        }
 
         if ( dITStructureRule.getDescription() != null )
         {
@@ -648,15 +653,37 @@ public class DescriptionUtils
         {
             buf.append( "SUP\n" );
             
-            for ( Integer sup:sups )
+            if ( sups.size() == 1 )
             {
-                buf.append( '\t' );
-                buf.append( sup );
-                buf.append( '\n' );
+                buf.append( sups.get( 0 ) );
             }
+            else
+            {
+                boolean isFirst = true;
+                buf.append( "( " );
+                
+                for ( int sup : sups )
+                {
+                    if ( isFirst )
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        buf.append( " " );
+                    }
+                    
+                    buf.append( sup );
+                }
+                
+                buf.append( " )" );
+            }
+
+            buf.append( '\n' );
         }
 
-        buf.append( " )" );
+        buf.append( " )\n" );
+
         return buf.toString();
     }
 
@@ -671,7 +698,8 @@ public class DescriptionUtils
      *  SyntaxDescription = &quot;(&quot; whsp
      *      numericoid whsp
      *      [ &quot;DESC&quot; qdstring ]
-     *  whsp &quot;)&quot;
+     *      [ extensions ]
+     *      whsp &quot;)&quot;
      * </pre>
      * 
      * @param syntax
@@ -680,7 +708,7 @@ public class DescriptionUtils
      */
     public static String getDescription( LdapSyntax syntax )
     {
-        StringBuffer buf = new StringBuffer( "( " );
+        StringBuilder buf = new StringBuilder( "( " );
         buf.append( syntax.getOid() );
         buf.append( '\n' );
 
@@ -691,7 +719,89 @@ public class DescriptionUtils
             buf.append( '\n' );
         }
 
+        if ( syntax.getExtensions() != null )
+        {
+            getExtensions( buf, syntax.getExtensions() );
+        }
+        
         buf.append( " )" );
         return buf.toString();
+    }
+
+    
+    private static void getExtensions( StringBuilder sb, Map<String, List<String>> extensions )
+    {
+        for ( String key:extensions.keySet() )
+        {
+            sb.append( key ).append( " " );
+            
+            List<String> values = extensions.get( key );
+            
+            if ( ( values != null ) && ( values.size() != 0 ) ) 
+            {
+                if ( values.size() == 1 )
+                {
+                    sb.append( values.get( 0 ) );
+                }
+                else
+                {
+                    boolean isFirst = true;
+                    sb.append( "( " );
+                    
+                    for ( String value : values )
+                    {
+                        if ( isFirst )
+                        {
+                            isFirst = false;
+                        }
+                        else
+                        {
+                            sb.append( " " );
+                        }
+                        
+                        sb.append( value );
+                    }
+                    
+                    sb.append( " )" );
+                }
+            }
+            
+            sb.append( '\n' );
+        }
+    }
+
+    
+    private static void getQDStrings( StringBuilder sb, List<? extends SchemaObject> schemaObjects )
+    {
+        if ( ( schemaObjects != null ) && ( schemaObjects.size() != 0 ) ) 
+        {
+            if ( schemaObjects.size() == 1 )
+            {
+                sb.append( schemaObjects.get( 0 ).getName() );
+            }
+            else
+            {
+                boolean isFirst = true;
+                sb.append( "( " );
+                
+                for ( SchemaObject schemaObject : schemaObjects )
+                {
+                    if ( isFirst )
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        sb.append( " " );
+                    }
+                    
+                    sb.append( schemaObject.getName() );
+                }
+                
+                sb.append( " )" );
+            }
+        }
+        
+        sb.append(  '\n' );
     }
 }

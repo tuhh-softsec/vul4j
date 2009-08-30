@@ -232,4 +232,11 @@ public class MatchingRule extends SchemaObject
             this.normalizer = normalizer;
         }
     }
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return DescriptionUtils.getDescription( this );
+    }
 }

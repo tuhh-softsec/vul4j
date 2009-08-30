@@ -125,37 +125,37 @@ public class AttributeTypeDescriptionSchemaParserTest
         // no SUP
         value = "( 1.1 SYNTAX 1.1 )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertNull( attributeType.getSupOid() );
+        assertNull( attributeType.getSuperiorOid() );
 
         // SUP numericoid
         value = "( 1.1 SYNTAX 1.1 SUP 1.2.3.4.5.6.7.8.9.0 )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "1.2.3.4.5.6.7.8.9.0", attributeType.getSupOid() );
+        assertEquals( "1.2.3.4.5.6.7.8.9.0", attributeType.getSuperiorOid() );
 
         // SUP descr, no space
         value = "(1.1 SYNTAX1.1 SUPabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789)";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSupOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSuperiorOid() );
 
         // SUP descr, newline
         value = "\t(\t1.1\tSYNTAX\t1.1\tSUP\tabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789\t)\t";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSupOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSuperiorOid() );
 
         // quoted SUP value
         value = "( 1.1 SYNTAX 1.1 SUP 'name' )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "name", attributeType.getSupOid() );
+        assertEquals( "name", attributeType.getSuperiorOid() );
 
         // quoted SUP value
         value = "( 1.1 SYNTAX 1.1 SUP '1.2.3.4' )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "1.2.3.4", attributeType.getSupOid() );
+        assertEquals( "1.2.3.4", attributeType.getSuperiorOid() );
 
         // quoted SUP value
         value = "( 1.1 SYNTAX 1.1 SUP ('1.2.3.4') )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "1.2.3.4", attributeType.getSupOid() );
+        assertEquals( "1.2.3.4", attributeType.getSuperiorOid() );
 
         // invalid character
         value = "( 1.1 SYNTAX 1.1 SUP 1.2.3.4.A )";
@@ -298,34 +298,34 @@ public class AttributeTypeDescriptionSchemaParserTest
         // no SUBSTR
         value = "( 1.1 SYNTAX 1.1 )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertNull( attributeType.getSubstrOid() );
+        assertNull( attributeType.getSubstringOid() );
 
         // SUBSTR numericoid
         value = "( 1.1 SYNTAX 1.1 SUBSTR 1.2.3.4567.8.9.0 )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "1.2.3.4567.8.9.0", attributeType.getSubstrOid() );
+        assertEquals( "1.2.3.4567.8.9.0", attributeType.getSubstringOid() );
 
         // SUBSTR descr, no space
         value = "(1.1 SYNTAX1.1 SUBSTRabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789)";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
-            .getSubstrOid() );
+            .getSubstringOid() );
 
         // SUBSTR descr, newline
         value = "\r\n(\r\n1.1\r\nSYNTAX\r\n1.1\r\nSUBSTR\r\nabcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789\r\n)\r\n";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType
-            .getSubstrOid() );
+            .getSubstringOid() );
 
         // quoted value
         value = "( 1.1 SYNTAX 1.1 SUBSTR 'caseIgnoreSubstringsMatch' )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstrOid() );
+        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstringOid() );
 
         // quote value in parentheses
         value = "( 1.1 SYNTAX 1.1 SUBSTR ('caseIgnoreSubstringsMatch') )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstrOid() );
+        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstringOid() );
     }
 
 
@@ -344,61 +344,61 @@ public class AttributeTypeDescriptionSchemaParserTest
         value = "( 1.1 SUP 1.1 )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertNull( attributeType.getSyntaxOid() );
-        assertEquals( 0, attributeType.getLength() );
+        assertEquals( 0, attributeType.getSyntaxLength() );
 
         // SYNTAX string
         value = "( 1.1 SYNTAX IA5String )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "IA5String", attributeType.getSyntaxOid() );
-        assertEquals( 0, attributeType.getLength() );
+        assertEquals( 0, attributeType.getSyntaxLength() );
 
         // SYNTAX numericoid
         value = "( 1.1 SYNTAX 1.2.3.4567.8.9.0 )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3.4567.8.9.0", attributeType.getSyntaxOid() );
-        assertEquals( 0, attributeType.getLength() );
+        assertEquals( 0, attributeType.getSyntaxLength() );
         
         // quoted numericoid
         value = "( 1.1 SYNTAX '1.2.3.4567.8.9.0' )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3.4567.8.9.0", attributeType.getSyntaxOid() );
-        assertEquals( 0, attributeType.getLength() );
+        assertEquals( 0, attributeType.getSyntaxLength() );
 
         // quoted numericoid
         value = "( 1.1 SYNTAX ('1.2.3.4567.8.9.0') )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3.4567.8.9.0", attributeType.getSyntaxOid() );
-        assertEquals( 0, attributeType.getLength() );
+        assertEquals( 0, attributeType.getSyntaxLength() );
 
         // SYNTAX numericoid and length, no spaces
         value = "(1.1 SYNTAX1.2.3.4567.8.9.0{1234567890})";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3.4567.8.9.0", attributeType.getSyntaxOid() );
-        assertEquals( 1234567890, attributeType.getLength() );
+        assertEquals( 1234567890, attributeType.getSyntaxLength() );
 
         // SYNTAX, with tabs
         value = "\t(\t1.1\tSYNTAX\t1.2.3.4567.8.9.0\t{1234567890}\t)\t";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3.4567.8.9.0", attributeType.getSyntaxOid() );
-        assertEquals( 1234567890, attributeType.getLength() );
+        assertEquals( 1234567890, attributeType.getSyntaxLength() );
 
         // SYNTAX numericoid and zero length
         value = "( 1.1 SYNTAX 1.2.3 {0} )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3", attributeType.getSyntaxOid() );
-        assertEquals( 0, attributeType.getLength() );
+        assertEquals( 0, attributeType.getSyntaxLength() );
 
         // quoted value
         value = "( 1.1 SYNTAX '1.2.3{32}' )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3", attributeType.getSyntaxOid() );
-        assertEquals( 32, attributeType.getLength() );
+        assertEquals( 32, attributeType.getSyntaxLength() );
 
         // quote value in parentheses
         value = "( 1.1 SYNTAX ( '1.2.3{32}' ) )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3", attributeType.getSyntaxOid() );
-        assertEquals( 32, attributeType.getLength() );
+        assertEquals( 32, attributeType.getSyntaxLength() );
 
         // empty length
         value = "( 1.1 SYNTAX 1.2.3.4{} )";
@@ -416,7 +416,7 @@ public class AttributeTypeDescriptionSchemaParserTest
         value = "( 1.1 SYNTAX 1.2.3.4{01} )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertEquals( "1.2.3.4", attributeType.getSyntaxOid() );
-        assertEquals( 1, attributeType.getLength() );
+        assertEquals( 1, attributeType.getSyntaxLength() );
 
         // invalid syntax length
         value = "( 1.1 SYNTAX 1.2.3.4{X} )";
@@ -471,17 +471,17 @@ public class AttributeTypeDescriptionSchemaParserTest
         // not single-value
         value = "( 1.1 SYNTAX 1.1 NAME 'test' DESC 'Descripton' )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertFalse( attributeType.isSingleValue() );
+        assertFalse( attributeType.isSingleValued() );
 
         // single-value
         value = "(1.1 SYNTAX 1.1 NAME 'test' DESC 'Descripton' SINGLE-VALUE)";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertTrue( attributeType.isSingleValue() );
+        assertTrue( attributeType.isSingleValued() );
 
         // single-value 
         value = "(1.1 SYNTAX 1.1 SINGLE-VALUE)";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertTrue( attributeType.isSingleValue() );
+        assertTrue( attributeType.isSingleValued() );
 
         // invalid
         value = "(1.1 SYNTAX 1.1 NAME 'test' DESC 'Descripton' SINGLE-VALU )";
@@ -551,17 +551,17 @@ public class AttributeTypeDescriptionSchemaParserTest
         // not NO-USER-MODIFICATION
         value = "( 1.1 SYNTAX 1.1 NAME 'test' DESC 'Descripton' )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertTrue( attributeType.isCanUserModify() );
+        assertTrue( attributeType.isUserModifiable() );
 
         // NO-USER-MODIFICATION
         value = "(1.1 SYNTAX 1.1 NAME 'test' DESC 'Descripton' NO-USER-MODIFICATION USAGE directoryOperation )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertFalse( attributeType.isCanUserModify() );
+        assertFalse( attributeType.isUserModifiable() );
 
         // NO-USER-MODIFICATION 
         value = "(1.1 SYNTAX 1.1 NO-USER-MODIFICATION USAGE directoryOperation )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertFalse( attributeType.isCanUserModify() );
+        assertFalse( attributeType.isUserModifiable() );
 
         // ivalid
         value = "(1.1 SYNTAX 1.1 NAME 'test' DESC 'Descripton' NO-USER-MODIFICATIO USAGE directoryOperation )";
@@ -664,16 +664,16 @@ public class AttributeTypeDescriptionSchemaParserTest
         assertEquals( "test", attributeType.getNames().get( 1 ) );
         assertEquals( "Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577", attributeType.getDescription() );
         assertTrue( attributeType.isObsolete() );
-        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSupOid() );
+        assertEquals( "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789", attributeType.getSuperiorOid() );
         assertEquals( "2.3.4.5.6.7.8.9.0.1", attributeType.getEqualityOid() );
         assertEquals( "3.4.5.6.7.8.9.0.1.2", attributeType.getOrderingOid() );
-        assertEquals( "4.5.6.7.8.9.0.1.2.3", attributeType.getSubstrOid() );
+        assertEquals( "4.5.6.7.8.9.0.1.2.3", attributeType.getSubstringOid() );
         assertEquals( "5.6.7.8.9.0.1.2.3.4", attributeType.getSyntaxOid() );
-        assertEquals( 1234567890, attributeType.getLength() );
+        assertEquals( 1234567890, attributeType.getSyntaxLength() );
 
-        assertTrue( attributeType.isSingleValue() );
+        assertTrue( attributeType.isSingleValued() );
         assertFalse( attributeType.isCollective() );
-        assertFalse( attributeType.isCanUserModify() );
+        assertFalse( attributeType.isUserModifiable() );
         assertEquals( UsageEnum.DSA_OPERATION, attributeType.getUsage() );
 
         assertEquals( 2, attributeType.getExtensions().size() );
@@ -723,17 +723,17 @@ public class AttributeTypeDescriptionSchemaParserTest
         value = "( 1.2.3.4.5.6.7.8.9.0 SYNTAX 1.1 SUP 1.1 )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertNotNull( attributeType.getSyntaxOid() );
-        assertNotNull( attributeType.getSupOid() );
+        assertNotNull( attributeType.getSuperiorOid() );
 
         value = "( 1.2.3.4.5.6.7.8.9.0 SYNTAX 1.1 )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertNotNull( attributeType.getSyntaxOid() );
-        assertNull( attributeType.getSupOid() );
+        assertNull( attributeType.getSuperiorOid() );
 
         value = "( 1.2.3.4.5.6.7.8.9.0 SUP 1.1 )";
         attributeType = parser.parseAttributeTypeDescription( value );
         assertNull( attributeType.getSyntaxOid() );
-        assertNotNull( attributeType.getSupOid() );
+        assertNotNull( attributeType.getSuperiorOid() );
 
         if ( !parser.isQuirksMode() )
         {
@@ -825,17 +825,17 @@ public class AttributeTypeDescriptionSchemaParserTest
 
         value = "( 1.1 SYNTAX 1.1 NO-USER-MODIFICATION USAGE directoryOperation )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertFalse( attributeType.isCanUserModify() );
+        assertFalse( attributeType.isUserModifiable() );
         assertEquals( UsageEnum.DIRECTORY_OPERATION, attributeType.getUsage() );
 
         value = "( 1.1 SYNTAX 1.1 NO-USER-MODIFICATION USAGE dSAOperation )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertFalse( attributeType.isCanUserModify() );
+        assertFalse( attributeType.isUserModifiable() );
         assertEquals( UsageEnum.DSA_OPERATION, attributeType.getUsage() );
 
         value = "( 1.1 SYNTAX 1.1 NO-USER-MODIFICATION USAGE distributedOperation )";
         attributeType = parser.parseAttributeTypeDescription( value );
-        assertFalse( attributeType.isCanUserModify() );
+        assertFalse( attributeType.isUserModifiable() );
         assertEquals( UsageEnum.DISTRIBUTED_OPERATION, attributeType.getUsage() );
 
         if ( !parser.isQuirksMode() )
@@ -881,9 +881,9 @@ public class AttributeTypeDescriptionSchemaParserTest
         assertEquals( "cn", attributeType.getNames().get( 0 ) );
         assertEquals( "commonName", attributeType.getNames().get( 1 ) );
         assertEquals( "RFC2256: common name(s) for which the entity is known by", attributeType.getDescription() );
-        assertEquals( "name", attributeType.getSupOid() );
+        assertEquals( "name", attributeType.getSuperiorOid() );
         assertEquals( "caseIgnoreMatch", attributeType.getEqualityOid() );
-        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstrOid() );
+        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstringOid() );
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", attributeType.getSyntaxOid() );
         assertEquals( UsageEnum.USER_APPLICATIONS, attributeType.getUsage() );
         assertEquals( 0, attributeType.getExtensions().size() );
@@ -905,19 +905,19 @@ public class AttributeTypeDescriptionSchemaParserTest
         assertEquals( "uid", attributeType.getNames().get( 0 ) );
         assertEquals( "userid", attributeType.getNames().get( 1 ) );
         assertEquals( "RFC1274: user identifier", attributeType.getDescription() );
-        assertNull( attributeType.getSupOid() );
+        assertNull( attributeType.getSuperiorOid() );
 
         assertEquals( "caseIgnoreMatch", attributeType.getEqualityOid() );
-        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstrOid() );
+        assertEquals( "caseIgnoreSubstringsMatch", attributeType.getSubstringOid() );
         assertNull( attributeType.getOrderingOid() );
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", attributeType.getSyntaxOid() );
-        assertEquals( 256, attributeType.getLength() );
+        assertEquals( 256, attributeType.getSyntaxLength() );
         assertEquals( UsageEnum.USER_APPLICATIONS, attributeType.getUsage() );
 
         assertFalse( attributeType.isObsolete() );
         assertFalse( attributeType.isCollective() );
-        assertFalse( attributeType.isSingleValue() );
-        assertTrue( attributeType.isCanUserModify() );
+        assertFalse( attributeType.isSingleValued() );
+        assertTrue( attributeType.isUserModifiable() );
 
         assertEquals( 0, attributeType.getExtensions().size() );
     }
@@ -936,8 +936,8 @@ public class AttributeTypeDescriptionSchemaParserTest
         assertEquals( "bogus", desc.getNames().get( 0 ) );
         assertEquals( "bogusName", desc.getNames().get( 1 ) );
         assertEquals( "bogus description", desc.getDescription() );
-        assertEquals( "name", desc.getSupOid() );
-        assertEquals( true, desc.isSingleValue() );
+        assertEquals( "name", desc.getSuperiorOid() );
+        assertEquals( true, desc.isSingleValued() );
     }
 
 
@@ -954,8 +954,8 @@ public class AttributeTypeDescriptionSchemaParserTest
         assertEquals( "bogus", desc.getNames().get( 0 ) );
         assertEquals( "bogusName", desc.getNames().get( 1 ) );
         assertEquals( "bogus description", desc.getDescription() );
-        assertEquals( "name", desc.getSupOid() );
-        assertEquals( true, desc.isSingleValue() );
+        assertEquals( "name", desc.getSuperiorOid() );
+        assertEquals( true, desc.isSingleValued() );
         assertEquals( "blah", desc.getExtensions().get( "X-SCHEMA" ).get( 0 ) );
     }
 
@@ -1030,7 +1030,7 @@ public class AttributeTypeDescriptionSchemaParserTest
             // SUPERTYPE with underscore
             value = "( 1.1 SYNTAX 1.1 SUP te_st )";
             attributeType = parser.parseAttributeTypeDescription( value );
-            assertEquals( "te_st", attributeType.getSupOid() );
+            assertEquals( "te_st", attributeType.getSuperiorOid() );
 
             // EQUALITY with underscore
             value = "( 1.1 SYNTAX 1.1 EQUALITY te_st )";
@@ -1040,7 +1040,7 @@ public class AttributeTypeDescriptionSchemaParserTest
             // SUBSTR with underscore
             value = "( 1.1 SYNTAX 1.1 SUBSTR te_st )";
             attributeType = parser.parseAttributeTypeDescription( value );
-            assertEquals( "te_st", attributeType.getSubstrOid() );
+            assertEquals( "te_st", attributeType.getSubstringOid() );
 
             // ORDERING with underscore
             value = "( 1.1 SYNTAX 1.1 ORDERING te_st )";

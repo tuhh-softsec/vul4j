@@ -501,7 +501,7 @@ public class Registries
 
         try
         {
-            isSuccess &= resolve( at.getSup(), errors );
+            isSuccess &= resolve( at.getSuperior(), errors );
         }
         catch ( Exception e )
         {
@@ -541,9 +541,9 @@ public class Registries
 
         try
         {
-            isSuccess &= resolve( at.getSubstr(), errors );
+            isSuccess &= resolve( at.getSubstring(), errors );
 
-            if ( at.getSubstr() != null )
+            if ( at.getSubstring() != null )
             {
                 hasMatchingRule |= true;
             }

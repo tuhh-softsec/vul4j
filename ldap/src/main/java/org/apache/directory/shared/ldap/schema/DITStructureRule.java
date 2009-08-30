@@ -193,4 +193,13 @@ public class DITStructureRule extends SchemaObject
     {
         throw new NotImplementedException(); 
     }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return DescriptionUtils.getDescription( this );
+    }
 }

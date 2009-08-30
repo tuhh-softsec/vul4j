@@ -152,10 +152,10 @@ public class AttributeType extends SchemaObject
     private MatchingRule equality;
     
     /** The substring OID associated with this AttributeType */
-    private String substrOid;
+    private String substringOid;
 
     /** The substring MatchingRule associated with the substringID */
-    private MatchingRule substr;
+    private MatchingRule substring;
     
     /** The ordering OID associated with this AttributeType */
     private String orderingOid;
@@ -164,13 +164,13 @@ public class AttributeType extends SchemaObject
     private MatchingRule ordering;
     
     /** The superior AttributeType OID */
-    private String supOid;
+    private String superiorOid;
     
     /** The superior AttributeType */
-    private AttributeType sup;
+    private AttributeType superior;
     
     /** whether or not this type is single valued */
-    private boolean isSingleValue = false;
+    private boolean isSingleValued = false;
 
     /** whether or not this type is a collective attribute */
     private boolean isCollective = false;
@@ -182,7 +182,7 @@ public class AttributeType extends SchemaObject
     private UsageEnum usage = UsageEnum.USER_APPLICATIONS;
 
     /** the length of this attribute in bytes */
-    private int length = 0;
+    private int syntaxLength = 0;
     
     /**
      * Creates a AttributeType object using a unique OID.
@@ -207,9 +207,9 @@ public class AttributeType extends SchemaObject
         {
             AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
             
-            if ( supOid != null )
+            if ( superiorOid != null )
             {
-                sup = atRegistry.lookup( supOid );
+                superior = atRegistry.lookup( superiorOid );
             }
             
             MatchingRuleRegistry mrRegistry = registries.getMatchingRuleRegistry();
@@ -224,15 +224,14 @@ public class AttributeType extends SchemaObject
                 ordering = mrRegistry.lookup( orderingOid );
             }
             
-            if ( substrOid != null )
+            if ( substringOid != null )
             {
-                substr = mrRegistry.lookup( substrOid );
+                substring = mrRegistry.lookup( substringOid );
             }
             
             LdapSyntaxRegistry lsRegistry = registries.getLdapSyntaxRegistry();
             
             syntax = lsRegistry.lookup( syntaxOid );
-            
         }
     }
     
@@ -243,22 +242,22 @@ public class AttributeType extends SchemaObject
      * @return true if only one value can exist for this AttributeType, false
      *         otherwise
      */
-    public boolean isSingleValue()
+    public boolean isSingleValued()
     {
-        return isSingleValue;
+        return isSingleValued;
     }
 
 
     /**
-     * Tells if this AttributeType is SIngle Valued or not
+     * Tells if this AttributeType is Single Valued or not
      *
-     * @param singleValue True if the AttributeType is single-vlaued
+     * @param singleValue True if the AttributeType is single-valued
      */
-    public void setSingleValue( boolean singleValue )
+    public void setSingleValued( boolean singleValued )
     {
         if ( !isReadOnly )
         {
-            this.isSingleValue = singleValue;
+            this.isSingleValued = singleValued;
         }
     }
 
@@ -268,7 +267,7 @@ public class AttributeType extends SchemaObject
      * 
      * @return true if users can modify it, false if only the directory can.
      */
-    public boolean isCanUserModify()
+    public boolean isUserModifiable()
     {
         return canUserModify;
     }
@@ -279,7 +278,7 @@ public class AttributeType extends SchemaObject
      *
      * @param canUserModify The flag to set
      */
-    public void setCanUserModify( boolean canUserModify )
+    public void setUserModifiable( boolean canUserModify )
     {
         if ( !isReadOnly )
         {
@@ -349,9 +348,9 @@ public class AttributeType extends SchemaObject
      * 
      * @return the length of the attribute
      */
-    public int getLength()
+    public int getSyntaxLength()
     {
-        return length;
+        return syntaxLength;
     }
     
     
@@ -361,11 +360,11 @@ public class AttributeType extends SchemaObject
      * 
      * @param length the new length to set
      */
-    public void setLength( int length )
+    public void setSyntaxLength( int length )
     {
         if ( !isReadOnly )
         {
-            this.length = length;
+            this.syntaxLength = length;
         }
     }
     
@@ -375,9 +374,9 @@ public class AttributeType extends SchemaObject
      * 
      * @return the superior AttributeType for this AttributeType
      */
-    public AttributeType getSup()
+    public AttributeType getSuperior()
     {
-        return sup;
+        return superior;
     }
 
     
@@ -386,9 +385,27 @@ public class AttributeType extends SchemaObject
      * 
      * @return The OID of the superior AttributeType for this AttributeType.
      */
-    public String getSupOid()
+    public String getSuperiorOid()
     {
-        return supOid;
+        return superiorOid;
+    }
+
+    
+    /**
+     * Gets the Name of the superior AttributeType for this AttributeType.
+     * 
+     * @return The Name of the superior AttributeType for this AttributeType.
+     */
+    public String getSuperiorName()
+    {
+        if ( superior != null )
+        {
+            return superior.getName();
+        }
+        else
+        {
+            return superiorOid;
+        }
     }
 
     
@@ -401,7 +418,7 @@ public class AttributeType extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            this.supOid = superiorOid;
+            this.superiorOid = superiorOid;
         }
     }
     
@@ -415,8 +432,8 @@ public class AttributeType extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            this.sup = superior;
-            this.supOid = superior.getOid();
+            this.superior = superior;
+            this.superiorOid = superior.getOid();
         }
     }
 
@@ -429,6 +446,24 @@ public class AttributeType extends SchemaObject
     public LdapSyntax getSyntax()
     {
         return syntax;
+    }
+
+
+    /**
+     * Gets the Syntax name for this AttributeType's values.
+     * 
+     * @return the value syntax name
+     */
+    public String getSyntaxName()
+    {
+        if ( syntax != null )
+        {
+            return syntax.getName();
+        }
+        else
+        {
+            return null;
+        }
     }
 
 
@@ -495,6 +530,24 @@ public class AttributeType extends SchemaObject
 
 
     /**
+     * Gets the Equality Name for this AttributeType's values.
+     * 
+     * @return the value Equality's Name
+     */
+    public String getEqualityName()
+    {
+        if ( equality != null )
+        {
+            return equality.getName();
+        }
+        else
+        {
+            return equalityOid;
+        }
+    }
+
+
+    /**
      * Sets the Equality OID for this AttributeType
      *
      * @param equalityOid The Equality OID for this AttributeType
@@ -531,6 +584,24 @@ public class AttributeType extends SchemaObject
     public MatchingRule getOrdering()
     {
         return ordering;
+    }
+
+
+    /**
+     * Gets the MatchingRule name for this AttributeType used for Ordering matching.
+     * 
+     * @return the Ordering matching rule name
+     */
+    public String getOrderingName()
+    {
+        if ( ordering != null )
+        {
+            return ordering.getName();
+        }
+        else
+        {
+            return orderingOid;
+        }
     }
 
 
@@ -579,9 +650,27 @@ public class AttributeType extends SchemaObject
      * 
      * @return the Substr matching rule
      */
-    public MatchingRule getSubstr()
+    public MatchingRule getSubstring()
     {
-        return substr;
+        return substring;
+    }
+
+
+    /**
+     * Gets the MatchingRule name for this AttributeType used for Substring matching.
+     * 
+     * @return the Substring matching rule name
+     */
+    public String getSubstringName()
+    {
+        if ( substring != null )
+        {
+            return substring.getName();
+        }
+        else
+        {
+            return substringOid;
+        }
     }
 
 
@@ -590,9 +679,9 @@ public class AttributeType extends SchemaObject
      * 
      * @return the value Substr's OID
      */
-    public String getSubstrOid()
+    public String getSubstringOid()
     {
-        return substrOid;
+        return substringOid;
     }
 
 
@@ -601,11 +690,11 @@ public class AttributeType extends SchemaObject
      *
      * @param substrOid The Substr OID for this AttributeType
      */
-    public void setSubstrOid( String substrOid )
+    public void setSubstringOid( String substrOid )
     {
         if ( !isReadOnly )
         {
-            this.substrOid = substrOid;
+            this.substringOid = substrOid;
         }
     }
     
@@ -613,14 +702,14 @@ public class AttributeType extends SchemaObject
     /**
      * Sets the Substr MR for this AttributeType
      *
-     * @param substr The Substr MR for this AttributeType
+     * @param substring The Substr MR for this AttributeType
      */
-    public void setSubstr( MatchingRule substr )
+    public void setSubstring( MatchingRule substring )
     {
         if ( !isReadOnly )
         {
-            this.substr = substr;
-            this.substrOid = substr.getOid();
+            this.substring = substring;
+            this.substringOid = substring.getOid();
         }
     }
 
@@ -661,8 +750,6 @@ public class AttributeType extends SchemaObject
     }
 
 
-    
-    
     /**
      * Recursive method which checks to see if a descendant is really an ancestor or if the two
      * are equal.
@@ -684,6 +771,15 @@ public class AttributeType extends SchemaObject
             return true;
         }
 
-        return isAncestorOrEqual( ancestor, descendant.getSup() );
+        return isAncestorOrEqual( ancestor, descendant.getSuperior() );
+    }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return DescriptionUtils.getDescription( this );
     }
 }
