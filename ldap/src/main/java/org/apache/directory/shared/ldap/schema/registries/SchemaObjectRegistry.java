@@ -179,6 +179,11 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
             return null;
         }
         
+        if ( ! OID.isOID( oid ) )
+        {
+        	oid = getOidByName( oid );
+        }
+        
         T schemaObject = byOid.get( oid );
 
         if ( schemaObject == null )
