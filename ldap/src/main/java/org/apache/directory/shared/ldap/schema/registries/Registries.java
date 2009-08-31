@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.schema.ObjectClass;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class Registries
+public class Registries implements SchemaLoaderListener
 {
     /**
      * A String name to Schema object map for those schemas loaded into this
@@ -613,6 +613,12 @@ public class Registries
 
         return isSuccess;
     }
+
+
+	public void schemaLoaded( Schema schema ) 
+	{
+		this.loadedSchemas.put( schema.getSchemaName(), schema );
+	}
     
     
     /**
