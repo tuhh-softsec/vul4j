@@ -358,7 +358,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     		}
 
     		// we found the schema object using lower cased name
-			T schemaObject = byName.get( name );
+			T schemaObject = byName.get( lowerCased );
 			
         	// provided name argument has case variance so we add it to 
 			// map in case the same lookup is attempted again in future
