@@ -265,7 +265,14 @@ public class SchemaLdifExtractor
 
         try
         {
-            FileOutputStream out = new FileOutputStream( new File( outputDirectory, resource ) );
+        	File destination = new File( outputDirectory, resource );
+        	
+        	if ( ! destination.getParentFile().exists() )
+        	{
+        		destination.getParentFile().mkdirs();
+        	}
+        	
+            FileOutputStream out = new FileOutputStream( destination );
             try
             {
                 while ( in.available() > 0 )
