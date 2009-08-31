@@ -9,9 +9,6 @@ creatorsname: uid=admin,ou=system
 m-name: dhcpDelayedServiceParameter
 m-oid: 2.16.840.1.113719.1.203.4.36
 m-singlevalue: TRUE
-m-description:: RGVsYXkgaW4gc2Vjb25kcyBjb3JyZXNwb25kaW5nIHRvIERlbGF5ZWQgU2Vydmlj
- ZSBQYXJhbWV0ZXIgY29uZmlndXJhdGlvbiwgYXMgZGVmaW5lZCBpbiAgREhDIExvYWQgQmFsYW5jaW5
- nIEFsZ29yaXRobSBbUkZDIDMwNzRdLiA=
 entryuuid:: bu+/vULvv73vv73vv71OYu+/vRNx77+977+9WDRl
 m-collective: FALSE
 m-obsolete: FALSE
