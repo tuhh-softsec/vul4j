@@ -20,13 +20,12 @@
 package org.apache.directory.server.schema.loader.ldif;
 
 
-import junit.framework.TestCase;
-
 import java.io.File;
 
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
+import org.junit.Test;
 
 
 /**
@@ -35,9 +34,10 @@ import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public class LdifSchemaLoaderTest extends TestCase
+public class LdifSchemaLoaderTest
 {
-    public static void testLoader() throws Exception
+    @Test
+    public void testLoader() throws Exception
     {
         File workingDirectory = new File( System.getProperty( "workingDirectory" ) );
         SchemaLdifExtractor extractor = new SchemaLdifExtractor( workingDirectory );

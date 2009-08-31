@@ -151,15 +151,20 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
         if ( ! baseDirectory.exists() )
         {
-            throw new IllegalArgumentException( "Provided baseDirectory '" +
-                    baseDirectory.getAbsolutePath() + "' does not exist." );
+            String msg = "Provided baseDirectory '" +
+                baseDirectory.getAbsolutePath() + "' does not exist.";
+            LOG.error( msg );
+            throw new IllegalArgumentException( msg );
         }
 
         File schemaLdif = new File( baseDirectory, OU_SCHEMA_LDIF );
+        
         if ( ! schemaLdif.exists() )
         {
-            throw new FileNotFoundException( "Expecting to find a schema.ldif file in provided baseDirectory " +
-                    "path '" + baseDirectory.getAbsolutePath() + "' but no such file found." );
+            String msg = "Expecting to find a schema.ldif file in provided baseDirectory path '" +
+                baseDirectory.getAbsolutePath() + "' but no such file found.";
+            LOG.error( msg );
+            throw new FileNotFoundException( msg );
         }
 
         if ( IS_DEBUG )
@@ -187,11 +192,11 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         File schemaDirectory = new File( baseDirectory, "schema" );
         String[] ldifFiles = schemaDirectory.list( ldifFilter );
 
-        for ( int ii = 0; ii < ldifFiles.length; ii++ )
+        for ( String ldifFile : ldifFiles )
         {
             try
             {
-                LdifReader reader = new LdifReader( new File( schemaDirectory, ldifFiles[ii] ) );
+                LdifReader reader = new LdifReader( new File( schemaDirectory, ldifFile ) );
                 LdifEntry entry = reader.next();
                 Schema schema = factory.getSchema( entry.getEntry() );
                 schemaMap.put( schema.getSchemaName(), schema );
@@ -203,7 +208,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             }
             catch ( Exception e )
             {
-                LOG.error( "Failed to load schema LDIF file " + ldifFiles[ii], e );
+                LOG.error( "Failed to load schema LDIF file " + ldifFile, e );
                 throw e;
             }
         }
