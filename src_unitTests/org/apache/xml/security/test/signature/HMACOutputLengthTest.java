@@ -71,7 +71,7 @@ public class HMACOutputLengthTest extends TestCase {
             validate("signature-enveloping-hmac-sha1-trunclen-0-attack.xml");
             fail("Expected HMACOutputLength exception");
         } catch (XMLSignatureException xse) {
-            System.out.println(xse.getMessage());
+            // System.out.println(xse.getMessage());
             if (xse.getMsgID().equals("algorithms.HMACOutputLengthMin")) {
                 // pass
             } else {
@@ -83,7 +83,7 @@ public class HMACOutputLengthTest extends TestCase {
         try {
             validate("signature-enveloping-hmac-sha1-trunclen-8-attack.xml");
         } catch (XMLSignatureException xse) {
-            System.out.println(xse.getMessage());
+            // System.out.println(xse.getMessage());
             if (xse.getMsgID().equals("algorithms.HMACOutputLengthMin")) {
                 // pass
             } else {
@@ -93,7 +93,7 @@ public class HMACOutputLengthTest extends TestCase {
     }
 
     private static void validate(String data) throws Exception {
-        System.out.println("Validating " + data);
+        // System.out.println("Validating " + data);
         File file = new File(BASEDIR + SEP + "data" + SEP + "javax" + SEP + "xml" + SEP + "crypto" + SEP + "dsig" + SEP, data);
 
         Document doc = dbf.newDocumentBuilder().parse(file);
@@ -111,7 +111,7 @@ public class HMACOutputLengthTest extends TestCase {
     }
 
     public void test_generate_hmac_sha1_40() throws Exception {
-        System.out.println("Generating ");
+        // System.out.println("Generating ");
 
         Document doc = dbf.newDocumentBuilder().newDocument();
         XMLSignature sig = new XMLSignature
@@ -121,7 +121,7 @@ public class HMACOutputLengthTest extends TestCase {
             sig.sign(getSecretKey("secret".getBytes("ASCII")));
             fail("Expected HMACOutputLength Exception");
         } catch (XMLSignatureException xse) {
-            System.out.println(xse.getMessage());
+            // System.out.println(xse.getMessage());
             if (xse.getMsgID().equals("algorithms.HMACOutputLengthMin")) {
                 // pass
             } else {

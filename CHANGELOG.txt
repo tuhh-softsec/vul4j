@@ -1,4 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
+New in v1.4.4-SNAPSHOT
+    Fixed Bug 47762: contextChild parameter of Transform.getInstance may be null 
 New in v1.4.3
     Fixed Bug 47526: XML signature HMAC truncation authentication bypass
     Fixed Bug 47525: Fix checkstyle problems with source and tests.

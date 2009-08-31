@@ -173,11 +173,15 @@ public final class Transform extends SignatureElementProxy {
         Document doc, String algorithmURI, Element contextChild)
         throws InvalidTransformException {
 
-        HelperNodeList contextNodes = new HelperNodeList();
-
-        XMLUtils.addReturnToElement(doc, contextNodes);
-        contextNodes.appendChild(contextChild);
-        XMLUtils.addReturnToElement(doc, contextNodes);
+        HelperNodeList contextNodes = null;
+        
+        if (contextChild != null) {
+            contextNodes = new HelperNodeList();
+    
+            XMLUtils.addReturnToElement(doc, contextNodes);
+            contextNodes.appendChild(contextChild);
+            XMLUtils.addReturnToElement(doc, contextNodes);
+        }
 
         return getInstance(doc, algorithmURI, contextNodes);
     }
