@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Stack;
 
 import javax.naming.NamingException;
@@ -88,6 +87,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     public final void loadAllEnabled( Registries registries ) throws Exception
     {
         Map<String,Schema> notloaded = new HashMap<String,Schema>( schemaMap );
+        
         for ( String schemaName : schemaMap.keySet() )
         {
             if ( registries.isSchemaLoaded( schemaName ) )

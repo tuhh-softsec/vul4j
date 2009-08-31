@@ -83,57 +83,55 @@ public class DescriptionUtils
         buf.append( attributeType.getOid() );
         buf.append( '\n' );
 
-        if ( attributeType.getName() != null )
+        if ( attributeType.getNames() != null )
         {
-            buf.append( "NAME " );
-            buf.append( attributeType.getName() );
-            buf.append( '\n' );
+            buf.append( " NAME " );
+            getQDescrs( buf, attributeType.getNames() );
         }
 
         if ( attributeType.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( attributeType.getDescription() );
             buf.append( '\n' );
         }
 
         if ( attributeType.isObsolete() )
         {
-            buf.append( "OBSOLETE" );
-            buf.append( '\n' );
+            buf.append( " OBSOLETE\n" );
         }
 
         if ( attributeType.getSuperior() != null )
         {
-            buf.append(  "SUP " );
+            buf.append(  " SUP " );
             buf.append( attributeType.getSuperiorName() );
             buf.append( '\n' );
         }
 
         if ( attributeType.getEquality() != null )
         {
-            buf.append( "EQUALITY " );
+            buf.append( " EQUALITY " );
             buf.append( attributeType.getEqualityName() );
             buf.append( '\n' );
         }
 
         if ( attributeType.getOrdering() != null )
         {
-            buf.append( "ORDERING " );
+            buf.append( " ORDERING " );
             buf.append( attributeType.getOrderingName() );
             buf.append( '\n' );
         }
 
         if ( attributeType.getSubstring() != null )
         {
-            buf.append( "SUBSTR " );
+            buf.append( " SUBSTR " );
             buf.append( attributeType.getSubstringName() );
             buf.append( '\n' );
         }
 
         if ( attributeType.getSyntax() != null )
         {
-            buf.append( "SYNTAX " );
+            buf.append( " SYNTAX " );
             
             buf.append( attributeType.getSyntaxName() );
 
@@ -147,23 +145,20 @@ public class DescriptionUtils
 
         if ( attributeType.isSingleValued() )
         {
-            buf.append( "SINGLE-VALUE" );
-            buf.append( '\n' );
+            buf.append( " SINGLE-VALUE\n" );
         }
 
         if ( attributeType.isCollective() )
         {
-            buf.append( "COLLECTIVE" );
-            buf.append( '\n' );
+            buf.append( " COLLECTIVE\n" );
         }
 
         if ( attributeType.isUserModifiable() )
         {
-            buf.append( "NO-USER-MODIFICATION" );
-            buf.append( '\n' );
+            buf.append( " NO-USER-MODIFICATION\n" );
         }
 
-        buf.append( "USAGE " );
+        buf.append( " USAGE " );
         buf.append( UsageEnum.render( attributeType.getUsage() ) );
         buf.append( '\n' );
         
@@ -208,24 +203,23 @@ public class DescriptionUtils
         buf.append( dITContentRule.getOid() );
         buf.append( '\n' );
 
-        if ( dITContentRule.getName() != null )
+        if ( dITContentRule.getNames() != null )
         {
-            buf.append( "NAME " );
-            buf.append( dITContentRule.getName() );
+            buf.append( " NAME " );
+            getQDescrs( buf, dITContentRule.getNames() );
             buf.append( '\n' );
         }
 
         if ( dITContentRule.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( dITContentRule.getDescription() );
             buf.append( '\n' );
         }
 
         if ( dITContentRule.isObsolete() )
         {
-            buf.append( "OBSOLETE" );
-            buf.append( '\n' );
+            buf.append( " OBSOLETE\n" );
         }
 
         // print out all the auxiliary object class oids
@@ -233,7 +227,7 @@ public class DescriptionUtils
         
         if ( ( aux != null ) && ( aux.size() > 0 ) )
         {
-            buf.append( "AUX " );
+            buf.append( " AUX " );
             getQDStrings( buf, aux );
         }
 
@@ -241,7 +235,7 @@ public class DescriptionUtils
         
         if ( ( must != null ) && ( must.size() > 0 ) )
         {
-            buf.append( "MUST " );
+            buf.append( " MUST " );
             getQDStrings( buf, must );
         }
 
@@ -249,7 +243,7 @@ public class DescriptionUtils
         
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
-            buf.append( "MAY " );
+            buf.append( " MAY " );
             getQDStrings( buf, may );
         }
 
@@ -257,7 +251,7 @@ public class DescriptionUtils
         
         if ( ( not != null ) && ( not.size() > 0 ) )
         {
-            buf.append( "NOT " );
+            buf.append( " NOT " );
             getQDStrings( buf, not );
         }
 
@@ -299,27 +293,25 @@ public class DescriptionUtils
         buf.append( matchingRule.getOid() );
         buf.append( '\n' );
 
-        if ( matchingRule.getName() != null )
+        if ( matchingRule.getNames() != null )
         {
-            buf.append( "NAME " );
-            buf.append( matchingRule.getName() );
-            buf.append( '\n' );
+            buf.append( " NAME " );
+            getQDescrs( buf, matchingRule.getNames() );
         }
 
         if ( matchingRule.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( matchingRule.getDescription() );
             buf.append( '\n' );
         }
 
         if ( matchingRule.isObsolete() )
         {
-            buf.append( "OBSOLETE" );
-            buf.append( '\n' );
+            buf.append( " OBSOLETE\n" );
         }
 
-        buf.append( "SYNTAX " );
+        buf.append( " SYNTAX " );
         buf.append( matchingRule.getSyntaxOid() );
         buf.append( '\n' ); 
         
@@ -370,24 +362,22 @@ public class DescriptionUtils
         buf.append( matchingRuleUse.getOid() );
         buf.append( '\n' );
 
-        buf.append( "NAME " );
-        buf.append( matchingRuleUse.getName() );
-        buf.append( '\n' );
+        buf.append( " NAME " );
+        getQDescrs( buf, matchingRuleUse.getNames() );
 
         if ( matchingRuleUse.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( matchingRuleUse.getDescription() );
             buf.append( '\n' );
         }
 
         if ( matchingRuleUse.isObsolete() )
         {
-            buf.append( "OBSOLETE" );
-            buf.append( '\n' );
+            buf.append( " OBSOLETE\n" );
         }
 
-        buf.append( "APPLIES " );
+        buf.append( " APPLIES " );
         List<AttributeType> attributeTypes = matchingRuleUse.getApplicableAttributes();
         
         if ( attributeTypes.size() == 1 )
@@ -457,31 +447,29 @@ public class DescriptionUtils
         buf.append( nameForm.getOid() );
         buf.append( '\n' );
 
-        if ( nameForm.getName() != null )
+        if ( nameForm.getNames() != null )
         {
-            buf.append( "NAME " );
-            buf.append( nameForm.getName() );
-            buf.append( '\n' );
+            buf.append( " NAME " );
+            getQDescrs( buf, nameForm.getNames() );
         }
 
         if ( nameForm.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( nameForm.getDescription() );
             buf.append( '\n' );
         }
 
         if ( nameForm.isObsolete() )
         {
-            buf.append( "OBSOLETE" );
-            buf.append( '\n' );
+            buf.append( " OBSOLETE\n" );
         }
 
-        buf.append( "OC " );
+        buf.append( " OC " );
         buf.append( nameForm.getStructuralObjectClassOid() );
         buf.append( '\n' );
 
-        buf.append( "MUST\n" );
+        buf.append( " MUST\n" );
         List<AttributeType> must = nameForm.getMustAttributeTypes();
 
         getQDStrings( buf, must );
@@ -490,7 +478,7 @@ public class DescriptionUtils
 
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
-            buf.append( "MAY\n" );
+            buf.append( " MAY\n" );
             getQDStrings( buf, may );
         }
 
@@ -534,36 +522,35 @@ public class DescriptionUtils
         buf.append( objectClass.getOid() );
         buf.append( '\n' );
 
-        if ( objectClass.getName() != null )
+        if ( objectClass.getNames() != null )
         {
-            buf.append( "NAME " );
-            buf.append( objectClass.getName() );
-            buf.append( '\n' );
+            buf.append( " NAME " );
+            getQDescrs( buf, objectClass.getNames() );
         }
 
         if ( objectClass.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( objectClass.getDescription() );
             buf.append( '\n' );
         }
 
         if ( objectClass.isObsolete() )
         {
-            buf.append( "OBSOLETE" );
-            buf.append( '\n' );
+            buf.append( " OBSOLETE\n" );
         }
 
         List<ObjectClass> sups = objectClass.getSuperiors();
 
         if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
-            buf.append( "SUP\n" );
+            buf.append( " SUP\n" );
             getQDStrings( buf, sups );
         }
 
         if ( objectClass.getType() != null )
         {
+            buf.append( ' ' );
             buf.append( objectClass.getType() );
             buf.append( '\n' );
         }
@@ -572,7 +559,7 @@ public class DescriptionUtils
         
         if ( ( must != null ) && ( must.size() > 0 ) )
         {
-            buf.append( "MUST\n" );
+            buf.append( " MUST\n" );
             getQDStrings( buf, must );
         }
 
@@ -580,7 +567,7 @@ public class DescriptionUtils
         
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
-            buf.append( "MAY\n" );
+            buf.append( " MAY\n" );
             getQDStrings( buf, may );
         }
 
@@ -622,27 +609,25 @@ public class DescriptionUtils
         buf.append( dITStructureRule.getOid() );
         buf.append( '\n' );
 
-        if ( dITStructureRule.getName() != null )
+        if ( dITStructureRule.getNames() != null )
         {
-            buf.append( "NAME " );
-            buf.append( dITStructureRule.getName() );
-            buf.append( '\n' );
+            buf.append( " NAME " );
+            getQDescrs( buf, dITStructureRule.getNames() );
         }
 
         if ( dITStructureRule.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( dITStructureRule.getDescription() );
             buf.append( '\n' );
         }
 
         if ( dITStructureRule.isObsolete() )
         {
-            buf.append( "OBSOLETE" );
-            buf.append( '\n' );
+            buf.append( " OBSOLETE\n" );
         }
 
-        buf.append( "FORM " );
+        buf.append( " FORM " );
         buf.append( dITStructureRule.getForm() );
         buf.append( '\n' );
 
@@ -651,7 +636,7 @@ public class DescriptionUtils
         
         if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
-            buf.append( "SUP\n" );
+            buf.append( " SUP\n" );
             
             if ( sups.size() == 1 )
             {
@@ -714,7 +699,7 @@ public class DescriptionUtils
 
         if ( syntax.getDescription() != null )
         {
-            buf.append( "DESC " );
+            buf.append( " DESC " );
             buf.append( syntax.getDescription() );
             buf.append( '\n' );
         }
@@ -777,7 +762,7 @@ public class DescriptionUtils
         {
             if ( schemaObjects.size() == 1 )
             {
-                sb.append( schemaObjects.get( 0 ).getName() );
+                sb.append( '\'' ).append( schemaObjects.get( 0 ).getName() ).append( '\'' );
             }
             else
             {
@@ -795,7 +780,42 @@ public class DescriptionUtils
                         sb.append( " " );
                     }
                     
-                    sb.append( schemaObject.getName() );
+                    sb.append( '\'' ).append( schemaObject.getName() ).append( '\'' );
+                }
+                
+                sb.append( " )" );
+            }
+        }
+        
+        sb.append(  '\n' );
+    }
+
+    
+    private static void getQDescrs( StringBuilder sb, List<String> names )
+    {
+        if ( ( names != null ) && ( names.size() != 0 ) ) 
+        {
+            if ( names.size() == 1 )
+            {
+                sb.append( '\'' ).append( names.get( 0 ) ).append( '\'' );
+            }
+            else
+            {
+                boolean isFirst = true;
+                sb.append( "( " );
+                
+                for ( String name : names )
+                {
+                    if ( isFirst )
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        sb.append( " " );
+                    }
+                    
+                    sb.append( '\'' ).append( name ).append( '\'' );
                 }
                 
                 sb.append( " )" );

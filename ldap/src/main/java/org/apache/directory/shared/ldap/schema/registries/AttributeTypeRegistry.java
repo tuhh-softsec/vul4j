@@ -190,12 +190,14 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      * @param numericOid the numeric identifier
      * @throws NamingException if the numeric identifier is invalid
      */
-    public void unregister( String numericOid ) throws NamingException
+    public AttributeType unregister( String numericOid ) throws NamingException
     {
-        super.unregister( numericOid );
+        AttributeType removed = super.unregister( numericOid );
 
-        removeMappingFor( oidRegistry.getSchemaObject( numericOid ) );
+        removeMappingFor( removed );
         oidToDescendantSet.remove( numericOid );
+        
+        return removed;
     }
 
     

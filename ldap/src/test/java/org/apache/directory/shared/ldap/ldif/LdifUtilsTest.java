@@ -372,13 +372,6 @@ public class LdifUtilsTest
     @Test
     public void testConvertAttributesfromLdif() throws NamingException
     {
-        String expected = 
-            "sn: test\n" +
-            "cn: Saarbrucke\n n\n" +
-            "objectClass: to\n p\n" +
-            "objectClass: pe\n rson\n" +
-            "objectClass: in\n etorgPerson\n\n";
-        
         Attributes attributes = new BasicAttributes( true );
         
         Attribute oc = new BasicAttribute( "objectclass" );

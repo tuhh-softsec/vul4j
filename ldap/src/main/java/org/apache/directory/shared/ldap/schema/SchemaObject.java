@@ -23,8 +23,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.directory.shared.ldap.util.StringTools;
 
@@ -211,11 +213,26 @@ public class SchemaObject implements Serializable
     {
         if ( ! isReadOnly )
         {
+            // We must avoid duplicated names, as names are case insensitive
+            Set<String> lowerNames = new HashSet<String>();
+            
+            // Fills a set with all the existing names
+            for ( String name : this.names )
+            {
+                lowerNames.add( StringTools.toLowerCase( name ) );
+            }
+            
             for ( String name : names )
             {
             	if ( name != null )
             	{
-            		this.names.add( name );
+            	    String lowerName = StringTools.toLowerCase( name );
+            	    // Check that the lower cased names is not already present
+            	    if ( ! lowerNames.contains( lowerName ) )
+            	    {
+            	        this.names.add( name );
+            	        lowerNames.add( lowerName );
+            	    }
             	}
             }
         }

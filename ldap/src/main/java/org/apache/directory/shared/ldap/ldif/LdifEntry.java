@@ -45,6 +45,7 @@ import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.util.DNUtils;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -632,65 +633,18 @@ public class LdifEntry implements Cloneable, Externalizable
 
     
     /**
-     * @return a String representing the Entry
+     * @return a String representing the Entry, as a LDIF 
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
-        sb.append( "Entry : " );
-        
-        if ( entry.getDn() == null )
+        try
         {
-            sb.append( "" );
+            return LdifUtils.convertToLdif( this );
         }
-        else
+        catch ( NamingException ne )
         {
-            sb.append( entry.getDn().getUpName() ).append( '\n' );
+            return null;
         }
-        
-        sb.append( '\n' );
-
-        if ( control != null )
-        {
-            sb.append( "    Control : " ).append(  control ).append( '\n' );
-        }
-        
-        switch ( changeType )
-        {
-            case Add :
-                sb.append( "    Change type is ADD\n" );
-                sb.append( "        Attributes : \n" );
-                sb.append( dumpAttributes() );
-                break;
-                
-            case Modify :
-                sb.append( "    Change type is MODIFY\n" );
-                sb.append( "        Modifications : \n" );
-                sb.append( dumpModificationItems() );
-                break;
-                
-            case Delete :
-                sb.append( "    Change type is DELETE\n" );
-                break;
-                
-            case ModDn :
-            case ModRdn :
-                sb.append( "    Change type is ").append( changeType == ChangeType.ModDn ? "MODDN\n" : "MODRDN\n" );
-                sb.append( "    Delete old RDN : " ).append( deleteOldRdn ? "true\n" : "false\n" );
-                sb.append( "    New RDN : " ).append( newRdn ).append( '\n' );
-                
-                if ( !StringTools.isEmpty( newSuperior ) )
-                {
-                    sb.append( "    New superior : " ).append( newSuperior ).append( '\n' );
-                }
-
-                break;
-                
-            default :
-                break; // Do nothing
-        }
-        
-        return sb.toString();
     }
     
     
