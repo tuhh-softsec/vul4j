@@ -21,12 +21,28 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 /**
- * A listener to the schema loader for events like a new schema being loaded.
+ * A listener interface used by schema loaders and the schema subsystem of 
+ * Apache Directory Server to notify the registry of events like a new schema 
+ * being loaded or unloaded.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
 public interface SchemaLoaderListener
 {
+	/**
+	 * Listener method called to indicate a loader or other agent finished 
+	 * loading the schema objects for a schema into the Registries.
+	 * 
+	 * @param schema the Schema that was loaded
+	 */
     void schemaLoaded( Schema schema );
+    
+    /**
+     * Listener method called to indicate an agent finished loading the schema
+     * objects for a schema into the Registries.
+     * 
+     * @param schema the Schema that was unloaded
+     */
+    void schemaUnloaded( Schema schema );
 }

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -615,28 +616,37 @@ public class Registries implements SchemaLoaderListener
     }
 
 
+    /**
+     * Merely adds the schema to the set of loaded schemas.  Does not
+     * actually do any work to add schema objects to registries.
+     * 
+     * {@inheritDoc}
+     */
 	public void schemaLoaded( Schema schema ) 
 	{
 		this.loadedSchemas.put( schema.getSchemaName(), schema );
 	}
-    
-    
+
+
     /**
-     * Removes a schema from the loaded set without unloading the schema.
-     * This should be used ONLY when an enabled schema is deleted.
+     * Merely removes the schema from the set of loaded schemas.  Does not
+     * actually do any work to remove schema objects from registries.
      * 
-     * @param schemaName the name of the schema to remove
+     * {@inheritDoc}
      */
-    //void removeFromLoadedSet( String schemaName );
-    
-    /**
-     * Adds a schema to the loaded set but does not load the schema in 
-     * question.  This may be a temporary fix for new schemas being added
-     * which are enabled yet do not have any schema entities associated 
-     * with them to load.  In this case all objects added under this 
-     * schema will load when added instead of in bulk.
-     * 
-     * @param schema the schema object to add to the loaded set.
-     */
-    //void addToLoadedSet( Schema schema );
+	public void schemaUnloaded(Schema schema) 
+	{
+		this.loadedSchemas.remove( schema.getSchemaName() );
+	}
+
+
+	/**
+	 * Gets an unmodifiable Map of schema names to loaded Schema objects. 
+	 * 
+	 * @return the map of loaded Schema objects
+	 */
+	public Map<String, Schema> getLoadedSchemas() 
+	{
+		return Collections.unmodifiableMap( loadedSchemas );
+	}
 }
