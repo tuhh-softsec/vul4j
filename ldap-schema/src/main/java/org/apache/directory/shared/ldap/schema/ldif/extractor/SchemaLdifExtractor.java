@@ -234,7 +234,7 @@ public class SchemaLdifExtractor
      * @return the URL to the resource in the Jar file
      * @throws IOException if there is an IO error
      */
-    static URL getUniqueResource( String resourceName, String resourceDescription )
+    public static URL getUniqueResource( String resourceName, String resourceDescription )
             throws IOException
     {
         Enumeration<URL> resources = SchemaLdifExtractor.class.getClassLoader().getResources( resourceName );

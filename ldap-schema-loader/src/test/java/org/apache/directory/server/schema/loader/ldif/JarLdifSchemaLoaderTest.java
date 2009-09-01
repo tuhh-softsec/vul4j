@@ -20,11 +20,8 @@
 package org.apache.directory.server.schema.loader.ldif;
 
 
-import java.io.File;
-
-import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
+import org.apache.directory.shared.schema.loader.ldif.JarLdifSchemaLoader;
 import org.junit.Test;
 
 
@@ -34,17 +31,13 @@ import org.junit.Test;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public class LdifSchemaLoaderTest
+public class JarLdifSchemaLoaderTest
 {
     @Test
-    public void testLoader() throws Exception
+    public void testJarLdifSchemaLoader() throws Exception
     {
-//        File workingDirectory = new File( System.getProperty( "workingDirectory" ) );
-//        SchemaLdifExtractor extractor = new SchemaLdifExtractor( workingDirectory );
-//        extractor.extractOrCopy();
-//        
-//        LdifSchemaLoader loader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
-//        Registries registries = new Registries();
-//        loader.loadAllEnabled( registries );
+        Registries registries = new Registries();
+        JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
+        loader.loadWithDependencies( loader.getSchema( "apachemeta" ), registries );
     }
 }

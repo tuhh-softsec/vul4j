@@ -33,33 +33,27 @@ import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.ResourceMap;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.AcceptAllSyntaxChecker;
-import org.apache.directory.shared.ldap.util.DateUtils;
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
-import org.apache.directory.shared.ldap.ldif.LdifUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-import javax.naming.NamingException;
+import java.util.regex.Pattern;
 
 
 /**
@@ -69,16 +63,13 @@ import javax.naming.NamingException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
  */
-public class LdifSchemaLoader extends AbstractSchemaLoader
+public class JarLdifSchemaLoader extends AbstractSchemaLoader
 {
     /** ldif file extension used */
     private static final String LDIF_EXT = "ldif";
     
-    /** ou=schema LDIF file name */
-    private static final String OU_SCHEMA_LDIF = "schema." + LDIF_EXT;
-    
     /** static class logger */
-    private static final Logger LOG = LoggerFactory.getLogger( LdifSchemaLoader.class );
+    private static final Logger LOG = LoggerFactory.getLogger( JarLdifSchemaLoader.class );
 
     /** Speedup for DEBUG mode */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
@@ -116,65 +107,29 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     /** name of the directory containing matchingRuleUses */
     private static final String MATCHING_RULE_USES_DIRNAME = "matchingRuleUse";
 
-    /**
-     * the administrator DN - very ADS specific but we need some DN here for
-     * the modifiers name when the system modifies by itself enabled and 
-     * disabled schemas in the repository.
-     */
-    private static final String ADMIN_SYSTEM_DN = "uid=admin,ou=system";
-
     /** the factory that generates respective SchemaObjects from LDIF entries */
     private final SchemaEntityFactory factory = new SchemaEntityFactory();
     
-    /** directory containing the schema LDIF file for ou=schema */
-    private final File baseDirectory;
+    /** a map of all the resources in this jar */
+    private static final Map<String,Boolean> RESOURCE_MAP = ResourceMap.getResources( Pattern.compile( ".*schema/schema.*" ) );
+
     
-    /** a filter for listing all the LDIF files within a directory */
-    private final FilenameFilter ldifFilter = new FilenameFilter()
-    {
-        public boolean accept( File file, String name )
-        {
-            return name.endsWith( LDIF_EXT );
-        }
-    };
-
-
     /**
      * Creates a new LDIF based SchemaLoader. The constructor checks to make
      * sure the supplied base directory exists and contains a schema.ldif file
      * and if not complains about it.
      *
-     * @param baseDirectory the schema LDIF base directory
+     * @param baseDirectory the schema LDIF base URL
      * @throws Exception if the base directory does not exist or does not
      * a valid schema.ldif file
      */
-    public LdifSchemaLoader( File baseDirectory ) throws Exception
+    public JarLdifSchemaLoader() throws Exception
     {
-        this.baseDirectory = baseDirectory;
-
-        if ( ! baseDirectory.exists() )
+        for ( String url : RESOURCE_MAP.keySet() )
         {
-            String msg = "Provided baseDirectory '" +
-                baseDirectory.getAbsolutePath() + "' does not exist.";
-            LOG.error( msg );
-            throw new IllegalArgumentException( msg );
+            System.out.println( url );
         }
 
-        File schemaLdif = new File( baseDirectory, OU_SCHEMA_LDIF );
-        
-        if ( ! schemaLdif.exists() )
-        {
-            String msg = "Expecting to find a schema.ldif file in provided baseDirectory path '" +
-                baseDirectory.getAbsolutePath() + "' but no such file found.";
-            LOG.error( msg );
-            throw new FileNotFoundException( msg );
-        }
-
-        if ( IS_DEBUG )
-        {
-            LOG.debug( "Using '{}' as the base schema load directory.", baseDirectory );
-        }
-        
         initializeSchemas();
     }
 
@@ -192,27 +147,32 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LOG.debug( "Initializing schema" );
         }
         
-        File schemaDirectory = new File( baseDirectory, "schema" );
-        String[] ldifFiles = schemaDirectory.list( ldifFilter );
-
-        for ( String ldifFile : ldifFiles )
+        for ( String file : RESOURCE_MAP.keySet() )
         {
-            try
+            Pattern pat = Pattern.compile( "schema/schema/[a-z]*/" );
+            if ( pat.matcher( file ).matches() )
             {
-                LdifReader reader = new LdifReader( new File( schemaDirectory, ldifFile ) );
-                LdifEntry entry = reader.next();
-                Schema schema = factory.getSchema( entry.getEntry() );
-                schemaMap.put( schema.getSchemaName(), schema );
-                
-                if ( IS_DEBUG )
+                String[] split = file.split( "/" );
+                String schemaName = split[split.length-1];
+                String resourcePath = "schema/schema/" + schemaName + "." + LDIF_EXT;
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema ldif file" );
+                try
                 {
-                    LOG.debug( "Schema Initialized ... \n{}", schema );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    Schema schema = factory.getSchema( entry.getEntry() );
+                    schemaMap.put( schema.getSchemaName(), schema );
+                    
+                    if ( IS_DEBUG )
+                    {
+                        LOG.debug( "Schema Initialized ... \n{}", schema );
+                    }
                 }
-            }
-            catch ( Exception e )
-            {
-                LOG.error( "Failed to load schema LDIF file " + ldifFile, e );
-                throw e;
+                catch ( Exception e )
+                {
+                    LOG.error( "Failed to load schema LDIF file " + file, e );
+                    throw e;
+                }
             }
         }
     }
@@ -257,7 +217,15 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     {
         Stack<String> beenthere = new Stack<String>();
         Map<String,Schema> notLoaded = new HashMap<String,Schema>();
-        notLoaded.put( schema.getSchemaName(), schema );
+        
+        for ( Schema candidate : schemaMap.values() )
+        {
+            if ( ! registries.isSchemaLoaded( candidate.getSchemaName() ) )
+            {
+                notLoaded.put( candidate.getSchemaName(), candidate );
+            }
+        }
+        
         super.loadDepsFirst( schema, beenthere, notLoaded, schema, registries );
     }
 
@@ -274,10 +242,11 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     public void load( Schema schema, Registries registries, boolean isDepLoad ) throws Exception
     {
         // if we're loading a dependency and it has not been enabled on 
-        // disk then enable it on disk before we proceed to load it
+        // disk then we cannot enable on disk from within a jar.  So the
+        // enableSchema method just marks the Schema as enabled.
         if ( schema.isDisabled() && isDepLoad )
         {
-            enableSchema( schema );
+            schema.enable();
         }
         
         if ( registries.isSchemaLoaded( schema.getSchemaName() ) )
@@ -306,78 +275,14 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
     
     /**
-     * Utility method used to enable a specific schema on disk in the LDIF
-     * based schema repository.  This method will remove the m-disabled AT
-     * in the schema file and update the modifiersName and modifyTimestamp.
-     * 
-     * The modifiersName and modifyTimestamp on the schema.ldif file will
-     * also be updated to indicate a change to the schema.
+     * Utility method to get the path for a schema directory.
      *
-     * @param schema the disabled schema to enable
-     * @throws Exception if there are problems writing changes back to disk
+     * @param schema the schema to get the path for
+     * @return the path for the specific schema directory
      */
-    private void enableSchema( Schema schema ) throws Exception
+    private final String getSchemaDirectory( Schema schema )
     {
-        // -------------------------------------------------------------------
-        // Modifying the foo schema foo.ldif file to be enabled but still
-        // have to now update the timestamps and update the modifiersName
-        // -------------------------------------------------------------------
-        
-        File schemaLdifFile = new File( new File( baseDirectory, "schema" ), 
-            schema.getSchemaName() + "." + LDIF_EXT );
-        LdifReader reader = new LdifReader( schemaLdifFile );
-        LdifEntry ldifEntry = reader.next();
-        Entry entry = ldifEntry.getEntry();
-        
-        entry.removeAttributes( "changeType" );
-        entry.removeAttributes( SchemaConstants.MODIFIERS_NAME_AT );
-        entry.removeAttributes( SchemaConstants.MODIFY_TIMESTAMP_AT );
-        entry.removeAttributes( MetaSchemaConstants.M_DISABLED_AT );
-        
-        entry.add( SchemaConstants.MODIFIERS_NAME_AT, ADMIN_SYSTEM_DN );
-        entry.add( SchemaConstants.MODIFY_TIMESTAMP_AT, 
-            DateUtils.getGeneralizedTime() );
-        
-        FileWriter out = new FileWriter( schemaLdifFile );
-        out.write( LdifUtils.convertEntryToLdif( entry ) );
-        out.flush();
-        out.close();
-        
-        // -------------------------------------------------------------------
-        // Now we need to update the timestamp on the schema.ldif file which
-        // shows that something changed below the schema directory in schema
-        // -------------------------------------------------------------------
-        
-        schemaLdifFile = new File( baseDirectory, "schema." + LDIF_EXT );
-        reader = new LdifReader( schemaLdifFile );
-        ldifEntry = reader.next();
-        entry = ldifEntry.getEntry();
-        
-        entry.removeAttributes( "changeType" );
-        entry.removeAttributes( SchemaConstants.MODIFIERS_NAME_AT );
-        entry.removeAttributes( SchemaConstants.MODIFY_TIMESTAMP_AT );
-
-        entry.add( SchemaConstants.MODIFIERS_NAME_AT, ADMIN_SYSTEM_DN );
-        entry.add( SchemaConstants.MODIFY_TIMESTAMP_AT, 
-            DateUtils.getGeneralizedTime() );
-        
-        out = new FileWriter( schemaLdifFile );
-        out.write( LdifUtils.convertEntryToLdif( entry ) );
-        out.flush();
-        out.close();
-    }
-
-
-    /**
-     * Utility method to get the file for a schema directory.
-     *
-     * @param schema the schema to get the file for
-     * @return the file for the specific schema directory
-     */
-    private final File getSchemaDirectory( Schema schema )
-    {
-        return new File( new File( baseDirectory, "schema" ), 
-            schema.getSchemaName() );
+        return "schema/schema/" + schema.getSchemaName();
     }
     
     
@@ -392,23 +297,22 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadComparators( Schema schema, Registries registries ) throws Exception
     {
-        File comparatorsDirectory = new File( getSchemaDirectory( schema ), 
-            COMPARATORS_DIRNAME );
+        String comparatorsDirectory = getSchemaDirectory( schema ) 
+            + "/" + COMPARATORS_DIRNAME;
         
-        if ( ! comparatorsDirectory.exists() )
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        File[] comparators = comparatorsDirectory.listFiles( ldifFilter );
-        for ( File ldifFile : comparators )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            LdapComparator<?> comparator = 
-                factory.getLdapComparator( entry.getEntry(), registries );
-            comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
-            registries.getComparatorRegistry().register( comparator );
+            Pattern regex = Pattern.compile( comparatorsDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
+            {
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF comparator" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                LdapComparator<?> comparator = 
+                    factory.getLdapComparator( entry.getEntry(), registries );
+                comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
+                registries.getComparatorRegistry().register( comparator );
+            }
         }
     }
     
@@ -424,29 +328,20 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadSyntaxCheckers( Schema schema, Registries registries ) throws Exception
     {
-        File syntaxCheckersDirectory = new File( getSchemaDirectory( schema ), 
-            SYNTAX_CHECKERS_DIRNAME );
-        
-        if ( ! syntaxCheckersDirectory.exists() )
+        String syntaxCheckersDirectory = getSchemaDirectory( schema ) 
+            +  "/" + SYNTAX_CHECKERS_DIRNAME;
+
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        File[] syntaxCheckerFiles = syntaxCheckersDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : syntaxCheckerFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            SyntaxChecker syntaxChecker = 
-                factory.getSyntaxChecker( entry.getEntry(), registries );
-            try
+            Pattern regex = Pattern.compile( syntaxCheckersDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
             {
-            	registries.getSyntaxCheckerRegistry().register( syntaxChecker );
-            }
-            catch ( Exception e )
-            {
-            	e.printStackTrace();
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF syntaxChecker" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                SyntaxChecker syntaxChecker = 
+                    factory.getSyntaxChecker( entry.getEntry(), registries );
+                registries.getSyntaxCheckerRegistry().register( syntaxChecker );
             }
         }
     }
@@ -463,23 +358,21 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadNormalizers( Schema schema, Registries registries ) throws Exception
     {
-        File normalizersDirectory = new File( getSchemaDirectory( schema ), 
-            NORMALIZERS_DIRNAME );
-        
-        if ( ! normalizersDirectory.exists() )
+        String normalizersDirectory = getSchemaDirectory( schema )
+            + "/" + NORMALIZERS_DIRNAME;
+
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        File[] normalizerFiles = normalizersDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : normalizerFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            Normalizer normalizer =
-                factory.getNormalizer( entry.getEntry(), registries );
-            registries.getNormalizerRegistry().register( normalizer );
+            Pattern regex = Pattern.compile( normalizersDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
+            {
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF normalizer" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                Normalizer normalizer =
+                    factory.getNormalizer( entry.getEntry(), registries );
+                registries.getNormalizerRegistry().register( normalizer );
+            }
         }
     }
     
@@ -495,23 +388,21 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadMatchingRules( Schema schema, Registries registries ) throws Exception
     {
-        File matchingRulesDirectory = new File( getSchemaDirectory( schema ), 
-            MATCHING_RULES_DIRNAME );
+        String matchingRulesDirectory = getSchemaDirectory( schema )
+            + "/" + MATCHING_RULES_DIRNAME;
         
-        if ( ! matchingRulesDirectory.exists() )
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        File[] matchingRuleFiles = matchingRulesDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : matchingRuleFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            MatchingRule matchingRule = factory.getMatchingRule( 
-                entry.getEntry(), registries, schema.getSchemaName() );
-            registries.getMatchingRuleRegistry().register( matchingRule );
+            Pattern regex = Pattern.compile( matchingRulesDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
+            {
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF matchingRule" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                MatchingRule matchingRule = factory.getMatchingRule( 
+                    entry.getEntry(), registries, schema.getSchemaName() );
+                registries.getMatchingRuleRegistry().register( matchingRule );
+            }
         }
     }
     
@@ -527,37 +418,21 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadSyntaxes( Schema schema, Registries registries ) throws Exception
     {
-        File syntaxesDirectory = new File( getSchemaDirectory( schema ), 
-            SYNTAXES_DIRNAME );
-        
-        if ( ! syntaxesDirectory.exists() )
-        {
-            return;
-        }
-        
-        File[] syntaxFiles = syntaxesDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : syntaxFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            LdapSyntax syntax = factory.getSyntax( 
-                entry.getEntry(), registries, schema.getSchemaName() );
-            registries.getLdapSyntaxRegistry().register( syntax );
+        String syntaxesDirectory = getSchemaDirectory( schema )
+            + "/" + SYNTAXES_DIRNAME;
 
-            /*
-            // Update the SyntaxChecker link
-            try
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        {
+            Pattern regex = Pattern.compile( syntaxesDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
             {
-                SyntaxChecker syntaxChecker = registries.getSyntaxCheckerRegistry().lookup( syntax.getOid() );
-                
-                syntax.setSyntaxChecker( syntaxChecker );
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF syntax" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                LdapSyntax syntax = factory.getSyntax( 
+                    entry.getEntry(), registries, schema.getSchemaName() );
+                registries.getLdapSyntaxRegistry().register( syntax );
             }
-            catch ( NamingException ne )
-            {
-                syntax.setSyntaxChecker( new  AcceptAllSyntaxChecker( syntax.getOid() ) );
-            }
-            */
         }
     }
 
@@ -595,21 +470,20 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
 
     	// check that the attributeTypes directory exists for the schema
-        File attributeTypesDirectory = new File ( getSchemaDirectory( schema ), ATTRIBUTE_TYPES_DIRNAME );
-        
-        if ( ! attributeTypesDirectory.exists() )
-        {
-            return;
-        }
+        String attributeTypesDirectory = getSchemaDirectory( schema )
+            + "/" + ATTRIBUTE_TYPES_DIRNAME;
         
         // get list of attributeType LDIF schema files in attributeTypes
-        File[] attributeTypeFiles = attributeTypesDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : attributeTypeFiles )
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            loadAttributeType( schema, deferredEntries, entry, registries );
+            Pattern regex = Pattern.compile( attributeTypesDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
+            {
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF attributeType" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                loadAttributeType( schema, deferredEntries, entry, registries );
+            }
         }
 
         
@@ -655,7 +529,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     {
         // get superior name and if exists check if loaded, defer if not
         EntryAttribute superior = entry.getEntry().get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT );
-        
         if ( superior != null )
         {
         	String superiorName = superior.getString().toLowerCase();
@@ -663,7 +536,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         	if ( ! registries.getAttributeTypeRegistry().containsName( superiorName ) )
         	{
         		List<LdifEntry> dependents = deferredEntries.get( superiorName );
-        		
         		if ( dependents == null )
         		{
         			dependents = new ArrayList<LdifEntry>();
@@ -687,7 +559,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         		{
         			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
         			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
-        			
         			for ( LdifEntry deferred : copiedList )
         			{
         				if ( loadAttributeType( schema, deferredEntries, deferred, registries ) )
@@ -719,30 +590,28 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
-        File matchingRuleUsesDirectory = new File( getSchemaDirectory( schema ),
-            MATCHING_RULE_USES_DIRNAME );
+        String matchingRuleUsesDirectory = getSchemaDirectory( schema )
+            + "/" + MATCHING_RULE_USES_DIRNAME;
         
-        if ( ! matchingRuleUsesDirectory.exists() )
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        File[] matchingRuleUseFiles = matchingRuleUsesDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : matchingRuleUseFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            MatchingRuleUse matchingRuleUse = null;
-            
-            // TODO add factory method to generate the matchingRuleUse
-            if ( true )
+            Pattern regex = Pattern.compile( matchingRuleUsesDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
             {
-                throw new NotImplementedException( "Need to implement factory " +
-                		"method for creating a matchingRuleUse" );
-            }
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF matchingRuleUse" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                MatchingRuleUse matchingRuleUse = null;
             
-            registries.getMatchingRuleUseRegistry().register( matchingRuleUse );
+                // TODO add factory method to generate the matchingRuleUse
+                if ( true )
+                {
+                    throw new NotImplementedException( "Need to implement factory " +
+                    		"method for creating a matchingRuleUse" );
+                }
+                
+                registries.getMatchingRuleUseRegistry().register( matchingRuleUse );
+            }
         }
     }
 
@@ -758,30 +627,27 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadNameForms( Schema schema, Registries registries ) throws Exception
     {
-        File nameFormsDirectory = new File( getSchemaDirectory( schema ),
-            NAME_FORMS_DIRNAME );
-        
-        if ( ! nameFormsDirectory.exists() )
-        {
-            return;
-        }
-        
-        File[] nameFormFiles = nameFormsDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : nameFormFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            NameForm nameForm = null;
+        String nameFormsDirectory = getSchemaDirectory( schema ) + "/" + NAME_FORMS_DIRNAME;
 
-            // TODO add factory method to generate the nameForm
-            if ( true )
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        {
+            Pattern regex = Pattern.compile( nameFormsDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
             {
-                throw new NotImplementedException( "Need to implement factory " +
-                        "method for creating a nameForm" );
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF nameForm" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                NameForm nameForm = null;
+
+                // TODO add factory method to generate the nameForm
+                if ( true )
+                {
+                    throw new NotImplementedException( "Need to implement factory " +
+                            "method for creating a nameForm" );
+                }
+                
+                registries.getNameFormRegistry().register( nameForm );
             }
-            
-            registries.getNameFormRegistry().register( nameForm );
         }
     }
 
@@ -797,30 +663,27 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadDitContentRules( Schema schema, Registries registries ) throws Exception
     {
-        File ditContentRulesDirectory = new File( getSchemaDirectory( schema ),
-            DIT_CONTENT_RULES_DIRNAME );
-        
-        if ( ! ditContentRulesDirectory.exists() )
+        String ditContentRulesDirectory = getSchemaDirectory( schema ) + "/" + DIT_CONTENT_RULES_DIRNAME;
+
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        File[] ditContentRuleFiles = ditContentRulesDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : ditContentRuleFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            DITContentRule ditContentRule = null;
-            
-            // TODO add factory method to generate the ditContentRule
-            if ( true )
+            Pattern regex = Pattern.compile( ditContentRulesDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
             {
-                throw new NotImplementedException( "Need to implement factory " +
-                        "method for creating a ditContentRule" );
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF ditContentRule" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                DITContentRule ditContentRule = null;
+                
+                // TODO add factory method to generate the ditContentRule
+                if ( true )
+                {
+                    throw new NotImplementedException( "Need to implement factory " +
+                            "method for creating a ditContentRule" );
+                }
+                
+                registries.getDitContentRuleRegistry().register( ditContentRule );
             }
-            
-            registries.getDitContentRuleRegistry().register( ditContentRule );
         }
     }
 
@@ -836,30 +699,29 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
-        File ditStructureRulesDirectory = new File( getSchemaDirectory( schema ),
-            DIT_STRUCTURE_RULES_DIRNAME );
-        
-        if ( ! ditStructureRulesDirectory.exists() )
+        String ditStructureRulesDirectory = getSchemaDirectory( schema )
+            + "/" + DIT_STRUCTURE_RULES_DIRNAME;
+
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        File[] ditStructureRuleFiles = ditStructureRulesDirectory.listFiles( ldifFilter );
-        
-        for ( File ldifFile : ditStructureRuleFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            DITStructureRule ditStructureRule = null;
-            
-            // TODO add factory method to generate the ditContentRule
-            if ( true )
+            Pattern regex = Pattern.compile( ditStructureRulesDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
             {
-                throw new NotImplementedException( "Need to implement factory " +
-                        "method for creating a ditStructureRule" );
-            }
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF ditStructureRule" );
+                LdifReader reader = new LdifReader( resource.openStream() );
             
-            registries.getDitStructureRuleRegistry().register( ditStructureRule );
+                LdifEntry entry = reader.next();
+                DITStructureRule ditStructureRule = null;
+            
+                // TODO add factory method to generate the ditContentRule
+                if ( true )
+                {
+                    throw new NotImplementedException( "Need to implement factory " +
+                            "method for creating a ditStructureRule" );
+                }
+                
+                registries.getDitStructureRuleRegistry().register( ditStructureRule );
+            }
         }
     }
 
@@ -897,38 +759,35 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
 
     	// get objectClasses directory, check if exists, return if not
-    	File objectClassesDirectory = new File( getSchemaDirectory( schema ), OBJECT_CLASSES_DIRNAME );
-        
-    	if ( ! objectClassesDirectory.exists() )
+    	String objectClassesDirectory = getSchemaDirectory( schema ) + "/" + OBJECT_CLASSES_DIRNAME;
+
+        for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            return;
-        }
-        
-        // get list of objectClass LDIF files from directory and load
-        File[] objectClassFiles = objectClassesDirectory.listFiles( ldifFilter );
-       
-        for ( File ldifFile : objectClassFiles )
-        {
-            LdifReader reader = new LdifReader( ldifFile );
-            LdifEntry entry = reader.next();
-            loadObjectClass( schema, deferredEntries, entry, registries );
-        }
-        
-        if ( ! deferredEntries.isEmpty() )
-        {
-        	for ( String missingSuperior : deferredEntries.keySet() )
-        	{
-        		if ( registries.getObjectClassRegistry().containsName( missingSuperior ) )
-        		{
-        			for ( LdifEntry entry : deferredEntries.get( missingSuperior ) )
-        			{
-        				if ( loadObjectClass( schema, deferredEntries, entry, registries ) )
-        				{
-        					LOG.error( "Still failed to load schema entry: {}", entry );
-        				}
-        			}
-        		}
-        	}
+            Pattern regex = Pattern.compile( objectClassesDirectory + "/.*\\." + LDIF_EXT );
+            if ( regex.matcher( resourcePath ).matches() )
+            {
+                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF objectClass" );
+                LdifReader reader = new LdifReader( resource.openStream() );
+                LdifEntry entry = reader.next();
+                loadObjectClass( schema, deferredEntries, entry, registries );
+            }
+            
+            if ( ! deferredEntries.isEmpty() )
+            {
+            	for ( String missingSuperior : deferredEntries.keySet() )
+            	{
+            		if ( registries.getObjectClassRegistry().containsName( missingSuperior ) )
+            		{
+            			for ( LdifEntry entry : deferredEntries.get( missingSuperior ) )
+            			{
+            				if ( loadObjectClass( schema, deferredEntries, entry, registries ) )
+            				{
+            					LOG.error( "Still failed to load schema entry: {}", entry );
+            				}
+            			}
+            		}
+            	}
+            }
         }
     }
     
@@ -956,17 +815,14 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 	{
         // get superior name and if exists check if loaded, defer if not
         EntryAttribute superiors = entry.getEntry().get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT );
-        
         if ( superiors != null )
         {
         	for ( Value<?> value : superiors )
         	{
         		String superiorName = value.getString().toLowerCase();
-            	
-        		if ( ! registries.getObjectClassRegistry().containsName( superiorName ) )
+            	if ( ! registries.getObjectClassRegistry().containsName( superiorName ) )
             	{
             		List<LdifEntry> dependents = deferredEntries.get( superiorName );
-            		
             		if ( dependents == null )
             		{
             			dependents = new ArrayList<LdifEntry>();
@@ -991,7 +847,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         		{
         			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
         			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
-        			
         			for ( LdifEntry deferred : copiedList )
         			{
         				if ( loadObjectClass( schema, deferredEntries, deferred, registries ) )
