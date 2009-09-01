@@ -642,7 +642,7 @@ public class StringTools
         
         for ( int i = 0; i < chars.length; i++ )
         {
-            chars[i] = LOWER_CASE[ chars[i] ];
+            chars[i] = TO_LOWER_CASE[ chars[i] ];
         }
         
         return new String( chars );

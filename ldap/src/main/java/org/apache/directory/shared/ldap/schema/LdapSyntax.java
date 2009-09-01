@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.schema;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.AcceptAllSyntaxChecker;
+
 
 /**
  * A syntax definition. Each attribute stored in a directory has a defined
@@ -170,5 +173,28 @@ public class LdapSyntax extends SchemaObject
     public String toString()
     {
         return DescriptionUtils.getDescription( this );
+    }
+
+
+    /**
+     * Inject the registries into this Object, updating the references to
+     * other SchemaObject
+     *
+     * @param registries The Registries
+     */
+    public void applyRegistries( Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            try
+            {
+                // Gets the associated C 
+                syntaxChecker = registries.getSyntaxCheckerRegistry().lookup( oid );
+            }
+            catch ( NamingException ne )
+            {
+                syntaxChecker = new  AcceptAllSyntaxChecker( oid );
+            }
+        }
     }
 }

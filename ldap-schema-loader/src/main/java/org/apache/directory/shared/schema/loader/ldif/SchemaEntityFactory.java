@@ -386,6 +386,7 @@ public class SchemaEntityFactory
         String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
         LdapSyntax syntax = new LdapSyntax( oid );
         syntax.setSchemaName( schema );
+        syntax.applyRegistries( targetRegistries );
         
         if ( entry.get( MetaSchemaConstants.X_HUMAN_READABLE_AT ) != null )
         {

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.schema;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
+import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -115,14 +117,25 @@ public class MatchingRule extends SchemaObject
     {
         if ( registries != null )
         {
-            // Gets the associated C 
-            ldapComparator = (LdapComparator<? super Object>)registries.getComparatorRegistry().lookup( oid );
-
-            // Gets the associated N 
-            normalizer = registries.getNormalizerRegistry().lookup( oid );
-
-            // Gets the associated SC 
-            ldapSyntax = registries.getLdapSyntaxRegistry().lookup( ldapSyntaxOid );
+            try
+            {
+                // Gets the associated C 
+                ldapComparator = (LdapComparator<? super Object>)registries.getComparatorRegistry().lookup( oid );
+            }
+            catch ( NamingException ne )
+            {
+                ldapComparator = new ComparableComparator( oid );
+            }
+    
+            try
+            {
+                // Gets the associated N 
+                normalizer = registries.getNormalizerRegistry().lookup( oid );
+            }
+            catch ( NamingException ne )
+            {
+                normalizer = new NoOpNormalizer( oid );
+            }
         }
     }
     

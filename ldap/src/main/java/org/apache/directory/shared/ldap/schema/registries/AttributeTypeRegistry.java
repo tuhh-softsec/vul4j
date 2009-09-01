@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
+import javax.naming.directory.NoSuchAttributeException;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -76,9 +77,8 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      * names.
      *
      * @return a map of OID Strings to OidNormalizer instances
-     * @throws NamingException if for some reason this information cannot be returned
      */
-    public Map<String, OidNormalizer> getNormalizerMapping() throws NamingException
+    public Map<String, OidNormalizer> getNormalizerMapping()
     {
         return Collections.unmodifiableMap( oidNormalizerMap );
     }
@@ -95,9 +95,16 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      */
     public boolean hasDescendants( String ancestorId ) throws NamingException
     {
-        String oid = getOidByName( ancestorId );
-        Set<AttributeType> descendants = oidToDescendantSet.get( oid );
-        return (descendants != null) && !descendants.isEmpty();
+        try
+        {
+            String oid = getOidByName( ancestorId );
+            Set<AttributeType> descendants = oidToDescendantSet.get( oid );
+            return (descendants != null) && !descendants.isEmpty();
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
     }
     
     
@@ -114,15 +121,22 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     @SuppressWarnings("unchecked")
     public Iterator<AttributeType> descendants( String ancestorId ) throws NamingException
     {
-        String oid = getOidByName( ancestorId );
-        Set<AttributeType> descendants = oidToDescendantSet.get( oid );
-        
-        if ( descendants == null )
+        try
         {
-            return Collections.EMPTY_SET.iterator();
+            String oid = getOidByName( ancestorId );
+            Set<AttributeType> descendants = oidToDescendantSet.get( oid );
+            
+            if ( descendants == null )
+            {
+                return Collections.EMPTY_SET.iterator();
+            }
+            
+            return descendants.iterator();
         }
-        
-        return descendants.iterator();
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
     }
     
     
@@ -135,18 +149,25 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      */
     public void register( AttributeType attributeType ) throws NamingException
     {
-        super.register( attributeType );
-        
-        // Inject the attributeType into the oid/normalizer map
-        addMappingFor( attributeType );
-
-        // Register this AttributeType into the Descendant map
-        registerDescendants( attributeType, attributeType.getSuperior() );
-        
-        // Internally associate the OID to the registered AttributeType
-        if ( IS_DEBUG )
+        try
         {
-            LOG.debug( "registred attributeType: {}", attributeType );
+            super.register( attributeType );
+            
+            // Inject the attributeType into the oid/normalizer map
+            addMappingFor( attributeType );
+    
+            // Register this AttributeType into the Descendant map
+            registerDescendants( attributeType, attributeType.getSuperior() );
+            
+            // Internally associate the OID to the registered AttributeType
+            if ( IS_DEBUG )
+            {
+                LOG.debug( "registred attributeType: {}", attributeType );
+            }
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
         }
     }
 
@@ -158,7 +179,8 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      * @param attributeType The attributeType to register
      * @throws NamingException If something went wrong
      */
-    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
+    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) 
+        throws NamingException
     {
         // add this attribute to descendant list of other attributes in superior chain
         if ( ancestor == null )
@@ -179,8 +201,15 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         // Add the current type as a descendant
         descendants.add( attributeType );
         
-        // And recurse until we reach the top of the hierarchy
-        registerDescendants( attributeType, ancestor.getSuperior() );
+        try
+        {
+            // And recurse until we reach the top of the hierarchy
+            registerDescendants( attributeType, ancestor.getSuperior() );
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
     }
     
     
@@ -192,12 +221,19 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      */
     public AttributeType unregister( String numericOid ) throws NamingException
     {
-        AttributeType removed = super.unregister( numericOid );
-
-        removeMappingFor( removed );
-        oidToDescendantSet.remove( numericOid );
-        
-        return removed;
+        try
+        {
+            AttributeType removed = super.unregister( numericOid );
+    
+            removeMappingFor( removed );
+            oidToDescendantSet.remove( numericOid );
+            
+            return removed;
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
     }
 
     
@@ -206,26 +242,33 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      */
     private void addMappingFor( AttributeType attributeType ) throws NamingException
     {
-        MatchingRule matchingRule = attributeType.getEquality();
-        OidNormalizer oidNormalizer;
-        String oid = attributeType.getOid();
-
-        if ( matchingRule == null )
+        try
         {
-            LOG.debug( "Attribute {} does not have normalizer : using NoopNormalizer", attributeType.getName() );
-            oidNormalizer = new OidNormalizer( oid, new NoOpNormalizer( attributeType.getOid() ) );
+            MatchingRule matchingRule = attributeType.getEquality();
+            OidNormalizer oidNormalizer;
+            String oid = attributeType.getOid();
+    
+            if ( matchingRule == null )
+            {
+                LOG.debug( "Attribute {} does not have normalizer : using NoopNormalizer", attributeType.getName() );
+                oidNormalizer = new OidNormalizer( oid, new NoOpNormalizer( attributeType.getOid() ) );
+            }
+            else
+            {
+                oidNormalizer = new OidNormalizer( oid, matchingRule.getNormalizer() );
+            }
+    
+            oidNormalizerMap.put( oid, oidNormalizer );
+            
+            // Also inject the attributeType's short names in the map
+            for ( String name : attributeType.getNames() )
+            {
+                oidNormalizerMap.put( name.toLowerCase(), oidNormalizer );
+            }
         }
-        else
+        catch ( NamingException ne )
         {
-            oidNormalizer = new OidNormalizer( oid, matchingRule.getNormalizer() );
-        }
-
-        oidNormalizerMap.put( oid, oidNormalizer );
-        
-        // Also inject the attributeType's short names in the map
-        for ( String name : attributeType.getNames() )
-        {
-            oidNormalizerMap.put( name.toLowerCase(), oidNormalizer );
+            throw new NoSuchAttributeException( ne.getMessage() );
         }
     }
 
@@ -233,7 +276,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     /**
      * Remove the AttributeType normalizer from the OidNormalizer map 
      */
-    private void removeMappingFor( SchemaObject attributeType ) throws NamingException
+    private void removeMappingFor( SchemaObject attributeType )
     {
         if ( attributeType == null )
         {
@@ -246,6 +289,22 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         for ( String name : attributeType.getNames() )
         {
             oidNormalizerMap.remove( name.toLowerCase() );
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public AttributeType lookup( String oid ) throws NamingException
+    {
+        try
+        {
+           return  super.lookup( oid );
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
         }
     }
 }

@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.AcceptAllSyntaxChecker;
 import org.apache.directory.shared.ldap.util.DateUtils;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
@@ -57,6 +58,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import javax.naming.NamingException;
 
 
 /**
@@ -430,6 +433,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] syntaxCheckerFiles = syntaxCheckersDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : syntaxCheckerFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -468,6 +472,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] normalizerFiles = normalizersDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : normalizerFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -499,6 +504,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] matchingRuleFiles = matchingRulesDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : matchingRuleFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -530,6 +536,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] syntaxFiles = syntaxesDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : syntaxFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -537,6 +544,20 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdapSyntax syntax = factory.getSyntax( 
                 entry.getEntry(), registries, schema.getSchemaName() );
             registries.getLdapSyntaxRegistry().register( syntax );
+
+            /*
+            // Update the SyntaxChecker link
+            try
+            {
+                SyntaxChecker syntaxChecker = registries.getSyntaxCheckerRegistry().lookup( syntax.getOid() );
+                
+                syntax.setSyntaxChecker( syntaxChecker );
+            }
+            catch ( NamingException ne )
+            {
+                syntax.setSyntaxChecker( new  AcceptAllSyntaxChecker( syntax.getOid() ) );
+            }
+            */
         }
     }
 
@@ -575,6 +596,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
     	// check that the attributeTypes directory exists for the schema
         File attributeTypesDirectory = new File ( getSchemaDirectory( schema ), ATTRIBUTE_TYPES_DIRNAME );
+        
         if ( ! attributeTypesDirectory.exists() )
         {
             return;
@@ -582,6 +604,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         
         // get list of attributeType LDIF schema files in attributeTypes
         File[] attributeTypeFiles = attributeTypesDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : attributeTypeFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -632,6 +655,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     {
         // get superior name and if exists check if loaded, defer if not
         EntryAttribute superior = entry.getEntry().get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT );
+        
         if ( superior != null )
         {
         	String superiorName = superior.getString().toLowerCase();
@@ -639,6 +663,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         	if ( ! registries.getAttributeTypeRegistry().containsName( superiorName ) )
         	{
         		List<LdifEntry> dependents = deferredEntries.get( superiorName );
+        		
         		if ( dependents == null )
         		{
         			dependents = new ArrayList<LdifEntry>();
@@ -662,6 +687,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         		{
         			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
         			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
+        			
         			for ( LdifEntry deferred : copiedList )
         			{
         				if ( loadAttributeType( schema, deferredEntries, deferred, registries ) )
@@ -702,6 +728,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] matchingRuleUseFiles = matchingRuleUsesDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : matchingRuleUseFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -740,6 +767,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] nameFormFiles = nameFormsDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : nameFormFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -778,6 +806,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] ditContentRuleFiles = ditContentRulesDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : ditContentRuleFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -816,6 +845,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] ditStructureRuleFiles = ditStructureRulesDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : ditStructureRuleFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -868,13 +898,15 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
     	// get objectClasses directory, check if exists, return if not
     	File objectClassesDirectory = new File( getSchemaDirectory( schema ), OBJECT_CLASSES_DIRNAME );
-        if ( ! objectClassesDirectory.exists() )
+        
+    	if ( ! objectClassesDirectory.exists() )
         {
             return;
         }
         
         // get list of objectClass LDIF files from directory and load
         File[] objectClassFiles = objectClassesDirectory.listFiles( ldifFilter );
+       
         for ( File ldifFile : objectClassFiles )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -924,14 +956,17 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 	{
         // get superior name and if exists check if loaded, defer if not
         EntryAttribute superiors = entry.getEntry().get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT );
+        
         if ( superiors != null )
         {
         	for ( Value<?> value : superiors )
         	{
         		String superiorName = value.getString().toLowerCase();
-            	if ( ! registries.getObjectClassRegistry().containsName( superiorName ) )
+            	
+        		if ( ! registries.getObjectClassRegistry().containsName( superiorName ) )
             	{
             		List<LdifEntry> dependents = deferredEntries.get( superiorName );
+            		
             		if ( dependents == null )
             		{
             			dependents = new ArrayList<LdifEntry>();
@@ -956,6 +991,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         		{
         			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
         			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
+        			
         			for ( LdifEntry deferred : copiedList )
         			{
         				if ( loadObjectClass( schema, deferredEntries, deferred, registries ) )

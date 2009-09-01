@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
+import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -178,12 +179,13 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
             return null;
         }
         
-        if ( ! OID.isOID( oid ) )
-        {
-        	oid = getOidByName( oid );
-        }
-        
         T schemaObject = byName.get( oid );
+        
+        if ( schemaObject == null )
+        {
+            // let's try with trimming and lowercasing now
+            schemaObject = byName.get( StringTools.trim( StringTools.toLowerCase( oid ) ) );
+        }
 
         if ( schemaObject == null )
         {
@@ -227,7 +229,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
          */
         for ( String name : schemaObject.getNames() )
         {
-        	byName.put( name.toLowerCase(), schemaObject );
+        	byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
         }
         
         if ( LOG.isDebugEnabled() )
@@ -350,9 +352,8 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
      * @param name The name we are looking for
      * @return true if the name or it's cannonical form is mapped to a 
      * schemaObject in this registry, false otherwise.
-     * @throws NamingException If the OID can't be found
      */
-    public boolean containsName( String name ) throws NamingException
+    public boolean containsName( String name )
     {
     	if ( ! byName.containsKey( name ) )
     	{
