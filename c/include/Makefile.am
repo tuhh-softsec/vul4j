@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-BUILT_SOURCES = xsec ${lib_includes}
+BUILT_SOURCES = ${lib_includes}
 nobase_include_HEADERS = ${lib_includes}
 
 lib_includes = 
@@ -213,7 +213,7 @@ lib_includes += \
 
 SUFFIXES = .hpp
 
-xsec/%.hpp: ../src/%.hpp
+xsec/%.hpp: xsec ../src/%.hpp
 	cp ../src/$*.hpp $@
 
 xsec:
