@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2009 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,8 +183,12 @@ XSECXPathNodeList * TXFMXPathFilter::evaluateSingleExpr(DSIGXPathFilterExpr *exp
 	setXPathNS(document, expr->mp_NSMap, addedNodes, mp_formatter, mp_nse);
 
 	XPathProcessorImpl	xppi;					// The processor
-	XercesDOMSupport	xds;
 	XercesParserLiaison xpl;
+#if XALAN_VERSION_MAJOR == 1 && XALAN_VERSION_MINOR > 10
+	XercesDOMSupport	xds(xpl);
+#else
+	XercesDOMSupport	xds;
+#endif
 	XPathEvaluator		xpe;
 	XPathFactoryDefault xpf;
 	XPathConstructionContextDefault xpcc;

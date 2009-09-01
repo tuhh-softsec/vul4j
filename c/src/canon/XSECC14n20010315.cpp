@@ -34,6 +34,7 @@
 #include <xsec/utils/XSECSafeBufferFormatter.hpp>
 
 // Xerces includes
+#include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
@@ -61,7 +62,7 @@ XALAN_USING_XALAN(XalanDOMChar)
 XALAN_USING_XALAN(NodeRefList)
 XALAN_USING_XALAN(XercesDocumentWrapper)
 XALAN_USING_XALAN(XercesWrapperNavigator)
-
+XALAN_USING_XALAN(c_wstr)
 
 #endif
 
@@ -450,21 +451,27 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 
 	// We use Xalan to process the Xerces DOM tree and get the XPath nodes
 
+#if XALAN_VERSION_MAJOR == 1 && XALAN_VERSION_MINOR > 10
+	XercesParserLiaison theParserLiaison;
+	XercesDOMSupport theDOMSupport(theParserLiaison);
+#else
 	XercesDOMSupport theDOMSupport;
 #if defined XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
 	XercesParserLiaison theParserLiaison(theDOMSupport);
 #else
 	XercesParserLiaison theParserLiaison;
 #endif
+#endif // XALAN_VERSION_MAJOR == 1 && XALAN_VERSION_MINOR > 10
 
 	if (mp_doc == 0) {
 		throw XSECException(XSECException::UnsupportedFunction,
 			"XPath selection only supported in C14n for full documents");
 	}
-	XalanDocument* theDoc = theParserLiaison.createDocument(mp_doc);
 
-	XalanElement * xe = theDoc->createElement(XalanDOMString("ns"));
-	xe->setAttribute(/*XalanDOMString(""), */XalanDOMString("xmlns:ietf"), XalanDOMString("http://www.ietf.org"));
+	DOMElement* theXercesNode = mp_doc->createElement(c_wstr(XalanDOMString("ns")));
+	theXercesNode->setAttribute(c_wstr(XalanDOMString("xmlns:ietf")), c_wstr(XalanDOMString("http://www.ietf.org")));
+
+	XalanDocument* theDoc = theParserLiaison.createDocument(mp_doc);
 
 	// Set up the XPath evaluator
 
@@ -505,7 +512,7 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 		theDOMSupport,
 		theContextNode,
 		expr,
-		xe));
+		theDoc->getElementById(XalanDOMString("ns"))));
 
 #else
 
@@ -514,7 +521,7 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 		theDOMSupport,
 		theContextNode,
 		expr,
-		xe));
+		theDoc->getElementById(XalanDOMString("ns"))));
 		//theDoc->getDocumentElement()));
 #endif
 

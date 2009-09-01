@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2002-2009 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,10 +102,14 @@ void TXFMXSL::expandNameSpaces(void) {
 
 TXFMXSL::TXFMXSL(DOMDocument *doc) : 
 	TXFMBase(doc),
+#if XALAN_VERSION_MAJOR == 1 && XALAN_VERSION_MINOR > 10
+xds(xpl)
+#else
 #if defined XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
 xpl(xds) 
 #else
 xpl()
+#endif
 #endif
 {
 
