@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.ldif.extractor;
 
 import java.io.File;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
  
 /**
@@ -31,8 +31,9 @@ import junit.framework.TestCase;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SchemaLdifExtractorTest extends TestCase
+public class SchemaLdifExtractorTest
 {
+    @Test
     public void testExtract() throws Exception
     {
         SchemaLdifExtractor extractor = new SchemaLdifExtractor( 
