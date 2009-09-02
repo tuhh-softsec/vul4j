@@ -20,11 +20,11 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.registries.ComparatorRegistry;
 
 
@@ -36,14 +36,16 @@ import org.apache.directory.shared.ldap.schema.registries.ComparatorRegistry;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class SerializableComparator<E> implements Comparator<E>, Serializable
+public class SerializableComparator<E> extends LdapComparator<E>
 {
     private static final long serialVersionUID = 3257566226288162870L;
 
     /** the system global Comparator registry */
     private static ComparatorRegistry registry;
+    
     /** the OID of the matchingRule for this comparator */
     private String matchingRuleOid;
+    
     /** the transient wrapped comparator */
     private transient Comparator<E> wrapped;
 
