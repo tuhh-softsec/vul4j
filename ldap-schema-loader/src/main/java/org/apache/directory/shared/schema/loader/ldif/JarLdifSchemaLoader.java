@@ -46,6 +46,7 @@ import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,6 +129,19 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         initializeSchemas();
     }
 
+    
+    private final URL getResource( String resource, String msg ) throws Exception
+    {
+        if ( RESOURCE_MAP.get( resource ) )
+        {
+            return SchemaLdifExtractor.getUniqueResource( resource, msg );
+        }
+        else
+        {
+            return new File( resource ).toURI().toURL();
+        }
+    }
+    
 
     /**
      * Scans for LDIF files just describing the various schema contained in
@@ -144,13 +158,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String file : RESOURCE_MAP.keySet() )
         {
-            Pattern pat = Pattern.compile( "schema/schema/[a-z]*/" );
+            Pattern pat = Pattern.compile( ".*schema/schema/[a-z]*\\." + LDIF_EXT );
             if ( pat.matcher( file ).matches() )
             {
-                String[] split = file.split( "/" );
-                String schemaName = split[split.length-1];
-                String resourcePath = "schema/schema/" + schemaName + "." + LDIF_EXT;
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema ldif file" );
+                URL resource = getResource( file, "schema LDIF file" );
+                
                 try
                 {
                     LdifReader reader = new LdifReader( resource.openStream() );
@@ -297,10 +309,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( comparatorsDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + comparatorsDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF comparator" );
+                URL resource = getResource( resourcePath, "comparator LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 LdapComparator<?> comparator = 
@@ -328,10 +340,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( syntaxCheckersDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + syntaxCheckersDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF syntaxChecker" );
+                URL resource = getResource( resourcePath, "syntaxChecker LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 SyntaxChecker syntaxChecker = 
@@ -358,10 +370,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( normalizersDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + normalizersDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF normalizer" );
+                URL resource = getResource( resourcePath, "normalizer LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 Normalizer normalizer =
@@ -388,10 +400,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( matchingRulesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + matchingRulesDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF matchingRule" );
+                URL resource = getResource( resourcePath, "matchingRules LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 MatchingRule matchingRule = factory.getMatchingRule( 
@@ -418,10 +430,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( syntaxesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + syntaxesDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF syntax" );
+                URL resource = getResource( resourcePath, "syntax LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 LdapSyntax syntax = factory.getSyntax( 
@@ -471,10 +483,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         // get list of attributeType LDIF schema files in attributeTypes
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( attributeTypesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + attributeTypesDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF attributeType" );
+                URL resource = getResource( resourcePath, "attributeType LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 loadAttributeType( schema, deferredEntries, entry, registries );
@@ -590,10 +602,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( matchingRuleUsesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + matchingRuleUsesDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF matchingRuleUse" );
+                URL resource = getResource( resourcePath, "matchingRuleUse LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 MatchingRuleUse matchingRuleUse = null;
@@ -626,10 +638,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( nameFormsDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + nameFormsDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF nameForm" );
+                URL resource = getResource( resourcePath, "nameForm LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 NameForm nameForm = null;
@@ -662,10 +674,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ditContentRulesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + ditContentRulesDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF ditContentRule" );
+                URL resource = getResource( resourcePath, "ditContentRule LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 DITContentRule ditContentRule = null;
@@ -699,10 +711,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ditStructureRulesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + ditStructureRulesDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF ditStructureRule" );
+                URL resource = getResource( resourcePath, "ditStructureRule LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
             
                 LdifEntry entry = reader.next();
@@ -758,10 +770,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( objectClassesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + objectClassesDirectory + "/.*\\." + LDIF_EXT );
             if ( regex.matcher( resourcePath ).matches() )
             {
-                URL resource = SchemaLdifExtractor.getUniqueResource( resourcePath, "schema LDIF objectClass" );
+                URL resource = getResource( resourcePath, "objectClass LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 loadObjectClass( schema, deferredEntries, entry, registries );
