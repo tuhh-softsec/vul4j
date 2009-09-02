@@ -119,7 +119,7 @@ public class MatchingRule extends SchemaObject
         {
             try
             {
-                // Gets the associated C 
+                // Gets the associated Comparator 
                 ldapComparator = (LdapComparator<? super Object>)registries.getComparatorRegistry().lookup( oid );
             }
             catch ( NamingException ne )
@@ -129,12 +129,22 @@ public class MatchingRule extends SchemaObject
     
             try
             {
-                // Gets the associated N 
+                // Gets the associated N ormalizer
                 normalizer = registries.getNormalizerRegistry().lookup( oid );
             }
             catch ( NamingException ne )
             {
                 normalizer = new NoOpNormalizer( oid );
+            }
+            
+            try
+            {
+                // Get the associated LdapSyntax
+                ldapSyntax = registries.getLdapSyntaxRegistry().lookup( oid );
+            }
+            catch ( NamingException ne )
+            {
+                ldapSyntax = new LdapSyntax( oid );
             }
         }
     }
