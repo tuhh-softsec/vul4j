@@ -125,11 +125,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     public JarLdifSchemaLoader() throws Exception
     {
-        for ( String url : RESOURCE_MAP.keySet() )
-        {
-            System.out.println( url );
-        }
-
         initializeSchemas();
     }
 
