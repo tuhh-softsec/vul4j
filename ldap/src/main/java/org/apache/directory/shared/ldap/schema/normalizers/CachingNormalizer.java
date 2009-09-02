@@ -24,6 +24,7 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.SynchronizedLRUMap;
 
 
@@ -114,7 +115,7 @@ public class CachingNormalizer extends Normalizer
             return null;
         }
 
-        Value<?> result =(Value<?>)cache.get( value );
+        Value<?> result = (Value<?>)cache.get( value );
 
         if ( result != null )
         {
@@ -137,7 +138,7 @@ public class CachingNormalizer extends Normalizer
             return null;
         }
 
-        String normalized =(String)cache.get( value );
+        String normalized = (String)cache.get( value );
 
         if ( normalized != null )
         {
@@ -147,5 +148,14 @@ public class CachingNormalizer extends Normalizer
         normalized = normalizer.normalize( value );
         cache.put( value, normalized );
         return normalized;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRegistries( Registries registries )
+    {
+        normalizer.setRegistries( registries );
     }
 }
