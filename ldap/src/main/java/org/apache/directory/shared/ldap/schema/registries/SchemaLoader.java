@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import java.util.Collection;
-import java.util.Properties;
 
 
 /**
