@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2008 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.SignatureElementProxy;
@@ -236,16 +237,9 @@ public final class Transform extends SignatureElementProxy {
                "algorithm.alreadyRegistered", exArgs);
         }
 
-        ClassLoader cl = (ClassLoader) AccessController.doPrivileged(
-            new PrivilegedAction() {
-                public Object run() {
-                    return Thread.currentThread().getContextClassLoader();
-                }
-            });
-
         try {
 	    transformClassHash.put
-                (algorithmURI, Class.forName(implementingClass, true, cl));
+                (algorithmURI, ClassLoaderUtils.loadClass(implementingClass, Transform.class));
 	} catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
