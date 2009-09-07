@@ -22,7 +22,6 @@ import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
 import net.webassembletool.parse.BlockRenderer;
-import net.webassembletool.parse.Renderer;
 import net.webassembletool.parse.ReplaceRenderer;
 import net.webassembletool.parse.TemplateRenderer;
 import net.webassembletool.parse.XpathRenderer;

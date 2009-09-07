@@ -16,6 +16,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.Renderer;
 
 import org.apache.xml.serializer.DOMSerializer;
 import org.apache.xml.serializer.Method;

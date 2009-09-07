@@ -64,14 +64,14 @@ public class IncludeTemplateRegion extends AbstractIncludeRegion {
             if (openTag.countTokens() != 2)
                 throw new AggregationSyntaxException("Invalid syntax: "
                         + openTag);
-            Tag closeTag = Tag.findNext("endput", content, openTag);
+            Tag closeTag = Tag.find("endput", content, openTag.getEndIndex());
             if (closeTag == null)
                 throw new AggregationSyntaxException("Tag not closed: "
                         + openTag);
             String paramName = openTag.getToken(1);
             result.put(paramName, content.substring(openTag.getEndIndex(),
                     closeTag.getBeginIndex()));
-            openTag = Tag.findNext("beginput", content, closeTag);
+            openTag = Tag.find("beginput", content, closeTag.getEndIndex());
         }
         return result;
     }

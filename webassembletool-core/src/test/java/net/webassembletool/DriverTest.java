@@ -27,7 +27,7 @@ public class DriverTest extends TestCase {
 
     public void testRenderBlock() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
-                "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello");
+                "abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
@@ -71,7 +71,7 @@ public class DriverTest extends TestCase {
 
     public void testRenderTemplate1() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
-                "some <!--$beginparam$key-->some hidden text goes here<!--$endparam$key--> printed");
+                "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);
@@ -91,7 +91,7 @@ public class DriverTest extends TestCase {
 
     public void testRenderTemplate2() throws IOException, HttpErrorPage {
         final StringOutput expectedOutput = new MockStringOutput(
-                "abc some<!--$begintemplate$A-->some text goes here<!--$endtemplate$A--> cdf hello");
+                "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
         expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
         Driver tested = new MockDriver("tested", new Properties(),
                 expectedOutput);

@@ -28,4 +28,9 @@ public class UnmodifiableRegion implements Region {
 	out.append(content, start, end);
     }
 
+	@Override
+	public String toString() {
+		return content.subSequence(start, end).toString();
+	}
+
 }

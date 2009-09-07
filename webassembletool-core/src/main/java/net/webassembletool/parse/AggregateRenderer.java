@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.Renderer;
 
 /**
  * Retrieves a resource from the provider application and parses it to find tags

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.Renderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,10 +71,10 @@ public class TemplateRenderer implements Renderer {
                     while (openTag != null && closeTag != null) {
                         sb.replace(openTag.getBeginIndex(), closeTag
                                 .getEndIndex(), value);
-                        openTag = Tag.findNext("beginparam$" + key, sb,
-                                closeTag);
+                        openTag = Tag.find("beginparam$" + key, sb,
+                                closeTag.getEndIndex());
                         closeTag = Tag
-                                .findNext("endparam$" + key, sb, closeTag);
+                                .find("endparam$" + key, sb, closeTag.getEndIndex());
                     }
                 }
             }

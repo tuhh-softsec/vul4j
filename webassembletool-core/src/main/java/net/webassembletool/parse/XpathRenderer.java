@@ -12,6 +12,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.Renderer;
 
 import org.apache.xml.serializer.DOMSerializer;
 import org.apache.xml.serializer.Method;

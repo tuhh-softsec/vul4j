@@ -21,9 +21,9 @@ public class BlockRendererTest extends TestCase {
     }
 
     public void testRenderBlock() throws IOException, HttpErrorPage {
-        final String expectedOutput = "abc some<!--$beginblock$A-->some text goes here<!--$endblock$A--> cdf hello";
+        final String expectedOutput = "abc some<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$--> cdf hello";
         Writer out = new StringWriter();
-        BlockRenderer tested = new BlockRenderer("A", null);
+        BlockRenderer tested = new BlockRenderer("myblock", null);
         tested.render(expectedOutput, out);
         assertEquals("some text goes here", out.toString());
 
@@ -33,5 +33,5 @@ public class BlockRendererTest extends TestCase {
         tested.render(expectedOutput, out);
         assertEquals(expectedOutput, out.toString());
     }
-
+        
 }

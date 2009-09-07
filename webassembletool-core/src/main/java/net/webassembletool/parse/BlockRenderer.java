@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.Renderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

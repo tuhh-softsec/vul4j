@@ -1,9 +1,8 @@
-package net.webassembletool.parse;
+package net.webassembletool;
 
 import java.io.IOException;
 import java.io.Writer;
 
-import net.webassembletool.HttpErrorPage;
 
 /**
  * Content rendering strategy.

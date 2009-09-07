@@ -32,7 +32,7 @@ public class TemplateRendererTest extends TestCase {
     }
 
     public void testRenderTemplate1() throws IOException, HttpErrorPage {
-        final String expectedOutput = "some <!--$beginparam$key-->some hidden text goes here<!--$endparam$key--> printed";
+        final String expectedOutput = "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed";
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
@@ -47,8 +47,19 @@ public class TemplateRendererTest extends TestCase {
         assertEquals("some 'value' printed", out.toString());
     }
 
+    public void testRenderTemplateWithSimilarParamNames() throws IOException, HttpErrorPage {
+        final String expectedOutput = "some <!--$beginparam$key1$-->some hidden text goes here<!--$endparam$key1$--> printed";
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("key", "Should not work");
+        StringWriter out = new StringWriter();
+        TemplateRenderer tested = new TemplateRenderer(null, params, null);
+        tested.render(expectedOutput, out);
+
+        assertFalse(out.toString().contains("Should not be used as replacement"));
+   }
+
     public void testRenderTemplate2() throws IOException, HttpErrorPage {
-        final String expectedOutput = "abc some<!--$begintemplate$A-->some text goes here<!--$endtemplate$A--> cdf hello";
+        final String expectedOutput = "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello";
         StringWriter out = new StringWriter();
         TemplateRenderer tested = new TemplateRenderer("A", null, null);
         tested.render(expectedOutput, out);

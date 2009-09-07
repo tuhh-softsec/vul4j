@@ -39,15 +39,15 @@ public class AggregateRendererRegionParserTest extends TestCase {
     public void testParse() throws IOException, HttpErrorPage {
         AggregateRendererRegionParser tested = new AggregateRendererRegionParser(
                 false);
-        String content = "content<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->"
-                + "content<!--$includetemplate$token1$token2--> some text <!--$endincludetemplate-->"
-                + "content<!--$includeblock$token1$token2-->content"
-                + "<!--$includeblock$token1$token2--> some text <!--$endincludeblock-->content"
+        String content = "content<!--$includeblock$token1$token2$--> some text <!--$endincludeblock$-->"
+                + "content<!--$includetemplate$token1$token2$--> some text <!--$endincludetemplate$-->"
+                + "content<!--$includeblock$token1$token2$-->content"
+                + "<!--$includeblock$token1$token2$--> some text <!--$endincludeblock$-->content"
                 + "<esi:include src='$PROVIDER({something})/page' />content"
                 + "<!--esicontent-->";
         List<Region> actual = tested.parse(content);
         assertNotNull(actual);
-        int expCount = 12;
+        int expCount = 10;
         assertEquals(expCount, actual.size());
         int i = 0;
         assertNotNull(actual.get(i));
@@ -63,13 +63,6 @@ public class AggregateRendererRegionParserTest extends TestCase {
         i++;
         assertNotNull(actual.get(i));
         assertTrue(actual.get(i) instanceof IncludeTemplateRegion);
-        i++;
-        assertNotNull(actual.get(i));
-        assertTrue(actual.get(i) instanceof UnmodifiableRegion);
-        checkOutput("content", actual.get(i));
-        i++;
-        assertNotNull(actual.get(i));
-        assertTrue(actual.get(i) instanceof IncludeBlockRegion);
         i++;
         assertNotNull(actual.get(i));
         assertTrue(actual.get(i) instanceof UnmodifiableRegion);
@@ -122,7 +115,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
                 .getPos()));
         checkOutput("content", actual.getRegion());
 
-        content = "content<!--$includeblock$token1$token2-->";
+        content = "content<!--$includeblock$token1$token2$-->";
         actual = tested.find(content, 0);
         assertNotNull(actual);
         assertEquals("content".length(), actual.getPos());
@@ -144,24 +137,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
         assertEquals(content.length(), actual.getPos());
         assertTrue(actual.getRegion() instanceof IncludeBlockRegion);
 
-        try {
-            tested.find("<!--$includesome-->", 0);
-            fail("should fail with AggregationSyntaxException");
-        } catch (AggregationSyntaxException e) {
-            assertNotNull(e.getMessage());
-            assertEquals("Invalid syntax: <includesome>", e.getMessage());
-        }
-
-        try {
-            tested.find("<!--$includesome$token1$token2-->", 0);
-            fail("should fail with AggregationSyntaxException");
-        } catch (AggregationSyntaxException e) {
-            assertNotNull(e.getMessage());
-            assertEquals("Unknown tag: <includesome,token1,token2>", e
-                    .getMessage());
-        }
-
-        content = "<!--$includeblock$token1$token2-->ignored<!--$endincludeblock-->";
+        content = "<!--$includeblock$token1$token2$-->ignored<!--$endincludeblock$-->";
         actual = tested.find(content, 0);
         assertNotNull(actual);
         assertEquals(content.length(), actual.getPos());
@@ -169,7 +145,7 @@ public class AggregateRendererRegionParserTest extends TestCase {
         actual = tested.find(content, actual.getPos());
         assertNull("should be one result found", actual);
 
-        content = "<!--$includetemplate$token1$token2-->ignored<!--$endincludetemplate-->";
+        content = "<!--$includetemplate$token1$token2$-->ignored<!--$endincludetemplate$-->";
         actual = tested.find(content, 0);
         assertNotNull(actual);
         assertEquals(content.length(), actual.getPos());

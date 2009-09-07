@@ -69,29 +69,29 @@ public class IncludeTemplateRegionTest extends TestCase {
         assertTrue(actual.isEmpty());
 
         actual = tested
-                .parseParameters("<!--$beginput$param-->value<!--$endput-->");
+                .parseParameters("<!--$beginput$param$-->value<!--$endput$-->");
         assertNotNull(actual);
         assertEquals(1, actual.size());
         assertTrue(actual.containsKey("param"));
         assertEquals("value", actual.get("param"));
 
         try {
-            tested.parseParameters("<!--$beginput$param-->value");
+            tested.parseParameters("<!--$beginput$param$-->value");
             fail("should throw AggregationSyntaxException");
         } catch (AggregationSyntaxException e) {
             assertEquals("Tag not closed: <beginput,param>", e.getMessage());
         }
 
         try {
-            tested.parseParameters("<!--$beginput-->");
+            tested.parseParameters("<!--$beginput$-->");
             fail("should throw AggregationSyntaxException");
         } catch (AggregationSyntaxException e) {
             assertEquals("Invalid syntax: <beginput>", e.getMessage());
         }
 
         actual = tested
-                .parseParameters("<!--$beginput$param1-->value1<!--$endput-->"
-                        + "<!--$beginput$param2-->value2<!--$endput-->");
+                .parseParameters("<!--$beginput$param1$-->value1<!--$endput$-->"
+                        + "<!--$beginput$param2$-->value2<!--$endput$-->");
         assertNotNull(actual);
         assertEquals(2, actual.size());
         assertTrue(actual.containsKey("param1"));

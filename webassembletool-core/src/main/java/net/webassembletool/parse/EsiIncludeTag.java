@@ -1,6 +1,6 @@
 package net.webassembletool.parse;
 
-import net.webassembletool.parse.Tag.Template;
+import net.webassembletool.parse.AggregateRendererRegionParser.Template;
 
 class EsiIncludeTag {
     private final int start;
