@@ -36,6 +36,14 @@
     jar can be used by clients as well as by ApacheDS' schema partition.
   </description>
 
+  <dependencies>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

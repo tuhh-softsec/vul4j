@@ -20,6 +20,9 @@
 package org.apache.directory.server.schema.loader.ldif;
 
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.schema.loader.ldif.JarLdifSchemaLoader;
 import org.junit.Test;
@@ -38,6 +41,13 @@ public class JarLdifSchemaLoaderTest
     {
         Registries registries = new Registries();
         JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
+        loader.loadWithDependencies( loader.getSchema( "system" ), registries );
+        
+        assertTrue( registries.getAttributeTypeRegistry().contains( "cn" ) );
+        assertFalse( registries.getAttributeTypeRegistry().contains( "m-aux" ) );
+        
         loader.loadWithDependencies( loader.getSchema( "apachemeta" ), registries );
+
+        assertTrue( registries.getAttributeTypeRegistry().contains( "m-aux" ) );
     }
 }

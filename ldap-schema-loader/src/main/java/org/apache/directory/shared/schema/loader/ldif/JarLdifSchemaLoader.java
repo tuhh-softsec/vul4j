@@ -20,8 +20,22 @@
 package org.apache.directory.shared.schema.loader.ldif;
 
 
-import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.regex.Pattern;
+
 import org.apache.directory.shared.ldap.NotImplementedException;
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.ldif.LdifEntry;
+import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
@@ -36,25 +50,10 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.ResourceMap;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.ldif.LdifEntry;
-import org.apache.directory.shared.ldap.ldif.LdifReader;
-
+import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.regex.Pattern;
 
 
 /**
@@ -76,43 +75,43 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** name of directory containing ldapComparators */
-    private static final String COMPARATORS_DIRNAME = "comparators";
+    private static final String COMPARATORS_DIRNAME = "ou=comparators";
     
     /** name of directory containing syntaxCheckers */
-    private static final String SYNTAX_CHECKERS_DIRNAME = "syntaxCheckers";
+    private static final String SYNTAX_CHECKERS_DIRNAME = "ou=syntaxCheckers";
 
     /** name of the directory containing normalizers */
-    private static final String NORMALIZERS_DIRNAME = "normalizers";
+    private static final String NORMALIZERS_DIRNAME = "ou=normalizers";
 
     /** name of the directory containing syntaxes */
-    private static final String SYNTAXES_DIRNAME = "syntaxes";
+    private static final String SYNTAXES_DIRNAME = "ou=syntaxes";
     
     /** name of the directory containing attributeTypes */
-    private static final String ATTRIBUTE_TYPES_DIRNAME = "attributeTypes";
+    private static final String ATTRIBUTE_TYPES_DIRNAME = "ou=attributeTypes";
     
     /** name of the directory containing matchingRules */
-    private final static String MATCHING_RULES_DIRNAME = "matchingRules";
+    private final static String MATCHING_RULES_DIRNAME = "ou=matchingRules";
 
     /** name of the directory containing objectClasses */
-    private static final String OBJECT_CLASSES_DIRNAME = "objectClasses";
+    private static final String OBJECT_CLASSES_DIRNAME = "ou=objectClasses";
     
     /** name of the directory containing ditStructureRules */
-    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ditStructureRules";
+    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ou=ditStructureRules";
     
     /** name of the directory containing ditContentRules */
-    private static final String DIT_CONTENT_RULES_DIRNAME = "ditContentRules";
+    private static final String DIT_CONTENT_RULES_DIRNAME = "ou=ditContentRules";
     
     /** name of the directory containing nameForms */
-    private static final String NAME_FORMS_DIRNAME = "nameForms";
+    private static final String NAME_FORMS_DIRNAME = "ou=nameForms";
     
     /** name of the directory containing matchingRuleUses */
-    private static final String MATCHING_RULE_USES_DIRNAME = "matchingRuleUse";
+    private static final String MATCHING_RULE_USES_DIRNAME = "ou=matchingRuleUse";
 
     /** the factory that generates respective SchemaObjects from LDIF entries */
     private final SchemaEntityFactory factory = new SchemaEntityFactory();
     
     /** a map of all the resources in this jar */
-    private static final Map<String,Boolean> RESOURCE_MAP = ResourceMap.getResources( Pattern.compile( ".*schema/schema.*" ) );
+    private static final Map<String,Boolean> RESOURCE_MAP = ResourceMap.getResources( Pattern.compile( ".*schema/ou=schema.*" ) );
 
     
     /**
@@ -158,7 +157,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String file : RESOURCE_MAP.keySet() )
         {
-            Pattern pat = Pattern.compile( ".*schema/schema/[a-z]*\\." + LDIF_EXT );
+            Pattern pat = Pattern.compile( ".*schema/ou=schema/cn=[a-z]*\\." + LDIF_EXT );
+            
             if ( pat.matcher( file ).matches() )
             {
                 URL resource = getResource( file, "schema LDIF file" );
@@ -289,7 +289,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     private final String getSchemaDirectory( Schema schema )
     {
-        return "schema/schema/" + schema.getSchemaName();
+        return "schema/ou=schema/cn=" + schema.getSchemaName();
     }
     
     
@@ -309,7 +309,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + comparatorsDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + comparatorsDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "comparator LDIF file" );
@@ -340,7 +341,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + syntaxCheckersDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + syntaxCheckersDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "syntaxChecker LDIF file" );
@@ -370,7 +372,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + normalizersDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + normalizersDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "normalizer LDIF file" );
@@ -400,7 +403,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + matchingRulesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + matchingRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "matchingRules LDIF file" );
@@ -430,7 +434,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + syntaxesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + syntaxesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "syntax LDIF file" );
@@ -483,7 +488,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         // get list of attributeType LDIF schema files in attributeTypes
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + attributeTypesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + attributeTypesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "attributeType LDIF file" );
@@ -536,6 +542,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     {
         // get superior name and if exists check if loaded, defer if not
         EntryAttribute superior = entry.getEntry().get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT );
+        
         if ( superior != null )
         {
         	String superiorName = superior.getString().toLowerCase();
@@ -543,6 +550,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         	if ( ! registries.getAttributeTypeRegistry().containsName( superiorName ) )
         	{
         		List<LdifEntry> dependents = deferredEntries.get( superiorName );
+        		
         		if ( dependents == null )
         		{
         			dependents = new ArrayList<LdifEntry>();
@@ -566,6 +574,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         		{
         			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
         			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
+        			
         			for ( LdifEntry deferred : copiedList )
         			{
         				if ( loadAttributeType( schema, deferredEntries, deferred, registries ) )
@@ -602,7 +611,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + matchingRuleUsesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + matchingRuleUsesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "matchingRuleUse LDIF file" );
@@ -638,7 +648,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + nameFormsDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + nameFormsDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "nameForm LDIF file" );
@@ -674,7 +685,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + ditContentRulesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + ditContentRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "ditContentRule LDIF file" );
@@ -711,7 +723,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + ditStructureRulesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + ditStructureRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "ditStructureRule LDIF file" );
@@ -770,7 +783,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
-            Pattern regex = Pattern.compile( ".*" + objectClassesDirectory + "/.*\\." + LDIF_EXT );
+            Pattern regex = Pattern.compile( ".*" + objectClassesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            
             if ( regex.matcher( resourcePath ).matches() )
             {
                 URL resource = getResource( resourcePath, "objectClass LDIF file" );
@@ -822,14 +836,17 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 	{
         // get superior name and if exists check if loaded, defer if not
         EntryAttribute superiors = entry.getEntry().get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT );
+        
         if ( superiors != null )
         {
         	for ( Value<?> value : superiors )
         	{
         		String superiorName = value.getString().toLowerCase();
+        		
             	if ( ! registries.getObjectClassRegistry().containsName( superiorName ) )
             	{
             		List<LdifEntry> dependents = deferredEntries.get( superiorName );
+            		
             		if ( dependents == null )
             		{
             			dependents = new ArrayList<LdifEntry>();
@@ -854,6 +871,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         		{
         			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
         			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
+        			
         			for ( LdifEntry deferred : copiedList )
         			{
         				if ( loadObjectClass( schema, deferredEntries, deferred, registries ) )

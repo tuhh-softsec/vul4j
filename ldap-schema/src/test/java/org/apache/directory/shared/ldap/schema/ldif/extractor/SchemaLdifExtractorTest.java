@@ -21,7 +21,11 @@ package org.apache.directory.shared.ldap.schema.ldif.extractor;
 
 
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
  
@@ -33,11 +37,39 @@ import org.junit.Test;
  */
 public class SchemaLdifExtractorTest
 {
+    private static String workingDirectory;
+
+    
+    @BeforeClass
+    public static void setup() throws IOException
+    {
+        workingDirectory = System.getProperty( "workingDirectory" );
+
+        if ( workingDirectory == null )
+        {
+            String path = SchemaLdifExtractorTest.class.getResource( "" ).getPath();
+            int targetPos = path.indexOf( "target" );
+            workingDirectory = path.substring( 0, targetPos + 6 );
+        }
+        
+        // Cleanup the target directory
+        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+    }
+    
+    
+    @AfterClass
+    public static void cleanup() throws IOException
+    {
+        // Cleanup the target directory
+        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+    }
+
+    
     @Test
     public void testExtract() throws Exception
     {
         SchemaLdifExtractor extractor = new SchemaLdifExtractor( 
-            new File( System.getProperty( "workingDirectory" ) ) );
+            new File( workingDirectory ) );
         extractor.extractOrCopy();
     }
 }

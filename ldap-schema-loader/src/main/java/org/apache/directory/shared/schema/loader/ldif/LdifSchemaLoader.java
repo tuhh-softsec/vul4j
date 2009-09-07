@@ -20,8 +20,26 @@
 package org.apache.directory.shared.schema.loader.ldif;
 
 
-import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import org.apache.directory.shared.ldap.NotImplementedException;
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.ldif.LdifEntry;
+import org.apache.directory.shared.ldap.ldif.LdifReader;
+import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
@@ -34,29 +52,11 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.util.DateUtils;
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.ldif.LdifEntry;
-import org.apache.directory.shared.ldap.ldif.LdifReader;
-import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 
 /**
@@ -72,7 +72,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private static final String LDIF_EXT = "ldif";
     
     /** ou=schema LDIF file name */
-    private static final String OU_SCHEMA_LDIF = "schema." + LDIF_EXT;
+    private static final String OU_SCHEMA_LDIF = "ou=schema." + LDIF_EXT;
     
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( LdifSchemaLoader.class );
@@ -81,37 +81,37 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** name of directory containing ldapComparators */
-    private static final String COMPARATORS_DIRNAME = "comparators";
+    private static final String COMPARATORS_DIRNAME = "ou=comparators";
     
     /** name of directory containing syntaxCheckers */
-    private static final String SYNTAX_CHECKERS_DIRNAME = "syntaxCheckers";
+    private static final String SYNTAX_CHECKERS_DIRNAME = "ou=syntaxCheckers";
 
     /** name of the directory containing normalizers */
-    private static final String NORMALIZERS_DIRNAME = "normalizers";
+    private static final String NORMALIZERS_DIRNAME = "ou=normalizers";
 
     /** name of the directory containing syntaxes */
-    private static final String SYNTAXES_DIRNAME = "syntaxes";
+    private static final String SYNTAXES_DIRNAME = "ou=syntaxes";
     
     /** name of the directory containing attributeTypes */
-    private static final String ATTRIBUTE_TYPES_DIRNAME = "attributeTypes";
+    private static final String ATTRIBUTE_TYPES_DIRNAME = "ou=attributeTypes";
     
     /** name of the directory containing matchingRules */
-    private final static String MATCHING_RULES_DIRNAME = "matchingRules";
+    private final static String MATCHING_RULES_DIRNAME = "ou=matchingRules";
 
     /** name of the directory containing objectClasses */
-    private static final String OBJECT_CLASSES_DIRNAME = "objectClasses";
+    private static final String OBJECT_CLASSES_DIRNAME = "ou=objectClasses";
     
     /** name of the directory containing ditStructureRules */
-    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ditStructureRules";
+    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ou=ditStructureRules";
     
     /** name of the directory containing ditContentRules */
-    private static final String DIT_CONTENT_RULES_DIRNAME = "ditContentRules";
+    private static final String DIT_CONTENT_RULES_DIRNAME = "ou=ditContentRules";
     
     /** name of the directory containing nameForms */
-    private static final String NAME_FORMS_DIRNAME = "nameForms";
+    private static final String NAME_FORMS_DIRNAME = "ou=nameForms";
     
     /** name of the directory containing matchingRuleUses */
-    private static final String MATCHING_RULE_USES_DIRNAME = "matchingRuleUse";
+    private static final String MATCHING_RULE_USES_DIRNAME = "ou=matchingRuleUse";
 
     /**
      * the administrator DN - very ADS specific but we need some DN here for
@@ -189,7 +189,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LOG.debug( "Initializing schema" );
         }
         
-        File schemaDirectory = new File( baseDirectory, "schema" );
+        File schemaDirectory = new File( baseDirectory, "ou=schema" );
         String[] ldifFiles = schemaDirectory.list( ldifFilter );
 
         for ( String ldifFile : ldifFiles )
@@ -320,8 +320,8 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         // have to now update the timestamps and update the modifiersName
         // -------------------------------------------------------------------
         
-        File schemaLdifFile = new File( new File( baseDirectory, "schema" ), 
-            schema.getSchemaName() + "." + LDIF_EXT );
+        File schemaLdifFile = new File( new File( baseDirectory, "ou=schema" ), 
+            "cn=" + schema.getSchemaName() + "." + LDIF_EXT );
         LdifReader reader = new LdifReader( schemaLdifFile );
         LdifEntry ldifEntry = reader.next();
         Entry entry = ldifEntry.getEntry();
@@ -345,7 +345,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         // shows that something changed below the schema directory in schema
         // -------------------------------------------------------------------
         
-        schemaLdifFile = new File( baseDirectory, "schema." + LDIF_EXT );
+        schemaLdifFile = new File( baseDirectory, "ou=schema." + LDIF_EXT );
         reader = new LdifReader( schemaLdifFile );
         ldifEntry = reader.next();
         entry = ldifEntry.getEntry();
@@ -373,8 +373,8 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private final File getSchemaDirectory( Schema schema )
     {
-        return new File( new File( baseDirectory, "schema" ), 
-            schema.getSchemaName() );
+        return new File( new File( baseDirectory, "ou=schema" ), 
+            "cn=" + schema.getSchemaName() );
     }
     
     
@@ -398,6 +398,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         File[] comparators = comparatorsDirectory.listFiles( ldifFilter );
+        
         for ( File ldifFile : comparators )
         {
             LdifReader reader = new LdifReader( ldifFile );
@@ -541,20 +542,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdapSyntax syntax = factory.getSyntax( 
                 entry.getEntry(), registries, schema.getSchemaName() );
             registries.getLdapSyntaxRegistry().register( syntax );
-
-            /*
-            // Update the SyntaxChecker link
-            try
-            {
-                SyntaxChecker syntaxChecker = registries.getSyntaxCheckerRegistry().lookup( syntax.getOid() );
-                
-                syntax.setSyntaxChecker( syntaxChecker );
-            }
-            catch ( NamingException ne )
-            {
-                syntax.setSyntaxChecker( new  AcceptAllSyntaxChecker( syntax.getOid() ) );
-            }
-            */
         }
     }
 

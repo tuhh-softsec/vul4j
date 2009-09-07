@@ -48,9 +48,6 @@ import org.slf4j.LoggerFactory;
 public class SchemaLdifExtractor
 {
     private static final String BASE_PATH = "";
-//    private static final String BASE_PATH = SchemaLdifExtractor.class.getName()
-//    .substring( 0, SchemaLdifExtractor.class.getName().lastIndexOf( "." ) + 1 )
-//    .replace( '.', '/' );
 
     private static final Logger LOG = LoggerFactory.getLogger( SchemaLdifExtractor.class );
     
@@ -78,12 +75,13 @@ public class SchemaLdifExtractor
         }
 
         File schemaDirectory = new File( outputDirectory, "schema" );
+        
         if ( ! schemaDirectory.exists() )
         {
             schemaDirectory.mkdirs();
         }
 
-        Pattern pattern = Pattern.compile( ".*schema/schema.*\\.ldif" );
+        Pattern pattern = Pattern.compile( ".*schema/ou=schema.*\\.ldif" );
         Map<String,Boolean> list = ResourceMap.getResources( pattern );
         
         for ( Entry<String,Boolean> entry : list.entrySet() )
@@ -172,20 +170,17 @@ public class SchemaLdifExtractor
         
         while ( parent != null )
         {
-            fileComponentStack.push( parent.getName() );
-            
             if ( parent.getName().equals( "schema" ) )
             {
                 // All LDIF files besides the schema.ldif are under the 
                 // schema/schema base path. So we need to add one more 
                 // schema component to all LDIF files minus this schema.ldif
-                if ( ! resource.getName().equals( "schema.ldif" ) )
-                {
-                    fileComponentStack.push( "schema" );
-                }
+                fileComponentStack.push( "schema" );
                 
                 return assembleDestinationFile( fileComponentStack );
             }
+
+            fileComponentStack.push( parent.getName() );
             
             if ( parent.equals( parent.getParentFile() ) 
                 || parent.getParentFile() == null )

@@ -20,11 +20,17 @@
 package org.apache.directory.server.schema.loader.ldif;
 
 
-import java.io.File;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -36,15 +42,44 @@ import org.junit.Test;
  */
 public class LdifSchemaLoaderTest
 {
+    private static String workingDirectory;
+
+    
+    @BeforeClass
+    public static void setup() throws IOException
+    {
+        workingDirectory = System.getProperty( "workingDirectory" );
+
+        if ( workingDirectory == null )
+        {
+            String path = LdifSchemaLoaderTest.class.getResource( "" ).getPath();
+            int targetPos = path.indexOf( "target" );
+            workingDirectory = path.substring( 0, targetPos + 6 );
+        }
+        
+        // Cleanup the target directory
+        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+    }
+    
+    
+    @AfterClass
+    public static void cleanup() throws IOException
+    {
+        // Cleanup the target directory
+        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+    }
+
+    
     @Test
     public void testLoader() throws Exception
     {
-//        File workingDirectory = new File( System.getProperty( "workingDirectory" ) );
-//        SchemaLdifExtractor extractor = new SchemaLdifExtractor( workingDirectory );
-//        extractor.extractOrCopy();
-//        
-//        LdifSchemaLoader loader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
-//        Registries registries = new Registries();
-//        loader.loadAllEnabled( registries );
+        SchemaLdifExtractor extractor = new SchemaLdifExtractor( new File( workingDirectory ) );
+        extractor.extractOrCopy();
+        
+        LdifSchemaLoader loader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
+        Registries registries = new Registries();
+        loader.loadAllEnabled( registries );
+        
+        assertTrue( registries.getAttributeTypeRegistry().contains( "cn" ) );
     }
 }
