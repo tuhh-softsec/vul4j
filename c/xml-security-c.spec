@@ -17,6 +17,9 @@ BuildRequires:  xerces%{?xercesver}-c-devel >= 2.8
 %{?_with_xalan:BuildRequires: xalan-c-devel >= 1.6}
 %endif
 BuildRequires:  openssl-devel gcc-c++ pkgconfig
+%if "%{_vendor}" == "redhat"
+BuildRequires: redhat-rpm-config
+%endif
 
 %description
 The xml-security-c library is a C++ implementation of the XML Digital Signature
