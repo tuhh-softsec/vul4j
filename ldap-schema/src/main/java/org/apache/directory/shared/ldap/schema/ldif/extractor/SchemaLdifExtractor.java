@@ -71,14 +71,14 @@ public class SchemaLdifExtractor
     {
         if ( ! outputDirectory.exists() )
         {
-            outputDirectory.mkdirs();
+            outputDirectory.mkdir();
         }
 
         File schemaDirectory = new File( outputDirectory, "schema" );
         
         if ( ! schemaDirectory.exists() )
         {
-            schemaDirectory.mkdirs();
+            schemaDirectory.mkdir();
         }
 
         Pattern pattern = Pattern.compile( ".*schema/ou=schema.*\\.ldif" );
