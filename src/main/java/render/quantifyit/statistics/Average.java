@@ -26,6 +26,13 @@ public interface Average {
 	 */
 	double median(double... elements);
 	
+	/**
+	 * In statistics, the mode is the value that occurs the most frequently in a data 
+	 * set or a probability distribution.
+	 * @param elements
+	 * @see http://en.wikipedia.org/wiki/Mode_(statistics)
+	 * @return
+	 */
 	Double[] mode(double... elements);
 	
 }
