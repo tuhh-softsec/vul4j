@@ -20,6 +20,7 @@ public class AverageImpl implements Average {
 		return sum/count;
 	}
 
+	
 	@Override
 	public double median(double... elements) {
 		if (elements == null || elements.length == 0){
