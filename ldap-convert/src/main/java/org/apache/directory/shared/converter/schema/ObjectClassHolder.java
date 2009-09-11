@@ -212,7 +212,7 @@ public class ObjectClassHolder extends SchemaElementImpl
     {
         StringBuilder sb = new StringBuilder();
 
-        String dn = "m-oid=" + oid + ", ou=objectClasses" + ", cn=" + Rdn.escapeValue( schemaName ) + ", ou=schema";
+        String dn = "m-oid=" + oid + ", ou=objectclasses" + ", cn=" + Rdn.escapeValue( schemaName ) + ", ou=schema";
 
         // First dump the DN only
         Entry entry = new DefaultClientEntry( new LdapDN( dn ) );
