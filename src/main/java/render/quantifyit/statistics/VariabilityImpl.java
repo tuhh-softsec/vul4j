@@ -1,4 +1,4 @@
-package render.lambda.statistics;
+package render.quantifyit.statistics;
 
 public class VariabilityImpl implements Variability {
 

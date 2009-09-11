@@ -1,4 +1,4 @@
-package render.lambda.statistics;
+package render.quantifyit.statistics;
 
 
 import static org.junit.Assert.assertEquals;
@@ -8,6 +8,9 @@ import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import render.quantifyit.statistics.Average;
+import render.quantifyit.statistics.AverageImpl;
 
 public class AverageImplTest {
 
