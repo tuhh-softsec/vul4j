@@ -1,4 +1,4 @@
-package render.lambda.statistics;
+package render.quantifyit.statistics;
 
 import java.util.Arrays;
 import java.util.HashSet;

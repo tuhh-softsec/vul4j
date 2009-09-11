@@ -1,9 +1,13 @@
-package render.lambda.statistics;
+package render.quantifyit.statistics;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import render.quantifyit.statistics.AverageImpl;
+import render.quantifyit.statistics.Variability;
+import render.quantifyit.statistics.VariabilityImpl;
 
 public class VariabilityImplTest {
 

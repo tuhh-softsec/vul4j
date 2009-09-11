@@ -1,4 +1,4 @@
-package render.lambda.statistics;
+package render.quantifyit.statistics;
 
 public interface Variability {
 

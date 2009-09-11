@@ -5,8 +5,12 @@
   <artifactId>quantify</artifactId>
   <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>lambda</name>
-  <url>http://maven.apache.org</url>
+  <name>quantifyit</name>
+  <url>http://github.com/fractal/quantifyit/tree/master</url>
+  <scm>
+  	<developerConnection>fractal</developerConnection>
+  	<url>git://github.com/fractal/quantifyit.git</url>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
