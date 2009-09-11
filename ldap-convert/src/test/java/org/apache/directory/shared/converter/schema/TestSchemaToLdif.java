@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.converter.schema;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -26,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 
 public class TestSchemaToLdif
@@ -80,7 +81,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOC, ou=schema\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOC, ou=schema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
             "objectclass: top\n" +
@@ -103,7 +104,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCMinimal, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCMinimal, ou=s\n" +
             " chema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -118,7 +119,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCNoName, ou=sc\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCNoName, ou=sc\n" +
             " hema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -141,7 +142,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCAbstract, ou=\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCAbstract, ou=\n" +
             " schema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -157,7 +158,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCAuxiliary, ou\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCAuxiliary, ou\n" +
             " =schema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -173,7 +174,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCDesc, ou=sche\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCDesc, ou=sche\n" +
             " ma\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -189,7 +190,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCMayOne, ou=sc\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCMayOne, ou=sc\n" +
             " hema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -205,7 +206,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCMay2, ou=sche\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCMay2, ou=sche\n" +
             " ma\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -222,7 +223,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCMayMany, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCMayMany, ou=s\n" +
             " chema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -240,7 +241,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCMustOne, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCMustOne, ou=s\n" +
             " chema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -256,7 +257,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCMust2, ou=sch\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCMust2, ou=sch\n" +
             " ema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -273,7 +274,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCMustMany, ou=\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCMustMany, ou=\n" +
             " schema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -291,7 +292,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCNameOne, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCNameOne, ou=s\n" +
             " chema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -307,7 +308,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCName2, ou=sch\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCName2, ou=sch\n" +
             " ema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -324,7 +325,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCNameMany, ou=\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCNameMany, ou=\n" +
             " schema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -342,7 +343,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCObsolete, ou=\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCObsolete, ou=\n" +
             " schema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -358,7 +359,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCSupOne, ou=sc\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCSupOne, ou=sc\n" +
             " hema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -374,7 +375,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCSup2, ou=sche\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCSup2, ou=sche\n" +
             " ma\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -391,7 +392,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectClasses, cn=testOCSupMany, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=objectclasses, cn=testOCSupMany, ou=s\n" +
             " chema\n" +
             "objectclass: metaObjectClass\n" +
             "objectclass: metaTop\n" +
@@ -412,7 +413,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATMinimal, ou=\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATMinimal, ou=\n" +
             " schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -427,7 +428,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATNoName, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATNoName, ou=s\n" +
             " chema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -442,7 +443,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATNameOne, ou=\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATNameOne, ou=\n" +
             " schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -458,7 +459,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATName2, ou=sc\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATName2, ou=sc\n" +
             " hema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -475,7 +476,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATNameMany, ou\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATNameMany, ou\n" +
             " =schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -493,7 +494,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATDesc, ou=sch\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATDesc, ou=sch\n" +
             " ema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -509,7 +510,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATObsolete, ou\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATObsolete, ou\n" +
             " =schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -525,7 +526,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATSup, ou=sche\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATSup, ou=sche\n" +
             " ma\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -541,7 +542,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATSupOID, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATSupOID, ou=s\n" +
             " chema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -557,7 +558,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATEquality, ou\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATEquality, ou\n" +
             " =schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -573,7 +574,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATEqualityOID,\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATEqualityOID,\n" +
             "  ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -589,7 +590,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATOrdering, ou\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATOrdering, ou\n" +
             " =schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -605,7 +606,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATOrderingOID,\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATOrderingOID,\n" +
             "  ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -621,7 +622,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATSubstr, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATSubstr, ou=s\n" +
             " chema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -637,7 +638,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATSubstrOID, o\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATSubstrOID, o\n" +
             " u=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -653,7 +654,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATSyntax, ou=s\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATSyntax, ou=s\n" +
             " chema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -669,7 +670,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATSyntaxOidLen\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATSyntaxOidLen\n" +
             " , ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -686,7 +687,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATSingleValue,\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATSingleValue,\n" +
             "  ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -702,7 +703,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATCollective, \n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATCollective, \n" +
             " ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -718,7 +719,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATNoUserModifi\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATNoUserModifi\n" +
             " cation, ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -734,7 +735,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATUsageUserApp\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATUsageUserApp\n" +
             " , ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -749,7 +750,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATUsageDirOp, \n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATUsageDirOp, \n" +
             " ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -765,7 +766,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATUsageDistrOp\n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATUsageDistrOp\n" +
             " , ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -781,7 +782,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributeTypes, cn=testATUsageDsaOp, \n" +
+            "dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.14, ou=attributetypes, cn=testATUsageDsaOp, \n" +
             " ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
@@ -797,7 +798,7 @@ public class TestSchemaToLdif
     {
         String expected =
             HEADER + 
-            "dn: m-oid=1.3.6.1.4.1.13769.3.2, ou=attributeTypes, cn=testMozillaATWithOidLen, \n" +
+            "dn: m-oid=1.3.6.1.4.1.13769.3.2, ou=attributetypes, cn=testMozillaATWithOidLen, \n" +
             " ou=schema\n" +
             "objectclass: metaAttributeType\n" +
             "objectclass: metaTop\n" +
