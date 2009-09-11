@@ -84,7 +84,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private static final String COMPARATORS_DIRNAME = "ou=comparators";
     
     /** name of directory containing syntaxCheckers */
-    private static final String SYNTAX_CHECKERS_DIRNAME = "ou=syntaxCheckers";
+    private static final String SYNTAX_CHECKERS_DIRNAME = "ou=syntaxcheckers";
 
     /** name of the directory containing normalizers */
     private static final String NORMALIZERS_DIRNAME = "ou=normalizers";
@@ -93,25 +93,25 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private static final String SYNTAXES_DIRNAME = "ou=syntaxes";
     
     /** name of the directory containing attributeTypes */
-    private static final String ATTRIBUTE_TYPES_DIRNAME = "ou=attributeTypes";
+    private static final String ATTRIBUTE_TYPES_DIRNAME = "ou=attributetypes";
     
     /** name of the directory containing matchingRules */
-    private final static String MATCHING_RULES_DIRNAME = "ou=matchingRules";
+    private final static String MATCHING_RULES_DIRNAME = "ou=matchingrules";
 
     /** name of the directory containing objectClasses */
-    private static final String OBJECT_CLASSES_DIRNAME = "ou=objectClasses";
+    private static final String OBJECT_CLASSES_DIRNAME = "ou=objectclasses";
     
     /** name of the directory containing ditStructureRules */
-    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ou=ditStructureRules";
+    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ou=ditstructurerules";
     
     /** name of the directory containing ditContentRules */
-    private static final String DIT_CONTENT_RULES_DIRNAME = "ou=ditContentRules";
+    private static final String DIT_CONTENT_RULES_DIRNAME = "ou=ditcontentrules";
     
     /** name of the directory containing nameForms */
-    private static final String NAME_FORMS_DIRNAME = "ou=nameForms";
+    private static final String NAME_FORMS_DIRNAME = "ou=nameforms";
     
     /** name of the directory containing matchingRuleUses */
-    private static final String MATCHING_RULE_USES_DIRNAME = "ou=matchingRuleUse";
+    private static final String MATCHING_RULE_USES_DIRNAME = "ou=matchingruleuse";
 
     /**
      * the administrator DN - very ADS specific but we need some DN here for
@@ -162,7 +162,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         if ( ! schemaLdif.exists() )
         {
             String msg = "Expecting to find a schema.ldif file in provided baseDirectory path '" +
-                baseDirectory.getAbsolutePath() + "' but no such file found.";
+                schemaLdif.getAbsolutePath() + "' but no such file found.";
             LOG.error( msg );
             throw new FileNotFoundException( msg );
         }
