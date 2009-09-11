@@ -27,7 +27,7 @@ limitations under the License.
   </parent>
 
   <artifactId>plexus-utils</artifactId>
-  <version>1.5.16-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
 
   <name>Plexus Common Utilities</name>
   <description>A collection of various utility classes to ease working with strings, files, command lines, XML and more.</description>
@@ -43,40 +43,9 @@ limitations under the License.
     <url>http://jira.codehaus.org/browse/PLXUTILS</url>
   </issueManagement>
 
-  <dependencies>
-    <dependency>
-      <!-- NOTE: plexus-interpolation is SHADED INTO plexus-utils.
-           This is done to provide a migration path from the old
-           interpolation classes in plexus-utils to the current
-           implementation, which was broken out into plexus-interpolation.
-           The old classes still exist in plexus-utils, but are 
-           DEPRECATED.
-      -->
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-interpolation</artifactId>
-      <version>1.11</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-classworlds</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-  </dependencies>
-
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>1.0.1</version>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
@@ -115,31 +84,6 @@ limitations under the License.
             </property>
           </systemProperties>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>shade</id>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-                <includes>
-                  <include>org.codehaus.plexus:plexus-interpolation</include>
-                </includes>
-              </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>org.codehaus.plexus.interpolation</pattern>
-                </relocation>
-              </relocations>
-              <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
