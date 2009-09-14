@@ -31,8 +31,7 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldReturnAMeanOfZeroIfNoElements(){
-		double elements = 0;
-		double mean = Average.mean(elements);
+		double mean = Average.mean(0);
 		assertEquals(0, mean, 0);
 	}
 	
@@ -52,8 +51,7 @@ public class AverageTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionOnNullElements(){
-		double[] elements =  null;
-		Average.mean(elements);
+		Average.mean(null);
 	}
 
 	/**
@@ -94,14 +92,12 @@ public class AverageTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionIfEmptyElements(){
-		double[] elements =  new double[]{};
-		Average.median(elements);
+		Average.median(new double[]{});
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionIfNullElements(){
-		double[] elements = null;
-		Average.median(elements);
+		Average.median(null);
 	}
 	
 	/**

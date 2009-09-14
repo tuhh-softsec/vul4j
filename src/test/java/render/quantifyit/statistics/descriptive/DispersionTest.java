@@ -45,8 +45,7 @@ public class DispersionTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testShouldFindTheVarianceOfNullElements(){
-		double[] elements = null;
-		Dispersion.variance(elements);
+		Dispersion.variance(null);
 	}
 	
 
@@ -84,8 +83,7 @@ public class DispersionTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testShouldFindTheStandardDeviationOfNullElements(){
-		double[] elements = null;
-		Dispersion.standardDeviation(elements);
+		Dispersion.standardDeviation(null);
 	}
 	
 	/**
@@ -109,5 +107,59 @@ public class DispersionTest {
 	public void testThatGivenAStandardDeviationFindsTheVariance(){
 		double variance = Dispersion.sd2Var(56.81);
 		assertEquals(3226.89d, variance, 2);
+	}
+	
+	/**
+	 * Minimum
+	 */
+	
+	@Test
+	public void testShouldReturnTheSmallestElementInADataSet(){
+		double[] elements = new double[]{10.23,130,9.178};
+		assertEquals(9.18, Dispersion.min(elements), 2);
+	}
+	
+	@Test
+	public void testShouldReturnTheSmallestElementInADataSetWithNegatives(){
+		double[] elements = new double[]{-18,-18.7,-7.8, 3};
+		assertEquals(-18.7, Dispersion.min(elements), 2);
+	}
+	
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testShouldThrowExceptionIfMinHasEmptyElements(){
+		Dispersion.min(new double[]{});
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testShouldThrowExceptionIfMinHasNullElements(){
+		Dispersion.min(null);
+	}
+	
+	/**
+	 * Maximum
+	 */
+	
+	@Test
+	public void testShouldReturnTheBigestElementInADataSet(){
+		double[] elements = new double[]{10.23,130,9.178};
+		assertEquals(130, Dispersion.max(elements), 2);
+	}
+	
+	@Test
+	public void testShouldReturnTheBigestElementInADataSetWithNegatives(){
+		double[] elements = new double[]{-18,-18.7,-7.8, -3.14};
+		assertEquals(-3.14, Dispersion.max(elements), 2);
+	}
+	
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testShouldThrowExceptionIfMaxHasEmptyElements(){
+		Dispersion.max(new double[]{});
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testShouldThrowExceptionIfMaxHasNullElements(){
+		Dispersion.max(null);
 	}
 }

@@ -26,4 +26,32 @@ public class Dispersion {
 		}
 		return Math.sqrt(variance);
 	}
+	
+	public static double min(double... elements){
+		if (elements == null || elements.length == 0){
+			throw new IllegalArgumentException("Please give at least one value.");
+		}
+		double min = elements[0];
+		for (double element : elements) {
+			if(Math.min(min, element) != min){
+				min = element;
+			}
+		}
+		return min;
+	}
+
+	public static double max(double... elements){
+		if (elements == null || elements.length == 0){
+			throw new IllegalArgumentException("Please give at least one value.");
+		}
+		double max = elements[0];
+		for (double element : elements) {
+			if(Math.max(max, element) != max) {
+				max = element;
+			}
+		}
+		return max;
+	}
+	
+
 }
