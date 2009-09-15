@@ -29,7 +29,6 @@ import java.util.Set;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
-import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -37,19 +36,20 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
-import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -496,14 +496,14 @@ public class SchemaEntityFactory
         {
         	String mrName = entry.get( MetaSchemaConstants.M_ORDERING_AT ).getString();
         	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
-            at.setEqualityOid( mrOid );
+            at.setOrderingOid( mrOid );
         }
         
         if ( entry.get( MetaSchemaConstants.M_SUBSTR_AT ) != null )
         {
         	String mrName = entry.get( MetaSchemaConstants.M_SUBSTR_AT ).getString();
         	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
-            at.setEqualityOid( mrOid );
+            at.setSubstringOid( mrOid );
         }
         
         if ( entry.get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT ) != null )
