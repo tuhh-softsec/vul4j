@@ -43,7 +43,7 @@
 		<script language="javascript">
 			<![CDATA[
 				importClass(java.lang.System);
-				System.setProperty("xslthl.config.verbose", "true");
+				System.setProperty("xslthl.loglevel", "FINEST");
 				System.setProperty("xslthl.config", configfile);
 			]]>
 		</script>

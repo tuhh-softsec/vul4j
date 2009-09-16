@@ -38,6 +38,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -71,8 +73,18 @@ public class Config {
 
 	/**
 	 * If set to true be verbose during loading of the configuration
+	 * 
+	 * @deprecated since 2.1 XSLTHL uses the Java logging facility
 	 */
+	@Deprecated
 	public static final String VERBOSE_LOADING_PROPERTY = "xslthl.config.verbose";
+
+	/**
+	 * The log level for the xslthl logger
+	 * 
+	 * @since 2.1
+	 */
+	public static final String LOGLEVEL_PROPERTY = "xslthl.loglevel";
 
 	/**
 	 * Property set to disable external configuration loading
@@ -89,9 +101,15 @@ public class Config {
 	 */
 	public static final Map<String, Class<? extends Highlighter>> highlighterClasses = new HashMap<String, Class<? extends Highlighter>>();
 
+	/**
+	 * Prefix used for plug-able highlighters
+	 * 
+	 * @since 2.1
+	 */
 	public static final String PLUGIN_PREFIX = "java:";
 
 	static {
+		// register builtin highlighers
 		highlighterClasses.put("multiline-comment",
 		        MultilineCommentHighlighter.class);
 		highlighterClasses.put("nested-multiline-comment",
@@ -124,6 +142,12 @@ public class Config {
 	 */
 	protected Map<String, MainHighlighter> highlighters = new HashMap<String, MainHighlighter>();
 
+	/**
+	 * The logging facility
+	 */
+	protected Logger logger = Logger.getLogger("net.sf.xslthl");
+
+	@Deprecated
 	protected boolean verbose;
 
 	/**
@@ -165,10 +189,10 @@ public class Config {
 	}
 
 	/**
-	 * Get the highlighter for a given language id
+	 * Get the highlighter for a given language id, URI or filename.
 	 * 
 	 * @param id
-	 * @return
+	 * @return A highlighter, or null if no highlighter exists
 	 */
 	public MainHighlighter getMainHighlighter(String id) {
 		if (id != null && id.length() > 0 && !highlighters.containsKey(id)) {
@@ -186,9 +210,11 @@ public class Config {
 					File floc = new File(id);
 					if (floc.getAbsoluteFile().exists()) {
 						uri = floc.getAbsoluteFile().toURI().toString();
-					} else if (verbose) {
-						System.out
-						        .println(String
+					} else {
+						// no highlighter found, which is not a major problem
+						// (i.e. fail silently)
+						logger
+						        .info(String
 						                .format(
 						                        "%s is not an known language id, valid URI, or existing file name",
 						                        id));
@@ -196,13 +222,16 @@ public class Config {
 				}
 				if (uri != null) {
 					try {
+						logger.info(String.format(
+						        "Loading external highlighter from %s", uri
+						                .toString()));
 						MainHighlighter hl = loadHl(id, uri);
 						highlighters.put(id, hl);
 						return hl;
 					} catch (Exception e) {
-						System.err.println(String.format(
+						logger.log(Level.SEVERE, String.format(
 						        "Unable to load highlighter from %s: %s", id, e
-						                .getMessage()));
+						                .getMessage()), e);
 					}
 				}
 			}
@@ -211,7 +240,7 @@ public class Config {
 	}
 
 	/**
-	 * Load a highlighter
+	 * Load a language highlighter configuration
 	 * 
 	 * @param filename
 	 * @return
@@ -255,21 +284,21 @@ public class Config {
 					hlinstance.init(params);
 					main.add(hlinstance);
 				} else {
-					System.err.println(String.format("Unknown highlighter: %s",
-					        type));
+					logger.severe(String
+					        .format("Unknown highlighter: %s", type));
 				}
 			} catch (HighlighterConfigurationException e) {
-				System.err.println(String.format(
+				logger.log(Level.SEVERE, String.format(
 				        "Invalid configuration for highlighter %s: %s", type, e
-				                .getMessage()));
+				                .getMessage()), e);
 			} catch (InstantiationException e) {
-				System.err.println(String.format(
+				logger.log(Level.SEVERE, String.format(
 				        "Error constructing highlighter %s: %s", type, e
-				                .getMessage()));
+				                .getMessage()), e);
 			} catch (IllegalAccessException e) {
-				System.err.println(String.format(
+				logger.log(Level.SEVERE, String.format(
 				        "IError constructing highlighter %s: %s", type, e
-				                .getMessage()));
+				                .getMessage()), e);
 			}
 		}
 	}
@@ -279,7 +308,8 @@ public class Config {
 	 * 
 	 * @param type
 	 * @param classpath
-	 * @return
+	 * @return The plugin class
+	 * @since 2.1
 	 */
 	protected Class<? extends Highlighter> loadPlugin(MainHighlighter main,
 	        String type, String classpath) {
@@ -302,9 +332,9 @@ public class Config {
 					}
 					urls.add(url);
 				} catch (MalformedURLException e) {
-					System.err.println(String.format(
+					logger.log(Level.WARNING, String.format(
 					        "Invalid classpath entry %s: %s", path, e
-					                .getMessage()));
+					                .getMessage()), e);
 				}
 			}
 			if (urls.size() > 0) {
@@ -317,13 +347,14 @@ public class Config {
 			if (Highlighter.class.isAssignableFrom(tmp)) {
 				return tmp.asSubclass(Highlighter.class);
 			} else {
-				System.err.println(String.format(
+				logger.log(Level.SEVERE, String.format(
 				        "Class %s is not a subclass of %s", tmp.getName(),
 				        Highlighter.class.getName()));
 			}
 		} catch (ClassNotFoundException e) {
-			System.err.println(String.format(
-			        "Unable to resolve highlighter class: %s", e.getMessage()));
+			logger.log(Level.SEVERE, String.format(
+			        "Unable to resolve highlighter class: %s", e.getMessage()),
+			        e);
 		}
 		return null;
 	}
@@ -333,41 +364,54 @@ public class Config {
 	}
 
 	protected Config(String configFilename) {
-		verbose = Boolean.getBoolean(VERBOSE_LOADING_PROPERTY);
-		if (verbose) {
-			System.out.println("Initializing xslthl " + Version.getVersion());
+		Level logLevel = Level.WARNING;
+		try {
+			logLevel = Level.parse(System.getProperty(LOGLEVEL_PROPERTY));
+		} catch (Exception e) {
 		}
+		logger.setLevel(logLevel);
+		logger.info("Initializing xslthl " + Version.getVersion());
+		loadConfiguration(configFilename);
+	}
 
+	/**
+	 * Load the configuration
+	 * 
+	 * @param configFilename
+	 *            When null or empty the default system configuration will be
+	 *            used
+	 * @since 2.1
+	 */
+	protected void loadConfiguration(String configFilename) {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = dbf.newDocumentBuilder();
+
+			// Find the configuration filename
 			if (configFilename == null || "".equals(configFilename)) {
-				if (verbose) {
-					System.out
-					        .println("No config file specified, falling back to default behavior");
-				}
+				logger
+				        .config("No config file specified, falling back to default behavior");
 				if (System.getProperty(CONFIG_PROPERTY) != null) {
 					configFilename = System.getProperty(CONFIG_PROPERTY);
 				} else {
 					configFilename = "xslthl-config.xml";
 				}
 			}
-			System.out.println("Loading Xslthl configuration from "
-			        + configFilename + "...");
+
+			logger.info(String.format("Loading Xslthl configuration from %s",
+			        configFilename));
 			Document doc = builder.parse(configFilename);
 			NodeList hls = doc.getDocumentElement().getElementsByTagName(
 			        "highlighter");
 			Map<String, MainHighlighter> fileMapping = new HashMap<String, MainHighlighter>();
 			for (int i = 0; i < hls.getLength(); i++) {
+				// Process the highlighters
 				Element hl = (Element) hls.item(i);
 				String id = hl.getAttribute("id");
 
 				if (highlighters.containsKey(id)) {
-					System.out
-					        .println(String
-					                .format(
-					                        "Warning: highlighter with id '%s' already exists!",
-					                        id));
+					logger.warning(String.format(
+					        "Highlighter with id '%s' already exists!", id));
 				}
 
 				String filename = hl.getAttribute("file");
@@ -375,33 +419,26 @@ public class Config {
 				        .toString();
 				if (fileMapping.containsKey(absFilename)) {
 					// no need to load the same file twice.
-					if (verbose) {
-						System.out.println("Reusing loaded highlighter for "
-						        + id + " from " + absFilename + "...");
-					}
+					logger.config(String.format(
+					        "Reusing loaded highlighter for %s from %s", id,
+					        absFilename));
 					highlighters.put(id, fileMapping.get(absFilename));
 					continue;
 				}
-				if (verbose) {
-					System.out.print("Loading " + id + " highligter from "
-					        + absFilename + "...");
-				}
+				logger.info(String.format("Loading %s highligter from %s", id,
+				        absFilename));
 				try {
 					MainHighlighter mhl = loadHl(id, absFilename);
 					highlighters.put(id, mhl);
-					if (verbose) {
-						System.out.println(" OK");
-						fileMapping.put(absFilename, mhl);
-					}
+					fileMapping.put(absFilename, mhl);
 				} catch (Exception e) {
-					if (verbose) {
-						System.out.println(" error: " + e.getMessage());
-					} else {
-						System.err.println("Error loading highlighter from "
-						        + absFilename + ": " + e.getMessage());
-					}
+					logger.log(Level.SEVERE, String.format(
+					        "Failed to load highlighter from %s: %s",
+					        absFilename, e.getMessage()), e);
 				}
 			}
+
+			// Process the additional settings
 			NodeList prefixNode = doc.getDocumentElement()
 			        .getElementsByTagName("namespace");
 			if (prefixNode.getLength() == 1) {
@@ -410,8 +447,9 @@ public class Config {
 				uri = e.getAttribute("uri");
 			}
 		} catch (Exception e) {
-			System.err
-			        .println("XSLT Highlighter: Cannot read xslthl-config.xml, no custom highlighters will be available.");
+			logger.log(Level.SEVERE, String.format(
+			        "Cannot read configuration %s: %s", configFilename, e
+			                .getMessage()), e);
 		}
 
 		if (!highlighters.containsKey("xml")) {
