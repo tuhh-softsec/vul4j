@@ -113,8 +113,11 @@ public class Params {
 	 * @return
 	 */
 	public Params getParams(String name) {
-		return new Params((Element) paramElem.getElementsByTagName(name)
-		        .item(0));
+		Element elm = (Element) paramElem.getElementsByTagName(name).item(0);
+		if (elm == null) {
+			return null;
+		}
+		return new Params(elm);
 	}
 
 	/**

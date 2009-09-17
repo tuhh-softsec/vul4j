@@ -45,7 +45,6 @@ import net.sf.xslthl.Params;
  * </dl>
  */
 public class KeywordsHighlighter extends Highlighter {
-
 	/**
 	 * the keywords this highligher accepts
 	 */
@@ -55,6 +54,16 @@ public class KeywordsHighlighter extends Highlighter {
 	 * Ignore case of the keywords.
 	 */
 	protected boolean ignoreCase = false;
+
+	/**
+	 * Optional extra character sequence that defines the start of an identifier
+	 */
+	protected String startChars;
+
+	/**
+	 * Optional extra character sequence that defines the part of an identifier
+	 */
+	protected String partChars;
 
 	@Override
 	public void init(Params params) throws HighlighterConfigurationException {
@@ -66,6 +75,18 @@ public class KeywordsHighlighter extends Highlighter {
 			keywords = new TreeSet<String>();
 		}
 		params.getMutliParams("keyword", keywords);
+
+		startChars = params.getParam("beginChars");
+		partChars = params.getParam("partChars");
+	}
+
+	protected void appendUnique(StringBuilder buf, char ch) {
+		for (int i = 0; i < buf.length(); ++i) {
+			if (buf.charAt(i) == ch) {
+				return;
+			}
+		}
+		buf.append(ch);
 	}
 
 	/*
@@ -75,9 +96,8 @@ public class KeywordsHighlighter extends Highlighter {
 	 */
 	@Override
 	public boolean startsWith(CharIter in) {
-		if (Character.isJavaIdentifierStart(in.current())
-		        && (in.prev() == null || !Character.isJavaIdentifierPart(in
-		                .prev()))) {
+		if (isIdentifierStart(in.current())
+		        && (in.prev() == null || !isIdentifierPart(in.prev()))) {
 			return true;
 		}
 		return false;
@@ -91,7 +111,7 @@ public class KeywordsHighlighter extends Highlighter {
 	 */
 	@Override
 	public boolean highlight(CharIter in, List<Block> out) {
-		while (!in.finished() && Character.isJavaIdentifierPart(in.current())) {
+		while (!in.finished() && isIdentifierPart(in.current())) {
 			in.moveNext();
 		}
 		if (keywords.contains(in.getMarked())) {
@@ -111,4 +131,29 @@ public class KeywordsHighlighter extends Highlighter {
 		return "keyword";
 	}
 
+	/**
+	 * @param ch
+	 * @return True if this character is a valid start of an identifier
+	 */
+	protected boolean isIdentifierStart(char ch) {
+		if (startChars != null) {
+			if (startChars.indexOf(ch) != -1) {
+				return true;
+			}
+		}
+		return Character.isJavaIdentifierStart(ch);
+	}
+
+	/**
+	 * @param ch
+	 * @return True if this character is a valid part of an identifier
+	 */
+	protected boolean isIdentifierPart(char ch) {
+		if (partChars != null) {
+			if (partChars.indexOf(ch) != -1) {
+				return true;
+			}
+		}
+		return Character.isJavaIdentifierPart(ch);
+	}
 }
