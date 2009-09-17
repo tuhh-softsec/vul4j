@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -145,10 +145,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     /** @inheritDoc */
     public boolean equals(Object obj) {
 
-	if (obj == null) {
-	    return false;
-	}
-        if (!this.getClass().getName().equals(obj.getClass().getName())) {
+        if (!(obj instanceof XMLX509IssuerSerial)) {
             return false;
         }
 
@@ -159,9 +156,10 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     }
 
     public int hashCode() {
-	// uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
-	return 82;
+        int result = 17;
+        result = 31 * result + getSerialNumber().hashCode();
+        result = 31 * result + getIssuerName().hashCode();
+        return result;
     }
 
     /** @inheritDoc */

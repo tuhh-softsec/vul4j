@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2009 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.apache.xml.security.keys.content.x509;
 
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Base64;
@@ -143,27 +144,29 @@ public class XMLX509SKI extends SignatureElementProxy
 
     /** @inheritDoc */
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-        if (!this.getClass().getName().equals(obj.getClass().getName())) {
+        if (!(obj instanceof XMLX509SKI)) {
             return false;
         }
 
         XMLX509SKI other = (XMLX509SKI) obj;
 
         try {
-            return java.security.MessageDigest.isEqual(other.getSKIBytes(),
-                                        this.getSKIBytes());
+            return Arrays.equals(other.getSKIBytes(), this.getSKIBytes());
         } catch (XMLSecurityException ex) {
             return false;
         }
     }
 
     public int hashCode() {
-	// uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
-	return 92;
+        int result = 17;
+        try {
+            byte[] bytes = getSKIBytes();
+            for (int i = 0; i < bytes.length; i++) {
+                result = 31 * result + bytes[i];
+            }
+        } catch (XMLSecurityException e) {}
+        return result;
+
     }
 
     /** @inheritDoc */

@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
@@ -138,17 +139,12 @@ public class XMLX509Certificate extends SignatureElementProxy
     /** @inheritDoc */
     public boolean equals(Object obj) {
 
-        if (obj == null) {
-	    return false;
-        }
-        if (!this.getClass().getName().equals(obj.getClass().getName())) {
+        if (!(obj instanceof XMLX509Certificate)) {
             return false;
         }
         XMLX509Certificate other = (XMLX509Certificate) obj;
         try {
-
-            /** $todo$ or should be create X509Certificates and use the equals() from the Certs */
-            return java.security.MessageDigest.isEqual
+            return Arrays.equals
 		(other.getCertificateBytes(), this.getCertificateBytes());
         } catch (XMLSecurityException ex) {
             return false;
@@ -156,9 +152,14 @@ public class XMLX509Certificate extends SignatureElementProxy
     }
 
     public int hashCode() {
-	// Uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
-	return 72;
+	int result = 17;
+        try {
+            byte[] bytes = getCertificateBytes();
+            for (int i = 0; i < bytes.length; i++) {
+                result = 31 * result + bytes[i];
+            }
+        } catch (XMLSecurityException e) {}
+        return result;
     }
 
    /** @inheritDoc */

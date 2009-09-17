@@ -80,11 +80,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
 
     /** @inheritDoc */
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-
-        if (!this.getClass().getName().equals(obj.getClass().getName())) {
+        if (!(obj instanceof XMLX509SubjectName)) {
             return false;
         }
 
@@ -96,9 +92,9 @@ public class XMLX509SubjectName extends SignatureElementProxy
    }
 
     public int hashCode() {
-	// uncomment when JDK 1.4 is required
-	// assert false : "hashCode not designed";
-	return 52;
+        int result = 17;
+        result = 31 * result + this.getSubjectName().hashCode();
+        return result;
     }
    
    /** @inheritDoc */
