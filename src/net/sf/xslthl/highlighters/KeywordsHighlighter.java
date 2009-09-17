@@ -65,10 +65,17 @@ public class KeywordsHighlighter extends Highlighter {
 	 */
 	protected String partChars;
 
+	/**
+	 * If true, then startChars and partChars are the only characters accepted
+	 * for the identifiers
+	 */
+	protected boolean exclusiveChars;
+
 	@Override
 	public void init(Params params) throws HighlighterConfigurationException {
 		super.init(params);
 		ignoreCase = params.isSet("ignoreCase");
+		exclusiveChars = params.isSet("exclusiveChars");
 		if (ignoreCase) {
 			keywords = new TreeSet<String>(new IgnoreCaseComparator());
 		} else {
@@ -140,6 +147,9 @@ public class KeywordsHighlighter extends Highlighter {
 			if (startChars.indexOf(ch) != -1) {
 				return true;
 			}
+			if (exclusiveChars) {
+				return false;
+			}
 		}
 		return Character.isJavaIdentifierStart(ch);
 	}
@@ -152,6 +162,9 @@ public class KeywordsHighlighter extends Highlighter {
 		if (partChars != null) {
 			if (partChars.indexOf(ch) != -1) {
 				return true;
+			}
+			if (exclusiveChars) {
+				return false;
 			}
 		}
 		return Character.isJavaIdentifierPart(ch);
