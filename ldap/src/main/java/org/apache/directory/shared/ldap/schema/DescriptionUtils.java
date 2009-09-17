@@ -83,7 +83,7 @@ public class DescriptionUtils
         buf.append( attributeType.getOid() );
         buf.append( '\n' );
 
-        if ( attributeType.getNames() != null )
+        if ( attributeType.getNames().size() != 0 )
         {
             buf.append( " NAME " );
             getQDescrs( buf, attributeType.getNames() );

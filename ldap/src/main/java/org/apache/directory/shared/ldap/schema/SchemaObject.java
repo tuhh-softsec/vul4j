@@ -187,7 +187,7 @@ public class SchemaObject implements Serializable
      * Gets the first name in the set of short names for this SchemaObject if
      * any exists for it.
      * 
-     * @return the first of the names for this SchemaObject or an empty string 
+     * @return the first of the names for this SchemaObject or the oid
      * if one does not exist
      */
     public String getName()
@@ -198,7 +198,7 @@ public class SchemaObject implements Serializable
         }
         else
         {
-            return StringTools.EMPTY;
+            return oid;
         }
     }
 
