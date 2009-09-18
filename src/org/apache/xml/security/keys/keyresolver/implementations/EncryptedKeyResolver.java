@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import javax.crypto.SecretKey;
 
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.encryption.XMLEncryptionException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
-
 
 /**
  * The <code>EncryptedKeyResolver</code> is not a generic resolver.  It can 
@@ -46,75 +46,70 @@ import org.w3c.dom.Element;
 
 public class EncryptedKeyResolver extends KeyResolverSpi {
 
-	/** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
                         RSAKeyValueResolver.class.getName());
 
-		
-	Key _kek;
-	String _algorithm;
+    Key _kek;
+    String _algorithm;
 
-	/**
-	 * Constructor for use when a KEK needs to be derived from a KeyInfo
-	 * list
-	 * @param algorithm
-	 */
-	public EncryptedKeyResolver(String algorithm) {		
-		_kek = null;
+    /**
+     * Constructor for use when a KEK needs to be derived from a KeyInfo
+     * list
+     * @param algorithm
+     */
+    public EncryptedKeyResolver(String algorithm) {		
+	_kek = null;
         _algorithm=algorithm;
-	}
+    }
 
-	/**
-	 * Constructor used for when a KEK has been set
-	 * @param algorithm
-	 * @param kek
-	 */
-
-	public EncryptedKeyResolver(String algorithm, Key kek) {		
-		_algorithm = algorithm;
-		_kek = kek;
-
-	}
+    /**
+     * Constructor used for when a KEK has been set
+     * @param algorithm
+     * @param kek
+     */
+    public EncryptedKeyResolver(String algorithm, Key kek) {		
+	_algorithm = algorithm;
+	_kek = kek;
+    }
 	
     /** @inheritDoc */
-   public PublicKey engineLookupAndResolvePublicKey(
+    public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
+        return null;
+    }
 
-	   return null;
-   }
-
-   /** @inheritDoc */
-   public X509Certificate engineLookupResolveX509Certificate(
+    /** @inheritDoc */
+    public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage) {
-      return null;
-   }
+        return null;
+    }
 
-   /** @inheritDoc */
-   public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
-           Element element, String BaseURI, StorageResolver storage) {
-	   SecretKey key=null;
-	   if (log.isDebugEnabled())
-		  	log.debug("EncryptedKeyResolver - Can I resolve " + element.getTagName());
+    /** @inheritDoc */
+    public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
+        Element element, String BaseURI, StorageResolver storage) {
+        if (log.isDebugEnabled()) {
+  	    log.debug("EncryptedKeyResolver - Can I resolve " + element.getTagName());
+        }
 
-	      if (element == null) {
-	         return null;
-	      }
+        if (element == null) {
+            return null;
+        }
 
-	      boolean isEncryptedKey = XMLUtils.elementIsInEncryptionSpace(element,
-	                              EncryptionConstants._TAG_ENCRYPTEDKEY);
-
-	      if (isEncryptedKey) {
-			  log.debug("Passed an Encrypted Key");
-			  try {
-				  XMLCipher cipher = XMLCipher.getInstance();
-				  cipher.init(XMLCipher.UNWRAP_MODE, _kek);
-				  EncryptedKey ek = cipher.loadEncryptedKey(element);
-				  key = (SecretKey) cipher.decryptKey(ek, _algorithm);
-			  }
-			  catch (Exception e) {}
-	      }
+        SecretKey key = null;
+        boolean isEncryptedKey = XMLUtils.elementIsInEncryptionSpace(element,
+                                 EncryptionConstants._TAG_ENCRYPTEDKEY);
+        if (isEncryptedKey) {
+	    log.debug("Passed an Encrypted Key");
+	    try {
+	        XMLCipher cipher = XMLCipher.getInstance();
+	        cipher.init(XMLCipher.UNWRAP_MODE, _kek);
+	        EncryptedKey ek = cipher.loadEncryptedKey(element);
+	        key = (SecretKey) cipher.decryptKey(ek, _algorithm);
+	    } catch (XMLEncryptionException e) {}
+        }
 		  	      
-      return key;
+        return key;
    }
 }

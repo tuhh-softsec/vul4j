@@ -1,6 +1,6 @@
 
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package org.apache.xml.security.keys.storage.implementations;
 
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.xml.security.keys.storage.StorageResolverSpi;
-
 
 /**
  * This {@link StorageResolverSpi} makes a single {@link X509Certificate}
@@ -38,8 +38,6 @@ public class SingleCertificateResolver extends StorageResolverSpi {
    Iterator _iterator = null;
 
    /**
-    *
-    *
     * @param x509cert the single {@link X509Certificate}
     */
    public SingleCertificateResolver(X509Certificate x509cert) {
@@ -82,9 +80,10 @@ public class SingleCertificateResolver extends StorageResolverSpi {
 
       /** @inheritDoc */
       public Object next() {
-
+         if (this._alreadyReturned) {
+             throw new NoSuchElementException();
+         }
          this._alreadyReturned = true;
-
          return this._certificate;
       }
 
