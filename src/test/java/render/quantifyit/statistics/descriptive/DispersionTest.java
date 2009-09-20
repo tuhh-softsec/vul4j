@@ -53,6 +53,7 @@ public class DispersionTest {
 	/**
 	 * Standard deviation
 	 */
+	
 	@Test
 	public void testShouldFindTheStandardDeviationOfAListOfElements(){
 		double[] elements = new double[]{1,2,3,4,20};
@@ -89,6 +90,7 @@ public class DispersionTest {
 	/**
 	 * Variance to Standard deviation
 	 */
+	
 	@Test
 	public void testThatGivenAVarianceFindsTheStandardDeviation(){
 		double standardDeviation = Dispersion.var2Sd(3226.89d);
@@ -103,6 +105,7 @@ public class DispersionTest {
 	/**
 	 *  Standard deviation to Variance
 	 */
+	
 	@Test
 	public void testThatGivenAStandardDeviationFindsTheVariance(){
 		double variance = Dispersion.sd2Var(56.81);
@@ -124,7 +127,6 @@ public class DispersionTest {
 		double[] elements = new double[]{-18,-18.7,-7.8, 3};
 		assertEquals(-18.7, Dispersion.min(elements), 2);
 	}
-	
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionIfMinHasEmptyElements(){
@@ -152,7 +154,6 @@ public class DispersionTest {
 		assertEquals(-3.14, Dispersion.max(elements), 2);
 	}
 	
-	
 	@Test(expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionIfMaxHasEmptyElements(){
 		Dispersion.max(new double[]{});
@@ -161,5 +162,32 @@ public class DispersionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionIfMaxHasNullElements(){
 		Dispersion.max(null);
+	}
+	
+	
+	/**
+	 * RANGEr
+	 */
+	
+	@Test
+	public void testShouldReturnTheRangeBetweenElementInADataSet(){
+		double[] elements = new double[]{10.23,130,9.178};
+		assertEquals(119.77, Dispersion.range(elements), 2);
+	}
+	
+	@Test
+	public void testShouldReturnTheRangeBetweenInADataSetWithNegatives(){
+		double[] elements = new double[]{-18,-18.7,-7.8, -3.14};
+		assertEquals(-15.56, Dispersion.range(elements), 2);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testShouldThrowExceptionIfRangeHasEmptyElements(){
+		Dispersion.range(new double[]{});
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testShouldThrowExceptionIfRangeHasNullElements(){
+		Dispersion.range(null);
 	}
 }

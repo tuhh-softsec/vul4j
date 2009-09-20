@@ -1,5 +1,7 @@
 package render.quantifyit.statistics.descriptive;
 
+import java.util.Arrays;
+
 public class Dispersion {
 
 	public static double standardDeviation(double... elements) {
@@ -53,5 +55,13 @@ public class Dispersion {
 		return max;
 	}
 	
+	public static double range(double... elements){
+		if (elements == null || elements.length == 0){
+			throw new IllegalArgumentException("Please give at least one value.");
+		}
+		Arrays.sort(elements);
+		
+		return elements[elements.length-1] - elements[0];
+	}
 
 }
