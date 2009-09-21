@@ -31,8 +31,7 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldReturnAMeanOfZeroIfNoElements(){
-		double mean = Average.mean(0);
-		assertEquals(0, mean, 0);
+		assertEquals(0, Average.mean(0), 0);
 	}
 	
 	@Test
@@ -54,6 +53,22 @@ public class AverageTest {
 		Average.mean(null);
 	}
 
+	@Test
+	public void testShouldReturnDecimalAverages(){
+		double[] elements = new double[]{1.3,2.5,3.1,4.25,5.97,6.41,7.132};
+		double mean = Average.mean(elements);
+		assertEquals(4.38, mean,2);
+	}
+	
+	@Test
+	public void testShouldReturnWeightedAverageWithDoubles(){
+		double[] elements = new double[10];
+		for (int i = 0; i < 10; i++) {
+			 elements[i] = .1;
+		}
+		assertEquals(.1, Average.mean(elements), 1);
+	}
+	
 	/**
 	 * MEDIAN
 	 */

@@ -178,7 +178,8 @@ public class DispersionTest {
 	@Test
 	public void testShouldReturnTheRangeBetweenInADataSetWithNegatives(){
 		double[] elements = new double[]{-18,-18.7,-7.8, -3.14};
-		assertEquals(-15.56, Dispersion.range(elements), 2);
+		double range = Dispersion.range(elements);
+		assertEquals(15.56, range, 2);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
