@@ -20,6 +20,16 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.naming.NamingException;
+import javax.naming.directory.NoSuchAttributeException;
+
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
@@ -28,16 +38,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.naming.NamingException;
-import javax.naming.directory.NoSuchAttributeException;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -306,5 +306,10 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         {
             throw new NoSuchAttributeException( ne.getMessage() );
         }
+    }
+    
+    public String toString()
+    {
+        return byName.toString();
     }
 }

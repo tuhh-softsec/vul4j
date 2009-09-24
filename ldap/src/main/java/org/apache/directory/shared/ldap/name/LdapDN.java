@@ -1437,7 +1437,7 @@ public class LdapDN implements Name, Externalizable
      * @throws InvalidNameException If the RDN is invalid.
      * @throws NamingException If something went wrong.
      */
-    private static void rdnOidToName( Rdn rdn, Map<String, OidNormalizer> oidsMap ) throws InvalidNameException,
+    /** No qualifier */ static void rdnOidToName( Rdn rdn, Map<String, OidNormalizer> oidsMap ) throws InvalidNameException,
         NamingException
     {
         if ( rdn.getNbAtavs() > 1 )

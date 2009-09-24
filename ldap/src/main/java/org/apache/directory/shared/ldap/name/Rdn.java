@@ -31,10 +31,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.naming.InvalidNameException;
+import javax.naming.NamingException;
 
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
+import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -309,10 +311,11 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
 
     /**
      * Transform the external representation of the current RDN to an internal
-     * normalized form where : - types are trimmed and lowercased - values are
-     * trimmed and lowercased
+     * normalized form where : 
+     * - types are trimmed and lower cased 
+     * - values are trimmed and lower cased
      */
-    // WARNING : The protection level is left unspecified intentionnaly.
+    // WARNING : The protection level is left unspecified on purpose.
     // We need this method to be visible from the DnParser class, but not
     // from outside this package.
     /* Unspecified protection */void normalize()
@@ -362,6 +365,28 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
                 break;
         }
     }
+    
+    
+    /**
+     * Transform a RDN by changing the value to its OID counterpart and
+     * normalizing the value accordingly to its type.
+     *
+     * @param rdn The RDN to modify.
+     * @param oidsMap The map of all existing oids and normalizer.
+     * @throws InvalidNameException If the RDN is invalid.
+     * @throws NamingException If something went wrong.
+     */
+    public Rdn normalize( Map<String, OidNormalizer> oidsMap ) throws InvalidNameException, NamingException
+    {
+        String upName = getUpName();
+        LdapDN.rdnOidToName( this, oidsMap );
+        normalize();
+        this.upName = upName;
+
+        
+        return this;
+    }
+
 
 
     /**
