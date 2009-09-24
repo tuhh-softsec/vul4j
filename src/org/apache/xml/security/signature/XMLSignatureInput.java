@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2008 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.apache.xml.security.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -74,24 +75,30 @@ public class XMLSignatureInput implements Cloneable {
     /**
      * The original Element
      */
-    Node _subNode=null;
+    Node _subNode = null;
     /**
      * Exclude Node *for enveloped transformations*
      */
-    Node excludeNode=null;
+    Node excludeNode = null;
     /**
      * 
      */
-    boolean excludeComments=false;
+    boolean excludeComments = false;
    
-    boolean isNodeSet=false;
+    boolean isNodeSet = false;
     /**
      * A cached bytes
      */
-    byte []bytes=null;
+    byte[] bytes = null;
 
     /**
-     * Some Transforms may require explicit MIME type, charset (IANA registered "character set"), or other such information concerning the data they are receiving from an earlier Transform or the source data, although no Transform algorithm specified in this document needs such explicit information. Such data characteristics are provided as parameters to the Transform algorithm and should be described in the specification for the algorithm.
+     * Some Transforms may require explicit MIME type, charset (IANA registered
+     * "character set"), or other such information concerning the data they are
+     * receiving from an earlier Transform or the source data, although no 
+     * Transform algorithm specified in this document needs such explicit 
+     * information. Such data characteristics are provided as parameters to the 
+     * Transform algorithm and should be described in the specification for the 
+     * algorithm.
      */   
     private String _MIMEType = null;
 
@@ -103,26 +110,10 @@ public class XMLSignatureInput implements Cloneable {
     /**
      * Node Filter list.
      */
-    List nodeFilters=new ArrayList();
+    List nodeFilters = new ArrayList();
    
-    boolean needsToBeExpanded=false;
-    OutputStream outputStream=null;
-
-    /**
-     * Check if the structured is needed to be circumbented.
-     * @return true if so.
-     */
-    public boolean isNeedsToBeExpanded() {
-	return needsToBeExpanded;
-    }
-   
-    /**
-     * Set if the structured is needed to be circumbented.
-     * @param needsToBeExpanded true if so.
-     */
-    public void setNeedsToBeExpanded(boolean needsToBeExpanded) {
-	this.needsToBeExpanded = needsToBeExpanded;
-    }
+    boolean needsToBeExpanded = false;
+    OutputStream outputStream = null;
 
     /**
      * Construct a XMLSignatureInput from an octet array.
@@ -133,11 +124,8 @@ public class XMLSignatureInput implements Cloneable {
      * @param inputOctets an octet array which including XML document or node
      */
     public XMLSignatureInput(byte[] inputOctets) {
-
         // NO  defensive copy
-   	  
-        //this._inputOctetStreamProxy = new ByteArrayInputStream(inputOctets);
-        this.bytes=inputOctets;
+        this.bytes = inputOctets;
     }
 
     /**
@@ -148,8 +136,6 @@ public class XMLSignatureInput implements Cloneable {
      */
     public XMLSignatureInput(InputStream inputOctetStream)  {
 	this._inputOctetStreamProxy=inputOctetStream;
-   	  
-        //this(JavaUtils.getBytesFromStream(inputOctetStream));
     }
 
     /**
@@ -186,8 +172,7 @@ public class XMLSignatureInput implements Cloneable {
      *
      * @param rootNode
      */
-    public XMLSignatureInput(Node rootNode)
-    {
+    public XMLSignatureInput(Node rootNode) {
         this._subNode = rootNode;
     }
 
@@ -200,7 +185,23 @@ public class XMLSignatureInput implements Cloneable {
     public XMLSignatureInput(Set inputNodeSet) {
         this._inputNodeSet = inputNodeSet;
     }
+
+    /**
+     * Check if the structure needs to be expanded.
+     * @return true if so.
+     */
+    public boolean isNeedsToBeExpanded() {
+	return needsToBeExpanded;
+    }
    
+    /**
+     * Set if the structure needs to be expanded.
+     * @param needsToBeExpanded true if so.
+     */
+    public void setNeedsToBeExpanded(boolean needsToBeExpanded) {
+	this.needsToBeExpanded = needsToBeExpanded;
+    }
+
     /**
      * Returns the node set from input which was specified as the parameter of 
      * {@link XMLSignatureInput} constructor
@@ -230,24 +231,22 @@ public class XMLSignatureInput implements Cloneable {
     public Set getNodeSet(boolean circumvent)
            throws ParserConfigurationException, IOException, SAXException,
                   CanonicalizationException {
-        if (this._inputNodeSet!=null) {
-      	    return this._inputNodeSet;
+        if (_inputNodeSet != null) {
+      	    return _inputNodeSet;
         }
-	if ((this._inputOctetStreamProxy==null)&& (this._subNode!=null) ) {
-            
-     	    if (circumvent) {           
+	if (_inputOctetStreamProxy == null && _subNode != null) {
+     	    if (circumvent) {
      	    	XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(_subNode));
             }
-            this._inputNodeSet = new HashSet();
-            XMLUtils.getSet(_subNode,this._inputNodeSet, excludeNode, this.excludeComments);
-            
-   	    return this._inputNodeSet;
+            _inputNodeSet = new HashSet();
+            XMLUtils.getSet
+                (_subNode, _inputNodeSet, excludeNode, excludeComments);
+   	    return _inputNodeSet;
 	} else if (this.isOctetStream()) {
             convertToNodes();
-            HashSet result=new HashSet();
-            XMLUtils.getSet(_subNode, result,null,false); 
-            //this._inputNodeSet=result;
-            return result;         
+            HashSet result = new HashSet();
+            XMLUtils.getSet(_subNode, result, null, false); 
+            return result;
         }
 
         throw new RuntimeException(
@@ -263,8 +262,11 @@ public class XMLSignatureInput implements Cloneable {
      * @throws IOException
      */
     public InputStream getOctetStream() throws IOException  {
-         	  
-        return getResetableInputStream();                 
+        if (_inputOctetStreamProxy instanceof FileInputStream) {
+            return _inputOctetStreamProxy;
+        } else {
+            return getResetableInputStream();                 
+        }
     }
 
     /**
@@ -285,21 +287,21 @@ public class XMLSignatureInput implements Cloneable {
      * @throws IOException
      */
     public byte[] getBytes() throws IOException, CanonicalizationException {
-        if (bytes!=null) {
+        if (bytes != null) {
             return bytes;      
         }
         InputStream is = getResetableInputStream();
-        if (is!=null) {
-            //resetable can read again bytes. 
-	    if (bytes==null) {
+        if (is != null) {
+            // resetable can read again bytes. 
+	    if (bytes == null) {
                 is.reset();       
                 bytes=JavaUtils.getBytesFromStream(is);
      	    } 	  	
      	    return bytes;   	  	      
-        }                    
+        }
         Canonicalizer20010315OmitComments c14nizer =
    		new Canonicalizer20010315OmitComments();                  
-        bytes=c14nizer.engineCanonicalize(this);         
+        bytes = c14nizer.engineCanonicalize(this);         
         return bytes;
     }
 
@@ -309,8 +311,8 @@ public class XMLSignatureInput implements Cloneable {
      * @return true if the object has been set up with a Node set
      */
     public boolean isNodeSet() {
-        return (( (this._inputOctetStreamProxy == null)
-              && (this._inputNodeSet != null) ) || isNodeSet);
+        return ((this._inputOctetStreamProxy == null
+                && this._inputNodeSet != null) || isNodeSet);
     }
 
     /**
@@ -319,8 +321,8 @@ public class XMLSignatureInput implements Cloneable {
      * @return true if the object has been set up with a Node set
      */
     public boolean isElement() {
-	return ((this._inputOctetStreamProxy==null)&& (this._subNode!=null)
-   		&& (this._inputNodeSet==null) && !isNodeSet);
+	return (this._inputOctetStreamProxy == null && this._subNode != null
+   		&& this._inputNodeSet == null && !isNodeSet);
     }
    
     /**
@@ -329,8 +331,8 @@ public class XMLSignatureInput implements Cloneable {
      * @return true if the object has been set up with an octet stream
      */
     public boolean isOctetStream() {
-        return ( ((this._inputOctetStreamProxy != null) || bytes!=null)
-              && ((this._inputNodeSet == null) && _subNode ==null));
+        return ((this._inputOctetStreamProxy != null || bytes != null)
+              && (this._inputNodeSet == null && _subNode == null));
     }
 
     /**
@@ -350,8 +352,8 @@ public class XMLSignatureInput implements Cloneable {
      * @return true is the object has been set up with an octet stream
      */
     public boolean isByteArray() {
-        return ( (bytes!=null)
-              && ((this._inputNodeSet == null) && _subNode ==null));
+        return (bytes != null
+                && (this._inputNodeSet == null && _subNode == null));
     }
 
     /**
@@ -360,7 +362,7 @@ public class XMLSignatureInput implements Cloneable {
      * @return true if the object has been set up correctly
      */
     public boolean isInitialized() {
-        return (this.isOctetStream() || this.isNodeSet());
+        return this.isOctetStream() || this.isNodeSet();
     }
 
     /**
@@ -430,9 +432,7 @@ public class XMLSignatureInput implements Cloneable {
      * @return The HTML representation for this XMLSignature
      */
     public String getHTMLRepresentation() throws XMLSignatureException {
-
         XMLSignatureInputDebugger db = new XMLSignatureInputDebugger(this);
-
         return db.getHTMLRepresentation();
     }
 
@@ -446,9 +446,8 @@ public class XMLSignatureInput implements Cloneable {
     public String getHTMLRepresentation(Set inclusiveNamespaces)
            throws XMLSignatureException {
 
-        XMLSignatureInputDebugger db = new XMLSignatureInputDebugger( this,
+        XMLSignatureInputDebugger db = new XMLSignatureInputDebugger(this,
                                         inclusiveNamespaces);
-
         return db.getHTMLRepresentation();
     }
 
@@ -502,13 +501,12 @@ public class XMLSignatureInput implements Cloneable {
     
     public void updateOutputStream(OutputStream diOs, boolean c14n11) 
     throws CanonicalizationException, IOException {        
-	if (diOs==outputStream) {
+	if (diOs == outputStream) {
        	    return;
         }
-        if (bytes!=null) {
+        if (bytes != null) {
             diOs.write(bytes);
-            return;      
-        } else if (_inputOctetStreamProxy==null) {                    
+        } else if (_inputOctetStreamProxy == null) {                    
 	    CanonicalizerBase c14nizer = null;
 	    if (c14n11) {
                 c14nizer = new Canonicalizer11_OmitComments();       
@@ -517,19 +515,26 @@ public class XMLSignatureInput implements Cloneable {
 	    }
             c14nizer.setWriter(diOs);
             c14nizer.engineCanonicalize(this); 
-            return;                  
         } else {
-            InputStream is = getResetableInputStream();
-            if (bytes!=null) {
-                //already read write it, can be rea.
-            	diOs.write(bytes,0,bytes.length);
-                return;
-            }            
-            is.reset();            
-            int num;
-            byte[] bytesT = new byte[1024];
-            while ((num=is.read(bytesT))>0) {
-            	diOs.write(bytesT,0,num);
+            if (_inputOctetStreamProxy instanceof FileInputStream) {
+                byte[] buffer = new byte[4 * 1024];
+                int bytesread = 0;
+	        while ((bytesread = _inputOctetStreamProxy.read(buffer)) != -1 ) {
+	            diOs.write(buffer, 0, bytesread);
+	        }
+            } else {
+                InputStream is = getResetableInputStream();
+                if (bytes != null) {
+                    // already read write it, can be rea.
+            	    diOs.write(bytes, 0, bytes.length);
+                } else {
+                    is.reset();            
+                    byte[] bytesT = new byte[1024];
+                    int num = 0;
+                    while ((num = is.read(bytesT)) > 0) {
+            	        diOs.write(bytesT, 0, num);
+                    }
+                }
             }
         }
     }
@@ -538,28 +543,28 @@ public class XMLSignatureInput implements Cloneable {
      * @param os
      */
     public void setOutputStream(OutputStream os) {
-	outputStream=os;
+	outputStream = os;
     }
 
-    protected InputStream getResetableInputStream() throws IOException{    	
-    	if ((_inputOctetStreamProxy instanceof ByteArrayInputStream) ) {            
+    protected InputStream getResetableInputStream() throws IOException {    	
+    	if (_inputOctetStreamProxy instanceof ByteArrayInputStream) {
             if (!_inputOctetStreamProxy.markSupported()) {
                 throw new RuntimeException("Accepted as Markable but not truly been"+_inputOctetStreamProxy);
             }
             return _inputOctetStreamProxy;
         }
-        if (bytes!=null) {
-            _inputOctetStreamProxy=new ByteArrayInputStream(bytes);
+        if (bytes != null) {
+            _inputOctetStreamProxy = new ByteArrayInputStream(bytes);
             return _inputOctetStreamProxy;
         }
-        if (_inputOctetStreamProxy ==null)
+        if (_inputOctetStreamProxy == null)
             return null;
         if (_inputOctetStreamProxy.markSupported()) {
             log.info("Mark Suported but not used as reset");
         }
-    	bytes=JavaUtils.getBytesFromStream(_inputOctetStreamProxy);
+    	bytes = JavaUtils.getBytesFromStream(_inputOctetStreamProxy);
     	_inputOctetStreamProxy.close();
-    	_inputOctetStreamProxy=new ByteArrayInputStream(bytes);
+    	_inputOctetStreamProxy = new ByteArrayInputStream(bytes);
         return _inputOctetStreamProxy;
     }
         
@@ -589,7 +594,7 @@ public class XMLSignatureInput implements Cloneable {
      * @param b
      */
     public void setNodeSet(boolean b) {
-	isNodeSet=b;
+	isNodeSet = b;
     }
 	
     void convertToNodes() throws CanonicalizationException, 
@@ -604,10 +609,8 @@ public class XMLSignatureInput implements Cloneable {
                .IgnoreAllErrorHandler());
 
             Document doc = db.parse(this.getOctetStream());
-           
-            this._subNode=doc;
+            this._subNode = doc;
         } catch (SAXException ex) {
-
             // if a not-wellformed nodeset exists, put a container around it...
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -617,9 +620,9 @@ public class XMLSignatureInput implements Cloneable {
 
             byte result[] = baos.toByteArray();
             Document document = db.parse(new ByteArrayInputStream(result));
-            this._subNode=document.getDocumentElement().getFirstChild().getFirstChild();				
+            this._subNode = document.getDocumentElement().getFirstChild().getFirstChild();				
         }
-        this._inputOctetStreamProxy=null;
-        this.bytes=null;
+        this._inputOctetStreamProxy = null;
+        this.bytes = null;
     }
 }
