@@ -52,12 +52,23 @@ public class ProcessingInstructionTest extends TestCase {
         org.apache.xml.security.Init.init();
     }
 
+    private static String dir;
+
     public static Test suite() {
         return new TestSuite(ProcessingInstructionTest.class);
     }
     
+    public ProcessingInstructionTest(String name) {
+        super(name);
+        String base = System.getProperty("basedir") == null 
+            ? "./" : System.getProperty("basedir");
+        String fs = System.getProperty("file.separator");
+        dir = base + fs + "data" + fs + "org" + fs + "apache" + fs + "xml" + 
+            fs + "security" + fs + "testcases" + fs;
+    }
+    
     public void testProcessingInstruction() throws Exception {
-        String signatureFileName = "data/org/apache/xml/security/testcases/upp_sign.xml";
+        String signatureFileName = dir + "upp_sign.xml";
         DocumentBuilderFactory dbf = 
             DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
@@ -125,7 +136,7 @@ public class ProcessingInstructionTest extends TestCase {
                 URI uriNew = new URI(uri.getNodeValue(), baseURI);
                 
                 FileInputStream inputStream = 
-                    new FileInputStream("data/org/apache/xml/security/testcases/out.xml");
+                    new FileInputStream(dir + "out.xml");
                 XMLSignatureInput result = new XMLSignatureInput(inputStream);
 
                 result.setSourceURI(uriNew.toString());
