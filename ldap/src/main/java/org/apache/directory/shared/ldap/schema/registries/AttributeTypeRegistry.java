@@ -214,6 +214,45 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     
     
     /**
+     * Remove the AttributeType from the map associating an AttributeType to its
+     * descendants.
+     * 
+     * @param attributeType The attributeType to unregister
+     * @param ancestor its ancestor 
+     * @throws NamingException If something went wrong
+     */
+    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) 
+        throws NamingException
+    {
+        // add this attribute to descendant list of other attributes in superior chain
+        if ( ancestor == null )
+        {
+            return;
+        }
+        
+        // Get the ancestor's descendant, if any
+        Set<AttributeType> descendants = oidToDescendantSet.get( ancestor.getOid() );
+
+        descendants.remove( attributeType );
+        
+        if ( descendants.size() == 0 )
+        {
+            oidToDescendantSet.remove( descendants );
+        }
+        
+        try
+        {
+            // And recurse until we reach the top of the hierarchy
+            unregisterDescendants( attributeType, ancestor.getSuperior() );
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
+    }
+    
+    
+    /**
      * Removes the AttributeType registered with this registry.
      * 
      * @param numericOid the numeric identifier
@@ -226,7 +265,14 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
             AttributeType removed = super.unregister( numericOid );
     
             removeMappingFor( removed );
+            
+            // Deleting an AT which might be used as a superior means we have
+            // to recursively update the descendant map. We also have to remove
+            // the at.oid -> descendant relation
             oidToDescendantSet.remove( numericOid );
+            
+            // Now recurse if needed
+            unregisterDescendants( removed, removed.getSuperior() );
             
             return removed;
         }
