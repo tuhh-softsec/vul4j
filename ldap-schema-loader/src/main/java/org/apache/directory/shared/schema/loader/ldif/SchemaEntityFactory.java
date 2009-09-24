@@ -231,6 +231,7 @@ public class SchemaEntityFactory
         comparator = ( LdapComparator<?> ) clazz.newInstance();
         comparator.setOid( oid );
         injectRegistries( comparator, targetRegistries );
+        comparator.setFqcn( className );
         return comparator;
     }
     
@@ -274,8 +275,9 @@ public class SchemaEntityFactory
         }
         
         String className = entry.get( MetaSchemaConstants.M_FQCN_AT ).get().getString();
-        return getLdapComparator( entry.get( MetaSchemaConstants.M_OID_AT ).getString(), 
-            className, entry.get( MetaSchemaConstants.M_BYTECODE_AT ), targetRegistries );
+        String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
+        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT ); 
+        return getLdapComparator( oid, className, byteCode, targetRegistries );
     }
     
     
