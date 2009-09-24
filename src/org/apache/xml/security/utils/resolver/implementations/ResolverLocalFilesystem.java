@@ -1,5 +1,5 @@
 /*
- * Copyright  1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2009 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,117 +37,114 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
                     ResolverLocalFilesystem.class.getName());
 
     public boolean engineIsThreadSafe() {
-  	   return true;
-   }
-   /**
-    * @inheritDoc
-    */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {
 
-     try {
-        URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
+        try {
+            URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
 
-        // if the URI contains a fragment, ignore it
-        URI uriNewNoFrag = new URI(uriNew);
+            // if the URI contains a fragment, ignore it
+            URI uriNewNoFrag = new URI(uriNew);
 
-        uriNewNoFrag.setFragment(null);
+            uriNewNoFrag.setFragment(null);
 
-        String fileName =
-           ResolverLocalFilesystem
-              .translateUriToFilename(uriNewNoFrag.toString());
-        FileInputStream inputStream = new FileInputStream(fileName);
-        XMLSignatureInput result = new XMLSignatureInput(inputStream);
+            String fileName =
+                ResolverLocalFilesystem
+                .translateUriToFilename(uriNewNoFrag.toString());
+            FileInputStream inputStream = new FileInputStream(fileName);
+            XMLSignatureInput result = new XMLSignatureInput(inputStream);
 
-        result.setSourceURI(uriNew.toString());
+            result.setSourceURI(uriNew.toString());
 
-        return result;
-     } catch (Exception e) {
-        throw new ResourceResolverException("generic.EmptyMessage", e, uri,
+            return result;
+        } catch (Exception e) {
+            throw new ResourceResolverException("generic.EmptyMessage", e, uri,
                                             BaseURI);
-      }
-   }
-
-   private static int FILE_URI_LENGTH="file:/".length();
-   /**
-    * Method translateUriToFilename
-    *
-    * @param uri
-    * @return the string of the filename
-    */
-   private static String translateUriToFilename(String uri) {
-
-      String subStr = uri.substring(FILE_URI_LENGTH);
-
-      if (subStr.indexOf("%20") > -1)
-      {
-        int offset = 0;
-        int index = 0;
-        StringBuffer temp = new StringBuffer(subStr.length());
-        do
-        {
-          index = subStr.indexOf("%20",offset);
-          if (index == -1) temp.append(subStr.substring(offset));
-          else
-          {
-            temp.append(subStr.substring(offset,index));
-            temp.append(' ');
-            offset = index+3;
-          }
         }
-        while(index != -1);
-        subStr = temp.toString();
-      }
+    }
 
-      if (subStr.charAt(1) == ':') {
-      	 // we're running M$ Windows, so this works fine
-         return subStr;
-      }
-      // we're running some UNIX, so we have to prepend a slash
-      return "/" + subStr;
-   }
+    private static int FILE_URI_LENGTH="file:/".length();
+    /**
+     * Method translateUriToFilename
+     *
+     * @param uri
+     * @return the string of the filename
+     */
+    private static String translateUriToFilename(String uri) {
 
-   /**
-    * @inheritDoc
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
+        String subStr = uri.substring(FILE_URI_LENGTH);
 
-      if (uri == null) {
-         return false;
-      }
+        if (subStr.indexOf("%20") > -1) {
+            int offset = 0;
+            int index = 0;
+            StringBuffer temp = new StringBuffer(subStr.length());
+            do {
+                index = subStr.indexOf("%20",offset);
+                if (index == -1) {
+                    temp.append(subStr.substring(offset));
+                } else {
+                    temp.append(subStr.substring(offset, index));
+                    temp.append(' ');
+                    offset = index + 3;
+                }
+            } while(index != -1);
+            subStr = temp.toString();
+        }
 
-      String uriNodeValue = uri.getNodeValue();
+        if (subStr.charAt(1) == ':') {
+      	    // we're running M$ Windows, so this works fine
+            return subStr;
+        }
+        // we're running some UNIX, so we have to prepend a slash
+        return "/" + subStr;
+    }
 
-      if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#') ||
-	  uriNodeValue.startsWith("http:")) {
-         return false;
-      }
+    /**
+     * @inheritDoc
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
+        if (uri == null) {
+            return false;
+        }
 
-      try {
-	         //URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
-	         if (log.isDebugEnabled())
-	         	log.debug("I was asked whether I can resolve " + uriNodeValue/*uriNew.toString()*/);
+        String uriNodeValue = uri.getNodeValue();
 
-	         if ( uriNodeValue.startsWith("file:") ||
-					 BaseURI.startsWith("file:")/*uriNew.getScheme().equals("file")*/) {
-	            if (log.isDebugEnabled())
-	            	log.debug("I state that I can resolve " + uriNodeValue/*uriNew.toString()*/);
+        if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#') ||
+	    uriNodeValue.startsWith("http:")) {
+            return false;
+        }
 
-	            return true;
-	         }
-      } catch (Exception e) {}
+        try {
+	    if (log.isDebugEnabled()) {
+	        log.debug("I was asked whether I can resolve " + uriNodeValue);
+            }
 
-      log.debug("But I can't");
+            if (uriNodeValue.startsWith("file:") ||
+		BaseURI.startsWith("file:")) {
+                if (log.isDebugEnabled()) {
+	       	    log.debug("I state that I can resolve " + uriNodeValue);
+                }
+                return true;
+            }
+        } catch (Exception e) {}
 
-      return false;
-   }
+        log.debug("But I can't");
 
-   private static URI getNewURI(String uri, String BaseURI)
+        return false;
+    }
+
+    private static URI getNewURI(String uri, String BaseURI)
            throws URI.MalformedURIException {
 
-      if ((BaseURI == null) || "".equals(BaseURI)) {
-         return new URI(uri);
-      }
-      return new URI(new URI(BaseURI), uri);
-   }
+        if (BaseURI == null || "".equals(BaseURI)) {
+             return new URI(uri);
+        }
+        return new URI(new URI(BaseURI), uri);
+    }
 }
