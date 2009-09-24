@@ -233,11 +233,14 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         // Get the ancestor's descendant, if any
         Set<AttributeType> descendants = oidToDescendantSet.get( ancestor.getOid() );
 
-        descendants.remove( attributeType );
-        
-        if ( descendants.size() == 0 )
+        if ( descendants != null )
         {
-            oidToDescendantSet.remove( descendants );
+            descendants.remove( attributeType );
+            
+            if ( descendants.size() == 0 )
+            {
+                oidToDescendantSet.remove( descendants );
+            }
         }
         
         try
