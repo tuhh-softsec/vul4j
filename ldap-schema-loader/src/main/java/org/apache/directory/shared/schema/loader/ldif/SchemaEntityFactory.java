@@ -157,6 +157,7 @@ public class SchemaEntityFactory
         // try now before returning to check if we can inject a Registries object
         syntaxChecker.setOid( syntaxOid );
         injectRegistries( syntaxChecker, targetRegistries );
+        syntaxChecker.setFqcn( className );
         return syntaxChecker;
     }
     
@@ -183,8 +184,9 @@ public class SchemaEntityFactory
 
         String className = entry.get( MetaSchemaConstants.M_FQCN_AT ).get().getString();
         String syntaxOid = entry.get( MetaSchemaConstants.M_OID_AT ).get().getString();
-        return getSyntaxChecker( syntaxOid, className, entry.get( 
-            MetaSchemaConstants.M_BYTECODE_AT ), targetRegistries );
+        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
+        
+        return getSyntaxChecker( syntaxOid, className, byteCode, targetRegistries );
     }
     
     
