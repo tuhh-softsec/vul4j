@@ -1,10 +1,11 @@
-package net.webassembletool.parse;
+package net.webassembletool.xml;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
 import junit.framework.TestCase;
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.xml.XpathRenderer;
 
 public class XpathRendererTest extends TestCase {
 

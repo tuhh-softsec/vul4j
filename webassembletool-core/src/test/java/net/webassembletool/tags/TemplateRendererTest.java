@@ -1,4 +1,4 @@
-package net.webassembletool.parse;
+package net.webassembletool.tags;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 import net.webassembletool.HttpErrorPage;
+import net.webassembletool.tags.TemplateRenderer;
 
 public class TemplateRendererTest extends TestCase {
 
@@ -32,13 +33,13 @@ public class TemplateRendererTest extends TestCase {
     }
 
     public void testRenderTemplate1() throws IOException, HttpErrorPage {
-        final String expectedOutput = "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed";
+        final String input = "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed";
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
         StringWriter out = new StringWriter();
         TemplateRenderer tested = new TemplateRenderer(null, params, null);
-        tested.render(expectedOutput, out);
+        tested.render(input, out);
 
         assertFalse(out.toString().contains("key"));
         assertTrue(out.toString().contains("'value'"));

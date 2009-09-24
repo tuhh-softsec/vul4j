@@ -106,4 +106,14 @@ public class DriverFactory {
 			    + effectiveInstanceName);
 	return instance;
     }
+    
+    /**
+     * Method used to inject providers. Usefull mainly for unit testing purpose
+     * 
+     * @param instanceName The name of the provider
+     * @param instance The instance
+     */
+    final static void put(String instanceName, Driver instance){
+    	INSTANCIES.put(instanceName, instance);
+    }
 }

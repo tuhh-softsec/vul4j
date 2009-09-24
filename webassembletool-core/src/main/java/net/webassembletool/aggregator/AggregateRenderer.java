@@ -1,13 +1,14 @@
-package net.webassembletool.parse;
+package net.webassembletool.aggregator;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
+import net.webassembletool.parser.Parser;
 
 /**
  * Retrieves a resource from the provider application and parses it to find tags
@@ -36,34 +37,26 @@ import net.webassembletool.Renderer;
  * @author Stanislav Bernatskyi
  */
 public class AggregateRenderer implements Renderer {
-    private final HttpServletRequest request;
-    private final boolean propagateJsessionId;
+	private final static Pattern PATTERN = Pattern
+			.compile("<!--\\$[^>]*\\$-->");
+
+	private final HttpServletRequest request;
+	private final boolean propagateJsessionId;
 
 	public AggregateRenderer(HttpServletRequest request,
 			boolean propagateJsessionId) {
-        this.request = request;
-        this.propagateJsessionId = propagateJsessionId;
-    }
+		this.request = request;
+		this.propagateJsessionId = propagateJsessionId;
+	}
 
-    /** {@inheritDoc} */
-	public void render(String content, Writer writer)
-			throws IOException, HttpErrorPage {
-        if (content == null)
-            return;
-        RegionParser parser = createParser();
-        List<Region> parsed = parser.parse(content);
-        for (Region region : parsed) {
-            try {
-                region.process(writer, request);
-            } catch (HttpErrorPage e) {
-                writer.append(e.getStatusCode() + " " + e.getStatusMessage());
-            }
-        }
-        // Don't forget to flush the buffer as it is a home made writer, it is not flushed automatically.
-        writer.flush();
-    }
-
-    private RegionParser createParser() {
-        return new AggregateRendererRegionParser(propagateJsessionId);
-    }
+	/** {@inheritDoc} */
+	public void render(String content, Writer out) throws IOException,
+			HttpErrorPage {
+		if (content == null)
+			return;
+		Parser parser = new Parser(PATTERN, IncludeBlockElement.TYPE,
+				IncludeTemplateElement.TYPE, PutElement.TYPE);
+		parser.setAttribute("request", request);
+		parser.parse(content, out, true);
+	}
 }

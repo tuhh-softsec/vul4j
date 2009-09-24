@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
-import net.webassembletool.parse.AggregateRenderer;
+import net.webassembletool.esi.EsiRenderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +42,8 @@ public class AggregatorServlet extends HttpServlet {
 					request,
 					response,
 					propagateJsessionId,
-					new AggregateRenderer(request, propagateJsessionId));
+					new AggregateRenderer(request, propagateJsessionId),
+					new EsiRenderer(request, propagateJsessionId));
 		} catch (HttpErrorPage e) {
 			throw new ServletException(e);
 		}

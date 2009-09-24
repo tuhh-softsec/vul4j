@@ -4,117 +4,52 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
-import net.webassembletool.output.MockStringOutput;
-import net.webassembletool.output.StringOutput;
 
 public class DriverTest extends TestCase {
 
-    public void testRenderBlockNull() throws IOException, HttpErrorPage {
-        final StringOutput expectedOutput = new MockStringOutput(null);
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
+	@Override
+	protected void setUp() throws Exception {
+		MockDriver provider = new MockDriver("mock");
+		provider
+				.addResource("/testBlock",
+						"abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
+		provider
+				.addResource(
+						"/testTemplateFullPage",
+						"some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
+		provider
+				.addResource(
+						"/testTemplate",
+						"abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
+	}
 
-        StringWriter out = new StringWriter();
-        tested.renderBlock(null, null, out, null, null, null, false, false);
-        assertEquals(0, out.toString().length());
-    }
+	public void testRenderBlock() throws IOException, HttpErrorPage {
+		Writer out = new StringWriter();
+		DriverFactory.getInstance("mock").renderBlock("/testBlock", "A", out,
+				null, new HashMap<String, String>(), null, false, false);
+		assertEquals("some text goes here", out.toString());
+	}
 
-    public void testRenderBlock() throws IOException, HttpErrorPage {
-        final StringOutput expectedOutput = new MockStringOutput(
-                "abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
+	public void testRenderTemplateFullPage() throws IOException, HttpErrorPage {
+		StringWriter out = new StringWriter();
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("key", "'value'");
+		params.put("some other key", "'another value'");
+		DriverFactory.getInstance("mock").renderTemplate(
+				"/testTemplateFullPage", null, out, null, params, null, null,
+				false);
+		assertFalse(out.toString().contains("key"));
+		assertTrue(out.toString().contains("'value'"));
+		assertFalse(out.toString().contains("some other key"));
+		assertEquals("some 'value' printed", out.toString());
+	}
 
-        Writer out = new StringWriter();
-        tested.renderBlock(null, "A", out, null, new HashMap<String, String>(),
-                null, false, false);
-        assertEquals("some text goes here", out.toString());
-    }
-
-    public void testRenderTemplateNull1() throws IOException,
-    HttpErrorPage {
-        final StringOutput expectedOutput = new MockStringOutput(null);
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
-
-        StringWriter out = new StringWriter();
-        tested.renderTemplate(null, null, out, null, null, null, null, false);
-        assertEquals(0, out.toString().length());
-    }
-
-    public void testRenderTemplateNull2() throws IOException,
-    HttpErrorPage {
-        final StringOutput expectedOutput = new MockStringOutput(null);
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
-
-        StringWriter out = new StringWriter();
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("key", "'value'");
-        params.put("some other key", "'another value'");
-
-        tested.renderTemplate(null, null, out, null, params, null, null, false);
-        assertFalse(out.toString().contains("key"));
-        assertTrue(out.toString().contains("'value'"));
-        assertFalse(out.toString().contains("some other key"));
-        assertTrue(out.toString().contains("'another value'"));
-    }
-
-    public void testRenderTemplate1() throws IOException, HttpErrorPage {
-        final StringOutput expectedOutput = new MockStringOutput(
-                "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
-
-        StringWriter out = new StringWriter();
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("key", "'value'");
-        params.put("some other key", "'another value'");
-
-        tested.renderTemplate(null, null, out, null, params, null, null, false);
-        assertFalse(out.toString().contains("key"));
-        assertTrue(out.toString().contains("'value'"));
-        assertFalse(out.toString().contains("some other key"));
-
-        assertEquals("some 'value' printed", out.toString());
-    }
-
-    public void testRenderTemplate2() throws IOException, HttpErrorPage {
-        final StringOutput expectedOutput = new MockStringOutput(
-                "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
-        expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
-        Driver tested = new MockDriver("tested", new Properties(),
-                expectedOutput);
-
-        StringWriter out = new StringWriter();
-
-        tested.renderTemplate(null, "A", out, null, null, null, null, false);
-        assertEquals("some text goes here", out.toString());
-    }
-
-    private static final class MockDriver extends Driver {
-        private final StringOutput expectedOutput;
-
-        public MockDriver(String name, Properties props,
-                StringOutput expectedOutput) {
-            super(name, props);
-            this.expectedOutput = expectedOutput;
-        }
-
-        @Override
-        protected StringOutput getResourceAsString(RequestContext target) {
-            return expectedOutput;
-        }
-
-    }
+	public void testRenderTemplate() throws IOException, HttpErrorPage {
+		StringWriter out = new StringWriter();
+		DriverFactory.getInstance("mock").renderTemplate("/testTemplate", "A",
+				out, null, null, null, null, false);
+		assertEquals("some text goes here", out.toString());
+	}
 }

@@ -21,13 +21,13 @@ import net.webassembletool.output.MultipleOutput;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
-import net.webassembletool.parse.BlockRenderer;
-import net.webassembletool.parse.ReplaceRenderer;
-import net.webassembletool.parse.TemplateRenderer;
-import net.webassembletool.parse.XpathRenderer;
-import net.webassembletool.parse.XsltRenderer;
+import net.webassembletool.regexp.ReplaceRenderer;
 import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.ResourceUtils;
+import net.webassembletool.tags.BlockRenderer;
+import net.webassembletool.tags.TemplateRenderer;
+import net.webassembletool.xml.XpathRenderer;
+import net.webassembletool.xml.XsltRenderer;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -178,7 +178,7 @@ public class Driver {
      * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the block
      */
-    public void renderBlock(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> replaceRules, Map<String, String> parameters, boolean propagateJsessionId,
+    public final void renderBlock(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> replaceRules, Map<String, String> parameters, boolean propagateJsessionId,
             boolean copyOriginalRequestParameters) throws IOException, HttpErrorPage {
         render(page, parameters, writer, originalRequest, propagateJsessionId, new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
     }
@@ -211,7 +211,7 @@ public class Driver {
      * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the template
      */
-    public void renderTemplate(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> params, Map<String, String> replaceRules,
+    public final void renderTemplate(String page, String name, Writer writer, HttpServletRequest originalRequest, Map<String, String> params, Map<String, String> replaceRules,
             Map<String, String> parameters, boolean propagateJsessionId) throws IOException, HttpErrorPage {
 		render(page, parameters, writer, originalRequest, propagateJsessionId,
 				new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
@@ -235,7 +235,7 @@ public class Driver {
      * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the template
 	 */
-	public void render(String page, Map<String, String> parameters, Writer writer, HttpServletRequest originalRequest, boolean propagateJsessionId, Renderer... renderers) throws IOException, HttpErrorPage {
+	public final void render(String page, Map<String, String> parameters, Writer writer, HttpServletRequest originalRequest, boolean propagateJsessionId, Renderer... renderers) throws IOException, HttpErrorPage {
         RequestContext target = new RequestContext(this, page, parameters, originalRequest, propagateJsessionId, false);
         StringOutput stringOutput = getResourceAsString(target);
 		String currentValue = stringOutput.toString();

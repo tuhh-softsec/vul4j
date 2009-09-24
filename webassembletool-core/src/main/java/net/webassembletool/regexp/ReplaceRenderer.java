@@ -1,4 +1,4 @@
-package net.webassembletool.parse;
+package net.webassembletool.regexp;
 
 import java.io.IOException;
 import java.io.Writer;

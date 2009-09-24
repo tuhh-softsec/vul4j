@@ -1,4 +1,4 @@
-package net.webassembletool.parse;
+package net.webassembletool.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
