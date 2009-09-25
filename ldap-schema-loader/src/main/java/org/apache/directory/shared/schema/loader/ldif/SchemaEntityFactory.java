@@ -302,6 +302,8 @@ public class SchemaEntityFactory
         normalizer = ( Normalizer ) clazz.newInstance();
         normalizer.setOid( oid );
         injectRegistries( normalizer, targetRegistries );
+        normalizer.setFqcn( className );
+        
         return normalizer;
     }
 
