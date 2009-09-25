@@ -140,7 +140,7 @@ public class MatchingRule extends SchemaObject
             try
             {
                 // Get the associated LdapSyntax
-                ldapSyntax = registries.getLdapSyntaxRegistry().lookup( oid );
+                ldapSyntax = registries.getLdapSyntaxRegistry().lookup( ldapSyntaxOid );
             }
             catch ( NamingException ne )
             {
