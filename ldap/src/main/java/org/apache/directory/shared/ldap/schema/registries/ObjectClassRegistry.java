@@ -20,8 +20,21 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.naming.NamingException;
+import javax.naming.directory.NoSuchAttributeException;
+
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -32,6 +45,15 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  */
 public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
 {
+    /** static class logger */
+    private static final Logger LOG = LoggerFactory.getLogger( ObjectClassRegistry.class );
+
+    /** Speedup for DEBUG mode */
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
+
+    /** maps OIDs to a Set of descendants for that OID */
+    private final Map<String,Set<ObjectClass>> oidToDescendantSet;
+
     /**
      * Creates a new default ObjectClassRegistry instance.
      * 
@@ -40,5 +62,209 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
     public ObjectClassRegistry( OidRegistry oidRegistry )
     {
         super( SchemaObjectType.OBJECT_CLASS, oidRegistry );
+        oidToDescendantSet= new ConcurrentHashMap<String,Set<ObjectClass>>();
+    }
+    
+    
+    /**
+     * Quick lookup to see if an objectClass has descendants.
+     * 
+     * @param ancestorId the name alias or OID for an ObjectClass
+     * @return an Iterator over the ObjectClasses which have the ancestor
+     * within their superior chain to the top
+     * @throws NamingException if the ancestor ObjectClass cannot be 
+     * discerned from the ancestorId supplied
+     */
+    public boolean hasDescendants( String ancestorId ) throws NamingException
+    {
+        try
+        {
+            String oid = getOidByName( ancestorId );
+            Set<ObjectClass> descendants = oidToDescendantSet.get( oid );
+            return (descendants != null) && !descendants.isEmpty();
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
+    }
+    
+    
+    /**
+     * Get's an iterator over the set of descendant ObjectClasses for
+     * some ancestor's name alias or their OID.
+     * 
+     * @param ancestorId the name alias or OID for an ObjectClass
+     * @return an Iterator over the ObjectClasses which have the ancestor
+     * within their superior chain to the top
+     * @throws NamingException if the ancestor ObjectClass cannot be 
+     * discerned from the ancestorId supplied
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<ObjectClass> descendants( String ancestorId ) throws NamingException
+    {
+        try
+        {
+            String oid = getOidByName( ancestorId );
+            Set<ObjectClass> descendants = oidToDescendantSet.get( oid );
+            
+            if ( descendants == null )
+            {
+                return Collections.EMPTY_SET.iterator();
+            }
+            
+            return descendants.iterator();
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
+    }
+
+    
+    /**
+     * Store the ObjectClass into a map associating an ObjectClass to its
+     * descendants.
+     * 
+     * @param attributeType The ObjectClass to register
+     * @throws NamingException If something went wrong
+     */
+    public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) 
+        throws NamingException
+    {
+        // add this attribute to descendant list of other attributes in superior chain
+        if ( ( ancestors == null ) || ( ancestors.size() == 0 ) ) 
+        {
+            return;
+        }
+        
+        for ( ObjectClass ancestor : ancestors )
+        {
+            // Get the ancestor's descendant, if any
+            Set<ObjectClass> descendants = oidToDescendantSet.get( ancestor.getOid() );
+    
+            // Initialize the descendant Set to store the descendants for the attributeType
+            if ( descendants == null )
+            {
+                descendants = new HashSet<ObjectClass>( 1 );
+                oidToDescendantSet.put( ancestor.getOid(), descendants );
+            }
+            
+            // Add the current ObjectClass as a descendant
+            descendants.add( objectClass );
+            
+            try
+            {
+                // And recurse until we reach the top of the hierarchy
+                registerDescendants( objectClass, ancestor.getSuperiors() );
+            }
+            catch ( NamingException ne )
+            {
+                throw new NoSuchAttributeException( ne.getMessage() );
+            }
+        }
+    }
+    
+    
+    /**
+     * Remove the ObjectClass from the map associating an ObjectClass to its
+     * descendants.
+     * 
+     * @param attributeType The ObjectClass to unregister
+     * @param ancestor its ancestor 
+     * @throws NamingException If something went wrong
+     */
+    public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) 
+        throws NamingException
+    {
+        // add this attribute to descendant list of other attributes in superior chain
+        if ( ( ancestors == null ) || ( ancestors.size() == 0 ) ) 
+        {
+            return;
+        }
+        
+        for ( ObjectClass ancestor : ancestors )
+        {
+            // Get the ancestor's descendant, if any
+            Set<ObjectClass> descendants = oidToDescendantSet.get( ancestor.getOid() );
+    
+            if ( descendants != null )
+            {
+                descendants.remove( attributeType );
+                
+                if ( descendants.size() == 0 )
+                {
+                    oidToDescendantSet.remove( descendants );
+                }
+            }
+            
+            try
+            {
+                // And recurse until we reach the top of the hierarchy
+                unregisterDescendants( attributeType, ancestor.getSuperiors() );
+            }
+            catch ( NamingException ne )
+            {
+                throw new NoSuchAttributeException( ne.getMessage() );
+            }
+        }
+    }
+    
+    
+    /**
+     * Registers a new ObjectClass with this registry.
+     *
+     * @param objectClass the ObjectClass to register
+     * @throws NamingException if the ObjectClass is already registered or
+     * the registration operation is not supported
+     */
+    public void register( ObjectClass objectClass ) throws NamingException
+    {
+        try
+        {
+            super.register( objectClass );
+            
+            // Register this ObjectClass into the Descendant map
+            registerDescendants( objectClass, objectClass.getSuperiors() );
+            
+            // Internally associate the OID to the registered AttributeType
+            if ( IS_DEBUG )
+            {
+                LOG.debug( "registred objectClass: {}", objectClass );
+            }
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
+    }
+    
+    
+    /**
+     * Removes the ObjectClass registered with this registry.
+     * 
+     * @param numericOid the numeric identifier
+     * @throws NamingException if the numeric identifier is invalid
+     */
+    public ObjectClass unregister( String numericOid ) throws NamingException
+    {
+        try
+        {
+            ObjectClass removed = super.unregister( numericOid );
+    
+            // Deleting an ObjectClass which might be used as a superior means we have
+            // to recursively update the descendant map. We also have to remove
+            // the at.oid -> descendant relation
+            oidToDescendantSet.remove( numericOid );
+            
+            // Now recurse if needed
+            unregisterDescendants( removed, removed.getSuperiors() );
+            
+            return removed;
+        }
+        catch ( NamingException ne )
+        {
+            throw new NoSuchAttributeException( ne.getMessage() );
+        }
     }
 }
