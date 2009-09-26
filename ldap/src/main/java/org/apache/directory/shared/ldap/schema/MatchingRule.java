@@ -154,9 +154,8 @@ public class MatchingRule extends SchemaObject
      * Gets the LdapSyntax used by this MatchingRule.
      * 
      * @return the LdapSyntax of this MatchingRule
-     * @throws NamingException if there is a failure resolving the object
      */
-    public LdapSyntax getSyntax() throws NamingException
+    public LdapSyntax getSyntax() 
     {
         return ldapSyntax;
     }
@@ -210,7 +209,7 @@ public class MatchingRule extends SchemaObject
      * @return the ordering LdapComparator
      * @throws NamingException if there is a failure resolving the object
      */
-    public LdapComparator<? super Object> getLdapComparator() throws NamingException
+    public LdapComparator<? super Object> getLdapComparator()
     {
         return ldapComparator;
     }
@@ -237,7 +236,7 @@ public class MatchingRule extends SchemaObject
      * @return the associated normalizer
      * @throws NamingException if there is a failure resolving the object
      */
-    public Normalizer getNormalizer() throws NamingException
+    public Normalizer getNormalizer()
     {
         return normalizer;
     }
