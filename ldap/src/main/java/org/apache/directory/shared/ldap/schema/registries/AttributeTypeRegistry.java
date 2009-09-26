@@ -291,33 +291,26 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
      */
     private void addMappingFor( AttributeType attributeType ) throws NamingException
     {
-        try
+        MatchingRule matchingRule = attributeType.getEquality();
+        OidNormalizer oidNormalizer;
+        String oid = attributeType.getOid();
+
+        if ( matchingRule == null )
         {
-            MatchingRule matchingRule = attributeType.getEquality();
-            OidNormalizer oidNormalizer;
-            String oid = attributeType.getOid();
-    
-            if ( matchingRule == null )
-            {
-                LOG.debug( "Attribute {} does not have normalizer : using NoopNormalizer", attributeType.getName() );
-                oidNormalizer = new OidNormalizer( oid, new NoOpNormalizer( attributeType.getOid() ) );
-            }
-            else
-            {
-                oidNormalizer = new OidNormalizer( oid, matchingRule.getNormalizer() );
-            }
-    
-            oidNormalizerMap.put( oid, oidNormalizer );
-            
-            // Also inject the attributeType's short names in the map
-            for ( String name : attributeType.getNames() )
-            {
-                oidNormalizerMap.put( name.toLowerCase(), oidNormalizer );
-            }
+            LOG.debug( "Attribute {} does not have normalizer : using NoopNormalizer", attributeType.getName() );
+            oidNormalizer = new OidNormalizer( oid, new NoOpNormalizer( attributeType.getOid() ) );
         }
-        catch ( NamingException ne )
+        else
         {
-            throw new NoSuchAttributeException( ne.getMessage() );
+            oidNormalizer = new OidNormalizer( oid, matchingRule.getNormalizer() );
+        }
+
+        oidNormalizerMap.put( oid, oidNormalizer );
+        
+        // Also inject the attributeType's short names in the map
+        for ( String name : attributeType.getNames() )
+        {
+            oidNormalizerMap.put( name.toLowerCase(), oidNormalizer );
         }
     }
 
