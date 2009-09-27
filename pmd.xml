@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+  <description>QuantifyIT PMD rules</description>
+  <rule ref="rulesets/optimizations.xml/AddEmptyString">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strings.xml/AppendCharacterWithChar">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/optimizations.xml/AvoidArrayLoops">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/optimizations.xml/AvoidInstantiatingObjectsInLoops">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/AvoidUsingShortType">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/BigIntegerInstantiation">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/BooleanInstantiation">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/FinalFieldCouldBeStatic">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/IdempotentOperations">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/UnnecessaryLocalBeforeReturn">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/optimizations.xml/UseArrayListInsteadOfVector">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/optimizations.xml/UseArraysAsList">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strings.xml/UselessStringValueOf">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/AbstractClassWithoutAbstractMethod">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/AvoidConstantsInterface">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strings.xml/AvoidDuplicateLiterals">
+    <priority>1</priority>
+    <properties>
+      <property name="threshold" value="3"/>
+      <property name="skipAnnotations" value="true" />
+    </properties>
+  </rule>
+  <rule ref="rulesets/design.xml/AvoidInstanceofChecksInCatchClause">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/AvoidProtectedFieldInFinalClass">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidRethrowingException">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidThrowingRawExceptionTypes">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/AvoidUsingVolatile">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/CollapsibleIfStatements">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/coupling.xml/CouplingBetweenObjects">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/imports.xml/DontImportJavaLang">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/imports.xml/DuplicateImports">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyCatchBlock">
+    <priority>1</priority>
+    <properties>
+      <property name="allowCommentedBlocks" value="true"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/finalizers.xml/EmptyFinalizer">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyFinallyBlock">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyIfStmt">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyStatementNotInLoop">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyStaticInitializer">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptySwitchStatements">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptySynchronizedBlock">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyTryBlock">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyWhileStmt">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
+    <priority>1</priority>
+    <properties>
+      <property name="minimum" value="350"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/coupling.xml/ExcessiveImports">
+    <priority>1</priority>
+    <properties>
+      <property name="minimum" value="30"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
+    <priority>1</priority>
+    <properties>
+      <property name="minimum" value="100"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/codesize.xml/ExcessiveParameterList">
+    <priority>1</priority>
+    <properties>
+      <property name="minimum" value="5"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/codesize.xml/ExcessivePublicCount">
+    <priority>1</priority>
+    <properties>
+      <property name="minimum" value="20"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/basic.xml/ForLoopShouldBeWhileLoop">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/imports.xml/ImportFromSamePackage">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/coupling.xml/LooseCoupling">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/MissingStaticMethodInNonInstantiatableClass">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/NullAssignment">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/PreserveStackTrace">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/logging-jakarta-commons.xml/ProperLogger">
+    <priority>1</priority>
+    <properties>
+      <property name="staticLoggerName" value="log"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/design.xml/SimplifyConditional">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/SingularField">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/codesize.xml/TooManyFields">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/imports.xml/TooManyStaticImports">
+    <priority>1</priority>
+    <properties>
+      <property name="maximumStaticImports" value="6"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/basic.xml/UnconditionalIfStatement">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/UnnecessaryConstructor">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/UnnecessaryReturn">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/UnusedModifier">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/unusedcode.xml/UnusedPrivateField">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/UseCollectionIsEmpty">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/logging-jakarta-commons.xml/UseCorrectExceptionLogging">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/UselessOverridingMethod">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/DontImportSun">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/migrating.xml/IntegerInstantiation">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/migrating.xml/ReplaceEnumerationWithIterator">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/migrating.xml/ReplaceHashtableWithMap">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/migrating.xml/ReplaceVectorWithList">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/AssignmentToNonFinalStatic">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidCatchingThrowable">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidCatchingNPE">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/AvoidUsingHardCodedIP">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/AvoidUsingOctalValues">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/CloseResource">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/CheckResultSet">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/ClassCastExceptionWithToArray">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/CompareObjectsWithEquals">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/MissingBreakInSwitch">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/PositionLiteralsFirstInComparisons">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/SimpleDateFormatNeedsLocale">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/ReturnFromFinallyBlock">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/AssignmentInOperand">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/AvoidDeeplyNestedIfStmts">
+    <priority>1</priority>
+    <properties>
+      <property name="problemDepth" value="2"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/naming.xml/AvoidDollarSigns">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/naming.xml/AvoidFieldNameMatchingMethodName">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/naming.xml/AvoidFieldNameMatchingTypeName">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/logging-java.xml/AvoidPrintStackTrace">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/ConfusingTernary">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/ExceptionAsFlowControl">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/braces.xml/ForLoopsMustUseBraces">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/braces.xml/IfElseStmtsMustUseBraces">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/braces.xml/IfStmtsMustUseBraces">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/InstantiationToGetClass">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/logging-java.xml/MoreThanOneLogger">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/naming.xml/MethodWithSameNameAsEnclosingClass">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/NonStaticInitializer">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/naming.xml/ShortVariable">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/naming.xml/SuspiciousConstantFieldName">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/naming.xml/SuspiciousEqualsMethodName">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/naming.xml/SuspiciousHashcodeMethodName">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/logging-java.xml/SystemPrintln">
+    <priority>1</priority>
+  </rule>
+  <rule ref="rulesets/braces.xml/WhileLoopsMustUseBraces">
+    <priority>1</priority>
+  </rule>
+</ruleset>

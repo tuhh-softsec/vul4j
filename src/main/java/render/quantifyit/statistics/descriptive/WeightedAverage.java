@@ -1,13 +1,14 @@
 package render.quantifyit.statistics.descriptive;
 
+import render.quantifyit.model.Decimal;
 import render.quantifyit.model.Probability;
 
 public class WeightedAverage {
 	
-	public static double weighted(Probability... probabilities){
-		double average = 0;
+	public static Decimal weighted(final Probability... probabilities){
+		Decimal average = Decimal.ZERO;
 		for (Probability probability : probabilities) {
-			average += probability.getWeight() * probability.getValue() ;
+			average = average.plus(	probability.getWeight().times(probability.getValue()) );
 		}
 		return average;
 	}

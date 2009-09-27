@@ -2,66 +2,69 @@ package render.quantifyit.statistics.descriptive;
 
 import java.util.Arrays;
 
+import render.quantifyit.model.Decimal;
+import render.quantifyit.util.DecimalArray;
+
 public class Dispersion {
 
-	public static double standardDeviation(double... elements) {
-		return Math.sqrt(variance(elements));
+	public static Decimal standardDeviation(final Decimal... elements) {
+		return variance(elements).squareRoot();
 	}
 
-	public static double variance(double... elements) {
-		double mean = Average.mean(elements);
-		double sumOfSquares = 0;
-		for (double element : elements) {
-			sumOfSquares += Math.pow(element, 2);
+	public static Decimal variance(final Decimal... elements) {
+		final Decimal mean = Average.mean(elements);
+		
+		Decimal sumOfSquares = Decimal.ZERO;
+		for (Decimal element : elements) {
+			sumOfSquares = sumOfSquares.plus(element.power(2));
 		}
 		
-		return (sumOfSquares/elements.length) - Math.pow(mean, 2);
+		return (sumOfSquares.by(elements.length)).minus(mean.power(2));
 	}
 
-	public static double sd2Var(double standardDeviation) {
-		return Math.pow(standardDeviation,2);
+	public static Decimal sd2Var(final Decimal standardDeviation) {
+		return standardDeviation.power(2);
 	}
 
-	public static double var2Sd(double variance) {
-		if(variance < 0){
+	public static Decimal var2Sd(final Decimal variance) {
+		if(variance.isNegative()){
 			throw new IllegalArgumentException("Please give a non negative number.");
 		}
-		return Math.sqrt(variance);
+		return variance.squareRoot();
 	}
 	
-	public static double min(double... elements){
-		if (elements == null || elements.length == 0){
-			throw new IllegalArgumentException("Please give at least one value.");
-		}
-		double min = elements[0];
-		for (double element : elements) {
-			if(Math.min(min, element) != min){
+	public static Decimal min(final Decimal... elements){
+		DecimalArray.notNullOrEmpty(elements);
+		
+		Decimal min = elements[0];
+		for (Decimal element : elements) {
+			if(element.lt(min)){
 				min = element;
 			}
 		}
 		return min;
 	}
 
-	public static double max(double... elements){
-		if (elements == null || elements.length == 0){
-			throw new IllegalArgumentException("Please give at least one value.");
-		}
-		double max = elements[0];
-		for (double element : elements) {
-			if(Math.max(max, element) != max) {
+	public static Decimal max(final Decimal... elements){
+		DecimalArray.notNullOrEmpty(elements);
+		
+		Decimal max = elements[0];
+		for (Decimal element : elements) {
+			if(element.gt(max)) {
 				max = element;
 			}
 		}
 		return max;
 	}
 	
-	public static double range(double... elements){
-		if (elements == null || elements.length == 0){
-			throw new IllegalArgumentException("Please give at least one value.");
-		}
+	//TODO: Do something better than just sort them...
+	
+	public static Decimal range(final Decimal... elements){
+		DecimalArray.notNullOrEmpty(elements);
+
 		Arrays.sort(elements);
 		
-		return elements[elements.length-1] - elements[0];
+		return elements[elements.length-1].minus(elements[0]);
 	}
 
 }

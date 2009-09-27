@@ -5,165 +5,343 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+/**
+ * Immutable, arbitrary-precision signed decimal numbers.
+ * Delegates the arithmetic to {@link java.math.BigDecimal}, through a consistent API
+ * As a design choice, Decimal trades-off performance for 
+ * precision. 
+ * 
+ * BigDecimal is a complicated class, with many pitfalls. For example,
+ * which one of the 15 constructors and 3 static factories should i call? 
+ * In particular, the ones accepting double are well-known for being broken.
+ * 
+ * Decimal provides simple methods, with short consistent names, favouring reuse. 
+ * It only supports int, double and String, although much prefers int and String. 
+ * 
+ * Decimal also chooses not to extend Number, to avoid having to implement 
+ * certain abstract methods. 
+ * 
+ * @author Fernando Racca
+ * @see java.math.BigDecimal
+ */
 public class Decimal implements Comparable<Decimal>, Serializable{
+
+	private static final int DEFAULT_SCALE = 10;
 
 	private static final long serialVersionUID = 6840541842364016476L;
 
 	public static final Decimal ZERO 	= new Decimal("0");
 	public static final Decimal ONE 	= new Decimal("1");
-	public static final Decimal TWO 	= new Decimal("2");
-	public static final Decimal THREE 	= new Decimal("3");
-	public static final Decimal FOUR 	= new Decimal("4");
-	public static final Decimal FIVE 	= new Decimal("5");
-	public static final Decimal SIX 	= new Decimal("6");
-	public static final Decimal SEVEN 	= new Decimal("7");
-	public static final Decimal EIGHT 	= new Decimal("8");
-	public static final Decimal NINE 	= new Decimal("9");
 	public static final Decimal TEN	 	= new Decimal("10");
 
-	private final BigDecimal value;
+	private final BigDecimal significand;
+	
+	/*
+	 * Constructors. all default to BigDecimal(String value)
+	 */
+	
 	
 	public Decimal(final int value){
 		this(Integer.toString(value));
+	}
+	
+	public Decimal(final int value, final MathContext roundingCriteria){
+		this(Integer.toString(value), roundingCriteria);
 	}
 	
 	public Decimal(final double value){
 		this(Double.toString(value));
 	}
 	
+	public Decimal(final double value, final MathContext roundingCriteria){
+		this(Double.toString(value), roundingCriteria);
+	}
+	
 	public Decimal(final String value) {
-		this.value = new BigDecimal(value);
+		this.significand = new BigDecimal(value);
 	}
 
 	public Decimal(final String value, final MathContext roundingCriteria) {
-		this.value = new BigDecimal(value, roundingCriteria);
+		this.significand = new BigDecimal(value, roundingCriteria);
 	}
 
 	private Decimal(final BigDecimal value) {
-		this.value = value;
+		this.significand = value;
 	}
 	
-	public Decimal plus(int augend) {
-		return new Decimal(value.add(new BigDecimal(Integer.toString(augend))));
+	/*
+	 * PLUS = Addition = BigDecimal.add(...)
+	 */
+	
+	public Decimal plus(final int augend) {
+		return new Decimal(significand.add(new BigDecimal(Integer.toString(augend))));
 	}
 	
-	public Decimal minus(int subtrahend) {
-		return new Decimal(value.subtract(new BigDecimal(Integer.toString(subtrahend))));
+	public Decimal plus(final double augend) {
+		return new Decimal(significand.add(new BigDecimal(Double.toString(augend))));
 	}
 	
-	public Decimal times(int multiplicand) {
-		return new Decimal(value.multiply(new BigDecimal(Integer.toString(multiplicand))));
+	public Decimal plus(final Decimal augend) {
+		return new Decimal(significand.add(augend.asBigDecimal()));
+	}
+	public Decimal plus(final Decimal augend, final MathContext roundingCriteria) {
+		return new Decimal(significand.add(augend.asBigDecimal(), roundingCriteria));
 	}
 	
-	public Decimal by(int divisor) {
-		return new Decimal(value.divide(new BigDecimal(Integer.toString(divisor))));
-	}
+	/*
+	 * MINUS = Subtraction = BigDecimal.subtract(...)
+	 */
 	
-	public Decimal power(int power){
-		return new Decimal(value.pow(power));
+	public Decimal minus(final int subtrahend) {
+		return new Decimal(significand.subtract(new BigDecimal(Integer.toString(subtrahend))));
 	}
 
-	public Decimal power(int power, MathContext roundingCriteria){
-		return new Decimal(value.pow(power, roundingCriteria));
+	public Decimal minus(final double subtrahend) {
+		return new Decimal(significand.subtract(new BigDecimal(Double.toString(subtrahend))));
+	}
+
+	public Decimal minus(final Decimal subtrahend) {
+		return new Decimal(significand.subtract(subtrahend.asBigDecimal()));
 	}
 	
-	
-	public Decimal plus(double augend) {
-		return new Decimal(value.add(new BigDecimal(Double.toString(augend))));
+	public Decimal minus(final Decimal subtrahend, final MathContext roundingCriteria) {
+		return new Decimal(significand.subtract(subtrahend.asBigDecimal(), roundingCriteria));
 	}
 	
-	public Decimal minus(double subtrahend) {
-		return new Decimal(value.subtract(new BigDecimal(Double.toString(subtrahend))));
-	}
-	
-	public Decimal times(double multiplicand) {
-		return new Decimal(value.multiply(new BigDecimal(Double.toString(multiplicand))));
-	}
-	
-	public Decimal by(double divisor) {
-		return new Decimal(value.divide(new BigDecimal(Double.toString(divisor))));
-	}
+	/*
+	 * TIMES = Multiplication = BigDecimal.multiply(...)
+	 */
 	
 	
-	public Decimal plus(Decimal augend) {
-		return new Decimal(value.add(augend.getBigDecimal()));
+	public Decimal times(final int multiplicand) {
+		return new Decimal(significand.multiply(new BigDecimal(Integer.toString(multiplicand))));
 	}
 	
-	public Decimal minus(Decimal subtrahend) {
-		return new Decimal(value.subtract(subtrahend.getBigDecimal()));
+	public Decimal times(final double multiplicand) {
+		return new Decimal(significand.multiply(new BigDecimal(Double.toString(multiplicand))));
+	}
+
+	public Decimal times(final Decimal multiplicand) {
+		return new Decimal(significand.multiply(multiplicand.asBigDecimal()));
 	}
 	
-	public Decimal times(Decimal multiplicand) {
-		return new Decimal(value.multiply(multiplicand.getBigDecimal()));
+	public Decimal times(final Decimal multiplicand, final MathContext roundingCriteria) {
+		return new Decimal(significand.multiply(multiplicand.asBigDecimal(), roundingCriteria));
 	}
 	
-	public Decimal by(Decimal divisor) {
-		return new Decimal(value.divide(divisor.getBigDecimal()));
+	/*
+	 * BY = Division = BigDecimal.divide(...)
+	 */
+	
+	public Decimal by(final int divisor) {
+		return by(divisor, DEFAULT_SCALE, RoundingMode.HALF_EVEN);
 	}
+	
+	public Decimal by(final int divisor, final int scale) {
+		return by(divisor, scale, RoundingMode.HALF_EVEN);
+	}
+	
+	public Decimal by(final int divisor, final int scale, final RoundingMode roundingMode) {
+		return by(new Decimal(Integer.toString(divisor)), scale, roundingMode);
+	}
+	
+	public Decimal by(final double divisor) {
+		return by(divisor, DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+	}
+	
+	public Decimal by(final double divisor, final int scale) {
+		return by(divisor, scale, RoundingMode.HALF_EVEN);
+	}
+	
+	public Decimal by(final double divisor, final int scale, final RoundingMode roundingMode) {
+		return by(new Decimal(Double.toString(divisor)), scale, roundingMode);
+	}
+		
+	public Decimal by(final Decimal divisor) {
+		return by(divisor, DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+	}
+	
+	public Decimal by(final Decimal divisor, final int scale) {
+		return by(divisor, scale, RoundingMode.HALF_EVEN);
+	}
+	
+	public Decimal by(final Decimal divisor, final int scale, final RoundingMode roundingMode) {
+		return new Decimal(significand.divide(divisor.asBigDecimal(), scale, roundingMode));
+	}
+	
+	public Decimal by(final Decimal divisor, final MathContext roundingCriteria) {
+		return new Decimal(significand.divide(divisor.asBigDecimal(), roundingCriteria));
+	}
+	
+	/*
+	 * POWER = Power = BigDecimal.pow(...)
+	 */
+	
+	public Decimal power(final int power){
+		return new Decimal(significand.pow(power));
+	}
+
+	public Decimal power(final int power, final MathContext roundingCriteria){
+		return new Decimal(significand.pow(power, roundingCriteria));
+	}
+	
+	public static Decimal squareRoot(final int squared){
+		return new Decimal(Math.sqrt(squared));
+	}
+	
+	public static Decimal squareRoot(final double squared){
+		return new Decimal(Math.sqrt(squared));
+	}
+	
+	public static Decimal squareRoot(final Decimal squared){
+		return new Decimal(Math.sqrt(squared.asDouble()));
+	}
+	
+	public static Decimal squareRoot(final Decimal squared, final MathContext roundingCriteria){
+		return new Decimal(Math.sqrt(squared.asDouble()), roundingCriteria);
+	}
+	
+	public Decimal squareRoot(){
+		return new Decimal(Math.sqrt(significand.doubleValue()));
+	}
+	
+	public Decimal squareRoot(final MathContext roundingCriteria){
+		return new Decimal(Math.sqrt(significand.doubleValue()), roundingCriteria);
+	}
+
+	//TODO: implement modulo
+	public Decimal modulo(final Decimal other){
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+	
+	/*
+	 * Comparison
+	 */
 	
 	@Override
-	public boolean equals(Object x) {
-	    if (!(x instanceof Decimal))
+	public boolean equals(final Object otherObject) {
+	    if (!(otherObject instanceof Decimal)){
             return false;
-        Decimal other = (Decimal) x;
-        if (x == this)
+	    }
+        final Decimal other = (Decimal) otherObject;
+        if (other == this){
             return true;
-		
-		return this.value.equals(other.getBigDecimal());
+        }
+		return this.significand.equals(other.asBigDecimal());
 	}
 
 	@Override
 	public int hashCode() {
-		return this.value.hashCode();
+		return this.significand.hashCode();
 	}
+	
+	public int compareTo(final Decimal other) {
+		return this.significand.compareTo(other.asBigDecimal());
+	}
+	
+	/**
+	 * Compares values for identical representation. Delegates to compareTo,
+	 * but is simpler to use, since it returns a boolean
+	 * @param other the value to compare
+	 * @return true if both values have exact same representation
+	 */
+	public boolean same(final Decimal other){
+		return this.compareTo(other) == 0;
+	}
+	
+	public Decimal min(final Decimal other) {
+		return (compareTo(other) <= 0 ? this : other);
+	}
+	
+	public Decimal max(final Decimal other) {
+		return (compareTo(other) >= 0 ? this : other);
+	}
+	
+	public boolean gt(final Decimal other){
+		return compareTo(other) > 0;
+	}
+	
+	public boolean lt(final Decimal other){
+		return compareTo(other) < 0;
+	}
+	
+	public boolean gte(final Decimal other){
+		return compareTo(other) >= 0;
+	}
+	
+	public boolean lte(final Decimal other){
+		return compareTo(other) <= 0;
+	}
+	
+	/**
+	 * If the number is GREATER THAN Decimal.ZERO
+	 * Doesn't account for positive or negative zero, infinity or NaN
+	 * @return true if code>x > 0</code> 
+	 */
+	public boolean isPositive(){
+		return gt(Decimal.ZERO);
+	}
+	
+	/**
+	 * If the number is LOWER THAN Decimal.ZERO
+	 * Doesn't account for positive or negative zero, infinity or NaN
+	 * @return true if code>x < 0</code> 
+	 */
+	public boolean isNegative(){
+		return lt(Decimal.ZERO);
+	}
+	
+	/*
+	 * Conversion
+	 */
 	
 	@Override
 	public String toString() {
-		return this.value.toPlainString();
+		return this.significand.toPlainString();
 	}
 	
 	public String toSciString(){
-		return value.toString();
+		return significand.toString();
 	}
 	
 	public String toEngString(){
-		return value.toEngineeringString();
+		return significand.toEngineeringString();
 	}	
 	
-	@Override
-	public int compareTo(Decimal x) {
-		return this.value.compareTo(x.getBigDecimal());
-	}
-	
-	public BigDecimal getBigDecimal() {
-		return value;
-	}
-	
-	public int getScale(){
-		return value.scale();
-	}
-	
-	public int getPrecision(){
-		return value.precision();
-	}
-	
-	public Decimal scaleTo(int scale){
-		return new Decimal(value.setScale(scale));
-	}
-	
-	public Decimal scaleTo(int scale, RoundingMode roundingMode){
-		return new Decimal(value.setScale(scale, roundingMode));
-	}
-	
-	public Decimal roundTo(MathContext roundingCriteria){
-		return new Decimal(value.round(roundingCriteria));
-	}
 
 	public double asDouble(){
-		return value.doubleValue();
+		return significand.doubleValue();
 	}
 	
 	public int asInteger(){
-		return value.intValue();
+		return significand.intValue();
+	}
+
+	public BigDecimal asBigDecimal() {
+		return significand;
+	}
+	
+	/*
+	 * Precision and scale
+	 */
+		
+	public Decimal scaleTo(final int scale){
+		return scaleTo(scale, RoundingMode.HALF_EVEN);
+	}
+	
+	public Decimal scaleTo(final int scale, final RoundingMode roundingMode){
+		return new Decimal(significand.setScale(scale, roundingMode));
+	}
+	
+	public Decimal roundTo(final MathContext roundingCriteria){
+		return new Decimal(significand.round(roundingCriteria));
+	}
+	
+	public int getScale(){
+		return significand.scale();
+	}
+	
+	public int getPrecision(){
+		return significand.precision();
 	}
 }

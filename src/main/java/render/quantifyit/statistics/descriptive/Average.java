@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import render.quantifyit.model.Decimal;
+import render.quantifyit.util.DecimalArray;
+
 public class Average  {
 	
 	/**
@@ -13,17 +16,15 @@ public class Average  {
 	 * @param elements
 	 * @return
 	 */
-	public static double mean(double... elements) {
-		if (elements == null){
-			throw new IllegalArgumentException("Please give at least one value.");
-		}		
+	public static Decimal mean(final Decimal... elements) {
+		DecimalArray.notNullOrEmpty(elements);	
 		int count = 0;
-		double sum = 0;
-		for (double element : elements){
-			sum += element;
+		Decimal sum = Decimal.ZERO;
+		for (Decimal element : elements){
+			sum = sum.plus(element);
 			count ++;
 		}
-		return sum/count;
+		return sum.by(new Decimal(count));
 	}
 	
 	/**
@@ -38,16 +39,14 @@ public class Average  {
 	 * @see http://en.wikipedia.org/wiki/Median 
 	 * @return
 	 */
-	public static double median(double... elements) {
-		if (elements == null || elements.length == 0){
-			throw new IllegalArgumentException("Please give at least one value.");
-		}
+	public static Decimal median(final Decimal... elements) {
+		DecimalArray.notNullOrEmpty(elements);
 		Arrays.sort(elements);
-		double median = 0;
-		int medianPosition = elements.length/2;
+		Decimal median = Decimal.ZERO;
+		final int medianPosition = elements.length/2;
 		
-		if (elements.length%2 == 0){
-			median = (elements[medianPosition - 1] + elements[medianPosition])/2;
+		if (elements.length % 2 == 0){
+			median = ( elements[medianPosition - 1].plus(elements[medianPosition]) ).by(2); 
 		}else{
 			median = elements[medianPosition];
 		}
@@ -61,34 +60,39 @@ public class Average  {
 	 * @see http://en.wikipedia.org/wiki/Mode_(statistics)
 	 * @return
 	 */
-	public static Double[] mode(double... elements) {
-		if (elements == null || elements.length == 0){
-			throw new IllegalArgumentException("Please give at least one value.");
+	public static Decimal[] mode(final Decimal... elements) {
+		DecimalArray.notNullOrEmpty(elements);
+		if(elements.length == 1){
+			return new Decimal[]{elements[0]};
 		}
-		Set<Double> modes = new HashSet<Double>(); 
-		int previousFrequency = 0;
-		for (int i = 0; i < elements.length; i++) {
-			int frequency = 0;
-			for (int j = 0; j < elements.length; j++){
-				if(elements[i] == elements[j]){
-					frequency++;
-				}
-			}
-			if(previousFrequency > frequency){
-				modes.add(elements[i - 1]);
-			} else if(previousFrequency < frequency) {
-				modes.clear();
-				modes.add(elements[i]);
+		Arrays.sort(elements);
+		
+		final Set<Decimal> modes = new HashSet<Decimal>(); 
+		Decimal last = elements[0];
+		Decimal current = null;
+		int counter = 1;
+		int maxCount = 1;
+		for (int i = 1; i < elements.length; i++) {
+			current = elements[i];
+			if(last.same(current)) {
+				counter++;
 			} else {
-				modes.add(elements[i]);
-				if(i != 0){
-					modes.add(elements[i-1]);					
+				if ( counter > maxCount) {
+					maxCount = counter;
+					modes.clear();
+					modes.add(last);
+				} else if ( counter == maxCount ) {
+					modes.add(last);
 				}
+				last = current;
+				counter = 1;
 			}
-			previousFrequency = frequency;
+		}
+		if ( counter == maxCount ) {
+			modes.add(last);
 		}
 		
-		return modes.toArray(new Double[]{});
+		return modes.toArray(new Decimal[]{});
 	}
 
 

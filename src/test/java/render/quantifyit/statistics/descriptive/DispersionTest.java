@@ -1,15 +1,14 @@
 package render.quantifyit.statistics.descriptive;
 
-import static org.junit.Assert.assertEquals;
+import static render.quantifyit.model.AssertDecimal.assertDecimal;
+import static render.quantifyit.util.DecimalArray.pack;
 
 import org.junit.Test;
 
+import render.quantifyit.model.Decimal;
+
+
 public class DispersionTest {
-	
-	@Test
-	public void constructor(){
-		new Dispersion();
-	}
 	
 	/**
 	 * Variance 
@@ -17,38 +16,30 @@ public class DispersionTest {
 	
 	@Test
 	public void testShouldFindTheVarianceOfAListOfElements(){
-		double[] elements = new double[]{1,2,9};
-		double variance = Dispersion.variance(elements);
-		assertEquals(12.67, variance, 2);
+		final Decimal[] elements = pack(new int[]{1,2,9});
+		final Decimal variance = Dispersion.variance(elements);
+		assertDecimal(12.67, variance, 2);
 	}
 	
 	@Test
 	public void testShouldFindTheVarianceOfAListOfNegativeElements(){
-		double[] elements = new double[]{-10,-130,-9};
-		double variance = Dispersion.variance(elements);
-		assertEquals(3226.89, variance, 2);
-	}
-	
-	@Test
-	public void testShouldFindTheVarianceOfEmptyElements(){
-		double[] elements = new double[]{};
-		double variance = Dispersion.variance(elements);
-		assertEquals(Double.NaN, variance, 0);
+		final Decimal[] elements = pack(new int[]{-10,-130,-9});
+		final Decimal variance = Dispersion.variance(elements);
+		assertDecimal(3226.89, variance, 2);
 	}
 	
 	@Test
 	public void testShouldFindTheVarianceOfOneElement(){
-		double[] elements = new double[]{2};
-		double variance = Dispersion.variance(elements);
-		assertEquals(0, variance, 0);
+		final Decimal[] elements = pack(new int[]{2});
+		final Decimal variance = Dispersion.variance(elements);
+		assertDecimal(0, variance);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void testShouldFindTheVarianceOfNullElements(){
-		Dispersion.variance(null);
+	public void testShouldThrowExceptionOnVarianceWithNullArray(){
+		final Decimal[] nullArray = null;
+		Dispersion.variance(nullArray);
 	}
-	
-
 	
 	/**
 	 * Standard deviation
@@ -56,36 +47,31 @@ public class DispersionTest {
 	
 	@Test
 	public void testShouldFindTheStandardDeviationOfAListOfElements(){
-		double[] elements = new double[]{1,2,3,4,20};
-		double standardDeviation = Dispersion.standardDeviation(elements);
-		assertEquals(7.07, standardDeviation, 2);
+		final Decimal[] elements = pack(new int[]{1,2,3,4,20});
+		final Decimal standardDeviation = Dispersion.standardDeviation(elements);
+		assertDecimal(7.07, standardDeviation, 2);
 	}
 	
 	@Test
 	public void testShouldFindTheStandardDeviationOfAListOfNegativeElements(){
-		double[] elements = new double[]{-10,-130,-9};
-		double standardDeviation = Dispersion.standardDeviation(elements);
-		assertEquals(56.81, standardDeviation, 2);
-	}
-	
-	@Test
-	public void testShouldFindTheStandardDeviationOfEmptyElements(){
-		double[] elements = new double[]{};
-		double standardDeviation = Dispersion.standardDeviation(elements);
-		assertEquals(Double.NaN, standardDeviation, 0);
+		final Decimal[] elements = pack(new int[]{-10,-130,-9});
+		final Decimal standardDeviation = Dispersion.standardDeviation(elements);
+		assertDecimal(56.81, standardDeviation, 2);
 	}
 	
 	@Test
 	public void testShouldFindTheStandardDeviationOfOneElement(){
-		double[] elements = new double[]{2};
-		double standardDeviation = Dispersion.standardDeviation(elements);
-		assertEquals(0, standardDeviation, 0);
+		final Decimal[] elements = pack(new int[]{2});
+		final Decimal standardDeviation = Dispersion.standardDeviation(elements);
+		assertDecimal(0, standardDeviation);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void testShouldFindTheStandardDeviationOfNullElements(){
-		Dispersion.standardDeviation(null);
+	public void testShouldThrowExceptionOnStandardDeviationWithNullArray(){
+		final Decimal[] nullArray = null;
+		Dispersion.standardDeviation(nullArray);
 	}
+
 	
 	/**
 	 * Variance to Standard deviation
@@ -93,13 +79,13 @@ public class DispersionTest {
 	
 	@Test
 	public void testThatGivenAVarianceFindsTheStandardDeviation(){
-		double standardDeviation = Dispersion.var2Sd(3226.89d);
-		assertEquals(56.81, standardDeviation, 2);
+		final Decimal standardDeviation = Dispersion.var2Sd(new Decimal(3226.89));
+		assertDecimal(56.81, standardDeviation, 2);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testThatGivenAVarianceThrowsExceptionIfVarianceIsNegative(){
-		Dispersion.var2Sd(-3226.89d);
+		Dispersion.var2Sd(new Decimal(-3226.89d));
 	}
 	
 	/**
@@ -108,62 +94,53 @@ public class DispersionTest {
 	
 	@Test
 	public void testThatGivenAStandardDeviationFindsTheVariance(){
-		double variance = Dispersion.sd2Var(56.81);
-		assertEquals(3226.89d, variance, 2);
+		final Decimal variance = Dispersion.sd2Var(new Decimal(56.81));
+		assertDecimal(3227.3761, variance);
 	}
 	
 	/**
-	 * Minimum
+	 * Minimalistic
 	 */
 	
 	@Test
 	public void testShouldReturnTheSmallestElementInADataSet(){
-		double[] elements = new double[]{10.23,130,9.178};
-		assertEquals(9.18, Dispersion.min(elements), 2);
+		final Decimal[] elements = pack(new double[]{10.23,130,9.178});
+		assertDecimal(9.178, Dispersion.min(elements));
 	}
 	
 	@Test
 	public void testShouldReturnTheSmallestElementInADataSetWithNegatives(){
-		double[] elements = new double[]{-18,-18.7,-7.8, 3};
-		assertEquals(-18.7, Dispersion.min(elements), 2);
+		final Decimal[] elements = pack(new double[]{-18,-18.7,-7.8, 3});
+		assertDecimal(-18.7, Dispersion.min(elements));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfMinHasEmptyElements(){
-		Dispersion.min(new double[]{});
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfMinHasNullElements(){
-		Dispersion.min(null);
+	public void testShouldThrowExceptionOnMinWithNullArray(){
+		final Decimal[] nullArray = null;
+		Dispersion.min(nullArray);
 	}
 	
 	/**
-	 * Maximum
+	 * Maximus
 	 */
 	
 	@Test
 	public void testShouldReturnTheBigestElementInADataSet(){
-		double[] elements = new double[]{10.23,130,9.178};
-		assertEquals(130, Dispersion.max(elements), 2);
+		final Decimal[] elements = pack(new double[]{10.23,130,9.178});
+		assertDecimal(130, Dispersion.max(elements));
 	}
 	
 	@Test
 	public void testShouldReturnTheBigestElementInADataSetWithNegatives(){
-		double[] elements = new double[]{-18,-18.7,-7.8, -3.14};
-		assertEquals(-3.14, Dispersion.max(elements), 2);
+		final Decimal[] elements = pack(new double[]{-18,-18.7,-7.8, -3.14});
+		assertDecimal(-3.14, Dispersion.max(elements));
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfMaxHasEmptyElements(){
-		Dispersion.max(new double[]{});
+	public void testShouldThrowExceptionOnMaxWithNullArray(){
+		final Decimal[] nullArray = null;
+		Dispersion.min(nullArray);
 	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfMaxHasNullElements(){
-		Dispersion.max(null);
-	}
-	
 	
 	/**
 	 * RANGEr
@@ -171,24 +148,20 @@ public class DispersionTest {
 	
 	@Test
 	public void testShouldReturnTheRangeBetweenElementInADataSet(){
-		double[] elements = new double[]{10.23,130,9.178};
-		assertEquals(119.77, Dispersion.range(elements), 2);
+		final Decimal[] elements = pack(new double[]{10.23,130,9.178});
+		assertDecimal(120.822, Dispersion.range(elements));
 	}
 	
 	@Test
 	public void testShouldReturnTheRangeBetweenInADataSetWithNegatives(){
-		double[] elements = new double[]{-18,-18.7,-7.8, -3.14};
-		double range = Dispersion.range(elements);
-		assertEquals(15.56, range, 2);
+		final Decimal[] elements = pack(new double[]{-18,-18.7,-7.8, -3.14});
+		final Decimal range = Dispersion.range(elements);
+		assertDecimal(15.56, range);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfRangeHasEmptyElements(){
-		Dispersion.range(new double[]{});
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfRangeHasNullElements(){
-		Dispersion.range(null);
+	public void testShouldThrowExceptionOnRangeWithNullArray(){
+		final Decimal[] nullArray = null;
+		Dispersion.min(nullArray);
 	}
 }

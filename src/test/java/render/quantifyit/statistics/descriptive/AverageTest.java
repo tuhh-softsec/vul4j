@@ -2,17 +2,16 @@ package render.quantifyit.statistics.descriptive;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
+import static render.quantifyit.model.AssertDecimal.assertDecimal;
+import static render.quantifyit.util.DecimalArray.pack;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
-public class AverageTest {
+import render.quantifyit.model.Decimal;
 
-	@Test
-	public void constructor(){
-		new Average();
-	}
+public class AverageTest {
 	
 	/**
 	 * Lean MEAN Machine
@@ -20,53 +19,47 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldCalculateTheMeanOfASetOfNumbers() {
-		double[] elements = new double[]{1,2,3,4,5,6,7};
-		double mean = Average.mean(elements);
-		assertEquals(4, mean, 0);
+		Decimal[] elements = pack(new int[]{1,2,3,4,5,6,7});
+		Decimal mean = Average.mean(elements);
+		assertDecimal(new Decimal(4), mean);
 		
-		elements = new double[]{100,25,52,26,69,39,1};
-		mean = Average.mean(elements);
-		assertEquals(44.57, mean, 2);
+		elements = pack(new int[]{100,25,52,26,69,39,1});
+		mean = Average.mean(elements).scaleTo(2);
+		assertDecimal(new Decimal(44.57), mean);
 	}
 	
 	@Test
 	public void testShouldReturnAMeanOfZeroIfNoElements(){
-		assertEquals(0, Average.mean(0), 0);
+		assertDecimal(Decimal.ZERO, Average.mean(Decimal.ZERO));
 	}
 	
 	@Test
 	public void testShouldReturnNegativeMeanElementsAreNegative(){
-		double[] elements = new double[]{-1,-2,-3,-4,-5,-6,-7};
-		double mean = Average.mean(elements);
-		assertEquals(-4, mean, 0);
-	}
-	
-	@Test
-	public void testShouldReturnAMeanNaNIfEmptyElements(){
-		double[] elements =  new double[]{};
-		double mean = Average.mean(elements);
-		assertEquals(Double.NaN, mean, 0);
+		final Decimal[] elements = pack(new int[]{-1,-2,-3,-4,-5,-6,-7});
+		final Decimal mean = Average.mean(elements);
+		assertDecimal(new Decimal(-4), mean);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionOnNullElements(){
-		Average.mean(null);
+	public void testShouldThrowExceptionOnMeanWithNullArray(){
+		final Decimal[] nullArray = null;
+		Average.mean(nullArray);
 	}
-
+	
 	@Test
 	public void testShouldReturnDecimalAverages(){
-		double[] elements = new double[]{1.3,2.5,3.1,4.25,5.97,6.41,7.132};
-		double mean = Average.mean(elements);
-		assertEquals(4.38, mean,2);
+		final Decimal[] elements = pack(new double[]{1.3,2.5,3.1,4.25,5.97,6.41,7.132});
+		final Decimal mean = Average.mean(elements).scaleTo(2);
+		assertDecimal(4.38, mean);
 	}
 	
 	@Test
 	public void testShouldReturnWeightedAverageWithDoubles(){
-		double[] elements = new double[10];
+		final Decimal[] elements = new Decimal[10];
 		for (int i = 0; i < 10; i++) {
-			 elements[i] = .1;
+			 elements[i] = new Decimal(.1);
 		}
-		assertEquals(.1, Average.mean(elements), 1);
+		assertDecimal(.1, Average.mean(elements), 1);
 	}
 	
 	/**
@@ -75,44 +68,40 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldCalculateTheMedianOfASetOfNumbers() {
-		double[] elements = new double[]{1,2,3,4,5,6,7};
-		double median = Average.median(elements);
-		assertEquals(4, median, 0);
+		Decimal[] elements = pack(new int[]{1,2,3,4,5,6,7});
+		Decimal median = Average.median(elements);
+		assertDecimal(4, median);
 		
-		elements = new double[]{100,25,52,26,69,39,1};
+		elements = pack(new double[]{100,25,52,26,69,39,1});
 		median = Average.median(elements);
-		assertEquals(39, median, 0);
+		assertDecimal(39, median);
 	}
 	
 	@Test
 	public void testShouldCalculateTheMedianWhenEvenAmountOfElements(){
-		double[] elements = new double[]{32,28,23,7};
-		double median = Average.median(elements);
-		assertEquals(25.5, median, 1);
+		final Decimal[] elements = pack(new double[]{32,28,23,7});
+		final Decimal median = Average.median(elements);
+		assertDecimal(25.5, median);
 	}
 	
 	@Test
 	public void testShouldReturnAMedianOfZeroIfNoElements(){
-		double elements = 0;
-		double median = Average.median(elements);
-		assertEquals(0, median, 0);
+		final Decimal elements = Decimal.ZERO;
+		final Decimal median = Average.median(elements);
+		assertDecimal(0, median);
 	}
 	
 	@Test
 	public void testShouldReturnNegativeMedianElementsAreNegative(){
-		double[] elements = new double[]{-1,-2,-3,-4,-5,-6,-7};
-		double median = Average.median(elements);
-		assertEquals(-4, median, 0);
+		final Decimal[] elements = pack(new int[]{-1,-2,-3,-4,-5,-6,-7});
+		final Decimal median = Average.median(elements);
+		assertDecimal(-4, median);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfEmptyElements(){
-		Average.median(new double[]{});
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfNullElements(){
-		Average.median(null);
+	public void testShouldThrowExceptionOnMedianWithNullArray(){
+		final Decimal[] nullArray = null;
+		Average.median(nullArray);
 	}
 	
 	/**
@@ -121,50 +110,47 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldCalculateTheModeOfASetOfNumbers() {
-		double[] elements = new double[]{100,25,52,26,25,39,1};
-		double mode = Average.mode(elements)[0];
-		assertEquals(25, mode, 0);
+		final Decimal[] elements = pack(new double[]{100,25,52,26,25,39,1});
+		final Decimal mode = Average.mode(elements)[0];
+		assertDecimal(25, mode);
 	}
 	
 	@Test
 	public void testShoudReturnTheSameElementIfOnlyOnePresent(){
-		double elements = 1;
-		double mode = Average.mode(elements)[0];
-		assertEquals(1, mode, 0);
+		final Decimal elements = Decimal.ONE;
+		final Decimal mode = Average.mode(elements)[0];
+		assertDecimal(1, mode);
 	}
 	
 	@Test
 	public void testShouldReturnMoreThanOneModeIfSetIsBimodal(){
-		double[] elements = new double[]{1,2,3,2,4,6,4,5,1,3,2,1,5,1,2,3};
-		Double[] modes = Average.mode(elements);
+		final Decimal[] elements = pack(new int[]{1,2,3,2,4,6,4,5,1,3,2,1,5,1,2,3});
+		final Decimal[] modes = Average.mode(elements);
 		assertEquals(2, modes.length);
-		assertTrue(Arrays.asList(modes).containsAll(Arrays.asList(new Double[]{1d,2d})));
+		final List<Decimal> results = Arrays.asList(pack(new int[]{1,2})); //4x1, 4x2
+		
+		assertTrue(Arrays.asList(modes).containsAll(results));
 	}
 	
 	@Test
 	public void testShouldReturnMoreThanOneModeIfSetIsMultimodal(){
-		double[] elements = new double[]{1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8};
-		Double[] modes = Average.mode(elements);
+		final Decimal[] elements = pack(new int[]{1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8});
+		final Decimal[] modes = Average.mode(elements);
 		assertEquals(8, modes.length);
-		assertTrue(Arrays.asList(modes).containsAll(Arrays.asList(new Double[]{1d,2d,3d,4d,5d,6d,7d,8d})));
+		final List<Decimal> results = Arrays.asList(pack(new int[]{1,2,3,4,5,6,7,8}));
+		assertTrue(Arrays.asList(modes).containsAll(results));
 	}
 	
 	@Test
 	public void testShouldReturnNegativeModeElementsAreNegative(){
-		double[] elements = new double[]{-1,-2,-3,-3,-4,-3,-7};
-		double mode = Average.mode(elements)[0];
-		assertEquals(-3, mode, 0);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionIfModeHasEmptyElements(){
-		double[] elements =  new double[]{};
-		Average.mode(elements);
+		final Decimal[] elements = pack(new int[]{-1,-2,-3,-3,-4,-3,-7});
+		final Decimal mode = Average.mode(elements)[0];
+		assertDecimal(-3, mode);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionIfModeHasNullElements(){
-		double[] elements = null;
-		Average.mode(elements);
+		final Decimal[] nullArray = null;
+		Average.mode(nullArray);
 	}
 }

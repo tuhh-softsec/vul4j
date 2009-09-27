@@ -1,9 +1,10 @@
 package render.quantifyit.statistics.descriptive;
 
-import static org.junit.Assert.assertEquals;
+import static render.quantifyit.model.AssertDecimal.assertDecimal;
 
 import org.junit.Test;
 
+import render.quantifyit.model.Decimal;
 import render.quantifyit.model.Probability;
 
 
@@ -11,11 +12,11 @@ public class WeightedAverageTest {
 	
 	@Test
 	public void testShouldReturnWeightedAverage(){
-		double weightedAverage = WeightedAverage.weighted(
-							new Probability(.8, 20), 
-							new Probability(.2, 30));
+		Decimal weightedAverage = WeightedAverage.weighted(
+							new Probability(new Decimal(.8), new Decimal(20)), 
+							new Probability(new Decimal(.2), new Decimal(30)));
 		
-		assertEquals(22, weightedAverage, 0);
+		assertDecimal(new Decimal(22), weightedAverage);
 	}
 
 }
