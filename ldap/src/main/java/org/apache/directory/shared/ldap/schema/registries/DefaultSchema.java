@@ -21,6 +21,11 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.directory.shared.ldap.schema.SchemaWrapper;
+import org.apache.directory.shared.ldap.util.StringTools;
 
 
 
@@ -32,33 +37,69 @@ import java.util.Arrays;
  */
 public class DefaultSchema implements Schema
 {
-    private static final String[] NONE = new String[0];
+    /** The default schema's owner */
     private static final String DEFAULT_OWNER = "uid=admin,ou=system";
     
+    /** Tells if this schema is disabled */
     private boolean disabled;
+    
+    /** Contains the list of schema it depends on */
     private String[] dependencies;
+    
+    /** The schema owner */
     private String owner;
+    
+    /** The schema name */
     private String name;
     
+    /** The set of SchemaObjects declared in this schema */
+    private Set<SchemaWrapper> content;
     
+    
+    /**
+     * Creates a new instance of DefaultSchema.
+     *
+     * @param name The schema's name
+     */
     public DefaultSchema( String name )
     {
         this( name, null, null, false );
     }
     
         
+    /**
+     * Creates a new instance of DefaultSchema.
+     *
+     * @param name The schema's name
+     * @param owner the schema's owner
+     */
     public DefaultSchema( String name, String owner )
     {
         this( name, owner, null, false );
     }
     
         
+    /**
+     * Creates a new instance of DefaultSchema.
+     *
+     * @param name The schema's name
+     * @param owner the schema's owner
+     * @param dependencies The list of schemas it depends on 
+     */
     public DefaultSchema( String name, String owner, String[] dependencies )
     {
         this( name, owner, dependencies, false );
     }
     
         
+    /**
+     * Creates a new instance of DefaultSchema.
+     *
+     * @param name The schema's name
+     * @param owner the schema's owner
+     * @param dependencies The list of schemas it depends on
+     * @param disabled Set the status for this schema 
+     */
     public DefaultSchema( String name, String owner, String[] dependencies, boolean disabled )
     {
         if ( name == null )
@@ -83,13 +124,18 @@ public class DefaultSchema implements Schema
         }
         else
         {
-            this.dependencies = NONE;
+            this.dependencies = StringTools.EMPTY_STRINGS;
         }
         
         this.disabled = disabled;
+        
+        content = new HashSet<SchemaWrapper>(); 
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String[] getDependencies()
     {
         String[] copy = new String[dependencies.length];
@@ -98,12 +144,18 @@ public class DefaultSchema implements Schema
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public String getOwner()
     {
         return owner;
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public String getSchemaName()
     {
         return name;
@@ -144,18 +196,32 @@ public class DefaultSchema implements Schema
     {
         this.disabled = false;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<SchemaWrapper> getContent()
+    {
+        return content;
+    }
     
-    
+
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         StringBuilder sb = new StringBuilder( "\tSchema Name: " );
-        sb.append( this.name );
+        sb.append( name );
         sb.append( "\n\t\tDisabled: " );
-        sb.append( this.disabled );
+        sb.append( disabled );
         sb.append( "\n\t\tOwner: " );
-        sb.append( this.owner );
+        sb.append( owner );
         sb.append( "\n\t\tDependencies: " );
         sb.append( Arrays.toString( dependencies ) );
+        
+        // TODO : print the associated ShcemaObjects
         return sb.toString();
     }
 }
