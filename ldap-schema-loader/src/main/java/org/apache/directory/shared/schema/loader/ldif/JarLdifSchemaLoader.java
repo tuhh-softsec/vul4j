@@ -319,7 +319,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdapComparator<?> comparator = 
                     factory.getLdapComparator( entry.getEntry(), registries );
                 comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
-                registries.getComparatorRegistry().register( comparator );
+                registries.register( comparator );
             }
         }
     }
@@ -350,7 +350,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifEntry entry = reader.next();
                 SyntaxChecker syntaxChecker = 
                     factory.getSyntaxChecker( entry.getEntry(), registries );
-                registries.getSyntaxCheckerRegistry().register( syntaxChecker );
+                registries.register( syntaxChecker );
             }
         }
     }
@@ -381,7 +381,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifEntry entry = reader.next();
                 Normalizer normalizer =
                     factory.getNormalizer( entry.getEntry(), registries );
-                registries.getNormalizerRegistry().register( normalizer );
+                registries.register( normalizer );
             }
         }
     }
@@ -412,7 +412,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifEntry entry = reader.next();
                 MatchingRule matchingRule = factory.getMatchingRule( 
                     entry.getEntry(), registries, schema.getSchemaName() );
-                registries.getMatchingRuleRegistry().register( matchingRule );
+                registries.register( matchingRule );
             }
         }
     }
@@ -443,7 +443,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifEntry entry = reader.next();
                 LdapSyntax syntax = factory.getSyntax( 
                     entry.getEntry(), registries, schema.getSchemaName() );
-                registries.getLdapSyntaxRegistry().register( syntax );
+                registries.register( syntax );
             }
         }
     }
@@ -563,7 +563,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         }
         
         AttributeType attributeType = factory.getAttributeType( entry.getEntry(), registries, schema.getSchemaName() );
-        registries.getAttributeTypeRegistry().register( attributeType );
+        registries.register( attributeType );
 
         // after registering AT check if any deferred entries depend on it
         if ( attributeType.getNames() != null )
@@ -627,7 +627,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                     		"method for creating a matchingRuleUse" );
                 }
                 
-                registries.getMatchingRuleUseRegistry().register( matchingRuleUse );
+                registries.register( matchingRuleUse );
             }
         }
     }
@@ -664,7 +664,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                             "method for creating a nameForm" );
                 }
                 
-                registries.getNameFormRegistry().register( nameForm );
+                registries.register( nameForm );
             }
         }
     }
@@ -701,7 +701,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                             "method for creating a ditContentRule" );
                 }
                 
-                registries.getDitContentRuleRegistry().register( ditContentRule );
+                registries.register( ditContentRule );
             }
         }
     }
@@ -740,7 +740,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                             "method for creating a ditStructureRule" );
                 }
                 
-                registries.getDitStructureRuleRegistry().register( ditStructureRule );
+                registries.register( ditStructureRule );
             }
         }
     }
@@ -860,7 +860,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         }
         
         ObjectClass objectClass = factory.getObjectClass( entry.getEntry(), registries, schema.getSchemaName() );
-        registries.getObjectClassRegistry().register( objectClass );
+        registries.register( objectClass );
 
         // after registering AT check if any deferred entries depend on it
         if ( objectClass.getNames() != null )
