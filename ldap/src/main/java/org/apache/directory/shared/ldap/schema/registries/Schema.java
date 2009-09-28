@@ -19,6 +19,10 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+import java.util.Set;
+
+import org.apache.directory.shared.ldap.schema.SchemaWrapper;
+
 
 /**
  * Base schema interface.
@@ -81,4 +85,12 @@ public interface Schema
      * @return the String names of schema dependencies
      */
     String[] getDependencies();
+    
+    
+    /**
+     * Gets the set of SchemaObject elements declared in this schema
+     *
+     * @return The Set of associated SchemaObjects
+     */
+    Set<SchemaWrapper> getContent();
 }

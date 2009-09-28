@@ -19,21 +19,30 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
 import org.apache.directory.shared.ldap.schema.NameForm;
+import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaWrapper;
+import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.util.StringTools;
 
 
 /**
@@ -86,6 +95,9 @@ public class Registries implements SchemaLoaderListener
     /** The LdapSyntax registry */
     protected LdapSyntaxRegistry ldapSyntaxRegistry;
     
+    /** A map storing all the schema objects associated with a schema */
+    private Map<String, Set<SchemaWrapper>> schemaObjectsBySchemaName;
+    
 
     /**
      * Creates a new instance of Registries.
@@ -106,6 +118,7 @@ public class Registries implements SchemaLoaderListener
         ditStructureRuleRegistry = new DITStructureRuleRegistry( oidRegistry );
         matchingRuleUseRegistry = new MatchingRuleUseRegistry( oidRegistry );
         nameFormRegistry = new NameFormRegistry( oidRegistry );
+        schemaObjectsBySchemaName = new HashMap<String, Set<SchemaWrapper>>();
     }
 
     
@@ -649,4 +662,171 @@ public class Registries implements SchemaLoaderListener
 	{
 		return Collections.unmodifiableMap( loadedSchemas );
 	}
+	
+	
+	/**
+	 * @return Gets a reference to the Map associating a schemaName to
+	 * its contained SchemaObjects
+	 */
+	public Map<String, Set<SchemaWrapper>> getObjectBySchemaname()
+	{
+	    return schemaObjectsBySchemaName;
+	}
+	
+	
+	/**
+	 * Create a new schema association with its content
+	 *
+	 * @param schemaName The schema name
+	 */
+	public Set<SchemaWrapper> addSchema( String schemaName )
+	{
+	    Set<SchemaWrapper> content = new HashSet<SchemaWrapper>();
+	    schemaObjectsBySchemaName.put( schemaName, content );
+	    
+	    return content;
+	}
+	
+	
+	public void register( SchemaObject schemaObject ) throws NamingException
+	{
+	    // First call the specific registry's register method
+	    switch ( schemaObject.getObjectType() )
+	    {
+	        case ATTRIBUTE_TYPE : 
+	            attributeTypeRegistry.register( (AttributeType)schemaObject );
+	            break;
+	            
+            case COMPARATOR : 
+                comparatorRegistry.register( (LdapComparator<?>)schemaObject );
+                break;
+                
+            case DIT_CONTENT_RULE : 
+                ditContentRuleRegistry.register( (DITContentRule)schemaObject );
+                break;
+                
+            case DIT_STRUCTURE_RULE : 
+                ditStructureRuleRegistry.register( (DITStructureRule)schemaObject );
+                break;
+                
+            case LDAP_SYNTAX : 
+                ldapSyntaxRegistry.register( (LdapSyntax)schemaObject );
+                break;
+                
+            case MATCHING_RULE : 
+                matchingRuleRegistry.register( (MatchingRule)schemaObject );
+                break;
+                
+            case MATCHING_RULE_USE : 
+                matchingRuleUseRegistry.register( (MatchingRuleUse)schemaObject );
+                break;
+                
+            case NAME_FORM : 
+                nameFormRegistry.register( (NameForm)schemaObject );
+                break;
+                
+            case NORMALIZER : 
+                normalizerRegistry.register( (Normalizer)schemaObject );
+                break;
+                
+            case OBJECT_CLASS : 
+                objectClassRegistry.register( (ObjectClass)schemaObject );
+                break;
+                
+            case SYNTAX_CHECKER : 
+                syntaxCheckerRegistry.register( (SyntaxChecker)schemaObject );
+                break;
+	    }
+	    
+	    // And register the schemaObject within its schema
+	    Set<SchemaWrapper> content = schemaObjectsBySchemaName.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
+	    
+	    if ( content == null )
+	    {
+	        content = new HashSet<SchemaWrapper>();
+	        schemaObjectsBySchemaName.put( StringTools.toLowerCase( schemaObject.getSchemaName() ), content );
+	    }
+	    
+	    SchemaWrapper schemaWrapper = new SchemaWrapper( schemaObject );
+	    
+	    if ( content.contains( schemaWrapper ) )
+	    {
+	        // Already present !
+	        
+	    }
+	    else
+	    {
+	        // Create the association
+	        content.add( schemaWrapper );
+	    }
+	}
+
+
+    public void unregister( SchemaObject schemaObject ) throws NamingException
+    {
+        String oid = schemaObject.getOid();
+        
+        // First call the specific registry's register method
+        switch ( schemaObject.getObjectType() )
+        {
+            case ATTRIBUTE_TYPE : 
+                attributeTypeRegistry.unregister( oid );
+                break;
+                
+            case COMPARATOR : 
+                comparatorRegistry.unregister( oid );
+                break;
+                
+            case DIT_CONTENT_RULE : 
+                ditContentRuleRegistry.unregister( oid );
+                break;
+                
+            case DIT_STRUCTURE_RULE : 
+                ditStructureRuleRegistry.unregister( oid );
+                break;
+                
+            case LDAP_SYNTAX : 
+                ldapSyntaxRegistry.unregister( oid );
+                break;
+                
+            case MATCHING_RULE : 
+                matchingRuleRegistry.unregister( oid );
+                break;
+                
+            case MATCHING_RULE_USE : 
+                matchingRuleUseRegistry.unregister( oid );
+                break;
+                
+            case NAME_FORM : 
+                nameFormRegistry.unregister( oid );
+                break;
+                
+            case NORMALIZER : 
+                normalizerRegistry.unregister( oid );
+                break;
+                
+            case OBJECT_CLASS : 
+                objectClassRegistry.unregister( oid );
+                break;
+                
+            case SYNTAX_CHECKER : 
+                syntaxCheckerRegistry.unregister( oid );
+                break;
+        }
+        
+        // And unregister the schemaObject within its schema
+        Set<SchemaWrapper> content = schemaObjectsBySchemaName.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
+        
+        SchemaWrapper schemaWrapper = new SchemaWrapper( schemaObject );
+        
+        if ( content.contains( schemaWrapper ) )
+        {
+            // remove the schemaObject
+            content.remove( schemaWrapper );
+        }
+        else
+        {
+            // Not present !!
+        }
+    }
 }

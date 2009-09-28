@@ -451,7 +451,7 @@ public class SchemaObject implements Serializable
      * <li> NameForm
      * <li> Normalizer (specific to ADS)
      * <li> ObjectClass
-     * <li> SynatxChecker (specific to ADS)
+     * <li> SyntaxChecker (specific to ADS)
      * 
      * @return the SchemaObject type
      */
