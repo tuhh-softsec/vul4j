@@ -107,17 +107,17 @@ public class Registries implements SchemaLoaderListener
     public Registries()
     {
         this.oidRegistry = new OidRegistry();
-        normalizerRegistry = new NormalizerRegistry( oidRegistry );
-        comparatorRegistry = new ComparatorRegistry( oidRegistry );
-        syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
-        ldapSyntaxRegistry = new LdapSyntaxRegistry( oidRegistry );
-        matchingRuleRegistry = new MatchingRuleRegistry( oidRegistry );
         attributeTypeRegistry = new AttributeTypeRegistry( oidRegistry );
-        objectClassRegistry = new ObjectClassRegistry( oidRegistry );
+        comparatorRegistry = new ComparatorRegistry( oidRegistry );
         ditContentRuleRegistry = new DITContentRuleRegistry( oidRegistry );
         ditStructureRuleRegistry = new DITStructureRuleRegistry( oidRegistry );
+        ldapSyntaxRegistry = new LdapSyntaxRegistry( oidRegistry );
+        matchingRuleRegistry = new MatchingRuleRegistry( oidRegistry );
         matchingRuleUseRegistry = new MatchingRuleUseRegistry( oidRegistry );
         nameFormRegistry = new NameFormRegistry( oidRegistry );
+        normalizerRegistry = new NormalizerRegistry( oidRegistry );
+        objectClassRegistry = new ObjectClassRegistry( oidRegistry );
+        syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
         schemaObjectsBySchemaName = new HashMap<String, Set<SchemaWrapper>>();
     }
 
@@ -690,6 +690,8 @@ public class Registries implements SchemaLoaderListener
 	
 	public void register( SchemaObject schemaObject ) throws NamingException
 	{
+	    String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+	    
 	    // First call the specific registry's register method
 	    switch ( schemaObject.getObjectType() )
 	    {
@@ -739,7 +741,7 @@ public class Registries implements SchemaLoaderListener
 	    }
 	    
 	    // And register the schemaObject within its schema
-	    Set<SchemaWrapper> content = schemaObjectsBySchemaName.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
+	    Set<SchemaWrapper> content = schemaObjectsBySchemaName.get( schemaName );
 	    
 	    if ( content == null )
 	    {
