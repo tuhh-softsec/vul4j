@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -1011,11 +1012,11 @@ public class SchemaUtils
 
     private static String getSchemaName( SchemaObject desc )
     {
-        List<String> values = desc.getExtensions().get( "X-SCHEMA" );
+        List<String> values = desc.getExtensions().get( MetaSchemaConstants.X_SCHEMA );
 
         if ( values == null || values.size() == 0 )
         {
-            return "other";
+            return MetaSchemaConstants.SCHEMA_OTHER;
         }
 
         return values.get( 0 );
