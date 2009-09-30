@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.util;
 
 
 import java.text.ParseException;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +39,7 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientEntry;
+import org.apache.directory.shared.ldap.ldif.LdifAttributesReader;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -1320,5 +1320,28 @@ public class AttributeUtils
         {
             return null;
         }
+    }
+    
+    
+    /**
+     * Build a new ATtributes instance from a LDIF list of lines
+     *
+     * @param avas The AttributeType and Values, using a ldif format 
+     * @return An Attributes instance
+     * @throws NamingException If the data are invalid
+     */
+    public static Attributes createAttributes( String... avas ) throws NamingException
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        for ( String ava : avas)
+        {
+            sb.append( ava ).append( '\n' );
+        }
+        
+        LdifAttributesReader reader = new LdifAttributesReader();
+        Attributes attributes = reader.parseAttributes( sb.toString() );
+
+        return attributes;
     }
 }
