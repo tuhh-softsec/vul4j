@@ -120,6 +120,15 @@ public class ValidateSignatureTest extends TestCase {
         }
     }
 
+    // Bug 47761: validates an xml signature containing a reference with
+    // xmlns:xml attributes. C14n should not emit these attributes.
+    public void test_signature_exclc14n_xmlnamespace() throws Exception {
+	String file = "demo.signed.xml";
+	boolean coreValidity = validator.validate(file, 
+	    new KeySelectors.RawX509KeySelector());
+	assertTrue("Signature failed core validation", coreValidity);
+    }
+
     /**
      * Set flag if called.
      */
