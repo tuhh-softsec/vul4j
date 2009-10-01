@@ -1,11 +1,14 @@
 package render.quantifyit.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static render.quantifyit.model.AssertDecimal.assertDecimal;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 import org.junit.Test;
 
@@ -122,4 +125,34 @@ public class DecimalOperationByTest {
 		assertDecimal(new Decimal(3.14159), decimalApproximation);	
 	}
 
+	
+	@Test(expected=ArithmeticException.class)
+	public void testNaN(){
+		Decimal.ZERO.by(0d);
+	}
+
+	@Test(expected=ArithmeticException.class)
+	public void testNaNWithScale(){
+		Decimal.ZERO.by(0d, 5);
+	}
+
+	@Test(expected=ArithmeticException.class)
+	public void testNaNWithPrecision(){
+		Decimal.ZERO.by(Decimal.ZERO, new MathContext(0));
+	}
+	
+	@Test
+	public void testPosiitiveInfinity(){
+		final Decimal positiveinfinity = new Decimal(Double.MAX_VALUE).times(2);
+		assertTrue(positiveinfinity.isInfinite());
+		assertEquals(Double.toString(Double.POSITIVE_INFINITY), Double.toString(positiveinfinity.asDouble()));
+	}
+	
+	@Test
+	public void testNegativeInfinity(){
+		final Decimal negativeInfinity = new Decimal(-Double.MAX_VALUE).times(2);
+		assertTrue(negativeInfinity.isInfinite());
+		assertEquals(Double.toString(Double.NEGATIVE_INFINITY), Double.toString(negativeInfinity.asDouble()));
+	}
+	
 }

@@ -3,7 +3,8 @@ package render.quantifyit.statistics.descriptive;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static render.quantifyit.model.AssertDecimal.assertDecimal;
-import static render.quantifyit.util.DecimalArray.pack;
+import static render.quantifyit.util.DecimalUtils.pack;
+import static render.quantifyit.util.DecimalUtils.packInts;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,11 +20,11 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldCalculateTheMeanOfASetOfNumbers() {
-		Decimal[] elements = pack(new int[]{1,2,3,4,5,6,7});
+		Decimal[] elements = pack(1,2,3,4,5,6,7);
 		Decimal mean = Average.mean(elements);
 		assertDecimal(new Decimal(4), mean);
 		
-		elements = pack(new int[]{100,25,52,26,69,39,1});
+		elements = pack(100,25,52,26,69,39,1);
 		mean = Average.mean(elements).scaleTo(2);
 		assertDecimal(new Decimal(44.57), mean);
 	}
@@ -35,7 +36,7 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldReturnNegativeMeanElementsAreNegative(){
-		final Decimal[] elements = pack(new int[]{-1,-2,-3,-4,-5,-6,-7});
+		final Decimal[] elements = pack(-1,-2,-3,-4,-5,-6,-7);
 		final Decimal mean = Average.mean(elements);
 		assertDecimal(new Decimal(-4), mean);
 	}
@@ -48,7 +49,8 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldReturnDecimalAverages(){
-		final Decimal[] elements = pack(new double[]{1.3,2.5,3.1,4.25,5.97,6.41,7.132});
+		final double[] dataset = new double[]{1.3,2.5,3.1,4.25,5.97,6.41,7.132};
+		final Decimal[] elements = pack(dataset);
 		final Decimal mean = Average.mean(elements).scaleTo(2);
 		assertDecimal(4.38, mean);
 	}
@@ -68,18 +70,18 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldCalculateTheMedianOfASetOfNumbers() {
-		Decimal[] elements = pack(new int[]{1,2,3,4,5,6,7});
+		Decimal[] elements = pack(1,2,3,4,5,6,7);
 		Decimal median = Average.median(elements);
 		assertDecimal(4, median);
 		
-		elements = pack(new double[]{100,25,52,26,69,39,1});
+		elements = pack(100,25,52,26,69,39,1);
 		median = Average.median(elements);
 		assertDecimal(39, median);
 	}
 	
 	@Test
 	public void testShouldCalculateTheMedianWhenEvenAmountOfElements(){
-		final Decimal[] elements = pack(new double[]{32,28,23,7});
+		final Decimal[] elements = pack(32,28,23,7);
 		final Decimal median = Average.median(elements);
 		assertDecimal(25.5, median);
 	}
@@ -93,7 +95,7 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldReturnNegativeMedianElementsAreNegative(){
-		final Decimal[] elements = pack(new int[]{-1,-2,-3,-4,-5,-6,-7});
+		final Decimal[] elements = pack(-1,-2,-3,-4,-5,-6,-7);
 		final Decimal median = Average.median(elements);
 		assertDecimal(-4, median);
 	}
@@ -110,7 +112,7 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldCalculateTheModeOfASetOfNumbers() {
-		final Decimal[] elements = pack(new double[]{100,25,52,26,25,39,1});
+		final Decimal[] elements = pack(100,25,52,26,25,39,1);
 		final Decimal mode = Average.mode(elements)[0];
 		assertDecimal(25, mode);
 	}
@@ -124,26 +126,27 @@ public class AverageTest {
 	
 	@Test
 	public void testShouldReturnMoreThanOneModeIfSetIsBimodal(){
-		final Decimal[] elements = pack(new int[]{1,2,3,2,4,6,4,5,1,3,2,1,5,1,2,3});
+		final double[] dataset = new double[]{1,2,3,2,4,6,4,5,1,3,2,1,5,1,2,3};
+		final Decimal[] elements = pack(dataset);
 		final Decimal[] modes = Average.mode(elements);
 		assertEquals(2, modes.length);
-		final List<Decimal> results = Arrays.asList(pack(new int[]{1,2})); //4x1, 4x2
+		final List<Decimal> results = Arrays.asList(pack(1,2)); //4x1, 4x2
 		
 		assertTrue(Arrays.asList(modes).containsAll(results));
 	}
 	
 	@Test
 	public void testShouldReturnMoreThanOneModeIfSetIsMultimodal(){
-		final Decimal[] elements = pack(new int[]{1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8});
+		final Decimal[] elements = pack(1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8);
 		final Decimal[] modes = Average.mode(elements);
 		assertEquals(8, modes.length);
-		final List<Decimal> results = Arrays.asList(pack(new int[]{1,2,3,4,5,6,7,8}));
+		final List<Decimal> results = Arrays.asList(pack(1,2,3,4,5,6,7,8));
 		assertTrue(Arrays.asList(modes).containsAll(results));
 	}
 	
 	@Test
 	public void testShouldReturnNegativeModeElementsAreNegative(){
-		final Decimal[] elements = pack(new int[]{-1,-2,-3,-3,-4,-3,-7});
+		final Decimal[] elements = pack(-1,-2,-3,-3,-4,-3,-7);
 		final Decimal mode = Average.mode(elements)[0];
 		assertDecimal(-3, mode);
 	}

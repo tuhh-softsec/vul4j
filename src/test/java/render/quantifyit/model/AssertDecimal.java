@@ -23,7 +23,7 @@ public final class AssertDecimal {
 	
 	public static void assertDecimal(final Decimal expected, final Decimal actual, final int scale, final RoundingMode roundingMode){
 		if(expected.getScale() != scale) {
-			throw new AssertionError("The expected scale is not the same as the desired: " + scale);
+			throw new AssertionError(String.format("The expected scale (%s) is not the same as the desired: (%s).", expected.getScale(), scale));
 		}
 		final Decimal scaledActual = actual.scaleTo(scale, roundingMode);
 		final String message = String.format(

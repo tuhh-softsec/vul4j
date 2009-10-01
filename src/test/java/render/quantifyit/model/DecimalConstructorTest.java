@@ -2,10 +2,13 @@ package render.quantifyit.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static render.quantifyit.model.AssertDecimal.assertDecimal;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DecimalConstructorTest {
@@ -105,7 +108,7 @@ public class DecimalConstructorTest {
 		assertEquals(STRING_POSITIVE, doubleConstructor.toPlainString());
 		assertEquals(STRING_POSITIVE, doubleConstructor.toEngineeringString());
 		assertEquals(STRING_DECIMAL, Double.toString(doubleConstructor.doubleValue()));
-		assertEquals(STRING_DECIMAL, Double.valueOf(doubleConstructor.toString()).toString());
+		assertEquals(DOUBLE_POSITIVE, Double.valueOf(doubleConstructor.toString()), 0);
 		
 		assertFalse(stringConstructor.equals(doubleConstructor));
 		
@@ -153,7 +156,54 @@ public class DecimalConstructorTest {
 		new Decimal(Double.NaN);
 	}
 	
-	private void assertEqualString(BigDecimal expected, Decimal actual) {
+	//FIXME: properly test missing constructors
+	
+	
+	@Test
+	public void testThatNumberCanBeConstructedWithAScaleArgument(){
+		assertEquals("34534533.00000", new Decimal(new BigDecimal(34534533), 5).toString());
+		assertEquals("456.000000001", new Decimal(new BigDecimal(456.0000000005605), 9).toString());
+		assertEquals("483934895393453453", new Decimal(483934895393453453L).toString());
+	}
+	
+	
+	@Ignore
+	@Test
+	public void testThatAnIntegerValueIsEqualsToItsCorrespondingDoubleValue(){
+		assertDecimal(1, new Decimal(1d));
+		assertDecimal(1, new Decimal(1.0d));
+		assertEquals(Decimal.ONE, new Decimal(1d));
+		assertEquals(Decimal.ONE, new Decimal(1.0d));
+		assertEquals(new Decimal(1), new Decimal(1d));
+		assertEquals(new Decimal(1), new Decimal(1.0d));
+	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testShouldFailOnNullStringConstructor(){
+		new Decimal(null);
+	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testShouldFailOnNullStringMathContextConstructor(){
+		new Decimal(null, new MathContext(1));
+	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testShouldFailOnNullBigDecimalScaleConstructor(){
+		new Decimal(null, 1);
+	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testShouldFailOnNullBigDecimalScaleRoundingModeConstructor(){
+		new Decimal(null, 1, RoundingMode.UNNECESSARY);
+	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testShouldFailOnNullBigDecimalMathContextConstructor(){
+		Decimal.valueOf(null, new MathContext(2));
+	}
+	
+	private void assertEqualString(final BigDecimal expected, final Decimal actual) {
 		assertEquals(expected.toString(), actual.toSciString());
 		assertEquals(expected.toEngineeringString(), actual.toEngString());
 		assertEquals(expected.toPlainString(), actual.toString());

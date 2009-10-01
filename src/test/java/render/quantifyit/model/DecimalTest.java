@@ -20,4 +20,16 @@ public class DecimalTest {
 		Decimal identicDecimals = new Decimal(654).plus(new Decimal(46.321456789), new MathContext(6));
 		assertTrue(new Decimal(700.321).same(identicDecimals));
 	}
+	
+	@Test
+	public void testPositiveAndNegativeNumbers(){
+		assertTrue(new Decimal(0.0001).isPositive());
+		assertTrue(new Decimal(1).isPositive());
+		assertFalse(new Decimal(-0.0001).isPositive());
+		assertTrue(new Decimal(-1).isNegative());
+		assertTrue(new Decimal(-0.0001).isNegative());
+		assertFalse(new Decimal(0.0001).isNegative());
+		assertFalse(Decimal.ZERO.isPositive());
+		assertFalse(Decimal.ZERO.isNegative());
+	}
 }

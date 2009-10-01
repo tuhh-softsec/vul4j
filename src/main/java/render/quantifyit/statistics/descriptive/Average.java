@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import render.quantifyit.model.Decimal;
-import render.quantifyit.util.DecimalArray;
+import render.quantifyit.util.DecimalUtils;
 
 public class Average  {
 	
@@ -16,8 +16,8 @@ public class Average  {
 	 * @param elements
 	 * @return
 	 */
-	public static Decimal mean(final Decimal... elements) {
-		DecimalArray.notNullOrEmpty(elements);	
+	public static Decimal mean(final Decimal ... elements) {
+		DecimalUtils.notNullOrEmpty(elements);	
 		int count = 0;
 		Decimal sum = Decimal.ZERO;
 		for (Decimal element : elements){
@@ -26,6 +26,7 @@ public class Average  {
 		}
 		return sum.by(new Decimal(count));
 	}
+	
 	
 	/**
 	 * A median is described as the number separating the higher half of a sample, 
@@ -40,13 +41,13 @@ public class Average  {
 	 * @return
 	 */
 	public static Decimal median(final Decimal... elements) {
-		DecimalArray.notNullOrEmpty(elements);
+		DecimalUtils.notNullOrEmpty(elements);
 		Arrays.sort(elements);
 		Decimal median = Decimal.ZERO;
 		final int medianPosition = elements.length/2;
 		
 		if (elements.length % 2 == 0){
-			median = ( elements[medianPosition - 1].plus(elements[medianPosition]) ).by(2); 
+			median = ( elements[medianPosition - 1].plus(elements[medianPosition]) ).halve(); 
 		}else{
 			median = elements[medianPosition];
 		}
@@ -61,7 +62,7 @@ public class Average  {
 	 * @return
 	 */
 	public static Decimal[] mode(final Decimal... elements) {
-		DecimalArray.notNullOrEmpty(elements);
+		DecimalUtils.notNullOrEmpty(elements);
 		if(elements.length == 1){
 			return new Decimal[]{elements[0]};
 		}

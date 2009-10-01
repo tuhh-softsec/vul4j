@@ -3,27 +3,47 @@ package render.quantifyit.statistics.descriptive;
 import java.util.Arrays;
 
 import render.quantifyit.model.Decimal;
-import render.quantifyit.util.DecimalArray;
+import render.quantifyit.util.DecimalUtils;
 
 public class Dispersion {
 
-	public static Decimal standardDeviation(final Decimal... elements) {
-		return variance(elements).squareRoot();
+	public static Decimal sampleStandardDeviation(final Decimal... elements) {
+		return sampleVariance(elements).squareRoot();
+	}
+	
+	public static Decimal populationStandardDeviation(final Decimal... elements) {
+		return populationVariance(elements).squareRoot();
 	}
 
-	public static Decimal variance(final Decimal... elements) {
+	public static Decimal sampleVariance(final Decimal... elements) {
 		final Decimal mean = Average.mean(elements);
-		
-		Decimal sumOfSquares = Decimal.ZERO;
-		for (Decimal element : elements) {
-			sumOfSquares = sumOfSquares.plus(element.power(2));
+		if(elements.length == 1) {
+			return Decimal.ZERO;
 		}
-		
-		return (sumOfSquares.by(elements.length)).minus(mean.power(2));
+		return sumOfSquaredDeltas(mean, elements).by(elements.length - 1);
+	}
+	
+	public static Decimal populationVariance(final Decimal... elements) {
+		final Decimal mean = Average.mean(elements);
+		if(elements.length == 1){
+			return Decimal.ZERO;
+		}
+		return sumOfSquaredDeltas(mean, elements).by(elements.length);
 	}
 
+	/**
+	 * (x - μ)^2
+	 */
+	private static Decimal sumOfSquaredDeltas(final Decimal mean, final Decimal... elements) {
+		Decimal sumOfSquaredDeltas = Decimal.ZERO;
+		for (Decimal element : elements) {  
+			sumOfSquaredDeltas = sumOfSquaredDeltas.plus(element.minus(mean).square());
+		}
+		return sumOfSquaredDeltas;
+	}	
+	
 	public static Decimal sd2Var(final Decimal standardDeviation) {
-		return standardDeviation.power(2);
+		return standardDeviation.square();
 	}
 
 	public static Decimal var2Sd(final Decimal variance) {
@@ -34,7 +54,7 @@ public class Dispersion {
 	}
 	
 	public static Decimal min(final Decimal... elements){
-		DecimalArray.notNullOrEmpty(elements);
+		DecimalUtils.notNullOrEmpty(elements);
 		
 		Decimal min = elements[0];
 		for (Decimal element : elements) {
@@ -46,7 +66,7 @@ public class Dispersion {
 	}
 
 	public static Decimal max(final Decimal... elements){
-		DecimalArray.notNullOrEmpty(elements);
+		DecimalUtils.notNullOrEmpty(elements);
 		
 		Decimal max = elements[0];
 		for (Decimal element : elements) {
@@ -56,11 +76,9 @@ public class Dispersion {
 		}
 		return max;
 	}
-	
-	//TODO: Do something better than just sort them...
-	
+		
 	public static Decimal range(final Decimal... elements){
-		DecimalArray.notNullOrEmpty(elements);
+		DecimalUtils.notNullOrEmpty(elements);
 
 		Arrays.sort(elements);
 		

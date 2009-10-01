@@ -10,7 +10,16 @@
 	<!--
 		<scm> <developerConnection>fractal</developerConnection>
 		<url>git://github.com/fractal/quantifyit.git</url> </scm>
-	-->
+	
+
+  <repositories>
+    <repository>
+      <id>jboss.org</id>
+      <url>http://repository.jboss.org/maven2/</url>
+    </repository>
+  </repositories>
+  
+  -->
 
 	<dependencies>
 		<dependency>

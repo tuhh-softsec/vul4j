@@ -1,7 +1,7 @@
 package render.quantifyit.statistics.descriptive;
 
 import static render.quantifyit.model.AssertDecimal.assertDecimal;
-import static render.quantifyit.util.DecimalArray.pack;
+import static render.quantifyit.util.DecimalUtils.pack;
 
 import org.junit.Test;
 
@@ -10,66 +10,161 @@ import render.quantifyit.model.Decimal;
 
 public class DispersionTest {
 	
-	/**
-	 * Variance 
-	 */
+	@Test
+	public void testShouldFindTheSampleVarianceList1(){
+		final Decimal[] elements = pack(1,2,9);
+		final Decimal variance = Dispersion.sampleVariance(elements);
+		assertDecimal(19, variance);
+	}
 	
 	@Test
-	public void testShouldFindTheVarianceOfAListOfElements(){
-		final Decimal[] elements = pack(new int[]{1,2,9});
-		final Decimal variance = Dispersion.variance(elements);
+	public void testShouldFindThePopulationVarianceList1(){
+		final Decimal[] elements = pack(1,2,9);
+		final Decimal variance = Dispersion.populationVariance(elements);
 		assertDecimal(12.67, variance, 2);
 	}
 	
 	@Test
-	public void testShouldFindTheVarianceOfAListOfNegativeElements(){
-		final Decimal[] elements = pack(new int[]{-10,-130,-9});
-		final Decimal variance = Dispersion.variance(elements);
-		assertDecimal(3226.89, variance, 2);
+	public void testShouldFindTheSampleVarianceList2(){
+		final Decimal[] elements = pack(-10,-130,-9);
+		final Decimal variance = Dispersion.sampleVariance(elements);
+		assertDecimal(4840.33, variance, 2);
 	}
+
+	@Test
+	public void testShouldFindThePopulationVarianceList2(){
+		final Decimal[] elements = pack(-10,-130,-9);
+		final Decimal variance = Dispersion.populationVariance(elements);
+		assertDecimal(3226.89, variance, 2);
+	}	
 	
 	@Test
-	public void testShouldFindTheVarianceOfOneElement(){
-		final Decimal[] elements = pack(new int[]{2});
-		final Decimal variance = Dispersion.variance(elements);
+	public void testShouldReturnZeroOnSampleVarianceOfOneElement(){
+		final Decimal[] elements = pack(2);
+		final Decimal variance = Dispersion.sampleVariance(elements);
+		assertDecimal(0, variance);
+	}
+
+	@Test
+	public void testShouldReturnZeroOnPopulationVarianceOfOneElement(){
+		final Decimal[] elements = pack(2);
+		final Decimal variance = Dispersion.populationVariance(elements);
 		assertDecimal(0, variance);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void testShouldThrowExceptionOnVarianceWithNullArray(){
+	public void testShouldThrowExceptionOnSampleVarianceWithNullArray(){
 		final Decimal[] nullArray = null;
-		Dispersion.variance(nullArray);
+		Dispersion.sampleVariance(nullArray);
 	}
+
+	@Test (expected = IllegalArgumentException.class)
+	public void testShouldThrowExceptionOnPopulationVarianceWithNullArray(){
+		final Decimal[] nullArray = null;
+		Dispersion.sampleVariance(nullArray);
+	}
+	
+	@Test
+	public void testShouldFindTheSampleVarianceList3(){
+		final Decimal[] elements = pack(4, 7, 13, 16);
+		assertDecimal(Decimal.TEN, Average.mean(elements));
+		final Decimal variance = Dispersion.sampleVariance(elements);
+		assertDecimal(30, variance);
+	}
+	
+	@Test
+	public void testShouldFindThePopulationVarianceList3(){
+		final Decimal[] elements = pack(4, 7, 13, 16);
+		assertDecimal(Decimal.TEN, Average.mean(elements));
+		final Decimal variance = Dispersion.populationVariance(elements);
+		assertDecimal(new Decimal("22.50"), variance, 2);
+	}
+	
+	@Test
+	public void testShouldFindTheSampleVarianceList4(){
+		final Decimal oneHundredMillions = Decimal.TEN.power(8);
+		final Decimal[] elements = new Decimal[]{
+						oneHundredMillions.plus(4),
+						oneHundredMillions.plus(7),
+						oneHundredMillions.plus(13),
+						oneHundredMillions.plus(16),
+						};
+		final Decimal variance = Dispersion.sampleVariance(elements);
+		assertDecimal(30, variance);
+	}
+	
+	@Test
+	public void testShouldFindThePopulationVarianceList4(){
+		final Decimal oneHundredMillions = Decimal.TEN.power(8);
+		final Decimal[] elements = new Decimal[]{
+				oneHundredMillions.plus(4),
+				oneHundredMillions.plus(7),
+				oneHundredMillions.plus(13),
+				oneHundredMillions.plus(16),
+		};
+		final Decimal variance = Dispersion.populationVariance(elements);
+		assertDecimal(new Decimal("22.50"), variance, 2);
+	}
+
+	
 	
 	/**
 	 * Standard deviation
 	 */
 	
 	@Test
-	public void testShouldFindTheStandardDeviationOfAListOfElements(){
-		final Decimal[] elements = pack(new int[]{1,2,3,4,20});
-		final Decimal standardDeviation = Dispersion.standardDeviation(elements);
-		assertDecimal(7.07, standardDeviation, 2);
+	public void testShouldFindTheSampleStandardDeviationList1(){
+		final Decimal[] elements = pack(1,2,3,4,20);
+		final Decimal sampleSD = Dispersion.sampleStandardDeviation(elements);
+		assertDecimal(7.91, sampleSD, 2);
+	}
+	@Test
+	public void testShouldFindThePopulationStandardDeviationList1(){
+		final Decimal[] elements = pack(1,2,3,4,20);
+		final Decimal populationSD = Dispersion.populationStandardDeviation(elements);
+		assertDecimal(7.07, populationSD, 2);
 	}
 	
 	@Test
-	public void testShouldFindTheStandardDeviationOfAListOfNegativeElements(){
-		final Decimal[] elements = pack(new int[]{-10,-130,-9});
-		final Decimal standardDeviation = Dispersion.standardDeviation(elements);
-		assertDecimal(56.81, standardDeviation, 2);
+	public void testShouldFindTheSampleStandardDeviationList2(){
+		final Decimal[] elements = pack(-10,-130,-9);
+		final Decimal sampleSD = Dispersion.sampleStandardDeviation(elements);
+		assertDecimal(69.57, sampleSD, 2);
+	}
+	
+	@Test
+	public void testShouldFindThePopulationStandardDeviationList2(){
+		final Decimal[] elements = pack(-10,-130,-9);
+		final Decimal populationSD = Dispersion.populationStandardDeviation(elements);
+		assertDecimal(56.81, populationSD, 2);
+	}
+	
+	@Test
+	public void testShouldFindTheSampleStandardDeviationList3(){
+		final double[] dataSet = new double[]{2,4,4,4,5,5,7,9};
+		final Decimal[] elements = pack(dataSet);
+		final Decimal sampleSD = Dispersion.sampleStandardDeviation(elements);
+		assertDecimal(2.14, sampleSD, 2);
+	}
+	@Test
+	public void testShouldFindThePopulationStandardDeviationList3(){
+		final double[] dataSet = new double[]{2,4,4,4,5,5,7,9};
+		final Decimal[] elements = pack(dataSet);
+		final Decimal populationSD = Dispersion.populationStandardDeviation(elements);
+		assertDecimal(2, populationSD);
 	}
 	
 	@Test
 	public void testShouldFindTheStandardDeviationOfOneElement(){
-		final Decimal[] elements = pack(new int[]{2});
-		final Decimal standardDeviation = Dispersion.standardDeviation(elements);
+		final Decimal[] elements = pack(2);
+		final Decimal standardDeviation = Dispersion.sampleStandardDeviation(elements);
 		assertDecimal(0, standardDeviation);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testShouldThrowExceptionOnStandardDeviationWithNullArray(){
 		final Decimal[] nullArray = null;
-		Dispersion.standardDeviation(nullArray);
+		Dispersion.sampleStandardDeviation(nullArray);
 	}
 
 	

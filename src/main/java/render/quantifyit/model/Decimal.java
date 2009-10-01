@@ -26,12 +26,28 @@ import java.math.RoundingMode;
  */
 public class Decimal implements Comparable<Decimal>, Serializable{
 
+	/**
+	 * Defaults to {@link RoundingMode#HALF_EVEN HALF_EVEN}, the IEEE 754R default.
+	 * "Note that this is the rounding mode that statistically minimizes cumulative
+	 * error when applied repeatedly over a sequence of calculations."
+	 * 
+	 * This is not the same as MathContext, which defaults to 
+	 * {@link RoundingMode#HALF_UP HALF_UP}
+	 */
+	private static final RoundingMode DEFAULT_ROUNDING = RoundingMode.HALF_EVEN;
+
+
+	/**
+	 * Defaults to 10 digits
+	 */
 	private static final int DEFAULT_SCALE = 10;
 
 	private static final long serialVersionUID = 6840541842364016476L;
 
 	public static final Decimal ZERO 	= new Decimal("0");
 	public static final Decimal ONE 	= new Decimal("1");
+	public static final Decimal TWO 	= new Decimal("2");
+	public static final Decimal THREE 	= new Decimal("3");
 	public static final Decimal TEN	 	= new Decimal("10");
 
 	private final BigDecimal significand;
@@ -42,11 +58,19 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	
 	
 	public Decimal(final int value){
-		this(Integer.toString(value));
+		this(BigDecimal.valueOf((long)value));
 	}
 	
 	public Decimal(final int value, final MathContext roundingCriteria){
-		this(Integer.toString(value), roundingCriteria);
+		this(new BigDecimal(value, roundingCriteria));
+	}
+	
+	public Decimal(final long value) {
+		this(BigDecimal.valueOf(value));
+	}
+	
+	public Decimal(final long value, final MathContext roundingCriteria) {
+		this(new BigDecimal(value, roundingCriteria));
 	}
 	
 	public Decimal(final double value){
@@ -58,17 +82,47 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	}
 	
 	public Decimal(final String value) {
+		if(value == null) {
+			throw new IllegalArgumentException("Decimal(String) failed construction due to a null argument.");
+		}
 		this.significand = new BigDecimal(value);
 	}
 
 	public Decimal(final String value, final MathContext roundingCriteria) {
+		if(value == null ) {
+			throw new IllegalArgumentException(
+					"Decimal(String, MathContext) failed construction due to a null argument.");
+		}
 		this.significand = new BigDecimal(value, roundingCriteria);
 	}
 
-	private Decimal(final BigDecimal value) {
+	private Decimal(final BigDecimal value){
+		if(value == null) {
+			throw new IllegalArgumentException("Decimal(BigDecimal) failed construction due to a null argument.");
+		}
 		this.significand = value;
 	}
 	
+	public Decimal(final BigDecimal value, final int scale) {
+		this(value, scale, DEFAULT_ROUNDING);
+	}
+	
+	public Decimal(final BigDecimal value, final int scale, final RoundingMode roundingMode) {
+		if(value == null) {
+			throw new IllegalArgumentException(
+				"Decimal(BigDecimal, int scale, RoundingMode) failed construction due to a null argument.");
+		}
+		this.significand = value.setScale(scale, roundingMode);
+	}
+	
+	public static Decimal valueOf(final BigDecimal value, final MathContext roundingCriteria) {
+		if(value == null) {
+			throw new IllegalArgumentException(
+				"Decimal(BigDecimal, MathContext) failed construction due to a null argument.");
+		}
+		return new Decimal(value.round(roundingCriteria));
+	}
+
 	/*
 	 * PLUS = Addition = BigDecimal.add(...)
 	 */
@@ -134,11 +188,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 */
 	
 	public Decimal by(final int divisor) {
-		return by(divisor, DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+		return by(divisor, DEFAULT_SCALE, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal by(final int divisor, final int scale) {
-		return by(divisor, scale, RoundingMode.HALF_EVEN);
+		return by(divisor, scale, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal by(final int divisor, final int scale, final RoundingMode roundingMode) {
@@ -146,11 +200,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	}
 	
 	public Decimal by(final double divisor) {
-		return by(divisor, DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+		return by(divisor, DEFAULT_SCALE, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal by(final double divisor, final int scale) {
-		return by(divisor, scale, RoundingMode.HALF_EVEN);
+		return by(divisor, scale, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal by(final double divisor, final int scale, final RoundingMode roundingMode) {
@@ -158,11 +212,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	}
 		
 	public Decimal by(final Decimal divisor) {
-		return by(divisor, DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+		return by(divisor, DEFAULT_SCALE, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal by(final Decimal divisor, final int scale) {
-		return by(divisor, scale, RoundingMode.HALF_EVEN);
+		return by(divisor, scale, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal by(final Decimal divisor, final int scale, final RoundingMode roundingMode) {
@@ -171,6 +225,10 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	
 	public Decimal by(final Decimal divisor, final MathContext roundingCriteria) {
 		return new Decimal(significand.divide(divisor.asBigDecimal(), roundingCriteria));
+	}
+	
+	public Decimal halve() {
+		return this.by(Decimal.TWO);
 	}
 	
 	/*
@@ -184,6 +242,14 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	public Decimal power(final int power, final MathContext roundingCriteria){
 		return new Decimal(significand.pow(power, roundingCriteria));
 	}
+	
+	public Decimal square() {
+		return this.power(2);
+	}
+	
+	/*
+	 * Square root
+	 */
 	
 	public static Decimal squareRoot(final int squared){
 		return new Decimal(Math.sqrt(squared));
@@ -273,6 +339,10 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return compareTo(other) <= 0;
 	}
 	
+	public boolean isInfinite(){
+		return Double.isInfinite(significand.doubleValue());
+	}
+	
 	/**
 	 * If the number is GREATER THAN Decimal.ZERO
 	 * Doesn't account for positive or negative zero, infinity or NaN
@@ -308,6 +378,13 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 		return significand.toEngineeringString();
 	}	
 	
+	public Decimal abs(){
+		return new Decimal(significand.abs());
+	}
+	
+	public Decimal abs(final MathContext roundingCriteria){
+		return new Decimal(significand.abs(roundingCriteria));
+	}
 
 	public double asDouble(){
 		return significand.doubleValue();
@@ -326,7 +403,7 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 */
 		
 	public Decimal scaleTo(final int scale){
-		return scaleTo(scale, RoundingMode.HALF_EVEN);
+		return scaleTo(scale, DEFAULT_ROUNDING);
 	}
 	
 	public Decimal scaleTo(final int scale, final RoundingMode roundingMode){
