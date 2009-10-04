@@ -11,10 +11,24 @@ import render.quantifyit.model.Decimal;
 public class DispersionTest {
 	
 	@Test
+	public void testShouldFindTheSampleVarianceList1WithMean(){
+		final Decimal[] elements = pack(1,2,9);
+		final Decimal varianceWithMean = Dispersion.sampleVariance(new Decimal(4), elements);
+		assertDecimal(19, varianceWithMean);
+	}
+	
+	@Test
 	public void testShouldFindTheSampleVarianceList1(){
 		final Decimal[] elements = pack(1,2,9);
 		final Decimal variance = Dispersion.sampleVariance(elements);
 		assertDecimal(19, variance);
+	}
+	
+	@Test
+	public void testShouldFindThePopulationVarianceList1WithMean(){
+		final Decimal[] elements = pack(1,2,9);
+		final Decimal variance = Dispersion.populationVariance(new Decimal(4), elements);
+		assertDecimal(12.67, variance, 2);
 	}
 	
 	@Test
@@ -113,11 +127,26 @@ public class DispersionTest {
 	 */
 	
 	@Test
+	public void testShouldFindTheSampleStandardDeviationList1WithMean(){
+		final Decimal[] elements = pack(1,2,3,4,20);
+		final Decimal sampleSD = Dispersion.sampleStandardDeviation(new Decimal(6), elements);
+		assertDecimal(7.91, sampleSD, 2);
+	}
+	
+	@Test
 	public void testShouldFindTheSampleStandardDeviationList1(){
 		final Decimal[] elements = pack(1,2,3,4,20);
 		final Decimal sampleSD = Dispersion.sampleStandardDeviation(elements);
 		assertDecimal(7.91, sampleSD, 2);
 	}
+	
+	@Test
+	public void testShouldFindThePopulationStandardDeviationList1WithMean(){
+		final Decimal[] elements = pack(1,2,3,4,20);
+		final Decimal populationSD = Dispersion.populationStandardDeviation(new Decimal(6), elements);
+		assertDecimal(7.07, populationSD, 2);
+	}
+	
 	@Test
 	public void testShouldFindThePopulationStandardDeviationList1(){
 		final Decimal[] elements = pack(1,2,3,4,20);

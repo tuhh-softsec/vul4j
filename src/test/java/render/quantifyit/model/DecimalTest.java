@@ -1,5 +1,6 @@
 package render.quantifyit.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -32,4 +33,10 @@ public class DecimalTest {
 		assertFalse(Decimal.ZERO.isPositive());
 		assertFalse(Decimal.ZERO.isNegative());
 	}
+	
+	@Test
+	public void testDecimalFormatting(){
+		assertEquals("  45.000", String.format("%8.3f", new Decimal(45).asBigDecimal()));
+	}
+	
 }

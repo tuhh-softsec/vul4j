@@ -8,14 +8,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.junit.Test;
 
 import render.quantifyit.model.Decimal;
 
-public class DecimalArrayTest {
+public class DecimalUtilsTest {
 
 	@Test
 	public void testPackLongs(){
@@ -23,23 +25,51 @@ public class DecimalArrayTest {
 		assertEquals(3, longs.length);
 	}
 	
+	
+	/**
+	 * fails with a HashSet, since it relies on equals(), which is different for ints and doubles
+	 */
 	@Test
-	public void testShouldAddEelementsIntoASet(){
-		Set<Decimal> decimals = new TreeSet<Decimal>();
+	public void testShouldAddUniqueElementsIntoASet(){ 
+		Set<Decimal> decimals = new TreeSet<Decimal>(); 
 		decimals.add(new Decimal(1));
 		decimals.add(Decimal.ONE);
-		decimals.add(new Decimal(1d));
+		decimals.add(new Decimal(1.0d));
 		decimals.add(new Decimal(2));
 		decimals.add(Decimal.TWO);
-		decimals.add(new Decimal(2d));
+		decimals.add(new Decimal(2.0d));
 		decimals.add(new Decimal(3));
 		decimals.add(Decimal.THREE);
-		decimals.add(new Decimal(3d));
+		decimals.add(new Decimal(3.0d));
 		
 		assertEquals(3, decimals.size());
 		assertTrue(decimals.contains(Decimal.ONE));
 		assertTrue(decimals.contains(Decimal.TWO));
 		assertTrue(decimals.contains(Decimal.THREE));
+	}
+	
+	@Test
+	public void testShouldAddDecimalsAsKeysForAMap(){
+		Map<Decimal, String> decimals = new TreeMap<Decimal, String>();
+		decimals.put(new Decimal(1), "asdf");
+		decimals.put(Decimal.ONE, "asdf");
+		decimals.put(new Decimal(1d), "ASDF");
+		decimals.put(new Decimal(2), "qwer");
+		decimals.put(Decimal.TWO, "qwer");
+		decimals.put(new Decimal(2d), "QWER");
+		decimals.put(new Decimal(3), "zxcv");
+		decimals.put(Decimal.THREE, "zxcv");
+		decimals.put(new Decimal(3d), "ZXCV");
+		
+		assertEquals(3, decimals.size());
+		assertTrue(decimals.containsKey(Decimal.ONE));
+		assertTrue(decimals.containsKey(Decimal.TWO));
+		assertTrue(decimals.containsKey(Decimal.THREE));
+		assertTrue(decimals.containsValue("ASDF"));
+		assertTrue(decimals.containsValue("QWER"));
+		assertTrue(decimals.containsValue("ZXCV"));
+		
+//		assertTrue(DecimalUtils.containsAll(decimals, Arrays.asList(DecimalUtils.pack(1,2,3))));
 	}
 	
 	// an array of ints, is not equal to the array of doubles, because 
@@ -67,8 +97,8 @@ public class DecimalArrayTest {
 		assertEquals(8, intsSet.size());
 		assertEquals(8, doublesSet.size());
 		
-		assertTrue(DecimalUtils.containsAll(doublesSet, intsSet));
-		assertTrue(DecimalUtils.containsAll(intsSet, doublesSet));
+//		assertTrue(DecimalUtils.containsAll(doublesSet, intsSet));
+//		assertTrue(DecimalUtils.containsAll(intsSet, doublesSet));
 	}
 	
 
