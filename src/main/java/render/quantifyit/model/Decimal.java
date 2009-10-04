@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Immutable, arbitrary-precision signed decimal numbers.
@@ -284,6 +287,27 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	 * Comparison
 	 */
 	
+	
+	/**
+	 * Honours the equals(Object) implementation of BigDecimal, which is prone to errors, since
+	 * new Decimal(1).equals(new Decimal(1d)) evaluates to false, because 1d = 1.0 (10 with a scale of 1)
+	 * Use {@link #compareTo(Decimal) instead. 
+	 * 
+	 * Warning, some collections based on equals ( and its evil twin hashCode), such as HashSet and HashMap
+	 * will fail the equality comparison.
+	 * Suggestions:
+	 * <ul>
+	 * 		<li>Do not use the double constructor/methods to compare against ints, 
+	 * 		use more strict versions such as Decimal(String), altough this still won't guarantee equality 
+	 * 		if you do operations such as division</li>
+	 * 		<li>Avoid hash based collections, prefer instead those that use Comparable/Comparator</li>
+	 * 		<li>To compare lists, use 
+	 * 			{@link DecimalUtils#containsAll(Collection<Decimal> source, Collection<Decimal> target)}</li>
+	 * 
+	 * {@link BigDecimal#equals(Object) equals(Object)} for 
+	 * @see 
+	 * @see #compareTo(java.math.BigDecimal)
+	 */
 	@Override
 	public boolean equals(final Object otherObject) {
 	    if (!(otherObject instanceof Decimal)){
@@ -376,7 +400,11 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	
 	public String toEngString(){
 		return significand.toEngineeringString();
-	}	
+	}
+	
+	public String format(String pattern){
+		return String.format(pattern, this.significand);
+	}
 	
 	public Decimal abs(){
 		return new Decimal(significand.abs());
@@ -412,6 +440,10 @@ public class Decimal implements Comparable<Decimal>, Serializable{
 	
 	public Decimal roundTo(final MathContext roundingCriteria){
 		return new Decimal(significand.round(roundingCriteria));
+	}
+	
+	public Decimal movePointToLeft(int n){
+		return new Decimal(significand.movePointLeft(n));
 	}
 	
 	public int getScale(){

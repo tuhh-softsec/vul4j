@@ -1,7 +1,9 @@
 package render.quantifyit.util;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import render.quantifyit.model.Decimal;
 
@@ -38,8 +40,24 @@ public class DecimalUtils {
 			throw new IllegalArgumentException("Please provide at least one value.");
 		}
 	}
+
+	public static boolean contains(final List<Decimal> source, final Decimal target){
+		return contains(source.iterator(), target);
+	}
+
 	
-	public static boolean contains(final Iterator<Decimal> sourceIterator, final Decimal target){
+	public static boolean containsAll(final List<Decimal> source, final List<Decimal> target) {
+		final Iterator<Decimal> sourceIterator = source.iterator();
+		final Iterator<Decimal> targetIterator = target.iterator();
+		while (targetIterator.hasNext()) {
+			if (!contains(sourceIterator, targetIterator.next())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean contains(final Iterator<Decimal> sourceIterator, final Decimal target){
 		if (target == null) {
 		    while (sourceIterator.hasNext()){
 				if (sourceIterator.next()==null) {
@@ -54,17 +72,6 @@ public class DecimalUtils {
 		    }
 		}
 		return false;
-	}
-	
-	public static boolean containsAll(final Collection<Decimal> source, final Collection<Decimal> target) {
-		final Iterator<Decimal> sourceIterator = source.iterator();
-		final Iterator<Decimal> targetIterator = target.iterator();
-		while (targetIterator.hasNext()) {
-			if (!contains(sourceIterator, targetIterator.next())) {
-				return false;
-			}
-		}
-		return true;
 	}
 	
 }
