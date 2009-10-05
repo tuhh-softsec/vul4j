@@ -19,10 +19,11 @@ import render.quantifyit.statistics.descriptive.PopulationSummary;
 
 public class SimplePerformanceStatisticsTest {
 
-	private static final int STARTUP_PAUSE = 15000;
+	private static final int STARTUP_PAUSE = 2;
 	private static final int ELEMENTS = 1000000;
 	private static final boolean GC_ON = false;
 	private static final boolean STORE_RESULTS = false;
+	private static final boolean PRINT_ENV = false;
 	
 	private static Decimal[] decimalResults;
 	private static Decimal[] decimalDataSet;
@@ -37,13 +38,18 @@ public class SimplePerformanceStatisticsTest {
 	private static List<Decimal> bigDecimalDuration = new ArrayList<Decimal>();
 	private static List<Decimal> doubleDuration = new ArrayList<Decimal>();
 
-	private MemorySnapshot atStart;
+	private MemorySnapshot testMemoryConsumption;
+	private static MemorySnapshot totalMemoryUsed;
 
 	private static long totalExecutionTime;
 	
 	@BeforeClass
 	public static void performanceBenchmarkStarts() throws InterruptedException{
 		System.out.format("Performance tests for Quantify: %s%n", new Date());
+		if(PRINT_ENV){
+			PerformanceUtils.runtime();
+		}
+		
 		System.out.format("Creating dataset with %d random numbers:%n", ELEMENTS);
 		
 		doubleDataSet = new double[ELEMENTS];
@@ -61,16 +67,19 @@ public class SimplePerformanceStatisticsTest {
 			bigDecimalDataSet[i] = new BigDecimal(100000 * (Math.random() + .1d)).setScale(10, RoundingMode.HALF_EVEN);
 		}
 		
-		doubleResults = new double[ELEMENTS];
-		decimalResults = new Decimal[ELEMENTS];
-		bigDecimalResults = new BigDecimal[ELEMENTS];
+		if(STORE_RESULTS){
+			doubleResults = new double[ELEMENTS];
+			decimalResults = new Decimal[ELEMENTS];
+			bigDecimalResults = new BigDecimal[ELEMENTS];
+		}
 		
-		System.out.format("Finished creating data, sleeping %s seconds...%n", STARTUP_PAUSE / 1000);
+		System.out.format("Finished creating data, sleeping %s seconds...%n", STARTUP_PAUSE);
 		System.gc();
-		Thread.sleep(STARTUP_PAUSE);
+		Thread.sleep(STARTUP_PAUSE * 1000);
 		PerformanceUtils.outputSystemLoad();
 		System.out.println("Ready to start!");
 		totalExecutionTime = PerformanceUtils.start();
+		totalMemoryUsed = PerformanceUtils.memorySnapshot();
 	}
 	
 	@AfterClass
@@ -100,7 +109,7 @@ public class SimplePerformanceStatisticsTest {
 		System.out.format("Decimal takes %s times longer than %s%n", 
 				decimalSummary.getMean().by(doubleSummary.getMean()).format("%5.2f"),  doubleClassName);
 		
-		PerformanceUtils.outputProperties();
+		PerformanceUtils.memoryConsumed(totalMemoryUsed);
 		PerformanceUtils.outputSystemLoad();
 		PerformanceUtils.end(totalExecutionTime);
 	}
@@ -108,14 +117,14 @@ public class SimplePerformanceStatisticsTest {
 	@Before
 	public void setUp()  {
 		if(STORE_RESULTS) {
-			atStart = PerformanceUtils.memorySnapshot();
+			testMemoryConsumption = PerformanceUtils.memorySnapshot();
 		}
 	}
 	
 	@After
 	public void measureMemoryAndTearDown() throws InterruptedException{
 		if(STORE_RESULTS) {
-			PerformanceUtils.memoryConsumed(atStart);
+			PerformanceUtils.memoryConsumed(testMemoryConsumption);
 		}
 		if(GC_ON){
 			System.gc();

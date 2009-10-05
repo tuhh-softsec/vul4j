@@ -50,8 +50,6 @@ public class PerformanceUtils {
 		for (String key : properties) {
 			System.out.format("%s : [%s]%n", key, System.getProperty(key));
 		}
-		
-		runtime();
 	}
     
 	public static MemorySnapshot memorySnapshot(){
@@ -64,7 +62,7 @@ public class PerformanceUtils {
 	public static void memoryConsumed(final MemorySnapshot atStart){
 		MemorySnapshot now = memorySnapshot();
 		
-		System.out.format("Memory allocated:%s%nMemory free:\t %s%nDelta:\t\t %s%n", 
+		System.out.format("%nMemory allocated:%s%nMemory free:\t %s%nDelta:\t\t %s%n", 
 				now.getFormattedTotalAllocated(), now.getFormattedFree(), now.getFormattedDelta());
 	}
 	
@@ -76,7 +74,7 @@ public class PerformanceUtils {
 	}
 
 	public static void outputSystemLoad(){
-		System.out.format("System load average: %s%n", systemLoad());
+		System.out.format("%nSystem load average: %s%n", systemLoad());
 	}
 	
 	public static String systemLoad(){

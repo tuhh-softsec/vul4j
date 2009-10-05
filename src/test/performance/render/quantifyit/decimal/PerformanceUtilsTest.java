@@ -11,9 +11,9 @@ public class PerformanceUtilsTest {
 	@Test
 	public void testFormatDuration() {
 		String duration = PerformanceUtils.formatDuration(new Decimal(16000));
-		assertEquals("16.000 ns", duration);
+		assertEquals("  16.000 ns", duration);
 		duration = PerformanceUtils.formatDuration(new Decimal(28435000));
-		assertEquals("28.435 μs", duration);
+		assertEquals("  28.435 μs", duration);
 	}
 
 }
