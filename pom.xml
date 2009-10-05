@@ -131,6 +131,7 @@
 			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/repository</url>
 		</repository>
 		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
 			<id>webassembletool-sourceforge-snapshots</id>
 			<name>webassembletool Snapshot Repository</name>
 			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/snapshots</url>
