@@ -20,6 +20,12 @@
 package org.apache.directory.shared.ldap.name;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,20 +48,11 @@ import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.name.LdapDN;
-import org.apache.directory.shared.ldap.name.LdapDnParser;
-import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertSame;
 
 
 /**
@@ -697,6 +694,22 @@ public class LdapDNTest
         assertEquals( 3, dn.size() );
     }
 
+    
+    @Test
+    public void testLdapDNAddVarargs() throws InvalidNameException
+    {
+        String c = "C";
+        String dd = "D = D";
+        
+        LdapDN dn = new LdapDN( 
+            "a = A", 
+            "b", "B",
+            "c", c,
+            dd );
+        
+        assertEquals( "a=A,b=B,c=C,d=D", dn.toString() );
+        assertEquals( "a = A,b=B,c=C,D = D", dn.getUpName() );
+    }
 
     /**
      * test Add a composite RDN to an existing LdapDN

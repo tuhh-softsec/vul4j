@@ -32,6 +32,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.InvalidAttributeIdentifierException;
+import javax.naming.directory.InvalidAttributeValueException;
 
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -1324,19 +1325,73 @@ public class AttributeUtils
     
     
     /**
-     * Build a new ATtributes instance from a LDIF list of lines
-     *
-     * @param avas The AttributeType and Values, using a ldif format 
+     * Build a new Attributes instance from a LDIF list of lines. The values can be 
+     * either a complete AVA, or a couple of AttributeType ID and a value (a String or 
+     * a byte[]). The following sample shows the three cases :
+     * 
+     * <pre>
+     * Attribute attr = AttributeUtils.createAttributes(
+     *     "objectclass: top",
+     *     "cn", "My name",
+     *     "jpegPhoto", new byte[]{0x01, 0x02} );
+     * </pre>
+     * 
+     * @param avas The AttributeType and Values, using a ldif format, or a couple of 
+     * Attribute ID/Value
      * @return An Attributes instance
      * @throws NamingException If the data are invalid
      */
-    public static Attributes createAttributes( String... avas ) throws NamingException
+    public static Attributes createAttributes( Object... avas ) throws NamingException
     {
         StringBuilder sb = new StringBuilder();
+        int pos = 0;
+        boolean valueExpected = false;
         
-        for ( String ava : avas)
+        for ( Object ava : avas)
         {
-            sb.append( ava ).append( '\n' );
+            if ( !valueExpected )
+            {
+                if ( !(ava instanceof String) )
+                {
+                    throw new InvalidAttributeValueException( "The Attribute ID #" + (pos+1) + " must be a String" );
+                }
+                
+                String attribute = (String)ava;
+                sb.append( attribute );
+                
+                if ( attribute.indexOf( ':' ) != -1 )
+                {
+                    sb.append( '\n' );
+                }
+                else
+                {
+                    valueExpected = true;
+                }
+            }
+            else
+            {
+                if ( ava instanceof String )
+                {
+                    sb.append( ": " ).append( (String)ava ).append( '\n' );
+                }
+                else if ( ava instanceof byte[] )
+                {
+                    sb.append( ":: " );
+                    sb.append( new String( Base64.encode( (byte[] )ava ) ) );
+                    sb.append( '\n' );
+                }
+                else
+                {
+                    throw new InvalidAttributeValueException( "The Attribute value #" + (pos+1) + " must be a String or a byte[]" );
+                }
+                
+                valueExpected = false;
+            }
+        }
+        
+        if ( valueExpected )
+        {
+            throw new InvalidAttributeValueException( "A value is missing at the end" );
         }
         
         LdifAttributesReader reader = new LdifAttributesReader();

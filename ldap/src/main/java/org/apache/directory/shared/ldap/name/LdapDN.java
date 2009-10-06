@@ -216,6 +216,73 @@ public class LdapDN implements Name, Externalizable
 
 
     /**
+     * Creates a new instance of LdapDN, using varargs to declare the RDNs. Each
+     * String is either a full RDN, or a couple of AttributeType DI and a value.
+     * If the String contains a '=' symbol, the the constructor will assume that
+     * the String arg contains afull RDN, otherwise, it will consider that the 
+     * following arg is the value.
+     * An example of usage would be :
+     * <pre>
+     * String exampleName = "example";
+     * String baseDn = "dc=apache,dc=org";
+     * 
+     * LdapDN dn = new LdapDN(
+     *     "cn=Test",
+     *     "ou", exampleName,
+     *     baseDn);
+     * </pre>
+     *
+     * @param upNames
+     * @throws InvalidNameException
+     */
+    public LdapDN( String... upNames ) throws InvalidNameException
+    {
+        StringBuilder sb = new StringBuilder();
+        boolean valueExpected = false;
+        boolean isFirst = true;
+        
+        for ( String upName : upNames )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else if ( !valueExpected )
+            {
+                sb.append( ',' );
+            }
+            
+            if ( !valueExpected )
+            {
+                sb.append( upName );
+                
+                if ( upName.indexOf( '=' ) == -1 )
+                {
+                    valueExpected = true;
+                }
+            }
+            else
+            {
+                sb.append( "=" ).append( upName );
+                
+                valueExpected = false;
+            }
+        }
+        
+        if ( valueExpected )
+        {
+            throw new InvalidNameException( "A value is missing on some RDN" );
+        }
+
+        // Stores the representations of a DN : internal (as a string and as a
+        // byte[]) and external.
+        upName = sb.toString();
+        LdapDnParser.parseInternal( upName, rdns );
+        normalizeInternal();
+        normalized = false;
+    }
+    
+    /**
      * Create a DN when deserializing it.
      * 
      * Note : this constructor is used only by the deserialization method.
