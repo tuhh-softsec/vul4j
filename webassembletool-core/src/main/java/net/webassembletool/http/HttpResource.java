@@ -8,8 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.security.Principal;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,22 +20,25 @@ import net.webassembletool.output.StringOutput;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 
-import org.apache.commons.httpclient.ConnectTimeoutException;
-import org.apache.commons.httpclient.ConnectionPoolTimeoutException;
-import org.apache.commons.httpclient.Cookie;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpMethodBase;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.ConnectionPoolTimeoutException;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 
 /**
@@ -46,35 +48,14 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
  */
 public class HttpResource extends Resource {
 	private final static Log LOG = LogFactory.getLog(HttpResource.class);
-	private HttpMethodBase httpMethod;
+	private HttpUriRequest httpUriRequest;
+	private HttpResponse httpResponse;
+	private HttpEntity httpEntity;
 	private int statusCode;
 	private String statusText;
 	private final RequestContext target;
 	private String url;
 	private Exception exception;
-
-	/** This method builds post request adding WAT specific parameters */
-	private void buildFormPostMethod() {
-		url = ResourceUtils.getHttpUrl(target);
-		PostMethod postMethod = new PostMethod(url);
-		postMethod.getParams().setContentCharset(
-				target.getOriginalRequest().getCharacterEncoding());
-		Map<String, String> parameters = target.getParameters();
-		if (parameters != null)
-			for (Map.Entry<String, String> temp : parameters.entrySet())
-				postMethod.addParameter(new NameValuePair(temp.getKey(), temp
-						.getValue()));
-		if (target.getOriginalRequest() != null)
-			for (Object obj : target.getOriginalRequest().getParameterMap()
-					.entrySet()) {
-				@SuppressWarnings("unchecked")
-				Entry<String, String[]> entry = (Entry<String, String[]>) obj;
-				for (int i = 0; i < entry.getValue().length; i++)
-					postMethod.addParameter(new NameValuePair(entry.getKey(),
-							entry.getValue()[i]));
-			}
-		httpMethod = postMethod;
-	}
 
 	/**
 	 * This builds a postMethod forwarding content and content type without
@@ -83,20 +64,29 @@ public class HttpResource extends Resource {
 	 * @throws IOException
 	 *             if problem getting the request
 	 */
-	private void buildRawPostMethod() throws IOException {
+	private void buildPostMethod() throws IOException {
 		url = ResourceUtils.getHttpUrlWithQueryString(target);
-		PostMethod postMethod = new PostMethod(url);
+		HttpPost postMethod = new HttpPost(url);
 		HttpServletRequest req = target.getOriginalRequest();
-		postMethod
-				.setRequestEntity(new InputStreamRequestEntity(req
-						.getInputStream(), req.getContentLength(), req
-						.getContentType()));
-		httpMethod = postMethod;
+		long contentLengthLong = -1;
+		String contentLength = req.getHeader("Content-length");
+		if (contentLength!=null)
+			contentLengthLong = Long.parseLong(contentLength);
+		InputStreamEntity inputStreamEntity = new InputStreamEntity(req
+				.getInputStream(), contentLengthLong);
+		String contentType = req.getContentType();
+		if (contentType != null)
+			inputStreamEntity.setContentType(contentType);
+		String contentEncoding = req.getHeader("Content-Encoding");
+		if (contentEncoding != null)
+			inputStreamEntity.setContentEncoding(contentEncoding);
+		postMethod.setEntity(inputStreamEntity);
+		httpUriRequest = postMethod;
 	}
 
 	private void buildGetMethod() {
 		url = ResourceUtils.getHttpUrlWithQueryString(target);
-		httpMethod = new GetMethod(url);
+		httpUriRequest = new HttpGet(url);
 	}
 
 	private void addCasAuthentication(String location) {
@@ -129,83 +119,75 @@ public class HttpResource extends Resource {
 		if ("GET".equalsIgnoreCase(target.getMethod()) || !target.isProxyMode())
 			buildGetMethod();
 		else if ("POST".equalsIgnoreCase(target.getMethod())) {
-			String contentType = target.getOriginalRequest().getContentType();
-			if (contentType != null
-					&& contentType
-							.startsWith("application/x-www-form-urlencoded"))
-				// Handle multipart forms adding WAT specific params
-				buildFormPostMethod();
-			else
-				// Raw forward of the post
-				buildRawPostMethod();
+			buildPostMethod();
 		} else
 			throw new UnsupportedHttpMethodException(target.getMethod() + " "
 					+ ResourceUtils.getHttpUrl(target));
 		if (target.isProxyMode())
-			httpMethod.setFollowRedirects(false);
+			httpUriRequest.getParams().setParameter(
+					ClientPNames.HANDLE_REDIRECTS, false);
 		else
-			httpMethod.setFollowRedirects(true);
+			httpUriRequest.getParams().setParameter(
+					ClientPNames.HANDLE_REDIRECTS, true);
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
 		String userAgent = target.getOriginalRequest().getHeader("User-Agent");
-		String accept = target.getOriginalRequest().getHeader("Accept");
-		String acceptEncoding = target.getOriginalRequest().getHeader(
-				"Accept-Encoding");
-		String acceptLanguage = target.getOriginalRequest().getHeader(
-				"Accept-Language");
-		String acceptCharset = target.getOriginalRequest().getHeader(
-				"Accept-Charset");
 		if (userAgent != null)
-			httpMethod.getParams().setParameter(HttpMethodParams.USER_AGENT,
-					userAgent);
-		if (accept != null)
-			httpMethod.setRequestHeader("Accept", accept);
-		if (acceptEncoding != null)
-			httpMethod.setRequestHeader("Accept-Encoding", acceptEncoding);
-		if (acceptLanguage != null)
-			httpMethod.setRequestHeader("Accept-Language", acceptLanguage);
-		if (acceptCharset != null)
-			httpMethod.setRequestHeader("Accept-Charset", acceptCharset);
+			httpUriRequest.getParams().setParameter(
+					CoreProtocolPNames.USER_AGENT, userAgent);
+		copyRequestHeaders("Accept", "Accept-Encoding", "Accept-Language",
+				"Accept-Charset", "Cache-control", "Pragma");
 		UserContext userContext = target.getUserContext();
 		if (userContext != null && userContext.getUser() != null)
-			httpMethod.addRequestHeader("X_REMOTE_USER", userContext.getUser());
+			httpUriRequest.addHeader("X_REMOTE_USER", userContext.getUser());
 	}
 
 	public HttpResource(HttpClient httpClient, RequestContext target) {
 		this.target = target;
 		// Retrieve session and other cookies
-		HttpState httpState = null;
+		HttpContext httpContext = null;
 		if (target.getUserContext() != null)
-			httpState = target.getUserContext().getHttpState();
+			httpContext = target.getUserContext().getHttpContext();
 		try {
 			buildHttpMethod();
 			if (HttpResource.LOG.isDebugEnabled())
 				HttpResource.LOG.debug(toString());
-			httpClient.executeMethod(httpClient.getHostConfiguration(),
-					httpMethod, httpState);
-			statusCode = httpMethod.getStatusCode();
-			statusText = httpMethod.getStatusText();
+			httpResponse = httpClient.execute(httpUriRequest, httpContext);
+			statusCode = httpResponse.getStatusLine().getStatusCode();
+			statusText = httpResponse.getStatusLine().getReasonPhrase();
+			httpEntity = httpResponse.getEntity();
 			// CAS support
 			String currentLocation = null;
-			if (!target.isProxyMode())
-				currentLocation = httpMethod.getPath() + "?"
-						+ httpMethod.getQueryString();
-			else if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
+			if (!target.isProxyMode()) {
+				// Calculating the URL we may have been redirected to, as
+				// automatic redirect following is activated
+				HttpUriRequest finalRequest = (HttpUriRequest) httpContext
+						.getAttribute(ExecutionContext.HTTP_REQUEST);
+				HttpHost host = (HttpHost) httpContext
+						.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+				currentLocation = host.getSchemeName() + "://";
+				currentLocation += host.getHostName();
+				if (host.getPort() != -1)
+					currentLocation += ":" + host.getPort();
+				currentLocation += finalRequest.getURI().normalize().toString();
+
+			} else if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
 					|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY)
-				currentLocation = httpMethod.getResponseHeader("location")
+				currentLocation = httpResponse.getFirstHeader("location")
 						.getValue();
 			if (currentLocation != null && currentLocation.contains("/login")) {
 				addCasAuthentication(currentLocation);
-				// We must ensure that the connection is allways released, if
+				// We must ensure that the connection is always released, if
 				// not the connection manager's pool may be exhausted soon !
-				httpMethod.releaseConnection();
+				if (httpEntity != null)
+					httpEntity.consumeContent();
 				buildHttpMethod();
 				HttpResource.LOG.debug(toString());
-				httpClient.executeMethod(httpClient.getHostConfiguration(),
-						httpMethod, httpState);
-				statusCode = httpMethod.getStatusCode();
-				statusText = httpMethod.getStatusText();
+				httpResponse = httpClient.execute(httpUriRequest, httpContext);
+				statusCode = httpResponse.getStatusLine().getStatusCode();
+				statusText = httpResponse.getStatusLine().getReasonPhrase();
+				httpEntity = httpResponse.getEntity();
 			}
 			if (isError())
 				HttpResource.LOG.warn("Problem retrieving URL: " + url + ": "
@@ -227,11 +209,6 @@ public class HttpResource extends Resource {
 			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
 			statusText = "Socket timeout retrieving URL: " + url;
 			HttpResource.LOG.warn("Socket timeout retrieving URL: " + url);
-		} catch (HttpException e) {
-			exception = e;
-			statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-			statusText = "Error retrieving URL: " + url;
-			HttpResource.LOG.error("Error retrieving URL: " + url, e);
 		} catch (IOException e) {
 			exception = e;
 			statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
@@ -240,22 +217,36 @@ public class HttpResource extends Resource {
 		}
 	}
 
-	private void copyHeaders(HttpMethod src, Output dest, String... headers) {
-		for (String name : headers) {
-			Header header = src.getResponseHeader(name);
-			if (header != null)
-				dest.addHeader(header.getName(), header.getValue());
+	private void copyHeaders(Output dest, String... headers) {
+		if (httpResponse != null) {
+			for (String name : headers) {
+				Header header = httpResponse.getFirstHeader(name);
+				if (header != null)
+					dest.addHeader(header.getName(), header.getValue());
+			}
+		}
+	}
+
+	private void copyRequestHeaders(String... headers) {
+		HttpServletRequest request = target.getOriginalRequest();
+		if (request != null) {
+			for (String name : headers) {
+				String value = request.getHeader(name);
+				if (value != null)
+					httpUriRequest.addHeader(name, value);
+			}
 		}
 	}
 
 	@Override
 	public void render(Output output) throws IOException {
 		output.setStatus(statusCode, statusText);
-		copyHeaders(httpMethod, output, "Date", "Content-Type",
-				"Content-Length", "Last-Modified", "ETag", "Expires",
-				"Cache-control");
+		copyHeaders(output, "Date", "Content-Type", "Content-Length",
+				"Last-Modified", "ETag", "Expires", "Cache-control");
 		// TODO: refactor this
-		Header header = httpMethod.getResponseHeader("Location");
+		Header header = null;
+		if (httpResponse != null)
+			header = httpResponse.getFirstHeader("Location");
 		if (header != null) {
 			// Location header rewriting
 			String location = header.getValue();
@@ -272,7 +263,9 @@ public class HttpResource extends Resource {
 					originalBase);
 			output.addHeader(header.getName(), location);
 		}
-		String charset = httpMethod.getResponseCharSet();
+		String charset = null;
+		if (httpEntity != null)
+			charset = EntityUtils.getContentCharSet(httpEntity);
 		if (charset != null)
 			output.setCharsetName(charset);
 		try {
@@ -281,7 +274,7 @@ public class HttpResource extends Resource {
 				output.write(statusText);
 			else {
 				Handler handler = createHandler();
-				handler.handle(httpMethod.getResponseBodyAsStream(), output);
+				handler.handle(httpResponse.getEntity().getContent(), output);
 			}
 		} finally {
 			output.close();
@@ -291,7 +284,7 @@ public class HttpResource extends Resource {
 	private Handler createHandler() {
 		String jsessionid = null;
 		if (target.getUserContext() != null && target.isFilterJsessionid()) {
-			Cookie[] cookies = target.getUserContext().getHttpState()
+			List<Cookie> cookies = target.getUserContext().getCookieStore()
 					.getCookies();
 			for (Cookie cookie : cookies)
 				if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
@@ -300,14 +293,16 @@ public class HttpResource extends Resource {
 				}
 		}
 		boolean textContentType = false;
-		Header contentTypeHeader = httpMethod.getResponseHeader("Content-Type");
+		Header contentTypeHeader = httpResponse.getFirstHeader("Content-Type");
 		if (contentTypeHeader != null)
 			textContentType = ResourceUtils.isTextContentType(contentTypeHeader
 					.getValue());
 		if (jsessionid == null || !textContentType)
 			return new OldHandler();
 		else {
-			String charset = httpMethod.getResponseCharSet();
+			String charset = null;
+			if (httpEntity != null)
+				charset = EntityUtils.getContentCharSet(httpEntity);
 			if (target.isPropagateJsessionId())
 				return new ReplaceCookieHandler(charset, jsessionid);
 			else
@@ -317,9 +312,12 @@ public class HttpResource extends Resource {
 
 	@Override
 	public void release() {
-		if (httpMethod != null) {
-			httpMethod.releaseConnection();
-			httpMethod = null;
+		if (httpEntity != null) {
+			try {
+				httpEntity.consumeContent();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+			}
 		}
 	}
 

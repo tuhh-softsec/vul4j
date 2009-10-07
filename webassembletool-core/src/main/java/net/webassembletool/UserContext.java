@@ -1,7 +1,11 @@
 package net.webassembletool;
 
-import org.apache.commons.httpclient.Cookie;
-import org.apache.commons.httpclient.HttpState;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 /**
  * User context that can be used in the master application to define the user
@@ -13,7 +17,25 @@ import org.apache.commons.httpclient.HttpState;
  */
 public class UserContext {
 	private String user;
-	private HttpState httpState = new HttpState();
+	private HttpContext httpContext;
+	public HttpContext getHttpContext() {
+		return httpContext;
+	}
+
+	private CookieStore cookieStore;
+
+	public UserContext() {
+		// Create a local instance of cookie store
+		cookieStore = new BasicCookieStore();
+		// Create local HTTP context
+		httpContext = new BasicHttpContext();
+		// Bind custom cookie store to the local context
+		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+	}
+
+	public CookieStore getCookieStore() {
+		return cookieStore;
+	}
 
 	public String getUser() {
 		return user;
@@ -21,14 +43,6 @@ public class UserContext {
 
 	public void setUser(String user) {
 		this.user = user;
-	}
-
-	public HttpState getHttpState() {
-		return httpState;
-	}
-
-	public void setHttpState(HttpState httpState) {
-		this.httpState = httpState;
 	}
 
 	/**
@@ -40,22 +54,20 @@ public class UserContext {
 		result.append("User=");
 		result.append(user);
 		result.append(" Cookies={\n");
-		if (httpState != null) {
-			for (Cookie cookie : httpState.getCookies()) {
-				result.append("\t");
-				if (cookie.getSecure())
-					result.append("https");
-				else
-					result.append("http");
-				result.append("://");
-				result.append(cookie.getDomain());
-				result.append(cookie.getPath());
-				result.append("#");
-				result.append(cookie.getName());
-				result.append("=");
-				result.append(cookie.getValue());
-				result.append("\n");
-			}
+		for (Cookie cookie : cookieStore.getCookies()) {
+			result.append("\t");
+			if (cookie.isSecure())
+				result.append("https");
+			else
+				result.append("http");
+			result.append("://");
+			result.append(cookie.getDomain());
+			result.append(cookie.getPath());
+			result.append("#");
+			result.append(cookie.getName());
+			result.append("=");
+			result.append(cookie.getValue());
+			result.append("\n");
 		}
 		result.append("}");
 		return result.toString();

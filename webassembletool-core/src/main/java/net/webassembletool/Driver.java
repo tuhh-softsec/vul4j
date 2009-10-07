@@ -29,11 +29,21 @@ import net.webassembletool.tags.TemplateRenderer;
 import net.webassembletool.xml.XpathRenderer;
 import net.webassembletool.xml.XsltRenderer;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.conn.params.ConnManagerPNames;
+import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
 
 /**
  * Main class used to retrieve data from a provider application using HTTP requests. Data can be retrieved as binary streams or as String for text data. To improve performance, the Driver uses a cache
@@ -49,23 +59,39 @@ public class Driver {
 
     public Driver(String name, Properties props) {
         config = new DriverConfiguration(name, props);
-        // Remote application settings
-        if (config.getBaseURL() != null) {
-            MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-            connectionManager.getParams().setDefaultMaxConnectionsPerHost(config.getMaxConnectionsPerHost());
-            httpClient = new HttpClient(connectionManager);
-            httpClient.getParams().setSoTimeout(config.getTimeout());
-            httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(config.getTimeout());
-            httpClient.getParams().setConnectionManagerTimeout(config.getTimeout());
-            httpClient.getParams().setBooleanParameter(
-                    "http.protocol.allow-circular-redirects", true);
-        } else
-            httpClient = null;
-        // Proxy settings
-        if (config.getProxyHost() != null) {
-            HostConfiguration conf = httpClient.getHostConfiguration();
-            conf.setProxy(config.getProxyHost(), config.getProxyPort());
-        }
+		// Remote application settings
+		if (config.getBaseURL() != null) {
+			// Create and initialize scheme registry
+			SchemeRegistry schemeRegistry = new SchemeRegistry();
+			schemeRegistry.register(new Scheme("http", PlainSocketFactory
+					.getSocketFactory(), 80));
+			// Create an HttpClient with the ThreadSafeClientConnManager.
+			// This connection manager must be used if more than one thread will
+			// be using the HttpClient.
+			HttpParams httpParams = new BasicHttpParams();
+			httpParams.setIntParameter(
+					ConnManagerPNames.MAX_TOTAL_CONNECTIONS, config
+							.getMaxConnectionsPerHost());
+			httpParams.setLongParameter(ConnManagerPNames.TIMEOUT, config
+					.getTimeout());
+			httpParams.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,
+					config.getTimeout());
+			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, config
+					.getTimeout());
+			httpParams
+					.setBooleanParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
+			ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(
+					httpParams, schemeRegistry);
+			httpClient = new DefaultHttpClient(connectionManager, httpParams);
+		} else
+			httpClient = null;
+		// Proxy settings
+		if (config.getProxyHost() != null) {
+			HttpHost proxy = new HttpHost(config.getProxyHost(), config
+					.getProxyPort(), "http");
+			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
+					proxy);
+		}
         // Cache
         if (config.isUseCache())
             cache = new Cache(config.getCacheRefreshDelay());
@@ -328,12 +354,13 @@ public class Driver {
 				// consistent with the original response
 				response.getOutputStream().write(
 						currentValue.getBytes(charsetName));
-			} else
+			} else {
 				// Even if Content-type header has been set, some containers like
 				// Jetty need the charsetName to be set, if not it will take
 				// default value ISO-8859-1
 				response.setCharacterEncoding(charsetName);
 				response.getWriter().write(currentValue);
+			}
 		}
 	}
 	
