@@ -227,7 +227,8 @@ public class XMLUtils {
 
 
    static  String dsPrefix=null;
-   static Map namePrefixes=new HashMap();
+   private static Map namePrefixes= java.util.Collections.synchronizedMap(new HashMap());
+
    /**
     * Creates an Element in the XML Signature specification namespace.
     *

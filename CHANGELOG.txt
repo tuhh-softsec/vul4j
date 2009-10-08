@@ -1,5 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 New in v1.4.4-SNAPSHOT
+    Fixed Bug 47779: ConcurrentModificationException in XMLUtils.  
     Fixed Bug 47761: xmlns:xml namespace improperly emitted during excl c14n. Thanks to Scott Cantor.
     Fixed Bug 36526: Out of memory error when signing or verifying big files. Thanks to Agnes Juhasz.
     Fixed Bug 47784: ClassNotFoundException when init the xml security in OSGi plateform
