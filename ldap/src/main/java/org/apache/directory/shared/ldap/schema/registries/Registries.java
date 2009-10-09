@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
@@ -98,6 +99,18 @@ public class Registries implements SchemaLoaderListener
     /** A map storing all the schema objects associated with a schema */
     private Map<String, Set<SchemaWrapper>> schemaObjectsBySchemaName;
     
+    /**
+     *  A map storing a relation between a SchemaObject and all the 
+     *  referencing SchemaObjects.
+     */
+    protected Map<SchemaWrapper, Set<SchemaObject>> usedBy;
+    
+    /**
+     *  A map storing a relation between a SchemaObject and all the 
+     *  SchemaObjects it uses.
+     */
+    protected Map<SchemaWrapper, Set<SchemaObject>> using;
+    
 
     /**
      * Creates a new instance of Registries.
@@ -119,6 +132,8 @@ public class Registries implements SchemaLoaderListener
         objectClassRegistry = new ObjectClassRegistry( oidRegistry );
         syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
         schemaObjectsBySchemaName = new HashMap<String, Set<SchemaWrapper>>();
+        usedBy = new ConcurrentHashMap<SchemaWrapper, Set<SchemaObject>>();
+        using = new ConcurrentHashMap<SchemaWrapper, Set<SchemaObject>>();
     }
 
     
@@ -433,7 +448,7 @@ public class Registries implements SchemaLoaderListener
 
 
     /**
-     * Check if the Normalizer and Comparator are existing for a matchingRule
+     * Check if the Comparator and the syntax are existing for a matchingRule
      */
     private boolean resolve( MatchingRule mr, List<Throwable> errors )
     {
@@ -451,22 +466,6 @@ public class Registries implements SchemaLoaderListener
                 String schema = matchingRuleRegistry.getSchemaName( mr.getOid() );
                 errors.add( new NullPointerException( "matchingRule " + mr.getName() + " in schema " + schema
                     + " with OID " + mr.getOid() + " has a null comparator" ) );
-                isSuccess = false;
-            }
-        }
-        catch ( Exception e )
-        {
-            errors.add( e );
-            isSuccess = false;
-        }
-
-        try
-        {
-            if ( mr.getNormalizer() == null )
-            {
-                String schema = matchingRuleRegistry.getSchemaName( mr.getOid() );
-                errors.add( new NullPointerException( "matchingRule " + mr.getName() + " in schema " + schema
-                    + " with OID " + mr.getOid() + " has a null normalizer" ) );
                 isSuccess = false;
             }
         }
@@ -668,7 +667,7 @@ public class Registries implements SchemaLoaderListener
 	 * @return Gets a reference to the Map associating a schemaName to
 	 * its contained SchemaObjects
 	 */
-	public Map<String, Set<SchemaWrapper>> getObjectBySchemaname()
+	public Map<String, Set<SchemaWrapper>> getObjectBySchemaName()
 	{
 	    return schemaObjectsBySchemaName;
 	}
@@ -764,6 +763,12 @@ public class Registries implements SchemaLoaderListener
 	}
 
 
+	/**
+	 * Unregister a SchemaObject from the registries
+	 *
+	 * @param schemaObject The SchemaObject we want to deregister
+	 * @throws NamingException If the removal failed
+	 */
     public void unregister( SchemaObject schemaObject ) throws NamingException
     {
         String oid = schemaObject.getOid();
@@ -830,5 +835,194 @@ public class Registries implements SchemaLoaderListener
         {
             // Not present !!
         }
+    }
+    
+    
+    /**
+     * Checks if a specific SchemaObject is referenced by any other SchemaObject.
+     *
+     * @param schemaObject The SchemaObject we are looking for
+     * @return true if there is at least one SchemaObjetc referencing the given one
+     */
+    public boolean isReferenced( SchemaObject schemaObject )
+    {
+        SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
+        
+        Set<SchemaObject> set = using.get( wrapper );
+        
+        return ( set != null ) && ( set.size() != 0 );
+    }
+
+    
+    /**
+     * Gets the Set of SchemaObjects referencing the given SchemaObject
+     *
+     * @param schemaObject The SchemaObject we are looking for
+     * @return The Set of referencing SchemaObject, or null 
+     */
+    public Set<SchemaObject> getUsedBy( SchemaObject schemaObject )
+    {
+        SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
+        
+        return usedBy.get( wrapper );
+    }
+
+    
+    /**
+     * Gets the Set of SchemaObjects referenced by the given SchemaObject
+     *
+     * @param schemaObject The SchemaObject we are looking for
+     * @return The Set of referenced SchemaObject, or null 
+     */
+    public Set<SchemaObject> getUsing( SchemaObject schemaObject )
+    {
+        SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
+        
+        return using.get( wrapper );
+    }
+    
+    
+    /**
+     * Add an association between a SchemaObject an the SchemaObject it refers
+     *
+     * @param reference The base SchemaObject
+     * @param referee The SchemaObject pointing on the reference
+     */
+    private void addUsing( SchemaObject reference, SchemaObject referee )
+    {
+        if ( ( reference == null ) || ( referee == null ) )
+        {
+            return;
+        }
+        
+        SchemaWrapper wrapper = new SchemaWrapper( reference );
+        
+        Set<SchemaObject> usedBy = getUsedBy( reference );
+        
+        if ( usedBy == null )
+        {
+            usedBy = new HashSet<SchemaObject>();
+            using.put( wrapper, usedBy );
+        }
+        
+        usedBy.add( referee );
+    }
+    
+    
+    /**
+     * Add an association between a SchemaObject an the SchemaObject it refers
+     *
+     * @param reference The base SchemaObject
+     * @param referee The SchemaObject pointing on the reference
+     */
+    public void addReference( SchemaObject reference, SchemaObject referee )
+    {
+        addUsing( reference, referee );
+        addUsedBy( referee, reference );
+    }
+
+
+    /**
+     * Add an association between a SchemaObject an the SchemaObject that refers it
+     *
+     * @param reference The base SchemaObject
+     * @param referee The SchemaObject pointing on the reference
+     */
+    private void addUsedBy( SchemaObject referee, SchemaObject reference )
+    {
+        if ( ( reference == null ) || ( referee == null ) )
+        {
+            return;
+        }
+        SchemaWrapper wrapper = new SchemaWrapper( referee );
+        
+        Set<SchemaObject> using = getUsing( referee );
+        
+        if ( using == null )
+        {
+            using = new HashSet<SchemaObject>();
+            usedBy.put( wrapper, using );
+        }
+        
+        using.add( reference );
+    }
+    
+    
+    /**
+     * Del an association between a SchemaObject an the SchemaObject it refers
+     *
+     * @param reference The base SchemaObject
+     * @param referee The SchemaObject pointing on the reference
+     */
+    private void delUsing( SchemaObject reference, SchemaObject referee )
+    {
+        if ( ( reference == null ) || ( referee == null ) )
+        {
+            return;
+        }
+        
+        Set<SchemaObject> usedBy = getUsedBy( reference );
+        
+        if ( usedBy == null )
+        {
+            return;
+        }
+        
+        usedBy.remove( referee );
+        
+        if ( usedBy.size() == 0 )
+        {
+            SchemaWrapper wrapper = new SchemaWrapper( reference );
+            
+            using.remove( wrapper );
+        }
+        
+        return;
+    }
+
+
+    /**
+     * Del an association between a SchemaObject an the SchemaObject that refers it
+     *
+     * @param reference The base SchemaObject
+     * @param referee The SchemaObject pointing on the reference
+     */
+    private void delUsedBy( SchemaObject referee, SchemaObject reference )
+    {
+        if ( ( reference == null ) || ( referee == null ) )
+        {
+            return;
+        }
+
+        Set<SchemaObject> using = getUsing( referee );
+        
+        if ( using == null )
+        {
+            return;
+        }
+        
+        using.remove( reference );
+        
+        if ( using.size() == 0 )
+        {
+            SchemaWrapper wrapper = new SchemaWrapper( referee );
+            
+            usedBy.remove( wrapper );
+        }
+        
+        return;
+    }
+    
+    
+    /**
+     * Delete an association between a SchemaObject an the SchemaObject it refers
+     *
+     * @param reference The base SchemaObject
+     * @param referee The SchemaObject pointing on the reference
+     */
+    public void delReference( SchemaObject reference, SchemaObject referee )
+    {
+        delUsing( reference, referee );
+        delUsedBy( referee, reference );
     }
 }

@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
@@ -73,39 +74,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
     /** Speedup for DEBUG mode */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-    /** name of directory containing ldapComparators */
-    private static final String COMPARATORS_DIRNAME = "ou=comparators";
-    
-    /** name of directory containing syntaxCheckers */
-    private static final String SYNTAX_CHECKERS_DIRNAME = "ou=syntaxcheckers";
-
-    /** name of the directory containing normalizers */
-    private static final String NORMALIZERS_DIRNAME = "ou=normalizers";
-
-    /** name of the directory containing syntaxes */
-    private static final String SYNTAXES_DIRNAME = "ou=syntaxes";
-    
-    /** name of the directory containing attributeTypes */
-    private static final String ATTRIBUTE_TYPES_DIRNAME = "ou=attributetypes";
-    
-    /** name of the directory containing matchingRules */
-    private final static String MATCHING_RULES_DIRNAME = "ou=matchingrules";
-
-    /** name of the directory containing objectClasses */
-    private static final String OBJECT_CLASSES_DIRNAME = "ou=objectclasses";
-    
-    /** name of the directory containing ditStructureRules */
-    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ou=ditstructurerules";
-    
-    /** name of the directory containing ditContentRules */
-    private static final String DIT_CONTENT_RULES_DIRNAME = "ou=ditcontentrules";
-    
-    /** name of the directory containing nameForms */
-    private static final String NAME_FORMS_DIRNAME = "ou=nameforms";
-    
-    /** name of the directory containing matchingRuleUses */
-    private static final String MATCHING_RULE_USES_DIRNAME = "ou=matchingruleuse";
 
     /** the factory that generates respective SchemaObjects from LDIF entries */
     private final SchemaEntityFactory factory = new SchemaEntityFactory();
@@ -265,17 +233,26 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
         
-        loadComparators( schema, registries );
-        loadNormalizers( schema, registries );
-        loadSyntaxCheckers( schema, registries );
-        loadSyntaxes( schema, registries );
-        loadMatchingRules( schema, registries );
-        loadAttributeTypes( schema, registries );
-        loadObjectClasses( schema, registries );
-        loadMatchingRuleUses( schema, registries );
-        loadDitContentRules( schema, registries );
-        loadNameForms( schema, registries );
-        loadDitStructureRules( schema, registries );
+        registries.schemaLoaded( schema );
+        
+        try
+        {
+            loadComparators( schema, registries );
+            loadNormalizers( schema, registries );
+            loadSyntaxCheckers( schema, registries );
+            loadSyntaxes( schema, registries );
+            loadMatchingRules( schema, registries );
+            loadAttributeTypes( schema, registries );
+            loadObjectClasses( schema, registries );
+            loadMatchingRuleUses( schema, registries );
+            loadDitContentRules( schema, registries );
+            loadNameForms( schema, registries );
+            loadDitStructureRules( schema, registries );
+        }
+        catch ( Exception e )
+        {
+            LOG.error( e.getMessage() );
+        }
 
         notifyListenerOrRegistries( schema, registries );
     }
@@ -305,7 +282,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private void loadComparators( Schema schema, Registries registries ) throws Exception
     {
         String comparatorsDirectory = getSchemaDirectory( schema ) 
-            + "/" + COMPARATORS_DIRNAME;
+            + "/" + SchemaConstants.COMPARATORS_PATH;
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -317,8 +294,14 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 LdapComparator<?> comparator = 
-                    factory.getLdapComparator( entry.getEntry(), registries );
+                    factory.getLdapComparator( entry.getEntry(), registries, schema.getSchemaName() );
                 comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
+
+                if ( schema.isEnabled() && comparator.isEnabled() )
+                {
+                    comparator.applyRegistries( registries );
+                }
+
                 registries.register( comparator );
             }
         }
@@ -337,7 +320,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private void loadSyntaxCheckers( Schema schema, Registries registries ) throws Exception
     {
         String syntaxCheckersDirectory = getSchemaDirectory( schema ) 
-            +  "/" + SYNTAX_CHECKERS_DIRNAME;
+            +  "/" + SchemaConstants.SYNTAX_CHECKERS_PATH;
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -349,7 +332,13 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 SyntaxChecker syntaxChecker = 
-                    factory.getSyntaxChecker( entry.getEntry(), registries );
+                    factory.getSyntaxChecker( entry.getEntry(), registries, schema.getSchemaName() );
+
+                if ( schema.isEnabled() && syntaxChecker.isEnabled() )
+                {
+                    syntaxChecker.applyRegistries( registries );
+                }
+
                 registries.register( syntaxChecker );
             }
         }
@@ -368,7 +357,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private void loadNormalizers( Schema schema, Registries registries ) throws Exception
     {
         String normalizersDirectory = getSchemaDirectory( schema )
-            + "/" + NORMALIZERS_DIRNAME;
+            + "/" + SchemaConstants.NORMALIZERS_PATH;
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -380,7 +369,13 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 Normalizer normalizer =
-                    factory.getNormalizer( entry.getEntry(), registries );
+                    factory.getNormalizer( entry.getEntry(), registries, schema.getSchemaName() );
+
+                if ( schema.isEnabled() && normalizer.isEnabled() )
+                {
+                    normalizer.applyRegistries( registries );
+                }
+
                 registries.register( normalizer );
             }
         }
@@ -399,7 +394,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private void loadMatchingRules( Schema schema, Registries registries ) throws Exception
     {
         String matchingRulesDirectory = getSchemaDirectory( schema )
-            + "/" + MATCHING_RULES_DIRNAME;
+            + "/" + SchemaConstants.MATCHING_RULES_PATH;
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -412,6 +407,12 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifEntry entry = reader.next();
                 MatchingRule matchingRule = factory.getMatchingRule( 
                     entry.getEntry(), registries, schema.getSchemaName() );
+
+                if ( matchingRule.isEnabled() )
+                {
+                    matchingRule.applyRegistries( registries );
+                }
+                
                 registries.register( matchingRule );
             }
         }
@@ -430,7 +431,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private void loadSyntaxes( Schema schema, Registries registries ) throws Exception
     {
         String syntaxesDirectory = getSchemaDirectory( schema )
-            + "/" + SYNTAXES_DIRNAME;
+            + "/" + SchemaConstants.SYNTAXES_PATH;
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -443,6 +444,12 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifEntry entry = reader.next();
                 LdapSyntax syntax = factory.getSyntax( 
                     entry.getEntry(), registries, schema.getSchemaName() );
+
+                if ( syntax.isEnabled() )
+                {
+                    syntax.applyRegistries( registries );
+                }
+
                 registries.register( syntax );
             }
         }
@@ -483,7 +490,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
     	// check that the attributeTypes directory exists for the schema
         String attributeTypesDirectory = getSchemaDirectory( schema )
-            + "/" + ATTRIBUTE_TYPES_DIRNAME;
+            + "/" + SchemaConstants.ATTRIBUTES_TYPE_PATH;
         
         // get list of attributeType LDIF schema files in attributeTypes
         for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -563,6 +570,12 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         }
         
         AttributeType attributeType = factory.getAttributeType( entry.getEntry(), registries, schema.getSchemaName() );
+        
+        if ( attributeType.isEnabled() )
+        {
+            attributeType.applyRegistries( registries );
+        }
+        
         registries.register( attributeType );
 
         // after registering AT check if any deferred entries depend on it
@@ -607,7 +620,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private void loadMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
         String matchingRuleUsesDirectory = getSchemaDirectory( schema )
-            + "/" + MATCHING_RULE_USES_DIRNAME;
+            + "/" + SchemaConstants.MATCHING_RULE_USE_PATH;
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -644,7 +657,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadNameForms( Schema schema, Registries registries ) throws Exception
     {
-        String nameFormsDirectory = getSchemaDirectory( schema ) + "/" + NAME_FORMS_DIRNAME;
+        String nameFormsDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.NAME_FORMS_PATH;
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -681,7 +694,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadDitContentRules( Schema schema, Registries registries ) throws Exception
     {
-        String ditContentRulesDirectory = getSchemaDirectory( schema ) + "/" + DIT_CONTENT_RULES_DIRNAME;
+        String ditContentRulesDirectory = getSchemaDirectory( schema ) + "/" + 
+            SchemaConstants.DIT_CONTENT_RULES_PATH;
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -719,7 +733,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private void loadDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
         String ditStructureRulesDirectory = getSchemaDirectory( schema )
-            + "/" + DIT_STRUCTURE_RULES_DIRNAME;
+            + "/" + SchemaConstants.DIT_STRUCTURE_RULES_PATH;
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -779,7 +793,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
 
     	// get objectClasses directory, check if exists, return if not
-    	String objectClassesDirectory = getSchemaDirectory( schema ) + "/" + OBJECT_CLASSES_DIRNAME;
+    	String objectClassesDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.OBJECT_CLASSES_PATH;
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -860,6 +874,12 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         }
         
         ObjectClass objectClass = factory.getObjectClass( entry.getEntry(), registries, schema.getSchemaName() );
+
+        if ( objectClass.isEnabled() )
+        {
+            objectClass.applyRegistries( registries );
+        }
+
         registries.register( objectClass );
 
         // after registering AT check if any deferred entries depend on it

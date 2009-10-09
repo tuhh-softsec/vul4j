@@ -115,6 +115,7 @@ public class ObjectClass extends SchemaObject
         mayAttributeTypes = new ArrayList<AttributeType>();
         mustAttributeTypes = new ArrayList<AttributeType>();
         superiors = new ArrayList<ObjectClass>();
+        objectClassType = ObjectClassTypeEnum.STRUCTURAL;
     }
     
     
@@ -126,7 +127,7 @@ public class ObjectClass extends SchemaObject
      * @throws Exception on failure
      *
      */
-    public void applyRegistries( Registries registries ) throws Exception
+    public void applyRegistries( Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
@@ -143,6 +144,7 @@ public class ObjectClass extends SchemaObject
                 	{
                 		continue;
                 	}
+                	
                     superiors.add( ocRegistry.lookup( ocRegistry.getOidByName( superiorName ) ) );
                 }
             }

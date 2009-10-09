@@ -71,7 +71,7 @@ public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker>
         {
             String msg = type.name() + " with OID " + oid + " already registered!";
             LOG.warn( msg );
-            throw new NamingException( msg );
+            //throw new NamingException( msg );
         }
 
         byName.put( oid, syntaxChecker );

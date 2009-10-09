@@ -68,15 +68,6 @@ public class DnNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public void setRegistries( Registries registries )
-    {
-        this.attrRegistry = registries.getAttributeTypeRegistry();
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
     public Value<?> normalize( Value<?> value ) throws NamingException
     {
         LdapDN dn = null;
@@ -118,5 +109,14 @@ public class DnNormalizer extends Normalizer
         
         dn.normalize( attrRegistry.getNormalizerMapping() );
         return dn.getNormName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void applyRegistries( Registries registries )
+    {
+        attrRegistry = registries.getAttributeTypeRegistry();
     }
 }

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.schema;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -144,7 +146,9 @@ public class MatchingRule extends SchemaObject
             }
             catch ( NamingException ne )
             {
-                ldapSyntax = new LdapSyntax( oid );
+                // The Syntax is a mandatory element, it must exist.
+                throw new LdapSchemaViolationException( "The created MatchingRule must refers to an existing SYNTAX element", 
+                    ResultCodeEnum.UNWILLING_TO_PERFORM );
             }
         }
     }

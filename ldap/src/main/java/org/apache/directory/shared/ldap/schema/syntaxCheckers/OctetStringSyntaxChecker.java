@@ -59,18 +59,6 @@ public class OctetStringSyntaxChecker extends SyntaxChecker
      */
     public boolean isValidSyntax( Object value )
     {
-        // It must be a byte[]
-        boolean result = value instanceof byte[];
-        
-        if ( result )
-        {
-            LOG.debug( "Syntax valid for '{}'", value );
-        }
-        else
-        {
-            LOG.debug( "Syntax invalid for '{}'", value );
-        }
-        
-        return result;
+        return ( value != null );
     }
 }

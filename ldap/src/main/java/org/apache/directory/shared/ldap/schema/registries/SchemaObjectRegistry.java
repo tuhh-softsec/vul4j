@@ -213,22 +213,25 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     {
         String oid = schemaObject.getOid();
         
-        if ( byName.containsKey( oid ) )
+        if ( schemaObject.isEnabled() )
         {
-            String msg = type.name() + " with OID " + oid + " already registered!";
-            LOG.warn( msg );
-            throw new NamingException( msg );
-        }
-
-        byName.put( oid, schemaObject );
-        
-        /*
-         * add the aliases/names to the name map along with their toLowerCase
-         * versions of the name: this is used to make sure name lookups work
-         */
-        for ( String name : schemaObject.getNames() )
-        {
-        	byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
+            if ( byName.containsKey( oid ) )
+            {
+                String msg = type.name() + " with OID " + oid + " already registered!";
+                LOG.warn( msg );
+                throw new NamingException( msg );
+            }
+    
+            byName.put( oid, schemaObject );
+            
+            /*
+             * add the aliases/names to the name map along with their toLowerCase
+             * versions of the name: this is used to make sure name lookups work
+             */
+            for ( String name : schemaObject.getNames() )
+            {
+            	byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
+            }
         }
         
         if ( LOG.isDebugEnabled() )

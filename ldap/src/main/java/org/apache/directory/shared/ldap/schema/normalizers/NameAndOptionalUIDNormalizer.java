@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -27,8 +29,6 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.StringTools;
-
-import javax.naming.NamingException;
 
 
 /**
@@ -60,7 +60,10 @@ public class NameAndOptionalUIDNormalizer extends Normalizer
     }
     
     
-    public void setRegistries( Registries registries )
+    /**
+     * {@inheritDoc}
+     */
+    public void applyRegistries( Registries registries )
     {
         this.attrRegistry = registries.getAttributeTypeRegistry();
     }

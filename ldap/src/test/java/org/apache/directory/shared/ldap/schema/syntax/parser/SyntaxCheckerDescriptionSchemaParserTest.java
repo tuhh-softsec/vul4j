@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.schema.syntax.parser;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.text.ParseException;
 
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
@@ -27,9 +31,6 @@ import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescriptionS
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 
 /**
@@ -186,7 +187,7 @@ public class SyntaxCheckerDescriptionSchemaParserTest
     @Test
     public void testSyntaxCheckerExample() throws ParseException
     {
-        String simple = "( 1.3.6.1.4.1.18060.0.4.1.0.10000 DESC 'bogus desc' FQCN org.apache.directory.shared.ldap.schema.syntax.AcceptAllSyntaxChecker )";
+        String simple = "( 1.3.6.1.4.1.18060.0.4.1.0.10000 DESC 'bogus desc' FQCN org.apache.directory.shared.ldap.schema.syntax.OctetStringSyntaxChecker )";
         SyntaxCheckerDescription syntaxCheckerDescription = parser.parseSyntaxCheckerDescription( simple );
         assertNotNull( syntaxCheckerDescription );
     }

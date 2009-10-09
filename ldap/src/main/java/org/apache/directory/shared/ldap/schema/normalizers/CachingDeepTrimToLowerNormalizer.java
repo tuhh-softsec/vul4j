@@ -46,8 +46,8 @@ public class CachingDeepTrimToLowerNormalizer extends CachingNormalizer
     /**
      * {@inheritDoc}
      */
-    public void setRegistries( Registries registries )
+    public void applyRegistries( Registries registries )
     {
-        super.setRegistries( registries );
+        super.applyRegistries( registries );
     }
 }

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.schema;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.LdapSyntaxRegistry;
 import org.apache.directory.shared.ldap.schema.registries.MatchingRuleRegistry;
@@ -197,9 +199,13 @@ public class AttributeType extends SchemaObject
     
     /**
      * Inject the registries into this Object, updating the references to
-     * other SchemaObject
+     * other SchemaObject.
+     * 
+     * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX), 
+     * an exception is thrown.
      *
      * @param registries The Registries
+     * @exception If the AttributeType is not valid 
      */
     public void applyRegistries( Registries registries ) throws NamingException
     {
@@ -218,20 +224,55 @@ public class AttributeType extends SchemaObject
             {
                 equality = mrRegistry.lookup( equalityOid );
             }
+            else if ( superior != null )
+            {
+                // We may have a superior with an EQUALITY MR 
+                equality = superior.getEquality();
+            }
             
             if ( orderingOid != null )
             {
                 ordering = mrRegistry.lookup( orderingOid );
+            }
+            else if ( superior != null )
+            {
+                // We may have a superior with an ORDERING MR 
+                ordering = superior.getOrdering();
             }
             
             if ( substringOid != null )
             {
                 substring = mrRegistry.lookup( substringOid );
             }
+            else if ( superior != null )
+            {
+                // We may have a superior with an SUBSTR MR 
+                substring = superior.getSubstring();
+            }
             
             LdapSyntaxRegistry lsRegistry = registries.getLdapSyntaxRegistry();
             
-            syntax = lsRegistry.lookup( syntaxOid );
+            if ( syntaxOid != null )
+            {
+                syntax = lsRegistry.lookup( syntaxOid );
+            }
+            else  if ( superior != null )
+            {
+                syntax = superior.getSyntax();
+            }
+            else
+            {
+                // This is an error: an AttributeType must have at least a SYNTAX or a SUP
+                throw new LdapSchemaViolationException( "The created AttributeType must have a SUP or a SYNTAX element", 
+                    ResultCodeEnum.UNWILLING_TO_PERFORM );
+            }
+            
+            // Inject the attributeType into the oid/normalizer map
+            atRegistry.addMappingFor( this );
+    
+            // Register this AttributeType into the Descendant map
+            atRegistry.registerDescendants( this, this.getSuperior() );
+            
         }
     }
     

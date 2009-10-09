@@ -52,7 +52,10 @@ public class DnComparator extends LdapComparator<Object>
     }
 
     
-    public void setRegistries( Registries registries )
+    /**
+     * {@inheritDoc}
+     */
+    public void applyRegistries( Registries registries )
     {
         attrRegistry = registries.getAttributeTypeRegistry();
     }

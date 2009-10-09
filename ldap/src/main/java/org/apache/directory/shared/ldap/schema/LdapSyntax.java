@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.AcceptAllSyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 
 
 /**
@@ -193,7 +193,7 @@ public class LdapSyntax extends SchemaObject
             }
             catch ( NamingException ne )
             {
-                syntaxChecker = new  AcceptAllSyntaxChecker( oid );
+                syntaxChecker = new OctetStringSyntaxChecker();
             }
         }
     }

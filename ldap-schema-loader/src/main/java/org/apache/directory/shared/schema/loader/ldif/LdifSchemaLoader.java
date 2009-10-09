@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
@@ -79,39 +81,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
     /** Speedup for DEBUG mode */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
-    /** name of directory containing ldapComparators */
-    private static final String COMPARATORS_DIRNAME = "ou=comparators";
-    
-    /** name of directory containing syntaxCheckers */
-    private static final String SYNTAX_CHECKERS_DIRNAME = "ou=syntaxcheckers";
-
-    /** name of the directory containing normalizers */
-    private static final String NORMALIZERS_DIRNAME = "ou=normalizers";
-
-    /** name of the directory containing syntaxes */
-    private static final String SYNTAXES_DIRNAME = "ou=syntaxes";
-    
-    /** name of the directory containing attributeTypes */
-    private static final String ATTRIBUTE_TYPES_DIRNAME = "ou=attributetypes";
-    
-    /** name of the directory containing matchingRules */
-    private final static String MATCHING_RULES_DIRNAME = "ou=matchingrules";
-
-    /** name of the directory containing objectClasses */
-    private static final String OBJECT_CLASSES_DIRNAME = "ou=objectclasses";
-    
-    /** name of the directory containing ditStructureRules */
-    private static final String DIT_STRUCTURE_RULES_DIRNAME = "ou=ditstructurerules";
-    
-    /** name of the directory containing ditContentRules */
-    private static final String DIT_CONTENT_RULES_DIRNAME = "ou=ditcontentrules";
-    
-    /** name of the directory containing nameForms */
-    private static final String NAME_FORMS_DIRNAME = "ou=nameforms";
-    
-    /** name of the directory containing matchingRuleUses */
-    private static final String MATCHING_RULE_USES_DIRNAME = "ou=matchingruleuse";
 
     /**
      * the administrator DN - very ADS specific but we need some DN here for
@@ -189,7 +158,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LOG.debug( "Initializing schema" );
         }
         
-        File schemaDirectory = new File( baseDirectory, "ou=schema" );
+        File schemaDirectory = new File( baseDirectory, SchemaConstants.OU_SCHEMA );
         String[] ldifFiles = schemaDirectory.list( ldifFilter );
 
         for ( String ldifFile : ldifFiles )
@@ -286,6 +255,8 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         
         LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
         
+        registries.schemaLoaded( schema );
+        
         loadComparators( schema, registries );
         loadNormalizers( schema, registries );
         loadSyntaxCheckers( schema, registries );
@@ -320,7 +291,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         // have to now update the timestamps and update the modifiersName
         // -------------------------------------------------------------------
         
-        File schemaLdifFile = new File( new File( baseDirectory, "ou=schema" ), 
+        File schemaLdifFile = new File( new File( baseDirectory, SchemaConstants.OU_SCHEMA ), 
             "cn=" + schema.getSchemaName() + "." + LDIF_EXT );
         LdifReader reader = new LdifReader( schemaLdifFile );
         LdifEntry ldifEntry = reader.next();
@@ -373,7 +344,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private final File getSchemaDirectory( Schema schema )
     {
-        return new File( new File( baseDirectory, "ou=schema" ), 
+        return new File( new File( baseDirectory, SchemaConstants.OU_SCHEMA ), 
             "cn=" + schema.getSchemaName() );
     }
     
@@ -390,7 +361,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadComparators( Schema schema, Registries registries ) throws Exception
     {
         File comparatorsDirectory = new File( getSchemaDirectory( schema ), 
-            COMPARATORS_DIRNAME );
+            SchemaConstants.COMPARATORS_PATH );
         
         if ( ! comparatorsDirectory.exists() )
         {
@@ -404,8 +375,14 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             LdapComparator<?> comparator = 
-                factory.getLdapComparator( entry.getEntry(), registries );
+                factory.getLdapComparator( entry.getEntry(), registries, schema.getSchemaName() );
             comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
+
+            if ( schema.isEnabled() && comparator.isEnabled() )
+            {
+                comparator.applyRegistries( registries );
+            }
+
             registries.getComparatorRegistry().register( comparator );
         }
     }
@@ -423,7 +400,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadSyntaxCheckers( Schema schema, Registries registries ) throws Exception
     {
         File syntaxCheckersDirectory = new File( getSchemaDirectory( schema ), 
-            SYNTAX_CHECKERS_DIRNAME );
+            SchemaConstants.SYNTAX_CHECKERS_PATH );
         
         if ( ! syntaxCheckersDirectory.exists() )
         {
@@ -437,14 +414,15 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             SyntaxChecker syntaxChecker = 
-                factory.getSyntaxChecker( entry.getEntry(), registries );
+                factory.getSyntaxChecker( entry.getEntry(), registries, schema.getSchemaName() );
             try
             {
             	registries.getSyntaxCheckerRegistry().register( syntaxChecker );
             }
-            catch ( Exception e )
+            catch ( NamingException e )
             {
-            	e.printStackTrace();
+            	// Do nothing at this point. Just log the event
+                LOG.warn( e.getMessage() );
             }
         }
     }
@@ -462,7 +440,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadNormalizers( Schema schema, Registries registries ) throws Exception
     {
         File normalizersDirectory = new File( getSchemaDirectory( schema ), 
-            NORMALIZERS_DIRNAME );
+            SchemaConstants.NORMALIZERS_PATH );
         
         if ( ! normalizersDirectory.exists() )
         {
@@ -476,7 +454,13 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             Normalizer normalizer =
-                factory.getNormalizer( entry.getEntry(), registries );
+                factory.getNormalizer( entry.getEntry(), registries, schema.getSchemaName() );
+            
+            if ( schema.isEnabled() && normalizer.isEnabled() )
+            {
+                normalizer.applyRegistries( registries );
+            }
+            
             registries.getNormalizerRegistry().register( normalizer );
         }
     }
@@ -494,7 +478,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadMatchingRules( Schema schema, Registries registries ) throws Exception
     {
         File matchingRulesDirectory = new File( getSchemaDirectory( schema ), 
-            MATCHING_RULES_DIRNAME );
+            SchemaConstants.MATCHING_RULES_PATH );
         
         if ( ! matchingRulesDirectory.exists() )
         {
@@ -509,6 +493,12 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifEntry entry = reader.next();
             MatchingRule matchingRule = factory.getMatchingRule( 
                 entry.getEntry(), registries, schema.getSchemaName() );
+
+            if ( schema.isEnabled() && matchingRule.isEnabled() )
+            {
+                matchingRule.applyRegistries( registries );
+            }
+
             registries.getMatchingRuleRegistry().register( matchingRule );
         }
     }
@@ -526,7 +516,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadSyntaxes( Schema schema, Registries registries ) throws Exception
     {
         File syntaxesDirectory = new File( getSchemaDirectory( schema ), 
-            SYNTAXES_DIRNAME );
+            SchemaConstants.SYNTAXES_PATH );
         
         if ( ! syntaxesDirectory.exists() )
         {
@@ -541,6 +531,12 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifEntry entry = reader.next();
             LdapSyntax syntax = factory.getSyntax( 
                 entry.getEntry(), registries, schema.getSchemaName() );
+
+            if ( schema.isEnabled() && syntax.isEnabled() )
+            {
+                syntax.applyRegistries( registries );
+            }
+
             registries.getLdapSyntaxRegistry().register( syntax );
         }
     }
@@ -579,7 +575,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
 
     	// check that the attributeTypes directory exists for the schema
-        File attributeTypesDirectory = new File ( getSchemaDirectory( schema ), ATTRIBUTE_TYPES_DIRNAME );
+        File attributeTypesDirectory = new File ( getSchemaDirectory( schema ), SchemaConstants.ATTRIBUTES_TYPE_PATH );
         
         if ( ! attributeTypesDirectory.exists() )
         {
@@ -661,6 +657,11 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         
         AttributeType attributeType = factory.getAttributeType( entry.getEntry(), registries, schema.getSchemaName() );
         registries.getAttributeTypeRegistry().register( attributeType );
+        
+        if ( schema.isEnabled() && attributeType.isEnabled() )
+        {
+            attributeType.applyRegistries( registries );
+        }
 
         // after registering AT check if any deferred entries depend on it
         if ( attributeType.getNames() != null )
@@ -704,7 +705,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
         File matchingRuleUsesDirectory = new File( getSchemaDirectory( schema ),
-            MATCHING_RULE_USES_DIRNAME );
+            SchemaConstants.MATCHING_RULE_USE_PATH );
         
         if ( ! matchingRuleUsesDirectory.exists() )
         {
@@ -743,7 +744,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadNameForms( Schema schema, Registries registries ) throws Exception
     {
         File nameFormsDirectory = new File( getSchemaDirectory( schema ),
-            NAME_FORMS_DIRNAME );
+            SchemaConstants.NAME_FORMS_PATH );
         
         if ( ! nameFormsDirectory.exists() )
         {
@@ -782,7 +783,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadDitContentRules( Schema schema, Registries registries ) throws Exception
     {
         File ditContentRulesDirectory = new File( getSchemaDirectory( schema ),
-            DIT_CONTENT_RULES_DIRNAME );
+            SchemaConstants.DIT_CONTENT_RULES_PATH );
         
         if ( ! ditContentRulesDirectory.exists() )
         {
@@ -821,7 +822,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     private void loadDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
         File ditStructureRulesDirectory = new File( getSchemaDirectory( schema ),
-            DIT_STRUCTURE_RULES_DIRNAME );
+            SchemaConstants.DIT_STRUCTURE_RULES_PATH );
         
         if ( ! ditStructureRulesDirectory.exists() )
         {
@@ -881,7 +882,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
 
     	// get objectClasses directory, check if exists, return if not
-    	File objectClassesDirectory = new File( getSchemaDirectory( schema ), OBJECT_CLASSES_DIRNAME );
+    	File objectClassesDirectory = new File( getSchemaDirectory( schema ), SchemaConstants.OBJECT_CLASSES_PATH );
         
     	if ( ! objectClassesDirectory.exists() )
         {
@@ -964,6 +965,12 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         }
         
         ObjectClass objectClass = factory.getObjectClass( entry.getEntry(), registries, schema.getSchemaName() );
+
+        if ( schema.isEnabled() && objectClass.isEnabled() )
+        {
+            objectClass.applyRegistries( registries );
+        }
+
         registries.getObjectClassRegistry().register( objectClass );
 
         // after registering AT check if any deferred entries depend on it

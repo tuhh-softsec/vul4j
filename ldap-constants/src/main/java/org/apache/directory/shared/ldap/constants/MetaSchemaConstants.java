@@ -167,8 +167,10 @@ public interface MetaSchemaConstants
     String M_LENGTH_AT_OID                  = "1.3.6.1.4.1.18060.0.4.0.2.39";
     
     // -- schema extensions & values --
+    String X_SCHEMA                         = "X-SCHEMA";
+    String X_IS_HUMAN_READABLE              = "X-IS-HUMAN-READABLE";
+    String X_READ_ONLY                      = "X-READ-ONLY";
+    String X_ENABLED                        = "X-ENABLED";
     
-    String X_SCHEMA = "X-SCHEMA";
-    String X_IS_HUMAN_READABLE = "X-IS-HUMAN-READABLE";
     String SCHEMA_OTHER = "other";
 }

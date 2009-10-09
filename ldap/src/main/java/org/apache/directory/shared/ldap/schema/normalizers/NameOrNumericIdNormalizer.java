@@ -143,7 +143,10 @@ public class NameOrNumericIdNormalizer extends Normalizer
     }
     
     
-    public void setRegistries( Registries registries )
+    /**
+     * {@inheritDoc}
+     */
+    public void applyRegistries( Registries registries )
     {
         this.registries = registries;
     }

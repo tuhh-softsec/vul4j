@@ -28,15 +28,19 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
@@ -51,6 +55,7 @@ import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.util.Base64;
+import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +87,118 @@ public class SchemaEntityFactory
     public SchemaEntityFactory() throws Exception
     {
         this.classLoader = new AttributeClassLoader();
+    }
+    
+    
+    /**
+     * Get an OID from an entry. Handles the bad cases (null OID, 
+     * not a valid OID, ...)
+     */
+    private String getOid( Entry entry, String objectType ) throws NamingException
+    {
+        // The OID
+        EntryAttribute mOid = entry.get( MetaSchemaConstants.M_OID_AT );
+        
+        if ( mOid == null )
+        {
+            String msg = objectType + " entry must have a valid " 
+                + MetaSchemaConstants.M_OID_AT + " attribute, it's null";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
+        }
+
+        String oid = mOid.getString();
+        
+        if ( !OID.isOID( oid ) )
+        {
+            String msg = "Comparator OID " + oid + " is not a valid OID "; 
+            LOG.warn( msg );
+            throw new LdapInvalidAttributeValueException( msg,
+                ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+        }
+        
+        return oid;
+    }
+    
+    
+    /**
+     * Get an OID from an entry. Handles the bad cases (null OID, 
+     * not a valid OID, ...)
+     */
+    private String getOid( SchemaObject description, String objectType ) throws NamingException
+    {
+        // The OID
+        String oid = description.getOid();
+        
+        if ( oid == null )
+        {
+            String msg = objectType + " entry must have a valid " 
+                + MetaSchemaConstants.M_OID_AT + " attribute, it's null";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
+        }
+
+        if ( !OID.isOID( oid ) )
+        {
+            String msg = "Comparator OID " + oid + " is not a valid OID "; 
+            LOG.warn( msg );
+            throw new LdapInvalidAttributeValueException( msg,
+                ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+        }
+        
+        return oid;
+    }
+
+    
+    /**
+     * Check that the Entry is not null
+     */
+    private void checkEntry( Entry entry, String schemaEntity )
+    {
+        if ( entry == null )
+        {
+            String msg = schemaEntity + " entry cannot be null";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
+        }
+    }
+
+    
+    /**
+     * Check that the Description is not null
+     */
+    private void checkDescription( SchemaObject description, String schemaEntity )
+    {
+        if ( description == null )
+        {
+            String msg = schemaEntity + " Schema description cannot be null";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
+        }
+    }
+
+    
+    /**
+     * Get the schema from its name. Return the Other reference if there
+     * is no schema name. Throws a NPE if the schema is not loaded.
+     */
+    private Schema getSchema( String schemaName, Registries registries )
+    {
+        if ( StringTools.isEmpty( schemaName ) )
+        {
+            schemaName = MetaSchemaConstants.SCHEMA_OTHER;
+        }
+
+        Schema schema = registries.getLoadedSchema( schemaName );
+        
+        if ( schema == null )
+        {
+            String msg = "The schema " + schemaName + " does not exists or is not loaded";
+            LOG.error( msg );
+            throw new NullPointerException( msg );
+        }
+        
+        return schema;
     }
 
     
@@ -136,28 +253,38 @@ public class SchemaEntityFactory
     }
     
     
-    private SyntaxChecker getSyntaxChecker( String syntaxOid, String className, 
-        EntryAttribute bytecode, Registries targetRegistries ) throws Exception
+    /**
+     * Class load a syntaxChecker instance
+     */
+    private SyntaxChecker classLoadSyntaxChecker( String oid, String className, 
+        EntryAttribute byteCode, Registries targetRegistries ) throws Exception
     {
+        // Try to class load the syntaxChecker
         Class<?> clazz = null;
         SyntaxChecker syntaxChecker = null;
-        
-        if ( bytecode == null )
+        String byteCodeStr = StringTools.EMPTY;
+
+        if ( byteCode == null )
         {
             clazz = Class.forName( className );
         }
         else
         {
-            classLoader.setAttribute( bytecode );
+            classLoader.setAttribute( byteCode );
             clazz = classLoader.loadClass( className );
+            byteCodeStr = new String( Base64.encode( byteCode.getBytes() ) );
         }
         
+        // Create the syntaxChecker instance
         syntaxChecker = ( SyntaxChecker ) clazz.newInstance();
 
-        // try now before returning to check if we can inject a Registries object
-        syntaxChecker.setOid( syntaxOid );
-        injectRegistries( syntaxChecker, targetRegistries );
+        // Update the common fields
+        syntaxChecker.setBytecode( byteCodeStr );
         syntaxChecker.setFqcn( className );
+        
+        // Inject the new OID, as the loaded syntaxChecker might have its own
+        syntaxChecker.setOid( oid );
+
         return syntaxChecker;
     }
     
@@ -169,89 +296,141 @@ public class SchemaEntityFactory
      * @return the loaded SyntaxChecker
      * @throws NamingException if anything fails during loading
      */
-    public SyntaxChecker getSyntaxChecker( Entry entry, Registries targetRegistries ) throws Exception
+    public SyntaxChecker getSyntaxChecker( Entry entry, Registries targetRegistries, String schemaName ) throws Exception
     {
-        if ( entry == null )
-        {
-            throw new NullPointerException( "entry cannot be null" );
-        }
+        checkEntry( entry, SchemaConstants.SYNTAX_CHECKER );
         
-        if ( entry.get( MetaSchemaConstants.M_FQCN_AT ) == null )
-        {
-            throw new NullPointerException( "entry must have a valid "
-                + MetaSchemaConstants.M_FQCN_AT + " attribute" );
-        }
+        // The SyntaxChecker OID
+        String oid = getOid( entry, SchemaConstants.SYNTAX_CHECKER );
 
-        String className = entry.get( MetaSchemaConstants.M_FQCN_AT ).get().getString();
-        String syntaxOid = entry.get( MetaSchemaConstants.M_OID_AT ).get().getString();
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // The FQCN
+        String className = getFqcn( entry, SchemaConstants.SYNTAX_CHECKER );
+        
+        // The ByteCode
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
+            
+        // Class load the syntaxChecker
+        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, className, byteCode, targetRegistries );
         
-        return getSyntaxChecker( syntaxOid, className, byteCode, targetRegistries );
+        // Update the common fields
+        setSchemaObjectProperties( syntaxChecker, entry, schema );
+        
+        // return the resulting syntaxChecker
+        return syntaxChecker;
     }
     
     
+    /**
+     * Create a new instance of a SyntaxChecker 
+     *
+     * @param syntaxCheckerDescription
+     * @param targetRegistries
+     * @param schemaName
+     * @return A new instance of a syntaxChecker
+     * @throws Exception If the creation has failed
+     */
     public SyntaxChecker getSyntaxChecker( SyntaxCheckerDescription syntaxCheckerDescription, 
-        Registries targetRegistries ) throws Exception
+        Registries targetRegistries, String schemaName ) throws Exception
     {
-        EntryAttribute attr = null;
+        checkDescription( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
         
-        if ( syntaxCheckerDescription.getBytecode() != null )
-        {
-            byte[] bytecode = Base64.decode( syntaxCheckerDescription.getBytecode().toCharArray() );
-            attr = new DefaultClientAttribute( MetaSchemaConstants.M_BYTECODE_AT, bytecode );
-        }
+        // The Comparator OID
+        String oid = getOid( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
         
-        return getSyntaxChecker( syntaxCheckerDescription.getOid(), 
-            syntaxCheckerDescription.getFqcn(), attr, targetRegistries );
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // The FQCN
+        String fqcn = getFqcn( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
+        
+        // get the byteCode
+        EntryAttribute byteCode = getByteCode( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
+        
+        // Class load the SyntaxChecker
+        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, 
+            fqcn, byteCode, targetRegistries );
+        
+        // Update the common fields
+        setSchemaObjectProperties( syntaxChecker, syntaxCheckerDescription, schema );
+        
+        return syntaxChecker;
     }
     
     
-    private LdapComparator<?> getLdapComparator( String oid, String className, 
-        EntryAttribute bytecode, Registries targetRegistries ) throws Exception
+    /**
+     * Class load a comparator instances
+     */
+    private LdapComparator<?> classLoadComparator( String oid, String className, 
+        EntryAttribute byteCode, Registries targetRegistries ) throws Exception
     {
+        // Try to class load the comparator
         LdapComparator<?> comparator = null;
         Class<?> clazz = null;
-         
-        try
+        String byteCodeStr = StringTools.EMPTY;
+
+        if ( byteCode == null ) 
         {
-	        if ( bytecode == null ) 
-	        {
-	            clazz = Class.forName( className );
-	        }
-	        else
-	        {
-	            classLoader.setAttribute( bytecode );
-	            clazz = classLoader.loadClass( className );
-	        }
+            clazz = Class.forName( className );
         }
-        catch ( Exception e )
+        else
         {
-        	LOG.error( "Failed to load class from LDIF bytecode from schemaObject {}", oid, e );
-        	throw e;
+            classLoader.setAttribute( byteCode );
+            clazz = classLoader.loadClass( className );
+            byteCodeStr = new String( Base64.encode( byteCode.getBytes() ) );
         }
         
+        // Create the comparator instance
         comparator = ( LdapComparator<?> ) clazz.newInstance();
-        comparator.setOid( oid );
-        injectRegistries( comparator, targetRegistries );
+
+        // Update the loadable fields
+        comparator.setBytecode( byteCodeStr );
         comparator.setFqcn( className );
+        
+        // Inject the new OID, as the loaded comparator might have its own
+        comparator.setOid( oid );
+        
         return comparator;
     }
     
     
+    /**
+     * Create a new instance of a LdapComparator 
+     *
+     * @param comparatorDescription
+     * @param targetRegistries
+     * @param schemaName
+     * @return A new instance of a LdapComparator
+     * @throws Exception If the creation has failed
+     */
     public LdapComparator<?> getLdapComparator( 
         LdapComparatorDescription comparatorDescription, 
-        Registries targetRegistries ) throws Exception
+        Registries targetRegistries, String schemaName ) throws Exception
     {
-        EntryAttribute attr = null;
+        checkDescription( comparatorDescription, SchemaConstants.COMPARATOR );
         
-        if ( comparatorDescription.getBytecode() != null )
-        { 
-            byte[] bytecode = Base64.decode( comparatorDescription.getBytecode().toCharArray() );
-            attr = new DefaultClientAttribute( MetaSchemaConstants.M_BYTECODE_AT, bytecode );
-        }
+        // The Comparator OID
+        String oid = getOid( comparatorDescription, SchemaConstants.COMPARATOR );
         
-        return getLdapComparator( comparatorDescription.getOid(), 
-            comparatorDescription.getFqcn(), attr, targetRegistries );
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // The FQCN
+        String fqcn = getFqcn( comparatorDescription, SchemaConstants.COMPARATOR );
+        
+        // get the byteCode
+        EntryAttribute byteCode = getByteCode( comparatorDescription, SchemaConstants.COMPARATOR );
+        
+        // Class load the comparator
+        LdapComparator<?> comparator = classLoadComparator( oid, 
+            fqcn, byteCode, targetRegistries );
+        
+        // Update the common fields
+        setSchemaObjectProperties( comparator, comparatorDescription, schema );
+        
+        return comparator;
     }
     
     
@@ -259,68 +438,108 @@ public class SchemaEntityFactory
      * Retrieve and load a Comparator class from the DIT.
      * 
      * @param entry the entry to load the Comparator from
+     * @param targetRegistries The registries
+     * @param schemaName The schema this SchemaObject will be part of
      * @return the loaded Comparator
      * @throws NamingException if anything fails during loading
      */
     public LdapComparator<?> getLdapComparator( Entry entry, 
-        Registries targetRegistries ) throws Exception
+        Registries targetRegistries, String schemaName ) throws Exception
     {
-        if ( entry == null )
-        {
-            throw new NullPointerException( "entry cannot be null" );
-        }
+        checkEntry( entry, SchemaConstants.COMPARATOR );
         
-        if ( entry.get( MetaSchemaConstants.M_FQCN_AT ) == null )
-        {
-            throw new NullPointerException( "entry must have a valid " 
-                + MetaSchemaConstants.M_FQCN_AT + " attribute" );
-        }
+        // The Comparator OID
+        String oid = getOid( entry, SchemaConstants.COMPARATOR );
         
-        String className = entry.get( MetaSchemaConstants.M_FQCN_AT ).get().getString();
-        String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
-        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT ); 
-        return getLdapComparator( oid, className, byteCode, targetRegistries );
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // The FQCN
+        String fqcn = getFqcn( entry, SchemaConstants.COMPARATOR );
+        
+        // The ByteCode
+        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
+            
+        // Class load the comparator
+        LdapComparator<?> comparator = classLoadComparator( oid, fqcn, byteCode, targetRegistries );
+        
+        // Update the common fields
+        setSchemaObjectProperties( comparator, entry, schema );
+        
+        // return the resulting comparator
+        return comparator;
     }
     
     
-    private Normalizer getNormalizer( String oid, String className, 
-        EntryAttribute bytecode, Registries targetRegistries ) throws Exception
+    /**
+     * Class load a normalizer instances
+     */
+    private Normalizer classLoadNormalizer( String oid, String className, 
+        EntryAttribute byteCode, Registries targetRegistries ) throws Exception
     {
+        // Try to class load the normalizer
         Class<?> clazz = null;
         Normalizer normalizer = null;
+        String byteCodeStr = StringTools.EMPTY;
         
-        if ( bytecode == null )
+        if ( byteCode == null )
         {
             clazz = Class.forName( className );
         }
         else
         {
-            classLoader.setAttribute( bytecode );
+            classLoader.setAttribute( byteCode );
             clazz = classLoader.loadClass( className );
+            byteCodeStr = new String( Base64.encode( byteCode.getBytes() ) );
         }
 
+        // Create the normalizer instance
         normalizer = ( Normalizer ) clazz.newInstance();
-        normalizer.setOid( oid );
-        injectRegistries( normalizer, targetRegistries );
+
+        // Update the common fields
+        normalizer.setBytecode( byteCodeStr );
         normalizer.setFqcn( className );
+        
+        // Inject the new OID, as the loaded normalizer might have its own
+        normalizer.setOid( oid );
         
         return normalizer;
     }
 
     
+    /**
+     * Create a new instance of a Normalizer 
+     *
+     * @param normalizerDescription
+     * @param targetRegistries
+     * @param schemaName
+     * @return A new instance of a normalizer
+     * @throws Exception If the creation has failed
+     */
     public Normalizer getNormalizer( NormalizerDescription normalizerDescription, 
-        Registries targetRegistries ) throws Exception
+        Registries targetRegistries, String schemaName ) throws Exception
     {
-        EntryAttribute attr = null;
+        checkDescription( normalizerDescription, SchemaConstants.NORMALIZER );
         
-        if ( normalizerDescription.getBytecode() != null )
-        {
-            byte[] bytecode = Base64.decode( normalizerDescription.getBytecode().toCharArray() );
-            attr = new DefaultClientAttribute( MetaSchemaConstants.M_BYTECODE_AT, bytecode );
-        }
+        // The Comparator OID
+        String oid = getOid( normalizerDescription, SchemaConstants.NORMALIZER );
         
-        return getNormalizer( normalizerDescription.getOid(), 
-            normalizerDescription.getFqcn(), attr, targetRegistries );
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // The FQCN
+        String fqcn = getFqcn( normalizerDescription, SchemaConstants.NORMALIZER );
+        
+        // get the byteCode
+        EntryAttribute byteCode = getByteCode( normalizerDescription, SchemaConstants.NORMALIZER );
+
+        // Class load the normalizer
+        Normalizer normalizer = classLoadNormalizer( oid, fqcn, byteCode, targetRegistries );
+        
+        // Update the common fields
+        setSchemaObjectProperties( normalizer, normalizerDescription, schema );
+        
+        return normalizer;
     }
     
     
@@ -331,24 +550,31 @@ public class SchemaEntityFactory
      * @return the loaded Normalizer
      * @throws NamingException if anything fails during loading
      */
-    public Normalizer getNormalizer( Entry entry, Registries targetRegistries ) 
+    public Normalizer getNormalizer( Entry entry, Registries targetRegistries, String schemaName ) 
         throws Exception
     {
-        if ( entry == null )
-        {
-            throw new NullPointerException( "entry cannot be null" );
-        }
+        checkEntry( entry, SchemaConstants.NORMALIZER );
         
-        if ( entry.get( MetaSchemaConstants.M_FQCN_AT ) == null )
-        {
-            throw new NullPointerException( "entry must have a valid " 
-                + MetaSchemaConstants.M_FQCN_AT + " attribute" );
-        }
+        // The Normalizer OID
+        String oid = getOid( entry, SchemaConstants.NORMALIZER );
+
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // The FQCN
+        String className = getFqcn( entry, SchemaConstants.NORMALIZER );
         
-        String className = entry.get( MetaSchemaConstants.M_FQCN_AT ).getString();
-        String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
-        EntryAttribute bytecode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
-        return getNormalizer( oid, className, bytecode, targetRegistries );
+        // The ByteCode
+        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
+            
+        // Class load the Normalizer
+        Normalizer normalizer = classLoadNormalizer( oid, className, byteCode, targetRegistries );
+        
+        // Update the common fields
+        setSchemaObjectProperties( normalizer, entry, schema );
+        
+        // return the resulting Normalizer
+        return normalizer;
     }
     
     
@@ -387,41 +613,77 @@ public class SchemaEntityFactory
     }
 
 
-    public LdapSyntax getSyntax( Entry entry, Registries targetRegistries, String schema ) throws NamingException
+    public LdapSyntax getSyntax( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException
     {
-        String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
+        checkEntry( entry, SchemaConstants.SYNTAX );
+
+        // The Syntax OID
+        String oid = getOid( entry, SchemaConstants.SYNTAX );
+
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // Create the new LdapSyntax instance
         LdapSyntax syntax = new LdapSyntax( oid );
-        syntax.setSchemaName( schema );
-        syntax.applyRegistries( targetRegistries );
         
-        if ( entry.get( MetaSchemaConstants.X_HUMAN_READABLE_AT ) != null )
+        // The isHumanReadable field
+        EntryAttribute mHumanReadable = entry.get( MetaSchemaConstants.X_HUMAN_READABLE_AT );
+        
+        if ( mHumanReadable != null )
         {
-            String val = entry.get( MetaSchemaConstants.X_HUMAN_READABLE_AT ).getString();
+            String val = mHumanReadable.getString();
             syntax.setHumanReadable( val.toUpperCase().equals( "TRUE" ) );
         }
-        
-        if ( entry.get( MetaSchemaConstants.M_DESCRIPTION_AT ) != null )
-        {
-            syntax.setDescription( entry.get( MetaSchemaConstants.M_DESCRIPTION_AT ).getString() ); 
-        }
+
+        // Common properties
+        setSchemaObjectProperties( syntax, entry, schema );
         
         return syntax;
     }
 
     
-    public MatchingRule getMatchingRule( Entry entry, Registries targetRegistries, String schema ) throws NamingException
+    /**
+     * Construct an MatchingRule from an entry get from the Dit
+     *
+     * @param entry The entry containing all the informations to build a MatchingRule
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema containing this MatchingRule
+     * @return A MatchingRule SchemaObject
+     * @throws NamingException If the MatchingRule is invalid
+     */
+    public MatchingRule getMatchingRule( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException
     {
-        String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
-        String syntaxOid = entry.get( MetaSchemaConstants.M_SYNTAX_AT ).getString();
-        MatchingRule mr = new MatchingRule( oid );
-        mr.setSyntaxOid( syntaxOid );
-        mr.setSchemaName( schema );
-        setSchemaObjectProperties( mr, entry );
-    	mr.applyRegistries( targetRegistries );
-        return mr;
+        checkEntry( entry, SchemaConstants.MATCHING_RULE );
+
+        // The MatchingRule OID
+        String oid = getOid( entry, SchemaConstants.MATCHING_RULE );
+
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        MatchingRule matchingRule = new MatchingRule( oid );
+
+        // The syntax field
+        EntryAttribute mSyntax = entry.get( MetaSchemaConstants.M_SYNTAX_AT );
+        
+        if ( mSyntax != null )
+        {
+            matchingRule.setSyntaxOid( mSyntax.getString() );
+        }
+
+        // The normalizer and comparator fields will be updated when we will
+        // apply the registry 
+
+        // Common properties
+        setSchemaObjectProperties( matchingRule, entry, schema );
+        
+        return matchingRule;
     }
     
     
+    /**
+     * Create a list of string from a multivalued attribute's values
+     */
     private List<String> getStrings( EntryAttribute attr ) throws NamingException
     {
         if ( attr == null )
@@ -440,126 +702,275 @@ public class SchemaEntityFactory
     }
     
     
-    public ObjectClass getObjectClass( Entry entry, Registries targetRegistries, String schema ) throws Exception
+    public ObjectClass getObjectClass( Entry entry, Registries targetRegistries, String schemaName ) throws Exception
     {
-        String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
+        checkEntry( entry, SchemaConstants.OBJECT_CLASS );
+
+        // The ObjectClass OID
+        String oid = getOid( entry, SchemaConstants.OBJECT_CLASS );
+
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // Create the ObjectClass instance
         ObjectClass oc = new ObjectClass( oid );
-        oc.setSchemaName( schema );
         
-        if ( entry.get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT ) != null )
+        // The Sup field
+        EntryAttribute mSuperiors = entry.get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT );
+        
+        if ( mSuperiors != null )
         {
-            oc.setSuperiorOids( getStrings( entry.get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT ) ) );
+            oc.setSuperiorOids( getStrings( mSuperiors ) );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_MAY_AT ) != null )
+        // The May field
+        EntryAttribute mMay = entry.get( MetaSchemaConstants.M_MAY_AT );
+            
+        if ( mMay != null )
         {
-            oc.setMayAttributeTypeOids( getStrings( entry.get( MetaSchemaConstants.M_MAY_AT ) ) );
+            oc.setMayAttributeTypeOids( getStrings( mMay ) );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_MUST_AT ) != null )
+        // The Must field
+        EntryAttribute mMust = entry.get( MetaSchemaConstants.M_MUST_AT );
+        
+        if ( mMust != null )
         {
-            oc.setMustAttributeTypeOids( getStrings( entry.get( MetaSchemaConstants.M_MUST_AT ) ) );
+            oc.setMustAttributeTypeOids( getStrings( mMust ) );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_TYPE_OBJECT_CLASS_AT ) != null )
+        // The objectClassType field
+        EntryAttribute mTypeObjectClass = entry.get( MetaSchemaConstants.M_TYPE_OBJECT_CLASS_AT );
+            
+        if ( mTypeObjectClass != null )
         {
-            String type = entry.get( MetaSchemaConstants.M_TYPE_OBJECT_CLASS_AT ).getString();
+            String type = mTypeObjectClass.getString();
             oc.setType( ObjectClassTypeEnum.getClassType( type ) );
         }
-        else
-        {
-            oc.setType( ObjectClassTypeEnum.STRUCTURAL );
-        }
         
-        setSchemaObjectProperties( oc, entry );
-        oc.applyRegistries( targetRegistries );
+        // Common properties
+        setSchemaObjectProperties( oc, entry, schema );
         
         return oc;
     }
     
     
-    public AttributeType getAttributeType( Entry entry, Registries targetRegistries, String schema ) throws NamingException
+    /**
+     * Construct an AttributeType from an entry representing an AttributeType.
+     *
+     * @param entry The entry containing all the informations to build an AttributeType
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema containing this AttributeType
+     * @return An AttributeType SchemaObject
+     * @throws NamingException If the AttributeType is invalid
+     */
+    public AttributeType getAttributeType( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException
     {
-        String oid = entry.get( MetaSchemaConstants.M_OID_AT ).getString();
-        AttributeType at = new AttributeType( oid );
+        checkEntry( entry, SchemaConstants.ATTRIBUTE_TYPE );
         
-        at.setSchemaName( schema );
-        setSchemaObjectProperties( at, entry );
+        // The AttributeType OID
+        String oid = getOid( entry, SchemaConstants.ATTRIBUTE_TYPE );
+
+        // Get the schema
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        // Create the new AttributeType
+        AttributeType attributeType = new AttributeType( oid );
         
-        if ( entry.get( MetaSchemaConstants.M_SYNTAX_AT ) != null )
+        // Syntax
+        EntryAttribute mSyntax = entry.get( MetaSchemaConstants.M_SYNTAX_AT );
+        
+        if ( mSyntax != null )
         {
-            at.setSyntaxOid( entry.get( MetaSchemaConstants.M_SYNTAX_AT ).getString() );
+            attributeType.setSyntaxOid( mSyntax.getString() );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_EQUALITY_AT ) != null )
+        // Equality
+        EntryAttribute mEquality = entry.get( MetaSchemaConstants.M_EQUALITY_AT );
+        
+        if ( mEquality != null )
         {
-        	String mrName = entry.get( MetaSchemaConstants.M_EQUALITY_AT ).getString();
-        	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
-            at.setEqualityOid( mrOid );
+        	attributeType.setEqualityOid( mEquality.getString() );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_ORDERING_AT ) != null )
+        // Ordering
+        EntryAttribute mOrdering = entry.get( MetaSchemaConstants.M_ORDERING_AT ); 
+            
+        if ( mOrdering != null )
         {
-        	String mrName = entry.get( MetaSchemaConstants.M_ORDERING_AT ).getString();
-        	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
-            at.setOrderingOid( mrOid );
+            attributeType.setOrderingOid( mOrdering.getString() );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_SUBSTR_AT ) != null )
+        // Substr
+        EntryAttribute mSubstr = entry.get( MetaSchemaConstants.M_SUBSTR_AT );
+        
+        if ( mSubstr != null )
         {
-        	String mrName = entry.get( MetaSchemaConstants.M_SUBSTR_AT ).getString();
-        	String mrOid = targetRegistries.getMatchingRuleRegistry().getOidByName( mrName );
-            at.setSubstringOid( mrOid );
+            attributeType.setSubstringOid( mSubstr.getString() );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT ) != null )
+        EntryAttribute mSupAttributeType = entry.get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT );
+        
+        // Sup
+        if ( mSupAttributeType != null )
         {
-        	String supName = entry.get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT ).getString();
-            String supOid = targetRegistries.getAttributeTypeRegistry().getOidByName( supName );
-        	at.setSuperiorOid( supOid );
+        	attributeType.setSuperiorOid( mSupAttributeType.getString() );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_COLLECTIVE_AT ) != null )
+        // isCollective
+        EntryAttribute mCollective = entry.get( MetaSchemaConstants.M_COLLECTIVE_AT );
+        
+        if ( mCollective != null )
         {
-            String val = entry.get( MetaSchemaConstants.M_COLLECTIVE_AT ).getString();
-            at.setCollective( val.equalsIgnoreCase( "TRUE" ) );
+            String val = mCollective.getString();
+            attributeType.setCollective( val.equalsIgnoreCase( "TRUE" ) );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_SINGLE_VALUE_AT ) != null )
+        // isSingleValued
+        EntryAttribute mSingleValued = entry.get( MetaSchemaConstants.M_SINGLE_VALUE_AT );
+        
+        if ( mSingleValued != null )
         {
-            String val = entry.get( MetaSchemaConstants.M_SINGLE_VALUE_AT ).getString();
-            at.setSingleValued( val.equalsIgnoreCase( "TRUE" ) );
+            String val = mSingleValued.getString();
+            attributeType.setSingleValued( val.equalsIgnoreCase( "TRUE" ) );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_NO_USER_MODIFICATION_AT ) != null )
+        // isReadOnly
+        EntryAttribute mNoUserModification = entry.get( MetaSchemaConstants.M_NO_USER_MODIFICATION_AT );
+        
+        if ( mNoUserModification != null )
         {
-            String val = entry.get( MetaSchemaConstants.M_NO_USER_MODIFICATION_AT ).getString();
-            at.setUserModifiable( ! val.equalsIgnoreCase( "TRUE" ) );
+            String val = mNoUserModification.getString();
+            attributeType.setUserModifiable( ! val.equalsIgnoreCase( "TRUE" ) );
         }
         
-        if ( entry.get( MetaSchemaConstants.M_USAGE_AT ) != null )
+        // Usage
+        EntryAttribute mUsage = entry.get( MetaSchemaConstants.M_USAGE_AT );
+        
+        if ( mUsage != null )
         {
-            at.setUsage( UsageEnum.getUsage( entry.get( MetaSchemaConstants.M_USAGE_AT ).getString() ) );
+            attributeType.setUsage( UsageEnum.getUsage( mUsage.getString() ) );
         }
         
-        at.applyRegistries( targetRegistries );
-        return at;
+        // Common properties
+        setSchemaObjectProperties( attributeType, entry, schema );
+        
+        return attributeType;
+    }
+    
+    
+    /**
+     * Process the FQCN attribute
+     */
+    private String getFqcn( Entry entry, String objectType ) throws NamingException
+    {
+        // The FQCN
+        EntryAttribute mFqcn = entry.get( MetaSchemaConstants.M_FQCN_AT );
+        
+        if ( mFqcn == null )
+        {
+            String msg = objectType + " entry must have a valid " 
+                + MetaSchemaConstants.M_FQCN_AT + " attribute";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
+        }
+        
+        return mFqcn.getString();
+    }
+    
+    
+    /**
+     * Process the FQCN attribute
+     */
+    private String getFqcn( LoadableSchemaObject description, String objectType ) throws NamingException
+    {
+        // The FQCN
+        String mFqcn = description.getFqcn();
+        
+        if ( mFqcn == null )
+        {
+            String msg = objectType + " entry must have a valid " 
+                + MetaSchemaConstants.M_FQCN_AT + " attribute";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
+        }
+        
+        return mFqcn;
+    }
+    
+    
+    /**
+     * Process the ByteCode attribute
+     */
+    private EntryAttribute getByteCode( Entry entry, String objectType ) throws NamingException
+    {
+        EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
+        
+        if ( byteCode == null )
+        {
+            String msg = objectType + " entry must have a valid " 
+                + MetaSchemaConstants.M_BYTECODE_AT + " attribute";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
+        }
+        
+        return byteCode;
     }
     
 
-    private void setSchemaObjectProperties( SchemaObject so, Entry entry ) throws NamingException
+    /**
+     * Process the ByteCode attribute
+     */
+    private EntryAttribute getByteCode( LoadableSchemaObject description, String objectType ) throws NamingException
     {
-        if ( entry.get( MetaSchemaConstants.M_OBSOLETE_AT ) != null )
-        {
-            String val = entry.get( MetaSchemaConstants.M_OBSOLETE_AT ).getString();
-            so.setObsolete( val.equalsIgnoreCase( "TRUE" ) );
-        }
+        String byteCodeString = description.getBytecode();
         
-        if ( entry.get( MetaSchemaConstants.M_DESCRIPTION_AT ) != null )
+        if ( byteCodeString == null )
         {
-            so.setDescription( entry.get( MetaSchemaConstants.M_DESCRIPTION_AT ).getString() ); 
+            String msg = objectType + " entry must have a valid " 
+                + MetaSchemaConstants.M_BYTECODE_AT + " attribute";
+            LOG.warn( msg );
+            throw new NullPointerException( msg );
         }
 
+        byte[] bytecode = Base64.decode( byteCodeString.toCharArray() );
+        EntryAttribute attr = new DefaultClientAttribute( MetaSchemaConstants.M_BYTECODE_AT, bytecode );
+        
+        return attr;
+    }
+    
+
+    /**
+     * Process the common attributes to all SchemaObjects :
+     *  - obsolete
+     *  - description
+     *  - names
+     *  - schemaName
+     *  - specification (if any)
+     *  - extensions
+     *  - isReadOnly
+     *  - isEnabled
+     */
+    private void setSchemaObjectProperties( SchemaObject schemaObject, Entry entry, Schema schema ) throws NamingException
+    {
+        // The isObsolete field
+        EntryAttribute mObsolete = entry.get( MetaSchemaConstants.M_OBSOLETE_AT );
+        
+        if ( mObsolete != null )
+        {
+            String val = mObsolete.getString();
+            schemaObject.setObsolete( val.equalsIgnoreCase( "TRUE" ) );
+        }
+        
+        // The description field
+        EntryAttribute mDescription = entry.get( MetaSchemaConstants.M_DESCRIPTION_AT );
+        
+        if ( mDescription != null )
+        {
+            schemaObject.setDescription( mDescription.getString() ); 
+        }
+
+        // The names field
         EntryAttribute names = entry.get( MetaSchemaConstants.M_NAME_AT );
         
         if ( names != null )
@@ -571,7 +982,105 @@ public class SchemaEntityFactory
                 values.add( name.getString() );
             }
             
-            so.setNames( values );
+            schemaObject.setNames( values );
         }
+        
+        // The isEnabled field
+        EntryAttribute mDisabled = entry.get( MetaSchemaConstants.M_DISABLED_AT );
+        
+        // If the SchemaObject has an explicit m-disabled attribute, then use it.
+        // Otherwise, inherit it from the schema
+        if ( mDisabled != null )
+        {
+            String val = mDisabled.getString();
+            schemaObject.setEnabled( ! val.equalsIgnoreCase( "TRUE" ) );
+        }
+        else
+        {
+            schemaObject.setEnabled( schema.isEnabled() );
+        }
+        
+        // The isReadOnly field
+        EntryAttribute mIsReadOnly = entry.get( MetaSchemaConstants.M_NO_USER_MODIFICATION_AT );
+
+        if ( mIsReadOnly != null )
+        {
+            String val = mIsReadOnly.getString();
+            schemaObject.setReadOnly( val.equalsIgnoreCase( "TRUE" ) );
+        }
+        
+        // The specification field
+        /*
+         * TODO : create the M_SPECIFICATION_ATAT
+        EntryAttribute mSpecification = entry.get( MetaSchemaConstants.M_SPECIFICATION_AT );
+        
+        if ( mSpecification != null )
+        {
+            so.setSpecification( mSpecification.getString() ); 
+        }
+        */
+        
+        // The schemaName field
+        schemaObject.setSchemaName( schema.getSchemaName() );
+        
+        // The extensions field
+        /*
+         * TODO create the M_EXTENSION_AT AT
+        EntryAttribute extensions = entry.get( MetaSchemaConstants.M_EXTENSION_AT );
+        
+        if ( extensions != null )
+        {
+            List<String> extensions = new ArrayList<String>();
+            
+            for ( Value<?> extension:extensions )
+            {
+                values.add( extension() );
+            }
+            
+            so.setExtensions( values );
+        }
+        */
+    }
+
+
+    /**
+     * Process the common attributes to all SchemaObjects :
+     *  - obsolete
+     *  - description
+     *  - names
+     *  - schemaName
+     *  - specification (if any)
+     *  - extensions
+     *  - isReadOnly
+     *  - isEnabled
+     */
+    private void setSchemaObjectProperties( SchemaObject schemaObject, SchemaObject description, Schema schema ) throws NamingException
+    {
+        // The isObsolete field
+        schemaObject.setObsolete( description.isObsolete() );
+        
+        // The description field
+        schemaObject.setDescription( description.getDescription() );
+
+        // The names field
+        schemaObject.setNames( description.getNames() );
+        
+        // The isEnabled field. Has the description does not hold a 
+        // Disable field, we will inherit from the schema enable field
+        schemaObject.setEnabled( schema.isEnabled() );
+        
+        // The isReadOnly field. We don't have this data in the description,
+        // so set it to false
+        // TODO : should it be a X-READONLY extension ?
+        schemaObject.setReadOnly( false );
+
+        // The specification field
+        schemaObject.setSpecification( description.getSpecification() );
+        
+        // The schemaName field
+        schemaObject.setSchemaName( schema.getSchemaName() );
+        
+        // The extensions field
+        schemaObject.setExtensions( description.getExtensions() );
     }
 }

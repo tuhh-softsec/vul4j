@@ -153,12 +153,6 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         {
             super.register( attributeType );
             
-            // Inject the attributeType into the oid/normalizer map
-            addMappingFor( attributeType );
-    
-            // Register this AttributeType into the Descendant map
-            registerDescendants( attributeType, attributeType.getSuperior() );
-            
             // Internally associate the OID to the registered AttributeType
             if ( IS_DEBUG )
             {
@@ -289,7 +283,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     /**
      * Add a new Oid/Normalizer couple in the OidNormalizer map
      */
-    private void addMappingFor( AttributeType attributeType ) throws NamingException
+    public void addMappingFor( AttributeType attributeType ) throws NamingException
     {
         MatchingRule matchingRule = attributeType.getEquality();
         OidNormalizer oidNormalizer;

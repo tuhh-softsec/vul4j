@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
+
 /**
  * The SchemaObject types
  *
@@ -56,5 +58,66 @@ public enum SchemaObjectType
     public int getValue()
     {
         return value;
+    }
+    
+    
+    /**
+     * Get the RDN associated with a schemaObjectType
+     *
+     * @param schemaObjectType The type we want the RDN for
+     * @return The associated RDN
+     */
+    public String getRdn()
+    {
+        String schemaObjectPath = null;
+        
+        switch ( this )
+        {
+            case ATTRIBUTE_TYPE :
+                schemaObjectPath = SchemaConstants.ATTRIBUTES_TYPE_PATH;
+                break;
+                
+            case COMPARATOR :
+                schemaObjectPath = SchemaConstants.COMPARATORS_PATH;
+                break;
+                
+            case DIT_CONTENT_RULE :
+                schemaObjectPath = SchemaConstants.DIT_CONTENT_RULES_PATH;
+                break;
+                
+            case DIT_STRUCTURE_RULE :
+                schemaObjectPath = SchemaConstants.DIT_STRUCTURE_RULES_PATH;
+                break;
+                
+            case LDAP_SYNTAX :
+                schemaObjectPath = SchemaConstants.SYNTAXES_PATH;
+                break;
+                
+            case MATCHING_RULE :
+                schemaObjectPath = SchemaConstants.MATCHING_RULES_PATH;
+                break;
+                
+            case MATCHING_RULE_USE :
+                schemaObjectPath = SchemaConstants.MATCHING_RULE_USE_PATH;
+                break;
+                
+            case NAME_FORM :
+                schemaObjectPath = SchemaConstants.NAME_FORMS_PATH;
+                break;
+                
+            case NORMALIZER :
+                schemaObjectPath = SchemaConstants.NORMALIZERS_PATH;
+                break;
+                
+            case OBJECT_CLASS :
+                schemaObjectPath = SchemaConstants.OBJECT_CLASSES_PATH;
+                break;
+                
+            case SYNTAX_CHECKER :
+                schemaObjectPath = SchemaConstants.SYNTAX_CHECKERS_PATH;
+                break;
+        }
+        
+        return schemaObjectPath;
     }
 }

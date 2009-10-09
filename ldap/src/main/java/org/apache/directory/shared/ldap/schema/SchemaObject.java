@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.NamingException;
+
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -68,7 +71,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class SchemaObject implements Serializable
+public abstract class SchemaObject implements Serializable
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
@@ -204,6 +207,18 @@ public class SchemaObject implements Serializable
 
     
     /**
+     * Inject the registries into this Object, updating the references to
+     * other SchemaObject
+     *
+     * @param registries The Registries
+     */
+    public void applyRegistries( Registries registries ) throws NamingException
+    {
+        // Do nothing
+    }
+    
+    
+    /**
      * Add a new name to the list of names for this SchemaObject. The name
      * is lowercased and trimmed.
      *  
@@ -254,7 +269,7 @@ public class SchemaObject implements Serializable
         if ( ! isReadOnly )
         {
             this.names = new ArrayList<String>( names.size() );
-            
+
             for ( String name:names )
             {
             	if ( name != null )
@@ -319,7 +334,9 @@ public class SchemaObject implements Serializable
     /**
      * Tells if this SchemaObject is enabled.
      *  
-     * @return true if the SchemaObject is enabled
+     * @param schemaEnabled the associated schema status
+     * @return true if the SchemaObject is enabled, or if it depends on 
+     * an enabled schema
      */
     public boolean isEnabled()
     {
@@ -426,15 +443,29 @@ public class SchemaObject implements Serializable
 
     
     /**
-     * Add an extensions with their values
+     * Add an extensions with their values. (Actually do a copy)
+     * 
      * @param key The extension key
      * @param values The associated values
      */
     public void setExtensions( Map<String, List<String>> extensions )
     {
-        if ( !isReadOnly )
+        if ( !isReadOnly && ( extensions != null ) )
         {
-            this.extensions = extensions;
+            this.extensions = new HashMap<String, List<String>>();
+
+            for ( String key : extensions.keySet() )
+            {
+                List<String> values = new ArrayList<String>();
+
+                for ( String value : extensions.get( key ) )
+                {
+                    values.add( value );
+                }
+
+                this.extensions.put( key, values );
+            }
+            
         }
     }
 
