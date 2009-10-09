@@ -44,6 +44,8 @@ import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -54,6 +56,9 @@ import org.apache.directory.shared.ldap.util.StringTools;
  */
 public class Registries implements SchemaLoaderListener
 {
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( Registries.class );
+
     /**
      * A String name to Schema object map for those schemas loaded into this
      * registry.
@@ -689,6 +694,8 @@ public class Registries implements SchemaLoaderListener
 	
 	public void register( SchemaObject schemaObject ) throws NamingException
 	{
+	    LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
+	    
 	    String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
 	    
 	    // First call the specific registry's register method
@@ -753,7 +760,9 @@ public class Registries implements SchemaLoaderListener
 	    if ( content.contains( schemaWrapper ) )
 	    {
 	        // Already present !
-	        
+	        // What should we do ?
+	        LOG.info( "Registering of {}:{} failed, is already present in the Registries", 
+	            schemaObject.getObjectType(), schemaObject.getOid() );
 	    }
 	    else
 	    {
@@ -771,6 +780,8 @@ public class Registries implements SchemaLoaderListener
 	 */
     public void unregister( SchemaObject schemaObject ) throws NamingException
     {
+        LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
+
         String oid = schemaObject.getOid();
         
         // First call the specific registry's register method
@@ -834,6 +845,9 @@ public class Registries implements SchemaLoaderListener
         else
         {
             // Not present !!
+            // What should we do ?
+            LOG.debug( "Unregistering of {}:{} failed, not found in Registries", 
+                schemaObject.getObjectType(), schemaObject.getOid() );
         }
     }
     
@@ -850,7 +864,23 @@ public class Registries implements SchemaLoaderListener
         
         Set<SchemaWrapper> set = usedBy.get( wrapper );
         
-        return ( set != null ) && ( set.size() != 0 );
+        boolean referenced = ( set != null ) && ( set.size() != 0 );
+        
+        if ( LOG.isDebugEnabled() )
+        {
+            if ( referenced )
+            {
+                LOG.debug( "The {}:{} is referenced", schemaObject.getObjectType(),
+                    schemaObject.getOid() );
+            }
+            else
+            {
+                LOG.debug( "The {}:{} is not referenced", schemaObject.getObjectType(),
+                    schemaObject.getOid() );
+            }
+        }
+        
+        return referenced;
     }
 
     
@@ -868,7 +898,10 @@ public class Registries implements SchemaLoaderListener
     }
 
     
-    public String dumpUsedBy()
+    /**
+     * Dump the UsedBy data structure as a String
+     */
+    private String dumpUsedBy()
     {
         StringBuilder sb = new StringBuilder();
         
@@ -901,7 +934,10 @@ public class Registries implements SchemaLoaderListener
     }
 
     
-    public String dumpUsing()
+    /**
+     * Dump the Using data structure as a String
+     */
+    private String dumpUsing()
     {
         StringBuilder sb = new StringBuilder();
         
@@ -984,14 +1020,19 @@ public class Registries implements SchemaLoaderListener
      */
     public void addReference( SchemaObject reference, SchemaObject referee )
     {
-        // TODO : Add Logs here
-        //dump( "add", reference, referee );
+        if ( LOG.isDebugEnabled() )
+        {
+            LOG.debug( dump( "add", reference, referee ) );
+        }
 
         addUsing( reference, referee );
         addUsedBy( referee, reference );
 
-        //System.out.println( dumpUsedBy() );
-        //System.out.println( dumpUsing() );
+        if ( LOG.isDebugEnabled() )
+        {
+            LOG.debug( dumpUsedBy() );
+            LOG.debug( dumpUsing() );
+        }
     }
 
 
@@ -1106,19 +1147,357 @@ public class Registries implements SchemaLoaderListener
      */
     public void delReference( SchemaObject reference, SchemaObject referee )
     {
-        // TODO : Add Logs here
-        //dump( "del", reference, referee );
+        if ( LOG.isDebugEnabled() )
+        {
+            LOG.debug( dump( "del", reference, referee ) );
+        }
         
         delUsing( reference, referee );
         delUsedBy( referee, reference );
         
-        //System.out.println( dumpUsedBy() );
-        //System.out.println( dumpUsing() );
+        if ( LOG.isDebugEnabled() )
+        {
+            LOG.debug( dumpUsedBy() );
+            LOG.debug( dumpUsing() );
+        }
     }
     
-    
-    private void dump( String op, SchemaObject reference, SchemaObject referee )
+
+    /**
+     * Dump the reference operation as a String
+     */
+    private String dump( String op, SchemaObject reference, SchemaObject referee )
     {
-        System.out.println( op + " : " + reference.getObjectType() + "[" + reference.getOid() + "]/[" + referee.getObjectType() + "[" + referee.getOid() +"]" );
+        return op + " : " + reference.getObjectType() + "[" + reference.getOid() + "]/[" + referee.getObjectType() + "[" + referee.getOid() +"]";
+    }
+
+    
+    private boolean checkReferences( SchemaObject reference, SchemaObject referee, String message )
+    {
+        SchemaWrapper referenceWrapper = new SchemaWrapper( reference );
+        SchemaWrapper refereeWrapper = new SchemaWrapper( referee );
+        
+        // Check the references : Syntax -> SyntaxChecker
+        if ( !using.containsKey( referenceWrapper ) )
+        {
+            LOG.debug( "The Syntax {}:{} does not reference any " + message, 
+                reference.getObjectType(), reference.getOid() );
+            
+            return false;
+        }
+        
+        Set<SchemaWrapper> usings = using.get( referenceWrapper );
+
+        if ( !usings.contains( refereeWrapper ) )
+        {
+            LOG.debug( "The {}:{} does not reference any " + message, 
+                reference.getObjectType(), reference.getOid() );
+            
+            return false;
+        }
+        
+        // Check the referees : SyntaxChecker -> Syntax
+        if ( !usedBy.containsKey( refereeWrapper ) )
+        {
+            LOG.debug( "The {}:{} is not referenced by any " + message, 
+                reference.getObjectType(), reference.getOid() );
+            
+            return false;
+        }
+        
+        Set<SchemaWrapper> used = usedBy.get( referenceWrapper );
+
+        if ( !used.contains( refereeWrapper ) )
+        {
+            LOG.debug( "The {}:{} is not referenced by any " + message, 
+                reference.getObjectType(), reference.getOid() );
+            
+            return false;
+        }
+        
+        return true;
+    }
+
+    
+    /**
+     * Check the registries for invalid relations. This check stops at the first error.
+     *
+     * @return true if the Registries is consistent, false otherwise
+     */
+    public boolean check()
+    {
+        // Check the Syntaxes : check for a SyntaxChecker
+        LOG.debug( "Checking Syntaxes" );
+        
+        for ( LdapSyntax syntax : ldapSyntaxRegistry )
+        {
+            // Check that each Syntax has a SyntaxChecker
+            if ( syntax.getSyntaxChecker() == null )
+            {
+                LOG.debug( "The Syntax {} has no SyntaxChecker", syntax );
+                
+                return false;
+            }
+            
+            if ( !syntaxCheckerRegistry.contains( syntax.getSyntaxChecker().getOid() ) )
+            {
+                LOG.debug( "Cannot find the SyntaxChecker {} for the Syntax {}",
+                    syntax.getSyntaxChecker().getOid(), syntax );
+                
+                return false;
+            }
+            
+            // Check the references : Syntax -> SyntaxChecker and SyntaxChecker -> Syntax 
+            if ( checkReferences( syntax, syntax.getSyntaxChecker(), "SyntaxChecker" ) )
+            {
+                return false;
+            }
+        }
+
+        // Check the MatchingRules : check for a Normalizer, a Comparator and a Syntax
+        LOG.debug( "Checking MatchingRules..." );
+        
+        for ( MatchingRule matchingRule : matchingRuleRegistry )
+        {
+            // Check that each MatchingRule has a Normalizer
+            if ( matchingRule.getNormalizer() == null )
+            {
+                LOG.debug( "The MatchingRule {} has no Normalizer", matchingRule );
+                
+                return false;
+            }
+            
+            // Check that each MatchingRule has a Normalizer
+            if ( !normalizerRegistry.contains( matchingRule.getNormalizer().getOid() ) )
+            {
+                LOG.debug( "Cannot find the Normalizer {} for the MatchingRule {}",
+                    matchingRule.getNormalizer().getOid(), matchingRule );
+                
+                return false;
+            }
+
+            // Check that each MatchingRule has a Comparator
+            if ( matchingRule.getLdapComparator() == null )
+            {
+                LOG.debug( "The MatchingRule {} has no Comparator", matchingRule );
+                
+                return false;
+            }
+            
+            if ( !comparatorRegistry.contains( matchingRule.getLdapComparator().getOid() ) )
+            {
+                LOG.debug( "Cannot find the Comparator {} for the MatchingRule {}",
+                    matchingRule.getLdapComparator().getOid(), matchingRule );
+                
+                return false;
+            }
+            
+            // Check that each MatchingRule has a Syntax
+            if ( matchingRule.getSyntax() == null )
+            {
+                LOG.debug( "The MatchingRule {} has no Syntax", matchingRule );
+                
+                return false;
+            }
+
+            if ( !ldapSyntaxRegistry.contains( matchingRule.getSyntax().getOid() ) )
+            {
+                LOG.debug( "Cannot find the Syntax {} for the MatchingRule {}",
+                    matchingRule.getSyntax().getOid(), matchingRule );
+                
+                return false;
+            }
+
+            // Check the references : MR -> S and S -> MR 
+            if ( checkReferences( matchingRule, matchingRule.getSyntax(), "Syntax" ) )
+            {
+                return false;
+            }
+
+            // Check the references : MR -> N 
+            if ( checkReferences( matchingRule, matchingRule.getNormalizer(), "Normalizer" ) )
+            {
+                return false;
+            }
+
+            // Check the references : MR -> C and C -> MR 
+            if ( checkReferences( matchingRule, matchingRule.getLdapComparator(), "Comparator" ) )
+            {
+                return false;
+            }
+        }
+        
+        // Check the ObjectClasses : check for MAY, MUST, SUPERIORS
+        LOG.debug( "Checking ObjectClasses..." );
+        
+        for ( ObjectClass objectClass : objectClassRegistry )
+        {
+            // Check that each ObjectClass has all the MAY AttributeTypes
+            if ( objectClass.getMayAttributeTypes() != null )
+            {
+                for ( AttributeType may:objectClass.getMayAttributeTypes() )
+                {
+                    if ( !attributeTypeRegistry.contains( may.getOid() ) )
+                    {
+                        LOG.debug( "Cannot find the AttributeType {} for the ObjectClass {} MAY",
+                            may, objectClass );
+                        
+                        return false;
+                    }
+
+                    // Check the references : OC -> AT  and AT -> OC (MAY) 
+                    if ( checkReferences( objectClass, may, "AttributeType" ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+            
+            // Check that each ObjectClass has all the MUST AttributeTypes
+            if ( objectClass.getMustAttributeTypes() != null )
+            {
+                for ( AttributeType must:objectClass.getMustAttributeTypes() )
+                {
+                    if ( !attributeTypeRegistry.contains( must.getOid() ) )
+                    {
+                        LOG.debug( "Cannot find the AttributeType {} for the ObjectClass {} MUST",
+                            must, objectClass );
+                        
+                        return false;
+                    }
+
+                    // Check the references : OC -> AT  and AT -> OC (MUST) 
+                    if ( checkReferences( objectClass, must, "AttributeType" ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+            
+            // Check that each ObjectClass has all the SUPERIORS ObjectClasses
+            if ( objectClass.getSuperiors() != null )
+            {
+                for ( ObjectClass superior:objectClass.getSuperiors() )
+                {
+                    if ( !objectClassRegistry.contains( objectClass.getOid() ) )
+                    {
+                        LOG.debug( "Cannot find the ObjectClass {} for the ObjectClass {} SUPERIORS",
+                            superior, objectClass );
+                        
+                        return false;
+                    }
+
+                    // Check the references : OC -> OC  and OC -> OC (SUPERIORS) 
+                    if ( checkReferences( objectClass, superior, "ObjectClass" ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        // Check the AttributeTypes : check for MatchingRules, Syntaxes
+        LOG.debug( "Checking AttributeTypes..." );
+        
+        for ( AttributeType attributeType : attributeTypeRegistry )
+        {
+            // Check that each AttributeType has a SYNTAX 
+            if ( attributeType.getSyntax() == null )
+            {
+                LOG.debug( "The AttributeType {} has no Syntax", attributeType );
+                
+                return false;
+            }
+            
+            if ( !ldapSyntaxRegistry.contains( attributeType.getSyntax().getOid() ) )
+            {
+                LOG.debug( "Cannot find the Syntax {} for the AttributeType {}",
+                    attributeType.getSyntax().getOid(), attributeType );
+                
+                return false;
+            }
+            
+            // Check the references for AT -> S and S -> AT
+            if ( checkReferences( attributeType, attributeType.getSyntax(), "AttributeType" ) )
+            {
+                return false;
+            }
+            
+            // Check the EQUALITY MatchingRule
+            if ( attributeType.getEquality() != null )
+            {
+                if ( !matchingRuleRegistry.contains( attributeType.getEquality().getOid() ) )
+                {
+                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}",
+                        attributeType.getEquality().getOid(), attributeType );
+                    
+                    return false;
+                }
+
+                // Check the references for AT -> MR and MR -> AT
+                if ( checkReferences( attributeType, attributeType.getEquality(), "AttributeType" ) )
+                {
+                    return false;
+                }
+            }
+            
+            // Check the ORDERING MatchingRule
+            if ( attributeType.getOrdering() != null )
+            {
+                if ( !matchingRuleRegistry.contains( attributeType.getOrdering().getOid() ) )
+                {
+                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}",
+                        attributeType.getOrdering().getOid(), attributeType );
+                    
+                    return false;
+                }
+
+                // Check the references for AT -> MR and MR -> AT
+                if ( checkReferences( attributeType, attributeType.getOrdering(), "AttributeType" ) )
+                {
+                    return false;
+                }
+            }
+
+            // Check the SUBSTR MatchingRule
+            if ( attributeType.getSubstring() != null )
+            {
+                if ( !matchingRuleRegistry.contains( attributeType.getSubstring().getOid() ) )
+                {
+                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}",
+                        attributeType.getSubstring().getOid(), attributeType );
+                    
+                    return false;
+                }
+
+                // Check the references for AT -> MR and MR -> AT
+                if ( checkReferences( attributeType, attributeType.getSubstring(), "AttributeType" ) )
+                {
+                    return false;
+                }
+            }
+            
+            // Check the SUP
+            if ( attributeType.getSuperior() != null )
+            {
+                AttributeType superior =attributeType.getSuperior();
+                
+                if ( !attributeTypeRegistry.contains( superior.getOid() ) )
+                {
+                    LOG.debug( "Cannot find the AttributeType {} for the AttributeType {} SUPERIOR",
+                        superior, attributeType );
+                    
+                    return false;
+                }
+
+                // Check the references : AT -> AT  and AT -> AT (SUPERIOR) 
+                if ( checkReferences( attributeType, superior, "AttributeType" ) )
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
