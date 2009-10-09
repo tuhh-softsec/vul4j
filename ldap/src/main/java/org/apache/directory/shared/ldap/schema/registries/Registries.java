@@ -984,13 +984,14 @@ public class Registries implements SchemaLoaderListener
      */
     public void addReference( SchemaObject reference, SchemaObject referee )
     {
-        dump( "add", reference, referee );
+        // TODO : Add Logs here
+        //dump( "add", reference, referee );
 
         addUsing( reference, referee );
         addUsedBy( referee, reference );
 
-        System.out.println( dumpUsedBy() );
-        System.out.println( dumpUsing() );
+        //System.out.println( dumpUsedBy() );
+        //System.out.println( dumpUsing() );
     }
 
 
@@ -1105,11 +1106,14 @@ public class Registries implements SchemaLoaderListener
      */
     public void delReference( SchemaObject reference, SchemaObject referee )
     {
-        dump( "del", reference, referee );
+        // TODO : Add Logs here
+        //dump( "del", reference, referee );
+        
         delUsing( reference, referee );
         delUsedBy( referee, reference );
-        System.out.println( dumpUsedBy() );
-        System.out.println( dumpUsing() );
+        
+        //System.out.println( dumpUsedBy() );
+        //System.out.println( dumpUsing() );
     }
     
     
