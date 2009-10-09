@@ -103,13 +103,13 @@ public class Registries implements SchemaLoaderListener
      *  A map storing a relation between a SchemaObject and all the 
      *  referencing SchemaObjects.
      */
-    protected Map<SchemaWrapper, Set<SchemaObject>> usedBy;
+    protected Map<SchemaWrapper, Set<SchemaWrapper>> usedBy;
     
     /**
      *  A map storing a relation between a SchemaObject and all the 
      *  SchemaObjects it uses.
      */
-    protected Map<SchemaWrapper, Set<SchemaObject>> using;
+    protected Map<SchemaWrapper, Set<SchemaWrapper>> using;
     
 
     /**
@@ -131,9 +131,9 @@ public class Registries implements SchemaLoaderListener
         normalizerRegistry = new NormalizerRegistry( oidRegistry );
         objectClassRegistry = new ObjectClassRegistry( oidRegistry );
         syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
-        schemaObjectsBySchemaName = new HashMap<String, Set<SchemaWrapper>>();
-        usedBy = new ConcurrentHashMap<SchemaWrapper, Set<SchemaObject>>();
-        using = new ConcurrentHashMap<SchemaWrapper, Set<SchemaObject>>();
+        schemaObjectsBySchemaName = new ConcurrentHashMap<String, Set<SchemaWrapper>>();
+        usedBy = new ConcurrentHashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        using = new ConcurrentHashMap<SchemaWrapper, Set<SchemaWrapper>>();
     }
 
     
@@ -848,7 +848,7 @@ public class Registries implements SchemaLoaderListener
     {
         SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
         
-        Set<SchemaObject> set = using.get( wrapper );
+        Set<SchemaWrapper> set = usedBy.get( wrapper );
         
         return ( set != null ) && ( set.size() != 0 );
     }
@@ -860,7 +860,7 @@ public class Registries implements SchemaLoaderListener
      * @param schemaObject The SchemaObject we are looking for
      * @return The Set of referencing SchemaObject, or null 
      */
-    public Set<SchemaObject> getUsedBy( SchemaObject schemaObject )
+    public Set<SchemaWrapper> getUsedBy( SchemaObject schemaObject )
     {
         SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
         
@@ -868,13 +868,78 @@ public class Registries implements SchemaLoaderListener
     }
 
     
+    public String dumpUsedBy()
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(  "USED BY :\n" );
+        
+        for ( SchemaWrapper wrapper : usedBy.keySet() )
+        {
+            sb.append( wrapper.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "] : {" );
+            
+            boolean isFirst = true;
+            
+            for ( SchemaWrapper uses : usedBy.get( wrapper) )
+            {
+                if ( isFirst )
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sb.append( ", " );
+                }
+                
+                sb.append( uses.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "]" );
+            }
+            
+            sb.append( "}\n" );
+        }
+        
+        return sb.toString();
+    }
+
+    
+    public String dumpUsing()
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(  "USING :\n" );
+
+        for ( SchemaWrapper wrapper : using.keySet() )
+        {
+            sb.append( wrapper.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "] : {" );
+            
+            boolean isFirst = true;
+            
+            for ( SchemaWrapper uses : using.get( wrapper) )
+            {
+                if ( isFirst )
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sb.append( ", " );
+                }
+                
+                sb.append( uses.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "]" );
+            }
+            
+            sb.append( "}\n" );
+        }
+        
+        return sb.toString();
+    }
+    
     /**
      * Gets the Set of SchemaObjects referenced by the given SchemaObject
      *
      * @param schemaObject The SchemaObject we are looking for
      * @return The Set of referenced SchemaObject, or null 
      */
-    public Set<SchemaObject> getUsing( SchemaObject schemaObject )
+    public Set<SchemaWrapper> getUsing( SchemaObject schemaObject )
     {
         SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
         
@@ -897,15 +962,17 @@ public class Registries implements SchemaLoaderListener
         
         SchemaWrapper wrapper = new SchemaWrapper( reference );
         
-        Set<SchemaObject> usedBy = getUsedBy( reference );
+        Set<SchemaWrapper> uses = getUsing( reference );
         
-        if ( usedBy == null )
+        if ( uses == null )
         {
-            usedBy = new HashSet<SchemaObject>();
-            using.put( wrapper, usedBy );
+            uses = new HashSet<SchemaWrapper>();
         }
         
-        usedBy.add( referee );
+        uses.add( new SchemaWrapper( referee ) );
+        
+        // Put back the set (this is a concurrentHashMap, it won't be replaced implicitly
+        using.put( wrapper, uses );
     }
     
     
@@ -917,8 +984,13 @@ public class Registries implements SchemaLoaderListener
      */
     public void addReference( SchemaObject reference, SchemaObject referee )
     {
+        dump( "add", reference, referee );
+
         addUsing( reference, referee );
         addUsedBy( referee, reference );
+
+        System.out.println( dumpUsedBy() );
+        System.out.println( dumpUsing() );
     }
 
 
@@ -934,17 +1006,20 @@ public class Registries implements SchemaLoaderListener
         {
             return;
         }
+        
         SchemaWrapper wrapper = new SchemaWrapper( referee );
         
-        Set<SchemaObject> using = getUsing( referee );
+        Set<SchemaWrapper> uses = getUsedBy( referee );
         
-        if ( using == null )
+        if ( uses == null )
         {
-            using = new HashSet<SchemaObject>();
-            usedBy.put( wrapper, using );
+            uses = new HashSet<SchemaWrapper>();
         }
         
-        using.add( reference );
+        uses.add( new SchemaWrapper( reference ) );
+        
+        // Put back the set (this is a concurrentHashMap, it won't be replaced implicitly
+        usedBy.put( wrapper, uses );
     }
     
     
@@ -961,20 +1036,24 @@ public class Registries implements SchemaLoaderListener
             return;
         }
         
-        Set<SchemaObject> usedBy = getUsedBy( reference );
+        Set<SchemaWrapper> uses = getUsing( reference );
         
-        if ( usedBy == null )
+        if ( uses == null )
         {
             return;
         }
         
-        usedBy.remove( referee );
+        uses.remove( new SchemaWrapper( referee ) );
         
-        if ( usedBy.size() == 0 )
+        SchemaWrapper wrapper = new SchemaWrapper( reference );
+        
+        if ( uses.size() == 0 )
         {
-            SchemaWrapper wrapper = new SchemaWrapper( reference );
-            
             using.remove( wrapper );
+        }
+        else
+        {
+            using.put( wrapper, uses );
         }
         
         return;
@@ -994,20 +1073,24 @@ public class Registries implements SchemaLoaderListener
             return;
         }
 
-        Set<SchemaObject> using = getUsing( referee );
+        Set<SchemaWrapper> uses = getUsedBy( referee );
         
-        if ( using == null )
+        if ( uses == null )
         {
             return;
         }
         
-        using.remove( reference );
+        uses.remove( new SchemaWrapper( reference ) );
         
-        if ( using.size() == 0 )
+        SchemaWrapper wrapper = new SchemaWrapper( referee );
+
+        if ( uses.size() == 0 )
         {
-            SchemaWrapper wrapper = new SchemaWrapper( referee );
-            
             usedBy.remove( wrapper );
+        }
+        else
+        {
+            usedBy.put( wrapper, uses );
         }
         
         return;
@@ -1022,7 +1105,16 @@ public class Registries implements SchemaLoaderListener
      */
     public void delReference( SchemaObject reference, SchemaObject referee )
     {
+        dump( "del", reference, referee );
         delUsing( reference, referee );
         delUsedBy( referee, reference );
+        System.out.println( dumpUsedBy() );
+        System.out.println( dumpUsing() );
+    }
+    
+    
+    private void dump( String op, SchemaObject reference, SchemaObject referee )
+    {
+        System.out.println( op + " : " + reference.getObjectType() + "[" + reference.getOid() + "]/[" + referee.getObjectType() + "[" + referee.getOid() +"]" );
     }
 }
