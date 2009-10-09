@@ -147,7 +147,7 @@ public class LdapSyntax extends SchemaObject
      * 
      * @return the SyntaxChecker
      */
-    public SyntaxChecker getSyntaxChecker() throws NamingException
+    public SyntaxChecker getSyntaxChecker()
     {
         return syntaxChecker;
     }
