@@ -20,16 +20,28 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.ldap.schema.registries.Schema;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.SchemaLoaderListener;
+import org.apache.directory.shared.ldap.NotImplementedException;
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.ldif.LdifEntry;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.DITContentRule;
+import org.apache.directory.shared.ldap.schema.DITStructureRule;
+import org.apache.directory.shared.ldap.schema.EntityFactory;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
+import org.apache.directory.shared.ldap.schema.NameForm;
+import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +60,14 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
 
     protected SchemaLoaderListener listener;
     
+    /** the factory that generates respective SchemaObjects from LDIF entries */
+    protected final EntityFactory factory;
+    
+    
+    public AbstractSchemaLoader( EntityFactory factory )
+    {
+        this.factory = factory;
+    }
     
     /** 
      * A map of all available schema names to schema objects. This map is 
@@ -197,5 +217,277 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         
         notLoaded.remove( schema.getSchemaName() );
         beenthere.pop();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Schema getSchema( String schemaName ) throws Exception
+    {
+        return this.schemaMap.get( schemaName );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void loadWithDependencies( Collection<Schema> schemas, Registries registries ) throws Exception
+    {
+        Map<String,Schema> notLoaded = new HashMap<String,Schema>();
+        
+        for ( Schema schema : schemas )
+        {
+            if ( ! registries.isSchemaLoaded( schema.getSchemaName() ) )
+            {
+                notLoaded.put( schema.getSchemaName(), schema );
+            }
+        }
+        
+        for ( Schema schema : notLoaded.values() )
+        {
+            Stack<String> beenthere = new Stack<String>();
+            loadDepsFirst( schema, beenthere, notLoaded, schema, registries );
+        }
+    }
+    
+    
+    /**
+     * Register the comparator contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the comparator description
+     * @param schema The associated schema
+     * @throws Exception If the registering failed
+     */
+    protected void registerComparator( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        LdapComparator<?> comparator = 
+            factory.getLdapComparator( entry.getEntry(), registries, schema.getSchemaName() );
+        comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
+
+        if ( schema.isEnabled() && comparator.isEnabled() )
+        {
+            comparator.applyRegistries( registries );
+            registries.register( comparator );
+        }
+    }
+    
+    
+    /**
+     * Register the SyntaxChecker contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the SyntaxChecker description
+     * @param schema The associated schema
+     * @return the created SyntaxChecker instance
+     * @throws Exception If the registering failed
+     */
+    protected SyntaxChecker registerSyntaxChecker( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        SyntaxChecker syntaxChecker = 
+            factory.getSyntaxChecker( entry.getEntry(), registries, schema.getSchemaName() );
+        syntaxChecker.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
+
+        if ( schema.isEnabled() && syntaxChecker.isEnabled() )
+        {
+            syntaxChecker.applyRegistries( registries );
+            registries.register( syntaxChecker );
+        }
+        
+        return syntaxChecker;
+    }
+    
+    
+    /**
+     * Register the Normalizer contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the Normalizer description
+     * @param schema The associated schema
+     * @return the created Normalizer instance
+     * @throws Exception If the registering failed
+     */
+    protected Normalizer registerNormalizer( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        Normalizer normalizer =
+            factory.getNormalizer( entry.getEntry(), registries, schema.getSchemaName() );
+        
+        if ( schema.isEnabled() && normalizer.isEnabled() )
+        {
+            normalizer.applyRegistries( registries );
+            registries.register( normalizer );
+        }
+        
+        return normalizer;
+    }
+    
+    
+    /**
+     * Register the MatchingRule contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the MatchingRule description
+     * @param schema The associated schema
+     * @return the created MatchingRule instance
+     * @throws Exception If the registering failed
+     */
+    protected MatchingRule registerMatchingRule( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        MatchingRule matchingRule = factory.getMatchingRule( 
+            entry.getEntry(), registries, schema.getSchemaName() );
+
+        if ( schema.isEnabled() && matchingRule.isEnabled() )
+        {
+            matchingRule.applyRegistries( registries );
+            registries.register( matchingRule );
+        }
+        
+        return matchingRule;
+    }
+    
+    
+    /**
+     * Register the Syntax contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the Syntax description
+     * @param schema The associated schema
+     * @return the created Syntax instance
+     * @throws Exception If the registering failed
+     */
+    protected LdapSyntax registerSyntax( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        LdapSyntax syntax = factory.getSyntax( 
+            entry.getEntry(), registries, schema.getSchemaName() );
+
+        if ( schema.isEnabled() && syntax.isEnabled() )
+        {
+            syntax.applyRegistries( registries );
+            registries.register( syntax );
+        }
+        
+        return syntax;
+    }
+    
+    
+    /**
+     * Register the AttributeType contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the AttributeType description
+     * @param schema The associated schema
+     * @return the created AttributeType instance
+     * @throws Exception If the registering failed
+     */
+    protected AttributeType registerAttributeType( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        AttributeType attributeType = factory.getAttributeType( entry.getEntry(), registries, schema.getSchemaName() );
+        
+        if ( schema.isEnabled() && attributeType.isEnabled() )
+        {
+            attributeType.applyRegistries( registries );
+            registries.register( attributeType );
+        }
+        
+        return attributeType;
+    }
+    
+    
+    /**
+     * Register the MatchingRuleUse contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the MatchingRuleUse description
+     * @param schema The associated schema
+     * @return the created MatchingRuleUse instance
+     * @throws Exception If the registering failed
+     */
+    protected MatchingRuleUse registerMatchingRuleUse( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a MatchingRuleUse" );
+    }
+    
+    
+    /**
+     * Register the NameForm contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the NameForm description
+     * @param schema The associated schema
+     * @return the created NameForm instance
+     * @throws Exception If the registering failed
+     */
+    protected NameForm registerNameForm( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a NameForm" );
+    }
+    
+    
+    /**
+     * Register the DitContentRule contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the DitContentRule description
+     * @param schema The associated schema
+     * @return the created DitContentRule instance
+     * @throws Exception If the registering failed
+     */
+    protected DITContentRule registerDitContentRule( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a DitContentRule" );
+    }
+    
+    
+    /**
+     * Register the DitStructureRule contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the DitStructureRule description
+     * @param schema The associated schema
+     * @return the created DitStructureRule instance
+     * @throws Exception If the registering failed
+     */
+    protected DITStructureRule registerDitStructureRule( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a DitStructureRule" );
+    }
+
+
+    /**
+     * Register the ObjectClass contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The LdifEntry containing the ObjectClass description
+     * @param schema The associated schema
+     * @return the created ObjectClass instance
+     * @throws Exception If the registering failed
+     */
+    protected ObjectClass registerObjectClass( Registries registries, LdifEntry entry, Schema schema) 
+        throws Exception
+    {
+        ObjectClass objectClass = factory.getObjectClass( entry.getEntry(), registries, schema.getSchemaName() );
+
+        if ( schema.isEnabled() && objectClass.isEnabled() )
+        {
+            objectClass.applyRegistries( registries );
+            registries.register( objectClass );
+        }
+        
+        return objectClass;
     }
 }

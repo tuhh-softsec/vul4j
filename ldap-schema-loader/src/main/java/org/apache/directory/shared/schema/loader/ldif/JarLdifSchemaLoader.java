@@ -23,14 +23,12 @@ package org.apache.directory.shared.schema.loader.ldif;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -38,16 +36,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.DITContentRule;
-import org.apache.directory.shared.ldap.schema.DITStructureRule;
-import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.MatchingRule;
-import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
-import org.apache.directory.shared.ldap.schema.NameForm;
-import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
-import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.ResourceMap;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
@@ -75,9 +64,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /** Speedup for DEBUG mode */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
-    /** the factory that generates respective SchemaObjects from LDIF entries */
-    private final SchemaEntityFactory factory = new SchemaEntityFactory();
-    
     /** a map of all the resources in this jar */
     private static final Map<String,Boolean> RESOURCE_MAP = ResourceMap.getResources( Pattern.compile( ".*schema/ou=schema.*" ) );
 
@@ -93,6 +79,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     public JarLdifSchemaLoader() throws Exception
     {
+        super( new SchemaEntityFactory() );
         initializeSchemas();
     }
 
@@ -149,38 +136,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                     throw e;
                 }
             }
-        }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Schema getSchema( String schemaName ) throws Exception
-    {
-        return this.schemaMap.get( schemaName );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void loadWithDependencies( Collection<Schema> schemas, Registries registries ) throws Exception
-    {
-        Map<String,Schema> notLoaded = new HashMap<String,Schema>();
-        
-        for ( Schema schema : schemas )
-        {
-            if ( ! registries.isSchemaLoaded( schema.getSchemaName() ) )
-            {
-                notLoaded.put( schema.getSchemaName(), schema );
-            }
-        }
-        
-        for ( Schema schema : notLoaded.values() )
-        {
-            Stack<String> beenthere = new Stack<String>();
-            super.loadDepsFirst( schema, beenthere, notLoaded, schema, registries );
         }
     }
 
@@ -293,16 +248,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "comparator LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                LdapComparator<?> comparator = 
-                    factory.getLdapComparator( entry.getEntry(), registries, schema.getSchemaName() );
-                comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
 
-                if ( schema.isEnabled() && comparator.isEnabled() )
-                {
-                    comparator.applyRegistries( registries );
-                }
-
-                registries.register( comparator );
+                registerComparator( registries, entry, schema );
             }
         }
     }
@@ -331,15 +278,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "syntaxChecker LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                SyntaxChecker syntaxChecker = 
-                    factory.getSyntaxChecker( entry.getEntry(), registries, schema.getSchemaName() );
-
-                if ( schema.isEnabled() && syntaxChecker.isEnabled() )
-                {
-                    syntaxChecker.applyRegistries( registries );
-                }
-
-                registries.register( syntaxChecker );
+                
+                registerSyntaxChecker( registries, entry, schema );
             }
         }
     }
@@ -368,15 +308,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "normalizer LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                Normalizer normalizer =
-                    factory.getNormalizer( entry.getEntry(), registries, schema.getSchemaName() );
-
-                if ( schema.isEnabled() && normalizer.isEnabled() )
-                {
-                    normalizer.applyRegistries( registries );
-                }
-
-                registries.register( normalizer );
+                
+                registerNormalizer( registries, entry, schema );
             }
         }
     }
@@ -405,15 +338,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "matchingRules LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                MatchingRule matchingRule = factory.getMatchingRule( 
-                    entry.getEntry(), registries, schema.getSchemaName() );
 
-                if ( matchingRule.isEnabled() )
-                {
-                    matchingRule.applyRegistries( registries );
-                }
-                
-                registries.register( matchingRule );
+                registerMatchingRule( registries, entry, schema );
             }
         }
     }
@@ -442,15 +368,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "syntax LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                LdapSyntax syntax = factory.getSyntax( 
-                    entry.getEntry(), registries, schema.getSchemaName() );
-
-                if ( syntax.isEnabled() )
-                {
-                    syntax.applyRegistries( registries );
-                }
-
-                registries.register( syntax );
+                
+                registerSyntax( registries, entry, schema );
             }
         }
     }
@@ -569,15 +488,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         	}
         }
         
-        AttributeType attributeType = factory.getAttributeType( entry.getEntry(), registries, schema.getSchemaName() );
+        AttributeType attributeType = registerAttributeType( registries, entry, schema );
         
-        if ( attributeType.isEnabled() )
-        {
-            attributeType.applyRegistries( registries );
-        }
-        
-        registries.register( attributeType );
-
         // after registering AT check if any deferred entries depend on it
         if ( attributeType.getNames() != null )
         {
@@ -631,16 +543,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "matchingRuleUse LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                MatchingRuleUse matchingRuleUse = null;
-            
-                // TODO add factory method to generate the matchingRuleUse
-                if ( true )
-                {
-                    throw new NotImplementedException( "Need to implement factory " +
-                    		"method for creating a matchingRuleUse" );
-                }
-                
-                registries.register( matchingRuleUse );
+
+                registerMatchingRuleUse( registries, entry, schema );
             }
         }
     }
@@ -668,16 +572,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "nameForm LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                NameForm nameForm = null;
 
-                // TODO add factory method to generate the nameForm
-                if ( true )
-                {
-                    throw new NotImplementedException( "Need to implement factory " +
-                            "method for creating a nameForm" );
-                }
-                
-                registries.register( nameForm );
+                registerNameForm( registries, entry, schema );
             }
         }
     }
@@ -706,16 +602,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "ditContentRule LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                DITContentRule ditContentRule = null;
                 
-                // TODO add factory method to generate the ditContentRule
-                if ( true )
-                {
-                    throw new NotImplementedException( "Need to implement factory " +
-                            "method for creating a ditContentRule" );
-                }
-                
-                registries.register( ditContentRule );
+                registerDitContentRule( registries, entry, schema );
             }
         }
     }
@@ -745,16 +633,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
             
                 LdifEntry entry = reader.next();
-                DITStructureRule ditStructureRule = null;
-            
-                // TODO add factory method to generate the ditContentRule
-                if ( true )
-                {
-                    throw new NotImplementedException( "Need to implement factory " +
-                            "method for creating a ditStructureRule" );
-                }
                 
-                registries.register( ditStructureRule );
+                registerDitStructureRule( registries, entry, schema );
             }
         }
     }
@@ -873,14 +753,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         	}
         }
         
-        ObjectClass objectClass = factory.getObjectClass( entry.getEntry(), registries, schema.getSchemaName() );
-
-        if ( objectClass.isEnabled() )
-        {
-            objectClass.applyRegistries( registries );
-        }
-
-        registries.register( objectClass );
+        ObjectClass objectClass = registerObjectClass( registries, entry, schema );
 
         // after registering AT check if any deferred entries depend on it
         if ( objectClass.getNames() != null )
