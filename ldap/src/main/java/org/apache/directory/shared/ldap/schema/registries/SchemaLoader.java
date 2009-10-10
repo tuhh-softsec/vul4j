@@ -36,7 +36,8 @@ public interface SchemaLoader
      * 
      * @param listener the listener to notify (only one is enough for us)
      */
-    public void setListener( SchemaLoaderListener listener );
+    void setListener( SchemaLoaderListener listener );
+    
     
     /**
      * Gets a schema object based on it's name.
@@ -46,6 +47,7 @@ public interface SchemaLoader
      * @throws Exception if any problems while trying to find the associated Schema
      */
     Schema getSchema( String schemaName ) throws Exception;
+    
     
     /**
      * Loads a collection of schemas.  A best effort should be made to load the dependended 
@@ -57,6 +59,7 @@ public interface SchemaLoader
      */
     void loadWithDependencies( Collection<Schema> schemas, Registries registries ) throws Exception;
     
+    
     /**
      * Loads a single schema at least and possibly it's dependencies.  
      * 
@@ -66,6 +69,7 @@ public interface SchemaLoader
      */
     void loadWithDependencies( Schema schema, Registries registries ) throws Exception;
     
+    
     /**
      * Loads all available enabled schemas.
      *
@@ -73,6 +77,7 @@ public interface SchemaLoader
      * @throws Exception if there are any failures
      */
     void loadAllEnabled( Registries registries ) throws Exception;
+    
     
     /**
      * Loads a single schema.  Do not try to resolve dependencies while implementing this method.
