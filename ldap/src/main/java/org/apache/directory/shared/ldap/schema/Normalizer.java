@@ -83,9 +83,8 @@ public abstract class Normalizer extends LoadableSchemaObject
      *
      * @param registries The Registries
      */
-    public void applyRegistries( Registries registries )
+    public void applyRegistries( Registries registries ) throws NamingException
     {
         // Do nothing. The extended class will store the Registries if needed
     }
-    
 }
