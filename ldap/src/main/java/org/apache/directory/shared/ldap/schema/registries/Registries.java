@@ -30,6 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
@@ -59,6 +61,12 @@ public class Registries implements SchemaLoaderListener
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( Registries.class );
 
+    /** A flag indicating if this Registries is relaxed or not */
+    private boolean isRelaxed;
+    
+    /** A flag indicating if this Registries should accept only enabled elements */
+    private boolean acceptDisabled;
+    
     /**
      * A String name to Schema object map for those schemas loaded into this
      * registry.
@@ -139,6 +147,12 @@ public class Registries implements SchemaLoaderListener
         schemaObjectsBySchemaName = new ConcurrentHashMap<String, Set<SchemaWrapper>>();
         usedBy = new ConcurrentHashMap<SchemaWrapper, Set<SchemaWrapper>>();
         using = new ConcurrentHashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        
+        // Default to not permissive
+        isRelaxed = false;
+        
+        // Default to not allow disabled element
+        acceptDisabled = false;
     }
 
     
@@ -390,6 +404,18 @@ public class Registries implements SchemaLoaderListener
      * Attempts to resolve the dependent schema objects of all entities that
      * refer to other objects within the registries.  Null references will be
      * handed appropriately.
+     * The order in which the SchemaObjects must be :
+     * <li/>1) Normalizers, Comparators and SyntaxCheckers (as they depend on nothing)
+     * <li/>2) Syntaxes (depend on SyntaxCheckers)
+     * <li/>3) MatchingRules (depend on Syntaxes, Normalizers and Comparators
+     * <li/>4) AttributeTypes (depend on MatchingRules, Syntaxes and AttributeTypes : in this case, we first handle the superior)
+     * <li/>5) ObjectClasses (depend on AttributeTypes and ObjectClasses)
+     * <br/><br/>
+     * Later, when we will support them :
+     * <li/>6) MatchingRuleUses (depend on matchingRules and AttributeTypes)
+     * <li/>7) DitContentRules (depend on ObjectClasses and AttributeTypes)
+     * <li/>8) NameForms (depends on ObjectClasses and AttributeTypes)
+     * <li/>9) DitStructureRules (depends onNameForms and DitStructureRules)      * 
      *
      * @return a list of exceptions encountered while resolving entities
      */
@@ -397,30 +423,56 @@ public class Registries implements SchemaLoaderListener
     {
         ArrayList<Throwable> errors = new ArrayList<Throwable>();
 
+        // Step 1 :
+        // We start with Normalizers, Comparators and SyntaxCheckers
+        // as they depend on nothing
+        // Check the Normalizers
+        for ( Normalizer normalizer : normalizerRegistry )
+        {
+            resolve( normalizer, errors );
+        }
+
+        // Check the Comparators
+        for ( LdapComparator<?> comparator : comparatorRegistry )
+        {
+            resolve( comparator, errors );
+        }
+        
+        // Check the SyntaxCheckers
+        for ( SyntaxChecker syntaxChecker : syntaxCheckerRegistry )
+        {
+            resolve( syntaxChecker, errors );
+        }
+
+        // Step 2 :
+        // Check the LdapSyntaxes
+        for ( LdapSyntax ldapSyntax : ldapSyntaxRegistry )
+        {
+            resolve( ldapSyntax, errors );
+        }
+        
+        // Step 3 :
+        // Check the matchingRules
+        for ( MatchingRule matchingRule : matchingRuleRegistry )
+        {
+            resolve( matchingRule, errors );
+        }
+        
+        // Step 4 :
+        // Check the AttributeTypes
+        for ( AttributeType attributeType : attributeTypeRegistry )
+        {
+            resolve( attributeType, errors );
+        }
+        
+        //  Step 5 :
         // Check the ObjectClasses
         for ( ObjectClass objectClass : objectClassRegistry )
         {
             resolve( objectClass, errors );
         }
 
-        // Check the AttributeTypes
-        for ( AttributeType attributeType : attributeTypeRegistry )
-        {
-            resolve( attributeType, errors );
-        }
-
-        // Check the MatchingRules
-        for ( MatchingRule matchingRule : matchingRuleRegistry )
-        {
-            resolve( matchingRule, errors );
-        }
-
-        // Check the LdapSyntax
-        for ( LdapSyntax ldapSyntax : ldapSyntaxRegistry )
-        {
-            resolve( ldapSyntax, errors );
-        }
-
+        // Step 6-9 aren't yet defined
         return errors;
     }
 
@@ -430,75 +482,228 @@ public class Registries implements SchemaLoaderListener
      *
      * @param syntax the LdapSyntax to resolve the SyntaxChecker of
      * @param errors the list of errors to add exceptions to
-     * @return true if it succeeds, false otherwise
      */
-    private boolean resolve( LdapSyntax syntax, List<Throwable> errors )
+    private void resolve( LdapSyntax syntax, List<Throwable> errors )
     {
-        if ( syntax == null )
-        {
-            return true;
-        }
-
+        // A LdapSyntax must point to a valid SyntaxChecker
+        // or to the OctetString SyntaxChecker
         try
         {
-            syntax.getSyntaxChecker();
-            return true;
+            syntax.applyRegistries( this );
         }
-        catch ( Exception e )
+        catch ( NamingException e )
         {
             errors.add( e );
-            return false;
         }
     }
 
 
     /**
-     * Check if the Comparator and the syntax are existing for a matchingRule
+     * Attempts to resolve the Normalizer
+     *
+     * @param normalizer the Normalizer
+     * @param errors the list of errors to add exceptions to
      */
-    private boolean resolve( MatchingRule mr, List<Throwable> errors )
+    private void resolve( Normalizer normalizer, List<Throwable> errors )
     {
-        boolean isSuccess = true;
-
-        if ( mr == null )
-        {
-            return true;
-        }
-
+        // This is currently doing nothing.
         try
         {
-            if ( mr.getLdapComparator() == null )
-            {
-                String schema = matchingRuleRegistry.getSchemaName( mr.getOid() );
-                errors.add( new NullPointerException( "matchingRule " + mr.getName() + " in schema " + schema
-                    + " with OID " + mr.getOid() + " has a null comparator" ) );
-                isSuccess = false;
-            }
+            normalizer.applyRegistries( this );
         }
-        catch ( Exception e )
+        catch ( NamingException e )
         {
             errors.add( e );
-            isSuccess = false;
         }
+    }
 
+
+    /**
+     * Attempts to resolve the LdapComparator
+     *
+     * @param comparator the LdapComparator
+     * @param errors the list of errors to add exceptions to
+     */
+    private void resolve( LdapComparator<?> comparator, List<Throwable> errors )
+    {
+        // This is currently doing nothing.
         try
         {
-            isSuccess &= resolve( mr.getSyntax(), errors );
-
-            if ( mr.getSyntax() == null )
-            {
-                String schema = matchingRuleRegistry.getSchemaName( mr.getOid() );
-                errors.add( new NullPointerException( "matchingRule " + mr.getName() + " in schema " + schema
-                    + " with OID " + mr.getOid() + " has a null Syntax" ) );
-                isSuccess = false;
-            }
+            comparator.applyRegistries( this );
         }
-        catch ( Exception e )
+        catch ( NamingException e )
         {
             errors.add( e );
-            isSuccess = false;
         }
+    }
 
-        return isSuccess;
+
+    /**
+     * Attempts to resolve the SyntaxChecker
+     *
+     * @param normalizer the SyntaxChecker
+     * @param errors the list of errors to add exceptions to
+     */
+    private void resolve( SyntaxChecker syntaxChecker, List<Throwable> errors )
+    {
+        // This is currently doing nothing.
+        try
+        {
+            syntaxChecker.applyRegistries( this );
+        }
+        catch ( NamingException e )
+        {
+            errors.add( e );
+        }
+    }
+
+
+    /**
+     * Check if the Comparator, Normalizer and the syntax are 
+     * existing for a matchingRule
+     */
+    private void resolve( MatchingRule matchingRule, List<Throwable> errors )
+    {
+        // A Matching rule must point to a valid Syntax
+        try
+        {
+            matchingRule.applyRegistries( this );
+        }
+        catch ( NamingException e )
+        {
+            errors.add( e );
+        }
+    }
+
+    
+    /**
+     * Check AttributeType referential integrity
+     */
+    private void resolveRecursive( AttributeType attributeType, Set<String> processed, List<Throwable> errors )
+    {
+        // Process the Superior, if any
+        String superiorOid = attributeType.getSuperiorOid();
+        AttributeType superior = null;
+        
+        if ( superiorOid != null )
+        {
+            // Check if the Superior is present in the registries
+            try
+            {
+                superior = attributeTypeRegistry.lookup( superiorOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This AT's superior has not been loaded into the Registries.
+                if ( !processed.contains( superiorOid ) )
+                {
+                    errors.add( ne );
+                }
+            }
+            
+            // We now have to process the superior, if it hasn"'t been 
+            // processed yet.
+            if ( ( superior != null ) && !processed.contains( superiorOid ) )
+            {
+                resolveRecursive( superior, processed, errors );
+            }
+        }
+        
+        // Process the Syntax. If it's null, the attributeType must have 
+        // a Superior.
+        String syntaxOid = attributeType.getSyntaxOid();
+        
+        if ( syntaxOid != null )
+        {
+            // Check if the Syntax is present in the registries
+            try
+            {
+                ldapSyntaxRegistry.lookup( syntaxOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This AT's syntax has not been loaded into the Registries.
+                errors.add( ne );
+            }
+        }
+        else
+        {
+            // No Syntax : get it from the AttributeType's superior
+            if ( superior == null )
+            {
+                // This is an error. if the AT does not have a Syntax,
+                // then it must have a superior, which syntax is get from.
+                Throwable error = new LdapSchemaViolationException( 
+                    "The AttributeType " + attributeType.getOid() + " does not have a superior" +
+                    " nor a Syntax. This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                errors.add( error );
+            }
+        }
+        
+        // Process the EQUALITY MatchingRule. It may be null, but if it's not
+        // it must have been processed before
+        String equalityOid = attributeType.getEqualityOid();
+        
+        if ( equalityOid != null )
+        {
+            // Check if the MatchingRule is present in the registries
+            try
+            {
+                matchingRuleRegistry.lookup( equalityOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This AT's EQUALITY matchingRule has not been loaded into the Registries.
+                errors.add( ne );
+            }
+        }
+        
+        // Process the ORDERING MatchingRule. It may be null, but if it's not
+        // it must have been processed before
+        String orderingOid = attributeType.getOrderingOid();
+        
+        if ( orderingOid != null )
+        {
+            // Check if the MatchingRule is present in the registries
+            try
+            {
+                matchingRuleRegistry.lookup( orderingOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This AT's ORDERING matchingRule has not been loaded into the Registries.
+                errors.add( ne );
+            }
+        }
+        
+        // Process the SUBSTR MatchingRule. It may be null, but if it's not
+        // it must have been processed before
+        String substringOid = attributeType.getSubstringOid();
+        
+        if ( substringOid != null )
+        {
+            // Check if the MatchingRule is present in the registries
+            try
+            {
+                matchingRuleRegistry.lookup( substringOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This AT's SUBSTR matchingRule has not been loaded into the Registries.
+                errors.add( ne );
+            }
+        }
+        
+        // All is done for this AttributeType, let's apply the registries
+        try
+        {
+            attributeType.applyRegistries( this );
+        }
+        catch ( NamingException ne )
+        {
+            // Do nothing. We may have a broken AT, 
+            // but at this point, it doesn't matter.
+        }
     }
 
 
@@ -506,130 +711,101 @@ public class Registries implements SchemaLoaderListener
      * Check the inheritance, and the existence of MatchingRules and LdapSyntax
      * for an attribute 
      */
-    private boolean resolve( AttributeType at, List<Throwable> errors )
+    private void resolve( AttributeType attributeType, List<Throwable> errors )
     {
-        boolean isSuccess = true;
-
-        boolean hasMatchingRule = false;
-
-        if ( at == null )
-        {
-            return true;
-        }
-
-        try
-        {
-            isSuccess &= resolve( at.getSuperior(), errors );
-        }
-        catch ( Exception e )
-        {
-            errors.add( e );
-            isSuccess = false;
-        }
-
-        try
-        {
-            isSuccess &= resolve( at.getEquality(), errors );
-
-            if ( at.getEquality() != null )
-            {
-                hasMatchingRule |= true;
-            }
-        }
-        catch ( Exception e )
-        {
-            errors.add( e );
-            isSuccess = false;
-        }
-
-        try
-        {
-            isSuccess &= resolve( at.getOrdering(), errors );
-
-            if ( at.getOrdering() != null )
-            {
-                hasMatchingRule |= true;
-            }
-        }
-        catch ( Exception e )
-        {
-            errors.add( e );
-            isSuccess = false;
-        }
-
-        try
-        {
-            isSuccess &= resolve( at.getSubstring(), errors );
-
-            if ( at.getSubstring() != null )
-            {
-                hasMatchingRule |= true;
-            }
-        }
-        catch ( Exception e )
-        {
-            errors.add( e );
-            isSuccess = false;
-        }
-
-        try
-        {
-            isSuccess &= resolve( at.getSyntax(), errors );
-
-            if ( at.getSyntax() == null )
-            {
-                String schema = attributeTypeRegistry.getSchemaName( at.getOid() );
-
-                errors.add( new NullPointerException( "attributeType " + at.getName() + " in schema " + schema
-                    + " with OID " + at.getOid() + " has a null Syntax" ) );
-
-                isSuccess = false;
-            }
-        }
-        catch ( Exception e )
-        {
-            errors.add( e );
-            isSuccess = false;
-        }
-
-        return isSuccess;
+        // This set is used to avoid having more than one error
+        // for an AttributeType. It's mandatory when processing
+        // a Superior, as it may be broken and referenced more than once. 
+        Set<String> processed = new HashSet<String>();
+        
+        // Call the recursive method, as we may have superiors to deal with
+        resolveRecursive( attributeType, processed, errors );
     }
 
 
-    private boolean resolve( ObjectClass oc, List<Throwable> errors )
+    private void resolve( ObjectClass objectClass, List<Throwable> errors )
     {
-        boolean isSuccess = true;
+        // This set is used to avoid having more than one error
+        // for an ObjectClass. It's mandatory when processing
+        // the Superiors, as they may be broken and referenced more than once. 
+        Set<String> processed = new HashSet<String>();
 
-        if ( oc == null )
+        
+        // Call the recursive method, as we may have superiors to deal with
+        resolveRecursive( objectClass, processed, errors );
+    }
+    
+    private void resolveRecursive( ObjectClass objectClass, Set<String> processed, List<Throwable> errors )
+    {
+        // Process the Superiors, if any
+        
+        List<String> superiorOids = objectClass.getSuperiorOids();
+        ObjectClass superior = null;
+        
+        for ( String superiorOid : superiorOids )
         {
-            return true;
-        }
-
-        List<ObjectClass> superiors = oc.getSuperiors();
-
-        if ( ( superiors == null ) || ( superiors.size() == 0 ) )
-        {
-            isSuccess = false;
-        }
-        else
-        {
-            for ( ObjectClass superior : superiors )
+            // Check if the Superior is present in the registries
+            try
             {
-                isSuccess &= resolve( superior, errors );
+                superior = objectClassRegistry.lookup( superiorOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This OC's superior has not been loaded into the Registries.
+                if ( !processed.contains( superiorOid ) )
+                {
+                    errors.add( ne );
+                }
+            }
+            
+            // We now have to process the superior, if it hasn't been 
+            // processed yet.
+            if ( ( superior != null ) && !processed.contains( superiorOid ) )
+            {
+                resolveRecursive( superior, processed, errors );
             }
         }
-
-        for ( AttributeType attributeType : oc.getMayAttributeTypes() )
+        
+        // Process the MAY attributeTypes.  
+        for ( String mayOid : objectClass.getMayAttributeTypeOids() )
         {
-            isSuccess &= resolve( attributeType, errors );
+            // Check if the MAY AttributeType is present in the registries
+            try
+            {
+                attributeTypeRegistry.lookup( mayOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This AT has not been loaded into the Registries.
+                errors.add( ne );
+            }
         }
-
-        for ( AttributeType attributeType : oc.getMustAttributeTypes() )
+        
+        // Process the MUST attributeTypes.  
+        for ( String mustOid : objectClass.getMustAttributeTypeOids() )
         {
-            isSuccess &= resolve( attributeType, errors );
+            // Check if the MUST AttributeType is present in the registries
+            try
+            {
+                attributeTypeRegistry.lookup( mustOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This AT has not been loaded into the Registries.
+                errors.add( ne );
+            }
         }
-
-        return isSuccess;
+        
+        // All is done for this ObjectClass, let's apply the registries
+        try
+        {
+            objectClass.applyRegistries( this );
+        }
+        catch ( NamingException ne )
+        {
+            // Do nothing. We may have a broken OC, 
+            // but at this point, it doesn't matter.
+        }
     }
 
 
@@ -901,7 +1077,7 @@ public class Registries implements SchemaLoaderListener
     /**
      * Dump the UsedBy data structure as a String
      */
-    private String dumpUsedBy()
+    public String dumpUsedBy()
     {
         StringBuilder sb = new StringBuilder();
         
@@ -937,7 +1113,7 @@ public class Registries implements SchemaLoaderListener
     /**
      * Dump the Using data structure as a String
      */
-    private String dumpUsing()
+    public String dumpUsing()
     {
         StringBuilder sb = new StringBuilder();
         
@@ -1200,17 +1376,17 @@ public class Registries implements SchemaLoaderListener
         if ( !usedBy.containsKey( refereeWrapper ) )
         {
             LOG.debug( "The {}:{} is not referenced by any " + message, 
-                reference.getObjectType(), reference.getOid() );
+                referee.getObjectType(), referee.getOid() );
             
             return false;
         }
         
-        Set<SchemaWrapper> used = usedBy.get( referenceWrapper );
+        Set<SchemaWrapper> used = usedBy.get( refereeWrapper );
 
-        if ( !used.contains( refereeWrapper ) )
+        if ( !used.contains( referenceWrapper ) )
         {
             LOG.debug( "The {}:{} is not referenced by any " + message, 
-                reference.getObjectType(), reference.getOid() );
+                referee.getObjectType(), referee.getOid() );
             
             return false;
         }
@@ -1248,7 +1424,7 @@ public class Registries implements SchemaLoaderListener
             }
             
             // Check the references : Syntax -> SyntaxChecker and SyntaxChecker -> Syntax 
-            if ( checkReferences( syntax, syntax.getSyntaxChecker(), "SyntaxChecker" ) )
+            if ( !checkReferences( syntax, syntax.getSyntaxChecker(), "SyntaxChecker" ) )
             {
                 return false;
             }
@@ -1309,19 +1485,19 @@ public class Registries implements SchemaLoaderListener
             }
 
             // Check the references : MR -> S and S -> MR 
-            if ( checkReferences( matchingRule, matchingRule.getSyntax(), "Syntax" ) )
+            if ( !checkReferences( matchingRule, matchingRule.getSyntax(), "Syntax" ) )
             {
                 return false;
             }
 
             // Check the references : MR -> N 
-            if ( checkReferences( matchingRule, matchingRule.getNormalizer(), "Normalizer" ) )
+            if ( !checkReferences( matchingRule, matchingRule.getNormalizer(), "Normalizer" ) )
             {
                 return false;
             }
 
             // Check the references : MR -> C and C -> MR 
-            if ( checkReferences( matchingRule, matchingRule.getLdapComparator(), "Comparator" ) )
+            if ( !checkReferences( matchingRule, matchingRule.getLdapComparator(), "Comparator" ) )
             {
                 return false;
             }
@@ -1346,7 +1522,7 @@ public class Registries implements SchemaLoaderListener
                     }
 
                     // Check the references : OC -> AT  and AT -> OC (MAY) 
-                    if ( checkReferences( objectClass, may, "AttributeType" ) )
+                    if ( !checkReferences( objectClass, may, "AttributeType" ) )
                     {
                         return false;
                     }
@@ -1367,7 +1543,7 @@ public class Registries implements SchemaLoaderListener
                     }
 
                     // Check the references : OC -> AT  and AT -> OC (MUST) 
-                    if ( checkReferences( objectClass, must, "AttributeType" ) )
+                    if ( !checkReferences( objectClass, must, "AttributeType" ) )
                     {
                         return false;
                     }
@@ -1388,7 +1564,7 @@ public class Registries implements SchemaLoaderListener
                     }
 
                     // Check the references : OC -> OC  and OC -> OC (SUPERIORS) 
-                    if ( checkReferences( objectClass, superior, "ObjectClass" ) )
+                    if ( !checkReferences( objectClass, superior, "ObjectClass" ) )
                     {
                         return false;
                     }
@@ -1418,7 +1594,7 @@ public class Registries implements SchemaLoaderListener
             }
             
             // Check the references for AT -> S and S -> AT
-            if ( checkReferences( attributeType, attributeType.getSyntax(), "AttributeType" ) )
+            if ( !checkReferences( attributeType, attributeType.getSyntax(), "AttributeType" ) )
             {
                 return false;
             }
@@ -1435,7 +1611,7 @@ public class Registries implements SchemaLoaderListener
                 }
 
                 // Check the references for AT -> MR and MR -> AT
-                if ( checkReferences( attributeType, attributeType.getEquality(), "AttributeType" ) )
+                if ( !checkReferences( attributeType, attributeType.getEquality(), "AttributeType" ) )
                 {
                     return false;
                 }
@@ -1453,7 +1629,7 @@ public class Registries implements SchemaLoaderListener
                 }
 
                 // Check the references for AT -> MR and MR -> AT
-                if ( checkReferences( attributeType, attributeType.getOrdering(), "AttributeType" ) )
+                if ( !checkReferences( attributeType, attributeType.getOrdering(), "AttributeType" ) )
                 {
                     return false;
                 }
@@ -1471,7 +1647,7 @@ public class Registries implements SchemaLoaderListener
                 }
 
                 // Check the references for AT -> MR and MR -> AT
-                if ( checkReferences( attributeType, attributeType.getSubstring(), "AttributeType" ) )
+                if ( !checkReferences( attributeType, attributeType.getSubstring(), "AttributeType" ) )
                 {
                     return false;
                 }
@@ -1491,7 +1667,7 @@ public class Registries implements SchemaLoaderListener
                 }
 
                 // Check the references : AT -> AT  and AT -> AT (SUPERIOR) 
-                if ( checkReferences( attributeType, superior, "AttributeType" ) )
+                if ( !checkReferences( attributeType, superior, "AttributeType" ) )
                 {
                     return false;
                 }
@@ -1499,5 +1675,52 @@ public class Registries implements SchemaLoaderListener
         }
 
         return true;
+    }
+    
+    
+    /**
+     * Tells if the Registries is permissive or if it must be checked 
+     * against inconsistencies.
+     *
+     * @return True if SchemaObjects can be added even if they break the consistency 
+     */
+    public boolean isRelaxed()
+    {
+        return isRelaxed;
+    }
+    
+    
+    /**
+     * Change the Registries behavior regarding consistency.
+     *
+     * @param isRelaxed If <code>false</code>, then the Registries won't allow modifications that 
+     * leave the Registries to be inconsistent
+     */
+    public void setRelaxed( boolean isRelaxed )
+    {
+        this.isRelaxed = isRelaxed;
+    }
+    
+    
+    /**
+     * Tells if the Registries accept disabled elements.
+     *
+     * @return True if disbaled SchemaObjects can be added 
+     */
+    public boolean acceptDisabled()
+    {
+        return acceptDisabled;
+    }
+    
+    
+    /**
+     * Change the Registries behavior regarding disabled SchemaObject element.
+     *
+     * @param acceptDisabled If <code>false</code>, then the Registries won't accept
+     * disabled SchemaObject or enabled SchemaObject from disabled schema 
+     */
+    public void setAcceptDisabled( boolean acceptDisabled )
+    {
+        this.acceptDisabled = acceptDisabled;
     }
 }

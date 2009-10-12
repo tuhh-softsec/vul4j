@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.normalizers;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -46,7 +48,7 @@ public class CachingDnNormalizer extends CachingNormalizer
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( Registries registries )
+    public void applyRegistries( Registries registries ) throws NamingException
     {
         super.applyRegistries( registries );
     }

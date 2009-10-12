@@ -356,9 +356,8 @@ public class ObjectClass extends SchemaObject
      * Gets the superclasses OIDsof this ObjectClass.
      * 
      * @return the superclasses OIDs
-     * @throws NamingException if there is a failure resolving the object
      */
-    public List<String> getSuperiorOids() throws NamingException
+    public List<String> getSuperiorOids()
     {
         return superiorOids;
     }

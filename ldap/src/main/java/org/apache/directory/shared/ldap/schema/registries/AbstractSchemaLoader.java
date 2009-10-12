@@ -20,8 +20,10 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -29,6 +31,7 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.DITContentRule;
@@ -104,8 +107,13 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     /**
      * {@inheritDoc}
      */
-    public final void loadAllEnabled( Registries registries ) throws Exception
+    public final List<Throwable> loadAllEnabled( Registries registries, boolean check ) throws Exception
     {
+        // Relax the controls at first
+        List<Throwable> errors = new ArrayList<Throwable>();
+        boolean wasRelaxed = registries.isRelaxed();
+        registries.setRelaxed( true );
+
         Map<String,Schema> notloaded = new HashMap<String,Schema>( schemaMap );
         
         for ( String schemaName : schemaMap.keySet() )
@@ -121,6 +129,17 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             loadDepsFirst( schema, new Stack<String>(), 
                 notloaded, schema, registries );
         }
+
+        // At the end, check the registries if required
+        if ( check )
+        {
+            errors = registries.checkRefInteg();
+        }
+        
+        // Restore the Registries isRelaxed flag
+        registries.setRelaxed( wasRelaxed );
+        
+        return errors;
     }
     
     
@@ -232,8 +251,13 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     /**
      * {@inheritDoc}
      */
-    public void loadWithDependencies( Collection<Schema> schemas, Registries registries ) throws Exception
+    public List<Throwable> loadWithDependencies( Collection<Schema> schemas, Registries registries, boolean check ) throws Exception
     {
+        // Relax the controls at first
+        List<Throwable> errors = new ArrayList<Throwable>();
+        boolean wasRelaxed = registries.isRelaxed();
+        registries.setRelaxed( true );
+
         Map<String,Schema> notLoaded = new HashMap<String,Schema>();
         
         for ( Schema schema : schemas )
@@ -249,6 +273,17 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             Stack<String> beenthere = new Stack<String>();
             loadDepsFirst( schema, beenthere, notLoaded, schema, registries );
         }
+        
+        // At the end, check the registries if required
+        if ( check )
+        {
+            errors = registries.checkRefInteg();
+        }
+        
+        // Restore the Registries isRelaxed flag
+        registries.setRelaxed( wasRelaxed );
+        
+        return errors;
     }
     
     
@@ -260,18 +295,48 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @throws Exception If the registering failed
      */
-    protected void registerComparator( Registries registries, LdifEntry entry, Schema schema) 
+    protected LdapComparator<?> registerComparator( Registries registries, LdifEntry entry, Schema schema ) 
+        throws Exception
+    {
+        return registerComparator( registries, entry.getEntry(), schema );
+    }
+    
+    
+    /**
+     * Register the comparator contained in the given Entry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The Entry containing the comparator description
+     * @param schema The associated schema
+     * @throws Exception If the registering failed
+     */
+    protected LdapComparator<?> registerComparator( Registries registries, Entry entry, Schema schema ) 
         throws Exception
     {
         LdapComparator<?> comparator = 
-            factory.getLdapComparator( entry.getEntry(), registries, schema.getSchemaName() );
+            factory.getLdapComparator( entry, registries, schema.getSchemaName() );
         comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
 
-        if ( schema.isEnabled() && comparator.isEnabled() )
+        if ( registries.isRelaxed() )
         {
-            comparator.applyRegistries( registries );
-            registries.register( comparator );
+            if ( registries.acceptDisabled() )
+            {
+                registries.register( comparator );
+            }
+            else if ( schema.isEnabled() && comparator.isEnabled() )
+            {
+                registries.register( comparator );
+            }
         }
+        else
+        {
+            if ( schema.isEnabled() && comparator.isEnabled() )
+            {
+                registries.register( comparator );
+            }
+        }
+        
+        return comparator;
     }
     
     
@@ -291,10 +356,23 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             factory.getSyntaxChecker( entry.getEntry(), registries, schema.getSchemaName() );
         syntaxChecker.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
 
-        if ( schema.isEnabled() && syntaxChecker.isEnabled() )
+        if ( registries.isRelaxed() )
         {
-            syntaxChecker.applyRegistries( registries );
-            registries.register( syntaxChecker );
+            if ( registries.acceptDisabled() )
+            {
+                registries.register( syntaxChecker );
+            }
+            else if ( schema.isEnabled() && syntaxChecker.isEnabled() )
+            {
+                registries.register( syntaxChecker );
+            }
+        }
+        else
+        {
+            if ( schema.isEnabled() && syntaxChecker.isEnabled() )
+            {
+                registries.register( syntaxChecker );
+            }
         }
         
         return syntaxChecker;
@@ -316,10 +394,23 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         Normalizer normalizer =
             factory.getNormalizer( entry.getEntry(), registries, schema.getSchemaName() );
         
-        if ( schema.isEnabled() && normalizer.isEnabled() )
+        if ( registries.isRelaxed() )
         {
-            normalizer.applyRegistries( registries );
-            registries.register( normalizer );
+            if ( registries.acceptDisabled() )
+            {
+                registries.register( normalizer );
+            }
+            else if ( schema.isEnabled() && normalizer.isEnabled() )
+            {
+                registries.register( normalizer );
+            }
+        }
+        else
+        {
+            if ( schema.isEnabled() && normalizer.isEnabled() )
+            {
+                registries.register( normalizer );
+            }
         }
         
         return normalizer;
@@ -341,10 +432,23 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         MatchingRule matchingRule = factory.getMatchingRule( 
             entry.getEntry(), registries, schema.getSchemaName() );
 
-        if ( schema.isEnabled() && matchingRule.isEnabled() )
+        if ( registries.isRelaxed() )
         {
-            matchingRule.applyRegistries( registries );
-            registries.register( matchingRule );
+            if ( registries.acceptDisabled() )
+            {
+                registries.register( matchingRule );
+            }
+            else if ( schema.isEnabled() && matchingRule.isEnabled() )
+            {
+                registries.register( matchingRule );
+            }
+        }
+        else
+        {
+            if ( schema.isEnabled() && matchingRule.isEnabled() )
+            {
+                registries.register( matchingRule );
+            }
         }
         
         return matchingRule;
@@ -366,10 +470,23 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         LdapSyntax syntax = factory.getSyntax( 
             entry.getEntry(), registries, schema.getSchemaName() );
 
-        if ( schema.isEnabled() && syntax.isEnabled() )
+        if ( registries.isRelaxed() )
         {
-            syntax.applyRegistries( registries );
-            registries.register( syntax );
+            if ( registries.acceptDisabled() )
+            {
+                registries.register( syntax );
+            }
+            else if ( schema.isEnabled() && syntax.isEnabled() )
+            {
+                registries.register( syntax );
+            }
+        }
+        else
+        {
+            if ( schema.isEnabled() && syntax.isEnabled() )
+            {
+                registries.register( syntax );
+            }
         }
         
         return syntax;
@@ -385,15 +502,28 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @return the created AttributeType instance
      * @throws Exception If the registering failed
      */
-    protected AttributeType registerAttributeType( Registries registries, LdifEntry entry, Schema schema) 
+    protected AttributeType registerAttributeType( Registries registries, LdifEntry entry, Schema schema ) 
         throws Exception
     {
         AttributeType attributeType = factory.getAttributeType( entry.getEntry(), registries, schema.getSchemaName() );
         
-        if ( schema.isEnabled() && attributeType.isEnabled() )
+        if ( registries.isRelaxed() )
         {
-            attributeType.applyRegistries( registries );
-            registries.register( attributeType );
+            if ( registries.acceptDisabled() )
+            {
+                registries.register( attributeType );
+            }
+            else if ( schema.isEnabled() && attributeType.isEnabled() )
+            {
+                registries.register( attributeType );
+            }
+        }
+        else
+        {
+            if ( schema.isEnabled() && attributeType.isEnabled() )
+            {
+                registries.register( attributeType );
+            }
         }
         
         return attributeType;
@@ -480,12 +610,41 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     protected ObjectClass registerObjectClass( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
-        ObjectClass objectClass = factory.getObjectClass( entry.getEntry(), registries, schema.getSchemaName() );
+        return registerObjectClass( registries, entry.getEntry(), schema );
+    }
 
-        if ( schema.isEnabled() && objectClass.isEnabled() )
+
+    /**
+     * Register the ObjectClass contained in the given LdifEntry into the registries. 
+     *
+     * @param registries The Registries
+     * @param entry The Entry containing the ObjectClass description
+     * @param schema The associated schema
+     * @return the created ObjectClass instance
+     * @throws Exception If the registering failed
+     */
+    protected ObjectClass registerObjectClass( Registries registries, Entry entry, Schema schema) 
+        throws Exception
+    {
+        ObjectClass objectClass = factory.getObjectClass( entry, registries, schema.getSchemaName() );
+
+        if ( registries.isRelaxed() )
         {
-            objectClass.applyRegistries( registries );
-            registries.register( objectClass );
+            if ( registries.acceptDisabled() )
+            {
+                registries.register( objectClass );
+            }
+            else if ( schema.isEnabled() && objectClass.isEnabled() )
+            {
+                registries.register( objectClass );
+            }
+        }
+        else
+        {
+            if ( schema.isEnabled() && objectClass.isEnabled() )
+            {
+                registries.register( objectClass );
+            }
         }
         
         return objectClass;

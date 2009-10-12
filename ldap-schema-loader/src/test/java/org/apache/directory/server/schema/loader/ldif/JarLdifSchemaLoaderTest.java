@@ -41,12 +41,12 @@ public class JarLdifSchemaLoaderTest
     {
         Registries registries = new Registries();
         JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
-        loader.loadWithDependencies( loader.getSchema( "system" ), registries );
+        loader.loadWithDependencies( loader.getSchema( "system" ), registries, true );
         
         assertTrue( registries.getAttributeTypeRegistry().contains( "cn" ) );
         assertFalse( registries.getAttributeTypeRegistry().contains( "m-aux" ) );
         
-        loader.loadWithDependencies( loader.getSchema( "apachemeta" ), registries );
+        loader.loadWithDependencies( loader.getSchema( "apachemeta" ), registries, true );
 
         assertTrue( registries.getAttributeTypeRegistry().contains( "m-aux" ) );
     }

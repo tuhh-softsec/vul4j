@@ -29,14 +29,9 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
-import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.ResourceMap;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
@@ -49,6 +44,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Loads schema data from LDIF files containing entries representing schema
  * objects, using the meta schema format.
+ * 
+ * This class is used only for tests.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Revision$
@@ -143,8 +140,13 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public void loadWithDependencies( Schema schema, Registries registries ) throws Exception
+    public List<Throwable> loadWithDependencies( Schema schema, Registries registries, boolean check ) throws Exception
     {
+        // Relax the controls at first
+        List<Throwable> errors = new ArrayList<Throwable>();
+        boolean wasRelaxed = registries.isRelaxed();
+        registries.setRelaxed( true );
+
         Stack<String> beenthere = new Stack<String>();
         Map<String,Schema> notLoaded = new HashMap<String,Schema>();
         
@@ -156,7 +158,18 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
             }
         }
         
-        super.loadDepsFirst( schema, beenthere, notLoaded, schema, registries );
+        loadDepsFirst( schema, beenthere, notLoaded, schema, registries );
+        
+        // At the end, check the registries if required
+        if ( check )
+        {
+            errors = registries.checkRefInteg();
+        }
+        
+        // Restore the Registries isRelaxed flag
+        registries.setRelaxed( wasRelaxed );
+        
+        return errors;
     }
 
 
@@ -190,24 +203,19 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         registries.schemaLoaded( schema );
         
-        try
-        {
-            loadComparators( schema, registries );
-            loadNormalizers( schema, registries );
-            loadSyntaxCheckers( schema, registries );
-            loadSyntaxes( schema, registries );
-            loadMatchingRules( schema, registries );
-            loadAttributeTypes( schema, registries );
-            loadObjectClasses( schema, registries );
-            loadMatchingRuleUses( schema, registries );
-            loadDitContentRules( schema, registries );
-            loadNameForms( schema, registries );
-            loadDitStructureRules( schema, registries );
-        }
-        catch ( Exception e )
-        {
-            LOG.error( e.getMessage() );
-        }
+        // We set the registries to Permissive, so that we don't care about the order
+        // the SchemaObjects are loaded.
+        loadComparators( schema, registries );
+        loadNormalizers( schema, registries );
+        loadSyntaxCheckers( schema, registries );
+        loadSyntaxes( schema, registries );
+        loadMatchingRules( schema, registries );
+        loadAttributeTypes( schema, registries );
+        loadObjectClasses( schema, registries );
+        loadMatchingRuleUses( schema, registries );
+        loadDitContentRules( schema, registries );
+        loadNameForms( schema, registries );
+        loadDitStructureRules( schema, registries );
 
         notifyListenerOrRegistries( schema, registries );
     }
@@ -386,27 +394,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadAttributeTypes( Schema schema, Registries registries ) throws Exception
     {
-    	/*
-    	 * AT's can depend on another AT via the superior relationship.  
-    	 * Because we separate each schema object into its own LDIF file and
-    	 * the file system scan producing the listing of files used to order
-    	 * the LDIF loads does not consider these dependencies we can have
-    	 * a situation where the superior may not be loaded when a dependent
-    	 * AT is loaded.
-    	 * 
-    	 * For this reason we must defer the loading of some LDIF entries 
-    	 * until their superior AT is actually loaded.  This hash stores
-    	 * LDIF entries keyed by the name of their superior AT.  When the
-    	 * superior is loaded, the deferred entries depending on that superior
-    	 * are loaded and the list of dependent entries are removed from this 
-    	 * hash map.
-    	 * 
-    	 * NOTE: Because we don't have an OID and must use a potentially 
-    	 * case varying String as the key in this map, we reduce the String to
-    	 * it's lower cased cannonical form.
-    	 */
-    	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
-
     	// check that the attributeTypes directory exists for the schema
         String attributeTypesDirectory = getSchemaDirectory( schema )
             + "/" + SchemaConstants.ATTRIBUTES_TYPE_PATH;
@@ -421,102 +408,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "attributeType LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                loadAttributeType( schema, deferredEntries, entry, registries );
+
+                registerAttributeType( registries, entry, schema );
             }
         }
-
-        
-        if ( ! deferredEntries.isEmpty() )
-        {
-        	for ( String missingSuperior : deferredEntries.keySet() )
-        	{
-        		if ( registries.getObjectClassRegistry().containsName( missingSuperior ) )
-        		{
-        			for ( LdifEntry entry : deferredEntries.get( missingSuperior ) )
-        			{
-        				if ( loadAttributeType( schema, deferredEntries, entry, registries ) )
-        				{
-        					LOG.error( "Still failed to load schema entry: {}", entry );
-        				}
-        			}
-        		}
-        	}
-        }
-    }
-    
-    
-    /**
-     * Recursive method that loads an AT, and other deferred ATs that depend
-     * on it.  This is separated from and used by 
-     * {@link #loadAttributeTypes(Schema, Registries)} to enter into this 
-     * method.
-     * 
-     * If the AT being loaded has deferred entries waiting on it to be loaded,
-     * then the AT is loaded then it's deferred entries are loaded by making a
-     * recursive call to this method.  This begins the process a new making 
-     * sure all deferred descendants in the AT hierarchy are load.
-     * 
-     * @param schema the schema we are loading
-     * @param deferredEntries map of deferred AT LDIF entries
-     * @param entry the AT LDIF entry to load
-     * @param registries the registries the schema objects are loaded into
-     * @return true if the AT is loaded, false otherwise
-     * @throws Exception if there any failures looking up or registering
-     */
-    private boolean loadAttributeType( Schema schema, Map<String,List<LdifEntry>> deferredEntries, LdifEntry entry,
-    		Registries registries ) throws Exception
-    {
-        // get superior name and if exists check if loaded, defer if not
-        EntryAttribute superior = entry.getEntry().get( MetaSchemaConstants.M_SUP_ATTRIBUTE_TYPE_AT );
-        
-        if ( superior != null )
-        {
-        	String superiorName = superior.getString().toLowerCase();
-        	
-        	if ( ! registries.getAttributeTypeRegistry().containsName( superiorName ) )
-        	{
-        		List<LdifEntry> dependents = deferredEntries.get( superiorName );
-        		
-        		if ( dependents == null )
-        		{
-        			dependents = new ArrayList<LdifEntry>();
-        			deferredEntries.put( superiorName, dependents );
-        		}
-
-        		dependents.add( entry );
-        		return false;  // - return false if deferred, true when loaded
-        	}
-        }
-        
-        AttributeType attributeType = registerAttributeType( registries, entry, schema );
-        
-        // after registering AT check if any deferred entries depend on it
-        if ( attributeType.getNames() != null )
-        {
-        	for ( String name : attributeType.getNames() )
-        	{
-        		if ( deferredEntries.containsKey( name.toLowerCase() ) )
-        		{
-        			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
-        			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
-        			
-        			for ( LdifEntry deferred : copiedList )
-        			{
-        				if ( loadAttributeType( schema, deferredEntries, deferred, registries ) )
-        				{
-        					deferredList.remove( deferred );
-        				}
-        			}
-        			
-        			if ( deferredList.isEmpty() )
-        			{
-        				deferredEntries.remove( name.toLowerCase() );
-        			}
-        		}
-        	}
-        }
-        
-        return true;
     }
 
 
@@ -651,27 +546,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     private void loadObjectClasses( Schema schema, Registries registries ) throws Exception
     {
-    	/*
-    	 * OC's can depend on other OCs via their list of superior OCs.  
-    	 * Because we separate each schema object into its own LDIF file and
-    	 * the file system scan producing the listing of files used to order
-    	 * the LDIF loads does not consider these dependencies we can have
-    	 * a situation where the superiors may not be loaded when a dependent
-    	 * OC is loaded.
-    	 * 
-    	 * For this reason we must defer the loading of some LDIF entries 
-    	 * until their superior OCs are actually loaded.  This hash stores
-    	 * LDIF entries keyed by the name of their superior OCs.  When a
-    	 * superior is loaded, the deferred entries depending on that superior
-    	 * are loaded and the list of dependent entries are removed from this 
-    	 * hash map.
-    	 * 
-    	 * NOTE: Because we don't have an OID and must use a potentially 
-    	 * case varying String as the key in this map, we reduce the String to
-    	 * it's lower cased cannonical form.
-    	 */
-    	Map<String,List<LdifEntry>> deferredEntries = new HashMap<String, List<LdifEntry>>();
-
     	// get objectClasses directory, check if exists, return if not
     	String objectClassesDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.OBJECT_CLASSES_PATH;
 
@@ -684,103 +558,9 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "objectClass LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
-                loadObjectClass( schema, deferredEntries, entry, registries );
-            }
-            
-            if ( ! deferredEntries.isEmpty() )
-            {
-            	for ( String missingSuperior : deferredEntries.keySet() )
-            	{
-            		if ( registries.getObjectClassRegistry().containsName( missingSuperior ) )
-            		{
-            			for ( LdifEntry entry : deferredEntries.get( missingSuperior ) )
-            			{
-            				if ( loadObjectClass( schema, deferredEntries, entry, registries ) )
-            				{
-            					LOG.error( "Still failed to load schema entry: {}", entry );
-            				}
-            			}
-            		}
-            	}
+
+                registerObjectClass( registries, entry, schema );
             }
         }
-    }
-    
-    
-    /**
-     * Recursive method that loads an OC, and other deferred OCs that may
-     * depend on the initial OC loaded.  This is separated from and used by
-     * {@link #loadObjectClasses(Schema, Registries)} to enter into this 
-     * method.
-     * 
-     * If the OC being loaded has deferred entries waiting on it to be loaded,
-     * then the OC is loaded then it's deferred entries are loaded by making a
-     * recursive call to this method.  This begins the process a new making 
-     * sure all deferred descendants in the OC hierarchy are load.
-     * 
-     * @param schema the schema we are loading
-     * @param deferredEntries map of deferred OC LDIF entries
-     * @param entry the OC LDIF entry to load
-     * @param registries the registries the schema objects are loaded into
-     * @return true if the OC is loaded, false otherwise
-     * @throws Exception if there any failures looking up or registering
-     */
-    private boolean loadObjectClass( Schema schema, Map<String,List<LdifEntry>> deferredEntries, LdifEntry entry, 
-    		Registries registries ) throws Exception
-	{
-        // get superior name and if exists check if loaded, defer if not
-        EntryAttribute superiors = entry.getEntry().get( MetaSchemaConstants.M_SUP_OBJECT_CLASS_AT );
-        
-        if ( superiors != null )
-        {
-        	for ( Value<?> value : superiors )
-        	{
-        		String superiorName = value.getString().toLowerCase();
-        		
-            	if ( ! registries.getObjectClassRegistry().containsName( superiorName ) )
-            	{
-            		List<LdifEntry> dependents = deferredEntries.get( superiorName );
-            		
-            		if ( dependents == null )
-            		{
-            			dependents = new ArrayList<LdifEntry>();
-            			deferredEntries.put( superiorName, dependents );
-            		}
-
-            		dependents.add( entry );
-            		return false;  // - return false if deferred, true when loaded
-            	}
-        	}
-        }
-        
-        ObjectClass objectClass = registerObjectClass( registries, entry, schema );
-
-        // after registering AT check if any deferred entries depend on it
-        if ( objectClass.getNames() != null )
-        {
-        	for ( String name : objectClass.getNames() )
-        	{
-        		if ( deferredEntries.containsKey( name.toLowerCase() ) )
-        		{
-        			List<LdifEntry> deferredList = deferredEntries.get( name.toLowerCase() );
-        			List<LdifEntry> copiedList = new ArrayList<LdifEntry>( deferredList );
-        			
-        			for ( LdifEntry deferred : copiedList )
-        			{
-        				if ( loadObjectClass( schema, deferredEntries, deferred, registries ) )
-        				{
-        					deferredList.remove( deferred );
-        				}
-        			}
-        			
-        			if ( deferredList.isEmpty() )
-        			{
-        				deferredEntries.remove( name.toLowerCase() );
-        			}
-        		}
-        	}
-        }
-        
-        return true;
     }
 }

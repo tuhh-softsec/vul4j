@@ -21,8 +21,6 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,9 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 public class OctetStringSyntaxChecker extends SyntaxChecker
 {
-    /** A logger for this class */
-    private static final Logger LOG = LoggerFactory.getLogger( OctetStringSyntaxChecker.class );
-
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
@@ -51,6 +46,17 @@ public class OctetStringSyntaxChecker extends SyntaxChecker
     public OctetStringSyntaxChecker()
     {
         super( SchemaConstants.OCTET_STRING_SYNTAX );
+    }
+    
+    
+    /**
+     * Creates a new instance of OctetStringSyntaxChecker, with a specific OID
+     * 
+     * @param oid The Syntax's OID 
+     */
+    public OctetStringSyntaxChecker( String oid )
+    {
+        super( oid );
     }
     
     

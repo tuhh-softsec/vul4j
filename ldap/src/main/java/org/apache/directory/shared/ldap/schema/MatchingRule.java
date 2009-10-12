@@ -126,16 +126,18 @@ public class MatchingRule extends SchemaObject
             }
             catch ( NamingException ne )
             {
+                // Default to a catch all comparator
                 ldapComparator = new ComparableComparator( oid );
             }
     
             try
             {
-                // Gets the associated N ormalizer
+                // Gets the associated Normalizer
                 normalizer = registries.getNormalizerRegistry().lookup( oid );
             }
             catch ( NamingException ne )
             {
+                // Default to the NoOp normalizer
                 normalizer = new NoOpNormalizer( oid );
             }
             

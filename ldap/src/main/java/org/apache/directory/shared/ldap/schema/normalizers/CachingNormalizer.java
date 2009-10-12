@@ -154,7 +154,7 @@ public class CachingNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( Registries registries )
+    public void applyRegistries( Registries registries ) throws NamingException
     {
         normalizer.applyRegistries( registries );
     }

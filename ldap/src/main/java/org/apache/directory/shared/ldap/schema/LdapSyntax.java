@@ -188,12 +188,13 @@ public class LdapSyntax extends SchemaObject
         {
             try
             {
-                // Gets the associated C 
+                // Gets the associated SyntaxChecker
                 syntaxChecker = registries.getSyntaxCheckerRegistry().lookup( oid );
             }
             catch ( NamingException ne )
             {
-                syntaxChecker = new OctetStringSyntaxChecker();
+                // No SyntaxChecker ? Associate the Syntax to a catch all SyntaxChecker
+                syntaxChecker = new OctetStringSyntaxChecker( oid );
             }
         }
     }

@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -55,9 +56,11 @@ public interface SchemaLoader
      * 
      * @param schemas the collection of schemas to load
      * @param registries the registries to populate with these schemas
+     * @param check tells if the Registries must be checked after having been loaded
+     * @return the list of erros we met during the loading of schemas
      * @throws Exception if any kind of problems are encountered during the load
      */
-    void loadWithDependencies( Collection<Schema> schemas, Registries registries ) throws Exception;
+    List<Throwable> loadWithDependencies( Collection<Schema> schemas, Registries registries, boolean check ) throws Exception;
     
     
     /**
@@ -65,18 +68,22 @@ public interface SchemaLoader
      * 
      * @param schema the schema to load
      * @param registries the registries to populate with these schemas
+     * @param check tells if the Registries must be checked after having been loaded
+     * @return the list of erros we met during the loading of schemas
      * @throws Exception if any kind of problems are encountered during the load
      */
-    void loadWithDependencies( Schema schema, Registries registries ) throws Exception;
+    List<Throwable> loadWithDependencies( Schema schema, Registries registries, boolean check ) throws Exception;
     
     
     /**
      * Loads all available enabled schemas.
      *
      * @param registries the registry to load all enabled schemas into
+     * @param check tells if the Registries must be checked after having been loaded
+     * @return the list of erros we met during the loading of schemas
      * @throws Exception if there are any failures
      */
-    void loadAllEnabled( Registries registries ) throws Exception;
+    List<Throwable> loadAllEnabled( Registries registries, boolean check ) throws Exception;
     
     
     /**

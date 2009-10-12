@@ -21,13 +21,16 @@ package org.apache.directory.server.schema.loader.ldif;
 
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.util.ExceptionUtils;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -78,7 +81,13 @@ public class LdifSchemaLoaderTest
         
         LdifSchemaLoader loader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
         Registries registries = new Registries();
-        loader.loadAllEnabled( registries );
+        
+        List<Throwable> errors = loader.loadAllEnabled( registries, true );
+        
+        if ( errors.size() != 0 )
+        {
+            fail( "Schema load failed : " + ExceptionUtils.printErrors( errors ) );
+        }
         
         assertTrue( registries.getAttributeTypeRegistry().contains( "cn" ) );
     }
