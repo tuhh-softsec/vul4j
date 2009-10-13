@@ -91,6 +91,7 @@
 		<module>webassembletool-taglib</module>
 		<module>webassembletool-taglib-helper</module>
 		<module>webassembletool-jsf</module>
+		<module>webassembletool-cas</module>
 		<module>webassembletool-app-aggregated1</module>
 		<module>webassembletool-app-aggregated2</module>
 		<module>webassembletool-app-aggregator</module>
