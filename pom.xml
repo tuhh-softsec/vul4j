@@ -103,6 +103,7 @@
 		<module>webassembletool-app-provider</module>
 		<module>webassembletool-app-facelet</module>
 		<module>webassembletool-integration-tests</module>
+		<module>webassembletool-assembly</module>
 	</modules>
 	<repositories>
 		<repository>
