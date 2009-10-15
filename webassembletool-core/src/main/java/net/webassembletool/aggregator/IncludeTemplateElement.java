@@ -51,8 +51,8 @@ public class IncludeTemplateElement implements Element {
 	public void doEndTag(String tag, Writer out, Parser parser)
 			throws IOException, HttpErrorPage {
 		driver.render(page, null, out, (HttpServletRequest) parser
-				.getAttribute("request"), true, new TemplateRenderer(name,
-				params, page));
+				.getAttribute("request"), new TemplateRenderer(name, params,
+				page));
 	}
 
 	public ElementType getType() {

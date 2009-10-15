@@ -7,7 +7,7 @@
 <body>
 	User: <%=request.getRemoteUser() %>
 	<br />
-	<a href="block.jsp">Block test</a>
+	<a href="aggregated1/block.jsp">Block test</a>
 </div>
 </body>
 </html>

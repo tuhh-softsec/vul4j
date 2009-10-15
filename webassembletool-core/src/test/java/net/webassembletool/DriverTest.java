@@ -28,7 +28,7 @@ public class DriverTest extends TestCase {
 	public void testRenderBlock() throws IOException, HttpErrorPage {
 		Writer out = new StringWriter();
 		DriverFactory.getInstance("mock").renderBlock("/testBlock", "A", out,
-				null, new HashMap<String, String>(), null, false, false);
+				null, new HashMap<String, String>(), null, false);
 		assertEquals("some text goes here", out.toString());
 	}
 

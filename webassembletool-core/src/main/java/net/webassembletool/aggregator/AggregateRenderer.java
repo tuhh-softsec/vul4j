@@ -11,8 +11,7 @@ import net.webassembletool.Renderer;
 import net.webassembletool.parser.Parser;
 
 /**
- * Retrieves a resource from the provider application and parses it to find tags
- * to be replaced by contents from other providers.
+ * Parses a page to find tags to be replaced by contents from other providers.
  * 
  * Sample syntax used for includes :
  * <ul>
@@ -29,24 +28,18 @@ import net.webassembletool.parser.Parser;
  * <li>&lt;!--$beginparam$name$--&gt;</li>
  * </ul>
  * 
- * Aggregation is always in "proxy mode" that means cookies or parameters from
- * the original request are transmitted to the target server. <br/>
- * <b>NB: Cookies and parameters are not transmitted to templates or blocks
- * invoked by the page</b>.
- * 
  * @author Stanislav Bernatskyi
+ * @author Francois-Xavier Bonnet
  */
 public class AggregateRenderer implements Renderer {
+	/** Generic pattern for all the tags we want to look for. */
 	private final static Pattern PATTERN = Pattern
 			.compile("<!--\\$[^>]*\\$-->");
 
 	private final HttpServletRequest request;
-	private final boolean propagateJsessionId;
 
-	public AggregateRenderer(HttpServletRequest request,
-			boolean propagateJsessionId) {
+	public AggregateRenderer(HttpServletRequest request) {
 		this.request = request;
-		this.propagateJsessionId = propagateJsessionId;
 	}
 
 	/** {@inheritDoc} */

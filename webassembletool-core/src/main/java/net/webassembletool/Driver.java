@@ -139,16 +139,6 @@ public class Driver {
 	}
 
 	/**
-	 * Indicates whether 'jsessionid' filtering enabled
-	 * 
-	 * @return flag indicating whether 'filterJsessionid' option is turned on in
-	 *         configuration
-	 */
-	public final boolean isFilterJsessionid() {
-		return config.isFilterJsessionid();
-	}
-
-	/**
 	 * Retrieves a page from the provider application, evaluates XPath
 	 * expression if exists, applies XSLT transformation and writes result to a
 	 * Writer.
@@ -170,8 +160,8 @@ public class Driver {
 	public final void renderXml(String source, String template, Writer out,
 			HttpServletRequest originalRequest) throws IOException,
 			HttpErrorPage {
-		render(source, null, out, originalRequest, false, new XsltRenderer(
-				template, originalRequest.getSession().getServletContext()));
+		render(source, null, out, originalRequest, new XsltRenderer(template,
+				originalRequest.getSession().getServletContext()));
 	}
 
 	/**
@@ -195,8 +185,7 @@ public class Driver {
 	public final void renderXpath(String source, String xpath, Writer out,
 			HttpServletRequest originalRequest) throws IOException,
 			HttpErrorPage {
-		render(source, null, out, originalRequest, false, new XpathRenderer(
-				xpath));
+		render(source, null, out, originalRequest, new XpathRenderer(xpath));
 	}
 
 	/**
@@ -218,9 +207,6 @@ public class Driver {
 	 *            the replace rules to be applied on the block
 	 * @param parameters
 	 *            Additional parameters
-	 * @param propagateJsessionId
-	 *            indicates whether <code>jsessionid</code> should be propagated
-	 *            or just removed from generated output
 	 * @param copyOriginalRequestParameters
 	 *            indicates whether the original request parameters should be
 	 *            copied in the new request
@@ -232,11 +218,10 @@ public class Driver {
 	public final void renderBlock(String page, String name, Writer writer,
 			HttpServletRequest originalRequest,
 			Map<String, String> replaceRules, Map<String, String> parameters,
-			boolean propagateJsessionId, boolean copyOriginalRequestParameters)
-			throws IOException, HttpErrorPage {
-		render(page, parameters, writer, originalRequest, propagateJsessionId,
-				new BlockRenderer(name, page),
-				new ReplaceRenderer(replaceRules));
+			boolean copyOriginalRequestParameters) throws IOException,
+			HttpErrorPage {
+		render(page, parameters, writer, originalRequest, new BlockRenderer(
+				name, page), new ReplaceRenderer(replaceRules));
 	}
 
 	/**
@@ -276,9 +261,8 @@ public class Driver {
 			HttpServletRequest originalRequest, Map<String, String> params,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean propagateJsessionId) throws IOException, HttpErrorPage {
-		render(page, parameters, writer, originalRequest, propagateJsessionId,
-				new TemplateRenderer(name, params, page), new ReplaceRenderer(
-						replaceRules));
+		render(page, parameters, writer, originalRequest, new TemplateRenderer(
+				name, params, page), new ReplaceRenderer(replaceRules));
 	}
 
 	/**
@@ -290,9 +274,6 @@ public class Driver {
 	 *            Writer where to write the result
 	 * @param originalRequest
 	 *            originating request object
-	 * @param propagateJsessionId
-	 *            indicates whether <code>jsessionid</code> should be propagated
-	 *            or just removed from generated output
 	 * @param renderers
 	 *            the renderers to use to transform the output
 	 * @throws IOException
@@ -302,10 +283,9 @@ public class Driver {
 	 */
 	public final void render(String page, Map<String, String> parameters,
 			Writer writer, HttpServletRequest originalRequest,
-			boolean propagateJsessionId, Renderer... renderers)
-			throws IOException, HttpErrorPage {
+			Renderer... renderers) throws IOException, HttpErrorPage {
 		RequestContext target = new RequestContext(this, page, parameters,
-				originalRequest, propagateJsessionId, false);
+				originalRequest);
 		StringOutput stringOutput = getResourceAsString(target);
 		String currentValue = stringOutput.toString();
 		for (Renderer renderer : renderers) {
@@ -348,9 +328,6 @@ public class Driver {
 	 *            the request
 	 * @param response
 	 *            the response
-	 * @param propagateJsessionId
-	 *            indicates whether <code>jsessionid</code> should be propagated
-	 *            or just removed from generated output
 	 * @param renderers
 	 *            the renderers to use to transform the output
 	 * @throws IOException
@@ -359,10 +336,10 @@ public class Driver {
 	 *             If the page contains incorrect tags
 	 */
 	public final void proxy(String relUrl, HttpServletRequest request,
-			HttpServletResponse response, boolean propagateJsessionId,
-			Renderer... renderers) throws IOException, HttpErrorPage {
+			HttpServletResponse response, Renderer... renderers)
+			throws IOException, HttpErrorPage {
 		RequestContext requestContext = new RequestContext(this, relUrl, null,
-				request, propagateJsessionId, true);
+				request);
 		request.setCharacterEncoding(config.getUriEncoding());
 		requestContext.setProxyMode(true);
 		if (renderers.length == 0) {

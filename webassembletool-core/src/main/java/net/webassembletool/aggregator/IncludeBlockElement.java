@@ -49,7 +49,7 @@ public class IncludeBlockElement implements Element {
 		if (parameters.length > 5)
 			name = parameters[4];
 		driver.render(page, null, out, (HttpServletRequest) parser
-				.getAttribute("request"), true, new BlockRenderer(name, page));
+				.getAttribute("request"), new BlockRenderer(name, page));
 	}
 
 	public ElementType getType() {

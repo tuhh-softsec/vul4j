@@ -16,14 +16,15 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>3.1.6</version>
-		</dependency>
-		<dependency>
 			<groupId>net.sourceforge.webassembletool</groupId>
 			<artifactId>webassembletool-core</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.webassembletool</groupId>
+			<artifactId>webassembletool-cas</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

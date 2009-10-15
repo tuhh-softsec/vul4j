@@ -56,7 +56,7 @@ public class IncludeElement implements Element {
         String page = src.substring(endIndex + "})".length());
 		Driver driver= DriverFactory.getInstance(provider);
 		driver.render(page, null, out, (HttpServletRequest) parser
-				.getAttribute("request"), true, new BlockRenderer(null, page));
+				.getAttribute("request"), new BlockRenderer(null, page));
 	}
 
 	public ElementType getType() {

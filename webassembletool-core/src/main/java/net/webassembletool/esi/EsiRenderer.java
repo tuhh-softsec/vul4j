@@ -11,30 +11,12 @@ import net.webassembletool.Renderer;
 import net.webassembletool.parser.Parser;
 
 /**
- * Retrieves a resource from the provider application and parses it to find tags
- * to be replaced by contents from other providers.
+ * Retrieves a resource from the provider application and parses it to find ESI
+ * tags to be replaced by contents from other applications.
  * 
- * Sample syntax used for includes :
- * <ul>
- * <li>&lt;!--$includeblock$provider$page$blockname$--&gt;</li>
- * <li>&lt;!--$includetemplate$provider$page$templatename$--&gt;</li>
- * <li>&lt;!--$beginput$name$--&gt;</li>
- * </ul>
+ * For more information about ESI language specification, see <a
+ * href="http://www.w3.org/TR/esi-lang">Edge Side Include</a>
  * 
- * Sample syntax used inside included contents for template and block
- * definition:
- * <ul>
- * <li>&lt;!--$beginblock$name$--&gt;</li>
- * <li>&lt;!--$begintemplate$name$--&gt;</li>
- * <li>&lt;!--$beginparam$name$--&gt;</li>
- * </ul>
- * 
- * Aggregation is always in "proxy mode" that means cookies or parameters from
- * the original request are transmitted to the target server. <br/>
- * <b>NB: Cookies and parameters are not transmitted to templates or blocks
- * invoked by the page</b>.
- * 
- * @author Stanislav Bernatskyi
  * @author Francois-Xavier Bonnet
  */
 public class EsiRenderer implements Renderer {
@@ -42,11 +24,9 @@ public class EsiRenderer implements Renderer {
 			.compile("(<esi:[^>]*>)|(<!--esi)|(-->)");
 
 	private final HttpServletRequest request;
-	private final boolean propagateJsessionId;
 
-	public EsiRenderer(HttpServletRequest request, boolean propagateJsessionId) {
+	public EsiRenderer(HttpServletRequest request) {
 		this.request = request;
-		this.propagateJsessionId = propagateJsessionId;
 	}
 
 	/** {@inheritDoc} */

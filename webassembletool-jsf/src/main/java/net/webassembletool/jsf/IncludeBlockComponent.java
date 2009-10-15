@@ -48,7 +48,8 @@ public class IncludeBlockComponent extends UIComponentBase implements
 	}
 
 	public boolean isDisplayErrorPage() {
-		return UIComponentUtils.getParam(this, "displayErrorPage", displayErrorPage);
+		return UIComponentUtils.getParam(this, "displayErrorPage",
+				displayErrorPage);
 	}
 
 	public void setDisplayErrorPage(boolean displayErrorPage) {
@@ -67,8 +68,7 @@ public class IncludeBlockComponent extends UIComponentBase implements
 				.getExternalContext().getRequest();
 		try {
 			DriverFactory.getInstance(getProvider()).renderBlock(getPage(),
-					getName(), writer, request, replaceRules, null, false,
-					false);
+					getName(), writer, request, replaceRules, null, false);
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage())
 				writer.write(re.getMessage());

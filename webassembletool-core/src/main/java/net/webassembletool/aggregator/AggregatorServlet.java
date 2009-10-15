@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AggregatorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private static final Log LOG = LogFactory.getLog(AggregatorServlet.class);
+	private static final Log LOG = LogFactory.getLog(AggregatorServlet.class);
 	private String provider;
 
 	@Override
@@ -34,16 +34,11 @@ public class AggregatorServlet extends HttpServlet {
 			relUrl = relUrl.substring(request.getServletPath().length());
 		}
 		LOG.debug("Aggregating " + relUrl);
-		boolean propagateJsessionId = response.encodeURL("/").contains(
-				"jsessionid");
 		try {
-			DriverFactory.getInstance(provider).proxy(
-					relUrl,
-					request,
+			DriverFactory.getInstance(provider).proxy(relUrl, request,
 					response,
-					propagateJsessionId,
-					new AggregateRenderer(request, propagateJsessionId),
-					new EsiRenderer(request, propagateJsessionId));
+					new AggregateRenderer(request),
+					new EsiRenderer(request));
 		} catch (HttpErrorPage e) {
 			throw new ServletException(e);
 		}

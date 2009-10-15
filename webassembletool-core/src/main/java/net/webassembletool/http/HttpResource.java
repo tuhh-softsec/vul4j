@@ -124,7 +124,7 @@ public class HttpResource extends Resource {
 	private void removeSessionId(InputStream inputStream, Output output)
 			throws IOException {
 		String jsessionid = null;
-		if (target.getUserContext() != null && target.isFilterJsessionid()) {
+		if (target.getUserContext() != null) {
 			List<Cookie> cookies = target.getUserContext().getCookieStore()
 					.getCookies();
 			for (Cookie cookie : cookies)
@@ -166,7 +166,7 @@ public class HttpResource extends Resource {
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
-		result.append(target.getMethod());
+		result.append(target.getOriginalRequest().getMethod());
 		result.append(" ");
 		result.append(ResourceUtils.getHttpUrlWithQueryString(target));
 		result.append("\n");

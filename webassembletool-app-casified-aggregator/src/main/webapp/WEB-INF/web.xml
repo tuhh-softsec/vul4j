@@ -67,6 +67,6 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>aggregator1</servlet-name>
-		<url-pattern>/block.jsp</url-pattern>
+		<url-pattern>/aggregated1/*</url-pattern>
 	</servlet-mapping>
 </web-app>

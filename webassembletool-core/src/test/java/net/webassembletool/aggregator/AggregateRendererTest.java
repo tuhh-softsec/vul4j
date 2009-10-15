@@ -29,7 +29,7 @@ public class AggregateRendererTest extends TestCase {
 
 	public void testIncludeBlockNoBlockName() throws IOException, HttpErrorPage {
 		String page = "content <!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$--> end";
-		AggregateRenderer tested = new AggregateRenderer(null, false);
+		AggregateRenderer tested = new AggregateRenderer(null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("content Test include end", out.toString());
@@ -37,7 +37,7 @@ public class AggregateRendererTest extends TestCase {
 
 	public void testIncludeBlock() throws IOException, HttpErrorPage {
 		String page = "content <!--$includeblock$mock$/testBlock$myblock$--> some text <!--$endincludeblock$--> end";
-		AggregateRenderer tested = new AggregateRenderer(null, false);
+		AggregateRenderer tested = new AggregateRenderer(null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("content some text goes here end", out.toString());
@@ -46,7 +46,7 @@ public class AggregateRendererTest extends TestCase {
 	public void testIncludeTemplateNoTemplateName() throws IOException,
 			HttpErrorPage {
 		String page = "content <!--$includetemplate$mock$/testInclude$--> some text <!--$endincludetemplate$--> end";
-		AggregateRenderer tested = new AggregateRenderer(null, false);
+		AggregateRenderer tested = new AggregateRenderer(null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("content Test include end", out.toString());
@@ -54,7 +54,7 @@ public class AggregateRendererTest extends TestCase {
 
 	public void testIncludeTemplate() throws IOException, HttpErrorPage {
 		String page = "content <!--$includetemplate$mock$/testTemplateParams$mytemplate$--> some text <!--$beginput$param1$-->Replacement<!--$endput$-->some other text<!--$endincludetemplate$--> end";
-		AggregateRenderer tested = new AggregateRenderer(null, false);
+		AggregateRenderer tested = new AggregateRenderer(null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("content some text Replacement goes here end", out.toString());

@@ -29,8 +29,7 @@ public class DriverUtils {
             boolean copyOriginalRequestParameters) throws JspException, HttpErrorPage {
         try {
             Driver driver = DriverFactory.getInstance(provider);
-            boolean propagateJsessionId = ((HttpServletResponse) pageContext.getResponse()).encodeURL("/").contains("jsessionid");
-            driver.renderBlock(page, name, pageContext.getOut(), (HttpServletRequest) pageContext.getRequest(), replaceRules, parameters, propagateJsessionId, copyOriginalRequestParameters);
+            driver.renderBlock(page, name, pageContext.getOut(), (HttpServletRequest) pageContext.getRequest(), replaceRules, parameters, copyOriginalRequestParameters);
         } catch (IOException e) {
             throw new JspException(e);
         }
