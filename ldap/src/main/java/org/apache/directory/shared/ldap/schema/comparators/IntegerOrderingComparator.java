@@ -80,8 +80,8 @@ public class IntegerOrderingComparator extends LdapComparator<String>
         // Both object must be stored as String for boolean
         // values. If this is not the case, we have a pb...
         // However, the method will then throw a ClassCastException
-        int b1 = Integer.parseInt( backendValue );
-        int b2 = Integer.parseInt( assertValue );
+        long b1 = Long.parseLong( backendValue );
+        long b2 = Long.parseLong( assertValue );
         
         if ( b1 == b2 )
         {
