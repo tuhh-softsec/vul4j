@@ -19,6 +19,11 @@
  */
 package org.apache.directory.shared.ldap.registries;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -26,10 +31,6 @@ import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.OidRegistry;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -96,5 +97,39 @@ public class AttributeTypeRegistryTest
         {
             assertTrue( true );
         }
+    }
+    
+    
+    @Test
+    public void testClone() throws Exception
+    {
+        AttributeType at0 = new AttributeType( "1.1" );
+        at0.addName( "t", "test", "Test", "T" );
+        
+        atRegistry.register( at0 );
+        
+        AttributeType at1 = new AttributeType( "1.2" );
+        at1.addName( "u", "unit", "Unit", "U" );
+
+        atRegistry.register( at1 );
+        
+        // Clone the ATRegistry
+        AttributeTypeRegistry clone = atRegistry.clone();
+        
+        assertEquals( at0, clone.lookup( "1.1" ) );
+        assertEquals( at1, clone.lookup( "1.2" ) );
+        
+        atRegistry.unregister( "1.1" );
+        assertFalse( atRegistry.contains( "1.1" ) );
+        assertTrue( clone.contains( "1.1" ) );
+        
+        AttributeType at = atRegistry.lookup( "1.2" );
+        at.setOid( "2.2" );
+        
+        at = atRegistry.lookup( "1.2" );
+        assertEquals( "2.2", at.getOid() );
+
+        at = clone.lookup( "1.2" );
+        assertEquals( "1.2", at.getOid() );
     }
 }
