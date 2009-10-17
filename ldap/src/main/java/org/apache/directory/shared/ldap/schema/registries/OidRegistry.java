@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class OidRegistry
+public class OidRegistry implements Cloneable
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( OidRegistry.class );
@@ -232,5 +233,28 @@ public class OidRegistry
         {
             LOG.debug( "Unregisted SchemaObject '{}' with OID: {}", removed, oid );
         }
+    }
+    
+    
+    /**
+     * Clone the OidRegistry, and all the contained values
+     * 
+     * @return A new OidRegistry instance
+     */
+    public OidRegistry clone() throws CloneNotSupportedException
+    {
+        OidRegistry clone = (OidRegistry)super.clone();
+        
+        clone.byOid = new HashMap<String,SchemaObject>();
+        
+        // Clone the byOid Map
+        for ( String key : byOid.keySet() )
+        {
+            // Clone each SchemaObject
+            SchemaObject value = byOid.get( key );
+            clone.byOid.put( key, value.clone() );
+        }
+        
+        return clone;
     }
 }

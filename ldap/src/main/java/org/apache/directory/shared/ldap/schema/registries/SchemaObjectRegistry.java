@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
+public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>, Cloneable
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( SchemaObjectRegistry.class );
@@ -49,13 +49,13 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     private static final boolean DEBUG = LOG.isDebugEnabled();
     
     /** a map of SchemaObject looked up by name */
-    protected final Map<String, T> byName;
+    protected Map<String, T> byName;
     
     /** The SchemaObject type */
     protected SchemaObjectType type;
 
     /** the global OID Registry */
-    protected final OidRegistry oidRegistry;
+    protected OidRegistry oidRegistry;
     
 
     /**
@@ -63,7 +63,7 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
      */
     protected SchemaObjectRegistry( SchemaObjectType schemaObjectType, OidRegistry oidRegistry )
     {
-        byName = new ConcurrentHashMap<String, T>();
+        byName = new HashMap<String, T>();
         type = schemaObjectType;
         this.oidRegistry = oidRegistry;
     }
@@ -364,5 +364,30 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
     	}
 
         return true;
+    }
+    
+
+    /**
+     * Clone a SchemaObjectRegistry
+     */
+    protected SchemaObjectRegistry<T> clone() throws CloneNotSupportedException
+    {
+        // Clone the base object
+        SchemaObjectRegistry<T> clone = (SchemaObjectRegistry<T>)super.clone();
+        
+        // Clone the byName Map
+        clone.byName = new HashMap<String, T>();
+        
+        for ( String key : byName.keySet() )
+        {
+            // Clone each SchemaObject
+            SchemaObject value = byName.get( key );
+            clone.byName.put( key, (T)value.clone() );
+        }
+        
+        // Clone the oidRegistry
+        clone.oidRegistry = oidRegistry.clone();
+        
+        return clone;
     }
 }

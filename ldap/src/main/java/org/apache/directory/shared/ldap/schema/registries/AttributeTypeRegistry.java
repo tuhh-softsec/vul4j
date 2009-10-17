@@ -21,11 +21,11 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
+public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType> implements Cloneable
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( AttributeTypeRegistry.class );
@@ -58,7 +58,7 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     private transient Map<String, OidNormalizer> oidNormalizerMap;
     
     /** maps OIDs to a Set of descendants for that OID */
-    private final Map<String,Set<AttributeType>> oidToDescendantSet;
+    private Map<String,Set<AttributeType>> oidToDescendantSet;
 
     
     /**
@@ -67,8 +67,8 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
     public AttributeTypeRegistry( OidRegistry oidRegistry )
     {
         super( SchemaObjectType.ATTRIBUTE_TYPE, oidRegistry );
-        oidNormalizerMap = new ConcurrentHashMap<String, OidNormalizer>();
-        oidToDescendantSet= new ConcurrentHashMap<String,Set<AttributeType>>();
+        oidNormalizerMap = new HashMap<String, OidNormalizer>();
+        oidToDescendantSet = new HashMap<String,Set<AttributeType>>();
     }
     
     
@@ -344,8 +344,28 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>
         }
     }
     
+    /**
+     * @see Object#toString()
+     */
     public String toString()
     {
         return byName.toString();
+    }
+    
+    
+    /**
+     * Clone the AttributeTypeRegistry
+     */
+    public AttributeTypeRegistry clone() throws CloneNotSupportedException
+    {
+        AttributeTypeRegistry clone = (AttributeTypeRegistry)super.clone();
+        
+        // Clone the oidNormalizerMap (will be empty)
+        clone.oidNormalizerMap = new HashMap<String, OidNormalizer>();
+        
+        // Clone the oidToDescendant map (will be empty)
+        clone.oidToDescendantSet = new HashMap<String,Set<AttributeType>>();
+
+        return clone;
     }
 }
