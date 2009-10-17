@@ -153,4 +153,15 @@ public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker>
             }
         }
     }
+    
+    
+    /**
+     * Clone the SyntaxCheckerRegistry
+     */
+    public SyntaxCheckerRegistry clone() throws CloneNotSupportedException
+    {
+        SyntaxCheckerRegistry clone = (SyntaxCheckerRegistry)super.clone();
+        
+        return clone;
+    }
 }

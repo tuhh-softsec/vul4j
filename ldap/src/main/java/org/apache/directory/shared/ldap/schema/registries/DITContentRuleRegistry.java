@@ -41,4 +41,15 @@ public class DITContentRuleRegistry extends SchemaObjectRegistry<DITContentRule>
     {
         super( SchemaObjectType.DIT_CONTENT_RULE, oidRegistry );
     }
+    
+    
+    /**
+     * Clone the DITContentRuleRegistry
+     */
+    public DITContentRuleRegistry clone() throws CloneNotSupportedException
+    {
+        DITContentRuleRegistry clone = (DITContentRuleRegistry)super.clone();
+        
+        return clone;
+    }
 }

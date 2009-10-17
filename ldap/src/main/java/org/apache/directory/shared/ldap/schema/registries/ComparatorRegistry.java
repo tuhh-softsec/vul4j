@@ -153,4 +153,15 @@ public class ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>>
             }
         }
     }
+    
+    
+    /**
+     * Clone the ComparatorRegistry
+     */
+    public ComparatorRegistry clone() throws CloneNotSupportedException
+    {
+        ComparatorRegistry clone = (ComparatorRegistry)super.clone();
+        
+        return clone;
+    }
 }

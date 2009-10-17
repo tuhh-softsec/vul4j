@@ -43,4 +43,15 @@ public class MatchingRuleUseRegistry extends SchemaObjectRegistry<MatchingRuleUs
     {
         super( SchemaObjectType.MATCHING_RULE_USE, oidRegistry );
     }
+    
+    
+    /**
+     * Clone the MatchingRuleUseRegistry
+     */
+    public MatchingRuleUseRegistry clone() throws CloneNotSupportedException
+    {
+        MatchingRuleUseRegistry clone = (MatchingRuleUseRegistry)super.clone();
+        
+        return clone;
+    }
 }

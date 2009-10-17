@@ -41,4 +41,15 @@ public class MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>
     {
         super( SchemaObjectType.MATCHING_RULE, oidRegistry );
     }
+    
+    
+    /**
+     * Clone the MatchingRuleRegistry
+     */
+    public MatchingRuleRegistry clone() throws CloneNotSupportedException
+    {
+        MatchingRuleRegistry clone = (MatchingRuleRegistry)super.clone();
+        
+        return clone;
+    }
 }

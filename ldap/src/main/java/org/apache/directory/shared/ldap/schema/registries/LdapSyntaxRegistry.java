@@ -40,4 +40,15 @@ public class LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>
     {
         super( SchemaObjectType.LDAP_SYNTAX, oidRegistry );
     }
+    
+    
+    /**
+     * Clone the LdapSyntaxRegistry
+     */
+    public LdapSyntaxRegistry clone() throws CloneNotSupportedException
+    {
+        LdapSyntaxRegistry clone = (LdapSyntaxRegistry)super.clone();
+        
+        return clone;
+    }
 }

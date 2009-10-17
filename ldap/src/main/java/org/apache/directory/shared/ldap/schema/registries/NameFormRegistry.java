@@ -41,4 +41,15 @@ public class NameFormRegistry extends SchemaObjectRegistry<NameForm>
     {
         super( SchemaObjectType.NAME_FORM, oidRegistry );
     }
+    
+    
+    /**
+     * Clone the DITContentRuleRegistry
+     */
+    public NameFormRegistry clone() throws CloneNotSupportedException
+    {
+        NameFormRegistry clone = (NameFormRegistry)super.clone();
+        
+        return clone;
+    }
 }

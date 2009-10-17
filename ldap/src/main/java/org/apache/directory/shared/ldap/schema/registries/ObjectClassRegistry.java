@@ -21,12 +21,12 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
@@ -52,7 +52,7 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** maps OIDs to a Set of descendants for that OID */
-    private final Map<String,Set<ObjectClass>> oidToDescendantSet;
+    private Map<String,Set<ObjectClass>> oidToDescendants;
 
     /**
      * Creates a new default ObjectClassRegistry instance.
@@ -62,7 +62,7 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
     public ObjectClassRegistry( OidRegistry oidRegistry )
     {
         super( SchemaObjectType.OBJECT_CLASS, oidRegistry );
-        oidToDescendantSet= new ConcurrentHashMap<String,Set<ObjectClass>>();
+        oidToDescendants = new HashMap<String,Set<ObjectClass>>();
     }
     
     
@@ -80,7 +80,7 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
         try
         {
             String oid = getOidByName( ancestorId );
-            Set<ObjectClass> descendants = oidToDescendantSet.get( oid );
+            Set<ObjectClass> descendants = oidToDescendants.get( oid );
             return (descendants != null) && !descendants.isEmpty();
         }
         catch ( NamingException ne )
@@ -106,7 +106,7 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
         try
         {
             String oid = getOidByName( ancestorId );
-            Set<ObjectClass> descendants = oidToDescendantSet.get( oid );
+            Set<ObjectClass> descendants = oidToDescendants.get( oid );
             
             if ( descendants == null )
             {
@@ -141,13 +141,13 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
         for ( ObjectClass ancestor : ancestors )
         {
             // Get the ancestor's descendant, if any
-            Set<ObjectClass> descendants = oidToDescendantSet.get( ancestor.getOid() );
+            Set<ObjectClass> descendants = oidToDescendants.get( ancestor.getOid() );
     
             // Initialize the descendant Set to store the descendants for the attributeType
             if ( descendants == null )
             {
                 descendants = new HashSet<ObjectClass>( 1 );
-                oidToDescendantSet.put( ancestor.getOid(), descendants );
+                oidToDescendants.put( ancestor.getOid(), descendants );
             }
             
             // Add the current ObjectClass as a descendant
@@ -186,7 +186,7 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
         for ( ObjectClass ancestor : ancestors )
         {
             // Get the ancestor's descendant, if any
-            Set<ObjectClass> descendants = oidToDescendantSet.get( ancestor.getOid() );
+            Set<ObjectClass> descendants = oidToDescendants.get( ancestor.getOid() );
     
             if ( descendants != null )
             {
@@ -194,7 +194,7 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
                 
                 if ( descendants.size() == 0 )
                 {
-                    oidToDescendantSet.remove( descendants );
+                    oidToDescendants.remove( descendants );
                 }
             }
             
@@ -255,7 +255,7 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
             // Deleting an ObjectClass which might be used as a superior means we have
             // to recursively update the descendant map. We also have to remove
             // the at.oid -> descendant relation
-            oidToDescendantSet.remove( numericOid );
+            oidToDescendants.remove( numericOid );
             
             // Now recurse if needed
             unregisterDescendants( removed, removed.getSuperiors() );
@@ -266,5 +266,19 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
         {
             throw new NoSuchAttributeException( ne.getMessage() );
         }
+    }
+    
+    
+    /**
+     * Clone the ObjectClassRegistry
+     */
+    public ObjectClassRegistry clone() throws CloneNotSupportedException
+    {
+        ObjectClassRegistry clone = (ObjectClassRegistry)super.clone();
+        
+        // Clone the oidToDescendantSet (will be empty)
+        clone.oidToDescendants = new HashMap<String, Set<ObjectClass>>();
+        
+        return clone;
     }
 }

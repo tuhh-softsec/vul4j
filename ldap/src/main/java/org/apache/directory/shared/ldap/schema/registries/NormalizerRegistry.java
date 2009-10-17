@@ -153,4 +153,15 @@ public class NormalizerRegistry extends SchemaObjectRegistry<Normalizer>
             }
         }
     }
+    
+    
+    /**
+     * Clone the NormalizerRegistry
+     */
+    public NormalizerRegistry clone() throws CloneNotSupportedException
+    {
+        NormalizerRegistry clone = (NormalizerRegistry)super.clone();
+        
+        return clone;
+    }
 }

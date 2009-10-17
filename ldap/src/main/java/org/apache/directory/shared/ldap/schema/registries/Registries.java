@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class Registries implements SchemaLoaderListener
+public class Registries implements SchemaLoaderListener, Cloneable
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( Registries.class );
@@ -1722,5 +1722,47 @@ public class Registries implements SchemaLoaderListener
     public void setAcceptDisabled( boolean acceptDisabled )
     {
         this.acceptDisabled = acceptDisabled;
+    }
+    
+    
+    /**
+     * Clone the Registries
+     */
+    public Registries clone() throws CloneNotSupportedException
+    {
+        // First clone the structure
+        Registries clone = (Registries)super.clone();
+        
+        // We have to clone every SchemaObject registries now
+        clone.attributeTypeRegistry = attributeTypeRegistry.clone();
+        clone.comparatorRegistry = comparatorRegistry.clone();
+        clone.ditContentRuleRegistry = ditContentRuleRegistry.clone();
+        clone.ditStructureRuleRegistry = ditStructureRuleRegistry.clone();
+        clone.ldapSyntaxRegistry = ldapSyntaxRegistry.clone();
+        clone.matchingRuleRegistry = matchingRuleRegistry.clone();
+        clone.matchingRuleUseRegistry = matchingRuleUseRegistry.clone();
+        clone.nameFormRegistry = nameFormRegistry.clone();
+        clone.normalizerRegistry = normalizerRegistry.clone();
+        clone.objectClassRegistry = objectClassRegistry.clone();
+        clone.syntaxCheckerRegistry = syntaxCheckerRegistry.clone();
+        
+        // Now, clone the oidRegistry
+        clone.oidRegistry = oidRegistry.clone();
+        
+        // Clone the schema list
+        clone.loadedSchemas = new HashMap<String, Schema>();
+        
+        for ( String schemaName : loadedSchemas.keySet() )
+        {
+            // We don't cone the schemas
+            clone.loadedSchemas.put( schemaName, loadedSchemas.get( schemaName ) );
+        }
+        
+        // Last, not least, clone the Using and usedBy structures
+        // They will be empty
+        clone.using = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        clone.usedBy = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        
+        return clone;
     }
 }

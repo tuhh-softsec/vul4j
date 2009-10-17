@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
@@ -48,7 +48,7 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
     private static final boolean DEBUG = LOG.isDebugEnabled();
     
     /** a map of DITStructureRule looked up by RuleId */
-    protected final Map<Integer, DITStructureRule> byRuleId;
+    protected Map<Integer, DITStructureRule> byRuleId;
     
     /**
      * Creates a new default NormalizerRegistry instance.
@@ -58,7 +58,7 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
     public DITStructureRuleRegistry( OidRegistry oidRegistry )
     {
         super( SchemaObjectType.DIT_STRUCTURE_RULE, oidRegistry );
-        byRuleId = new ConcurrentHashMap<Integer, DITStructureRule>();
+        byRuleId = new HashMap<Integer, DITStructureRule>();
     }
 
 
@@ -245,5 +245,19 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
                 }
             }
         }
+    }
+    
+    
+    /**
+     * Clone the DITStructureRuleRegistry
+     */
+    public DITStructureRuleRegistry clone() throws CloneNotSupportedException
+    {
+        DITStructureRuleRegistry clone = (DITStructureRuleRegistry)super.clone();
+        
+        // Clone the RuleId map
+        clone.byRuleId = new HashMap<Integer, DITStructureRule>();
+        
+        return clone;
     }
 }
