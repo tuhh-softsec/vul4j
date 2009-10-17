@@ -52,4 +52,15 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
     {
         super( SchemaObjectType.COMPARATOR );
     }
+
+
+    /**
+     * Clone a LdapComparator
+     */
+    public LdapComparator<T> clone() throws CloneNotSupportedException
+    {
+        LdapComparator<T> clone = (LdapComparator<T>)super.clone();
+        
+        return clone;
+    }
 }

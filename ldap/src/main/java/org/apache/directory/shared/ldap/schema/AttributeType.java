@@ -136,7 +136,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class AttributeType extends SchemaObject
+public class AttributeType extends SchemaObject implements Cloneable
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
@@ -822,5 +822,23 @@ public class AttributeType extends SchemaObject
     public String toString()
     {
         return DescriptionUtils.getDescription( this );
+    }
+    
+    
+    /**
+     * Clone an AttributeType
+     */
+    public AttributeType clone() throws CloneNotSupportedException
+    {
+        AttributeType clone = (AttributeType)super.clone();
+        
+        // All the references to other Registries object are set to null.
+        clone.equality = null;
+        clone.ordering = null;
+        clone.substring = null;
+        clone.superior = null;
+        clone.syntax = null;
+        
+        return clone;
     }
 }

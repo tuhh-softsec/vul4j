@@ -229,4 +229,26 @@ public class MatchingRuleUse extends SchemaObject
     {
         return DescriptionUtils.getDescription( this );
     }
+    
+    
+    /**
+     * Clone an MatchingRuleUse
+     */
+    public MatchingRuleUse clone() throws CloneNotSupportedException
+    {
+        MatchingRuleUse clone = (MatchingRuleUse)super.clone();
+        
+        // Clone the APPLY AttributeTypes
+        clone.applicableAttributeOids = new ArrayList<String>();
+        
+        for ( String oid : applicableAttributeOids )
+        {
+            clone.applicableAttributeOids.add( oid );
+        }
+        
+        clone.applicableAttributes = new ArrayList<AttributeType>();
+        
+        
+        return clone;
+    }
 }

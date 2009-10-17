@@ -563,4 +563,56 @@ public class DITContentRule extends SchemaObject
     {
         return DescriptionUtils.getDescription( this );
     }
+
+
+    /**
+     * Clone a DITContentRule
+     */
+    public DITContentRule clone() throws CloneNotSupportedException
+    {
+        DITContentRule clone = (DITContentRule)super.clone();
+        
+        // Clone the AUX ObjectClasses
+        clone.auxObjectClassOids = new ArrayList<String>();
+        
+        for ( String oid : auxObjectClassOids )
+        {
+            clone.auxObjectClassOids.add( oid );
+        }
+        
+        clone.auxObjectClasses = new ArrayList<ObjectClass>();
+        
+        // Clone the MAY AttributeTypes
+        clone.mayAttributeTypeOids = new ArrayList<String>();
+        
+        for ( String oid : mayAttributeTypeOids )
+        {
+            clone.mayAttributeTypeOids.add( oid );
+        }
+        
+        clone.mayAttributeTypes = new ArrayList<AttributeType>();
+        
+        // Clone the MUST AttributeTypes
+        clone.mustAttributeTypeOids = new ArrayList<String>();
+        
+        for ( String oid : mustAttributeTypeOids )
+        {
+            clone.mustAttributeTypeOids.add( oid );
+        }
+        
+        clone.mustAttributeTypes = new ArrayList<AttributeType>();
+        
+        // Clone the NOT AttributeTypes
+        clone.notAttributeTypeOids = new ArrayList<String>();
+        
+        for ( String oid : notAttributeTypeOids )
+        {
+            clone.notAttributeTypeOids.add( oid );
+        }
+        
+        clone.notAttributeTypes = new ArrayList<AttributeType>();
+        
+        
+        return clone;
+    }
 }

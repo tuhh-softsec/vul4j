@@ -198,4 +198,18 @@ public class LdapSyntax extends SchemaObject
             }
         }
     }
+
+
+    /**
+     * Clone a LdapSyntax
+     */
+    public LdapSyntax clone() throws CloneNotSupportedException
+    {
+        LdapSyntax clone = (LdapSyntax)super.clone();
+        
+        // All the references to other Registries object are set to null.
+        clone.syntaxChecker = null;
+        
+        return clone;
+    }
 }

@@ -82,4 +82,15 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
             throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
         }
     }
+
+
+    /**
+     * Clone a SyntaxChecker
+     */
+    public SyntaxChecker clone() throws CloneNotSupportedException
+    {
+        SyntaxChecker clone = (SyntaxChecker)super.clone();
+        
+        return clone;
+    }
 }

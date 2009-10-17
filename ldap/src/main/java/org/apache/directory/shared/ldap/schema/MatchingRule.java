@@ -267,4 +267,20 @@ public class MatchingRule extends SchemaObject
     {
         return DescriptionUtils.getDescription( this );
     }
+    
+    
+    /**
+     * Clone an MatchingRule
+     */
+    public MatchingRule clone() throws CloneNotSupportedException
+    {
+        MatchingRule clone = (MatchingRule)super.clone();
+        
+        // All the references to other Registries object are set to null.
+        clone.ldapComparator = null;
+        clone.ldapSyntax = null;
+        clone.normalizer = null;
+        
+        return clone;
+    }
 }

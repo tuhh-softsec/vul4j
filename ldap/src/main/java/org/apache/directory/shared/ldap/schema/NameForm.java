@@ -425,4 +425,38 @@ public class NameForm extends SchemaObject
     {
         return DescriptionUtils.getDescription( this );
     }
+    
+    
+    /**
+     * Clone a NameForm
+     */
+    public NameForm clone() throws CloneNotSupportedException
+    {
+        NameForm clone = (NameForm)super.clone();
+        
+        // Clone the MAY AttributeTypes
+        clone.mayAttributeTypeOids = new ArrayList<String>();
+        
+        for ( String oid : mayAttributeTypeOids )
+        {
+            clone.mayAttributeTypeOids.add( oid );
+        }
+        
+        clone.mayAttributeTypes = new ArrayList<AttributeType>();
+        
+        // Clone the MUST AttributeTypes
+        clone.mustAttributeTypeOids = new ArrayList<String>();
+        
+        for ( String oid : mustAttributeTypeOids )
+        {
+            clone.mustAttributeTypeOids.add( oid );
+        }
+        
+        clone.mustAttributeTypes = new ArrayList<AttributeType>();
+
+        // All the references to other Registries object are set to null.
+        clone.structuralObjectClass = null;
+        
+        return clone;
+    }
 }

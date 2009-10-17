@@ -202,4 +202,23 @@ public class DITStructureRule extends SchemaObject
     {
         return DescriptionUtils.getDescription( this );
     }
+
+
+    /**
+     * Clone a DITStructureRule
+     */
+    public DITStructureRule clone() throws CloneNotSupportedException
+    {
+        DITStructureRule clone = (DITStructureRule)super.clone();
+        
+        // Clone the Superiors rules
+        clone.superRules = new ArrayList<Integer>();
+        
+        for ( int ruleId : superRules )
+        {
+            clone.superRules.add( ruleId );
+        }
+        
+        return clone;
+    }
 }

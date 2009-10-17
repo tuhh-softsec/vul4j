@@ -505,4 +505,45 @@ public class ObjectClass extends SchemaObject
     {
         return DescriptionUtils.getDescription( this );
     }
+
+    
+    /**
+     * Clone an ObjectClass
+     */
+    public ObjectClass clone() throws CloneNotSupportedException
+    {
+        ObjectClass clone = (ObjectClass)super.clone();
+        
+        // Clone the Superiors ObjectClasses
+        clone.superiorOids = new ArrayList<String>();
+        
+        for ( String oid : superiorOids )
+        {
+            clone.superiorOids.add( oid );
+        }
+        
+        clone.superiors = new ArrayList<ObjectClass>();
+        
+        // Clone the MAY AttributeTypes
+        clone.mayAttributeTypeOids = new ArrayList<String>();
+        
+        for ( String oid : mayAttributeTypeOids )
+        {
+            clone.mayAttributeTypeOids.add( oid );
+        }
+        
+        clone.mayAttributeTypes = new ArrayList<AttributeType>();
+        
+        // Clone the MUST AttributeTypes
+        clone.mustAttributeTypeOids = new ArrayList<String>();
+        
+        for ( String oid : mustAttributeTypeOids )
+        {
+            clone.mustAttributeTypeOids.add( oid );
+        }
+        
+        clone.mustAttributeTypes = new ArrayList<AttributeType>();
+        
+        return clone;
+    }
 }

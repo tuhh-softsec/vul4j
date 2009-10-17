@@ -112,4 +112,15 @@ public abstract class LoadableSchemaObject extends SchemaObject
             this.fqcn = fqcn;
         }
     }
+
+
+    /**
+     * Clone a LoadableSchemaObject
+     */
+    public LoadableSchemaObject clone() throws CloneNotSupportedException
+    {
+        LoadableSchemaObject clone = (LoadableSchemaObject)super.clone();
+        
+        return clone;
+    }
 }

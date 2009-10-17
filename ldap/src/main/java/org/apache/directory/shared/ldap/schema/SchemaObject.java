@@ -71,7 +71,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public abstract class SchemaObject implements Serializable
+public abstract class SchemaObject implements Serializable, Cloneable
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
@@ -705,5 +705,41 @@ public abstract class SchemaObject implements Serializable
         }
         
         return false;
+    }
+    
+
+    /**
+     * Clone a SchemaObject
+     */
+    public SchemaObject clone() throws CloneNotSupportedException
+    {
+        SchemaObject clone = (SchemaObject)super.clone();
+
+        //Clone the names
+        clone.names = new ArrayList<String>();
+        
+        for ( String name : names )
+        {
+            clone.names.add( name );
+        }
+
+        // Clone the extensions
+        clone.extensions = new HashMap<String, List<String>>();
+        
+        for ( String key : extensions.keySet() )
+        {
+            List<String> extensionValues = extensions.get( key );
+            
+            List<String> cloneExtension = new ArrayList<String>();
+            
+            for ( String value : extensionValues )
+            {
+                cloneExtension.add( value );
+            }
+            
+            clone.extensions.put( key, cloneExtension );
+        }
+        
+        return clone;
     }
 }

@@ -87,4 +87,15 @@ public abstract class Normalizer extends LoadableSchemaObject
     {
         // Do nothing. The extended class will store the Registries if needed
     }
+
+
+    /**
+     * Clone a Normalizer
+     */
+    public Normalizer clone() throws CloneNotSupportedException
+    {
+        Normalizer clone = (Normalizer)super.clone();
+        
+        return clone;
+    }
 }
