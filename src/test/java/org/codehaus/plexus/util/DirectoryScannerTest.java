@@ -52,6 +52,7 @@ public class DirectoryScannerTest
         }
 
         ds.setIncludes( new String[] { "foo" + fs } );
+        ds.addDefaultExcludes();
         ds.scan();
 
         String[] files = ds.getIncludedFiles();
@@ -76,6 +77,7 @@ public class DirectoryScannerTest
         }
 
         ds.setExcludes( new String[] { "foo" + fs } );
+        ds.addDefaultExcludes();
         ds.scan();
 
         String[] files = ds.getIncludedFiles();
