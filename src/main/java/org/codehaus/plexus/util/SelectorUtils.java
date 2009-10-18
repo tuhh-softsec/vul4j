@@ -57,7 +57,6 @@ package org.codehaus.plexus.util;
 import java.io.File;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * <p>This is a utility class used by selectors and DirectoryScanner. The
@@ -260,10 +259,7 @@ public final class SelectorUtils
             pattern = pattern.substring( REGEX_HANDLER_PREFIX.length(), pattern.length()
                                          - PATTERN_HANDLER_SUFFIX.length() );
 
-            String pat = pattern;
-            pat = pat.replaceAll( "/", "[\\\\\\\\/]" );
-            
-            return str.matches( pat );
+            return str.matches( pattern );
         }
         else
         {
@@ -273,28 +269,25 @@ public final class SelectorUtils
                 pattern =
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
-
-            String altStr = str.replace( '\\', '/' );
             
-            return matchAntPathPattern( pattern, str, File.separator, isCaseSensitive )
-                || matchAntPathPattern( pattern, altStr, "/", isCaseSensitive );
+            return matchAntPathPattern( pattern, str, isCaseSensitive );
         }
     }
 
-    private static boolean matchAntPathPattern( String pattern, String str, String separator, boolean isCaseSensitive )
+    private static boolean matchAntPathPattern( String pattern, String str, boolean isCaseSensitive )
     {
         // When str starts with a File.separator, pattern has to start with a
         // File.separator.
         // When pattern starts with a File.separator, str has to start with a
         // File.separator.
-        if ( str.startsWith( separator ) !=
-            pattern.startsWith( separator ) )
+        if ( str.startsWith( File.separator ) !=
+            pattern.startsWith( File.separator ) )
         {
             return false;
         }
 
-        Vector patDirs = tokenizePath( pattern, separator );
-        Vector strDirs = tokenizePath( str, separator );
+        Vector patDirs = tokenizePath( pattern, File.separator );
+        Vector strDirs = tokenizePath( str, File.separator );
 
         int patIdxStart = 0;
         int patIdxEnd = patDirs.size() - 1;

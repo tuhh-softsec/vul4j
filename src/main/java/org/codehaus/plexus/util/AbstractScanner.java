@@ -283,18 +283,7 @@ public abstract class AbstractScanner
             this.includes = new String[includes.length];
             for ( int i = 0; i < includes.length; i++ )
             {
-                String pattern = includes[i].trim();
-                if ( !pattern.startsWith( SelectorUtils.REGEX_HANDLER_PREFIX ) )
-                {
-                    pattern = pattern.replace( File.separatorChar == '/' ? '\\' : '/', File.separatorChar );
-                }
-                
-                if ( pattern.endsWith( File.separator ) )
-                {
-                    pattern += "**";
-                }
-                
-                this.includes[i] = pattern;
+                this.includes[i] = normalizePattern( includes[i] );
             }
         }
     }
@@ -322,23 +311,45 @@ public abstract class AbstractScanner
             this.excludes = new String[excludes.length];
             for ( int i = 0; i < excludes.length; i++ )
             {
-                String pattern = excludes[i].trim();
-                if ( !pattern.startsWith( SelectorUtils.REGEX_HANDLER_PREFIX ) )
-                {
-                    pattern = pattern.replace( File.separatorChar == '/' ? '\\' : '/', File.separatorChar );
-                }
-                
-                if ( pattern.endsWith( File.separator ) )
-                {
-                    pattern += "**";
-                }
-                
-                this.excludes[i] = pattern;
+                this.excludes[i] = normalizePattern( excludes[i] );
             }
         }
     }
-  
-  
+
+    /**
+     * Normalizes the pattern, e.g. converts forward and backward slashes to the platform-specific file separator.
+     * 
+     * @param pattern The pattern to normalize, must not be <code>null</code>.
+     * @return The normalized pattern, never <code>null</code>.
+     */
+    private String normalizePattern( String pattern )
+    {
+        pattern = pattern.trim();
+
+        if ( pattern.startsWith( SelectorUtils.REGEX_HANDLER_PREFIX ) )
+        {
+            if ( File.separatorChar == '\\' )
+            {
+                pattern = StringUtils.replace( pattern, "/", "\\\\" );
+            }
+            else
+            {
+                pattern = StringUtils.replace( pattern, "\\\\", "/" );
+            }
+        }
+        else
+        {
+            pattern = pattern.replace( File.separatorChar == '/' ? '\\' : '/', File.separatorChar );
+
+            if ( pattern.endsWith( File.separator ) )
+            {
+                pattern += "**";
+            }
+        }
+
+        return pattern;
+    }
+
     /**
      * Tests whether or not a name matches against at least one include
      * pattern.
@@ -413,7 +424,7 @@ public abstract class AbstractScanner
         }
         for ( int i = 0; i < DEFAULTEXCLUDES.length; i++ )
         {
-            newExcludes[i + excludesLength] = DEFAULTEXCLUDES[i];
+            newExcludes[i + excludesLength] = DEFAULTEXCLUDES[i].replace( '/', File.separatorChar );
         }
         excludes = newExcludes;
     }

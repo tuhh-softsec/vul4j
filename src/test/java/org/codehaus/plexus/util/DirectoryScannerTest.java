@@ -314,6 +314,45 @@ public class DirectoryScannerTest
         assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
     }
 
+    public void testRegexWithSlashInsideCharacterClass()
+        throws IOException
+    {
+        printTestHeader();
+
+        File dir = new File( testDir, "regex-dir" );
+        try
+        {
+            FileUtils.deleteDirectory( dir );
+        }
+        catch ( IOException e )
+        {
+        }
+
+        dir.mkdirs();
+
+        String[] excludedPaths = { "target/foo.txt", "target/src/main/target/foo.txt" };
+
+        createFiles( dir, excludedPaths );
+
+        String[] includedPaths = { "module/src/main/target/foo.txt" };
+
+        createFiles( dir, includedPaths );
+
+        // NOTE: The portion "[^/]" is the interesting part of this pattern.
+        String regex = "(?!((?!target/)[^/]+/)*src/).*target.*";
+
+        DirectoryScanner ds = new DirectoryScanner();
+
+        String excludeExpr = SelectorUtils.REGEX_HANDLER_PREFIX + regex + SelectorUtils.PATTERN_HANDLER_SUFFIX;
+
+        String[] excludes = { excludeExpr };
+        ds.setExcludes( excludes );
+        ds.setBasedir( dir );
+        ds.scan();
+
+        assertInclusionsAndExclusions( ds.getIncludedFiles(), excludedPaths, includedPaths );
+    }
+
     private void printTestHeader()
     {
         StackTraceElement ste = new Throwable().getStackTrace()[1];
