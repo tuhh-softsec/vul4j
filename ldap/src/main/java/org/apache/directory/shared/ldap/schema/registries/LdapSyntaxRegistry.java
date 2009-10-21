@@ -51,4 +51,13 @@ public class LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of Syntaxes stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

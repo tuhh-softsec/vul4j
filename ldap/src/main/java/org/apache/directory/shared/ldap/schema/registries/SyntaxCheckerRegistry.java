@@ -164,4 +164,13 @@ public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker>
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of SyntaxCheckers stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

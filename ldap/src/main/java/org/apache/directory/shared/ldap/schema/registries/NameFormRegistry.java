@@ -52,4 +52,13 @@ public class NameFormRegistry extends SchemaObjectRegistry<NameForm>
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of NameForms stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

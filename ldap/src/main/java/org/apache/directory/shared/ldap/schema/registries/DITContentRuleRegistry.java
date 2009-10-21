@@ -52,4 +52,13 @@ public class DITContentRuleRegistry extends SchemaObjectRegistry<DITContentRule>
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of DITContentRule stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

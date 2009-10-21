@@ -281,4 +281,13 @@ public class ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of ObjectClasses stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

@@ -164,4 +164,13 @@ public class NormalizerRegistry extends SchemaObjectRegistry<Normalizer>
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of Normalizers stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

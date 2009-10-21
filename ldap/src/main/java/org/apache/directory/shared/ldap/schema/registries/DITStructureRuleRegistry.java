@@ -260,4 +260,13 @@ public class DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureR
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of DITStructureRule stored
+     */
+    public int size()
+    {
+        return byRuleId.values().size();
+    }
 }

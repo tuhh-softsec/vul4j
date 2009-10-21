@@ -54,4 +54,13 @@ public class MatchingRuleUseRegistry extends SchemaObjectRegistry<MatchingRuleUs
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of MatchingRuleUse stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

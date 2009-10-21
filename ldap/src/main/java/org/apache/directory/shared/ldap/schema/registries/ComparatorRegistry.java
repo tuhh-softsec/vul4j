@@ -164,4 +164,13 @@ public class ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>>
         
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of Comparators stored
+     */
+    public int size()
+    {
+        return byName.values().size();
+    }
 }

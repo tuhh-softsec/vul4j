@@ -368,4 +368,13 @@ public class AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType> i
 
         return clone;
     }
+    
+    
+    /**
+     *  @return The number of AttributeType stored
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
@@ -52,7 +51,7 @@ public class OidRegistry implements Cloneable
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** Maps OID to a SchemaObject */
-    private Map<String, SchemaObject> byOid = new ConcurrentHashMap<String, SchemaObject>();
+    private Map<String, SchemaObject> byOid = new HashMap<String, SchemaObject>();
     
     /**
      * Tells if the given OID is present on this registry
@@ -256,5 +255,14 @@ public class OidRegistry implements Cloneable
         }
         
         return clone;
+    }
+    
+    
+    /**
+     * @return The number of stored OIDs
+     */
+    protected int size() 
+    {
+        return byOid.size();
     }
 }
