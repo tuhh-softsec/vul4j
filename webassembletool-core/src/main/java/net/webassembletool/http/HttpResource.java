@@ -43,8 +43,6 @@ public class HttpResource extends Resource {
 		AuthenticationHandler authenticationHandler = target.getDriver()
 				.getAuthenticationHandler();
 		boolean proxy = target.isProxyMode();
-		if (HttpResource.LOG.isDebugEnabled())
-			HttpResource.LOG.debug(toString());
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
 				originalRequest, proxy);
 		authenticationHandler.preRequest(httpClientRequest, target);
@@ -58,8 +56,6 @@ public class HttpResource extends Resource {
 			httpClientRequest = new HttpClientRequest(url, originalRequest,
 					proxy);
 			authenticationHandler.preRequest(httpClientRequest, target);
-			if (HttpResource.LOG.isDebugEnabled())
-				HttpResource.LOG.debug(toString());
 			httpClientResponse = httpClientRequest.execute(httpClient,
 					httpContext);
 		}
@@ -88,7 +84,10 @@ public class HttpResource extends Resource {
 		copyHeader(output, "Cache-control");
 		String location = httpClientResponse.getHeader("Location");
 		if (location != null) {
+			// In case of a redirect, we need to rewrite the location header to match 
+			// provider application and remove any jsessionid in the URL
 			location = rewriteLocation(location);
+			location = removeSessionId(location);
 			output.addHeader("Location", location);
 		}
 		String charset = httpClientResponse.getContentCharset();
@@ -140,7 +139,7 @@ public class HttpResource extends Resource {
 		} else {
 			String charset = httpClientResponse.getContentCharset();
 			String content = IOUtils.toString(inputStream, charset);
-			content = content.replaceAll("[;]{0,1}jsessionid=([^?#&'\"]+)", "");
+			content = removeSessionId(content);
 			if (output.getHeader("Content-length") != null)
 				output.setHeader("Content-length", Integer.toString(content
 						.length()));
@@ -148,6 +147,10 @@ public class HttpResource extends Resource {
 			IOUtils.write(content, outputStream, charset);
 		}
 		inputStream.close();
+	}
+	
+	private String removeSessionId(String src) {
+		return src.replaceAll("[;]{0,1}jsessionid=([^?#&'\"]+)", "");
 	}
 
 	@Override

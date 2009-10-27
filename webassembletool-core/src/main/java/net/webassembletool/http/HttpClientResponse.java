@@ -130,4 +130,13 @@ public class HttpClientResponse {
 		else
 			return null;
 	}
+
+	@Override
+	public String toString() {
+		String result = statusCode + " " + statusText;
+		if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
+				|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY)
+			result += " -> " + currentLocation;
+		return result;
+	}
 }

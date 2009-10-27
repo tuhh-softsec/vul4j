@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -23,7 +25,9 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HttpContext;
 
 public class HttpClientRequest {
+	private final static Log LOG = LogFactory.getLog(HttpClientRequest.class);
 	private String uri;
+
 	public String getUri() {
 		return uri;
 	}
@@ -47,7 +51,10 @@ public class HttpClientRequest {
 	public HttpClientResponse execute(HttpClient httpClient,
 			HttpContext httpContext) throws IOException {
 		buildHttpMethod();
-		return new HttpClientResponse(httpUriRequest, httpClient, httpContext);
+		HttpClientResponse result = new HttpClientResponse(httpUriRequest,
+				httpClient, httpContext);
+		LOG.debug(toString() + " -> " + result.toString());
+		return result;
 	}
 
 	/**
@@ -135,6 +142,11 @@ public class HttpClientRequest {
 		if (headers == null)
 			headers = new HashMap<String, String>();
 		headers.put(name, value);
+	}
+
+	@Override
+	public String toString() {
+		return httpUriRequest.getMethod() + " " + uri;
 	}
 
 }

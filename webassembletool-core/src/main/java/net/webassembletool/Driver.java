@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.webassembletool.authentication.AuthenticationHandler;
-import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
 import net.webassembletool.cache.Cache;
 import net.webassembletool.cache.MemoryOutput;
 import net.webassembletool.cache.MemoryResource;
@@ -60,18 +59,14 @@ public class Driver {
 	private final DriverConfiguration config;
 	private final Cache cache;
 	private final HttpClient httpClient;
-	private AuthenticationHandler authenticationHandler = new RemoteUserAuthenticationHandler();
+	private AuthenticationHandler authenticationHandler;
 
 	public AuthenticationHandler getAuthenticationHandler() {
 		return authenticationHandler;
 	}
 
-	public void setAuthenticationHandler(
-			AuthenticationHandler authenticationHandler) {
-		this.authenticationHandler = authenticationHandler;
-	}
-
 	public Driver(String name, Properties props) {
+		LOG.debug("Initializing instance: " + name);
 		config = new DriverConfiguration(name, props);
 		// Remote application settings
 		if (config.getBaseURL() != null) {
@@ -110,6 +105,19 @@ public class Driver {
 			cache = new Cache(config.getCacheRefreshDelay());
 		else
 			cache = null;
+		// Authentication handler
+		LOG.debug("Using authenticationHandler: " + config.getAuthenticationHandler());
+		try {
+			authenticationHandler = (AuthenticationHandler) Class.forName(
+					config.getAuthenticationHandler()).newInstance();
+		} catch (InstantiationException e) {
+			throw new ConfigurationException(e);
+		} catch (IllegalAccessException e) {
+			throw new ConfigurationException(e);
+		} catch (ClassNotFoundException e) {
+			throw new ConfigurationException(e);
+		}
+		authenticationHandler.init(config.getProperties());
 	}
 
 	public final UserContext getContext(HttpServletRequest request) {

@@ -1,5 +1,7 @@
 package net.webassembletool.authentication;
 
+import java.util.Properties;
+
 import net.webassembletool.RequestContext;
 import net.webassembletool.UserContext;
 import net.webassembletool.http.HttpClientRequest;
@@ -30,5 +32,9 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 			remoteUser = requestContext.getOriginalRequest().getRemoteUser();
 		if (remoteUser != null)
 			request.addHeader("X_REMOTE_USER", remoteUser);
+	}
+
+	public void init(Properties properties) {
+		// Nothing to do		
 	}
 }

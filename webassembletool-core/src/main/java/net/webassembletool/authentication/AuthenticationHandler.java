@@ -1,5 +1,7 @@
 package net.webassembletool.authentication;
 
+import java.util.Properties;
+
 import net.webassembletool.RequestContext;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
@@ -15,6 +17,9 @@ import net.webassembletool.http.HttpClientResponse;
  * 
  */
 public interface AuthenticationHandler {
+
+	public void init(Properties properties);
+
 	public void preRequest(HttpClientRequest request,
 			RequestContext requestContext);
 

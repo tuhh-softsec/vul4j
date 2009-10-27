@@ -3,6 +3,7 @@ package net.webassembletool.cas;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.Principal;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,21 +20,13 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 	private final static Log LOG = LogFactory
 			.getLog(AuthenticationHandler.class);
 	private final static String SECOND_REQUEST = "SECOND_REQUEST";
-	private String loginUrl;
-
-	public CasAuthenticationHandler() {
-		this.loginUrl = "/login";
-	}
-
-	public CasAuthenticationHandler(String loginUrl) {
-		this.loginUrl = loginUrl;
-	}
+	private String loginUrl ="/login";
 
 	public boolean needsNewRequest(HttpClientResponse httpClientResponse,
 			RequestContext requestContext) {
 		HttpServletRequest httpServletRequest = requestContext
 				.getOriginalRequest();
-		if (httpServletRequest.getAttribute(SECOND_REQUEST) == null) {
+		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
 			// Calculating the URL we may have been redirected to, as
 			// automatic redirect following is activated
 			String currentLocation = httpClientResponse.getCurrentLocation();
@@ -67,24 +60,22 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		if (principal != null && principal instanceof AttributePrincipal) {
 			AttributePrincipal casPrincipal = (AttributePrincipal) principal;
 			LOG.debug("User logged in CAS as: " + casPrincipal.getName());
-			String service = location;
-			service = service.substring(service.indexOf("service=")
-					+ "service=".length());
-			int ampersandPosition = service.indexOf('&');
-			if (ampersandPosition > 0)
-				service = service.substring(0, ampersandPosition);
-			try {
-				service = URLDecoder.decode(service, "ISO-8859-1");
-			} catch (UnsupportedEncodingException e) {
-				// Should not happen
-			}
-			String casProxyTicket = casPrincipal.getProxyTicketFor(service);
+			String casProxyTicket = casPrincipal.getProxyTicketFor(location);
 			LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName()
-					+ " for service: " + service + " : " + casProxyTicket);
-			if (casProxyTicket != null)
-				return service += "&ticket=" + casProxyTicket;
-			return service;
+					+ " for service: " + location + " : " + casProxyTicket);
+			if (casProxyTicket != null) {
+				if (location.indexOf("?") > 0)
+					return location + "&ticket=" + casProxyTicket;
+				else
+					return location + "?ticket=" + casProxyTicket;
+			}
 		}
 		return location;
+	}
+
+	public void init(Properties properties) {
+		String casLoginUrl = properties.getProperty("casLoginUrl");
+		if  (casLoginUrl!=null)
+			this.loginUrl = casLoginUrl;
 	}
 }
