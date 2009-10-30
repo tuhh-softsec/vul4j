@@ -52,7 +52,10 @@ public class NameAndOptionalUIDComparator extends LdapComparator<Object>
     }
 
     
-    public void setRegistries( Registries registries )
+    /**
+     * {@inheritDoc}
+     */
+    public void applyRegistries( Registries registries ) throws NamingException
     {
         attrRegistry = registries.getAttributeTypeRegistry();
     }
