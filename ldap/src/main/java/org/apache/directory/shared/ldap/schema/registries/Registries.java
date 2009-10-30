@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
@@ -45,6 +44,7 @@ import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,12 +61,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( Registries.class );
 
-    /** A flag indicating if this Registries is relaxed or not */
-    private boolean isRelaxed;
-    
-    /** A flag indicating if this Registries should accept only enabled elements */
-    private boolean acceptDisabled;
-    
     /**
      * A String name to Schema object map for those schemas loaded into this
      * registry.
@@ -112,6 +106,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /** A map storing all the schema objects associated with a schema */
     private Map<String, Set<SchemaWrapper>> schemaObjectsBySchemaName;
     
+    /** A flag indicating that the Registries is relaxed or not */
+    private boolean isRelaxed;
+    
+    /** A flag indicating that disabled SchemaObject are accepted */
+    private boolean disabledAccepted;
+    
+    /** Two flags for RELAXED and STRUCT */
+    public static final boolean STRICT = false;
+    public static final boolean RELAXED = true;
+    
     /**
      *  A map storing a relation between a SchemaObject and all the 
      *  referencing SchemaObjects.
@@ -144,15 +148,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
         normalizerRegistry = new NormalizerRegistry( oidRegistry );
         objectClassRegistry = new ObjectClassRegistry( oidRegistry );
         syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
-        schemaObjectsBySchemaName = new ConcurrentHashMap<String, Set<SchemaWrapper>>();
-        usedBy = new ConcurrentHashMap<SchemaWrapper, Set<SchemaWrapper>>();
-        using = new ConcurrentHashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        schemaObjectsBySchemaName = new HashMap<String, Set<SchemaWrapper>>();
+        usedBy = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        using = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
         
-        // Default to not permissive
-        isRelaxed = false;
-        
-        // Default to not allow disabled element
-        acceptDisabled = false;
+        isRelaxed = STRICT;
+        disabledAccepted = false;
     }
 
     
@@ -474,6 +475,49 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
         // Step 6-9 aren't yet defined
         return errors;
+    }
+    
+    
+    /**
+     * Build the usedBy and using references from the stored elements.
+     */
+    public void buildReferences()
+    {
+        // First start with the Syntaxes
+        for ( LdapSyntax syntax : ldapSyntaxRegistry )
+        {
+            SyntaxChecker syntaxChecker = null;
+            
+            // Each syntax should reference a SyntaxChecker with the same OID
+            try
+            {
+                syntaxChecker = syntaxCheckerRegistry.lookup( syntax.getOid() );
+            }
+            catch ( NamingException ne )
+            {
+                // There is no SyntaxChecker : default to the OctetString SyntaxChecker
+                syntaxChecker = new OctetStringSyntaxChecker( syntax.getOid() );
+            }
+            
+            addReference( syntax, syntaxChecker );
+        }
+
+        // Then the MatchingRules
+        for ( MatchingRule matchingRule : matchingRuleRegistry )
+        {
+            // each matching rule references a Syntax, a Comparator and a Normalizer
+            // If we don't have a Syntax, this is an error
+            LdapSyntax syntax = null;
+            
+            try
+            {
+                syntax = ldapSyntaxRegistry.lookup( matchingRule.getSyntaxOid() );
+            }
+            catch ( NamingException ne )
+            {
+                
+            }
+        }
     }
 
     
@@ -867,7 +911,63 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	    return content;
 	}
 	
+
+	/**
+	 * Add the given AttributeTtpe into the Registries
+	 *
+	 * @param attributeType The AttributeType to register
+	 * @throws NamingException If the registering failed
+	 */
+    public void register( AttributeType attributeType ) throws NamingException
+    {
+        LOG.debug( "Registering AttributeType: {}:{}", attributeType.getOid(), attributeType.getName() );
+        
+        String schemaName = StringTools.toLowerCase( attributeType.getSchemaName() );
+
+        // First, clone the Registries so that we don't mess with the 
+        // current registries if something goes wrong
+        // Register the new AT into the cloned ATRegistry
+        attributeTypeRegistry.register( attributeType );
+        
+        if ( isStrict() )
+        {
+            // Update the AT with the cloned registries
+            attributeType.applyRegistries( this );
+            
+            // Update the referenced objects (Using/UsedBy)
+            // The Syntax,
+            addReference( attributeType, attributeType.getSyntax() );
+    
+            // The Superior if any
+            addReference( attributeType, attributeType.getSuperior() );
+    
+            // The MatchingRules
+            addReference( attributeType, attributeType.getEquality() );
+            addReference( attributeType, attributeType.getOrdering() );
+            addReference( attributeType, attributeType.getSubstring() );
+        }        
+    }
+    
 	
+    /**
+     * Add the given LdapComparator into the Registries
+     *
+     * @param comparator The LdapComparator to register
+     * @throws NamingException If the registering failed
+     */
+    public void register( LdapComparator<?> comparator ) throws NamingException
+    {
+        LOG.debug( "Registering Comparator: {}:{}", comparator.getOid(), comparator.getName() );
+
+        comparatorRegistry.register( comparator );
+        
+        if ( LOG.isDebugEnabled() )
+        {
+            LOG.debug( "registered " + comparator.getName() + " for OID {}", comparator.getOid() );
+        }
+    }
+    
+        
 	public void register( SchemaObject schemaObject ) throws NamingException
 	{
 	    LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
@@ -877,14 +977,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	    // First call the specific registry's register method
 	    switch ( schemaObject.getObjectType() )
 	    {
-	        case ATTRIBUTE_TYPE : 
-	            attributeTypeRegistry.register( (AttributeType)schemaObject );
-	            break;
-	            
-            case COMPARATOR : 
-                comparatorRegistry.register( (LdapComparator<?>)schemaObject );
-                break;
-                
             case DIT_CONTENT_RULE : 
                 ditContentRuleRegistry.register( (DITContentRule)schemaObject );
                 break;
@@ -1679,53 +1771,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
     
     
     /**
-     * Tells if the Registries is permissive or if it must be checked 
-     * against inconsistencies.
-     *
-     * @return True if SchemaObjects can be added even if they break the consistency 
-     */
-    public boolean isRelaxed()
-    {
-        return isRelaxed;
-    }
-    
-    
-    /**
-     * Change the Registries behavior regarding consistency.
-     *
-     * @param isRelaxed If <code>false</code>, then the Registries won't allow modifications that 
-     * leave the Registries to be inconsistent
-     */
-    public void setRelaxed( boolean isRelaxed )
-    {
-        this.isRelaxed = isRelaxed;
-    }
-    
-    
-    /**
-     * Tells if the Registries accept disabled elements.
-     *
-     * @return True if disbaled SchemaObjects can be added 
-     */
-    public boolean acceptDisabled()
-    {
-        return acceptDisabled;
-    }
-    
-    
-    /**
-     * Change the Registries behavior regarding disabled SchemaObject element.
-     *
-     * @param acceptDisabled If <code>false</code>, then the Registries won't accept
-     * disabled SchemaObject or enabled SchemaObject from disabled schema 
-     */
-    public void setAcceptDisabled( boolean acceptDisabled )
-    {
-        this.acceptDisabled = acceptDisabled;
-    }
-    
-    
-    /**
      * Clone the Registries
      */
     public Registries clone() throws CloneNotSupportedException
@@ -1763,6 +1808,142 @@ public class Registries implements SchemaLoaderListener, Cloneable
         clone.using = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
         clone.usedBy = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
         
+        // Now, check the registries. We don"t care about errors
+        checkRefInteg();
+        
+        // Last, rebuild the using and usedBy references
+        buildReferences();
+        
         return clone;
+    }
+
+    
+    /**
+     * Tells if the Registries is permissive or if it must be checked 
+     * against inconsistencies.
+     *
+     * @return True if SchemaObjects can be added even if they break the consistency 
+     */
+    public boolean isRelaxed()
+    {
+        return isRelaxed;
+    }
+
+    
+    /**
+     * Tells if the Registries is strict.
+     *
+     * @return True if SchemaObjects cannot be added if they break the consistency 
+     */
+    public boolean isStrict()
+    {
+        return !isRelaxed;
+    }
+
+    
+    /**
+     * Change the Registries to a relaxed mode, where invalid SchemaObjects
+     * can be registered.
+     */
+    public void setRelaxed()
+    {
+        isRelaxed = RELAXED;
+    }
+
+    
+    /**
+     * Change the Registries to a strict mode, where invalid SchemaObjects
+     * cannot be registered.
+     */
+    public void setStrict()
+    {
+        isRelaxed = STRICT;
+    }
+
+
+    /**
+     * Tells if the Registries accept disabled elements.
+     *
+     * @return True if disabled SchemaObjects can be added 
+     */
+    public boolean isDisabledAccepted()
+    {
+        return disabledAccepted;
+    }
+    
+    
+    /**
+     * Change the Registries behavior regarding disabled SchemaObject element.
+     *
+     * @param acceptDisabled If <code>false</code>, then the Registries won't accept
+     * disabled SchemaObject or enabled SchemaObject from disabled schema 
+     */
+    public void setDisabledAccepted( boolean disabledAccepted )
+    {
+        this.disabledAccepted = disabledAccepted;
+    }
+    
+    
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append( "Registries [" );
+        
+        if ( isRelaxed )
+        {
+            sb.append( "RELAXED," );
+        }
+        else
+        {
+            sb.append( "STRICT," );
+        }
+        
+        if ( disabledAccepted )
+        {
+            sb.append( " Disabled accepted] :\n" );
+        }
+        else
+        {
+            sb.append( " Disabled forbidden] :\n" );
+        }
+        
+        sb.append( "loaded schemas [" );
+        boolean isFirst = true;
+        
+        for ( String schema:loadedSchemas.keySet() )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+            
+            sb.append( schema );
+        }
+        
+        sb.append( "]\n" );
+        
+        sb.append( "AttributeTypes : " ).append( attributeTypeRegistry.size() ).append( "\n" );
+        sb.append( "Comparators : " ).append( comparatorRegistry.size() ).append( "\n" );
+        sb.append( "DitContentRules : " ).append( ditContentRuleRegistry.size() ).append( "\n" );
+        sb.append( "DitStructureRules : " ).append( ditStructureRuleRegistry.size() ).append( "\n" );
+        sb.append( "MatchingRules : " ).append( matchingRuleRegistry.size() ).append( "\n" );
+        sb.append( "MatchingRuleUses : " ).append( matchingRuleUseRegistry.size() ).append( "\n" );
+        sb.append( "NameForms : " ).append( nameFormRegistry.size() ).append( "\n" );
+        sb.append( "Normalizers : " ).append( normalizerRegistry.size() ).append( "\n" );
+        sb.append( "ObjectClasses : " ).append( objectClassRegistry.size() ).append( "\n" );
+        sb.append( "Syntaxes : " ).append( ldapSyntaxRegistry.size() ).append( "\n" );
+        sb.append( "SyntaxCheckers : " ).append( syntaxCheckerRegistry.size() ).append( "\n" );
+        
+        sb.append( "OidRegistry : " ).append( oidRegistry.size() ).append( '\n' );
+        
+        return sb.toString();
     }
 }

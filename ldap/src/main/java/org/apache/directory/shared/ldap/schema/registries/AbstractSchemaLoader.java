@@ -20,31 +20,18 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Stack;
+import java.util.Set;
 
-import javax.naming.NamingException;
-
-import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.ldif.LdifEntry;
-import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.DITContentRule;
-import org.apache.directory.shared.ldap.schema.DITStructureRule;
-import org.apache.directory.shared.ldap.schema.EntityFactory;
-import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.MatchingRule;
-import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
-import org.apache.directory.shared.ldap.schema.NameForm;
-import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.schema.ObjectClass;
-import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,15 +49,6 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     
 
     protected SchemaLoaderListener listener;
-    
-    /** the factory that generates respective SchemaObjects from LDIF entries */
-    protected final EntityFactory factory;
-    
-    
-    public AbstractSchemaLoader( EntityFactory factory )
-    {
-        this.factory = factory;
-    }
     
     /** 
      * A map of all available schema names to schema objects. This map is 
@@ -107,39 +85,9 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     /**
      * {@inheritDoc}
      */
-    public final List<Throwable> loadAllEnabled( Registries registries, boolean check ) throws Exception
+    public final Collection<Schema> getAllEnabled() throws Exception
     {
-        // Relax the controls at first
-        List<Throwable> errors = new ArrayList<Throwable>();
-        boolean wasRelaxed = registries.isRelaxed();
-        registries.setRelaxed( true );
-
-        Map<String,Schema> notloaded = new HashMap<String,Schema>( schemaMap );
-        
-        for ( String schemaName : schemaMap.keySet() )
-        {
-            if ( registries.isSchemaLoaded( schemaName ) )
-            {
-                notloaded.remove( schemaName );
-            }
-        }
-         
-        for ( Schema schema : schemaMap.values() )
-        {
-            loadDepsFirst( schema, new Stack<String>(), 
-                notloaded, schema, registries );
-        }
-
-        // At the end, check the registries if required
-        if ( check )
-        {
-            errors = registries.checkRefInteg();
-        }
-        
-        // Restore the Registries isRelaxed flag
-        registries.setRelaxed( wasRelaxed );
-        
-        return errors;
+        return schemaMap.values();
     }
     
     
@@ -156,7 +104,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param props to use while trying to resolve other schemas
      * @throws Exception if there is a cycle detected and/or another
      * failure results while loading, producing and or registering schema objects
-     */
+     *
     protected final void loadDepsFirst( Schema rootAncestor, Stack<String> beenthere, Map<String, Schema> notLoaded,
                                         Schema schema, Registries registries ) throws Exception
     {
@@ -190,7 +138,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
          * We got deps and need to load them before this schema.  We go through
          * all deps loading them with their deps first if they have not been
          * loaded.
-         */
+         *
         for ( String depName : deps )
         {
             // @todo if a dependency is not loaded it's not in this list
@@ -247,11 +195,62 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         return this.schemaMap.get( schemaName );
     }
 
+    
+    protected Schema getSchema( Entry entry ) throws Exception
+    {
+        String name;
+        String owner;
+        String[] dependencies = StringTools.EMPTY_STRINGS;
+        boolean isDisabled = false;
+        
+        if ( entry == null )
+        {
+            throw new NullPointerException( "entry cannot be null" );
+        }
+        
+        if ( entry.get( SchemaConstants.CN_AT ) == null )
+        {
+            throw new NullPointerException( "entry must have a valid cn attribute" );
+        }
+        
+        name = entry.get( SchemaConstants.CN_AT ).getString();
+        
+        if ( entry.get( SchemaConstants.CREATORS_NAME_AT ) == null )
+        {
+            throw new NullPointerException( "entry must have a valid " 
+                + SchemaConstants.CREATORS_NAME_AT + " attribute" );
+        }
+        
+        owner = entry.get( SchemaConstants.CREATORS_NAME_AT ).getString();
+        
+        if ( entry.get( MetaSchemaConstants.M_DISABLED_AT ) != null )
+        {
+            String value = entry.get( MetaSchemaConstants.M_DISABLED_AT ).getString();
+            value = value.toUpperCase();
+            isDisabled = value.equals( "TRUE" );
+        }
+        
+        if ( entry.get( MetaSchemaConstants.M_DEPENDENCIES_AT ) != null )
+        {
+            Set<String> depsSet = new HashSet<String>();
+            EntryAttribute depsAttr = entry.get( MetaSchemaConstants.M_DEPENDENCIES_AT );
+            
+            for ( Value<?> value:depsAttr )
+            {
+                depsSet.add( value.getString() );
+            }
+
+            dependencies = depsSet.toArray( StringTools.EMPTY_STRINGS );
+        }
+        
+        return new DefaultSchema( name, owner, dependencies, isDisabled ){};
+    }
+    
 
     /**
      * {@inheritDoc}
-     */
-    public List<Throwable> loadWithDependencies( Collection<Schema> schemas, Registries registries, boolean check ) throws Exception
+     *
+    public List<Throwable> loadWithDependencies( Registries registries, boolean check, Schema... schemas ) throws Exception
     {
         // Relax the controls at first
         List<Throwable> errors = new ArrayList<Throwable>();
@@ -294,7 +293,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param entry The LdifEntry containing the comparator description
      * @param schema The associated schema
      * @throws Exception If the registering failed
-     */
+     *
     protected LdapComparator<?> registerComparator( Registries registries, LdifEntry entry, Schema schema ) 
         throws Exception
     {
@@ -309,7 +308,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param entry The Entry containing the comparator description
      * @param schema The associated schema
      * @throws Exception If the registering failed
-     */
+     *
     protected LdapComparator<?> registerComparator( Registries registries, Entry entry, Schema schema ) 
         throws Exception
     {
@@ -348,7 +347,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created SyntaxChecker instance
      * @throws Exception If the registering failed
-     */
+     *
     protected SyntaxChecker registerSyntaxChecker( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -387,7 +386,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created Normalizer instance
      * @throws Exception If the registering failed
-     */
+     *
     protected Normalizer registerNormalizer( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -425,7 +424,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created MatchingRule instance
      * @throws Exception If the registering failed
-     */
+     *
     protected MatchingRule registerMatchingRule( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -463,7 +462,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created Syntax instance
      * @throws Exception If the registering failed
-     */
+     *
     protected LdapSyntax registerSyntax( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -501,7 +500,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created AttributeType instance
      * @throws Exception If the registering failed
-     */
+     *
     protected AttributeType registerAttributeType( Registries registries, LdifEntry entry, Schema schema ) 
         throws Exception
     {
@@ -538,7 +537,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created MatchingRuleUse instance
      * @throws Exception If the registering failed
-     */
+     *
     protected MatchingRuleUse registerMatchingRuleUse( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -555,7 +554,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created NameForm instance
      * @throws Exception If the registering failed
-     */
+     *
     protected NameForm registerNameForm( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -572,7 +571,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created DitContentRule instance
      * @throws Exception If the registering failed
-     */
+     *
     protected DITContentRule registerDitContentRule( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -589,7 +588,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created DitStructureRule instance
      * @throws Exception If the registering failed
-     */
+     *
     protected DITStructureRule registerDitStructureRule( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -606,7 +605,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created ObjectClass instance
      * @throws Exception If the registering failed
-     */
+     *
     protected ObjectClass registerObjectClass( Registries registries, LdifEntry entry, Schema schema) 
         throws Exception
     {
@@ -622,7 +621,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * @param schema The associated schema
      * @return the created ObjectClass instance
      * @throws Exception If the registering failed
-     */
+     *
     protected ObjectClass registerObjectClass( Registries registries, Entry entry, Schema schema) 
         throws Exception
     {
@@ -648,5 +647,17 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         }
         
         return objectClass;
+    }
+    
+    
+    public EntityFactory getFactory()
+    {
+        return factory;
+    }
+    */
+
+    public Object getDao()
+    {
+        return null;
     }
 }

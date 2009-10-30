@@ -23,19 +23,17 @@ package org.apache.directory.shared.schema.loader.ldif;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.ResourceMap;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +74,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     public JarLdifSchemaLoader() throws Exception
     {
-        super( new SchemaEntityFactory() );
         initializeSchemas();
     }
 
@@ -119,7 +116,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 {
                     LdifReader reader = new LdifReader( resource.openStream() );
                     LdifEntry entry = reader.next();
-                    Schema schema = factory.getSchema( entry.getEntry() );
+                    Schema schema = getSchema( entry.getEntry() );
                     schemaMap.put( schema.getSchemaName(), schema );
                     
                     if ( IS_DEBUG )
@@ -139,8 +136,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
     /**
      * {@inheritDoc}
-     */
-    public List<Throwable> loadWithDependencies( Schema schema, Registries registries, boolean check ) throws Exception
+     *
+    public List<Throwable> loadWithDependencies( Registries registries, boolean check, Schema... schemas ) throws Exception
     {
         // Relax the controls at first
         List<Throwable> errors = new ArrayList<Throwable>();
@@ -181,7 +178,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * the schema has been loaded.
      * 
      * {@inheritDoc}
-     */
+     *
     public void load( Schema schema, Registries registries, boolean isDepLoad ) throws Exception
     {
         // if we're loading a dependency and it has not been enabled on 
@@ -205,17 +202,17 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         // We set the registries to Permissive, so that we don't care about the order
         // the SchemaObjects are loaded.
-        loadComparators( schema, registries );
-        loadNormalizers( schema, registries );
-        loadSyntaxCheckers( schema, registries );
-        loadSyntaxes( schema, registries );
-        loadMatchingRules( schema, registries );
-        loadAttributeTypes( schema, registries );
-        loadObjectClasses( schema, registries );
-        loadMatchingRuleUses( schema, registries );
-        loadDitContentRules( schema, registries );
-        loadNameForms( schema, registries );
-        loadDitStructureRules( schema, registries );
+        loadComparators( schema );
+        loadNormalizers( schema );
+        loadSyntaxCheckers( schema );
+        loadSyntaxes( schema );
+        loadMatchingRules( schema );
+        loadAttributeTypes( schema );
+        loadObjectClasses( schema );
+        loadMatchingRuleUses( schema );
+        loadDitContentRules( schema );
+        loadNameForms( schema );
+        loadDitStructureRules( schema );
 
         notifyListenerOrRegistries( schema, registries );
     }
@@ -234,18 +231,14 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     
     
     /**
-     * Loads the Comparators from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which comparators are loaded
-     * @param registries the registries which are loaded with comparators
-     * @throws Exception if there are failures accessing comparator information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadComparators( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadComparators( Schema schema ) throws Exception
     {
         String comparatorsDirectory = getSchemaDirectory( schema ) 
             + "/" + SchemaConstants.COMPARATORS_PATH;
+        
+        List<Entry> comparatorList = new ArrayList<Entry>();
         
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -257,9 +250,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
 
-                registerComparator( registries, entry, schema );
+                comparatorList.add( entry.getEntry() );
             }
         }
+        
+        return comparatorList;
     }
     
     
@@ -268,14 +263,15 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which syntaxCheckers are loaded
-     * @param targetRegistries the registries which are loaded with syntaxCheckers
      * @throws Exception if there are failures accessing syntaxChecker 
      * information stored in LDIF files
      */
-    private void loadSyntaxCheckers( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadSyntaxCheckers( Schema schema ) throws Exception
     {
         String syntaxCheckersDirectory = getSchemaDirectory( schema ) 
             +  "/" + SchemaConstants.SYNTAX_CHECKERS_PATH;
+
+        List<Entry> syntaxCheckerList = new ArrayList<Entry>();
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -287,9 +283,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 
-                registerSyntaxChecker( registries, entry, schema );
+                syntaxCheckerList.add( entry.getEntry() );
             }
         }
+        
+        return syntaxCheckerList;
     }
     
     
@@ -298,14 +296,15 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which normalizers are loaded
-     * @param registries the registries which are loaded with normalizers
      * @throws Exception if there are failures accessing normalizer information
      * stored in LDIF files
      */
-    private void loadNormalizers( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadNormalizers( Schema schema ) throws Exception
     {
         String normalizersDirectory = getSchemaDirectory( schema )
             + "/" + SchemaConstants.NORMALIZERS_PATH;
+
+        List<Entry> normalizerList = new ArrayList<Entry>();
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -317,9 +316,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 
-                registerNormalizer( registries, entry, schema );
+                normalizerList.add( entry.getEntry() );
             }
         }
+        
+        return normalizerList;
     }
     
     
@@ -328,15 +329,16 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which matchingRules are loaded
-     * @param registries the registries which are loaded with matchingRules
      * @throws Exception if there are failures accessing matchingRule 
      * information stored in LDIF files
      */
-    private void loadMatchingRules( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadMatchingRules( Schema schema ) throws Exception
     {
         String matchingRulesDirectory = getSchemaDirectory( schema )
             + "/" + SchemaConstants.MATCHING_RULES_PATH;
         
+        List<Entry> matchingRuleList = new ArrayList<Entry>();
+
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
             Pattern regex = Pattern.compile( ".*" + matchingRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
@@ -347,9 +349,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
 
-                registerMatchingRule( registries, entry, schema );
+                matchingRuleList.add( entry.getEntry() );
             }
         }
+        
+        return matchingRuleList;
     }
     
     
@@ -358,14 +362,15 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which syntaxes are loaded
-     * @param registries the registries which are loaded with syntaxes
      * @throws Exception if there are failures accessing comparator information
      * stored in LDIF files
      */
-    private void loadSyntaxes( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadSyntaxes( Schema schema ) throws Exception
     {
         String syntaxesDirectory = getSchemaDirectory( schema )
             + "/" + SchemaConstants.SYNTAXES_PATH;
+
+        List<Entry> syntaxList = new ArrayList<Entry>();
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -377,9 +382,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 
-                registerSyntax( registries, entry, schema );
+                syntaxList.add( entry.getEntry() );
             }
         }
+        
+        return syntaxList;
     }
 
     
@@ -388,16 +395,17 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which attributeTypes are loaded
-     * @param registries the registries which are loaded with attributeTypes
      * @throws Exception if there are failures accessing attributeTypes 
      * information stored in LDIF files
      */
-    private void loadAttributeTypes( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadAttributeTypes( Schema schema ) throws Exception
     {
     	// check that the attributeTypes directory exists for the schema
         String attributeTypesDirectory = getSchemaDirectory( schema )
             + "/" + SchemaConstants.ATTRIBUTES_TYPE_PATH;
         
+        List<Entry> attributeTypeList = new ArrayList<Entry>();
+
         // get list of attributeType LDIF schema files in attributeTypes
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -409,9 +417,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
 
-                registerAttributeType( registries, entry, schema );
+                attributeTypeList.add( entry.getEntry() );
             }
         }
+        
+        return attributeTypeList;
     }
 
 
@@ -420,15 +430,16 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which matchingRuleUses are loaded
-     * @param registries the registries which are loaded with matchingRuleUses
      * @throws Exception if there are failures accessing matchingRuleUse 
      * information stored in LDIF files
      */
-    private void loadMatchingRuleUses( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadMatchingRuleUses( Schema schema ) throws Exception
     {
         String matchingRuleUsesDirectory = getSchemaDirectory( schema )
             + "/" + SchemaConstants.MATCHING_RULE_USE_PATH;
         
+        List<Entry> matchingRuleUseList = new ArrayList<Entry>();
+
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
             Pattern regex = Pattern.compile( ".*" + matchingRuleUsesDirectory + "/m-oid=.*\\." + LDIF_EXT );
@@ -439,9 +450,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
 
-                registerMatchingRuleUse( registries, entry, schema );
+                matchingRuleUseList.add( entry.getEntry() );
             }
         }
+        
+        return matchingRuleUseList;
     }
 
 
@@ -450,13 +463,14 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which nameForms are loaded
-     * @param registries the registries which are loaded with nameForms
      * @throws Exception if there are failures accessing nameForm information
      * stored in LDIF files
      */
-    private void loadNameForms( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadNameForms( Schema schema ) throws Exception
     {
         String nameFormsDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.NAME_FORMS_PATH;
+
+        List<Entry> nameFormList = new ArrayList<Entry>();
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -468,9 +482,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
 
-                registerNameForm( registries, entry, schema );
+                nameFormList.add( entry.getEntry() );
             }
         }
+        
+        return nameFormList;
     }
 
 
@@ -479,14 +495,15 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which ditContentRules are loaded
-     * @param registries the registries which are loaded with ditContentRules
      * @throws Exception if there are failures accessing ditContentRules 
      * information stored in LDIF files
      */
-    private void loadDitContentRules( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadDitContentRules( Schema schema ) throws Exception
     {
         String ditContentRulesDirectory = getSchemaDirectory( schema ) + "/" + 
             SchemaConstants.DIT_CONTENT_RULES_PATH;
+
+        List<Entry> ditContentRulesList = new ArrayList<Entry>();
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -498,9 +515,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
                 
-                registerDitContentRule( registries, entry, schema );
+                ditContentRulesList.add( entry.getEntry() );
             }
         }
+        
+        return ditContentRulesList;
     }
 
 
@@ -509,14 +528,15 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * the supplied registries.
      *
      * @param schema the schema for which ditStructureRules are loaded
-     * @param registries the registries which are loaded with ditStructureRules
      * @throws Exception if there are failures accessing ditStructureRule 
      * information stored in LDIF files
      */
-    private void loadDitStructureRules( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadDitStructureRules( Schema schema ) throws Exception
     {
         String ditStructureRulesDirectory = getSchemaDirectory( schema )
             + "/" + SchemaConstants.DIT_STRUCTURE_RULES_PATH;
+
+        List<Entry> ditStructureRuleList = new ArrayList<Entry>();
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -529,9 +549,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
             
                 LdifEntry entry = reader.next();
                 
-                registerDitStructureRule( registries, entry, schema );
+                ditStructureRuleList.add( entry.getEntry() );
             }
         }
+        
+        return ditStructureRuleList;
     }
 
 
@@ -540,14 +562,15 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * supplied registries.
      *
      * @param schema the schema for which objectClasses are loaded
-     * @param registries the registries which are loaded with objectClasses
      * @throws Exception if there are failures accessing objectClass information
      * stored in LDIF files
      */
-    private void loadObjectClasses( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadObjectClasses( Schema schema ) throws Exception
     {
     	// get objectClasses directory, check if exists, return if not
     	String objectClassesDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.OBJECT_CLASSES_PATH;
+
+        List<Entry> objectClassList = new ArrayList<Entry>();
 
         for ( String resourcePath : RESOURCE_MAP.keySet() )
         {
@@ -559,8 +582,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
 
-                registerObjectClass( registries, entry, schema );
+                objectClassList.add( entry.getEntry() );
             }
         }
+        
+        return objectClassList;
     }
 }

@@ -23,6 +23,8 @@ package org.apache.directory.shared.ldap.schema.registries;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.directory.shared.ldap.entry.Entry;
+
 
 /**
  * Loads schemas into registres.
@@ -51,28 +53,16 @@ public interface SchemaLoader
     
     
     /**
-     * Loads a collection of schemas.  A best effort should be made to load the dependended 
+     * Loads a set of schemas.  A best effort should be made to load the dependended 
      * schemas that these schemas may rely on even if they are not included in the collection.
      * 
-     * @param schemas the collection of schemas to load
      * @param registries the registries to populate with these schemas
      * @param check tells if the Registries must be checked after having been loaded
+     * @param schemas the set of schemas to load
      * @return the list of erros we met during the loading of schemas
      * @throws Exception if any kind of problems are encountered during the load
-     */
-    List<Throwable> loadWithDependencies( Collection<Schema> schemas, Registries registries, boolean check ) throws Exception;
-    
-    
-    /**
-     * Loads a single schema at least and possibly it's dependencies.  
-     * 
-     * @param schema the schema to load
-     * @param registries the registries to populate with these schemas
-     * @param check tells if the Registries must be checked after having been loaded
-     * @return the list of erros we met during the loading of schemas
-     * @throws Exception if any kind of problems are encountered during the load
-     */
-    List<Throwable> loadWithDependencies( Schema schema, Registries registries, boolean check ) throws Exception;
+     *
+    List<Throwable> loadWithDependencies( Registries registries, boolean check, Schema... schemas ) throws Exception;
     
     
     /**
@@ -82,7 +72,7 @@ public interface SchemaLoader
      * @param check tells if the Registries must be checked after having been loaded
      * @return the list of erros we met during the loading of schemas
      * @throws Exception if there are any failures
-     */
+     *
     List<Throwable> loadAllEnabled( Registries registries, boolean check ) throws Exception;
     
     
@@ -93,6 +83,119 @@ public interface SchemaLoader
      * @param registries the registries to populate with these schemas
      * @param isDepLoad tells the loader if this load request is to satisfy a dependency
      * @throws Exception if any kind of problems are encountered during the load
-     */
+     *
     void load( Schema schema, Registries registries, boolean isDepLoad ) throws Exception;
+    
+    
+    /**
+     * Build a list of AttributeTypes read from the underlying storage
+     *
+     * @param schema the schema from which AttributeTypes are loaded
+     * @throws Exception if there are failures accessing AttributeType information
+     */
+    List<Entry> loadAttributeTypes( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of Comparators read from the underlying storage
+     *
+     * @param schema the schema from which Comparators are loaded
+     * @throws Exception if there are failures accessing Comparator information
+     */
+    List<Entry> loadComparators( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of DitContentRules read from the underlying storage
+     *
+     * @param schema the schema from which DitContentRules are loaded
+     * @throws Exception if there are failures accessing DitContentRule information
+     */
+    List<Entry> loadDitContentRules( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of DitStructureRules read from the underlying storage
+     *
+     * @param schema the schema from which DitStructureRules are loaded
+     * @throws Exception if there are failures accessing DitStructureRule information
+     */
+    List<Entry> loadDitStructureRules( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of MatchingRules read from the underlying storage
+     *
+     * @param schema the schema from which MatchingRules are loaded
+     * @throws Exception if there are failures accessing MatchingRule information
+     */
+    List<Entry> loadMatchingRules( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of MatchingRuleUses read from the underlying storage
+     *
+     * @param schema the schema from which MatchingRuleUses are loaded
+     * @throws Exception if there are failures accessing MatchingRuleUse information
+     */
+    List<Entry> loadMatchingRuleUses( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of NameForms read from the underlying storage
+     *
+     * @param schema the schema from which NameForms are loaded
+     * @throws Exception if there are failures accessing NameForm information
+     */
+    List<Entry> loadNameForms( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of Normalizers read from the underlying storage
+     *
+     * @param schema the schema from which Normalizers are loaded
+     * @throws Exception if there are failures accessing Normalizer information
+     */
+    List<Entry> loadNormalizers( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of ObjectClasses read from the underlying storage
+     *
+     * @param schema the schema from which ObjectClasses are loaded
+     * @throws Exception if there are failures accessing ObjectClass information
+     */
+    List<Entry> loadObjectClasses( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of Syntaxes read from the underlying storage
+     *
+     * @param schema the schema from which Syntaxes are loaded
+     * @throws Exception if there are failures accessing Syntax information
+     */
+    List<Entry> loadSyntaxes( Schema schema ) throws Exception;
+    
+    
+    /**
+     * Build a list of SyntaxCheckers read from the underlying storage
+     *
+     * @param schema the schema from which SyntaxCheckers are loaded
+     * @throws Exception if there are failures accessing SyntaxChecker information
+     */
+    List<Entry> loadSyntaxCheckers( Schema schema ) throws Exception;
+
+
+    /**
+     * @return the list of enabled schemas
+     * @throws Exception TODO
+     */
+    Collection<Schema> getAllEnabled() throws Exception;
+
+
+    /**
+     * TODO : get rid of this here !
+     * @dao the DAO
+     */
+    Object getDao();
 }

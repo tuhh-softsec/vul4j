@@ -23,7 +23,8 @@ package org.apache.directory.server.schema.loader.ldif;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.JarLdifSchemaLoader;
 import org.junit.Test;
 
@@ -39,15 +40,16 @@ public class JarLdifSchemaLoaderTest
     @Test
     public void testJarLdifSchemaLoader() throws Exception
     {
-        Registries registries = new Registries();
         JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
-        loader.loadWithDependencies( loader.getSchema( "system" ), registries, true );
-        
-        assertTrue( registries.getAttributeTypeRegistry().contains( "cn" ) );
-        assertFalse( registries.getAttributeTypeRegistry().contains( "m-aux" ) );
-        
-        loader.loadWithDependencies( loader.getSchema( "apachemeta" ), registries, true );
+        SchemaManager sm = new DefaultSchemaManager( loader );
 
-        assertTrue( registries.getAttributeTypeRegistry().contains( "m-aux" ) );
+        sm.loadWithDeps( "system" );
+        
+        assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );
+        assertFalse( sm.getRegistries().getAttributeTypeRegistry().contains( "m-aux" ) );
+        
+        sm.loadWithDeps( "apachemeta" );
+
+        assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "m-aux" ) );
     }
 }

@@ -25,10 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
@@ -37,7 +34,6 @@ import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.util.DateUtils;
 import org.slf4j.Logger;
@@ -98,8 +94,6 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     public LdifSchemaLoader( File baseDirectory ) throws Exception
     {
-        super( new SchemaEntityFactory() );
-
         this.baseDirectory = baseDirectory;
 
         if ( ! baseDirectory.exists() )
@@ -151,7 +145,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             {
                 LdifReader reader = new LdifReader( new File( schemaDirectory, ldifFile ) );
                 LdifEntry entry = reader.next();
-                Schema schema = factory.getSchema( entry.getEntry() );
+                Schema schema = getSchema( entry.getEntry() );
                 schemaMap.put( schema.getSchemaName(), schema );
                 
                 if ( IS_DEBUG )
@@ -170,7 +164,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
     /**
      * {@inheritDoc}
-     */
+     *
     public List<Throwable> loadWithDependencies( Schema schema, Registries registries, boolean check ) throws Exception
     {
         // Relax the controls at first
@@ -204,7 +198,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      * the schema has been loaded.
      * 
      * {@inheritDoc}
-     */
+     *
     public void load( Schema schema, Registries registries, boolean isDepLoad ) throws Exception
     {
         // if we're loading a dependency and it has not been enabled on 
@@ -225,7 +219,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         
         registries.schemaLoaded( schema );
         
-        loadComparators( schema, registries );
+        loadComparators( schema );
         loadNormalizers( schema, registries );
         loadSyntaxCheckers( schema, registries );
         loadSyntaxes( schema, registries );
@@ -318,22 +312,18 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
     
     
     /**
-     * Loads the Comparators from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which comparators are loaded
-     * @param registries the registries which are loaded with comparators
-     * @throws Exception if there are failures accessing comparator information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadComparators( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadComparators( Schema schema ) throws Exception
     {
         File comparatorsDirectory = new File( getSchemaDirectory( schema ), 
             SchemaConstants.COMPARATORS_PATH );
         
+        List<Entry> comparatorList = new ArrayList<Entry>();
+        
         if ( ! comparatorsDirectory.exists() )
         {
-            return;
+            return comparatorList;
         }
         
         File[] comparators = comparatorsDirectory.listFiles( ldifFilter );
@@ -343,28 +333,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerComparator( registries, entry, schema );
+            comparatorList.add( entry.getEntry() );
         }
+        
+        return comparatorList;
     }
     
     
     /**
-     * Loads the SyntaxCheckers from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which syntaxCheckers are loaded
-     * @param targetRegistries the registries which are loaded with syntaxCheckers
-     * @throws Exception if there are failures accessing syntaxChecker 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadSyntaxCheckers( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadSyntaxCheckers( Schema schema ) throws Exception
     {
         File syntaxCheckersDirectory = new File( getSchemaDirectory( schema ), 
             SchemaConstants.SYNTAX_CHECKERS_PATH );
         
+        List<Entry> syntaxCheckerList = new ArrayList<Entry>();
+
         if ( ! syntaxCheckersDirectory.exists() )
         {
-            return;
+            return syntaxCheckerList;
         }
         
         File[] syntaxCheckerFiles = syntaxCheckersDirectory.listFiles( ldifFilter );
@@ -374,28 +362,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerSyntaxChecker( registries, entry, schema );
+            syntaxCheckerList.add( entry.getEntry() );
         }
+        
+        return syntaxCheckerList;
     }
     
     
     /**
-     * Loads the Normalizers from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which normalizers are loaded
-     * @param registries the registries which are loaded with normalizers
-     * @throws Exception if there are failures accessing normalizer information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadNormalizers( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadNormalizers( Schema schema ) throws Exception
     {
         File normalizersDirectory = new File( getSchemaDirectory( schema ), 
             SchemaConstants.NORMALIZERS_PATH );
         
+        List<Entry> normalizerList = new ArrayList<Entry>();
+
         if ( ! normalizersDirectory.exists() )
         {
-            return;
+            return normalizerList;
         }
         
         File[] normalizerFiles = normalizersDirectory.listFiles( ldifFilter );
@@ -405,28 +391,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerNormalizer( registries, entry, schema );
+            normalizerList.add( entry.getEntry() );
         }
+        
+        return normalizerList;
     }
     
     
     /**
-     * Loads the MatchingRules from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which matchingRules are loaded
-     * @param registries the registries which are loaded with matchingRules
-     * @throws Exception if there are failures accessing matchingRule 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadMatchingRules( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadMatchingRules( Schema schema ) throws Exception
     {
         File matchingRulesDirectory = new File( getSchemaDirectory( schema ), 
             SchemaConstants.MATCHING_RULES_PATH );
         
+        List<Entry> matchingRuleList = new ArrayList<Entry>();
+
         if ( ! matchingRulesDirectory.exists() )
         {
-            return;
+            return matchingRuleList;
         }
         
         File[] matchingRuleFiles = matchingRulesDirectory.listFiles( ldifFilter );
@@ -436,28 +420,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
 
-            registerMatchingRule( registries, entry, schema );
+            matchingRuleList.add( entry.getEntry() );
         }
+        
+        return matchingRuleList;
     }
     
     
     /**
-     * Loads the Syntaxes from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which syntaxes are loaded
-     * @param registries the registries which are loaded with syntaxes
-     * @throws Exception if there are failures accessing comparator information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadSyntaxes( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadSyntaxes( Schema schema ) throws Exception
     {
         File syntaxesDirectory = new File( getSchemaDirectory( schema ), 
             SchemaConstants.SYNTAXES_PATH );
         
+        List<Entry> syntaxList = new ArrayList<Entry>();
+
         if ( ! syntaxesDirectory.exists() )
         {
-            return;
+            return syntaxList;
         }
         
         File[] syntaxFiles = syntaxesDirectory.listFiles( ldifFilter );
@@ -467,28 +449,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
 
-            registerSyntax( registries, entry, schema );
+            syntaxList.add( entry.getEntry() );
         }
+        
+        return syntaxList;
     }
 
     
     /**
-     * Loads the AttributeTypes from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which attributeTypes are loaded
-     * @param registries the registries which are loaded with attributeTypes
-     * @throws Exception if there are failures accessing attributeTypes 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadAttributeTypes( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadAttributeTypes( Schema schema ) throws Exception
     {
     	// check that the attributeTypes directory exists for the schema
         File attributeTypesDirectory = new File ( getSchemaDirectory( schema ), SchemaConstants.ATTRIBUTES_TYPE_PATH );
         
+        List<Entry> attributeTypeList = new ArrayList<Entry>();
+
         if ( ! attributeTypesDirectory.exists() )
         {
-            return;
+            return attributeTypeList;
         }
         
         // get list of attributeType LDIF schema files in attributeTypes
@@ -499,28 +479,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerAttributeType( registries, entry, schema );
+            attributeTypeList.add( entry.getEntry() );
         }
+        
+        return attributeTypeList;
     }
     
     
     /**
-     * Loads the MatchingRuleUses from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which matchingRuleUses are loaded
-     * @param registries the registries which are loaded with matchingRuleUses
-     * @throws Exception if there are failures accessing matchingRuleUse 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadMatchingRuleUses( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadMatchingRuleUses( Schema schema ) throws Exception
     {
         File matchingRuleUsesDirectory = new File( getSchemaDirectory( schema ),
             SchemaConstants.MATCHING_RULE_USE_PATH );
         
+        List<Entry> matchingRuleUseList = new ArrayList<Entry>();
+
         if ( ! matchingRuleUsesDirectory.exists() )
         {
-            return;
+            return matchingRuleUseList;
         }
         
         File[] matchingRuleUseFiles = matchingRuleUsesDirectory.listFiles( ldifFilter );
@@ -530,28 +508,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerMatchingRuleUse( registries, entry, schema );
+            matchingRuleUseList.add( entry.getEntry() );
         }
+        
+        return matchingRuleUseList;
     }
 
 
     /**
-     * Loads the NameForms from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which nameForms are loaded
-     * @param registries the registries which are loaded with nameForms
-     * @throws Exception if there are failures accessing nameForm information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadNameForms( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadNameForms( Schema schema ) throws Exception
     {
         File nameFormsDirectory = new File( getSchemaDirectory( schema ),
             SchemaConstants.NAME_FORMS_PATH );
         
+        List<Entry> nameFormList = new ArrayList<Entry>();
+
         if ( ! nameFormsDirectory.exists() )
         {
-            return;
+            return nameFormList;
         }
         
         File[] nameFormFiles = nameFormsDirectory.listFiles( ldifFilter );
@@ -561,28 +537,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerNameForm( registries, entry, schema );
+            nameFormList.add( entry.getEntry() );
         }
+        
+        return nameFormList;
     }
 
 
     /**
-     * Loads the DitContentRules from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which ditContentRules are loaded
-     * @param registries the registries which are loaded with ditContentRules
-     * @throws Exception if there are failures accessing ditContentRules 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadDitContentRules( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadDitContentRules( Schema schema ) throws Exception
     {
         File ditContentRulesDirectory = new File( getSchemaDirectory( schema ),
             SchemaConstants.DIT_CONTENT_RULES_PATH );
         
+        List<Entry> ditContentRuleList = new ArrayList<Entry>();
+        
         if ( ! ditContentRulesDirectory.exists() )
         {
-            return;
+            return ditContentRuleList;
         }
         
         File[] ditContentRuleFiles = ditContentRulesDirectory.listFiles( ldifFilter );
@@ -592,28 +566,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerDitContentRule( registries, entry, schema );
+            ditContentRuleList.add( entry.getEntry() );
         }
+        
+        return ditContentRuleList;
     }
 
 
     /**
-     * Loads the ditStructureRules from LDIF files in the supplied schema into 
-     * the supplied registries.
-     *
-     * @param schema the schema for which ditStructureRules are loaded
-     * @param registries the registries which are loaded with ditStructureRules
-     * @throws Exception if there are failures accessing ditStructureRule 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadDitStructureRules( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadDitStructureRules( Schema schema ) throws Exception
     {
         File ditStructureRulesDirectory = new File( getSchemaDirectory( schema ),
             SchemaConstants.DIT_STRUCTURE_RULES_PATH );
+
+        List<Entry> ditStructureRuleList = new ArrayList<Entry>();
         
         if ( ! ditStructureRulesDirectory.exists() )
         {
-            return;
+            return ditStructureRuleList;
         }
         
         File[] ditStructureRuleFiles = ditStructureRulesDirectory.listFiles( ldifFilter );
@@ -623,28 +595,26 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerDitStructureRule( registries, entry, schema );
+            ditStructureRuleList.add( entry.getEntry() );
         }
+        
+        return ditStructureRuleList;
     }
 
 
     /**
-     * Loads the ObjectClasses from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which objectClasses are loaded
-     * @param registries the registries which are loaded with objectClasses
-     * @throws Exception if there are failures accessing objectClass information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    private void loadObjectClasses( Schema schema, Registries registries ) throws Exception
+    public List<Entry> loadObjectClasses( Schema schema ) throws Exception
     {
     	// get objectClasses directory, check if exists, return if not
     	File objectClassesDirectory = new File( getSchemaDirectory( schema ), SchemaConstants.OBJECT_CLASSES_PATH );
         
-    	if ( ! objectClassesDirectory.exists() )
+        List<Entry> objectClassList = new ArrayList<Entry>();
+
+        if ( ! objectClassesDirectory.exists() )
         {
-            return;
+            return objectClassList;
         }
         
         // get list of objectClass LDIF files from directory and load
@@ -655,7 +625,9 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
             
-            registerObjectClass( registries, entry, schema );
+            objectClassList.add( entry.getEntry() );
         }
+        
+        return objectClassList;
     }
 }
