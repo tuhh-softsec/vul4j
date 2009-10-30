@@ -59,6 +59,10 @@ public interface SchemaConstants
     // Schema root
     String OU_SCHEMA                            = "ou=schema";
     
+    // The DN for the schema modifications
+    String SCHEMA_MODIFICATIONS_DN              = "cn=schemaModifications,ou=schema";
+    
+    
     // Special attributes 1.1 , * and + for search operations
     String NO_ATTRIBUTE                         = "1.1";
     String[] NO_ATTRIBUTE_ARRAY                 = new String[]{ NO_ATTRIBUTE };
