@@ -171,6 +171,6 @@ public class SyntaxCheckerRegistry extends  SchemaObjectRegistry<SyntaxChecker>
      */
     public int size()
     {
-        return oidRegistry.size();
+        return byName.values().size();
     }
 }

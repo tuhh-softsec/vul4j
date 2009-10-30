@@ -171,6 +171,6 @@ public class NormalizerRegistry extends SchemaObjectRegistry<Normalizer>
      */
     public int size()
     {
-        return oidRegistry.size();
+        return byName.values().size();
     }
 }

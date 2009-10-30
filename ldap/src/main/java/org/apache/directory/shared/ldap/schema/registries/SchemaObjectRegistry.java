@@ -390,4 +390,13 @@ public class SchemaObjectRegistry<T extends SchemaObject> implements Iterable<T>
         
         return clone;
     }
+
+
+    /**
+     * @return the type
+     */
+    public SchemaObjectType getType()
+    {
+        return type;
+    }
 }
