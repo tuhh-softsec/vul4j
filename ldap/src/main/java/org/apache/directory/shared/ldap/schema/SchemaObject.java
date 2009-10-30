@@ -214,7 +214,7 @@ public abstract class SchemaObject implements Serializable, Cloneable
      */
     public void applyRegistries( Registries registries ) throws NamingException
     {
-        // Do nothing
+        // do nothing
     }
     
     
