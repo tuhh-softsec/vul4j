@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+import org.junit.Test;
+
 
 /**
  * Test the registries class
@@ -28,5 +30,9 @@ package org.apache.directory.shared.ldap.schema.registries;
  */
 public class RegistriesTest
 {
-
+    @Test
+    public void testClone()
+    {
+        
+    }
 }
