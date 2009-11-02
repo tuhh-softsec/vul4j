@@ -1,7 +1,5 @@
 package net.webassembletool.cas;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Properties;
 
@@ -20,7 +18,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 	private final static Log LOG = LogFactory
 			.getLog(AuthenticationHandler.class);
 	private final static String SECOND_REQUEST = "SECOND_REQUEST";
-	private String loginUrl ="/login";
+	private String loginUrl = "/login";
 
 	public boolean needsNewRequest(HttpClientResponse httpClientResponse,
 			RequestContext requestContext) {
@@ -75,7 +73,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 
 	public void init(Properties properties) {
 		String casLoginUrl = properties.getProperty("casLoginUrl");
-		if  (casLoginUrl!=null)
+		if (casLoginUrl != null)
 			this.loginUrl = casLoginUrl;
 	}
 }
