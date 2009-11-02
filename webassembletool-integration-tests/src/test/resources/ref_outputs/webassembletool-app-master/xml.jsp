@@ -9,32 +9,22 @@
 </head>
 <body style="background-color: yellow">
 <p>Fragment below was retrieved from 'provider' source using following code:<br />
-<code>&lt;assemble:include-xml source="xml-page.xml" xpath="//DIV/DIV" /&gt;</code><br />
-<DIV style="background-color: aqua">
-
-<UL>
-
-<LI>Item 1</LI>
-
-<LI>Item 2</LI>
-
-<LI>Item 3</LI>
-
-</UL>
-
-</DIV>
-
+<code>&lt;assemble:include-xml source="xml-page.xml" xpath="//html:div/html:div" /&gt;</code><br />
+<div style="background-color: aqua" xmlns="http://www.w3.org/1999/xhtml">
+<ul>
+<li>Item 1</li>
+<li>Item 2</li>
+<li>Item 3</li>
+</ul>
+</div>
 <b>NB</b>: You should see bulleted list with aqua background color without any border.</p>
 
 <p>Fragment below was retrieved from 'provider' source using following code:<br />
-<code>&lt;assemble:include-xml source="xml-page.xml" xpath="//DIV/DIV/UL" template="/WEB-INF/xml-template.xslt" /&gt;</code><br />
-<div style="background-color: blue">
-<ol>
-<li>updated: Item 1</li>
-<li>updated: Item 2</li>
-<li>updated: Item 3</li>
-</ol>
-</div>
+<code>&lt;assemble:include-xml source="xml-page.xml" template="/WEB-INF/xml-template.xslt" /&gt;</code><br />
+<?xml version="1.0" encoding="UTF-8"?>
+
+<div style="background-color: blue" xmlns="http://www.w3.org/1999/xhtml" xmlns:html="http://www.w3.org/1999/xhtml"><ol><li>updated: Item 1</li><li>updated: Item 2</li><li>updated: Item 3</li></ol></div>
+
 
 <b>NB</b>: You should see numbered list with blue background color without any border, each list item should have 'updated: ' prefix.</p>
 </body>
