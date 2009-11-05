@@ -5,7 +5,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.webassembletool.RequestContext;
+import net.webassembletool.ResourceContext;
 
 /**
  * Utility class to generate URL and path for Resources
@@ -13,14 +13,14 @@ import net.webassembletool.RequestContext;
  * @author Francois-Xavier Bonnet
  */
 public class ResourceUtils {
-	private final static String buildQueryString(RequestContext target) {
+	private final static String buildQueryString(ResourceContext target) {
 		try {
 			StringBuilder queryString = new StringBuilder();
 			String charset = target.getOriginalRequest().getCharacterEncoding();
 			if (charset == null)
 				charset = "ISO-8859-1";
 			String qs = target.getOriginalRequest().getQueryString();
-			if (target.isProxyMode())
+			if (target.isProxy())
 				if (qs != null && !qs.equals(""))
 					// Should encode parameters here !
 					queryString.append(qs).append("&");
@@ -111,7 +111,7 @@ public class ResourceUtils {
 		return input.replaceAll(" ", "%20").replaceAll("\\|", "%7C");
 	}
 
-	public final static String getHttpUrlWithQueryString(RequestContext target) {
+	public final static String getHttpUrlWithQueryString(ResourceContext target) {
 
 		String url = concatUrl(target.getDriver().getBaseURL(), target
 				.getRelUrl());
@@ -122,14 +122,14 @@ public class ResourceUtils {
 			return encodeSpecialChars(url + "?" + queryString);
 	}
 
-	public final static String getHttpUrl(RequestContext target) {
+	public final static String getHttpUrl(ResourceContext target) {
 		String url = ResourceUtils.concatUrl(target.getDriver().getBaseURL(),
 				target.getRelUrl());
 		return encodeSpecialChars(url);
 	}
 
 	public final static String getFileUrl(String localBase,
-			RequestContext target) {
+			ResourceContext target) {
 		String url = ResourceUtils.concatUrl(localBase, target.getRelUrl());
 		// Append queryString hashcode to supply different cache
 		// filenames

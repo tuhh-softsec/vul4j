@@ -2,7 +2,7 @@ package net.webassembletool.authentication;
 
 import java.util.Properties;
 
-import net.webassembletool.RequestContext;
+import net.webassembletool.ResourceContext;
 import net.webassembletool.UserContext;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
@@ -18,12 +18,12 @@ import net.webassembletool.http.HttpClientResponse;
 public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 
 	public boolean needsNewRequest(HttpClientResponse response,
-			RequestContext requestContext) {
+			ResourceContext requestContext) {
 		return false;
 	}
 
 	public void preRequest(HttpClientRequest request,
-			RequestContext requestContext) {
+			ResourceContext requestContext) {
 		UserContext userContext = requestContext.getUserContext();
 		String remoteUser = null;
 		if (userContext != null && userContext.getUser() != null)

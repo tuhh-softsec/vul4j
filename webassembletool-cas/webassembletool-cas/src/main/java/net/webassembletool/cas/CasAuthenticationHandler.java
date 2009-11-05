@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.webassembletool.RequestContext;
+import net.webassembletool.ResourceContext;
 import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
@@ -21,7 +21,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 	private String loginUrl = "/login";
 
 	public boolean needsNewRequest(HttpClientResponse httpClientResponse,
-			RequestContext requestContext) {
+			ResourceContext requestContext) {
 		HttpServletRequest httpServletRequest = requestContext
 				.getOriginalRequest();
 		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
@@ -42,7 +42,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 	}
 
 	public void preRequest(HttpClientRequest request,
-			RequestContext requestContext) {
+			ResourceContext requestContext) {
 		HttpServletRequest httpServletRequest = requestContext
 				.getOriginalRequest();
 		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null)
@@ -52,7 +52,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 	}
 
 	private String addCasAuthentication(String location,
-			RequestContext requestContext) {
+			ResourceContext requestContext) {
 		Principal principal = requestContext.getOriginalRequest()
 				.getUserPrincipal();
 		if (principal != null && principal instanceof AttributePrincipal) {

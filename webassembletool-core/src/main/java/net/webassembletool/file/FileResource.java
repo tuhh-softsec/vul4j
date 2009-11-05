@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Map.Entry;
 
-import net.webassembletool.RequestContext;
+import net.webassembletool.ResourceContext;
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
@@ -26,7 +26,7 @@ public class FileResource extends Resource {
 	private File file;
 	private final File headersFile;
 
-	public FileResource(String localBase, RequestContext target) {
+	public FileResource(String localBase, ResourceContext target) {
 		String url = ResourceUtils.getFileUrl(localBase, target);
 		file = new File(url);
 		headersFile = new File(url + ".headers");

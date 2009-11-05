@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Francois-Xavier Bonnet
  */
-public class RequestContext {
+public class ResourceContext {
 	private final Driver driver;
 
 	/**
@@ -29,13 +29,22 @@ public class RequestContext {
 	private final String relUrl;
 	private final HttpServletRequest originalRequest;
 	private final Map<String, String> parameters;
-	private boolean proxyMode = false;
+	private boolean proxy = false;
+	private boolean preserveHost = false;
 
-	public void setProxyMode(boolean proxyMode) {
-		this.proxyMode = proxyMode;
+	public boolean isPreserveHost() {
+		return preserveHost;
 	}
 
-	public RequestContext(Driver driver, String relUrl,
+	public void setPreserveHost(boolean preserveHost) {
+		this.preserveHost = preserveHost;
+	}
+
+	public void setProxy(boolean proxyMode) {
+		this.proxy = proxyMode;
+	}
+
+	public ResourceContext(Driver driver, String relUrl,
 			Map<String, String> parameters, HttpServletRequest originalRequest) {
 		this.driver = driver;
 		this.relUrl = relUrl;
@@ -58,8 +67,8 @@ public class RequestContext {
 		return parameters;
 	}
 
-	public boolean isProxyMode() {
-		return proxyMode;
+	public boolean isProxy() {
+		return proxy;
 	}
 
 	public boolean isCacheable() {

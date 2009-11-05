@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -40,19 +41,26 @@ public class HttpClientRequest {
 	private boolean proxy;
 	private HttpUriRequest httpUriRequest;
 	private HashMap<String, String> headers;
+	private boolean preserveHost = false;
 
 	public HttpClientRequest(String uri, HttpServletRequest originalRequest,
-			boolean proxy) {
+			boolean proxy, boolean preserveHost) {
 		this.uri = uri;
 		this.originalRequest = originalRequest;
 		this.proxy = proxy;
+		this.preserveHost = preserveHost;
 	}
 
 	public HttpClientResponse execute(HttpClient httpClient,
 			HttpContext httpContext) throws IOException {
 		buildHttpMethod();
-		HttpClientResponse result = new HttpClientResponse(httpUriRequest,
-				httpClient, httpContext);
+		HttpClientResponse result;
+		HttpHost httpHost = null;
+		if (preserveHost)
+			httpHost = new HttpHost(originalRequest.getServerName(),
+					originalRequest.getServerPort());
+		result = new HttpClientResponse(httpHost, httpUriRequest, httpClient,
+				httpContext);
 		LOG.debug(toString() + " -> " + result.toString());
 		return result;
 	}
@@ -147,6 +155,22 @@ public class HttpClientRequest {
 	@Override
 	public String toString() {
 		return httpUriRequest.getMethod() + " " + uri;
+	}
+
+	public boolean isProxy() {
+		return proxy;
+	}
+
+	public void setProxy(boolean proxy) {
+		this.proxy = proxy;
+	}
+
+	public boolean isPreserveHost() {
+		return preserveHost;
+	}
+
+	public void setPreserveHost(boolean preserveHost) {
+		this.preserveHost = preserveHost;
 	}
 
 }

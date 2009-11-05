@@ -26,6 +26,7 @@ class DriverConfiguration {
 	private String authenticationHandler = RemoteUserAuthenticationHandler.class
 			.getName();
 	private Properties properties;
+	private boolean preserveHost = false;
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
@@ -62,7 +63,14 @@ class DriverConfiguration {
 					.getProperty("filterJsessionid"));
 		if (props.getProperty("authenticationHandler") != null)
 			authenticationHandler = props.getProperty("authenticationHandler");
+		if (props.getProperty("preserveHost") != null)
+			preserveHost = Boolean.parseBoolean(props
+					.getProperty("preserveHost"));
 		properties = props;
+	}
+
+	public boolean isPreserveHost() {
+		return preserveHost;
 	}
 
 	public String getInstanceName() {

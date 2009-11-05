@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.webassembletool.RequestContext;
+import net.webassembletool.ResourceContext;
 import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
@@ -28,34 +28,37 @@ import org.apache.http.protocol.HttpContext;
 public class HttpResource extends Resource {
 	private final static Log LOG = LogFactory.getLog(HttpResource.class);
 	private HttpClientResponse httpClientResponse;
-	private final RequestContext target;
+	private final ResourceContext target;
 	private String url;
 
-	public HttpResource(HttpClient httpClient, RequestContext target)
+	public HttpResource(HttpClient httpClient, ResourceContext resourceContext)
 			throws IOException {
-		this.target = target;
-		this.url = ResourceUtils.getHttpUrlWithQueryString(target);
+		this.target = resourceContext;
+		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 		// Retrieve session and other cookies
 		HttpContext httpContext = null;
-		if (target.getUserContext() != null)
-			httpContext = target.getUserContext().getHttpContext();
-		HttpServletRequest originalRequest = target.getOriginalRequest();
-		AuthenticationHandler authenticationHandler = target.getDriver()
-				.getAuthenticationHandler();
-		boolean proxy = target.isProxyMode();
+		if (resourceContext.getUserContext() != null)
+			httpContext = resourceContext.getUserContext().getHttpContext();
+		HttpServletRequest originalRequest = resourceContext
+				.getOriginalRequest();
+		AuthenticationHandler authenticationHandler = resourceContext
+				.getDriver().getAuthenticationHandler();
+		boolean proxy = resourceContext.isProxy();
+		boolean preserveHost = resourceContext.isPreserveHost();
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
-				originalRequest, proxy);
-		authenticationHandler.preRequest(httpClientRequest, target);
+				originalRequest, proxy, preserveHost);
+		authenticationHandler.preRequest(httpClientRequest, resourceContext);
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
 		// Authentication challenge
-		while (authenticationHandler
-				.needsNewRequest(httpClientResponse, target)) {
+		while (authenticationHandler.needsNewRequest(httpClientResponse,
+				resourceContext)) {
 			// We must first ensure that the connection is always released, if
 			// not the connection manager's pool may be exhausted soon !
 			httpClientResponse.finish();
 			httpClientRequest = new HttpClientRequest(url, originalRequest,
-					proxy);
-			authenticationHandler.preRequest(httpClientRequest, target);
+					proxy, preserveHost);
+			authenticationHandler
+					.preRequest(httpClientRequest, resourceContext);
 			httpClientResponse = httpClientRequest.execute(httpClient,
 					httpContext);
 		}
@@ -84,7 +87,8 @@ public class HttpResource extends Resource {
 		copyHeader(output, "Cache-control");
 		String location = httpClientResponse.getHeader("Location");
 		if (location != null) {
-			// In case of a redirect, we need to rewrite the location header to match 
+			// In case of a redirect, we need to rewrite the location header to
+			// match
 			// provider application and remove any jsessionid in the URL
 			location = rewriteLocation(location);
 			location = removeSessionId(location);
@@ -148,7 +152,7 @@ public class HttpResource extends Resource {
 		}
 		inputStream.close();
 	}
-	
+
 	private String removeSessionId(String src) {
 		return src.replaceAll("[;]{0,1}jsessionid=([^?#&'\"]+)", "");
 	}

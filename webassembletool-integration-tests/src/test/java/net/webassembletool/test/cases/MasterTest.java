@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.test.junit.HttpTestCase;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+
 /**
  * Junit tests using the "/master" webapp
  * 
@@ -106,6 +109,22 @@ public class MasterTest extends HttpTestCase {
 		doGet(APPLICATION_PATH + "user.jsp");
 		assertStatus(HttpServletResponse.SC_OK);
 		assertBodyEqualsLocalFile(APPLICATION_PATH + "user.jsp");
+	}
+
+	public void testPreserveHost() throws Exception {
+		String absoluteUrl = "http://127.0.0.1:8080/webassembletool-app-master/images/host.jsp";
+		GetMethod httpMethod = new GetMethod(absoluteUrl);
+		HttpClient httpClient = new HttpClient();
+		try {
+			httpClient.executeMethod(httpMethod);
+			String result = httpMethod.getResponseBodyAsString();
+			assertEquals(
+					"Host name and port should be preserved",
+					"You should see here the same hostname and port as in the browser=>127.0.0.1:8080",
+					result);
+		} finally {
+			httpMethod.releaseConnection();
+		}
 	}
 
 }

@@ -24,7 +24,7 @@ public class MockDriver extends Driver {
 	}
 
 	@Override
-	protected StringOutput getResourceAsString(RequestContext target)
+	protected StringOutput getResourceAsString(ResourceContext target)
 			throws HttpErrorPage {
 		StringOutput result = resources.get(target.getRelUrl());
 		if (result == null)

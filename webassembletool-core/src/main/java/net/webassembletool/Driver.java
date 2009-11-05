@@ -106,7 +106,8 @@ public class Driver {
 		else
 			cache = null;
 		// Authentication handler
-		LOG.debug("Using authenticationHandler: " + config.getAuthenticationHandler());
+		LOG.debug("Using authenticationHandler: "
+				+ config.getAuthenticationHandler());
 		try {
 			authenticationHandler = (AuthenticationHandler) Class.forName(
 					config.getAuthenticationHandler()).newInstance();
@@ -292,9 +293,10 @@ public class Driver {
 	public final void render(String page, Map<String, String> parameters,
 			Writer writer, HttpServletRequest originalRequest,
 			Renderer... renderers) throws IOException, HttpErrorPage {
-		RequestContext target = new RequestContext(this, page, parameters,
+		ResourceContext resourceContext = new ResourceContext(this, page, parameters,
 				originalRequest);
-		StringOutput stringOutput = getResourceAsString(target);
+		resourceContext.setPreserveHost(config.isPreserveHost());
+		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
 		for (Renderer renderer : renderers) {
 			StringWriter stringWriter = new StringWriter();
@@ -346,18 +348,19 @@ public class Driver {
 	public final void proxy(String relUrl, HttpServletRequest request,
 			HttpServletResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
-		RequestContext requestContext = new RequestContext(this, relUrl, null,
-				request);
+		ResourceContext resourceContext = new ResourceContext(this, relUrl,
+				null, request);
 		request.setCharacterEncoding(config.getUriEncoding());
-		requestContext.setProxyMode(true);
+		resourceContext.setProxy(true);
+		resourceContext.setPreserveHost(config.isPreserveHost());
 		if (renderers.length == 0) {
-			renderResource(requestContext,
-					new ResponseOutput(request, response));
+			renderResource(resourceContext, new ResponseOutput(request,
+					response));
 		} else {
 			// Directly stream out non text data
 			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(request,
 					response);
-			renderResource(requestContext, textOutput);
+			renderResource(resourceContext, textOutput);
 			// If data was binary, no text buffer is available and no rendering
 			// is needed.
 			if (!textOutput.hasTextBuffer()) {
@@ -394,7 +397,7 @@ public class Driver {
 		}
 	}
 
-	private final void renderResource(RequestContext target, Output output) {
+	private final void renderResource(ResourceContext target, Output output) {
 		String httpUrl = ResourceUtils.getHttpUrlWithQueryString(target);
 		MultipleOutput multipleOutput = new MultipleOutput();
 		multipleOutput.addOutput(output);
@@ -503,7 +506,7 @@ public class Driver {
 	 * @return the content of the url
 	 * @throws HttpErrorPage
 	 */
-	protected StringOutput getResourceAsString(RequestContext target)
+	protected StringOutput getResourceAsString(ResourceContext target)
 			throws HttpErrorPage {
 		StringOutput stringOutput = new StringOutput();
 		renderResource(target, stringOutput);
