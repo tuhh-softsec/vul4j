@@ -106,7 +106,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         
         for ( String file : RESOURCE_MAP.keySet() )
         {
-            Pattern pat = Pattern.compile( ".*schema/ou=schema/cn=[a-z]*\\." + LDIF_EXT );
+            Pattern pat = Pattern.compile( ".*schema/ou=schema/cn=[a-z0-9-_]*\\." + LDIF_EXT );
             
             if ( pat.matcher( file ).matches() )
             {
