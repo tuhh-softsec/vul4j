@@ -21,7 +21,7 @@ public interface EntityFactory
      * @return the loaded SyntaxChecker
      * @throws NamingException if anything fails during loading
      */
-    SyntaxChecker getSyntaxChecker( Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
+    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
     
 
     /**
@@ -33,7 +33,7 @@ public interface EntityFactory
      * @return A new instance of a syntaxChecker
      * @throws Exception If the creation has failed
      */
-    SyntaxChecker getSyntaxChecker( SyntaxCheckerDescription syntaxCheckerDescription, 
+    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, SyntaxCheckerDescription syntaxCheckerDescription, 
         Registries targetRegistries, String schemaName ) throws Exception;
 
 
@@ -46,7 +46,7 @@ public interface EntityFactory
      * @return A new instance of a LdapComparator
      * @throws Exception If the creation has failed
      */
-    LdapComparator<?> getLdapComparator( 
+    LdapComparator<?> getLdapComparator( SchemaManager schemaManager, 
         LdapComparatorDescription comparatorDescription, 
         Registries targetRegistries, String schemaName ) throws Exception;
 
@@ -60,7 +60,7 @@ public interface EntityFactory
      * @return the loaded Comparator
      * @throws NamingException if anything fails during loading
      */
-    LdapComparator<?> getLdapComparator( Entry entry, 
+    LdapComparator<?> getLdapComparator( SchemaManager schemaManager, Entry entry, 
         Registries targetRegistries, String schemaName ) throws Exception;
     
     
@@ -73,7 +73,7 @@ public interface EntityFactory
      * @return A new instance of a normalizer
      * @throws Exception If the creation has failed
      */
-    Normalizer getNormalizer( NormalizerDescription normalizerDescription, 
+    Normalizer getNormalizer( SchemaManager schemaManager, NormalizerDescription normalizerDescription, 
         Registries targetRegistries, String schemaName ) throws Exception;
     
     
@@ -84,7 +84,7 @@ public interface EntityFactory
      * @return the loaded Normalizer
      * @throws NamingException if anything fails during loading
      */
-    Normalizer getNormalizer( Entry entry, Registries targetRegistries, String schemaName ) 
+    Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) 
         throws Exception;
     
     

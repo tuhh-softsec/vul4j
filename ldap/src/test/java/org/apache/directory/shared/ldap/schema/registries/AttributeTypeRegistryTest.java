@@ -27,8 +27,6 @@ import static org.junit.Assert.fail;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.schema.registries.OidRegistry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +44,7 @@ public class AttributeTypeRegistryTest
     @Before
     public void setup()
     {
-        atRegistry = new AttributeTypeRegistry( new OidRegistry() );
+        atRegistry = new DefaultAttributeTypeRegistry( new OidRegistry() );
     }
     
     
@@ -114,7 +112,7 @@ public class AttributeTypeRegistryTest
         atRegistry.register( at1 );
         
         // Clone the ATRegistry
-        AttributeTypeRegistry clone = atRegistry.clone();
+        AttributeTypeRegistry clone = (AttributeTypeRegistry)atRegistry.clone();
         
         assertEquals( at0, clone.lookup( "1.1" ) );
         assertEquals( at1, clone.lookup( "1.2" ) );

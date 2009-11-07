@@ -27,8 +27,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 
 /**
@@ -42,20 +41,6 @@ public class DnNormalizer extends Normalizer
     // The serial UID
     private static final long serialVersionUID = 1L;
     
-    /** A static instance of this normalizer */
-    public static final DnNormalizer INSTANCE = new DnNormalizer();
-
-    // @TODO use this later for setting up normalization
-    private AttributeTypeRegistry attrRegistry;
-    
-    
-    public DnNormalizer( AttributeTypeRegistry attrRegistry )
-    {
-        super( SchemaConstants.DISTINGUISHED_NAME_MATCH_MR_OID );
-        this.attrRegistry = attrRegistry;
-    }
-    
-
     /**
      * Empty constructor
      */
@@ -76,7 +61,7 @@ public class DnNormalizer extends Normalizer
         
         dn = new LdapDN( dnStr );
         
-        dn.normalize( attrRegistry.getNormalizerMapping() );
+        dn.normalize( schemaManager.getNormalizerMapping() );
         return new ClientStringValue( dn.getNormName() );
     }
 
@@ -90,7 +75,7 @@ public class DnNormalizer extends Normalizer
         
         dn = new LdapDN( value );
         
-        dn.normalize( attrRegistry.getNormalizerMapping() );
+        dn.normalize( schemaManager.getNormalizerMapping() );
         return dn.getNormName();
     }
 
@@ -107,7 +92,7 @@ public class DnNormalizer extends Normalizer
         
         dn = new LdapDN( value );
         
-        dn.normalize( attrRegistry.getNormalizerMapping() );
+        dn.normalize( schemaManager.getNormalizerMapping() );
         return dn.getNormName();
     }
 
@@ -115,8 +100,8 @@ public class DnNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( Registries registries )
+    public void applySchemaManager( SchemaManager schemaManager )
     {
-        attrRegistry = registries.getAttributeTypeRegistry();
+        this.schemaManager = schemaManager;
     }
 }

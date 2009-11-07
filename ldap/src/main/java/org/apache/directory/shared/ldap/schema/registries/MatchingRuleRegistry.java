@@ -21,44 +21,25 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import org.apache.directory.shared.ldap.schema.MatchingRule;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
- * A registry used to track system matchingRules.
+ * An AttributeType registry service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>
+public interface MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>,
+    Iterable<MatchingRule>, Cloneable
 {
-    /**
-     * Creates a new default MatchingRuleRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
-     */
-    public MatchingRuleRegistry( OidRegistry oidRegistry )
-    {
-        super( SchemaObjectType.MATCHING_RULE, oidRegistry );
-    }
-    
-    
     /**
      * Clone the MatchingRuleRegistry
      */
-    public MatchingRuleRegistry clone() throws CloneNotSupportedException
-    {
-        MatchingRuleRegistry clone = (MatchingRuleRegistry)super.clone();
-        
-        return clone;
-    }
+    MatchingRuleRegistry clone() throws CloneNotSupportedException;
     
     
     /**
-     *  @return The number of MatchingRule stored
+     * @return The number of MatchingRule stored
      */
-    public int size()
-    {
-        return oidRegistry.size();
-    }
+    int size();
 }

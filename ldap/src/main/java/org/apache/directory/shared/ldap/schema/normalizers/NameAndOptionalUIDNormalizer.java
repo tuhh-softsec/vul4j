@@ -26,8 +26,6 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -44,28 +42,11 @@ public class NameAndOptionalUIDNormalizer extends Normalizer
     // The serial UID
     private static final long serialVersionUID = 1L;
 
-    private AttributeTypeRegistry attrRegistry;
-    
-    public final static NameAndOptionalUIDNormalizer INSTANCE = new NameAndOptionalUIDNormalizer();
+    //public final static NameAndOptionalUIDNormalizer INSTANCE = new NameAndOptionalUIDNormalizer();
     
     public NameAndOptionalUIDNormalizer()
     {
         super( OID );
-    }
-    
-    public NameAndOptionalUIDNormalizer( AttributeTypeRegistry attrRegistry )
-    {
-        super( OID );
-        this.attrRegistry = attrRegistry;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void applyRegistries( Registries registries )
-    {
-        this.attrRegistry = registries.getAttributeTypeRegistry();
     }
     
 
@@ -100,7 +81,7 @@ public class NameAndOptionalUIDNormalizer extends Normalizer
             {
                 LdapDN dn = new LdapDN( nameAndUid.substring( 0, sharpPos ) );
                 
-                dn.normalize( attrRegistry.getNormalizerMapping() );
+                dn.normalize( schemaManager.getNormalizerMapping() );
                 
                 return new ClientStringValue( dn.getNormName() + '#' + uid );
             }
@@ -148,7 +129,7 @@ public class NameAndOptionalUIDNormalizer extends Normalizer
             {
                 LdapDN dn = new LdapDN( value.substring( 0, sharpPos ) );
                 
-                dn.normalize( attrRegistry.getNormalizerMapping() );
+                dn.normalize( schemaManager.getNormalizerMapping() );
                 
                 return dn.getNormName() + '#' + uid;
             }

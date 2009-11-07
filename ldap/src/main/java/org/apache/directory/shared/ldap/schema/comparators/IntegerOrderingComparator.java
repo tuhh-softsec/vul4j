@@ -24,6 +24,7 @@ import java.util.Comparator;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,7 @@ public class IntegerOrderingComparator extends LdapComparator<String>
         super( SchemaConstants.INTEGER_ORDERING_MATCH_MR_OID );
     }
 
+    
     /**
      * Implementation of the Compare method
      */
@@ -94,5 +96,16 @@ public class IntegerOrderingComparator extends LdapComparator<String>
         // We don't need to check the assertion value, because we
         // are dealing with booleans.
         return ( b1 > b2 ? 1 : -1 );
+    }
+    
+    
+    /**
+     * Sets the SchemaManager
+     * 
+     * @param schemaManager The SchemaManager
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        super.setSchemaManager( schemaManager ); 
     }
 }

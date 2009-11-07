@@ -25,7 +25,7 @@ import java.util.Comparator;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.schema.registries.ComparatorRegistry;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 
 /**
@@ -40,36 +40,15 @@ public class SerializableComparator<E> extends LdapComparator<E>
 {
     private static final long serialVersionUID = 3257566226288162870L;
 
-    /** the system global Comparator registry */
-    private static ComparatorRegistry registry;
-    
     /** the OID of the matchingRule for this comparator */
     private String matchingRuleOid;
     
     /** the transient wrapped comparator */
     private transient Comparator<E> wrapped;
-
-
-    // ------------------------------------------------------------------------
-    // S T A T I C   M E T H O D S
-    // ------------------------------------------------------------------------
-
-    /**
-     * Sets the global Comparator registry for comparator lookups.
-     *
-     * @param registry the comparator registry to use for Comparator lookups
-     */
-    public static void setRegistry( ComparatorRegistry registry )
-    {
-        SerializableComparator.registry = registry;
-    }
-
-
+    
     // ------------------------------------------------------------------------
     // C O N T R U C T O R S
     // ------------------------------------------------------------------------
-
-
     public SerializableComparator( String matchingRuleOid )
     {
         this.matchingRuleOid = matchingRuleOid;
@@ -90,7 +69,7 @@ public class SerializableComparator<E> extends LdapComparator<E>
         {
             try
             {
-                wrapped = (Comparator<E>)registry.lookup( matchingRuleOid );
+                wrapped = (Comparator<E>)schemaManager.lookupComparatorRegistry( matchingRuleOid );
             }
             catch ( NamingException e )
             {
@@ -99,5 +78,27 @@ public class SerializableComparator<E> extends LdapComparator<E>
         }
 
         return wrapped.compare( o1, o2 );
+    }
+
+
+    /**
+     * @param schemaManager the schemaManager to set
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        if ( wrapped == null )
+        {
+            try
+            {
+                wrapped = (Comparator<E>)schemaManager.lookupComparatorRegistry( matchingRuleOid );
+            }
+            catch ( NamingException ne )
+            {
+                
+            }
+        }
+
+        ((LdapComparator<E>)wrapped).setSchemaManager( schemaManager );
+        super.setSchemaManager( schemaManager );
     }
 }

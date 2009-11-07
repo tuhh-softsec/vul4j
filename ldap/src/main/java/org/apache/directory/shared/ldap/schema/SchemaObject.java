@@ -106,6 +106,8 @@ public abstract class SchemaObject implements Serializable, Cloneable
     /** A map containing the list of supported extensions */
     protected Map<String, List<String>> extensions;
 
+    /** A reference to the SchemaManager */
+    protected transient SchemaManager schemaManager;
     
     /**
      * A constructor for a SchemaObject instance. It must be 
@@ -741,5 +743,16 @@ public abstract class SchemaObject implements Serializable, Cloneable
         }
         
         return clone;
+    }
+    
+    
+    /**
+     * Sets the SchemaManager
+     * 
+     * @param schemaManager The SchemaManager
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        this.schemaManager = schemaManager; 
     }
 }

@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import org.apache.directory.shared.ldap.schema.NameForm;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
@@ -30,35 +29,17 @@ import org.apache.directory.shared.ldap.schema.SchemaObjectType;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class NameFormRegistry extends SchemaObjectRegistry<NameForm>
+public interface NameFormRegistry extends SchemaObjectRegistry<NameForm>,
+    Iterable<NameForm>, Cloneable
 {
     /**
-     * Creates a new default NameFormRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
+     * Clone the NameFormRegistry
      */
-    public NameFormRegistry( OidRegistry oidRegistry )
-    {
-        super( SchemaObjectType.NAME_FORM, oidRegistry );
-    }
-    
-    
-    /**
-     * Clone the DITContentRuleRegistry
-     */
-    public NameFormRegistry clone() throws CloneNotSupportedException
-    {
-        NameFormRegistry clone = (NameFormRegistry)super.clone();
-        
-        return clone;
-    }
+    NameFormRegistry clone() throws CloneNotSupportedException;
     
     
     /**
      *  @return The number of NameForms stored
      */
-    public int size()
-    {
-        return oidRegistry.size();
-    }
+    int size();
 }

@@ -25,8 +25,6 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
 /**
@@ -37,27 +35,8 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  */
 public class DnComparator extends LdapComparator<Object>
 {
-    // @TODO you'll need this to fix the way normalization is done
-    private AttributeTypeRegistry attrRegistry;
-    
-    
-    public DnComparator( AttributeTypeRegistry attrRegistry )
-    {
-        this.attrRegistry = attrRegistry;
-    }
-    
-    
     public DnComparator()
     {
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void applyRegistries( Registries registries )
-    {
-        attrRegistry = registries.getAttributeTypeRegistry();
     }
     
     
@@ -89,17 +68,17 @@ public class DnComparator extends LdapComparator<Object>
         {
             dn = (LdapDN)obj;
             
-            dn = ( dn.isNormalized() ? dn : LdapDN.normalize( dn, attrRegistry.getNormalizerMapping() ) );
+            dn = ( dn.isNormalized() ? dn : LdapDN.normalize( dn, schemaManager.getNormalizerMapping() ) );
         }
         else if ( obj instanceof Name )
         {
             dn = new LdapDN( ( Name ) obj );
-            dn.normalize( attrRegistry.getNormalizerMapping() );
+            dn.normalize( schemaManager.getNormalizerMapping() );
         }
         else if ( obj instanceof String )
         {
             dn = new LdapDN( ( String ) obj );
-            dn.normalize( attrRegistry.getNormalizerMapping() );
+            dn.normalize( schemaManager.getNormalizerMapping() );
         }
         else
         {

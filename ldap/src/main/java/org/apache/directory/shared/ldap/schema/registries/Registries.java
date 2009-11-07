@@ -137,17 +137,17 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public Registries()
     {
         this.oidRegistry = new OidRegistry();
-        attributeTypeRegistry = new AttributeTypeRegistry( oidRegistry );
-        comparatorRegistry = new ComparatorRegistry( oidRegistry );
-        ditContentRuleRegistry = new DITContentRuleRegistry( oidRegistry );
-        ditStructureRuleRegistry = new DITStructureRuleRegistry( oidRegistry );
-        ldapSyntaxRegistry = new LdapSyntaxRegistry( oidRegistry );
-        matchingRuleRegistry = new MatchingRuleRegistry( oidRegistry );
-        matchingRuleUseRegistry = new MatchingRuleUseRegistry( oidRegistry );
-        nameFormRegistry = new NameFormRegistry( oidRegistry );
-        normalizerRegistry = new NormalizerRegistry( oidRegistry );
-        objectClassRegistry = new ObjectClassRegistry( oidRegistry );
-        syntaxCheckerRegistry = new SyntaxCheckerRegistry( oidRegistry );
+        attributeTypeRegistry = new DefaultAttributeTypeRegistry( oidRegistry );
+        comparatorRegistry = new DefaultComparatorRegistry( oidRegistry );
+        ditContentRuleRegistry = new DefaultDITContentRuleRegistry( oidRegistry );
+        ditStructureRuleRegistry = new DefaultDITStructureRuleRegistry( oidRegistry );
+        ldapSyntaxRegistry = new DefaultLdapSyntaxRegistry( oidRegistry );
+        matchingRuleRegistry = new DefaultMatchingRuleRegistry( oidRegistry );
+        matchingRuleUseRegistry = new DefaultMatchingRuleUseRegistry( oidRegistry );
+        nameFormRegistry = new DefaultNameFormRegistry( oidRegistry );
+        normalizerRegistry = new DefaultNormalizerRegistry( oidRegistry );
+        objectClassRegistry = new DefaultObjectClassRegistry( oidRegistry );
+        syntaxCheckerRegistry = new DefaultSyntaxCheckerRegistry( oidRegistry );
         schemaObjectsBySchemaName = new HashMap<String, Set<SchemaWrapper>>();
         usedBy = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
         using = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
@@ -977,6 +977,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	    // First call the specific registry's register method
 	    switch ( schemaObject.getObjectType() )
 	    {
+	        case ATTRIBUTE_TYPE :
+	            attributeTypeRegistry.register( (AttributeType)schemaObject );
+	            break;
+	            
             case DIT_CONTENT_RULE : 
                 ditContentRuleRegistry.register( (DITContentRule)schemaObject );
                 break;
@@ -1046,57 +1050,58 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	 * @param schemaObject The SchemaObject we want to deregister
 	 * @throws NamingException If the removal failed
 	 */
-    public void unregister( SchemaObject schemaObject ) throws NamingException
+    public SchemaObject unregister( SchemaObject schemaObject ) throws NamingException
     {
         LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
         String oid = schemaObject.getOid();
+        SchemaObject unregistered = null;
         
         // First call the specific registry's register method
         switch ( schemaObject.getObjectType() )
         {
             case ATTRIBUTE_TYPE : 
-                attributeTypeRegistry.unregister( oid );
+                unregistered = attributeTypeRegistry.unregister( oid );
                 break;
                 
             case COMPARATOR : 
-                comparatorRegistry.unregister( oid );
+                unregistered = comparatorRegistry.unregister( oid );
                 break;
                 
             case DIT_CONTENT_RULE : 
-                ditContentRuleRegistry.unregister( oid );
+                unregistered = ditContentRuleRegistry.unregister( oid );
                 break;
                 
             case DIT_STRUCTURE_RULE : 
-                ditStructureRuleRegistry.unregister( oid );
+                unregistered = ditStructureRuleRegistry.unregister( oid );
                 break;
                 
             case LDAP_SYNTAX : 
-                ldapSyntaxRegistry.unregister( oid );
+                unregistered = ldapSyntaxRegistry.unregister( oid );
                 break;
                 
             case MATCHING_RULE : 
-                matchingRuleRegistry.unregister( oid );
+                unregistered = matchingRuleRegistry.unregister( oid );
                 break;
                 
             case MATCHING_RULE_USE : 
-                matchingRuleUseRegistry.unregister( oid );
+                unregistered = matchingRuleUseRegistry.unregister( oid );
                 break;
                 
             case NAME_FORM : 
-                nameFormRegistry.unregister( oid );
+                unregistered = nameFormRegistry.unregister( oid );
                 break;
                 
             case NORMALIZER : 
-                normalizerRegistry.unregister( oid );
+                unregistered = normalizerRegistry.unregister( oid );
                 break;
                 
             case OBJECT_CLASS : 
-                objectClassRegistry.unregister( oid );
+                unregistered = objectClassRegistry.unregister( oid );
                 break;
                 
             case SYNTAX_CHECKER : 
-                syntaxCheckerRegistry.unregister( oid );
+                unregistered = syntaxCheckerRegistry.unregister( oid );
                 break;
         }
         
@@ -1117,6 +1122,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             LOG.debug( "Unregistering of {}:{} failed, not found in Registries", 
                 schemaObject.getObjectType(), schemaObject.getOid() );
         }
+        
+        return unregistered;
     }
     
     
@@ -1779,7 +1786,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         Registries clone = (Registries)super.clone();
         
         // We have to clone every SchemaObject registries now
-        clone.attributeTypeRegistry = attributeTypeRegistry.clone();
+        clone.attributeTypeRegistry = (AttributeTypeRegistry)attributeTypeRegistry.clone();
         clone.comparatorRegistry = comparatorRegistry.clone();
         clone.ditContentRuleRegistry = ditContentRuleRegistry.clone();
         clone.ditStructureRuleRegistry = ditStructureRuleRegistry.clone();

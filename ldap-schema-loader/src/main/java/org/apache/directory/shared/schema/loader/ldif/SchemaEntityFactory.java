@@ -46,6 +46,7 @@ import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
@@ -196,7 +197,6 @@ public class SchemaEntityFactory implements EntityFactory
         {
             String msg = "The schema " + schemaName + " does not exists or is not loaded";
             LOG.error( msg );
-            throw new NullPointerException( msg );
         }
         
         return schema;
@@ -257,7 +257,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Class load a syntaxChecker instance
      */
-    private SyntaxChecker classLoadSyntaxChecker( String oid, String className, 
+    private SyntaxChecker classLoadSyntaxChecker( SchemaManager schemaManager, String oid, String className, 
         EntryAttribute byteCode, Registries targetRegistries ) throws Exception
     {
         // Try to class load the syntaxChecker
@@ -278,6 +278,9 @@ public class SchemaEntityFactory implements EntityFactory
         
         // Create the syntaxChecker instance
         syntaxChecker = ( SyntaxChecker ) clazz.newInstance();
+        
+        // Inject the SchemaManager
+        syntaxChecker.setSchemaManager( schemaManager );
 
         // Update the common fields
         syntaxChecker.setBytecode( byteCodeStr );
@@ -297,7 +300,7 @@ public class SchemaEntityFactory implements EntityFactory
      * @return the loaded SyntaxChecker
      * @throws NamingException if anything fails during loading
      */
-    public SyntaxChecker getSyntaxChecker( Entry entry, Registries targetRegistries, String schemaName ) throws Exception
+    public SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception
     {
         checkEntry( entry, SchemaConstants.SYNTAX_CHECKER );
         
@@ -314,7 +317,7 @@ public class SchemaEntityFactory implements EntityFactory
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
             
         // Class load the syntaxChecker
-        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, className, byteCode, targetRegistries );
+        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( schemaManager, oid, className, byteCode, targetRegistries );
         
         // Update the common fields
         setSchemaObjectProperties( syntaxChecker, entry, schema );
@@ -333,7 +336,7 @@ public class SchemaEntityFactory implements EntityFactory
      * @return A new instance of a syntaxChecker
      * @throws Exception If the creation has failed
      */
-    public SyntaxChecker getSyntaxChecker( SyntaxCheckerDescription syntaxCheckerDescription, 
+    public SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, SyntaxCheckerDescription syntaxCheckerDescription, 
         Registries targetRegistries, String schemaName ) throws Exception
     {
         checkDescription( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
@@ -351,7 +354,7 @@ public class SchemaEntityFactory implements EntityFactory
         EntryAttribute byteCode = getByteCode( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
         
         // Class load the SyntaxChecker
-        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( oid, 
+        SyntaxChecker syntaxChecker = classLoadSyntaxChecker( schemaManager, oid, 
             fqcn, byteCode, targetRegistries );
         
         // Update the common fields
@@ -364,7 +367,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Class load a comparator instances
      */
-    private LdapComparator<?> classLoadComparator( String oid, String className, 
+    private LdapComparator<?> classLoadComparator( SchemaManager schemaManager, String oid, String className, 
         EntryAttribute byteCode, Registries targetRegistries ) throws Exception
     {
         // Try to class load the comparator
@@ -386,6 +389,9 @@ public class SchemaEntityFactory implements EntityFactory
         // Create the comparator instance
         comparator = ( LdapComparator<?> ) clazz.newInstance();
 
+        // Inject the SchemaManager
+        comparator.setSchemaManager( schemaManager );
+        
         // Update the loadable fields
         comparator.setBytecode( byteCodeStr );
         comparator.setFqcn( className );
@@ -406,7 +412,7 @@ public class SchemaEntityFactory implements EntityFactory
      * @return A new instance of a LdapComparator
      * @throws Exception If the creation has failed
      */
-    public LdapComparator<?> getLdapComparator( 
+    public LdapComparator<?> getLdapComparator( SchemaManager schemaManager, 
         LdapComparatorDescription comparatorDescription, 
         Registries targetRegistries, String schemaName ) throws Exception
     {
@@ -425,7 +431,7 @@ public class SchemaEntityFactory implements EntityFactory
         EntryAttribute byteCode = getByteCode( comparatorDescription, SchemaConstants.COMPARATOR );
         
         // Class load the comparator
-        LdapComparator<?> comparator = classLoadComparator( oid, 
+        LdapComparator<?> comparator = classLoadComparator( schemaManager, oid, 
             fqcn, byteCode, targetRegistries );
         
         // Update the common fields
@@ -444,7 +450,7 @@ public class SchemaEntityFactory implements EntityFactory
      * @return the loaded Comparator
      * @throws NamingException if anything fails during loading
      */
-    public LdapComparator<?> getLdapComparator( Entry entry, 
+    public LdapComparator<?> getLdapComparator( SchemaManager schemaManager, Entry entry, 
         Registries targetRegistries, String schemaName ) throws Exception
     {
         checkEntry( entry, SchemaConstants.COMPARATOR );
@@ -462,7 +468,7 @@ public class SchemaEntityFactory implements EntityFactory
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
             
         // Class load the comparator
-        LdapComparator<?> comparator = classLoadComparator( oid, fqcn, byteCode, targetRegistries );
+        LdapComparator<?> comparator = classLoadComparator( schemaManager, oid, fqcn, byteCode, targetRegistries );
         
         // Update the common fields
         setSchemaObjectProperties( comparator, entry, schema );
@@ -475,7 +481,7 @@ public class SchemaEntityFactory implements EntityFactory
     /**
      * Class load a normalizer instances
      */
-    private Normalizer classLoadNormalizer( String oid, String className, 
+    private Normalizer classLoadNormalizer( SchemaManager schemaManager, String oid, String className, 
         EntryAttribute byteCode, Registries targetRegistries ) throws Exception
     {
         // Try to class load the normalizer
@@ -497,6 +503,9 @@ public class SchemaEntityFactory implements EntityFactory
         // Create the normalizer instance
         normalizer = ( Normalizer ) clazz.newInstance();
 
+        // Inject the SchemaManager
+        normalizer.setSchemaManager( schemaManager );
+        
         // Update the common fields
         normalizer.setBytecode( byteCodeStr );
         normalizer.setFqcn( className );
@@ -517,7 +526,7 @@ public class SchemaEntityFactory implements EntityFactory
      * @return A new instance of a normalizer
      * @throws Exception If the creation has failed
      */
-    public Normalizer getNormalizer( NormalizerDescription normalizerDescription, 
+    public Normalizer getNormalizer( SchemaManager schemaManager, NormalizerDescription normalizerDescription, 
         Registries targetRegistries, String schemaName ) throws Exception
     {
         checkDescription( normalizerDescription, SchemaConstants.NORMALIZER );
@@ -535,7 +544,7 @@ public class SchemaEntityFactory implements EntityFactory
         EntryAttribute byteCode = getByteCode( normalizerDescription, SchemaConstants.NORMALIZER );
 
         // Class load the normalizer
-        Normalizer normalizer = classLoadNormalizer( oid, fqcn, byteCode, targetRegistries );
+        Normalizer normalizer = classLoadNormalizer( schemaManager, oid, fqcn, byteCode, targetRegistries );
         
         // Update the common fields
         setSchemaObjectProperties( normalizer, normalizerDescription, schema );
@@ -551,7 +560,7 @@ public class SchemaEntityFactory implements EntityFactory
      * @return the loaded Normalizer
      * @throws NamingException if anything fails during loading
      */
-    public Normalizer getNormalizer( Entry entry, Registries targetRegistries, String schemaName ) 
+    public Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) 
         throws Exception
     {
         checkEntry( entry, SchemaConstants.NORMALIZER );
@@ -569,7 +578,7 @@ public class SchemaEntityFactory implements EntityFactory
         EntryAttribute byteCode = entry.get( MetaSchemaConstants.M_BYTECODE_AT );
             
         // Class load the Normalizer
-        Normalizer normalizer = classLoadNormalizer( oid, className, byteCode, targetRegistries );
+        Normalizer normalizer = classLoadNormalizer( schemaManager, oid, className, byteCode, targetRegistries );
         
         // Update the common fields
         setSchemaObjectProperties( normalizer, entry, schema );
@@ -774,6 +783,12 @@ public class SchemaEntityFactory implements EntityFactory
 
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
+        
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested AttributeType
+            return null;
+        }
 
         // Create the new AttributeType
         AttributeType attributeType = new AttributeType( oid );

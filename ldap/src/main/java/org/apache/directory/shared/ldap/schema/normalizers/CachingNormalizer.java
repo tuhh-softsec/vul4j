@@ -24,6 +24,7 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.util.SynchronizedLRUMap;
 
@@ -157,5 +158,16 @@ public class CachingNormalizer extends Normalizer
     public void applyRegistries( Registries registries ) throws NamingException
     {
         normalizer.applyRegistries( registries );
+    }
+    
+    
+    /**
+     * Sets the SchemaManager
+     * 
+     * @param schemaManager The SchemaManager
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        normalizer.setSchemaManager( schemaManager ); 
     }
 }

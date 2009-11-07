@@ -19,27 +19,46 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-
-import org.apache.directory.shared.ldap.schema.DITContentRule;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
- * An DITContentRule registry's service interface.
+ * A LdapSyntax registry's service default implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 828111 $
  */
-public interface DITContentRuleRegistry extends SchemaObjectRegistry<DITContentRule>,
-    Iterable<DITContentRule>, Cloneable
+public class DefaultLdapSyntaxRegistry extends DefaultSchemaObjectRegistry<LdapSyntax>
+    implements LdapSyntaxRegistry
 {
     /**
-     * Clone the DITContentRuleRegistry
+     * Creates a new default LdapSyntaxRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    DITContentRuleRegistry clone() throws CloneNotSupportedException;
+    public DefaultLdapSyntaxRegistry( OidRegistry oidRegistry )
+    {
+        super( SchemaObjectType.LDAP_SYNTAX, oidRegistry );
+    }
     
     
     /**
-     *  @return The number of DITContentRule stored
+     * {@inheritDoc}
      */
-    int size();
+    public DefaultLdapSyntaxRegistry clone() throws CloneNotSupportedException
+    {
+        DefaultLdapSyntaxRegistry clone = (DefaultLdapSyntaxRegistry)super.clone();
+        
+        return clone;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

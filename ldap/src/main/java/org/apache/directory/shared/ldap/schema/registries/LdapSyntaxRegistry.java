@@ -20,44 +20,25 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
- * Manages the lookup and registration of LdapSyntaxes within the system by OID.
+ * An LdapSyntax registry service interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>
+public interface LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>,
+    Iterable<LdapSyntax>, Cloneable
 {
-    /**
-     * Creates a new default LdapSyntaxRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
-     */
-    public LdapSyntaxRegistry( OidRegistry oidRegistry )
-    {
-        super( SchemaObjectType.LDAP_SYNTAX, oidRegistry );
-    }
-    
-    
     /**
      * Clone the LdapSyntaxRegistry
      */
-    public LdapSyntaxRegistry clone() throws CloneNotSupportedException
-    {
-        LdapSyntaxRegistry clone = (LdapSyntaxRegistry)super.clone();
-        
-        return clone;
-    }
+    LdapSyntaxRegistry clone() throws CloneNotSupportedException;
     
     
     /**
      *  @return The number of Syntaxes stored
      */
-    public int size()
-    {
-        return oidRegistry.size();
-    }
+    int size();
 }

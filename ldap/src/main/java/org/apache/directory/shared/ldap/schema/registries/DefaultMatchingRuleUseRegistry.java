@@ -21,27 +21,48 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
+import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
 /**
- * A MatchingRuleUse registry service interface.  MatchingRuleUse objects are
- * special in that they do not have unique OID's specifically assigned to them.
- * Their OID is really the OID of the MatchingRule they refer to.
+ * A MatchingRuleUse registry service default implementation. 
+ * MatchingRuleUse objects are special in that they do not have unique OID's 
+ * specifically assigned to them. Their OID is really the OID of the MatchingRule 
+ * they refer to.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$
+ * @version $Rev: 828111 $
  */
-public interface MatchingRuleUseRegistry extends SchemaObjectRegistry<MatchingRuleUse>,
-    Iterable<MatchingRuleUse>, Cloneable
+public class DefaultMatchingRuleUseRegistry extends DefaultSchemaObjectRegistry<MatchingRuleUse>
+    implements MatchingRuleUseRegistry
 {
     /**
-     * Clone the MatchingRuleUseRegistry
+     * Creates a new default MatchingRuleUseRegistry instance.
+     * 
+     * @param oidRegistry The global OID registry 
      */
-    MatchingRuleUseRegistry clone() throws CloneNotSupportedException;
+    public DefaultMatchingRuleUseRegistry( OidRegistry oidRegistry )
+    {
+        super( SchemaObjectType.MATCHING_RULE_USE, oidRegistry );
+    }
     
     
     /**
-     *  @return The number of MatchingRuleUse stored
+     * {@inheritDoc}
      */
-    int size();
+    public DefaultMatchingRuleUseRegistry clone() throws CloneNotSupportedException
+    {
+        DefaultMatchingRuleUseRegistry clone = (DefaultMatchingRuleUseRegistry)super.clone();
+        
+        return clone;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int size()
+    {
+        return oidRegistry.size();
+    }
 }

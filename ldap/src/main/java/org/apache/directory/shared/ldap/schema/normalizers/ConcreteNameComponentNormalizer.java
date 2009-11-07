@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import java.io.UnsupportedEncodingException; 
+import java.io.UnsupportedEncodingException;
 
 import javax.naming.NamingException;
 
@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +48,8 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     /** The LoggerFactory used by this Interceptor */
     private static Logger LOG = LoggerFactory.getLogger( ConcreteNameComponentNormalizer.class );
 
-    /** the at registry used to dynamically resolve Normalizers */
-    private final AttributeTypeRegistry attributeRegistry;
+    /** the schemaManager used to dynamically resolve Normalizers */
+    private final SchemaManager schemaManager;
     
 
     /**
@@ -57,11 +57,11 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
      * registries to find the appropriate normalizer for the attribute of the
      * name component with which to normalize the name component value.
      *
-     * @param registry the at registry used to dynamically resolve Normalizers
+     * @param schemaManager the schemaManager used to dynamically resolve Normalizers
      */
-    public ConcreteNameComponentNormalizer( AttributeTypeRegistry registry )
+    public ConcreteNameComponentNormalizer( SchemaManager schemaManager )
     {
-        this.attributeRegistry = registry;
+        this.schemaManager = schemaManager;
     }
 
     
@@ -110,7 +110,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
      */
     public Object normalizeByName( String name, String value ) throws NamingException
     {
-        AttributeType attributeType = attributeRegistry.lookup( name );
+        AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( name );
         
         if ( attributeType.getSyntax().isHumanReadable() )
         {
@@ -141,7 +141,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
      */
     public Object normalizeByName( String name, byte[] value ) throws NamingException
     {
-        AttributeType attributeType = attributeRegistry.lookup( name );
+        AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( name );
         
         if ( !attributeType.getSyntax().isHumanReadable() )
         {
@@ -195,7 +195,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
      */
     private Normalizer lookup( String id ) throws NamingException
     {
-        AttributeType type = attributeRegistry.lookup( id );
+        AttributeType type = schemaManager.lookupAttributeTypeRegistry( id );
         MatchingRule mrule = type.getEquality();
         
         if ( mrule == null )
@@ -212,12 +212,12 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
      */
     public boolean isDefined( String id )
     {
-        return attributeRegistry.contains( id );
+        return schemaManager.getAttributeTypeRegistry().contains( id );
     }
 
 
     public String normalizeName( String attributeName ) throws NamingException
     {
-        return attributeRegistry.getOidByName( attributeName );
+        return schemaManager.getAttributeTypeRegistry().getOidByName( attributeName );
     }
 }

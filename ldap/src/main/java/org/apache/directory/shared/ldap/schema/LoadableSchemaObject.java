@@ -37,7 +37,6 @@ public abstract class LoadableSchemaObject extends SchemaObject
     /** The base64 encoded bytecode for this schema */
     private String bytecode;
 
-
     /**
      * Constructor to use when the OID is known in advance.
      * 
