@@ -20,11 +20,27 @@
 package org.apache.directory.shared.ldap.schema;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ComparatorRegistry;
+import org.apache.directory.shared.ldap.schema.registries.DITContentRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.DITStructureRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.LdapSyntaxRegistry;
+import org.apache.directory.shared.ldap.schema.registries.MatchingRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.MatchingRuleUseRegistry;
+import org.apache.directory.shared.ldap.schema.registries.NameFormRegistry;
+import org.apache.directory.shared.ldap.schema.registries.NormalizerRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
+import org.apache.directory.shared.ldap.schema.registries.OidRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
+import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
 
 /**
  * A class used to manage access to the Schemas and Registries. It's associated 
@@ -271,6 +287,124 @@ public interface SchemaManager
      * @return The Registries
      */
     Registries getRegistries();
+    
+    
+    /**
+     * Lookup for an AttributeType in the AttributeType registry
+     * 
+     * @param String oid the OID we are looking for
+     * @return The found AttributeType 
+     * @throws NamingException if the OID is not found in the AttributeType registry
+     */
+    AttributeType lookupAttributeTypeRegistry( String oid ) throws NamingException;
+
+    
+    /**
+     * Lookup for a Comparator in the Comparator registry
+     * 
+     * @param String oid the OID we are looking for
+     * @return The found Comparator 
+     * @throws NamingException if the OID is not found in the Comparator registry
+     */
+    LdapComparator<?> lookupComparatorRegistry( String oid ) throws NamingException;
+    
+    
+    /**
+     * Get an immutable reference on the AttributeType registry
+     * 
+     * @return A reference to the AttributeType registry.
+     */
+    AttributeTypeRegistry getAttributeTypeRegistry();
+
+    
+    /**
+     * Get an immutable reference on the Comparator registry
+     * 
+     * @return A reference to the Comparator registry.
+     */
+    ComparatorRegistry getComparatorRegistry();
+
+    
+    /**
+     * Get an immutable reference on the DITContentRule registry
+     * 
+     * @return A reference to the DITContentRule registry.
+     */
+    DITContentRuleRegistry getDITContentRuleRegistry();
+
+    
+    /**
+     * Get an immutable reference on the DITStructureRule registry
+     * 
+     * @return A reference to the DITStructureRule registry.
+     */
+    DITStructureRuleRegistry getDITStructureRuleRegistry();
+
+    
+    /**
+     * Get an immutable reference on the MatchingRule registry
+     * 
+     * @return A reference to the MatchingRule registry.
+     */
+    MatchingRuleRegistry getMatchingRuleRegistry();
+
+    
+    /**
+     * Get an immutable reference on the MatchingRuleUse registry
+     * 
+     * @return A reference to the MatchingRuleUse registry.
+     */
+    MatchingRuleUseRegistry getMatchingRuleUseRegistry();
+
+    
+    /**
+     * Get an immutable reference on the Normalizer registry
+     * 
+     * @return A reference to the Normalizer registry.
+     */
+    NormalizerRegistry getNormalizerRegistry();
+
+    
+    /**
+     * Get an immutable reference on the NameForm registry
+     * 
+     * @return A reference to the NameForm registry.
+     */
+    NameFormRegistry getNameFormRegistry();
+
+    
+    /**
+     * Get an immutable reference on the ObjectClass registry
+     * 
+     * @return A reference to the ObjectClass registry.
+     */
+    ObjectClassRegistry getObjectClassRegistry();
+
+    
+    /**
+     * Get an immutable reference on the LdapSyntax registry
+     * 
+     * @return A reference to the LdapSyntax registry.
+     */
+    LdapSyntaxRegistry getLdapSyntaxRegistry();
+
+    
+    /**
+     * Get an immutable reference on the SyntaxChecker registry
+     * 
+     * @return A reference to the SyntaxChecker registry.
+     */
+    SyntaxCheckerRegistry getSyntaxCheckerRegistry();
+
+    
+    /**
+     * Get an immutable reference on the Normalizer mapping
+     * 
+     * @return A reference to the Normalizer mapping
+     */
+    Map<String, OidNormalizer> getNormalizerMapping();
+
+    
     void setRegistries( Registries registries );
     
     
@@ -301,4 +435,148 @@ public interface SchemaManager
      * @return The used loader
      */
     SchemaLoader getLoader();
+
+
+    /**
+     * Registers a new SchemaObject.
+     *
+     * @param schemaObject the SchemaObject to register
+     * @throws NamingException if the SchemaObject is already registered or
+     * the registration operation is not supported
+     */
+    void register( SchemaObject schemaObject ) throws NamingException;
+
+
+    /**
+     * Removes the registered SchemaObject from the registries
+     * 
+     * @param schemaObject the schemaObject to unregister
+     * @throws NamingException if the schemaObject is invalid
+     */
+    SchemaObject unregister( SchemaObject schemaObject ) throws NamingException;
+
+
+    /**
+     * Removes the registered attributeType from the attributeTypeRegistry 
+     * 
+     * @param String the attributeType OID to unregister
+     * @throws NamingException if the attributeType is invalid
+     */
+    SchemaObject unregisterAttributeType( String attributeTypeOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered Comparator from the ComparatorRegistry 
+     * 
+     * @param String the Comparator OID to unregister
+     * @throws NamingException if the Comparator is invalid
+     */
+    SchemaObject unregisterComparator( String comparatorOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered DitControlRule from the DitControlRuleRegistry 
+     * 
+     * @param String the DitControlRule OID to unregister
+     * @throws NamingException if the DitControlRule is invalid
+     */
+    SchemaObject unregisterDitControlRule( String ditControlRuleOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered DitStructureRule from the DitStructureRuleRegistry 
+     * 
+     * @param String the DitStructureRule OID to unregister
+     * @throws NamingException if the DitStructureRule is invalid
+     */
+    SchemaObject unregisterDitStructureRule( String ditStructureRuleOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered MatchingRule from the MatchingRuleRegistry 
+     * 
+     * @param String the MatchingRuleRule OID to unregister
+     * @throws NamingException if the MatchingRule is invalid
+     */
+    SchemaObject unregisterMatchingRule( String matchingRuleOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered MatchingRuleUse from the MatchingRuleUseRegistry 
+     * 
+     * @param String the MatchingRuleUse OID to unregister
+     * @throws NamingException if the MatchingRuleUse is invalid
+     */
+    SchemaObject unregisterMatchingRuleUse( String matchingRuleUseOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered NameForm from the NameFormRegistry 
+     * 
+     * @param String the NameForm OID to unregister
+     * @throws NamingException if the NameForm is invalid
+     */
+    SchemaObject unregisterNameForm( String nameFormOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered Normalizer from the NormalizerRegistry 
+     * 
+     * @param String the Normalizer OID to unregister
+     * @throws NamingException if the Normalizer is invalid
+     */
+    SchemaObject unregisterNormalizer( String normalizerOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered ObjectClass from the ObjectClassRegistry 
+     * 
+     * @param String the ObjectClass OID to unregister
+     * @throws NamingException if the ObjectClass is invalid
+     */
+    SchemaObject unregisterObjectClass( String objectClassOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered LdapSyntax from the LdapSyntaxRegistry 
+     * 
+     * @param String the LdapSyntax OID to unregister
+     * @throws NamingException if the LdapSyntax is invalid
+     */
+    SchemaObject unregisterLdapSyntax( String ldapSyntaxOid ) throws NamingException;
+
+
+    /**
+     * Removes the registered SyntaxChecker from the SyntaxCheckerRegistry 
+     * 
+     * @param String the SyntaxChecker OID to unregister
+     * @throws NamingException if the SyntaxChecker is invalid
+     */
+    SchemaObject unregisterSyntaxChecker( String syntaxCheckerOid ) throws NamingException;
+
+
+    /**
+     * Returns a reference to the OidRegistry
+     *
+     * @return The OidRegistry
+     */
+    OidRegistry getOidRegistry();
+    
+    
+    /**
+     * Gets a schema that has been loaded into these Registries.
+     * 
+     * @param schemaName the name of the schema to lookup
+     * @return the loaded Schema if one corresponding to the name exists
+     */
+    Schema getLoadedSchema( String schemaName );
+
+
+    /**
+     * Tells if the specific schema is loaded
+     *
+     * @param schemaName The schema we want to check
+     * @return true if the schema is laoded
+     */
+    boolean isSchemaLoaded( String schemaName );
 }

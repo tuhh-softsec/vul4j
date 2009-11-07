@@ -21,6 +21,7 @@ package org.apache.directory.shared.schema;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 
@@ -41,10 +42,36 @@ import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ComparatorRegistry;
+import org.apache.directory.shared.ldap.schema.registries.DITContentRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.DITStructureRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableAttributeTypeRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableComparatorRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableDITContentRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableDITStructureRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableLdapSyntaxRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableMatchingRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableMatchingRuleUseRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableNameFormRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableNormalizerRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableObjectClassRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ImmutableSyntaxCheckerRegistry;
+import org.apache.directory.shared.ldap.schema.registries.LdapSyntaxRegistry;
+import org.apache.directory.shared.ldap.schema.registries.MatchingRuleRegistry;
+import org.apache.directory.shared.ldap.schema.registries.MatchingRuleUseRegistry;
+import org.apache.directory.shared.ldap.schema.registries.NameFormRegistry;
+import org.apache.directory.shared.ldap.schema.registries.NormalizerRegistry;
+import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
+import org.apache.directory.shared.ldap.schema.registries.OidRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
+import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
+import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.schema.loader.ldif.SchemaEntityFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,6 +297,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         return registries;
     }
+    
 
     public boolean isDisabledAccepter()
     {
@@ -294,7 +322,6 @@ public class DefaultSchemaManager implements SchemaManager
 
         // Swap the registries if it is consistent
         return swapRegistries( clonedRegistries );
-        
     }
 
     
@@ -563,7 +590,7 @@ public class DefaultSchemaManager implements SchemaManager
         throws Exception
     {
         LdapComparator<?> comparator = 
-            factory.getLdapComparator( entry, registries, schema.getSchemaName() );
+            factory.getLdapComparator( this, entry, registries, schema.getSchemaName() );
         
         comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
 
@@ -729,7 +756,7 @@ public class DefaultSchemaManager implements SchemaManager
         throws Exception
     {
         Normalizer normalizer =
-            factory.getNormalizer( entry, registries, schema.getSchemaName() );
+            factory.getNormalizer( this, entry, registries, schema.getSchemaName() );
         
         if ( registries.isRelaxed() )
         {
@@ -823,7 +850,7 @@ public class DefaultSchemaManager implements SchemaManager
         throws Exception
     {
         SyntaxChecker syntaxChecker = 
-            factory.getSyntaxChecker( entry, registries, schema.getSchemaName() );
+            factory.getSyntaxChecker( this, entry, registries, schema.getSchemaName() );
         syntaxChecker.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
 
         if ( registries.isRelaxed() )
@@ -923,16 +950,37 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadDisabled( Schema... schemas ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        // Work on a cloned and relaxed registries
+        Registries clonedRegistries = cloneRegistries();
+        
+        // Accept the disabled schemas
+        clonedRegistries.setDisabledAccepted( true );
+
+        // Load the schemas
+        for ( Schema schema : schemas )
+        {
+            // Enable the Schema object before loading it
+            schema.enable();
+            load( clonedRegistries, schema  );
+        }
+
+        // Swap the registries if it is consistent
+        return swapRegistries( clonedRegistries );
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadDisabled( String... schemas ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        return loadDisabled( toArray( schemas ) );
     }
 
     public boolean loadRelaxed( Schema... schemas ) throws Exception
@@ -1121,5 +1169,274 @@ public class DefaultSchemaManager implements SchemaManager
     public SchemaLoader getLoader()
     {
         return loader;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public AttributeTypeRegistry getAttributeTypeRegistry()
+    {
+        return new ImmutableAttributeTypeRegistry( registries.getAttributeTypeRegistry() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ComparatorRegistry getComparatorRegistry()
+    {
+        return new ImmutableComparatorRegistry( registries.getComparatorRegistry() );
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public DITContentRuleRegistry getDITContentRuleRegistry()
+    {
+        return new ImmutableDITContentRuleRegistry( registries.getDitContentRuleRegistry() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public DITStructureRuleRegistry getDITStructureRuleRegistry()
+    {
+        return new ImmutableDITStructureRuleRegistry( registries.getDitStructureRuleRegistry() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public MatchingRuleRegistry getMatchingRuleRegistry()
+    {
+        return new ImmutableMatchingRuleRegistry( registries.getMatchingRuleRegistry() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public MatchingRuleUseRegistry getMatchingRuleUseRegistry()
+    {
+        return new ImmutableMatchingRuleUseRegistry( registries.getMatchingRuleUseRegistry() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public NameFormRegistry getNameFormRegistry()
+    {
+        return new ImmutableNameFormRegistry( registries.getNameFormRegistry() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public NormalizerRegistry getNormalizerRegistry()
+    {
+        return new ImmutableNormalizerRegistry( registries.getNormalizerRegistry() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectClassRegistry getObjectClassRegistry()
+    {
+        return new ImmutableObjectClassRegistry( registries.getObjectClassRegistry() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public LdapSyntaxRegistry getLdapSyntaxRegistry()
+    {
+        return new ImmutableLdapSyntaxRegistry( registries.getLdapSyntaxRegistry() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SyntaxCheckerRegistry getSyntaxCheckerRegistry()
+    {
+        return new ImmutableSyntaxCheckerRegistry( registries.getSyntaxCheckerRegistry() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public AttributeType lookupAttributeTypeRegistry( String oid ) throws NamingException
+    {
+        return registries.getAttributeTypeRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public LdapComparator<?> lookupComparatorRegistry( String oid ) throws NamingException
+    {
+        return registries.getComparatorRegistry().lookup( oid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void register( SchemaObject schemaObject ) throws NamingException
+    {
+        registries.register( schemaObject );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregister( SchemaObject schemaObject ) throws NamingException
+    {
+        return registries.unregister( schemaObject );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, OidNormalizer> getNormalizerMapping()
+    {
+        return registries.getAttributeTypeRegistry().getNormalizerMapping();
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public OidRegistry getOidRegistry()
+    {
+        return registries.getOidRegistry();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Schema getLoadedSchema( String schemaName )
+    {
+        return registries.getLoadedSchema( schemaName );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSchemaLoaded( String schemaName )
+    {
+        return registries.isSchemaLoaded( schemaName );
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterAttributeType( String attributeTypeOid ) throws NamingException
+    {
+        return registries.getAttributeTypeRegistry().unregister( attributeTypeOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterComparator( String comparatorOid ) throws NamingException
+    {
+        return registries.getComparatorRegistry().unregister( comparatorOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterDitControlRule( String ditControlRuleOid ) throws NamingException
+    {
+        return registries.getDitContentRuleRegistry().unregister( ditControlRuleOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterDitStructureRule( String ditStructureRuleOid ) throws NamingException
+    {
+        return registries.getDitStructureRuleRegistry().unregister( ditStructureRuleOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterLdapSyntax( String ldapSyntaxOid ) throws NamingException
+    {
+        return registries.getLdapSyntaxRegistry().unregister( ldapSyntaxOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterMatchingRule( String matchingRuleOid ) throws NamingException
+    {
+        return registries.getMatchingRuleRegistry().unregister( matchingRuleOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterMatchingRuleUse( String matchingRuleUseOid ) throws NamingException
+    {
+        return registries.getMatchingRuleUseRegistry().unregister( matchingRuleUseOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterNameForm( String nameFormOid ) throws NamingException
+    {
+        return registries.getNameFormRegistry().unregister( nameFormOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterNormalizer( String normalizerOid ) throws NamingException
+    {
+        return registries.getNormalizerRegistry().unregister( normalizerOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterObjectClass( String objectClassOid ) throws NamingException
+    {
+        return registries.getObjectClassRegistry().unregister( objectClassOid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject unregisterSyntaxChecker( String syntaxCheckerOid ) throws NamingException
+    {
+        return registries.getSyntaxCheckerRegistry().unregister( syntaxCheckerOid );
     }
 }
