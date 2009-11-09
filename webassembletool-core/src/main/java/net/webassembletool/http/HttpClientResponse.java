@@ -30,14 +30,10 @@ public class HttpClientResponse {
 	private Exception exception;
 	private InputStream inputStream;
 
-	public HttpClientResponse(HttpHost httpHost, HttpUriRequest httpUriRequest,
+	public HttpClientResponse(HttpUriRequest httpUriRequest,
 			HttpClient httpClient, HttpContext httpContext) {
 		try {
-			if (httpHost != null)
-				httpResponse = httpClient.execute(httpHost, httpUriRequest,
-						httpContext);
-			else
-				httpResponse = httpClient.execute(httpUriRequest, httpContext);
+			httpResponse = httpClient.execute(httpUriRequest, httpContext);
 			statusCode = httpResponse.getStatusLine().getStatusCode();
 			statusText = httpResponse.getStatusLine().getReasonPhrase();
 			httpEntity = httpResponse.getEntity();

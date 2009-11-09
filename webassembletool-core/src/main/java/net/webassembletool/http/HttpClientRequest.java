@@ -56,11 +56,14 @@ public class HttpClientRequest {
 		buildHttpMethod();
 		HttpClientResponse result;
 		HttpHost httpHost = null;
-		if (preserveHost)
+		if (preserveHost) {
 			httpHost = new HttpHost(originalRequest.getServerName(),
-					originalRequest.getServerPort());
-		result = new HttpClientResponse(httpHost, httpUriRequest, httpClient,
-				httpContext);
+					originalRequest.getServerPort(), originalRequest
+							.getScheme());
+			httpUriRequest.getParams().setParameter(ClientPNames.VIRTUAL_HOST,
+					httpHost);
+		}
+		result = new HttpClientResponse(httpUriRequest, httpClient, httpContext);
 		LOG.debug(toString() + " -> " + result.toString());
 		return result;
 	}
