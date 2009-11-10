@@ -9,16 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.InputStreamEntity;
@@ -75,7 +68,8 @@ public class HttpClientRequest {
 	 *             if problem getting the request
 	 */
 	private void copyEntity(HttpServletRequest req,
-			HttpEntityEnclosingRequestBase postMethod) throws IOException {
+			HttpEntityEnclosingRequest httpEntityEnclosingRequest)
+			throws IOException {
 		long contentLengthLong = -1;
 		String contentLength = req.getHeader("Content-length");
 		if (contentLength != null)
@@ -88,29 +82,33 @@ public class HttpClientRequest {
 		String contentEncoding = req.getHeader("Content-Encoding");
 		if (contentEncoding != null)
 			inputStreamEntity.setContentEncoding(contentEncoding);
-		postMethod.setEntity(inputStreamEntity);
+		httpEntityEnclosingRequest.setEntity(inputStreamEntity);
 	}
 
 	private void buildHttpMethod() throws IOException {
-		String method = originalRequest.getMethod();
-		if ("GET".equalsIgnoreCase(method) || !proxy)
-			httpUriRequest = new HttpGet(uri);
-		else if ("HEAD".equalsIgnoreCase(method)) {
-			httpUriRequest = new HttpHead(uri);
-		} else if ("OPTIONS".equalsIgnoreCase(method)) {
-			httpUriRequest = new HttpOptions(uri);
-		} else if ("TRACE".equalsIgnoreCase(method)) {
-			httpUriRequest = new HttpTrace(uri);
-		} else if ("DELETE".equalsIgnoreCase(method)) {
-			httpUriRequest = new HttpDelete(uri);
-		} else if ("POST".equalsIgnoreCase(method)) {
-			HttpPost httpPost = new HttpPost(uri);
-			copyEntity(originalRequest, httpPost);
-			httpUriRequest = httpPost;
-		} else if ("PUT".equalsIgnoreCase(method)) {
-			HttpPut httpPut = new HttpPut(uri);
-			copyEntity(originalRequest, httpPut);
-			httpUriRequest = httpPut;
+		String method;
+		if (proxy)
+			method = originalRequest.getMethod();
+		else
+			method = "GET";
+		if ("GET".equalsIgnoreCase(method) || "HEAD".equalsIgnoreCase(method)
+				|| "OPTIONS".equalsIgnoreCase(method)
+				|| "TRACE".equalsIgnoreCase(method)
+				|| "DELETE".equalsIgnoreCase(method)) {
+			httpUriRequest = new GenericHttpRequest(method, uri);
+		} else if ("POST".equalsIgnoreCase(method)
+				|| "PUT".equalsIgnoreCase(method)
+				|| "PROPFIND".equalsIgnoreCase(method)
+				|| "PROPPATCH".equalsIgnoreCase(method)
+				|| "MKCOL".equalsIgnoreCase(method)
+				|| "COPY".equalsIgnoreCase(method)
+				|| "MOVE".equalsIgnoreCase(method)
+				|| "LOCK".equalsIgnoreCase(method)
+				|| "UNLOCK".equalsIgnoreCase(method)) {
+			GenericHttpEntityEnclosingRequest genericHttpEntityEnclosingRequest = new GenericHttpEntityEnclosingRequest(
+					method, uri);
+			copyEntity(originalRequest, genericHttpEntityEnclosingRequest);
+			httpUriRequest = genericHttpEntityEnclosingRequest;
 		} else
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		if (proxy)
