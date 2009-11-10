@@ -111,9 +111,10 @@ public interface EntityFactory
      *
      * @param entry The entry containing all the informations to build an AttributeType
      * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaManager The SchemaManager
      * @param schemaName The schema containing this AttributeType
      * @return An AttributeType SchemaObject
      * @throws NamingException If the AttributeType is invalid
      */
-    AttributeType getAttributeType( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
+    AttributeType getAttributeType( Entry entry, Registries targetRegistries, SchemaManager schemaManager, String schemaName ) throws NamingException;
 }

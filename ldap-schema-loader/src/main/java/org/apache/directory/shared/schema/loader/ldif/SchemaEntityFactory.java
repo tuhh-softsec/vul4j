@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.DefaultClientAttribute;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.EntityFactory;
@@ -310,6 +311,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested SyntaxChecker
+            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getUpName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         // The FQCN
         String className = getFqcn( entry, SchemaConstants.SYNTAX_CHECKER );
         
@@ -347,6 +357,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested SyntaxChecker
+            String msg = "Cannot add the SyntaxChecker " + syntaxCheckerDescription.getName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         // The FQCN
         String fqcn = getFqcn( syntaxCheckerDescription, SchemaConstants.SYNTAX_CHECKER );
         
@@ -424,6 +443,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested Comparator
+            String msg = "Cannot add the Comparator " + comparatorDescription.getName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+
         // The FQCN
         String fqcn = getFqcn( comparatorDescription, SchemaConstants.COMPARATOR );
         
@@ -461,6 +489,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested Comparator
+            String msg = "Cannot add the Comparator " + entry.getDn().getUpName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         // The FQCN
         String fqcn = getFqcn( entry, SchemaConstants.COMPARATOR );
         
@@ -537,6 +574,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested Normalizer
+            String msg = "Cannot add the Normalizer " + normalizerDescription.getName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         // The FQCN
         String fqcn = getFqcn( normalizerDescription, SchemaConstants.NORMALIZER );
         
@@ -571,6 +617,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested Normalizer
+            String msg = "Cannot add the Normalizer " + entry.getDn().getUpName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         // The FQCN
         String className = getFqcn( entry, SchemaConstants.NORMALIZER );
         
@@ -633,6 +688,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested Syntax
+            String msg = "Cannot add the Syntax " + entry.getDn().getUpName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         // Create the new LdapSyntax instance
         LdapSyntax syntax = new LdapSyntax( oid );
         
@@ -671,6 +735,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested MatchingRule
+            String msg = "Cannot add the MatchingRule " + entry.getDn().getUpName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         MatchingRule matchingRule = new MatchingRule( oid );
 
         // The syntax field
@@ -722,6 +795,15 @@ public class SchemaEntityFactory implements EntityFactory
         // Get the schema
         Schema schema = getSchema( schemaName, targetRegistries );
 
+        if ( schema == null )
+        {
+            // The schema is not loaded. We can't create the requested ObjectClass
+            String msg = "Cannot add the ObjectClass " + entry.getDn().getUpName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         // Create the ObjectClass instance
         ObjectClass oc = new ObjectClass( oid );
         
@@ -770,11 +852,12 @@ public class SchemaEntityFactory implements EntityFactory
      *
      * @param entry The entry containing all the informations to build an AttributeType
      * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaManager The schema Manager
      * @param schemaName The schema containing this AttributeType
      * @return An AttributeType SchemaObject
      * @throws NamingException If the AttributeType is invalid
      */
-    public AttributeType getAttributeType( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException
+    public AttributeType getAttributeType( Entry entry, Registries targetRegistries, SchemaManager schemaManager, String schemaName ) throws NamingException
     {
         checkEntry( entry, SchemaConstants.ATTRIBUTE_TYPE );
         
@@ -782,12 +865,24 @@ public class SchemaEntityFactory implements EntityFactory
         String oid = getOid( entry, SchemaConstants.ATTRIBUTE_TYPE );
 
         // Get the schema
+        if ( !schemaManager.isSchemaLoaded( schemaName ) )
+        {
+            // The schema is not loaded, this is an error
+            String msg = "Cannot add the AttributeType " + entry.getDn().getUpName() + ", as the associated schema (" +
+                schemaName + " is not loaded";
+            LOG.warn( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
         Schema schema = getSchema( schemaName, targetRegistries );
         
         if ( schema == null )
         {
-            // The schema is not loaded. We can't create the requested AttributeType
-            return null;
+            // The schema is disabled. We still have to update the backend
+            String msg = "Cannot add the AttributeType " + entry.getDn().getUpName() + " into the registries, "+
+                "as the associated schema (" + schemaName + " is disabled";
+            LOG.info( msg );
+            schema = schemaManager.getLoadedSchema( schemaName );
         }
 
         // Create the new AttributeType
@@ -1013,7 +1108,7 @@ public class SchemaEntityFactory implements EntityFactory
         }
         else
         {
-            schemaObject.setEnabled( schema.isEnabled() );
+            schemaObject.setEnabled( schema != null && schema.isEnabled() );
         }
         
         // The isReadOnly field

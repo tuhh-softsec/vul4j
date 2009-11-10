@@ -299,7 +299,10 @@ public class DefaultSchemaManager implements SchemaManager
     }
     
 
-    public boolean isDisabledAccepter()
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDisabledAccepted()
     {
         // TODO Auto-generated method stub
         return false;
@@ -542,7 +545,7 @@ public class DefaultSchemaManager implements SchemaManager
     private AttributeType registerAttributeType( Registries registries, Entry entry, Schema schema ) 
         throws Exception
     {
-        AttributeType attributeType = factory.getAttributeType( entry, registries, schema.getSchemaName() );
+        AttributeType attributeType = factory.getAttributeType( entry, registries, this, schema.getSchemaName() );
         
         if ( registries.isRelaxed() )
         {
@@ -1329,7 +1332,14 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public Schema getLoadedSchema( String schemaName )
     {
-        return registries.getLoadedSchema( schemaName );
+        try
+        {
+            return loader.getSchema( schemaName );
+        }
+        catch ( Exception e )
+        {
+            return null;
+        }
     }
 
 
@@ -1338,7 +1348,15 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public boolean isSchemaLoaded( String schemaName )
     {
-        return registries.isSchemaLoaded( schemaName );
+        try
+        {
+            Schema schema = loader.getSchema( schemaName );
+            return schema != null;
+        }
+        catch ( Exception e )
+        {
+            return false;
+        }
     }
     
 
