@@ -739,9 +739,7 @@ public class SchemaEntityFactory implements EntityFactory
         String oid = getOid( entry, SchemaConstants.MATCHING_RULE );
 
         // Get the schema
-        Schema schema = getSchema( schemaName, targetRegistries );
-
-        if ( schema == null )
+        if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested MatchingRule
             String msg = "Cannot add the MatchingRule " + entry.getDn().getUpName() + ", as the associated schema (" +
@@ -750,6 +748,17 @@ public class SchemaEntityFactory implements EntityFactory
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
         
+        Schema schema = getSchema( schemaName, targetRegistries );
+        
+        if ( schema == null )
+        {
+            // The schema is disabled. We still have to update the backend
+            String msg = "Cannot add the MatchingRule " + entry.getDn().getUpName() + " into the registries, "+
+                "as the associated schema (" + schemaName + ") is disabled";
+            LOG.info( msg );
+            schema = schemaManager.getLoadedSchema( schemaName );
+        }
+
         MatchingRule matchingRule = new MatchingRule( oid );
 
         // The syntax field
