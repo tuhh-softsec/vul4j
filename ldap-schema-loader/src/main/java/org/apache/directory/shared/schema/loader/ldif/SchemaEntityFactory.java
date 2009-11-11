@@ -688,9 +688,7 @@ public class SchemaEntityFactory implements EntityFactory
         String oid = getOid( entry, SchemaConstants.SYNTAX );
 
         // Get the schema
-        Schema schema = getSchema( schemaName, targetRegistries );
-
-        if ( schema == null )
+        if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested Syntax
             String msg = "Cannot add the Syntax " + entry.getDn().getUpName() + ", as the associated schema (" +
@@ -699,6 +697,17 @@ public class SchemaEntityFactory implements EntityFactory
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
         
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        if ( schema == null )
+        {
+            // The schema is disabled. We still have to update the backend
+            String msg = "Cannot add the SyntaxChecker " + entry.getDn().getUpName() + " into the registries, "+
+                "as the associated schema (" + schemaName + ") is disabled";
+            LOG.info( msg );
+            schema = schemaManager.getLoadedSchema( schemaName );
+        }
+
         // Create the new LdapSyntax instance
         LdapSyntax syntax = new LdapSyntax( oid );
         
