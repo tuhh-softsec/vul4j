@@ -588,8 +588,7 @@ public class SchemaEntityFactory implements EntityFactory
      * {@inheritDoc}
      */
     public Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, 
-        Registries targetRegistries, String schemaName ) 
-        throws Exception
+        Registries targetRegistries, String schemaName ) throws Exception
     {
         checkEntry( entry, SchemaConstants.NORMALIZER );
         
@@ -597,15 +596,24 @@ public class SchemaEntityFactory implements EntityFactory
         String oid = getOid( entry, SchemaConstants.NORMALIZER );
 
         // Get the schema
-        Schema schema = getSchema( schemaName, targetRegistries );
-
-        if ( schema == null )
+        if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested Normalizer
             String msg = "Cannot add the Normalizer " + entry.getDn().getUpName() + ", as the associated schema (" +
                 schemaName + " is not loaded";
             LOG.warn( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
+        Schema schema = getSchema( schemaName, targetRegistries );
+
+        if ( schema == null )
+        {
+            // The schema is disabled. We still have to update the backend
+            String msg = "Cannot add the Normalizer " + entry.getDn().getUpName() + " into the registries, "+
+                "as the associated schema (" + schemaName + ") is disabled";
+            LOG.info( msg );
+            schema = schemaManager.getLoadedSchema( schemaName );
         }
         
         // The FQCN
