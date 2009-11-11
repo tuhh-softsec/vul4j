@@ -12,50 +12,50 @@ import org.apache.directory.shared.ldap.schema.registries.Schema;
 
 public interface EntityFactory
 {
+    /**
+     * Return an instance of the Schema associated to the entry
+     *
+     * @param entry The Schema entry
+     * @return An instance of a Schema
+     * @throws Exception If the instance can't be created
+     */
     Schema getSchema( Entry entry ) throws Exception;
     
-    /**
-     * Retrieve and load a syntaxChecker class from the DIT.
-     * 
-     * @param entry the entry to load the syntaxChecker from
-     * @return the loaded SyntaxChecker
-     * @throws NamingException if anything fails during loading
-     */
-    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
     
-
     /**
-     * Create a new instance of a SyntaxChecker 
+     * Construct an AttributeType from an entry representing an AttributeType.
      *
-     * @param syntaxCheckerDescription
-     * @param targetRegistries
-     * @param schemaName
-     * @return A new instance of a syntaxChecker
-     * @throws Exception If the creation has failed
+     * @param schemaManager The Schema Manager
+     * @param entry The entry containing all the informations to build an AttributeType
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema this SchemaObject will be part of
+     * @return An AttributeType SchemaObject
+     * @throws NamingException If the AttributeType is invalid
      */
-    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, SyntaxCheckerDescription syntaxCheckerDescription, 
-        Registries targetRegistries, String schemaName ) throws Exception;
+    AttributeType getAttributeType( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
 
-
+    
     /**
-     * Create a new instance of a LdapComparator 
+     * Construct a LdapComparator from a description of a comparator.
      *
-     * @param comparatorDescription
-     * @param targetRegistries
-     * @param schemaName
+     * @param schemaManager The Schema Manager
+     * @param comparatorDescription The LdapComparator description object 
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema this SchemaObject will be part of
      * @return A new instance of a LdapComparator
      * @throws Exception If the creation has failed
      */
     LdapComparator<?> getLdapComparator( SchemaManager schemaManager, 
         LdapComparatorDescription comparatorDescription, 
         Registries targetRegistries, String schemaName ) throws Exception;
-
-
+    
+    
     /**
      * Retrieve and load a Comparator class from the DIT.
      * 
-     * @param entry the entry to load the Comparator from
-     * @param targetRegistries The registries
+     * @param schemaManager The Schema Manager
+     * @param entry The entry containing all the informations to build a LdapComparator
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
      * @param schemaName The schema this SchemaObject will be part of
      * @return the loaded Comparator
      * @throws NamingException if anything fails during loading
@@ -63,13 +63,27 @@ public interface EntityFactory
     LdapComparator<?> getLdapComparator( SchemaManager schemaManager, Entry entry, 
         Registries targetRegistries, String schemaName ) throws Exception;
     
-    
+
+    /**
+     * Construct an MatchingRule from an entry get from the Dit
+     *
+     * @param schemaManager The Schema Manager
+     * @param entry The entry containing all the informations to build a MatchingRule
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema this SchemaObject will be part of
+     * @return A MatchingRule SchemaObject
+     * @throws NamingException If the MatchingRule is invalid
+     */
+    MatchingRule getMatchingRule( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
+
+
     /**
      * Create a new instance of a Normalizer 
      *
-     * @param normalizerDescription
-     * @param targetRegistries
-     * @param schemaName
+     * @param schemaManager The Schema Manager
+     * @param normalizerDescription The Normalizer description object 
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema this SchemaObject will be part of
      * @return A new instance of a normalizer
      * @throws Exception If the creation has failed
      */
@@ -80,7 +94,10 @@ public interface EntityFactory
     /**
      * Retrieve and load a Normalizer class from the DIT.
      * 
-     * @param entry the entry to load the Normalizer from
+     * @param schemaManager The Schema Manager
+     * @param entry The entry containing all the informations to build a Normalizer
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema this SchemaObject will be part of
      * @return the loaded Normalizer
      * @throws NamingException if anything fails during loading
      */
@@ -88,33 +105,53 @@ public interface EntityFactory
         throws Exception;
     
     
-    LdapSyntax getSyntax( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
+    /**
+     * 
+     * @param schemaManager The Schema Manager
+     * @param entry The entry containing all the informations to build an ObjectClass
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema this SchemaObject will be part of
+     * @return
+     * @throws Exception
+     */
+    ObjectClass getObjectClass( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
     
     
     /**
-     * Construct an MatchingRule from an entry get from the Dit
-     *
-     * @param entry The entry containing all the informations to build a MatchingRule
+     * 
+     * @param schemaManager The Schema Manager
+     * @param entry The entry containing all the informations to build a LdapSyntax
      * @param targetRegistries The registries containing all the enabled SchemaObjects
-     * @param schemaName The schema containing this MatchingRule
-     * @return A MatchingRule SchemaObject
-     * @throws NamingException If the MatchingRule is invalid
+     * @param schemaName The schema this SchemaObject will be part of
+     * @return
+     * @throws NamingException
      */
-    MatchingRule getMatchingRule( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
-
-
-    ObjectClass getObjectClass( Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
+    LdapSyntax getSyntax( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws NamingException;
     
     
     /**
-     * Construct an AttributeType from an entry representing an AttributeType.
-     *
-     * @param entry The entry containing all the informations to build an AttributeType
+     * Retrieve and load a syntaxChecker class from the DIT.
+     * 
+     * @param schemaManager The Schema Manager
+     * @param entry The entry containing all the informations to build a SyntaxChecker
      * @param targetRegistries The registries containing all the enabled SchemaObjects
-     * @param schemaManager The SchemaManager
-     * @param schemaName The schema containing this AttributeType
-     * @return An AttributeType SchemaObject
-     * @throws NamingException If the AttributeType is invalid
+     * @param schemaName The schema this SchemaObject will be part of
+     * @return the loaded SyntaxChecker
+     * @throws NamingException if anything fails during loading
      */
-    AttributeType getAttributeType( Entry entry, Registries targetRegistries, SchemaManager schemaManager, String schemaName ) throws NamingException;
+    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception;
+    
+
+    /**
+     * Create a new instance of a SyntaxChecker 
+     *
+     * @param schemaManager The Schema Manager
+     * @param syntaxCheckerDescription The SyntaxChecker description object 
+     * @param targetRegistries The registries containing all the enabled SchemaObjects
+     * @param schemaName The schema this SchemaObject will be part of
+     * @return A new instance of a syntaxChecker
+     * @throws Exception If the creation has failed
+     */
+    SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, SyntaxCheckerDescription syntaxCheckerDescription, 
+        Registries targetRegistries, String schemaName ) throws Exception;
 }
