@@ -545,7 +545,7 @@ public class DefaultSchemaManager implements SchemaManager
     private AttributeType registerAttributeType( Registries registries, Entry entry, Schema schema ) 
         throws Exception
     {
-        AttributeType attributeType = factory.getAttributeType( entry, registries, this, schema.getSchemaName() );
+        AttributeType attributeType = factory.getAttributeType( this, entry, registries, schema.getSchemaName() );
         
         if ( registries.isRelaxed() )
         {
@@ -675,7 +675,7 @@ public class DefaultSchemaManager implements SchemaManager
         throws Exception
     {
         MatchingRule matchingRule = factory.getMatchingRule( 
-            entry, registries, schema.getSchemaName() );
+            this, entry, registries, schema.getSchemaName() );
 
         if ( registries.isRelaxed() )
         {
@@ -804,7 +804,7 @@ public class DefaultSchemaManager implements SchemaManager
     private ObjectClass registerObjectClass( Registries registries, Entry entry, Schema schema) 
         throws Exception
     {
-        ObjectClass objectClass = factory.getObjectClass( entry, registries, schema.getSchemaName() );
+        ObjectClass objectClass = factory.getObjectClass( this, entry, registries, schema.getSchemaName() );
 
         if ( registries.isRelaxed() )
         {
@@ -900,7 +900,7 @@ public class DefaultSchemaManager implements SchemaManager
     private LdapSyntax registerSyntax( Registries registries, Entry entry, Schema schema) 
         throws Exception
     {
-        LdapSyntax syntax = factory.getSyntax( 
+        LdapSyntax syntax = factory.getSyntax( this,
             entry, registries, schema.getSchemaName() );
 
         if ( registries.isRelaxed() )

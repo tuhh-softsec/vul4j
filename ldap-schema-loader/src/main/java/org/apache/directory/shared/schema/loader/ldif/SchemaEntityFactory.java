@@ -204,6 +204,9 @@ public class SchemaEntityFactory implements EntityFactory
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public Schema getSchema( Entry entry ) throws Exception
     {
         String name;
@@ -251,7 +254,7 @@ public class SchemaEntityFactory implements EntityFactory
             dependencies = depsSet.toArray( EMPTY_ARRAY );
         }
         
-        return new DefaultSchema( name, owner, dependencies, isDisabled ){};
+        return new DefaultSchema( name, owner, dependencies, isDisabled );
     }
     
     
@@ -295,11 +298,7 @@ public class SchemaEntityFactory implements EntityFactory
     
     
     /**
-     * Retrieve and load a syntaxChecker class from the DIT.
-     * 
-     * @param entry the entry to load the syntaxChecker from
-     * @return the loaded SyntaxChecker
-     * @throws NamingException if anything fails during loading
+     * {@inheritDoc}
      */
     public SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws Exception
     {
@@ -338,13 +337,7 @@ public class SchemaEntityFactory implements EntityFactory
     
     
     /**
-     * Create a new instance of a SyntaxChecker 
-     *
-     * @param syntaxCheckerDescription
-     * @param targetRegistries
-     * @param schemaName
-     * @return A new instance of a syntaxChecker
-     * @throws Exception If the creation has failed
+     * {@inheritDoc}
      */
     public SyntaxChecker getSyntaxChecker( SchemaManager schemaManager, SyntaxCheckerDescription syntaxCheckerDescription, 
         Registries targetRegistries, String schemaName ) throws Exception
@@ -423,13 +416,7 @@ public class SchemaEntityFactory implements EntityFactory
     
     
     /**
-     * Create a new instance of a LdapComparator 
-     *
-     * @param comparatorDescription
-     * @param targetRegistries
-     * @param schemaName
-     * @return A new instance of a LdapComparator
-     * @throws Exception If the creation has failed
+     * {@inheritDoc}
      */
     public LdapComparator<?> getLdapComparator( SchemaManager schemaManager, 
         LdapComparatorDescription comparatorDescription, 
@@ -470,16 +457,10 @@ public class SchemaEntityFactory implements EntityFactory
     
     
     /**
-     * Retrieve and load a Comparator class from the DIT.
-     * 
-     * @param entry the entry to load the Comparator from
-     * @param targetRegistries The registries
-     * @param schemaName The schema this SchemaObject will be part of
-     * @return the loaded Comparator
-     * @throws NamingException if anything fails during loading
+     * {@inheritDoc}
      */
-    public LdapComparator<?> getLdapComparator( SchemaManager schemaManager, Entry entry, 
-        Registries targetRegistries, String schemaName ) throws Exception
+    public LdapComparator<?> getLdapComparator( SchemaManager schemaManager, 
+        Entry entry, Registries targetRegistries, String schemaName ) throws Exception
     {
         checkEntry( entry, SchemaConstants.COMPARATOR );
         
@@ -555,15 +536,10 @@ public class SchemaEntityFactory implements EntityFactory
 
     
     /**
-     * Create a new instance of a Normalizer 
-     *
-     * @param normalizerDescription
-     * @param targetRegistries
-     * @param schemaName
-     * @return A new instance of a normalizer
-     * @throws Exception If the creation has failed
+     * {@inheritDoc}
      */
-    public Normalizer getNormalizer( SchemaManager schemaManager, NormalizerDescription normalizerDescription, 
+    public Normalizer getNormalizer( SchemaManager schemaManager, 
+        NormalizerDescription normalizerDescription, 
         Registries targetRegistries, String schemaName ) throws Exception
     {
         checkDescription( normalizerDescription, SchemaConstants.NORMALIZER );
@@ -600,13 +576,10 @@ public class SchemaEntityFactory implements EntityFactory
     
     
     /**
-     * Retrieve and load a Normalizer class from the DIT.
-     * 
-     * @param entry the entry to load the Normalizer from
-     * @return the loaded Normalizer
-     * @throws NamingException if anything fails during loading
+     * {@inheritDoc}
      */
-    public Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) 
+    public Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, 
+        Registries targetRegistries, String schemaName ) 
         throws Exception
     {
         checkEntry( entry, SchemaConstants.NORMALIZER );
@@ -678,7 +651,10 @@ public class SchemaEntityFactory implements EntityFactory
     }
 
 
-    public LdapSyntax getSyntax( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException
+    /**
+     * {@inheritDoc}
+     */
+    public LdapSyntax getSyntax( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) throws NamingException
     {
         checkEntry( entry, SchemaConstants.SYNTAX );
 
@@ -717,15 +693,10 @@ public class SchemaEntityFactory implements EntityFactory
 
     
     /**
-     * Construct an MatchingRule from an entry get from the Dit
-     *
-     * @param entry The entry containing all the informations to build a MatchingRule
-     * @param targetRegistries The registries containing all the enabled SchemaObjects
-     * @param schemaName The schema containing this MatchingRule
-     * @return A MatchingRule SchemaObject
-     * @throws NamingException If the MatchingRule is invalid
+     * {@inheritDoc}
      */
-    public MatchingRule getMatchingRule( Entry entry, Registries targetRegistries, String schemaName ) throws NamingException
+    public MatchingRule getMatchingRule( SchemaManager schemaManager, Entry entry, 
+        Registries targetRegistries, String schemaName ) throws NamingException
     {
         checkEntry( entry, SchemaConstants.MATCHING_RULE );
 
@@ -785,7 +756,11 @@ public class SchemaEntityFactory implements EntityFactory
     }
     
     
-    public ObjectClass getObjectClass( Entry entry, Registries targetRegistries, String schemaName ) throws Exception
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectClass getObjectClass( SchemaManager schemaManager, Entry entry, 
+        Registries targetRegistries, String schemaName ) throws Exception
     {
         checkEntry( entry, SchemaConstants.OBJECT_CLASS );
 
@@ -848,16 +823,10 @@ public class SchemaEntityFactory implements EntityFactory
     
     
     /**
-     * Construct an AttributeType from an entry representing an AttributeType.
-     *
-     * @param entry The entry containing all the informations to build an AttributeType
-     * @param targetRegistries The registries containing all the enabled SchemaObjects
-     * @param schemaManager The schema Manager
-     * @param schemaName The schema containing this AttributeType
-     * @return An AttributeType SchemaObject
-     * @throws NamingException If the AttributeType is invalid
+     * {@inheritDoc}
      */
-    public AttributeType getAttributeType( Entry entry, Registries targetRegistries, SchemaManager schemaManager, String schemaName ) throws NamingException
+    public AttributeType getAttributeType( SchemaManager schemaManager, Entry entry, 
+        Registries targetRegistries, String schemaName ) throws NamingException
     {
         checkEntry( entry, SchemaConstants.ATTRIBUTE_TYPE );
         
