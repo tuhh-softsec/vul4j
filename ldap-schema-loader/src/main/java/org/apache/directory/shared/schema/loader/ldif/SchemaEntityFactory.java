@@ -468,9 +468,7 @@ public class SchemaEntityFactory implements EntityFactory
         String oid = getOid( entry, SchemaConstants.COMPARATOR );
         
         // Get the schema
-        Schema schema = getSchema( schemaName, targetRegistries );
-
-        if ( schema == null )
+        if ( !schemaManager.isSchemaLoaded( schemaName ) )
         {
             // The schema is not loaded. We can't create the requested Comparator
             String msg = "Cannot add the Comparator " + entry.getDn().getUpName() + ", as the associated schema (" +
@@ -479,6 +477,17 @@ public class SchemaEntityFactory implements EntityFactory
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
         
+        Schema schema = getSchema( schemaName, targetRegistries );
+        
+        if ( schema == null )
+        {
+            // The schema is disabled. We still have to update the backend
+            String msg = "Cannot add the Comparator " + entry.getDn().getUpName() + " into the registries, "+
+                "as the associated schema (" + schemaName + ") is disabled";
+            LOG.info( msg );
+            schema = schemaManager.getLoadedSchema( schemaName );
+        }
+
         // The FQCN
         String fqcn = getFqcn( entry, SchemaConstants.COMPARATOR );
         
@@ -849,7 +858,7 @@ public class SchemaEntityFactory implements EntityFactory
         {
             // The schema is disabled. We still have to update the backend
             String msg = "Cannot add the AttributeType " + entry.getDn().getUpName() + " into the registries, "+
-                "as the associated schema (" + schemaName + " is disabled";
+                "as the associated schema (" + schemaName + ") is disabled";
             LOG.info( msg );
             schema = schemaManager.getLoadedSchema( schemaName );
         }

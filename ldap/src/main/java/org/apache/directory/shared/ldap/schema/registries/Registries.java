@@ -981,6 +981,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	            attributeTypeRegistry.register( (AttributeType)schemaObject );
 	            break;
 	            
+	        case COMPARATOR :
+	            comparatorRegistry.register( (LdapComparator<?>)schemaObject );
+	            break;
+	            
             case DIT_CONTENT_RULE : 
                 ditContentRuleRegistry.register( (DITContentRule)schemaObject );
                 break;

@@ -164,26 +164,25 @@ public class DefaultSchemaManager implements SchemaManager
     
     
     /***
-     * Swap the registries, deleting all the schemaObjects and links from the old one
-     * to avoid memory leaks.
+     * {@inheritDoc}
      */
-    private boolean swapRegistries( Registries clonedRegistries )
+    public boolean swapRegistries( Registries targetRegistries )
     {
         // Check the resulting registries
-        errors = clonedRegistries.checkRefInteg();
+        errors = targetRegistries.checkRefInteg();
         
         // if we have no more error, we can swap the registries
         if ( errors.size() == 0 )
         {
-            clonedRegistries.setStrict();
+            targetRegistries.setStrict();
             
             // Rebuild the references
-            errors = clonedRegistries.checkRefInteg();
+            errors = targetRegistries.checkRefInteg();
 
             if ( errors.size() == 0 )
             {
                 Registries oldRegistries = registries;
-                registries = clonedRegistries;
+                registries = targetRegistries;
 
                 // Delete the old registries to avoid memory leaks
                 //destroy( oldRegistries );
