@@ -231,8 +231,24 @@ public interface SchemaManager
      */
     boolean loadAllEnabledRelaxed() throws Exception;
     
+    
+    /**
+     * Unload the given set of Schemas
+     *
+     * @param schemas The list of Schema to unload
+     * @return True if all the schemas have been unloaded
+     */
     boolean unload( Schema... schemas );
+    
+    
+    /**
+     * Unload the given set of Schemas
+     *
+     * @param schemas The list of Schema to unload
+     * @return True if all the schemas have been unloaded
+     */
     boolean unload( String... schemas );
+    
     
     //---------------------------------------------------------------------------------
     // Other Schema methods
@@ -257,19 +273,83 @@ public interface SchemaManager
      * 
      * If the modification is ok, the Registries will be updated.
      *  
-     *  @param schemas The list of schemas to enable
+     *  @param schemas The list of schema name to enable
      *  @return true if the Registries is still consistent, false otherwise.
      */
     boolean enable( String... schemas ) throws Exception;
 
+    
+    /**
+     * Enables a set of Schemas, and returns true if all the schema have been
+     * enabled, with all the dependent schemas. No check is done, the Registries
+     * might become inconsistent after this operation.
+     * 
+     *  @param schemas The list of schemas to enable
+     *  @return true if all the schemas have been enabled
+     */
     boolean enableRelaxed( Schema... schemas );
+
+    
+    /**
+     * Enables a set of Schemas, and returns true if all the schema have been
+     * enabled, with all the dependent schemas. No check is done, the Registries
+     * might become inconsistent after this operation.
+     * 
+     *  @param schemas The list of schema names to enable
+     *  @return true if all the schemas have been enabled
+     */
     boolean enableRelaxed( String... schemas );
     
     
+    /**
+     * Disables a set of Schemas, and returns true if all the schema have been
+     * disabled, with all the dependent schemas, and if the registries is 
+     * still consistent.
+     * 
+     * If the modification is ok, the Registries will be updated. 
+     * 
+     *  @param schemas The list of schemas to disable
+     *  @return true if the Registries is still consistent, false otherwise.
+     */
     boolean disable( Schema... schemas );
+    
+    
+    /**
+     * Disables a set of Schemas, and returns true if all the schema have been
+     * disabled, with all the dependent schemas, and if the registries is 
+     * still consistent.
+     * 
+     * If the modification is ok, the Registries will be updated. 
+     * 
+     *  @param schemas The list of schema names to disable
+     *  @return true if the Registries is still consistent, false otherwise.
+     */
     boolean disable( String... schemas );
 
+    
+    /**
+     * Disables a set of Schemas, and returns true if all the schema have been
+     * disabled, with all the dependent schemas. The Registries is not checked
+     * and can be inconsistent after this operation
+     * 
+     * If the modification is ok, the Registries will be updated. 
+     * 
+     *  @param schemas The list of schemas to disable
+     *  @return true if all the schemas have been disabled
+     */
     boolean disabledRelaxed( Schema... schemas );
+
+    
+    /**
+     * Disables a set of Schemas, and returns true if all the schema have been
+     * disabled, with all the dependent schemas. The Registries is not checked
+     * and can be inconsistent after this operation
+     * 
+     * If the modification is ok, the Registries will be updated. 
+     * 
+     *  @param schemas The list of schema names to disable
+     *  @return true if all the schemas have been disabled
+     */
     boolean disabledRelaxed( String... schemas );
 
 
@@ -278,9 +358,19 @@ public interface SchemaManager
      * 
      * @param schemas The schemas to check
      * @return true if the schemas can be loaded in the registries
+     * @throws Exception if something went wrong
      */
-    boolean verify( Schema... schemas );
-    boolean verify( String... schemas );
+    boolean verify( Schema... schemas ) throws Exception;
+    
+    
+    /**
+     * Check that the Schemas are consistent regarding the current Registries.
+     * 
+     * @param schemas The schema names to check
+     * @return true if the schemas can be loaded in the registries
+     * @throws Exception if something went wrong
+     */
+    boolean verify( String... schemas ) throws Exception;
     
     
     /**
@@ -405,6 +495,11 @@ public interface SchemaManager
     Map<String, OidNormalizer> getNormalizerMapping();
 
     
+    /**
+     * Associate a new Registries to the SchemaManager
+     *
+     * @param registries The new Registries
+     */
     void setRegistries( Registries registries );
     
     
@@ -419,11 +514,25 @@ public interface SchemaManager
     
     
     /**
+     * Delete the given registries and all its content. This method is called
+     * to avoid memory leaks.
+     *
+     * @param registries The registries to be deleted
+     */
+    public void destroy( Registries registries );
+    
+    
+    /**
      * @return The errors obtained when checking the registries
      */
     List<Throwable> getErrors();
     
     
+    /**
+     * Associate a Schema loader to this SchemaManager
+     *
+     * @param schemaLoader The schema loader to use
+     */
     void setSchemaLoader( SchemaLoader schemaLoader );
 
 

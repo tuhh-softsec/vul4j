@@ -97,8 +97,8 @@ public class DefaultSchemaManager implements SchemaManager
     /** The list of errors produced when loading some schema elements */
     private List<Throwable> errors;
     
-    /** The Schema loader used by this SchemaManager */
-    private SchemaLoader loader;
+    /** The Schema schemaLoader used by this SchemaManager */
+    private SchemaLoader schemaLoader;
     
     /** the factory that generates respective SchemaObjects from LDIF entries */
     protected final EntityFactory factory;
@@ -107,19 +107,20 @@ public class DefaultSchemaManager implements SchemaManager
     private LdapDN schemaModificationAttributesDN;
     
     /**
-     * Creates a new instance of DefaultSchemaManager with the default schema loader
+     * Creates a new instance of DefaultSchemaManager with the default schema schemaLoader
      *
-     * @param loader
+     * @param schemaLoader
      */
     public DefaultSchemaManager( SchemaLoader loader ) throws Exception
     {
         // Default to the the root (one schemaManager for all the entries
         namingContext = LdapDN.EMPTY_LDAPDN;
-        this.loader = loader;
+        this.schemaLoader = loader;
         errors = null;
         registries = new Registries();
         factory = new SchemaEntityFactory();
     }
+    
 
     /**
      * Creates a new instance of DefaultSchemaManager, for a specific
@@ -130,7 +131,7 @@ public class DefaultSchemaManager implements SchemaManager
     public DefaultSchemaManager( SchemaLoader loader, LdapDN namingContext ) throws Exception
     {
         this.namingContext = namingContext;
-        this.loader = loader;
+        this.schemaLoader = loader;
         errors = null;
         registries = new Registries();
         factory = new SchemaEntityFactory();
@@ -163,6 +164,53 @@ public class DefaultSchemaManager implements SchemaManager
     }
     
     
+    /**
+     * Transform a String[] array of schema to a Schema[]
+     */
+    private Schema[] toArray( String... schemas ) throws Exception
+    {
+        Schema[] schemaArray = new Schema[schemas.length];
+        int n = 0;
+        
+        for ( String schemaName:schemas )
+        {
+            schemaArray[n++] = schemaLoader.getSchema( schemaName );
+        }
+        
+        return schemaArray;
+    }
+    
+    
+    private void registerSchemaObjects( Schema schema, Registries registries ) throws Exception
+    {
+        registerComparators( schema, registries );
+        registerNormalizers( schema, registries );
+        registerSyntaxCheckers( schema, registries );
+        registerSyntaxes( schema, registries );
+        registerMatchingRules( schema, registries );
+        registerAttributeTypes( schema, registries );
+        registerObjectClasses( schema, registries );
+        registerMatchingRuleUses( schema, registries );
+        registerDitContentRules( schema, registries );
+        registerNameForms( schema, registries );
+        registerDitStructureRules( schema, registries );
+
+        //notifyListenerOrRegistries( schema, registries );
+    }
+    
+    
+    //-----------------------------------------------------------------------
+    // API methods
+    //-----------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy( Registries registries )
+    {
+        // TODO : Implement this method
+    }
+    
+    
     /***
      * {@inheritDoc}
      */
@@ -185,7 +233,7 @@ public class DefaultSchemaManager implements SchemaManager
                 registries = targetRegistries;
 
                 // Delete the old registries to avoid memory leaks
-                //destroy( oldRegistries );
+                destroy( oldRegistries );
                 
                 return true;
             }
@@ -203,40 +251,38 @@ public class DefaultSchemaManager implements SchemaManager
     
     
     /**
-     * Transform a String[] array of schema to a Schema[]
+     * {@inheritDoc}
      */
-    private Schema[] toArray( String... schemas ) throws Exception
-    {
-        Schema[] schemaArray = new Schema[schemas.length];
-        int n = 0;
-        
-        for ( String schemaName:schemas )
-        {
-            schemaArray[n++] = loader.getSchema( schemaName );
-        }
-        
-        return schemaArray;
-    }
-    
-    
     public boolean disable( Schema... schemas )
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean disable( String... schemas )
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean disabledRelaxed( Schema... schemas )
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean disabledRelaxed( String... schemas )
     {
         // TODO Auto-generated method stub
@@ -271,12 +317,20 @@ public class DefaultSchemaManager implements SchemaManager
         return enable( toArray( schemas ) );
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean enableRelaxed( Schema... schemas )
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean enableRelaxed( String... schemas )
     {
         // TODO Auto-generated method stub
@@ -292,6 +346,10 @@ public class DefaultSchemaManager implements SchemaManager
         return errors;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public Registries getRegistries()
     {
         return registries;
@@ -335,25 +393,6 @@ public class DefaultSchemaManager implements SchemaManager
         return load( toArray( schemas ) );
     }
 
-    
-    
-    
-    private void registerSchemaObjects( Schema schema, Registries registries ) throws Exception
-    {
-        registerComparators( schema, registries );
-        registerNormalizers( schema, registries );
-        registerSyntaxCheckers( schema, registries );
-        registerSyntaxes( schema, registries );
-        registerMatchingRules( schema, registries );
-        registerAttributeTypes( schema, registries );
-        registerObjectClasses( schema, registries );
-        registerMatchingRuleUses( schema, registries );
-        registerDitContentRules( schema, registries );
-        registerNameForms( schema, registries );
-        registerDitStructureRules( schema, registries );
-
-        //notifyListenerOrRegistries( schema, registries );
-    }
     
     /**
      * Load the schema in the registries. We will load everything accordingly to the two flags :
@@ -405,7 +444,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerAttributeTypes( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadAttributeTypes( schema ) )
+        for ( Entry entry : schemaLoader.loadAttributeTypes( schema ) )
         {
             registerAttributeType( registries, entry, schema );
         }
@@ -417,7 +456,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerComparators( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadComparators( schema ) )
+        for ( Entry entry : schemaLoader.loadComparators( schema ) )
         {
             registerComparator( registries, entry, schema );
         }
@@ -429,7 +468,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerDitContentRules( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadDitContentRules( schema ) )
+        for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
         {
             registerDitContentRule( registries, entry, schema );
         }
@@ -441,7 +480,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadDitStructureRules( schema ) )
+        for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
         {
             registerDitStructureRule( registries, entry, schema );
         }
@@ -453,7 +492,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerMatchingRules( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadMatchingRules( schema ) )
+        for ( Entry entry : schemaLoader.loadMatchingRules( schema ) )
         {
             registerMatchingRule( registries, entry, schema );
         }
@@ -465,7 +504,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadMatchingRuleUses( schema ) )
+        for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
         {
             registerMatchingRuleUse( registries, entry, schema );
         }
@@ -477,7 +516,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerNameForms( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadNameForms( schema ) )
+        for ( Entry entry : schemaLoader.loadNameForms( schema ) )
         {
             registerNameForm( registries, entry, schema );
         }
@@ -489,7 +528,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerNormalizers( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadNormalizers( schema ) )
+        for ( Entry entry : schemaLoader.loadNormalizers( schema ) )
         {
             registerNormalizer( registries, entry, schema );
         }
@@ -501,7 +540,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerObjectClasses( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadObjectClasses( schema ) )
+        for ( Entry entry : schemaLoader.loadObjectClasses( schema ) )
         {
             registerObjectClass( registries, entry, schema );
         }
@@ -513,7 +552,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerSyntaxes( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadSyntaxes( schema ) )
+        for ( Entry entry : schemaLoader.loadSyntaxes( schema ) )
         {
             registerSyntax( registries, entry, schema );
         }
@@ -525,7 +564,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private void registerSyntaxCheckers( Schema schema, Registries registries ) throws Exception
     {
-        for ( Entry entry : loader.loadSyntaxCheckers( schema ) )
+        for ( Entry entry : schemaLoader.loadSyntaxCheckers( schema ) )
         {
             registerSyntaxChecker( registries, entry, schema );
         }
@@ -941,11 +980,15 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public boolean loadAllEnabled() throws Exception
     {
-        Schema[] schemas = loader.getAllEnabled().toArray( new Schema[0] );
+        Schema[] schemas = schemaLoader.getAllEnabled().toArray( new Schema[0] );
         
         return loadWithDeps( schemas );
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadAllEnabledRelaxed() throws Exception
     {
         // TODO Auto-generated method stub
@@ -985,12 +1028,20 @@ public class DefaultSchemaManager implements SchemaManager
         return loadDisabled( toArray( schemas ) );
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadRelaxed( Schema... schemas ) throws Exception
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadRelaxed( String... schemas ) throws Exception
     {
         // TODO Auto-generated method stub
@@ -1077,7 +1128,7 @@ public class DefaultSchemaManager implements SchemaManager
             else
             {
                 // Call recursively this method
-                Schema schemaDep = loader.getSchema( depName );
+                Schema schemaDep = schemaLoader.getSchema( depName );
                 loadDepsFirst( schemaDep, registries );
             }
         }
@@ -1087,52 +1138,115 @@ public class DefaultSchemaManager implements SchemaManager
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadWithDepsRelaxed( Schema... schemas ) throws Exception
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean loadWithDepsRelaxed( String... schemas ) throws Exception
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public void setRegistries( Registries registries )
     {
         // TODO Auto-generated method stub
         
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean unload( Schema... schemas )
     {
         // TODO Auto-generated method stub
         return false;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean unload( String... schemas )
     {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public boolean verify( Schema... schemas )
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean verify( Schema... schemas ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        Registries clonedRegistries = null;
+        
+        clonedRegistries = registries.clone();
+        clonedRegistries.setRelaxed();
+        
+        for ( Schema schema : schemas )
+        {
+            try
+            {
+                
+                // Inject the schema
+                boolean loaded = load( clonedRegistries, schema );
+                
+                if ( !loaded )
+                {
+                    destroy( clonedRegistries );
+                    return false;
+                }
+                
+                // Now, check the registries
+                List<Throwable> errors = clonedRegistries.checkRefInteg();
+                
+                if ( errors.size() != 0 )
+                {
+                    destroy( clonedRegistries );
+                    return false;
+                }
+            }
+            catch ( Exception e )
+            {
+                destroy( clonedRegistries );
+                return false;
+            }
+        }
+        
+        return true;
     }
 
-    public boolean verify( String... schemas )
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean verify( String... schemas ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        return verify( toArray( schemas ) );
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
     public void setSchemaLoader( SchemaLoader schemaLoader )
     {
-        // TODO Auto-generated method stub
-        
+        this.schemaLoader = schemaLoader;
     }
 
 
@@ -1170,7 +1284,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public SchemaLoader getLoader()
     {
-        return loader;
+        return schemaLoader;
     }
 
     
@@ -1308,6 +1422,7 @@ public class DefaultSchemaManager implements SchemaManager
         return registries.unregister( schemaObject );
     }
 
+    
     /**
      * {@inheritDoc}
      */
@@ -1333,7 +1448,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         try
         {
-            return loader.getSchema( schemaName );
+            return schemaLoader.getSchema( schemaName );
         }
         catch ( Exception e )
         {
@@ -1349,7 +1464,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         try
         {
-            Schema schema = loader.getSchema( schemaName );
+            Schema schema = schemaLoader.getSchema( schemaName );
             return schema != null;
         }
         catch ( Exception e )
