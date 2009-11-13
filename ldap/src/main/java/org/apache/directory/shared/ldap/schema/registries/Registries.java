@@ -62,8 +62,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     private static final Logger LOG = LoggerFactory.getLogger( Registries.class );
 
     /**
-     * A String name to Schema object map for those schemas loaded into this
-     * registry.
+     * A String name to Schema object map for the schemas loaded into this
+     * registry. The loaded schemas may be disabled.
      */
     protected Map<String, Schema> loadedSchemas = new HashMap<String, Schema>();
 
@@ -949,25 +949,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
     }
     
 	
-    /**
-     * Add the given LdapComparator into the Registries
-     *
-     * @param comparator The LdapComparator to register
-     * @throws NamingException If the registering failed
-     */
-    public void register( LdapComparator<?> comparator ) throws NamingException
-    {
-        LOG.debug( "Registering Comparator: {}:{}", comparator.getOid(), comparator.getName() );
-
-        comparatorRegistry.register( comparator );
-        
-        if ( LOG.isDebugEnabled() )
-        {
-            LOG.debug( "registered " + comparator.getName() + " for OID {}", comparator.getOid() );
-        }
-    }
-    
-        
 	public void register( SchemaObject schemaObject ) throws NamingException
 	{
 	    LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
@@ -1044,6 +1025,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	    {
 	        // Create the association
 	        content.add( schemaWrapper );
+	        
+            LOG.debug( "registered {} for OID {}", schemaObject.getName(), schemaObject.getOid() );
 	    }
 	}
 
@@ -1118,6 +1101,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             // remove the schemaObject
             content.remove( schemaWrapper );
+            LOG.debug( "Unregistered {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
         }
         else
         {

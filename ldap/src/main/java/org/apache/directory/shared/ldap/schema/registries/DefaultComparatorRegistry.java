@@ -163,30 +163,4 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
     {
         return byName.values().size();
     }
-
-
-    /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        
-        for ( String name:byName.keySet() )
-        {
-            if ( isFirst )
-            {
-                isFirst = false;
-            }
-            else
-            {
-                sb.append(  ", " );
-            }
-            
-            sb.append( name );
-        }
-        
-        return sb.toString();
-    }
 }

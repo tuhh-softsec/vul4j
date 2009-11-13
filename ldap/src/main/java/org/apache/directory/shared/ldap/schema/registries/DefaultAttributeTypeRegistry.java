@@ -317,32 +317,6 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
 
     
     /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        
-        for ( String name:byName.keySet() )
-        {
-            if ( isFirst )
-            {
-                isFirst = false;
-            }
-            else
-            {
-                sb.append(  ", " );
-            }
-            
-            sb.append( name );
-        }
-        
-        return sb.toString();
-    }
-    
-    
-    /**
      * {@inheritDoc}
      */
     public DefaultAttributeTypeRegistry clone() throws CloneNotSupportedException

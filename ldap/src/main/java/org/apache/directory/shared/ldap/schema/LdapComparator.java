@@ -63,4 +63,13 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
         
         return clone;
     }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return objectType + " " + DescriptionUtils.getDescription( this );
+    }
 }

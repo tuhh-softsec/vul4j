@@ -51,7 +51,7 @@ public class DescriptionUtils
     /**
      * Generates the description using the AttributeTypeDescription as defined
      * by the syntax: 1.3.6.1.4.1.1466.115.121.1.3. Only the right hand side of
-     * the description starting at the openning parenthesis is generated: that
+     * the description starting at the opening parenthesis is generated: that
      * is 'AttributeTypeDescription = ' is not generated.
      * 
      * <pre>
@@ -172,11 +172,36 @@ public class DescriptionUtils
         return buf.toString();
     }
 
+    
+    /**
+     * Generates the ComparatorDescription for a LdapComparator. Only the right 
+     * hand side of the description starting at the opening parenthesis is 
+     * generated: that is 'ComparatorDescription = ' is not generated.
+     * 
+     * <pre>
+     * ComparatorDescription = &quot;(&quot;
+     *     numericoid                          
+     *     [&quot;DESC&quot; qdstring ]
+     *     &quot;FQCN&quot; whsp fqcn
+     *     [&quot;BYTECODE&quot; whsp base64  ]
+     *     extensions 
+     *     &quot;)&quot;
+     * </pre>
+     * 
+     * @param comparator
+     *            the Comparator to generate the description for
+     * @return the ComparatorDescription string
+     */
+    public static String getDescription( LdapComparator<?> comparator )
+    {
+        return getLoadableDescription( comparator );
+    }
+    
 
     /**
      * Generates the DITContentRuleDescription for a DITContentRule as defined
      * by the syntax: 1.3.6.1.4.1.1466.115.121.1.16. Only the right hand side of
-     * the description starting at the openning parenthesis is generated: that
+     * the description starting at the opening parenthesis is generated: that
      * is 'DITContentRuleDescription = ' is not generated.
      * 
      * <pre>
@@ -264,13 +289,103 @@ public class DescriptionUtils
         return buf.toString();
     }
 
+    
+    /**
+     * Generates the DITStructureRuleDescription for a DITStructureRule as
+     * defined by the syntax: 1.3.6.1.4.1.1466.115.121.1.17. Only the right hand
+     * side of the description starting at the opening parenthesis is
+     * generated: that is 'DITStructureRuleDescription = ' is not generated.
+     * 
+     * <pre>
+     *   DITStructureRuleDescription = &quot;(&quot; whsp
+     *       ruleid                     ; rule identifier
+     *       [ SP "NAME" SP qdescrs ]   ; short names (descriptors)
+     *       [ SP "DESC" SP qdstring ]  ; description
+     *       [ SP "OBSOLETE" ]          ; not active
+     *       SP "FORM" SP oid           ; NameForm
+     *       [ SP "SUP" ruleids ]       ; superior rules
+     *       extensions WSP             ; extensions
+     *       &quot;)&quot;
+     * </pre>
+     * 
+     * @param dITStructureRule
+     *            the DITStructureRule to generate the description for
+     * @return the description in the DITStructureRuleDescription syntax
+     */
+    public static String getDescription( DITStructureRule dITStructureRule )
+    {
+        StringBuilder buf = new StringBuilder( "( " );
+        buf.append( dITStructureRule.getOid() );
+        buf.append( '\n' );
 
+        if ( dITStructureRule.getNames() != null )
+        {
+            buf.append( " NAME " );
+            getQDescrs( buf, dITStructureRule.getNames() );
+        }
+
+        if ( dITStructureRule.getDescription() != null )
+        {
+            buf.append( " DESC " );
+            buf.append( dITStructureRule.getDescription() );
+            buf.append( '\n' );
+        }
+
+        if ( dITStructureRule.isObsolete() )
+        {
+            buf.append( " OBSOLETE\n" );
+        }
+
+        buf.append( " FORM " );
+        buf.append( dITStructureRule.getForm() );
+        buf.append( '\n' );
+
+        // TODO : Shouldn't we get the ruleId OID ? 
+        List<Integer> sups = dITStructureRule.getSuperRules();
+        
+        if ( ( sups != null ) && ( sups.size() > 0 ) )
+        {
+            buf.append( " SUP\n" );
+            
+            if ( sups.size() == 1 )
+            {
+                buf.append( sups.get( 0 ) );
+            }
+            else
+            {
+                boolean isFirst = true;
+                buf.append( "( " );
+                
+                for ( int sup : sups )
+                {
+                    if ( isFirst )
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        buf.append( " " );
+                    }
+                    
+                    buf.append( sup );
+                }
+                
+                buf.append( " )" );
+            }
+
+            buf.append( '\n' );
+        }
+
+        buf.append( " )\n" );
+
+        return buf.toString();
+    }
 
 
     /**
      * Generates the MatchingRuleDescription for a MatchingRule as defined by
      * the syntax: 1.3.6.1.4.1.1466.115.121.1.30. Only the right hand side of
-     * the description starting at the openning parenthesis is generated: that
+     * the description starting at the opening parenthesis is generated: that
      * is 'MatchingRuleDescription = ' is not generated.
      * 
      * <pre>
@@ -328,7 +443,7 @@ public class DescriptionUtils
     /**
      * Generates the MatchingRuleUseDescription for a MatchingRuleUse as defined
      * by the syntax: 1.3.6.1.4.1.1466.115.121.1.31. Only the right hand side of
-     * the description starting at the openning parenthesis is generated: that
+     * the description starting at the opening parenthesis is generated: that
      * is 'MatchingRuleUseDescription = ' is not generated.
      * 
      * <pre>
@@ -422,7 +537,7 @@ public class DescriptionUtils
     /**
      * Generates the NameFormDescription for a NameForm as defined by the
      * syntax: 1.3.6.1.4.1.1466.115.121.1.35. Only the right hand side of the
-     * description starting at the openning parenthesis is generated: that is
+     * description starting at the opening parenthesis is generated: that is
      * 'NameFormDescription = ' is not generated.
      * 
      * <pre>
@@ -491,11 +606,36 @@ public class DescriptionUtils
         return buf.toString();
     }
 
+    
+    /**
+     * Generates the NormalizerDescription for a Normalizer. Only the right 
+     * hand side of the description starting at the opening parenthesis is 
+     * generated: that is 'NormalizerDescription = ' is not generated.
+     * 
+     * <pre>
+     * NormalizerDescription = &quot;(&quot;
+     *     numericoid                          
+     *     [&quot;DESC&quot; qdstring ]
+     *     &quot;FQCN&quot; whsp fqcn
+     *     [&quot;BYTECODE&quot; whsp base64  ]
+     *     extensions 
+     *     &quot;)&quot;
+     * </pre>
+     * 
+     * @param normalizer
+     *            the Normalizer to generate the description for
+     * @return the NormalizerDescription string
+     */
+    public static String getDescription( Normalizer normalizer )
+    {
+        return getLoadableDescription( normalizer );
+    }
+
 
     /**
      * Generates the ObjectClassDescription for an ObjectClass as defined by the
      * syntax: 1.3.6.1.4.1.1466.115.121.1.37. Only the right hand side of the
-     * description starting at the openning parenthesis is generated: that is
+     * description starting at the opening parenthesis is generated: that is
      * 'ObjectClassDescription = ' is not generated.
      * 
      * <pre>
@@ -582,101 +722,9 @@ public class DescriptionUtils
 
 
     /**
-     * Generates the DITStructureRuleDescription for a DITStructureRule as
-     * defined by the syntax: 1.3.6.1.4.1.1466.115.121.1.17. Only the right hand
-     * side of the description starting at the openning parenthesis is
-     * generated: that is 'DITStructureRuleDescription = ' is not generated.
-     * 
-     * <pre>
-     *   DITStructureRuleDescription = &quot;(&quot; whsp
-     *       ruleid                     ; rule identifier
-     *       [ SP "NAME" SP qdescrs ]   ; short names (descriptors)
-     *       [ SP "DESC" SP qdstring ]  ; description
-     *       [ SP "OBSOLETE" ]          ; not active
-     *       SP "FORM" SP oid           ; NameForm
-     *       [ SP "SUP" ruleids ]       ; superior rules
-     *       extensions WSP             ; extensions
-     *       &quot;)&quot;
-     * </pre>
-     * 
-     * @param dITStructureRule
-     *            the DITStructureRule to generate the description for
-     * @return the description in the DITStructureRuleDescription syntax
-     */
-    public static String getDescription( DITStructureRule dITStructureRule )
-    {
-        StringBuilder buf = new StringBuilder( "( " );
-        buf.append( dITStructureRule.getOid() );
-        buf.append( '\n' );
-
-        if ( dITStructureRule.getNames() != null )
-        {
-            buf.append( " NAME " );
-            getQDescrs( buf, dITStructureRule.getNames() );
-        }
-
-        if ( dITStructureRule.getDescription() != null )
-        {
-            buf.append( " DESC " );
-            buf.append( dITStructureRule.getDescription() );
-            buf.append( '\n' );
-        }
-
-        if ( dITStructureRule.isObsolete() )
-        {
-            buf.append( " OBSOLETE\n" );
-        }
-
-        buf.append( " FORM " );
-        buf.append( dITStructureRule.getForm() );
-        buf.append( '\n' );
-
-        // TODO : Shouldn't we get the ruleId OID ? 
-        List<Integer> sups = dITStructureRule.getSuperRules();
-        
-        if ( ( sups != null ) && ( sups.size() > 0 ) )
-        {
-            buf.append( " SUP\n" );
-            
-            if ( sups.size() == 1 )
-            {
-                buf.append( sups.get( 0 ) );
-            }
-            else
-            {
-                boolean isFirst = true;
-                buf.append( "( " );
-                
-                for ( int sup : sups )
-                {
-                    if ( isFirst )
-                    {
-                        isFirst = false;
-                    }
-                    else
-                    {
-                        buf.append( " " );
-                    }
-                    
-                    buf.append( sup );
-                }
-                
-                buf.append( " )" );
-            }
-
-            buf.append( '\n' );
-        }
-
-        buf.append( " )\n" );
-
-        return buf.toString();
-    }
-
-
-    /**
      * Generates the SyntaxDescription for a Syntax as defined by the syntax:
      * 1.3.6.1.4.1.1466.115.121.1.54. Only the right hand side of the
-     * description starting at the openning parenthesis is generated: that is
+     * description starting at the opening parenthesis is generated: that is
      * 'SyntaxDescription = ' is not generated.
      * 
      * <pre>
@@ -714,6 +762,31 @@ public class DescriptionUtils
     }
 
     
+    /**
+     * Generates the SyntaxCheckerDescription for a SyntaxChecker. Only the right 
+     * hand side of the description starting at the opening parenthesis is 
+     * generated: that is 'SyntaxCheckerDescription = ' is not generated.
+     * 
+     * <pre>
+     * SyntaxCheckerDescription = &quot;(&quot;
+     *     numericoid                          
+     *     [&quot;DESC&quot; qdstring ]
+     *     &quot;FQCN&quot; whsp fqcn
+     *     [&quot;BYTECODE&quot; whsp base64  ]
+     *     extensions 
+     *     &quot;)&quot;
+     * </pre>
+     * 
+     * @param syntaxChecker
+     *            the SyntaxChecker to generate the description for
+     * @return the SyntaxCheckerDescription string
+     */
+    public static String getDescription( SyntaxChecker syntaxChecker )
+    {
+        return getLoadableDescription( syntaxChecker );
+    }
+
+
     private static void getExtensions( StringBuilder sb, Map<String, List<String>> extensions )
     {
         for ( String key:extensions.keySet() )
@@ -823,5 +896,56 @@ public class DescriptionUtils
         }
         
         sb.append(  '\n' );
+    }
+    
+    
+    /**
+     * Generate the description for Comparators, Normalizers and SyntaxCheckers.
+     */
+    private static String getLoadableDescription( LoadableSchemaObject schemaObject )
+    {
+        StringBuilder buf = new StringBuilder( "( " );
+        buf.append( schemaObject.getOid() );
+        buf.append( '\n' );
+
+        if ( schemaObject.getDescription() != null )
+        {
+            buf.append( " DESC " );
+            buf.append( schemaObject.getDescription() );
+            buf.append( '\n' );
+        }
+
+        if ( schemaObject.getFqcn() != null )
+        {
+            buf.append( " FQCN " );
+            buf.append( schemaObject.getFqcn() );
+            buf.append( '\n' );
+        }
+
+        if ( schemaObject.getBytecode() != null )
+        {
+            buf.append( " BYTECODE " );
+            
+            // We will dump only the 16 first bytes
+            if ( schemaObject.getBytecode().length() > 16 )
+            {
+                buf.append( schemaObject.getBytecode().substring( 0, 16 ) );
+            }
+            else
+            {
+                buf.append( schemaObject.getBytecode() );
+            }
+            
+            buf.append( '\n' );
+        }
+
+        if ( schemaObject.getExtensions() != null )
+        {
+            getExtensions( buf, schemaObject.getExtensions() );
+        }
+
+        buf.append( " ) " );
+
+        return buf.toString();
     }
 }

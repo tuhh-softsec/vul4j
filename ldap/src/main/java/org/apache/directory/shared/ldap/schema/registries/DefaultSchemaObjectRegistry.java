@@ -362,5 +362,17 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
     {
         return 0;
     }
-
+    
+    
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append( type ).append( ':' );
+        sb.append( StringTools.setToString( byName.keySet() ) );
+        return sb.toString();
+    }
 }

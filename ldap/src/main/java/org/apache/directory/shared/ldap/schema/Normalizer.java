@@ -98,4 +98,13 @@ public abstract class Normalizer extends LoadableSchemaObject
         
         return clone;
     }
+
+
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return objectType + " " + DescriptionUtils.getDescription( this );
+    }
 }

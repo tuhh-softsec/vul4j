@@ -423,7 +423,7 @@ public class NameForm extends SchemaObject
      */
     public String toString()
     {
-        return DescriptionUtils.getDescription( this );
+        return objectType + " " + DescriptionUtils.getDescription( this );
     }
     
     

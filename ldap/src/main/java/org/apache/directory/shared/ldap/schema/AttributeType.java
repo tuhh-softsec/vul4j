@@ -821,7 +821,7 @@ public class AttributeType extends SchemaObject implements Cloneable
      */
     public String toString()
     {
-        return DescriptionUtils.getDescription( this );
+        return objectType + " " + DescriptionUtils.getDescription( this );
     }
     
     
