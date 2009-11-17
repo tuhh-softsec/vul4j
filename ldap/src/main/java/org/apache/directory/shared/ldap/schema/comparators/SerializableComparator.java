@@ -94,7 +94,8 @@ public class SerializableComparator<E> extends LdapComparator<E>
             }
             catch ( NamingException ne )
             {
-                
+                // Not found : get the default comparator
+                wrapped = (Comparator<E>)new ComparableComparator<Comparable<E>>( matchingRuleOid );
             }
         }
 
