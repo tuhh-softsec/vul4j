@@ -566,53 +566,59 @@ public class DITContentRule extends SchemaObject
 
 
     /**
-     * Clone a DITContentRule
+     * Copy a DITContentRule
      */
-    public DITContentRule clone() throws CloneNotSupportedException
+    public DITContentRule copy()
     {
-        DITContentRule clone = (DITContentRule)super.clone();
+        DITContentRule copy = new DITContentRule( oid );
+
+        // Copy the SchemaObject common data
+        copy.copy( this );
         
-        // Clone the AUX ObjectClasses
-        clone.auxObjectClassOids = new ArrayList<String>();
+        // copy the AUX ObjectClasses OIDs
+        copy.auxObjectClassOids = new ArrayList<String>();
         
         for ( String oid : auxObjectClassOids )
         {
-            clone.auxObjectClassOids.add( oid );
+            copy.auxObjectClassOids.add( oid );
         }
         
-        clone.auxObjectClasses = new ArrayList<ObjectClass>();
+        // copy the AUX ObjectClasses ( will be empty )
+        copy.auxObjectClasses = new ArrayList<ObjectClass>();
         
-        // Clone the MAY AttributeTypes
-        clone.mayAttributeTypeOids = new ArrayList<String>();
+        // Clone the MAY AttributeTypes OIDs
+        copy.mayAttributeTypeOids = new ArrayList<String>();
         
         for ( String oid : mayAttributeTypeOids )
         {
-            clone.mayAttributeTypeOids.add( oid );
+            copy.mayAttributeTypeOids.add( oid );
         }
         
-        clone.mayAttributeTypes = new ArrayList<AttributeType>();
+        // Clone the MAY AttributeTypes ( will be empty )
+        copy.mayAttributeTypes = new ArrayList<AttributeType>();
         
-        // Clone the MUST AttributeTypes
-        clone.mustAttributeTypeOids = new ArrayList<String>();
+        // Clone the MUST AttributeTypes OIDs
+        copy.mustAttributeTypeOids = new ArrayList<String>();
         
         for ( String oid : mustAttributeTypeOids )
         {
-            clone.mustAttributeTypeOids.add( oid );
+            copy.mustAttributeTypeOids.add( oid );
         }
         
-        clone.mustAttributeTypes = new ArrayList<AttributeType>();
+        // Clone the MUST AttributeTypes ( will be empty )
+        copy.mustAttributeTypes = new ArrayList<AttributeType>();
         
-        // Clone the NOT AttributeTypes
-        clone.notAttributeTypeOids = new ArrayList<String>();
+        // Clone the NOT AttributeTypes OIDs
+        copy.notAttributeTypeOids = new ArrayList<String>();
         
         for ( String oid : notAttributeTypeOids )
         {
-            clone.notAttributeTypeOids.add( oid );
+            copy.notAttributeTypeOids.add( oid );
         }
         
-        clone.notAttributeTypes = new ArrayList<AttributeType>();
+        // Clone the NOT AttributeTypes ( will be empty )
+        copy.notAttributeTypes = new ArrayList<AttributeType>();
         
-        
-        return clone;
+        return copy;
     }
 }

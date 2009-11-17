@@ -232,23 +232,27 @@ public class MatchingRuleUse extends SchemaObject
     
     
     /**
-     * Clone an MatchingRuleUse
+     * Copy an MatchingRuleUse
      */
-    public MatchingRuleUse clone() throws CloneNotSupportedException
+    public MatchingRuleUse copy()
     {
-        MatchingRuleUse clone = (MatchingRuleUse)super.clone();
+        MatchingRuleUse copy = new MatchingRuleUse( oid );
+
+        // Copy the SchemaObject common data
+        copy.copy( this );
         
         // Clone the APPLY AttributeTypes
-        clone.applicableAttributeOids = new ArrayList<String>();
+        copy.applicableAttributeOids = new ArrayList<String>();
         
+        // Copy the APPLIES oid list
         for ( String oid : applicableAttributeOids )
         {
-            clone.applicableAttributeOids.add( oid );
+            copy.applicableAttributeOids.add( oid );
         }
         
-        clone.applicableAttributes = new ArrayList<AttributeType>();
+        // Copy the APPLIES list (will be empty)
+        copy.applicableAttributes = new ArrayList<AttributeType>();
         
-        
-        return clone;
+        return copy;
     }
 }

@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.schema.SyntaxChecker;
  * @version $Rev$
  */
 public interface SyntaxCheckerRegistry extends SchemaObjectRegistry<SyntaxChecker>,
-    Iterable<SyntaxChecker>, Cloneable
+    Iterable<SyntaxChecker>
 {
     /**
      * Registers a new SyntaxChecker with this registry.
@@ -64,13 +64,7 @@ public interface SyntaxCheckerRegistry extends SchemaObjectRegistry<SyntaxChecke
     
     
     /**
-     * Clone the SyntaxCheckerRegistry
+     * Copy the SyntaxCheckerRegistry
      */
-    SyntaxCheckerRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of SyntaxCheckers stored
-     */
-    int size();
+    SyntaxCheckerRegistry copy();
 }

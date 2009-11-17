@@ -55,6 +55,15 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * @throws NamingException if the schema object does not exist
      */
     String getSchemaName( String oid ) throws NamingException;
+    
+    
+    /**
+     * Gets the SchemaObject associated with a given OID.
+     *
+     * @param oid The SchemaObject's OID we are looking for
+     * @return The SchemaObject, if any. Null otherwise
+     */
+    SchemaObject get( String oid );
 
     
     /**
@@ -150,9 +159,12 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
     
 
     /**
-     * Clone a DefaultSchemaObjectRegistry
+     * Copy a DefaultSchemaObjectRegistry. All the stored SchemaObject will also
+     * be copied, by the cross references will be lost.
+     * 
+     * @return SchemaObjectRegistry<T> The copied registry
      */
-    SchemaObjectRegistry<T> clone() throws CloneNotSupportedException;
+    SchemaObjectRegistry<T> copy();
 
 
     /**

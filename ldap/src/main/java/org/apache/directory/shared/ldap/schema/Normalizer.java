@@ -90,17 +90,6 @@ public abstract class Normalizer extends LoadableSchemaObject
 
 
     /**
-     * Clone a Normalizer
-     */
-    public Normalizer clone() throws CloneNotSupportedException
-    {
-        Normalizer clone = (Normalizer)super.clone();
-        
-        return clone;
-    }
-
-
-    /**
      * @see Object#toString()
      */
     public String toString()

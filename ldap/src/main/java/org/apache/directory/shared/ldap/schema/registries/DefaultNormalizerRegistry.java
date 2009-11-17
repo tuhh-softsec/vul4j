@@ -48,12 +48,10 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
     
     /**
      * Creates a new default NormalizerRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultNormalizerRegistry( OidRegistry oidRegistry )
+    public DefaultNormalizerRegistry()
     {
-        super( SchemaObjectType.NORMALIZER, oidRegistry );
+        super( SchemaObjectType.NORMALIZER, new OidRegistry() );
     }
     
     
@@ -66,7 +64,7 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
         
         if ( byName.containsKey( oid ) )
         {
-            String msg = type.name() + " with OID " + oid + " already registered!";
+            String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
             LOG.warn( msg );
             throw new NamingException( msg );
         }
@@ -81,6 +79,9 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
         {
             byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), normalizer );
         }
+        
+        // Update the NormalizerRegistry OidRegistry
+        oidRegistry.register( normalizer );
         
         if ( LOG.isDebugEnabled() )
         {
@@ -148,19 +149,58 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
     /**
      * {@inheritDoc}
      */
-    public DefaultNormalizerRegistry clone() throws CloneNotSupportedException
+    public DefaultNormalizerRegistry copy()
     {
-        DefaultNormalizerRegistry clone = (DefaultNormalizerRegistry)super.clone();
+        DefaultNormalizerRegistry copy = new DefaultNormalizerRegistry();
         
-        return clone;
+        // Copy the base data
+        copy.copy( this );
+        
+        return copy;
     }
     
     
     /**
-     * {@inheritDoc}
+     * @see Object#toString()
      */
-    public int size()
+    public String toString()
     {
-        return byName.values().size();
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append( schemaObjectType ).append( ": " );
+        boolean isFirst = true;
+        
+        for ( String name : byName.keySet() )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+            
+            Normalizer normalizer = byName.get( name );
+            
+            String fqcn = normalizer.getFqcn();
+            int lastDotPos = fqcn.lastIndexOf( '.' );
+            
+            sb.append( '<' ).append( normalizer.getOid() ).append( ", " );
+            
+            
+            if ( lastDotPos > 0 )
+            {
+                sb.append( fqcn.substring( lastDotPos + 1 ) );
+            }
+            else
+            {
+                sb.append( fqcn );
+            }
+            
+            sb.append( '>' );
+        }
+        
+        return sb.toString();
     }
 }

@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
  * @version $Rev$
  */
 public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>,
-    Iterable<AttributeType>, Cloneable
+    Iterable<AttributeType>
 {
     /**
      * Gets an oid/name to normalizer mapping used to normalize distinguished 
@@ -79,7 +79,7 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * @param attributeType The attributeType to register
      * @throws NamingException If something went wrong
      */
-    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException;
+    void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException;
     
     
     /**
@@ -96,5 +96,11 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
     /**
      * Add a new Oid/Normalizer couple in the OidNormalizer map
      */
-    public void addMappingFor( AttributeType attributeType ) throws NamingException;
+    void addMappingFor( AttributeType attributeType ) throws NamingException;
+
+    
+    /**
+     * Copy the AttributeTypeRegistry
+     */
+    AttributeTypeRegistry copy();
 }

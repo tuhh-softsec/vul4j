@@ -428,35 +428,43 @@ public class NameForm extends SchemaObject
     
     
     /**
-     * Clone a NameForm
+     * Copy a NameForm
      */
-    public NameForm clone() throws CloneNotSupportedException
+    public NameForm copy()
     {
-        NameForm clone = (NameForm)super.clone();
+        NameForm copy = new NameForm( oid );
+
+        // Copy the SchemaObject common data
+        copy.copy( this );
         
-        // Clone the MAY AttributeTypes
-        clone.mayAttributeTypeOids = new ArrayList<String>();
+        // Copy the MAY AttributeTypes OIDs
+        copy.mayAttributeTypeOids = new ArrayList<String>();
         
         for ( String oid : mayAttributeTypeOids )
         {
-            clone.mayAttributeTypeOids.add( oid );
+            copy.mayAttributeTypeOids.add( oid );
         }
         
-        clone.mayAttributeTypes = new ArrayList<AttributeType>();
+        // Copy the MAY AttributeTypes (will be empty)
+        copy.mayAttributeTypes = new ArrayList<AttributeType>();
         
-        // Clone the MUST AttributeTypes
-        clone.mustAttributeTypeOids = new ArrayList<String>();
+        // Copy the MUST AttributeTypes OIDs
+        copy.mustAttributeTypeOids = new ArrayList<String>();
         
         for ( String oid : mustAttributeTypeOids )
         {
-            clone.mustAttributeTypeOids.add( oid );
+            copy.mustAttributeTypeOids.add( oid );
         }
         
-        clone.mustAttributeTypes = new ArrayList<AttributeType>();
+        // Copy the MUST AttributeTypes ( will be empty )
+        copy.mustAttributeTypes = new ArrayList<AttributeType>();
 
-        // All the references to other Registries object are set to null.
-        clone.structuralObjectClass = null;
+        // Copy the Structural ObjectClass OID
+        copy.structuralObjectClassOid = structuralObjectClassOid;
         
-        return clone;
+        // All the references to other Registries object are set to null.
+        copy.structuralObjectClass = null;
+        
+        return copy;
     }
 }

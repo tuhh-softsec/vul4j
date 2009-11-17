@@ -35,31 +35,23 @@ public class DefaultNameFormRegistry extends DefaultSchemaObjectRegistry<NameFor
 {
     /**
      * Creates a new default NameFormRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultNameFormRegistry( OidRegistry oidRegistry )
+    public DefaultNameFormRegistry()
     {
-        super( SchemaObjectType.NAME_FORM, oidRegistry );
+        super( SchemaObjectType.NAME_FORM, new OidRegistry() );
     }
     
     
     /**
      * {@inheritDoc}
      */
-    public DefaultNameFormRegistry clone() throws CloneNotSupportedException
+    public DefaultNameFormRegistry copy()
     {
-        DefaultNameFormRegistry clone = (DefaultNameFormRegistry)super.clone();
+        DefaultNameFormRegistry copy = new DefaultNameFormRegistry();
         
-        return clone;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int size()
-    {
-        return oidRegistry.size();
+        // Copy the base data
+        copy.copy( this );
+        
+        return copy;
     }
 }

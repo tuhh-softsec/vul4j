@@ -165,6 +165,17 @@ public class LdapSyntax extends SchemaObject
             this.syntaxChecker = syntaxChecker;
         }
     }
+    
+    
+    /**
+     * Update the associated SyntaxChecker, even if the SchemaObject is readOnly
+     *
+     * @param syntaxChecker The associated SyntaxChecker
+     */
+    public void updateSyntaxChecker( SyntaxChecker syntaxChecker )
+    {
+        this.syntaxChecker = syntaxChecker;
+    }
 
 
     /**
@@ -201,15 +212,21 @@ public class LdapSyntax extends SchemaObject
 
 
     /**
-     * Clone a LdapSyntax
+     * Copy a LdapSyntax
      */
-    public LdapSyntax clone() throws CloneNotSupportedException
+    public LdapSyntax copy()
     {
-        LdapSyntax clone = (LdapSyntax)super.clone();
+        LdapSyntax copy = new LdapSyntax( oid );
+
+        // Copy the SchemaObject common data
+        copy.copy( this );
+        
+        // Copy the HR flag
+        copy.isHumanReadable = isHumanReadable;
         
         // All the references to other Registries object are set to null.
-        clone.syntaxChecker = null;
+        copy.syntaxChecker = null;
         
-        return clone;
+        return copy;
     }
 }

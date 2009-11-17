@@ -140,11 +140,6 @@ public class ObjectClass extends SchemaObject
                 
                 for ( String superiorName : superiorOids )
                 {
-                	if ( superiorName.equals( "top" ) )
-                	{
-                		continue;
-                	}
-                	
                     superiors.add( ocRegistry.lookup( ocRegistry.getOidByName( superiorName ) ) );
                 }
             }
@@ -254,6 +249,26 @@ public class ObjectClass extends SchemaObject
             }
         }
     }
+    
+    
+    /**
+     * Update the associated MAY AttributeType, even if the SchemaObject is readOnly
+     *
+     * @param mayAttributeTypes the list of allowed AttributeTypes
+     */
+    public void updateMayAttributeTypes( List<AttributeType> mayAttributeTypes )
+    {
+        this.mayAttributeTypes.clear();
+        this.mayAttributeTypes.addAll( mayAttributeTypes );
+        
+        // update the OIDS now
+        mayAttributeTypeOids.clear();
+        
+        for ( AttributeType may : mayAttributeTypes )
+        {
+            mayAttributeTypeOids.add( may.getOid() );
+        }
+    }
 
 
     /**
@@ -339,6 +354,26 @@ public class ObjectClass extends SchemaObject
         }
     }
     
+    
+    /**
+     * Update the associated MUST AttributeType, even if the SchemaObject is readOnly
+     *
+     * @param mayAttributeTypes the list of allowed AttributeTypes
+     */
+    public void updateMustAttributeTypes( List<AttributeType> mustAttributeTypes )
+    {
+        this.mustAttributeTypes.clear();
+        this.mustAttributeTypes.addAll( mustAttributeTypes );
+        
+        // update the OIDS now
+        mustAttributeTypeOids.clear();
+        
+        for ( AttributeType must : mustAttributeTypes )
+        {
+            mustAttributeTypeOids.add( must.getOid() );
+        }
+    }
+
     
     /**
      * Gets the superclasses of this ObjectClass.
@@ -427,6 +462,26 @@ public class ObjectClass extends SchemaObject
 
     
     /**
+     * Update the associated SUPERIORS ObjectClasses, even if the SchemaObject is readOnly
+     * 
+     * @param superiors the object classes to set
+     */
+    public void updateSuperiors( List<ObjectClass> superiors )
+    {
+        this.superiors.clear();
+        this.superiors.addAll( superiors );
+        
+        // update the OIDS now
+        superiorOids.clear();
+        
+        for ( ObjectClass oc : superiors )
+        {
+            superiorOids.add( oc.getOid() );
+        }
+    }
+
+    
+    /**
      * Sets the superior object class OIDs
      * 
      * @param superiorOids the object class OIDs to set
@@ -508,42 +563,51 @@ public class ObjectClass extends SchemaObject
 
     
     /**
-     * Clone an ObjectClass
+     * Copy an ObjectClass
      */
-    public ObjectClass clone() throws CloneNotSupportedException
+    public ObjectClass copy()
     {
-        ObjectClass clone = (ObjectClass)super.clone();
+        ObjectClass copy = new ObjectClass( oid );
         
-        // Clone the Superiors ObjectClasses
-        clone.superiorOids = new ArrayList<String>();
+        // Copy the SchemaObject common data
+        copy.copy( this );
+        
+        // Copy the ObjectClass type
+        copy.objectClassType = objectClassType;
+        
+        // Copy the Superiors ObjectClasses OIDs
+        copy.superiorOids = new ArrayList<String>();
         
         for ( String oid : superiorOids )
         {
-            clone.superiorOids.add( oid );
+            copy.superiorOids.add( oid );
         }
         
-        clone.superiors = new ArrayList<ObjectClass>();
+        // Copy the Superiors ObjectClasses ( will be empty )
+        copy.superiors = new ArrayList<ObjectClass>();
         
-        // Clone the MAY AttributeTypes
-        clone.mayAttributeTypeOids = new ArrayList<String>();
+        // Copy the MAY AttributeTypes OIDs
+        copy.mayAttributeTypeOids = new ArrayList<String>();
         
         for ( String oid : mayAttributeTypeOids )
         {
-            clone.mayAttributeTypeOids.add( oid );
+            copy.mayAttributeTypeOids.add( oid );
         }
         
-        clone.mayAttributeTypes = new ArrayList<AttributeType>();
+        // Copy the MAY AttributeTypes ( will be empty )
+        copy.mayAttributeTypes = new ArrayList<AttributeType>();
         
-        // Clone the MUST AttributeTypes
-        clone.mustAttributeTypeOids = new ArrayList<String>();
+        // Copy the MUST AttributeTypes OIDs
+        copy.mustAttributeTypeOids = new ArrayList<String>();
         
         for ( String oid : mustAttributeTypeOids )
         {
-            clone.mustAttributeTypeOids.add( oid );
+            copy.mustAttributeTypeOids.add( oid );
         }
         
-        clone.mustAttributeTypes = new ArrayList<AttributeType>();
+        // Copy the MUST AttributeTypes ( will be empty )
+        copy.mustAttributeTypes = new ArrayList<AttributeType>();
         
-        return clone;
+        return copy;
     }
 }

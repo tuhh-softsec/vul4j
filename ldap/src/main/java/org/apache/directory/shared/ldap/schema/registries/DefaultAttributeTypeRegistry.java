@@ -64,12 +64,10 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     
     /**
      * Creates a new default AttributeTypeRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry
      */
-    public DefaultAttributeTypeRegistry( OidRegistry oidRegistry )
+    public DefaultAttributeTypeRegistry()
     {
-        super( SchemaObjectType.ATTRIBUTE_TYPE, oidRegistry );
+        super( SchemaObjectType.ATTRIBUTE_TYPE, new OidRegistry() );
         oidNormalizerMap = new HashMap<String, OidNormalizer>();
         oidToDescendantSet = new HashMap<String,Set<AttributeType>>();
     }
@@ -256,18 +254,18 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
      */
     public void addMappingFor( AttributeType attributeType ) throws NamingException
     {
-        MatchingRule matchingRule = attributeType.getEquality();
+        MatchingRule equality = attributeType.getEquality();
         OidNormalizer oidNormalizer;
         String oid = attributeType.getOid();
 
-        if ( matchingRule == null )
+        if ( equality == null )
         {
             LOG.debug( "Attribute {} does not have normalizer : using NoopNormalizer", attributeType.getName() );
             oidNormalizer = new OidNormalizer( oid, new NoOpNormalizer( attributeType.getOid() ) );
         }
         else
         {
-            oidNormalizer = new OidNormalizer( oid, matchingRule.getNormalizer() );
+            oidNormalizer = new OidNormalizer( oid, equality.getNormalizer() );
         }
 
         oidNormalizerMap.put( oid, oidNormalizer );
@@ -319,25 +317,13 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public DefaultAttributeTypeRegistry clone() throws CloneNotSupportedException
+    public AttributeTypeRegistry copy()
     {
-        DefaultAttributeTypeRegistry clone = (DefaultAttributeTypeRegistry)super.clone();
+        DefaultAttributeTypeRegistry copy = new DefaultAttributeTypeRegistry();
         
-        // Clone the oidNormalizerMap (will be empty)
-        clone.oidNormalizerMap = new HashMap<String, OidNormalizer>();
+        // Copy the base data
+        copy.copy( this );
         
-        // Clone the oidToDescendant map (will be empty)
-        clone.oidToDescendantSet = new HashMap<String,Set<AttributeType>>();
-
-        return clone;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int size()
-    {
-        return oidRegistry.size();
+        return copy;
     }
 }

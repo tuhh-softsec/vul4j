@@ -30,16 +30,10 @@ import org.apache.directory.shared.ldap.schema.DITContentRule;
  * @version $Rev$
  */
 public interface DITContentRuleRegistry extends SchemaObjectRegistry<DITContentRule>,
-    Iterable<DITContentRule>, Cloneable
+    Iterable<DITContentRule>
 {
     /**
-     * Clone the DITContentRuleRegistry
+     * Copy the DITContentRuleRegistry
      */
-    DITContentRuleRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of DITContentRule stored
-     */
-    int size();
+    DITContentRuleRegistry copy();
 }

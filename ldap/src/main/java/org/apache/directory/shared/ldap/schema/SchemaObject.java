@@ -71,7 +71,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public abstract class SchemaObject implements Serializable, Cloneable
+public abstract class SchemaObject implements Serializable
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
@@ -709,28 +709,39 @@ public abstract class SchemaObject implements Serializable, Cloneable
         return false;
     }
     
+    
+    public abstract SchemaObject copy();
+    
 
     /**
-     * Clone a SchemaObject
+     * Copy a SchemaObject.
+     * 
+     * @return A copy of the current SchemaObject
      */
-    public SchemaObject clone() throws CloneNotSupportedException
+    public SchemaObject copy( SchemaObject original )
     {
-        SchemaObject clone = (SchemaObject)super.clone();
-
-        //Clone the names
-        clone.names = new ArrayList<String>();
+        // copy the description
+        description = original.description;
         
-        for ( String name : names )
+        // copy the flags
+        isEnabled = original.isEnabled;
+        isObsolete = original.isObsolete;
+        isReadOnly = original.isReadOnly;
+
+        // copy the names
+        names = new ArrayList<String>();
+        
+        for ( String name : original.names )
         {
-            clone.names.add( name );
+            names.add( name );
         }
 
-        // Clone the extensions
-        clone.extensions = new HashMap<String, List<String>>();
+        // copy the extensions
+        extensions = new HashMap<String, List<String>>();
         
-        for ( String key : extensions.keySet() )
+        for ( String key : original.extensions.keySet() )
         {
-            List<String> extensionValues = extensions.get( key );
+            List<String> extensionValues = original.extensions.get( key );
             
             List<String> cloneExtension = new ArrayList<String>();
             
@@ -739,10 +750,19 @@ public abstract class SchemaObject implements Serializable, Cloneable
                 cloneExtension.add( value );
             }
             
-            clone.extensions.put( key, cloneExtension );
+            extensions.put( key, cloneExtension );
         }
         
-        return clone;
+        // The SchemaName
+        schemaName = original.schemaName;
+        
+        // The SchemaManager
+        schemaManager = original.schemaManager;
+        
+        // The specification
+        specification = original.specification;
+        
+        return this;
     }
     
     

@@ -26,6 +26,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.NameForm;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
@@ -56,9 +57,9 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
     /**
      * {@inheritDoc}
      */
-    public ImmutableNameFormRegistry clone() throws CloneNotSupportedException
+    public ImmutableNameFormRegistry copy()
     {
-        return (ImmutableNameFormRegistry)immutableNameFormRegistry.clone();
+        return (ImmutableNameFormRegistry)immutableNameFormRegistry.copy();
     }
     
     
@@ -176,5 +177,14 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableNameFormRegistry.get( oid );
     }
 }

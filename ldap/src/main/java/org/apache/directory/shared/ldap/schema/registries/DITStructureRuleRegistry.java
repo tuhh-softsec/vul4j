@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.schema.DITStructureRule;
  * @version $Rev$
  */
 public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStructureRule>,
-    Iterable<DITStructureRule>, Cloneable
+    Iterable<DITStructureRule>
 {
     /**
      * Checks to see if an DITStructureRule exists in the registry, by its
@@ -124,13 +124,7 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
     
     
     /**
-     * Clone the DITStructureRuleRegistry
+     * Copy the DITStructureRuleRegistry
      */
-    DITStructureRuleRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of DITStructureRule stored
-     */
-    int size();
+    DITStructureRuleRegistry copy();
 }

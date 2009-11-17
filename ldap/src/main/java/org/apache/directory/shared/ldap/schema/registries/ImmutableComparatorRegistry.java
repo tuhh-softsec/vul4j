@@ -27,6 +27,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
@@ -82,9 +83,9 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public ImmutableComparatorRegistry clone() throws CloneNotSupportedException
+    public ImmutableComparatorRegistry copy()
     {
-        return (ImmutableComparatorRegistry)immutableComparatorRegistry.clone();
+        return (ImmutableComparatorRegistry)immutableComparatorRegistry.copy();
     }
     
     
@@ -175,5 +176,14 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the ComparatorRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableComparatorRegistry.get( oid );
     }
 }

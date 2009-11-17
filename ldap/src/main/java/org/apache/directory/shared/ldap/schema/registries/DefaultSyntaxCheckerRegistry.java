@@ -48,12 +48,10 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
     
     /**
      * Creates a new default SyntaxCheckerRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultSyntaxCheckerRegistry( OidRegistry oidRegistry )
+    public DefaultSyntaxCheckerRegistry()
     {
-        super( SchemaObjectType.SYNTAX_CHECKER, oidRegistry );
+        super( SchemaObjectType.SYNTAX_CHECKER, new OidRegistry() );
     }
     
     
@@ -66,7 +64,7 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
         
         if ( byName.containsKey( oid ) )
         {
-            String msg = type.name() + " with OID " + oid + " already registered!";
+            String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
             LOG.warn( msg );
             //throw new NamingException( msg );
         }
@@ -81,6 +79,9 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
         {
             byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), syntaxChecker );
         }
+        
+        // Update the SyntaxCheckerRegistry OidRegistry
+        oidRegistry.register( syntaxChecker );
         
         if ( LOG.isDebugEnabled() )
         {
@@ -148,19 +149,58 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
     /**
      * {@inheritDoc}
      */
-    public DefaultSyntaxCheckerRegistry clone() throws CloneNotSupportedException
+    public DefaultSyntaxCheckerRegistry copy()
     {
-        DefaultSyntaxCheckerRegistry clone = (DefaultSyntaxCheckerRegistry)super.clone();
+        DefaultSyntaxCheckerRegistry copy = new DefaultSyntaxCheckerRegistry();
         
-        return clone;
+        // Copy the base data
+        copy.copy( this );
+        
+        return copy;
     }
-    
+
     
     /**
-     * {@inheritDoc}
+     * @see Object#toString()
      */
-    public int size()
+    public String toString()
     {
-        return byName.values().size();
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append( schemaObjectType ).append( ": " );
+        boolean isFirst = true;
+        
+        for ( String name : byName.keySet() )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+            
+            SyntaxChecker syntaxChecker = byName.get( name );
+            
+            String fqcn = syntaxChecker.getFqcn();
+            int lastDotPos = fqcn.lastIndexOf( '.' );
+            
+            sb.append( '<' ).append( syntaxChecker.getOid() ).append( ", " );
+            
+            
+            if ( lastDotPos > 0 )
+            {
+                sb.append( fqcn.substring( lastDotPos + 1 ) );
+            }
+            else
+            {
+                sb.append( fqcn );
+            }
+            
+            sb.append( '>' );
+        }
+        
+        return sb.toString();
     }
 }

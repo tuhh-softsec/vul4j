@@ -28,18 +28,18 @@ package org.apache.directory.shared.ldap.schema;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SchemaWrapper
+public class SchemaObjectWrapper
 {
     /** The internal schemaObject */
     private SchemaObject schemaObject;
     
     
     /**
-     * Creates a new instance of SchemaWrapper.
+     * Creates a new instance of SchemaObjectWrapper.
      *
      * @param schemaObject The contained SchemaObject
      */
-    public SchemaWrapper( SchemaObject schemaObject )
+    public SchemaObjectWrapper( SchemaObject schemaObject )
     {
         this.schemaObject = schemaObject;
     }
@@ -68,12 +68,12 @@ public class SchemaWrapper
             return true;
         }
         
-        if ( !(o instanceof SchemaWrapper ) )
+        if ( !(o instanceof SchemaObjectWrapper ) )
         {
             return false;
         }
         
-        SchemaObject that = ((SchemaWrapper)o).get();
+        SchemaObject that = ((SchemaObjectWrapper)o).get();
         SchemaObject current = get();
         
         return ( that.getOid().equals( current.getOid() ) &&

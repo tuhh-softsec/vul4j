@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
  * @version $Rev$
  */
 public interface ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<?>>,
-    Iterable<LdapComparator<?>>, Cloneable
+    Iterable<LdapComparator<?>>
 {
     /**
      * Registers a new LdapComparator with this registry.
@@ -64,13 +64,7 @@ public interface ComparatorRegistry extends SchemaObjectRegistry<LdapComparator<
     
     
     /**
-     * Clone the ComparatorRegistry
+     * Copy the ComparatorRegistry
      */
-    ComparatorRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of Comparators stored
-     */
-    int size();
+    ComparatorRegistry copy();
 }

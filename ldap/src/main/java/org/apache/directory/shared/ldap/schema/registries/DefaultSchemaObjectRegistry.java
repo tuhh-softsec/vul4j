@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements SchemaObjectRegistry<T>, Iterable<T>, Cloneable
+public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implements SchemaObjectRegistry<T>, Iterable<T>
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultSchemaObjectRegistry.class );
@@ -51,8 +52,8 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
     /** a map of SchemaObject looked up by name */
     protected Map<String, T> byName;
     
-    /** The SchemaObject type */
-    protected SchemaObjectType type;
+    /** The SchemaObject type, used by the toString() method  */
+    protected SchemaObjectType schemaObjectType;
 
     /** the global OID Registry */
     protected OidRegistry oidRegistry;
@@ -64,7 +65,7 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
     protected DefaultSchemaObjectRegistry( SchemaObjectType schemaObjectType, OidRegistry oidRegistry )
     {
         byName = new HashMap<String, T>();
-        type = schemaObjectType;
+        this.schemaObjectType = schemaObjectType;
         this.oidRegistry = oidRegistry;
     }
     
@@ -168,7 +169,7 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
 
         if ( schemaObject == null )
         {
-            String msg = type.name() + " for OID " + oid + " does not exist!";
+            String msg = schemaObjectType.name() + " for OID " + oid + " does not exist!";
             LOG.debug( msg );
             throw new NamingException( msg );
         }
@@ -193,7 +194,7 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
         {
             if ( byName.containsKey( oid ) )
             {
-                String msg = type.name() + " with OID " + oid + " already registered!";
+                String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
                 LOG.warn( msg );
                 throw new NamingException( msg );
             }
@@ -269,7 +270,6 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
             {
                 String oid = schemaObject.getOid();
                 SchemaObject removed = unregister( oid );
-                oidRegistry.unregister( oid );
                 
                 if ( DEBUG )
                 {
@@ -324,34 +324,63 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
     /**
      * {@inheritDoc}
      */
-    public DefaultSchemaObjectRegistry<T> clone() throws CloneNotSupportedException
+    public SchemaObjectRegistry<T> copy( SchemaObjectRegistry<T> original )
     {
-        // Clone the base object
-        DefaultSchemaObjectRegistry<T> clone = (DefaultSchemaObjectRegistry<T>)super.clone();
-        
-        // Clone the byName Map
-        clone.byName = new HashMap<String, T>();
-        
-        for ( String key : byName.keySet() )
+        // Fill the byName and OidRegistry maps, the type has already be copied
+        for ( String key : ((DefaultSchemaObjectRegistry<T>)original).byName.keySet() )
         {
             // Clone each SchemaObject
-            SchemaObject value = byName.get( key );
-            clone.byName.put( key, (T)value.clone() );
+            T value = ((DefaultSchemaObjectRegistry<T>)original).byName.get( key );
+            
+            if ( value instanceof LoadableSchemaObject )
+            {
+                // Update the data structure. 
+                // Comparators, Normalizers and SyntaxCheckers aren't copied, 
+                // they are immutable
+                byName.put( key, value );
+            
+                // Update the OidRegistry
+                oidRegistry.put( value );
+            }
+            else
+            {
+                // Copy the value
+                T copiedValue = (T)value.copy();
+                
+                // Update the data structure. 
+                byName.put( key, copiedValue );
+
+                // Update the OidRegistry
+                oidRegistry.put( copiedValue );
+            }
         }
         
-        // Clone the oidRegistry
-        clone.oidRegistry = oidRegistry.clone();
-        
-        return clone;
+        return this;
     }
 
 
     /**
      * {@inheritDoc}
      */
+    public SchemaObject get( String oid )
+    {
+        try
+        {
+            return oidRegistry.getSchemaObject( oid );
+        }
+        catch ( NamingException ne )
+        {
+            return null;
+        }
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
     public SchemaObjectType getType()
     {
-        return type;
+        return schemaObjectType;
     }
     
     
@@ -360,7 +389,7 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
      */
     public int size()
     {
-        return 0;
+        return oidRegistry.size();
     }
     
     
@@ -371,8 +400,25 @@ public class DefaultSchemaObjectRegistry<T extends SchemaObject> implements Sche
     {
         StringBuilder sb = new StringBuilder();
         
-        sb.append( type ).append( ':' );
-        sb.append( StringTools.setToString( byName.keySet() ) );
+        sb.append( schemaObjectType ).append( ": " );
+        boolean isFirst = true;
+        
+        for ( String name : byName.keySet() )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+            
+            T schemaObject = byName.get( name );
+            
+            sb.append( '<' ).append( name ).append( ", " ).append( schemaObject.getOid() ).append( '>' );
+        }
+        
         return sb.toString();
     }
 }

@@ -103,7 +103,7 @@ public class DescriptionUtils
 
         if ( attributeType.getSuperior() != null )
         {
-            buf.append(  " SUP " );
+            buf.append( " SUP " );
             buf.append( attributeType.getSuperiorName() );
             buf.append( '\n' );
         }
@@ -684,7 +684,7 @@ public class DescriptionUtils
 
         if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
-            buf.append( " SUP\n" );
+            buf.append( " SUP " );
             getQDStrings( buf, sups );
         }
 
@@ -699,7 +699,7 @@ public class DescriptionUtils
         
         if ( ( must != null ) && ( must.size() > 0 ) )
         {
-            buf.append( " MUST\n" );
+            buf.append( " MUST " );
             getQDStrings( buf, must );
         }
 
@@ -707,7 +707,7 @@ public class DescriptionUtils
         
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
-            buf.append( " MAY\n" );
+            buf.append( " MAY " );
             getQDStrings( buf, may );
         }
 
@@ -717,6 +717,7 @@ public class DescriptionUtils
         }
 
         buf.append( " )\n" );
+
         return buf.toString();
     }
 
@@ -860,7 +861,7 @@ public class DescriptionUtils
             }
         }
         
-        sb.append(  '\n' );
+        sb.append( '\n' );
     }
 
     
@@ -895,7 +896,7 @@ public class DescriptionUtils
             }
         }
         
-        sb.append(  '\n' );
+        sb.append( '\n' );
     }
     
     

@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
@@ -112,9 +113,9 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * Clone the ObjectClassRegistry
      */
-    public ImmutableObjectClassRegistry clone() throws CloneNotSupportedException
+    public ImmutableObjectClassRegistry copy()
     {
-        return (ImmutableObjectClassRegistry)immutableObjectClassRegistry.clone();
+        return (ImmutableObjectClassRegistry)immutableObjectClassRegistry.copy();
     }
     
     
@@ -214,5 +215,14 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableObjectClassRegistry.get( oid );
     }
 }

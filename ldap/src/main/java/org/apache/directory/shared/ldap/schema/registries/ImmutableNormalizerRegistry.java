@@ -27,6 +27,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
@@ -83,9 +84,9 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      *  {@inheritDoc}
      */
-    public ImmutableNormalizerRegistry clone() throws CloneNotSupportedException
+    public ImmutableNormalizerRegistry copy()
     {
-        return (ImmutableNormalizerRegistry)immutableNormalizerRegistry.clone();
+        return (ImmutableNormalizerRegistry)immutableNormalizerRegistry.copy();
     }
     
     
@@ -176,5 +177,14 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableNormalizerRegistry.get( oid );
     }
 }

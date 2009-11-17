@@ -30,16 +30,10 @@ import org.apache.directory.shared.ldap.schema.NameForm;
  * @version $Rev$
  */
 public interface NameFormRegistry extends SchemaObjectRegistry<NameForm>,
-    Iterable<NameForm>, Cloneable
+    Iterable<NameForm>
 {
     /**
-     * Clone the NameFormRegistry
+     * Copy the NameFormRegistry
      */
-    NameFormRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of NameForms stored
-     */
-    int size();
+    NameFormRegistry copy();
 }

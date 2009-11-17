@@ -53,12 +53,10 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     
     /**
      * Creates a new default NormalizerRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultDITStructureRuleRegistry( OidRegistry oidRegistry )
+    public DefaultDITStructureRuleRegistry()
     {
-        super( SchemaObjectType.DIT_STRUCTURE_RULE, oidRegistry );
+        super( SchemaObjectType.DIT_STRUCTURE_RULE, new OidRegistry() );
         byRuleId = new HashMap<Integer, DITStructureRule>();
     }
 
@@ -221,22 +219,13 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     /**
      * {@inheritDoc}
      */
-    public DefaultDITStructureRuleRegistry clone() throws CloneNotSupportedException
+    public DefaultDITStructureRuleRegistry copy()
     {
-        DefaultDITStructureRuleRegistry clone = (DefaultDITStructureRuleRegistry)super.clone();
+        DefaultDITStructureRuleRegistry copy = new DefaultDITStructureRuleRegistry();
         
-        // Clone the RuleId map
-        clone.byRuleId = new HashMap<Integer, DITStructureRule>();
+        // Copy the base data
+        copy.copy( this );
         
-        return clone;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int size()
-    {
-        return byRuleId.values().size();
+        return copy;
     }
 }

@@ -85,17 +85,6 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
 
 
     /**
-     * Clone a SyntaxChecker
-     */
-    public SyntaxChecker clone() throws CloneNotSupportedException
-    {
-        SyntaxChecker clone = (SyntaxChecker)super.clone();
-        
-        return clone;
-    }
-
-
-    /**
      * @see Object#toString()
      */
     public String toString()

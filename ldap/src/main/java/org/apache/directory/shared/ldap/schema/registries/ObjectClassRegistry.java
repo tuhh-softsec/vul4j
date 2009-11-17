@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.schema.ObjectClass;
  * @version $Rev$
  */
 public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
-    Iterable<ObjectClass>, Cloneable
+    Iterable<ObjectClass>
 {
     /**
      * Quick lookup to see if an objectClass has descendants.
@@ -105,13 +105,7 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
     
     
     /**
-     * Clone the ObjectClassRegistry
+     * Copy the ObjectClassRegistry
      */
-    ObjectClassRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of ObjectClasses stored
-     */
-    int size();
+    ObjectClassRegistry copy();
 }

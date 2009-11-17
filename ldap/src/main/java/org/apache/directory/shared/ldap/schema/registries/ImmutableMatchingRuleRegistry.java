@@ -26,6 +26,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
@@ -56,9 +57,9 @@ public class ImmutableMatchingRuleRegistry implements MatchingRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public ImmutableMatchingRuleRegistry clone() throws CloneNotSupportedException
+    public ImmutableMatchingRuleRegistry copy()
     {
-        return (ImmutableMatchingRuleRegistry)immutableMatchingRuleRegistry.clone();
+        return (ImmutableMatchingRuleRegistry)immutableMatchingRuleRegistry.copy();
     }
     
     
@@ -176,5 +177,14 @@ public class ImmutableMatchingRuleRegistry implements MatchingRuleRegistry
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableMatchingRuleRegistry.get( oid );
     }
 }

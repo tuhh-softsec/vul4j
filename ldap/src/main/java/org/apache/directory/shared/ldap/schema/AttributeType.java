@@ -272,7 +272,6 @@ public class AttributeType extends SchemaObject implements Cloneable
     
             // Register this AttributeType into the Descendant map
             atRegistry.registerDescendants( this, this.getSuperior() );
-            
         }
     }
     
@@ -480,6 +479,18 @@ public class AttributeType extends SchemaObject implements Cloneable
 
 
     /**
+     * Update the associated Superior AttributeType, even if the SchemaObject is readOnly
+     *
+     * @param superior The superior for this AttributeType
+     */
+    public void updateSuperior( AttributeType superior )
+    {
+        this.superior = superior;
+        this.superiorOid = superior.getOid();
+    }
+
+
+    /**
      * Gets the Syntax for this AttributeType's values.
      * 
      * @return the value syntax
@@ -545,6 +556,18 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.syntax = syntax;
             this.syntaxOid = syntax.getOid();
         }
+    }
+
+    
+    /**
+     * Update the associated Syntax, even if the SchemaObject is readOnly
+     *
+     * @param syntax The Syntax for this AttributeType
+     */
+    public void updateSyntax( LdapSyntax syntax )
+    {
+        this.syntax = syntax;
+        this.syntaxOid = syntax.getOid();
     }
 
     
@@ -618,6 +641,18 @@ public class AttributeType extends SchemaObject implements Cloneable
     
 
     /**
+     * Update the associated Equality MatchingRule, even if the SchemaObject is readOnly
+     *
+     * @param equality The Equality MR for this AttributeType
+     */
+    public void updateEquality( MatchingRule equality )
+    {
+        this.equality = equality;
+        this.equalityOid = equality.getOid();
+    }
+    
+
+    /**
      * Gets the MatchingRule for this AttributeType used for Ordering matching.
      * 
      * @return the Ordering matching rule
@@ -687,6 +722,18 @@ public class AttributeType extends SchemaObject implements Cloneable
 
     
     /**
+     * Update the associated Ordering MatchingRule, even if the SchemaObject is readOnly
+     *
+     * @param ordering The Ordering MR for this AttributeType
+     */
+    public void updateOrdering( MatchingRule ordering )
+    {
+        this.ordering = ordering;
+        this.orderingOid = ordering.getOid();
+    }
+
+    
+    /**
      * Gets the MatchingRule for this AttributeType used for Substr matching.
      * 
      * @return the Substr matching rule
@@ -752,6 +799,18 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.substring = substring;
             this.substringOid = substring.getOid();
         }
+    }
+
+
+    /**
+     * Update the associated Substring MatchingRule, even if the SchemaObject is readOnly
+     *
+     * @param substring The Substr MR for this AttributeType
+     */
+    public void updateSubstring( MatchingRule substring )
+    {
+        this.substring = substring;
+        this.substringOid = substring.getOid();
     }
 
 
@@ -826,19 +885,50 @@ public class AttributeType extends SchemaObject implements Cloneable
     
     
     /**
-     * Clone an AttributeType
+     * Copy an AttributeType
      */
-    public AttributeType clone() throws CloneNotSupportedException
+    public AttributeType copy()
     {
-        AttributeType clone = (AttributeType)super.clone();
+        AttributeType copy = new AttributeType( oid );
+
+        // Copy the SchemaObject common data
+        copy.copy( this );
         
-        // All the references to other Registries object are set to null.
-        clone.equality = null;
-        clone.ordering = null;
-        clone.substring = null;
-        clone.superior = null;
-        clone.syntax = null;
+        // Copy the canUserModify flag
+        copy.canUserModify = canUserModify;
         
-        return clone;
+        // Copy the isCollective flag
+        copy.isCollective = isCollective;
+        
+        // Copy the isSingleValue flag
+        copy.isSingleValued = isSingleValued;
+        
+        // Copy the USAGE type
+        copy.usage = usage;
+        
+        // All the references to other Registries object are set to null,
+        // all the OIDs are copied
+        // The EQUALITY MR
+        copy.equality = null;
+        copy.equalityOid = equalityOid;
+        
+        // The ORDERING MR
+        copy.ordering = null;
+        copy.orderingOid = orderingOid;
+
+        // The SUBSTR MR
+        copy.substring = null;
+        copy.substringOid = substringOid;
+
+        // The SUP AT
+        copy.superior = null;
+        copy.superiorOid = superiorOid;
+        
+        // The SYNTAX
+        copy.syntax = null;
+        copy.syntaxOid = syntaxOid;
+        copy.syntaxLength = syntaxLength;
+        
+        return copy;
     }
 }

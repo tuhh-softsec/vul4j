@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 
@@ -148,9 +149,9 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public AttributeTypeRegistry clone() throws CloneNotSupportedException
+    public AttributeTypeRegistry copy()
     {
-        return (AttributeTypeRegistry)immutableAttributeTypeRegistry.clone();
+        return (AttributeTypeRegistry)immutableAttributeTypeRegistry.copy();
     }
     
     
@@ -241,5 +242,14 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableAttributeTypeRegistry.get( oid );
     }
 }

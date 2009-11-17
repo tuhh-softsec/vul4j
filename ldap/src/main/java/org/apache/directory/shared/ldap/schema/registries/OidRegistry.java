@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class OidRegistry implements Cloneable
+public class OidRegistry implements Iterable<SchemaObject>
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( OidRegistry.class );
@@ -215,6 +215,19 @@ public class OidRegistry implements Cloneable
             }
         }
     }
+    
+    
+    /**
+     * Store the given SchemaObject into the OidRegistry. Available only to 
+     * the current package. A weak form (no check is done) of the register 
+     * method, define for clone methods.
+     *
+     * @param schemaObject The SchemaObject to inject into the OidRegistry
+     */
+    /* No qualifier */ void put( SchemaObject schemaObject )
+    {
+        byOid.put( schemaObject.getOid(), schemaObject );
+    }
 
 
     /**
@@ -236,25 +249,18 @@ public class OidRegistry implements Cloneable
     
     
     /**
-     * Clone the OidRegistry, and all the contained values
+     * Copy the OidRegistry, without the contained values
      * 
      * @return A new OidRegistry instance
      */
-    public OidRegistry clone() throws CloneNotSupportedException
+    public OidRegistry copy()
     {
-        OidRegistry clone = (OidRegistry)super.clone();
+        OidRegistry copy = new OidRegistry();
         
-        clone.byOid = new HashMap<String,SchemaObject>();
+        // Clone the map
+        copy.byOid = new HashMap<String,SchemaObject>();
         
-        // Clone the byOid Map
-        for ( String key : byOid.keySet() )
-        {
-            // Clone each SchemaObject
-            SchemaObject value = byOid.get( key );
-            clone.byOid.put( key, value.clone() );
-        }
-        
-        return clone;
+        return copy;
     }
     
     
@@ -264,5 +270,48 @@ public class OidRegistry implements Cloneable
     protected int size() 
     {
         return byOid.size();
+    }
+    
+    
+    /**
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        if ( byOid != null )
+        {
+            boolean isFirst = true;
+            
+            for ( String oid : byOid.keySet() )
+            {
+                if ( isFirst )
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sb.append( ", " );
+                }
+                
+                sb.append( "<" );
+                
+                SchemaObject schemaObject = byOid.get( oid );
+                
+                if ( schemaObject != null )
+                {
+                    sb.append( schemaObject.getObjectType() );
+                    sb.append( ", " );
+                    sb.append( schemaObject.getOid() );
+                    sb.append( ", " );
+                    sb.append( schemaObject.getName() );
+                }
+                
+                sb.append( ">" );
+            }
+        }
+        
+        return sb.toString();
     }
 }

@@ -29,6 +29,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -36,14 +37,16 @@ import org.apache.directory.shared.ldap.schema.DITContentRule;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
 import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
-import org.apache.directory.shared.ldap.schema.SchemaWrapper;
+import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -94,8 +97,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /** The Normalizer registry */
     protected NormalizerRegistry normalizerRegistry;
 
-    /** The OID registry */
-    protected OidRegistry oidRegistry;
+    /** The global OID registry */
+    protected OidRegistry globalOidRegistry;
 
     /** The SyntaxChecker registry */
     protected SyntaxCheckerRegistry syntaxCheckerRegistry;
@@ -104,7 +107,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     protected LdapSyntaxRegistry ldapSyntaxRegistry;
     
     /** A map storing all the schema objects associated with a schema */
-    private Map<String, Set<SchemaWrapper>> schemaObjectsBySchemaName;
+    private Map<String, Set<SchemaObjectWrapper>> schemaObjectsBySchemaName;
     
     /** A flag indicating that the Registries is relaxed or not */
     private boolean isRelaxed;
@@ -120,13 +123,13 @@ public class Registries implements SchemaLoaderListener, Cloneable
      *  A map storing a relation between a SchemaObject and all the 
      *  referencing SchemaObjects.
      */
-    protected Map<SchemaWrapper, Set<SchemaWrapper>> usedBy;
+    protected Map<SchemaObjectWrapper, Set<SchemaObjectWrapper>> usedBy;
     
     /**
      *  A map storing a relation between a SchemaObject and all the 
      *  SchemaObjects it uses.
      */
-    protected Map<SchemaWrapper, Set<SchemaWrapper>> using;
+    protected Map<SchemaObjectWrapper, Set<SchemaObjectWrapper>> using;
     
 
     /**
@@ -136,21 +139,21 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public Registries()
     {
-        this.oidRegistry = new OidRegistry();
-        attributeTypeRegistry = new DefaultAttributeTypeRegistry( oidRegistry );
-        comparatorRegistry = new DefaultComparatorRegistry( oidRegistry );
-        ditContentRuleRegistry = new DefaultDITContentRuleRegistry( oidRegistry );
-        ditStructureRuleRegistry = new DefaultDITStructureRuleRegistry( oidRegistry );
-        ldapSyntaxRegistry = new DefaultLdapSyntaxRegistry( oidRegistry );
-        matchingRuleRegistry = new DefaultMatchingRuleRegistry( oidRegistry );
-        matchingRuleUseRegistry = new DefaultMatchingRuleUseRegistry( oidRegistry );
-        nameFormRegistry = new DefaultNameFormRegistry( oidRegistry );
-        normalizerRegistry = new DefaultNormalizerRegistry( oidRegistry );
-        objectClassRegistry = new DefaultObjectClassRegistry( oidRegistry );
-        syntaxCheckerRegistry = new DefaultSyntaxCheckerRegistry( oidRegistry );
-        schemaObjectsBySchemaName = new HashMap<String, Set<SchemaWrapper>>();
-        usedBy = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
-        using = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        this.globalOidRegistry = new OidRegistry();
+        attributeTypeRegistry = new DefaultAttributeTypeRegistry();
+        comparatorRegistry = new DefaultComparatorRegistry();
+        ditContentRuleRegistry = new DefaultDITContentRuleRegistry();
+        ditStructureRuleRegistry = new DefaultDITStructureRuleRegistry();
+        ldapSyntaxRegistry = new DefaultLdapSyntaxRegistry();
+        matchingRuleRegistry = new DefaultMatchingRuleRegistry();
+        matchingRuleUseRegistry = new DefaultMatchingRuleUseRegistry();
+        nameFormRegistry = new DefaultNameFormRegistry();
+        normalizerRegistry = new DefaultNormalizerRegistry();
+        objectClassRegistry = new DefaultObjectClassRegistry();
+        syntaxCheckerRegistry = new DefaultSyntaxCheckerRegistry();
+        schemaObjectsBySchemaName = new HashMap<String, Set<SchemaObjectWrapper>>();
+        usedBy = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
+        using = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
         
         isRelaxed = STRICT;
         disabledAccepted = false;
@@ -239,11 +242,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
     
     /**
-     * @return The getOid registry
+     * @return The global Oid registry
      */
-    public OidRegistry getOidRegistry()
+    public OidRegistry getGlobalOidRegistry()
     {
-        return oidRegistry;
+        return globalOidRegistry;
     }
 
     
@@ -479,11 +482,642 @@ public class Registries implements SchemaLoaderListener, Cloneable
     
     
     /**
-     * Build the usedBy and using references from the stored elements.
+     * Add the AT references (using and usedBy) : 
+     * AT -> MR (for EQUALITY, ORDERING and SUBSTR)
+     * AT -> S
+     * AT -> AT
      */
-    public void buildReferences()
+    public void addCrossReferences( AttributeType attributeType )
     {
-        // First start with the Syntaxes
+        if ( attributeType.getEquality() != null )
+        {
+            addReference( attributeType, attributeType.getEquality() );
+        }
+        
+        if ( attributeType.getOrdering() != null )
+        {
+            addReference( attributeType, attributeType.getOrdering() );
+        }
+        
+        if ( attributeType.getSubstring() != null )
+        {
+            addReference( attributeType, attributeType.getSubstring() );
+        }
+        
+        if ( attributeType.getSyntax() != null )
+        {
+            addReference( attributeType, attributeType.getSyntax() );
+        }
+        
+        if ( attributeType.getSuperior() != null )
+        {
+            addReference( attributeType, attributeType.getSuperior() );
+        }
+    }
+    
+    
+    /**
+     * Delete the AT references (using and usedBy) : 
+     * AT -> MR (for EQUALITY, ORDERING and SUBSTR)
+     * AT -> S
+     * AT -> AT
+     */
+    public void delCrossReferences( AttributeType attributeType )
+    {
+        if ( attributeType.getEquality() != null )
+        {
+            delReference( attributeType, attributeType.getEquality() );
+        }
+        
+        if ( attributeType.getOrdering() != null )
+        {
+            delReference( attributeType, attributeType.getOrdering() );
+        }
+        
+        if ( attributeType.getSubstring() != null )
+        {
+            delReference( attributeType, attributeType.getSubstring() );
+        }
+        
+        if ( attributeType.getSyntax() != null )
+        {
+            delReference( attributeType, attributeType.getSyntax() );
+        }
+        
+        if ( attributeType.getSuperior() != null )
+        {
+            delReference( attributeType, attributeType.getSuperior() );
+        }
+    }
+    
+    
+    /**
+     * Build the AttributeType references
+     */
+    private void buildAttributeTypeReferences( List<Throwable> errors )
+    {
+        for ( AttributeType attributeType : attributeTypeRegistry )
+        {
+            // An attributeType has references on Syntax, MatchingRule and itself
+            
+            // The LdapSyntax (cannot be null)
+            if ( attributeType.getSyntaxOid() != null )
+            {
+                LdapSyntax syntax = null;
+                
+                try
+                {
+                    syntax = ldapSyntaxRegistry.lookup( attributeType.getSyntaxOid() );
+                }
+                catch ( NamingException ne )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a Syntax object " + attributeType.getSyntaxOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " attributeType.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+                
+                if ( syntax != null )
+                {
+                    // Update the Syntax reference
+                    attributeType.updateSyntax( syntax );
+                }
+                else
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a Syntax object " + attributeType.getSyntaxOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " matchingRule.";
+
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            else
+            {
+                // Not allowed.
+                String msg = "The AttributeType " + attributeType.getName() + " must have " +
+                    "a syntax OID.";
+
+                Throwable error = new LdapSchemaViolationException( 
+                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                errors.add( error );
+                LOG.info( msg );
+            }
+            
+            // The equality MR. It can be null
+            if ( attributeType.getEqualityOid() != null )
+            {
+                MatchingRule equality = null;
+                
+                try
+                {
+                    equality = matchingRuleRegistry.lookup( attributeType.getEqualityOid() );
+                }
+                catch ( Exception e )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find an Equality object " + attributeType.getSyntaxOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " attributeType.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+                
+                if ( equality != null )
+                {
+                    attributeType.updateEquality( equality );
+                }
+                else
+                {
+                    // Not allowed.
+                    String msg = "Cannot find an EQUALITY MatchingRule object " + attributeType.getEqualityOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " matchingRule.";
+
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            
+            // The ordering MR. It can be null
+            if ( attributeType.getOrderingOid() != null )
+            {
+                MatchingRule ordering = null;
+                
+                try
+                {
+                    ordering = matchingRuleRegistry.lookup( attributeType.getOrderingOid() );
+                }
+                catch ( Exception e )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a Ordering object " + attributeType.getSyntaxOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " attributeType.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+                
+                if ( ordering != null )
+                {
+                    attributeType.updateOrdering( ordering );
+                }
+                else
+                {
+                    // Not allowed.
+                    String msg = "Cannot find an ORDERING MatchingRule object " + attributeType.getOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " matchingRule.";
+
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            
+            // The Substring MR. It can be null
+            if ( attributeType.getSubstringOid() != null )
+            {
+                MatchingRule substring = null;
+                
+                try
+                {
+                    substring = matchingRuleRegistry.lookup( attributeType.getSubstringOid() );
+                }
+                catch ( Exception e )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a Substring object " + attributeType.getSyntaxOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " attributeType.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+                
+                if ( substring != null )
+                {
+                    attributeType.updateSubstring( substring );
+                }
+                else
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a SUBSTR MatchingRule object " + attributeType.getOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " matchingRule.";
+
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            
+            // The Superior AT. It can be null
+            if ( attributeType.getSuperiorOid() != null )
+            {
+                AttributeType superior = null;
+                
+                try
+                {
+                    superior = attributeTypeRegistry.lookup( attributeType.getSuperiorOid() );
+                }
+                catch ( Exception e )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a Superior object " + attributeType.getSyntaxOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " attributeType.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+                
+                if ( superior != null )
+                {
+                    attributeType.updateSuperior( superior );
+                }
+                else
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a SUPERIOR AttributeType object " + attributeType.getOid() + 
+                        " while building cross-references for the " + attributeType.getName() + 
+                        " matchingRule.";
+
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            
+            // Update the cross references
+            addCrossReferences( attributeType );
+        }
+    }
+    
+    
+    /**
+     * Build the DitContentRule references
+     */
+    private void buildDitContentRuleReferences( List<Throwable> errors )
+    {
+        for ( DITContentRule ditContentRule : ditContentRuleRegistry )
+        {
+            // TODO
+        }
+    }
+    
+    
+    /**
+     * Build the DitStructureRule references
+     */
+    private void buildDitStructureRuleReferences( List<Throwable> errors )
+    {
+        for ( DITStructureRule ditStructureRule : ditStructureRuleRegistry )
+        {
+            // TODO
+        }
+    }
+    
+    
+    /**
+     * Add the MR references (using and usedBy) : 
+     * MR -> C
+     * MR -> N
+     * MR -> S
+     */
+    public void addCrossReferences( MatchingRule matchingRule )
+    {
+        if ( matchingRule.getLdapComparator() != null )
+        {
+            addReference( matchingRule, matchingRule.getLdapComparator() );
+        }
+        
+        if ( matchingRule.getNormalizer() != null )
+        {
+            addReference( matchingRule, matchingRule.getNormalizer() );
+        }
+        
+        if ( matchingRule.getSyntax() != null )
+        {
+            addReference( matchingRule, matchingRule.getSyntax() );
+        }
+    }
+    
+    /**
+     * Build the MatchingRule references
+     */
+    private void buildMatchingRuleReferences( List<Throwable> errors )
+    {
+        for ( MatchingRule matchingRule : matchingRuleRegistry )
+        {
+            // each matching rule references a Syntax, a Comparator and a Normalizer
+            // If we don't have a Syntax, this is an error
+            if ( matchingRule.getSyntaxOid() != null )
+            {
+                LdapSyntax syntax = null;
+                
+                try
+                {
+                    syntax = ldapSyntaxRegistry.lookup( matchingRule.getSyntaxOid() );
+                }
+                catch ( NamingException ne )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a Syntax object " + matchingRule.getSyntaxOid() + 
+                        " while building cross-references for the " + matchingRule.getName() + 
+                        " matchingRule.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+                
+                if ( syntax != null )
+                {
+                    // Update the Syntax reference
+                    matchingRule.updateSyntax( syntax );
+                }
+                else
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a Syntax object " + matchingRule.getSyntaxOid() + 
+                        " while building cross-references for the " + matchingRule.getName() + 
+                        " matchingRule.";
+
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            else
+            {
+                // Not allowed.
+                String msg = "The MatchingRule " + matchingRule.getName() + " must have " +
+                    "a syntax OID.";
+
+                Throwable error = new LdapSchemaViolationException( 
+                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                errors.add( error );
+                LOG.info( msg );
+            }
+            
+            // Get the comparator. Must not be null
+            LdapComparator<?> comparator = null;
+            
+            try
+            {
+                comparator = comparatorRegistry.lookup( matchingRule.getOid() );
+            }
+            catch ( Exception e )
+            {
+                // Not allowed.
+                String msg = "Cannot find a Comparator object " + matchingRule.getSyntaxOid() + 
+                    " while building cross-references for the " + matchingRule.getName() + 
+                    " matchingRule.";
+
+                Throwable error = new LdapSchemaViolationException( 
+                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                errors.add( error );
+                LOG.info( msg );
+            }
+            
+            if ( comparator != null )
+            {
+                // Update the Comparator reference
+                matchingRule.updateLdapComparator( comparator );
+            }
+            else
+            {
+                // Not allowed.
+                String msg = "Cannot find a Comparator object " + matchingRule.getOid() + 
+                    " while building cross-references for the " + matchingRule.getName() + 
+                    " matchingRule.";
+                Throwable error = new LdapSchemaViolationException( 
+                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                errors.add( error );
+                LOG.info( msg );
+            }
+            
+            // Get the normalizer. May be null
+            Normalizer normalizer = null;
+            
+            try
+            {
+                normalizer = normalizerRegistry.lookup( matchingRule.getOid() );
+            }
+            catch ( Exception e )
+            {
+                // Not found : get the default Normalizer
+                normalizer = new NoOpNormalizer( matchingRule.getOid() );
+            }
+            
+            if ( normalizer != null )
+            {
+                // Update the Normalizer reference
+                matchingRule.updateNormalizer( normalizer );
+            }
+            else
+            {
+                // Set a default normalizer
+                matchingRule.updateNormalizer( new NoOpNormalizer( matchingRule.getOid() ) );
+            }
+            
+            // Update the MR cross references
+            addCrossReferences( matchingRule );
+        }
+    }
+
+    
+    /**
+     * Build the MatchingRuleUse references
+     */
+    private void buildMatchingRuleUseReferences( List<Throwable> errors )
+    {
+        for ( MatchingRuleUse matchingRuleUse : matchingRuleUseRegistry )
+        {
+            // TODO
+        }
+    }
+
+    
+    /**
+     * Build the NameForm references
+     */
+    private void buildNameFormReferences( List<Throwable> errors )
+    {
+        for ( NameForm nameFormRule : nameFormRegistry )
+        {
+            // TODO
+        }
+    }
+
+    
+    /**
+     * Add the OC references (using and usedBy) : 
+     * OC -> AT (MAY and MUST)
+     * OC -> OC (SUPERIORS)
+     */
+    public void addCrossReferences( ObjectClass objectClass )
+    {
+        for ( AttributeType mayAttributeType : objectClass.getMayAttributeTypes() )
+        {
+            addReference( objectClass, mayAttributeType );
+        }
+
+        for ( AttributeType mustAttributeType : objectClass.getMustAttributeTypes() )
+        {
+            addReference( objectClass, mustAttributeType );
+        }
+        
+        for ( ObjectClass superiorObjectClass : objectClass.getSuperiors() )
+        {
+            addReference( objectClass, superiorObjectClass );
+        }
+    }
+    
+    /**
+     * Build the ObjectClasses references
+     */
+    private void buildObjectClassReferences( List<Throwable> errors )
+    {
+        // The ObjectClass
+        for ( ObjectClass objectClass : objectClassRegistry )
+        {
+            // An ObjectClass has references on AttributeType May and Must, 
+            // and its superiors
+            // The MAY attributeTypes
+            AttributeType may = null;
+            List<AttributeType> mayList = new ArrayList<AttributeType>();
+            
+            for ( String mayOid : objectClass.getMayAttributeTypeOids() )
+            {
+                try
+                {
+                    may = attributeTypeRegistry.lookup( mayOid );
+                    mayList.add( may );
+                }
+                catch ( NamingException ne )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a AttributeType MAY object for " + mayOid + 
+                        " while building cross-references for the " + objectClass.getName() + 
+                        " objectClass.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            
+            // Update the MAY references
+            objectClass.updateMayAttributeTypes( mayList );
+
+            // The MUST attributeTypes
+            AttributeType must = null;
+            List<AttributeType> mustList = new ArrayList<AttributeType>();
+            
+            for ( String mustOid : objectClass.getMustAttributeTypeOids() )
+            {
+                try
+                {
+                    must = attributeTypeRegistry.lookup( mustOid );
+                    mustList.add( must );
+                }
+                catch ( NamingException ne )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find a AttributeType MUST object for " + mustOid + 
+                        " while building cross-references for the " + objectClass.getName() + 
+                        " objectClass.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            
+            // Update the MUST references
+            objectClass.updateMustAttributeTypes( mustList );
+
+            // The SUPERIORS objectClasses
+            ObjectClass superior = null;
+            List<ObjectClass> superiorList = new ArrayList<ObjectClass>();
+            
+            for ( String superiorOid : objectClass.getSuperiorOids() )
+            {
+                try
+                {
+                    superior = objectClassRegistry.lookup( superiorOid );
+                    superiorList.add( superior );
+                }
+                catch ( NamingException ne )
+                {
+                    // Not allowed.
+                    String msg = "Cannot find an ObjectClass SUPERIOR object for " + superiorOid + 
+                        " while building cross-references for the " + objectClass.getName() + 
+                        " objectClass.";
+    
+                    Throwable error = new LdapSchemaViolationException( 
+                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    LOG.info( msg );
+                }
+            }
+            
+            // Update the SUPERIOR references
+            objectClass.updateSuperiors( superiorList );
+            
+            // Update the ObjectClass cross references
+            addCrossReferences( objectClass );
+        }
+    }
+    
+    
+    /**
+     * Add the references for S :
+     * S -> SC
+     */
+    public void addCrossReferences( LdapSyntax syntax )
+    {
+        if ( syntax.getSyntaxChecker() != null )
+        {
+            addReference( syntax, syntax.getSyntaxChecker() );
+        }
+    }
+    
+    
+    /**
+     * Build the Syntax references
+     */
+    private void buildLdapSyntaxReferences( List<Throwable> errors )
+    {
         for ( LdapSyntax syntax : ldapSyntaxRegistry )
         {
             SyntaxChecker syntaxChecker = null;
@@ -499,25 +1133,170 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 syntaxChecker = new OctetStringSyntaxChecker( syntax.getOid() );
             }
             
-            addReference( syntax, syntaxChecker );
-        }
+            if ( syntaxChecker != null )
+            {
+                // Set the SyntaxChecker reference
+                syntax.updateSyntaxChecker( syntaxChecker );
+            }
+            else
+            {
+                // Not allowed.
+                String msg = "Cannot find a SyntaxChecker object " + syntax.getOid() + 
+                    " while building cross-references for the " + syntax.getName() + 
+                    " matchingRule.";
 
-        // Then the MatchingRules
-        for ( MatchingRule matchingRule : matchingRuleRegistry )
-        {
-            // each matching rule references a Syntax, a Comparator and a Normalizer
-            // If we don't have a Syntax, this is an error
-            LdapSyntax syntax = null;
+                Throwable error = new LdapSchemaViolationException( 
+                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                errors.add( error );
+                LOG.info( msg );
+            }
             
+            // Update the using and usedBy references
+            addCrossReferences( syntax );
+        }
+    }
+    
+    
+    /**
+     * Recreate the globalOidRegistry
+     */
+    private void buildOidRegistryReferences( List<Throwable> errors )
+    {
+        for ( AttributeType attributeType : attributeTypeRegistry )
+        {
             try
             {
-                syntax = ldapSyntaxRegistry.lookup( matchingRule.getSyntaxOid() );
+                globalOidRegistry.register( attributeType );
             }
             catch ( NamingException ne )
             {
-                
+                errors.add( ne );
             }
         }
+
+        for ( DITContentRule ditContentRule : ditContentRuleRegistry )
+        {
+            try
+            {
+                globalOidRegistry.register( ditContentRule );
+            }
+            catch ( NamingException ne )
+            {
+                errors.add( ne );
+            }
+        }
+
+        for ( DITStructureRule ditStructureRule : ditStructureRuleRegistry )
+        {
+            try
+            {
+                globalOidRegistry.register( ditStructureRule );
+            }
+            catch ( NamingException ne )
+            {
+                errors.add( ne );
+            }
+        }
+
+        for ( MatchingRule matchingRule : matchingRuleRegistry )
+        {
+            try
+            {
+                globalOidRegistry.register( matchingRule );
+            }
+            catch ( NamingException ne )
+            {
+                errors.add( ne );
+            }
+        }
+
+        for ( MatchingRuleUse matchingRuleUse : matchingRuleUseRegistry )
+        {
+            try
+            {
+                globalOidRegistry.register( matchingRuleUse );
+            }
+            catch ( NamingException ne )
+            {
+                errors.add( ne );
+            }
+        }
+
+        for ( NameForm nameForm : nameFormRegistry )
+        {
+            try
+            {
+                globalOidRegistry.register( nameForm );
+            }
+            catch ( NamingException ne )
+            {
+                errors.add( ne );
+            }
+        }
+        
+        for ( ObjectClass objectClass : objectClassRegistry )
+        {
+            try
+            {
+                globalOidRegistry.register( objectClass );
+            }
+            catch ( NamingException ne )
+            {
+                errors.add( ne );
+            }
+        }
+        
+        for ( LdapSyntax ldapSyntax : ldapSyntaxRegistry )
+        {
+            try
+            {
+                globalOidRegistry.register( ldapSyntax );
+            }
+            catch ( NamingException ne )
+            {
+                errors.add( ne );
+            }
+        }
+    }
+    
+    
+    /**
+     * Build the usedBy and using references from the stored elements.
+     * 
+     * @return A list of all the errors we met during the cross reference update
+     */
+    public List<Throwable> buildReferences()
+    {
+        List<Throwable> errors = new ArrayList<Throwable>();
+        
+        // First start with the Syntax references
+        buildLdapSyntaxReferences( errors );
+
+        // The MatchingRules references
+        buildMatchingRuleReferences( errors );
+        
+        // The AttributeType references
+        buildAttributeTypeReferences( errors );
+        
+        // The MatchingRuleUse references
+        buildMatchingRuleUseReferences( errors );
+        
+        // The ObjectClasses references
+        buildObjectClassReferences( errors );
+        
+        // The DitContentRules references
+        buildDitContentRuleReferences( errors );
+        
+        // The NameForms references
+        buildNameFormReferences( errors );
+
+        // The DitStructureRules references
+        buildDitStructureRuleReferences( errors );
+        
+        // Last, not least, build the OidRegistry references
+        buildOidRegistryReferences( errors );
+        
+        return errors;
     }
 
     
@@ -627,6 +1406,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         // Process the Superior, if any
         String superiorOid = attributeType.getSuperiorOid();
+        
         AttributeType superior = null;
         
         if ( superiorOid != null )
@@ -645,11 +1425,25 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 }
             }
             
-            // We now have to process the superior, if it hasn"'t been 
+            // We now have to process the superior, if it hasn't been 
             // processed yet.
-            if ( ( superior != null ) && !processed.contains( superiorOid ) )
+            if ( superior != null )
             {
-                resolveRecursive( superior, processed, errors );
+                if ( !processed.contains( superiorOid ) )
+                {
+                    resolveRecursive( superior, processed, errors );
+                    processed.add( attributeType.getOid() );
+                }
+                else
+                {
+                    // Not allowed : we have a cyle
+                    Throwable error = new LdapSchemaViolationException( 
+                        "The AttributeType " + attributeType.getOid() + " can't have itself as a superior, or" +
+                        " a cycle has been detected while processing the superior's tree", 
+                        ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    return;
+                }
             }
         }
         
@@ -762,6 +1556,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // a Superior, as it may be broken and referenced more than once. 
         Set<String> processed = new HashSet<String>();
         
+        // Store the AttributeType itself in the processed, to avoid cycle
+        processed.add( attributeType.getOid() );
+        
         // Call the recursive method, as we may have superiors to deal with
         resolveRecursive( attributeType, processed, errors );
     }
@@ -773,16 +1570,18 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // for an ObjectClass. It's mandatory when processing
         // the Superiors, as they may be broken and referenced more than once. 
         Set<String> processed = new HashSet<String>();
-
         
+        // Store the ObjectClass itself in the processed, to avoid cycle
+        processed.add( objectClass.getOid() );
+
         // Call the recursive method, as we may have superiors to deal with
         resolveRecursive( objectClass, processed, errors );
     }
+
     
     private void resolveRecursive( ObjectClass objectClass, Set<String> processed, List<Throwable> errors )
     {
         // Process the Superiors, if any
-        
         List<String> superiorOids = objectClass.getSuperiorOids();
         ObjectClass superior = null;
         
@@ -804,9 +1603,23 @@ public class Registries implements SchemaLoaderListener, Cloneable
             
             // We now have to process the superior, if it hasn't been 
             // processed yet.
-            if ( ( superior != null ) && !processed.contains( superiorOid ) )
+            if ( superior != null )
             {
-                resolveRecursive( superior, processed, errors );
+                if ( !processed.contains( superiorOid ) )
+                {
+                    resolveRecursive( superior, processed, errors );
+                    processed.add( objectClass.getOid() );
+                }
+                else
+                {
+                    // Not allowed : we have a cyle
+                    Throwable error = new LdapSchemaViolationException( 
+                        "The AttributeType " + objectClass.getOid() + " can't have itself as a superior, or" +
+                        " a cycle has been detected while processing the superior's tree", 
+                        ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    return;
+                }
             }
         }
         
@@ -892,9 +1705,33 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	 * @return Gets a reference to the Map associating a schemaName to
 	 * its contained SchemaObjects
 	 */
-	public Map<String, Set<SchemaWrapper>> getObjectBySchemaName()
+	public Map<String, Set<SchemaObjectWrapper>> getObjectBySchemaName()
 	{
 	    return schemaObjectsBySchemaName;
+	}
+	
+	
+	/**
+	 * Tells if the given SchemaObject is present in one schema. The schema
+	 * may be disabled.
+	 *
+	 * @param schemaObject The schemaObject we are looking for
+	 * @return true if the schemaObject is present in a schema
+	 */
+	public boolean contains( SchemaObject schemaObject )
+	{
+	    String schemaName = schemaObject.getSchemaName();
+	    
+	    Set<SchemaObjectWrapper> setSchemaObjects = schemaObjectsBySchemaName.get( schemaName );
+	    
+	    if ( ( setSchemaObjects == null ) || setSchemaObjects.isEmpty() )
+	    {
+	        return false;
+	    }
+
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
+	    
+	    return setSchemaObjects.contains( wrapper );
 	}
 	
 	
@@ -903,57 +1740,28 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	 *
 	 * @param schemaName The schema name
 	 */
-	public Set<SchemaWrapper> addSchema( String schemaName )
+	public Set<SchemaObjectWrapper> addSchema( String schemaName )
 	{
-	    Set<SchemaWrapper> content = new HashSet<SchemaWrapper>();
+	    Set<SchemaObjectWrapper> content = new HashSet<SchemaObjectWrapper>();
 	    schemaObjectsBySchemaName.put( schemaName, content );
 	    
 	    return content;
 	}
 	
 
-	/**
-	 * Add the given AttributeTtpe into the Registries
-	 *
-	 * @param attributeType The AttributeType to register
-	 * @throws NamingException If the registering failed
-	 */
-    public void register( AttributeType attributeType ) throws NamingException
-    {
-        LOG.debug( "Registering AttributeType: {}:{}", attributeType.getOid(), attributeType.getName() );
-        
-        String schemaName = StringTools.toLowerCase( attributeType.getSchemaName() );
-
-        // First, clone the Registries so that we don't mess with the 
-        // current registries if something goes wrong
-        // Register the new AT into the cloned ATRegistry
-        attributeTypeRegistry.register( attributeType );
-        
-        if ( isStrict() )
-        {
-            // Update the AT with the cloned registries
-            attributeType.applyRegistries( this );
-            
-            // Update the referenced objects (Using/UsedBy)
-            // The Syntax,
-            addReference( attributeType, attributeType.getSyntax() );
-    
-            // The Superior if any
-            addReference( attributeType, attributeType.getSuperior() );
-    
-            // The MatchingRules
-            addReference( attributeType, attributeType.getEquality() );
-            addReference( attributeType, attributeType.getOrdering() );
-            addReference( attributeType, attributeType.getSubstring() );
-        }        
-    }
-    
-	
 	public void register( SchemaObject schemaObject ) throws NamingException
 	{
 	    LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 	    
-	    String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+	    // Check that the SchemaObject is not already registered
+	    if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.hasOid( schemaObject.getOid() ) )
+	    {
+	        // TODO : throw an exception here
+	        String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid() +
+	            "failed, it's already present in the Registries";
+            LOG.error( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+	    }
 	    
 	    // First call the specific registry's register method
 	    switch ( schemaObject.getObjectType() )
@@ -1002,32 +1810,65 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 syntaxCheckerRegistry.register( (SyntaxChecker)schemaObject );
                 break;
 	    }
-	    
-	    // And register the schemaObject within its schema
-	    Set<SchemaWrapper> content = schemaObjectsBySchemaName.get( schemaName );
-	    
-	    if ( content == null )
-	    {
-	        content = new HashSet<SchemaWrapper>();
-	        schemaObjectsBySchemaName.put( StringTools.toLowerCase( schemaObject.getSchemaName() ), content );
-	    }
-	    
-	    SchemaWrapper schemaWrapper = new SchemaWrapper( schemaObject );
-	    
-	    if ( content.contains( schemaWrapper ) )
-	    {
-	        // Already present !
-	        // What should we do ?
-	        LOG.info( "Registering of {}:{} failed, is already present in the Registries", 
-	            schemaObject.getObjectType(), schemaObject.getOid() );
-	    }
-	    else
-	    {
-	        // Create the association
-	        content.add( schemaWrapper );
-	        
+	}
+	
+	
+	/**
+	 * Store the given SchemaObject in the Map associating SchemaObjetcs to their
+	 * related Schema.
+	 *
+	 * @param schemaObject The schemaObject to register
+	 * @throws NamingException If there is a problem
+	 */
+	public void associateWithSchema( SchemaObject schemaObject ) throws NamingException
+	{
+        LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
+        
+        // Check that the SchemaObject is not already registered
+        if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.hasOid( schemaObject.getOid() ) )
+        {
+            // TODO : throw an exception here
+            String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid() +
+                "failed, it's already present in the Registries";
+            LOG.error( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+        
+        // Get a normalized form of schema name
+        String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+
+        // And register the schemaObject within its schema
+        Set<SchemaObjectWrapper> content = schemaObjectsBySchemaName.get( schemaName );
+        
+        if ( content == null )
+        {
+            content = new HashSet<SchemaObjectWrapper>();
+            schemaObjectsBySchemaName.put( StringTools.toLowerCase( schemaName ), content );
+        }
+        
+        SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
+        
+        if ( content.contains( schemaObjectWrapper ) )
+        {
+            // Already present !
+            // What should we do ?
+            LOG.info( "Registering of {}:{} failed, is already present in the Registries", 
+                schemaObject.getObjectType(), schemaObject.getOid() );
+        }
+        else
+        {
+            // Create the association
+            content.add( schemaObjectWrapper );
+            
+            // Update the global OidRegistry if the SchemaObject is not
+            // an instance of LoadableSchemaObject
+            if ( !( schemaObject instanceof LoadableSchemaObject ) )
+            {
+                globalOidRegistry.register( schemaObject );
+            }
+            
             LOG.debug( "registered {} for OID {}", schemaObject.getName(), schemaObject.getOid() );
-	    }
+        }
 	}
 
 
@@ -1092,15 +1933,36 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 break;
         }
         
+        return unregistered;
+    }
+    
+    
+    /**
+     * Remove the given SchemaObject from the Map associating SchemaObjetcs to their
+     * related Schema.
+     *
+     * @param schemaObject The schemaObject to remove
+     * @throws NamingException If there is a problem
+     */
+    public void dissociateFromSchema( SchemaObject schemaObject ) throws NamingException
+    {
         // And unregister the schemaObject within its schema
-        Set<SchemaWrapper> content = schemaObjectsBySchemaName.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
+        Set<SchemaObjectWrapper> content = schemaObjectsBySchemaName.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
         
-        SchemaWrapper schemaWrapper = new SchemaWrapper( schemaObject );
+        SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
         
-        if ( content.contains( schemaWrapper ) )
+        if ( content.contains( schemaObjectWrapper ) )
         {
             // remove the schemaObject
-            content.remove( schemaWrapper );
+            content.remove( schemaObjectWrapper );
+            
+            // Update the global OidRegistry if the SchemaObject is not
+            // an instance of LoadableSchemaObject
+            if ( !( schemaObject instanceof LoadableSchemaObject ) )
+            {
+                globalOidRegistry.unregister( schemaObject.getOid() );
+            }
+            
             LOG.debug( "Unregistered {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
         }
         else
@@ -1110,8 +1972,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
             LOG.debug( "Unregistering of {}:{} failed, not found in Registries", 
                 schemaObject.getObjectType(), schemaObject.getOid() );
         }
-        
-        return unregistered;
     }
     
     
@@ -1123,9 +1983,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public boolean isReferenced( SchemaObject schemaObject )
     {
-        SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
         
-        Set<SchemaWrapper> set = usedBy.get( wrapper );
+        Set<SchemaObjectWrapper> set = usedBy.get( wrapper );
         
         boolean referenced = ( set != null ) && ( set.size() != 0 );
         
@@ -1153,9 +2013,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @param schemaObject The SchemaObject we are looking for
      * @return The Set of referencing SchemaObject, or null 
      */
-    public Set<SchemaWrapper> getUsedBy( SchemaObject schemaObject )
+    public Set<SchemaObjectWrapper> getUsedBy( SchemaObject schemaObject )
     {
-        SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
         
         return usedBy.get( wrapper );
     }
@@ -1170,13 +2030,13 @@ public class Registries implements SchemaLoaderListener, Cloneable
         
         sb.append(  "USED BY :\n" );
         
-        for ( SchemaWrapper wrapper : usedBy.keySet() )
+        for ( SchemaObjectWrapper wrapper : usedBy.keySet() )
         {
             sb.append( wrapper.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "] : {" );
             
             boolean isFirst = true;
             
-            for ( SchemaWrapper uses : usedBy.get( wrapper) )
+            for ( SchemaObjectWrapper uses : usedBy.get( wrapper) )
             {
                 if ( isFirst )
                 {
@@ -1206,13 +2066,13 @@ public class Registries implements SchemaLoaderListener, Cloneable
         
         sb.append(  "USING :\n" );
 
-        for ( SchemaWrapper wrapper : using.keySet() )
+        for ( SchemaObjectWrapper wrapper : using.keySet() )
         {
             sb.append( wrapper.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "] : {" );
             
             boolean isFirst = true;
             
-            for ( SchemaWrapper uses : using.get( wrapper) )
+            for ( SchemaObjectWrapper uses : using.get( wrapper) )
             {
                 if ( isFirst )
                 {
@@ -1238,9 +2098,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @param schemaObject The SchemaObject we are looking for
      * @return The Set of referenced SchemaObject, or null 
      */
-    public Set<SchemaWrapper> getUsing( SchemaObject schemaObject )
+    public Set<SchemaObjectWrapper> getUsing( SchemaObject schemaObject )
     {
-        SchemaWrapper wrapper = new SchemaWrapper( schemaObject );
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
         
         return using.get( wrapper );
     }
@@ -1259,16 +2119,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
             return;
         }
         
-        SchemaWrapper wrapper = new SchemaWrapper( reference );
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( reference );
         
-        Set<SchemaWrapper> uses = getUsing( reference );
+        Set<SchemaObjectWrapper> uses = getUsing( reference );
         
         if ( uses == null )
         {
-            uses = new HashSet<SchemaWrapper>();
+            uses = new HashSet<SchemaObjectWrapper>();
         }
         
-        uses.add( new SchemaWrapper( referee ) );
+        uses.add( new SchemaObjectWrapper( referee ) );
         
         // Put back the set (this is a concurrentHashMap, it won't be replaced implicitly
         using.put( wrapper, uses );
@@ -1278,18 +2138,18 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Add an association between a SchemaObject an the SchemaObject it refers
      *
-     * @param reference The base SchemaObject
-     * @param referee The SchemaObject pointing on the reference
+     * @param base The base SchemaObject
+     * @param referenced The referenced SchemaObject
      */
-    public void addReference( SchemaObject reference, SchemaObject referee )
+    public void addReference( SchemaObject base, SchemaObject referenced )
     {
         if ( LOG.isDebugEnabled() )
         {
-            LOG.debug( dump( "add", reference, referee ) );
+            LOG.debug( dump( "add", base, referenced ) );
         }
 
-        addUsing( reference, referee );
-        addUsedBy( referee, reference );
+        addUsing( base, referenced );
+        addUsedBy( referenced, base );
 
         if ( LOG.isDebugEnabled() )
         {
@@ -1312,16 +2172,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
             return;
         }
         
-        SchemaWrapper wrapper = new SchemaWrapper( referee );
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( referee );
         
-        Set<SchemaWrapper> uses = getUsedBy( referee );
+        Set<SchemaObjectWrapper> uses = getUsedBy( referee );
         
         if ( uses == null )
         {
-            uses = new HashSet<SchemaWrapper>();
+            uses = new HashSet<SchemaObjectWrapper>();
         }
         
-        uses.add( new SchemaWrapper( reference ) );
+        uses.add( new SchemaObjectWrapper( reference ) );
         
         // Put back the set (this is a concurrentHashMap, it won't be replaced implicitly
         usedBy.put( wrapper, uses );
@@ -1341,16 +2201,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
             return;
         }
         
-        Set<SchemaWrapper> uses = getUsing( reference );
+        Set<SchemaObjectWrapper> uses = getUsing( reference );
         
         if ( uses == null )
         {
             return;
         }
         
-        uses.remove( new SchemaWrapper( referee ) );
+        uses.remove( new SchemaObjectWrapper( referee ) );
         
-        SchemaWrapper wrapper = new SchemaWrapper( reference );
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( reference );
         
         if ( uses.size() == 0 )
         {
@@ -1378,16 +2238,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
             return;
         }
 
-        Set<SchemaWrapper> uses = getUsedBy( referee );
+        Set<SchemaObjectWrapper> uses = getUsedBy( referee );
         
         if ( uses == null )
         {
             return;
         }
         
-        uses.remove( new SchemaWrapper( reference ) );
+        uses.remove( new SchemaObjectWrapper( reference ) );
         
-        SchemaWrapper wrapper = new SchemaWrapper( referee );
+        SchemaObjectWrapper wrapper = new SchemaObjectWrapper( referee );
 
         if ( uses.size() == 0 )
         {
@@ -1405,18 +2265,18 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Delete an association between a SchemaObject an the SchemaObject it refers
      *
-     * @param reference The base SchemaObject
-     * @param referee The SchemaObject pointing on the reference
+     * @param base The base SchemaObject
+     * @param referenced The referenced SchemaObject
      */
-    public void delReference( SchemaObject reference, SchemaObject referee )
+    public void delReference( SchemaObject base, SchemaObject referenced )
     {
         if ( LOG.isDebugEnabled() )
         {
-            LOG.debug( dump( "del", reference, referee ) );
+            LOG.debug( dump( "del", base, referenced ) );
         }
         
-        delUsing( reference, referee );
-        delUsedBy( referee, reference );
+        delUsing( base, referenced );
+        delUsedBy( referenced, base );
         
         if ( LOG.isDebugEnabled() )
         {
@@ -1437,8 +2297,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     
     private boolean checkReferences( SchemaObject reference, SchemaObject referee, String message )
     {
-        SchemaWrapper referenceWrapper = new SchemaWrapper( reference );
-        SchemaWrapper refereeWrapper = new SchemaWrapper( referee );
+        SchemaObjectWrapper referenceWrapper = new SchemaObjectWrapper( reference );
+        SchemaObjectWrapper refereeWrapper = new SchemaObjectWrapper( referee );
         
         // Check the references : Syntax -> SyntaxChecker
         if ( !using.containsKey( referenceWrapper ) )
@@ -1449,7 +2309,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
             return false;
         }
         
-        Set<SchemaWrapper> usings = using.get( referenceWrapper );
+        Set<SchemaObjectWrapper> usings = using.get( referenceWrapper );
 
         if ( !usings.contains( refereeWrapper ) )
         {
@@ -1468,7 +2328,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
             return false;
         }
         
-        Set<SchemaWrapper> used = usedBy.get( refereeWrapper );
+        Set<SchemaObjectWrapper> used = usedBy.get( refereeWrapper );
 
         if ( !used.contains( referenceWrapper ) )
         {
@@ -1766,48 +2626,50 @@ public class Registries implements SchemaLoaderListener, Cloneable
     
     
     /**
-     * Clone the Registries
+     * Clone the Registries. This is done in two steps :
+     * - first clone the SchemaObjetc registries
+     * - second restore the relation between them
      */
     public Registries clone() throws CloneNotSupportedException
     {
         // First clone the structure
         Registries clone = (Registries)super.clone();
         
-        // We have to clone every SchemaObject registries now
-        clone.attributeTypeRegistry = (AttributeTypeRegistry)attributeTypeRegistry.clone();
-        clone.comparatorRegistry = comparatorRegistry.clone();
-        clone.ditContentRuleRegistry = ditContentRuleRegistry.clone();
-        clone.ditStructureRuleRegistry = ditStructureRuleRegistry.clone();
-        clone.ldapSyntaxRegistry = ldapSyntaxRegistry.clone();
-        clone.matchingRuleRegistry = matchingRuleRegistry.clone();
-        clone.matchingRuleUseRegistry = matchingRuleUseRegistry.clone();
-        clone.nameFormRegistry = nameFormRegistry.clone();
-        clone.normalizerRegistry = normalizerRegistry.clone();
-        clone.objectClassRegistry = objectClassRegistry.clone();
-        clone.syntaxCheckerRegistry = syntaxCheckerRegistry.clone();
-        
         // Now, clone the oidRegistry
-        clone.oidRegistry = oidRegistry.clone();
+        clone.globalOidRegistry = globalOidRegistry.copy();
+        
+        // We have to clone every SchemaObject registries now
+        clone.attributeTypeRegistry    = attributeTypeRegistry.copy();
+        clone.comparatorRegistry       = comparatorRegistry.copy();
+        clone.ditContentRuleRegistry   = ditContentRuleRegistry.copy();
+        clone.ditStructureRuleRegistry = ditStructureRuleRegistry.copy();
+        clone.ldapSyntaxRegistry       = ldapSyntaxRegistry.copy();
+        clone.matchingRuleRegistry     = matchingRuleRegistry.copy();
+        clone.matchingRuleUseRegistry  = matchingRuleUseRegistry.copy();
+        clone.nameFormRegistry         = nameFormRegistry.copy();
+        clone.normalizerRegistry       = normalizerRegistry.copy();
+        clone.objectClassRegistry      = objectClassRegistry.copy();
+        clone.syntaxCheckerRegistry    = syntaxCheckerRegistry.copy();
         
         // Clone the schema list
         clone.loadedSchemas = new HashMap<String, Schema>();
         
         for ( String schemaName : loadedSchemas.keySet() )
         {
-            // We don't cone the schemas
+            // We don't clone the schemas
             clone.loadedSchemas.put( schemaName, loadedSchemas.get( schemaName ) );
         }
         
-        // Last, not least, clone the Using and usedBy structures
+        // Clone the Using and usedBy structures
         // They will be empty
-        clone.using = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
-        clone.usedBy = new HashMap<SchemaWrapper, Set<SchemaWrapper>>();
+        clone.using = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
+        clone.usedBy = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
         
-        // Now, check the registries. We don"t care about errors
-        checkRefInteg();
+        // Now, check the registries. We don't care about errors
+        clone.checkRefInteg();
         
         // Last, rebuild the using and usedBy references
-        buildReferences();
+        clone.buildReferences();
         
         return clone;
     }
@@ -1937,7 +2799,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         sb.append( "Syntaxes : " ).append( ldapSyntaxRegistry.size() ).append( "\n" );
         sb.append( "SyntaxCheckers : " ).append( syntaxCheckerRegistry.size() ).append( "\n" );
         
-        sb.append( "OidRegistry : " ).append( oidRegistry.size() ).append( '\n' );
+        sb.append( "OidRegistry : " ).append( globalOidRegistry.size() ).append( '\n' );
         
         return sb.toString();
     }

@@ -205,20 +205,26 @@ public class DITStructureRule extends SchemaObject
 
 
     /**
-     * Clone a DITStructureRule
+     * Copy a DITStructureRule
      */
-    public DITStructureRule clone() throws CloneNotSupportedException
+    public DITStructureRule copy()
     {
-        DITStructureRule clone = (DITStructureRule)super.clone();
+        DITStructureRule copy = new DITStructureRule( ruleId );
+
+        // Copy the SchemaObject common data
+        copy.copy( this );
         
-        // Clone the Superiors rules
-        clone.superRules = new ArrayList<Integer>();
+        // Copy the Superiors rules
+        copy.superRules = new ArrayList<Integer>();
+        
+        // Copy the form
+        copy.form = form;
         
         for ( int ruleId : superRules )
         {
-            clone.superRules.add( ruleId );
+            copy.superRules.add( ruleId );
         }
         
-        return clone;
+        return copy;
     }
 }

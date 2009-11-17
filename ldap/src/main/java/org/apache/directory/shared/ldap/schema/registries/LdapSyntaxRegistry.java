@@ -29,16 +29,10 @@ import org.apache.directory.shared.ldap.schema.LdapSyntax;
  * @version $Rev$
  */
 public interface LdapSyntaxRegistry extends SchemaObjectRegistry<LdapSyntax>,
-    Iterable<LdapSyntax>, Cloneable
+    Iterable<LdapSyntax>
 {
     /**
-     * Clone the LdapSyntaxRegistry
+     * Copy the LdapSyntaxRegistry
      */
-    LdapSyntaxRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of Syntaxes stored
-     */
-    int size();
+    LdapSyntaxRegistry copy();
 }

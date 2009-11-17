@@ -209,6 +209,18 @@ public class MatchingRule extends SchemaObject
 
 
     /**
+     * Update the associated Syntax, even if the SchemaObject is readOnly
+     *
+     * @param oid The Syntax
+     */
+    public void updateSyntax( LdapSyntax ldapSyntax )
+    {
+        this.ldapSyntax = ldapSyntax;
+        this.ldapSyntaxOid = ldapSyntax.getOid();
+    }
+
+
+    /**
      * Gets the LdapComparator enabling the use of this MatchingRule for ORDERING
      * and sorted indexing.
      * 
@@ -232,6 +244,17 @@ public class MatchingRule extends SchemaObject
         {
             this.ldapComparator = (LdapComparator<? super Object>)ldapComparator;
         }
+    }
+
+
+    /**
+     * Update the associated Comparator, even if the SchemaObject is readOnly
+     *
+     * @param oid The LdapComparator
+     */
+    public void updateLdapComparator( LdapComparator<?> ldapComparator )
+    {
+        this.ldapComparator = (LdapComparator<? super Object>)ldapComparator;
     }
 
 
@@ -260,6 +283,19 @@ public class MatchingRule extends SchemaObject
             this.normalizer = normalizer;
         }
     }
+
+
+    /**
+     * Update the associated Normalizer, even if the SchemaObject is readOnly
+     *
+     * @param oid The Normalizer
+     */
+    public void updateNormalizer( Normalizer normalizer )
+    {
+        this.normalizer = normalizer;
+    }
+    
+    
     /**
      * @see Object#toString()
      */
@@ -270,17 +306,23 @@ public class MatchingRule extends SchemaObject
     
     
     /**
-     * Clone an MatchingRule
+     * Copy an MatchingRule
      */
-    public MatchingRule clone() throws CloneNotSupportedException
+    public MatchingRule copy()
     {
-        MatchingRule clone = (MatchingRule)super.clone();
-        
+        MatchingRule copy = new MatchingRule( oid );
+
+        // Copy the SchemaObject common data
+        copy.copy( this );
+
         // All the references to other Registries object are set to null.
-        clone.ldapComparator = null;
-        clone.ldapSyntax = null;
-        clone.normalizer = null;
+        copy.ldapComparator = null;
+        copy.ldapSyntax = null;
+        copy.normalizer = null;
         
-        return clone;
+        // Copy the syntax OID
+        copy.ldapSyntaxOid = ldapSyntaxOid;
+        
+        return copy;
     }
 }

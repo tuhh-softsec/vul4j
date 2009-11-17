@@ -55,17 +55,6 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
 
 
     /**
-     * Clone a LdapComparator
-     */
-    public LdapComparator<T> clone() throws CloneNotSupportedException
-    {
-        LdapComparator<T> clone = (LdapComparator<T>)super.clone();
-        
-        return clone;
-    }
-
-
-    /**
      * @see Object#toString()
      */
     public String toString()

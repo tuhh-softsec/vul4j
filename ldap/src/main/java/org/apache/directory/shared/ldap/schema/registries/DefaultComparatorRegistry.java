@@ -48,12 +48,10 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
     
     /**
      * Creates a new default ComparatorRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultComparatorRegistry( OidRegistry oidRegistry )
+    public DefaultComparatorRegistry()
     {
-        super( SchemaObjectType.COMPARATOR, oidRegistry );
+        super( SchemaObjectType.COMPARATOR, new OidRegistry() );
     }
     
     
@@ -66,7 +64,7 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
         
         if ( byName.containsKey( oid ) )
         {
-            String msg = type.name() + " with OID " + oid + " already registered!";
+            String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
             LOG.warn( msg );
             throw new NamingException( msg );
         }
@@ -82,6 +80,9 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
             byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), comparator );
         }
         
+        // Update the ComparatorRegistry OidRegistry
+        oidRegistry.register( comparator );
+
         if ( LOG.isDebugEnabled() )
         {
             LOG.debug( "registered " + comparator.getName() + " for OID {}", oid );
@@ -148,19 +149,58 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
     /**
      * {@inheritDoc}
      */
-    public DefaultComparatorRegistry clone() throws CloneNotSupportedException
+    public DefaultComparatorRegistry copy()
     {
-        DefaultComparatorRegistry clone = (DefaultComparatorRegistry)super.clone();
+        DefaultComparatorRegistry copy = new DefaultComparatorRegistry();
         
-        return clone;
+        // Copy the base data
+        copy.copy( this );
+        
+        return copy;
     }
     
     
     /**
-     * {@inheritDoc}
+     * @see Object#toString()
      */
-    public int size()
+    public String toString()
     {
-        return byName.values().size();
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append( schemaObjectType ).append( ": " );
+        boolean isFirst = true;
+        
+        for ( String name : byName.keySet() )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+            
+            LdapComparator<?> comparator = byName.get( name );
+            
+            String fqcn = comparator.getFqcn();
+            int lastDotPos = fqcn.lastIndexOf( '.' );
+            
+            sb.append( '<' ).append( comparator.getOid() ).append( ", " );
+            
+            
+            if ( lastDotPos > 0 )
+            {
+                sb.append( fqcn.substring( lastDotPos + 1 ) );
+            }
+            else
+            {
+                sb.append( fqcn );
+            }
+            
+            sb.append( '>' );
+        }
+        
+        return sb.toString();
     }
 }

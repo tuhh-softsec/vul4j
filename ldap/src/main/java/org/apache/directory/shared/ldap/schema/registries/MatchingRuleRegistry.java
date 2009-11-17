@@ -30,16 +30,10 @@ import org.apache.directory.shared.ldap.schema.MatchingRule;
  * @version $Rev$
  */
 public interface MatchingRuleRegistry extends SchemaObjectRegistry<MatchingRule>,
-    Iterable<MatchingRule>, Cloneable
+    Iterable<MatchingRule>
 {
     /**
-     * Clone the MatchingRuleRegistry
+     * Copy the MatchingRuleRegistry
      */
-    MatchingRuleRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     * @return The number of MatchingRule stored
-     */
-    int size();
+    MatchingRuleRegistry copy();
 }

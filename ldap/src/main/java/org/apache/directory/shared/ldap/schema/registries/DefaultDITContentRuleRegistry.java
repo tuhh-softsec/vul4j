@@ -35,31 +35,23 @@ public class DefaultDITContentRuleRegistry extends DefaultSchemaObjectRegistry<D
 {
     /**
      * Creates a new default DITContentRuleRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultDITContentRuleRegistry( OidRegistry oidRegistry )
+    public DefaultDITContentRuleRegistry()
     {
-        super( SchemaObjectType.DIT_CONTENT_RULE, oidRegistry );
+        super( SchemaObjectType.DIT_CONTENT_RULE, new OidRegistry() );
     }
     
     
     /**
      * {@inheritDoc}
      */
-    public DefaultDITContentRuleRegistry clone() throws CloneNotSupportedException
+    public DefaultDITContentRuleRegistry copy()
     {
-        DefaultDITContentRuleRegistry clone = (DefaultDITContentRuleRegistry)super.clone();
+        DefaultDITContentRuleRegistry copy = new DefaultDITContentRuleRegistry();
         
-        return clone;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int size()
-    {
-        return oidRegistry.size();
+        // Copy the base data
+        copy.copy( this );
+
+        return copy;
     }
 }

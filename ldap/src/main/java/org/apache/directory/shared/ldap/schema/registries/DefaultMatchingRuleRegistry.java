@@ -35,31 +35,23 @@ public class DefaultMatchingRuleRegistry extends DefaultSchemaObjectRegistry<Mat
 {
     /**
      * Creates a new default MatchingRuleRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultMatchingRuleRegistry( OidRegistry oidRegistry )
+    public DefaultMatchingRuleRegistry()
     {
-        super( SchemaObjectType.MATCHING_RULE, oidRegistry );
+        super( SchemaObjectType.MATCHING_RULE, new OidRegistry() );
     }
     
     
     /**
      * {@inheritDoc}
      */
-    public DefaultMatchingRuleRegistry clone() throws CloneNotSupportedException
+    public DefaultMatchingRuleRegistry copy()
     {
-        DefaultMatchingRuleRegistry clone = (DefaultMatchingRuleRegistry)super.clone();
+        DefaultMatchingRuleRegistry copy = new DefaultMatchingRuleRegistry();
         
-        return clone;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int size()
-    {
-        return oidRegistry.size();
+        // Copy the base data
+        copy.copy( this );
+        
+        return copy;
     }
 }

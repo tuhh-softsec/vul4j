@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
  * @version $Rev$
  */
 public interface NormalizerRegistry extends SchemaObjectRegistry<Normalizer>,
-    Iterable<Normalizer>, Cloneable
+    Iterable<Normalizer>
 {
     /**
      * Registers a new Normalizer with this registry.
@@ -64,13 +64,7 @@ public interface NormalizerRegistry extends SchemaObjectRegistry<Normalizer>,
     
     
     /**
-     * Clone the NormalizerRegistry
+     * Copy the NormalizerRegistry
      */
-    NormalizerRegistry clone() throws CloneNotSupportedException;
-    
-    
-    /**
-     *  @return The number of Normalizers stored
-     */
-    int size();
+    NormalizerRegistry copy();
 }

@@ -57,12 +57,10 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
 
     /**
      * Creates a new default ObjectClassRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultObjectClassRegistry( OidRegistry oidRegistry )
+    public DefaultObjectClassRegistry()
     {
-        super( SchemaObjectType.OBJECT_CLASS, oidRegistry );
+        super( SchemaObjectType.OBJECT_CLASS, new OidRegistry() );
         oidToDescendants = new HashMap<String,Set<ObjectClass>>();
     }
     
@@ -199,9 +197,6 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
         {
             super.register( objectClass );
             
-            // Register this ObjectClass into the Descendant map
-            registerDescendants( objectClass, objectClass.getSuperiors() );
-            
             // Internally associate the OID to the registered AttributeType
             if ( IS_DEBUG )
             {
@@ -244,22 +239,13 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
     /**
      * {@inheritDoc}
      */
-    public DefaultObjectClassRegistry clone() throws CloneNotSupportedException
+    public DefaultObjectClassRegistry copy()
     {
-        DefaultObjectClassRegistry clone = (DefaultObjectClassRegistry)super.clone();
+        DefaultObjectClassRegistry copy = new DefaultObjectClassRegistry();
         
-        // Clone the oidToDescendantSet (will be empty)
-        clone.oidToDescendants = new HashMap<String, Set<ObjectClass>>();
+        // Copy the base data
+        copy.copy( this );
         
-        return clone;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int size()
-    {
-        return oidRegistry.size();
+        return copy;
     }
 }

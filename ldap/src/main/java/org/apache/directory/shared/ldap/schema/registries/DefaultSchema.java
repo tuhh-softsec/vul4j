@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.schema.SchemaWrapper;
+import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -53,7 +53,7 @@ public class DefaultSchema implements Schema
     private String name;
     
     /** The set of SchemaObjects declared in this schema */
-    private Set<SchemaWrapper> content;
+    private Set<SchemaObjectWrapper> content;
     
     
     /**
@@ -129,7 +129,7 @@ public class DefaultSchema implements Schema
         
         this.disabled = disabled;
         
-        content = new HashSet<SchemaWrapper>(); 
+        content = new HashSet<SchemaObjectWrapper>(); 
     }
 
 
@@ -201,7 +201,7 @@ public class DefaultSchema implements Schema
     /**
      * {@inheritDoc}
      */
-    public Set<SchemaWrapper> getContent()
+    public Set<SchemaObjectWrapper> getContent()
     {
         return content;
     }

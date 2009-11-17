@@ -34,31 +34,23 @@ public class DefaultLdapSyntaxRegistry extends DefaultSchemaObjectRegistry<LdapS
 {
     /**
      * Creates a new default LdapSyntaxRegistry instance.
-     * 
-     * @param oidRegistry The global OID registry 
      */
-    public DefaultLdapSyntaxRegistry( OidRegistry oidRegistry )
+    public DefaultLdapSyntaxRegistry()
     {
-        super( SchemaObjectType.LDAP_SYNTAX, oidRegistry );
+        super( SchemaObjectType.LDAP_SYNTAX, new OidRegistry() );
     }
     
     
     /**
      * {@inheritDoc}
      */
-    public DefaultLdapSyntaxRegistry clone() throws CloneNotSupportedException
+    public DefaultLdapSyntaxRegistry copy()
     {
-        DefaultLdapSyntaxRegistry clone = (DefaultLdapSyntaxRegistry)super.clone();
+        DefaultLdapSyntaxRegistry copy = new DefaultLdapSyntaxRegistry();
         
-        return clone;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int size()
-    {
-        return oidRegistry.size();
+        // Copy the base data
+        copy.copy( this );
+        
+        return copy;
     }
 }

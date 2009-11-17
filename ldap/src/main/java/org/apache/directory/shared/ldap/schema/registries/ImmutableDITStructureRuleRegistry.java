@@ -27,6 +27,7 @@ import javax.naming.NamingException;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 
 
@@ -135,9 +136,9 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public ImmutableDITStructureRuleRegistry clone() throws CloneNotSupportedException
+    public ImmutableDITStructureRuleRegistry copy()
     {
-        return (ImmutableDITStructureRuleRegistry)immutableDITStructureRuleRegistry.clone();
+        return (ImmutableDITStructureRuleRegistry)immutableDITStructureRuleRegistry.copy();
     }
     
     
@@ -219,5 +220,14 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     public DITStructureRule unregister( String numericOid ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableDITStructureRuleRegistry.get( oid );
     }
 }

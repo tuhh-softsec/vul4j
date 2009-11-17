@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.schema.SchemaWrapper;
+import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 
 
 /**
@@ -92,5 +92,5 @@ public interface Schema
      *
      * @return The Set of associated SchemaObjects
      */
-    Set<SchemaWrapper> getContent();
+    Set<SchemaObjectWrapper> getContent();
 }

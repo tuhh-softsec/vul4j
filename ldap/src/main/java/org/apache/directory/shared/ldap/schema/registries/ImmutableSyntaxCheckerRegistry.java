@@ -26,6 +26,7 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 
@@ -82,9 +83,9 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
     /**
      * {@inheritDoc}
      */
-    public ImmutableSyntaxCheckerRegistry clone() throws CloneNotSupportedException
+    public ImmutableSyntaxCheckerRegistry copy()
     {
-        return (ImmutableSyntaxCheckerRegistry)immutableSyntaxCheckerRegistry.clone();
+        return (ImmutableSyntaxCheckerRegistry)immutableSyntaxCheckerRegistry.copy();
     }
     
     
@@ -175,5 +176,14 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
         throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SchemaObject get( String oid )
+    {
+        return immutableSyntaxCheckerRegistry.get( oid );
     }
 }
