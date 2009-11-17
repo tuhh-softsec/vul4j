@@ -918,6 +918,15 @@ public class SchemaEntityFactory implements EntityFactory
             attributeType.setSyntaxOid( mSyntax.getString() );
         }
         
+        // Syntax Length
+        EntryAttribute mSyntaxLength = entry.get( MetaSchemaConstants.M_LENGTH_AT );
+        
+        if ( mSyntaxLength != null )
+        {
+            attributeType.setSyntaxLength( Integer.parseInt( mSyntaxLength.getString() ) );
+        }
+
+        
         // Equality
         EntryAttribute mEquality = entry.get( MetaSchemaConstants.M_EQUALITY_AT );
         
@@ -1144,7 +1153,7 @@ public class SchemaEntityFactory implements EntityFactory
         
         // The specification field
         /*
-         * TODO : create the M_SPECIFICATION_ATAT
+         * TODO : create the M_SPECIFICATION_AT
         EntryAttribute mSpecification = entry.get( MetaSchemaConstants.M_SPECIFICATION_AT );
         
         if ( mSpecification != null )
