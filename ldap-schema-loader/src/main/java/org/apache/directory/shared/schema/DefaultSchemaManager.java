@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
-import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -195,6 +194,10 @@ public class DefaultSchemaManager implements SchemaManager
         registerNameForms( schema, registries );
         registerDitStructureRules( schema, registries );
 
+        // Now that we have loaded all the SchemaObjects, we have to create the 
+        // cross references
+        registries.buildReferences();
+        
         //notifyListenerOrRegistries( schema, registries );
     }
     
@@ -219,28 +222,21 @@ public class DefaultSchemaManager implements SchemaManager
         // Check the resulting registries
         errors = targetRegistries.checkRefInteg();
         
+        // Rebuild the using and usedBy references
+        errors.addAll( targetRegistries.buildReferences() );
+
         // if we have no more error, we can swap the registries
         if ( errors.size() == 0 )
         {
             targetRegistries.setStrict();
             
-            // Rebuild the references
-            errors = targetRegistries.checkRefInteg();
+            Registries oldRegistries = registries;
+            registries = targetRegistries;
 
-            if ( errors.size() == 0 )
-            {
-                Registries oldRegistries = registries;
-                registries = targetRegistries;
-
-                // Delete the old registries to avoid memory leaks
-                destroy( oldRegistries );
-                
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            // Delete the old registries to avoid memory leaks
+            destroy( oldRegistries );
+            
+            return true;
         }
         else
         {
@@ -587,11 +583,7 @@ public class DefaultSchemaManager implements SchemaManager
         
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() )
-            {
-                registries.register( attributeType );
-            }
-            else if ( schema.isEnabled() && attributeType.isEnabled() )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && attributeType.isEnabled() ) )
             {
                 registries.register( attributeType );
             }
@@ -612,9 +604,6 @@ public class DefaultSchemaManager implements SchemaManager
             }
         }
         
-        // And register the AT in the OidRegister
-        registries.getOidRegistry().register( attributeType );
-        
         return attributeType;
     }
 
@@ -633,15 +622,9 @@ public class DefaultSchemaManager implements SchemaManager
         LdapComparator<?> comparator = 
             factory.getLdapComparator( this, entry, registries, schema.getSchemaName() );
         
-        comparator.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
-
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() )
-            {
-                registries.register( comparator );
-            }
-            else if ( schema.isEnabled() && comparator.isEnabled() )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && comparator.isEnabled() ) )
             {
                 registries.register( comparator );
             }
@@ -717,11 +700,7 @@ public class DefaultSchemaManager implements SchemaManager
 
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() )
-            {
-                registries.register( matchingRule );
-            }
-            else if ( schema.isEnabled() && matchingRule.isEnabled() )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && matchingRule.isEnabled() ) )
             {
                 registries.register( matchingRule );
             }
@@ -741,10 +720,6 @@ public class DefaultSchemaManager implements SchemaManager
                 errors.add( new Throwable() );
             }
         }
-        
-        
-        // And register the MR in the OidRegister
-        registries.getOidRegistry().register( matchingRule );
         
         return matchingRule;
     }
@@ -801,11 +776,7 @@ public class DefaultSchemaManager implements SchemaManager
         
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() )
-            {
-                registries.register( normalizer );
-            }
-            else if ( schema.isEnabled() && normalizer.isEnabled() )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && normalizer.isEnabled() ) )
             {
                 registries.register( normalizer );
             }
@@ -846,11 +817,7 @@ public class DefaultSchemaManager implements SchemaManager
 
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() )
-            {
-                registries.register( objectClass );
-            }
-            else if ( schema.isEnabled() && objectClass.isEnabled() )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && objectClass.isEnabled() ) )
             {
                 registries.register( objectClass );
             }
@@ -871,9 +838,6 @@ public class DefaultSchemaManager implements SchemaManager
             }
         }
         
-        // And register the OC in the OidRegister
-        registries.getOidRegistry().register( objectClass );
-        
         return objectClass;
     }
 
@@ -892,15 +856,10 @@ public class DefaultSchemaManager implements SchemaManager
     {
         SyntaxChecker syntaxChecker = 
             factory.getSyntaxChecker( this, entry, registries, schema.getSchemaName() );
-        syntaxChecker.setOid( entry.get( MetaSchemaConstants.M_OID_AT ).getString() );
 
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() )
-            {
-                registries.register( syntaxChecker );
-            }
-            else if ( schema.isEnabled() && syntaxChecker.isEnabled() )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && syntaxChecker.isEnabled() ) )
             {
                 registries.register( syntaxChecker );
             }
@@ -943,11 +902,7 @@ public class DefaultSchemaManager implements SchemaManager
 
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() )
-            {
-                registries.register( syntax );
-            }
-            else if ( schema.isEnabled() && syntax.isEnabled() )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && syntax.isEnabled() ) )
             {
                 registries.register( syntax );
             }
@@ -967,9 +922,6 @@ public class DefaultSchemaManager implements SchemaManager
                 errors.add( new Throwable() );
             }
         }
-        
-        // And register the Syntax in the OidRegister
-        registries.getOidRegistry().register( syntax );
         
         return syntax;
     }
@@ -1193,21 +1145,20 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public boolean verify( Schema... schemas ) throws Exception
     {
-        Registries clonedRegistries = null;
+        // Work on a cloned registries
+        Registries clonedRegistries = cloneRegistries();
         
-        clonedRegistries = registries.clone();
-        clonedRegistries.setRelaxed();
-        
+        // Loop on all the schemas 
         for ( Schema schema : schemas )
         {
             try
             {
-                
                 // Inject the schema
                 boolean loaded = load( clonedRegistries, schema );
                 
                 if ( !loaded )
                 {
+                    // We got an error : exit
                     destroy( clonedRegistries );
                     return false;
                 }
@@ -1217,16 +1168,21 @@ public class DefaultSchemaManager implements SchemaManager
                 
                 if ( errors.size() != 0 )
                 {
+                    // We got an error : exit
                     destroy( clonedRegistries );
                     return false;
                 }
             }
             catch ( Exception e )
             {
+                // We got an error : exit
                 destroy( clonedRegistries );
                 return false;
             }
         }
+        
+        // We can now delete the cloned registries before exiting
+        destroy( clonedRegistries );
         
         return true;
     }
@@ -1437,7 +1393,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public OidRegistry getOidRegistry()
     {
-        return registries.getOidRegistry();
+        return registries.getGlobalOidRegistry();
     }
 
 
