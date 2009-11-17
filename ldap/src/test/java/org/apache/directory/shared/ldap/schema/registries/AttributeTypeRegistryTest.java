@@ -44,7 +44,7 @@ public class AttributeTypeRegistryTest
     @Before
     public void setup()
     {
-        atRegistry = new DefaultAttributeTypeRegistry( new OidRegistry() );
+        atRegistry = new DefaultAttributeTypeRegistry();
     }
     
     
@@ -95,39 +95,5 @@ public class AttributeTypeRegistryTest
         {
             assertTrue( true );
         }
-    }
-    
-    
-    @Test
-    public void testClone() throws Exception
-    {
-        AttributeType at0 = new AttributeType( "1.1" );
-        at0.addName( "t", "test", "Test", "T" );
-        
-        atRegistry.register( at0 );
-        
-        AttributeType at1 = new AttributeType( "1.2" );
-        at1.addName( "u", "unit", "Unit", "U" );
-
-        atRegistry.register( at1 );
-        
-        // Clone the ATRegistry
-        AttributeTypeRegistry clone = (AttributeTypeRegistry)atRegistry.clone();
-        
-        assertEquals( at0, clone.lookup( "1.1" ) );
-        assertEquals( at1, clone.lookup( "1.2" ) );
-        
-        atRegistry.unregister( "1.1" );
-        assertFalse( atRegistry.contains( "1.1" ) );
-        assertTrue( clone.contains( "1.1" ) );
-        
-        AttributeType at = atRegistry.lookup( "1.2" );
-        at.setOid( "2.2" );
-        
-        at = atRegistry.lookup( "1.2" );
-        assertEquals( "2.2", at.getOid() );
-
-        at = clone.lookup( "1.2" );
-        assertEquals( "1.2", at.getOid() );
     }
 }
