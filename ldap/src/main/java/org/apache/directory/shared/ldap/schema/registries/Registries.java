@@ -826,6 +826,33 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
     }
     
+    
+    
+    /**
+     * Delete the MR references (using and usedBy) : 
+     * MR -> C
+     * MR -> N
+     * MR -> S
+     */
+    public void delCrossReferences( MatchingRule matchingRule )
+    {
+        if ( matchingRule.getLdapComparator() != null )
+        {
+            delReference( matchingRule, matchingRule.getLdapComparator() );
+        }
+        
+        if ( matchingRule.getNormalizer() != null )
+        {
+            delReference( matchingRule, matchingRule.getNormalizer() );
+        }
+        
+        if ( matchingRule.getSyntax() != null )
+        {
+            delReference( matchingRule, matchingRule.getSyntax() );
+        }
+    }
+
+    
     /**
      * Build the MatchingRule references
      */
@@ -1383,18 +1410,35 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
     /**
      * Check if the Comparator, Normalizer and the syntax are 
-     * existing for a matchingRule
+     * existing for a matchingRule. The Comparator and Normalizer aren't checked,
+     * as they have been defaulted to NoOp comparator and Normalizer if they
+     * were missing when the Matchingrule has been created.
      */
     private void resolve( MatchingRule matchingRule, List<Throwable> errors )
     {
-        // A Matching rule must point to a valid Syntax
-        try
+        // Process the Syntax. It can't be null
+        String syntaxOid = matchingRule.getSyntaxOid();
+        
+        if ( syntaxOid != null )
         {
-            matchingRule.applyRegistries( this );
+            // Check if the Syntax is present in the registries
+            try
+            {
+                ldapSyntaxRegistry.lookup( syntaxOid );
+            }
+            catch ( NamingException ne )
+            {
+                // This MR's syntax has not been loaded into the Registries.
+                errors.add( ne );
+            }
         }
-        catch ( NamingException e )
+        else
         {
-            errors.add( e );
+            // This is an error. 
+            Throwable error = new LdapSchemaViolationException( 
+                "The MatchingRule " + matchingRule.getOid() + " does not have a syntax." +
+                " This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            errors.add( error );
         }
     }
 
