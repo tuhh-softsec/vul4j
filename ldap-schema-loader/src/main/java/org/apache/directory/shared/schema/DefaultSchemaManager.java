@@ -223,7 +223,7 @@ public class DefaultSchemaManager implements SchemaManager
         errors = targetRegistries.checkRefInteg();
         
         // Rebuild the using and usedBy references
-        errors.addAll( targetRegistries.buildReferences() );
+        // errors.addAll( targetRegistries.buildReferences() );
 
         // if we have no more error, we can swap the registries
         if ( errors.size() == 0 )
