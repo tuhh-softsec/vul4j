@@ -21,6 +21,7 @@ package org.apache.directory.shared.schema.loader.ldif;
 
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,10 +112,11 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
             if ( pat.matcher( file ).matches() )
             {
                 URL resource = getResource( file, "schema LDIF file" );
+                InputStream in = resource.openStream();
                 
                 try
                 {
-                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifReader reader = new LdifReader( in );
                     LdifEntry entry = reader.next();
                     Schema schema = getSchema( entry.getEntry() );
                     schemaMap.put( schema.getSchemaName(), schema );
@@ -128,6 +130,10 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 {
                     LOG.error( "Failed to load schema LDIF file " + file, e );
                     throw e;
+                }
+                finally
+                {
+                    in.close();
                 }
             }
         }

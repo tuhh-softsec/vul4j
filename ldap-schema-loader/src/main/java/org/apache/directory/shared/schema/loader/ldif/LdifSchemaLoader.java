@@ -141,10 +141,13 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
 
         for ( String ldifFile : ldifFiles )
         {
+            File file = new File( schemaDirectory, ldifFile );
+            
             try
             {
-                LdifReader reader = new LdifReader( new File( schemaDirectory, ldifFile ) );
+                LdifReader reader = new LdifReader( file );
                 LdifEntry entry = reader.next();
+                reader.close();
                 Schema schema = getSchema( entry.getEntry() );
                 schemaMap.put( schema.getSchemaName(), schema );
                 
@@ -295,6 +298,8 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         out.write( LdifUtils.convertEntryToLdif( entry ) );
         out.flush();
         out.close();
+        
+        reader.close();
     }
 
 
@@ -332,6 +337,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             comparatorList.add( entry.getEntry() );
         }
@@ -361,6 +367,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             syntaxCheckerList.add( entry.getEntry() );
         }
@@ -390,6 +397,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             normalizerList.add( entry.getEntry() );
         }
@@ -419,6 +427,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
 
             matchingRuleList.add( entry.getEntry() );
         }
@@ -448,6 +457,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
 
             syntaxList.add( entry.getEntry() );
         }
@@ -478,6 +488,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             attributeTypeList.add( entry.getEntry() );
         }
@@ -507,6 +518,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             matchingRuleUseList.add( entry.getEntry() );
         }
@@ -536,6 +548,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             nameFormList.add( entry.getEntry() );
         }
@@ -565,6 +578,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             ditContentRuleList.add( entry.getEntry() );
         }
@@ -594,6 +608,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             ditStructureRuleList.add( entry.getEntry() );
         }
@@ -624,6 +639,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
         {
             LdifReader reader = new LdifReader( ldifFile );
             LdifEntry entry = reader.next();
+            reader.close();
             
             objectClassList.add( entry.getEntry() );
         }
