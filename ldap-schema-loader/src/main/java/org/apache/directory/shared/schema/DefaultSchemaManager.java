@@ -20,8 +20,10 @@
 package org.apache.directory.shared.schema;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.NamingException;
 
@@ -42,6 +44,7 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -69,6 +72,7 @@ import org.apache.directory.shared.ldap.schema.registries.OidRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
+import org.apache.directory.shared.ldap.schema.registries.SchemaObjectRegistry;
 import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.schema.loader.ldif.SchemaEntityFactory;
@@ -210,9 +214,86 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public void destroy( Registries registries )
     {
-        // TODO : Implement this method
+        if( registries == null )
+        {
+            return;
+        }
+        
+        registries.getAttributeTypeRegistry().getNormalizerMapping().clear();
+        
+        destroy_( registries.getComparatorRegistry() );
+        destroy_( registries.getDitStructureRuleRegistry() );
+        destroy_( registries.getLdapSyntaxRegistry( ) );
+        destroy_( registries.getMatchingRuleRegistry( ) );
+        destroy_( registries.getMatchingRuleUseRegistry( ) );
+        destroy_( registries.getNameFormRegistry( ) );
+        destroy_( registries.getNormalizerRegistry( ) );
+        destroy_( registries.getObjectClassRegistry( ) );
+        destroy_( registries.getSyntaxCheckerRegistry( ) );
+
+        // clearing the schemaObjectsBySchemaName, usedBy and using maps
+        Map<String, Set<SchemaObjectWrapper>> schemaObjectsBySchemaName = registries.getObjectBySchemaName();
+        
+        Set<java.util.Map.Entry<String, Set<SchemaObjectWrapper>>> entries = schemaObjectsBySchemaName.entrySet();
+        for( java.util.Map.Entry<String, Set<SchemaObjectWrapper>> e : entries )
+        {
+            Set<SchemaObjectWrapper> schemaObjWrappers = e.getValue();
+            // for each SchemaObject present in the wrapper
+            // get the Set<SchemaObjectWrapper> values from used and using maps and
+            // clear them
+            // TODO how to clear the used and using maps? here it is only clearing the
+            // Set<SchemaObjectWrapper> values which are part of those maps
+            for( SchemaObjectWrapper sow : schemaObjWrappers )
+            {
+                Set<SchemaObjectWrapper> tmp = registries.getUsedBy( sow.get() );
+                if( tmp != null )
+                {
+                    tmp.clear();
+                }
+                
+                tmp = registries.getUsing( sow.get() );
+                if( tmp != null )
+                {
+                    tmp.clear();
+                }
+            }
+            
+            // clear the Set<SchemaObjectWrapper> value of schemaObjectsBySchemaName map 
+            schemaObjWrappers.clear();
+        }
+        
+        // finally clear the schemaObjectsBySchemaName map
+        schemaObjectsBySchemaName.clear();
     }
+
     
+    /**
+     * tries to unregister the SchemaObjectS associated with OIDs
+     * by getting the OID iterator of given SchemaObjectRegistry
+     */
+    private void destroy_( SchemaObjectRegistry objRegistry )
+    {
+        if( objRegistry == null )
+        {
+            return;
+        }
+        
+        Iterator<String> oidIterator = objRegistry.oidsIterator();
+        while( oidIterator.hasNext() )
+        {
+            String oid = oidIterator.next();
+            try
+            {
+                objRegistry.unregister( oid );
+            }
+            catch( Exception e )
+            {
+                // just log at debug level
+                LOG.debug( "Failed to unregister OID {}", oid );
+            }
+        }
+    }
+
     
     /***
      * {@inheritDoc}
