@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.ldif;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +35,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.naming.ldap.Control;
-import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -37,12 +43,6 @@ import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -91,7 +91,7 @@ public class LdifReaderTest
     }
 
     @Test
-    public void testLdifNull() throws NamingException
+    public void testLdifNull() throws Exception
     {
         String ldif = null;
 
@@ -101,30 +101,34 @@ public class LdifReaderTest
         assertEquals( 0, entries.size() );
     }
 
+    
     @Test
-    public void testLdifEmpty() throws NamingException
+    public void testLdifEmpty() throws Exception
     {
         String ldif = "";
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 0, entries.size() );
     }
 
+    
     @Test
-    public void testLdifEmptyLines() throws NamingException
+    public void testLdifEmptyLines() throws Exception
     {
         String ldif = "\n\n\r\r\n";
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 0, entries.size() );
     }
 
     @Test
-    public void testLdifComments() throws NamingException
+    public void testLdifComments() throws Exception
     {
         String ldif = 
             "#Comment 1\r" + 
@@ -135,12 +139,14 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 0, entries.size() );
     }
+    
 
     @Test
-    public void testLdifVersion() throws NamingException
+    public void testLdifVersion() throws Exception
     {
         String ldif = 
             "#Comment 1\r" + 
@@ -154,13 +160,15 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 0, entries.size() );
         assertEquals( 1, reader.getVersion() );
     }
 
+    
     @Test
-    public void testLdifVersionStart() throws NamingException
+    public void testLdifVersionStart() throws Exception
     {
         String ldif = 
             "version:\n" + 
@@ -177,6 +185,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 1, reader.getVersion() );
         assertNotNull( entries );
@@ -190,13 +199,14 @@ public class LdifReaderTest
         EntryAttribute attr = entry.get( "displayname" );
         assertTrue( attr.contains( "app1" ) );
     }
+    
 
     /**
      * Test the ldif parser with a file without a version. It should default to 1
-     * @throws NamingException
+     * @throws Exception
      */
     @Test
-    public void testLdifWithoutVersion() throws NamingException
+    public void testLdifWithoutVersion() throws Exception
     {
         String ldif = 
             "#Comment 1\r" + 
@@ -208,18 +218,20 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 0, entries.size() );
         assertEquals( 1, reader.getVersion() );
     }
+    
 
     /**
      * Spaces at the end of values should not be included into values.
      * 
-     * @throws NamingException
+     * @throws Exception
      */
     @Test
-    public void testLdifParserEndSpaces() throws NamingException
+    public void testLdifParserEndSpaces() throws Exception
     {
         String ldif = 
             "version:   1\n" + 
@@ -234,6 +246,8 @@ public class LdifReaderTest
         LdifReader reader = new LdifReader();
 
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
+
         assertNotNull( entries );
 
         LdifEntry entry = (LdifEntry) entries.get( 0 );
@@ -247,8 +261,9 @@ public class LdifReaderTest
 
     }
 
+    
     @Test
-    public void testLdifParserAddAttrCaseInsensitiveAttrId() throws NamingException
+    public void testLdifParserAddAttrCaseInsensitiveAttrId() throws Exception
     {
         // test that mixed case attr ids work at all
         String ldif =
@@ -272,14 +287,16 @@ public class LdifReaderTest
 
         testReaderAttrIdCaseInsensitive( ldif );
     }
+    
 
     private void testReaderAttrIdCaseInsensitive( String ldif )
-            throws NamingException
+            throws Exception
     {
         LdifReader reader = new LdifReader();
 
         List<LdifEntry> entries = reader.parseLdif( ldif );
         assertNotNull( entries );
+        reader.close();
 
         LdifEntry entry = ( LdifEntry ) entries.get( 0 );
 
@@ -293,14 +310,15 @@ public class LdifReaderTest
         assertTrue( attr.getId().equals( "administrativerole"));
         assertEquals( attr.getString(), "accessControlSpecificArea" );
     }
+    
 
     /**
      * Changes and entries should not be mixed
      * 
-     * @throws NamingException
+     * @throws Exception
      */
     @Test
-    public void testLdifParserCombinedEntriesChanges()
+    public void testLdifParserCombinedEntriesChanges() throws Exception
     {
         String ldif = 
             "version:   1\n" + 
@@ -327,19 +345,24 @@ public class LdifReaderTest
             reader.parseLdif( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch (Exception ne)
         {
             assertTrue( true );
         }
+        finally
+        {
+            reader.close();
+        }
     }
+    
 
     /**
      * Changes and entries should not be mixed
      * 
-     * @throws NamingException
+     * @throws Exception
      */
     @Test
-    public void testLdifParserCombinedEntriesChanges2()
+    public void testLdifParserCombinedEntriesChanges2() throws Exception
     {
         String ldif = 
             "version:   1\n" + 
@@ -365,19 +388,24 @@ public class LdifReaderTest
             reader.parseLdif( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch (Exception ne)
         {
             assertTrue( true );
         }
+        finally
+        {
+            reader.close();
+        }
     }
+    
 
     /**
      * Changes and entries should not be mixed
      * 
-     * @throws NamingException
+     * @throws Exception
      */
     @Test
-    public void testLdifParserCombinedChangesEntries()
+    public void testLdifParserCombinedChangesEntries() throws Exception
     {
         String ldif = 
             "version:   1\n" + 
@@ -404,19 +432,24 @@ public class LdifReaderTest
             reader.parseLdif( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch (Exception ne)
         {
             assertTrue( true );
         }
+        finally
+        {
+            reader.close();
+        }
     }
+    
 
     /**
      * Changes and entries should not be mixed
      * 
-     * @throws NamingException
+     * @throws Exception
      */
     @Test
-    public void testLdifParserCombinedChangesEntries2()
+    public void testLdifParserCombinedChangesEntries2() throws Exception
     {
         String ldif = 
             "version:   1\n" + 
@@ -442,14 +475,19 @@ public class LdifReaderTest
             reader.parseLdif( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch (Exception ne)
         {
             assertTrue( true );
         }
+        finally
+        {
+            reader.close();
+        }
     }
+    
 
     @Test
-    public void testLdifParser() throws NamingException
+    public void testLdifParser() throws Exception
     {
         String ldif = 
             "version:   1\n" + 
@@ -463,6 +501,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertNotNull( entries );
 
@@ -487,9 +526,10 @@ public class LdifReaderTest
         attr = entry.get( "envvars" );
         assertNull( attr.get().get() );
     }
+    
 
     @Test
-    public void testLdifParserMuiltiLineComments() throws NamingException
+    public void testLdifParserMuiltiLineComments() throws Exception
     {
         String ldif = 
             "#comment\n" + 
@@ -507,6 +547,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertNotNull( entries );
 
@@ -532,8 +573,9 @@ public class LdifReaderTest
         assertNull( attr.get().get() );
     }
 
+    
     @Test
-    public void testLdifParserMultiLineEntries() throws NamingException
+    public void testLdifParserMultiLineEntries() throws Exception
     {
         String ldif = 
             "#comment\n" + 
@@ -551,6 +593,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertNotNull( entries );
 
@@ -575,9 +618,10 @@ public class LdifReaderTest
         attr = entry.get( "envvars" );
         assertNull( attr.get().get() );
     }
+    
 
     @Test
-    public void testLdifParserBase64() throws NamingException, UnsupportedEncodingException
+    public void testLdifParserBase64() throws Exception, UnsupportedEncodingException
     {
         String ldif = 
             "#comment\n" + 
@@ -594,6 +638,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertNotNull( entries );
 
@@ -618,9 +663,10 @@ public class LdifReaderTest
         attr = entry.get( "envvars" );
         assertNull( attr.get().get() );
     }
+    
 
     @Test
-    public void testLdifParserBase64MultiLine() throws NamingException, UnsupportedEncodingException
+    public void testLdifParserBase64MultiLine() throws Exception, UnsupportedEncodingException
     {
         String ldif = 
             "#comment\n" + 
@@ -638,6 +684,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertNotNull( entries );
 
@@ -662,9 +709,10 @@ public class LdifReaderTest
         attr = entry.get( "envvars" );
         assertNull( attr.get().get() );
     }
+    
 
     @Test
-    public void testLdifParserRFC2849Sample1() throws NamingException
+    public void testLdifParserRFC2849Sample1() throws Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -690,6 +738,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 2, entries.size() );
 
@@ -743,8 +792,9 @@ public class LdifReaderTest
         assertTrue( attr.contains( "+1 408 555 1212" ) );
     }
 
+    
     @Test
-    public void testLdifParserRFC2849Sample2() throws NamingException
+    public void testLdifParserRFC2849Sample2() throws Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -764,6 +814,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 1, entries.size() );
 
@@ -798,11 +849,11 @@ public class LdifReaderTest
 
         attr = entry.get( "title" );
         assertTrue( attr.contains( "Product Manager, Rod and Reel Division" ) );
-
     }
 
+    
     @Test
-    public void testLdifParserRFC2849Sample3() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample3() throws Exception, Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -822,6 +873,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 1, entries.size() );
 
@@ -854,9 +906,10 @@ public class LdifReaderTest
                 .contains( "What a careful reader you are!  This value is base-64-encoded because it has a control character in it (a CR).\r  By the way, you should really get out more."
                         .getBytes( "UTF-8" ) ) );
     }
+    
 
     @Test
-    public void testLdifParserRFC2849Sample3VariousSpacing() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample3VariousSpacing() throws Exception, Exception
     {
         String ldif = 
             "version:1\n" + 
@@ -876,6 +929,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         assertEquals( 1, entries.size() );
 
@@ -909,8 +963,9 @@ public class LdifReaderTest
                         .getBytes( "UTF-8" ) ) );
     }
 
+    
     @Test
-    public void testLdifParserRFC2849Sample4() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample4() throws Exception, Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -969,6 +1024,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         String[][][] values =
             {
@@ -1041,9 +1097,10 @@ public class LdifReaderTest
             }
         }
     }
+    
 
     @Test
-    public void testLdifParserRFC2849Sample5() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample5() throws Exception, Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -1060,6 +1117,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         String[][] values =
             {
@@ -1107,6 +1165,7 @@ public class LdifReaderTest
             }
         }
     }
+    
 
     @Test
     public void testLdifParserRFC2849Sample5WithSizeLimit() throws Exception
@@ -1126,20 +1185,22 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         reader.setSizeLimit( 128 );
+        reader.close();
 
         try
         {
             reader.parseLdif( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch (Exception ne)
         {
             assertEquals( "Error while parsing the ldif buffer", ne.getMessage() );
         }
     }
 
+    
     @Test
-    public void testLdifParserRFC2849Sample6() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample6() throws Exception, Exception
     {
         String ldif = 
             "version: 1\n" +
@@ -1212,6 +1273,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         String[][][] values =
             {
@@ -1368,8 +1430,9 @@ public class LdifReaderTest
         assertEquals( values[5][2][0], item.getAttribute().getId() );
     }
 
+    
     @Test
-    public void testLdifParserRFC2849Sample7() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample7() throws Exception, Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -1383,6 +1446,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         LdifEntry entry = (LdifEntry) entries.get( 0 );
 
@@ -1395,9 +1459,10 @@ public class LdifReaderTest
         assertEquals( "1.2.840.113556.1.4.805", control.getID() );
         assertTrue( control.isCritical() );
     }
+    
 
     @Test
-    public void testLdifParserRFC2849Sample7NoValueNoCritical() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample7NoValueNoCritical() throws Exception, Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -1411,6 +1476,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         LdifEntry entry = (LdifEntry) entries.get( 0 );
 
@@ -1423,9 +1489,10 @@ public class LdifReaderTest
         assertEquals( "1.2.840.11556.1.4.805", control.getID() );
         assertFalse( control.isCritical() );
     }
+    
 
     @Test
-    public void testLdifParserRFC2849Sample7NoCritical() throws NamingException, Exception
+    public void testLdifParserRFC2849Sample7NoCritical() throws Exception, Exception
     {
         String ldif = 
             "version: 1\n" + 
@@ -1439,6 +1506,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         LdifEntry entry = (LdifEntry) entries.get( 0 );
 
@@ -1453,6 +1521,7 @@ public class LdifReaderTest
         assertEquals( "control-value", StringTools.utf8ToString( control.getEncodedValue() ) );
     }
 
+    
     @Test
     public void testLdifParserRFC2849Sample7NoOid() throws Exception
     {
@@ -1473,11 +1542,16 @@ public class LdifReaderTest
             reader.parseLdif( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch (Exception ne)
         {
             assertTrue( true );
         }
+        finally
+        {
+            reader.close();
+        }
     }
+    
 
     @Test
     public void testLdifParserRFC2849Sample7BadOid() throws Exception
@@ -1499,15 +1573,19 @@ public class LdifReaderTest
             reader.parseLdif( ldif );
             fail();
         }
-        catch (NamingException ne)
+        catch (Exception ne)
         {
             assertTrue( true );
+        }
+        finally
+        {
+            reader.close();
         }
     }
 
     
     @Test
-    public void testLdifReaderDirServer() throws NamingException, Exception
+    public void testLdifReaderDirServer() throws Exception, Exception
     {
         String ldif = 
             "# -------------------------------------------------------------------\n" +
@@ -1544,6 +1622,8 @@ public class LdifReaderTest
         LdifReader reader = new LdifReader();
 
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
+
         LdifEntry entry = (LdifEntry) entries.get( 0 );
 
         assertEquals( "ou=Users, dc=example, dc=com", entry.getDn().getUpName() );
@@ -1558,7 +1638,7 @@ public class LdifReaderTest
 
     
     @Test
-    public void testLdifParserCommentsEmptyLines() throws NamingException, Exception
+    public void testLdifParserCommentsEmptyLines() throws Exception, Exception
     {
         String ldif = 
             "#\n" +
@@ -1602,6 +1682,7 @@ public class LdifReaderTest
 
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( ldif );
+        reader.close();
 
         LdifEntry entry = (LdifEntry) entries.get( 0 );
 

@@ -21,9 +21,9 @@ package org.apache.directory.shared.ldap.ldif;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -454,7 +454,7 @@ public class LdifRevertorTest
      * 
      */
     @Test
-    public void testReverseMultipleModifications() throws NamingException
+    public void testReverseMultipleModifications() throws Exception
     {
         String initialEntryLdif = 
                 "dn: cn=test, ou=system\n" + 
@@ -468,6 +468,7 @@ public class LdifRevertorTest
         
         LdifReader reader = new LdifReader();
         List<LdifEntry> entries = reader.parseLdif( initialEntryLdif );
+        reader.close();
         
         LdifEntry initialEntry = entries.get( 0 );
  
@@ -532,7 +533,8 @@ public class LdifRevertorTest
     
         reader = new LdifReader();
         entries = reader.parseLdif( expectedEntryLdif );
-    
+        reader.close();
+
         LdifEntry expectedEntry = entries.get( 0 );
         
         assertEquals( expectedEntry, reversedEntry );
