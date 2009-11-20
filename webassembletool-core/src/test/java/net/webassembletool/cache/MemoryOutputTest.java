@@ -19,7 +19,7 @@ public class MemoryOutputTest extends TestCase {
 	public void testCacheMaxFileSize() {
 		
 		// Size > Content : content is written
-		MemoryOutput memoryOutput = new MemoryOutput(500);
+		CacheOutput memoryOutput = new CacheOutput(500);
 		memoryOutput.setCharsetName(CHARSET);
 		memoryOutput.open();
 		memoryOutput.write(CONTENT);
@@ -27,7 +27,7 @@ public class MemoryOutputTest extends TestCase {
 		assertFalse(memoryOutput.toResource().isEmpty());
 
 		// Size < Content : content is NOT written
-		memoryOutput = new MemoryOutput(5);
+		memoryOutput = new CacheOutput(5);
 		memoryOutput.setCharsetName(CHARSET);
 		memoryOutput.open();
 		memoryOutput.write(CONTENT);
@@ -36,7 +36,7 @@ public class MemoryOutputTest extends TestCase {
 
 		// Size =0 (means no limit) : content is written
 		// see http://webassembletool.sourceforge.net/configuration.html
-		memoryOutput = new MemoryOutput(0);
+		memoryOutput = new CacheOutput(0);
 		memoryOutput.setCharsetName(CHARSET);
 		memoryOutput.open();
 		memoryOutput.write(CONTENT);

@@ -12,11 +12,11 @@ import net.webassembletool.output.OutputException;
  * 
  * @author Francois-Xavier Bonnet
  * @author nricheton
- * @see MemoryResource
+ * @see CachedResponse
  * 
  */
-public class MemoryOutput extends Output {
-	private final MemoryOutputStream out;
+public class CacheOutput extends Output {
+	private final MaxSizedOutputStream out;
 
 	/**
 	 * Creates a MemoryOuput with the given size limit. If content exceeds
@@ -27,8 +27,8 @@ public class MemoryOutput extends Output {
 	 *            Value &gt;=0. 0 means 'no limit'.
 	 * 
 	 */
-	public MemoryOutput(int maxSize) {
-		out = new MemoryOutputStream(maxSize);
+	public CacheOutput(int maxSize) {
+		out = new MaxSizedOutputStream(maxSize);
 	}
 
 	/** {@inheritDoc} */
@@ -54,12 +54,12 @@ public class MemoryOutput extends Output {
 		}
 	}
 
-	public MemoryResource toResource() {
-		MemoryResource result;
+	public CachedResponse toResource() {
+		CachedResponse result;
 		if (out.isTooBig()) {
-			result = new MemoryResource();
+			result = new CachedResponse();
 		} else {
-			result = new MemoryResource(out.toByteArray(), getCharsetName(),
+			result = new CachedResponse(out.toByteArray(), getCharsetName(),
 					getHeaders(), getStatusCode(), getStatusMessage());
 		}
 		out.clear();
@@ -73,7 +73,7 @@ public class MemoryOutput extends Output {
 	 * @author nricheton
 	 * 
 	 */
-	public static final class MemoryOutputStream extends ByteArrayOutputStream {
+	public static final class MaxSizedOutputStream extends ByteArrayOutputStream {
 		private final int maxSize;
 		private boolean tooBig = false;
 
@@ -86,7 +86,7 @@ public class MemoryOutput extends Output {
 		 * @param maxSize
 		 *            Value &gt;=0. 0 means 'no limit'.
 		 */
-		public MemoryOutputStream(int maxSize) {
+		public MaxSizedOutputStream(int maxSize) {
 			this.maxSize = maxSize;
 		}
 

@@ -75,6 +75,22 @@ public class ResourceContext {
 		return "GET".equalsIgnoreCase(originalRequest.getMethod());
 	}
 
+	public boolean isRefreshRequired() {
+		String pragma = originalRequest.getHeader("Pragma");
+		if ("no-cache".equalsIgnoreCase(pragma))
+			return true;
+		String cacheControl = originalRequest.getHeader("Cache-control");
+		if (cacheControl != null) {
+			cacheControl = cacheControl.toLowerCase();
+			if (cacheControl.contains("no-cache")
+					|| cacheControl.contains("no-store")
+					|| cacheControl.contains("must-revalidate")
+					|| cacheControl.contains("max-age=0"))
+				return true;
+		}
+		return false;
+	}
+
 	public UserContext getUserContext() {
 		return driver.getContext(originalRequest);
 	}

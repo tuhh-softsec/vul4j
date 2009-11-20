@@ -12,8 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.cache.Cache;
-import net.webassembletool.cache.MemoryOutput;
-import net.webassembletool.cache.MemoryResource;
+import net.webassembletool.cache.CacheOutput;
+import net.webassembletool.cache.CachedResponse;
 import net.webassembletool.file.FileOutput;
 import net.webassembletool.file.FileResource;
 import net.webassembletool.http.HttpResource;
@@ -293,8 +293,8 @@ public class Driver {
 	public final void render(String page, Map<String, String> parameters,
 			Writer writer, HttpServletRequest originalRequest,
 			Renderer... renderers) throws IOException, HttpErrorPage {
-		ResourceContext resourceContext = new ResourceContext(this, page, parameters,
-				originalRequest);
+		ResourceContext resourceContext = new ResourceContext(this, page,
+				parameters, originalRequest);
 		resourceContext.setPreserveHost(config.isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
@@ -397,46 +397,59 @@ public class Driver {
 		}
 	}
 
-	private final void renderResource(ResourceContext target, Output output) {
-		String httpUrl = ResourceUtils.getHttpUrlWithQueryString(target);
+	private final void renderResource(ResourceContext resourceContext,
+			Output output) {
+		String httpUrl = ResourceUtils
+				.getHttpUrlWithQueryString(resourceContext);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("renderResource " + httpUrl + " original method="
+					+ resourceContext.getOriginalRequest().getMethod()
+					+ " refresh required="
+					+ resourceContext.isRefreshRequired());
+		}
 		MultipleOutput multipleOutput = new MultipleOutput();
 		multipleOutput.addOutput(output);
-		MemoryResource cachedResource = null;
+		CachedResponse cachedResource = null;
 		HttpResource httpResource = null;
 		FileResource fileResource = null;
-		MemoryOutput memoryOutput = null;
+		CacheOutput memoryOutput = null;
 		FileOutput fileOutput = null;
+		boolean miss = false;
 		try {
-			if (config.isUseCache() && target.isCacheable()) {
+			if (config.isUseCache() && resourceContext.isCacheable()) {
 				// Try to load the resource from cache
 				cachedResource = cache.get(httpUrl);
-				if (cachedResource == null || cachedResource.isStale()) {
-					// Resource not in cache or stale, prepare a memoryOutput to
-					// collect the new version
-					memoryOutput = new MemoryOutput(config
-							.getCacheMaxFileSize());
+				// Check if the resource was not found or stale as it may put a
+				// lock in the cache. Then we must not forget to release the
+				// lock at the end!
+				miss = cachedResource == null || cachedResource.isStale();
+				if (miss || resourceContext.isRefreshRequired()
+						|| (cachedResource != null && cachedResource.isEmpty())) {
+					// Resource not in cache or stale, or refresh was forced by
+					// the user (hit refresh in the browser so the browser sent
+					// a pragma:no-cache header or something similar) or
+					// resource is
+					// empty because it was too big to put into the cache, let's
+					// prepare a
+					// memoryOutput to collect the new version
+					memoryOutput = new CacheOutput(config.getCacheMaxFileSize());
 					multipleOutput.addOutput(memoryOutput);
-				} else if (cachedResource.isEmpty() || cachedResource.isError()) {
-					// Empty resource in cache because it was too big, or error
-					// we have to reload it
 				} else {
-					// Resource in cache, not empty and not stale with no error,
-					// we can render it and return
+					// Resource in cache, not empty and not stale (but may be an
+					// error page!), we can render it and return
 					cachedResource.render(multipleOutput);
 					return;
 				}
 			}
 			// Try to load it from HTTP
-			if (config.getBaseURL() != null
-					&& (cachedResource == null || cachedResource.isStale() || cachedResource
-							.isEmpty())) {
+			if (config.getBaseURL() != null) {
 				// Prepare a FileOutput to store the result on the file system
-				if (config.isPutInCache() && target.isCacheable()) {
+				if (config.isPutInCache() && resourceContext.isCacheable()) {
 					fileOutput = new FileOutput(ResourceUtils.getFileUrl(config
-							.getLocalBase(), target));
+							.getLocalBase(), resourceContext));
 					multipleOutput.addOutput(fileOutput);
 				}
-				httpResource = new HttpResource(httpClient, target);
+				httpResource = new HttpResource(httpClient, resourceContext);
 				if (!httpResource.isError()) {
 					httpResource.render(multipleOutput);
 					return;
@@ -451,19 +464,20 @@ public class Driver {
 			}
 			// Resource could not be loaded neither from HTTP, nor from the
 			// cache, let's try from the file system
-			if (config.getLocalBase() != null && target.isCacheable()) {
-				fileResource = new FileResource(config.getLocalBase(), target);
+			if (config.getLocalBase() != null && resourceContext.isCacheable()) {
+				fileResource = new FileResource(config.getLocalBase(),
+						resourceContext);
 				if (!fileResource.isError()) {
 					fileResource.render(multipleOutput);
 					return;
 				}
 			}
-			// Not valid response could be found, let's render the response even
+			// No valid response could be found, let's render the response even
 			// if it is an error
 			if (httpResource != null) {
 				httpResource.render(multipleOutput);
 				return;
-			} else if (cachedResource != null) {
+			} else if (cachedResource != null && !cachedResource.isEmpty()) {
 				cachedResource.render(multipleOutput);
 				return;
 			} else if (fileResource != null) {
@@ -478,7 +492,7 @@ public class Driver {
 			// should have been gracefully closed in the render method but we
 			// must discard the entry inside the cache or the file system
 			// because it is not complete
-			if (memoryOutput != null) {
+			if (miss) {
 				cache.cancelUpdate(httpUrl);
 				memoryOutput = null;
 			}

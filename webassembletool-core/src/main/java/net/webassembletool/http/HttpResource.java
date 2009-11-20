@@ -182,4 +182,9 @@ public class HttpResource extends Resource {
 		return result.toString();
 	}
 
+	@Override
+	public String getHeader(String name) {
+		return httpClientResponse.getHeader(name);
+	}
+
 }

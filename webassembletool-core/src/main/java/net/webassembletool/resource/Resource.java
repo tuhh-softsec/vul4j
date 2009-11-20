@@ -42,5 +42,7 @@ public abstract class Resource {
 		&& statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
 		&& statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY;
     }
+    
+    public abstract String getHeader(String name);
 
 }
