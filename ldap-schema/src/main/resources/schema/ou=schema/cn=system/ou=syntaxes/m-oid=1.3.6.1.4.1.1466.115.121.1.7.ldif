@@ -8,5 +8,5 @@ entrycsn: 20090818052727.145000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Boolean
+m-description: Boolean
 creatorsname: uid=admin,ou=system

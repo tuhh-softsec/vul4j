@@ -8,5 +8,5 @@ entrycsn: 20090818052727.372000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Telephone Number
+m-description: Telephone Number
 creatorsname: uid=admin,ou=system

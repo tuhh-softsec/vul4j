@@ -8,5 +8,5 @@ entrycsn: 20090818052727.129000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Enhanced Guide
+m-description: Enhanced Guide
 creatorsname: uid=admin,ou=system

@@ -8,5 +8,5 @@ entrycsn: 20090818052727.192000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Master And Shadow Access Points
+m-description: Master And Shadow Access Points
 creatorsname: uid=admin,ou=system

@@ -8,5 +8,5 @@ entrycsn: 20090818052727.152000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Facsimile Telephone Number
+m-description: Facsimile Telephone Number
 creatorsname: uid=admin,ou=system

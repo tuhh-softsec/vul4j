@@ -8,5 +8,5 @@ entrycsn: 20090818052727.110000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Presentation Address
+m-description: Presentation Address
 creatorsname: uid=admin,ou=system

@@ -8,5 +8,5 @@ entrycsn: 20090818052727.390000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: LDAP BootstrapSchema Description
+m-description: LDAP BootstrapSchema Description
 creatorsname: uid=admin,ou=system

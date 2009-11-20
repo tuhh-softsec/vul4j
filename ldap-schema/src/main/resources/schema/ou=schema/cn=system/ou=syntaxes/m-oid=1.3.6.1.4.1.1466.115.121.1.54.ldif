@@ -8,5 +8,5 @@ entrycsn: 20090818052727.156000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: LDAP Syntax Description
+m-description: LDAP Syntax Description
 creatorsname: uid=admin,ou=system

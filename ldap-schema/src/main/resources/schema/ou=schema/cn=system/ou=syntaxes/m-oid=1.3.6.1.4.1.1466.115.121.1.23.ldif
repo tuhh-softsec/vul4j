@@ -8,5 +8,5 @@ entrycsn: 20090818052727.267000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Fax
+m-description: Fax
 creatorsname: uid=admin,ou=system

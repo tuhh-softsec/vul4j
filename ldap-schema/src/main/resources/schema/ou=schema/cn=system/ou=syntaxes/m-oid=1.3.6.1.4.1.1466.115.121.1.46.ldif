@@ -8,5 +8,5 @@ entrycsn: 20090818052727.437000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Supplier Information
+m-description: Supplier Information
 creatorsname: uid=admin,ou=system

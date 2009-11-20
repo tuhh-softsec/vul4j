@@ -8,5 +8,5 @@ entrycsn: 20090818052727.162000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: Protocol Information
+m-description: Protocol Information
 creatorsname: uid=admin,ou=system

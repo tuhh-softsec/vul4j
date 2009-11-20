@@ -8,5 +8,5 @@ entrycsn: 20090818052727.261000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: INTEGER
+m-description: INTEGER
 creatorsname: uid=admin,ou=system
