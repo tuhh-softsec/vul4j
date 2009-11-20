@@ -9,5 +9,5 @@ m-description: RFC2307 NIS Netgroup Triple
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: NIS Netgroup Triple
+m-description: NIS Netgroup Triple
 creatorsname: uid=admin,ou=system

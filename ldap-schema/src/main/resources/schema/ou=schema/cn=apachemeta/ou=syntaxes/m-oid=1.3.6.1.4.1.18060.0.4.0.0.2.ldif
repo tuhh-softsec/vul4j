@@ -9,5 +9,5 @@ m-description: The syntax for numericoids.
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: numericOid
+m-description: numericOid
 creatorsname: uid=admin,ou=system

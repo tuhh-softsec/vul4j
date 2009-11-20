@@ -8,5 +8,5 @@ entrycsn: 20090818052727.088000Z#000000#000#000000
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: NIS Boot Parameter
+m-description: NIS Boot Parameter
 creatorsname: uid=admin,ou=system

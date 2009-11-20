@@ -9,5 +9,5 @@ m-description: The syntax for numeric strings.
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: numeric
+m-description: numeric
 creatorsname: uid=admin,ou=system

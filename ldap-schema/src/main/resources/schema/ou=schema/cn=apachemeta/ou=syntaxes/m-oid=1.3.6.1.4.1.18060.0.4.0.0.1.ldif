@@ -9,5 +9,5 @@ m-description: The syntax for either numeric ids or names.
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: objectClassType
+m-description: objectClassType
 creatorsname: uid=admin,ou=system

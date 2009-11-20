@@ -9,5 +9,5 @@ m-description: The syntax for object names.
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-name: objectName
+m-description: objectName
 creatorsname: uid=admin,ou=system
