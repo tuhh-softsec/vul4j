@@ -5,7 +5,7 @@
 	<artifactId>webassembletool</artifactId>
 	<packaging>pom</packaging>
 	<name>webassembletool</name>
-	<version>2.3-SNAPSHOT</version>
+	<version>2.3</version>
 	<inceptionYear>2008</inceptionYear>
 	<mailingLists>
 		<mailingList>
