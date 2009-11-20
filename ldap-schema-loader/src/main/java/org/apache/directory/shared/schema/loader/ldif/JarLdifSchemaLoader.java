@@ -118,6 +118,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 {
                     LdifReader reader = new LdifReader( in );
                     LdifEntry entry = reader.next();
+                    reader.close();
                     Schema schema = getSchema( entry.getEntry() );
                     schemaMap.put( schema.getSchemaName(), schema );
                     
@@ -140,90 +141,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     }
 
 
-    /**
-     * {@inheritDoc}
-     *
-    public List<Throwable> loadWithDependencies( Registries registries, boolean check, Schema... schemas ) throws Exception
-    {
-        // Relax the controls at first
-        List<Throwable> errors = new ArrayList<Throwable>();
-        boolean wasRelaxed = registries.isRelaxed();
-        registries.setRelaxed( true );
-
-        Stack<String> beenthere = new Stack<String>();
-        Map<String,Schema> notLoaded = new HashMap<String,Schema>();
-        
-        for ( Schema candidate : schemaMap.values() )
-        {
-            if ( ! registries.isSchemaLoaded( candidate.getSchemaName() ) )
-            {
-                notLoaded.put( candidate.getSchemaName(), candidate );
-            }
-        }
-        
-        loadDepsFirst( schema, beenthere, notLoaded, schema, registries );
-        
-        // At the end, check the registries if required
-        if ( check )
-        {
-            errors = registries.checkRefInteg();
-        }
-        
-        // Restore the Registries isRelaxed flag
-        registries.setRelaxed( wasRelaxed );
-        
-        return errors;
-    }
-
-
-    /**
-     * Loads a single schema if it has not been loaded already.  If the schema
-     * load request was made because some other schema depends on this one then
-     * the schema is checked to see if it is disabled.  If disabled it is 
-     * enabled with a write to disk and then loaded. Listeners are notified that
-     * the schema has been loaded.
-     * 
-     * {@inheritDoc}
-     *
-    public void load( Schema schema, Registries registries, boolean isDepLoad ) throws Exception
-    {
-        // if we're loading a dependency and it has not been enabled on 
-        // disk then we cannot enable on disk from within a jar.  So the
-        // enableSchema method just marks the Schema as enabled.
-        if ( schema.isDisabled() && isDepLoad )
-        {
-            schema.enable();
-        }
-        
-        if ( registries.isSchemaLoaded( schema.getSchemaName() ) )
-        {
-            LOG.info( "Will not attempt to load already loaded '{}' " +
-            		"schema: \n{}", schema.getSchemaName(), schema );
-            return;
-        }
-        
-        LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
-        
-        registries.schemaLoaded( schema );
-        
-        // We set the registries to Permissive, so that we don't care about the order
-        // the SchemaObjects are loaded.
-        loadComparators( schema );
-        loadNormalizers( schema );
-        loadSyntaxCheckers( schema );
-        loadSyntaxes( schema );
-        loadMatchingRules( schema );
-        loadAttributeTypes( schema );
-        loadObjectClasses( schema );
-        loadMatchingRuleUses( schema );
-        loadDitContentRules( schema );
-        loadNameForms( schema );
-        loadDitStructureRules( schema );
-
-        notifyListenerOrRegistries( schema, registries );
-    }
-
-    
     /**
      * Utility method to get the path for a schema directory.
      *
@@ -255,6 +172,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "comparator LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
 
                 comparatorList.add( entry.getEntry() );
             }
@@ -288,6 +206,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "syntaxChecker LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
                 
                 syntaxCheckerList.add( entry.getEntry() );
             }
@@ -321,6 +240,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "normalizer LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
                 
                 normalizerList.add( entry.getEntry() );
             }
@@ -354,6 +274,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "matchingRules LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
 
                 matchingRuleList.add( entry.getEntry() );
             }
@@ -387,6 +308,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "syntax LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
                 
                 syntaxList.add( entry.getEntry() );
             }
@@ -422,6 +344,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "attributeType LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
 
                 attributeTypeList.add( entry.getEntry() );
             }
@@ -455,6 +378,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "matchingRuleUse LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
 
                 matchingRuleUseList.add( entry.getEntry() );
             }
@@ -487,6 +411,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "nameForm LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
 
                 nameFormList.add( entry.getEntry() );
             }
@@ -520,6 +445,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "ditContentRule LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
                 
                 ditContentRulesList.add( entry.getEntry() );
             }
@@ -552,8 +478,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
             {
                 URL resource = getResource( resourcePath, "ditStructureRule LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
-            
                 LdifEntry entry = reader.next();
+                reader.close();
                 
                 ditStructureRuleList.add( entry.getEntry() );
             }
@@ -587,6 +513,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
                 URL resource = getResource( resourcePath, "objectClass LDIF file" );
                 LdifReader reader = new LdifReader( resource.openStream() );
                 LdifEntry entry = reader.next();
+                reader.close();
 
                 objectClassList.add( entry.getEntry() );
             }
