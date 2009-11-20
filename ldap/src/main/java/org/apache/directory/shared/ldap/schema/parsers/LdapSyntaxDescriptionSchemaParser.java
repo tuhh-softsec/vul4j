@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -60,7 +59,7 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
      *    extensions WSP RPAREN      ; extensions
      * </pre>
      * 
-     * @param ldapSyntaxDescription the LDAP syntay description to be parsed
+     * @param ldapSyntaxDescription the LDAP syntax description to be parsed
      * @return the parsed LdapSyntax bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
