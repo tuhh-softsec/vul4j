@@ -153,7 +153,7 @@ public class DescriptionUtils
             buf.append( " COLLECTIVE\n" );
         }
 
-        if ( attributeType.isUserModifiable() )
+        if ( !attributeType.isUserModifiable() )
         {
             buf.append( " NO-USER-MODIFICATION\n" );
         }
