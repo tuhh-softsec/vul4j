@@ -181,7 +181,7 @@ public class AttributeType extends SchemaObject implements Cloneable
     private boolean canUserModify = true;
 
     /** the usage for this attributeType */
-    private UsageEnum usage = UsageEnum.USER_APPLICATIONS;
+    private UsageEnum usage;
 
     /** the length of this attribute in bytes */
     private int syntaxLength = 0;
@@ -325,7 +325,6 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.canUserModify = canUserModify;
         }
     }
-    
     
 
     /**
@@ -930,5 +929,22 @@ public class AttributeType extends SchemaObject implements Cloneable
         copy.syntaxLength = syntaxLength;
         
         return copy;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // Clear the common elements
+        super.clear();
+        
+        // Clear the references
+        equality = null;
+        ordering = null;
+        substring = null;
+        superior = null;
+        syntax = null;
     }
 }
