@@ -45,16 +45,6 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
 
     
     /**
-     * Create a new instance of a Comparator when the OID is not known until
-     * after instantiation.
-     *
-    protected LdapComparator()
-    {
-        super( SchemaObjectType.COMPARATOR );
-    }
-
-    
-    /**
      * Store the SchemaManager in this instance. It may be necessary for some
      * comparator which needs to have access to the oidNormalizer Map.
      *
