@@ -3,8 +3,8 @@ createtimestamp: 20090818022728Z
 entryuuid:: kJKWSGTeSl+DRD+fGryNjQ==
 m-oid: 2.5.13.23
 entrycsn: 20090818052728.218000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.NameAndOptionalUIDCo
- mparator
+m-fqcn: org.apache.directory.shared.ldap.schema.comparators.UniqueMemberComparat
+ or
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
