@@ -20,6 +20,7 @@
 package org.apache.directory.shared.schema.loader.ldif;
 
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -283,9 +284,6 @@ public class SchemaEntityFactory implements EntityFactory
         // Create the syntaxChecker instance
         syntaxChecker = ( SyntaxChecker ) clazz.newInstance();
         
-        // Inject the SchemaManager
-        syntaxChecker.setSchemaManager( schemaManager );
-
         // Update the common fields
         syntaxChecker.setBytecode( byteCodeStr );
         syntaxChecker.setFqcn( className );
@@ -407,18 +405,29 @@ public class SchemaEntityFactory implements EntityFactory
             byteCodeStr = new String( Base64.encode( byteCode.getBytes() ) );
         }
         
-        // Create the comparator instance
-        comparator = ( LdapComparator<?> ) clazz.newInstance();
+        // Create the comparator instance. Either we have a no argument constructor,
+        // or we have one which takes an OID. Lets try the one with an OID argument first
+        try
+        {
+            Constructor<?> constructor = clazz.getConstructor( new Class[]{String.class} );
+            comparator = ( LdapComparator<?> )constructor.newInstance( new Object[]{ oid } );
+        }
+        catch ( NoSuchMethodException nsme )
+        {
+            // Ok, let's try with the constructor without argument
+            Constructor<?> constructor = clazz.getConstructor();
+            comparator = ( LdapComparator<?> )clazz.newInstance();
+        }
 
-        // Inject the SchemaManager
-        comparator.setSchemaManager( schemaManager );
-        
         // Update the loadable fields
         comparator.setBytecode( byteCodeStr );
         comparator.setFqcn( className );
         
+        // Inject the SchemaManager for the comparator who need it
+        comparator.setSchemaManager( schemaManager );
+        
         // Inject the new OID, as the loaded comparator might have its own
-        comparator.setOid( oid );
+        //comparator.setOid( oid );
         
         return comparator;
     }
@@ -539,9 +548,6 @@ public class SchemaEntityFactory implements EntityFactory
         // Create the normalizer instance
         normalizer = ( Normalizer ) clazz.newInstance();
 
-        // Inject the SchemaManager
-        normalizer.setSchemaManager( schemaManager );
-        
         // Update the common fields
         normalizer.setBytecode( byteCodeStr );
         normalizer.setFqcn( className );
