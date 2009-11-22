@@ -181,7 +181,7 @@ public class AttributeType extends SchemaObject implements Cloneable
     private boolean canUserModify = true;
 
     /** the usage for this attributeType */
-    private UsageEnum usage;
+    private UsageEnum usage = UsageEnum.USER_APPLICATIONS;
 
     /** the length of this attribute in bytes */
     private int syntaxLength = 0;
