@@ -41,6 +41,9 @@ public class DnNormalizer extends Normalizer
     // The serial UID
     private static final long serialVersionUID = 1L;
     
+    /** A reference to the schema manager used to normalize the DN */
+    private SchemaManager schemaManager;
+    
     /**
      * Empty constructor
      */
@@ -100,7 +103,7 @@ public class DnNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public void applySchemaManager( SchemaManager schemaManager )
+    public void setSchemaManager( SchemaManager schemaManager )
     {
         this.schemaManager = schemaManager;
     }

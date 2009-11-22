@@ -22,10 +22,12 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -37,16 +39,16 @@ import org.apache.directory.shared.ldap.util.StringTools;
  */
 public class NameAndOptionalUIDNormalizer extends Normalizer
 {
-    private static final String OID = "2.5.13.23";
-
     // The serial UID
     private static final long serialVersionUID = 1L;
 
-    //public final static NameAndOptionalUIDNormalizer INSTANCE = new NameAndOptionalUIDNormalizer();
+    /** A reference to the schema manager used to normalize the DN */
+    private SchemaManager schemaManager;
+    
     
     public NameAndOptionalUIDNormalizer()
     {
-        super( OID );
+        super( SchemaConstants.UNIQUE_MEMBER_MATCH_MATCH_MR_OID );
     }
     
 
@@ -145,5 +147,14 @@ public class NameAndOptionalUIDNormalizer extends Normalizer
             // Return the normalized DN
             return new LdapDN( value ).getNormName();
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        this.schemaManager = schemaManager;
     }
 }

@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -38,7 +39,7 @@ public class CachingDnNormalizer extends CachingNormalizer
 {
     /** serial version UID */
     private static final long serialVersionUID = -206263185305284269L;
-
+    
     public CachingDnNormalizer()
     {
         super( new DnNormalizer() );
@@ -51,5 +52,15 @@ public class CachingDnNormalizer extends CachingNormalizer
     public void applyRegistries( Registries registries ) throws NamingException
     {
         super.applyRegistries( registries );
+    }
+    
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        super.normalizer.setSchemaManager( schemaManager );
     }
 }
