@@ -339,9 +339,20 @@ public class AttributeType extends SchemaObject implements Cloneable
 
 
     /**
-     * Tells if this AttributeType is a collective attribute or not
+     * Updates the collective flag
      *
-     * @param collective True if the AttributeType is collective
+     * @param collective The new value to set
+     */
+    public void updateCollective( boolean collective )
+    {
+        this.isCollective = collective;
+    }
+    
+    
+    /**
+     * Sets the collective flag
+     *
+     * @param collective The new value to set
      */
     public void setCollective( boolean collective )
     {
@@ -379,6 +390,22 @@ public class AttributeType extends SchemaObject implements Cloneable
         {
             this.usage = usage;
         }
+    }
+    
+    
+    /**
+     * Updates the AttributeType usage, one of :<br>
+     * <li>USER_APPLICATIONS
+     * <li>DIRECTORY_OPERATION
+     * <li>DISTRIBUTED_OPERATION
+     * <li>DSA_OPERATION
+     * <br>
+     * @see UsageEnum
+     * @param usage The AttributeType usage
+     */
+    public void updateUsage( UsageEnum usage )
+    {
+        this.usage = usage;
     }
     
 
