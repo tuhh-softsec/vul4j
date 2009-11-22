@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 
 /**
@@ -36,42 +36,42 @@ public class ByteArrayComparatorTest
     @Test
     public void testBothNull()
     {
-        assertEquals( 0, ByteArrayComparator.INSTANCE.compare( null, null ) );
+        assertEquals( 0, new ByteArrayComparator( null ).compare( null, null ) );
     }
 
     
     @Test
     public void testB2Null()
     {
-        assertEquals( 1, ByteArrayComparator.INSTANCE.compare( new byte[0], null ) );
+        assertEquals( 1, new ByteArrayComparator( null ).compare( new byte[0], null ) );
     }
 
     
     @Test
     public void testB1Null()
     {
-        assertEquals( -1, ByteArrayComparator.INSTANCE.compare( null, new byte[0] ) );
+        assertEquals( -1, new ByteArrayComparator( null ).compare( null, new byte[0] ) );
     }
 
     
     @Test
     public void testBothEmpty()
     {
-        assertEquals( 0, ByteArrayComparator.INSTANCE.compare( new byte[0], new byte[0] ) );
+        assertEquals( 0, new ByteArrayComparator( null ).compare( new byte[0], new byte[0] ) );
     }
 
     
     @Test
     public void testBothEqualLengthOne()
     {
-        assertEquals( 0, ByteArrayComparator.INSTANCE.compare( new byte[1], new byte[1] ) );
+        assertEquals( 0, new ByteArrayComparator( null ).compare( new byte[1], new byte[1] ) );
     }
 
     
     @Test
     public void testBothEqualLengthTen()
     {
-        assertEquals( 0, ByteArrayComparator.INSTANCE.compare( new byte[10], new byte[10] ) );
+        assertEquals( 0, new ByteArrayComparator( null ).compare( new byte[10], new byte[10] ) );
     }
     
     
@@ -81,7 +81,7 @@ public class ByteArrayComparatorTest
         byte[] b1 = new byte[] { 0, 1, 2 };
         byte[] b2 = new byte[] { 0, 1, 2, 3 };
 
-        assertEquals( -1, ByteArrayComparator.INSTANCE.compare( b1, b2 ) );
+        assertEquals( -1, new ByteArrayComparator( null ).compare( b1, b2 ) );
     }
     
     
@@ -91,7 +91,7 @@ public class ByteArrayComparatorTest
         byte[] b1 = new byte[] { 0, 1, 2, 3 };
         byte[] b2 = new byte[] { 0, 1, 2 };
 
-        assertEquals( 1, ByteArrayComparator.INSTANCE.compare( b1, b2 ) );
+        assertEquals( 1, new ByteArrayComparator( null ).compare( b1, b2 ) );
     }
     
     
@@ -101,7 +101,7 @@ public class ByteArrayComparatorTest
         byte[] b1 = new byte[] { 0, 5 };
         byte[] b2 = new byte[] { 0, 1, 2 };
 
-        assertEquals( 1, ByteArrayComparator.INSTANCE.compare( b1, b2 ) );
+        assertEquals( 1, new ByteArrayComparator( null ).compare( b1, b2 ) );
     }
 
 
@@ -111,7 +111,7 @@ public class ByteArrayComparatorTest
         byte[] b1 = new byte[] { 0, 5 };
         byte[] b2 = new byte[] { 0, 1 };
 
-        assertEquals( 1, ByteArrayComparator.INSTANCE.compare( b1, b2 ) );
+        assertEquals( 1, new ByteArrayComparator( null ).compare( b1, b2 ) );
     }
 
 
@@ -121,7 +121,7 @@ public class ByteArrayComparatorTest
         byte[] b1 = new byte[] { 0, 1, 2 };
         byte[] b2 = new byte[] { 0, 5 };
 
-        assertEquals( -1, ByteArrayComparator.INSTANCE.compare( b1, b2 ) );
+        assertEquals( -1, new ByteArrayComparator( null ).compare( b1, b2 ) );
     }
 
 
@@ -131,6 +131,6 @@ public class ByteArrayComparatorTest
         byte[] b1 = new byte[] { 0, 1 };
         byte[] b2 = new byte[] { 0, 5 };
 
-        assertEquals( -1, ByteArrayComparator.INSTANCE.compare( b1, b2 ) );
+        assertEquals( -1, new ByteArrayComparator( null ).compare( b1, b2 ) );
     }
 }

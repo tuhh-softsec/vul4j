@@ -19,10 +19,11 @@
  */
 package org.apache.directory.shared.ldap.schema.comparators;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -38,7 +39,7 @@ public class ObjectIdentifierFirstComponentComparatorTest
     @Before
     public void init()
     {
-        comparator = new ObjectIdentifierFirstComponentComparator();
+        comparator = new ObjectIdentifierFirstComponentComparator( null );
     }
     
     
