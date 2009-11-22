@@ -45,12 +45,16 @@ public class SerializableComparator<E> extends LdapComparator<E>
     
     /** the transient wrapped comparator */
     private transient Comparator<E> wrapped;
+
+    /** A reference to the schema manager */ 
+    private transient SchemaManager schemaManager;
     
     // ------------------------------------------------------------------------
     // C O N T R U C T O R S
     // ------------------------------------------------------------------------
     public SerializableComparator( String matchingRuleOid )
     {
+        super( matchingRuleOid );
         this.matchingRuleOid = matchingRuleOid;
     }
 

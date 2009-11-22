@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 
 /**
@@ -35,11 +36,18 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
  */
 public class DnComparator extends LdapComparator<Object>
 {
-    public DnComparator()
+    /** A reference to the schema manager */ 
+    private transient SchemaManager schemaManager;
+    
+    public DnComparator( String oid )
     {
+        super( oid );
     }
     
     
+    /**
+     * {@inheritDoc}
+     */
     public int compare( Object obj0, Object obj1 ) 
     {
         LdapDN dn0 = null;
@@ -87,5 +95,14 @@ public class DnComparator extends LdapComparator<Object>
         }
         
         return dn;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        this.schemaManager = schemaManager;
     }
 }

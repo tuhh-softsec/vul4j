@@ -20,9 +20,6 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
-
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,17 +41,13 @@ public class CsnSidComparator extends LdapComparator<String>
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** A static instance of this comparator */
-    public static final Comparator<String> INSTANCE = new CsnSidComparator();
-    
-    
     /**
      * The CsnSidComparator constructor. Its OID is the CsnSidMatch matching
      * rule OID.
      */
-    public CsnSidComparator()
+    public CsnSidComparator( String oid )
     {
-        super( SchemaConstants.CSN_SID_MATCH_MR_OID );
+        super( oid );
     }
     
     

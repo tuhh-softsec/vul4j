@@ -42,15 +42,6 @@ public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
     private static final long serialVersionUID = 1L;
 
     /**
-     * The ComparableComparator constructor. The OID has to be created later.
-     */
-    public ComparableComparator()
-    {
-        super( null );
-    }
-
-    
-    /**
      * The BooleanComparator constructor. Its OID is the BooleanMatch matching
      * rule OID.
      */

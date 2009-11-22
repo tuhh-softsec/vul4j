@@ -19,9 +19,6 @@
  */
 package org.apache.directory.shared.ldap.schema.comparators;
 
-import java.util.Comparator;
-
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,16 +38,13 @@ public class BooleanComparator extends LdapComparator<String>
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** A static instance of this comparator */
-    public static final Comparator<String> INSTANCE = new BooleanComparator();
-
     /**
      * The BooleanComparator constructor. Its OID is the BooleanMatch matching
      * rule OID.
      */
-    public BooleanComparator()
+    public BooleanComparator( String oid )
     {
-        super( SchemaConstants.BOOLEAN_MATCH_MR_OID );
+        super( oid );
     }
 
     /**

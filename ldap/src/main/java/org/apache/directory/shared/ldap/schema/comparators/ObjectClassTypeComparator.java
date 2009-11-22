@@ -20,6 +20,11 @@ public class ObjectClassTypeComparator<T> extends LdapComparator<T>
     private static final long serialVersionUID = 1L;
 
     
+    public ObjectClassTypeComparator( String oid )
+    {
+        super( oid );
+    }
+    
     public int compare( T o1, T o2 )
     {
         String s1 = getString( o1 );

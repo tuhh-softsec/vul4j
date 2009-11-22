@@ -31,13 +31,19 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
  */
 public class LongComparator extends LdapComparator<Long>
 {
-    /** A instance of this comparator */
-    public static final LongComparator INSTANCE = new LongComparator();
-
     /**
      * Version id for serialization.
      */
     static final long serialVersionUID = 1L;
+    
+    /**
+     * The LongComparator constructor. Its OID is the IntegerOrderingMatch matching
+     * rule OID.
+     */
+    public LongComparator( String oid )
+    {
+        super( oid );
+    }
 
 
     /**

@@ -20,10 +20,7 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
-
 import org.apache.directory.shared.asn1.primitives.OID;
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -44,17 +41,13 @@ public class ObjectIdentifierFirstComponentComparator extends LdapComparator<Str
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** A static instance of this comparator */
-    public static final Comparator<String> INSTANCE = new ObjectIdentifierFirstComponentComparator();
-    
-    
     /**
      * The ObjectIdentifierFirstComponentComparator constructor. Its OID is the 
      * ObjectIdentifierFirstComponentMatch matching rule OID.
      */
-    public ObjectIdentifierFirstComponentComparator()
+    public ObjectIdentifierFirstComponentComparator( String oid )
     {
-        super( SchemaConstants.OBJECT_IDENTIFIER_FIRST_COMPONENT_MATCH_MR_OID );
+        super( oid );
     }
 
     

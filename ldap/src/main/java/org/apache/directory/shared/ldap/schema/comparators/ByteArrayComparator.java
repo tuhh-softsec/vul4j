@@ -20,9 +20,6 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
-
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -43,16 +40,13 @@ public class ByteArrayComparator extends LdapComparator<byte[]>
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** A static instance of this comparator */
-    public static final Comparator<byte[]> INSTANCE = new ByteArrayComparator();
-
     /**
      * The ByteArrayComparator constructor. Its OID is the OctetStringMatch matching
      * rule OID.
      */
-    public ByteArrayComparator()
+    public ByteArrayComparator( String oid )
     {
-        super( SchemaConstants.OCTET_STRING_MATCH_MR_OID );
+        super( oid );
     }
 
     /**

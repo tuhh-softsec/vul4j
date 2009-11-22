@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.CachingNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 
@@ -35,9 +36,20 @@ public class DeepTrimToLowerCachingNormalizingComparator extends NormalizingComp
     private static final long serialVersionUID = -3462901701103045845L;
 
     
-    public DeepTrimToLowerCachingNormalizingComparator()
+    public DeepTrimToLowerCachingNormalizingComparator( String oid )
     {
-        super( new CachingNormalizer( new DeepTrimToLowerNormalizer(), 10 ), 
-            new ComparableComparator() );
+        super( oid, new CachingNormalizer( new DeepTrimToLowerNormalizer( oid ), 10 ), 
+            new ComparableComparator( oid ) );
     }
+    
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        super.setSchemaManager( schemaManager );
+    }
+    
 }

@@ -20,9 +20,6 @@
 package org.apache.directory.shared.ldap.schema.comparators;
 
 
-import java.util.Comparator;
-
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,17 +42,13 @@ public class TelephoneNumberComparator extends LdapComparator<String>
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
-    /** A static instance of this comparator */
-    public static final Comparator<String> INSTANCE = new TelephoneNumberComparator();
-    
-    
     /**
      * The TelephoneNumberComparator constructor. Its OID is the TelephoneNumberMatch matching
      * rule OID.
      */
-    public TelephoneNumberComparator()
+    public TelephoneNumberComparator( String oid )
     {
-        super( SchemaConstants.TELEPHONE_NUMBER_MATCH_MR_OID );
+        super( oid );
     }
 
     
