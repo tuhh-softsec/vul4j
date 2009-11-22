@@ -106,9 +106,6 @@ public abstract class SchemaObject implements Serializable
     /** A map containing the list of supported extensions */
     protected Map<String, List<String>> extensions;
 
-    /** A reference to the SchemaManager */
-    protected transient SchemaManager schemaManager;
-    
     /**
      * A constructor for a SchemaObject instance. It must be 
      * invoked by the inherited class.
@@ -710,6 +707,11 @@ public abstract class SchemaObject implements Serializable
     }
     
     
+    /**
+     * Copy the current SchemaObject on place
+     *
+     * @return The copied SchemaObject
+     */
     public abstract SchemaObject copy();
     
 
@@ -756,9 +758,6 @@ public abstract class SchemaObject implements Serializable
         // The SchemaName
         schemaName = original.schemaName;
         
-        // The SchemaManager
-        schemaManager = original.schemaManager;
-        
         // The specification
         specification = original.specification;
         
@@ -767,12 +766,22 @@ public abstract class SchemaObject implements Serializable
     
     
     /**
-     * Sets the SchemaManager
-     * 
-     * @param schemaManager The SchemaManager
+     * Clear the current SchemaObject : remove all the references to other objects, 
+     * and all the Maps. 
      */
-    public void setSchemaManager( SchemaManager schemaManager )
+    public void clear()
     {
-        this.schemaManager = schemaManager; 
+        // Clear the extensions
+        for ( String extension : extensions.keySet() )
+        {
+            List<String> extensionList = extensions.get( extension ); 
+            
+            extensionList.clear();
+        }
+        
+        extensions.clear();
+        
+        // Clear the names
+        names.clear();
     }
 }

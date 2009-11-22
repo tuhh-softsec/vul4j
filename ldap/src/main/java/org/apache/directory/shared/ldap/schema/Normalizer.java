@@ -88,6 +88,18 @@ public abstract class Normalizer extends LoadableSchemaObject
         // Do nothing. The extended class will store the Registries if needed
     }
 
+    
+    /**
+     * Store the SchemaManager in this instance. It may be necessary for some
+     * normalizer which needs to have access to the oidNormalizer Map.
+     *
+     * @param schemaManager the schemaManager to store
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        // Do nothing (general case).
+    }
+    
 
     /**
      * @see Object#toString()

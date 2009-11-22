@@ -325,4 +325,19 @@ public class MatchingRule extends SchemaObject
         
         return copy;
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // Clear the common elements
+        super.clear();
+        
+        // Clear the references
+        ldapComparator = null;
+        ldapSyntax = null;
+        normalizer = null;
+    }
 }

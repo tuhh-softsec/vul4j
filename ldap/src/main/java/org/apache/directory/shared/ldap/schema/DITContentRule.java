@@ -621,4 +621,24 @@ public class DITContentRule extends SchemaObject
         
         return copy;
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // Clear the common elements
+        super.clear();
+        
+        // Clear the references
+        auxObjectClasses.clear();
+        auxObjectClassOids.clear();
+        mayAttributeTypes.clear();
+        mayAttributeTypeOids.clear();
+        mustAttributeTypes.clear();
+        mustAttributeTypeOids.clear();
+        notAttributeTypes.clear();
+        notAttributeTypeOids.clear();
+    }
 }

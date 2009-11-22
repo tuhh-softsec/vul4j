@@ -467,4 +467,21 @@ public class NameForm extends SchemaObject
         
         return copy;
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // Clear the common elements
+        super.clear();
+        
+        // Clear the references
+        mayAttributeTypes.clear();
+        mayAttributeTypeOids.clear();
+        mustAttributeTypes.clear();
+        mustAttributeTypeOids.clear();
+        structuralObjectClass = null;
+    }
 }

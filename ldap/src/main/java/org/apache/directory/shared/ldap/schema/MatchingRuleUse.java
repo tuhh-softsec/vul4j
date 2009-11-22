@@ -255,4 +255,18 @@ public class MatchingRuleUse extends SchemaObject
         
         return copy;
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // Clear the common elements
+        super.clear();
+        
+        // Clear the references
+        applicableAttributes.clear();
+        applicableAttributeOids.clear();
+    }
 }
