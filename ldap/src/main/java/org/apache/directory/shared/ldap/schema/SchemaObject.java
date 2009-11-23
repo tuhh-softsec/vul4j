@@ -83,13 +83,13 @@ public abstract class SchemaObject implements Serializable
     protected List<String> names;
     
     /** Whether or not this SchemaObject is enabled */
-    protected boolean isEnabled;
+    protected boolean isEnabled = true;
 
     /** Whether or not this SchemaObject can be modified */
-    protected boolean isReadOnly;
+    protected boolean isReadOnly = false;
     
     /** Whether or not this SchemaObject is obsolete */
-    protected boolean isObsolete;
+    protected boolean isObsolete = false;
 
     /** A short description of this SchemaObject */
     protected String description;
@@ -116,8 +116,6 @@ public abstract class SchemaObject implements Serializable
     {
         this.objectType = objectType;
         this.oid = oid;
-        isEnabled = true;
-        isReadOnly = false;
         extensions = new HashMap<String, List<String>>();
         names = new ArrayList<String>();
     }
@@ -132,8 +130,6 @@ public abstract class SchemaObject implements Serializable
     protected SchemaObject( SchemaObjectType objectType )
     {
         this.objectType = objectType;
-        isEnabled = true;
-        isReadOnly = false;
         extensions = new HashMap<String, List<String>>();
         names = new ArrayList<String>();
     }
