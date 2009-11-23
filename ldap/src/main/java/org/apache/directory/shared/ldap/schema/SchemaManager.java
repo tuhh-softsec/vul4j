@@ -508,9 +508,10 @@ public interface SchemaManager
      * to avoid memory leaks.
      * 
      * @param targetRegistries The registries we want to store in place of the existing one
+     * @exception If something went wrong
      * @return true if the replacement has been done
      */
-    public boolean swapRegistries( Registries targetRegistries );
+    public boolean swapRegistries( Registries targetRegistries ) throws NamingException;
     
     
     /**
@@ -518,8 +519,9 @@ public interface SchemaManager
      * to avoid memory leaks.
      *
      * @param registries The registries to be deleted
+     * @exception If something went wrong
      */
-    public void destroy( Registries registries );
+    public void destroy( Registries registries ) throws NamingException;
     
     
     /**
