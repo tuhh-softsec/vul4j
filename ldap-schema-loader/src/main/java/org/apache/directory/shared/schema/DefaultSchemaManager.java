@@ -20,10 +20,8 @@
 package org.apache.directory.shared.schema;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.naming.NamingException;
 
@@ -32,19 +30,14 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.DITContentRule;
-import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.apache.directory.shared.ldap.schema.EntityFactory;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
-import org.apache.directory.shared.ldap.schema.MatchingRuleUse;
-import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
-import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -72,7 +65,6 @@ import org.apache.directory.shared.ldap.schema.registries.OidRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.SchemaObjectRegistry;
 import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.schema.loader.ldif.SchemaEntityFactory;
@@ -80,8 +72,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
- * TODO DefaultSchemaManager.
+ * The SchemaManager class : it handles all the schema operations (addition, removal,
+ * modification).
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
@@ -120,7 +112,7 @@ public class DefaultSchemaManager implements SchemaManager
         namingContext = LdapDN.EMPTY_LDAPDN;
         this.schemaLoader = loader;
         errors = null;
-        registries = new Registries();
+        registries = new Registries( this );
         factory = new SchemaEntityFactory();
     }
     
@@ -136,7 +128,7 @@ public class DefaultSchemaManager implements SchemaManager
         this.namingContext = namingContext;
         this.schemaLoader = loader;
         errors = null;
-        registries = new Registries();
+        registries = new Registries( this );
         factory = new SchemaEntityFactory();
     }
 
@@ -162,7 +154,7 @@ public class DefaultSchemaManager implements SchemaManager
         
         // Now, relax the cloned Registries if there is no error
         clonedRegistries.setRelaxed();
-
+        
         return clonedRegistries;
     }
     
@@ -198,10 +190,7 @@ public class DefaultSchemaManager implements SchemaManager
         registerNameForms( schema, registries );
         registerDitStructureRules( schema, registries );
 
-        // Now that we have loaded all the SchemaObjects, we have to create the 
-        // cross references
-        registries.buildReferences();
-        
+        // TODO Add some listener handling at this point
         //notifyListenerOrRegistries( schema, registries );
     }
     
@@ -212,85 +201,15 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public void destroy( Registries registries )
+    public void destroy( Registries registries ) throws NamingException
     {
-        if( registries == null )
+        if ( registries == null )
         {
             return;
         }
-        
-        registries.getAttributeTypeRegistry().getNormalizerMapping().clear();
-        
-        destroy_( registries.getComparatorRegistry() );
-        destroy_( registries.getDitStructureRuleRegistry() );
-        destroy_( registries.getLdapSyntaxRegistry( ) );
-        destroy_( registries.getMatchingRuleRegistry( ) );
-        destroy_( registries.getMatchingRuleUseRegistry( ) );
-        destroy_( registries.getNameFormRegistry( ) );
-        destroy_( registries.getNormalizerRegistry( ) );
-        destroy_( registries.getObjectClassRegistry( ) );
-        destroy_( registries.getSyntaxCheckerRegistry( ) );
-
-        // clearing the schemaObjectsBySchemaName, usedBy and using maps
-        Map<String, Set<SchemaObjectWrapper>> schemaObjectsBySchemaName = registries.getObjectBySchemaName();
-        
-        Set<java.util.Map.Entry<String, Set<SchemaObjectWrapper>>> entries = schemaObjectsBySchemaName.entrySet();
-        for( java.util.Map.Entry<String, Set<SchemaObjectWrapper>> e : entries )
+        else
         {
-            Set<SchemaObjectWrapper> schemaObjWrappers = e.getValue();
-            // for each SchemaObject present in the wrapper
-            // get the Set<SchemaObjectWrapper> values from used and using maps and
-            // clear them
-            // TODO how to clear the used and using maps? here it is only clearing the
-            // Set<SchemaObjectWrapper> values which are part of those maps
-            for( SchemaObjectWrapper sow : schemaObjWrappers )
-            {
-                Set<SchemaObjectWrapper> tmp = registries.getUsedBy( sow.get() );
-                if( tmp != null )
-                {
-                    tmp.clear();
-                }
-                
-                tmp = registries.getUsing( sow.get() );
-                if( tmp != null )
-                {
-                    tmp.clear();
-                }
-            }
-            
-            // clear the Set<SchemaObjectWrapper> value of schemaObjectsBySchemaName map 
-            schemaObjWrappers.clear();
-        }
-        
-        // finally clear the schemaObjectsBySchemaName map
-        schemaObjectsBySchemaName.clear();
-    }
-
-    
-    /**
-     * tries to unregister the SchemaObjectS associated with OIDs
-     * by getting the OID iterator of given SchemaObjectRegistry
-     */
-    private void destroy_( SchemaObjectRegistry objRegistry )
-    {
-        if( objRegistry == null )
-        {
-            return;
-        }
-        
-        Iterator<String> oidIterator = objRegistry.oidsIterator();
-        while( oidIterator.hasNext() )
-        {
-            String oid = oidIterator.next();
-            try
-            {
-                objRegistry.unregister( oid );
-            }
-            catch( Exception e )
-            {
-                // just log at debug level
-                LOG.debug( "Failed to unregister OID {}", oid );
-            }
+            registries.clear();
         }
     }
 
@@ -298,22 +217,23 @@ public class DefaultSchemaManager implements SchemaManager
     /***
      * {@inheritDoc}
      */
-    public boolean swapRegistries( Registries targetRegistries )
+    public boolean swapRegistries( Registries targetRegistries ) throws NamingException 
     {
         // Check the resulting registries
         errors = targetRegistries.checkRefInteg();
-        
-        // Rebuild the using and usedBy references
-        // errors.addAll( targetRegistries.buildReferences() );
 
         // if we have no more error, we can swap the registries
         if ( errors.size() == 0 )
         {
-            targetRegistries.setStrict();
+            // Switch back to strict if needed
+            if ( registries.isStrict() )
+            {
+                targetRegistries.setStrict();
+            }
             
             Registries oldRegistries = registries;
             registries = targetRegistries;
-
+            
             // Delete the old registries to avoid memory leaks
             destroy( oldRegistries );
             
@@ -523,7 +443,9 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadAttributeTypes( schema ) )
         {
-            registerAttributeType( registries, entry, schema );
+            AttributeType attributeType = factory.getAttributeType( this, entry, registries, schema.getSchemaName() );
+
+            registerSchemaObject( registries, attributeType, schema );
         }
     }
 
@@ -535,7 +457,10 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadComparators( schema ) )
         {
-            registerComparator( registries, entry, schema );
+            LdapComparator<?> comparator = 
+                factory.getLdapComparator( this, entry, registries, schema.getSchemaName() );
+            
+            registerSchemaObject( registries, comparator, schema );
         }
     }
 
@@ -547,7 +472,8 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
         {
-            registerDitContentRule( registries, entry, schema );
+            throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a DitContentRule" );
         }
     }
 
@@ -559,7 +485,8 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
         {
-            registerDitStructureRule( registries, entry, schema );
+            throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a DitStructureRule" );
         }
     }
 
@@ -571,7 +498,10 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadMatchingRules( schema ) )
         {
-            registerMatchingRule( registries, entry, schema );
+            MatchingRule matchingRule = factory.getMatchingRule( 
+                this, entry, registries, schema.getSchemaName() );
+
+            registerSchemaObject( registries, matchingRule, schema );
         }
     }
 
@@ -583,7 +513,8 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
         {
-            registerMatchingRuleUse( registries, entry, schema );
+            throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a MatchingRuleUse" );
         }
     }
 
@@ -595,7 +526,8 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadNameForms( schema ) )
         {
-            registerNameForm( registries, entry, schema );
+            throw new NotImplementedException( "Need to implement factory " +
+                "method for creating a NameForm" );
         }
     }
 
@@ -607,7 +539,10 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadNormalizers( schema ) )
         {
-            registerNormalizer( registries, entry, schema );
+            Normalizer normalizer =
+                factory.getNormalizer( this, entry, registries, schema.getSchemaName() );
+            
+            registerSchemaObject( registries, normalizer, schema );
         }
     }
 
@@ -619,7 +554,9 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadObjectClasses( schema ) )
         {
-            registerObjectClass( registries, entry, schema );
+            ObjectClass objectClass = factory.getObjectClass( this, entry, registries, schema.getSchemaName() );
+
+            registerSchemaObject( registries, objectClass, schema );
         }
     }
 
@@ -631,7 +568,10 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadSyntaxes( schema ) )
         {
-            registerSyntax( registries, entry, schema );
+            LdapSyntax syntax = factory.getSyntax( this,
+                entry, registries, schema.getSchemaName() );
+
+            registerSchemaObject( registries, syntax, schema );
         }
     }
 
@@ -643,30 +583,34 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadSyntaxCheckers( schema ) )
         {
-            registerSyntaxChecker( registries, entry, schema );
+            SyntaxChecker syntaxChecker = 
+                factory.getSyntaxChecker( this, entry, registries, schema.getSchemaName() );
+
+            registerSchemaObject( registries, syntaxChecker, schema );
         }
     }
 
     
     /**
-     * Register the AttributeType contained in the given Entry into the registries. 
+     * Register the schemaObject into the registries. 
      *
      * @param registries The Registries
-     * @param entry The Entry containing the AttributeType description
+     * @param schemaObject The SchemaObject containing the SchemaObject description
      * @param schema The associated schema
-     * @return the created AttributeType instance
+     * @return the created schemaObject instance
      * @throws Exception If the registering failed
      */
-    private AttributeType registerAttributeType( Registries registries, Entry entry, Schema schema ) 
+    private SchemaObject registerSchemaObject( Registries registries, SchemaObject schemaObject, Schema schema) 
         throws Exception
     {
-        AttributeType attributeType = factory.getAttributeType( this, entry, registries, schema.getSchemaName() );
-        
         if ( registries.isRelaxed() )
         {
-            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && attributeType.isEnabled() ) )
+            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && schemaObject.isEnabled() ) )
             {
-                registries.register( attributeType );
+                registries.register( schemaObject );
+
+                // Associate the SchemaObject with its schema
+                registries.associateWithSchema( schemaObject );
             }
             else
             {
@@ -675,9 +619,12 @@ public class DefaultSchemaManager implements SchemaManager
         }
         else
         {
-            if ( schema.isEnabled() && attributeType.isEnabled() )
+            if ( schema.isEnabled() && schemaObject.isEnabled() )
             {
-                registries.register( attributeType );
+                registries.register( schemaObject );
+
+                // Associate the SchemaObject with its schema
+                registries.associateWithSchema( schemaObject );
             }
             else
             {
@@ -685,328 +632,9 @@ public class DefaultSchemaManager implements SchemaManager
             }
         }
         
-        return attributeType;
-    }
-
-    
-    /**
-     * Register the comparator contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the comparator description
-     * @param schema The associated schema
-     * @throws Exception If the registering failed
-     */
-    private LdapComparator<?> registerComparator( Registries registries, Entry entry, Schema schema ) 
-        throws Exception
-    {
-        LdapComparator<?> comparator = 
-            factory.getLdapComparator( this, entry, registries, schema.getSchemaName() );
-        
-        if ( registries.isRelaxed() )
-        {
-            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && comparator.isEnabled() ) )
-            {
-                registries.register( comparator );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        else
-        {
-            if ( schema.isEnabled() && comparator.isEnabled() )
-            {
-                registries.register( comparator );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        
-        return comparator;
+        return schemaObject;
     }
     
-    
-    /**
-     * Register the DitContentRule contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the DitContentRule description
-     * @param schema The associated schema
-     * @return the created DitContentRule instance
-     * @throws Exception If the registering failed
-     */
-    private DITContentRule registerDitContentRule( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a DitContentRule" );
-    }
-    
-    
-    /**
-     * Register the DitStructureRule contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the DitStructureRule description
-     * @param schema The associated schema
-     * @return the created DitStructureRule instance
-     * @throws Exception If the registering failed
-     */
-    private DITStructureRule registerDitStructureRule( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a DitStructureRule" );
-    }
-
-    
-    /**
-     * Register the MatchingRule contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the MatchingRule description
-     * @param schema The associated schema
-     * @return the created MatchingRule instance
-     * @throws Exception If the registering failed
-     */
-    private MatchingRule registerMatchingRule( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        MatchingRule matchingRule = factory.getMatchingRule( 
-            this, entry, registries, schema.getSchemaName() );
-
-        if ( registries.isRelaxed() )
-        {
-            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && matchingRule.isEnabled() ) )
-            {
-                registries.register( matchingRule );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        else
-        {
-            if ( schema.isEnabled() && matchingRule.isEnabled() )
-            {
-                registries.register( matchingRule );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        
-        return matchingRule;
-    }
-    
-    
-    /**
-     * Register the MatchingRuleUse contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the MatchingRuleUse description
-     * @param schema The associated schema
-     * @return the created MatchingRuleUse instance
-     * @throws Exception If the registering failed
-     */
-    private MatchingRuleUse registerMatchingRuleUse( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a MatchingRuleUse" );
-    }
-    
-    
-    /**
-     * Register the NameForm contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the NameForm description
-     * @param schema The associated schema
-     * @return the created NameForm instance
-     * @throws Exception If the registering failed
-     */
-    private NameForm registerNameForm( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a NameForm" );
-    }
-
-    
-    /**
-     * Register the Normalizer contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the Normalizer description
-     * @param schema The associated schema
-     * @return the created Normalizer instance
-     * @throws Exception If the registering failed
-     */
-    private Normalizer registerNormalizer( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        Normalizer normalizer =
-            factory.getNormalizer( this, entry, registries, schema.getSchemaName() );
-        
-        if ( registries.isRelaxed() )
-        {
-            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && normalizer.isEnabled() ) )
-            {
-                registries.register( normalizer );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        else
-        {
-            if ( schema.isEnabled() && normalizer.isEnabled() )
-            {
-                registries.register( normalizer );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        
-        return normalizer;
-    }
-    
-    
-    /**
-     * Register the ObjectClass contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the ObjectClass description
-     * @param schema The associated schema
-     * @return the created ObjectClass instance
-     * @throws Exception If the registering failed
-     */
-    private ObjectClass registerObjectClass( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        ObjectClass objectClass = factory.getObjectClass( this, entry, registries, schema.getSchemaName() );
-
-        if ( registries.isRelaxed() )
-        {
-            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && objectClass.isEnabled() ) )
-            {
-                registries.register( objectClass );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        else
-        {
-            if ( schema.isEnabled() && objectClass.isEnabled() )
-            {
-                registries.register( objectClass );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        
-        return objectClass;
-    }
-
-    
-    /**
-     * Register the SyntaxChecker contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the SyntaxChecker description
-     * @param schema The associated schema
-     * @return the created SyntaxChecker instance
-     * @throws Exception If the registering failed
-     */
-    private SyntaxChecker registerSyntaxChecker( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        SyntaxChecker syntaxChecker = 
-            factory.getSyntaxChecker( this, entry, registries, schema.getSchemaName() );
-
-        if ( registries.isRelaxed() )
-        {
-            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && syntaxChecker.isEnabled() ) )
-            {
-                registries.register( syntaxChecker );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        else
-        {
-            if ( schema.isEnabled() && syntaxChecker.isEnabled() )
-            {
-                registries.register( syntaxChecker );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        
-        return syntaxChecker;
-    }
-    
-    
-
-    /**
-     * Register the Syntax contained in the given Entry into the registries. 
-     *
-     * @param registries The Registries
-     * @param entry The Entry containing the Syntax description
-     * @param schema The associated schema
-     * @return the created Syntax instance
-     * @throws Exception If the registering failed
-     */
-    private LdapSyntax registerSyntax( Registries registries, Entry entry, Schema schema) 
-        throws Exception
-    {
-        LdapSyntax syntax = factory.getSyntax( this,
-            entry, registries, schema.getSchemaName() );
-
-        if ( registries.isRelaxed() )
-        {
-            if ( registries.isDisabledAccepted() || ( schema.isEnabled() && syntax.isEnabled() ) )
-            {
-                registries.register( syntax );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        else
-        {
-            if ( schema.isEnabled() && syntax.isEnabled() )
-            {
-                registries.register( syntax );
-            }
-            else
-            {
-                errors.add( new Throwable() );
-            }
-        }
-        
-        return syntax;
-    }
-
     
     /**
      * {@inheritDoc}
@@ -1089,12 +717,16 @@ public class DefaultSchemaManager implements SchemaManager
     {
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
+        clonedRegistries.setRelaxed();
 
         //Load the schemas
         for ( Schema schema : schemas )
         {
             loadDepsFirst( schema, clonedRegistries );
         }
+        
+        // Rebuild all the cross references now
+        clonedRegistries.buildReferences();
         
         // Swap the registries if it is consistent
         return swapRegistries( clonedRegistries );
