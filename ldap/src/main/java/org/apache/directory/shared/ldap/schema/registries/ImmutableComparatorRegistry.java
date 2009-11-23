@@ -186,4 +186,13 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     {
         return immutableComparatorRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the ComparatorRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

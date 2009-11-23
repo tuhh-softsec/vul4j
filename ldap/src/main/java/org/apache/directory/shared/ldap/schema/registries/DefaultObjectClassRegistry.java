@@ -32,6 +32,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -191,28 +192,6 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
     /**
      * {@inheritDoc}
      */
-    public void register( ObjectClass objectClass ) throws NamingException
-    {
-        try
-        {
-            super.register( objectClass );
-            
-            // Internally associate the OID to the registered AttributeType
-            if ( IS_DEBUG )
-            {
-                LOG.debug( "registred objectClass: {}", objectClass );
-            }
-        }
-        catch ( NamingException ne )
-        {
-            throw new NoSuchAttributeException( ne.getMessage() );
-        }
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
     public ObjectClass unregister( String numericOid ) throws NamingException
     {
         try
@@ -247,5 +226,34 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
         copy.copy( this );
         
         return copy;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // Clear the contained SchemaObjects
+        for ( SchemaObject objectClass : oidRegistry )
+        {
+            objectClass.clear();
+        }
+        
+        // First clear the shared elements
+        super.clear();
+        
+        // and clear the descendant
+        for ( String oid : oidToDescendants.keySet() )
+        {
+            Set<ObjectClass> descendants = oidToDescendants.get( oid );
+            
+            if ( descendants != null )
+            {
+                descendants.clear();
+            }
+        }
+        
+        oidToDescendants.clear();
     }
 }

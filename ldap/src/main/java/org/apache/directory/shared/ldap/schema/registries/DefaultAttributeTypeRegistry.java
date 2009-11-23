@@ -128,28 +128,6 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * {@inheritDoc}
      */
-    public void register( AttributeType attributeType ) throws NamingException
-    {
-        try
-        {
-            super.register( attributeType );
-            
-            // Internally associate the OID to the registered AttributeType
-            if ( IS_DEBUG )
-            {
-                LOG.debug( "registred attributeType: {}", attributeType );
-            }
-        }
-        catch ( NamingException ne )
-        {
-            throw new NoSuchAttributeException( ne.getMessage() );
-        }
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
     public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) 
         throws NamingException
     {
@@ -260,7 +238,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
 
         if ( equality == null )
         {
-            LOG.debug( "Attribute {} does not have normalizer : using NoopNormalizer", attributeType.getName() );
+            LOG.debug( "Attribute {} does not have an EQUALITY MatchingRule : using NoopNormalizer", attributeType.getName() );
             oidNormalizer = new OidNormalizer( oid, new NoOpNormalizer( attributeType.getOid() ) );
         }
         else
@@ -325,5 +303,31 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         copy.copy( this );
         
         return copy;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // First clear the shared elements
+        super.clear();
+        
+        // clear the OidNormalizer map
+        oidNormalizerMap.clear();
+        
+        // and clear the descendant
+        for ( String oid : oidToDescendantSet.keySet() )
+        {
+            Set<AttributeType> descendants = oidToDescendantSet.get( oid );
+            
+            if ( descendants != null )
+            {
+                descendants.clear();
+            }
+        }
+        
+        oidToDescendantSet.clear();
     }
 }

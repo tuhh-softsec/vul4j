@@ -186,4 +186,13 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
     {
         return immutableSyntaxCheckerRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

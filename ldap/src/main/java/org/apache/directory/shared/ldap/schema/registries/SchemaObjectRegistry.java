@@ -177,4 +177,10 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      *  @return The number of AttributeType stored
      */
     int size();
+    
+    
+    /**
+     * Clear the registry from all its content
+     */
+    void clear() throws NamingException;
 }

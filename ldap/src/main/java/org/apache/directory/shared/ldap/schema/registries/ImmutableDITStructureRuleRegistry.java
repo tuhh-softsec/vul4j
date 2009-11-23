@@ -230,4 +230,13 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     {
         return immutableDITStructureRuleRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

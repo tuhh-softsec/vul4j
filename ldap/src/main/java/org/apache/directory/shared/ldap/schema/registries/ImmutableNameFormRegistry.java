@@ -187,4 +187,13 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
     {
         return immutableNameFormRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

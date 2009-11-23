@@ -26,7 +26,6 @@ import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,41 +54,6 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
     }
     
     
-    /**
-     * {@inheritDoc}
-     */
-    public void register( SyntaxChecker syntaxChecker ) throws NamingException
-    {
-        String oid = syntaxChecker.getOid();
-        
-        if ( byName.containsKey( oid ) )
-        {
-            String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
-            LOG.warn( msg );
-            //throw new NamingException( msg );
-        }
-
-        byName.put( oid, syntaxChecker );
-        
-        /*
-         * add the aliases/names to the name map along with their toLowerCase
-         * versions of the name: this is used to make sure name lookups work
-         */
-        for ( String name : syntaxChecker.getNames() )
-        {
-            byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), syntaxChecker );
-        }
-        
-        // Update the SyntaxCheckerRegistry OidRegistry
-        oidRegistry.register( syntaxChecker );
-        
-        if ( LOG.isDebugEnabled() )
-        {
-            LOG.debug( "registered " + syntaxChecker.getName() + " for OID {}", oid );
-        }
-    }
-
-
     /**
      * {@inheritDoc}
      */

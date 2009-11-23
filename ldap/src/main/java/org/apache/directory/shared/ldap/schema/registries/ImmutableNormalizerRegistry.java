@@ -187,4 +187,13 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     {
         return immutableNormalizerRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

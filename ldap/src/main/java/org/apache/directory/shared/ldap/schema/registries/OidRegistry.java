@@ -201,7 +201,7 @@ public class OidRegistry implements Iterable<SchemaObject>
          */
         if ( byOid.containsKey( oid ) )
         {
-            String message = "Therer is already a SchemaObject for OID " + oid;
+            String message = "There is already a SchemaObject for OID " + oid;
             LOG.info( message );
             return;
         }
@@ -270,6 +270,13 @@ public class OidRegistry implements Iterable<SchemaObject>
     protected int size() 
     {
         return byOid.size();
+    }
+    
+    
+    public void clear()
+    {
+        // remove all the OID
+        byOid.clear();
     }
     
     

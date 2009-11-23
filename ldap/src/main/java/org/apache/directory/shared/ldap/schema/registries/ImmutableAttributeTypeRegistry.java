@@ -252,4 +252,13 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     {
         return immutableAttributeTypeRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

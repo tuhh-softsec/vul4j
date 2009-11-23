@@ -26,7 +26,6 @@ import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,41 +54,6 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
     }
     
     
-    /**
-     * {@inheritDoc}
-     */
-    public void register( Normalizer normalizer ) throws NamingException
-    {
-        String oid = normalizer.getOid();
-        
-        if ( byName.containsKey( oid ) )
-        {
-            String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
-            LOG.warn( msg );
-            throw new NamingException( msg );
-        }
-
-        byName.put( oid, normalizer );
-        
-        /*
-         * add the aliases/names to the name map along with their toLowerCase
-         * versions of the name: this is used to make sure name lookups work
-         */
-        for ( String name : normalizer.getNames() )
-        {
-            byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), normalizer );
-        }
-        
-        // Update the NormalizerRegistry OidRegistry
-        oidRegistry.register( normalizer );
-        
-        if ( LOG.isDebugEnabled() )
-        {
-            LOG.debug( "registered " + normalizer.getName() + " for OID {}", oid );
-        }
-    }
-
-
     /**
      * {@inheritDoc}
      */

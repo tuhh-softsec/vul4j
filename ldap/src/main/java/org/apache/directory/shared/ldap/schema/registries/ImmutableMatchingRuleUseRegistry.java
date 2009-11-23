@@ -186,4 +186,13 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
     {
         return immutableMatchingRuleUseRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

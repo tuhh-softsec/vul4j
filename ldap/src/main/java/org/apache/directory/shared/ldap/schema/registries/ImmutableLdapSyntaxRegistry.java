@@ -185,4 +185,13 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
     {
         return immutableLdapSyntaxRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the LdapSyntaxRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }

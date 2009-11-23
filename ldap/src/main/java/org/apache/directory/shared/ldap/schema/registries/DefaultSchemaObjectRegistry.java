@@ -136,7 +136,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
      */
     public Iterator<T> iterator()
     {
-        return byName.values().iterator();
+        return (Iterator<T>)oidRegistry.iterator(); //byName.values().iterator();
     }
 
     
@@ -190,34 +190,31 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         String oid = schemaObject.getOid();
         
-        if ( schemaObject.isEnabled() )
+        if ( byName.containsKey( oid ) )
         {
-            if ( byName.containsKey( oid ) )
-            {
-                String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
-                LOG.warn( msg );
-                throw new NamingException( msg );
-            }
-    
-            byName.put( oid, schemaObject );
-            
-            /*
-             * add the aliases/names to the name map along with their toLowerCase
-             * versions of the name: this is used to make sure name lookups work
-             */
-            for ( String name : schemaObject.getNames() )
-            {
-            	byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
-            }
+            String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
+            LOG.warn( msg );
+            throw new NamingException( msg );
         }
+
+        byName.put( oid, schemaObject );
+        
+        /*
+         * add the aliases/names to the name map along with their toLowerCase
+         * versions of the name: this is used to make sure name lookups work
+         */
+        for ( String name : schemaObject.getNames() )
+        {
+        	byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
+        }
+
+        // And register the oid -> schemaObject relation
+        oidRegistry.register( schemaObject );
         
         if ( LOG.isDebugEnabled() )
         {
             LOG.debug( "registered " + schemaObject.getName() + " for OID {}", oid );
         }
-        
-        // And register the oid -> schemaObject relation
-        oidRegistry.register( schemaObject );
     }
 
 
@@ -344,8 +341,24 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             }
             else
             {
-                // Copy the value
-                T copiedValue = (T)value.copy();
+                T copiedValue = null;
+                
+                // Copy the value if it's not already in the oidRegistry
+                if ( oidRegistry.hasOid( value.getOid() ) )
+                {
+                    try
+                    {
+                        copiedValue = (T)oidRegistry.getSchemaObject( value.getOid() );
+                    }
+                    catch ( NamingException ne )
+                    {
+                        // Can't happen
+                    }
+                }
+                else
+                {
+                    copiedValue = (T)value.copy();
+                }
                 
                 // Update the data structure. 
                 byName.put( key, copiedValue );
@@ -420,5 +433,28 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         }
         
         return sb.toString();
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear()
+    {
+        // Clear all the schemaObjects
+        for ( SchemaObject schemaObject : oidRegistry )
+        {
+            // Don't clear LoadableSchemaObject
+            if ( ! (schemaObject instanceof LoadableSchemaObject ) )
+            {
+                schemaObject.clear();
+            }
+        }
+        
+        // Remove the byName elements
+        byName.clear();
+        
+        // Clear the OidRegistry
+        oidRegistry.clear();
     }
 }

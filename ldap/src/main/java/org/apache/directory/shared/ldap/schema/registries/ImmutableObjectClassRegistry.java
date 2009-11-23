@@ -225,4 +225,13 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     {
         return immutableObjectClassRegistry.get( oid );
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+    }
 }
