@@ -194,15 +194,6 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableAttributeTypeRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableAttributeTypeRegistry.getOidByName( name );

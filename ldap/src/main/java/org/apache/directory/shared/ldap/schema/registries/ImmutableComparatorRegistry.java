@@ -110,15 +110,6 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableComparatorRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableComparatorRegistry.getOidByName( name );

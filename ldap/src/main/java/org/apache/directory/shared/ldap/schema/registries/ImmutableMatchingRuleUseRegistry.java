@@ -83,15 +83,6 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableMatchingRuleUseRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableMatchingRuleUseRegistry.getOidByName( name );

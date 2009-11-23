@@ -163,15 +163,6 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableDITStructureRuleRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableDITStructureRuleRegistry.getOidByName( name );

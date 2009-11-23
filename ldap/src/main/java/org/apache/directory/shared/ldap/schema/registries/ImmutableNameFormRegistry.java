@@ -84,15 +84,6 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableNameFormRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableNameFormRegistry.getOidByName( name );

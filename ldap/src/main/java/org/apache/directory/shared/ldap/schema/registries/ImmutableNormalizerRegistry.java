@@ -111,15 +111,6 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     /**
      *  {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableNormalizerRegistry.containsName( name );
-    }
-
-
-    /**
-     *  {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableNormalizerRegistry.getOidByName( name );

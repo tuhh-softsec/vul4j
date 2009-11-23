@@ -146,19 +146,6 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
 
 
     /**
-     * Checks to see if an alias/name is associated with an OID and it's 
-     * respective schema object in this registry.  Unlike the getOidByName()
-     * method this method does not throw an exception when the name is not
-     * found.
-     * 
-     * @param name The name we are looking for
-     * @return true if the name or it's cannonical form is mapped to a 
-     * schemaObject in this registry, false otherwise.
-     */
-    boolean containsName( String name );
-    
-
-    /**
      * Copy a DefaultSchemaObjectRegistry. All the stored SchemaObject will also
      * be copied, by the cross references will be lost.
      * 

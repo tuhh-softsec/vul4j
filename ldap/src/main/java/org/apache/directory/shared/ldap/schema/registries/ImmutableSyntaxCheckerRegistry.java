@@ -110,15 +110,6 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableSyntaxCheckerRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableSyntaxCheckerRegistry.getOidByName( name );

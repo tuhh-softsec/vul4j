@@ -82,15 +82,6 @@ public class ImmutableLdapSyntaxRegistry implements LdapSyntaxRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableLdapSyntaxRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableLdapSyntaxRegistry.getOidByName( name );

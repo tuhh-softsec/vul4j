@@ -136,7 +136,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
      */
     public Iterator<T> iterator()
     {
-        return (Iterator<T>)oidRegistry.iterator(); //byName.values().iterator();
+        return (Iterator<T>)oidRegistry.iterator();
     }
 
     
@@ -302,21 +302,6 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         return schemaObject.getOid();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsName( String name )
-    {
-    	if ( ! byName.containsKey( name ) )
-    	{
-    		// last resort before giving up check with lower cased version
-        	return byName.containsKey( name.toLowerCase() );
-    	}
-
-        return true;
-    }
-    
 
     /**
      * {@inheritDoc}

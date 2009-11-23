@@ -83,15 +83,6 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableDITContentRuleRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableDITContentRuleRegistry.getOidByName( name );

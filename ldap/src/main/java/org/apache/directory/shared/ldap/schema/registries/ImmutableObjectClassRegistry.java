@@ -140,15 +140,6 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /**
      * {@inheritDoc}
      */
-    public boolean containsName( String name )
-    {
-        return immutableObjectClassRegistry.containsName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getOidByName( String name ) throws NamingException
     {
         return immutableObjectClassRegistry.getOidByName( name );
