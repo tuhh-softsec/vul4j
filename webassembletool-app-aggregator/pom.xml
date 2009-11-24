@@ -11,14 +11,113 @@
 		<groupId>net.sourceforge.webassembletool</groupId>
 		<version>2.4-SNAPSHOT</version>
 	</parent>
-	<build>
-		<finalName>webassembletool-app-aggregator</finalName>
-	</build>
 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit-addons</groupId>
+			<artifactId>junit-addons</artifactId>
+			<version>1.4</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>httpunit</groupId>
+			<artifactId>httpunit</artifactId>
+			<version>1.6.2</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.webassembletool</groupId>
 			<artifactId>webassembletool-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.webassembletool</groupId>
+			<artifactId>webassembletool-app-aggregated1</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.webassembletool</groupId>
+			<artifactId>webassembletool-app-aggregated2</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
+	<build>
+		<finalName>webassembletool-app-aggregator</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skipTests>false</skipTests>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>start-container</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<wait>false</wait>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop-container</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<configuration>
+						<deployables>
+							<deployable>
+								<artifactId>webassembletool-app-aggregated1</artifactId>
+								<properties>
+									<context>webassembletool-app-aggregated1</context>
+								</properties>
+							</deployable>
+							<deployable>
+								<artifactId>webassembletool-app-aggregated2</artifactId>
+								<properties>
+									<context>webassembletool-app-aggregated2</context>
+								</properties>
+							</deployable>
+						</deployables>
+					</configuration>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

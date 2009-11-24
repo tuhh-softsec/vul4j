@@ -94,6 +94,8 @@
 		<module>webassembletool-taglib-helper</module>
 		<module>webassembletool-jsf</module>
 		<module>webassembletool-cas</module>
+		<module>webassembletool-app-provider</module>
+		<module>webassembletool-app-master</module>
 		<module>webassembletool-app-aggregated1</module>
 		<module>webassembletool-app-aggregated2</module>
 		<module>webassembletool-app-aggregator</module>
@@ -101,10 +103,7 @@
 		<module>webassembletool-app-casified-aggregated1</module>
 		<module>webassembletool-app-casified-aggregated2</module>
 		<module>webassembletool-app-casified-aggregator</module>
-		<module>webassembletool-app-master</module>
-		<module>webassembletool-app-provider</module>
 		<module>webassembletool-app-facelet</module>
-		<module>webassembletool-integration-tests</module>
 	</modules>
 	<repositories>
 		<repository>
