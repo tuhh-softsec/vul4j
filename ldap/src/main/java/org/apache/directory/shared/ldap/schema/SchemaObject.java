@@ -588,8 +588,9 @@ public abstract class SchemaObject implements Serializable
         
         // Two schemaObject are equals if their oid is equal,
         // their ObjectType is equal, their names are equals
-        // their schema name is the same, and their extensions are equals
-        if ( !oid.equals( that.oid ) )
+        // their schema name is the same, all their flags are equals,
+        // the description is the same and their extensions are equals
+        if ( !compareOid( oid, that.oid ) )
         {
             return false;
         }
@@ -636,11 +637,7 @@ public abstract class SchemaObject implements Serializable
         }
         else
         {
-            if ( that.schemaName == null )
-            {
-                return false;
-            }
-            else if ( !schemaName.equalsIgnoreCase( this.schemaName ) )
+            if ( !schemaName.equalsIgnoreCase( that.schemaName ) )
             {
                 return false;
             }
@@ -690,8 +687,6 @@ public abstract class SchemaObject implements Serializable
                         return false;
                     }
                 }
-                
-                return true;
             }
         }
         else if ( that.extensions != null )
@@ -699,7 +694,29 @@ public abstract class SchemaObject implements Serializable
             return false;
         }
         
-        return false;
+        if ( this.isEnabled != that.isEnabled )
+        {
+            return false;
+        }
+        
+        if ( this.isObsolete != that.isObsolete )
+        {
+            return false;
+        }
+        
+        if ( this.isReadOnly != that.isReadOnly )
+        {
+            return false;
+        }
+        
+        if ( this.description == null )
+        {
+            return that.description == null;
+        }
+        else
+        {
+            return this.description.equalsIgnoreCase( that.description );
+        }
     }
     
     
@@ -710,6 +727,22 @@ public abstract class SchemaObject implements Serializable
      */
     public abstract SchemaObject copy();
     
+    
+    /**
+     * Compare two oids, and return true if they are both null or
+     * equals
+     */
+    protected boolean compareOid( String oid1, String oid2 )
+    {
+        if ( oid1 == null )
+        {
+            return oid2 == null;
+        }
+        else
+        {
+            return oid1.equals( oid2 );
+        }
+    }
 
     /**
      * Copy a SchemaObject.

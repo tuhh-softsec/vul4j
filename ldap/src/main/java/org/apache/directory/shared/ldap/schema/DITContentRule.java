@@ -624,6 +624,27 @@ public class DITContentRule extends SchemaObject
     
     
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof DITContentRule ) )
+        {
+            return false;
+        }
+        
+        DITContentRule that = (DITContentRule)o;
+
+        // TODO : complete the check
+        return true;
+    }
+        
+    /**
      * {@inheritDoc}
      */
     public void clear()

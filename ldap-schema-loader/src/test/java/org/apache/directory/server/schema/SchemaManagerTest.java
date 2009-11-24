@@ -19,20 +19,199 @@
  */
 package org.apache.directory.server.schema;
 
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.directory.server.schema.loader.ldif.LdifSchemaLoaderTest;
+import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.JarLdifSchemaLoader;
+import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
+import org.apache.directory.shared.schema.loader.ldif.SchemaEntityFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
+/**
+ * A test class for SchemaManager.
+ *
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @version $Rev$, $Date$
+ */
 public class SchemaManagerTest
 {
+    // A directory in which the ldif files will be stored
+    private static String workingDirectory;
+    
+    // A LDIF loader
+    private static LdifSchemaLoader ldifLoader;
+    
+    // A SchemaObject factory
+    private static SchemaEntityFactory factory;
+    
+    @BeforeClass
+    public static void setup() throws Exception
+    {
+        workingDirectory = System.getProperty( "workingDirectory" );
+
+        if ( workingDirectory == null )
+        {
+            String path = LdifSchemaLoaderTest.class.getResource( "" ).getPath();
+            int targetPos = path.indexOf( "target" );
+            workingDirectory = path.substring( 0, targetPos + 6 );
+        }
+        
+        // Cleanup the target directory
+        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+
+        SchemaLdifExtractor extractor = new SchemaLdifExtractor( new File( workingDirectory ) );
+        extractor.extractOrCopy();
+        
+        ldifLoader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
+        factory = new SchemaEntityFactory();
+    }
+    
+    
+    @AfterClass
+    public static void cleanup() throws IOException
+    {
+        // Cleanup the target directory
+        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+    }
+    
+    
+    private void checkComparators( List<Entry> comparators, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+    {
+        for ( Entry entry : comparators )
+        {
+            LdapComparator<?> expectedComparator = factory.getLdapComparator( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            LdapComparator<?> comparator = schemaManager.getComparatorRegistry().lookup( expectedComparator.getOid() );
+            
+            if ( !expectedComparator.equals( comparator ) )
+            {
+                fail();
+            }
+            
+            expectedRegistries.register( expectedComparator );
+        }
+    }
+    
+    
+    private void checkNormalizers( List<Entry> normalizers, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+    {
+        for ( Entry entry : normalizers )
+        {
+            Normalizer expectedNormalizer = factory.getNormalizer( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            Normalizer normalizer = schemaManager.getNormalizerRegistry().lookup( expectedNormalizer.getOid() );
+            
+            if ( !expectedNormalizer.equals( normalizer ) )
+            {
+                fail();
+            }
+
+            expectedRegistries.register( expectedNormalizer );
+        }
+    }
+    
+    
+    private void checkSyntaxCheckers( List<Entry> syntaxCheckers, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+    {
+        for ( Entry entry : syntaxCheckers )
+        {
+            SyntaxChecker expectedSyntaxChecker = factory.getSyntaxChecker( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            SyntaxChecker syntaxChecker = schemaManager.getSyntaxCheckerRegistry().lookup( expectedSyntaxChecker.getOid() );
+            
+            if ( !expectedSyntaxChecker.equals( syntaxChecker ) )
+            {
+                fail();
+            }
+            
+            expectedRegistries.register( expectedSyntaxChecker );
+        }
+    }
+    
+    
+    private void checkSyntaxes( List<Entry> syntaxes, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+    {
+        for ( Entry entry : syntaxes )
+        {
+            LdapSyntax expectedLdapSyntax = factory.getSyntax( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            LdapSyntax syntax = schemaManager.getLdapSyntaxRegistry().lookup( expectedLdapSyntax.getOid() );
+            
+            expectedLdapSyntax.applyRegistries( expectedRegistries );
+            
+            if ( !expectedLdapSyntax.equals( syntax ) )
+            {
+                fail();
+            }
+            
+            expectedRegistries.register( expectedLdapSyntax );
+        }
+    }
+    
+    
+    private void checkMatchingRules( List<Entry> matchingRules, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+    {
+        for ( Entry entry : matchingRules )
+        {
+            MatchingRule expectedMatchingRule = factory.getMatchingRule( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            MatchingRule matchingRule = schemaManager.getMatchingRuleRegistry().lookup( expectedMatchingRule.getOid() );
+            
+            expectedMatchingRule.applyRegistries( expectedRegistries );
+            
+            if ( !expectedMatchingRule.equals( matchingRule ) )
+            {
+                fail();
+            }
+            
+            expectedRegistries.register( expectedMatchingRule );
+        }
+    }
+    
+    
+    /**
+     * We will load the System schema, and test that the schemaManager is consistent
+     */
     @Test
-    public void testSchemaManager() throws Exception
+    public void testLoadSystem() throws Exception
     {
         JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
-        SchemaManager sm = new DefaultSchemaManager( loader );
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
 
-        sm.loadWithDeps( /*"system", */"apachemeta" );
+        Registries expectedRegistries = new Registries( null );
+
+        String schemaName = "system";
+        
+        schemaManager.loadWithDeps( schemaName );
+        
+        // Test Comparators
+        checkComparators( ldifLoader.loadComparators( schemaName ), schemaManager, expectedRegistries );
+        
+        // Test Normalizers
+        checkNormalizers( ldifLoader.loadNormalizers( schemaName ), schemaManager, expectedRegistries );
+        
+        // Test SyntaxCheckers
+        checkSyntaxCheckers( ldifLoader.loadSyntaxCheckers( schemaName ), schemaManager, expectedRegistries );
+        
+        // Test LdapSyntax
+        checkSyntaxes( ldifLoader.loadSyntaxes( schemaName ), schemaManager, expectedRegistries );
+
+        // Test MatchingRules
+        checkMatchingRules( ldifLoader.loadMatchingRules( schemaName ), schemaManager, expectedRegistries );
+        
+        // Test ATs
     }
 }

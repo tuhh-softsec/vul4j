@@ -613,6 +613,177 @@ public class ObjectClass extends SchemaObject
     
     
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof ObjectClass ) )
+        {
+            return false;
+        }
+        
+        ObjectClass that = (ObjectClass)o;
+        
+        // The ObjectClassType
+        if ( objectClassType != that.objectClassType )
+        {
+            return false;
+        }
+        
+        // The Superiors OIDs
+        if ( superiorOids.size() != that.superiorOids.size() )
+        {
+            return false;
+        }
+        
+        // One way
+        for ( String oid : superiorOids )
+        {
+            if ( !that.superiorOids.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The other way
+        for ( String oid : that.superiorOids )
+        {
+            if ( !superiorOids.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The Superiors
+        if ( superiors.size() != that.superiors.size() )
+        {
+            return false;
+        }
+        
+        // One way
+        for ( ObjectClass oid : superiors )
+        {
+            if ( !that.superiors.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The other way
+        for ( ObjectClass oid : that.superiors )
+        {
+            if ( !superiors.contains( oid ) )
+            {
+                return false;
+            }
+        }
+        
+        // The MAY OIDs
+        if ( mayAttributeTypeOids.size() != that.mayAttributeTypeOids.size() )
+        {
+            return false;
+        }
+        
+        // One way
+        for ( String oid : mayAttributeTypeOids )
+        {
+            if ( !that.mayAttributeTypeOids.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The other way
+        for ( String oid : that.mayAttributeTypeOids )
+        {
+            if ( !mayAttributeTypeOids.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The MAY
+        if ( mayAttributeTypes.size() != that.mayAttributeTypes.size() )
+        {
+            return false;
+        }
+        
+        // One way
+        for ( AttributeType oid : mayAttributeTypes )
+        {
+            if ( !that.mayAttributeTypes.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The other way
+        for ( AttributeType oid : that.mayAttributeTypes )
+        {
+            if ( !mayAttributeTypes.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The MUST OIDs
+        if ( mustAttributeTypeOids.size() != that.mustAttributeTypeOids.size() )
+        {
+            return false;
+        }
+        
+        // One way
+        for ( String oid : mustAttributeTypeOids )
+        {
+            if ( !that.mustAttributeTypeOids.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The other way
+        for ( String oid : that.mustAttributeTypeOids )
+        {
+            if ( !mustAttributeTypeOids.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The MUST
+        if ( mustAttributeTypes.size() != that.mustAttributeTypes.size() )
+        {
+            return false;
+        }
+        
+        // One way
+        for ( AttributeType oid : mustAttributeTypes )
+        {
+            if ( !that.mustAttributeTypes.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        // The other way
+        for ( AttributeType oid : that.mustAttributeTypes )
+        {
+            if ( !mustAttributeTypes.contains( oid ) )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    
+    /**
      * {@inheritDoc}
      */
     public void clear()

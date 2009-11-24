@@ -230,6 +230,28 @@ public class DITStructureRule extends SchemaObject
     
     
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof DITStructureRule ) )
+        {
+            return false;
+        }
+        
+        DITStructureRule that = (DITStructureRule)o;
+        
+        // TODO : complete the test
+        return true;
+    }
+    
+    
+    /**
      * {@inheritDoc}
      */
     public void clear()

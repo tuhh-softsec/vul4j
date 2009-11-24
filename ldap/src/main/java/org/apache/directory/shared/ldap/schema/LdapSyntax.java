@@ -232,6 +232,34 @@ public class LdapSyntax extends SchemaObject
     
     
     /**
+     * @see Object#equals()
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof LdapSyntax ) )
+        {
+            return false;
+        }
+        
+        LdapSyntax that = (LdapSyntax)o;
+        
+        // IsHR
+        if ( isHumanReadable != that.isHumanReadable )
+        {
+            return false;
+        }
+        
+        // Check the SyntaxChecker (not a equals)
+        return syntaxChecker.getOid().equals( that.syntaxChecker.getOid() );
+    }
+
+    
+    /**
      * {@inheritDoc}
      */
     public void clear()

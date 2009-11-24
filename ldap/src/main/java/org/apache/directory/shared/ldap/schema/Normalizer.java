@@ -100,6 +100,20 @@ public abstract class Normalizer extends LoadableSchemaObject
         // Do nothing (general case).
     }
     
+    
+    /**
+     * @see Object#equals()
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        return o instanceof Normalizer;
+    }
+    
 
     /**
      * @see Object#toString()

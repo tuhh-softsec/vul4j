@@ -328,6 +328,66 @@ public class MatchingRule extends SchemaObject
     
     
     /**
+     * @see Object#equals()
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof MatchingRule ) )
+        {
+            return false;
+        }
+        
+        MatchingRule that = (MatchingRule)o;
+        
+        // Check the Comparator
+        if ( ldapComparator != null )
+        {
+            if ( !ldapComparator.equals( that.ldapComparator ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( that.ldapComparator != null )
+            {
+                return false;
+            }
+        }
+            
+        
+        // Check the Normalizer
+        if ( normalizer != null )
+        {
+            if ( !normalizer.equals( that.normalizer ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( that.normalizer != null )
+            {
+                return false;
+            }
+        }
+        
+        // Check the Syntax
+        if ( !compareOid( ldapSyntaxOid, that.ldapSyntaxOid ) )
+        {
+            return false;
+        }
+        
+        return ldapSyntax.equals( that.ldapSyntax );
+    }
+    
+    
+    /**
      * {@inheritDoc}
      */
     public void clear()

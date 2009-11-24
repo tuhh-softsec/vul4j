@@ -258,6 +258,28 @@ public class MatchingRuleUse extends SchemaObject
     
     
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof MatchingRuleUse ) )
+        {
+            return false;
+        }
+        
+        MatchingRuleUse that = (MatchingRuleUse)o;
+        
+        // TODO : complete the checks
+        return true;
+    }
+    
+    
+    /**
      * {@inheritDoc}
      */
     public void clear()

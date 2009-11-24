@@ -85,6 +85,20 @@ public abstract class SyntaxChecker extends LoadableSchemaObject
 
 
     /**
+     * @see Object#equals()
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        return o instanceof SyntaxChecker;
+    }
+
+    
+    /**
      * @see Object#toString()
      */
     public String toString()

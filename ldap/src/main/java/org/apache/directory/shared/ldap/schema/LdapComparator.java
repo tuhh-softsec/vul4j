@@ -54,6 +54,20 @@ public abstract class LdapComparator<T> extends LoadableSchemaObject implements 
     {
         // Do nothing (general case).
     }
+    
+    
+    /**
+     * @see Object#equals()
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        return o instanceof LdapComparator<?>;
+    }
 
     
     /**

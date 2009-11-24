@@ -470,6 +470,28 @@ public class NameForm extends SchemaObject
     
     
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof NameForm ) )
+        {
+            return false;
+        }
+        
+        NameForm that = (NameForm)o;
+        
+        // TODO : complete the checks
+        return true;
+    }
+    
+    
+    /**
      * {@inheritDoc}
      */
     public void clear()

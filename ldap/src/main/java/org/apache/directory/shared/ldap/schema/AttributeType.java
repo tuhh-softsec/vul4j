@@ -974,4 +974,156 @@ public class AttributeType extends SchemaObject implements Cloneable
         superior = null;
         syntax = null;
     }
+    
+    
+    /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof AttributeType ) )
+        {
+            return false;
+        }
+        
+        AttributeType that = (AttributeType)o;
+        
+        // The COLLECTIVE
+        if ( isCollective != that.isCollective )
+        {
+            return false;
+        }
+        
+        // The SINGLE_VALUE
+        if ( isSingleValued != that.isSingleValued )
+        {
+            return false;
+        }
+        
+        // The NO_USER_MODIFICATION
+        if ( canUserModify != that.canUserModify )
+        {
+            return false;
+        }
+        
+        // The USAGE
+        if ( usage != that.usage )
+        {
+            return false;
+        }
+        
+        // The equality
+        if ( !compareOid( equalityOid, that.equalityOid ) )
+        {
+            return false;
+        }
+        
+        if ( equality != null )
+        {
+            if ( !equality.equals( that.equality ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( that.equality != null )
+            {
+                return false;
+            }
+        }
+        
+        // The ordering
+        if ( !compareOid( orderingOid, that.orderingOid ) )
+        {
+            return false;
+        }
+
+        if ( ordering != null )
+        {
+            if ( !ordering.equals( that.ordering ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( that.ordering != null )
+            {
+                return false;
+            }
+        }
+        
+        // The substring
+        if ( !compareOid( substringOid, that.substringOid ) )
+        {
+            return false;
+        }
+        
+        if ( substring != null )
+        {
+            if ( !substring.equals( that.substring ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( that.substring != null )
+            {
+                return false;
+            }
+        }
+
+        // The superior
+        if ( !compareOid( superiorOid, that.superiorOid ) )
+        {
+            return false;
+        }
+        
+        if ( superior != null )
+        {
+            if ( !superior.equals( that.superior ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( that.superior != null )
+            {
+                return false;
+            }
+        }
+        
+        // The syntax
+        if ( !compareOid( syntaxOid, that.syntaxOid ) )
+        {
+            return false;
+        }
+        
+        if ( syntaxLength != that.syntaxLength )
+        {
+            return false;
+        }
+        
+        if ( syntax == null )
+        {
+            return that.syntax == null;
+        }
+
+        if ( syntax.equals(  that.syntax ) )
+        {
+            return syntaxLength == that.syntaxLength;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

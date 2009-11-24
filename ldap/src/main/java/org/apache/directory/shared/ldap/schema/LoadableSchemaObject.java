@@ -117,4 +117,37 @@ public abstract class LoadableSchemaObject extends SchemaObject
     {
         return null;
     }
+    
+    
+    /**
+     * @see Object#equals()
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof LoadableSchemaObject ) )
+        {
+            return false;
+        }
+        
+        LoadableSchemaObject that = (LoadableSchemaObject)o;
+        
+        // Check the byteCode
+        // TODO
+        
+        // Check the FQCN
+        if ( fqcn == null )
+        {
+            return that.fqcn == null;
+        }
+        else
+        {
+            return fqcn.equals( that.fqcn );
+        }
+       
+    }
 }
