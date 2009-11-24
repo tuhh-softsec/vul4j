@@ -125,6 +125,13 @@
                     <td>No</td>
                     <td>true</td>
                 </tr>
+                <tr>
+                    <td>preserveHost</td>
+                    <td>Instructs send the request to the target server with the same Host header value as in the incoming request.
+                    This feature is very usefull when the target server uses virtual hosts.</td>
+                    <td>No</td>
+                    <td>false</td>
+                </tr>
 			</table>
 
 		</section>

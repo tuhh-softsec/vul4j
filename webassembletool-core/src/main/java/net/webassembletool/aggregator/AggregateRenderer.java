@@ -15,9 +15,9 @@ import net.webassembletool.parser.Parser;
  * 
  * Sample syntax used for includes :
  * <ul>
- * <li>&lt;!--$includeblock$provider$page$blockname$--&gt;</li>
- * <li>&lt;!--$includetemplate$provider$page$templatename$--&gt;</li>
- * <li>&lt;!--$beginput$name$--&gt;</li>
+ * <li>&lt;!--$includeblock$provider$page$blockname$--&gt;&lt;!--$endincludeblock$--&gt;</li>
+ * <li>&lt;!--$includetemplate$provider$page$templatename$--&gt;&lt;!--$endincludetemplate$--&gt;</li>
+ * <li>&lt;!--$beginput$name$--&gt;&lt;!--$endput$--&gt;</li>
  * </ul>
  * 
  * Sample syntax used inside included contents for template and block

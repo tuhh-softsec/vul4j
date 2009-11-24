@@ -10,6 +10,6 @@ Page from aggregated1
 <br />
 User: <%=request.getRemoteUser() %>
 <br />
-<!--$includeblock$aggregated2$block.jsp$myblock$-->
+<!--$includeblock$aggregated2$block.jsp$myblock$--><!--$endincludeblock$-->
 </body>
 </html>

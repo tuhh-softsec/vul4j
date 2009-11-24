@@ -11,11 +11,11 @@
 			the API for more specific purpose. All functionalities
 			are implemented in
 			class
-			<a href="apidocs/net/webassembletool/Driver.html">net.webassembletool.Driver</a>
+			<a href="webassembletool-core/apidocs/net/webassembletool/Driver.html">net.webassembletool.Driver</a>
 		</p>
 		<p>
 			See the
-			<a href="apidocs/index.html">Javadoc</a>
+			<a href="webassembletool-core/apidocs/index.html">Javadoc</a>
 			for more information
 		</p>
 	</body>

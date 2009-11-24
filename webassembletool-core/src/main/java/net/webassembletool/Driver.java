@@ -310,28 +310,6 @@ public class Driver {
 	 * Retrieves a resource from the provider application and transforms it
 	 * using the Renderer passed as a parameter.
 	 * 
-	 * On of the Renderers that can be used is the AggregateRenderer that parses
-	 * the html pages to find tags to be replaced by contents from other
-	 * providers. Sample syntax used for includes :
-	 * <ul>
-	 * <li>&lt;!--$includeblock$provider$page$blockname$--&gt;</li>
-	 * <li>&lt;!--$beginincludetemplate$provider$page$templatename$--&gt;</li>
-	 * <li>&lt;!--$beginput$name$--&gt;</li>
-	 * </ul>
-	 * Sample syntax used inside included contents for template and block
-	 * definition :
-	 * <ul>
-	 * <li>&lt;!--$beginblock$name$--&gt;</li>
-	 * <li>&lt;!--$begintemplate$name$--&gt;</li>
-	 * <li>&lt;!--$beginparam$name$--&gt;</li>
-	 * </ul>
-	 * Aggregation is always in "proxy mode" that means cookies or parameters
-	 * from the original request are transmitted to the target server. <br/>
-	 * <b>NB: Cookies and parameters are not transmitted to templates or blocks
-	 * invoked by the page</b>.
-	 * 
-	 * 
-	 * 
 	 * @param relUrl
 	 *            the relative URL to the resource
 	 * @param request

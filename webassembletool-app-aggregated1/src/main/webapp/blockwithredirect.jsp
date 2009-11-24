@@ -8,6 +8,6 @@
 <body style="background-color: yellow">
 Page from aggregated1
 <br />
-<!--$includeblock$aggregated2$circularredirect.jsp?count=<%=request.getParameter("count")%>$myblock$-->
+<!--$includeblock$aggregated2$circularredirect.jsp?count=<%=request.getParameter("count")%>$myblock$--><!--$endincludeblock$-->
 </body>
 </html>
