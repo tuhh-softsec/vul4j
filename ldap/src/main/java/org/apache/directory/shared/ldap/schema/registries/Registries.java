@@ -288,7 +288,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             AttributeType attributeType = attributeTypeRegistry.lookup( name );
             
-            return attributeType.getOid();
+            if ( attributeType != null )
+            {
+                return attributeType.getOid();
+            }
         }
         catch ( NamingException ne )
         {
@@ -300,7 +303,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             ObjectClass objectClass = objectClassRegistry.lookup( name );
             
-            return objectClass.getOid();
+            if ( objectClass != null )
+            {
+                return objectClass.getOid();
+            }
         }
         catch ( NamingException ne )
         {
@@ -312,7 +318,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             LdapSyntax ldapSyntax = ldapSyntaxRegistry.lookup( name );
             
-            return ldapSyntax.getOid();
+            if ( ldapSyntax != null )
+            {
+                return ldapSyntax.getOid();
+            }
         }
         catch ( NamingException ne )
         {
@@ -324,7 +333,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             MatchingRule matchingRule = matchingRuleRegistry.lookup( name );
             
-            return matchingRule.getOid();
+            if ( matchingRule != null )
+            {
+                return matchingRule.getOid();
+            }
         }
         catch ( NamingException ne )
         {
@@ -336,7 +348,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             MatchingRuleUse matchingRuleUse = matchingRuleUseRegistry.lookup( name );
             
-            return matchingRuleUse.getOid();
+            if ( matchingRuleUse != null )
+            {
+                return matchingRuleUse.getOid();
+            }
         }
         catch ( NamingException ne )
         {
@@ -348,7 +363,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             NameForm nameForm = nameFormRegistry.lookup( name );
             
-            return nameForm.getOid();
+            if ( nameForm != null )
+            {
+                return nameForm.getOid();
+            }
         }
         catch ( NamingException ne )
         {
@@ -360,7 +378,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             DITContentRule ditContentRule = ditContentRuleRegistry.lookup( name );
             
-            return ditContentRule.getOid();
+            if ( ditContentRule != null )
+            {
+                return ditContentRule.getOid();
+            }
         }
         catch ( NamingException ne )
         {
@@ -372,13 +393,17 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             DITStructureRule ditStructureRule = ditStructureRuleRegistry.lookup( name );
             
-            return ditStructureRule.getOid();
+            if ( ditStructureRule != null )
+            {
+                return ditStructureRule.getOid();
+            }
         }
         catch ( NamingException ne )
         {
             // No more registries to look at...
-            return null;
         }
+        
+        return null;
     }
 
 
