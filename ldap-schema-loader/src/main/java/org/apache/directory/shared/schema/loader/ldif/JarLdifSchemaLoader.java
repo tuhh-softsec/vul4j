@@ -156,25 +156,33 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     /**
      * {@inheritDoc}
      */
-    public List<Entry> loadComparators( Schema schema ) throws Exception
+    public List<Entry> loadComparators( Schema... schemas ) throws Exception
     {
-        String comparatorsDirectory = getSchemaDirectory( schema ) 
-            + "/" + SchemaConstants.COMPARATORS_PATH;
-        
         List<Entry> comparatorList = new ArrayList<Entry>();
         
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + comparatorsDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            return comparatorList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String comparatorsDirectory = getSchemaDirectory( schema ) 
+                + "/" + SchemaConstants.COMPARATORS_PATH;
             
-            if ( regex.matcher( resourcePath ).matches() )
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "comparator LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
-
-                comparatorList.add( entry.getEntry() );
+                Pattern regex = Pattern.compile( ".*" + comparatorsDirectory + "/m-oid=.*\\." + LDIF_EXT );
+                
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "comparator LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+    
+                    comparatorList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -183,32 +191,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     
     
     /**
-     * Loads the SyntaxCheckers from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which syntaxCheckers are loaded
-     * @throws Exception if there are failures accessing syntaxChecker 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadSyntaxCheckers( Schema schema ) throws Exception
+    public List<Entry> loadSyntaxCheckers( Schema... schemas ) throws Exception
     {
-        String syntaxCheckersDirectory = getSchemaDirectory( schema ) 
-            +  "/" + SchemaConstants.SYNTAX_CHECKERS_PATH;
-
         List<Entry> syntaxCheckerList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + syntaxCheckersDirectory + "/m-oid=.*\\." + LDIF_EXT );
-            
-            if ( regex.matcher( resourcePath ).matches() )
+            return syntaxCheckerList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String syntaxCheckersDirectory = getSchemaDirectory( schema ) 
+                +  "/" + SchemaConstants.SYNTAX_CHECKERS_PATH;
+    
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "syntaxChecker LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
+                Pattern regex = Pattern.compile( ".*" + syntaxCheckersDirectory + "/m-oid=.*\\." + LDIF_EXT );
                 
-                syntaxCheckerList.add( entry.getEntry() );
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "syntaxChecker LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+                    
+                    syntaxCheckerList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -217,32 +228,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     
     
     /**
-     * Loads the Normalizers from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which normalizers are loaded
-     * @throws Exception if there are failures accessing normalizer information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadNormalizers( Schema schema ) throws Exception
+    public List<Entry> loadNormalizers( Schema... schemas ) throws Exception
     {
-        String normalizersDirectory = getSchemaDirectory( schema )
-            + "/" + SchemaConstants.NORMALIZERS_PATH;
-
         List<Entry> normalizerList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + normalizersDirectory + "/m-oid=.*\\." + LDIF_EXT );
-            
-            if ( regex.matcher( resourcePath ).matches() )
+            return normalizerList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String normalizersDirectory = getSchemaDirectory( schema )
+                + "/" + SchemaConstants.NORMALIZERS_PATH;
+    
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "normalizer LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
+                Pattern regex = Pattern.compile( ".*" + normalizersDirectory + "/m-oid=.*\\." + LDIF_EXT );
                 
-                normalizerList.add( entry.getEntry() );
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "normalizer LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+                    
+                    normalizerList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -251,32 +265,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     
     
     /**
-     * Loads the MatchingRules from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which matchingRules are loaded
-     * @throws Exception if there are failures accessing matchingRule 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadMatchingRules( Schema schema ) throws Exception
+    public List<Entry> loadMatchingRules( Schema... schemas ) throws Exception
     {
-        String matchingRulesDirectory = getSchemaDirectory( schema )
-            + "/" + SchemaConstants.MATCHING_RULES_PATH;
-        
         List<Entry> matchingRuleList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + matchingRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            return matchingRuleList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String matchingRulesDirectory = getSchemaDirectory( schema )
+                + "/" + SchemaConstants.MATCHING_RULES_PATH;
             
-            if ( regex.matcher( resourcePath ).matches() )
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "matchingRules LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
-
-                matchingRuleList.add( entry.getEntry() );
+                Pattern regex = Pattern.compile( ".*" + matchingRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+                
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "matchingRules LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+    
+                    matchingRuleList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -285,32 +302,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     
     
     /**
-     * Loads the Syntaxes from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which syntaxes are loaded
-     * @throws Exception if there are failures accessing comparator information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadSyntaxes( Schema schema ) throws Exception
+    public List<Entry> loadSyntaxes( Schema... schemas ) throws Exception
     {
-        String syntaxesDirectory = getSchemaDirectory( schema )
-            + "/" + SchemaConstants.SYNTAXES_PATH;
-
         List<Entry> syntaxList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + syntaxesDirectory + "/m-oid=.*\\." + LDIF_EXT );
-            
-            if ( regex.matcher( resourcePath ).matches() )
+            return syntaxList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String syntaxesDirectory = getSchemaDirectory( schema )
+                + "/" + SchemaConstants.SYNTAXES_PATH;
+    
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "syntax LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
+                Pattern regex = Pattern.compile( ".*" + syntaxesDirectory + "/m-oid=.*\\." + LDIF_EXT );
                 
-                syntaxList.add( entry.getEntry() );
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "syntax LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+                    
+                    syntaxList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -319,34 +339,37 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
     
     /**
-     * Loads the AttributeTypes from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which attributeTypes are loaded
-     * @throws Exception if there are failures accessing attributeTypes 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadAttributeTypes( Schema schema ) throws Exception
+    public List<Entry> loadAttributeTypes( Schema... schemas ) throws Exception
     {
-    	// check that the attributeTypes directory exists for the schema
-        String attributeTypesDirectory = getSchemaDirectory( schema )
-            + "/" + SchemaConstants.ATTRIBUTES_TYPE_PATH;
-        
         List<Entry> attributeTypeList = new ArrayList<Entry>();
 
-        // get list of attributeType LDIF schema files in attributeTypes
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + attributeTypesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            return attributeTypeList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+        	// check that the attributeTypes directory exists for the schema
+            String attributeTypesDirectory = getSchemaDirectory( schema )
+                + "/" + SchemaConstants.ATTRIBUTES_TYPE_PATH;
             
-            if ( regex.matcher( resourcePath ).matches() )
+            // get list of attributeType LDIF schema files in attributeTypes
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "attributeType LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
-
-                attributeTypeList.add( entry.getEntry() );
+                Pattern regex = Pattern.compile( ".*" + attributeTypesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+                
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "attributeType LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+    
+                    attributeTypeList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -355,32 +378,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
 
     /**
-     * Loads the MatchingRuleUses from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which matchingRuleUses are loaded
-     * @throws Exception if there are failures accessing matchingRuleUse 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadMatchingRuleUses( Schema schema ) throws Exception
+    public List<Entry> loadMatchingRuleUses( Schema... schemas ) throws Exception
     {
-        String matchingRuleUsesDirectory = getSchemaDirectory( schema )
-            + "/" + SchemaConstants.MATCHING_RULE_USE_PATH;
-        
         List<Entry> matchingRuleUseList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + matchingRuleUsesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+            return matchingRuleUseList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String matchingRuleUsesDirectory = getSchemaDirectory( schema )
+                + "/" + SchemaConstants.MATCHING_RULE_USE_PATH;
             
-            if ( regex.matcher( resourcePath ).matches() )
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "matchingRuleUse LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
-
-                matchingRuleUseList.add( entry.getEntry() );
+                Pattern regex = Pattern.compile( ".*" + matchingRuleUsesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+                
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "matchingRuleUse LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+    
+                    matchingRuleUseList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -389,31 +415,34 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
 
     /**
-     * Loads the NameForms from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which nameForms are loaded
-     * @throws Exception if there are failures accessing nameForm information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadNameForms( Schema schema ) throws Exception
+    public List<Entry> loadNameForms( Schema... schemas ) throws Exception
     {
-        String nameFormsDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.NAME_FORMS_PATH;
-
         List<Entry> nameFormList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + nameFormsDirectory + "/m-oid=.*\\." + LDIF_EXT );
-            
-            if ( regex.matcher( resourcePath ).matches() )
+            return nameFormList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String nameFormsDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.NAME_FORMS_PATH;
+    
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "nameForm LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
-
-                nameFormList.add( entry.getEntry() );
+                Pattern regex = Pattern.compile( ".*" + nameFormsDirectory + "/m-oid=.*\\." + LDIF_EXT );
+                
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "nameForm LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+    
+                    nameFormList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -422,32 +451,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
 
     /**
-     * Loads the DitContentRules from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which ditContentRules are loaded
-     * @throws Exception if there are failures accessing ditContentRules 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadDitContentRules( Schema schema ) throws Exception
+    public List<Entry> loadDitContentRules( Schema... schemas ) throws Exception
     {
-        String ditContentRulesDirectory = getSchemaDirectory( schema ) + "/" + 
-            SchemaConstants.DIT_CONTENT_RULES_PATH;
-
         List<Entry> ditContentRulesList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + ditContentRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
-            
-            if ( regex.matcher( resourcePath ).matches() )
+            return ditContentRulesList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String ditContentRulesDirectory = getSchemaDirectory( schema ) + "/" + 
+                SchemaConstants.DIT_CONTENT_RULES_PATH;
+    
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "ditContentRule LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
+                Pattern regex = Pattern.compile( ".*" + ditContentRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
                 
-                ditContentRulesList.add( entry.getEntry() );
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "ditContentRule LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+                    
+                    ditContentRulesList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -456,32 +488,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
 
     /**
-     * Loads the ditStructureRules from LDIF files in the supplied schema into 
-     * the supplied registries.
-     *
-     * @param schema the schema for which ditStructureRules are loaded
-     * @throws Exception if there are failures accessing ditStructureRule 
-     * information stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadDitStructureRules( Schema schema ) throws Exception
+    public List<Entry> loadDitStructureRules( Schema... schemas ) throws Exception
     {
-        String ditStructureRulesDirectory = getSchemaDirectory( schema )
-            + "/" + SchemaConstants.DIT_STRUCTURE_RULES_PATH;
-
         List<Entry> ditStructureRuleList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + ditStructureRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
-            
-            if ( regex.matcher( resourcePath ).matches() )
+            return ditStructureRuleList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+            String ditStructureRulesDirectory = getSchemaDirectory( schema )
+                + "/" + SchemaConstants.DIT_STRUCTURE_RULES_PATH;
+    
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "ditStructureRule LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
+                Pattern regex = Pattern.compile( ".*" + ditStructureRulesDirectory + "/m-oid=.*\\." + LDIF_EXT );
                 
-                ditStructureRuleList.add( entry.getEntry() );
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "ditStructureRule LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+                    
+                    ditStructureRuleList.add( entry.getEntry() );
+                }
             }
         }
         
@@ -490,32 +525,35 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
 
 
     /**
-     * Loads the ObjectClasses from LDIF files in the supplied schema into the 
-     * supplied registries.
-     *
-     * @param schema the schema for which objectClasses are loaded
-     * @throws Exception if there are failures accessing objectClass information
-     * stored in LDIF files
+     * {@inheritDoc}
      */
-    public List<Entry> loadObjectClasses( Schema schema ) throws Exception
+    public List<Entry> loadObjectClasses( Schema... schemas ) throws Exception
     {
-    	// get objectClasses directory, check if exists, return if not
-    	String objectClassesDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.OBJECT_CLASSES_PATH;
-
         List<Entry> objectClassList = new ArrayList<Entry>();
-
-        for ( String resourcePath : RESOURCE_MAP.keySet() )
+        
+        if ( schemas == null )
         {
-            Pattern regex = Pattern.compile( ".*" + objectClassesDirectory + "/m-oid=.*\\." + LDIF_EXT );
-            
-            if ( regex.matcher( resourcePath ).matches() )
+            return objectClassList;
+        }
+        
+        for ( Schema schema : schemas )
+        {
+        	// get objectClasses directory, check if exists, return if not
+        	String objectClassesDirectory = getSchemaDirectory( schema ) + "/" + SchemaConstants.OBJECT_CLASSES_PATH;
+    
+            for ( String resourcePath : RESOURCE_MAP.keySet() )
             {
-                URL resource = getResource( resourcePath, "objectClass LDIF file" );
-                LdifReader reader = new LdifReader( resource.openStream() );
-                LdifEntry entry = reader.next();
-                reader.close();
-
-                objectClassList.add( entry.getEntry() );
+                Pattern regex = Pattern.compile( ".*" + objectClassesDirectory + "/m-oid=.*\\." + LDIF_EXT );
+                
+                if ( regex.matcher( resourcePath ).matches() )
+                {
+                    URL resource = getResource( resourcePath, "objectClass LDIF file" );
+                    LdifReader reader = new LdifReader( resource.openStream() );
+                    LdifEntry entry = reader.next();
+                    reader.close();
+    
+                    objectClassList.add( entry.getEntry() );
+                }
             }
         }
         

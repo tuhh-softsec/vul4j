@@ -20,9 +20,11 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -659,5 +661,173 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     public Object getDao()
     {
         return null;
+    }
+    
+    
+    private Schema[] buildSchemaArray( String... schemaNames ) throws Exception
+    {
+        Schema[] schemas = new Schema[schemaNames.length];
+        int pos = 0;
+        
+        for ( String schemaName : schemaNames )
+        {
+            schemas[pos++] = getSchema( schemaName );
+        }
+        
+        return schemas;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadAttributeTypes( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadAttributeTypes( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadComparators( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadComparators( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadDitContentRules( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadDitContentRules( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadDitStructureRules( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadDitStructureRules( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadMatchingRules( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadMatchingRules( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadMatchingRuleUses( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadMatchingRuleUses( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadNameForms( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadNameForms( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadNormalizers( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadNormalizers( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadObjectClasses( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadObjectClasses( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadSyntaxes( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadSyntaxes( buildSchemaArray( schemaNames ) );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Entry> loadSyntaxCheckers( String... schemaNames ) throws Exception
+    {
+        if ( schemaNames == null )
+        {
+            return new ArrayList<Entry>();
+        }
+        
+        return loadSyntaxCheckers( buildSchemaArray( schemaNames ) );
     }
 }
