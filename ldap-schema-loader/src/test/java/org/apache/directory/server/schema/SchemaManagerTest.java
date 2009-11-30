@@ -23,11 +23,13 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.server.schema.loader.ldif.LdifSchemaLoaderTest;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -146,12 +148,14 @@ public class SchemaManagerTest
     
     private void checkSyntaxes( List<Entry> syntaxes, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
     {
+        List<Throwable> errors = new ArrayList<Throwable>();
+        
         for ( Entry entry : syntaxes )
         {
             LdapSyntax expectedLdapSyntax = factory.getSyntax( schemaManager, entry, schemaManager.getRegistries(), "system" );
             LdapSyntax syntax = schemaManager.getLdapSyntaxRegistry().lookup( expectedLdapSyntax.getOid() );
             
-            expectedLdapSyntax.applyRegistries( expectedRegistries );
+            expectedLdapSyntax.applyRegistries( errors, expectedRegistries );
             
             if ( !expectedLdapSyntax.equals( syntax ) )
             {
@@ -165,12 +169,14 @@ public class SchemaManagerTest
     
     private void checkMatchingRules( List<Entry> matchingRules, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
     {
+        List<Throwable> errors = new ArrayList<Throwable>();
+        
         for ( Entry entry : matchingRules )
         {
             MatchingRule expectedMatchingRule = factory.getMatchingRule( schemaManager, entry, schemaManager.getRegistries(), "system" );
             MatchingRule matchingRule = schemaManager.getMatchingRuleRegistry().lookup( expectedMatchingRule.getOid() );
             
-            expectedMatchingRule.applyRegistries( expectedRegistries );
+            expectedMatchingRule.applyRegistries( errors, expectedRegistries );
             
             if ( !expectedMatchingRule.equals( matchingRule ) )
             {
@@ -179,6 +185,19 @@ public class SchemaManagerTest
             
             expectedRegistries.register( expectedMatchingRule );
         }
+    }
+    
+    
+    private SchemaManager loadSystem() throws Exception
+    {
+        JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+
+        String schemaName = "system";
+        
+        schemaManager.loadWithDeps( schemaName );
+        
+        return schemaManager;
     }
     
     
@@ -213,5 +232,23 @@ public class SchemaManagerTest
         checkMatchingRules( ldifLoader.loadMatchingRules( schemaName ), schemaManager, expectedRegistries );
         
         // Test ATs
+    }
+    
+    
+    @Test
+    public void testAddAttributeType() throws Exception
+    {
+    	SchemaManager schemaManager = loadSystem();
+    	
+    	AttributeType attributeType = new AttributeType( "1.1.0" );
+    	attributeType.setEqualityOid( "2.5.13.1" );
+    	attributeType.setOrderingOid( null );
+    	attributeType.setSubstringOid( null );
+    	attributeType.setSuperior( (String)null );
+    	
+    	schemaManager.register( attributeType );
+    	
+    	// Check that the AT has been correctly added
+    	
     }
 }

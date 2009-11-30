@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.List;
+
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -193,7 +195,7 @@ public class LdapSyntax extends SchemaObject
      *
      * @param registries The Registries
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
@@ -206,6 +208,13 @@ public class LdapSyntax extends SchemaObject
             {
                 // No SyntaxChecker ? Associate the Syntax to a catch all SyntaxChecker
                 syntaxChecker = new OctetStringSyntaxChecker( oid );
+            }
+
+            // Add the references for S :
+            // S -> SC
+            if ( syntaxChecker != null )
+            {
+                registries.addReference( this, syntaxChecker );
             }
         }
     }

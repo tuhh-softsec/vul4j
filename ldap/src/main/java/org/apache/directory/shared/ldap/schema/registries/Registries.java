@@ -47,9 +47,6 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.schema.UsageEnum;
-import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +106,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     protected LdapSyntaxRegistry ldapSyntaxRegistry;
     
     /** A map storing all the schema objects associated with a schema */
-    private Map<String, Set<SchemaObjectWrapper>> schemaObjectsBySchemaName;
+    private Map<String, Set<SchemaObjectWrapper>> schemaObjects;
     
     /** A flag indicating that the Registries is relaxed or not */
     private boolean isRelaxed;
@@ -155,7 +152,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         normalizerRegistry = new DefaultNormalizerRegistry();
         objectClassRegistry = new DefaultObjectClassRegistry();
         syntaxCheckerRegistry = new DefaultSyntaxCheckerRegistry();
-        schemaObjectsBySchemaName = new HashMap<String, Set<SchemaObjectWrapper>>();
+        schemaObjects = new HashMap<String, Set<SchemaObjectWrapper>>();
         usedBy = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
         using = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
         
@@ -512,37 +509,13 @@ public class Registries implements SchemaLoaderListener, Cloneable
     
     
     /**
-     * Add the AT references (using and usedBy) : 
-     * AT -> MR (for EQUALITY, ORDERING and SUBSTR)
-     * AT -> S
-     * AT -> AT
-     */
-    public void addCrossReferences( AttributeType attributeType )
+     * Add the SchemaObjectReferences. This method does nothing, it's just
+     * a catch all. The other methods will be called for each specific 
+     * schemaObject
+     *
+    public void addCrossReferences( SchemaObject schemaObject )
     {
-        if ( attributeType.getEquality() != null )
-        {
-            addReference( attributeType, attributeType.getEquality() );
-        }
-        
-        if ( attributeType.getOrdering() != null )
-        {
-            addReference( attributeType, attributeType.getOrdering() );
-        }
-        
-        if ( attributeType.getSubstring() != null )
-        {
-            addReference( attributeType, attributeType.getSubstring() );
-        }
-        
-        if ( attributeType.getSyntax() != null )
-        {
-            addReference( attributeType, attributeType.getSyntax() );
-        }
-        
-        if ( attributeType.getSuperior() != null )
-        {
-            addReference( attributeType, attributeType.getSuperior() );
-        }
+        // Do nothing : it's a catch all method.
     }
     
     
@@ -582,385 +555,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
     
     
     /**
-     * Build the Superior AttributeType reference for an AttributeType
-     */
-    private void buildSuperior(List<Throwable> errors, Set<String> done, AttributeType attributeType )
-    {
-        AttributeType superior = null;
-        
-        if ( attributeType.getSuperiorOid() != null )
-        {
-            // This AT has a superior
-            try
-            {
-                superior = attributeTypeRegistry.lookup( attributeType.getSuperiorOid() );
-            }
-            catch ( Exception e )
-            {
-                // Not allowed.
-                String msg = "Cannot find a Superior object for " + attributeType.getSyntaxOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " attributeType.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                
-                // Get out now
-                return;
-            }
-            
-            if ( superior != null )
-            {
-                // Check if this superior has already be processed
-                if ( !done.contains( superior.getOid() ) )
-                {
-                    done.add( superior.getOid() );
-                    
-                    // Recursively process the superior, and continue
-                    buildRecursiveAttributeTypeReferences( errors, done, superior );
-                }
-                
-                attributeType.updateSuperior( superior );
-                
-                // Update the descendant MAP
-                try
-                {
-                    attributeTypeRegistry.registerDescendants( attributeType, superior );
-                }
-                catch ( NamingException ne )
-                {
-                    errors.add( ne );
-                    LOG.info( ne.getMessage() );
-                }
-                
-                return;
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "Cannot find a SUPERIOR AttributeType object " + attributeType.getOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " matchingRule.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                
-                // Get out and return
-                return;
-            }
-        }
-        else
-        {
-            // No superior, just return
-            return;
-        }
-    }
-    
-    
-    /**
-     * Build the SYNTAX reference for an AttributeType
-     */
-    private void buildSyntax( List<Throwable> errors, AttributeType attributeType )
-    {
-        if ( attributeType.getSyntaxOid() != null )
-        {
-            LdapSyntax syntax = null;
-            
-            try
-            {
-                syntax = ldapSyntaxRegistry.lookup( attributeType.getSyntaxOid() );
-            }
-            catch ( NamingException ne )
-            {
-                // Not allowed.
-                String msg = "Cannot find a Syntax object for " + attributeType.getSyntaxOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " attributeType.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                return;
-            }
-            
-            if ( syntax != null )
-            {
-                // Update the Syntax reference
-                attributeType.updateSyntax( syntax );
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "Cannot find a Syntax instance for " + attributeType.getSyntaxOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " matchingRule.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                return;
-            }
-        }
-        else
-        {
-            // We inherit from the superior's syntax, if any
-            if ( attributeType.getSuperior() != null )
-            {
-                attributeType.updateSyntax( attributeType.getSuperior().getSyntax() );
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "The AttributeType " + attributeType.getName() + " must have " +
-                    "a syntax OID or a superior, it does not have any.";
-    
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                return;
-            }
-        }
-    }
-    
-    
-    /**
-     * Build the EQUALITY MR reference for an AttributeType
-     */
-    private void buildEquality( List<Throwable> errors, AttributeType attributeType )
-    {
-        // The equality MR. It can be null
-        if ( attributeType.getEqualityOid() != null )
-        {
-            MatchingRule equality = null;
-            
-            try
-            {
-                equality = matchingRuleRegistry.lookup( attributeType.getEqualityOid() );
-            }
-            catch ( NamingException ne )
-            {
-                // Not allowed.
-                String msg = "Cannot find an Equality MatchingRule object for " + attributeType.getEqualityOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " attributeType.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                return;
-            }
-            
-            if ( equality != null )
-            {
-                attributeType.updateEquality( equality );
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "Cannot find an EQUALITY MatchingRule instance for " + attributeType.getEqualityOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " matchingRule.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-            }
-        }
-        else
-        {
-            // If the AT has a superior, take its Equality MR if any
-            if ( ( attributeType.getSuperior() != null ) && ( attributeType.getSuperior().getEquality() != null ) )
-            {
-                attributeType.updateEquality( attributeType.getSuperior().getEquality() );
-            }
-        }
-    }
-    
-    
-    /**
-     * Build the ORDERING MR reference for an AttributeType
-     */
-    private void buildOrdering( List<Throwable> errors, AttributeType attributeType )
-    {
-        if ( attributeType.getOrderingOid() != null )
-        {
-            MatchingRule ordering = null;
-            
-            try
-            {
-                ordering = matchingRuleRegistry.lookup( attributeType.getOrderingOid() );
-            }
-            catch ( NamingException ne )
-            {
-                // Not allowed.
-                String msg = "Cannot find a Ordering MatchingRule object for " + attributeType.getSyntaxOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " attributeType.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                return;
-            }
-            
-            if ( ordering != null )
-            {
-                attributeType.updateOrdering( ordering );
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "Cannot find an ORDERING MatchingRule instance for " + attributeType.getOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " matchingRule.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-            }
-        }
-        else
-        {
-            // If the AT has a superior, take its Ordering MR if any
-            if ( ( attributeType.getSuperior() != null ) && ( attributeType.getSuperior().getOrdering() != null ) )
-            {
-                attributeType.updateOrdering( attributeType.getSuperior().getOrdering() );
-            }
-        }
-    }
-    
-    
-    /**
-     * Build the SUBSTR MR reference for an AttributeType
-     */
-    private void buildSubstring( List<Throwable> errors, AttributeType attributeType )
-    {
-        // The Substring MR. It can be null
-        if ( attributeType.getSubstringOid() != null )
-        {
-            MatchingRule substring = null;
-            
-            try
-            {
-                substring = matchingRuleRegistry.lookup( attributeType.getSubstringOid() );
-            }
-            catch ( NamingException ne )
-            {
-                // Not allowed.
-                String msg = "Cannot find a Substring MatchingRule object for " + attributeType.getSyntaxOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " attributeType.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                return;
-            }
-            
-            if ( substring != null )
-            {
-                attributeType.updateSubstring( substring );
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "Cannot find a SUBSTR MatchingRule instance for " + attributeType.getOid() + 
-                    " while building cross-references for the " + attributeType.getName() + 
-                    " matchingRule.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-                return;
-            }
-        }
-        else
-        {
-            // If the AT has a superior, take its Substring MR if any
-            if ( ( attributeType.getSuperior() != null ) && ( attributeType.getSuperior().getSubstring() != null ) )
-            {
-                attributeType.updateSubstring( attributeType.getSuperior().getSubstring() );
-            }
-        }
-    }
-    
-    
-    /**
-     * Check the constraints for the Usage field.
-     */
-    private void checkUsage( List<Throwable> errors, AttributeType attributeType )
-    {
-        // Check that the AT usage is the same that its superior
-        if ( ( attributeType.getSuperior() != null ) && 
-             ( attributeType.getUsage() != attributeType.getSuperior().getUsage() ) )
-        {
-            // This is an error
-            String msg = "The attributeType " + attributeType.getName() + " must have the same USAGE than its superior"; 
-
-            Throwable error = new LdapSchemaViolationException( 
-                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-            errors.add( error );
-            LOG.info( msg );
-            return;
-        }
-        
-        // Now, check that the AttributeType's USAGE does not conflict
-        if ( !attributeType.isUserModifiable() && ( attributeType.getUsage() == UsageEnum.USER_APPLICATIONS ) )
-        {
-            // Cannot have a not user modifiable AT whoch is not an operational AT
-            String msg = "The attributeType " + attributeType.getName() + " is a USER-APPLICATION attribute, " +
-                "it must be USER-MODIFIABLE"; 
-            
-            Throwable error = new LdapSchemaViolationException( 
-                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-            errors.add( error );
-            LOG.info( msg );
-        }
-    }
-    
-    
-    /**
-     * Check the constraints for the Collective field.
-     */
-    private void checkCollective( List<Throwable> errors, AttributeType attributeType )
-    {
-        if ( attributeType.getSuperior() != null )
-        {
-            if ( attributeType.getSuperior().isCollective() )
-            {
-                // An AttributeType will be collective if its superior is collective
-                attributeType.updateCollective( true );
-            }
-        }
-
-        if ( attributeType.isCollective() && ( attributeType.getUsage() != UsageEnum.USER_APPLICATIONS ) )
-        {
-            // An AttributeType which is collective must be a USER attributeType
-            String msg = "The attributeType " + attributeType.getName() + " is a COLLECTIVE AttributeType, " +
-                ", it must be a USER-APPLICATION attributeType too.";
-            
-            Throwable error = new LdapSchemaViolationException( 
-                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-            errors.add( error );
-            LOG.info( msg );
-        }
-    }
-
-    
-    /**
      * Some specific controls must be checked : 
      * - an AT must have either a SYNTAX or a SUP. If there is no SYNTAX, then
      * the AT will take it's superior SYNTAX;
@@ -974,32 +568,47 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * - if an AT has a superior, and if its superior is COLLECTIVE, then
      * the AT will be COLLECTIVE too
      * 
-     */
+     *
     private void buildRecursiveAttributeTypeReferences( List<Throwable> errors, Set<String> done, AttributeType attributeType )
     {
+        buildReference( errors, attributeType );
         // An attributeType has references on Syntax, MatchingRule and itself
-
+        try
+        {
+            attributeType.applyRegistries( this );
+        }
+        catch ( NamingException ne )
+        {
+            String msg = "Cannot build the AttributeType references for the object " + attributeType.getName() +
+                ", error : " + ne.getMessage();
+            
+            Throwable error = new LdapSchemaViolationException( 
+                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            errors.add( error );
+            LOG.info( msg );
+        }
+        
         // First, check if the AT has a superior
-        buildSuperior( errors, done, attributeType );
+        //buildSuperior( errors, done, attributeType );
         
         // The LdapSyntax (cannot be null)
-        buildSyntax( errors, attributeType );
+        //buildSyntax( errors, attributeType );
         
         // The equality MR. 
-        buildEquality( errors, attributeType );
+        //buildEquality( errors, attributeType );
 
         // The ORDERING MR.
-        buildOrdering( errors, attributeType );
+        //buildOrdering( errors, attributeType );
         
         // The SUBSTR MR.
-        buildSubstring( errors, attributeType );
+        //buildSubstring( errors, attributeType );
         
         // Last, not least, check some of the other constraints
-        checkUsage( errors, attributeType );
-        checkCollective( errors, attributeType );
+        //checkUsage( errors, attributeType );
+        //checkCollective( errors, attributeType );
         
         // Update the dedicated fields
-        try
+        /*try
         {
             attributeTypeRegistry.addMappingFor( attributeType );
         }
@@ -1026,24 +635,13 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     private void buildAttributeTypeReferences( List<Throwable> errors )
     {
-        // Remember the AT we have already processed
-        Set<String> done = new HashSet<String>();
-        
         for ( AttributeType attributeType : attributeTypeRegistry )
         {
-            if ( done.contains( attributeType.getOid() ) )
+            if ( ( getUsing( attributeType ) == null ) || getUsing( attributeType ).isEmpty() )
             {
-                continue;
+                buildReference( errors, attributeType );
             }
-            else
-            {
-                done.add( attributeType.getOid() );
-            }
-        
-            buildRecursiveAttributeTypeReferences( errors, done, attributeType );
         }
-        
-        done.clear();
     }
     
     
@@ -1054,17 +652,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         for ( LdapComparator<?> comparator : comparatorRegistry )
         {
-            try
-            {
-                comparator.applyRegistries( this );
-
-                // Set the SchemaManager for those Comparators which need it
-                comparator.setSchemaManager( schemaManager );
-            }
-            catch ( NamingException ne )
-            {
-                errors.add( ne );
-            }
+            buildReference( errors, comparator );
         }
     }
     
@@ -1094,32 +682,6 @@ public class Registries implements SchemaLoaderListener, Cloneable
     
     
     /**
-     * Add the MR references (using and usedBy) : 
-     * MR -> C
-     * MR -> N
-     * MR -> S
-     */
-    public void addCrossReferences( MatchingRule matchingRule )
-    {
-        if ( matchingRule.getLdapComparator() != null )
-        {
-            addReference( matchingRule, matchingRule.getLdapComparator() );
-        }
-        
-        if ( matchingRule.getNormalizer() != null )
-        {
-            addReference( matchingRule, matchingRule.getNormalizer() );
-        }
-        
-        if ( matchingRule.getSyntax() != null )
-        {
-            addReference( matchingRule, matchingRule.getSyntax() );
-        }
-    }
-    
-    
-    
-    /**
      * Delete the MR references (using and usedBy) : 
      * MR -> C
      * MR -> N
@@ -1145,128 +707,36 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
     
     /**
+     * Build the SchemaObject references
+     */
+    public void buildReference( List<Throwable> errors, SchemaObject schemaObject )
+    {
+        try
+        {
+            schemaObject.applyRegistries( errors, this );
+        }
+        catch ( NamingException ne )
+        {
+            // Not allowed.
+            String msg = "Cannot build the references for " + schemaObject.getName() + 
+                ", error : " + ne.getMessage();
+
+            Throwable error = new LdapSchemaViolationException( 
+                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            errors.add( error );
+            LOG.info( msg );
+        }
+    }
+    
+    
+    /**
      * Build the MatchingRule references
      */
     private void buildMatchingRuleReferences( List<Throwable> errors )
     {
         for ( MatchingRule matchingRule : matchingRuleRegistry )
         {
-            // each matching rule references a Syntax, a Comparator and a Normalizer
-            // If we don't have a Syntax, this is an error
-            if ( matchingRule.getSyntaxOid() != null )
-            {
-                LdapSyntax syntax = null;
-                
-                try
-                {
-                    syntax = ldapSyntaxRegistry.lookup( matchingRule.getSyntaxOid() );
-                }
-                catch ( NamingException ne )
-                {
-                    // Not allowed.
-                    String msg = "Cannot find a Syntax object " + matchingRule.getSyntaxOid() + 
-                        " while building cross-references for the " + matchingRule.getName() + 
-                        " matchingRule.";
-    
-                    Throwable error = new LdapSchemaViolationException( 
-                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                    errors.add( error );
-                    LOG.info( msg );
-                }
-                
-                if ( syntax != null )
-                {
-                    // Update the Syntax reference
-                    matchingRule.updateSyntax( syntax );
-                }
-                else
-                {
-                    // Not allowed.
-                    String msg = "Cannot find a Syntax object " + matchingRule.getSyntaxOid() + 
-                        " while building cross-references for the " + matchingRule.getName() + 
-                        " matchingRule.";
-
-                    Throwable error = new LdapSchemaViolationException( 
-                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                    errors.add( error );
-                    LOG.info( msg );
-                }
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "The MatchingRule " + matchingRule.getName() + " must have " +
-                    "a syntax OID.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-            }
-            
-            // Get the comparator. Must not be null
-            LdapComparator<?> comparator = null;
-            
-            try
-            {
-                comparator = comparatorRegistry.lookup( matchingRule.getOid() );
-            }
-            catch ( Exception e )
-            {
-                // Not allowed.
-                String msg = "Cannot find a Comparator object " + matchingRule.getSyntaxOid() + 
-                    " while building cross-references for the " + matchingRule.getName() + 
-                    " matchingRule.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-            }
-            
-            if ( comparator != null )
-            {
-                // Update the Comparator reference
-                matchingRule.updateLdapComparator( comparator );
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "Cannot find a Comparator object " + matchingRule.getOid() + 
-                    " while building cross-references for the " + matchingRule.getName() + 
-                    " matchingRule.";
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-            }
-            
-            // Get the normalizer. May be null
-            Normalizer normalizer = null;
-            
-            try
-            {
-                normalizer = normalizerRegistry.lookup( matchingRule.getOid() );
-            }
-            catch ( Exception e )
-            {
-                // Not found : get the default Normalizer
-                normalizer = new NoOpNormalizer( matchingRule.getOid() );
-            }
-            
-            if ( normalizer != null )
-            {
-                // Update the Normalizer reference
-                matchingRule.updateNormalizer( normalizer );
-            }
-            else
-            {
-                // Set a default normalizer
-                matchingRule.updateNormalizer( new NoOpNormalizer( matchingRule.getOid() ) );
-            }
-            
-            // Update the MR cross references
-            addCrossReferences( matchingRule );
+            buildReference( errors, matchingRule );
         }
     }
 
@@ -1278,7 +748,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         for ( MatchingRuleUse matchingRuleUse : matchingRuleUseRegistry )
         {
-            // TODO
+            buildReference( errors, matchingRuleUse );
         }
     }
 
@@ -1302,153 +772,32 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         for ( Normalizer normalizer : normalizerRegistry )
         {
-            try
-            {
-                normalizer.applyRegistries( this );
-                
-                // Set the SchemaManager for those Comparators which need it
-                normalizer.setSchemaManager( schemaManager );
-            }
-            catch ( NamingException ne )
-            {
-                errors.add( ne );
-            }
+            buildReference( errors, normalizer );
         }
     }
 
-    
-    /**
-     * Add the OC references (using and usedBy) : 
-     * OC -> AT (MAY and MUST)
-     * OC -> OC (SUPERIORS)
-     */
-    public void addCrossReferences( ObjectClass objectClass )
-    {
-        for ( AttributeType mayAttributeType : objectClass.getMayAttributeTypes() )
-        {
-            addReference( objectClass, mayAttributeType );
-        }
-
-        for ( AttributeType mustAttributeType : objectClass.getMustAttributeTypes() )
-        {
-            addReference( objectClass, mustAttributeType );
-        }
-        
-        for ( ObjectClass superiorObjectClass : objectClass.getSuperiors() )
-        {
-            addReference( objectClass, superiorObjectClass );
-        }
-    }
     
     /**
      * Build the ObjectClasses references
      */
     private void buildObjectClassReferences( List<Throwable> errors )
     {
+        // Remember the OC we have already processed
+        Set<String> done = new HashSet<String>();
+        
         // The ObjectClass
         for ( ObjectClass objectClass : objectClassRegistry )
         {
-            // An ObjectClass has references on AttributeType May and Must, 
-            // and its superiors
-            // The MAY attributeTypes
-            AttributeType may = null;
-            List<AttributeType> mayList = new ArrayList<AttributeType>();
-            
-            for ( String mayOid : objectClass.getMayAttributeTypeOids() )
+            if ( done.contains( objectClass.getOid() ) )
             {
-                try
-                {
-                    may = attributeTypeRegistry.lookup( mayOid );
-                    mayList.add( may );
-                }
-                catch ( NamingException ne )
-                {
-                    // Not allowed.
-                    String msg = "Cannot find a AttributeType MAY object for " + mayOid + 
-                        " while building cross-references for the " + objectClass.getName() + 
-                        " objectClass.";
-    
-                    Throwable error = new LdapSchemaViolationException( 
-                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                    errors.add( error );
-                    LOG.info( msg );
-                }
+                continue;
             }
-            
-            // Update the MAY references
-            objectClass.updateMayAttributeTypes( mayList );
+            else
+            {
+                done.add( objectClass.getOid() );
+            }
 
-            // The MUST attributeTypes
-            AttributeType must = null;
-            List<AttributeType> mustList = new ArrayList<AttributeType>();
-            
-            for ( String mustOid : objectClass.getMustAttributeTypeOids() )
-            {
-                try
-                {
-                    must = attributeTypeRegistry.lookup( mustOid );
-                    mustList.add( must );
-                }
-                catch ( NamingException ne )
-                {
-                    // Not allowed.
-                    String msg = "Cannot find a AttributeType MUST object for " + mustOid + 
-                        " while building cross-references for the " + objectClass.getName() + 
-                        " objectClass.";
-    
-                    Throwable error = new LdapSchemaViolationException( 
-                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                    errors.add( error );
-                    LOG.info( msg );
-                }
-            }
-            
-            // Update the MUST references
-            objectClass.updateMustAttributeTypes( mustList );
-
-            // The SUPERIORS objectClasses
-            ObjectClass superior = null;
-            List<ObjectClass> superiorList = new ArrayList<ObjectClass>();
-            
-            for ( String superiorOid : objectClass.getSuperiorOids() )
-            {
-                try
-                {
-                    superior = objectClassRegistry.lookup( superiorOid );
-                    superiorList.add( superior );
-                }
-                catch ( NamingException ne )
-                {
-                    // Not allowed.
-                    String msg = "Cannot find an ObjectClass SUPERIOR object for " + superiorOid + 
-                        " while building cross-references for the " + objectClass.getName() + 
-                        " objectClass.";
-    
-                    Throwable error = new LdapSchemaViolationException( 
-                        msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                    errors.add( error );
-                    LOG.info( msg );
-                }
-            }
-            
-            // Update the SUPERIOR references
-            objectClass.updateSuperiors( superiorList );
-            
-            // Update the ObjectClass cross references
-            addCrossReferences( objectClass );
-        }
-    }
-    
-    
-    /**
-     * Add the references for S :
-     * S -> SC
-     */
-    public void addCrossReferences( LdapSyntax syntax )
-    {
-        if ( syntax.getSyntaxChecker() != null )
-        {
-            addReference( syntax, syntax.getSyntaxChecker() );
+            buildReference( errors, objectClass );
         }
     }
     
@@ -1460,39 +809,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         for ( LdapSyntax syntax : ldapSyntaxRegistry )
         {
-            SyntaxChecker syntaxChecker = null;
-            
-            // Each syntax should reference a SyntaxChecker with the same OID
-            try
-            {
-                syntaxChecker = syntaxCheckerRegistry.lookup( syntax.getOid() );
-            }
-            catch ( NamingException ne )
-            {
-                // There is no SyntaxChecker : default to the OctetString SyntaxChecker
-                syntaxChecker = new OctetStringSyntaxChecker( syntax.getOid() );
-            }
-            
-            if ( syntaxChecker != null )
-            {
-                // Set the SyntaxChecker reference
-                syntax.updateSyntaxChecker( syntaxChecker );
-            }
-            else
-            {
-                // Not allowed.
-                String msg = "Cannot find a SyntaxChecker object " + syntax.getOid() + 
-                    " while building cross-references for the " + syntax.getName() + 
-                    " matchingRule.";
-
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
-                errors.add( error );
-                LOG.info( msg );
-            }
-            
-            // Update the using and usedBy references
-            addCrossReferences( syntax );
+            buildReference( errors, syntax );
         }
     }
     
@@ -1504,14 +821,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         for ( SyntaxChecker syntaxChecker : syntaxCheckerRegistry )
         {
-            try
-            {
-                syntaxChecker.applyRegistries( this );
-            }
-            catch ( NamingException ne )
-            {
-                errors.add( ne );
-            }
+            buildReference( errors, syntaxChecker );
         }
     }
     
@@ -1574,7 +884,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // or to the OctetString SyntaxChecker
         try
         {
-            syntax.applyRegistries( this );
+            syntax.applyRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -1594,7 +904,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // This is currently doing nothing.
         try
         {
-            normalizer.applyRegistries( this );
+            normalizer.applyRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -1614,7 +924,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // This is currently doing nothing.
         try
         {
-            comparator.applyRegistries( this );
+            comparator.applyRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -1634,7 +944,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // This is currently doing nothing.
         try
         {
-            syntaxChecker.applyRegistries( this );
+            syntaxChecker.applyRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -1946,7 +1256,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // All is done for this ObjectClass, let's apply the registries
         try
         {
-            objectClass.applyRegistries( this );
+            objectClass.applyRegistries( errors, this );
         }
         catch ( NamingException ne )
         {
@@ -1997,7 +1307,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	 */
 	public Map<String, Set<SchemaObjectWrapper>> getObjectBySchemaName()
 	{
-	    return schemaObjectsBySchemaName;
+	    return schemaObjects;
 	}
 	
 	
@@ -2012,7 +1322,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	{
 	    String schemaName = schemaObject.getSchemaName();
 	    
-	    Set<SchemaObjectWrapper> setSchemaObjects = schemaObjectsBySchemaName.get( schemaName );
+	    Set<SchemaObjectWrapper> setSchemaObjects = schemaObjects.get( schemaName );
 	    
 	    if ( ( setSchemaObjects == null ) || setSchemaObjects.isEmpty() )
 	    {
@@ -2033,10 +1343,23 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	public Set<SchemaObjectWrapper> addSchema( String schemaName )
 	{
 	    Set<SchemaObjectWrapper> content = new HashSet<SchemaObjectWrapper>();
-	    schemaObjectsBySchemaName.put( schemaName, content );
+	    schemaObjects.put( schemaName, content );
 	    
 	    return content;
 	}
+	
+	
+    /**
+     * Applies the added SchemaObject to the given register
+     */
+    public void add( SchemaObject schemaObject ) throws NamingException
+    {
+        // Register the SchemaObject in the registries
+        register( schemaObject );
+        
+        // Associate the SchemaObject with its schema
+        associateWithSchema( schemaObject );
+    }
 	
 
 	public void register( SchemaObject schemaObject ) throws NamingException
@@ -2128,12 +1451,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
         String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
 
         // And register the schemaObject within its schema
-        Set<SchemaObjectWrapper> content = schemaObjectsBySchemaName.get( schemaName );
+        Set<SchemaObjectWrapper> content = schemaObjects.get( schemaName );
         
         if ( content == null )
         {
             content = new HashSet<SchemaObjectWrapper>();
-            schemaObjectsBySchemaName.put( StringTools.toLowerCase( schemaName ), content );
+            schemaObjects.put( StringTools.toLowerCase( schemaName ), content );
         }
         
         SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
@@ -2237,7 +1560,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public void dissociateFromSchema( SchemaObject schemaObject ) throws NamingException
     {
         // And unregister the schemaObject within its schema
-        Set<SchemaObjectWrapper> content = schemaObjectsBySchemaName.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
+        Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
         
         SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
         
@@ -3105,15 +2428,15 @@ public class Registries implements SchemaLoaderListener, Cloneable
             syntaxCheckerRegistry.clear();
         }
         
-        // Clear the schemaObjectsBySchemaName map
-        for ( String schemaName : schemaObjectsBySchemaName.keySet() )
+        // Clear the schemaObjects map
+        for ( String schemaName : schemaObjects.keySet() )
         {
-            Set<SchemaObjectWrapper> wrapperSet = schemaObjectsBySchemaName.get( schemaName );
+            Set<SchemaObjectWrapper> wrapperSet = schemaObjects.get( schemaName );
             
             wrapperSet.clear();
         }
         
-        schemaObjectsBySchemaName.clear();
+        schemaObjects.clear();
         
         // Clear the usedBy map
         for ( SchemaObjectWrapper wrapper : usedBy.keySet() )

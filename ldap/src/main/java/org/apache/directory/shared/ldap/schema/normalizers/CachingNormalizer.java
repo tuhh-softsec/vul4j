@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
+import java.util.List;
+
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.entry.Value;
@@ -155,9 +157,9 @@ public class CachingNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
-        normalizer.applyRegistries( registries );
+        normalizer.applyRegistries( errors, registries );
     }
     
     

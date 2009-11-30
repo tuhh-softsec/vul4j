@@ -19,6 +19,10 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
+import javax.naming.NamingException;
+
+import org.apache.directory.shared.ldap.schema.registries.Registries;
+
 /**
  * An abstract class used to manage the ADS specific SchemaObject, which can
  * contain some compiled Java class to implement the specific logic.
@@ -113,6 +117,18 @@ public abstract class LoadableSchemaObject extends SchemaObject
     }
     
     
+    /**
+     * {@inheritDoc}
+     */
+    public void registerOid( SchemaObject schemaObject, Registries registries ) throws NamingException
+    {
+        // Do nothing : the current SchemaObject ha sthe same OID than the one it is realted to
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
     public LoadableSchemaObject copy()
     {
         return null;

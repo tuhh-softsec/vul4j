@@ -515,16 +515,6 @@ public interface SchemaManager
     
     
     /**
-     * Delete the given registries and all its content. This method is called
-     * to avoid memory leaks.
-     *
-     * @param registries The registries to be deleted
-     * @exception If something went wrong
-     */
-    public void destroy( Registries registries ) throws NamingException;
-    
-    
-    /**
      * @return The errors obtained when checking the registries
      */
     List<Throwable> getErrors();

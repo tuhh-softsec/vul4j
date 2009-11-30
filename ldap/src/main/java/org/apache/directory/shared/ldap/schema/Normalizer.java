@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.schema;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
 /**
@@ -77,17 +76,6 @@ public abstract class Normalizer extends LoadableSchemaObject
      */
     public abstract String normalize( String value ) throws NamingException;
     
-    
-    /**
-     * Associate the registries to the normalizer, if needed.
-     *
-     * @param registries The Registries
-     */
-    public void applyRegistries( Registries registries ) throws NamingException
-    {
-        // Do nothing. The extended class will store the Registries if needed
-    }
-
     
     /**
      * Store the SchemaManager in this instance. It may be necessary for some

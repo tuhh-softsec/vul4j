@@ -19,6 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.normalizers;
 
+import java.util.List;
+
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -48,8 +50,8 @@ public class CachingDeepTrimNormalizer extends CachingNormalizer
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
-        super.applyRegistries( registries );
+        super.applyRegistries( errors, registries );
     }
 }

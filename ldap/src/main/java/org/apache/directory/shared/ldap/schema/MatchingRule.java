@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.schema;
 
 
+import java.util.List;
+
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
@@ -115,7 +117,7 @@ public class MatchingRule extends SchemaObject
      *
      * @param registries The Registries
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
@@ -152,6 +154,28 @@ public class MatchingRule extends SchemaObject
                 throw new LdapSchemaViolationException( "The created MatchingRule must refers to an existing SYNTAX element", 
                     ResultCodeEnum.UNWILLING_TO_PERFORM );
             }
+            
+            /**
+             * Add the MR references (using and usedBy) : 
+             * MR -> C
+             * MR -> N
+             * MR -> S
+             */
+            if ( ldapComparator != null )
+            {
+                registries.addReference( this, ldapComparator );
+            }
+            
+            if ( normalizer != null )
+            {
+                registries.addReference( this, normalizer );
+            }
+            
+            if ( ldapSyntax != null )
+            {
+                registries.addReference( this, ldapSyntax );
+            }
+            
         }
     }
     

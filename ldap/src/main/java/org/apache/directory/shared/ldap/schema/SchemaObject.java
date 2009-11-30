@@ -205,9 +205,10 @@ public abstract class SchemaObject implements Serializable
      * Inject the registries into this Object, updating the references to
      * other SchemaObject
      *
+     * @param errors The errors we got
      * @param registries The Registries
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         // do nothing
     }
@@ -721,6 +722,20 @@ public abstract class SchemaObject implements Serializable
     
     
     /**
+     * Register the given SchemaObject into the given registries' globalOidRegistry
+     *
+     * @param schemaObject the SchemaObject we want to register
+     * @param registries The registries in which we want it to be stored
+     * @throws NamingException If the OID is invalid
+     */
+    public void registerOid( SchemaObject schemaObject, Registries registries ) throws NamingException
+    {
+        // Add the SchemaObject into the globalOidRegistry
+        registries.getGlobalOidRegistry().register( this );
+    }
+    
+    
+    /**
      * Copy the current SchemaObject on place
      *
      * @return The copied SchemaObject
@@ -744,6 +759,7 @@ public abstract class SchemaObject implements Serializable
         }
     }
 
+    
     /**
      * Copy a SchemaObject.
      * 

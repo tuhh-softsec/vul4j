@@ -127,7 +127,7 @@ public class ObjectClass extends SchemaObject
      * @throws Exception on failure
      *
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
@@ -162,6 +162,26 @@ public class ObjectClass extends SchemaObject
                 {
                     mustAttributeTypes.add( atRegistry.lookup( atRegistry.getOidByName( mustAttributeTypeName ) ) );
                 }
+            }
+            
+            /**
+             * Add the OC references (using and usedBy) : 
+             * OC -> AT (MAY and MUST)
+             * OC -> OC (SUPERIORS)
+             */
+            for ( AttributeType mayAttributeType : mayAttributeTypes )
+            {
+                registries.addReference( this, mayAttributeType );
+            }
+
+            for ( AttributeType mustAttributeType : mustAttributeTypes )
+            {
+                registries.addReference( this, mustAttributeType );
+            }
+            
+            for ( ObjectClass superiorObjectClass : superiors )
+            {
+                registries.addReference( this, superiorObjectClass );
             }
         }
     }

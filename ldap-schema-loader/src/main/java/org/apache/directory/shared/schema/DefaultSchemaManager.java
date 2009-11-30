@@ -198,22 +198,6 @@ public class DefaultSchemaManager implements SchemaManager
     //-----------------------------------------------------------------------
     // API methods
     //-----------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public void destroy( Registries registries ) throws NamingException
-    {
-        if ( registries == null )
-        {
-            return;
-        }
-        else
-        {
-            registries.clear();
-        }
-    }
-
-    
     /***
      * {@inheritDoc}
      */
@@ -235,7 +219,7 @@ public class DefaultSchemaManager implements SchemaManager
             registries = targetRegistries;
             
             // Delete the old registries to avoid memory leaks
-            destroy( oldRegistries );
+            oldRegistries.clear();
             
             return true;
         }
@@ -301,8 +285,27 @@ public class DefaultSchemaManager implements SchemaManager
             load( clonedRegistries, schema  );
         }
         
+        List<Throwable> errors = clonedRegistries.checkRefInteg();
+        
+        // Destroy the clonedRegistry
+        clonedRegistries.clear();
+        
+        if ( errors.isEmpty() )
+        {
+            // No error, inject the schema in the current registries 
+            for ( Schema schema:schemas )
+            {
+                schema.enable();
+                load( registries, schema  );
+            }
+            
+            errors = registries.checkRefInteg();
+        }
+        
+        return errors.isEmpty();
+        
         // Swap the registries if it is consistent
-        return swapRegistries( clonedRegistries );
+        //return swapRegistries( clonedRegistries );
     }
 
 
@@ -607,10 +610,8 @@ public class DefaultSchemaManager implements SchemaManager
         {
             if ( registries.isDisabledAccepted() || ( schema.isEnabled() && schemaObject.isEnabled() ) )
             {
-                registries.register( schemaObject );
+                registries.add( schemaObject );
 
-                // Associate the SchemaObject with its schema
-                registries.associateWithSchema( schemaObject );
             }
             else
             {
@@ -621,10 +622,7 @@ public class DefaultSchemaManager implements SchemaManager
         {
             if ( schema.isEnabled() && schemaObject.isEnabled() )
             {
-                registries.register( schemaObject );
-
-                // Associate the SchemaObject with its schema
-                registries.associateWithSchema( schemaObject );
+                registries.add( schemaObject );
             }
             else
             {
@@ -719,7 +717,7 @@ public class DefaultSchemaManager implements SchemaManager
         Registries clonedRegistries = cloneRegistries();
         clonedRegistries.setRelaxed();
 
-        //Load the schemas
+        // Load the schemas
         for ( Schema schema : schemas )
         {
             loadDepsFirst( schema, clonedRegistries );
@@ -872,7 +870,7 @@ public class DefaultSchemaManager implements SchemaManager
                 if ( !loaded )
                 {
                     // We got an error : exit
-                    destroy( clonedRegistries );
+                    clonedRegistries.clear();
                     return false;
                 }
                 
@@ -882,20 +880,20 @@ public class DefaultSchemaManager implements SchemaManager
                 if ( errors.size() != 0 )
                 {
                     // We got an error : exit
-                    destroy( clonedRegistries );
+                    clonedRegistries.clear();
                     return false;
                 }
             }
             catch ( Exception e )
             {
                 // We got an error : exit
-                destroy( clonedRegistries );
+                clonedRegistries.clear();
                 return false;
             }
         }
         
         // We can now delete the cloned registries before exiting
-        destroy( clonedRegistries );
+        clonedRegistries.clear();
         
         return true;
     }
