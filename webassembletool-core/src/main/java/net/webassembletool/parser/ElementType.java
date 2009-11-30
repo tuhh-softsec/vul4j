@@ -1,5 +1,12 @@
 package net.webassembletool.parser;
 
+/**
+ * An element type. There must be one Element type for each type of tags the
+ * parser has to look for in the pages
+ * 
+ * @author Francois-Xavier Bonnet
+ * 
+ */
 public interface ElementType {
 	/**
 	 * Detects an opening tag for this element type

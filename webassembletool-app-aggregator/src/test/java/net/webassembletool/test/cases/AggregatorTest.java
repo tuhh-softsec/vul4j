@@ -193,4 +193,9 @@ public class AggregatorTest extends TestCase {
 		assertEquals("Status should be 404", HttpServletResponse.SC_NOT_FOUND,
 				resp.getResponseCode());
 	}
+
+	public void testMixedEncodings() throws Exception {
+		doSimpleTest("template-mixed-encodings.jsp");
+	}
+
 }

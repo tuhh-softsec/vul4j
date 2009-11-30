@@ -1,18 +1,15 @@
 package net.webassembletool.aggregator;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.parser.Element;
+import net.webassembletool.parser.ElementStack;
 import net.webassembletool.parser.ElementType;
-import net.webassembletool.parser.Parser;
 import net.webassembletool.tags.TemplateRenderer;
 
 public class IncludeTemplateElement implements Element {
@@ -34,9 +31,14 @@ public class IncludeTemplateElement implements Element {
 	private String page = "";
 	private String name = null;
 	private Map<String, String> params = new HashMap<String, String>();
+	private AggregateRenderer aggregateRenderer;
+	private Appendable out;
 
-	public void doStartTag(String tag, Writer out, Parser parser)
+	public void doStartTag(String tag, Appendable out, ElementStack stack)
 			throws IOException, HttpErrorPage {
+		this.out = out;
+		aggregateRenderer = stack.findAncestorWithClass(this,
+				AggregateRenderer.class);
 		String[] parameters = tag.split("\\$");
 		if (parameters.length > 3)
 			driver = DriverFactory.getInstance(parameters[2]);
@@ -48,20 +50,13 @@ public class IncludeTemplateElement implements Element {
 			name = parameters[4];
 	}
 
-	public void doEndTag(String tag, Writer out, Parser parser)
-			throws IOException, HttpErrorPage {
-		driver.render(page, null, out, (HttpServletRequest) parser
-				.getAttribute("request"), new TemplateRenderer(name, params,
-				page));
+	public void doEndTag(String tag) throws IOException, HttpErrorPage {
+		driver.render(page, null, out, aggregateRenderer.getRequest(),
+				new TemplateRenderer(name, params, page));
 	}
 
 	public ElementType getType() {
 		return TYPE;
-	}
-
-	public void write(CharSequence content, int begin, int end, Writer out,
-			Parser parser) {
-		// Just ignore tag body
 	}
 
 	public void addParam(String name, String value) {
@@ -70,6 +65,22 @@ public class IncludeTemplateElement implements Element {
 
 	public boolean isClosed() {
 		return false;
+	}
+
+	public Appendable append(CharSequence csq) throws IOException {
+		// Just ignore tag body
+		return this;
+	}
+
+	public Appendable append(char c) throws IOException {
+		// Just ignore tag body
+		return this;
+	}
+
+	public Appendable append(CharSequence csq, int start, int end)
+			throws IOException {
+		// Just ignore tag body
+		return this;
 	}
 
 }

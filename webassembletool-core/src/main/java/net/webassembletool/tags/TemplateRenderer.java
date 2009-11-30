@@ -29,25 +29,33 @@ import org.apache.commons.logging.LogFactory;
  * @author Stanislav Bernatskyi
  * @author Francois-Xavier Bonnet
  */
-public class TemplateRenderer implements Renderer {
+public class TemplateRenderer implements Renderer, Appendable {
 	private final static Log LOG = LogFactory.getLog(TemplateRenderer.class);
-	private final static Pattern PATTERN = Pattern
-			.compile("<!--\\$[^>]*\\$-->");
+	private final static Parser PARSER = new Parser(Pattern
+			.compile("<!--\\$[^>]*\\$-->"), TemplateElement.TYPE,
+			ParamElement.TYPE);
 
 	private final String page;
 	private final String name;
 	private final Map<String, String> params;
+	private boolean write;
+	private Writer out;
 
 	public TemplateRenderer(String name, Map<String, String> params, String page) {
 		this.name = name;
 		this.params = params;
 		this.page = page;
+		if (name == null)
+			write = true;
+		else
+			write = false;
 	}
 
 	/** {@inheritDoc} */
 	public void render(String content, Writer out) throws IOException,
 			HttpErrorPage {
 		LOG.debug("Rendering block " + name + " in page " + page);
+		this.out = out;
 		if (content == null) {
 			if (params != null) {
 				for (String value : params.values()) {
@@ -55,17 +63,39 @@ public class TemplateRenderer implements Renderer {
 				}
 			}
 		} else {
-			Parser parser = new Parser(PATTERN, TemplateElement.TYPE,
-					ParamElement.TYPE);
-			parser.setAttribute("params", params);
-			if (name != null) {
-				parser.setAttribute("name", name);
-				parser.parse(content, out, false);
-			} else {
-				parser.setAttribute("insideTemplate", Boolean.TRUE);
-				parser.parse(content, out, true);
-			}
+			PARSER.parse(content, this);
 		}
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setWrite(boolean write) {
+		this.write = write;
+	}
+
+	public String getParam(String name) {
+		return params.get(name);
+	}
+
+	public Appendable append(CharSequence csq) throws IOException {
+		if (write)
+			out.append(csq);
+		return this;
+	}
+
+	public Appendable append(char c) throws IOException {
+		if (write)
+			out.append(c);
+		return this;
+	}
+
+	public Appendable append(CharSequence csq, int start, int end)
+			throws IOException {
+		if (write)
+			out.append(csq, start, end);
+		return this;
 	}
 
 }

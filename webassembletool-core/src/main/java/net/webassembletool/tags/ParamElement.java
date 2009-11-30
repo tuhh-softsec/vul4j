@@ -1,16 +1,15 @@
 package net.webassembletool.tags;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.util.Map;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.aggregator.AggregationSyntaxException;
 import net.webassembletool.parser.Element;
+import net.webassembletool.parser.ElementStack;
 import net.webassembletool.parser.ElementType;
-import net.webassembletool.parser.Parser;
 
 public class ParamElement implements Element {
+	private Appendable parent;
 	public final static ElementType TYPE = new ElementType() {
 
 		public boolean isStartTag(String tag) {
@@ -29,26 +28,25 @@ public class ParamElement implements Element {
 
 	private boolean valueFound = false;
 
-	public void doEndTag(String tag, Writer out, Parser parser) {
+	public void doEndTag(String tag) {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Writer out, Parser parser)
+	public void doStartTag(String tag, Appendable parent, ElementStack stack)
 			throws IOException, HttpErrorPage {
+		this.parent = parent;
 		String[] parameters = tag.split("\\$");
 		if (parameters.length != 4)
 			throw new AggregationSyntaxException("Invalid syntax: " + tag);
 		String name = parameters[2];
-		Boolean insideTemplate = (Boolean) parser
-				.getAttribute("insideTemplate");
-		if (Boolean.TRUE.equals(insideTemplate)) {
-			String value = null;
-			Map<String, String> params = (Map<String, String>) parser
-					.getAttribute("params");
-			if (params != null)
-				value = params.get(name);
+		TemplateElement templateElement = stack.findAncestorWithClass(this,
+				TemplateElement.class);
+		TemplateRenderer templateRenderer = stack.findAncestorWithClass(this,
+				TemplateRenderer.class);
+		if (templateElement == null || templateElement.isNameMatches()) {
+			String value = templateRenderer.getParam(name);
 			if (value != null) {
-				out.write(value);
+				parent.append(value);
 				valueFound = true;
 			}
 		}
@@ -58,14 +56,27 @@ public class ParamElement implements Element {
 		return TYPE;
 	}
 
-	public void write(CharSequence content, int begin, int end, Writer out,
-			Parser parser) throws IOException {
-		if (!valueFound)
-			out.append(content, begin, end);
-	}
-
 	public boolean isClosed() {
 		return false;
+	}
+
+	public Appendable append(CharSequence csq) throws IOException {
+		if (!valueFound)
+			parent.append(csq);
+		return this;
+	}
+
+	public Appendable append(char c) throws IOException {
+		if (!valueFound)
+			parent.append(c);
+		return this;
+	}
+
+	public Appendable append(CharSequence csq, int start, int end)
+			throws IOException {
+		if (!valueFound)
+			parent.append(csq, start, end);
+		return this;
 	}
 
 }

@@ -19,10 +19,11 @@ import net.webassembletool.parser.Parser;
  * 
  * @author Francois-Xavier Bonnet
  */
-public class EsiRenderer implements Renderer {
-	private final static Pattern PATTERN = Pattern
-			.compile("(<esi:[^>]*>)|(<!--esi)|(-->)");
-
+public class EsiRenderer implements Renderer, Appendable {
+	private final static Parser PARSER = new Parser(Pattern
+			.compile("(<esi:[^>]*>)|(<!--esi)|(-->)"), IncludeElement.TYPE,
+			Comment.TYPE);
+	private Writer out;
 	private final HttpServletRequest request;
 
 	public EsiRenderer(HttpServletRequest request) {
@@ -32,10 +33,29 @@ public class EsiRenderer implements Renderer {
 	/** {@inheritDoc} */
 	public void render(String content, Writer out) throws IOException,
 			HttpErrorPage {
+		this.out = out;
 		if (content == null)
 			return;
-		Parser parser = new Parser(PATTERN, IncludeElement.TYPE, Comment.TYPE);
-		parser.setAttribute("request", request);
-		parser.parse(content, out, true);
+		PARSER.parse(content, this);
+	}
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public Appendable append(CharSequence csq) throws IOException {
+		out.append(csq);
+		return this;
+	}
+
+	public Appendable append(char c) throws IOException {
+		out.append(c);
+		return this;
+	}
+
+	public Appendable append(CharSequence csq, int start, int end)
+			throws IOException {
+		out.append(csq, start, end);
+		return this;
 	}
 }

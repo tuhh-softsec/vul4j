@@ -2,7 +2,6 @@ package net.webassembletool;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 
@@ -166,7 +165,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
-	public final void renderXml(String source, String template, Writer out,
+	public final void renderXml(String source, String template, Appendable out,
 			HttpServletRequest originalRequest) throws IOException,
 			HttpErrorPage {
 		render(source, null, out, originalRequest, new XsltRenderer(template,
@@ -191,7 +190,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
-	public final void renderXpath(String source, String xpath, Writer out,
+	public final void renderXpath(String source, String xpath, Appendable out,
 			HttpServletRequest originalRequest) throws IOException,
 			HttpErrorPage {
 		render(source, null, out, originalRequest, new XpathRenderer(xpath));
@@ -224,7 +223,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
-	public final void renderBlock(String page, String name, Writer writer,
+	public final void renderBlock(String page, String name, Appendable writer,
 			HttpServletRequest originalRequest,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean copyOriginalRequestParameters) throws IOException,
@@ -266,7 +265,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	public final void renderTemplate(String page, String name, Writer writer,
+	public final void renderTemplate(String page, String name, Appendable writer,
 			HttpServletRequest originalRequest, Map<String, String> params,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean propagateJsessionId) throws IOException, HttpErrorPage {
@@ -291,7 +290,7 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the template
 	 */
 	public final void render(String page, Map<String, String> parameters,
-			Writer writer, HttpServletRequest originalRequest,
+			Appendable writer, HttpServletRequest originalRequest,
 			Renderer... renderers) throws IOException, HttpErrorPage {
 		ResourceContext resourceContext = new ResourceContext(this, page,
 				parameters, originalRequest);
@@ -303,7 +302,7 @@ public class Driver {
 			renderer.render(currentValue, stringWriter);
 			currentValue = stringWriter.toString();
 		}
-		writer.write(currentValue);
+		writer.append(currentValue);
 	}
 
 	/**

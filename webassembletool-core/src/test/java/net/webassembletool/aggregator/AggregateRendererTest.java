@@ -57,7 +57,18 @@ public class AggregateRendererTest extends TestCase {
 		AggregateRenderer tested = new AggregateRenderer(null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
-		assertEquals("content some text Replacement goes here end", out.toString());
+		assertEquals("content some text Replacement goes here end", out
+				.toString());
+	}
+
+	public void testNestedTags() throws IOException, HttpErrorPage {
+		String page = "content <!--$includetemplate$mock$/testTemplateParams$mytemplate$--> some text <!--$beginput$param1$-->aaa <!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$--> bbb<!--$endput$-->some other text<!--$endincludetemplate$--> end";
+		AggregateRenderer tested = new AggregateRenderer(null);
+		StringWriter out = new StringWriter();
+		tested.render(page, out);
+		assertEquals("content some text aaa Test include bbb goes here end", out
+				.toString());
+
 	}
 
 }

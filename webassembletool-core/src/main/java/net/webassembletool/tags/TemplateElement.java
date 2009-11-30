@@ -1,15 +1,16 @@
 package net.webassembletool.tags;
 
 import java.io.IOException;
-import java.io.Writer;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.aggregator.AggregationSyntaxException;
 import net.webassembletool.parser.Element;
+import net.webassembletool.parser.ElementStack;
 import net.webassembletool.parser.ElementType;
-import net.webassembletool.parser.Parser;
 
 public class TemplateElement implements Element {
+	private TemplateRenderer templateRenderer;
+	private boolean nameMatches;
 	public final static ElementType TYPE = new ElementType() {
 
 		public boolean isStartTag(String tag) {
@@ -26,37 +27,55 @@ public class TemplateElement implements Element {
 
 	};
 
-	private boolean matches = false;
-
-	public void doEndTag(String tag, Writer out, Parser parser)
-			throws IOException {
-		if (matches)
-			parser.setAttribute("insideTemplate", Boolean.FALSE);
+	public void doEndTag(String tag) throws IOException {
+		// Stop writing
+		if (nameMatches)
+			templateRenderer.setWrite(false);
 	}
 
-	public void doStartTag(String tag, Writer out, Parser parser)
+	public void doStartTag(String tag, Appendable parent, ElementStack stack)
 			throws IOException, HttpErrorPage {
 		String[] parameters = tag.split("\\$");
 		if (parameters.length != 4)
 			throw new AggregationSyntaxException("Invalid syntax: " + tag);
 		String name = parameters[2];
-		matches = name.equals(parser.getAttribute("name"));
-		if (matches)
-			parser.setAttribute("insideTemplate", Boolean.TRUE);
+		this.templateRenderer = stack.findAncestorWithClass(this,
+				TemplateRenderer.class);
+		// If name matches, start writing
+		nameMatches = name.equals(templateRenderer.getName());
+		if (nameMatches)
+			templateRenderer.setWrite(true);
 	}
 
 	public ElementType getType() {
 		return TYPE;
 	}
 
-	public void write(CharSequence content, int begin, int end, Writer out,
-			Parser parser) throws IOException {
-		if (matches)
-			out.append(content, begin, end);
-	}
-
 	public boolean isClosed() {
 		return false;
+	}
+
+	public boolean isNameMatches() {
+		return nameMatches;
+	}
+
+	public Appendable append(CharSequence csq) throws IOException {
+		if (nameMatches)
+			templateRenderer.append(csq);
+		return this;
+	}
+
+	public Appendable append(char c) throws IOException {
+		if (nameMatches)
+			templateRenderer.append(c);
+		return this;
+	}
+
+	public Appendable append(CharSequence csq, int start, int end)
+			throws IOException {
+		if (nameMatches)
+			templateRenderer.append(csq, start, end);
+		return this;
 	}
 
 }

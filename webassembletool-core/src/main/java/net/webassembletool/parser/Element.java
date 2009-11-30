@@ -1,25 +1,28 @@
 package net.webassembletool.parser;
 
 import java.io.IOException;
-import java.io.Writer;
 
 import net.webassembletool.HttpErrorPage;
 
-public interface Element {
+/**
+ * An element represents a tag inside a document.
+ * @author Francois-Xavier Bonnet
+ * 
+ */
+public interface Element extends Appendable {
 	/**
 	 * Method called by the parser when it finds an opening tag
 	 * 
 	 * @param tag
 	 *            The tag
-	 * @param out
-	 *            The writer where to output the result
-	 * @param parser
-	 *            Gives access to the parser if the tag needs to access the tag
-	 *            stack and attributes created by parent tags
+	 * @param parent
+	 *            The parent tag or document to write to
+	 * @param stack
+	 *            The current stack of Elements
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void doStartTag(String tag, Writer out, Parser parser)
+	public void doStartTag(String tag, Appendable parent, ElementStack stack)
 			throws IOException, HttpErrorPage;
 
 	/**
@@ -27,42 +30,19 @@ public interface Element {
 	 * 
 	 * @param tag
 	 *            The tag
-	 * @param out
-	 *            The Writer where to output the result
-	 * @param parser
-	 *            Gives access to the parser if the tag needs to access the tag
-	 *            stack and attributes created by parent tags
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void doEndTag(String tag, Writer out, Parser parser)
-			throws IOException, HttpErrorPage;
+	public void doEndTag(String tag) throws IOException, HttpErrorPage;
 
 	/**
-	 * Method called by the parser when reading text inside the tag. This method
-	 * may be called several times.
-	 * 
-	 * @param content
-	 *            A CharSequence containing the content of the tag
-	 * @param begin
-	 *            The begin index of the content to process
-	 * @param end
-	 *            The end index of the content to process
-	 * @param out
-	 *            The writer where to output the result
-	 * @param parser
-	 *            Gives access to the parser if the tag needs to access the tag
-	 *            stack and attributes created by parent tags
-	 * @throws IOException
+	 * @return The Type for this Element
 	 */
-	public void write(CharSequence content, int begin, int end, Writer out,
-			Parser parser) throws IOException;
-
 	public ElementType getType();
 
 	/**
-	 * @return Returns true if the tag is already closed, that means that it does not
-	 *         need a matching closing tag. Ex: &lt;br /&gt;
+	 * @return Returns true if the tag is already closed, that means that it
+	 *         does not need a matching closing tag. Ex: &lt;br /&gt;
 	 */
 	public boolean isClosed();
 }

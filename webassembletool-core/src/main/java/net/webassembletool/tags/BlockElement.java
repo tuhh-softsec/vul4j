@@ -1,15 +1,16 @@
 package net.webassembletool.tags;
 
 import java.io.IOException;
-import java.io.Writer;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.aggregator.AggregationSyntaxException;
 import net.webassembletool.parser.Element;
+import net.webassembletool.parser.ElementStack;
 import net.webassembletool.parser.ElementType;
-import net.webassembletool.parser.Parser;
 
 public class BlockElement implements Element {
+	private BlockRenderer blockRenderer;
+	private boolean nameMatches;
 	public final static ElementType TYPE = new ElementType() {
 
 		public boolean isStartTag(String tag) {
@@ -26,34 +27,48 @@ public class BlockElement implements Element {
 
 	};
 
-	private boolean nameMatches = false;
-
-	public void doEndTag(String tag, Writer out, Parser parser)
-			throws IOException {
-		// Nothing to do
+	public void doEndTag(String tag) throws IOException {
+		// Stop writing
+		if (nameMatches)
+			blockRenderer.setWrite(false);
 	}
 
-	public void doStartTag(String tag, Writer out, Parser parser)
+	public void doStartTag(String tag, Appendable parent, ElementStack stack)
 			throws IOException, HttpErrorPage {
 		String[] parameters = tag.split("\\$");
 		if (parameters.length != 4)
 			throw new AggregationSyntaxException("Invalid syntax: " + tag);
 		String name = parameters[2];
-		nameMatches = name.equals(parser.getAttribute("name"));
+		this.blockRenderer = stack.findAncestorWithClass(this,
+				BlockRenderer.class);
+		// If name matches, start writing
+		nameMatches = name.equals(blockRenderer.getName());
+		if (nameMatches)
+			blockRenderer.setWrite(true);
 	}
 
 	public ElementType getType() {
 		return TYPE;
 	}
 
-	public void write(CharSequence content, int begin, int end, Writer out,
-			Parser parser) throws IOException {
-		if (nameMatches)
-			out.append(content, begin, end);
-	}
-
 	public boolean isClosed() {
 		return false;
+	}
+
+	public Appendable append(CharSequence csq) throws IOException {
+		blockRenderer.append(csq);
+		return this;
+	}
+
+	public Appendable append(char c) throws IOException {
+		blockRenderer.append(c);
+		return this;
+	}
+
+	public Appendable append(CharSequence csq, int start, int end)
+			throws IOException {
+		blockRenderer.append(csq, start, end);
+		return this;
 	}
 
 }
