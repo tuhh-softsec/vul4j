@@ -549,13 +549,14 @@ public interface SchemaManager
 
 
     /**
-     * Registers a new SchemaObject.
+     * Registers a new SchemaObject. The registries will be updated only if it's
+     * consistent after this addition, if the SchemaManager is in Strict mode.
      *
      * @param schemaObject the SchemaObject to register
      * @throws NamingException if the SchemaObject is already registered or
      * the registration operation is not supported
      */
-    void register( SchemaObject schemaObject ) throws NamingException;
+    void add( SchemaObject schemaObject ) throws NamingException;
 
 
     /**

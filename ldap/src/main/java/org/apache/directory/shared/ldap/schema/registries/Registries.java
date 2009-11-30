@@ -1350,7 +1350,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	
 	
     /**
-     * Applies the added SchemaObject to the given register
+     * Applies the added SchemaObject to the given register. This method is common
+     * to all the addition operations (LDAP injection or schema loading).
      */
     public void add( SchemaObject schemaObject ) throws NamingException
     {
