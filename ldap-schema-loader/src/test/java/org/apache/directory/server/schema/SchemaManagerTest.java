@@ -246,7 +246,7 @@ public class SchemaManagerTest
     	attributeType.setSubstringOid( null );
     	attributeType.setSuperior( (String)null );
     	
-    	schemaManager.register( attributeType );
+    	schemaManager.add( attributeType );
     	
     	// Check that the AT has been correctly added
     	
