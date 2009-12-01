@@ -4,7 +4,7 @@ m-singlevalue: FALSE
 entryuuid:: GhVNcYJBQH2fMkR7vE72kw==
 m-obsolete: FALSE
 m-description: time which schema was modified
-m-usage: USER_APPLICATIONS
+m-usage: DIRECTORY_OPERATION
 creatorsname: uid=admin,ou=system
 m-ordering: generalizedTimeOrderingMatch
 m-collective: FALSE
