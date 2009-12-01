@@ -107,7 +107,7 @@ public class SchemaManagerTest
                 fail();
             }
             
-            expectedRegistries.register( expectedComparator );
+            expectedRegistries.add( expectedComparator );
         }
     }
     
@@ -124,7 +124,7 @@ public class SchemaManagerTest
                 fail();
             }
 
-            expectedRegistries.register( expectedNormalizer );
+            expectedRegistries.add( expectedNormalizer );
         }
     }
     
@@ -141,7 +141,7 @@ public class SchemaManagerTest
                 fail();
             }
             
-            expectedRegistries.register( expectedSyntaxChecker );
+            expectedRegistries.add( expectedSyntaxChecker );
         }
     }
     
@@ -162,7 +162,7 @@ public class SchemaManagerTest
                 fail();
             }
             
-            expectedRegistries.register( expectedLdapSyntax );
+            expectedRegistries.add( expectedLdapSyntax );
         }
     }
     
@@ -183,7 +183,7 @@ public class SchemaManagerTest
                 fail();
             }
             
-            expectedRegistries.register( expectedMatchingRule );
+            expectedRegistries.add( expectedMatchingRule );
         }
     }
     

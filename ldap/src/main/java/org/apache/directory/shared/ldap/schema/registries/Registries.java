@@ -1363,7 +1363,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
     }
 	
 
-	public void register( SchemaObject schemaObject ) throws NamingException
+    /**
+     * Register the given SchemaObject into the associated Registry
+     */
+	private void register( SchemaObject schemaObject ) throws NamingException
 	{
 	    LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 	    
@@ -1434,7 +1437,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
 	 * @param schemaObject The schemaObject to register
 	 * @throws NamingException If there is a problem
 	 */
-	public void associateWithSchema( SchemaObject schemaObject ) throws NamingException
+	private void associateWithSchema( SchemaObject schemaObject ) throws NamingException
 	{
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
         

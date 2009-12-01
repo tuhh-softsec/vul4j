@@ -185,19 +185,19 @@ public class DefaultSchemaManager implements SchemaManager
     }
     
     
-    private void registerSchemaObjects( Schema schema, Registries registries ) throws Exception
+    private void addSchemaObjects( Schema schema, Registries registries ) throws Exception
     {
-        registerComparators( schema, registries );
-        registerNormalizers( schema, registries );
-        registerSyntaxCheckers( schema, registries );
-        registerSyntaxes( schema, registries );
-        registerMatchingRules( schema, registries );
-        registerAttributeTypes( schema, registries );
-        registerObjectClasses( schema, registries );
-        registerMatchingRuleUses( schema, registries );
-        registerDitContentRules( schema, registries );
-        registerNameForms( schema, registries );
-        registerDitStructureRules( schema, registries );
+        addComparators( schema, registries );
+        addNormalizers( schema, registries );
+        addSyntaxCheckers( schema, registries );
+        addSyntaxes( schema, registries );
+        addMatchingRules( schema, registries );
+        addAttributeTypes( schema, registries );
+        addObjectClasses( schema, registries );
+        addMatchingRuleUses( schema, registries );
+        addDitContentRules( schema, registries );
+        addNameForms( schema, registries );
+        addDitStructureRules( schema, registries );
 
         // TODO Add some listener handling at this point
         //notifyListenerOrRegistries( schema, registries );
@@ -459,7 +459,7 @@ public class DefaultSchemaManager implements SchemaManager
                 
                 registries.schemaLoaded( schema );
                 
-                registerSchemaObjects( schema, registries );
+                addSchemaObjects( schema, registries );
             }
             else
             {
@@ -471,7 +471,7 @@ public class DefaultSchemaManager implements SchemaManager
             LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
             
             registries.schemaLoaded( schema );
-            registerSchemaObjects( schema, registries );
+            addSchemaObjects( schema, registries );
         }
         
         return true;
@@ -479,38 +479,38 @@ public class DefaultSchemaManager implements SchemaManager
 
     
     /**
-     * Register all the Schema's AttributeTypes
+     * Add all the Schema's AttributeTypes
      */
-    private void registerAttributeTypes( Schema schema, Registries registries ) throws Exception
+    private void addAttributeTypes( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadAttributeTypes( schema ) )
         {
             AttributeType attributeType = factory.getAttributeType( this, entry, registries, schema.getSchemaName() );
 
-            registerSchemaObject( registries, attributeType, schema );
+            addSchemaObject( registries, attributeType, schema );
         }
     }
 
     
     /**
-     * Register all the Schema's comparators
+     * Add all the Schema's comparators
      */
-    private void registerComparators( Schema schema, Registries registries ) throws Exception
+    private void addComparators( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadComparators( schema ) )
         {
             LdapComparator<?> comparator = 
                 factory.getLdapComparator( this, entry, registries, schema.getSchemaName() );
             
-            registerSchemaObject( registries, comparator, schema );
+            addSchemaObject( registries, comparator, schema );
         }
     }
 
     
     /**
-     * Register all the Schema's DitContentRules
+     * Add all the Schema's DitContentRules
      */
-    private void registerDitContentRules( Schema schema, Registries registries ) throws Exception
+    private void addDitContentRules( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
         {
@@ -521,9 +521,9 @@ public class DefaultSchemaManager implements SchemaManager
 
     
     /**
-     * Register all the Schema's DitStructureRules
+     * Add all the Schema's DitStructureRules
      */
-    private void registerDitStructureRules( Schema schema, Registries registries ) throws Exception
+    private void addDitStructureRules( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
         {
@@ -534,24 +534,24 @@ public class DefaultSchemaManager implements SchemaManager
 
     
     /**
-     * Register all the Schema's MatchingRules
+     * Add all the Schema's MatchingRules
      */
-    private void registerMatchingRules( Schema schema, Registries registries ) throws Exception
+    private void addMatchingRules( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadMatchingRules( schema ) )
         {
             MatchingRule matchingRule = factory.getMatchingRule( 
                 this, entry, registries, schema.getSchemaName() );
 
-            registerSchemaObject( registries, matchingRule, schema );
+            addSchemaObject( registries, matchingRule, schema );
         }
     }
 
     
     /**
-     * Register all the Schema's MatchingRuleUses
+     * Add all the Schema's MatchingRuleUses
      */
-    private void registerMatchingRuleUses( Schema schema, Registries registries ) throws Exception
+    private void addMatchingRuleUses( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
         {
@@ -562,9 +562,9 @@ public class DefaultSchemaManager implements SchemaManager
 
     
     /**
-     * Register all the Schema's NameForms
+     * Add all the Schema's NameForms
      */
-    private void registerNameForms( Schema schema, Registries registries ) throws Exception
+    private void addNameForms( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadNameForms( schema ) )
         {
@@ -575,66 +575,66 @@ public class DefaultSchemaManager implements SchemaManager
 
     
     /**
-     * Register all the Schema's Normalizers
+     * Add all the Schema's Normalizers
      */
-    private void registerNormalizers( Schema schema, Registries registries ) throws Exception
+    private void addNormalizers( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadNormalizers( schema ) )
         {
             Normalizer normalizer =
                 factory.getNormalizer( this, entry, registries, schema.getSchemaName() );
             
-            registerSchemaObject( registries, normalizer, schema );
+            addSchemaObject( registries, normalizer, schema );
         }
     }
 
     
     /**
-     * Register all the Schema's ObjectClasses
+     * Add all the Schema's ObjectClasses
      */
-    private void registerObjectClasses( Schema schema, Registries registries ) throws Exception
+    private void addObjectClasses( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadObjectClasses( schema ) )
         {
             ObjectClass objectClass = factory.getObjectClass( this, entry, registries, schema.getSchemaName() );
 
-            registerSchemaObject( registries, objectClass, schema );
+            addSchemaObject( registries, objectClass, schema );
         }
     }
 
     
     /**
-     * Register all the Schema's Syntaxes
+     * Add all the Schema's Syntaxes
      */
-    private void registerSyntaxes( Schema schema, Registries registries ) throws Exception
+    private void addSyntaxes( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadSyntaxes( schema ) )
         {
             LdapSyntax syntax = factory.getSyntax( this,
                 entry, registries, schema.getSchemaName() );
 
-            registerSchemaObject( registries, syntax, schema );
+            addSchemaObject( registries, syntax, schema );
         }
     }
 
     
-    /**
+    /**Add
      * Register all the Schema's SyntaxCheckers
      */
-    private void registerSyntaxCheckers( Schema schema, Registries registries ) throws Exception
+    private void addSyntaxCheckers( Schema schema, Registries registries ) throws Exception
     {
         for ( Entry entry : schemaLoader.loadSyntaxCheckers( schema ) )
         {
             SyntaxChecker syntaxChecker = 
                 factory.getSyntaxChecker( this, entry, registries, schema.getSchemaName() );
 
-            registerSchemaObject( registries, syntaxChecker, schema );
+            addSchemaObject( registries, syntaxChecker, schema );
         }
     }
 
     
     /**
-     * Register the schemaObject into the registries. 
+     * Add the schemaObject into the registries. 
      *
      * @param registries The Registries
      * @param schemaObject The SchemaObject containing the SchemaObject description
@@ -642,7 +642,7 @@ public class DefaultSchemaManager implements SchemaManager
      * @return the created schemaObject instance
      * @throws Exception If the registering failed
      */
-    private SchemaObject registerSchemaObject( Registries registries, SchemaObject schemaObject, Schema schema) 
+    private SchemaObject addSchemaObject( Registries registries, SchemaObject schemaObject, Schema schema) 
         throws Exception
     {
         if ( registries.isRelaxed() )
