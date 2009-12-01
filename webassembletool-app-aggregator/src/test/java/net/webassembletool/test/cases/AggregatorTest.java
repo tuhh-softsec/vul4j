@@ -149,11 +149,10 @@ public class AggregatorTest extends TestCase {
 	}
 
 	public void testZipDownload() throws Exception {
-		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-				+ "export_ContentContainer_55.zip");
+		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "test.zip");
 		WebResponse resp = webConversation.getResponse(req);
 		InputStream inputStream = this.getClass().getResourceAsStream(
-				RESOURCES_PATH + "export_ContentContainer_55.zip");
+				RESOURCES_PATH + "test.zip");
 		byte[] expected = IOUtils.toByteArray(inputStream);
 		inputStream.close();
 		byte[] result = IOUtils.toByteArray(resp.getInputStream());
@@ -196,6 +195,18 @@ public class AggregatorTest extends TestCase {
 
 	public void testMixedEncodings() throws Exception {
 		doSimpleTest("template-mixed-encodings.jsp");
+	}
+
+	public void testBlockGzip() throws Exception {
+		doSimpleTest("block-gzip.html", "block.html");
+	}
+
+	public void testPageGzip() throws Exception {
+		doSimpleTest("page-gzip.jsp");
+	}
+
+	public void testBinaryGzip() throws Exception {
+		doSimpleTest("binary-gzip.jsp");
 	}
 
 }

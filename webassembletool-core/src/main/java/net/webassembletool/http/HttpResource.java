@@ -85,6 +85,7 @@ public class HttpResource extends Resource {
 		copyHeader(output, "ETag");
 		copyHeader(output, "Expires");
 		copyHeader(output, "Cache-control");
+		copyHeader(output, "Content-encoding");
 		String location = httpClientResponse.getHeader("Location");
 		if (location != null) {
 			// In case of a redirect, we need to rewrite the location header to
