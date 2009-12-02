@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
@@ -71,7 +73,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
     /** The AttributeType registry */
     protected AttributeTypeRegistry attributeTypeRegistry;
-    
+
     /** The ObjectClass registry */
     protected ObjectClassRegistry objectClassRegistry;
 
@@ -104,26 +106,26 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
     /** The LdapSyntax registry */
     protected LdapSyntaxRegistry ldapSyntaxRegistry;
-    
+
     /** A map storing all the schema objects associated with a schema */
     private Map<String, Set<SchemaObjectWrapper>> schemaObjects;
-    
+
     /** A flag indicating that the Registries is relaxed or not */
     private boolean isRelaxed;
-    
+
     /** A flag indicating that disabled SchemaObject are accepted */
     private boolean disabledAccepted;
-    
+
     /** Two flags for RELAXED and STRUCT */
     public static final boolean STRICT = false;
     public static final boolean RELAXED = true;
-    
+
     /**
      *  A map storing a relation between a SchemaObject and all the 
      *  referencing SchemaObjects.
      */
     protected Map<SchemaObjectWrapper, Set<SchemaObjectWrapper>> usedBy;
-    
+
     /**
      *  A map storing a relation between a SchemaObject and all the 
      *  SchemaObjects it uses.
@@ -132,6 +134,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
     /** A reference on the schema Manager */
     private SchemaManager schemaManager;
+
 
     /**
      * Creates a new instance of Registries.
@@ -155,13 +158,13 @@ public class Registries implements SchemaLoaderListener, Cloneable
         schemaObjects = new HashMap<String, Set<SchemaObjectWrapper>>();
         usedBy = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
         using = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
-        
+
         isRelaxed = STRICT;
         disabledAccepted = false;
         this.schemaManager = schemaManager;
     }
 
-    
+
     /**
      * @return The AttributeType registry
      */
@@ -170,7 +173,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return attributeTypeRegistry;
     }
 
-    
+
     /**
      * @return The Comparator registry
      */
@@ -179,7 +182,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return comparatorRegistry;
     }
 
-    
+
     /**
      * @return The DITContentRule registry
      */
@@ -188,7 +191,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return ditContentRuleRegistry;
     }
 
-    
+
     /**
      * @return The DITStructureRule registry
      */
@@ -197,7 +200,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return ditStructureRuleRegistry;
     }
 
-    
+
     /**
      * @return The MatchingRule registry
      */
@@ -206,7 +209,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return matchingRuleRegistry;
     }
 
-    
+
     /**
      * @return The MatchingRuleUse registry
      */
@@ -215,7 +218,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return matchingRuleUseRegistry;
     }
 
-    
+
     /**
      * @return The NameForm registry
      */
@@ -224,7 +227,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return nameFormRegistry;
     }
 
-    
+
     /**
      * @return The Normalizer registry
      */
@@ -233,7 +236,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return normalizerRegistry;
     }
 
-    
+
     /**
      * @return The ObjectClass registry
      */
@@ -242,7 +245,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return objectClassRegistry;
     }
 
-    
+
     /**
      * @return The global Oid registry
      */
@@ -251,7 +254,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return globalOidRegistry;
     }
 
-    
+
     /**
      * @return The SyntaxChecker registry
      */
@@ -260,7 +263,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return syntaxCheckerRegistry;
     }
 
-    
+
     /**
      * @return The LdapSyntax registry
      */
@@ -268,8 +271,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         return ldapSyntaxRegistry;
     }
-    
-    
+
+
     /**
      * Get an OID from a name. As we have many possible registries, we 
      * have to look in all of them to get the one containing the OID.
@@ -284,7 +287,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         try
         {
             AttributeType attributeType = attributeTypeRegistry.lookup( name );
-            
+
             if ( attributeType != null )
             {
                 return attributeType.getOid();
@@ -294,12 +297,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             // Fall down to the next registry
         }
-        
+
         // ObjectClass
         try
         {
             ObjectClass objectClass = objectClassRegistry.lookup( name );
-            
+
             if ( objectClass != null )
             {
                 return objectClass.getOid();
@@ -314,7 +317,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         try
         {
             LdapSyntax ldapSyntax = ldapSyntaxRegistry.lookup( name );
-            
+
             if ( ldapSyntax != null )
             {
                 return ldapSyntax.getOid();
@@ -324,12 +327,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             // Fall down to the next registry
         }
-        
+
         // MatchingRule
         try
         {
             MatchingRule matchingRule = matchingRuleRegistry.lookup( name );
-            
+
             if ( matchingRule != null )
             {
                 return matchingRule.getOid();
@@ -339,12 +342,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             // Fall down to the next registry
         }
-        
+
         // MatchingRuleUse
         try
         {
             MatchingRuleUse matchingRuleUse = matchingRuleUseRegistry.lookup( name );
-            
+
             if ( matchingRuleUse != null )
             {
                 return matchingRuleUse.getOid();
@@ -354,12 +357,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             // Fall down to the next registry
         }
-        
+
         // NameForm
         try
         {
             NameForm nameForm = nameFormRegistry.lookup( name );
-            
+
             if ( nameForm != null )
             {
                 return nameForm.getOid();
@@ -369,12 +372,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             // Fall down to the next registry
         }
-        
+
         // DITContentRule
         try
         {
             DITContentRule ditContentRule = ditContentRuleRegistry.lookup( name );
-            
+
             if ( ditContentRule != null )
             {
                 return ditContentRule.getOid();
@@ -389,7 +392,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         try
         {
             DITStructureRule ditStructureRule = ditStructureRuleRegistry.lookup( name );
-            
+
             if ( ditStructureRule != null )
             {
                 return ditStructureRule.getOid();
@@ -399,7 +402,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             // No more registries to look at...
         }
-        
+
         return null;
     }
 
@@ -468,7 +471,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             resolve( comparator, errors );
         }
-        
+
         // Check the SyntaxCheckers
         for ( SyntaxChecker syntaxChecker : syntaxCheckerRegistry )
         {
@@ -481,21 +484,21 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             resolve( ldapSyntax, errors );
         }
-        
+
         // Step 3 :
         // Check the matchingRules
         for ( MatchingRule matchingRule : matchingRuleRegistry )
         {
             resolve( matchingRule, errors );
         }
-        
+
         // Step 4 :
         // Check the AttributeTypes
         for ( AttributeType attributeType : attributeTypeRegistry )
         {
             resolve( attributeType, errors );
         }
-        
+
         //  Step 5 :
         // Check the ObjectClasses
         for ( ObjectClass objectClass : objectClassRegistry )
@@ -506,8 +509,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // Step 6-9 aren't yet defined
         return errors;
     }
-    
-    
+
+
     /**
      * Add the SchemaObjectReferences. This method does nothing, it's just
      * a catch all. The other methods will be called for each specific 
@@ -531,29 +534,29 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             delReference( attributeType, attributeType.getEquality() );
         }
-        
+
         if ( attributeType.getOrdering() != null )
         {
             delReference( attributeType, attributeType.getOrdering() );
         }
-        
+
         if ( attributeType.getSubstring() != null )
         {
             delReference( attributeType, attributeType.getSubstring() );
         }
-        
+
         if ( attributeType.getSyntax() != null )
         {
             delReference( attributeType, attributeType.getSyntax() );
         }
-        
+
         if ( attributeType.getSuperior() != null )
         {
             delReference( attributeType, attributeType.getSuperior() );
         }
     }
-    
-    
+
+
     /**
      * Some specific controls must be checked : 
      * - an AT must have either a SYNTAX or a SUP. If there is no SYNTAX, then
@@ -643,8 +646,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             }
         }
     }
-    
-    
+
+
     /**
      * Build the Comparator references
      */
@@ -655,8 +658,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             buildReference( errors, comparator );
         }
     }
-    
-    
+
+
     /**
      * Build the DitContentRule references
      */
@@ -667,8 +670,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             // TODO
         }
     }
-    
-    
+
+
     /**
      * Build the DitStructureRule references
      */
@@ -679,8 +682,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             // TODO
         }
     }
-    
-    
+
+
     /**
      * Delete the MR references (using and usedBy) : 
      * MR -> C
@@ -693,19 +696,19 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             delReference( matchingRule, matchingRule.getLdapComparator() );
         }
-        
+
         if ( matchingRule.getNormalizer() != null )
         {
             delReference( matchingRule, matchingRule.getNormalizer() );
         }
-        
+
         if ( matchingRule.getSyntax() != null )
         {
             delReference( matchingRule, matchingRule.getSyntax() );
         }
     }
 
-    
+
     /**
      * Build the SchemaObject references
      */
@@ -718,17 +721,15 @@ public class Registries implements SchemaLoaderListener, Cloneable
         catch ( NamingException ne )
         {
             // Not allowed.
-            String msg = "Cannot build the references for " + schemaObject.getName() + 
-                ", error : " + ne.getMessage();
+            String msg = "Cannot build the references for " + schemaObject.getName() + ", error : " + ne.getMessage();
 
-            Throwable error = new LdapSchemaViolationException( 
-                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
             LOG.info( msg );
         }
     }
-    
-    
+
+
     /**
      * Build the MatchingRule references
      */
@@ -740,7 +741,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
     }
 
-    
+
     /**
      * Build the MatchingRuleUse references
      */
@@ -752,7 +753,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
     }
 
-    
+
     /**
      * Build the NameForm references
      */
@@ -763,8 +764,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             // TODO
         }
     }
-    
-    
+
+
     /**
      * Build the Normalizer references
      */
@@ -776,7 +777,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
     }
 
-    
+
     /**
      * Build the ObjectClasses references
      */
@@ -784,7 +785,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         // Remember the OC we have already processed
         Set<String> done = new HashSet<String>();
-        
+
         // The ObjectClass
         for ( ObjectClass objectClass : objectClassRegistry )
         {
@@ -800,8 +801,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             buildReference( errors, objectClass );
         }
     }
-    
-    
+
+
     /**
      * Build the Syntax references
      */
@@ -812,8 +813,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             buildReference( errors, syntax );
         }
     }
-    
-    
+
+
     /**
      * Build the SyntaxChecker references
      */
@@ -824,8 +825,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
             buildReference( errors, syntaxChecker );
         }
     }
-    
-    
+
+
     /**
      * Build the usedBy and using references from the stored elements.
      * 
@@ -834,44 +835,44 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public List<Throwable> buildReferences()
     {
         List<Throwable> errors = new ArrayList<Throwable>();
-        
+
         // The Comparator references
         buildComparatorReferences( errors );
-        
+
         // The Normalizer references
         buildNormalizerReferences( errors );
-        
+
         // The SyntaxChecker references
         buildSyntaxCheckerReferences( errors );
-        
+
         // The Syntax references
         buildLdapSyntaxReferences( errors );
 
         // The MatchingRules references
         buildMatchingRuleReferences( errors );
-        
+
         // The AttributeType references
         buildAttributeTypeReferences( errors );
-        
+
         // The MatchingRuleUse references
         buildMatchingRuleUseReferences( errors );
-        
+
         // The ObjectClasses references
         buildObjectClassReferences( errors );
-        
+
         // The DitContentRules references
         buildDitContentRuleReferences( errors );
-        
+
         // The NameForms references
         buildNameFormReferences( errors );
 
         // The DitStructureRules references
         buildDitStructureRuleReferences( errors );
-        
+
         return errors;
     }
 
-    
+
     /**
      * Attempts to resolve the SyntaxChecker associated with a Syntax.
      *
@@ -961,7 +962,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         // Process the Syntax. It can't be null
         String syntaxOid = matchingRule.getSyntaxOid();
-        
+
         if ( syntaxOid != null )
         {
             // Check if the Syntax is present in the registries
@@ -978,38 +979,35 @@ public class Registries implements SchemaLoaderListener, Cloneable
         else
         {
             // This is an error. 
-            Throwable error = new LdapSchemaViolationException( 
-                "The MatchingRule " + matchingRule.getOid() + " does not have a syntax." +
-                " This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( "The MatchingRule " + matchingRule.getOid()
+                + " does not have a syntax." + " This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
         }
-        
+
         // Process the Normalizer
         Normalizer normalizer = matchingRule.getNormalizer();
-        
+
         if ( normalizer == null )
         {
             // Ok, no normalizer, this is an error
-            Throwable error = new LdapSchemaViolationException( 
-                "The MatchingRule " + matchingRule.getOid() + " does not have a normalizer." +
-                " This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( "The MatchingRule " + matchingRule.getOid()
+                + " does not have a normalizer." + " This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
         }
-        
+
         // Process the Comparator
         LdapComparator<?> comparator = matchingRule.getLdapComparator();
-        
+
         if ( comparator == null )
         {
             // Ok, no comparator, this is an error
-            Throwable error = new LdapSchemaViolationException( 
-                "The MatchingRule " + matchingRule.getOid() + " does not have a comparator." +
-                " This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( "The MatchingRule " + matchingRule.getOid()
+                + " does not have a comparator." + " This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
         }
     }
 
-    
+
     /**
      * Check AttributeType referential integrity
      */
@@ -1017,9 +1015,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         // Process the Superior, if any
         String superiorOid = attributeType.getSuperiorOid();
-        
+
         AttributeType superior = null;
-        
+
         if ( superiorOid != null )
         {
             // Check if the Superior is present in the registries
@@ -1035,7 +1033,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
                     errors.add( ne );
                 }
             }
-            
+
             // We now have to process the superior, if it hasn't been 
             // processed yet.
             if ( superior != null )
@@ -1048,20 +1046,20 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapSchemaViolationException( 
-                        "The AttributeType " + attributeType.getOid() + " can't have itself as a superior, or" +
-                        " a cycle has been detected while processing the superior's tree", 
+                    Throwable error = new LdapSchemaViolationException( "The AttributeType " + attributeType.getOid()
+                        + " can't have itself as a superior, or"
+                        + " a cycle has been detected while processing the superior's tree",
                         ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                     errors.add( error );
                     return;
                 }
             }
         }
-        
+
         // Process the Syntax. If it's null, the attributeType must have 
         // a Superior.
         String syntaxOid = attributeType.getSyntaxOid();
-        
+
         if ( syntaxOid != null )
         {
             // Check if the Syntax is present in the registries
@@ -1082,17 +1080,17 @@ public class Registries implements SchemaLoaderListener, Cloneable
             {
                 // This is an error. if the AT does not have a Syntax,
                 // then it must have a superior, which syntax is get from.
-                Throwable error = new LdapSchemaViolationException( 
-                    "The AttributeType " + attributeType.getOid() + " does not have a superior" +
-                    " nor a Syntax. This is invalid", ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( "The AttributeType " + attributeType.getOid()
+                    + " does not have a superior" + " nor a Syntax. This is invalid",
+                    ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
             }
         }
-        
+
         // Process the EQUALITY MatchingRule. It may be null, but if it's not
         // it must have been processed before
         String equalityOid = attributeType.getEqualityOid();
-        
+
         if ( equalityOid != null )
         {
             // Check if the MatchingRule is present in the registries
@@ -1106,11 +1104,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 errors.add( ne );
             }
         }
-        
+
         // Process the ORDERING MatchingRule. It may be null, but if it's not
         // it must have been processed before
         String orderingOid = attributeType.getOrderingOid();
-        
+
         if ( orderingOid != null )
         {
             // Check if the MatchingRule is present in the registries
@@ -1124,11 +1122,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 errors.add( ne );
             }
         }
-        
+
         // Process the SUBSTR MatchingRule. It may be null, but if it's not
         // it must have been processed before
         String substringOid = attributeType.getSubstringOid();
-        
+
         if ( substringOid != null )
         {
             // Check if the MatchingRule is present in the registries
@@ -1155,10 +1153,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // for an AttributeType. It's mandatory when processing
         // a Superior, as it may be broken and referenced more than once. 
         Set<String> processed = new HashSet<String>();
-        
+
         // Store the AttributeType itself in the processed, to avoid cycle
         processed.add( attributeType.getOid() );
-        
+
         // Call the recursive method, as we may have superiors to deal with
         resolveRecursive( attributeType, processed, errors );
     }
@@ -1170,7 +1168,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // for an ObjectClass. It's mandatory when processing
         // the Superiors, as they may be broken and referenced more than once. 
         Set<String> processed = new HashSet<String>();
-        
+
         // Store the ObjectClass itself in the processed, to avoid cycle
         processed.add( objectClass.getOid() );
 
@@ -1178,13 +1176,13 @@ public class Registries implements SchemaLoaderListener, Cloneable
         resolveRecursive( objectClass, processed, errors );
     }
 
-    
+
     private void resolveRecursive( ObjectClass objectClass, Set<String> processed, List<Throwable> errors )
     {
         // Process the Superiors, if any
         List<String> superiorOids = objectClass.getSuperiorOids();
         ObjectClass superior = null;
-        
+
         for ( String superiorOid : superiorOids )
         {
             // Check if the Superior is present in the registries
@@ -1200,7 +1198,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
                     errors.add( ne );
                 }
             }
-            
+
             // We now have to process the superior, if it hasn't been 
             // processed yet.
             if ( superior != null )
@@ -1213,16 +1211,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapSchemaViolationException( 
-                        "The AttributeType " + objectClass.getOid() + " can't have itself as a superior, or" +
-                        " a cycle has been detected while processing the superior's tree", 
+                    Throwable error = new LdapSchemaViolationException( "The AttributeType " + objectClass.getOid()
+                        + " can't have itself as a superior, or"
+                        + " a cycle has been detected while processing the superior's tree",
                         ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                     errors.add( error );
                     return;
                 }
             }
         }
-        
+
         // Process the MAY attributeTypes.  
         for ( String mayOid : objectClass.getMayAttributeTypeOids() )
         {
@@ -1237,7 +1235,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 errors.add( ne );
             }
         }
-        
+
         // Process the MUST attributeTypes.  
         for ( String mustOid : objectClass.getMustAttributeTypeOids() )
         {
@@ -1252,7 +1250,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 errors.add( ne );
             }
         }
-        
+
         // All is done for this ObjectClass, let's apply the registries
         try
         {
@@ -1267,15 +1265,39 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
 
     /**
+     * Applies the added SchemaObject to the given register
+     */
+    public List<Throwable> add( List<Throwable> errors, SchemaObject schemaObject ) throws NamingException
+    {
+        // Relax the registries
+        setRelaxed();
+
+        // Register the SchemaObject in the registries
+        add( schemaObject );
+
+        // Build the SchemaObject references
+        buildReference( errors, schemaObject );
+
+        // Check the registries now
+        List<Throwable> checkErrors = checkRefInteg();
+
+        errors.addAll( checkErrors );
+
+        // return the errors
+        return errors;
+    }
+
+
+    /**
      * Merely adds the schema to the set of loaded schemas.  Does not
      * actually do any work to add schema objects to registries.
      * 
      * {@inheritDoc}
      */
-	public void schemaLoaded( Schema schema ) 
-	{
-		this.loadedSchemas.put( schema.getSchemaName(), schema );
-	}
+    public void schemaLoaded( Schema schema )
+    {
+        this.loadedSchemas.put( schema.getSchemaName(), schema );
+    }
 
 
     /**
@@ -1284,71 +1306,89 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * 
      * {@inheritDoc}
      */
-	public void schemaUnloaded(Schema schema) 
-	{
-		this.loadedSchemas.remove( schema.getSchemaName() );
-	}
+    public void schemaUnloaded( Schema schema )
+    {
+        this.loadedSchemas.remove( schema.getSchemaName() );
+    }
 
 
-	/**
-	 * Gets an unmodifiable Map of schema names to loaded Schema objects. 
-	 * 
-	 * @return the map of loaded Schema objects
-	 */
-	public Map<String, Schema> getLoadedSchemas() 
-	{
-		return Collections.unmodifiableMap( loadedSchemas );
-	}
-	
-	
-	/**
-	 * @return Gets a reference to the Map associating a schemaName to
-	 * its contained SchemaObjects
-	 */
-	public Map<String, Set<SchemaObjectWrapper>> getObjectBySchemaName()
-	{
-	    return schemaObjects;
-	}
-	
-	
-	/**
-	 * Tells if the given SchemaObject is present in one schema. The schema
-	 * may be disabled.
-	 *
-	 * @param schemaObject The schemaObject we are looking for
-	 * @return true if the schemaObject is present in a schema
-	 */
-	public boolean contains( SchemaObject schemaObject )
-	{
-	    String schemaName = schemaObject.getSchemaName();
-	    
-	    Set<SchemaObjectWrapper> setSchemaObjects = schemaObjects.get( schemaName );
-	    
-	    if ( ( setSchemaObjects == null ) || setSchemaObjects.isEmpty() )
-	    {
-	        return false;
-	    }
+    /**
+     * Gets an unmodifiable Map of schema names to loaded Schema objects. 
+     * 
+     * @return the map of loaded Schema objects
+     */
+    public Map<String, Schema> getLoadedSchemas()
+    {
+        return Collections.unmodifiableMap( loadedSchemas );
+    }
+
+
+    /**
+     * @return Gets a reference to the Map associating a schemaName to
+     * its contained SchemaObjects
+     */
+    public Map<String, Set<SchemaObjectWrapper>> getObjectBySchemaName()
+    {
+        return schemaObjects;
+    }
+
+
+    /**
+     * Retrieve the schema name for a specific SchemaObject, or return "other" if none is found.
+     */
+    private String getSchemaName( SchemaObject schemaObject ) throws Exception
+    {
+        String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+
+        if ( loadedSchemas.containsKey( schemaName ) )
+        {
+            return schemaName;
+        }
+        else
+        {
+            return MetaSchemaConstants.SCHEMA_OTHER;
+        }
+    }
+
+
+    /**
+     * Tells if the given SchemaObject is present in one schema. The schema
+     * may be disabled.
+     *
+     * @param schemaObject The schemaObject we are looking for
+     * @return true if the schemaObject is present in a schema
+     */
+    public boolean contains( SchemaObject schemaObject )
+    {
+        String schemaName = schemaObject.getSchemaName();
+
+        Set<SchemaObjectWrapper> setSchemaObjects = schemaObjects.get( schemaName );
+
+        if ( ( setSchemaObjects == null ) || setSchemaObjects.isEmpty() )
+        {
+            return false;
+        }
 
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
-	    
-	    return setSchemaObjects.contains( wrapper );
-	}
-	
-	
-	/**
-	 * Create a new schema association with its content
-	 *
-	 * @param schemaName The schema name
-	 */
-	public Set<SchemaObjectWrapper> addSchema( String schemaName )
-	{
-	    Set<SchemaObjectWrapper> content = new HashSet<SchemaObjectWrapper>();
-	    schemaObjects.put( schemaName, content );
-	    
-	    return content;
-	}
-	
-	
+
+        return setSchemaObjects.contains( wrapper );
+    }
+
+
+    /**
+     * Create a new schema association with its content
+     *
+     * @param schemaName The schema name
+     */
+    public Set<SchemaObjectWrapper> addSchema( String schemaName )
+    {
+        Set<SchemaObjectWrapper> content = new HashSet<SchemaObjectWrapper>();
+        schemaObjects.put( schemaName, content );
+
+        return content;
+    }
+
+
     /**
      * Applies the added SchemaObject to the given register. This method is common
      * to all the addition operations (LDAP injection or schema loading).
@@ -1357,203 +1397,203 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         // Register the SchemaObject in the registries
         register( schemaObject );
-        
+
         // Associate the SchemaObject with its schema
         associateWithSchema( schemaObject );
     }
-	
+
 
     /**
      * Register the given SchemaObject into the associated Registry
      */
-	private void register( SchemaObject schemaObject ) throws NamingException
-	{
-	    LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
-	    
-	    // Check that the SchemaObject is not already registered
-	    if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.hasOid( schemaObject.getOid() ) )
-	    {
-	        // TODO : throw an exception here
-	        String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid() +
-	            "failed, it's already present in the Registries";
-            LOG.error( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
-	    }
-	    
-	    // First call the specific registry's register method
-	    switch ( schemaObject.getObjectType() )
-	    {
-	        case ATTRIBUTE_TYPE :
-	            attributeTypeRegistry.register( (AttributeType)schemaObject );
-	            break;
-	            
-	        case COMPARATOR :
-	            comparatorRegistry.register( (LdapComparator<?>)schemaObject );
-	            break;
-	            
-            case DIT_CONTENT_RULE : 
-                ditContentRuleRegistry.register( (DITContentRule)schemaObject );
-                break;
-                
-            case DIT_STRUCTURE_RULE : 
-                ditStructureRuleRegistry.register( (DITStructureRule)schemaObject );
-                break;
-                
-            case LDAP_SYNTAX : 
-                ldapSyntaxRegistry.register( (LdapSyntax)schemaObject );
-                break;
-                
-            case MATCHING_RULE : 
-                matchingRuleRegistry.register( (MatchingRule)schemaObject );
-                break;
-                
-            case MATCHING_RULE_USE : 
-                matchingRuleUseRegistry.register( (MatchingRuleUse)schemaObject );
-                break;
-                
-            case NAME_FORM : 
-                nameFormRegistry.register( (NameForm)schemaObject );
-                break;
-                
-            case NORMALIZER : 
-                normalizerRegistry.register( (Normalizer)schemaObject );
-                break;
-                
-            case OBJECT_CLASS : 
-                objectClassRegistry.register( (ObjectClass)schemaObject );
-                break;
-                
-            case SYNTAX_CHECKER : 
-                syntaxCheckerRegistry.register( (SyntaxChecker)schemaObject );
-                break;
-	    }
-	}
-	
-	
-	/**
-	 * Store the given SchemaObject in the Map associating SchemaObjetcs to their
-	 * related Schema.
-	 *
-	 * @param schemaObject The schemaObject to register
-	 * @throws NamingException If there is a problem
-	 */
-	public void associateWithSchema( SchemaObject schemaObject ) throws NamingException
-	{
+    private void register( SchemaObject schemaObject ) throws NamingException
+    {
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
-        
+
         // Check that the SchemaObject is not already registered
         if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.hasOid( schemaObject.getOid() ) )
         {
             // TODO : throw an exception here
-            String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid() +
-                "failed, it's already present in the Registries";
+            String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
+                + "failed, it's already present in the Registries";
             LOG.error( msg );
             throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
         }
-        
+
+        // First call the specific registry's register method
+        switch ( schemaObject.getObjectType() )
+        {
+            case ATTRIBUTE_TYPE:
+                attributeTypeRegistry.register( ( AttributeType ) schemaObject );
+                break;
+
+            case COMPARATOR:
+                comparatorRegistry.register( ( LdapComparator<?> ) schemaObject );
+                break;
+
+            case DIT_CONTENT_RULE:
+                ditContentRuleRegistry.register( ( DITContentRule ) schemaObject );
+                break;
+
+            case DIT_STRUCTURE_RULE:
+                ditStructureRuleRegistry.register( ( DITStructureRule ) schemaObject );
+                break;
+
+            case LDAP_SYNTAX:
+                ldapSyntaxRegistry.register( ( LdapSyntax ) schemaObject );
+                break;
+
+            case MATCHING_RULE:
+                matchingRuleRegistry.register( ( MatchingRule ) schemaObject );
+                break;
+
+            case MATCHING_RULE_USE:
+                matchingRuleUseRegistry.register( ( MatchingRuleUse ) schemaObject );
+                break;
+
+            case NAME_FORM:
+                nameFormRegistry.register( ( NameForm ) schemaObject );
+                break;
+
+            case NORMALIZER:
+                normalizerRegistry.register( ( Normalizer ) schemaObject );
+                break;
+
+            case OBJECT_CLASS:
+                objectClassRegistry.register( ( ObjectClass ) schemaObject );
+                break;
+
+            case SYNTAX_CHECKER:
+                syntaxCheckerRegistry.register( ( SyntaxChecker ) schemaObject );
+                break;
+        }
+    }
+
+
+    /**
+     * Store the given SchemaObject in the Map associating SchemaObjetcs to their
+     * related Schema.
+     *
+     * @param schemaObject The schemaObject to register
+     * @throws NamingException If there is a problem
+     */
+    public void associateWithSchema( SchemaObject schemaObject ) throws NamingException
+    {
+        LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
+
+        // Check that the SchemaObject is not already registered
+        if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.hasOid( schemaObject.getOid() ) )
+        {
+            // TODO : throw an exception here
+            String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
+                + "failed, it's already present in the Registries";
+            LOG.error( msg );
+            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+
         // Get a normalized form of schema name
         String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
 
         // And register the schemaObject within its schema
         Set<SchemaObjectWrapper> content = schemaObjects.get( schemaName );
-        
+
         if ( content == null )
         {
             content = new HashSet<SchemaObjectWrapper>();
             schemaObjects.put( StringTools.toLowerCase( schemaName ), content );
         }
-        
+
         SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
-        
+
         if ( content.contains( schemaObjectWrapper ) )
         {
             // Already present !
             // What should we do ?
-            LOG.info( "Registering of {}:{} failed, is already present in the Registries", 
+            LOG.info( "Registering of {}:{} failed, is already present in the Registries",
                 schemaObject.getObjectType(), schemaObject.getOid() );
         }
         else
         {
             // Create the association
             content.add( schemaObjectWrapper );
-            
+
             // Update the global OidRegistry if the SchemaObject is not
             // an instance of LoadableSchemaObject
             if ( !( schemaObject instanceof LoadableSchemaObject ) )
             {
                 globalOidRegistry.register( schemaObject );
             }
-            
+
             LOG.debug( "registered {} for OID {}", schemaObject.getName(), schemaObject.getOid() );
         }
-	}
+    }
 
 
-	/**
-	 * Unregister a SchemaObject from the registries
-	 *
-	 * @param schemaObject The SchemaObject we want to deregister
-	 * @throws NamingException If the removal failed
-	 */
+    /**
+     * Unregister a SchemaObject from the registries
+     *
+     * @param schemaObject The SchemaObject we want to deregister
+     * @throws NamingException If the removal failed
+     */
     public SchemaObject unregister( SchemaObject schemaObject ) throws NamingException
     {
         LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
         String oid = schemaObject.getOid();
         SchemaObject unregistered = null;
-        
+
         // First call the specific registry's register method
         switch ( schemaObject.getObjectType() )
         {
-            case ATTRIBUTE_TYPE : 
+            case ATTRIBUTE_TYPE:
                 unregistered = attributeTypeRegistry.unregister( oid );
                 break;
-                
-            case COMPARATOR : 
+
+            case COMPARATOR:
                 unregistered = comparatorRegistry.unregister( oid );
                 break;
-                
-            case DIT_CONTENT_RULE : 
+
+            case DIT_CONTENT_RULE:
                 unregistered = ditContentRuleRegistry.unregister( oid );
                 break;
-                
-            case DIT_STRUCTURE_RULE : 
+
+            case DIT_STRUCTURE_RULE:
                 unregistered = ditStructureRuleRegistry.unregister( oid );
                 break;
-                
-            case LDAP_SYNTAX : 
+
+            case LDAP_SYNTAX:
                 unregistered = ldapSyntaxRegistry.unregister( oid );
                 break;
-                
-            case MATCHING_RULE : 
+
+            case MATCHING_RULE:
                 unregistered = matchingRuleRegistry.unregister( oid );
                 break;
-                
-            case MATCHING_RULE_USE : 
+
+            case MATCHING_RULE_USE:
                 unregistered = matchingRuleUseRegistry.unregister( oid );
                 break;
-                
-            case NAME_FORM : 
+
+            case NAME_FORM:
                 unregistered = nameFormRegistry.unregister( oid );
                 break;
-                
-            case NORMALIZER : 
+
+            case NORMALIZER:
                 unregistered = normalizerRegistry.unregister( oid );
                 break;
-                
-            case OBJECT_CLASS : 
+
+            case OBJECT_CLASS:
                 unregistered = objectClassRegistry.unregister( oid );
                 break;
-                
-            case SYNTAX_CHECKER : 
+
+            case SYNTAX_CHECKER:
                 unregistered = syntaxCheckerRegistry.unregister( oid );
                 break;
         }
-        
+
         return unregistered;
     }
-    
-    
+
+
     /**
      * Remove the given SchemaObject from the Map associating SchemaObjetcs to their
      * related Schema.
@@ -1565,33 +1605,33 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         // And unregister the schemaObject within its schema
         Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
-        
+
         SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
-        
+
         if ( content.contains( schemaObjectWrapper ) )
         {
             // remove the schemaObject
             content.remove( schemaObjectWrapper );
-            
+
             // Update the global OidRegistry if the SchemaObject is not
             // an instance of LoadableSchemaObject
             if ( !( schemaObject instanceof LoadableSchemaObject ) )
             {
                 globalOidRegistry.unregister( schemaObject.getOid() );
             }
-            
+
             LOG.debug( "Unregistered {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
         }
         else
         {
             // Not present !!
             // What should we do ?
-            LOG.debug( "Unregistering of {}:{} failed, not found in Registries", 
-                schemaObject.getObjectType(), schemaObject.getOid() );
+            LOG.debug( "Unregistering of {}:{} failed, not found in Registries", schemaObject.getObjectType(),
+                schemaObject.getOid() );
         }
     }
-    
-    
+
+
     /**
      * Checks if a specific SchemaObject is referenced by any other SchemaObject.
      *
@@ -1601,29 +1641,27 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public boolean isReferenced( SchemaObject schemaObject )
     {
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
-        
+
         Set<SchemaObjectWrapper> set = usedBy.get( wrapper );
-        
+
         boolean referenced = ( set != null ) && ( set.size() != 0 );
-        
+
         if ( LOG.isDebugEnabled() )
         {
             if ( referenced )
             {
-                LOG.debug( "The {}:{} is referenced", schemaObject.getObjectType(),
-                    schemaObject.getOid() );
+                LOG.debug( "The {}:{} is referenced", schemaObject.getObjectType(), schemaObject.getOid() );
             }
             else
             {
-                LOG.debug( "The {}:{} is not referenced", schemaObject.getObjectType(),
-                    schemaObject.getOid() );
+                LOG.debug( "The {}:{} is not referenced", schemaObject.getObjectType(), schemaObject.getOid() );
             }
         }
-        
+
         return referenced;
     }
 
-    
+
     /**
      * Gets the Set of SchemaObjects referencing the given SchemaObject
      *
@@ -1633,27 +1671,27 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public Set<SchemaObjectWrapper> getUsedBy( SchemaObject schemaObject )
     {
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
-        
+
         return usedBy.get( wrapper );
     }
 
-    
+
     /**
      * Dump the UsedBy data structure as a String
      */
     public String dumpUsedBy()
     {
         StringBuilder sb = new StringBuilder();
-        
-        sb.append(  "USED BY :\n" );
-        
+
+        sb.append( "USED BY :\n" );
+
         for ( SchemaObjectWrapper wrapper : usedBy.keySet() )
         {
             sb.append( wrapper.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "] : {" );
-            
+
             boolean isFirst = true;
-            
-            for ( SchemaObjectWrapper uses : usedBy.get( wrapper) )
+
+            for ( SchemaObjectWrapper uses : usedBy.get( wrapper ) )
             {
                 if ( isFirst )
                 {
@@ -1663,33 +1701,33 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 {
                     sb.append( ", " );
                 }
-                
+
                 sb.append( uses.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "]" );
             }
-            
+
             sb.append( "}\n" );
         }
-        
+
         return sb.toString();
     }
 
-    
+
     /**
      * Dump the Using data structure as a String
      */
     public String dumpUsing()
     {
         StringBuilder sb = new StringBuilder();
-        
-        sb.append(  "USING :\n" );
+
+        sb.append( "USING :\n" );
 
         for ( SchemaObjectWrapper wrapper : using.keySet() )
         {
             sb.append( wrapper.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "] : {" );
-            
+
             boolean isFirst = true;
-            
-            for ( SchemaObjectWrapper uses : using.get( wrapper) )
+
+            for ( SchemaObjectWrapper uses : using.get( wrapper ) )
             {
                 if ( isFirst )
                 {
@@ -1699,17 +1737,17 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 {
                     sb.append( ", " );
                 }
-                
+
                 sb.append( uses.get().getObjectType() ).append( '[' ).append( wrapper.get().getOid() ).append( "]" );
             }
-            
+
             sb.append( "}\n" );
         }
-        
+
         return sb.toString();
     }
 
-    
+
     /**
      * Gets the Set of SchemaObjects referenced by the given SchemaObject
      *
@@ -1719,11 +1757,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public Set<SchemaObjectWrapper> getUsing( SchemaObject schemaObject )
     {
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( schemaObject );
-        
+
         return using.get( wrapper );
     }
-    
-    
+
+
     /**
      * Add an association between a SchemaObject an the SchemaObject it refers
      *
@@ -1736,23 +1774,23 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             return;
         }
-        
+
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( reference );
-        
+
         Set<SchemaObjectWrapper> uses = getUsing( reference );
-        
+
         if ( uses == null )
         {
             uses = new HashSet<SchemaObjectWrapper>();
         }
-        
+
         uses.add( new SchemaObjectWrapper( referee ) );
-        
+
         // Put back the set (this is a concurrentHashMap, it won't be replaced implicitly
         using.put( wrapper, uses );
     }
-    
-    
+
+
     /**
      * Add an association between a SchemaObject an the SchemaObject it refers
      *
@@ -1789,23 +1827,23 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             return;
         }
-        
+
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( referee );
-        
+
         Set<SchemaObjectWrapper> uses = getUsedBy( referee );
-        
+
         if ( uses == null )
         {
             uses = new HashSet<SchemaObjectWrapper>();
         }
-        
+
         uses.add( new SchemaObjectWrapper( reference ) );
-        
+
         // Put back the set (this is a concurrentHashMap, it won't be replaced implicitly
         usedBy.put( wrapper, uses );
     }
-    
-    
+
+
     /**
      * Del an association between a SchemaObject an the SchemaObject it refers
      *
@@ -1818,18 +1856,18 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             return;
         }
-        
+
         Set<SchemaObjectWrapper> uses = getUsing( reference );
-        
+
         if ( uses == null )
         {
             return;
         }
-        
+
         uses.remove( new SchemaObjectWrapper( referee ) );
-        
+
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( reference );
-        
+
         if ( uses.size() == 0 )
         {
             using.remove( wrapper );
@@ -1838,7 +1876,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             using.put( wrapper, uses );
         }
-        
+
         return;
     }
 
@@ -1857,14 +1895,14 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
 
         Set<SchemaObjectWrapper> uses = getUsedBy( referee );
-        
+
         if ( uses == null )
         {
             return;
         }
-        
+
         uses.remove( new SchemaObjectWrapper( reference ) );
-        
+
         SchemaObjectWrapper wrapper = new SchemaObjectWrapper( referee );
 
         if ( uses.size() == 0 )
@@ -1875,11 +1913,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             usedBy.put( wrapper, uses );
         }
-        
+
         return;
     }
-    
-    
+
+
     /**
      * Delete an association between a SchemaObject an the SchemaObject it refers
      *
@@ -1892,74 +1930,72 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             LOG.debug( dump( "del", base, referenced ) );
         }
-        
+
         delUsing( base, referenced );
         delUsedBy( referenced, base );
-        
+
         if ( LOG.isDebugEnabled() )
         {
             LOG.debug( dumpUsedBy() );
             LOG.debug( dumpUsing() );
         }
     }
-    
+
 
     /**
      * Dump the reference operation as a String
      */
     private String dump( String op, SchemaObject reference, SchemaObject referee )
     {
-        return op + " : " + reference.getObjectType() + "[" + reference.getOid() + "]/[" + referee.getObjectType() + "[" + referee.getOid() +"]";
+        return op + " : " + reference.getObjectType() + "[" + reference.getOid() + "]/[" + referee.getObjectType()
+            + "[" + referee.getOid() + "]";
     }
 
-    
+
     private boolean checkReferences( SchemaObject reference, SchemaObject referee, String message )
     {
         SchemaObjectWrapper referenceWrapper = new SchemaObjectWrapper( reference );
         SchemaObjectWrapper refereeWrapper = new SchemaObjectWrapper( referee );
-        
+
         // Check the references : Syntax -> SyntaxChecker
         if ( !using.containsKey( referenceWrapper ) )
         {
-            LOG.debug( "The Syntax {}:{} does not reference any " + message, 
-                reference.getObjectType(), reference.getOid() );
-            
+            LOG.debug( "The Syntax {}:{} does not reference any " + message, reference.getObjectType(), reference
+                .getOid() );
+
             return false;
         }
-        
+
         Set<SchemaObjectWrapper> usings = using.get( referenceWrapper );
 
         if ( !usings.contains( refereeWrapper ) )
         {
-            LOG.debug( "The {}:{} does not reference any " + message, 
-                reference.getObjectType(), reference.getOid() );
-            
+            LOG.debug( "The {}:{} does not reference any " + message, reference.getObjectType(), reference.getOid() );
+
             return false;
         }
-        
+
         // Check the referees : SyntaxChecker -> Syntax
         if ( !usedBy.containsKey( refereeWrapper ) )
         {
-            LOG.debug( "The {}:{} is not referenced by any " + message, 
-                referee.getObjectType(), referee.getOid() );
-            
+            LOG.debug( "The {}:{} is not referenced by any " + message, referee.getObjectType(), referee.getOid() );
+
             return false;
         }
-        
+
         Set<SchemaObjectWrapper> used = usedBy.get( refereeWrapper );
 
         if ( !used.contains( referenceWrapper ) )
         {
-            LOG.debug( "The {}:{} is not referenced by any " + message, 
-                referee.getObjectType(), referee.getOid() );
-            
+            LOG.debug( "The {}:{} is not referenced by any " + message, referee.getObjectType(), referee.getOid() );
+
             return false;
         }
-        
+
         return true;
     }
 
-    
+
     /**
      * Check the registries for invalid relations. This check stops at the first error.
      *
@@ -1969,25 +2005,25 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         // Check the Syntaxes : check for a SyntaxChecker
         LOG.debug( "Checking Syntaxes" );
-        
+
         for ( LdapSyntax syntax : ldapSyntaxRegistry )
         {
             // Check that each Syntax has a SyntaxChecker
             if ( syntax.getSyntaxChecker() == null )
             {
                 LOG.debug( "The Syntax {} has no SyntaxChecker", syntax );
-                
+
                 return false;
             }
-            
+
             if ( !syntaxCheckerRegistry.contains( syntax.getSyntaxChecker().getOid() ) )
             {
-                LOG.debug( "Cannot find the SyntaxChecker {} for the Syntax {}",
-                    syntax.getSyntaxChecker().getOid(), syntax );
-                
+                LOG.debug( "Cannot find the SyntaxChecker {} for the Syntax {}", syntax.getSyntaxChecker().getOid(),
+                    syntax );
+
                 return false;
             }
-            
+
             // Check the references : Syntax -> SyntaxChecker and SyntaxChecker -> Syntax 
             if ( !checkReferences( syntax, syntax.getSyntaxChecker(), "SyntaxChecker" ) )
             {
@@ -1997,23 +2033,23 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
         // Check the MatchingRules : check for a Normalizer, a Comparator and a Syntax
         LOG.debug( "Checking MatchingRules..." );
-        
+
         for ( MatchingRule matchingRule : matchingRuleRegistry )
         {
             // Check that each MatchingRule has a Normalizer
             if ( matchingRule.getNormalizer() == null )
             {
                 LOG.debug( "The MatchingRule {} has no Normalizer", matchingRule );
-                
+
                 return false;
             }
-            
+
             // Check that each MatchingRule has a Normalizer
             if ( !normalizerRegistry.contains( matchingRule.getNormalizer().getOid() ) )
             {
-                LOG.debug( "Cannot find the Normalizer {} for the MatchingRule {}",
-                    matchingRule.getNormalizer().getOid(), matchingRule );
-                
+                LOG.debug( "Cannot find the Normalizer {} for the MatchingRule {}", matchingRule.getNormalizer()
+                    .getOid(), matchingRule );
+
                 return false;
             }
 
@@ -2021,31 +2057,31 @@ public class Registries implements SchemaLoaderListener, Cloneable
             if ( matchingRule.getLdapComparator() == null )
             {
                 LOG.debug( "The MatchingRule {} has no Comparator", matchingRule );
-                
+
                 return false;
             }
-            
+
             if ( !comparatorRegistry.contains( matchingRule.getLdapComparator().getOid() ) )
             {
-                LOG.debug( "Cannot find the Comparator {} for the MatchingRule {}",
-                    matchingRule.getLdapComparator().getOid(), matchingRule );
-                
+                LOG.debug( "Cannot find the Comparator {} for the MatchingRule {}", matchingRule.getLdapComparator()
+                    .getOid(), matchingRule );
+
                 return false;
             }
-            
+
             // Check that each MatchingRule has a Syntax
             if ( matchingRule.getSyntax() == null )
             {
                 LOG.debug( "The MatchingRule {} has no Syntax", matchingRule );
-                
+
                 return false;
             }
 
             if ( !ldapSyntaxRegistry.contains( matchingRule.getSyntax().getOid() ) )
             {
-                LOG.debug( "Cannot find the Syntax {} for the MatchingRule {}",
-                    matchingRule.getSyntax().getOid(), matchingRule );
-                
+                LOG.debug( "Cannot find the Syntax {} for the MatchingRule {}", matchingRule.getSyntax().getOid(),
+                    matchingRule );
+
                 return false;
             }
 
@@ -2067,22 +2103,21 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 return false;
             }
         }
-        
+
         // Check the ObjectClasses : check for MAY, MUST, SUPERIORS
         LOG.debug( "Checking ObjectClasses..." );
-        
+
         for ( ObjectClass objectClass : objectClassRegistry )
         {
             // Check that each ObjectClass has all the MAY AttributeTypes
             if ( objectClass.getMayAttributeTypes() != null )
             {
-                for ( AttributeType may:objectClass.getMayAttributeTypes() )
+                for ( AttributeType may : objectClass.getMayAttributeTypes() )
                 {
                     if ( !attributeTypeRegistry.contains( may.getOid() ) )
                     {
-                        LOG.debug( "Cannot find the AttributeType {} for the ObjectClass {} MAY",
-                            may, objectClass );
-                        
+                        LOG.debug( "Cannot find the AttributeType {} for the ObjectClass {} MAY", may, objectClass );
+
                         return false;
                     }
 
@@ -2093,17 +2128,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
                     }
                 }
             }
-            
+
             // Check that each ObjectClass has all the MUST AttributeTypes
             if ( objectClass.getMustAttributeTypes() != null )
             {
-                for ( AttributeType must:objectClass.getMustAttributeTypes() )
+                for ( AttributeType must : objectClass.getMustAttributeTypes() )
                 {
                     if ( !attributeTypeRegistry.contains( must.getOid() ) )
                     {
-                        LOG.debug( "Cannot find the AttributeType {} for the ObjectClass {} MUST",
-                            must, objectClass );
-                        
+                        LOG.debug( "Cannot find the AttributeType {} for the ObjectClass {} MUST", must, objectClass );
+
                         return false;
                     }
 
@@ -2114,17 +2148,17 @@ public class Registries implements SchemaLoaderListener, Cloneable
                     }
                 }
             }
-            
+
             // Check that each ObjectClass has all the SUPERIORS ObjectClasses
             if ( objectClass.getSuperiors() != null )
             {
-                for ( ObjectClass superior:objectClass.getSuperiors() )
+                for ( ObjectClass superior : objectClass.getSuperiors() )
                 {
                     if ( !objectClassRegistry.contains( objectClass.getOid() ) )
                     {
-                        LOG.debug( "Cannot find the ObjectClass {} for the ObjectClass {} SUPERIORS",
-                            superior, objectClass );
-                        
+                        LOG.debug( "Cannot find the ObjectClass {} for the ObjectClass {} SUPERIORS", superior,
+                            objectClass );
+
                         return false;
                     }
 
@@ -2136,42 +2170,42 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 }
             }
         }
-        
+
         // Check the AttributeTypes : check for MatchingRules, Syntaxes
         LOG.debug( "Checking AttributeTypes..." );
-        
+
         for ( AttributeType attributeType : attributeTypeRegistry )
         {
             // Check that each AttributeType has a SYNTAX 
             if ( attributeType.getSyntax() == null )
             {
                 LOG.debug( "The AttributeType {} has no Syntax", attributeType );
-                
+
                 return false;
             }
-            
+
             if ( !ldapSyntaxRegistry.contains( attributeType.getSyntax().getOid() ) )
             {
-                LOG.debug( "Cannot find the Syntax {} for the AttributeType {}",
-                    attributeType.getSyntax().getOid(), attributeType );
-                
+                LOG.debug( "Cannot find the Syntax {} for the AttributeType {}", attributeType.getSyntax().getOid(),
+                    attributeType );
+
                 return false;
             }
-            
+
             // Check the references for AT -> S and S -> AT
             if ( !checkReferences( attributeType, attributeType.getSyntax(), "AttributeType" ) )
             {
                 return false;
             }
-            
+
             // Check the EQUALITY MatchingRule
             if ( attributeType.getEquality() != null )
             {
                 if ( !matchingRuleRegistry.contains( attributeType.getEquality().getOid() ) )
                 {
-                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}",
-                        attributeType.getEquality().getOid(), attributeType );
-                    
+                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}", attributeType.getEquality()
+                        .getOid(), attributeType );
+
                     return false;
                 }
 
@@ -2181,15 +2215,15 @@ public class Registries implements SchemaLoaderListener, Cloneable
                     return false;
                 }
             }
-            
+
             // Check the ORDERING MatchingRule
             if ( attributeType.getOrdering() != null )
             {
                 if ( !matchingRuleRegistry.contains( attributeType.getOrdering().getOid() ) )
                 {
-                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}",
-                        attributeType.getOrdering().getOid(), attributeType );
-                    
+                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}", attributeType.getOrdering()
+                        .getOid(), attributeType );
+
                     return false;
                 }
 
@@ -2205,9 +2239,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
             {
                 if ( !matchingRuleRegistry.contains( attributeType.getSubstring().getOid() ) )
                 {
-                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}",
-                        attributeType.getSubstring().getOid(), attributeType );
-                    
+                    LOG.debug( "Cannot find the MatchingRule {} for the AttributeType {}", attributeType.getSubstring()
+                        .getOid(), attributeType );
+
                     return false;
                 }
 
@@ -2217,17 +2251,17 @@ public class Registries implements SchemaLoaderListener, Cloneable
                     return false;
                 }
             }
-            
+
             // Check the SUP
             if ( attributeType.getSuperior() != null )
             {
-                AttributeType superior =attributeType.getSuperior();
-                
+                AttributeType superior = attributeType.getSuperior();
+
                 if ( !attributeTypeRegistry.contains( superior.getOid() ) )
                 {
-                    LOG.debug( "Cannot find the AttributeType {} for the AttributeType {} SUPERIOR",
-                        superior, attributeType );
-                    
+                    LOG.debug( "Cannot find the AttributeType {} for the AttributeType {} SUPERIOR", superior,
+                        attributeType );
+
                     return false;
                 }
 
@@ -2241,8 +2275,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
         return true;
     }
-    
-    
+
+
     /**
      * Clone the Registries. This is done in two steps :
      * - first clone the SchemaObjetc registries
@@ -2251,48 +2285,48 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public Registries clone() throws CloneNotSupportedException
     {
         // First clone the structure
-        Registries clone = (Registries)super.clone();
-        
+        Registries clone = ( Registries ) super.clone();
+
         // Now, clone the oidRegistry
         clone.globalOidRegistry = globalOidRegistry.copy();
-        
+
         // We have to clone every SchemaObject registries now
-        clone.attributeTypeRegistry    = attributeTypeRegistry.copy();
-        clone.comparatorRegistry       = comparatorRegistry.copy();
-        clone.ditContentRuleRegistry   = ditContentRuleRegistry.copy();
+        clone.attributeTypeRegistry = attributeTypeRegistry.copy();
+        clone.comparatorRegistry = comparatorRegistry.copy();
+        clone.ditContentRuleRegistry = ditContentRuleRegistry.copy();
         clone.ditStructureRuleRegistry = ditStructureRuleRegistry.copy();
-        clone.ldapSyntaxRegistry       = ldapSyntaxRegistry.copy();
-        clone.matchingRuleRegistry     = matchingRuleRegistry.copy();
-        clone.matchingRuleUseRegistry  = matchingRuleUseRegistry.copy();
-        clone.nameFormRegistry         = nameFormRegistry.copy();
-        clone.normalizerRegistry       = normalizerRegistry.copy();
-        clone.objectClassRegistry      = objectClassRegistry.copy();
-        clone.syntaxCheckerRegistry    = syntaxCheckerRegistry.copy();
-        
+        clone.ldapSyntaxRegistry = ldapSyntaxRegistry.copy();
+        clone.matchingRuleRegistry = matchingRuleRegistry.copy();
+        clone.matchingRuleUseRegistry = matchingRuleUseRegistry.copy();
+        clone.nameFormRegistry = nameFormRegistry.copy();
+        clone.normalizerRegistry = normalizerRegistry.copy();
+        clone.objectClassRegistry = objectClassRegistry.copy();
+        clone.syntaxCheckerRegistry = syntaxCheckerRegistry.copy();
+
         // Clone the schema list
         clone.loadedSchemas = new HashMap<String, Schema>();
-        
+
         for ( String schemaName : loadedSchemas.keySet() )
         {
             // We don't clone the schemas
             clone.loadedSchemas.put( schemaName, loadedSchemas.get( schemaName ) );
         }
-        
+
         // Clone the Using and usedBy structures
         // They will be empty
         clone.using = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
         clone.usedBy = new HashMap<SchemaObjectWrapper, Set<SchemaObjectWrapper>>();
-        
+
         // Last, rebuild the using and usedBy references
         clone.buildReferences();
-        
+
         // Now, check the registries. We don't care about errors
         clone.checkRefInteg();
-        
+
         return clone;
     }
 
-    
+
     /**
      * Tells if the Registries is permissive or if it must be checked 
      * against inconsistencies.
@@ -2304,7 +2338,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return isRelaxed;
     }
 
-    
+
     /**
      * Tells if the Registries is strict.
      *
@@ -2315,7 +2349,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         return !isRelaxed;
     }
 
-    
+
     /**
      * Change the Registries to a relaxed mode, where invalid SchemaObjects
      * can be registered.
@@ -2325,7 +2359,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         isRelaxed = RELAXED;
     }
 
-    
+
     /**
      * Change the Registries to a strict mode, where invalid SchemaObjects
      * cannot be registered.
@@ -2345,8 +2379,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         return disabledAccepted;
     }
-    
-    
+
+
     /**
      * Change the Registries behavior regarding disabled SchemaObject element.
      *
@@ -2357,8 +2391,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         this.disabledAccepted = disabledAccepted;
     }
-    
-    
+
+
     /**
      * Clear the registries from all its elements
      *
@@ -2371,114 +2405,114 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             attributeTypeRegistry.clear();
         }
-        
+
         // The ComparatorRegistry
         if ( comparatorRegistry != null )
         {
             comparatorRegistry.clear();
         }
-        
+
         // The DitContentRuleRegistry
         if ( ditContentRuleRegistry != null )
         {
             ditContentRuleRegistry.clear();
         }
-        
+
         // The DitStructureRuleRegistry
         if ( ditStructureRuleRegistry != null )
         {
             ditStructureRuleRegistry.clear();
         }
-        
+
         // The MatchingRuleRegistry
         if ( matchingRuleRegistry != null )
         {
             matchingRuleRegistry.clear();
         }
-        
+
         // The MatchingRuleUseRegistry
         if ( matchingRuleUseRegistry != null )
         {
             matchingRuleUseRegistry.clear();
         }
-        
+
         // The NameFormRegistry
         if ( nameFormRegistry != null )
         {
             nameFormRegistry.clear();
         }
-        
+
         // The NormalizerRegistry
         if ( normalizerRegistry != null )
         {
             normalizerRegistry.clear();
         }
-        
+
         // The ObjectClassRegistry
         if ( objectClassRegistry != null )
         {
             objectClassRegistry.clear();
         }
-        
+
         // The SyntaxRegistry
         if ( ldapSyntaxRegistry != null )
         {
             ldapSyntaxRegistry.clear();
         }
-        
+
         // The SyntaxCheckerRegistry
         if ( syntaxCheckerRegistry != null )
         {
             syntaxCheckerRegistry.clear();
         }
-        
+
         // Clear the schemaObjects map
         for ( String schemaName : schemaObjects.keySet() )
         {
             Set<SchemaObjectWrapper> wrapperSet = schemaObjects.get( schemaName );
-            
+
             wrapperSet.clear();
         }
-        
+
         schemaObjects.clear();
-        
+
         // Clear the usedBy map
         for ( SchemaObjectWrapper wrapper : usedBy.keySet() )
         {
             Set<SchemaObjectWrapper> wrapperSet = usedBy.get( wrapper );
-            
+
             wrapperSet.clear();
         }
-        
+
         usedBy.clear();
-        
+
         // Clear the using map
         for ( SchemaObjectWrapper wrapper : using.keySet() )
         {
             Set<SchemaObjectWrapper> wrapperSet = using.get( wrapper );
-            
+
             wrapperSet.clear();
         }
-        
+
         using.clear();
-        
+
         // Clear the global OID registry
         globalOidRegistry.clear();
-        
+
         // Clear the loadedSchema Map
         loadedSchemas.clear();
     }
-    
-    
+
+
     /**
      * @see Object#toString()
      */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append( "Registries [" );
-        
+
         if ( isRelaxed )
         {
             sb.append( "RELAXED," );
@@ -2487,7 +2521,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             sb.append( "STRICT," );
         }
-        
+
         if ( disabledAccepted )
         {
             sb.append( " Disabled accepted] :\n" );
@@ -2496,11 +2530,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
         {
             sb.append( " Disabled forbidden] :\n" );
         }
-        
+
         sb.append( "loaded schemas [" );
         boolean isFirst = true;
-        
-        for ( String schema:loadedSchemas.keySet() )
+
+        for ( String schema : loadedSchemas.keySet() )
         {
             if ( isFirst )
             {
@@ -2510,12 +2544,12 @@ public class Registries implements SchemaLoaderListener, Cloneable
             {
                 sb.append( ", " );
             }
-            
+
             sb.append( schema );
         }
-        
+
         sb.append( "]\n" );
-        
+
         sb.append( "AttributeTypes : " ).append( attributeTypeRegistry.size() ).append( "\n" );
         sb.append( "Comparators : " ).append( comparatorRegistry.size() ).append( "\n" );
         sb.append( "DitContentRules : " ).append( ditContentRuleRegistry.size() ).append( "\n" );
@@ -2527,9 +2561,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
         sb.append( "ObjectClasses : " ).append( objectClassRegistry.size() ).append( "\n" );
         sb.append( "Syntaxes : " ).append( ldapSyntaxRegistry.size() ).append( "\n" );
         sb.append( "SyntaxCheckers : " ).append( syntaxCheckerRegistry.size() ).append( "\n" );
-        
+
         sb.append( "GlobalOidRegistry : " ).append( globalOidRegistry.size() ).append( '\n' );
-        
+
         return sb.toString();
     }
 }
