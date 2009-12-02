@@ -19,6 +19,7 @@
  */
 package org.apache.directory.server.schema;
 
+
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.server.schema.loader.ldif.LdifSchemaLoaderTest;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
@@ -57,13 +59,14 @@ public class SchemaManagerTest
 {
     // A directory in which the ldif files will be stored
     private static String workingDirectory;
-    
+
     // A LDIF loader
     private static LdifSchemaLoader ldifLoader;
-    
+
     // A SchemaObject factory
     private static SchemaEntityFactory factory;
-    
+
+
     @BeforeClass
     public static void setup() throws Exception
     {
@@ -75,50 +78,54 @@ public class SchemaManagerTest
             int targetPos = path.indexOf( "target" );
             workingDirectory = path.substring( 0, targetPos + 6 );
         }
-        
+
         // Cleanup the target directory
         FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
 
         SchemaLdifExtractor extractor = new SchemaLdifExtractor( new File( workingDirectory ) );
         extractor.extractOrCopy();
-        
+
         ldifLoader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
         factory = new SchemaEntityFactory();
     }
-    
-    
+
+
     @AfterClass
     public static void cleanup() throws IOException
     {
         // Cleanup the target directory
         FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
     }
-    
-    
-    private void checkComparators( List<Entry> comparators, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+
+
+    private void checkComparators( List<Entry> comparators, SchemaManager schemaManager, Registries expectedRegistries )
+        throws Exception
     {
         for ( Entry entry : comparators )
         {
-            LdapComparator<?> expectedComparator = factory.getLdapComparator( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            LdapComparator<?> expectedComparator = factory.getLdapComparator( schemaManager, entry, schemaManager
+                .getRegistries(), "system" );
             LdapComparator<?> comparator = schemaManager.getComparatorRegistry().lookup( expectedComparator.getOid() );
-            
+
             if ( !expectedComparator.equals( comparator ) )
             {
                 fail();
             }
-            
+
             expectedRegistries.add( expectedComparator );
         }
     }
-    
-    
-    private void checkNormalizers( List<Entry> normalizers, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+
+
+    private void checkNormalizers( List<Entry> normalizers, SchemaManager schemaManager, Registries expectedRegistries )
+        throws Exception
     {
         for ( Entry entry : normalizers )
         {
-            Normalizer expectedNormalizer = factory.getNormalizer( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            Normalizer expectedNormalizer = factory.getNormalizer( schemaManager, entry, schemaManager.getRegistries(),
+                "system" );
             Normalizer normalizer = schemaManager.getNormalizerRegistry().lookup( expectedNormalizer.getOid() );
-            
+
             if ( !expectedNormalizer.equals( normalizer ) )
             {
                 fail();
@@ -127,80 +134,87 @@ public class SchemaManagerTest
             expectedRegistries.add( expectedNormalizer );
         }
     }
-    
-    
-    private void checkSyntaxCheckers( List<Entry> syntaxCheckers, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+
+
+    private void checkSyntaxCheckers( List<Entry> syntaxCheckers, SchemaManager schemaManager,
+        Registries expectedRegistries ) throws Exception
     {
         for ( Entry entry : syntaxCheckers )
         {
-            SyntaxChecker expectedSyntaxChecker = factory.getSyntaxChecker( schemaManager, entry, schemaManager.getRegistries(), "system" );
-            SyntaxChecker syntaxChecker = schemaManager.getSyntaxCheckerRegistry().lookup( expectedSyntaxChecker.getOid() );
-            
+            SyntaxChecker expectedSyntaxChecker = factory.getSyntaxChecker( schemaManager, entry, schemaManager
+                .getRegistries(), "system" );
+            SyntaxChecker syntaxChecker = schemaManager.getSyntaxCheckerRegistry().lookup(
+                expectedSyntaxChecker.getOid() );
+
             if ( !expectedSyntaxChecker.equals( syntaxChecker ) )
             {
                 fail();
             }
-            
+
             expectedRegistries.add( expectedSyntaxChecker );
         }
     }
-    
-    
-    private void checkSyntaxes( List<Entry> syntaxes, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+
+
+    private void checkSyntaxes( List<Entry> syntaxes, SchemaManager schemaManager, Registries expectedRegistries )
+        throws Exception
     {
         List<Throwable> errors = new ArrayList<Throwable>();
-        
+
         for ( Entry entry : syntaxes )
         {
-            LdapSyntax expectedLdapSyntax = factory.getSyntax( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            LdapSyntax expectedLdapSyntax = factory.getSyntax( schemaManager, entry, schemaManager.getRegistries(),
+                "system" );
             LdapSyntax syntax = schemaManager.getLdapSyntaxRegistry().lookup( expectedLdapSyntax.getOid() );
-            
+
             expectedLdapSyntax.applyRegistries( errors, expectedRegistries );
-            
+
             if ( !expectedLdapSyntax.equals( syntax ) )
             {
                 fail();
             }
-            
+
             expectedRegistries.add( expectedLdapSyntax );
         }
     }
-    
-    
-    private void checkMatchingRules( List<Entry> matchingRules, SchemaManager schemaManager, Registries expectedRegistries ) throws Exception
+
+
+    private void checkMatchingRules( List<Entry> matchingRules, SchemaManager schemaManager,
+        Registries expectedRegistries ) throws Exception
     {
         List<Throwable> errors = new ArrayList<Throwable>();
-        
+
         for ( Entry entry : matchingRules )
         {
-            MatchingRule expectedMatchingRule = factory.getMatchingRule( schemaManager, entry, schemaManager.getRegistries(), "system" );
+            MatchingRule expectedMatchingRule = factory.getMatchingRule( schemaManager, entry, schemaManager
+                .getRegistries(), "system" );
             MatchingRule matchingRule = schemaManager.getMatchingRuleRegistry().lookup( expectedMatchingRule.getOid() );
-            
+
             expectedMatchingRule.applyRegistries( errors, expectedRegistries );
-            
+
             if ( !expectedMatchingRule.equals( matchingRule ) )
             {
                 fail();
             }
-            
+
             expectedRegistries.add( expectedMatchingRule );
         }
     }
-    
-    
+
+
     private SchemaManager loadSystem() throws Exception
     {
         JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
         SchemaManager schemaManager = new DefaultSchemaManager( loader );
 
         String schemaName = "system";
-        
+
         schemaManager.loadWithDeps( schemaName );
-        
+
         return schemaManager;
     }
-    
-    
+
+
     /**
      * We will load the System schema, and test that the schemaManager is consistent
      */
@@ -213,42 +227,42 @@ public class SchemaManagerTest
         Registries expectedRegistries = new Registries( null );
 
         String schemaName = "system";
-        
+
         schemaManager.loadWithDeps( schemaName );
-        
+
         // Test Comparators
         checkComparators( ldifLoader.loadComparators( schemaName ), schemaManager, expectedRegistries );
-        
+
         // Test Normalizers
         checkNormalizers( ldifLoader.loadNormalizers( schemaName ), schemaManager, expectedRegistries );
-        
+
         // Test SyntaxCheckers
         checkSyntaxCheckers( ldifLoader.loadSyntaxCheckers( schemaName ), schemaManager, expectedRegistries );
-        
+
         // Test LdapSyntax
         checkSyntaxes( ldifLoader.loadSyntaxes( schemaName ), schemaManager, expectedRegistries );
 
         // Test MatchingRules
         checkMatchingRules( ldifLoader.loadMatchingRules( schemaName ), schemaManager, expectedRegistries );
-        
+
         // Test ATs
     }
-    
-    
-    @Test
-    public void testAddAttributeType() throws Exception
+
+
+    /**
+     * Try to inject an AttributeType without any superior nor Syntax : it's invalid
+     */
+    @Test(expected = LdapOperationNotSupportedException.class)
+    public void testAddAttributeTypeNoSyntaxNoSuperior() throws Exception
     {
-    	SchemaManager schemaManager = loadSystem();
-    	
-    	AttributeType attributeType = new AttributeType( "1.1.0" );
-    	attributeType.setEqualityOid( "2.5.13.1" );
-    	attributeType.setOrderingOid( null );
-    	attributeType.setSubstringOid( null );
-    	attributeType.setSuperior( (String)null );
-    	
-    	schemaManager.add( attributeType );
-    	
-    	// Check that the AT has been correctly added
-    	
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSuperior( ( String ) null );
+
+        schemaManager.add( attributeType );
     }
 }
