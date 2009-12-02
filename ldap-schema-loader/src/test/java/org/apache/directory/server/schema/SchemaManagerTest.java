@@ -38,6 +38,7 @@ import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
@@ -249,6 +250,9 @@ public class SchemaManagerTest
     }
 
 
+    //-------------------------------------------------------------------------
+    // AttributeType addition tests
+    //-------------------------------------------------------------------------
     /**
      * Try to inject an AttributeType without any superior nor Syntax : it's invalid
      */
@@ -263,6 +267,28 @@ public class SchemaManagerTest
         attributeType.setSubstringOid( null );
         attributeType.setSuperior( ( String ) null );
 
+        // It should fail
+        schemaManager.add( attributeType );
+    }
+
+
+    /**
+     * Try to inject an AttributeType which is Collective, but an operational AT
+     */
+    @Test(expected = LdapOperationNotSupportedException.class)
+    public void testAddAttributeTypeCollectiveOperational() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.DIRECTORY_OPERATION );
+        attributeType.setCollective( true );
+
+        // It should fail
         schemaManager.add( attributeType );
     }
 }
