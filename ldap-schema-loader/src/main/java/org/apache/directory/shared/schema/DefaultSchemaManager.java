@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.schema;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,12 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.NotImplementedException;
+import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.EntityFactory;
@@ -71,6 +76,7 @@ import org.apache.directory.shared.schema.loader.ldif.SchemaEntityFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * The SchemaManager class : it handles all the schema operations (addition, removal,
  * modification).
@@ -85,29 +91,30 @@ public class DefaultSchemaManager implements SchemaManager
 
     /** The NamingContext this SchemaManager is associated with */
     private LdapDN namingContext;
-    
+
     /** The global registries for this namingContext */
     private volatile Registries registries;
-    
+
     /** The list of errors produced when loading some schema elements */
     private List<Throwable> errors;
-    
+
     /** The Schema schemaLoader used by this SchemaManager */
     private SchemaLoader schemaLoader;
-    
+
     /** the factory that generates respective SchemaObjects from LDIF entries */
     protected final EntityFactory factory;
-    
+
     /** the normalized name for the schema modification attributes */
     private LdapDN schemaModificationAttributesDN;
-    
+
     /** A flag indicating that the SchemaManager is relaxed or not */
     private boolean isRelaxed = STRICT;
-    
+
     /** Two flags for RELAXED and STRUCT */
     public static final boolean STRICT = false;
     public static final boolean RELAXED = true;
-    
+
+
     /**
      * Creates a new instance of DefaultSchemaManager with the default schema schemaLoader
      *
@@ -123,7 +130,7 @@ public class DefaultSchemaManager implements SchemaManager
         factory = new SchemaEntityFactory();
         isRelaxed = STRICT;
     }
-    
+
 
     /**
      * Creates a new instance of DefaultSchemaManager, for a specific
@@ -141,7 +148,7 @@ public class DefaultSchemaManager implements SchemaManager
         isRelaxed = STRICT;
     }
 
-    
+
     //-----------------------------------------------------------------------
     // Helper methods
     //-----------------------------------------------------------------------
@@ -156,18 +163,18 @@ public class DefaultSchemaManager implements SchemaManager
 
         // Clone the Registries
         Registries clonedRegistries = registries.clone();
-        
+
         // And update references. We may have errors, that may be fixed
         // by the new loaded schemas.
         errors = clonedRegistries.checkRefInteg();
-        
+
         // Now, relax the cloned Registries if there is no error
         clonedRegistries.setRelaxed();
-        
+
         return clonedRegistries;
     }
-    
-    
+
+
     /**
      * Transform a String[] array of schema to a Schema[]
      */
@@ -175,16 +182,16 @@ public class DefaultSchemaManager implements SchemaManager
     {
         Schema[] schemaArray = new Schema[schemas.length];
         int n = 0;
-        
-        for ( String schemaName:schemas )
+
+        for ( String schemaName : schemas )
         {
             schemaArray[n++] = schemaLoader.getSchema( schemaName );
         }
-        
+
         return schemaArray;
     }
-    
-    
+
+
     private void addSchemaObjects( Schema schema, Registries registries ) throws Exception
     {
         addComparators( schema, registries );
@@ -202,15 +209,15 @@ public class DefaultSchemaManager implements SchemaManager
         // TODO Add some listener handling at this point
         //notifyListenerOrRegistries( schema, registries );
     }
-    
-    
+
+
     //-----------------------------------------------------------------------
     // API methods
     //-----------------------------------------------------------------------
     /***
      * {@inheritDoc}
      */
-    public boolean swapRegistries( Registries targetRegistries ) throws NamingException 
+    public boolean swapRegistries( Registries targetRegistries ) throws NamingException
     {
         // Check the resulting registries
         errors = targetRegistries.checkRefInteg();
@@ -223,13 +230,13 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 targetRegistries.setStrict();
             }
-            
+
             Registries oldRegistries = registries;
             registries = targetRegistries;
-            
+
             // Delete the old registries to avoid memory leaks
             oldRegistries.clear();
-            
+
             return true;
         }
         else
@@ -238,8 +245,8 @@ public class DefaultSchemaManager implements SchemaManager
             return false;
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -259,7 +266,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -269,7 +276,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -279,7 +286,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -288,31 +295,31 @@ public class DefaultSchemaManager implements SchemaManager
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
 
-        for ( Schema schema:schemas )
+        for ( Schema schema : schemas )
         {
             schema.enable();
-            load( clonedRegistries, schema  );
+            load( clonedRegistries, schema );
         }
-        
+
         List<Throwable> errors = clonedRegistries.checkRefInteg();
-        
+
         // Destroy the clonedRegistry
         clonedRegistries.clear();
-        
+
         if ( errors.isEmpty() )
         {
             // No error, inject the schema in the current registries 
-            for ( Schema schema:schemas )
+            for ( Schema schema : schemas )
             {
                 schema.enable();
-                load( registries, schema  );
+                load( registries, schema );
             }
-            
+
             errors = registries.checkRefInteg();
         }
-        
+
         return errors.isEmpty();
-        
+
         // Swap the registries if it is consistent
         //return swapRegistries( clonedRegistries );
     }
@@ -326,7 +333,7 @@ public class DefaultSchemaManager implements SchemaManager
         return enable( toArray( schemas ) );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -336,7 +343,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -346,7 +353,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -355,7 +362,7 @@ public class DefaultSchemaManager implements SchemaManager
         return errors;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -363,7 +370,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         return registries;
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -374,14 +381,14 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean load( Schema... schemas ) throws Exception
     {
-    	boolean loaded = false;
-    	
+        boolean loaded = false;
+
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
         clonedRegistries.setRelaxed();
@@ -389,41 +396,41 @@ public class DefaultSchemaManager implements SchemaManager
         // Load the schemas
         for ( Schema schema : schemas )
         {
-            load( clonedRegistries, schema  );
+            load( clonedRegistries, schema );
         }
 
         // Build the cross references
         List<Throwable> errors = clonedRegistries.buildReferences();
-        
+
         if ( errors.isEmpty() )
         {
-        	// Ok no errors. Check the registries now
-        	errors = clonedRegistries.checkRefInteg();
-        	
-        	if ( errors.isEmpty() )
-        	{
-        		// We are golden : let's apply the schema in the real registries
+            // Ok no errors. Check the registries now
+            errors = clonedRegistries.checkRefInteg();
 
-        		// Load the schemas
+            if ( errors.isEmpty() )
+            {
+                // We are golden : let's apply the schema in the real registries
+
+                // Load the schemas
                 for ( Schema schema : schemas )
                 {
-                    load( registries, schema  );
+                    load( registries, schema );
                 }
 
                 // Build the cross references
                 registries.buildReferences();
-                
+
                 loaded = true;
-        	}
+            }
         }
 
         // clear the cloned registries
         clonedRegistries.clear();
-        
+
         return loaded;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -432,7 +439,7 @@ public class DefaultSchemaManager implements SchemaManager
         return load( toArray( schemas ) );
     }
 
-    
+
     /**
      * Load the schema in the registries. We will load everything accordingly to the two flags :
      * - isRelaxed
@@ -450,15 +457,15 @@ public class DefaultSchemaManager implements SchemaManager
         {
             return true;
         }
-        
+
         if ( schema.isDisabled() )
         {
             if ( registries.isDisabledAccepted() )
             {
                 LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
-                
+
                 registries.schemaLoaded( schema );
-                
+
                 addSchemaObjects( schema, registries );
             }
             else
@@ -469,15 +476,15 @@ public class DefaultSchemaManager implements SchemaManager
         else
         {
             LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
-            
+
             registries.schemaLoaded( schema );
             addSchemaObjects( schema, registries );
         }
-        
+
         return true;
     }
 
-    
+
     /**
      * Add all the Schema's AttributeTypes
      */
@@ -491,7 +498,7 @@ public class DefaultSchemaManager implements SchemaManager
         }
     }
 
-    
+
     /**
      * Add all the Schema's comparators
      */
@@ -499,14 +506,13 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadComparators( schema ) )
         {
-            LdapComparator<?> comparator = 
-                factory.getLdapComparator( this, entry, registries, schema.getSchemaName() );
-            
+            LdapComparator<?> comparator = factory.getLdapComparator( this, entry, registries, schema.getSchemaName() );
+
             addSchemaObject( registries, comparator, schema );
         }
     }
 
-    
+
     /**
      * Add all the Schema's DitContentRules
      */
@@ -514,12 +520,11 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadDitContentRules( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a DitContentRule" );
+            throw new NotImplementedException( "Need to implement factory " + "method for creating a DitContentRule" );
         }
     }
 
-    
+
     /**
      * Add all the Schema's DitStructureRules
      */
@@ -527,12 +532,11 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadDitStructureRules( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a DitStructureRule" );
+            throw new NotImplementedException( "Need to implement factory " + "method for creating a DitStructureRule" );
         }
     }
 
-    
+
     /**
      * Add all the Schema's MatchingRules
      */
@@ -540,14 +544,13 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadMatchingRules( schema ) )
         {
-            MatchingRule matchingRule = factory.getMatchingRule( 
-                this, entry, registries, schema.getSchemaName() );
+            MatchingRule matchingRule = factory.getMatchingRule( this, entry, registries, schema.getSchemaName() );
 
             addSchemaObject( registries, matchingRule, schema );
         }
     }
 
-    
+
     /**
      * Add all the Schema's MatchingRuleUses
      */
@@ -555,12 +558,11 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadMatchingRuleUses( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a MatchingRuleUse" );
+            throw new NotImplementedException( "Need to implement factory " + "method for creating a MatchingRuleUse" );
         }
     }
 
-    
+
     /**
      * Add all the Schema's NameForms
      */
@@ -568,12 +570,11 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadNameForms( schema ) )
         {
-            throw new NotImplementedException( "Need to implement factory " +
-                "method for creating a NameForm" );
+            throw new NotImplementedException( "Need to implement factory " + "method for creating a NameForm" );
         }
     }
 
-    
+
     /**
      * Add all the Schema's Normalizers
      */
@@ -581,14 +582,13 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadNormalizers( schema ) )
         {
-            Normalizer normalizer =
-                factory.getNormalizer( this, entry, registries, schema.getSchemaName() );
-            
+            Normalizer normalizer = factory.getNormalizer( this, entry, registries, schema.getSchemaName() );
+
             addSchemaObject( registries, normalizer, schema );
         }
     }
 
-    
+
     /**
      * Add all the Schema's ObjectClasses
      */
@@ -602,7 +602,7 @@ public class DefaultSchemaManager implements SchemaManager
         }
     }
 
-    
+
     /**
      * Add all the Schema's Syntaxes
      */
@@ -610,14 +610,13 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadSyntaxes( schema ) )
         {
-            LdapSyntax syntax = factory.getSyntax( this,
-                entry, registries, schema.getSchemaName() );
+            LdapSyntax syntax = factory.getSyntax( this, entry, registries, schema.getSchemaName() );
 
             addSchemaObject( registries, syntax, schema );
         }
     }
 
-    
+
     /**Add
      * Register all the Schema's SyntaxCheckers
      */
@@ -625,14 +624,13 @@ public class DefaultSchemaManager implements SchemaManager
     {
         for ( Entry entry : schemaLoader.loadSyntaxCheckers( schema ) )
         {
-            SyntaxChecker syntaxChecker = 
-                factory.getSyntaxChecker( this, entry, registries, schema.getSchemaName() );
+            SyntaxChecker syntaxChecker = factory.getSyntaxChecker( this, entry, registries, schema.getSchemaName() );
 
             addSchemaObject( registries, syntaxChecker, schema );
         }
     }
 
-    
+
     /**
      * Add the schemaObject into the registries. 
      *
@@ -642,7 +640,7 @@ public class DefaultSchemaManager implements SchemaManager
      * @return the created schemaObject instance
      * @throws Exception If the registering failed
      */
-    private SchemaObject addSchemaObject( Registries registries, SchemaObject schemaObject, Schema schema) 
+    private SchemaObject addSchemaObject( Registries registries, SchemaObject schemaObject, Schema schema )
         throws Exception
     {
         if ( registries.isRelaxed() )
@@ -668,22 +666,22 @@ public class DefaultSchemaManager implements SchemaManager
                 errors.add( new Throwable() );
             }
         }
-        
+
         return schemaObject;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public boolean loadAllEnabled() throws Exception
     {
         Schema[] schemas = schemaLoader.getAllEnabled().toArray( new Schema[0] );
-        
+
         return loadWithDeps( schemas );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -701,7 +699,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
-        
+
         // Accept the disabled schemas
         clonedRegistries.setDisabledAccepted( true );
 
@@ -710,14 +708,14 @@ public class DefaultSchemaManager implements SchemaManager
         {
             // Enable the Schema object before loading it
             schema.enable();
-            load( clonedRegistries, schema  );
+            load( clonedRegistries, schema );
         }
 
         // Swap the registries if it is consistent
         return swapRegistries( clonedRegistries );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -726,7 +724,7 @@ public class DefaultSchemaManager implements SchemaManager
         return loadDisabled( toArray( schemas ) );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -736,7 +734,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -745,16 +743,16 @@ public class DefaultSchemaManager implements SchemaManager
         // TODO Auto-generated method stub
         return false;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public boolean loadWithDeps( Schema... schemas ) throws Exception
     {
-    	boolean loaded = false;
+        boolean loaded = false;
 
-    	// Work on a cloned and relaxed registries
+        // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
         clonedRegistries.setRelaxed();
 
@@ -763,39 +761,39 @@ public class DefaultSchemaManager implements SchemaManager
         {
             loadDepsFirst( clonedRegistries, schema );
         }
-        
+
         // Build the cross references
         List<Throwable> errors = clonedRegistries.buildReferences();
-        
+
         if ( errors.isEmpty() )
         {
-        	// Ok no errors. Check the registries now
-        	errors = clonedRegistries.checkRefInteg();
-        	
-        	if ( errors.isEmpty() )
-        	{
-        		// We are golden : let's apply the schema in the real registries
+            // Ok no errors. Check the registries now
+            errors = clonedRegistries.checkRefInteg();
 
-        		// Load the schemas
+            if ( errors.isEmpty() )
+            {
+                // We are golden : let's apply the schema in the real registries
+
+                // Load the schemas
                 for ( Schema schema : schemas )
                 {
-                	loadDepsFirst( registries, schema  );
+                    loadDepsFirst( registries, schema );
                 }
 
                 // Build the cross references
                 registries.buildReferences();
-                
+
                 loaded = true;
-        	}
+            }
         }
-        
+
         // clear the cloned registries
         clonedRegistries.clear();
 
         return loaded;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -804,7 +802,7 @@ public class DefaultSchemaManager implements SchemaManager
         return loadWithDeps( toArray( schemas ) );
     }
 
-    
+
     /**
      * Recursive method which loads schema's with their dependent schemas first
      * and tracks what schemas it has seen so the recursion does not go out of
@@ -822,22 +820,22 @@ public class DefaultSchemaManager implements SchemaManager
             LOG.info( "The schema is disabled and the registries does not accepted disabled schema" );
             return;
         }
-        
+
         String schemaName = schema.getSchemaName();
-        
+
         if ( registries.isSchemaLoaded( schemaName ) )
         {
             LOG.info( "{} schema has already been loaded" + schema.getSchemaName() );
             return;
         }
-        
+
         String[] deps = schema.getDependencies();
 
         // if no deps then load this guy and return
         if ( ( deps == null ) || ( deps.length == 0 ) )
         {
             load( registries, schema );
-            
+
             return;
         }
 
@@ -865,7 +863,7 @@ public class DefaultSchemaManager implements SchemaManager
         load( registries, schema );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -875,7 +873,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -885,17 +883,17 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     public void setRegistries( Registries registries )
     {
         // TODO Auto-generated method stub
-        
+
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -915,7 +913,7 @@ public class DefaultSchemaManager implements SchemaManager
         return false;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -923,7 +921,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         // Work on a cloned registries
         Registries clonedRegistries = cloneRegistries();
-        
+
         // Loop on all the schemas 
         for ( Schema schema : schemas )
         {
@@ -931,17 +929,17 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 // Inject the schema
                 boolean loaded = load( clonedRegistries, schema );
-                
+
                 if ( !loaded )
                 {
                     // We got an error : exit
                     clonedRegistries.clear();
                     return false;
                 }
-                
+
                 // Now, check the registries
                 List<Throwable> errors = clonedRegistries.checkRefInteg();
-                
+
                 if ( errors.size() != 0 )
                 {
                     // We got an error : exit
@@ -956,14 +954,14 @@ public class DefaultSchemaManager implements SchemaManager
                 return false;
             }
         }
-        
+
         // We can now delete the cloned registries before exiting
         clonedRegistries.clear();
-        
+
         return true;
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -972,7 +970,7 @@ public class DefaultSchemaManager implements SchemaManager
         return verify( toArray( schemas ) );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1001,8 +999,8 @@ public class DefaultSchemaManager implements SchemaManager
         try
         {
             schemaModificationAttributesDN = new LdapDN( SchemaConstants.SCHEMA_MODIFICATIONS_DN );
-            schemaModificationAttributesDN.normalize( 
-                getRegistries().getAttributeTypeRegistry().getNormalizerMapping() );
+            schemaModificationAttributesDN
+                .normalize( getRegistries().getAttributeTypeRegistry().getNormalizerMapping() );
         }
         catch ( NamingException e )
         {
@@ -1039,7 +1037,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         return new ImmutableComparatorRegistry( registries.getComparatorRegistry() );
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -1049,7 +1047,7 @@ public class DefaultSchemaManager implements SchemaManager
         return new ImmutableDITContentRuleRegistry( registries.getDitContentRuleRegistry() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1058,7 +1056,7 @@ public class DefaultSchemaManager implements SchemaManager
         return new ImmutableDITStructureRuleRegistry( registries.getDitStructureRuleRegistry() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1067,7 +1065,7 @@ public class DefaultSchemaManager implements SchemaManager
         return new ImmutableMatchingRuleRegistry( registries.getMatchingRuleRegistry() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1076,7 +1074,7 @@ public class DefaultSchemaManager implements SchemaManager
         return new ImmutableMatchingRuleUseRegistry( registries.getMatchingRuleUseRegistry() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1085,7 +1083,7 @@ public class DefaultSchemaManager implements SchemaManager
         return new ImmutableNameFormRegistry( registries.getNameFormRegistry() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1094,7 +1092,7 @@ public class DefaultSchemaManager implements SchemaManager
         return new ImmutableNormalizerRegistry( registries.getNormalizerRegistry() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1140,24 +1138,103 @@ public class DefaultSchemaManager implements SchemaManager
     }
 
 
+    /**
+     * Check that the given OID does not already exist in the globalOidRegistry.
+     */
+    private void checkOidIsUnique( SchemaObject schemaObject ) throws NamingException
+    {
+        if ( registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() ) )
+        {
+            throw new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
+                + " for new schema entity is not unique.", ResultCodeEnum.OTHER );
+        }
+    }
+
+
+    /**
+     * Retrieve the schema name for a specific SchemaObject, or return "other" if none is found.
+     */
+    private String getSchemaName( SchemaObject schemaObject ) throws Exception
+    {
+        String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+
+        if ( schemaLoader.getSchema( schemaName ) == null )
+        {
+            return MetaSchemaConstants.SCHEMA_OTHER;
+        }
+        else
+        {
+            return schemaName;
+        }
+    }
+
+
     //-----------------------------------------------------------------------------------
     // SchemaObject operations
     //-----------------------------------------------------------------------------------
     /**
      * {@inheritDoc}
      */
-    public void add( SchemaObject schemaObject ) throws NamingException
+    public void add( SchemaObject schemaObject ) throws Exception
     {
-    	if ( isRelaxed )
-    	{
-    		// Apply the addition right away
-    		registries.add( schemaObject );
-    	}
-    	else
-    	{
-    		// Clone, apply, check, then apply again if ok
-    		
-    	}
+        if ( registries.isRelaxed() )
+        {
+            // Apply the addition right away
+            registries.add( schemaObject );
+        }
+        else
+        {
+            // Clone, apply, check, then apply again if ok
+            // The new schemaObject's OID must not already exist
+            checkOidIsUnique( schemaObject );
+
+            // Build the new AttributeType from the given entry
+            String schemaName = getSchemaName( schemaObject );
+
+            // At this point, the constructed AttributeType has not been checked against the 
+            // existing Registries. It may be broken (missing SUP, or such), it will be checked
+            // there, if the schema and the AttributeType are both enabled.
+            Schema schema = getLoadedSchema( schemaName );
+            List<Throwable> errors = new ArrayList<Throwable>();
+
+            if ( schema.isEnabled() && schemaObject.isEnabled() )
+            {
+                // As we may break the registries, work on a cloned registries
+                Registries clonedRegistries = registries.clone();
+
+                // Inject the new SchemaObject in the cloned registries
+                clonedRegistries.add( errors, schemaObject );
+
+                // Remove the cloned registries
+                clonedRegistries.clear();
+
+                // If we didn't get any error, apply the addition to the real retistries
+                if ( errors.isEmpty() )
+                {
+                    // Apply the addition to the real registries
+                    registries.add( errors, schemaObject );
+
+                    LOG.debug( "Added {} into the enabled schema {}", schemaObject.getName(), schemaName );
+                }
+                else
+                {
+                    // We have some error : reject the addition and get out
+                    String msg = "Cannot add the SchemaObject " + schemaObject.getOid() + " into the registries, "
+                        + "the resulting registries would be inconsistent :" + StringTools.listToString( errors );
+                    LOG.info( msg );
+                    throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+                }
+            }
+            else
+            {
+                // At least, we register the OID in the globalOidRegistry, and associates it with the
+                // schema
+                registries.associateWithSchema( schemaObject );
+
+                LOG.debug( "Added {} into the disabled schema {}", schemaObject.getName(), schemaName );
+            }
+
+        }
     }
 
 
@@ -1169,7 +1246,7 @@ public class DefaultSchemaManager implements SchemaManager
         return registries.unregister( schemaObject );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -1177,8 +1254,8 @@ public class DefaultSchemaManager implements SchemaManager
     {
         return registries.getAttributeTypeRegistry().getNormalizerMapping();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1219,7 +1296,7 @@ public class DefaultSchemaManager implements SchemaManager
             return false;
         }
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -1331,7 +1408,7 @@ public class DefaultSchemaManager implements SchemaManager
         return isRelaxed;
     }
 
-    
+
     /**
      * Tells if the SchemaManager is strict.
      *
@@ -1342,7 +1419,7 @@ public class DefaultSchemaManager implements SchemaManager
         return !isRelaxed;
     }
 
-    
+
     /**
      * Change the SchemaManager to a relaxed mode, where invalid SchemaObjects
      * can be registered.
@@ -1352,7 +1429,7 @@ public class DefaultSchemaManager implements SchemaManager
         isRelaxed = RELAXED;
     }
 
-    
+
     /**
      * Change the SchemaManager to a strict mode, where invalid SchemaObjects
      * cannot be registered.

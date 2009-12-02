@@ -48,31 +48,30 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( AbstractSchemaLoader.class );
-    
 
     protected SchemaLoaderListener listener;
-    
+
     /** 
      * A map of all available schema names to schema objects. This map is 
      * populated when this class is created with all the schemas present in
      * the LDIF based schema repository.
      */
-    protected final Map<String,Schema> schemaMap = new HashMap<String,Schema>();
-    
+    protected final Map<String, Schema> schemaMap = new HashMap<String, Schema>();
+
 
     public void setListener( SchemaLoaderListener listener )
     {
         this.listener = listener;
     }
-    
-    
+
+
     protected final void notifyListenerOrRegistries( Schema schema, Registries registries )
     {
         if ( listener != null )
         {
             listener.schemaLoaded( schema );
         }
-        
+
         if ( registries instanceof SchemaLoaderListener )
         {
             if ( registries != listener )
@@ -82,8 +81,8 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -91,8 +90,8 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     {
         return schemaMap.values();
     }
-    
-    
+
+
     /**
      * Recursive method which loads schema's with their dependent schemas first
      * and tracks what schemas it has seen so the recursion does not go out of
@@ -197,57 +196,59 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         return this.schemaMap.get( schemaName );
     }
 
-    
+
     protected Schema getSchema( Entry entry ) throws Exception
     {
         String name;
         String owner;
         String[] dependencies = StringTools.EMPTY_STRINGS;
         boolean isDisabled = false;
-        
+
         if ( entry == null )
         {
             throw new NullPointerException( "entry cannot be null" );
         }
-        
+
         if ( entry.get( SchemaConstants.CN_AT ) == null )
         {
             throw new NullPointerException( "entry must have a valid cn attribute" );
         }
-        
+
         name = entry.get( SchemaConstants.CN_AT ).getString();
-        
+
         if ( entry.get( SchemaConstants.CREATORS_NAME_AT ) == null )
         {
-            throw new NullPointerException( "entry must have a valid " 
-                + SchemaConstants.CREATORS_NAME_AT + " attribute" );
+            throw new NullPointerException( "entry must have a valid " + SchemaConstants.CREATORS_NAME_AT
+                + " attribute" );
         }
-        
+
         owner = entry.get( SchemaConstants.CREATORS_NAME_AT ).getString();
-        
+
         if ( entry.get( MetaSchemaConstants.M_DISABLED_AT ) != null )
         {
             String value = entry.get( MetaSchemaConstants.M_DISABLED_AT ).getString();
             value = value.toUpperCase();
             isDisabled = value.equals( "TRUE" );
         }
-        
+
         if ( entry.get( MetaSchemaConstants.M_DEPENDENCIES_AT ) != null )
         {
             Set<String> depsSet = new HashSet<String>();
             EntryAttribute depsAttr = entry.get( MetaSchemaConstants.M_DEPENDENCIES_AT );
-            
-            for ( Value<?> value:depsAttr )
+
+            for ( Value<?> value : depsAttr )
             {
                 depsSet.add( value.getString() );
             }
 
             dependencies = depsSet.toArray( StringTools.EMPTY_STRINGS );
         }
-        
-        return new DefaultSchema( name, owner, dependencies, isDisabled ){};
+
+        return new DefaultSchema( name, owner, dependencies, isDisabled )
+        {
+        };
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -662,18 +663,18 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
     {
         return null;
     }
-    
-    
+
+
     private Schema[] buildSchemaArray( String... schemaNames ) throws Exception
     {
         Schema[] schemas = new Schema[schemaNames.length];
         int pos = 0;
-        
+
         for ( String schemaName : schemaNames )
         {
             schemas[pos++] = getSchema( schemaName );
         }
-        
+
         return schemas;
     }
 
@@ -687,7 +688,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadAttributeTypes( buildSchemaArray( schemaNames ) );
     }
 
@@ -701,7 +702,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadComparators( buildSchemaArray( schemaNames ) );
     }
 
@@ -715,7 +716,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadDitContentRules( buildSchemaArray( schemaNames ) );
     }
 
@@ -729,7 +730,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadDitStructureRules( buildSchemaArray( schemaNames ) );
     }
 
@@ -743,7 +744,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadMatchingRules( buildSchemaArray( schemaNames ) );
     }
 
@@ -757,7 +758,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadMatchingRuleUses( buildSchemaArray( schemaNames ) );
     }
 
@@ -771,7 +772,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadNameForms( buildSchemaArray( schemaNames ) );
     }
 
@@ -785,7 +786,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadNormalizers( buildSchemaArray( schemaNames ) );
     }
 
@@ -799,7 +800,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadObjectClasses( buildSchemaArray( schemaNames ) );
     }
 
@@ -813,7 +814,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadSyntaxes( buildSchemaArray( schemaNames ) );
     }
 
@@ -827,7 +828,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         {
             return new ArrayList<Entry>();
         }
-        
+
         return loadSyntaxCheckers( buildSchemaArray( schemaNames ) );
     }
 }

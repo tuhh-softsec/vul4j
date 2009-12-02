@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
+
 
 /**
  * A class used to manage access to the Schemas and Registries. It's associated 
@@ -69,7 +71,7 @@ public interface SchemaManager
      */
     boolean load( Schema... schemas ) throws Exception;
 
-    
+
     /**
      * Load some Schemas into the registries. The Registries is checked after the 
      * schemas have been loaded, and if there is an error, the method returns false
@@ -116,8 +118,8 @@ public interface SchemaManager
      * @throws Exception @TODO 
      */
     boolean loadWithDeps( String... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Load Schemas into the registries, even if there are some errors in the schemas. 
      * The Registries is checked after the schemas have been loaded. Even if we have 
@@ -132,8 +134,8 @@ public interface SchemaManager
      * @throws Exception @TODO 
      */
     boolean loadRelaxed( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Load Schemas into the registries, even if there are some errors in the schemas. 
      * The Registries is checked after the schemas have been loaded. Even if we have 
@@ -180,8 +182,8 @@ public interface SchemaManager
      * @throws Exception @TODO 
      */
     boolean loadWithDepsRelaxed( String... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Load Schemas into the Registries, even if they are disabled. The disabled
      * SchemaObject from an enabled schema will also be loaded. The Registries will
@@ -195,8 +197,8 @@ public interface SchemaManager
      * @throws Exception @TODO 
      */
     boolean loadDisabled( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Load Schemas into the Registries, even if they are disabled. The disabled
      * SchemaObject from an enabled schema will also be loaded. The Registries will
@@ -210,8 +212,8 @@ public interface SchemaManager
      * @throws Exception @TODO 
      */
     boolean loadDisabled( String... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Load all the enabled schema into the Registries. The Registries is strict,
      * any inconsistent schema will be rejected. 
@@ -220,8 +222,8 @@ public interface SchemaManager
      * @throws Exception @TODO
      */
     boolean loadAllEnabled() throws Exception;
-    
-    
+
+
     /**
      * Load all the enabled schema into the Registries. The Registries is relaxed,
      * even inconsistent schema will be loaded. 
@@ -230,8 +232,8 @@ public interface SchemaManager
      * @throws Exception @TODO
      */
     boolean loadAllEnabledRelaxed() throws Exception;
-    
-    
+
+
     /**
      * Unload the given set of Schemas
      *
@@ -239,8 +241,8 @@ public interface SchemaManager
      * @return True if all the schemas have been unloaded
      */
     boolean unload( Schema... schemas );
-    
-    
+
+
     /**
      * Unload the given set of Schemas
      *
@@ -248,8 +250,8 @@ public interface SchemaManager
      * @return True if all the schemas have been unloaded
      */
     boolean unload( String... schemas );
-    
-    
+
+
     //---------------------------------------------------------------------------------
     // Other Schema methods
     //---------------------------------------------------------------------------------
@@ -264,7 +266,7 @@ public interface SchemaManager
      *  @return true if the Registries is still consistent, false otherwise.
      */
     boolean enable( Schema... schemas ) throws Exception;
-    
+
 
     /**
      * Enables a set of Schemas, and returns true if all the schema have been
@@ -278,7 +280,7 @@ public interface SchemaManager
      */
     boolean enable( String... schemas ) throws Exception;
 
-    
+
     /**
      * Enables a set of Schemas, and returns true if all the schema have been
      * enabled, with all the dependent schemas. No check is done, the Registries
@@ -289,7 +291,7 @@ public interface SchemaManager
      */
     boolean enableRelaxed( Schema... schemas );
 
-    
+
     /**
      * Enables a set of Schemas, and returns true if all the schema have been
      * enabled, with all the dependent schemas. No check is done, the Registries
@@ -299,8 +301,8 @@ public interface SchemaManager
      *  @return true if all the schemas have been enabled
      */
     boolean enableRelaxed( String... schemas );
-    
-    
+
+
     /**
      * Disables a set of Schemas, and returns true if all the schema have been
      * disabled, with all the dependent schemas, and if the registries is 
@@ -312,8 +314,8 @@ public interface SchemaManager
      *  @return true if the Registries is still consistent, false otherwise.
      */
     boolean disable( Schema... schemas );
-    
-    
+
+
     /**
      * Disables a set of Schemas, and returns true if all the schema have been
      * disabled, with all the dependent schemas, and if the registries is 
@@ -326,7 +328,7 @@ public interface SchemaManager
      */
     boolean disable( String... schemas );
 
-    
+
     /**
      * Disables a set of Schemas, and returns true if all the schema have been
      * disabled, with all the dependent schemas. The Registries is not checked
@@ -339,7 +341,7 @@ public interface SchemaManager
      */
     boolean disabledRelaxed( Schema... schemas );
 
-    
+
     /**
      * Disables a set of Schemas, and returns true if all the schema have been
      * disabled, with all the dependent schemas. The Registries is not checked
@@ -361,8 +363,8 @@ public interface SchemaManager
      * @throws Exception if something went wrong
      */
     boolean verify( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Check that the Schemas are consistent regarding the current Registries.
      * 
@@ -371,14 +373,14 @@ public interface SchemaManager
      * @throws Exception if something went wrong
      */
     boolean verify( String... schemas ) throws Exception;
-    
-    
+
+
     /**
      * @return The Registries
      */
     Registries getRegistries();
-    
-    
+
+
     /**
      * Lookup for an AttributeType in the AttributeType registry
      * 
@@ -388,7 +390,7 @@ public interface SchemaManager
      */
     AttributeType lookupAttributeTypeRegistry( String oid ) throws NamingException;
 
-    
+
     /**
      * Lookup for a Comparator in the Comparator registry
      * 
@@ -397,8 +399,8 @@ public interface SchemaManager
      * @throws NamingException if the OID is not found in the Comparator registry
      */
     LdapComparator<?> lookupComparatorRegistry( String oid ) throws NamingException;
-    
-    
+
+
     /**
      * Get an immutable reference on the AttributeType registry
      * 
@@ -406,7 +408,7 @@ public interface SchemaManager
      */
     AttributeTypeRegistry getAttributeTypeRegistry();
 
-    
+
     /**
      * Get an immutable reference on the Comparator registry
      * 
@@ -414,7 +416,7 @@ public interface SchemaManager
      */
     ComparatorRegistry getComparatorRegistry();
 
-    
+
     /**
      * Get an immutable reference on the DITContentRule registry
      * 
@@ -422,7 +424,7 @@ public interface SchemaManager
      */
     DITContentRuleRegistry getDITContentRuleRegistry();
 
-    
+
     /**
      * Get an immutable reference on the DITStructureRule registry
      * 
@@ -430,7 +432,7 @@ public interface SchemaManager
      */
     DITStructureRuleRegistry getDITStructureRuleRegistry();
 
-    
+
     /**
      * Get an immutable reference on the MatchingRule registry
      * 
@@ -438,7 +440,7 @@ public interface SchemaManager
      */
     MatchingRuleRegistry getMatchingRuleRegistry();
 
-    
+
     /**
      * Get an immutable reference on the MatchingRuleUse registry
      * 
@@ -446,7 +448,7 @@ public interface SchemaManager
      */
     MatchingRuleUseRegistry getMatchingRuleUseRegistry();
 
-    
+
     /**
      * Get an immutable reference on the Normalizer registry
      * 
@@ -454,7 +456,7 @@ public interface SchemaManager
      */
     NormalizerRegistry getNormalizerRegistry();
 
-    
+
     /**
      * Get an immutable reference on the NameForm registry
      * 
@@ -462,7 +464,7 @@ public interface SchemaManager
      */
     NameFormRegistry getNameFormRegistry();
 
-    
+
     /**
      * Get an immutable reference on the ObjectClass registry
      * 
@@ -470,7 +472,7 @@ public interface SchemaManager
      */
     ObjectClassRegistry getObjectClassRegistry();
 
-    
+
     /**
      * Get an immutable reference on the LdapSyntax registry
      * 
@@ -478,7 +480,7 @@ public interface SchemaManager
      */
     LdapSyntaxRegistry getLdapSyntaxRegistry();
 
-    
+
     /**
      * Get an immutable reference on the SyntaxChecker registry
      * 
@@ -486,7 +488,7 @@ public interface SchemaManager
      */
     SyntaxCheckerRegistry getSyntaxCheckerRegistry();
 
-    
+
     /**
      * Get an immutable reference on the Normalizer mapping
      * 
@@ -494,15 +496,15 @@ public interface SchemaManager
      */
     Map<String, OidNormalizer> getNormalizerMapping();
 
-    
+
     /**
      * Associate a new Registries to the SchemaManager
      *
      * @param registries The new Registries
      */
     void setRegistries( Registries registries );
-    
-    
+
+
     /***
      * Swap the registries, deleting all the schemaObjects and links from the old one
      * to avoid memory leaks.
@@ -512,14 +514,14 @@ public interface SchemaManager
      * @return true if the replacement has been done
      */
     public boolean swapRegistries( Registries targetRegistries ) throws NamingException;
-    
-    
+
+
     /**
      * @return The errors obtained when checking the registries
      */
     List<Throwable> getErrors();
-    
-    
+
+
     /**
      * Associate a Schema loader to this SchemaManager
      *
@@ -540,8 +542,8 @@ public interface SchemaManager
      * @throws Exception If the initialization fails
      */
     void initialize() throws Exception;
-    
-    
+
+
     /**
      * @return The used loader
      */
@@ -553,10 +555,10 @@ public interface SchemaManager
      * consistent after this addition, if the SchemaManager is in Strict mode.
      *
      * @param schemaObject the SchemaObject to register
-     * @throws NamingException if the SchemaObject is already registered or
+     * @throws Exception if the SchemaObject is already registered or
      * the registration operation is not supported
      */
-    void add( SchemaObject schemaObject ) throws NamingException;
+    void add( SchemaObject schemaObject ) throws Exception;
 
 
     /**
@@ -673,8 +675,8 @@ public interface SchemaManager
      * @return The OidRegistry
      */
     OidRegistry getOidRegistry();
-    
-    
+
+
     /**
      * Gets a schema that has been loaded into these Registries.
      * 

@@ -40,8 +40,8 @@ public interface SchemaLoader
      * @param listener the listener to notify (only one is enough for us)
      */
     void setListener( SchemaLoaderListener listener );
-    
-    
+
+
     /**
      * Gets a schema object based on it's name.
      * 
@@ -50,8 +50,8 @@ public interface SchemaLoader
      * @throws Exception if any problems while trying to find the associated Schema
      */
     Schema getSchema( String schemaName ) throws Exception;
-    
-    
+
+
     /**
      * Loads a set of schemas.  A best effort should be made to load the dependended 
      * schemas that these schemas may rely on even if they are not included in the collection.
@@ -95,8 +95,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing AttributeType information
      */
     List<Entry> loadAttributeTypes( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of AttributeTypes read from the underlying storage for
      * a list of specific schema, using their name
@@ -105,8 +105,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing AttributeType information
      */
     List<Entry> loadAttributeTypes( String... schemaNames ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of Comparators read from the underlying storage for
      * a list of specific schema.
@@ -115,8 +115,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing Comparator information
      */
     List<Entry> loadComparators( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of Comparators read from the underlying storage for
      * a list of specific schema, using their name
@@ -125,8 +125,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing Comparator information
      */
     List<Entry> loadComparators( String... schemaNames ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of DitContentRules read from the underlying storage for
      * a list of specific schema.
@@ -135,8 +135,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing DitContentRule information
      */
     List<Entry> loadDitContentRules( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of DitContentRules read from the underlying storage for
      * a list of specified schema names
@@ -155,8 +155,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing DitStructureRule information
      */
     List<Entry> loadDitStructureRules( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of DitStructureRules read from the underlying storage for
      * a list of specified schema names
@@ -175,8 +175,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing MatchingRule information
      */
     List<Entry> loadMatchingRules( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of MatchingRules read from the underlying storage for
      * a list of specific schema, using their name
@@ -185,8 +185,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing MatchingRule information
      */
     List<Entry> loadMatchingRules( String... schemaNames ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of MatchingRuleUses read from the underlying storage for
      * a list of specific schema.
@@ -195,8 +195,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing MatchingRuleUse information
      */
     List<Entry> loadMatchingRuleUses( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of MatchingRuleUses read from the underlying storage for
      * a list of specified schema names
@@ -215,8 +215,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing NameForm information
      */
     List<Entry> loadNameForms( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of NameForms read from the underlying storage for
      * a list of specified schema names
@@ -235,8 +235,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing Normalizer information
      */
     List<Entry> loadNormalizers( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of Normalizers read from the underlying storage for
      * a list of specified schema names
@@ -245,8 +245,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing Normalizer information
      */
     List<Entry> loadNormalizers( String... schemaNames ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of ObjectClasses read from the underlying storage for
      * a list of specific schema.
@@ -255,8 +255,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing ObjectClass information
      */
     List<Entry> loadObjectClasses( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of ObjectClasses read from the underlying storage for
      * a list of specified schema names
@@ -265,8 +265,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing ObjectClasses information
      */
     List<Entry> loadObjectClasses( String... schemaNames ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of Syntaxes read from the underlying storage for
      * a list of specified schema
@@ -275,8 +275,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing Syntax information
      */
     List<Entry> loadSyntaxes( Schema... schemas ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of Syntaxes read from the underlying storage for
      * a list of specified schema names
@@ -285,8 +285,8 @@ public interface SchemaLoader
      * @throws Exception if there are failures accessing Syntax information
      */
     List<Entry> loadSyntaxes( String... schemaNames ) throws Exception;
-    
-    
+
+
     /**
      * Build a list of SyntaxCheckers read from the underlying storage for
      * a list of specified schema
