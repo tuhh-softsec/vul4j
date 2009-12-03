@@ -415,4 +415,30 @@ public class SchemaManagerTest
 
         assertTrue( error instanceof LdapSchemaViolationException );
     }
+
+
+    /**
+     * Try to inject an AttributeType with a bad superior
+     */
+    @Test
+    public void testAddAttributeTypeSupBadSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( null );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSuperiorOid( "0.0" );
+        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+    }
 }
