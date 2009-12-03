@@ -9,7 +9,6 @@ creatorsname: uid=admin,ou=system
 m-collective: FALSE
 m-oid: 1.3.6.1.4.1.18060.0.4.1.2.7
 entrycsn: 20090818052729.137000Z#000000#000#000000
-m-supattributetype: distinguishedName
 m-nousermodification: TRUE
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
 objectclass: metaAttributeType
