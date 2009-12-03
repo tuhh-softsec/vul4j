@@ -46,22 +46,22 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 828111 $
  */
-public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<AttributeType> 
-    implements AttributeTypeRegistry
+public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<AttributeType> implements
+    AttributeTypeRegistry
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultAttributeTypeRegistry.class );
 
     /** Speedup for DEBUG mode */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-    
+
     /** cached Oid/normalizer mapping */
     private transient Map<String, OidNormalizer> oidNormalizerMap;
-    
-    /** maps OIDs to a Set of descendants for that OID */
-    private Map<String,Set<AttributeType>> oidToDescendantSet;
 
-    
+    /** maps OIDs to a Set of descendants for that OID */
+    private Map<String, Set<AttributeType>> oidToDescendantSet;
+
+
     /**
      * Creates a new default AttributeTypeRegistry instance.
      */
@@ -69,10 +69,10 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     {
         super( SchemaObjectType.ATTRIBUTE_TYPE, new OidRegistry() );
         oidNormalizerMap = new HashMap<String, OidNormalizer>();
-        oidToDescendantSet = new HashMap<String,Set<AttributeType>>();
+        oidToDescendantSet = new HashMap<String, Set<AttributeType>>();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -80,8 +80,8 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     {
         return Collections.unmodifiableMap( oidNormalizerMap );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -91,15 +91,15 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         {
             String oid = getOidByName( ancestorId );
             Set<AttributeType> descendants = oidToDescendantSet.get( oid );
-            return (descendants != null) && !descendants.isEmpty();
+            return ( descendants != null ) && !descendants.isEmpty();
         }
         catch ( NamingException ne )
         {
             throw new NoSuchAttributeException( ne.getMessage() );
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -110,12 +110,12 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         {
             String oid = getOidByName( ancestorId );
             Set<AttributeType> descendants = oidToDescendantSet.get( oid );
-            
+
             if ( descendants == null )
             {
                 return Collections.EMPTY_SET.iterator();
             }
-            
+
             return descendants.iterator();
         }
         catch ( NamingException ne )
@@ -123,20 +123,19 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
             throw new NoSuchAttributeException( ne.getMessage() );
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
-    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) 
-        throws NamingException
+    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
     {
         // add this attribute to descendant list of other attributes in superior chain
         if ( ancestor == null )
         {
             return;
         }
-        
+
         // Get the ancestor's descendant, if any
         Set<AttributeType> descendants = oidToDescendantSet.get( ancestor.getOid() );
 
@@ -146,10 +145,11 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
             descendants = new HashSet<AttributeType>( 1 );
             oidToDescendantSet.put( ancestor.getOid(), descendants );
         }
-        
+
         // Add the current type as a descendant
         descendants.add( attributeType );
-        
+
+        /*
         try
         {
             // And recurse until we reach the top of the hierarchy
@@ -159,34 +159,34 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         {
             throw new NoSuchAttributeException( ne.getMessage() );
         }
+        */
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
-    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) 
-        throws NamingException
+    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
     {
         // add this attribute to descendant list of other attributes in superior chain
         if ( ancestor == null )
         {
             return;
         }
-        
+
         // Get the ancestor's descendant, if any
         Set<AttributeType> descendants = oidToDescendantSet.get( ancestor.getOid() );
 
         if ( descendants != null )
         {
             descendants.remove( attributeType );
-            
+
             if ( descendants.size() == 0 )
             {
                 oidToDescendantSet.remove( descendants );
             }
         }
-        
+
         try
         {
             // And recurse until we reach the top of the hierarchy
@@ -197,8 +197,8 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
             throw new NoSuchAttributeException( ne.getMessage() );
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -207,17 +207,17 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         try
         {
             AttributeType removed = super.unregister( numericOid );
-    
+
             removeMappingFor( removed );
-            
+
             // Deleting an AT which might be used as a superior means we have
             // to recursively update the descendant map. We also have to remove
             // the at.oid -> descendant relation
             oidToDescendantSet.remove( numericOid );
-            
+
             // Now recurse if needed
             unregisterDescendants( removed, removed.getSuperior() );
-            
+
             return removed;
         }
         catch ( NamingException ne )
@@ -226,7 +226,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -238,7 +238,8 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
 
         if ( equality == null )
         {
-            LOG.debug( "Attribute {} does not have an EQUALITY MatchingRule : using NoopNormalizer", attributeType.getName() );
+            LOG.debug( "Attribute {} does not have an EQUALITY MatchingRule : using NoopNormalizer", attributeType
+                .getName() );
             oidNormalizer = new OidNormalizer( oid, new NoOpNormalizer( attributeType.getOid() ) );
         }
         else
@@ -247,7 +248,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         }
 
         oidNormalizerMap.put( oid, oidNormalizer );
-        
+
         // Also inject the attributeType's short names in the map
         for ( String name : attributeType.getNames() )
         {
@@ -265,7 +266,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         {
             return;
         }
-        
+
         oidNormalizerMap.remove( attributeType.getOid() );
 
         // We also have to remove all the short names for this attribute
@@ -283,7 +284,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     {
         try
         {
-           return super.lookup( oid );
+            return super.lookup( oid );
         }
         catch ( NamingException ne )
         {
@@ -291,21 +292,21 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     public AttributeTypeRegistry copy()
     {
         DefaultAttributeTypeRegistry copy = new DefaultAttributeTypeRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -313,21 +314,21 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     {
         // First clear the shared elements
         super.clear();
-        
+
         // clear the OidNormalizer map
         oidNormalizerMap.clear();
-        
+
         // and clear the descendant
         for ( String oid : oidToDescendantSet.keySet() )
         {
             Set<AttributeType> descendants = oidToDescendantSet.get( oid );
-            
+
             if ( descendants != null )
             {
                 descendants.clear();
             }
         }
-        
+
         oidToDescendantSet.clear();
     }
 }

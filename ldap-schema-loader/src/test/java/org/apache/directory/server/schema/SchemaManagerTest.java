@@ -22,6 +22,7 @@ package org.apache.directory.server.schema;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -106,14 +107,16 @@ public class SchemaManagerTest
     }
 
 
-    //-------------------------------------------------------------------------
+    //=========================================================================
     // AttributeType addition tests
+    //-------------------------------------------------------------------------
+    // First, not defined superior
     //-------------------------------------------------------------------------
     /**
      * Try to inject an AttributeType without any superior nor Syntax : it's invalid
      */
     @Test
-    public void testAddAttributeTypeNoSyntaxNoSuperior() throws Exception
+    public void testAddAttributeTypeNoSupNoSyntaxNoSuperior() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
 
@@ -121,7 +124,6 @@ public class SchemaManagerTest
         attributeType.setEqualityOid( "2.5.13.1" );
         attributeType.setOrderingOid( null );
         attributeType.setSubstringOid( null );
-        attributeType.setSuperior( ( String ) null );
 
         // It should fail
         assertFalse( schemaManager.add( attributeType ) );
@@ -138,7 +140,7 @@ public class SchemaManagerTest
      * Try to inject an AttributeType which is Collective, and userApplication AT
      */
     @Test
-    public void testAddAttributeTypeCollectiveUser() throws Exception
+    public void testAddAttributeTypeNoSupCollectiveUser() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
 
@@ -151,7 +153,9 @@ public class SchemaManagerTest
         attributeType.setCollective( true );
 
         // It should not fail
-        schemaManager.add( attributeType );
+        assertTrue( schemaManager.add( attributeType ) );
+
+        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "1.1.0" ) );
     }
 
 
@@ -159,7 +163,7 @@ public class SchemaManagerTest
      * Try to inject an AttributeType which is Collective, but an operational AT
      */
     @Test
-    public void testAddAttributeTypeCollectiveOperational() throws Exception
+    public void testAddAttributeTypeNoSupCollectiveOperational() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
 
@@ -172,6 +176,32 @@ public class SchemaManagerTest
         attributeType.setCollective( true );
 
         // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+    }
+
+
+    /**
+     * Try to inject an AttributeType which is a NO-USER-MODIFICATION and userApplication
+     */
+    @Test
+    public void testAddAttributeTypeNoSupNoUserModificationUserAplication() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+        attributeType.setUserModifiable( false );
+
         // It should fail
         assertFalse( schemaManager.add( attributeType ) );
 
@@ -180,6 +210,209 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+    }
 
+
+    /**
+     * Try to inject an AttributeType which is a NO-USER-MODIFICATION and is operational
+     */
+    @Test
+    public void testAddAttributeTypeNoSupNoUserModificationOpAttr() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
+        attributeType.setUserModifiable( false );
+
+        // It should not fail
+        assertTrue( schemaManager.add( attributeType ) );
+
+        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "1.1.0" ) );
+    }
+
+
+    /**
+     * Try to inject an AttributeType with an invalid EQUALITY MR
+     */
+    @Test
+    public void testAddAttributeTypeNoSupInvalidEqualityMR() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "0.0" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+    }
+
+
+    /**
+     * Try to inject an AttributeType with an invalid ORDERING MR
+     */
+    @Test
+    public void testAddAttributeTypeNoSupInvalidOrderingMR() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( null );
+        attributeType.setOrderingOid( "0.0" );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+    }
+
+
+    /**
+     * Try to inject an AttributeType with an invalid SUBSTR MR
+     */
+    @Test
+    public void testAddAttributeTypeNoSupInvalidSubstringMR() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( null );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( "0.0" );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+    }
+
+
+    /**
+     * Try to inject an AttributeType with valid MRs
+     */
+    @Test
+    public void testAddAttributeTypeNoSupValidMR() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( "2.5.13.1" );
+        attributeType.setSubstringOid( "2.5.13.1" );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+
+        // It should not fail
+        assertTrue( schemaManager.add( attributeType ) );
+
+        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "1.1.0" ) );
+    }
+
+
+    //-------------------------------------------------------------------------
+    // Then, with a superior
+    //-------------------------------------------------------------------------
+    /**
+     * Try to inject an AttributeType with a superior and no Syntax : it should
+     * take its superior' syntax and MR
+     */
+    @Test
+    public void testAddAttributeTypeSupNoSyntaxNoSuperior() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( null );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSuperiorOid( "2.5.18.4" );
+        attributeType.setUsage( UsageEnum.DIRECTORY_OPERATION );
+
+        // It should not fail
+        assertTrue( schemaManager.add( attributeType ) );
+
+        AttributeType result = schemaManager.lookupAttributeTypeRegistry( "1.1.0" );
+
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.12", result.getSyntaxOid() );
+        assertEquals( "2.5.13.1", result.getEqualityOid() );
+    }
+
+
+    /**
+     * Try to inject an AttributeType with a superior and different USAGE
+     */
+    @Test
+    public void testAddAttributeTypeSupDifferentUsage() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( null );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSuperiorOid( "2.5.18.4" );
+        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+    }
+
+
+    /**
+     * Try to inject an AttributeType with itself as a superior
+     */
+    @Test
+    public void testAddAttributeTypeSupWithOwnSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( null );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSuperiorOid( "1.1.0" );
+        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
     }
 }

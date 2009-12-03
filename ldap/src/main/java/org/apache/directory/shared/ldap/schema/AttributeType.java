@@ -147,37 +147,37 @@ public class AttributeType extends SchemaObject implements Cloneable
 
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
-    
+
     /** The syntax OID associated with this AttributeType */
     private String syntaxOid;
-    
+
     /** The syntax associated with the syntaxID */
     private LdapSyntax syntax;
-    
+
     /** The equality OID associated with this AttributeType */
     private String equalityOid;
 
     /** The equality MatchingRule associated with the equalityID */
     private MatchingRule equality;
-    
+
     /** The substring OID associated with this AttributeType */
     private String substringOid;
 
     /** The substring MatchingRule associated with the substringID */
     private MatchingRule substring;
-    
+
     /** The ordering OID associated with this AttributeType */
     private String orderingOid;
-    
+
     /** The ordering MatchingRule associated with the orderingID */
     private MatchingRule ordering;
-    
+
     /** The superior AttributeType OID */
     private String superiorOid;
-    
+
     /** The superior AttributeType */
     private AttributeType superior;
-    
+
     /** whether or not this type is single valued */
     private boolean isSingleValued = false;
 
@@ -192,7 +192,8 @@ public class AttributeType extends SchemaObject implements Cloneable
 
     /** the length of this attribute in bytes */
     private int syntaxLength = 0;
-    
+
+
     /**
      * Creates a AttributeType object using a unique OID.
      * 
@@ -202,16 +203,16 @@ public class AttributeType extends SchemaObject implements Cloneable
     {
         super( SchemaObjectType.ATTRIBUTE_TYPE, oid );
     }
-    
-    
+
+
     /**
      * Build the Superior AttributeType reference for an AttributeType
      */
-    private void buildSuperior(List<Throwable> errors, Registries registries )
+    private boolean buildSuperior( List<Throwable> errors, Registries registries )
     {
         AttributeType superior = null;
         AttributeTypeRegistry attributeTypeRegistry = registries.getAttributeTypeRegistry();
-        
+
         if ( superiorOid != null )
         {
             // This AT has a superior
@@ -222,32 +223,29 @@ public class AttributeType extends SchemaObject implements Cloneable
             catch ( Exception e )
             {
                 // Not allowed.
-                String msg = "Cannot find the SUPERIOR object " + superiorOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find the SUPERIOR object " + superiorOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
-                
+
                 // Get out now
-                return;
+                return false;
             }
-            
+
             if ( superior != null )
             {
                 this.superior = superior;
-                
+
                 // Recursively update the superior if not already done. We don't recurse
                 // if the superior's superior is not null, as it means it has already been
                 // handled.
-                if ( //( ( registries.getUsing( superior ) == null ) || registries.getUsing( superior ).isEmpty() ) && 
-                     ( superior.getSuperior() == null ) )
+                if ( superior.getSuperior() == null )
                 {
                     registries.buildReference( errors, superior );
                 }
-                
+
                 // Update the descendant MAP
                 try
                 {
@@ -257,28 +255,30 @@ public class AttributeType extends SchemaObject implements Cloneable
                 {
                     errors.add( ne );
                     LOG.info( ne.getMessage() );
+                    return false;
                 }
-                
+
                 // Check for cycles now
                 Set<String> superiors = new HashSet<String>();
                 superiors.add( oid );
                 AttributeType tmp = superior;
-                
+                boolean isOk = true;
+
                 while ( tmp != null )
                 {
                     if ( superiors.contains( tmp.getOid() ) )
                     {
                         // There is a cycle : bad bad bad !
                         // Not allowed.
-                        String msg = "A cycle has been detected in the superior hierarchyOid" + 
-                            " while building cross-references for the " + getName() + 
-                            " AttributeType.";
+                        String msg = "A cycle has been detected in the superior hierarchyOid"
+                            + " while building cross-references for the " + getName() + " AttributeType.";
 
-                        Throwable error = new LdapSchemaViolationException( 
-                            msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        Throwable error = new LdapSchemaViolationException( msg,
+                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                         errors.add( error );
                         LOG.info( msg );
-                        
+                        isOk = false;
+
                         break;
                     }
                     else
@@ -287,35 +287,33 @@ public class AttributeType extends SchemaObject implements Cloneable
                         tmp = tmp.getSuperior();
                     }
                 }
-                
+
                 superiors.clear();
-                
-                return;
+
+                return isOk;
             }
             else
             {
                 // Not allowed.
-                String msg = "Cannot find the SUPERIOR object " + superiorOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find the SUPERIOR object " + superiorOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
-                
+
                 // Get out now
-                return;
+                return false;
             }
         }
         else
         {
             // No superior, just return
-            return;
+            return true;
         }
     }
 
-    
+
     /**
      * Build the SYNTAX reference for an AttributeType
      */
@@ -324,7 +322,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         if ( syntaxOid != null )
         {
             LdapSyntax syntax = null;
-            
+
             try
             {
                 syntax = registries.getLdapSyntaxRegistry().lookup( syntaxOid );
@@ -332,17 +330,15 @@ public class AttributeType extends SchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find a Syntax object " + syntaxOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find a Syntax object " + syntaxOid + " while building cross-references for the "
+                    + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
                 return;
             }
-            
+
             if ( syntax != null )
             {
                 // Update the Syntax reference
@@ -351,12 +347,10 @@ public class AttributeType extends SchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find a Syntax object " + syntaxOid + 
-                " while building cross-references for the " + getName() + 
-                " AttributeType.";
+                String msg = "Cannot find a Syntax object " + syntaxOid + " while building cross-references for the "
+                    + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -368,23 +362,23 @@ public class AttributeType extends SchemaObject implements Cloneable
             if ( superior != null )
             {
                 this.syntax = superior.getSyntax();
+                this.syntaxOid = this.syntax.getOid();
             }
             else
             {
                 // Not allowed.
-                String msg = "The AttributeType " + getName() + " must have " +
-                    "a syntax OID or a superior, it does not have any.";
-    
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                String msg = "The AttributeType " + getName() + " must have "
+                    + "a syntax OID or a superior, it does not have any.";
+
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
                 return;
             }
         }
     }
-    
-    
+
+
     /**
      * Build the EQUALITY MR reference for an AttributeType
      */
@@ -394,7 +388,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         if ( equalityOid != null )
         {
             MatchingRule equality = null;
-            
+
             try
             {
                 equality = registries.getMatchingRuleRegistry().lookup( equalityOid );
@@ -402,17 +396,15 @@ public class AttributeType extends SchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find an Equality MatchingRule object for " + equalityOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find an Equality MatchingRule object for " + equalityOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
                 return;
             }
-            
+
             if ( equality != null )
             {
                 this.equality = equality;
@@ -420,12 +412,10 @@ public class AttributeType extends SchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find an EQUALITY MatchingRule instance for " + equalityOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find an EQUALITY MatchingRule instance for " + equalityOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
             }
@@ -436,11 +426,12 @@ public class AttributeType extends SchemaObject implements Cloneable
             if ( ( superior != null ) && ( superior.getEquality() != null ) )
             {
                 this.equality = superior.getEquality();
+                this.equalityOid = this.equality.getOid();
             }
         }
     }
-    
-    
+
+
     /**
      * Build the ORDERING MR reference for an AttributeType
      */
@@ -449,7 +440,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         if ( orderingOid != null )
         {
             MatchingRule ordering = null;
-            
+
             try
             {
                 ordering = registries.getMatchingRuleRegistry().lookup( orderingOid );
@@ -457,17 +448,15 @@ public class AttributeType extends SchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find a Ordering MatchingRule object for " + orderingOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find a Ordering MatchingRule object for " + orderingOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
                 return;
             }
-            
+
             if ( ordering != null )
             {
                 this.ordering = ordering;
@@ -475,12 +464,10 @@ public class AttributeType extends SchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find an ORDERING MatchingRule instance for " + orderingOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find an ORDERING MatchingRule instance for " + orderingOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
             }
@@ -491,11 +478,12 @@ public class AttributeType extends SchemaObject implements Cloneable
             if ( ( superior != null ) && ( superior.getOrdering() != null ) )
             {
                 this.ordering = superior.getOrdering();
+                this.orderingOid = this.ordering.getOid();
             }
         }
     }
 
-    
+
     /**
      * Build the SUBSTR MR reference for an AttributeType
      */
@@ -505,7 +493,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         if ( substringOid != null )
         {
             MatchingRule substring = null;
-            
+
             try
             {
                 substring = registries.getMatchingRuleRegistry().lookup( substringOid );
@@ -513,17 +501,15 @@ public class AttributeType extends SchemaObject implements Cloneable
             catch ( NamingException ne )
             {
                 // Not allowed.
-                String msg = "Cannot find a SUBSTR MatchingRule object for " + substringOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find a SUBSTR MatchingRule object for " + substringOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
                 return;
             }
-            
+
             if ( substring != null )
             {
                 this.substring = substring;
@@ -531,12 +517,10 @@ public class AttributeType extends SchemaObject implements Cloneable
             else
             {
                 // Not allowed.
-                String msg = "Cannot find a SUBSTR MatchingRule instance for " + substringOid + 
-                    " while building cross-references for the " + getName() + 
-                    " AttributeType.";
+                String msg = "Cannot find a SUBSTR MatchingRule instance for " + substringOid
+                    + " while building cross-references for the " + getName() + " AttributeType.";
 
-                Throwable error = new LdapSchemaViolationException( 
-                    msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -548,11 +532,12 @@ public class AttributeType extends SchemaObject implements Cloneable
             if ( ( superior != null ) && ( superior.getSubstring() != null ) )
             {
                 this.substring = superior.getSubstring();
+                this.substringOid = this.substring.getOid();
             }
         }
     }
 
-    
+
     /**
      * Check the constraints for the Usage field.
      */
@@ -562,30 +547,28 @@ public class AttributeType extends SchemaObject implements Cloneable
         if ( ( superior != null ) && ( usage != superior.getUsage() ) )
         {
             // This is an error
-            String msg = "The attributeType " + getName() + " must have the same USAGE than its superior"; 
+            String msg = "The attributeType " + getName() + " must have the same USAGE than its superior";
 
-            Throwable error = new LdapSchemaViolationException( 
-                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
             LOG.info( msg );
             return;
         }
-        
+
         // Now, check that the AttributeType's USAGE does not conflict
         if ( !isUserModifiable() && ( usage == UsageEnum.USER_APPLICATIONS ) )
         {
             // Cannot have a not user modifiable AT which is not an operational AT
-            String msg = "The attributeType " + getName() + " is a USER-APPLICATION attribute, " +
-                "it must be USER-MODIFIABLE"; 
-            
-            Throwable error = new LdapSchemaViolationException( 
-                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            String msg = "The attributeType " + getName() + " is a USER-APPLICATION attribute, "
+                + "it must be USER-MODIFIABLE";
+
+            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
             LOG.info( msg );
         }
     }
-    
-    
+
+
     /**
      * Check the constraints for the Collective field.
      */
@@ -603,17 +586,16 @@ public class AttributeType extends SchemaObject implements Cloneable
         if ( isCollective() && ( usage != UsageEnum.USER_APPLICATIONS ) )
         {
             // An AttributeType which is collective must be a USER attributeType
-            String msg = "The attributeType " + getName() + " is a COLLECTIVE AttributeType, " +
-                ", it must be a USER-APPLICATION attributeType too.";
-            
-            Throwable error = new LdapSchemaViolationException( 
-                msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            String msg = "The attributeType " + getName() + " is a COLLECTIVE AttributeType, "
+                + ", it must be a USER-APPLICATION attributeType too.";
+
+            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
             LOG.info( msg );
         }
     }
-    
-    
+
+
     /**
      * Inject the registries into this Object, updating the references to
      * other SchemaObject.
@@ -629,31 +611,35 @@ public class AttributeType extends SchemaObject implements Cloneable
         if ( registries != null )
         {
             AttributeTypeRegistry attributeTypeRegistry = registries.getAttributeTypeRegistry();
-            
+
             // The superior
-            buildSuperior( errors, registries );
-            
+            if ( !buildSuperior( errors, registries ) )
+            {
+                // We have had errors, let's stop here as we need a correct superior to continue
+                return;
+            }
+
             // The Syntax
             buildSyntax( errors, registries );
-            
+
             // The EQUALITY matching rule
             buildEquality( errors, registries );
-            
+
             // The ORDERING matching rule
             buildOrdering( errors, registries );
-            
+
             // The SUBSTR matching rule
             buildSubstring( errors, registries );
-            
+
             // Check the USAGE
             checkUsage( errors, registries );
-            
+
             // Check the COLLECTIVE element
             checkCollective( errors, registries );
-            
+
             // Inject the attributeType into the oid/normalizer map
             attributeTypeRegistry.addMappingFor( this );
-    
+
             // Register this AttributeType into the Descendant map
             attributeTypeRegistry.registerDescendants( this, superior );
 
@@ -665,32 +651,32 @@ public class AttributeType extends SchemaObject implements Cloneable
              */
             if ( equality != null )
             {
-               registries. addReference( this, equality );
+                registries.addReference( this, equality );
             }
-            
+
             if ( ordering != null )
             {
                 registries.addReference( this, ordering );
             }
-            
+
             if ( substring != null )
             {
                 registries.addReference( this, substring );
             }
-            
+
             if ( syntax != null )
             {
                 registries.addReference( this, syntax );
             }
-            
+
             if ( superior != null )
             {
                 registries.addReference( this, superior );
             }
         }
     }
-    
-    
+
+
     /**
      * Gets whether or not this AttributeType is single-valued.
      * 
@@ -716,7 +702,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         }
     }
 
-    
+
     /**
      * Gets whether or not this AttributeType can be modified by a user.
      * 
@@ -727,7 +713,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         return canUserModify;
     }
 
-    
+
     /**
      * Tells if this AttributeType can be modified by a user or not
      *
@@ -740,7 +726,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.canUserModify = canUserModify;
         }
     }
-    
+
 
     /**
      * Gets whether or not this AttributeType is a collective attribute.
@@ -762,8 +748,8 @@ public class AttributeType extends SchemaObject implements Cloneable
     {
         this.isCollective = collective;
     }
-    
-    
+
+
     /**
      * Sets the collective flag
      *
@@ -776,8 +762,8 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.isCollective = collective;
         }
     }
-    
-    
+
+
     /**
      * Determines the usage for this AttributeType.
      * 
@@ -806,8 +792,8 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.usage = usage;
         }
     }
-    
-    
+
+
     /**
      * Updates the AttributeType usage, one of :<br>
      * <li>USER_APPLICATIONS
@@ -822,7 +808,7 @@ public class AttributeType extends SchemaObject implements Cloneable
     {
         this.usage = usage;
     }
-    
+
 
     /**
      * Gets a length limit for this AttributeType.
@@ -833,8 +819,8 @@ public class AttributeType extends SchemaObject implements Cloneable
     {
         return syntaxLength;
     }
-    
-    
+
+
     /**
      * Sets the length limit of this AttributeType based on its associated
      * syntax.
@@ -848,8 +834,8 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.syntaxLength = length;
         }
     }
-    
-    
+
+
     /**
      * Gets the the superior AttributeType of this AttributeType.
      * 
@@ -860,7 +846,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         return superior;
     }
 
-    
+
     /**
      * Gets the OID of the superior AttributeType for this AttributeType.
      * 
@@ -871,7 +857,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         return superiorOid;
     }
 
-    
+
     /**
      * Gets the Name of the superior AttributeType for this AttributeType.
      * 
@@ -889,7 +875,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         }
     }
 
-    
+
     /**
      * Sets the superior AttributeType OID of this AttributeType
      *
@@ -902,7 +888,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.superiorOid = superiorOid;
         }
     }
-    
+
 
     /**
      * Sets the superior for this AttributeType
@@ -917,7 +903,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.superiorOid = superior.getOid();
         }
     }
-    
+
 
     /**
      * Sets the superior oid for this AttributeType
@@ -997,7 +983,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.syntaxOid = syntaxOid;
         }
     }
-    
+
 
     /**
      * Sets the Syntax for this AttributeType
@@ -1013,7 +999,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         }
     }
 
-    
+
     /**
      * Update the associated Syntax, even if the SchemaObject is readOnly
      *
@@ -1025,7 +1011,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         this.syntaxOid = syntax.getOid();
     }
 
-    
+
     /**
      * Gets the MatchingRule for this AttributeType used for equality matching.
      * 
@@ -1078,7 +1064,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.equalityOid = equalityOid;
         }
     }
-    
+
 
     /**
      * Sets the Equality MR for this AttributeType
@@ -1093,7 +1079,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.equalityOid = equality.getOid();
         }
     }
-    
+
 
     /**
      * Update the associated Equality MatchingRule, even if the SchemaObject is readOnly
@@ -1105,7 +1091,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         this.equality = equality;
         this.equalityOid = equality.getOid();
     }
-    
+
 
     /**
      * Gets the MatchingRule for this AttributeType used for Ordering matching.
@@ -1159,7 +1145,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.orderingOid = orderingOid;
         }
     }
-    
+
 
     /**
      * Sets the Ordering MR for this AttributeType
@@ -1175,7 +1161,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         }
     }
 
-    
+
     /**
      * Update the associated Ordering MatchingRule, even if the SchemaObject is readOnly
      *
@@ -1187,7 +1173,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         this.orderingOid = ordering.getOid();
     }
 
-    
+
     /**
      * Gets the MatchingRule for this AttributeType used for Substr matching.
      * 
@@ -1240,7 +1226,7 @@ public class AttributeType extends SchemaObject implements Cloneable
             this.substringOid = substrOid;
         }
     }
-    
+
 
     /**
      * Sets the Substr MR for this AttributeType
@@ -1286,7 +1272,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         return isAncestorOrEqual( this, descendant );
     }
 
-    
+
     /**
      * Checks to see if this AttributeType is the descendant of another
      * attributeType.
@@ -1337,8 +1323,8 @@ public class AttributeType extends SchemaObject implements Cloneable
     {
         return objectType + " " + DescriptionUtils.getDescription( this );
     }
-    
-    
+
+
     /**
      * Copy an AttributeType
      */
@@ -1348,25 +1334,25 @@ public class AttributeType extends SchemaObject implements Cloneable
 
         // Copy the SchemaObject common data
         copy.copy( this );
-        
+
         // Copy the canUserModify flag
         copy.canUserModify = canUserModify;
-        
+
         // Copy the isCollective flag
         copy.isCollective = isCollective;
-        
+
         // Copy the isSingleValue flag
         copy.isSingleValued = isSingleValued;
-        
+
         // Copy the USAGE type
         copy.usage = usage;
-        
+
         // All the references to other Registries object are set to null,
         // all the OIDs are copied
         // The EQUALITY MR
         copy.equality = null;
         copy.equalityOid = equalityOid;
-        
+
         // The ORDERING MR
         copy.ordering = null;
         copy.orderingOid = orderingOid;
@@ -1378,16 +1364,16 @@ public class AttributeType extends SchemaObject implements Cloneable
         // The SUP AT
         copy.superior = null;
         copy.superiorOid = superiorOid;
-        
+
         // The SYNTAX
         copy.syntax = null;
         copy.syntaxOid = syntaxOid;
         copy.syntaxLength = syntaxLength;
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -1395,7 +1381,7 @@ public class AttributeType extends SchemaObject implements Cloneable
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         equality = null;
         ordering = null;
@@ -1403,8 +1389,8 @@ public class AttributeType extends SchemaObject implements Cloneable
         superior = null;
         syntax = null;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -1419,39 +1405,39 @@ public class AttributeType extends SchemaObject implements Cloneable
         {
             return false;
         }
-        
-        AttributeType that = (AttributeType)o;
-        
+
+        AttributeType that = ( AttributeType ) o;
+
         // The COLLECTIVE
         if ( isCollective != that.isCollective )
         {
             return false;
         }
-        
+
         // The SINGLE_VALUE
         if ( isSingleValued != that.isSingleValued )
         {
             return false;
         }
-        
+
         // The NO_USER_MODIFICATION
         if ( canUserModify != that.canUserModify )
         {
             return false;
         }
-        
+
         // The USAGE
         if ( usage != that.usage )
         {
             return false;
         }
-        
+
         // The equality
         if ( !compareOid( equalityOid, that.equalityOid ) )
         {
             return false;
         }
-        
+
         if ( equality != null )
         {
             if ( !equality.equals( that.equality ) )
@@ -1466,7 +1452,7 @@ public class AttributeType extends SchemaObject implements Cloneable
                 return false;
             }
         }
-        
+
         // The ordering
         if ( !compareOid( orderingOid, that.orderingOid ) )
         {
@@ -1487,13 +1473,13 @@ public class AttributeType extends SchemaObject implements Cloneable
                 return false;
             }
         }
-        
+
         // The substring
         if ( !compareOid( substringOid, that.substringOid ) )
         {
             return false;
         }
-        
+
         if ( substring != null )
         {
             if ( !substring.equals( that.substring ) )
@@ -1514,7 +1500,7 @@ public class AttributeType extends SchemaObject implements Cloneable
         {
             return false;
         }
-        
+
         if ( superior != null )
         {
             if ( !superior.equals( that.superior ) )
@@ -1529,24 +1515,24 @@ public class AttributeType extends SchemaObject implements Cloneable
                 return false;
             }
         }
-        
+
         // The syntax
         if ( !compareOid( syntaxOid, that.syntaxOid ) )
         {
             return false;
         }
-        
+
         if ( syntaxLength != that.syntaxLength )
         {
             return false;
         }
-        
+
         if ( syntax == null )
         {
             return that.syntax == null;
         }
 
-        if ( syntax.equals(  that.syntax ) )
+        if ( syntax.equals( that.syntax ) )
         {
             return syntaxLength == that.syntaxLength;
         }
