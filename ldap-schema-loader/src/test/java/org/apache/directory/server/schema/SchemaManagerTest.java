@@ -273,6 +273,27 @@ public class SchemaManagerTest
 
 
     /**
+     * Try to inject an AttributeType which is Collective, and userApplication AT
+     */
+    @Test
+    public void testAddAttributeTypeCollectiveUser() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
+        attributeType.setCollective( true );
+
+        // It should not fail
+        schemaManager.add( attributeType );
+    }
+
+
+    /**
      * Try to inject an AttributeType which is Collective, but an operational AT
      */
     @Test(expected = LdapOperationNotSupportedException.class)
