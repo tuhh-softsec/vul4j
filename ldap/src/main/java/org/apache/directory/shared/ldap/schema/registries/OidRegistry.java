@@ -52,7 +52,8 @@ public class OidRegistry implements Iterable<SchemaObject>
 
     /** Maps OID to a SchemaObject */
     private Map<String, SchemaObject> byOid = new HashMap<String, SchemaObject>();
-    
+
+
     /**
      * Tells if the given OID is present on this registry
      * 
@@ -76,7 +77,7 @@ public class OidRegistry implements Iterable<SchemaObject>
     public String getPrimaryName( String oid ) throws NamingException
     {
         SchemaObject schemaObject = byOid.get( oid );
-        
+
         if ( schemaObject != null )
         {
             return schemaObject.getName();
@@ -100,7 +101,7 @@ public class OidRegistry implements Iterable<SchemaObject>
     public SchemaObject getSchemaObject( String oid ) throws NamingException
     {
         SchemaObject schemaObject = byOid.get( oid );
-        
+
         if ( schemaObject != null )
         {
             return schemaObject;
@@ -138,12 +139,12 @@ public class OidRegistry implements Iterable<SchemaObject>
         }
 
         List<String> names = schemaObject.getNames();
-        
+
         if ( IS_DEBUG )
         {
             LOG.debug( "looked up names '{}' for OID '{}'", ArrayUtils.toString( names ), oid );
         }
-        
+
         return names;
     }
 
@@ -181,21 +182,21 @@ public class OidRegistry implements Iterable<SchemaObject>
         if ( schemaObject == null )
         {
             String message = "Cannot register a Null SchemaObject !";
-        
+
             LOG.debug( message );
             throw new NamingException( message );
         }
-        
+
         String oid = schemaObject.getOid();
-        
+
         if ( !OID.isOID( oid ) )
         {
             String message = "The given SchemaObject does not have a valid OID";
-            
+
             LOG.debug( message );
             throw new NamingException( message );
         }
-        
+
         /*
          * Update OID Map if it does not already exist
          */
@@ -215,8 +216,8 @@ public class OidRegistry implements Iterable<SchemaObject>
             }
         }
     }
-    
-    
+
+
     /**
      * Store the given SchemaObject into the OidRegistry. Available only to 
      * the current package. A weak form (no check is done) of the register 
@@ -224,7 +225,7 @@ public class OidRegistry implements Iterable<SchemaObject>
      *
      * @param schemaObject The SchemaObject to inject into the OidRegistry
      */
-    /* No qualifier */ void put( SchemaObject schemaObject )
+    /* No qualifier */void put( SchemaObject schemaObject )
     {
         byOid.put( schemaObject.getOid(), schemaObject );
     }
@@ -240,14 +241,14 @@ public class OidRegistry implements Iterable<SchemaObject>
     {
         // Removes the <OID, names> from the byOID map
         SchemaObject removed = byOid.remove( oid );
-        
+
         if ( IS_DEBUG )
         {
             LOG.debug( "Unregisted SchemaObject '{}' with OID: {}", removed, oid );
         }
     }
-    
-    
+
+
     /**
      * Copy the OidRegistry, without the contained values
      * 
@@ -256,41 +257,41 @@ public class OidRegistry implements Iterable<SchemaObject>
     public OidRegistry copy()
     {
         OidRegistry copy = new OidRegistry();
-        
+
         // Clone the map
-        copy.byOid = new HashMap<String,SchemaObject>();
-        
+        copy.byOid = new HashMap<String, SchemaObject>();
+
         return copy;
     }
-    
-    
+
+
     /**
      * @return The number of stored OIDs
      */
-    protected int size() 
+    protected int size()
     {
         return byOid.size();
     }
-    
-    
+
+
     public void clear()
     {
         // remove all the OID
         byOid.clear();
     }
-    
-    
+
+
     /**
      * @see Object#toString()
      */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         if ( byOid != null )
         {
             boolean isFirst = true;
-            
+
             for ( String oid : byOid.keySet() )
             {
                 if ( isFirst )
@@ -301,11 +302,11 @@ public class OidRegistry implements Iterable<SchemaObject>
                 {
                     sb.append( ", " );
                 }
-                
+
                 sb.append( "<" );
-                
+
                 SchemaObject schemaObject = byOid.get( oid );
-                
+
                 if ( schemaObject != null )
                 {
                     sb.append( schemaObject.getObjectType() );
@@ -314,11 +315,11 @@ public class OidRegistry implements Iterable<SchemaObject>
                     sb.append( ", " );
                     sb.append( schemaObject.getName() );
                 }
-                
+
                 sb.append( ">" );
             }
         }
-        
+
         return sb.toString();
     }
 }

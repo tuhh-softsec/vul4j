@@ -47,9 +47,8 @@ public interface SchemaLoader
      * 
      * @param schemaName the name of the schema to load
      * @return the Schema object associated with the name
-     * @throws Exception if any problems while trying to find the associated Schema
      */
-    Schema getSchema( String schemaName ) throws Exception;
+    Schema getSchema( String schemaName );
 
 
     /**

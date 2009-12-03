@@ -1273,15 +1273,21 @@ public class Registries implements SchemaLoaderListener, Cloneable
         setRelaxed();
 
         // Register the SchemaObject in the registries
-        add( schemaObject );
+        register( errors, schemaObject );
+
+        // Associate the SchemaObject with its schema
+        associateWithSchema( errors, schemaObject );
 
         // Build the SchemaObject references
         buildReference( errors, schemaObject );
 
-        // Check the registries now
-        List<Throwable> checkErrors = checkRefInteg();
+        if ( errors.isEmpty() )
+        {
+            // Check the registries now
+            List<Throwable> checkErrors = checkRefInteg();
 
-        errors.addAll( checkErrors );
+            errors.addAll( checkErrors );
+        }
 
         // return the errors
         return errors;
@@ -1390,23 +1396,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
 
     /**
-     * Applies the added SchemaObject to the given register. This method is common
-     * to all the addition operations (LDAP injection or schema loading).
-     */
-    public void add( SchemaObject schemaObject ) throws NamingException
-    {
-        // Register the SchemaObject in the registries
-        register( schemaObject );
-
-        // Associate the SchemaObject with its schema
-        associateWithSchema( schemaObject );
-    }
-
-
-    /**
      * Register the given SchemaObject into the associated Registry
      */
-    private void register( SchemaObject schemaObject ) throws NamingException
+    private void register( List<Throwable> errors, SchemaObject schemaObject ) throws NamingException
     {
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
@@ -1477,7 +1469,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @param schemaObject The schemaObject to register
      * @throws NamingException If there is a problem
      */
-    public void associateWithSchema( SchemaObject schemaObject ) throws NamingException
+    public void associateWithSchema( List<Throwable> errors, SchemaObject schemaObject ) //throws NamingException
     {
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
@@ -1488,7 +1480,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
             String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
                 + "failed, it's already present in the Registries";
             LOG.error( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            Throwable error = new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            errors.add( error );
+            return;
         }
 
         // Get a normalized form of schema name
@@ -1521,7 +1515,15 @@ public class Registries implements SchemaLoaderListener, Cloneable
             // an instance of LoadableSchemaObject
             if ( !( schemaObject instanceof LoadableSchemaObject ) )
             {
-                globalOidRegistry.register( schemaObject );
+                try
+                {
+                    globalOidRegistry.register( schemaObject );
+                }
+                catch ( NamingException ne )
+                {
+                    errors.add( ne );
+                    return;
+                }
             }
 
             LOG.debug( "registered {} for OID {}", schemaObject.getName(), schemaObject.getOid() );

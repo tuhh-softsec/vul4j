@@ -553,12 +553,15 @@ public interface SchemaManager
     /**
      * Registers a new SchemaObject. The registries will be updated only if it's
      * consistent after this addition, if the SchemaManager is in Strict mode.
+     * If something went wrong during this operation, the 
+     * SchemaManager.getErrors() will give the list of generated errors.
      *
      * @param schemaObject the SchemaObject to register
+     * @return true if the addition has been made, false if there were some errors
      * @throws Exception if the SchemaObject is already registered or
      * the registration operation is not supported
      */
-    void add( SchemaObject schemaObject ) throws Exception;
+    boolean add( SchemaObject schemaObject ) throws Exception;
 
 
     /**

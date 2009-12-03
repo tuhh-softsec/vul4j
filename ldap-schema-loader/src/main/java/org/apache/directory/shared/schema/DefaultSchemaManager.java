@@ -30,7 +30,6 @@ import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -647,7 +646,7 @@ public class DefaultSchemaManager implements SchemaManager
         {
             if ( registries.isDisabledAccepted() || ( schema.isEnabled() && schemaObject.isEnabled() ) )
             {
-                registries.add( schemaObject );
+                registries.add( errors, schemaObject );
 
             }
             else
@@ -659,7 +658,7 @@ public class DefaultSchemaManager implements SchemaManager
         {
             if ( schema.isEnabled() && schemaObject.isEnabled() )
             {
-                registries.add( schemaObject );
+                registries.add( errors, schemaObject );
             }
             else
             {
@@ -763,7 +762,7 @@ public class DefaultSchemaManager implements SchemaManager
         }
 
         // Build the cross references
-        List<Throwable> errors = clonedRegistries.buildReferences();
+        errors = clonedRegistries.buildReferences();
 
         if ( errors.isEmpty() )
         {
@@ -773,6 +772,7 @@ public class DefaultSchemaManager implements SchemaManager
             if ( errors.isEmpty() )
             {
                 // We are golden : let's apply the schema in the real registries
+                registries.setRelaxed();
 
                 // Load the schemas
                 for ( Schema schema : schemas )
@@ -782,6 +782,7 @@ public class DefaultSchemaManager implements SchemaManager
 
                 // Build the cross references
                 registries.buildReferences();
+                registries.setStrict();
 
                 loaded = true;
             }
@@ -1141,20 +1142,24 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Check that the given OID does not already exist in the globalOidRegistry.
      */
-    private void checkOidIsUnique( SchemaObject schemaObject ) throws NamingException
+    private boolean checkOidIsUnique( SchemaObject schemaObject )
     {
         if ( registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() ) )
         {
-            throw new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
+            Throwable error = new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
                 + " for new schema entity is not unique.", ResultCodeEnum.OTHER );
+            errors.add( error );
+            return false;
         }
+
+        return true;
     }
 
 
     /**
      * Retrieve the schema name for a specific SchemaObject, or return "other" if none is found.
      */
-    private String getSchemaName( SchemaObject schemaObject ) throws Exception
+    private String getSchemaName( SchemaObject schemaObject )
     {
         String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
 
@@ -1175,18 +1180,26 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public void add( SchemaObject schemaObject ) throws Exception
+    public boolean add( SchemaObject schemaObject ) throws Exception
     {
+        // First, clear the errors
+        errors.clear();
+
         if ( registries.isRelaxed() )
         {
             // Apply the addition right away
-            registries.add( schemaObject );
+            registries.add( errors, schemaObject );
+
+            return errors.isEmpty();
         }
         else
         {
             // Clone, apply, check, then apply again if ok
             // The new schemaObject's OID must not already exist
-            checkOidIsUnique( schemaObject );
+            if ( !checkOidIsUnique( schemaObject ) )
+            {
+                return false;
+            }
 
             // Build the new AttributeType from the given entry
             String schemaName = getSchemaName( schemaObject );
@@ -1195,7 +1208,17 @@ public class DefaultSchemaManager implements SchemaManager
             // existing Registries. It may be broken (missing SUP, or such), it will be checked
             // there, if the schema and the AttributeType are both enabled.
             Schema schema = getLoadedSchema( schemaName );
-            List<Throwable> errors = new ArrayList<Throwable>();
+
+            if ( schema == null )
+            {
+                // The SchemaObject must be associated with an existing schema
+                String msg = "Cannot inject the SchemaObject " + schemaObject.getOid()
+                    + " as it's not associated with a schema";
+                LOG.info( msg );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                errors.add( error );
+                return false;
+            }
 
             if ( schema.isEnabled() && schemaObject.isEnabled() )
             {
@@ -1215,6 +1238,8 @@ public class DefaultSchemaManager implements SchemaManager
                     registries.add( errors, schemaObject );
 
                     LOG.debug( "Added {} into the enabled schema {}", schemaObject.getName(), schemaName );
+
+                    return true;
                 }
                 else
                 {
@@ -1222,18 +1247,19 @@ public class DefaultSchemaManager implements SchemaManager
                     String msg = "Cannot add the SchemaObject " + schemaObject.getOid() + " into the registries, "
                         + "the resulting registries would be inconsistent :" + StringTools.listToString( errors );
                     LOG.info( msg );
-                    throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+
+                    return false;
                 }
             }
             else
             {
                 // At least, we register the OID in the globalOidRegistry, and associates it with the
                 // schema
-                registries.associateWithSchema( schemaObject );
+                registries.associateWithSchema( errors, schemaObject );
 
                 LOG.debug( "Added {} into the disabled schema {}", schemaObject.getName(), schemaName );
+                return errors.isEmpty();
             }
-
         }
     }
 
@@ -1270,14 +1296,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public Schema getLoadedSchema( String schemaName )
     {
-        try
-        {
-            return schemaLoader.getSchema( schemaName );
-        }
-        catch ( Exception e )
-        {
-            return null;
-        }
+        return schemaLoader.getSchema( schemaName );
     }
 
 
