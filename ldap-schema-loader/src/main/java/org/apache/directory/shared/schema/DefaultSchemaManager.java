@@ -1191,10 +1191,13 @@ public class DefaultSchemaManager implements SchemaManager
         // First, clear the errors
         errors.clear();
 
+        // Clone the schemaObject
+        SchemaObject copy = schemaObject.copy();
+
         if ( registries.isRelaxed() )
         {
             // Apply the addition right away
-            registries.add( errors, schemaObject );
+            registries.add( errors, copy );
 
             return errors.isEmpty();
         }
@@ -1202,13 +1205,13 @@ public class DefaultSchemaManager implements SchemaManager
         {
             // Clone, apply, check, then apply again if ok
             // The new schemaObject's OID must not already exist
-            if ( !checkOidIsUnique( schemaObject ) )
+            if ( !checkOidIsUnique( copy ) )
             {
                 return false;
             }
 
             // Build the new AttributeType from the given entry
-            String schemaName = getSchemaName( schemaObject );
+            String schemaName = getSchemaName( copy );
 
             // At this point, the constructed AttributeType has not been checked against the 
             // existing Registries. It may be broken (missing SUP, or such), it will be checked
@@ -1218,7 +1221,7 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schema == null )
             {
                 // The SchemaObject must be associated with an existing schema
-                String msg = "Cannot inject the SchemaObject " + schemaObject.getOid()
+                String msg = "Cannot inject the SchemaObject " + copy.getOid()
                     + " as it's not associated with a schema";
                 LOG.info( msg );
                 Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
@@ -1226,13 +1229,13 @@ public class DefaultSchemaManager implements SchemaManager
                 return false;
             }
 
-            if ( schema.isEnabled() && schemaObject.isEnabled() )
+            if ( schema.isEnabled() && copy.isEnabled() )
             {
                 // As we may break the registries, work on a cloned registries
                 Registries clonedRegistries = registries.clone();
 
                 // Inject the new SchemaObject in the cloned registries
-                clonedRegistries.add( errors, schemaObject );
+                clonedRegistries.add( errors, copy );
 
                 // Remove the cloned registries
                 clonedRegistries.clear();
@@ -1241,16 +1244,16 @@ public class DefaultSchemaManager implements SchemaManager
                 if ( errors.isEmpty() )
                 {
                     // Apply the addition to the real registries
-                    registries.add( errors, schemaObject );
+                    registries.add( errors, copy );
 
-                    LOG.debug( "Added {} into the enabled schema {}", schemaObject.getName(), schemaName );
+                    LOG.debug( "Added {} into the enabled schema {}", copy.getName(), schemaName );
 
                     return true;
                 }
                 else
                 {
                     // We have some error : reject the addition and get out
-                    String msg = "Cannot add the SchemaObject " + schemaObject.getOid() + " into the registries, "
+                    String msg = "Cannot add the SchemaObject " + copy.getOid() + " into the registries, "
                         + "the resulting registries would be inconsistent :" + StringTools.listToString( errors );
                     LOG.info( msg );
 
@@ -1261,9 +1264,9 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 // At least, we register the OID in the globalOidRegistry, and associates it with the
                 // schema
-                registries.associateWithSchema( errors, schemaObject );
+                registries.associateWithSchema( errors, copy );
 
-                LOG.debug( "Added {} into the disabled schema {}", schemaObject.getName(), schemaName );
+                LOG.debug( "Added {} into the disabled schema {}", copy.getName(), schemaName );
                 return errors.isEmpty();
             }
         }
