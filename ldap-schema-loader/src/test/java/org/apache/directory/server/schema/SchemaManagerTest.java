@@ -129,6 +129,11 @@ public class SchemaManagerTest
 
 
     //=========================================================================
+    // For each test, we will check many different things.
+    // If the test is successful, we want to know if the SchemaObject
+    // Registry has grown : its size must be one bigger. If the SchemaObject
+    // is not loadable, then the GlobalOidRegistry must also have grwon.
+    //=========================================================================
     // AttributeType addition tests
     //-------------------------------------------------------------------------
     // First, not defined superior
@@ -140,6 +145,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupNoSyntaxNoSuperior() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -156,6 +163,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -166,6 +175,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupCollectiveUser() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -179,6 +190,8 @@ public class SchemaManagerTest
         assertTrue( schemaManager.add( attributeType ) );
 
         assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -189,6 +202,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupCollectiveOperational() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -208,6 +223,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -218,6 +235,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupNoUserModificationUserAplication() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -237,6 +256,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -247,6 +268,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupNoUserModificationOpAttr() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -260,6 +283,8 @@ public class SchemaManagerTest
         assertTrue( schemaManager.add( attributeType ) );
 
         assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -270,6 +295,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupInvalidEqualityMR() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "0.0" );
@@ -288,6 +315,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -298,6 +327,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupInvalidOrderingMR() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -316,6 +347,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -326,6 +359,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupInvalidSubstringMR() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -344,6 +379,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -354,6 +391,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeNoSupValidMR() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -366,6 +405,8 @@ public class SchemaManagerTest
         assertTrue( schemaManager.add( attributeType ) );
 
         assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -376,6 +417,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeAlreadyExist() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "2.5.18.4" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -397,6 +440,8 @@ public class SchemaManagerTest
         // Check that it hasen't changed
         AttributeType original = schemaManager.lookupAttributeTypeRegistry( "2.5.18.4" );
         assertEquals( "distinguishedNameMatch", original.getEqualityOid() );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -411,6 +456,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeSupNoSyntaxNoSuperior() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -426,6 +473,8 @@ public class SchemaManagerTest
 
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.12", result.getSyntaxOid() );
         assertEquals( "2.5.13.1", result.getEqualityOid() );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -436,6 +485,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeSupDifferentUsage() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -454,6 +505,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -464,6 +517,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeSupWithOwnSup() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -482,6 +537,8 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -492,6 +549,8 @@ public class SchemaManagerTest
     public void testAddAttributeTypeSupBadSup() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -510,5 +569,7 @@ public class SchemaManagerTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 }

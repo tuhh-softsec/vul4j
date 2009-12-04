@@ -268,7 +268,7 @@ public class OidRegistry implements Iterable<SchemaObject>
     /**
      * @return The number of stored OIDs
      */
-    protected int size()
+    public int size()
     {
         return byOid.size();
     }
