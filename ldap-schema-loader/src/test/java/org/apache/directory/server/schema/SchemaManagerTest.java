@@ -22,12 +22,14 @@ package org.apache.directory.server.schema;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import javax.naming.NamingException;
+import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.server.schema.loader.ldif.LdifSchemaLoaderTest;
@@ -107,6 +109,25 @@ public class SchemaManagerTest
     }
 
 
+    private boolean isATPresent( SchemaManager schemaManager, String oid )
+    {
+        try
+        {
+            AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
+
+            return attributeType != null;
+        }
+        catch ( NoSuchAttributeException nsae )
+        {
+            return false;
+        }
+        catch ( NamingException ne )
+        {
+            return false;
+        }
+    }
+
+
     //=========================================================================
     // AttributeType addition tests
     //-------------------------------------------------------------------------
@@ -133,6 +154,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -155,7 +178,7 @@ public class SchemaManagerTest
         // It should not fail
         assertTrue( schemaManager.add( attributeType ) );
 
-        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "1.1.0" ) );
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -183,6 +206,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -210,6 +235,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -232,7 +259,7 @@ public class SchemaManagerTest
         // It should not fail
         assertTrue( schemaManager.add( attributeType ) );
 
-        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "1.1.0" ) );
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -259,6 +286,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -285,6 +314,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -311,6 +342,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -332,7 +365,38 @@ public class SchemaManagerTest
         // It should not fail
         assertTrue( schemaManager.add( attributeType ) );
 
-        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "1.1.0" ) );
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+    }
+
+
+    /**
+     * Try to inject an AttributeType which already exist
+     */
+    @Test
+    public void testAddAttributeTypeAlreadyExist() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+
+        AttributeType attributeType = new AttributeType( "2.5.18.4" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( "2.5.13.1" );
+        attributeType.setSubstringOid( "2.5.13.1" );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        // The AT must be there
+        assertTrue( isATPresent( schemaManager, "2.5.18.4" ) );
+
+        // Check that it hasen't changed
+        AttributeType original = schemaManager.lookupAttributeTypeRegistry( "2.5.18.4" );
+        assertEquals( "distinguishedNameMatch", original.getEqualityOid() );
     }
 
 
@@ -388,6 +452,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -414,6 +480,8 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 
 
@@ -440,5 +508,7 @@ public class SchemaManagerTest
         Throwable error = errors.get( 0 );
 
         assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
     }
 }

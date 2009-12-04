@@ -2325,6 +2325,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // Now, check the registries. We don't care about errors
         clone.checkRefInteg();
 
+        clone.schemaObjects = new HashMap<String, Set<SchemaObjectWrapper>>();
+
+        // Last, not least, clone the SchemaObjects Map. It will be empty
+        for ( String schemaName : schemaObjects.keySet() )
+        {
+            Set<SchemaObjectWrapper> objects = new HashSet<SchemaObjectWrapper>();
+
+            clone.schemaObjects.put( schemaName, objects );
+        }
+
         return clone;
     }
 
