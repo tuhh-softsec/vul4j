@@ -822,6 +822,12 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private final void loadDepsFirst( Registries registries, Schema schema ) throws Exception
     {
+        if ( schema == null )
+        {
+            LOG.info( "The schema is null" );
+            return;
+        }
+
         if ( schema.isDisabled() && !registries.isDisabledAccepted() )
         {
             LOG.info( "The schema is disabled and the registries does not accepted disabled schema" );
