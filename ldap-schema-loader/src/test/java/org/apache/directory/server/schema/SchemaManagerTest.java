@@ -32,16 +32,13 @@ import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.server.schema.loader.ldif.LdifSchemaLoaderTest;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
-import org.apache.directory.shared.schema.loader.ldif.JarLdifSchemaLoader;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
-import org.apache.directory.shared.schema.loader.ldif.SchemaEntityFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,12 +55,15 @@ public class SchemaManagerTest
     // A directory in which the ldif files will be stored
     private static String workingDirectory;
 
+    // The schema repository
+    private static File schemaRepository;
+
+
     // A LDIF loader
-    private static LdifSchemaLoader ldifLoader;
+    //private static LdifSchemaLoader ldifLoader;
 
     // A SchemaObject factory
-    private static SchemaEntityFactory factory;
-
+    //private static SchemaEntityFactory factory;
 
     @BeforeClass
     public static void setup() throws Exception
@@ -72,19 +72,18 @@ public class SchemaManagerTest
 
         if ( workingDirectory == null )
         {
-            String path = LdifSchemaLoaderTest.class.getResource( "" ).getPath();
+            String path = SchemaManagerTest.class.getResource( "" ).getPath();
             int targetPos = path.indexOf( "target" );
             workingDirectory = path.substring( 0, targetPos + 6 );
         }
 
+        schemaRepository = new File( workingDirectory, "schema" );
+
         // Cleanup the target directory
-        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+        FileUtils.deleteDirectory( schemaRepository );
 
         SchemaLdifExtractor extractor = new SchemaLdifExtractor( new File( workingDirectory ) );
         extractor.extractOrCopy();
-
-        ldifLoader = new LdifSchemaLoader( new File( workingDirectory, "schema" ) );
-        factory = new SchemaEntityFactory();
     }
 
 
@@ -92,13 +91,13 @@ public class SchemaManagerTest
     public static void cleanup() throws IOException
     {
         // Cleanup the target directory
-        FileUtils.deleteDirectory( new File( workingDirectory + "/schema" ) );
+        FileUtils.deleteDirectory( schemaRepository );
     }
 
 
     private SchemaManager loadSystem() throws Exception
     {
-        JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
+        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
         SchemaManager schemaManager = new DefaultSchemaManager( loader );
 
         String schemaName = "system";
