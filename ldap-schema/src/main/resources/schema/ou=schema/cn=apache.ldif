@@ -6,4 +6,5 @@ entrycsn: 20090818052725.807000Z#000000#000#000000
 objectclass: metaSchema
 objectclass: top
 m-dependencies: system
+m-dependencies: core
 creatorsname: uid=admin,ou=system
