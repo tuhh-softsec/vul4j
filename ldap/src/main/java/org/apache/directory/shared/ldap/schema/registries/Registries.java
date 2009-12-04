@@ -415,7 +415,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public Schema getLoadedSchema( String schemaName )
     {
-        return loadedSchemas.get( schemaName );
+        return loadedSchemas.get( StringTools.toLowerCase( schemaName ) );
     }
 
 
@@ -427,7 +427,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public boolean isSchemaLoaded( String schemaName )
     {
-        return loadedSchemas.containsKey( schemaName );
+        return loadedSchemas.containsKey( StringTools.toLowerCase( schemaName ) );
     }
 
 
@@ -1302,7 +1302,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public void schemaLoaded( Schema schema )
     {
-        this.loadedSchemas.put( schema.getSchemaName(), schema );
+        this.loadedSchemas.put( StringTools.toLowerCase( schema.getSchemaName() ), schema );
     }
 
 
@@ -1314,7 +1314,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public void schemaUnloaded( Schema schema )
     {
-        this.loadedSchemas.remove( schema.getSchemaName() );
+        this.loadedSchemas.remove( StringTools.toLowerCase( schema.getSchemaName() ) );
     }
 
 
