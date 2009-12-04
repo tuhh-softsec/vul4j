@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
 import org.apache.directory.shared.ldap.exception.LdapNamingException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.NumericOidSyntaxChecker;
 
 
@@ -47,14 +47,14 @@ public class NameOrNumericIdNormalizer extends Normalizer
     public static final long serialVersionUID = 1L;
 
     private NumericOidSyntaxChecker checker = new NumericOidSyntaxChecker();
-    
-    /** The global registries */
-    private Registries registries;
-    
+
+    /** A reference to the schema manager used to normalize the Name */
+    private SchemaManager schemaManager;
+
     /** A static instance of this normalizer */
     public static final NameOrNumericIdNormalizer INSTANCE = new NameOrNumericIdNormalizer();
-    
-    
+
+
     /**
      * Creates a new instance of GeneralizedTimeNormalizer.
      */
@@ -62,15 +62,8 @@ public class NameOrNumericIdNormalizer extends Normalizer
     {
         super( SchemaConstants.NAME_OR_NUMERIC_ID_MATCH_OID );
     }
-    
-    
-    public NameOrNumericIdNormalizer( Registries registries )
-    {
-        super(  SchemaConstants.NAME_OR_NUMERIC_ID_MATCH_OID  );
-        this.registries = registries;
-    }
-    
-    
+
+
     /**
      * {@inheritDoc} 
      */
@@ -80,34 +73,34 @@ public class NameOrNumericIdNormalizer extends Normalizer
         {
             return null;
         }
-        
+
         String strValue = value.getString();
 
         if ( strValue.length() == 0 )
         {
             return new ClientStringValue( "" );
         }
-        
+
         // if value is a numeric id then return it as is
         if ( checker.isValidSyntax( strValue ) )
         {
             return value;
         }
-        
+
         // if it is a name we need to do a lookup
-        String oid = registries.getOid( strValue );
-        
+        String oid = schemaManager.getRegistries().getOid( strValue );
+
         if ( oid != null )
         {
             return new ClientStringValue( oid );
         }
-        
+
         // if all else fails
-        throw new LdapNamingException( "Encountered name based id of " + value 
-            + " which was not found in the OID registry" , ResultCodeEnum.OTHER );
+        throw new LdapNamingException( "Encountered name based id of " + value
+            + " which was not found in the OID registry", ResultCodeEnum.OTHER );
     }
-    
-    
+
+
     /**
      * {@inheritDoc} 
      */
@@ -117,37 +110,37 @@ public class NameOrNumericIdNormalizer extends Normalizer
         {
             return null;
         }
-        
+
         if ( value.length() == 0 )
         {
             return value;
         }
-        
+
         // if value is a numeric id then return it as is
         if ( checker.isValidSyntax( value ) )
         {
             return value;
         }
-        
+
         // if it is a name we need to do a lookup
-        String oid = registries.getOid( value );
-        
-        if ( oid != null  )
+        String oid = schemaManager.getRegistries().getOid( value );
+
+        if ( oid != null )
         {
             return oid;
         }
-        
+
         // if all else fails
-        throw new LdapNamingException( "Encountered name based id of " + value 
-            + " which was not found in the OID registry" , ResultCodeEnum.OTHER );
+        throw new LdapNamingException( "Encountered name based id of " + value
+            + " which was not found in the OID registry", ResultCodeEnum.OTHER );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( Registries registries )
+    public void setSchemaManager( SchemaManager schemaManager )
     {
-        this.registries = registries;
+        this.schemaManager = schemaManager;
     }
 }
