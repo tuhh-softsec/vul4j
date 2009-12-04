@@ -751,6 +751,12 @@ public class DefaultSchemaManager implements SchemaManager
     {
         boolean loaded = false;
 
+        // Reset the errors if not null
+        if ( errors != null )
+        {
+            errors.clear();
+        }
+
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
         clonedRegistries.setRelaxed();
@@ -781,7 +787,7 @@ public class DefaultSchemaManager implements SchemaManager
                 }
 
                 // Build the cross references
-                registries.buildReferences();
+                errors = registries.buildReferences();
                 registries.setStrict();
 
                 loaded = true;
