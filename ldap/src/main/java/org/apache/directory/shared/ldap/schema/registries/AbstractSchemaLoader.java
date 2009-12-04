@@ -97,7 +97,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public Schema getSchema( String schemaName )
     {
-        return this.schemaMap.get( schemaName );
+        return this.schemaMap.get( StringTools.toLowerCase( schemaName ) );
     }
 
 
