@@ -22,8 +22,6 @@ package org.apache.directory.server.schema;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -52,7 +50,7 @@ import org.junit.Test;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SchemaManagerTest
+public class SchemaManagerAddTest
 {
     // A directory in which the ldif files will be stored
     private static String workingDirectory;
@@ -61,12 +59,6 @@ public class SchemaManagerTest
     private static File schemaRepository;
 
 
-    // A LDIF loader
-    //private static LdifSchemaLoader ldifLoader;
-
-    // A SchemaObject factory
-    //private static SchemaEntityFactory factory;
-
     @BeforeClass
     public static void setup() throws Exception
     {
@@ -74,7 +66,7 @@ public class SchemaManagerTest
 
         if ( workingDirectory == null )
         {
-            String path = SchemaManagerTest.class.getResource( "" ).getPath();
+            String path = SchemaManagerAddTest.class.getResource( "" ).getPath();
             int targetPos = path.indexOf( "target" );
             workingDirectory = path.substring( 0, targetPos + 6 );
         }
@@ -574,428 +566,54 @@ public class SchemaManagerTest
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
-
+    //=========================================================================
+    // Comparator addition tests
     //-------------------------------------------------------------------------
-    // Test the load( String... schemaName) method
+    // TODO
+
+    //=========================================================================
+    // DITContentRule addition tests
     //-------------------------------------------------------------------------
-    /**
-     * test loading the "system" schema 
-     */
-    @Test
-    public void testLoadSystem() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+    // TODO
+
+    //=========================================================================
+    // DITStructureRule addition tests
+    //-------------------------------------------------------------------------
+    // TODO
+
+    //=========================================================================
+    // MatchingRule addition tests
+    //-------------------------------------------------------------------------
+    // TODO
+
+    //=========================================================================
+    // MatchingRuleUse addition tests
+    //-------------------------------------------------------------------------
+    // TODO
+
+    //=========================================================================
+    // NameForm addition tests
+    //-------------------------------------------------------------------------
+    // TODO
+
+    //=========================================================================
+    // Normalizer addition tests
+    //-------------------------------------------------------------------------
+    // TODO
+
+    //=========================================================================
+    // ObjectClass addition tests
+    //-------------------------------------------------------------------------
+    // TODO
+
+    //=========================================================================
+    // Syntax addition tests
+    //-------------------------------------------------------------------------
+    // TODO
+
+    //=========================================================================
+    // SyntaxChecker addition tests
+    //-------------------------------------------------------------------------
+    // TODO
 
-        schemaManager.loadWithDeps( "system" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 38, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 9, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 141, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 1, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-    }
-
-
-    /**
-     * test loading the "core" schema, which depends on "system"
-     */
-    @Test
-    public void testLoadCore() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "core" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 92, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 36, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 222, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 2, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-    }
-
-
-    /**
-     * test loading the "apache" schema, which depends on "system" and "core"
-     */
-    @Test
-    public void testLoadApache() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "apache" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 145, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 43, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 43, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 43, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 53, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 62, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 66, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 307, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "apache" ) );
-    }
-
-
-    /**
-     * test loading the "apacheMeta" schema, which depends on "system"
-     */
-    @Test
-    public void testLoadApacheMeta() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "apacheMeta" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 69, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 40, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 40, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 42, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 22, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 63, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 64, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 195, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 2, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "apachemeta" ) );
-    }
-
-
-    /**
-     * test loading the "java" schema, which depends on "system" and "core"
-     */
-    @Test
-    public void testLoadJava() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "Java" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 99, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 41, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 234, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "Java" ) );
-    }
-
-
-    /**
-     * test loading the "other" schema, which depends on "system", "core",
-     * "apache" and "apacheMeta"
-     */
-    @Test
-    public void testLoadOther() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "other" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 176, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 48, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 66, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 361, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 5, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "apache" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "apacheMeta" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "other" ) );
-    }
-
-
-    /**
-     * test loading the "cosine" schema, which depends on "system" and "core"
-     */
-    @Test
-    public void testLoadCosine() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "cosine" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 133, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 49, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 276, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
-    }
-
-
-    /**
-     * test loading the "InetOrgPerson" schema, which depends on "system", "core"
-     * and "cosine"
-     */
-    @Test
-    public void testLoadInetOrgPerson() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "InetOrgPerson" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 142, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
-    }
-
-
-    /**
-     * test loading the "Collective" schema, which depends on "system" and "core"
-     */
-    @Test
-    public void testLoadCollective() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "Collective" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 105, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 36, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 235, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "collective" ) );
-    }
-
-
-    /**
-     * test loading the "Krb5Kdc" schema, which depends on "system" and "core"
-     */
-    @Test
-    public void testLoadKrb5Kdc() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "Krb5Kdc" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 107, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 39, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 240, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "Krb5Kdc" ) );
-    }
-
-
-    /**
-     * test loading the "nis" schema, which depends on "system", "core" and "cosine",
-     * but is disabled
-     */
-    @Test
-    public void testLoadNis() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "nis" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 0, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 0, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 0, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 0, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 0, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 0, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 0, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 0, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 0, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
-    }
-
-
-    /**
-     * Test loading a wrong schema
-     */
-    @Test
-    public void testLoadWrongSchema() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "bad" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 0, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 0, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 0, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 0, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 0, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 0, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 0, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 0, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 0, schemaManager.getRegistries().getLoadedSchemas().size() );
-    }
-
-
-    /**
-     * test loading the "InetOrgPerson" and "core" schema, which depends on "system" and "cosine"
-     */
-    @Test
-    public void testLoadCoreAndInetOrgPerson() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "core", "InetOrgPerson" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 142, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
-    }
-
-
-    /**
-     * test loading the "InetOrgPerson", "core" and a bad schema
-     */
-    @Test
-    public void testLoadCoreInetOrgPersonAndBad() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "core", "bad", "InetOrgPerson" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 142, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
-    }
-
-
-    /**
-     * test loading the "InetOrgPerson", "core" and a disabled schema
-     */
-    @Test
-    public void testLoadCoreInetOrgPersonAndNis() throws Exception
-    {
-        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
-        SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        schemaManager.loadWithDeps( "core", "nis", "InetOrgPerson" );
-
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 142, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
-        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
-
-        assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
-    }
 }
