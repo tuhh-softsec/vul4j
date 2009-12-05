@@ -388,6 +388,12 @@ public class DefaultSchemaManager implements SchemaManager
     {
         boolean loaded = false;
 
+        // Reset the errors if not null
+        if ( errors != null )
+        {
+            errors.clear();
+        }
+
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
         clonedRegistries.setRelaxed();
@@ -399,7 +405,7 @@ public class DefaultSchemaManager implements SchemaManager
         }
 
         // Build the cross references
-        List<Throwable> errors = clonedRegistries.buildReferences();
+        errors = clonedRegistries.buildReferences();
 
         if ( errors.isEmpty() )
         {
@@ -409,6 +415,7 @@ public class DefaultSchemaManager implements SchemaManager
             if ( errors.isEmpty() )
             {
                 // We are golden : let's apply the schema in the real registries
+                registries.setRelaxed();
 
                 // Load the schemas
                 for ( Schema schema : schemas )
@@ -417,7 +424,8 @@ public class DefaultSchemaManager implements SchemaManager
                 }
 
                 // Build the cross references
-                registries.buildReferences();
+                errors = registries.buildReferences();
+                registries.setStrict();
 
                 loaded = true;
             }
@@ -451,6 +459,12 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private boolean load( Registries registries, Schema schema ) throws Exception
     {
+        if ( schema == null )
+        {
+            LOG.info( "The schema is null" );
+            return false;
+        }
+
         // First avoid loading twice the same schema
         if ( registries.isSchemaLoaded( schema.getSchemaName() ) )
         {
