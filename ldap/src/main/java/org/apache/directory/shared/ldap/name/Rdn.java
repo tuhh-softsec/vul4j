@@ -24,6 +24,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import java.util.TreeSet;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 
+import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.entry.client.ClientStringValue;
@@ -150,7 +152,7 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
      */
     @SuppressWarnings(
         { "unchecked" })
-    private Map<String, AttributeTypeAndValue> atavTypes = new MultiValueMap();
+    private MultiMap atavTypes = new MultiValueMap();
 
     /**
      * We keep the type for a single valued RDN, to avoid the creation of an HashMap
@@ -547,38 +549,25 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
             default:
                 if ( atavTypes.containsKey( normalizedType ) )
                 {
-                    Object obj = atavTypes.get( normalizedType );
+                    Collection<AttributeTypeAndValue> atavList = ( Collection<AttributeTypeAndValue> ) atavTypes.get( normalizedType );
+                    StringBuffer sb = new StringBuffer();
+                    boolean isFirst = true;
 
-                    if ( obj instanceof AttributeTypeAndValue )
+                    for ( AttributeTypeAndValue elem : atavList )
                     {
-                        return ( ( AttributeTypeAndValue ) obj ).getNormValue();
-                    }
-                    else if ( obj instanceof List )
-                    {
-                        StringBuffer sb = new StringBuffer();
-                        boolean isFirst = true;
-                        List<AttributeTypeAndValue> atavList = ( ( List<AttributeTypeAndValue> ) obj );
-
-                        for ( AttributeTypeAndValue elem : atavList )
+                        if ( isFirst )
                         {
-                            if ( isFirst )
-                            {
-                                isFirst = false;
-                            }
-                            else
-                            {
-                                sb.append( ',' );
-                            }
-
-                            sb.append( elem.getNormValue() );
+                            isFirst = false;
+                        }
+                        else
+                        {
+                            sb.append( ',' );
                         }
 
-                        return sb.toString();
+                        sb.append( elem.getNormValue() );
                     }
-                    else
-                    {
-                        throw new InvalidNameException( "Bad object stored in the RDN" );
-                    }
+
+                    return sb.toString();
                 }
 
                 return "";
@@ -638,7 +627,8 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
             default:
                 if ( atavTypes.containsKey( normalizedType ) )
                 {
-                    return atavTypes.get( normalizedType );
+                    Collection<AttributeTypeAndValue> atavList = ( Collection<AttributeTypeAndValue> ) atavTypes.get( normalizedType );
+                    return atavList.iterator().next();
                 }
 
                 return null;
