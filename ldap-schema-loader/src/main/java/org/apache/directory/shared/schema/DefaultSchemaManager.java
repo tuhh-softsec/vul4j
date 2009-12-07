@@ -23,6 +23,7 @@ package org.apache.directory.shared.schema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.NamingException;
 
@@ -42,6 +43,7 @@ import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
+import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
@@ -1318,6 +1320,21 @@ public class DefaultSchemaManager implements SchemaManager
 
             // Build the new AttributeType from the given entry
             SchemaObject toDelete = registries.getGlobalOidRegistry().getSchemaObject( schemaObject.getOid() );
+
+            // First check that this SchemaObject does not have any referencing SchemaObjects
+            Set<SchemaObjectWrapper> referencing = registries.getReferencing( toDelete );
+
+            if ( ( referencing != null ) && !referencing.isEmpty() )
+            {
+                String msg = "Cannot remove  " + schemaObject.getOid()
+                    + " for the registries, it would become inconsistent. The following SchemaOjects are "
+                    + "referencing this SchemaObject : " + StringTools.setToString( referencing );
+
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                errors.add( error );
+                return false;
+            }
+
             String schemaName = getSchemaName( toDelete );
 
             // At this point, the deleted AttributeType may be referenced, it will be checked

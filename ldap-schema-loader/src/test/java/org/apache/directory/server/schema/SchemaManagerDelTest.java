@@ -87,12 +87,10 @@ public class SchemaManagerDelTest
     }
 
 
-    private SchemaManager loadCore() throws Exception
+    private SchemaManager loadSchema( String schemaName ) throws Exception
     {
         LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
         SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
-        String schemaName = "core";
 
         schemaManager.loadWithDeps( schemaName );
 
@@ -135,7 +133,7 @@ public class SchemaManagerDelTest
     @Test
     public void testDelNonExistentAttributeType() throws Exception
     {
-        SchemaManager schemaManager = loadCore();
+        SchemaManager schemaManager = loadSchema( "Core" );
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
@@ -162,7 +160,7 @@ public class SchemaManagerDelTest
     public void testDelExistingAttributeTypeNoReference() throws Exception
     {
         // First inject such an AT
-        SchemaManager schemaManager = loadCore();
+        SchemaManager schemaManager = loadSchema( "Core" );
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
@@ -184,7 +182,7 @@ public class SchemaManagerDelTest
     @Test
     public void testDelExistingAttributeTypeReferencedByOC() throws Exception
     {
-        SchemaManager schemaManager = loadCore();
+        SchemaManager schemaManager = loadSchema( "Core" );
 
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
@@ -208,7 +206,7 @@ public class SchemaManagerDelTest
     @Test
     public void testDelAttributeTypeFromDisabledSchema() throws Exception
     {
-        SchemaManager schemaManager = loadCore();
+        SchemaManager schemaManager = loadSchema( "Core" );
 
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
@@ -232,7 +230,7 @@ public class SchemaManagerDelTest
     @Test
     public void testDelExistingAttributeTypeReferencedByDescendant() throws Exception
     {
-        SchemaManager schemaManager = loadCore();
+        SchemaManager schemaManager = loadSchema( "Apache" );
 
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
@@ -242,7 +240,7 @@ public class SchemaManagerDelTest
         AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( "modifiersName" );
 
         // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
+        assertFalse( schemaManager.delete( attributeType ) );
 
         assertTrue( isATPresent( schemaManager, "modifiersName" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );

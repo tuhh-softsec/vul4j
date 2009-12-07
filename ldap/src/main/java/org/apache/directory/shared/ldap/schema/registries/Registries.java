@@ -2605,6 +2605,21 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
 
     /**
+     * Check that we can remove a given SchemaObject without breaking some of its references.
+     * We will return the list of refereing objects.
+     *
+     * @param schemaObject The SchemaObject to remove
+     * @return The list of SchemaObjects referencing the SchemaObjetc we want to remove
+     */
+    public Set<SchemaObjectWrapper> getReferencing( SchemaObject schemaObject )
+    {
+        SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
+
+        return usedBy.get( schemaObjectWrapper );
+    }
+
+
+    /**
      * Change the Registries behavior regarding disabled SchemaObject element.
      *
      * @param acceptDisabled If <code>false</code>, then the Registries won't accept
