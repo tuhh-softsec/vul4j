@@ -103,6 +103,23 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
 
     protected Schema getSchema( Entry entry ) throws Exception
     {
+        EntryAttribute objectClasses = entry.get( SchemaConstants.OBJECT_CLASS_AT );
+        boolean isSchema = false;
+
+        for ( Value<?> value : objectClasses )
+        {
+            if ( MetaSchemaConstants.META_SCHEMA_OC.equalsIgnoreCase( value.getString() ) )
+            {
+                isSchema = true;
+                break;
+            }
+        }
+
+        if ( !isSchema )
+        {
+            return null;
+        }
+
         String name;
         String owner;
         String[] dependencies = StringTools.EMPTY_STRINGS;
