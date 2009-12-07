@@ -29,6 +29,7 @@ package org.apache.directory.shared.ldap.constants;
 public interface MetaSchemaConstants
 {
     String SCHEMA_NAME = "apachemeta";
+    String SCHEMA_OTHER = "other";
 
     // -- objectClass names --
     
@@ -171,6 +172,4 @@ public interface MetaSchemaConstants
     String X_IS_HUMAN_READABLE              = "X-IS-HUMAN-READABLE";
     String X_READ_ONLY                      = "X-READ-ONLY";
     String X_ENABLED                        = "X-ENABLED";
-    
-    String SCHEMA_OTHER = "other";
 }
