@@ -31,6 +31,8 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
+import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
@@ -509,6 +511,41 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 286, schemaManager.getOidRegistry().size() );
 
         assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
+    }
+
+
+    /**
+     * test loading the "InetOrgPerson", "core" and a disabled schema
+     */
+    @Test
+    public void testLoadWithDepsCoreInetOrgPersonAndNis() throws Exception
+    {
+        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+
+        Schema system = loader.getSchema( "system" );
+        Schema core = loader.getSchema( "core" );
+        Schema empty = new DefaultSchema( "empty" );
+        Schema cosine = loader.getSchema( "cosine" );
+        Schema inetOrgPerson = loader.getSchema( "InetOrgPerson" );
+
+        assertTrue( schemaManager.load( system, core, empty, cosine, inetOrgPerson ) );
+
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 142, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 35, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 286, schemaManager.getOidRegistry().size() );
+
+        assertEquals( 5, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
