@@ -88,32 +88,32 @@ import org.slf4j.LoggerFactory;
 public class DefaultSchemaManager implements SchemaManager
 {
     /** static class logger */
-    private static final Logger LOG = LoggerFactory.getLogger( DefaultSchemaManager.class );
+    private static final Logger   LOG       = LoggerFactory.getLogger( DefaultSchemaManager.class );
 
     /** The NamingContext this SchemaManager is associated with */
-    private LdapDN namingContext;
+    private LdapDN                namingContext;
 
     /** The global registries for this namingContext */
-    private volatile Registries registries;
+    private volatile Registries   registries;
 
     /** The list of errors produced when loading some schema elements */
-    private List<Throwable> errors;
+    private List<Throwable>       errors;
 
     /** The Schema schemaLoader used by this SchemaManager */
-    private SchemaLoader schemaLoader;
+    private SchemaLoader          schemaLoader;
 
     /** the factory that generates respective SchemaObjects from LDIF entries */
     protected final EntityFactory factory;
 
     /** the normalized name for the schema modification attributes */
-    private LdapDN schemaModificationAttributesDN;
+    private LdapDN                schemaModificationAttributesDN;
 
     /** A flag indicating that the SchemaManager is relaxed or not */
-    private boolean isRelaxed = STRICT;
+    private boolean               isRelaxed = STRICT;
 
     /** Two flags for RELAXED and STRUCT */
-    public static final boolean STRICT = false;
-    public static final boolean RELAXED = true;
+    public static final boolean   STRICT    = false;
+    public static final boolean   RELAXED   = true;
 
 
     /**
@@ -312,8 +312,17 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public boolean enable( Schema... schemas ) throws Exception
     {
+        boolean enabled = false;
+
+        // Reset the errors if not null
+        if ( errors != null )
+        {
+            errors.clear();
+        }
+
         // Work on a cloned and relaxed registries
         Registries clonedRegistries = cloneRegistries();
+        clonedRegistries.setRelaxed();
 
         for ( Schema schema : schemas )
         {
@@ -321,27 +330,38 @@ public class DefaultSchemaManager implements SchemaManager
             load( clonedRegistries, schema );
         }
 
-        List<Throwable> errors = clonedRegistries.checkRefInteg();
+        // Build the cross references
+        errors = clonedRegistries.buildReferences();
 
         // Destroy the clonedRegistry
         clonedRegistries.clear();
 
         if ( errors.isEmpty() )
         {
-            // No error, inject the schema in the current registries 
-            for ( Schema schema : schemas )
-            {
-                schema.enable();
-                load( registries, schema );
-            }
+            // Ok no errors. Check the registries now
+            errors = clonedRegistries.checkRefInteg();
 
-            errors = registries.checkRefInteg();
+            if ( errors.isEmpty() )
+            {
+                // We are golden : let's apply the schemas in the real registries
+                for ( Schema schema : schemas )
+                {
+                    schema.enable();
+                    load( registries, schema );
+                }
+
+                // Build the cross references
+                errors = registries.buildReferences();
+                registries.setStrict();
+
+                enabled = true;
+            }
         }
 
-        return errors.isEmpty();
+        // clear the cloned registries
+        clonedRegistries.clear();
 
-        // Swap the registries if it is consistent
-        //return swapRegistries( clonedRegistries );
+        return enabled;
     }
 
 
@@ -701,7 +721,6 @@ public class DefaultSchemaManager implements SchemaManager
             if ( registries.isDisabledAccepted() || ( schema.isEnabled() && schemaObject.isEnabled() ) )
             {
                 registries.add( errors, schemaObject );
-
             }
             else
             {
@@ -1617,5 +1636,45 @@ public class DefaultSchemaManager implements SchemaManager
     public void setStrict()
     {
         isRelaxed = STRICT;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDisabled( String schemaName )
+    {
+        Schema schema = registries.getLoadedSchema( schemaName );
+
+        return ( schema != null ) && schema.isDisabled();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDisabled( Schema schema )
+    {
+        return ( schema != null ) && schema.isDisabled();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEnabled( String schemaName )
+    {
+        Schema schema = registries.getLoadedSchema( schemaName );
+
+        return ( schema != null ) && schema.isEnabled();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEnabled( Schema schema )
+    {
+        return ( schema != null ) && schema.isEnabled();
     }
 }

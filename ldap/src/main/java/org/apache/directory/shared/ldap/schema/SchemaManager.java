@@ -310,6 +310,24 @@ public interface SchemaManager
 
 
     /**
+     * Tells if the given Schema is enabled
+     *
+     * @param schemaName The schema name
+     * @return true if the schema is enabled
+     */
+    boolean isEnabled( String schemaName );
+
+
+    /**
+     * Tells if the given Schema is enabled
+     *
+     * @param schema The schema
+     * @return true if the schema is enabled
+     */
+    boolean isEnabled( Schema schema );
+
+
+    /**
      * Disables a set of Schemas, and returns true if all the schema have been
      * disabled, with all the dependent schemas, and if the registries is 
      * still consistent.
@@ -365,6 +383,24 @@ public interface SchemaManager
      * @return the list of all the disabled schema
      */
     List<Schema> getDisabled();
+
+
+    /**
+     * Tells if the given Schema is disabled
+     *
+     * @param schemaName The schema name
+     * @return true if the schema is disabled
+     */
+    boolean isDisabled( String schemaName );
+
+
+    /**
+     * Tells if the given Schema is disabled
+     *
+     * @param schema The schema
+     * @return true if the schema is disabled
+     */
+    boolean isDisabled( Schema schema );
 
 
     /**

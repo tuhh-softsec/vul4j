@@ -21,6 +21,8 @@ package org.apache.directory.server.schema;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -52,21 +54,22 @@ public class SchemaManagerEnableDisableLoadTest
     private static String workingDirectory;
 
     // The schema repository
-    private static File schemaRepository;
+    private static File   schemaRepository;
 
     // The schemaManager
     private SchemaManager schemaManager;
 
     // List of all the available schemas, enabled or disabled
-    private List<String> allSchemas = Arrays.asList( "system", "core", "cosine", "inetorgperson", "apache",
-        "apachemeta", "collective", "java", "krb5kdc", "other", "nis", "autofs", "apachedns", "dhcp", "samba", "corba" );
+    private List<String>  allSchemas      = Arrays.asList( "system", "core", "cosine", "inetorgperson", "apache",
+                                              "apachemeta", "collective", "java", "krb5kdc", "other", "nis", "autofs",
+                                              "apachedns", "dhcp", "samba", "corba" );
 
     // List of all the enabled schemas
-    private List<String> enabledSchemas = Arrays.asList( "system", "core", "cosine", "inetorgperson", "apache",
-        "apachemeta", "collective", "java", "krb5kdc", "other" );
+    private List<String>  enabledSchemas  = Arrays.asList( "system", "core", "cosine", "inetorgperson", "apache",
+                                              "apachemeta", "collective", "java", "krb5kdc", "other" );
 
     // List of all the disabled schemas
-    private List<String> disabledSchemas = Arrays.asList( "nis", "autofs", "apachedns", "dhcp", "samba", "corba" );
+    private List<String>  disabledSchemas = Arrays.asList( "nis", "autofs", "apachedns", "dhcp", "samba", "corba" );
 
 
     @BeforeClass
@@ -138,6 +141,19 @@ public class SchemaManagerEnableDisableLoadTest
         List<Schema> disabled = schemaManager.getDisabled();
 
         assertEquals( 0, disabled.size() );
+
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 261, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 48, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 88, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 468, schemaManager.getOidRegistry().size() );
+
+        assertEquals( 10, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
     }
 
 
@@ -145,21 +161,44 @@ public class SchemaManagerEnableDisableLoadTest
     // Test the enable( String... schemaName) method
     //-------------------------------------------------------------------------
     /**
-     * Enable a schema which is alread enabled
+     * Enable a schema which is already enabled
      */
     @Test
     public void testEnableAlreadyEnabled() throws Exception
     {
         schemaManager.loadAllEnabled();
 
+        assertTrue( schemaManager.isEnabled( "core" ) );
         assertTrue( schemaManager.enable( "core" ) );
+        assertTrue( schemaManager.isEnabled( "core" ) );
     }
 
 
+    /**
+     * Enable a disabled schema
+     */
     @Test
-    public void testEnableDisabled()
+    public void testEnableDisabled() throws Exception
     {
+        schemaManager.loadAllEnabled();
 
+        assertTrue( schemaManager.enable( "nis" ) );
+        assertTrue( schemaManager.isEnabled( "nis" ) );
+
+        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "gecos" ) );
+
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 288, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 49, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 49, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 51, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 101, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 68, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 73, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 511, schemaManager.getOidRegistry().size() );
+
+        assertEquals( 11, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
     }
 
 
@@ -171,7 +210,7 @@ public class SchemaManagerEnableDisableLoadTest
 
 
     /**
-     * Enable multiple schemas, some are enabled, sme are disabled, some are not existing
+     * Enable multiple schemas, some are enabled, some are disabled, some are not existing
      */
     @Test
     public void testEnableMultipleSchemas()
