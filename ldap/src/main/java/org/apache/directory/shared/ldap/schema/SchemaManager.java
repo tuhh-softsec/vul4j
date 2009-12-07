@@ -304,6 +304,12 @@ public interface SchemaManager
 
 
     /**
+     * @return the list of all the enabled schema
+     */
+    List<Schema> getEnabled();
+
+
+    /**
      * Disables a set of Schemas, and returns true if all the schema have been
      * disabled, with all the dependent schemas, and if the registries is 
      * still consistent.
@@ -353,6 +359,12 @@ public interface SchemaManager
      *  @return true if all the schemas have been disabled
      */
     boolean disabledRelaxed( String... schemas );
+
+
+    /**
+     * @return the list of all the disabled schema
+     */
+    List<Schema> getDisabled();
 
 
     /**

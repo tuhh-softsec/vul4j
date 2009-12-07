@@ -291,6 +291,25 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
+    public List<Schema> getDisabled()
+    {
+        List<Schema> disabled = new ArrayList<Schema>();
+
+        for ( Schema schema : registries.getLoadedSchemas().values() )
+        {
+            if ( schema.isDisabled() )
+            {
+                disabled.add( schema );
+            }
+        }
+
+        return disabled;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean enable( Schema... schemas ) throws Exception
     {
         // Work on a cloned and relaxed registries
@@ -352,6 +371,25 @@ public class DefaultSchemaManager implements SchemaManager
     {
         // TODO Auto-generated method stub
         return false;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Schema> getEnabled()
+    {
+        List<Schema> enabled = new ArrayList<Schema>();
+
+        for ( Schema schema : registries.getLoadedSchemas().values() )
+        {
+            if ( schema.isEnabled() )
+            {
+                enabled.add( schema );
+            }
+        }
+
+        return enabled;
     }
 
 
