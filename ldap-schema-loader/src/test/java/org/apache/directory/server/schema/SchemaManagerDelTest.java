@@ -32,10 +32,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
@@ -89,12 +87,12 @@ public class SchemaManagerDelTest
     }
 
 
-    private SchemaManager loadSystem() throws Exception
+    private SchemaManager loadCore() throws Exception
     {
         LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
         SchemaManager schemaManager = new DefaultSchemaManager( loader );
 
-        String schemaName = "system";
+        String schemaName = "core";
 
         schemaManager.loadWithDeps( schemaName );
 
@@ -137,7 +135,7 @@ public class SchemaManagerDelTest
     @Test
     public void testDelNonExistentAttributeType() throws Exception
     {
-        SchemaManager schemaManager = loadSystem();
+        SchemaManager schemaManager = loadCore();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
@@ -146,7 +144,7 @@ public class SchemaManagerDelTest
         attributeType.setOrderingOid( null );
         attributeType.setSubstringOid( null );
 
-        // It should not fail
+        // It should fail
         assertFalse( schemaManager.delete( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
@@ -158,491 +156,146 @@ public class SchemaManagerDelTest
 
 
     /**
-     * Delete an existing AT not referecend by any object
+     * Delete an existing AT not referenced by any object
      */
     @Test
     public void testDelExistingAttributeTypeNoReference() throws Exception
     {
         // First inject such an AT
-        SchemaManager schemaManager = loadSystem();
+        SchemaManager schemaManager = loadCore();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( "2.5.13.1" );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        AttributeType attributeType = new AttributeType( "generationQualifier" );
+        attributeType.setOid( "2.5.4.44" );
 
-        // It should not fail
-        assertTrue( schemaManager.add( attributeType ) );
-
-        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
-
-        // Now delete it
         // It should not fail
         assertTrue( schemaManager.delete( attributeType ) );
 
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertFalse( isATPresent( schemaManager, "generationQualifier" ) );
+        assertEquals( atrSize - 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Delete an existing AT referenced by some other OC
+     */
+    @Test
+    public void testDelExistingAttributeTypeReferencedByOC() throws Exception
+    {
+        SchemaManager schemaManager = loadCore();
+
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        // Try to delete an AT which is referenced by at least one OC
+        // (modifiersName has one descendant : schemaModifiersName)
+        AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( "cn" );
+
+        // It should fail
+        assertFalse( schemaManager.delete( attributeType ) );
+
+        assertTrue( isATPresent( schemaManager, "cn" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
     /**
-     * Try to inject an AttributeType which is Collective, and userApplication AT
+     * Delete an existing AT stored in some disabled schema
      */
     @Test
-    public void testAddAttributeTypeNoSupCollectiveUser() throws Exception
+    public void testDelAttributeTypeFromDisabledSchema() throws Exception
     {
-        SchemaManager schemaManager = loadSystem();
+        SchemaManager schemaManager = loadCore();
+
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( "2.5.13.1" );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
-        attributeType.setCollective( true );
+        // Try to delete an AT which is contained by a disabled schema
+        AttributeType attributeType = new AttributeType( "gecos" );
+        attributeType.setOid( "1.3.6.1.1.1.1.2" );
 
-        // It should not fail
-        assertTrue( schemaManager.add( attributeType ) );
+        // It should fail
+        assertFalse( schemaManager.delete( attributeType ) );
 
-        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertFalse( isATPresent( schemaManager, "gecos" ) );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
     /**
-     * Try to inject an AttributeType which is Collective, but an operational AT
+     * Delete an existing AT referenced by some descendant
      */
     @Test
-    public void testAddAttributeTypeNoSupCollectiveOperational() throws Exception
+    public void testDelExistingAttributeTypeReferencedByDescendant() throws Exception
     {
-        SchemaManager schemaManager = loadSystem();
+        SchemaManager schemaManager = loadCore();
+
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( "2.5.13.1" );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.DIRECTORY_OPERATION );
-        attributeType.setCollective( true );
+        // Try to delete an AT which has descendant 
+        // (modifiersName has one descendant : schemaModifiersName)
+        AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( "modifiersName" );
 
         // It should fail
         assertFalse( schemaManager.add( attributeType ) );
 
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType which is a NO-USER-MODIFICATION and userApplication
-     */
-    @Test
-    public void testAddAttributeTypeNoSupNoUserModificationUserAplication() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( "2.5.13.1" );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
-        attributeType.setUserModifiable( false );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType which is a NO-USER-MODIFICATION and is operational
-     */
-    @Test
-    public void testAddAttributeTypeNoSupNoUserModificationOpAttr() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( "2.5.13.1" );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
-        attributeType.setUserModifiable( false );
-
-        // It should not fail
-        assertTrue( schemaManager.add( attributeType ) );
-
-        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType with an invalid EQUALITY MR
-     */
-    @Test
-    public void testAddAttributeTypeNoSupInvalidEqualityMR() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( "0.0" );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType with an invalid ORDERING MR
-     */
-    @Test
-    public void testAddAttributeTypeNoSupInvalidOrderingMR() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( null );
-        attributeType.setOrderingOid( "0.0" );
-        attributeType.setSubstringOid( null );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType with an invalid SUBSTR MR
-     */
-    @Test
-    public void testAddAttributeTypeNoSupInvalidSubstringMR() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( null );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( "0.0" );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType with valid MRs
-     */
-    @Test
-    public void testAddAttributeTypeNoSupValidMR() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( "2.5.13.1" );
-        attributeType.setOrderingOid( "2.5.13.1" );
-        attributeType.setSubstringOid( "2.5.13.1" );
-        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
-        attributeType.setUsage( UsageEnum.USER_APPLICATIONS );
-
-        // It should not fail
-        assertTrue( schemaManager.add( attributeType ) );
-
-        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType which already exist
-     */
-    @Test
-    public void testAddAttributeTypeAlreadyExist() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "2.5.18.4" );
-        attributeType.setEqualityOid( "2.5.13.1" );
-        attributeType.setOrderingOid( "2.5.13.1" );
-        attributeType.setSubstringOid( "2.5.13.1" );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        // The AT must be there
-        assertTrue( isATPresent( schemaManager, "2.5.18.4" ) );
-
-        // Check that it hasen't changed
-        AttributeType original = schemaManager.lookupAttributeTypeRegistry( "2.5.18.4" );
-        assertEquals( "distinguishedNameMatch", original.getEqualityOid() );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    //-------------------------------------------------------------------------
-    // Then, with a superior
-    //-------------------------------------------------------------------------
-    /**
-     * Try to inject an AttributeType with a superior and no Syntax : it should
-     * take its superior' syntax and MR
-     */
-    @Test
-    public void testAddAttributeTypeSupNoSyntaxNoSuperior() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( null );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSuperiorOid( "2.5.18.4" );
-        attributeType.setUsage( UsageEnum.DIRECTORY_OPERATION );
-
-        // It should not fail
-        assertTrue( schemaManager.add( attributeType ) );
-
-        AttributeType result = schemaManager.lookupAttributeTypeRegistry( "1.1.0" );
-
-        assertEquals( "1.3.6.1.4.1.1466.115.121.1.12", result.getSyntaxOid() );
-        assertEquals( "2.5.13.1", result.getEqualityOid() );
-        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType with a superior and different USAGE
-     */
-    @Test
-    public void testAddAttributeTypeSupDifferentUsage() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( null );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSuperiorOid( "2.5.18.4" );
-        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType with itself as a superior
-     */
-    @Test
-    public void testAddAttributeTypeSupWithOwnSup() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( null );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSuperiorOid( "1.1.0" );
-        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
-        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-    }
-
-
-    /**
-     * Try to inject an AttributeType with a bad superior
-     */
-    @Test
-    public void testAddAttributeTypeSupBadSup() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        AttributeType attributeType = new AttributeType( "1.1.0" );
-        attributeType.setEqualityOid( null );
-        attributeType.setOrderingOid( null );
-        attributeType.setSubstringOid( null );
-        attributeType.setSuperiorOid( "0.0" );
-        attributeType.setUsage( UsageEnum.DISTRIBUTED_OPERATION );
-
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
-
-        assertTrue( error instanceof LdapSchemaViolationException );
-
-        assertFalse( isATPresent( schemaManager, "1.1.0" ) );
+        assertTrue( isATPresent( schemaManager, "modifiersName" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
     //=========================================================================
-    // Comparator addition tests
+    // Comparator deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // DITContentRule addition tests
+    // DITContentRule deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // DITStructureRule addition tests
+    // DITStructureRule deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // MatchingRule addition tests
+    // MatchingRule deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // MatchingRuleUse addition tests
+    // MatchingRuleUse deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // NameForm addition tests
+    // NameForm deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // Normalizer addition tests
+    // Normalizer deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // ObjectClass addition tests
+    // ObjectClass deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // Syntax addition tests
+    // Syntax deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
     //=========================================================================
-    // SyntaxChecker addition tests
+    // SyntaxChecker deletion tests
     //-------------------------------------------------------------------------
     // TODO
 
