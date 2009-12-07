@@ -19,9 +19,6 @@
  */
 package org.apache.directory.shared.ldap.schema.normalizers;
 
-import java.util.List;
-
-import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
@@ -41,17 +38,18 @@ public class CachingDeepTrimToLowerNormalizer extends CachingNormalizer
     /** serial version UID */
     private static final long serialVersionUID = -206263185305284269L;
 
+
     public CachingDeepTrimToLowerNormalizer()
     {
         super( new DeepTrimToLowerNormalizer() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void setRegistries( Registries registries )
     {
-        super.applyRegistries( errors, registries );
+        super.setRegistries( registries );
     }
 }

@@ -41,7 +41,8 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
 {
     /** The wrapped DITContentRule registry */
     DITContentRuleRegistry immutableDITContentRuleRegistry;
-    
+
+
     /**
      * Creates a new instance of ImmutableDITContentRuleRegistry.
      *
@@ -51,17 +52,17 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
     {
         immutableDITContentRuleRegistry = ditContentRuleRegistry;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public ImmutableDITContentRuleRegistry copy()
     {
-        return (ImmutableDITContentRuleRegistry)immutableDITContentRuleRegistry.copy();
+        return ( ImmutableDITContentRuleRegistry ) immutableDITContentRuleRegistry.copy();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -139,7 +140,8 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
      */
     public void register( DITContentRule schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -148,7 +150,8 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -157,7 +160,8 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
      */
     public DITContentRule unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -166,7 +170,8 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -184,6 +189,17 @@ public class ImmutableDITContentRuleRegistry implements DITContentRuleRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public DITContentRule unregister( DITContentRule schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITContentRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

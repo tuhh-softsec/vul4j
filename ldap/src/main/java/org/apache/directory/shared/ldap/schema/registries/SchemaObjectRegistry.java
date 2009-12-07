@@ -45,8 +45,8 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * otherwise
      */
     boolean contains( String oid );
-    
-    
+
+
     /**
      * Gets the name of the schema this schema object is associated with.
      *
@@ -55,8 +55,8 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * @throws NamingException if the schema object does not exist
      */
     String getSchemaName( String oid ) throws NamingException;
-    
-    
+
+
     /**
      * Gets the SchemaObject associated with a given OID.
      *
@@ -65,7 +65,7 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      */
     SchemaObject get( String oid );
 
-    
+
     /**
      * Modify all the SchemaObject using a schemaName when this name changes.
      *
@@ -74,8 +74,8 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * @throws NamingException if the schema object does not exist
      */
     void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException;
-    
-    
+
+
     /**
      * Gets an iterator over the registered schema objects in the registry.
      *
@@ -83,7 +83,7 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      */
     Iterator<T> iterator();
 
-    
+
     /**
      * Gets an iterator over the registered schema objects'OID in the registry.
      *
@@ -91,7 +91,7 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      */
     Iterator<String> oidsIterator();
 
-    
+
     /**
      * Looks up a SchemaObject by its unique Object Identifier or by name.
      *
@@ -100,8 +100,8 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * @throws NamingException if the SchemaObject does not exist
      */
     T lookup( String oid ) throws NamingException;
-    
-    
+
+
     /**
      * Registers a new SchemaObject with this registry.
      *
@@ -120,8 +120,17 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * @throws NamingException if the numeric identifier is invalid
      */
     T unregister( String numericOid ) throws NamingException;
-    
-    
+
+
+    /**
+     * Removes the SchemaObject registered with this registry.
+     * 
+     * @param T the schemaObject to unregister
+     * @throws NamingException if the schemaObject can't be unregistered is invalid
+     */
+    T unregister( T schemaObject ) throws NamingException;
+
+
     /**
      * Unregisters all SchemaObjects defined for a specific schema from
      * this registry.
@@ -129,8 +138,8 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * @param schemaName the name of the schema whose SchemaObjects will be removed from
      */
     void unregisterSchemaElements( String schemaName ) throws NamingException;
-    
-    
+
+
     /**
      * Gets the numericOid for a name/alias if one is associated.  To prevent
      * lookup failures due to case variance in the name, a failure to lookup the
@@ -164,8 +173,8 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      *  @return The number of AttributeType stored
      */
     int size();
-    
-    
+
+
     /**
      * Clear the registry from all its content
      */

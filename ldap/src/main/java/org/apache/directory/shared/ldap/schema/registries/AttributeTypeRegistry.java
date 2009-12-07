@@ -35,8 +35,7 @@ import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>,
-    Iterable<AttributeType>
+public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeType>, Iterable<AttributeType>
 {
     /**
      * Gets an oid/name to normalizer mapping used to normalize distinguished 
@@ -45,8 +44,8 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * @return a map of OID Strings to OidNormalizer instances
      */
     Map<String, OidNormalizer> getNormalizerMapping();
-    
-    
+
+
     /**
      * Quick lookup to see if an attribute has descendants.
      * 
@@ -57,8 +56,8 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * discerned from the ancestorId supplied
      */
     boolean hasDescendants( String ancestorId ) throws NamingException;
-    
-    
+
+
     /**
      * Get's an iterator over the set of descendant attributeTypes for
      * some ancestor's name alias or their OID.
@@ -70,8 +69,8 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * discerned from the ancestorId supplied
      */
     Iterator<AttributeType> descendants( String ancestorId ) throws NamingException;
-    
-    
+
+
     /**
      * Store the AttributeType into a map associating an AttributeType to its
      * descendants.
@@ -80,8 +79,8 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * @throws NamingException If something went wrong
      */
     void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException;
-    
-    
+
+
     /**
      * Remove the AttributeType from the map associating an AttributeType to its
      * descendants.
@@ -91,14 +90,20 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * @throws NamingException If something went wrong
      */
     void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException;
-    
-    
+
+
     /**
      * Add a new Oid/Normalizer couple in the OidNormalizer map
      */
     void addMappingFor( AttributeType attributeType ) throws NamingException;
 
-    
+
+    /**
+     * Remove a new Oid/Normalizer couple in the OidNormalizer map
+     */
+    void removeMappingFor( AttributeType attributeType ) throws NamingException;
+
+
     /**
      * Copy the AttributeTypeRegistry
      */

@@ -565,12 +565,17 @@ public interface SchemaManager
 
 
     /**
-     * Removes the registered SchemaObject from the registries
-     * 
-     * @param schemaObject the schemaObject to unregister
-     * @throws NamingException if the schemaObject is invalid
+     * Unregisters a new SchemaObject. The registries will be updated only if it's
+     * consistent after this deletion, if the SchemaManager is in Strict mode.
+     * If something went wrong during this operation, the 
+     * SchemaManager.getErrors() will give the list of generated errors.
+     *
+     * @param schemaObject the SchemaObject to unregister
+     * @return true if the deletion has been made, false if there were some errors
+     * @throws Exception if the SchemaObject is not registered or
+     * the deletion operation is not supported
      */
-    SchemaObject unregister( SchemaObject schemaObject ) throws NamingException;
+    boolean delete( SchemaObject schemaObject ) throws Exception;
 
 
     /**

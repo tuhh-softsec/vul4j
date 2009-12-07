@@ -43,6 +43,7 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     /** The wrapped ObjectClass registry */
     private ObjectClassRegistry immutableObjectClassRegistry;
 
+
     /**
      * Creates a new instance of ImmutableAttributeTypeRegistry.
      *
@@ -52,8 +53,8 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     {
         immutableObjectClassRegistry = ocRegistry;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -61,8 +62,8 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
     {
         return immutableObjectClassRegistry.hasDescendants( ancestorId );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -71,54 +72,56 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
         return immutableObjectClassRegistry.descendants( ancestorId );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
-    public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) 
-        throws NamingException
+    public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
-    public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) 
-        throws NamingException
+    public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public void register( ObjectClass objectClass ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public ObjectClass unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * Clone the ObjectClassRegistry
      */
     public ImmutableObjectClassRegistry copy()
     {
-        return (ImmutableObjectClassRegistry)immutableObjectClassRegistry.copy();
+        return ( ImmutableObjectClassRegistry ) immutableObjectClassRegistry.copy();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -196,7 +199,8 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -205,7 +209,8 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -223,6 +228,17 @@ public class ImmutableObjectClassRegistry implements ObjectClassRegistry, Clonea
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectClass unregister( ObjectClass schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the ObjectClassRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

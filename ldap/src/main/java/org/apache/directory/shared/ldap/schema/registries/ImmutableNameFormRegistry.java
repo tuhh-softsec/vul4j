@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
+
 import java.util.Iterator;
 
 import javax.naming.NamingException;
@@ -28,8 +29,6 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.NameForm;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-
-
 
 
 /**
@@ -42,7 +41,8 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
 {
     /** The wrapped NameForm registry */
     NameFormRegistry immutableNameFormRegistry;
-    
+
+
     /**
      * Creates a new instance of ImmutableNameFormRegistry.
      *
@@ -52,17 +52,17 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
     {
         immutableNameFormRegistry = nameFormRegistry;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public ImmutableNameFormRegistry copy()
     {
-        return (ImmutableNameFormRegistry)immutableNameFormRegistry.copy();
+        return ( ImmutableNameFormRegistry ) immutableNameFormRegistry.copy();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -140,7 +140,8 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
      */
     public void register( NameForm schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -149,7 +150,8 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -158,7 +160,8 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
      */
     public NameForm unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -167,7 +170,8 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -185,6 +189,17 @@ public class ImmutableNameFormRegistry implements NameFormRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public NameForm unregister( NameForm schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the NameFormRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

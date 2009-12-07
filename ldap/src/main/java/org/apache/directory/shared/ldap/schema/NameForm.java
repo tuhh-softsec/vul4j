@@ -95,17 +95,17 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class NameForm extends SchemaObject
+public class NameForm extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
     /** The structural object class OID this rule applies to */
     private String structuralObjectClassOid;
-    
+
     /** The structural object class this rule applies to */
     private ObjectClass structuralObjectClass;
-    
+
     /** The set of required attribute OIDs for this name form */
     private List<String> mustAttributeTypeOids;
 
@@ -114,10 +114,10 @@ public class NameForm extends SchemaObject
 
     /** The set of allowed attribute OIDs for this name form */
     private List<String> mayAttributeTypeOids;
-    
+
     /** The set of allowed AttributeTypes for this name form */
     private List<AttributeType> mayAttributeTypes;
-    
+
 
     /**
      * Creates a new instance of MatchingRule.
@@ -128,33 +128,33 @@ public class NameForm extends SchemaObject
     public NameForm( String oid )
     {
         super( SchemaObjectType.NAME_FORM, oid );
-        
+
         mustAttributeTypeOids = new ArrayList<String>();
         mayAttributeTypeOids = new ArrayList<String>();
 
         mustAttributeTypes = new ArrayList<AttributeType>();
         mayAttributeTypes = new ArrayList<AttributeType>();
     }
-    
-    
+
+
     /**
-     * Inject the registries into this Object, updating the references to
+     * Inject the NameForm into the registries, updating the references to
      * other SchemaObject
      *
      * @param registries The Registries
      */
-    public void setRegistries( Registries registries ) throws NamingException
+    public void addToRegistries( Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
             AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
 
             structuralObjectClass = registries.getObjectClassRegistry().lookup( structuralObjectClassOid );
-            
+
             if ( mayAttributeTypeOids != null )
             {
                 mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
-                
+
                 for ( String oid : mayAttributeTypeOids )
                 {
                     mayAttributeTypes.add( atRegistry.lookup( oid ) );
@@ -164,7 +164,7 @@ public class NameForm extends SchemaObject
             if ( mustAttributeTypeOids != null )
             {
                 mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
-                
+
                 for ( String oid : mustAttributeTypeOids )
                 {
                     mustAttributeTypes.add( atRegistry.lookup( oid ) );
@@ -268,7 +268,7 @@ public class NameForm extends SchemaObject
         }
     }
 
-    
+
     /**
      * Sets the list of required AttributeTypes
      *
@@ -279,10 +279,10 @@ public class NameForm extends SchemaObject
         if ( !isReadOnly )
         {
             this.mustAttributeTypes = mustAttributeTypes;
-            
+
             // update the OIDS now
             mustAttributeTypeOids.clear();
-            
+
             for ( AttributeType may : mustAttributeTypes )
             {
                 mustAttributeTypeOids.add( may.getOid() );
@@ -290,7 +290,7 @@ public class NameForm extends SchemaObject
         }
     }
 
-    
+
     /**
      * Add a required AttributeType OID
      *
@@ -314,15 +314,15 @@ public class NameForm extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! mustAttributeTypeOids.contains( attributeType.getOid() ) )
+            if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
             {
                 mustAttributeTypes.add( attributeType );
                 mustAttributeTypeOids.add( attributeType.getOid() );
             }
         }
     }
-    
-    
+
+
     /**
      * Gets all the AttributeTypes OIDs of the attribute this NameForm specifies as
      * being usable without requirement in the given objectClass for naming: as
@@ -336,7 +336,7 @@ public class NameForm extends SchemaObject
         return Collections.unmodifiableList( mayAttributeTypeOids );
     }
 
-    
+
     /**
      * Gets all the AttributeTypes of the attribute this NameForm specifies as
      * being useable without requirement in the given objectClass for naming: as
@@ -348,8 +348,8 @@ public class NameForm extends SchemaObject
     {
         return Collections.unmodifiableList( mayAttributeTypes );
     }
-    
-    
+
+
     /**
      * Sets the list of allowed AttributeTypes
      *
@@ -362,8 +362,8 @@ public class NameForm extends SchemaObject
             this.mayAttributeTypeOids = mayAttributeTypeOids;
         }
     }
-    
-    
+
+
     /**
      * Sets the list of allowed AttributeTypes
      *
@@ -374,18 +374,18 @@ public class NameForm extends SchemaObject
         if ( !isReadOnly )
         {
             this.mayAttributeTypes = mayAttributeTypes;
-            
+
             // update the OIDS now
             mayAttributeTypeOids.clear();
-            
+
             for ( AttributeType may : mayAttributeTypes )
             {
                 mayAttributeTypeOids.add( may.getOid() );
             }
         }
     }
-    
-    
+
+
     /**
      * Add an allowed AttributeType
      *
@@ -409,7 +409,7 @@ public class NameForm extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! mayAttributeTypeOids.contains( attributeType.getOid() ) )
+            if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
             {
                 mayAttributeTypes.add( attributeType );
                 mayAttributeTypeOids.add( attributeType.getOid() );
@@ -425,8 +425,8 @@ public class NameForm extends SchemaObject
     {
         return objectType + " " + DescriptionUtils.getDescription( this );
     }
-    
-    
+
+
     /**
      * Copy a NameForm
      */
@@ -436,39 +436,39 @@ public class NameForm extends SchemaObject
 
         // Copy the SchemaObject common data
         copy.copy( this );
-        
+
         // Copy the MAY AttributeTypes OIDs
         copy.mayAttributeTypeOids = new ArrayList<String>();
-        
+
         for ( String oid : mayAttributeTypeOids )
         {
             copy.mayAttributeTypeOids.add( oid );
         }
-        
+
         // Copy the MAY AttributeTypes (will be empty)
         copy.mayAttributeTypes = new ArrayList<AttributeType>();
-        
+
         // Copy the MUST AttributeTypes OIDs
         copy.mustAttributeTypeOids = new ArrayList<String>();
-        
+
         for ( String oid : mustAttributeTypeOids )
         {
             copy.mustAttributeTypeOids.add( oid );
         }
-        
+
         // Copy the MUST AttributeTypes ( will be empty )
         copy.mustAttributeTypes = new ArrayList<AttributeType>();
 
         // Copy the Structural ObjectClass OID
         copy.structuralObjectClassOid = structuralObjectClassOid;
-        
+
         // All the references to other Registries object are set to null.
         copy.structuralObjectClass = null;
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -483,14 +483,14 @@ public class NameForm extends SchemaObject
         {
             return false;
         }
-        
-        NameForm that = (NameForm)o;
-        
+
+        NameForm that = ( NameForm ) o;
+
         // TODO : complete the checks
         return true;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -498,7 +498,7 @@ public class NameForm extends SchemaObject
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         mayAttributeTypes.clear();
         mayAttributeTypeOids.clear();

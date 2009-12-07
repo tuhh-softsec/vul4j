@@ -80,26 +80,27 @@ import org.apache.directory.shared.ldap.NotImplementedException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class DITStructureRule extends SchemaObject
+public class DITStructureRule extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
     /** The rule ID. A DSR does not have an OID */
     private int ruleId;
-    
+
     /** The associated NameForm */
     private String form;
 
     /** The list of superiors rules */
     private List<Integer> superRules;
 
+
     /**
      * Creates a new instance of DITStructureRule
      */
     public DITStructureRule( int ruleId )
     {
-        super(  SchemaObjectType.DIT_STRUCTURE_RULE, null );
+        super( SchemaObjectType.DIT_STRUCTURE_RULE, null );
         this.ruleId = ruleId;
         form = null;
         superRules = new ArrayList<Integer>();
@@ -184,14 +185,14 @@ public class DITStructureRule extends SchemaObject
     {
         superRules.add( superRule );
     }
-    
-    
+
+
     /**
      * The DSR does not have an OID, so throw an exception
      */
     public String getOid()
     {
-        throw new NotImplementedException(); 
+        throw new NotImplementedException();
     }
 
 
@@ -213,22 +214,22 @@ public class DITStructureRule extends SchemaObject
 
         // Copy the SchemaObject common data
         copy.copy( this );
-        
+
         // Copy the Superiors rules
         copy.superRules = new ArrayList<Integer>();
-        
+
         // Copy the form
         copy.form = form;
-        
+
         for ( int ruleId : superRules )
         {
             copy.superRules.add( ruleId );
         }
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -243,14 +244,14 @@ public class DITStructureRule extends SchemaObject
         {
             return false;
         }
-        
-        DITStructureRule that = (DITStructureRule)o;
-        
+
+        DITStructureRule that = ( DITStructureRule ) o;
+
         // TODO : complete the test
         return true;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -258,7 +259,7 @@ public class DITStructureRule extends SchemaObject
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         superRules.clear();
     }

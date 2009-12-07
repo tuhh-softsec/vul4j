@@ -41,8 +41,8 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
 {
     /** The wrapped Normalizer registry */
     NormalizerRegistry immutableNormalizerRegistry;
-    
-    
+
+
     /**
      * Creates a new immutable NormalizerRegistry instance.
      * 
@@ -52,14 +52,15 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
     {
         immutableNormalizerRegistry = normalizerRegistry;
     }
-    
-    
+
+
     /**
      *  {@inheritDoc}
      */
     public void register( Normalizer normalizer ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -68,28 +69,30 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
      */
     public Normalizer unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      *  {@inheritDoc}
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      *  {@inheritDoc}
      */
     public ImmutableNormalizerRegistry copy()
     {
-        return (ImmutableNormalizerRegistry)immutableNormalizerRegistry.copy();
+        return ( ImmutableNormalizerRegistry ) immutableNormalizerRegistry.copy();
     }
-    
-    
+
+
     /**
      *  {@inheritDoc}
      */
@@ -167,7 +170,8 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -185,6 +189,17 @@ public class ImmutableNormalizerRegistry implements NormalizerRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Normalizer unregister( Normalizer schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the NormalizerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

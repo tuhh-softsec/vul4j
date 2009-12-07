@@ -578,7 +578,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // An attributeType has references on Syntax, MatchingRule and itself
         try
         {
-            attributeType.applyRegistries( this );
+            attributeType.addToRegistries( this );
         }
         catch ( NamingException ne )
         {
@@ -716,12 +716,33 @@ public class Registries implements SchemaLoaderListener, Cloneable
     {
         try
         {
-            schemaObject.applyRegistries( errors, this );
+            schemaObject.addToRegistries( errors, this );
         }
         catch ( NamingException ne )
         {
             // Not allowed.
             String msg = "Cannot build the references for " + schemaObject.getName() + ", error : " + ne.getMessage();
+
+            Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+            errors.add( error );
+            LOG.info( msg );
+        }
+    }
+
+
+    /**
+     * Unlink the SchemaObject references
+     */
+    public void removeReference( List<Throwable> errors, SchemaObject schemaObject )
+    {
+        try
+        {
+            schemaObject.removeFromRegistries( errors, this );
+        }
+        catch ( NamingException ne )
+        {
+            // Not allowed.
+            String msg = "Cannot remove the references for " + schemaObject.getName() + ", error : " + ne.getMessage();
 
             Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
             errors.add( error );
@@ -885,7 +906,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // or to the OctetString SyntaxChecker
         try
         {
-            syntax.applyRegistries( errors, this );
+            syntax.addToRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -905,7 +926,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // This is currently doing nothing.
         try
         {
-            normalizer.applyRegistries( errors, this );
+            normalizer.addToRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -925,7 +946,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // This is currently doing nothing.
         try
         {
-            comparator.applyRegistries( errors, this );
+            comparator.addToRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -945,7 +966,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // This is currently doing nothing.
         try
         {
-            syntaxChecker.applyRegistries( errors, this );
+            syntaxChecker.addToRegistries( errors, this );
         }
         catch ( NamingException e )
         {
@@ -1254,7 +1275,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // All is done for this ObjectClass, let's apply the registries
         try
         {
-            objectClass.applyRegistries( errors, this );
+            objectClass.addToRegistries( errors, this );
         }
         catch ( NamingException ne )
         {
@@ -1270,6 +1291,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public List<Throwable> add( List<Throwable> errors, SchemaObject schemaObject ) throws NamingException
     {
         // Relax the registries
+        boolean wasRelaxed = isRelaxed;
         setRelaxed();
 
         // Register the SchemaObject in the registries
@@ -1287,6 +1309,49 @@ public class Registries implements SchemaLoaderListener, Cloneable
             List<Throwable> checkErrors = checkRefInteg();
 
             errors.addAll( checkErrors );
+        }
+
+        // Get back to Strict mode
+        if ( !wasRelaxed )
+        {
+            setStrict();
+        }
+
+        // return the errors
+        return errors;
+    }
+
+
+    /**
+     * Remove the given SchemaObject from the registries
+     */
+    public List<Throwable> delete( List<Throwable> errors, SchemaObject schemaObject ) throws NamingException
+    {
+        // Relax the registries
+        boolean wasRelaxed = isRelaxed;
+        setRelaxed();
+
+        // Remove the SchemaObject from the registries
+        SchemaObject removed = unregister( errors, schemaObject );
+
+        // Remove the SchemaObject from its schema
+        dissociateFromSchema( errors, removed );
+
+        // Unlink the SchemaObject references
+        removeReference( errors, removed );
+
+        if ( errors.isEmpty() )
+        {
+            // Check the registries now
+            List<Throwable> checkErrors = checkRefInteg();
+
+            errors.addAll( checkErrors );
+        }
+
+        // Restore the previous registries state
+        if ( !wasRelaxed )
+        {
+            setStrict();
         }
 
         // return the errors
@@ -1342,7 +1407,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * Retrieve the schema name for a specific SchemaObject, or return "other" if none is found.
      */
-    private String getSchemaName( SchemaObject schemaObject ) throws Exception
+    private String getSchemaName( SchemaObject schemaObject )
     {
         String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
 
@@ -1403,13 +1468,20 @@ public class Registries implements SchemaLoaderListener, Cloneable
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
         // Check that the SchemaObject is not already registered
-        if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.hasOid( schemaObject.getOid() ) )
+        if ( !( schemaObject instanceof LoadableSchemaObject ) )
         {
-            // TODO : throw an exception here
-            String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
-                + "failed, it's already present in the Registries";
-            LOG.error( msg );
-            throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            // TODO : Check for existing Loadable SchemaObject
+        }
+        else
+        {
+            if ( globalOidRegistry.hasOid( schemaObject.getOid() ) )
+            {
+                // TODO : throw an exception here
+                String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
+                    + "failed, it's already present in the Registries";
+                LOG.error( msg );
+                throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            }
         }
 
         // First call the specific registry's register method
@@ -1469,7 +1541,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @param schemaObject The schemaObject to register
      * @throws NamingException If there is a problem
      */
-    public void associateWithSchema( List<Throwable> errors, SchemaObject schemaObject ) //throws NamingException
+    public void associateWithSchema( List<Throwable> errors, SchemaObject schemaObject )
     {
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
@@ -1486,7 +1558,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
 
         // Get a normalized form of schema name
-        String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+        String schemaName = getSchemaName( schemaObject );
 
         // And register the schemaObject within its schema
         Set<SchemaObjectWrapper> content = schemaObjects.get( schemaName );
@@ -1532,63 +1604,144 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
 
     /**
+     * Store the given SchemaObject in the Map associating SchemaObjetcs to their
+     * related Schema.
+     *
+     * @param schemaObject The schemaObject to register
+     * @throws NamingException If there is a problem
+     */
+
+    public void dissociateFromSchema( List<Throwable> errors, SchemaObject schemaObject ) throws NamingException
+    {
+        LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
+
+        // Check that the SchemaObject is already registered
+        if ( !( schemaObject instanceof LoadableSchemaObject ) && !globalOidRegistry.hasOid( schemaObject.getOid() ) )
+        {
+            // TODO : throw an exception here
+            String msg = "Unregistering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
+                + "failed, it's not present in the Registries";
+            LOG.error( msg );
+            Throwable error = new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            errors.add( error );
+            return;
+        }
+
+        // Get a normalized form of schema name
+        String schemaName = getSchemaName( schemaObject );
+        String oid = schemaObject.getOid();
+
+        // And unregister the schemaObject from its schema
+        Set<SchemaObjectWrapper> content = schemaObjects.get( schemaName );
+
+        SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
+
+        if ( !content.contains( schemaObjectWrapper ) )
+        {
+            // Not present !
+            // What should we do ?
+            LOG.info( "Unregistering of {}:{} failed, is not present in the Registries", schemaObject.getObjectType(),
+                schemaObject.getOid() );
+        }
+        else
+        {
+            // Remove the association
+            content.remove( schemaObjectWrapper );
+
+            // Update the global OidRegistry if the SchemaObject is not
+            // an instance of LoadableSchemaObject
+            if ( !( schemaObject instanceof LoadableSchemaObject ) )
+            {
+                try
+                {
+                    globalOidRegistry.unregister( oid );
+                }
+                catch ( NamingException ne )
+                {
+                    errors.add( ne );
+                    return;
+                }
+            }
+
+            LOG.debug( "Unregistered {} for OID {}", schemaObject.getName(), schemaObject.getOid() );
+        }
+    }
+
+
+    /**
      * Unregister a SchemaObject from the registries
      *
      * @param schemaObject The SchemaObject we want to deregister
      * @throws NamingException If the removal failed
      */
-    public SchemaObject unregister( SchemaObject schemaObject ) throws NamingException
+    private SchemaObject unregister( List<Throwable> errors, SchemaObject schemaObject ) throws NamingException
     {
         LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
-        String oid = schemaObject.getOid();
+        // Check that the SchemaObject is present in the registries
+        if ( schemaObject instanceof LoadableSchemaObject )
+        {
+            // TODO : check for an existing Loadable SchemaObject
+        }
+        else
+        {
+            if ( !globalOidRegistry.hasOid( schemaObject.getOid() ) )
+            {
+                // TODO : throw an exception here
+                String msg = "Unregistering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
+                    + "failed, it's not present in the Registries";
+                LOG.error( msg );
+                throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            }
+        }
+
         SchemaObject unregistered = null;
 
         // First call the specific registry's register method
         switch ( schemaObject.getObjectType() )
         {
             case ATTRIBUTE_TYPE:
-                unregistered = attributeTypeRegistry.unregister( oid );
+                unregistered = attributeTypeRegistry.unregister( ( AttributeType ) schemaObject );
                 break;
 
             case COMPARATOR:
-                unregistered = comparatorRegistry.unregister( oid );
+                unregistered = comparatorRegistry.unregister( ( LdapComparator<?> ) schemaObject );
                 break;
 
             case DIT_CONTENT_RULE:
-                unregistered = ditContentRuleRegistry.unregister( oid );
+                unregistered = ditContentRuleRegistry.unregister( ( DITContentRule ) schemaObject );
                 break;
 
             case DIT_STRUCTURE_RULE:
-                unregistered = ditStructureRuleRegistry.unregister( oid );
+                unregistered = ditStructureRuleRegistry.unregister( ( DITStructureRule ) schemaObject );
                 break;
 
             case LDAP_SYNTAX:
-                unregistered = ldapSyntaxRegistry.unregister( oid );
+                unregistered = ldapSyntaxRegistry.unregister( ( LdapSyntax ) schemaObject );
                 break;
 
             case MATCHING_RULE:
-                unregistered = matchingRuleRegistry.unregister( oid );
+                unregistered = matchingRuleRegistry.unregister( ( MatchingRule ) schemaObject );
                 break;
 
             case MATCHING_RULE_USE:
-                unregistered = matchingRuleUseRegistry.unregister( oid );
+                unregistered = matchingRuleUseRegistry.unregister( ( MatchingRuleUse ) schemaObject );
                 break;
 
             case NAME_FORM:
-                unregistered = nameFormRegistry.unregister( oid );
+                unregistered = nameFormRegistry.unregister( ( NameForm ) schemaObject );
                 break;
 
             case NORMALIZER:
-                unregistered = normalizerRegistry.unregister( oid );
+                unregistered = normalizerRegistry.unregister( ( Normalizer ) schemaObject );
                 break;
 
             case OBJECT_CLASS:
-                unregistered = objectClassRegistry.unregister( oid );
+                unregistered = objectClassRegistry.unregister( ( ObjectClass ) schemaObject );
                 break;
 
             case SYNTAX_CHECKER:
-                unregistered = syntaxCheckerRegistry.unregister( oid );
+                unregistered = syntaxCheckerRegistry.unregister( ( SyntaxChecker ) schemaObject );
                 break;
         }
 
@@ -2305,6 +2458,47 @@ public class Registries implements SchemaLoaderListener, Cloneable
         clone.objectClassRegistry = objectClassRegistry.copy();
         clone.syntaxCheckerRegistry = syntaxCheckerRegistry.copy();
 
+        // Store all the SchemaObjects into the globalOid registry
+        for ( AttributeType attributeType : clone.attributeTypeRegistry )
+        {
+            clone.globalOidRegistry.put( attributeType );
+        }
+
+        for ( DITContentRule ditContentRule : clone.ditContentRuleRegistry )
+        {
+            clone.globalOidRegistry.put( ditContentRule );
+        }
+
+        for ( DITStructureRule ditStructureRule : clone.ditStructureRuleRegistry )
+        {
+            clone.globalOidRegistry.put( ditStructureRule );
+        }
+
+        for ( MatchingRule matchingRule : clone.matchingRuleRegistry )
+        {
+            clone.globalOidRegistry.put( matchingRule );
+        }
+
+        for ( MatchingRuleUse matchingRuleUse : clone.matchingRuleUseRegistry )
+        {
+            clone.globalOidRegistry.put( matchingRuleUse );
+        }
+
+        for ( NameForm nameForm : clone.nameFormRegistry )
+        {
+            clone.globalOidRegistry.put( nameForm );
+        }
+
+        for ( ObjectClass objectClass : clone.objectClassRegistry )
+        {
+            clone.globalOidRegistry.put( objectClass );
+        }
+
+        for ( LdapSyntax syntax : clone.ldapSyntaxRegistry )
+        {
+            clone.globalOidRegistry.put( syntax );
+        }
+
         // Clone the schema list
         clone.loadedSchemas = new HashMap<String, Schema>();
 
@@ -2327,10 +2521,27 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
         clone.schemaObjects = new HashMap<String, Set<SchemaObjectWrapper>>();
 
-        // Last, not least, clone the SchemaObjects Map. It will be empty
+        // Last, not least, clone the SchemaObjects Map, and reference all the copied
+        // SchemaObjects
         for ( String schemaName : schemaObjects.keySet() )
         {
             Set<SchemaObjectWrapper> objects = new HashSet<SchemaObjectWrapper>();
+
+            for ( SchemaObjectWrapper schemaObjectWrapper : schemaObjects.get( schemaName ) )
+            {
+                SchemaObject original = schemaObjectWrapper.get();
+
+                try
+                {
+                    SchemaObject copy = clone.globalOidRegistry.getSchemaObject( original.getOid() );
+                    SchemaObjectWrapper newWrapper = new SchemaObjectWrapper( copy );
+                    objects.add( newWrapper );
+                }
+                catch ( NamingException ne )
+                {
+                    // Nothing to do
+                }
+            }
 
             clone.schemaObjects.put( schemaName, objects );
         }

@@ -19,9 +19,11 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
+
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
+
 
 /**
  * An abstract class used to manage the ADS specific SchemaObject, which can
@@ -30,7 +32,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public abstract class LoadableSchemaObject extends SchemaObject
+public abstract class LoadableSchemaObject extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -40,6 +42,7 @@ public abstract class LoadableSchemaObject extends SchemaObject
 
     /** The base64 encoded bytecode for this schema */
     private String bytecode;
+
 
     /**
      * Constructor to use when the OID is known in advance.
@@ -87,7 +90,7 @@ public abstract class LoadableSchemaObject extends SchemaObject
      */
     public void setBytecode( String bytecode )
     {
-        if ( ! isReadOnly )
+        if ( !isReadOnly )
         {
             this.bytecode = bytecode;
         }
@@ -110,13 +113,13 @@ public abstract class LoadableSchemaObject extends SchemaObject
      */
     public void setFqcn( String fqcn )
     {
-        if ( ! isReadOnly )
+        if ( !isReadOnly )
         {
             this.fqcn = fqcn;
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -124,8 +127,8 @@ public abstract class LoadableSchemaObject extends SchemaObject
     {
         // Do nothing : the current SchemaObject ha sthe same OID than the one it is realted to
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -133,8 +136,8 @@ public abstract class LoadableSchemaObject extends SchemaObject
     {
         return null;
     }
-    
-    
+
+
     /**
      * @see Object#equals()
      */
@@ -149,12 +152,12 @@ public abstract class LoadableSchemaObject extends SchemaObject
         {
             return false;
         }
-        
-        LoadableSchemaObject that = (LoadableSchemaObject)o;
-        
+
+        LoadableSchemaObject that = ( LoadableSchemaObject ) o;
+
         // Check the byteCode
         // TODO
-        
+
         // Check the FQCN
         if ( fqcn == null )
         {
@@ -164,6 +167,6 @@ public abstract class LoadableSchemaObject extends SchemaObject
         {
             return fqcn.equals( that.fqcn );
         }
-       
+
     }
 }

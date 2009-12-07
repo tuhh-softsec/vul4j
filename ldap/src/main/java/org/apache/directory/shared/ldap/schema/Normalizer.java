@@ -36,6 +36,7 @@ public abstract class Normalizer extends LoadableSchemaObject
     /** The serialversionUID */
     private static final long serialVersionUID = 1L;
 
+
     /**
      * The Normalizer base constructor. We use it's MR OID to
      * initialize the SchemaObject instance
@@ -58,7 +59,7 @@ public abstract class Normalizer extends LoadableSchemaObject
     }
 
 
-	/**
+    /**
      * Gets the normalized value.
      * 
      * @param value the value to normalize. It must *not* be null !
@@ -66,6 +67,7 @@ public abstract class Normalizer extends LoadableSchemaObject
      * @throws NamingException if an error results during normalization
      */
     public abstract Value<?> normalize( Value<?> value ) throws NamingException;
+
 
     /**
      * Gets the normalized value.
@@ -75,8 +77,8 @@ public abstract class Normalizer extends LoadableSchemaObject
      * @throws NamingException if an error results during normalization
      */
     public abstract String normalize( String value ) throws NamingException;
-    
-    
+
+
     /**
      * Store the SchemaManager in this instance. It may be necessary for some
      * normalizer which needs to have access to the oidNormalizer Map.
@@ -87,8 +89,8 @@ public abstract class Normalizer extends LoadableSchemaObject
     {
         // Do nothing (general case).
     }
-    
-    
+
+
     /**
      * @see Object#equals()
      */
@@ -101,7 +103,7 @@ public abstract class Normalizer extends LoadableSchemaObject
 
         return o instanceof Normalizer;
     }
-    
+
 
     /**
      * @see Object#toString()

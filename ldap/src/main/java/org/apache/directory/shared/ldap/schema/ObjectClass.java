@@ -74,14 +74,14 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class ObjectClass extends SchemaObject
+public class ObjectClass extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
     /** The ObjectClass type : ABSTRACT, AUXILIARY or STRUCTURAL */
     private ObjectClassTypeEnum objectClassType = ObjectClassTypeEnum.STRUCTURAL;
-    
+
     /** The ObjectClass superior OIDs */
     private List<String> superiorOids;
 
@@ -100,14 +100,15 @@ public class ObjectClass extends SchemaObject
     /** The list of required AttributeTypes */
     private List<AttributeType> mustAttributeTypes;
 
+
     /**
      * Creates a new instance of MatchingRuleUseDescription
      * @param oid the OID for this objectClass
      */
     public ObjectClass( String oid )
     {
-        super(  SchemaObjectType.OBJECT_CLASS, oid );
-        
+        super( SchemaObjectType.OBJECT_CLASS, oid );
+
         mayAttributeTypeOids = new ArrayList<String>();
         mustAttributeTypeOids = new ArrayList<String>();
         superiorOids = new ArrayList<String>();
@@ -117,27 +118,27 @@ public class ObjectClass extends SchemaObject
         superiors = new ArrayList<ObjectClass>();
         objectClassType = ObjectClassTypeEnum.STRUCTURAL;
     }
-    
-    
+
+
     /**
-     * Inject the registries into this Object, updating the references to
+     * Inject the ObjectClass into the registries, updating the references to
      * other SchemaObject
      *
      * @param registries The Registries
      * @throws Exception on failure
      *
      */
-    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
             AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
             ObjectClassRegistry ocRegistry = registries.getObjectClassRegistry();
-            
+
             if ( superiorOids != null )
             {
                 superiors = new ArrayList<ObjectClass>( superiorOids.size() );
-                
+
                 for ( String superiorName : superiorOids )
                 {
                     superiors.add( ocRegistry.lookup( ocRegistry.getOidByName( superiorName ) ) );
@@ -147,7 +148,7 @@ public class ObjectClass extends SchemaObject
             if ( mayAttributeTypeOids != null )
             {
                 mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
-                
+
                 for ( String mayAttributeTypeName : mayAttributeTypeOids )
                 {
                     mayAttributeTypes.add( atRegistry.lookup( atRegistry.getOidByName( mayAttributeTypeName ) ) );
@@ -157,13 +158,13 @@ public class ObjectClass extends SchemaObject
             if ( mustAttributeTypeOids != null )
             {
                 mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
-                
+
                 for ( String mustAttributeTypeName : mustAttributeTypeOids )
                 {
                     mustAttributeTypes.add( atRegistry.lookup( atRegistry.getOidByName( mustAttributeTypeName ) ) );
                 }
             }
-            
+
             /**
              * Add the OC references (using and usedBy) : 
              * OC -> AT (MAY and MUST)
@@ -178,7 +179,7 @@ public class ObjectClass extends SchemaObject
             {
                 registries.addReference( this, mustAttributeType );
             }
-            
+
             for ( ObjectClass superiorObjectClass : superiors )
             {
                 registries.addReference( this, superiorObjectClass );
@@ -186,7 +187,7 @@ public class ObjectClass extends SchemaObject
         }
     }
 
-    
+
     /**
      * @return the mayAttributeTypeOids
      */
@@ -204,7 +205,7 @@ public class ObjectClass extends SchemaObject
         return mayAttributeTypes;
     }
 
-    
+
     /**
      * Add an allowed AttributeType
      *
@@ -228,7 +229,7 @@ public class ObjectClass extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! mayAttributeTypeOids.contains( attributeType.getOid() ) )
+            if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
             {
                 mayAttributeTypes.add( attributeType );
                 mayAttributeTypeOids.add( attributeType.getOid() );
@@ -236,7 +237,7 @@ public class ObjectClass extends SchemaObject
         }
     }
 
-    
+
     /**
      * @param mayAttributeTypeOids the mayAttributeTypeOids to set
      */
@@ -247,8 +248,8 @@ public class ObjectClass extends SchemaObject
             this.mayAttributeTypeOids = mayAttributeTypeOids;
         }
     }
-    
-    
+
+
     /**
      * Sets the list of allowed AttributeTypes
      *
@@ -259,18 +260,18 @@ public class ObjectClass extends SchemaObject
         if ( !isReadOnly )
         {
             this.mayAttributeTypes = mayAttributeTypes;
-            
+
             // update the OIDS now
             mayAttributeTypeOids.clear();
-            
+
             for ( AttributeType may : mayAttributeTypes )
             {
                 mayAttributeTypeOids.add( may.getOid() );
             }
         }
     }
-    
-    
+
+
     /**
      * Update the associated MAY AttributeType, even if the SchemaObject is readOnly
      *
@@ -280,10 +281,10 @@ public class ObjectClass extends SchemaObject
     {
         this.mayAttributeTypes.clear();
         this.mayAttributeTypes.addAll( mayAttributeTypes );
-        
+
         // update the OIDS now
         mayAttributeTypeOids.clear();
-        
+
         for ( AttributeType may : mayAttributeTypes )
         {
             mayAttributeTypeOids.add( may.getOid() );
@@ -308,7 +309,7 @@ public class ObjectClass extends SchemaObject
         return mustAttributeTypes;
     }
 
-    
+
     /**
      * Add a required AttributeType OID
      *
@@ -332,7 +333,7 @@ public class ObjectClass extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! mustAttributeTypeOids.contains( attributeType.getOid() ) )
+            if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
             {
                 mustAttributeTypes.add( attributeType );
                 mustAttributeTypeOids.add( attributeType.getOid() );
@@ -352,7 +353,7 @@ public class ObjectClass extends SchemaObject
         }
     }
 
-    
+
     /**
      * Sets the list of required AttributeTypes
      *
@@ -363,18 +364,18 @@ public class ObjectClass extends SchemaObject
         if ( !isReadOnly )
         {
             this.mustAttributeTypes = mustAttributeTypes;
-            
+
             // update the OIDS now
             mustAttributeTypeOids.clear();
-            
+
             for ( AttributeType may : mustAttributeTypes )
             {
                 mustAttributeTypeOids.add( may.getOid() );
             }
         }
     }
-    
-    
+
+
     /**
      * Update the associated MUST AttributeType, even if the SchemaObject is readOnly
      *
@@ -384,17 +385,17 @@ public class ObjectClass extends SchemaObject
     {
         this.mustAttributeTypes.clear();
         this.mustAttributeTypes.addAll( mustAttributeTypes );
-        
+
         // update the OIDS now
         mustAttributeTypeOids.clear();
-        
+
         for ( AttributeType must : mustAttributeTypes )
         {
             mustAttributeTypeOids.add( must.getOid() );
         }
     }
 
-    
+
     /**
      * Gets the superclasses of this ObjectClass.
      * 
@@ -406,7 +407,7 @@ public class ObjectClass extends SchemaObject
         return superiors;
     }
 
-    
+
     /**
      * Gets the superclasses OIDsof this ObjectClass.
      * 
@@ -458,7 +459,7 @@ public class ObjectClass extends SchemaObject
         }
     }
 
-    
+
     /**
      * Sets the superior object classes
      * 
@@ -469,10 +470,10 @@ public class ObjectClass extends SchemaObject
         if ( !isReadOnly )
         {
             this.superiors = superiors;
-            
+
             // update the OIDS now
             superiorOids.clear();
-            
+
             for ( ObjectClass oc : superiors )
             {
                 superiorOids.add( oc.getOid() );
@@ -480,7 +481,7 @@ public class ObjectClass extends SchemaObject
         }
     }
 
-    
+
     /**
      * Update the associated SUPERIORS ObjectClasses, even if the SchemaObject is readOnly
      * 
@@ -490,17 +491,17 @@ public class ObjectClass extends SchemaObject
     {
         this.superiors.clear();
         this.superiors.addAll( superiors );
-        
+
         // update the OIDS now
         superiorOids.clear();
-        
+
         for ( ObjectClass oc : superiors )
         {
             superiorOids.add( oc.getOid() );
         }
     }
 
-    
+
     /**
      * Sets the superior object class OIDs
      * 
@@ -513,7 +514,7 @@ public class ObjectClass extends SchemaObject
             this.superiorOids = superiorOids;
         }
     }
-    
+
 
     /**
      * Gets the type of this ObjectClass as a type safe enum.
@@ -524,8 +525,8 @@ public class ObjectClass extends SchemaObject
     {
         return objectClassType;
     }
-    
-    
+
+
     /**
      * Set the ObjectClass type, one of ABSTRACT, AUXILIARY or STRUCTURAL.
      * 
@@ -538,8 +539,8 @@ public class ObjectClass extends SchemaObject
             this.objectClassType = objectClassType;
         }
     }
-    
-    
+
+
     /**
      * Tells if the current ObjectClass is STRUCTURAL
      * 
@@ -549,7 +550,7 @@ public class ObjectClass extends SchemaObject
     {
         return objectClassType == ObjectClassTypeEnum.STRUCTURAL;
     }
-    
+
 
     /**
      * Tells if the current ObjectClass is ABSTRACT
@@ -560,7 +561,7 @@ public class ObjectClass extends SchemaObject
     {
         return objectClassType == ObjectClassTypeEnum.ABSTRACT;
     }
-    
+
 
     /**
      * Tells if the current ObjectClass is AUXILIARY
@@ -581,57 +582,57 @@ public class ObjectClass extends SchemaObject
         return objectType + " " + DescriptionUtils.getDescription( this );
     }
 
-    
+
     /**
      * Copy an ObjectClass
      */
     public ObjectClass copy()
     {
         ObjectClass copy = new ObjectClass( oid );
-        
+
         // Copy the SchemaObject common data
         copy.copy( this );
-        
+
         // Copy the ObjectClass type
         copy.objectClassType = objectClassType;
-        
+
         // Copy the Superiors ObjectClasses OIDs
         copy.superiorOids = new ArrayList<String>();
-        
+
         for ( String oid : superiorOids )
         {
             copy.superiorOids.add( oid );
         }
-        
+
         // Copy the Superiors ObjectClasses ( will be empty )
         copy.superiors = new ArrayList<ObjectClass>();
-        
+
         // Copy the MAY AttributeTypes OIDs
         copy.mayAttributeTypeOids = new ArrayList<String>();
-        
+
         for ( String oid : mayAttributeTypeOids )
         {
             copy.mayAttributeTypeOids.add( oid );
         }
-        
+
         // Copy the MAY AttributeTypes ( will be empty )
         copy.mayAttributeTypes = new ArrayList<AttributeType>();
-        
+
         // Copy the MUST AttributeTypes OIDs
         copy.mustAttributeTypeOids = new ArrayList<String>();
-        
+
         for ( String oid : mustAttributeTypeOids )
         {
             copy.mustAttributeTypeOids.add( oid );
         }
-        
+
         // Copy the MUST AttributeTypes ( will be empty )
         copy.mustAttributeTypes = new ArrayList<AttributeType>();
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -646,21 +647,21 @@ public class ObjectClass extends SchemaObject
         {
             return false;
         }
-        
-        ObjectClass that = (ObjectClass)o;
-        
+
+        ObjectClass that = ( ObjectClass ) o;
+
         // The ObjectClassType
         if ( objectClassType != that.objectClassType )
         {
             return false;
         }
-        
+
         // The Superiors OIDs
         if ( superiorOids.size() != that.superiorOids.size() )
         {
             return false;
         }
-        
+
         // One way
         for ( String oid : superiorOids )
         {
@@ -684,7 +685,7 @@ public class ObjectClass extends SchemaObject
         {
             return false;
         }
-        
+
         // One way
         for ( ObjectClass oid : superiors )
         {
@@ -702,13 +703,13 @@ public class ObjectClass extends SchemaObject
                 return false;
             }
         }
-        
+
         // The MAY OIDs
         if ( mayAttributeTypeOids.size() != that.mayAttributeTypeOids.size() )
         {
             return false;
         }
-        
+
         // One way
         for ( String oid : mayAttributeTypeOids )
         {
@@ -732,7 +733,7 @@ public class ObjectClass extends SchemaObject
         {
             return false;
         }
-        
+
         // One way
         for ( AttributeType oid : mayAttributeTypes )
         {
@@ -756,7 +757,7 @@ public class ObjectClass extends SchemaObject
         {
             return false;
         }
-        
+
         // One way
         for ( String oid : mustAttributeTypeOids )
         {
@@ -780,7 +781,7 @@ public class ObjectClass extends SchemaObject
         {
             return false;
         }
-        
+
         // One way
         for ( AttributeType oid : mustAttributeTypes )
         {
@@ -801,8 +802,8 @@ public class ObjectClass extends SchemaObject
 
         return true;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -810,7 +811,7 @@ public class ObjectClass extends SchemaObject
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         mayAttributeTypes.clear();
         mayAttributeTypeOids.clear();

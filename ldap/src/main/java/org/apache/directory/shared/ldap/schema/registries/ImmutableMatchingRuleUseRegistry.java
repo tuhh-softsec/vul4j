@@ -41,7 +41,8 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
 {
     /** The wrapped MatchingRuleUse registry */
     MatchingRuleUseRegistry immutableMatchingRuleUseRegistry;
-    
+
+
     /**
      * Creates a new instance of ImmutableMatchingRuleUseRegistry.
      *
@@ -51,17 +52,17 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
     {
         immutableMatchingRuleUseRegistry = matchingRuleUseRegistry;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public ImmutableMatchingRuleUseRegistry copy()
     {
-        return (ImmutableMatchingRuleUseRegistry)immutableMatchingRuleUseRegistry.copy();
+        return ( ImmutableMatchingRuleUseRegistry ) immutableMatchingRuleUseRegistry.copy();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -139,7 +140,8 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void register( MatchingRuleUse schemaObject ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -148,7 +150,8 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -157,7 +160,8 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public MatchingRuleUse unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -166,7 +170,8 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -184,6 +189,17 @@ public class ImmutableMatchingRuleUseRegistry implements MatchingRuleUseRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MatchingRuleUse unregister( MatchingRuleUse schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the MatchingRuleUseRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

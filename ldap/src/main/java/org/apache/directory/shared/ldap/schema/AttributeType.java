@@ -140,7 +140,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class AttributeType extends SchemaObject implements Cloneable
+public class AttributeType extends AbstractSchemaObject implements Cloneable
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( AttributeType.class );
@@ -597,7 +597,7 @@ public class AttributeType extends SchemaObject implements Cloneable
 
 
     /**
-     * Inject the registries into this Object, updating the references to
+     * Inject the attributeType into the registries, updating the references to
      * other SchemaObject.
      * 
      * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX), 
@@ -606,7 +606,7 @@ public class AttributeType extends SchemaObject implements Cloneable
      * @param registries The Registries
      * @exception If the AttributeType is not valid 
      */
-    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
@@ -672,6 +672,62 @@ public class AttributeType extends SchemaObject implements Cloneable
             if ( superior != null )
             {
                 registries.addReference( this, superior );
+            }
+        }
+    }
+
+
+    /**
+     * Remove the attributeType from the registries, updating the references to
+     * other SchemaObject.
+     * 
+     * If one of the referenced SchemaObject does not exist (SUP, EQUALITY, ORDERING, SUBSTR, SYNTAX), 
+     * an exception is thrown.
+     *
+     * @param registries The Registries
+     * @exception If the AttributeType is not valid 
+     */
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            AttributeTypeRegistry attributeTypeRegistry = registries.getAttributeTypeRegistry();
+
+            // Remove the attributeType from the oid/normalizer map
+            attributeTypeRegistry.removeMappingFor( this );
+
+            // Register this AttributeType into the Descendant map
+            attributeTypeRegistry.unregisterDescendants( this, superior );
+
+            /**
+             * Add the AT references (using and usedBy) : 
+             * AT -> MR (for EQUALITY, ORDERING and SUBSTR)
+             * AT -> S
+             * AT -> AT
+             */
+            if ( equality != null )
+            {
+                registries.delReference( this, equality );
+            }
+
+            if ( ordering != null )
+            {
+                registries.delReference( this, ordering );
+            }
+
+            if ( substring != null )
+            {
+                registries.delReference( this, substring );
+            }
+
+            if ( syntax != null )
+            {
+                registries.delReference( this, syntax );
+            }
+
+            if ( superior != null )
+            {
+                registries.delReference( this, superior );
             }
         }
     }

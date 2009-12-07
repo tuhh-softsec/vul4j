@@ -41,7 +41,8 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
 {
     /** The wrapped DITStructureRule registry */
     DITStructureRuleRegistry immutableDITStructureRuleRegistry;
-    
+
+
     /**
      * Creates a new instance of ImmutableDITStructureRuleRegistry.
      *
@@ -61,7 +62,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
         return immutableDITStructureRuleRegistry.contains( ruleId );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,8 +70,8 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     {
         return immutableDITStructureRuleRegistry.iterator();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -78,8 +79,8 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     {
         return immutableDITStructureRuleRegistry.ruleIdIterator();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -88,7 +89,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
         return immutableDITStructureRuleRegistry.getSchemaName( ruleId );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -96,7 +97,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     {
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -111,37 +112,40 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
      */
     public void unregister( int ruleId ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public ImmutableDITStructureRuleRegistry copy()
     {
-        return (ImmutableDITStructureRuleRegistry)immutableDITStructureRuleRegistry.copy();
+        return ( ImmutableDITStructureRuleRegistry ) immutableDITStructureRuleRegistry.copy();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -210,7 +214,8 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
      */
     public DITStructureRule unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -228,6 +233,17 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public DITStructureRule unregister( DITStructureRule schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the DITStructureRuleRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

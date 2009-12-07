@@ -32,7 +32,6 @@ import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
-import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
@@ -187,6 +186,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
             }
         }
 
+        /*
         try
         {
             // And recurse until we reach the top of the hierarchy
@@ -196,6 +196,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
         {
             throw new NoSuchAttributeException( ne.getMessage() );
         }
+        */
     }
 
 
@@ -260,7 +261,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     /**
      * Remove the AttributeType normalizer from the OidNormalizer map 
      */
-    private void removeMappingFor( SchemaObject attributeType )
+    public void removeMappingFor( AttributeType attributeType ) throws NamingException
     {
         if ( attributeType == null )
         {

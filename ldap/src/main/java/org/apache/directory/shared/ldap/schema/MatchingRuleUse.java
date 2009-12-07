@@ -85,7 +85,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class MatchingRuleUse extends SchemaObject
+public class MatchingRuleUse extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -95,35 +95,37 @@ public class MatchingRuleUse extends SchemaObject
 
     /** The list of attributes types the matching rule applies to */
     private List<AttributeType> applicableAttributes;
-    
+
+
     /**
      * Creates a new instance of MatchingRuleUseDescription
      */
     public MatchingRuleUse( String oid )
     {
-        super(  SchemaObjectType.MATCHING_RULE_USE, oid );
-        
+        super( SchemaObjectType.MATCHING_RULE_USE, oid );
+
         applicableAttributeOids = new ArrayList<String>();
         applicableAttributes = new ArrayList<AttributeType>();
     }
-    
+
 
     /**
-     * Inject the registries into this Object, updating the references to
+     * Inject the MatchingRuleUse into the registries, updating the references to
      * other SchemaObject
      *
      * @param registries The Registries
+     * @exception If the addition failed
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void addToRegistries( Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
             AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
-            
+
             if ( applicableAttributeOids != null )
             {
                 applicableAttributes = new ArrayList<AttributeType>( applicableAttributeOids.size() );
-                
+
                 for ( String oid : applicableAttributeOids )
                 {
                     applicableAttributes.add( atRegistry.lookup( oid ) );
@@ -132,7 +134,7 @@ public class MatchingRuleUse extends SchemaObject
         }
     }
 
-    
+
     /**
      * @return The matchingRule's list of AttributeType OIDs the MRU applies to
      */
@@ -163,8 +165,8 @@ public class MatchingRuleUse extends SchemaObject
             this.applicableAttributeOids = applicableAttributeOids;
         }
     }
-    
-    
+
+
     /**
      * Set the matchingRule's AttributeType the MRU applies to.
      *
@@ -175,18 +177,18 @@ public class MatchingRuleUse extends SchemaObject
         if ( !isReadOnly )
         {
             this.applicableAttributes = applicableAttributes;
-            
+
             // update the OIDS now
             applicableAttributeOids.clear();
-            
+
             for ( AttributeType at : applicableAttributes )
             {
                 applicableAttributeOids.add( at.getOid() );
             }
         }
     }
-    
-    
+
+
     /**
      * Add a matchingRule's AttributeType OIDs the MRU applies to.
      *
@@ -213,7 +215,7 @@ public class MatchingRuleUse extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! applicableAttributeOids.contains( attributeType.getOid() ) )
+            if ( !applicableAttributeOids.contains( attributeType.getOid() ) )
             {
                 applicableAttributes.add( attributeType );
                 applicableAttributeOids.add( attributeType.getOid() );
@@ -229,8 +231,8 @@ public class MatchingRuleUse extends SchemaObject
     {
         return objectType + " " + DescriptionUtils.getDescription( this );
     }
-    
-    
+
+
     /**
      * Copy an MatchingRuleUse
      */
@@ -240,23 +242,23 @@ public class MatchingRuleUse extends SchemaObject
 
         // Copy the SchemaObject common data
         copy.copy( this );
-        
+
         // Clone the APPLY AttributeTypes
         copy.applicableAttributeOids = new ArrayList<String>();
-        
+
         // Copy the APPLIES oid list
         for ( String oid : applicableAttributeOids )
         {
             copy.applicableAttributeOids.add( oid );
         }
-        
+
         // Copy the APPLIES list (will be empty)
         copy.applicableAttributes = new ArrayList<AttributeType>();
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -271,14 +273,14 @@ public class MatchingRuleUse extends SchemaObject
         {
             return false;
         }
-        
-        MatchingRuleUse that = (MatchingRuleUse)o;
-        
+
+        MatchingRuleUse that = ( MatchingRuleUse ) o;
+
         // TODO : complete the checks
         return true;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -286,7 +288,7 @@ public class MatchingRuleUse extends SchemaObject
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         applicableAttributes.clear();
         applicableAttributeOids.clear();

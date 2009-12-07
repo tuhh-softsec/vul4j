@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
-import java.util.List;
-
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.entry.Value;
@@ -83,7 +81,7 @@ public class CachingNormalizer extends Normalizer
         cache = new SynchronizedLRUMap( cacheSz );
     }
 
-    
+
     /**
      * Overrides default behavior by returning the OID of the wrapped 
      * Normalizer.
@@ -93,8 +91,8 @@ public class CachingNormalizer extends Normalizer
     {
         return normalizer.getOid();
     }
-    
-    
+
+
     /**
      * Overrides default behavior by setting the OID of the wrapped Normalizer.
      * 
@@ -103,10 +101,10 @@ public class CachingNormalizer extends Normalizer
     @Override
     public void setOid( String oid )
     {
-    	super.setOid( oid );
+        super.setOid( oid );
         normalizer.setOid( oid );
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -118,7 +116,7 @@ public class CachingNormalizer extends Normalizer
             return null;
         }
 
-        Value<?> result = (Value<?>)cache.get( value );
+        Value<?> result = ( Value<?> ) cache.get( value );
 
         if ( result != null )
         {
@@ -141,7 +139,7 @@ public class CachingNormalizer extends Normalizer
             return null;
         }
 
-        String normalized = (String)cache.get( value );
+        String normalized = ( String ) cache.get( value );
 
         if ( normalized != null )
         {
@@ -157,12 +155,12 @@ public class CachingNormalizer extends Normalizer
     /**
      * {@inheritDoc}
      */
-    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void setRegistries( Registries registries )
     {
-        normalizer.applyRegistries( errors, registries );
+        normalizer.setRegistries( registries );
     }
-    
-    
+
+
     /**
      * Sets the SchemaManager
      * 
@@ -170,6 +168,6 @@ public class CachingNormalizer extends Normalizer
      */
     public void setSchemaManager( SchemaManager schemaManager )
     {
-        normalizer.setSchemaManager( schemaManager ); 
+        normalizer.setSchemaManager( schemaManager );
     }
 }

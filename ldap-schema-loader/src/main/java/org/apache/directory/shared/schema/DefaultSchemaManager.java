@@ -1166,19 +1166,11 @@ public class DefaultSchemaManager implements SchemaManager
 
 
     /**
-     * Check that the given OID does not already exist in the globalOidRegistry.
+     * Check that the given OID exists in the globalOidRegistry.
      */
-    private boolean checkOidIsUnique( SchemaObject schemaObject )
+    private boolean checkOidExist( SchemaObject schemaObject )
     {
-        if ( registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() ) )
-        {
-            Throwable error = new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
-                + " for new schema entity is not unique.", ResultCodeEnum.OTHER );
-            errors.add( error );
-            return false;
-        }
-
-        return true;
+        return registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() );
     }
 
 
@@ -1225,8 +1217,12 @@ public class DefaultSchemaManager implements SchemaManager
         {
             // Clone, apply, check, then apply again if ok
             // The new schemaObject's OID must not already exist
-            if ( !checkOidIsUnique( copy ) )
+            if ( checkOidExist( copy ) )
             {
+                Throwable error = new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
+                    + " for new schema entity is not unique.", ResultCodeEnum.OTHER );
+                errors.add( error );
+
                 return false;
             }
 
@@ -1296,9 +1292,90 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public SchemaObject unregister( SchemaObject schemaObject ) throws NamingException
+    public boolean delete( SchemaObject schemaObject ) throws Exception
     {
-        return registries.unregister( schemaObject );
+        // First, clear the errors
+        errors.clear();
+
+        if ( registries.isRelaxed() )
+        {
+            // Apply the addition right away
+            registries.delete( errors, schemaObject );
+
+            return errors.isEmpty();
+        }
+        else
+        {
+            // Clone, apply, check, then apply again if ok
+            // The new schemaObject's OID must exist
+            if ( !checkOidExist( schemaObject ) )
+            {
+                Throwable error = new LdapSchemaViolationException( "Oid " + schemaObject.getOid()
+                    + " for new schema entity does not exist.", ResultCodeEnum.OTHER );
+                errors.add( error );
+                return false;
+            }
+
+            // Build the new AttributeType from the given entry
+            SchemaObject toDelete = registries.getGlobalOidRegistry().getSchemaObject( schemaObject.getOid() );
+            String schemaName = getSchemaName( toDelete );
+
+            // At this point, the deleted AttributeType may be referenced, it will be checked
+            // there, if the schema and the AttributeType are both enabled.
+            Schema schema = getLoadedSchema( schemaName );
+
+            if ( schema == null )
+            {
+                // The SchemaObject must be associated with an existing schema
+                String msg = "Cannot delete the SchemaObject " + schemaObject.getOid()
+                    + " as it's not associated with a schema";
+                LOG.info( msg );
+                Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                errors.add( error );
+                return false;
+            }
+
+            if ( schema.isEnabled() && schemaObject.isEnabled() )
+            {
+                // As we may break the registries, work on a cloned registries
+                Registries clonedRegistries = registries.clone();
+
+                // Delete the SchemaObject from the cloned registries
+                clonedRegistries.delete( errors, toDelete );
+
+                // Remove the cloned registries
+                clonedRegistries.clear();
+
+                // If we didn't get any error, apply the deletion to the real retistries
+                if ( errors.isEmpty() )
+                {
+                    // Apply the deletion to the real registries
+                    registries.delete( errors, toDelete );
+
+                    LOG.debug( "Removed {} from the enabled schema {}", toDelete.getName(), schemaName );
+
+                    return true;
+                }
+                else
+                {
+                    // We have some error : reject the deletion and get out
+                    String msg = "Cannot deete the SchemaObject " + schemaObject.getOid() + " from the registries, "
+                        + "the resulting registries would be inconsistent :" + StringTools.listToString( errors );
+                    LOG.info( msg );
+
+                    return false;
+                }
+            }
+            else
+            {
+                // At least, we register the OID in the globalOidRegistry, and associates it with the
+                // schema
+                registries.associateWithSchema( errors, schemaObject );
+
+                LOG.debug( "Removed {} from the disabled schema {}", schemaObject.getName(), schemaName );
+                return errors.isEmpty();
+            }
+        }
     }
 
 

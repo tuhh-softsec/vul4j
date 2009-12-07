@@ -82,7 +82,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class MatchingRule extends SchemaObject
+public class MatchingRule extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -95,10 +95,11 @@ public class MatchingRule extends SchemaObject
 
     /** The associated LdapSyntax */
     protected LdapSyntax ldapSyntax;
-    
+
     /** The associated LdapSyntax OID */
     private String ldapSyntaxOid;
-    
+
+
     /**
      * Creates a new instance of MatchingRule.
      *
@@ -112,26 +113,27 @@ public class MatchingRule extends SchemaObject
 
 
     /**
-     * Inject the registries into this Object, updating the references to
+     * Inject the MatchingRule into the registries, updating the references to
      * other SchemaObject
      *
      * @param registries The Registries
+     * @exception If the addition failed
      */
-    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
             try
             {
                 // Gets the associated Comparator 
-                ldapComparator = (LdapComparator<? super Object>)registries.getComparatorRegistry().lookup( oid );
+                ldapComparator = ( LdapComparator<? super Object> ) registries.getComparatorRegistry().lookup( oid );
             }
             catch ( NamingException ne )
             {
                 // Default to a catch all comparator
                 ldapComparator = new ComparableComparator( oid );
             }
-    
+
             try
             {
                 // Gets the associated Normalizer
@@ -142,7 +144,7 @@ public class MatchingRule extends SchemaObject
                 // Default to the NoOp normalizer
                 normalizer = new NoOpNormalizer( oid );
             }
-            
+
             try
             {
                 // Get the associated LdapSyntax
@@ -151,10 +153,11 @@ public class MatchingRule extends SchemaObject
             catch ( NamingException ne )
             {
                 // The Syntax is a mandatory element, it must exist.
-                throw new LdapSchemaViolationException( "The created MatchingRule must refers to an existing SYNTAX element", 
+                throw new LdapSchemaViolationException(
+                    "The created MatchingRule must refers to an existing SYNTAX element",
                     ResultCodeEnum.UNWILLING_TO_PERFORM );
             }
-            
+
             /**
              * Add the MR references (using and usedBy) : 
              * MR -> C
@@ -165,32 +168,32 @@ public class MatchingRule extends SchemaObject
             {
                 registries.addReference( this, ldapComparator );
             }
-            
+
             if ( normalizer != null )
             {
                 registries.addReference( this, normalizer );
             }
-            
+
             if ( ldapSyntax != null )
             {
                 registries.addReference( this, ldapSyntax );
             }
-            
+
         }
     }
-    
-    
+
+
     /**
      * Gets the LdapSyntax used by this MatchingRule.
      * 
      * @return the LdapSyntax of this MatchingRule
      */
-    public LdapSyntax getSyntax() 
+    public LdapSyntax getSyntax()
     {
         return ldapSyntax;
     }
 
-    
+
     /**
      * Gets the LdapSyntax OID used by this MatchingRule.
      * 
@@ -202,7 +205,7 @@ public class MatchingRule extends SchemaObject
         return ldapSyntaxOid;
     }
 
-    
+
     /**
      * Sets the Syntax's OID
      *
@@ -216,7 +219,7 @@ public class MatchingRule extends SchemaObject
         }
     }
 
-    
+
     /**
      * Sets the Syntax
      *
@@ -266,7 +269,7 @@ public class MatchingRule extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            this.ldapComparator = (LdapComparator<? super Object>)ldapComparator;
+            this.ldapComparator = ( LdapComparator<? super Object> ) ldapComparator;
         }
     }
 
@@ -278,7 +281,7 @@ public class MatchingRule extends SchemaObject
      */
     public void updateLdapComparator( LdapComparator<?> ldapComparator )
     {
-        this.ldapComparator = (LdapComparator<? super Object>)ldapComparator;
+        this.ldapComparator = ( LdapComparator<? super Object> ) ldapComparator;
     }
 
 
@@ -318,8 +321,8 @@ public class MatchingRule extends SchemaObject
     {
         this.normalizer = normalizer;
     }
-    
-    
+
+
     /**
      * @see Object#toString()
      */
@@ -327,8 +330,8 @@ public class MatchingRule extends SchemaObject
     {
         return objectType + " " + DescriptionUtils.getDescription( this );
     }
-    
-    
+
+
     /**
      * Copy an MatchingRule
      */
@@ -343,14 +346,14 @@ public class MatchingRule extends SchemaObject
         copy.ldapComparator = null;
         copy.ldapSyntax = null;
         copy.normalizer = null;
-        
+
         // Copy the syntax OID
         copy.ldapSyntaxOid = ldapSyntaxOid;
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#equals()
      */
@@ -365,9 +368,9 @@ public class MatchingRule extends SchemaObject
         {
             return false;
         }
-        
-        MatchingRule that = (MatchingRule)o;
-        
+
+        MatchingRule that = ( MatchingRule ) o;
+
         // Check the Comparator
         if ( ldapComparator != null )
         {
@@ -383,8 +386,7 @@ public class MatchingRule extends SchemaObject
                 return false;
             }
         }
-            
-        
+
         // Check the Normalizer
         if ( normalizer != null )
         {
@@ -400,17 +402,17 @@ public class MatchingRule extends SchemaObject
                 return false;
             }
         }
-        
+
         // Check the Syntax
         if ( !compareOid( ldapSyntaxOid, that.ldapSyntaxOid ) )
         {
             return false;
         }
-        
+
         return ldapSyntax.equals( that.ldapSyntax );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -418,7 +420,7 @@ public class MatchingRule extends SchemaObject
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         ldapComparator = null;
         ldapSyntax = null;

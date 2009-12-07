@@ -41,7 +41,8 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
 {
     /** The wrapped SyntaxChecker registry */
     SyntaxCheckerRegistry immutableSyntaxCheckerRegistry;
-    
+
+
     /**
      * Creates a new instance of ImmutableSyntaxCheckerRegistry.
      *
@@ -51,14 +52,15 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
     {
         immutableSyntaxCheckerRegistry = syntaxCheckerRegistry;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public void register( SyntaxChecker syntaxChecker ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -67,28 +69,30 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
      */
     public SyntaxChecker unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public ImmutableSyntaxCheckerRegistry copy()
     {
-        return (ImmutableSyntaxCheckerRegistry)immutableSyntaxCheckerRegistry.copy();
+        return ( ImmutableSyntaxCheckerRegistry ) immutableSyntaxCheckerRegistry.copy();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -166,7 +170,8 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
      */
     public void renameSchema( String originalSchemaName, String newSchemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -184,6 +189,17 @@ public class ImmutableSyntaxCheckerRegistry implements SyntaxCheckerRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SyntaxChecker unregister( SyntaxChecker schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the SyntaxCheckerRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

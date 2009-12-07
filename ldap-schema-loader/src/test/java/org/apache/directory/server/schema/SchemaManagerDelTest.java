@@ -45,12 +45,12 @@ import org.junit.Test;
 
 
 /**
- * A test class for SchemaManager, testig the addition of a SchemaObject.
+ * A test class for SchemaManager, testing the deletion of a SchemaObject.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SchemaManagerAddTest
+public class SchemaManagerDelTest
 {
     // A directory in which the ldif files will be stored
     private static String workingDirectory;
@@ -66,7 +66,7 @@ public class SchemaManagerAddTest
 
         if ( workingDirectory == null )
         {
-            String path = SchemaManagerAddTest.class.getResource( "" ).getPath();
+            String path = SchemaManagerDelTest.class.getResource( "" ).getPath();
             int targetPos = path.indexOf( "target" );
             workingDirectory = path.substring( 0, targetPos + 6 );
         }
@@ -124,18 +124,18 @@ public class SchemaManagerAddTest
     //=========================================================================
     // For each test, we will check many different things.
     // If the test is successful, we want to know if the SchemaObject
-    // Registry has grown : its size must be one bigger. If the SchemaObject
+    // Registry has shrunk : its size must be one lower. If the SchemaObject
     // is not loadable, then the GlobalOidRegistry must also have grown.
     //=========================================================================
-    // AttributeType addition tests
+    // AttributeType deletion tests
     //-------------------------------------------------------------------------
-    // First, not defined superior
+    // First, not defined descendant
     //-------------------------------------------------------------------------
     /**
-     * Try to inject an AttributeType without any superior nor Syntax : it's invalid
+     * Try to delete an AttributeType not existing in the schemaManager
      */
     @Test
-    public void testAddAttributeTypeNoSupNoSyntaxNoSuperior() throws Exception
+    public void testDelNonExistentAttributeType() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
@@ -146,14 +146,44 @@ public class SchemaManagerAddTest
         attributeType.setOrderingOid( null );
         attributeType.setSubstringOid( null );
 
-        // It should fail
-        assertFalse( schemaManager.add( attributeType ) );
+        // It should not fail
+        assertFalse( schemaManager.delete( attributeType ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-        Throwable error = errors.get( 0 );
+        assertFalse( errors.isEmpty() );
 
-        assertTrue( error instanceof LdapSchemaViolationException );
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Delete an existing AT not referecend by any object
+     */
+    @Test
+    public void testDelExistingAttributeTypeNoReference() throws Exception
+    {
+        // First inject such an AT
+        SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        AttributeType attributeType = new AttributeType( "1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( null );
+        attributeType.setSubstringOid( null );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+
+        // It should not fail
+        assertTrue( schemaManager.add( attributeType ) );
+
+        assertTrue( isATPresent( schemaManager, "1.1.0" ) );
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+
+        // Now delete it
+        // It should not fail
+        assertTrue( schemaManager.delete( attributeType ) );
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );

@@ -71,17 +71,18 @@ import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxC
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 437007 $
  */
-public class LdapSyntax extends SchemaObject
+public class LdapSyntax extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
-    
+
     /** the human readable flag */
     protected boolean isHumanReadable = false;
-    
+
     /** The associated SyntaxChecker */
     protected SyntaxChecker syntaxChecker;
-    
+
+
     /**
      * Creates a Syntax object using a unique OID.
      * 
@@ -110,7 +111,7 @@ public class LdapSyntax extends SchemaObject
      * 
      * @param oid the OID for this Syntax
      */
-    public LdapSyntax( String oid, String description, boolean isHumanReadable  )
+    public LdapSyntax( String oid, String description, boolean isHumanReadable )
     {
         super( SchemaObjectType.LDAP_SYNTAX, oid );
         this.description = description;
@@ -128,7 +129,7 @@ public class LdapSyntax extends SchemaObject
         return isHumanReadable;
     }
 
-    
+
     /**
      * Sets the human readable flag value.
      * 
@@ -136,12 +137,12 @@ public class LdapSyntax extends SchemaObject
      */
     public void setHumanReadable( boolean isHumanReadable )
     {
-        if ( ! isReadOnly )
+        if ( !isReadOnly )
         {
             this.isHumanReadable = isHumanReadable;
         }
     }
-    
+
 
     /**
      * Gets the SyntaxChecker used to validate values in accordance with this
@@ -153,8 +154,8 @@ public class LdapSyntax extends SchemaObject
     {
         return syntaxChecker;
     }
-    
-    
+
+
     /**
      * Sets the associated SyntaxChecker
      *
@@ -162,13 +163,13 @@ public class LdapSyntax extends SchemaObject
      */
     public void setSyntaxChecker( SyntaxChecker syntaxChecker )
     {
-        if ( ! isReadOnly )
+        if ( !isReadOnly )
         {
             this.syntaxChecker = syntaxChecker;
         }
     }
-    
-    
+
+
     /**
      * Update the associated SyntaxChecker, even if the SchemaObject is readOnly
      *
@@ -190,12 +191,13 @@ public class LdapSyntax extends SchemaObject
 
 
     /**
-     * Inject the registries into this Object, updating the references to
+     * Inject the Syntax into the registries, updating the references to
      * other SchemaObject
      *
      * @param registries The Registries
+     * @exception If the addition failed
      */
-    public void applyRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
@@ -229,17 +231,17 @@ public class LdapSyntax extends SchemaObject
 
         // Copy the SchemaObject common data
         copy.copy( this );
-        
+
         // Copy the HR flag
         copy.isHumanReadable = isHumanReadable;
-        
+
         // All the references to other Registries object are set to null.
         copy.syntaxChecker = null;
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#equals()
      */
@@ -254,20 +256,20 @@ public class LdapSyntax extends SchemaObject
         {
             return false;
         }
-        
-        LdapSyntax that = (LdapSyntax)o;
-        
+
+        LdapSyntax that = ( LdapSyntax ) o;
+
         // IsHR
         if ( isHumanReadable != that.isHumanReadable )
         {
             return false;
         }
-        
+
         // Check the SyntaxChecker (not a equals)
         return syntaxChecker.getOid().equals( that.syntaxChecker.getOid() );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -275,7 +277,7 @@ public class LdapSyntax extends SchemaObject
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         syntaxChecker = null;
     }

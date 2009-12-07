@@ -43,7 +43,8 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
 {
     /** The wrapped AttributeType registry */
     AttributeTypeRegistry immutableAttributeTypeRegistry;
-    
+
+
     /**
      * Creates a new instance of ImmutableAttributeTypeRegistry.
      *
@@ -53,8 +54,8 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     {
         immutableAttributeTypeRegistry = attributeTypeRegistry;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -62,8 +63,8 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     {
         return immutableAttributeTypeRegistry.getNormalizerMapping();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -71,8 +72,8 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     {
         return immutableAttributeTypeRegistry.hasDescendants( ancestorId );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -80,52 +81,65 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     {
         return immutableAttributeTypeRegistry.descendants( ancestorId );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public void register( AttributeType attributeType ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
-    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) 
-        throws NamingException
+    public void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
-    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) 
-        throws NamingException
+    public void unregisterDescendants( AttributeType attributeType, AttributeType ancestor ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public AttributeType unregister( String numericOid ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     public void addMappingFor( AttributeType attributeType ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeMappingFor( AttributeType attributeType ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -136,7 +150,8 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     {
         return immutableAttributeTypeRegistry.lookup( oid );
     }
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -144,17 +159,17 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
     {
         return immutableAttributeTypeRegistry.toString();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public AttributeTypeRegistry copy()
     {
-        return (AttributeTypeRegistry)immutableAttributeTypeRegistry.copy();
+        return ( AttributeTypeRegistry ) immutableAttributeTypeRegistry.copy();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -163,7 +178,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
         return immutableAttributeTypeRegistry.size();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -222,7 +237,7 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      * {@inheritDoc}
      */
     public void renameSchema( String originalSchemaName, String newSchemaName )
-    {        
+    {
         // Do nothing
     }
 
@@ -232,7 +247,8 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void unregisterSchemaElements( String schemaName ) throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 
 
@@ -250,6 +266,17 @@ public class ImmutableAttributeTypeRegistry implements AttributeTypeRegistry
      */
     public void clear() throws NamingException
     {
-        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy", ResultCodeEnum.NO_SUCH_OPERATION );
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public AttributeType unregister( AttributeType schemaObject ) throws NamingException
+    {
+        throw new LdapOperationNotSupportedException( "Cannot modify the AttributeTypeRegistry copy",
+            ResultCodeEnum.NO_SUCH_OPERATION );
     }
 }

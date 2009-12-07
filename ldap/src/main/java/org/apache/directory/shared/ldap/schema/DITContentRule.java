@@ -116,11 +116,11 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class DITContentRule extends SchemaObject
+public class DITContentRule extends AbstractSchemaObject
 {
     /** The serialVersionUID */
     public static final long serialVersionUID = 1L;
-    
+
     /** The list of Auxiliary ObjectClass OIDs entries may belong to */
     private List<String> auxObjectClassOids;
 
@@ -138,12 +138,13 @@ public class DITContentRule extends SchemaObject
 
     /** The list of required AttributeTypes */
     private List<AttributeType> mustAttributeTypes;
-    
+
     /** The list of precluded AttributeType OIDs */
     private List<String> notAttributeTypeOids;
 
     /** The list of precluded AttributeTypes */
     private List<AttributeType> notAttributeTypes;
+
 
     /**
      * Creates a DITContentRule object using a unique OID.
@@ -153,7 +154,7 @@ public class DITContentRule extends SchemaObject
     public DITContentRule( String oid )
     {
         super( SchemaObjectType.DIT_CONTENT_RULE, oid );
-        
+
         mayAttributeTypeOids = new ArrayList<String>();
         mustAttributeTypeOids = new ArrayList<String>();
         notAttributeTypeOids = new ArrayList<String>();
@@ -165,7 +166,7 @@ public class DITContentRule extends SchemaObject
         auxObjectClasses = new ArrayList<ObjectClass>();
     }
 
-    
+
     /**
      * @return the auxObjectClassOids
      */
@@ -174,7 +175,7 @@ public class DITContentRule extends SchemaObject
         return auxObjectClassOids;
     }
 
-    
+
     /**
      * Add an Auxiliary ObjectClass Oid
      *
@@ -198,14 +199,14 @@ public class DITContentRule extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! auxObjectClassOids.contains( objectClass.getOid() ) )
+            if ( !auxObjectClassOids.contains( objectClass.getOid() ) )
             {
                 auxObjectClasses.add( objectClass );
                 auxObjectClassOids.add( objectClass.getOid() );
             }
         }
     }
-    
+
 
     /**
      * @param auxObjectClassOids the auxObjectClassOids to set
@@ -227,18 +228,18 @@ public class DITContentRule extends SchemaObject
         if ( !isReadOnly )
         {
             this.auxObjectClasses = auxObjectClasses;
-            
+
             // update the OIDS now
             auxObjectClassOids.clear();
-            
+
             for ( ObjectClass oc : auxObjectClasses )
             {
                 auxObjectClassOids.add( oc.getOid() );
             }
         }
     }
-    
-    
+
+
     /**
      * @return the auxObjectClasses
      */
@@ -247,7 +248,7 @@ public class DITContentRule extends SchemaObject
         return auxObjectClasses;
     }
 
-    
+
     /**
      * @return the mayAttributeTypeOids
      */
@@ -280,7 +281,7 @@ public class DITContentRule extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! mayAttributeTypeOids.contains( attributeType.getOid() ) )
+            if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
             {
                 mayAttributeTypes.add( attributeType );
                 mayAttributeTypeOids.add( attributeType.getOid() );
@@ -288,7 +289,7 @@ public class DITContentRule extends SchemaObject
         }
     }
 
-    
+
     /**
      * @param mayAttributeTypeOids the mayAttributeTypeOids to set
      */
@@ -299,8 +300,8 @@ public class DITContentRule extends SchemaObject
             this.mayAttributeTypeOids = mayAttributeTypeOids;
         }
     }
-    
-    
+
+
     /**
      * Sets the list of allowed AttributeTypes
      *
@@ -311,10 +312,10 @@ public class DITContentRule extends SchemaObject
         if ( !isReadOnly )
         {
             this.mayAttributeTypes = mayAttributeTypes;
-            
+
             // update the OIDS now
             mayAttributeTypeOids.clear();
-            
+
             for ( AttributeType may : mayAttributeTypes )
             {
                 mayAttributeTypeOids.add( may.getOid() );
@@ -340,7 +341,7 @@ public class DITContentRule extends SchemaObject
         return mustAttributeTypeOids;
     }
 
-    
+
     /**
      * Add a required AttributeType OID
      *
@@ -364,7 +365,7 @@ public class DITContentRule extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! mustAttributeTypeOids.contains( attributeType.getOid() ) )
+            if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
             {
                 mustAttributeTypes.add( attributeType );
                 mustAttributeTypeOids.add( attributeType.getOid() );
@@ -384,7 +385,7 @@ public class DITContentRule extends SchemaObject
         }
     }
 
-    
+
     /**
      * Sets the list of required AttributeTypes
      *
@@ -395,10 +396,10 @@ public class DITContentRule extends SchemaObject
         if ( !isReadOnly )
         {
             this.mustAttributeTypes = mustAttributeTypes;
-            
+
             // update the OIDS now
             mustAttributeTypeOids.clear();
-            
+
             for ( AttributeType may : mustAttributeTypes )
             {
                 mustAttributeTypeOids.add( may.getOid() );
@@ -448,7 +449,7 @@ public class DITContentRule extends SchemaObject
     {
         if ( !isReadOnly )
         {
-            if ( ! notAttributeTypeOids.contains( attributeType.getOid() ) )
+            if ( !notAttributeTypeOids.contains( attributeType.getOid() ) )
             {
                 notAttributeTypes.add( attributeType );
                 notAttributeTypeOids.add( attributeType.getOid() );
@@ -468,7 +469,7 @@ public class DITContentRule extends SchemaObject
         }
     }
 
-    
+
     /**
      * Sets the list of precluded AttributeTypes
      *
@@ -479,10 +480,10 @@ public class DITContentRule extends SchemaObject
         if ( !isReadOnly )
         {
             this.notAttributeTypes = notAttributeTypes;
-            
+
             // update the OIDS now
             notAttributeTypeOids.clear();
-            
+
             for ( AttributeType not : notAttributeTypes )
             {
                 notAttributeTypeOids.add( not.getOid() );
@@ -498,25 +499,26 @@ public class DITContentRule extends SchemaObject
     {
         return notAttributeTypes;
     }
-    
-    
+
+
     /**
-     * Inject the registries into this Object, updating the references to
+     * Inject the DITContentRule into the registries, updating the references to
      * other SchemaObject
      *
      * @param registries The Registries
+     * @exception If the addition failed
      */
-    public void applyRegistries( Registries registries ) throws NamingException
+    public void addToRegistries( Registries registries ) throws NamingException
     {
         if ( registries != null )
         {
             AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
             ObjectClassRegistry ocRegistry = registries.getObjectClassRegistry();
-            
+
             if ( mayAttributeTypeOids != null )
             {
                 mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
-                
+
                 for ( String oid : mayAttributeTypeOids )
                 {
                     mayAttributeTypes.add( atRegistry.lookup( oid ) );
@@ -526,7 +528,7 @@ public class DITContentRule extends SchemaObject
             if ( mustAttributeTypeOids != null )
             {
                 mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
-                
+
                 for ( String oid : mustAttributeTypeOids )
                 {
                     mustAttributeTypes.add( atRegistry.lookup( oid ) );
@@ -536,17 +538,17 @@ public class DITContentRule extends SchemaObject
             if ( notAttributeTypeOids != null )
             {
                 notAttributeTypes = new ArrayList<AttributeType>( notAttributeTypeOids.size() );
-                
+
                 for ( String oid : notAttributeTypeOids )
                 {
                     notAttributeTypes.add( atRegistry.lookup( oid ) );
                 }
             }
-            
+
             if ( auxObjectClassOids != null )
             {
                 auxObjectClasses = new ArrayList<ObjectClass>( auxObjectClassOids.size() );
-                
+
                 for ( String oid : auxObjectClassOids )
                 {
                     auxObjectClasses.add( ocRegistry.lookup( oid ) );
@@ -574,55 +576,55 @@ public class DITContentRule extends SchemaObject
 
         // Copy the SchemaObject common data
         copy.copy( this );
-        
+
         // copy the AUX ObjectClasses OIDs
         copy.auxObjectClassOids = new ArrayList<String>();
-        
+
         for ( String oid : auxObjectClassOids )
         {
             copy.auxObjectClassOids.add( oid );
         }
-        
+
         // copy the AUX ObjectClasses ( will be empty )
         copy.auxObjectClasses = new ArrayList<ObjectClass>();
-        
+
         // Clone the MAY AttributeTypes OIDs
         copy.mayAttributeTypeOids = new ArrayList<String>();
-        
+
         for ( String oid : mayAttributeTypeOids )
         {
             copy.mayAttributeTypeOids.add( oid );
         }
-        
+
         // Clone the MAY AttributeTypes ( will be empty )
         copy.mayAttributeTypes = new ArrayList<AttributeType>();
-        
+
         // Clone the MUST AttributeTypes OIDs
         copy.mustAttributeTypeOids = new ArrayList<String>();
-        
+
         for ( String oid : mustAttributeTypeOids )
         {
             copy.mustAttributeTypeOids.add( oid );
         }
-        
+
         // Clone the MUST AttributeTypes ( will be empty )
         copy.mustAttributeTypes = new ArrayList<AttributeType>();
-        
+
         // Clone the NOT AttributeTypes OIDs
         copy.notAttributeTypeOids = new ArrayList<String>();
-        
+
         for ( String oid : notAttributeTypeOids )
         {
             copy.notAttributeTypeOids.add( oid );
         }
-        
+
         // Clone the NOT AttributeTypes ( will be empty )
         copy.notAttributeTypes = new ArrayList<AttributeType>();
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -637,13 +639,14 @@ public class DITContentRule extends SchemaObject
         {
             return false;
         }
-        
-        DITContentRule that = (DITContentRule)o;
+
+        DITContentRule that = ( DITContentRule ) o;
 
         // TODO : complete the check
         return true;
     }
-        
+
+
     /**
      * {@inheritDoc}
      */
@@ -651,7 +654,7 @@ public class DITContentRule extends SchemaObject
     {
         // Clear the common elements
         super.clear();
-        
+
         // Clear the references
         auxObjectClasses.clear();
         auxObjectClassOids.clear();

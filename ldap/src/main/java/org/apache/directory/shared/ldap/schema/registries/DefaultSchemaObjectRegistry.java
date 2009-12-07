@@ -41,24 +41,25 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implements SchemaObjectRegistry<T>, Iterable<T>
+public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implements SchemaObjectRegistry<T>,
+    Iterable<T>
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultSchemaObjectRegistry.class );
 
     /** A speedup for debug */
     private static final boolean DEBUG = LOG.isDebugEnabled();
-    
+
     /** a map of SchemaObject looked up by name */
     protected Map<String, T> byName;
-    
+
     /** The SchemaObject type, used by the toString() method  */
     protected SchemaObjectType schemaObjectType;
 
     /** the global OID Registry */
     protected OidRegistry oidRegistry;
-    
-    
+
+
     /**
      * Creates a new DefaultSchemaObjectRegistry instance.
      */
@@ -68,8 +69,8 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         this.schemaObjectType = schemaObjectType;
         this.oidRegistry = oidRegistry;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -79,36 +80,36 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             return byName.containsKey( StringTools.toLowerCase( oid ) );
         }
-        
+
         return true;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public String getSchemaName( String oid ) throws NamingException
     {
-        if ( ! OID.isOID( oid ) )
+        if ( !OID.isOID( oid ) )
         {
             String msg = "Looks like the arg is not a numeric OID";
             LOG.warn( msg );
             throw new NamingException( msg );
         }
-        
+
         SchemaObject schemaObject = byName.get( oid );
 
         if ( schemaObject != null )
         {
             return schemaObject.getSchemaName();
         }
-        
+
         String msg = "OID " + oid + " not found in oid to schema name map!";
         LOG.warn( msg );
         throw new NamingException( msg );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -121,7 +122,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             if ( originalSchemaName.equalsIgnoreCase( schemaObject.getSchemaName() ) )
             {
                 schemaObject.setSchemaName( newSchemaName );
-                
+
                 if ( DEBUG )
                 {
                     LOG.debug( "Renamed {} schemaName to {}", schemaObject, newSchemaName );
@@ -129,17 +130,17 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public Iterator<T> iterator()
     {
-        return (Iterator<T>)oidRegistry.iterator();
+        return ( Iterator<T> ) oidRegistry.iterator();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -148,7 +149,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         return byName.keySet().iterator();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -158,9 +159,9 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             return null;
         }
-        
+
         T schemaObject = byName.get( oid );
-        
+
         if ( schemaObject == null )
         {
             // let's try with trimming and lowercasing now
@@ -176,20 +177,20 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
 
         if ( DEBUG )
         {
-    		LOG.debug( "Found {} with oid: {}", schemaObject, oid );
+            LOG.debug( "Found {} with oid: {}", schemaObject, oid );
         }
-        
+
         return schemaObject;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public void register( T schemaObject ) throws NamingException
     {
         String oid = schemaObject.getOid();
-        
+
         if ( byName.containsKey( oid ) )
         {
             String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
@@ -198,19 +199,19 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         }
 
         byName.put( oid, schemaObject );
-        
+
         /*
          * add the aliases/names to the name map along with their toLowerCase
          * versions of the name: this is used to make sure name lookups work
          */
         for ( String name : schemaObject.getNames() )
         {
-        	byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
+            byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
         }
 
         // And register the oid -> schemaObject relation
         oidRegistry.register( schemaObject );
-        
+
         if ( LOG.isDebugEnabled() )
         {
             LOG.debug( "registered " + schemaObject.getName() + " for OID {}", oid );
@@ -231,24 +232,57 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         }
 
         T schemaObject = byName.remove( numericOid );
-        
+
         for ( String name : schemaObject.getNames() )
         {
             byName.remove( name );
         }
-        
+
         // And remove the SchemaObject from the oidRegistry
         oidRegistry.unregister( numericOid );
-        
+
         if ( DEBUG )
         {
             LOG.debug( "Removed {} with oid {} from the registry", schemaObject, numericOid );
         }
-        
+
         return schemaObject;
     }
-    
-    
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public T unregister( T schemaObject ) throws NamingException
+    {
+        String oid = schemaObject.getOid();
+
+        if ( !byName.containsKey( oid ) )
+        {
+            String msg = schemaObjectType.name() + " with OID " + oid + " not registered!";
+            LOG.warn( msg );
+            throw new NamingException( msg );
+        }
+
+        // Remove the oid
+        T removed = byName.remove( oid );
+
+        /*
+         * Remove the aliases/names from the name map along with their toLowerCase
+         * versions of the name.
+         */
+        for ( String name : schemaObject.getNames() )
+        {
+            byName.remove( StringTools.trim( StringTools.toLowerCase( name ) ) );
+        }
+
+        // And unregister the oid -> schemaObject relation
+        oidRegistry.unregister( oid );
+
+        return removed;
+    }
+
+
     /**
      * {@inheritDoc}
      */
@@ -258,7 +292,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             return;
         }
-        
+
         // Loop on all the SchemaObjects stored and remove those associated
         // with the give schemaName
         for ( T schemaObject : this )
@@ -267,7 +301,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             {
                 String oid = schemaObject.getOid();
                 SchemaObject removed = unregister( oid );
-                
+
                 if ( DEBUG )
                 {
                     LOG.debug( "Removed {} with oid {} from the registry", removed, oid );
@@ -275,8 +309,8 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -284,21 +318,21 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         T schemaObject = byName.get( name );
 
-    	if ( schemaObject == null )
-    	{
-    		// last resort before giving up check with lower cased version
-        	String lowerCased = name.toLowerCase();
-    		
-        	schemaObject = byName.get( lowerCased );
-        	
-        	// ok this name is not for a schema object in the registry
-    		if ( schemaObject == null )
-    		{
-    	        throw new NamingException( "Can't find an OID for the name " + name );
-    		}
-    	}
-    	
-    	// we found the schema object by key on the first lookup attempt
+        if ( schemaObject == null )
+        {
+            // last resort before giving up check with lower cased version
+            String lowerCased = name.toLowerCase();
+
+            schemaObject = byName.get( lowerCased );
+
+            // ok this name is not for a schema object in the registry
+            if ( schemaObject == null )
+            {
+                throw new NamingException( "Can't find an OID for the name " + name );
+            }
+        }
+
+        // we found the schema object by key on the first lookup attempt
         return schemaObject.getOid();
     }
 
@@ -309,31 +343,31 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     public SchemaObjectRegistry<T> copy( SchemaObjectRegistry<T> original )
     {
         // Fill the byName and OidRegistry maps, the type has already be copied
-        for ( String key : ((DefaultSchemaObjectRegistry<T>)original).byName.keySet() )
+        for ( String key : ( ( DefaultSchemaObjectRegistry<T> ) original ).byName.keySet() )
         {
             // Clone each SchemaObject
-            T value = ((DefaultSchemaObjectRegistry<T>)original).byName.get( key );
-            
+            T value = ( ( DefaultSchemaObjectRegistry<T> ) original ).byName.get( key );
+
             if ( value instanceof LoadableSchemaObject )
             {
                 // Update the data structure. 
                 // Comparators, Normalizers and SyntaxCheckers aren't copied, 
                 // they are immutable
                 byName.put( key, value );
-            
+
                 // Update the OidRegistry
                 oidRegistry.put( value );
             }
             else
             {
                 T copiedValue = null;
-                
+
                 // Copy the value if it's not already in the oidRegistry
                 if ( oidRegistry.hasOid( value.getOid() ) )
                 {
                     try
                     {
-                        copiedValue = (T)oidRegistry.getSchemaObject( value.getOid() );
+                        copiedValue = ( T ) oidRegistry.getSchemaObject( value.getOid() );
                     }
                     catch ( NamingException ne )
                     {
@@ -342,9 +376,9 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
                 }
                 else
                 {
-                    copiedValue = (T)value.copy();
+                    copiedValue = ( T ) value.copy();
                 }
-                
+
                 // Update the data structure. 
                 byName.put( key, copiedValue );
 
@@ -352,7 +386,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
                 oidRegistry.put( copiedValue );
             }
         }
-        
+
         return this;
     }
 
@@ -372,7 +406,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -380,8 +414,8 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         return schemaObjectType;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -389,18 +423,18 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         return oidRegistry.size();
     }
-    
-    
+
+
     /**
      * @see Object#toString()
      */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append( schemaObjectType ).append( ": " );
         boolean isFirst = true;
-        
+
         for ( String name : byName.keySet() )
         {
             if ( isFirst )
@@ -411,16 +445,16 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             {
                 sb.append( ", " );
             }
-            
+
             T schemaObject = byName.get( name );
-            
+
             sb.append( '<' ).append( name ).append( ", " ).append( schemaObject.getOid() ).append( '>' );
         }
-        
+
         return sb.toString();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -430,15 +464,15 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         for ( SchemaObject schemaObject : oidRegistry )
         {
             // Don't clear LoadableSchemaObject
-            if ( ! (schemaObject instanceof LoadableSchemaObject ) )
+            if ( !( schemaObject instanceof LoadableSchemaObject ) )
             {
                 schemaObject.clear();
             }
         }
-        
+
         // Remove the byName elements
         byName.clear();
-        
+
         // Clear the OidRegistry
         oidRegistry.clear();
     }
