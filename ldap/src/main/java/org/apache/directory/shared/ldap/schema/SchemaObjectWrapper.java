@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
+
 /**
  * A class containing a SchemaObject, used by the global registries. As the hash code
  * method of the SchemaObjetc class is too complex, we had to define a simplest class
@@ -32,8 +33,8 @@ public class SchemaObjectWrapper
 {
     /** The internal schemaObject */
     private SchemaObject schemaObject;
-    
-    
+
+
     /**
      * Creates a new instance of SchemaObjectWrapper.
      *
@@ -43,7 +44,8 @@ public class SchemaObjectWrapper
     {
         this.schemaObject = schemaObject;
     }
-    
+
+
     /**
      * Compute the hash code for this wrapper. We only use the object type
      * and its oid.
@@ -51,13 +53,13 @@ public class SchemaObjectWrapper
     public int hashCode()
     {
         int h = 37;
-        h += h*17 + schemaObject.getObjectType().getValue();
-        h += h*17 + schemaObject.getOid().hashCode();
-        
+        h += h * 17 + schemaObject.getObjectType().getValue();
+        h += h * 17 + schemaObject.getOid().hashCode();
+
         return h;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -67,20 +69,19 @@ public class SchemaObjectWrapper
         {
             return true;
         }
-        
-        if ( !(o instanceof SchemaObjectWrapper ) )
+
+        if ( !( o instanceof SchemaObjectWrapper ) )
         {
             return false;
         }
-        
-        SchemaObject that = ((SchemaObjectWrapper)o).get();
+
+        SchemaObject that = ( ( SchemaObjectWrapper ) o ).get();
         SchemaObject current = get();
-        
-        return ( that.getOid().equals( current.getOid() ) &&
-            ( that.getObjectType() == current.getObjectType() ) );
+
+        return ( that.getOid().equals( current.getOid() ) && ( that.getObjectType() == current.getObjectType() ) );
     }
 
-    
+
     /**
      *  @return The interned SchemaObject
      */
@@ -88,13 +89,13 @@ public class SchemaObjectWrapper
     {
         return schemaObject;
     }
-    
-    
+
+
     /**
      * @see Object#toString()
      */
     public String toString()
     {
-        return schemaObject.toString();
+        return "<" + schemaObject.getObjectType() + "," + schemaObject.getOid() + ">";
     }
 }
