@@ -22,7 +22,9 @@ package org.apache.directory.server.schema;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +36,10 @@ import javax.naming.directory.NoSuchAttributeException;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
+import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
@@ -56,7 +60,7 @@ public class SchemaManagerAddTest
     private static String workingDirectory;
 
     // The schema repository
-    private static File schemaRepository;
+    private static File   schemaRepository;
 
 
     @BeforeClass
@@ -566,10 +570,38 @@ public class SchemaManagerAddTest
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
+
     //=========================================================================
     // Comparator addition tests
     //-------------------------------------------------------------------------
-    // TODO
+    @Test
+    public void testAddNewComparator() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapComparator<?> lc = new BooleanComparator( "0.0.0" );
+
+        assertTrue( schemaManager.add( lc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        try
+        {
+            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( "0.0.0" );
+
+            assertNotNull( added );
+        }
+        catch ( NamingException ne )
+        {
+            fail();
+        }
+    }
 
     //=========================================================================
     // DITContentRule addition tests

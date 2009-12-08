@@ -38,6 +38,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.EntityFactory;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
@@ -1377,8 +1378,17 @@ public class DefaultSchemaManager implements SchemaManager
         // First, clear the errors
         errors.clear();
 
+        SchemaObject copy = null;
+
         // Clone the schemaObject
-        SchemaObject copy = schemaObject.copy();
+        if ( !( schemaObject instanceof LoadableSchemaObject ) )
+        {
+            copy = schemaObject.copy();
+        }
+        else
+        {
+            copy = schemaObject;
+        }
 
         if ( registries.isRelaxed() )
         {
