@@ -1345,7 +1345,27 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private boolean checkOidExist( SchemaObject schemaObject )
     {
-        return registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() );
+        if ( !( schemaObject instanceof LoadableSchemaObject ) )
+        {
+            return registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() );
+        }
+
+        if ( schemaObject instanceof LdapComparator<?> )
+        {
+            return registries.getComparatorRegistry().contains( schemaObject.getOid() );
+        }
+
+        if ( schemaObject instanceof LdapSyntax )
+        {
+            return registries.getLdapSyntaxRegistry().contains( schemaObject.getOid() );
+        }
+
+        if ( schemaObject instanceof Normalizer )
+        {
+            return registries.getNormalizerRegistry().contains( schemaObject.getOid() );
+        }
+
+        return false;
     }
 
 

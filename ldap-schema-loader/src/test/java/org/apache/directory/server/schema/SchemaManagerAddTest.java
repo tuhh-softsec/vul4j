@@ -605,7 +605,7 @@ public class SchemaManagerAddTest
         }
     }
 
-    
+
     @Test
     public void testAddAlreadyExistingComparator() throws Exception
     {
@@ -618,22 +618,44 @@ public class SchemaManagerAddTest
 
         assertTrue( schemaManager.add( lc ) );
 
+        try
+        {
+            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+
+            assertNotNull( added );
+        }
+        catch ( NamingException ne )
+        {
+            fail();
+        }
+
         List<Throwable> errors = schemaManager.getErrors();
         assertEquals( 0, errors.size() );
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
 
         lc = new CsnComparator( oid );
-        // FIXME the below add throws a NamingException instead of false
-        // expected behaviour is to return a boolean value consistently
+
         assertFalse( schemaManager.add( lc ) );
 
         errors = schemaManager.getErrors();
         assertEquals( 1, errors.size() );
-        
-        assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
+
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        try
+        {
+            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+
+            assertNotNull( added );
+        }
+        catch ( NamingException ne )
+        {
+            fail();
+        }
     }
-    
-    
+
     //=========================================================================
     // DITContentRule addition tests
     //-------------------------------------------------------------------------
