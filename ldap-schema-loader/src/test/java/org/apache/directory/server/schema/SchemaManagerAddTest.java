@@ -40,6 +40,7 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
+import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
@@ -581,7 +582,8 @@ public class SchemaManagerAddTest
         int ctrSize = schemaManager.getComparatorRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
-        LdapComparator<?> lc = new BooleanComparator( "0.0.0" );
+        String oid = "0.0.0";
+        LdapComparator<?> lc = new BooleanComparator( oid );
 
         assertTrue( schemaManager.add( lc ) );
 
@@ -593,7 +595,7 @@ public class SchemaManagerAddTest
 
         try
         {
-            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( "0.0.0" );
+            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
 
             assertNotNull( added );
         }
@@ -603,6 +605,35 @@ public class SchemaManagerAddTest
         }
     }
 
+    
+    @Test
+    public void testAddAlreadyExistingComparator() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        String oid = "0.0.0";
+        LdapComparator<?> lc = new BooleanComparator( oid );
+
+        assertTrue( schemaManager.add( lc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        lc = new CsnComparator( oid );
+        // FIXME the below add throws a NamingException instead of false
+        // expected behaviour is to return a boolean value consistently
+        assertFalse( schemaManager.add( lc ) );
+
+        errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        
+        assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+    
+    
     //=========================================================================
     // DITContentRule addition tests
     //-------------------------------------------------------------------------
