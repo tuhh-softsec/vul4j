@@ -24,11 +24,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.naming.NamingException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -199,6 +202,47 @@ public class SchemaManagerEnableDisableLoadTest
 
         assertEquals( 11, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
+    }
+
+
+    /**
+     * Disable an enabled schema
+     */
+    @Test
+    public void testDisableEnabled() throws Exception
+    {
+        schemaManager.loadAllEnabled();
+
+        assertTrue( schemaManager.enable( "nis" ) );
+        assertTrue( schemaManager.isEnabled( "nis" ) );
+
+        assertEquals( 11, schemaManager.getRegistries().getLoadedSchemas().size() );
+
+        assertTrue( schemaManager.disable( "nis" ) );
+
+        try
+        {
+            schemaManager.lookupAttributeTypeRegistry( "gecos" );
+            fail();
+        }
+        catch ( NamingException ne )
+        {
+            // Expected
+        }
+
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 261, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 48, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 48, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 50, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 88, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 468, schemaManager.getOidRegistry().size() );
+
+        assertEquals( 10, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
+
     }
 
 

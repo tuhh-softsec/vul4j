@@ -264,6 +264,7 @@ public interface SchemaManager
      * 
      *  @param schemas The list of schemas to enable
      *  @return true if the Registries is still consistent, false otherwise.
+     *  @throws If something went wrong
      */
     boolean enable( Schema... schemas ) throws Exception;
 
@@ -277,6 +278,7 @@ public interface SchemaManager
      *  
      *  @param schemas The list of schema name to enable
      *  @return true if the Registries is still consistent, false otherwise.
+     *  @throws If something went wrong
      */
     boolean enable( String... schemas ) throws Exception;
 
@@ -336,8 +338,9 @@ public interface SchemaManager
      * 
      *  @param schemas The list of schemas to disable
      *  @return true if the Registries is still consistent, false otherwise.
+     *  @throws If something went wrong
      */
-    boolean disable( Schema... schemas );
+    boolean disable( Schema... schemas ) throws Exception;
 
 
     /**
@@ -349,8 +352,9 @@ public interface SchemaManager
      * 
      *  @param schemas The list of schema names to disable
      *  @return true if the Registries is still consistent, false otherwise.
+     *  @throws If something went wrong
      */
-    boolean disable( String... schemas );
+    boolean disable( String... schemas ) throws Exception;
 
 
     /**

@@ -212,6 +212,32 @@ public class DefaultSchemaManager implements SchemaManager
     }
 
 
+    /**
+     * Delete all the schemaObjects for a given schema from the registries
+     */
+    private void deleteSchemaObjects( Schema schema, Registries registries ) throws Exception
+    {
+        Map<String, Set<SchemaObjectWrapper>> schemaObjects = registries.getObjectBySchemaName();
+        Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schema.getSchemaName() ) );
+
+        List<SchemaObject> toBeDeleted = new ArrayList<SchemaObject>();
+
+        // Buid an intermediate list to avoid concurrent modifications
+        for ( SchemaObjectWrapper schemaObjectWrapper : content )
+        {
+            toBeDeleted.add( schemaObjectWrapper.get() );
+        }
+
+        for ( SchemaObject schemaObject : toBeDeleted )
+        {
+            registries.delete( errors, schemaObject );
+        }
+
+        // TODO Add some listener handling at this point
+        //notifyListenerOrRegistries( schema, registries );
+    }
+
+
     //-----------------------------------------------------------------------
     // API methods
     //-----------------------------------------------------------------------
@@ -251,20 +277,68 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean disable( Schema... schemas )
+    public boolean disable( Schema... schemas ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        boolean disabled = false;
+
+        // Reset the errors if not null
+        if ( errors != null )
+        {
+            errors.clear();
+        }
+
+        // Work on a cloned and relaxed registries
+        Registries clonedRegistries = cloneRegistries();
+        clonedRegistries.setRelaxed();
+
+        for ( Schema schema : schemas )
+        {
+            unload( clonedRegistries, schema );
+        }
+
+        // Build the cross references
+        errors = clonedRegistries.buildReferences();
+
+        // Destroy the clonedRegistry
+        clonedRegistries.clear();
+
+        if ( errors.isEmpty() )
+        {
+            // Ok no errors. Check the registries now
+            errors = clonedRegistries.checkRefInteg();
+
+            if ( errors.isEmpty() )
+            {
+                // We are golden : let's apply the schemas in the real registries
+                for ( Schema schema : schemas )
+                {
+                    unload( registries, schema );
+                    schema.disable();
+                }
+
+                // Build the cross references
+                errors = registries.buildReferences();
+                registries.setStrict();
+
+                disabled = true;
+            }
+        }
+
+        // clear the cloned registries
+        clonedRegistries.clear();
+
+        return disabled;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public boolean disable( String... schemas )
+    public boolean disable( String... schemaNames ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        Schema[] schemas = toArray( schemaNames );
+
+        return disable( schemas );
     }
 
 
@@ -368,9 +442,10 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean enable( String... schemas ) throws Exception
+    public boolean enable( String... schemaNames ) throws Exception
     {
-        return enable( toArray( schemas ) );
+        Schema[] schemas = toArray( schemaNames );
+        return enable( schemas );
     }
 
 
@@ -501,9 +576,11 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean load( String... schemas ) throws Exception
+    public boolean load( String... schemaNames ) throws Exception
     {
-        return load( toArray( schemas ) );
+        Schema[] schemas = toArray( schemaNames );
+
+        return load( schemas );
     }
 
 
@@ -552,6 +629,42 @@ public class DefaultSchemaManager implements SchemaManager
 
             registries.schemaLoaded( schema );
             addSchemaObjects( schema, registries );
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Unload the schema from the registries. We will unload everything accordingly to the two flags :
+     * - isRelaxed
+     * - disabledAccepted
+     *
+     * @param registries
+     * @param schemas
+     * @return
+     * @throws Exception
+     */
+    private boolean unload( Registries registries, Schema schema ) throws Exception
+    {
+        if ( schema == null )
+        {
+            LOG.info( "The schema is null" );
+            return false;
+        }
+
+        // First avoid unloading twice the same schema
+        if ( !registries.isSchemaLoaded( schema.getSchemaName() ) )
+        {
+            return true;
+        }
+
+        if ( schema.isEnabled() )
+        {
+            LOG.info( "Unloading {} schema: \n{}", schema.getSchemaName(), schema );
+
+            deleteSchemaObjects( schema, registries );
+            registries.schemaUnloaded( schema );
         }
 
         return true;
@@ -791,9 +904,11 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean loadDisabled( String... schemas ) throws Exception
+    public boolean loadDisabled( String... schemaNames ) throws Exception
     {
-        return loadDisabled( toArray( schemas ) );
+        Schema[] schemas = toArray( schemaNames );
+
+        return loadDisabled( schemas );
     }
 
 
@@ -810,9 +925,9 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean loadRelaxed( String... schemas ) throws Exception
+    public boolean loadRelaxed( String... schemaNames ) throws Exception
     {
-        // TODO Auto-generated method stub
+        Schema[] schemas = toArray( schemaNames );
         return false;
     }
 
