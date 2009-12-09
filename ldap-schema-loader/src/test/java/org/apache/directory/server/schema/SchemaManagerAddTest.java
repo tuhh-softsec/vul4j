@@ -28,6 +28,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -606,7 +607,7 @@ public class SchemaManagerAddTest
     }
 
 
-    @Test
+    //@Test
     public void testAddAlreadyExistingComparator() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
@@ -655,7 +656,94 @@ public class SchemaManagerAddTest
             fail();
         }
     }
+    
 
+    @Test
+    public void testAddAnotherComparatorWithSameClass() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        String oid = "0.0.0";
+        LdapComparator<?> lc = new BooleanComparator( oid );
+        // using java.sql.ResultSet cause it is very unlikely to get loaded
+        // in ADS
+        lc.setFqcn( "java.sql.ResultSet" );
+
+        assertTrue( schemaManager.add( lc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        lc = new BooleanComparator( "0.0.1" );
+        lc.setFqcn( "java.sql.ResultSet" );
+    
+        // FIXME this has to fail cause the java.sql.ResultSet class was already used in the above lc
+        assertFalse( schemaManager.add( lc ) );
+        
+        errors = schemaManager.getErrors();
+        errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        
+        try
+        {
+            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+
+            assertNotNull( added );
+        }
+        catch ( NamingException ne )
+        {
+            fail();
+        }
+
+    }
+
+    
+    @Test
+    public void testAddNewComparatorWithDuplicateName() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        List<String> names = new ArrayList<String>();
+        names.add( "name" );
+        names.add( "name" );
+        
+        String oid = "0.0.0";
+        LdapComparator<?> lc = new BooleanComparator( oid );
+        lc.setNames( names );
+
+        // FIXME this should fail cause the same name was set twice
+        assertTrue( schemaManager.add( lc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        
+        
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        try
+        {
+            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+
+            assertNotNull( added );
+        }
+        catch ( NamingException ne )
+        {
+            fail();
+        }
+
+    }
+
+    
     //=========================================================================
     // DITContentRule addition tests
     //-------------------------------------------------------------------------
