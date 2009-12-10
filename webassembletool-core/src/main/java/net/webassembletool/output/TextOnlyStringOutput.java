@@ -9,13 +9,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.NullOutputStream;
 
 /**
  * TextOnlyStringOutput is a variant of string output which actually checks
@@ -34,16 +32,13 @@ import org.apache.commons.io.output.NullOutputStream;
  * @author Francois-Xavier Bonnet
  */
 public class TextOnlyStringOutput extends Output {
-	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private OutputStream outputStream;
 	private boolean unzip = false;
 	private boolean text = false;
 
-	public TextOnlyStringOutput(HttpServletRequest request,
-			HttpServletResponse response) {
-		this.request = request;
+	public TextOnlyStringOutput(HttpServletResponse response) {
 		this.response = response;
 	}
 
@@ -64,38 +59,27 @@ public class TextOnlyStringOutput extends Output {
 	/** {@inheritDoc} */
 	@Override
 	public void open() {
-		String ifModifiedSince = request.getHeader("If-Modified-Since");
-		String ifNoneMatch = request.getHeader("If-None-Match");
-		if ((ifModifiedSince != null && ifModifiedSince
-				.equals(getHeader("Last-Modified")))
-				|| (ifNoneMatch != null && ifNoneMatch
-						.equals(getHeader("ETag")))) {
-			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-			// After a "not modified" response, content body will be ignored
-			outputStream = new NullOutputStream();
-		} else {
-			response.setStatus(getStatusCode());
-			if (ResourceUtils.isTextContentType(getHeader("Content-Type")))
-				text = true;
-			copyHeaders();
-			try {
-				if (text) {
-					String contentEncoding = getHeader("Content-encoding");
-					if (contentEncoding != null) {
-						unzip = true;
-						if (!"gzip".equalsIgnoreCase(contentEncoding)
-								&& !"x-gzip".equalsIgnoreCase(contentEncoding))
-							throw new UnsupportedContentEncodingException(
-									"Content-encoding \"" + contentEncoding
-											+ "\" is not supported");
-					}
-					byteArrayOutputStream = new ByteArrayOutputStream();
-				} else {
-					outputStream = response.getOutputStream();
+		response.setStatus(getStatusCode());
+		if (ResourceUtils.isTextContentType(getHeader("Content-Type")))
+			text = true;
+		copyHeaders();
+		try {
+			if (text) {
+				String contentEncoding = getHeader("Content-encoding");
+				if (contentEncoding != null) {
+					unzip = true;
+					if (!"gzip".equalsIgnoreCase(contentEncoding)
+							&& !"x-gzip".equalsIgnoreCase(contentEncoding))
+						throw new UnsupportedContentEncodingException(
+								"Content-encoding \"" + contentEncoding
+										+ "\" is not supported");
 				}
-			} catch (IOException e) {
-				throw new OutputException(e);
+				byteArrayOutputStream = new ByteArrayOutputStream();
+			} else {
+				outputStream = response.getOutputStream();
 			}
+		} catch (IOException e) {
+			throw new OutputException(e);
 		}
 	}
 

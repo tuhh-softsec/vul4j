@@ -22,15 +22,6 @@ import org.apache.http.protocol.HttpContext;
 public class HttpClientRequest {
 	private final static Log LOG = LogFactory.getLog(HttpClientRequest.class);
 	private String uri;
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
 	private HttpServletRequest originalRequest;
 	private boolean proxy;
 	private HttpUriRequest httpUriRequest;
@@ -148,7 +139,7 @@ public class HttpClientRequest {
 		if (originalRequest != null) {
 			String value = originalRequest.getHeader(name);
 			if (value != null)
-				httpUriRequest.addHeader(name, value);
+				httpUriRequest.setHeader(name, value);
 		}
 	}
 
@@ -179,4 +170,11 @@ public class HttpClientRequest {
 		this.preserveHost = preserveHost;
 	}
 
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
 }

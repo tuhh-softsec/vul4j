@@ -76,8 +76,9 @@ public abstract class Output {
 				.entrySet().iterator(); headersIterator.hasNext();) {
 			Map.Entry<Object, Object> entry = headersIterator.next();
 			if (key.equalsIgnoreCase(entry.getKey().toString()))
-				headers.put(entry.getKey(), value);
+				headers.remove(entry.getKey());
 		}
+		headers.put(key, value);
 	}
 
 	/**

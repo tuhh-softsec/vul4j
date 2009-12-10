@@ -24,6 +24,7 @@ import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
 import net.webassembletool.regexp.ReplaceRenderer;
 import net.webassembletool.resource.NullResource;
+import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 import net.webassembletool.tags.BlockRenderer;
 import net.webassembletool.tags.TemplateRenderer;
@@ -338,12 +339,10 @@ public class Driver {
 			// cache. So we can use conditional a request like
 			// "if-modified-since"
 			resourceContext.setNeededForTransformation(false);
-			renderResource(resourceContext, new ResponseOutput(request,
-					response));
+			renderResource(resourceContext, new ResponseOutput(response));
 		} else {
 			// Directly stream out non text data
-			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(request,
-					response);
+			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(response);
 			renderResource(resourceContext, textOutput);
 			// If data was binary, no text buffer is available and no rendering
 			// is needed.
@@ -388,7 +387,7 @@ public class Driver {
 		MultipleOutput multipleOutput = new MultipleOutput();
 		multipleOutput.addOutput(output);
 		CachedResponse cachedResource = null;
-		HttpResource httpResource = null;
+		Resource httpResource = null;
 		FileResource fileResource = null;
 		CacheOutput memoryOutput = null;
 		FileOutput fileOutput = null;
@@ -408,9 +407,17 @@ public class Driver {
 						// Forced expiration delay
 						if (Rfc2616.requiresRefresh(resourceContext)
 								|| Rfc2616.getAge(cachedResource) > config
-										.getCacheRefreshDelay())
+										.getCacheRefreshDelay() * 1000)
 							needsValidation = true;
 					}
+				}
+				if (LOG.isDebugEnabled()) {
+					String message = "Needs validation=" + needsValidation;
+					message += " cacheRefreshDelay="
+							+ config.getCacheRefreshDelay();
+					if (cachedResource != null)
+						message += " cachedResource=" + cachedResource;
+					LOG.debug(message);
 				}
 				if (needsValidation) {
 					// Resource not in cache or stale, or refresh was forced by
@@ -422,7 +429,8 @@ public class Driver {
 				} else {
 					// Resource in cache, does not need validation, just render
 					// it
-					cachedResource.render(multipleOutput);
+					LOG.debug("Reusing cache entry for: " + httpUrl);
+					Rfc2616.renderResource(cachedResource, multipleOutput);
 					return;
 				}
 			}
@@ -435,17 +443,22 @@ public class Driver {
 							.getLocalBase(), resourceContext));
 					multipleOutput.addOutput(fileOutput);
 				}
-				httpResource = new HttpResource(httpClient, resourceContext);
+				Map<String, String> validators = cache.getValidators(
+						resourceContext, cachedResource);
+				httpResource = new HttpResource(httpClient, resourceContext,
+						validators);
+				httpResource = cache.select(resourceContext, cachedResource,
+						httpResource);
 				// If there is an error, we will try to reuse an old cache entry
 				if (!httpResource.isError()) {
-					httpResource.render(multipleOutput);
+					Rfc2616.renderResource(httpResource, multipleOutput);
 					return;
 				}
 			}
 			// Resource could not be loaded from HTTP, let's use the expired
 			// cache entry if not empty and not error.
 			if (cachedResource != null && !cachedResource.isError()) {
-				cachedResource.render(multipleOutput);
+				Rfc2616.renderResource(cachedResource, multipleOutput);
 				return;
 			}
 			// Resource could not be loaded neither from HTTP, nor from the
@@ -455,24 +468,24 @@ public class Driver {
 				fileResource = new FileResource(config.getLocalBase(),
 						resourceContext);
 				if (!fileResource.isError()) {
-					fileResource.render(multipleOutput);
+					Rfc2616.renderResource(fileResource, multipleOutput);
 					return;
 				}
 			}
 			// No valid response could be found, let's render the response even
 			// if it is an error
 			if (httpResource != null) {
-				httpResource.render(multipleOutput);
+				Rfc2616.renderResource(httpResource, multipleOutput);
 				return;
 			} else if (cachedResource != null) {
-				cachedResource.render(multipleOutput);
+				Rfc2616.renderResource(cachedResource, multipleOutput);
 				return;
 			} else if (fileResource != null) {
-				fileResource.render(multipleOutput);
+				Rfc2616.renderResource(fileResource, multipleOutput);
 				return;
 			} else
 				// Resource could not be loaded at all
-				new NullResource().render(multipleOutput);
+				Rfc2616.renderResource(new NullResource(), multipleOutput);
 		} catch (Throwable t) {
 			// In case there was a problem during rendering (client abort for
 			// exemple), all the output

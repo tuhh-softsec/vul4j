@@ -1,5 +1,6 @@
 package net.webassembletool.cache;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,8 +8,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.ResourceContext;
+import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
 
 import org.apache.commons.logging.Log;
@@ -159,10 +162,12 @@ public class Rfc2616 {
 		Long maxAge = null;
 		CacheControlResponseHeader cacheControl = CacheControlResponseHeader
 				.parse(resource);
-		if (cacheControl.maxAge != null)
-			maxAge = cacheControl.maxAge;
-		if (cacheControl.sMaxAge != null)
-			maxAge = cacheControl.sMaxAge;
+		if (cacheControl != null) {
+			if (cacheControl.maxAge != null)
+				maxAge = cacheControl.maxAge;
+			if (cacheControl.sMaxAge != null)
+				maxAge = cacheControl.sMaxAge;
+		}
 		if (maxAge != null) {
 			// maxAge directive found according to HTTP/1.1
 			return new Date(date.getTime() + maxAge.longValue());
@@ -240,6 +245,17 @@ public class Rfc2616 {
 
 	public final static Date getDateHeader(Resource resource, String name) {
 		String dateString = resource.getHeader(name);
+		return convertDate(dateString);
+	}
+
+	public final static Date getDateHeader(ResourceContext resourceContext,
+			String name) {
+		String dateString = resourceContext.getOriginalRequest()
+				.getHeader(name);
+		return convertDate(dateString);
+	}
+
+	private final static Date convertDate(String dateString) {
 		if (dateString != null) {
 			try {
 				return DateUtils.parseDate(dateString);
@@ -266,6 +282,41 @@ public class Rfc2616 {
 				return true;
 		}
 		return false;
+	}
+
+	public final static void renderResource(Resource resource, Output output)
+			throws IOException {
+		if (HttpServletResponse.SC_NOT_MODIFIED == resource.getStatusCode()) {
+			output.setStatusCode(resource.getStatusCode());
+			copyHeaders(resource, output);
+			output.open();
+			output.getOutputStream();
+			// No response body
+			output.close();
+		} else {
+			resource.render(output);
+		}
+	}
+
+	/**
+	 * Copies end-to-end headers from a resource to an output
+	 */
+	public final static void copyHeaders(Resource resource, Output output) {
+		copyHeader(resource, output, "Date");
+		copyHeader(resource, output, "Content-Type");
+		copyHeader(resource, output, "Content-Length");
+		copyHeader(resource, output, "Last-Modified");
+		copyHeader(resource, output, "ETag");
+		copyHeader(resource, output, "Expires");
+		copyHeader(resource, output, "Cache-control");
+		copyHeader(resource, output, "Content-encoding");
+	}
+
+	private final static void copyHeader(Resource resource, Output output,
+			String name) {
+		String value = resource.getHeader(name);
+		if (value != null)
+			output.setHeader(name, value);
 	}
 
 }

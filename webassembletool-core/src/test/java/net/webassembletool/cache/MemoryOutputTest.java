@@ -9,8 +9,8 @@ import junit.framework.TestCase;
  */
 public class MemoryOutputTest extends TestCase {
 
-	final static String CONTENT = "My content";
-	final static String CHARSET = "UTF-8";
+	private final static String CONTENT = "My content";
+	private final static String CHARSET = "UTF-8";
 
 	/**
 	 * Ensure 'cacheMaxFileSize' from configuration works as expected.
@@ -33,7 +33,7 @@ public class MemoryOutputTest extends TestCase {
 		memoryOutput.open();
 		memoryOutput.write(CONTENT);
 		memoryOutput.close();
-		assertFalse(memoryOutput.toResource().hasResponseBody());
+		assertNull(memoryOutput.toResource());
 
 		// Size =0 (means no limit) : content is written
 		// see http://webassembletool.sourceforge.net/configuration.html

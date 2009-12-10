@@ -20,8 +20,6 @@ import net.webassembletool.resource.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.impl.cookie.DateParseException;
-import org.apache.http.impl.cookie.DateUtils;
 
 class CacheEntry {
 	private final static Log LOG = LogFactory.getLog(CacheEntry.class);
@@ -55,7 +53,9 @@ class CacheEntry {
 				result = cachedResponse;
 				String key = getCacheKey(resourceContext, result);
 				storage.touch(key);
-				LOG.debug("get(" + key + ")=" + result);
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("get(" + key + ")=" + result);
+				}
 			}
 		}
 		return result;
@@ -105,7 +105,7 @@ class CacheEntry {
 				.iterator(); iterator.hasNext();) {
 			CachedResponse cachedResponse = iterator.next();
 			String etag = cachedResponse.getHeader("Etag");
-			if (etag != null) {
+			if (etag != null && cachedResponse.hasResponseBody()) {
 				etags.add(etag);
 			}
 		}
@@ -121,38 +121,20 @@ class CacheEntry {
 
 	private String getIfModifiedSince(ResourceContext resourceContext,
 			CachedResponse cachedResponse) {
-		String requestedIfModifiedSince = resourceContext.getOriginalRequest()
-				.getHeader("If-Modified-Since");
-		String cacheLastModified = cachedResponse.getHeader("Last-Modified");
-		Date requestedIfModifiedSinceDate = null;
+		Date requestedIfModifiedSinceDate = Rfc2616.getDateHeader(
+				resourceContext, "If-Modified-Since");
 		Date cacheLastModifiedDate = null;
-		if (requestedIfModifiedSince != null) {
-			try {
-				requestedIfModifiedSinceDate = DateUtils
-						.parseDate(requestedIfModifiedSince);
-			} catch (DateParseException e) {
-				// Ignore invalid date
-				LOG.warn("Invalid date format: If-Modified-Since: "
-						+ requestedIfModifiedSince);
-				requestedIfModifiedSince = null;
-			}
+		if (cachedResponse != null && cachedResponse.hasResponseBody()) {
+			cacheLastModifiedDate = Rfc2616.getDateHeader(cachedResponse,
+					"Last-modified");
+			if (resourceContext.isNeededForTransformation()
+					|| requestedIfModifiedSinceDate == null
+					|| (cacheLastModifiedDate != null && cacheLastModifiedDate
+							.after(requestedIfModifiedSinceDate)))
+				return cachedResponse.getHeader("Last-modified");
 		}
-		if (cacheLastModified != null) {
-			try {
-				cacheLastModifiedDate = DateUtils.parseDate(cacheLastModified);
-			} catch (DateParseException e) {
-				// Ignore invalid date
-				LOG.warn("Invalid date format in cache entry: Last-Modified: "
-						+ cacheLastModified);
-				cacheLastModified = null;
-			}
-		}
-		if (resourceContext.isNeededForTransformation()
-				|| requestedIfModifiedSinceDate == null
-				|| (cacheLastModifiedDate != null && cacheLastModifiedDate
-						.after(requestedIfModifiedSinceDate)))
-			requestedIfModifiedSince = cacheLastModified;
-		return requestedIfModifiedSince;
+		return resourceContext.getOriginalRequest().getHeader(
+				"If-Modified-Since");
 	}
 
 	/**
@@ -169,20 +151,41 @@ class CacheEntry {
 	public Resource select(ResourceContext resourceContext,
 			CachedResponse cachedResponse, Resource newResource)
 			throws HttpErrorPage {
-		Resource result;
+		Resource result = null;
 		if (newResource.getStatusCode() == HttpServletResponse.SC_NOT_MODIFIED) {
-			String etag = newResource.getHeader("Etag");
-			if (etag == null)
-				result = cachedResponse;
-			else {
-				result = findByEtag(etag);
-				if (result == null)
-					throw new HttpErrorPage(
-							HttpServletResponse.SC_PRECONDITION_FAILED,
-							"Requested Etag not found in cache",
-							"Requested Etag not found in cache");
+			String etag = Rfc2616.getEtag(newResource);
+			if (etag == null) {
+				// No e-tag specified by the server
+				// The not modified response is for the if-modified-since we
+				// sent
+				String sentIfModifiedSince = getIfModifiedSince(
+						resourceContext, cachedResponse);
+				if (sentIfModifiedSince != null) {
+					if (!resourceContext.isNeededForTransformation()
+							&& sentIfModifiedSince.equals(resourceContext
+									.getOriginalRequest().getHeader(
+											"If-Modified-Since")))
+						result = newResource;
+					else
+						result = cachedResponse;
+				}
+			} else {
+				if (!resourceContext.isNeededForTransformation()
+						&& Rfc2616.etagMatches(resourceContext, newResource))
+					result = newResource;
+				else
+					result = findByEtag(etag);
 			}
-			updateHeaders(cachedResponse, newResource);
+			if (cachedResponse != null)
+				updateHeaders(cachedResponse, newResource);
+			if (result == null) {
+				LOG.warn("Invalid 304 response, neededForTransformation: "
+						+ resourceContext.isNeededForTransformation()
+						+ " etag: " + etag);
+				throw new HttpErrorPage(
+						HttpServletResponse.SC_PRECONDITION_FAILED,
+						"Invalid 304 response", "Invalid 304 response");
+			}
 		} else {
 			result = newResource;
 		}
@@ -190,6 +193,7 @@ class CacheEntry {
 	}
 
 	private CachedResponse findByEtag(String etag) {
+		LOG.debug("findByEtag(" + etag + ")");
 		for (Iterator<CachedResponse> iterator = cachedResponses.values()
 				.iterator(); iterator.hasNext();) {
 			CachedResponse cachedResponse = iterator.next();
@@ -218,10 +222,14 @@ class CacheEntry {
 	}
 
 	public void put(ResourceContext resourceContext, CachedResponse resource) {
-		String key = getCacheKey(resourceContext, resource);
-		cachedResponses.put(key, resource);
-		storage.put(key, resource);
-		LOG.debug("put(" + key + ")");
+		// Don't put in cache null or not modified responses
+		if (resource != null
+				&& resource.getStatusCode() != HttpServletResponse.SC_NOT_MODIFIED) {
+			String key = getCacheKey(resourceContext, resource);
+			cachedResponses.put(key, resource);
+			storage.put(key, resource);
+			LOG.debug("put(" + key + ")");
+		}
 	}
 
 	private String getCacheKey(ResourceContext resourceContext,

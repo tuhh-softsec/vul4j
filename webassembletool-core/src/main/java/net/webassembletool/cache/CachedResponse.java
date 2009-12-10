@@ -97,4 +97,11 @@ public class CachedResponse extends Resource {
 		return localDate;
 	}
 
+	@Override
+	public String toString() {
+		return statusCode + " " + statusMessage + " age="
+				+ Rfc2616.getAge(this) + " stale=" + Rfc2616.isStale(this)
+				+ " hasBody=" + hasResponseBody();
+	}
+
 }

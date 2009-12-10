@@ -5,13 +5,10 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.output.Output;
 import net.webassembletool.output.OutputException;
-
-import org.apache.commons.io.output.NullOutputStream;
 
 /**
  * Output implementation that simply writes to an HttpServletResponse.
@@ -20,36 +17,22 @@ import org.apache.commons.io.output.NullOutputStream;
  * 
  */
 public class ResponseOutput extends Output {
-	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	private OutputStream outputStream;
 
-	public ResponseOutput(HttpServletRequest request,
-			HttpServletResponse response) {
-		this.request = request;
+	public ResponseOutput(HttpServletResponse response) {
 		this.response = response;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void open() {
-		String ifModifiedSince = request.getHeader("If-Modified-Since");
-		String ifNoneMatch = request.getHeader("If-None-Match");
-		if ((ifModifiedSince != null && ifModifiedSince
-				.equals(getHeader("Last-Modified")))
-				|| (ifNoneMatch != null && ifNoneMatch
-						.equals(getHeader("ETag")))) {
-			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-			// After a "not modified" response, response body will be ignored
-			outputStream = new NullOutputStream();
-		} else {
-			response.setStatus(getStatusCode());
-			try {
-				copyHeaders();
-				outputStream = response.getOutputStream();
-			} catch (IOException e) {
-				throw new OutputException(e);
-			}
+		response.setStatus(getStatusCode());
+		try {
+			copyHeaders();
+			outputStream = response.getOutputStream();
+		} catch (IOException e) {
+			throw new OutputException(e);
 		}
 	}
 

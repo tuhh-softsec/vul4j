@@ -57,7 +57,7 @@ public class CacheOutput extends Output {
 	public CachedResponse toResource() {
 		CachedResponse result;
 		if (out.isTooBig()) {
-			result = new CachedResponse();
+			result = null;
 		} else {
 			result = new CachedResponse(out.toByteArray(), getCharsetName(),
 					getHeaders(), getStatusCode(), getStatusMessage());

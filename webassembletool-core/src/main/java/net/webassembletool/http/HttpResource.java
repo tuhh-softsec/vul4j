@@ -3,12 +3,16 @@ package net.webassembletool.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.ResourceContext;
 import net.webassembletool.authentication.AuthenticationHandler;
+import net.webassembletool.cache.Rfc2616;
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
@@ -31,8 +35,8 @@ public class HttpResource extends Resource {
 	private final ResourceContext target;
 	private String url;
 
-	public HttpResource(HttpClient httpClient, ResourceContext resourceContext)
-			throws IOException {
+	public HttpResource(HttpClient httpClient, ResourceContext resourceContext,
+			Map<String, String> validators) throws IOException {
 		this.target = resourceContext;
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 		// Retrieve session and other cookies
@@ -47,6 +51,13 @@ public class HttpResource extends Resource {
 		boolean preserveHost = resourceContext.isPreserveHost();
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
 				originalRequest, proxy, preserveHost);
+		for (Iterator<Entry<String, String>> iterator = validators.entrySet()
+				.iterator(); iterator.hasNext();) {
+			Entry<String, String> header = iterator.next();
+			LOG.debug("Adding validator: " + header.getKey() + ": "
+					+ header.getValue());
+			httpClientRequest.addHeader(header.getKey(), header.getValue());
+		}
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
 		// Authentication challenge
@@ -63,29 +74,16 @@ public class HttpResource extends Resource {
 					httpContext);
 		}
 		if (isError())
-			HttpResource.LOG.warn("Problem retrieving URL: " + url + ": "
+			LOG.warn("Problem retrieving URL: " + url + ": "
 					+ httpClientResponse.getStatusCode() + " "
 					+ httpClientResponse.getStatusText());
-	}
-
-	private void copyHeader(Output dest, String name) {
-		String value = httpClientResponse.getHeader(name);
-		if (value != null)
-			dest.addHeader(name, value);
 	}
 
 	@Override
 	public void render(Output output) throws IOException {
 		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse
 				.getStatusText());
-		copyHeader(output, "Date");
-		copyHeader(output, "Content-Type");
-		copyHeader(output, "Content-Length");
-		copyHeader(output, "Last-Modified");
-		copyHeader(output, "ETag");
-		copyHeader(output, "Expires");
-		copyHeader(output, "Cache-control");
-		copyHeader(output, "Content-encoding");
+		Rfc2616.copyHeaders(this, output);
 		String location = httpClientResponse.getHeader("Location");
 		if (location != null) {
 			// In case of a redirect, we need to rewrite the location header to
