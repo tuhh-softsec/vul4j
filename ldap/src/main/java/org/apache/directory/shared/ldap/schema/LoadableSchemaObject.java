@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.util.StringTools;
 
 
 /**
@@ -38,10 +39,10 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
     private static final long serialVersionUID = 1L;
 
     /** The Full Qualified Class Name */
-    private String fqcn;
+    private String            fqcn;
 
     /** The base64 encoded bytecode for this schema */
-    private String bytecode;
+    private String            bytecode;
 
 
     /**
@@ -167,6 +168,27 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
         {
             return fqcn.equals( that.fqcn );
         }
+    }
 
+
+    /**
+     * Test that the FQCN is equal to the instance's name. If the FQCN is
+     * empty, fill it with the instance's name
+     *
+     * @return true if the FQCN is correctly set
+     */
+    public boolean isValid()
+    {
+        String className = this.getClass().getName();
+
+        if ( StringTools.isEmpty( fqcn ) )
+        {
+            fqcn = className;
+            return true;
+        }
+        else
+        {
+            return className.equals( fqcn );
+        }
     }
 }
