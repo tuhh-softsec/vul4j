@@ -31,6 +31,7 @@ import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
@@ -1407,7 +1408,20 @@ public class DefaultSchemaManager implements SchemaManager
         }
         else
         {
-            copy = schemaObject;
+            // Check the schemaObject here.
+            if ( ( ( LoadableSchemaObject ) schemaObject ).isValid() )
+            {
+                copy = schemaObject;
+            }
+            else
+            {
+                // We have an invalid SchemaObject, no need to go any further
+                Throwable error = new LdapOperationNotSupportedException( "the SchemaObject " + schemaObject.getOid()
+                    + " canot be added, it's not a valid LoadableSchemaObject.", ResultCodeEnum.UNWILLING_TO_PERFORM );
+                errors.add( error );
+
+                return false;
+            }
         }
 
         if ( registries.isRelaxed() )
@@ -1578,7 +1592,7 @@ public class DefaultSchemaManager implements SchemaManager
                 else
                 {
                     // We have some error : reject the deletion and get out
-                    String msg = "Cannot deete the SchemaObject " + schemaObject.getOid() + " from the registries, "
+                    String msg = "Cannot delete the SchemaObject " + schemaObject.getOid() + " from the registries, "
                         + "the resulting registries would be inconsistent :" + StringTools.listToString( errors );
                     LOG.info( msg );
 
