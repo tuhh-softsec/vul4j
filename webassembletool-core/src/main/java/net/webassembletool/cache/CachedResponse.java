@@ -1,6 +1,7 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -22,8 +23,7 @@ public class CachedResponse extends Resource {
 	private final String charset;
 	private final int statusCode;
 	private final String statusMessage;
-	private boolean stale = false;
-	private Map<String, String> vary;
+	private final Date localDate = new Date();
 
 	public CachedResponse(byte[] byteArray, String charset, Properties headers,
 			int statusCode, String statusMessage) {
@@ -34,8 +34,8 @@ public class CachedResponse extends Resource {
 		this.statusMessage = statusMessage;
 	}
 
-	public boolean isEmpty() {
-		return byteArray == null;
+	public boolean hasResponseBody() {
+		return !(byteArray == null);
 	}
 
 	public CachedResponse() {
@@ -78,15 +78,6 @@ public class CachedResponse extends Resource {
 		return statusCode;
 	}
 
-	public boolean isStale() {
-		// TODO compute with headers
-		return stale;
-	}
-
-	public void setStale() {
-		this.stale = true;
-	}
-
 	@Override
 	public final String getHeader(String key) {
 		for (Iterator<Map.Entry<Object, Object>> headersIterator = headers
@@ -98,8 +89,12 @@ public class CachedResponse extends Resource {
 		return null;
 	}
 
-	public Map<String, String> getVary() {
-		return vary;
+	public void setHeader(String name, String value) {
+		headers.put(name, value);
+	}
+
+	public Date getLocalDate() {
+		return localDate;
 	}
 
 }

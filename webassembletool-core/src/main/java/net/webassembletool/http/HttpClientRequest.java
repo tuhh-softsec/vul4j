@@ -14,6 +14,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HttpContext;
@@ -117,6 +118,10 @@ public class HttpClientRequest {
 		else
 			httpUriRequest.getParams().setParameter(
 					ClientPNames.HANDLE_REDIRECTS, true);
+		// Use browser compatibility cookie policy. This policy is the closest
+		// to the behavior of a real browser.
+		httpUriRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY,
+				CookiePolicy.BROWSER_COMPATIBILITY);
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser

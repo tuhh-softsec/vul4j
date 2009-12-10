@@ -31,6 +31,7 @@ public class ResourceContext {
 	private final Map<String, String> parameters;
 	private boolean proxy = false;
 	private boolean preserveHost = false;
+	private boolean neededForTransformation = true;
 
 	public boolean isPreserveHost() {
 		return preserveHost;
@@ -71,28 +72,16 @@ public class ResourceContext {
 		return proxy;
 	}
 
-	public boolean isCacheable() {
-		return "GET".equalsIgnoreCase(originalRequest.getMethod());
-	}
-
-	public boolean isRefreshRequired() {
-		String pragma = originalRequest.getHeader("Pragma");
-		if ("no-cache".equalsIgnoreCase(pragma))
-			return true;
-		String cacheControl = originalRequest.getHeader("Cache-control");
-		if (cacheControl != null) {
-			cacheControl = cacheControl.toLowerCase();
-			if (cacheControl.contains("no-cache")
-					|| cacheControl.contains("no-store")
-					|| cacheControl.contains("must-revalidate")
-					|| cacheControl.contains("max-age=0"))
-				return true;
-		}
-		return false;
-	}
-
 	public UserContext getUserContext() {
 		return driver.getContext(originalRequest);
+	}
+
+	public boolean isNeededForTransformation() {
+		return neededForTransformation;
+	}
+
+	public void setNeededForTransformation(boolean neededForTransformation) {
+		this.neededForTransformation = neededForTransformation;
 	}
 
 }

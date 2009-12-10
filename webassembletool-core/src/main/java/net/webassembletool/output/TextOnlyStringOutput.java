@@ -71,8 +71,7 @@ public class TextOnlyStringOutput extends Output {
 				|| (ifNoneMatch != null && ifNoneMatch
 						.equals(getHeader("ETag")))) {
 			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-			// FIXME in order to avoid NullpointerException when sending a
-			// not_modified response
+			// After a "not modified" response, content body will be ignored
 			outputStream = new NullOutputStream();
 		} else {
 			response.setStatus(getStatusCode());

@@ -1,55 +1,53 @@
 package net.webassembletool.cache;
 
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import com.opensymphony.oscache.general.GeneralCacheAdministrator;
+import java.util.Map;
+
+import net.webassembletool.HttpErrorPage;
+import net.webassembletool.ResourceContext;
+import net.webassembletool.resource.Resource;
 
 /**
  * Represents a local interface to caching system.
  * <p>
- * Currently only opensimphony's OScache is supported.
+ * Curently only opensimphony's OScache is supported.
  * 
  * @author Francois-Xavier Bonnet
  */
-/*
- * TODO: Rewrite a caching system that will not depend on Oscache, non blocking
- * and thread-safe
- */
 public class Cache {
-	private GeneralCacheAdministrator cache;
-	private int expirationDelay;
+	private final Storage storage;
 
-	public Cache(int expirationDelay) {
-		cache = new GeneralCacheAdministrator();
-		this.expirationDelay = expirationDelay;
+	public Cache() {
+		storage = new Storage();
 	}
 
-	public void put(String key, CachedResponse resource) {
-		cache.putInCache(key, resource);
-	}
-
-	/**
-	 * Returns a cache entry.
-	 * 
-	 * @param key
-	 *            key of the cache entry
-	 * @return the cache entry if any
-	 */
-	public CachedResponse get(String key) {
-		CachedResponse memoryResource = null;
-		try {
-			memoryResource = (CachedResponse) cache.getFromCache(key);
-			memoryResource = (CachedResponse) cache.getFromCache(key,
-					expirationDelay);
-		} catch (NeedsRefreshException e1) {
-			// Not in cache
-			if (memoryResource != null)
-				memoryResource.setStale();
+	private CacheEntry getCacheEntry(ResourceContext resourceContext) {
+		String url = resourceContext.getRelUrl();
+		CacheEntry cacheEntry = (CacheEntry) storage.get(url);
+		if (cacheEntry == null) {
+			cacheEntry = new CacheEntry(url, storage);
+			storage.put(url, cacheEntry);
 		}
-		return memoryResource;
+		return cacheEntry;
 	}
 
-	public void cancelUpdate(String key) {
-		cache.cancelUpdate(key);
+	public CachedResponse get(ResourceContext resourceContext) {
+		return getCacheEntry(resourceContext).get(resourceContext);
 	}
 
+	public Map<String, String> getValidators(ResourceContext resourceContext,
+			CachedResponse cachedResponse) {
+		return getCacheEntry(resourceContext).getValidators(resourceContext,
+				cachedResponse);
+	}
+
+	public Resource select(ResourceContext resourceContext,
+			CachedResponse oldResponse, Resource newResponse)
+			throws HttpErrorPage {
+		return getCacheEntry(resourceContext).select(resourceContext,
+				oldResponse, newResponse);
+	}
+
+	public void put(ResourceContext resourceContext, CachedResponse resource) {
+		getCacheEntry(resourceContext).put(resourceContext, resource);
+	}
 }

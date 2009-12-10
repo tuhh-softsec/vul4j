@@ -13,6 +13,7 @@ import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.cache.Cache;
 import net.webassembletool.cache.CacheOutput;
 import net.webassembletool.cache.CachedResponse;
+import net.webassembletool.cache.Rfc2616;
 import net.webassembletool.file.FileOutput;
 import net.webassembletool.file.FileResource;
 import net.webassembletool.http.HttpResource;
@@ -101,7 +102,7 @@ public class Driver {
 		}
 		// Cache
 		if (config.isUseCache())
-			cache = new Cache(config.getCacheRefreshDelay());
+			cache = new Cache();
 		else
 			cache = null;
 		// Authentication handler
@@ -265,10 +266,11 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	public final void renderTemplate(String page, String name, Appendable writer,
-			HttpServletRequest originalRequest, Map<String, String> params,
-			Map<String, String> replaceRules, Map<String, String> parameters,
-			boolean propagateJsessionId) throws IOException, HttpErrorPage {
+	public final void renderTemplate(String page, String name,
+			Appendable writer, HttpServletRequest originalRequest,
+			Map<String, String> params, Map<String, String> replaceRules,
+			Map<String, String> parameters, boolean propagateJsessionId)
+			throws IOException, HttpErrorPage {
 		render(page, parameters, writer, originalRequest, new TemplateRenderer(
 				name, params, page), new ReplaceRenderer(replaceRules));
 	}
@@ -331,6 +333,11 @@ public class Driver {
 		resourceContext.setProxy(true);
 		resourceContext.setPreserveHost(config.isPreserveHost());
 		if (renderers.length == 0) {
+			// As we don't have any transformation to apply, we don't even
+			// have to retrieve the resource if it is already in browser's
+			// cache. So we can use conditional a request like
+			// "if-modified-since"
+			resourceContext.setNeededForTransformation(false);
 			renderResource(resourceContext, new ResponseOutput(request,
 					response));
 		} else {
@@ -378,12 +385,6 @@ public class Driver {
 			Output output) {
 		String httpUrl = ResourceUtils
 				.getHttpUrlWithQueryString(resourceContext);
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("renderResource " + httpUrl + " original method="
-					+ resourceContext.getOriginalRequest().getMethod()
-					+ " refresh required="
-					+ resourceContext.isRefreshRequired());
-		}
 		MultipleOutput multipleOutput = new MultipleOutput();
 		multipleOutput.addOutput(output);
 		CachedResponse cachedResource = null;
@@ -391,29 +392,36 @@ public class Driver {
 		FileResource fileResource = null;
 		CacheOutput memoryOutput = null;
 		FileOutput fileOutput = null;
-		boolean miss = false;
 		try {
-			if (config.isUseCache() && resourceContext.isCacheable()) {
+			if (config.isUseCache() && Rfc2616.isCacheable(resourceContext)) {
 				// Try to load the resource from cache
-				cachedResource = cache.get(httpUrl);
-				// Check if the resource was not found or stale as it may put a
-				// lock in the cache. Then we must not forget to release the
-				// lock at the end!
-				miss = cachedResource == null || cachedResource.isStale();
-				if (miss || resourceContext.isRefreshRequired()
-						|| (cachedResource != null && cachedResource.isEmpty())) {
+				cachedResource = cache.get(resourceContext);
+				boolean needsValidation = true;
+				if (cachedResource != null) {
+					needsValidation = false;
+					if (config.getCacheRefreshDelay() <= 0) {
+						// Auto http cache
+						if (Rfc2616.needsValidation(resourceContext,
+								cachedResource))
+							needsValidation = true;
+					} else {
+						// Forced expiration delay
+						if (Rfc2616.requiresRefresh(resourceContext)
+								|| Rfc2616.getAge(cachedResource) > config
+										.getCacheRefreshDelay())
+							needsValidation = true;
+					}
+				}
+				if (needsValidation) {
 					// Resource not in cache or stale, or refresh was forced by
 					// the user (hit refresh in the browser so the browser sent
-					// a pragma:no-cache header or something similar) or
-					// resource is
-					// empty because it was too big to put into the cache, let's
-					// prepare a
+					// a pragma:no-cache header or something similar), prepare a
 					// memoryOutput to collect the new version
 					memoryOutput = new CacheOutput(config.getCacheMaxFileSize());
 					multipleOutput.addOutput(memoryOutput);
 				} else {
-					// Resource in cache, not empty and not stale (but may be an
-					// error page!), we can render it and return
+					// Resource in cache, does not need validation, just render
+					// it
 					cachedResource.render(multipleOutput);
 					return;
 				}
@@ -421,12 +429,14 @@ public class Driver {
 			// Try to load it from HTTP
 			if (config.getBaseURL() != null) {
 				// Prepare a FileOutput to store the result on the file system
-				if (config.isPutInCache() && resourceContext.isCacheable()) {
+				if (config.isPutInCache()
+						&& Rfc2616.isCacheable(resourceContext)) {
 					fileOutput = new FileOutput(ResourceUtils.getFileUrl(config
 							.getLocalBase(), resourceContext));
 					multipleOutput.addOutput(fileOutput);
 				}
 				httpResource = new HttpResource(httpClient, resourceContext);
+				// If there is an error, we will try to reuse an old cache entry
 				if (!httpResource.isError()) {
 					httpResource.render(multipleOutput);
 					return;
@@ -434,14 +444,14 @@ public class Driver {
 			}
 			// Resource could not be loaded from HTTP, let's use the expired
 			// cache entry if not empty and not error.
-			if (cachedResource != null && !cachedResource.isEmpty()
-					&& !cachedResource.isError()) {
+			if (cachedResource != null && !cachedResource.isError()) {
 				cachedResource.render(multipleOutput);
 				return;
 			}
 			// Resource could not be loaded neither from HTTP, nor from the
 			// cache, let's try from the file system
-			if (config.getLocalBase() != null && resourceContext.isCacheable()) {
+			if (config.getLocalBase() != null
+					&& Rfc2616.isCacheable(resourceContext)) {
 				fileResource = new FileResource(config.getLocalBase(),
 						resourceContext);
 				if (!fileResource.isError()) {
@@ -454,7 +464,7 @@ public class Driver {
 			if (httpResource != null) {
 				httpResource.render(multipleOutput);
 				return;
-			} else if (cachedResource != null && !cachedResource.isEmpty()) {
+			} else if (cachedResource != null) {
 				cachedResource.render(multipleOutput);
 				return;
 			} else if (fileResource != null) {
@@ -469,8 +479,7 @@ public class Driver {
 			// should have been gracefully closed in the render method but we
 			// must discard the entry inside the cache or the file system
 			// because it is not complete
-			if (miss) {
-				cache.cancelUpdate(httpUrl);
+			if (memoryOutput != null) {
 				memoryOutput = null;
 			}
 			if (fileOutput != null)
@@ -481,7 +490,7 @@ public class Driver {
 			if (cachedResource != null)
 				cachedResource.release();
 			if (memoryOutput != null)
-				cache.put(httpUrl, memoryOutput.toResource());
+				cache.put(resourceContext, memoryOutput.toResource());
 			if (httpResource != null)
 				httpResource.release();
 			if (fileResource != null)

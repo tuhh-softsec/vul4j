@@ -55,7 +55,7 @@ public class MasterTest extends TestCase {
 		assertEquals(getResource(resultResource), resp.getText());
 	}
 
-	// TODO This test does not work with cargo maven plugin as the version of
+	// This test does not work with cargo maven plugin as the version of
 	// Xerces is too old. Needed to add a new version of Xerces to the
 	// app-master project. But it works fine without it in a real servlet
 	// container.

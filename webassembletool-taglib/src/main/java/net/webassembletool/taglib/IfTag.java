@@ -4,7 +4,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * TODO Type javadoc
+ * If tag
  * 
  * @author Cedric Brandes
  */
