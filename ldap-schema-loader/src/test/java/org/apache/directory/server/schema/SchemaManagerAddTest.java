@@ -28,7 +28,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -47,7 +46,6 @@ import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -63,7 +61,7 @@ public class SchemaManagerAddTest
     private static String workingDirectory;
 
     // The schema repository
-    private static File   schemaRepository;
+    private static File schemaRepository;
 
 
     @BeforeClass
@@ -595,20 +593,14 @@ public class SchemaManagerAddTest
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
 
-        try
-        {
-            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+        LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
 
-            assertNotNull( added );
-        }
-        catch ( NamingException ne )
-        {
-            fail();
-        }
+        assertNotNull( added );
+        assertEquals( lc.getClass().getName(), added.getFqcn() );
     }
 
 
-    //@Test
+    @Test
     public void testAddAlreadyExistingComparator() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
@@ -616,27 +608,21 @@ public class SchemaManagerAddTest
         int goidSize = schemaManager.getOidRegistry().size();
 
         String oid = "0.0.0";
-        LdapComparator<?> lc = new BooleanComparator( oid );
+        LdapComparator<?> bc = new BooleanComparator( oid );
 
-        assertTrue( schemaManager.add( lc ) );
+        assertTrue( schemaManager.add( bc ) );
 
-        try
-        {
-            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+        LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
 
-            assertNotNull( added );
-        }
-        catch ( NamingException ne )
-        {
-            fail();
-        }
+        assertNotNull( added );
+        assertEquals( bc.getClass().getName(), added.getFqcn() );
 
         List<Throwable> errors = schemaManager.getErrors();
         assertEquals( 0, errors.size() );
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
 
-        lc = new CsnComparator( oid );
+        LdapComparator<?> lc = new CsnComparator( oid );
 
         assertFalse( schemaManager.add( lc ) );
 
@@ -646,24 +632,15 @@ public class SchemaManagerAddTest
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
 
-        try
-        {
-            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+        added = schemaManager.lookupComparatorRegistry( oid );
 
-            assertNotNull( added );
-        }
-        catch ( NamingException ne )
-        {
-            fail();
-        }
+        assertNotNull( added );
+        assertEquals( bc.getClass().getName(), added.getFqcn() );
     }
 
 
     /**
      * Test that we can't add two comparators with the same class code.
-     * 
-     * This is a questionable test, as there is no real reason why it could
-     * be a problem.
      */
     @Test
     public void testAddComparatorWithWrongFQCN() throws Exception
@@ -674,6 +651,7 @@ public class SchemaManagerAddTest
 
         String oid = "0.0.0";
         LdapComparator<?> lc = new BooleanComparator( oid );
+
         // using java.sql.ResultSet cause it is very unlikely to get loaded
         // in ADS, as the FQCN is not the one expected
         lc.setFqcn( "java.sql.ResultSet" );
@@ -689,7 +667,7 @@ public class SchemaManagerAddTest
 
         try
         {
-            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
+            schemaManager.lookupComparatorRegistry( oid );
             fail();
         }
         catch ( Exception e )
@@ -697,47 +675,6 @@ public class SchemaManagerAddTest
             // Expected
             assertTrue( true );
         }
-    }
-
-
-    @Ignore
-    // Definitively not an issue.
-    @Test
-    public void testAddNewComparatorWithDuplicateName() throws Exception
-    {
-        SchemaManager schemaManager = loadSystem();
-        int ctrSize = schemaManager.getComparatorRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
-
-        List<String> names = new ArrayList<String>();
-        names.add( "name" );
-        names.add( "name" );
-
-        String oid = "0.0.0";
-        LdapComparator<?> lc = new BooleanComparator( oid );
-        lc.setNames( names );
-
-        // FIXME this should fail cause the same name was set twice
-        assertTrue( schemaManager.add( lc ) );
-
-        List<Throwable> errors = schemaManager.getErrors();
-        errors = schemaManager.getErrors();
-        assertEquals( 1, errors.size() );
-
-        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
-
-        try
-        {
-            LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
-
-            assertNotNull( added );
-        }
-        catch ( NamingException ne )
-        {
-            fail();
-        }
-
     }
 
     //=========================================================================
