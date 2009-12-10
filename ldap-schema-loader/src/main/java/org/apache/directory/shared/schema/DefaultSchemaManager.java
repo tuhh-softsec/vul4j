@@ -1351,6 +1351,15 @@ public class DefaultSchemaManager implements SchemaManager
 
 
     /**
+     * {@inheritDoc}
+     */
+    public SyntaxChecker lookupSyntaxCheckerRegistry( String oid ) throws NamingException
+    {
+        return registries.getSyntaxCheckerRegistry().lookup( oid );
+    }
+
+
+    /**
      * Check that the given OID exists in the globalOidRegistry.
      */
     private boolean checkOidExist( SchemaObject schemaObject )
@@ -1365,9 +1374,9 @@ public class DefaultSchemaManager implements SchemaManager
             return registries.getComparatorRegistry().contains( schemaObject.getOid() );
         }
 
-        if ( schemaObject instanceof LdapSyntax )
+        if ( schemaObject instanceof SyntaxChecker )
         {
-            return registries.getLdapSyntaxRegistry().contains( schemaObject.getOid() );
+            return registries.getSyntaxCheckerRegistry().contains( schemaObject.getOid() );
         }
 
         if ( schemaObject instanceof Normalizer )

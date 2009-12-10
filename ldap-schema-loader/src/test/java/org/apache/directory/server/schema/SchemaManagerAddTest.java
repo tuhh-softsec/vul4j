@@ -39,11 +39,13 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.RegexSyntaxChecker;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
@@ -810,6 +812,7 @@ public class SchemaManagerAddTest
         }
     }
 
+
     //=========================================================================
     // ObjectClass addition tests
     //-------------------------------------------------------------------------
@@ -823,6 +826,105 @@ public class SchemaManagerAddTest
     //=========================================================================
     // SyntaxChecker addition tests
     //-------------------------------------------------------------------------
-    // TODO
+    @Test
+    public void testAddNewSyntaxChecker() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int nrSize = schemaManager.getSyntaxCheckerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
+        String oid = "0.0.0";
+        SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
+
+        assertTrue( schemaManager.add( syntaxChecker ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        SyntaxChecker added = schemaManager.lookupSyntaxCheckerRegistry( oid );
+
+        assertNotNull( added );
+        assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
+    }
+
+
+    @Test
+    public void testAddAlreadyExistingSyntaxChecker() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int nrSize = schemaManager.getSyntaxCheckerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        String oid = "0.0.0";
+        SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
+
+        assertTrue( schemaManager.add( syntaxChecker ) );
+
+        SyntaxChecker added = schemaManager.lookupSyntaxCheckerRegistry( oid );
+
+        assertNotNull( added );
+        assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+        assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        SyntaxChecker syntaxChecker2 = new RegexSyntaxChecker( oid );
+
+        assertFalse( schemaManager.add( syntaxChecker2 ) );
+
+        errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+
+        assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        added = schemaManager.lookupSyntaxCheckerRegistry( oid );
+
+        assertNotNull( added );
+        assertEquals( syntaxChecker.getClass().getName(), added.getFqcn() );
+    }
+
+
+    /**
+     * Test that we can't add two SyntaxCheckers with the same class code.
+     */
+    @Test
+    public void testAddSyntaxCheckerWithWrongFQCN() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int nrSize = schemaManager.getSyntaxCheckerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        String oid = "0.0.0";
+        SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
+
+        // using java.sql.ResultSet cause it is very unlikely to get loaded
+        // in ADS, as the FQCN is not the one expected
+        syntaxChecker.setFqcn( "java.sql.ResultSet" );
+
+        assertFalse( schemaManager.add( syntaxChecker ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+
+        assertEquals( nrSize, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        try
+        {
+            schemaManager.lookupSyntaxCheckerRegistry( oid );
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // Expected
+            assertTrue( true );
+        }
+    }
 }

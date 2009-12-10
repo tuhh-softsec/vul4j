@@ -464,6 +464,16 @@ public interface SchemaManager
 
 
     /**
+     * Lookup for a SyntaxChecker in the SyntaxChecker registry
+     * 
+     * @param String oid the OID we are looking for
+     * @return The found SyntaxChecker 
+     * @throws NamingException if the OID is not found in the SyntaxChecker registry
+     */
+    SyntaxChecker lookupSyntaxCheckerRegistry( String oid ) throws NamingException;
+
+
+    /**
      * Get an immutable reference on the AttributeType registry
      * 
      * @return A reference to the AttributeType registry.
