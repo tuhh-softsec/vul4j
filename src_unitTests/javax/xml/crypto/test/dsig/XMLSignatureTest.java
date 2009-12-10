@@ -21,6 +21,7 @@ package javax.xml.crypto.test.dsig;
 
 import java.util.*;
 import java.security.*;
+import javax.xml.crypto.dom.DOMStructure;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
@@ -29,6 +30,7 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import junit.framework.*;
 
@@ -231,6 +233,61 @@ public class XMLSignatureTest extends TestCase {
 */
     }
 
+    public void testSignWithReferenceManifestDependencies() throws Exception {
+        // create references
+	DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
+        List refs = Collections.singletonList(fac.newReference("#object-1", dm));
+
+        // create SignedInfo
+	CanonicalizationMethod cm = fac.newCanonicalizationMethod
+	    (CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
+        SignedInfo si = fac.newSignedInfo(cm, SIG_METHODS[1], refs);
+
+        // create objects
+        List objs = new ArrayList();
+
+        // Object 1
+        List manRefs = Collections.singletonList
+            (fac.newReference("#object-2", dm));
+        objs.add(fac.newXMLObject(Collections.singletonList
+            (fac.newManifest(manRefs, "manifest-1")), "object-1", null, null));
+
+        // Object 2
+        Document doc = TestUtils.newDocument();
+        Element nc = doc.createElementNS(null, "NonCommentandus");
+        nc.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", "");
+        nc.appendChild(doc.createComment(" Commentandum "));
+        objs.add(fac.newXMLObject(Collections.singletonList
+            (new DOMStructure(nc)), "object-2", null, null));
+
+	KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
+		    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[1])));
+
+        // create XMLSignature
+        XMLSignature sig = fac.newXMLSignature(si, ki, objs, "signature", null);
+        DOMSignContext dsc = new DOMSignContext(SIGN_KEYS[1], doc);
+
+        sig.sign(dsc);
+
+/*
+	StringWriter sw = new StringWriter();
+	dumpDocument(doc, sw);
+	System.out.println(sw);
+*/
+
+        DOMValidateContext dvc = new DOMValidateContext
+	    (VALIDATE_KEYS[1], doc.getDocumentElement());
+        XMLSignature sig2 = fac.unmarshalXMLSignature(dvc);
+
+        if (sig.equals(sig2) == false) {
+            throw new Exception
+                ("Unmarshalled signature is not equal to generated signature");
+        }
+        if (sig2.validate(dvc) == false) {
+            throw new Exception("Validation of generated signature failed");
+        }
+    }
+
     private SignedInfo createSignedInfo(SignatureMethod sm) throws Exception {
 	// set up the building blocks
 	CanonicalizationMethod cm = fac.newCanonicalizationMethod
@@ -247,5 +304,4 @@ public class XMLSignatureTest extends TestCase {
 	    super("TestProvider", 0, "TestProvider");
 	}
     }
-
 }

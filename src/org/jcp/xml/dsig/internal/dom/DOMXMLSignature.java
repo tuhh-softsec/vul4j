@@ -321,7 +321,7 @@ public final class DOMXMLSignature extends DOMStructure
         }
 
 	// generate references and signature value
-	List allReferences = new ArrayList(si.getReferences());
+	List allReferences = new ArrayList();
 
 	// traverse the Signature and register all objects with IDs that
 	// may contain References
@@ -351,6 +351,9 @@ public final class DOMXMLSignature extends DOMStructure
 		}
             }
 	}
+        // always add SignedInfo references after Manifest references so
+        // that Manifest reference are digested first
+        allReferences.addAll(si.getReferences());
 
         // generate/digest each reference
 	for (int i = 0, size = allReferences.size(); i < size; i++) {
