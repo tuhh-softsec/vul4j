@@ -90,32 +90,32 @@ import org.slf4j.LoggerFactory;
 public class DefaultSchemaManager implements SchemaManager
 {
     /** static class logger */
-    private static final Logger   LOG       = LoggerFactory.getLogger( DefaultSchemaManager.class );
+    private static final Logger LOG = LoggerFactory.getLogger( DefaultSchemaManager.class );
 
     /** The NamingContext this SchemaManager is associated with */
-    private LdapDN                namingContext;
+    private LdapDN namingContext;
 
     /** The global registries for this namingContext */
-    private volatile Registries   registries;
+    private volatile Registries registries;
 
     /** The list of errors produced when loading some schema elements */
-    private List<Throwable>       errors;
+    private List<Throwable> errors;
 
     /** The Schema schemaLoader used by this SchemaManager */
-    private SchemaLoader          schemaLoader;
+    private SchemaLoader schemaLoader;
 
     /** the factory that generates respective SchemaObjects from LDIF entries */
     protected final EntityFactory factory;
 
     /** the normalized name for the schema modification attributes */
-    private LdapDN                schemaModificationAttributesDN;
+    private LdapDN schemaModificationAttributesDN;
 
     /** A flag indicating that the SchemaManager is relaxed or not */
-    private boolean               isRelaxed = STRICT;
+    private boolean isRelaxed = STRICT;
 
     /** Two flags for RELAXED and STRUCT */
-    public static final boolean   STRICT    = false;
-    public static final boolean   RELAXED   = true;
+    public static final boolean STRICT = false;
+    public static final boolean RELAXED = true;
 
 
     /**
@@ -1338,6 +1338,15 @@ public class DefaultSchemaManager implements SchemaManager
     public LdapComparator<?> lookupComparatorRegistry( String oid ) throws NamingException
     {
         return registries.getComparatorRegistry().lookup( oid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Normalizer lookupNormalizerRegistry( String oid ) throws NamingException
+    {
+        return registries.getNormalizerRegistry().lookup( oid );
     }
 
 

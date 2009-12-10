@@ -454,6 +454,16 @@ public interface SchemaManager
 
 
     /**
+     * Lookup for a Normalizer in the Normalizer registry
+     * 
+     * @param String oid the OID we are looking for
+     * @return The found Normalizer 
+     * @throws NamingException if the OID is not found in the Normalizer registry
+     */
+    Normalizer lookupNormalizerRegistry( String oid ) throws NamingException;
+
+
+    /**
      * Get an immutable reference on the AttributeType registry
      * 
      * @return A reference to the AttributeType registry.

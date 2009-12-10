@@ -37,11 +37,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
@@ -677,6 +679,7 @@ public class SchemaManagerAddTest
         }
     }
 
+
     //=========================================================================
     // DITContentRule addition tests
     //-------------------------------------------------------------------------
@@ -705,7 +708,107 @@ public class SchemaManagerAddTest
     //=========================================================================
     // Normalizer addition tests
     //-------------------------------------------------------------------------
-    // TODO
+    @Test
+    public void testAddNewNormalizer() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int nrSize = schemaManager.getNormalizerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        String oid = "0.0.0";
+        Normalizer normalizer = new NoOpNormalizer( oid );
+
+        assertTrue( schemaManager.add( normalizer ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        Normalizer added = schemaManager.lookupNormalizerRegistry( oid );
+
+        assertNotNull( added );
+        assertEquals( normalizer.getClass().getName(), added.getFqcn() );
+    }
+
+
+    @Test
+    public void testAddAlreadyExistingNormalizer() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int nrSize = schemaManager.getNormalizerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        String oid = "0.0.0";
+        Normalizer normalizer = new NoOpNormalizer( oid );
+
+        assertTrue( schemaManager.add( normalizer ) );
+
+        Normalizer added = schemaManager.lookupNormalizerRegistry( oid );
+
+        assertNotNull( added );
+        assertEquals( normalizer.getClass().getName(), added.getFqcn() );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+        assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        Normalizer normalizer2 = new NoOpNormalizer( oid );
+
+        assertFalse( schemaManager.add( normalizer2 ) );
+
+        errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+
+        assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        added = schemaManager.lookupNormalizerRegistry( oid );
+
+        assertNotNull( added );
+        assertEquals( normalizer.getClass().getName(), added.getFqcn() );
+    }
+
+
+    /**
+     * Test that we can't add two Normalizers with the same class code.
+     */
+    @Test
+    public void testAddNormalizerWithWrongFQCN() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int nrSize = schemaManager.getNormalizerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        String oid = "0.0.0";
+        Normalizer normalizer = new NoOpNormalizer( oid );
+
+        // using java.sql.ResultSet cause it is very unlikely to get loaded
+        // in ADS, as the FQCN is not the one expected
+        normalizer.setFqcn( "java.sql.ResultSet" );
+
+        assertFalse( schemaManager.add( normalizer ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+
+        assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        try
+        {
+            schemaManager.lookupNormalizerRegistry( oid );
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // Expected
+            assertTrue( true );
+        }
+    }
 
     //=========================================================================
     // ObjectClass addition tests
