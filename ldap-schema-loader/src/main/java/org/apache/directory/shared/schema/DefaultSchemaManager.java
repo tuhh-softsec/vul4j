@@ -1344,6 +1344,15 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
+    public MatchingRule lookupMatchingRuleRegistry( String oid ) throws NamingException
+    {
+        return registries.getMatchingRuleRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public Normalizer lookupNormalizerRegistry( String oid ) throws NamingException
     {
         return registries.getNormalizerRegistry().lookup( oid );
@@ -1404,9 +1413,14 @@ public class DefaultSchemaManager implements SchemaManager
     {
         String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
 
-        if ( schemaLoader.getSchema( schemaName ) == null )
+        if ( StringTools.isEmpty( schemaName ) )
         {
             return MetaSchemaConstants.SCHEMA_OTHER;
+        }
+
+        if ( schemaLoader.getSchema( schemaName ) == null )
+        {
+            return null;
         }
         else
         {
@@ -1484,6 +1498,17 @@ public class DefaultSchemaManager implements SchemaManager
 
             // Build the new AttributeType from the given entry
             String schemaName = getSchemaName( copy );
+
+            if ( schemaName == null )
+            {
+                // The schema associated with the SchemzaObject does not exist. This is not valid.
+                Throwable error = new LdapOperationNotSupportedException( "Cannot add the SchemaObject "
+                    + schemaObject.getOid() + " into a non existing schema " + copy.getSchemaName(),
+                    ResultCodeEnum.UNWILLING_TO_PERFORM );
+                errors.add( error );
+
+                return false;
+            }
 
             // At this point, the constructed AttributeType has not been checked against the 
             // existing Registries. It may be broken (missing SUP, or such), it will be checked

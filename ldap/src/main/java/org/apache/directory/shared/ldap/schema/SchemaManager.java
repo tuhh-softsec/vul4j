@@ -454,6 +454,16 @@ public interface SchemaManager
 
 
     /**
+     * Lookup for a MatchingRule in the MatchingRule registry
+     * 
+     * @param String oid the OID we are looking for
+     * @return The found MatchingRule 
+     * @throws NamingException if the OID is not found in the MatchingRule registry
+     */
+    MatchingRule lookupMatchingRuleRegistry( String oid ) throws NamingException;
+
+
+    /**
      * Lookup for a Normalizer in the Normalizer registry
      * 
      * @param String oid the OID we are looking for

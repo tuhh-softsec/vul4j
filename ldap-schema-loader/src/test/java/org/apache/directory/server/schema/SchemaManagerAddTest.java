@@ -34,15 +34,18 @@ import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
+import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
@@ -113,6 +116,9 @@ public class SchemaManagerAddTest
     }
 
 
+    /**
+     * Check if an AT is present in the AT registry
+     */
     private boolean isATPresent( SchemaManager schemaManager, String oid )
     {
         try
@@ -132,6 +138,31 @@ public class SchemaManagerAddTest
     }
 
 
+    /**
+     * Check if a MR is present in the MR registry
+     */
+    private boolean isMRPresent( SchemaManager schemaManager, String oid )
+    {
+        try
+        {
+            MatchingRule matchingRule = schemaManager.lookupMatchingRuleRegistry( oid );
+
+            return matchingRule != null;
+        }
+        catch ( NoSuchAttributeException nsae )
+        {
+            return false;
+        }
+        catch ( NamingException ne )
+        {
+            return false;
+        }
+    }
+
+
+    /**
+     * Check if a S is present in the S registry
+     */
     private boolean isSyntaxPresent( SchemaManager schemaManager, String oid )
     {
         try
@@ -754,7 +785,6 @@ public class SchemaManagerAddTest
         assertFalse( schemaManager.add( lc ) );
 
         List<Throwable> errors = schemaManager.getErrors();
-        errors = schemaManager.getErrors();
         assertEquals( 1, errors.size() );
 
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
@@ -786,7 +816,216 @@ public class SchemaManagerAddTest
     //=========================================================================
     // MatchingRule addition tests
     //-------------------------------------------------------------------------
-    // TODO
+    /**
+     * Try to inject a new MatchingRule
+     */
+    @Test
+    public void testAddValidMatchingRule() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        MatchingRule matchingRule = new MatchingRule( "1.1.0" );
+        matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+
+        // It should not fail
+        assertTrue( schemaManager.add( matchingRule ) );
+
+        assertTrue( isMRPresent( schemaManager, "1.1.0" ) );
+
+        // The C and N must have default values
+        MatchingRule added = schemaManager.lookupMatchingRuleRegistry( "1.1.0" );
+
+        assertEquals( NoOpNormalizer.class.getName(), added.getNormalizer().getClass().getName() );
+        assertEquals( ComparableComparator.class.getName(), added.getLdapComparator().getClass().getName() );
+
+        assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a new MatchingRule without a syntax
+     */
+    @Test
+    public void testAddMatchingRuleNoSyntax() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        MatchingRule matchingRule = new MatchingRule( "1.1.0" );
+
+        // It should fail (no syntax)
+        assertFalse( schemaManager.add( matchingRule ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
+
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a new MatchingRule with an existing OID
+     */
+    @Test
+    public void testAddMatchingRuleExistingOID() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        MatchingRule matchingRule = new MatchingRule( "2.5.13.0" );
+        matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+
+        // It should fail (oid already registered)
+        assertFalse( schemaManager.add( matchingRule ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        // Check that the existing MR has not been replaced
+        assertTrue( isMRPresent( schemaManager, "2.5.13.0" ) );
+        MatchingRule existing = schemaManager.lookupMatchingRuleRegistry( "2.5.13.0" );
+
+        assertEquals( "objectIdentifierMatch", existing.getName() );
+
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a new MatchingRule with an existing name
+     */
+    @Test
+    public void testAddMatchingRuleExistingName() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        MatchingRule matchingRule = new MatchingRule( "1.1.0" );
+        matchingRule.setNames( "Test", "objectIdentifierMatch" );
+        matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+
+        // It should fail (name already registered)
+        assertFalse( schemaManager.add( matchingRule ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a new MatchingRule with an existing AT name 
+     */
+    @Test
+    public void testAddMatchingRuleExistingATName() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        MatchingRule matchingRule = new MatchingRule( "1.1.0" );
+        matchingRule.setNames( "Test", "cn" );
+        matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+
+        // It should not fail
+        assertTrue( schemaManager.add( matchingRule ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+
+        assertEquals( 0, errors.size() );
+
+        // Check that the new MR has been injected
+        assertTrue( isMRPresent( schemaManager, "1.1.0" ) );
+        MatchingRule added = schemaManager.lookupMatchingRuleRegistry( "1.1.0" );
+
+        assertTrue( added.getNames().contains( "cn" ) );
+        assertTrue( added.getNames().contains( "Test" ) );
+
+        assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a new MatchingRule with a not existing Syntax 
+     */
+    @Test
+    public void testAddMatchingRuleNotExistingSyntax() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        MatchingRule matchingRule = new MatchingRule( "1.1.0" );
+        matchingRule.setNames( "Test" );
+        matchingRule.setSyntaxOid( "1.1.1" );
+
+        // It should fail
+        assertFalse( schemaManager.add( matchingRule ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a new MatchingRule with an existing AT name 
+     */
+    @Test
+    public void testAddMatchingRuleNotExistingSchema() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        MatchingRule matchingRule = new MatchingRule( "1.1.0" );
+        matchingRule.setNames( "Test" );
+        matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        matchingRule.setSchemaName( "bad" );
+
+        // It should fail
+        assertFalse( schemaManager.add( matchingRule ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+        assertTrue( error instanceof LdapOperationNotSupportedException );
+
+        // Check that the new MR has been injected
+        assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
+
+        assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
 
     //=========================================================================
     // MatchingRuleUse addition tests
