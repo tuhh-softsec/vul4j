@@ -1353,6 +1353,15 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
+    public LdapSyntax lookupLdapSyntaxRegistry( String oid ) throws NamingException
+    {
+        return registries.getLdapSyntaxRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public SyntaxChecker lookupSyntaxCheckerRegistry( String oid ) throws NamingException
     {
         return registries.getSyntaxCheckerRegistry().lookup( oid );

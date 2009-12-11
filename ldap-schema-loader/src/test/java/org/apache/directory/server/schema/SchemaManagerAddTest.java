@@ -37,6 +37,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -45,6 +46,7 @@ import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.RegexSyntaxChecker;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
@@ -118,6 +120,25 @@ public class SchemaManagerAddTest
             AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
 
             return attributeType != null;
+        }
+        catch ( NoSuchAttributeException nsae )
+        {
+            return false;
+        }
+        catch ( NamingException ne )
+        {
+            return false;
+        }
+    }
+
+
+    private boolean isSyntaxPresent( SchemaManager schemaManager, String oid )
+    {
+        try
+        {
+            LdapSyntax syntax = schemaManager.lookupLdapSyntaxRegistry( oid );
+
+            return syntax != null;
         }
         catch ( NoSuchAttributeException nsae )
         {
@@ -821,7 +842,35 @@ public class SchemaManagerAddTest
     //=========================================================================
     // Syntax addition tests
     //-------------------------------------------------------------------------
-    // TODO
+    /**
+     * Try to inject a new valid Syntax
+     */
+    @Test
+    public void testAddValidSyntax() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int sSize = schemaManager.getLdapSyntaxRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapSyntax syntax = new LdapSyntax( "1.1.0" );
+        //syntax.setSyntaxChecker( new RegexSyntaxChecker( "1.1.0" ) );
+
+        // It should not fail
+        assertTrue( schemaManager.add( syntax ) );
+
+        LdapSyntax added = schemaManager.lookupLdapSyntaxRegistry( "1.1.0" );
+
+        assertNotNull( added );
+        assertEquals( OctetStringSyntaxChecker.class.getName(), added.getSyntaxChecker().getClass().getName() );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        assertTrue( isSyntaxPresent( schemaManager, "1.1.0" ) );
+        assertEquals( sSize + 1, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
 
     //=========================================================================
     // SyntaxChecker addition tests

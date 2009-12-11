@@ -464,6 +464,16 @@ public interface SchemaManager
 
 
     /**
+     * Lookup for an LdapSyntax in the LdapSyntax registry
+     * 
+     * @param String oid the OID we are looking for
+     * @return The found LdapSyntax 
+     * @throws NamingException if the OID is not found in the LdapSyntax registry
+     */
+    LdapSyntax lookupLdapSyntaxRegistry( String oid ) throws NamingException;
+
+
+    /**
      * Lookup for a SyntaxChecker in the SyntaxChecker registry
      * 
      * @param String oid the OID we are looking for
