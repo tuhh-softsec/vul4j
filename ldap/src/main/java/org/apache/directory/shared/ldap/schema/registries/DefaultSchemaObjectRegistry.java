@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
@@ -195,7 +197,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             String msg = schemaObjectType.name() + " with OID " + oid + " already registered!";
             LOG.warn( msg );
-            throw new NamingException( msg );
+            throw new LdapSchemaViolationException( msg, ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS );
         }
 
         byName.put( oid, schemaObject );
@@ -206,7 +208,18 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
          */
         for ( String name : schemaObject.getNames() )
         {
-            byName.put( StringTools.trim( StringTools.toLowerCase( name ) ), schemaObject );
+            String lowerName = StringTools.trim( StringTools.toLowerCase( name ) );
+
+            if ( byName.containsKey( lowerName ) )
+            {
+                String msg = schemaObjectType.name() + " with name " + name + " already registered!";
+                LOG.warn( msg );
+                throw new LdapSchemaViolationException( msg, ResultCodeEnum.ATTRIBUTE_OR_VALUE_EXISTS );
+            }
+            else
+            {
+                byName.put( lowerName, schemaObject );
+            }
         }
 
         // And register the oid -> schemaObject relation

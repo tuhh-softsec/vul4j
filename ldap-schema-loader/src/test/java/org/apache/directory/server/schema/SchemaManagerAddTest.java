@@ -468,6 +468,40 @@ public class SchemaManagerAddTest
     }
 
 
+    /**
+     * Try to inject an AttributeType whith a already attributed name
+     */
+    @Test
+    public void testAddAttributeTypeNameAlreadyExist() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        AttributeType attributeType = new AttributeType( "1.1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( "2.5.13.1" );
+        attributeType.setSubstringOid( "2.5.13.1" );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setNames( "Test", "cn" );
+
+        // It should fail
+        assertFalse( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        // The AT must not be there
+        assertFalse( isATPresent( schemaManager, "1.1.1.0" ) );
+
+        assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
     //-------------------------------------------------------------------------
     // Then, with a superior
     //-------------------------------------------------------------------------
@@ -843,7 +877,8 @@ public class SchemaManagerAddTest
     // Syntax addition tests
     //-------------------------------------------------------------------------
     /**
-     * Try to inject a new valid Syntax
+     * Try to inject a new valid Syntax, with no SC : the associated SC 
+     * will be the default OctetString SC
      */
     @Test
     public void testAddValidSyntax() throws Exception
@@ -853,7 +888,6 @@ public class SchemaManagerAddTest
         int goidSize = schemaManager.getOidRegistry().size();
 
         LdapSyntax syntax = new LdapSyntax( "1.1.0" );
-        //syntax.setSyntaxChecker( new RegexSyntaxChecker( "1.1.0" ) );
 
         // It should not fail
         assertTrue( schemaManager.add( syntax ) );
@@ -869,6 +903,31 @@ public class SchemaManagerAddTest
         assertTrue( isSyntaxPresent( schemaManager, "1.1.0" ) );
         assertEquals( sSize + 1, schemaManager.getLdapSyntaxRegistry().size() );
         assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject a Syntax with an existing OID
+     */
+    @Test
+    public void testAddSyntaxExistingOid() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int sSize = schemaManager.getLdapSyntaxRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapSyntax syntax = new LdapSyntax( "2.5.4.3" );
+
+        // It should fail
+        assertFalse( schemaManager.add( syntax ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 1, errors.size() );
+        Throwable error = errors.get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 

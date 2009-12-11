@@ -1480,56 +1480,65 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
                     + "failed, it's already present in the Registries";
                 LOG.error( msg );
-                throw new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+                Throwable error = new LdapOperationNotSupportedException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+                errors.add( error );
+                return;
             }
         }
 
-        // First call the specific registry's register method
-        switch ( schemaObject.getObjectType() )
+        try
         {
-            case ATTRIBUTE_TYPE:
-                attributeTypeRegistry.register( ( AttributeType ) schemaObject );
-                break;
+            // First call the specific registry's register method
+            switch ( schemaObject.getObjectType() )
+            {
+                case ATTRIBUTE_TYPE:
+                    attributeTypeRegistry.register( ( AttributeType ) schemaObject );
+                    break;
 
-            case COMPARATOR:
-                comparatorRegistry.register( ( LdapComparator<?> ) schemaObject );
-                break;
+                case COMPARATOR:
+                    comparatorRegistry.register( ( LdapComparator<?> ) schemaObject );
+                    break;
 
-            case DIT_CONTENT_RULE:
-                ditContentRuleRegistry.register( ( DITContentRule ) schemaObject );
-                break;
+                case DIT_CONTENT_RULE:
+                    ditContentRuleRegistry.register( ( DITContentRule ) schemaObject );
+                    break;
 
-            case DIT_STRUCTURE_RULE:
-                ditStructureRuleRegistry.register( ( DITStructureRule ) schemaObject );
-                break;
+                case DIT_STRUCTURE_RULE:
+                    ditStructureRuleRegistry.register( ( DITStructureRule ) schemaObject );
+                    break;
 
-            case LDAP_SYNTAX:
-                ldapSyntaxRegistry.register( ( LdapSyntax ) schemaObject );
-                break;
+                case LDAP_SYNTAX:
+                    ldapSyntaxRegistry.register( ( LdapSyntax ) schemaObject );
+                    break;
 
-            case MATCHING_RULE:
-                matchingRuleRegistry.register( ( MatchingRule ) schemaObject );
-                break;
+                case MATCHING_RULE:
+                    matchingRuleRegistry.register( ( MatchingRule ) schemaObject );
+                    break;
 
-            case MATCHING_RULE_USE:
-                matchingRuleUseRegistry.register( ( MatchingRuleUse ) schemaObject );
-                break;
+                case MATCHING_RULE_USE:
+                    matchingRuleUseRegistry.register( ( MatchingRuleUse ) schemaObject );
+                    break;
 
-            case NAME_FORM:
-                nameFormRegistry.register( ( NameForm ) schemaObject );
-                break;
+                case NAME_FORM:
+                    nameFormRegistry.register( ( NameForm ) schemaObject );
+                    break;
 
-            case NORMALIZER:
-                normalizerRegistry.register( ( Normalizer ) schemaObject );
-                break;
+                case NORMALIZER:
+                    normalizerRegistry.register( ( Normalizer ) schemaObject );
+                    break;
 
-            case OBJECT_CLASS:
-                objectClassRegistry.register( ( ObjectClass ) schemaObject );
-                break;
+                case OBJECT_CLASS:
+                    objectClassRegistry.register( ( ObjectClass ) schemaObject );
+                    break;
 
-            case SYNTAX_CHECKER:
-                syntaxCheckerRegistry.register( ( SyntaxChecker ) schemaObject );
-                break;
+                case SYNTAX_CHECKER:
+                    syntaxCheckerRegistry.register( ( SyntaxChecker ) schemaObject );
+                    break;
+            }
+        }
+        catch ( Exception e )
+        {
+            errors.add( e );
         }
     }
 

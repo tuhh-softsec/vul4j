@@ -304,6 +304,32 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
 
     /**
+     * Sets the list of names for this SchemaObject. The names are
+     * lowercased and trimmed.
+     *  
+     * @param names The list of names.
+     */
+    public void setNames( String... names )
+    {
+        if ( names == null )
+        {
+            return;
+        }
+
+        if ( !isReadOnly )
+        {
+            for ( String name : names )
+            {
+                if ( name != null )
+                {
+                    this.names.add( name );
+                }
+            }
+        }
+    }
+
+
+    /**
      * Gets a short description about this SchemaObject.
      * 
      * @return a short description about this SchemaObject
