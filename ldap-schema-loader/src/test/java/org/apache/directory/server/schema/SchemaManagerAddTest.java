@@ -469,7 +469,7 @@ public class SchemaManagerAddTest
 
 
     /**
-     * Try to inject an AttributeType whith a already attributed name
+     * Try to inject an AttributeType with an already attributed name
      */
     @Test
     public void testAddAttributeTypeNameAlreadyExist() throws Exception
@@ -499,6 +499,42 @@ public class SchemaManagerAddTest
 
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Try to inject an AttributeType with an ObjectClass name
+     */
+    @Test
+    public void testAddAttributeTypeNameOfAnObjectClass() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        AttributeType attributeType = new AttributeType( "1.1.1.0" );
+        attributeType.setEqualityOid( "2.5.13.1" );
+        attributeType.setOrderingOid( "2.5.13.1" );
+        attributeType.setSubstringOid( "2.5.13.1" );
+        attributeType.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
+        attributeType.setNames( "Test", "referral" );
+
+        // It should be ok
+        assertTrue( schemaManager.add( attributeType ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertEquals( 0, errors.size() );
+
+        // The AT must be present
+        assertTrue( isATPresent( schemaManager, "1.1.1.0" ) );
+
+        assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+
+        AttributeType added = schemaManager.lookupAttributeTypeRegistry( "referral" );
+        assertNotNull( added );
+        assertEquals( "1.1.1.0", added.getOid() );
+        assertTrue( added.getNames().contains( "referral" ) );
     }
 
 

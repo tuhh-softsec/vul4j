@@ -1415,20 +1415,10 @@ public class DefaultSchemaManager implements SchemaManager
     }
 
 
-    //-----------------------------------------------------------------------------------
-    // SchemaObject operations
-    //-----------------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public boolean add( SchemaObject schemaObject ) throws Exception
+    private SchemaObject copy( SchemaObject schemaObject )
     {
-        // First, clear the errors
-        errors.clear();
-
         SchemaObject copy = null;
 
-        // Clone the schemaObject
         if ( !( schemaObject instanceof LoadableSchemaObject ) )
         {
             copy = schemaObject.copy();
@@ -1446,9 +1436,30 @@ public class DefaultSchemaManager implements SchemaManager
                 Throwable error = new LdapOperationNotSupportedException( "the SchemaObject " + schemaObject.getOid()
                     + " canot be added, it's not a valid LoadableSchemaObject.", ResultCodeEnum.UNWILLING_TO_PERFORM );
                 errors.add( error );
-
-                return false;
             }
+        }
+
+        return copy;
+    }
+
+
+    //-----------------------------------------------------------------------------------
+    // SchemaObject operations
+    //-----------------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public boolean add( SchemaObject schemaObject ) throws Exception
+    {
+        // First, clear the errors
+        errors.clear();
+
+        // Clone the schemaObject
+        SchemaObject copy = copy( schemaObject );
+
+        if ( copy == null )
+        {
+            return false;
         }
 
         if ( registries.isRelaxed() )
@@ -1504,6 +1515,9 @@ public class DefaultSchemaManager implements SchemaManager
                 // If we didn't get any error, apply the addition to the real retistries
                 if ( errors.isEmpty() )
                 {
+                    // Copy again as the clonedRegistries clear has removed the previous copy
+                    copy = copy( schemaObject );
+
                     // Apply the addition to the real registries
                     registries.add( errors, copy );
 
