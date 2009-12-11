@@ -132,14 +132,14 @@ public class DescriptionUtils
         if ( attributeType.getSyntax() != null )
         {
             buf.append( " SYNTAX " );
-            
+
             buf.append( attributeType.getSyntaxName() );
 
             if ( attributeType.getSyntaxLength() > 0 )
             {
                 buf.append( '{' ).append( attributeType.getSyntaxLength() ).append( '}' );
             }
-            
+
             buf.append( '\n' );
         }
 
@@ -161,7 +161,7 @@ public class DescriptionUtils
         buf.append( " USAGE " );
         buf.append( UsageEnum.render( attributeType.getUsage() ) );
         buf.append( '\n' );
-        
+
         if ( attributeType.getExtensions() != null )
         {
             getExtensions( buf, attributeType.getExtensions() );
@@ -172,7 +172,7 @@ public class DescriptionUtils
         return buf.toString();
     }
 
-    
+
     /**
      * Generates the ComparatorDescription for a LdapComparator. Only the right 
      * hand side of the description starting at the opening parenthesis is 
@@ -196,7 +196,7 @@ public class DescriptionUtils
     {
         return getLoadableDescription( comparator );
     }
-    
+
 
     /**
      * Generates the DITContentRuleDescription for a DITContentRule as defined
@@ -249,7 +249,7 @@ public class DescriptionUtils
 
         // print out all the auxiliary object class oids
         List<ObjectClass> aux = dITContentRule.getAuxObjectClasses();
-        
+
         if ( ( aux != null ) && ( aux.size() > 0 ) )
         {
             buf.append( " AUX " );
@@ -257,7 +257,7 @@ public class DescriptionUtils
         }
 
         List<AttributeType> must = dITContentRule.getMustAttributeTypes();
-        
+
         if ( ( must != null ) && ( must.size() > 0 ) )
         {
             buf.append( " MUST " );
@@ -265,7 +265,7 @@ public class DescriptionUtils
         }
 
         List<AttributeType> may = dITContentRule.getMayAttributeTypes();
-        
+
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( " MAY " );
@@ -273,7 +273,7 @@ public class DescriptionUtils
         }
 
         List<AttributeType> not = dITContentRule.getNotAttributeTypes();
-        
+
         if ( ( not != null ) && ( not.size() > 0 ) )
         {
             buf.append( " NOT " );
@@ -289,7 +289,7 @@ public class DescriptionUtils
         return buf.toString();
     }
 
-    
+
     /**
      * Generates the DITStructureRuleDescription for a DITStructureRule as
      * defined by the syntax: 1.3.6.1.4.1.1466.115.121.1.17. Only the right hand
@@ -342,11 +342,11 @@ public class DescriptionUtils
 
         // TODO : Shouldn't we get the ruleId OID ? 
         List<Integer> sups = dITStructureRule.getSuperRules();
-        
+
         if ( ( sups != null ) && ( sups.size() > 0 ) )
         {
             buf.append( " SUP\n" );
-            
+
             if ( sups.size() == 1 )
             {
                 buf.append( sups.get( 0 ) );
@@ -355,7 +355,7 @@ public class DescriptionUtils
             {
                 boolean isFirst = true;
                 buf.append( "( " );
-                
+
                 for ( int sup : sups )
                 {
                     if ( isFirst )
@@ -366,10 +366,10 @@ public class DescriptionUtils
                     {
                         buf.append( " " );
                     }
-                    
+
                     buf.append( sup );
                 }
-                
+
                 buf.append( " )" );
             }
 
@@ -428,8 +428,8 @@ public class DescriptionUtils
 
         buf.append( " SYNTAX " );
         buf.append( matchingRule.getSyntaxOid() );
-        buf.append( '\n' ); 
-        
+        buf.append( '\n' );
+
         if ( matchingRule.getExtensions() != null )
         {
             getExtensions( buf, matchingRule.getExtensions() );
@@ -494,7 +494,7 @@ public class DescriptionUtils
 
         buf.append( " APPLIES " );
         List<AttributeType> attributeTypes = matchingRuleUse.getApplicableAttributes();
-        
+
         if ( attributeTypes.size() == 1 )
         {
             buf.append( attributeTypes.get( 0 ).getOid() );
@@ -503,9 +503,9 @@ public class DescriptionUtils
         // for list of oids we need a parenthesis
         {
             buf.append( "( " );
-            
+
             boolean isFirst = true;
-            
+
             for ( AttributeType attributeType : attributeTypes )
             {
                 if ( isFirst )
@@ -516,10 +516,10 @@ public class DescriptionUtils
                 {
                     buf.append( " $ " );
                 }
-                
+
                 buf.append( attributeType );
             }
-            
+
             buf.append( " ) " );
         }
 
@@ -529,7 +529,7 @@ public class DescriptionUtils
         }
 
         buf.append( " )\n" );
-        
+
         return buf.toString();
     }
 
@@ -606,7 +606,7 @@ public class DescriptionUtils
         return buf.toString();
     }
 
-    
+
     /**
      * Generates the NormalizerDescription for a Normalizer. Only the right 
      * hand side of the description starting at the opening parenthesis is 
@@ -662,7 +662,7 @@ public class DescriptionUtils
         buf.append( objectClass.getOid() );
         buf.append( '\n' );
 
-        if ( objectClass.getNames() != null )
+        if ( ( objectClass.getNames() != null ) && ( objectClass.getNames().size() != 0 ) )
         {
             buf.append( " NAME " );
             getQDescrs( buf, objectClass.getNames() );
@@ -696,7 +696,7 @@ public class DescriptionUtils
         }
 
         List<AttributeType> must = objectClass.getMustAttributeTypes();
-        
+
         if ( ( must != null ) && ( must.size() > 0 ) )
         {
             buf.append( " MUST " );
@@ -704,7 +704,7 @@ public class DescriptionUtils
         }
 
         List<AttributeType> may = objectClass.getMayAttributeTypes();
-        
+
         if ( ( may != null ) && ( may.size() > 0 ) )
         {
             buf.append( " MAY " );
@@ -757,12 +757,12 @@ public class DescriptionUtils
         {
             getExtensions( buf, syntax.getExtensions() );
         }
-        
+
         buf.append( " )" );
         return buf.toString();
     }
 
-    
+
     /**
      * Generates the SyntaxCheckerDescription for a SyntaxChecker. Only the right 
      * hand side of the description starting at the opening parenthesis is 
@@ -790,13 +790,13 @@ public class DescriptionUtils
 
     private static void getExtensions( StringBuilder sb, Map<String, List<String>> extensions )
     {
-        for ( String key:extensions.keySet() )
+        for ( String key : extensions.keySet() )
         {
             sb.append( key ).append( " " );
-            
+
             List<String> values = extensions.get( key );
-            
-            if ( ( values != null ) && ( values.size() != 0 ) ) 
+
+            if ( ( values != null ) && ( values.size() != 0 ) )
             {
                 if ( values.size() == 1 )
                 {
@@ -806,7 +806,7 @@ public class DescriptionUtils
                 {
                     boolean isFirst = true;
                     sb.append( "( " );
-                    
+
                     for ( String value : values )
                     {
                         if ( isFirst )
@@ -817,22 +817,22 @@ public class DescriptionUtils
                         {
                             sb.append( " " );
                         }
-                        
+
                         sb.append( value );
                     }
-                    
+
                     sb.append( " )" );
                 }
             }
-            
+
             sb.append( '\n' );
         }
     }
 
-    
+
     private static void getQDStrings( StringBuilder sb, List<? extends SchemaObject> schemaObjects )
     {
-        if ( ( schemaObjects != null ) && ( schemaObjects.size() != 0 ) ) 
+        if ( ( schemaObjects != null ) && ( schemaObjects.size() != 0 ) )
         {
             if ( schemaObjects.size() == 1 )
             {
@@ -842,7 +842,7 @@ public class DescriptionUtils
             {
                 boolean isFirst = true;
                 sb.append( "( " );
-                
+
                 for ( SchemaObject schemaObject : schemaObjects )
                 {
                     if ( isFirst )
@@ -853,21 +853,21 @@ public class DescriptionUtils
                     {
                         sb.append( " " );
                     }
-                    
+
                     sb.append( '\'' ).append( schemaObject.getName() ).append( '\'' );
                 }
-                
+
                 sb.append( " )" );
             }
         }
-        
+
         sb.append( '\n' );
     }
 
-    
+
     private static void getQDescrs( StringBuilder sb, List<String> names )
     {
-        if ( ( names != null ) && ( names.size() != 0 ) ) 
+        if ( ( names != null ) && ( names.size() != 0 ) )
         {
             if ( names.size() == 1 )
             {
@@ -877,7 +877,7 @@ public class DescriptionUtils
             {
                 boolean isFirst = true;
                 sb.append( "( " );
-                
+
                 for ( String name : names )
                 {
                     if ( isFirst )
@@ -888,18 +888,18 @@ public class DescriptionUtils
                     {
                         sb.append( " " );
                     }
-                    
+
                     sb.append( '\'' ).append( name ).append( '\'' );
                 }
-                
+
                 sb.append( " )" );
             }
         }
-        
+
         sb.append( '\n' );
     }
-    
-    
+
+
     /**
      * Generate the description for Comparators, Normalizers and SyntaxCheckers.
      */
@@ -926,7 +926,7 @@ public class DescriptionUtils
         if ( schemaObject.getBytecode() != null )
         {
             buf.append( " BYTECODE " );
-            
+
             // We will dump only the 16 first bytes
             if ( schemaObject.getBytecode().length() > 16 )
             {
@@ -936,7 +936,7 @@ public class DescriptionUtils
             {
                 buf.append( schemaObject.getBytecode() );
             }
-            
+
             buf.append( '\n' );
         }
 

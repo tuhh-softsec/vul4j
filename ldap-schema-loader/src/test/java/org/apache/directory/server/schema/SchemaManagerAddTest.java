@@ -28,7 +28,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
@@ -41,6 +43,7 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
@@ -148,6 +151,28 @@ public class SchemaManagerAddTest
             MatchingRule matchingRule = schemaManager.lookupMatchingRuleRegistry( oid );
 
             return matchingRule != null;
+        }
+        catch ( NoSuchAttributeException nsae )
+        {
+            return false;
+        }
+        catch ( NamingException ne )
+        {
+            return false;
+        }
+    }
+
+
+    /**
+     * Check if an OC is present in the OC registry
+     */
+    private boolean isOCPresent( SchemaManager schemaManager, String oid )
+    {
+        try
+        {
+            ObjectClass objectClass = schemaManager.lookupObjectClassRegistry( oid );
+
+            return objectClass != null;
         }
         catch ( NoSuchAttributeException nsae )
         {
@@ -1146,7 +1171,412 @@ public class SchemaManagerAddTest
     //=========================================================================
     // ObjectClass addition tests
     //-------------------------------------------------------------------------
-    // TODO
+    //-------------------------------------------------------------------------
+    // First, not defined superior
+    //-------------------------------------------------------------------------
+    /**
+     * Addition of a valid OC
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorValid() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+
+        assertTrue( schemaManager.add( objectClass ) );
+
+        assertEquals( 0, schemaManager.getErrors().size() );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
+
+        assertNotNull( added );
+
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with an existing OID
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorWithExistingOid() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "2.5.17.0" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertEquals( 1, schemaManager.getErrors().size() );
+        Throwable error = schemaManager.getErrors().get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "2.5.17.0" );
+
+        assertNotNull( added );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with an existing OC name
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorWithExistingOCName() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.0" );
+        objectClass.setNames( "Test", "referral" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertEquals( 1, schemaManager.getErrors().size() );
+        Throwable error = schemaManager.getErrors().get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.0" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with an AT name
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorWithATName() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test", "cn" );
+
+        assertTrue( schemaManager.add( objectClass ) );
+
+        assertEquals( 0, schemaManager.getErrors().size() );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
+
+        assertNotNull( added );
+        assertTrue( added.getNames().contains( "Test" ) );
+        assertTrue( added.getNames().contains( "cn" ) );
+
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with not existing AT in MAY
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorNonExistingAtInMay() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.addMayAttributeTypeOids( "cn", "none", "sn" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertEquals( 1, schemaManager.getErrors().size() );
+        Throwable error = schemaManager.getErrors().get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with not existing AT in MUST
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorNonExistingAtInMust() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.addMustAttributeTypeOids( "cn", "none", "sn" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertEquals( 1, schemaManager.getErrors().size() );
+        Throwable error = schemaManager.getErrors().get( 0 );
+
+        assertTrue( error instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with an AT present more than once in MAY
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorATMoreThanOnceInMay() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.addMayAttributeTypeOids( "cn", "ref", "commonName" );
+
+        assertTrue( schemaManager.add( objectClass ) );
+
+        assertEquals( 0, schemaManager.getErrors().size() );
+
+        assertTrue( isOCPresent( schemaManager, "1.1.1" ) );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
+
+        assertNotNull( added );
+
+        assertNotNull( added.getMayAttributeTypes() );
+        assertEquals( 2, added.getMayAttributeTypes().size() );
+        Set<String> expectedAT = new HashSet<String>();
+
+        expectedAT.add( "cn" );
+        expectedAT.add( "ref" );
+
+        for ( AttributeType attributeType : added.getMayAttributeTypes() )
+        {
+            assertTrue( expectedAT.contains( attributeType.getName() ) );
+
+            expectedAT.remove( attributeType.getName() );
+        }
+
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with an AT present more than once in MUST
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorATMoreThanOnceInMust() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.addMustAttributeTypeOids( "cn", "ref", "2.5.4.3" );
+
+        assertTrue( schemaManager.add( objectClass ) );
+
+        assertEquals( 0, schemaManager.getErrors().size() );
+
+        assertTrue( isOCPresent( schemaManager, "1.1.1" ) );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
+
+        assertNotNull( added );
+
+        assertNotNull( added.getMustAttributeTypes() );
+        assertEquals( 2, added.getMustAttributeTypes().size() );
+        Set<String> expectedAT = new HashSet<String>();
+
+        expectedAT.add( "cn" );
+        expectedAT.add( "ref" );
+
+        for ( AttributeType attributeType : added.getMustAttributeTypes() )
+        {
+            assertTrue( expectedAT.contains( attributeType.getName() ) );
+
+            expectedAT.remove( attributeType.getName() );
+        }
+
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with an AT present in MUST and MAY.
+     */
+    @Test
+    public void testAddObjectClassNoSuperiorATInMustAndMay() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.addMustAttributeTypeOids( "cn", "ref" );
+        objectClass.addMayAttributeTypeOids( "2.5.4.3" );
+
+        assertTrue( schemaManager.add( objectClass ) );
+
+        assertEquals( 0, schemaManager.getErrors().size() );
+
+        assertTrue( isOCPresent( schemaManager, "1.1.1" ) );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
+
+        assertNotNull( added );
+
+        assertNotNull( added.getMustAttributeTypes() );
+        assertEquals( 2, added.getMustAttributeTypes().size() );
+        Set<String> expectedAT = new HashSet<String>();
+
+        expectedAT.add( "cn" );
+        expectedAT.add( "ref" );
+
+        for ( AttributeType attributeType : added.getMustAttributeTypes() )
+        {
+            assertTrue( expectedAT.contains( attributeType.getName() ) );
+
+            expectedAT.remove( attributeType.getName() );
+        }
+
+        assertNotNull( added.getMayAttributeTypes() );
+        assertEquals( 1, added.getMayAttributeTypes().size() );
+        assertEquals( "2.5.4.3", added.getMayAttributeTypes().get( 0 ).getOid() );
+
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    //-------------------------------------------------------------------------
+    // Then, with superiors
+    //-------------------------------------------------------------------------
+    /**
+     * Addition of a valid OC
+     */
+    @Test
+    public void testAddObjectClassSuperiorsValid() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an OC with itself in the SUP list
+     */
+    @Test
+    public void testAddObjectClassSuperiorsWithCycle() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an OC with the same OC more than once in SUP
+     */
+    @Test
+    public void testAddObjectClassSuperiorsOcMoreThanOnceInSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an OC with a non existing OC in SUP
+     */
+    @Test
+    public void testAddObjectClassSuperiorsNonExistingOCInSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an ABSTRACT OC with some AUXILIARY superior
+     */
+    @Test
+    public void testAddObjectClassSuperiorsAbstractWithAuxiliaryInSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an ABSTRACT OC with some STRUCTURAL superior
+     */
+    @Test
+    public void testAddObjectClassSuperiorsAbstractWithStructuralInSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an AUXILIARY OC with some STRUCTURAL superior
+     */
+    @Test
+    public void testAddObjectClassSuperiorsAuxiliaryWithStructuralInSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an STRUCTURAL OC with some AUXILIARY superior
+     */
+    @Test
+    public void testAddObjectClassSuperiorsStructuralWithAuxiliaryInSup() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
+
+    /**
+     * Addition of an OC with a some AT present in one of its superiors' MAY or MUST 
+     */
+    @Test
+    public void testAddObjectClassSuperiorsATPresentInSuperiors() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+    }
+
 
     //=========================================================================
     // Syntax addition tests

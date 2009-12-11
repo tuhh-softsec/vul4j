@@ -149,9 +149,25 @@ public class ObjectClass extends AbstractSchemaObject
             {
                 mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
 
+                List<String> toRemove = new ArrayList<String>();
+
                 for ( String mayAttributeTypeName : mayAttributeTypeOids )
                 {
-                    mayAttributeTypes.add( atRegistry.lookup( atRegistry.getOidByName( mayAttributeTypeName ) ) );
+                    AttributeType attributeType = atRegistry.lookup( mayAttributeTypeName );
+
+                    if ( mayAttributeTypes.contains( attributeType ) )
+                    {
+                        // Already registrred : skip it and remove it from the OIDs list
+                        toRemove.add( mayAttributeTypeName );
+                        continue;
+                    }
+
+                    mayAttributeTypes.add( attributeType );
+                }
+
+                for ( String oid : toRemove )
+                {
+                    mayAttributeTypeOids.remove( oid );
                 }
             }
 
@@ -159,9 +175,25 @@ public class ObjectClass extends AbstractSchemaObject
             {
                 mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
 
+                List<String> toRemove = new ArrayList<String>();
+
                 for ( String mustAttributeTypeName : mustAttributeTypeOids )
                 {
-                    mustAttributeTypes.add( atRegistry.lookup( atRegistry.getOidByName( mustAttributeTypeName ) ) );
+                    AttributeType attributeType = atRegistry.lookup( mustAttributeTypeName );
+
+                    if ( mustAttributeTypes.contains( attributeType ) )
+                    {
+                        // Already registrred : skip it and remove it from the OIDs list
+                        toRemove.add( mustAttributeTypeName );
+                        continue;
+                    }
+
+                    mustAttributeTypes.add( attributeType );
+                }
+
+                for ( String oid : toRemove )
+                {
+                    mustAttributeTypeOids.remove( oid );
                 }
             }
 
@@ -207,32 +239,38 @@ public class ObjectClass extends AbstractSchemaObject
 
 
     /**
-     * Add an allowed AttributeType
+     * Add some allowed AttributeType
      *
-     * @param oid The attributeType oid
+     * @param oids The attributeType oids
      */
-    public void addMayAttributeTypeOids( String oid )
+    public void addMayAttributeTypeOids( String... oids )
     {
         if ( !isReadOnly )
         {
-            mayAttributeTypeOids.add( oid );
+            for ( String oid : oids )
+            {
+                mayAttributeTypeOids.add( oid );
+            }
         }
     }
 
 
     /**
-     * Add an allowed AttributeType
+     * Add some allowed AttributeTypes
      *
-     * @param attributeType The attributeType
+     * @param attributeTypes The attributeTypes
      */
-    public void addMayAttributeTypes( AttributeType attributeType )
+    public void addMayAttributeTypes( AttributeType... attributeTypes )
     {
         if ( !isReadOnly )
         {
-            if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
+            for ( AttributeType attributeType : attributeTypes )
             {
-                mayAttributeTypes.add( attributeType );
-                mayAttributeTypeOids.add( attributeType.getOid() );
+                if ( !mayAttributeTypeOids.contains( attributeType.getOid() ) )
+                {
+                    mayAttributeTypes.add( attributeType );
+                    mayAttributeTypeOids.add( attributeType.getOid() );
+                }
             }
         }
     }
@@ -311,32 +349,38 @@ public class ObjectClass extends AbstractSchemaObject
 
 
     /**
-     * Add a required AttributeType OID
+     * Add some required AttributeType OIDs
      *
-     * @param oid The attributeType OID
+     * @param oid The attributeType OIDs
      */
-    public void addMustAttributeTypeOids( String oid )
+    public void addMustAttributeTypeOids( String... oids )
     {
         if ( !isReadOnly )
         {
-            mustAttributeTypeOids.add( oid );
+            for ( String oid : oids )
+            {
+                mustAttributeTypeOids.add( oid );
+            }
         }
     }
 
 
     /**
-     * Add a required AttributeType
+     * Add some required AttributeTypes
      *
-     * @param attributeType The attributeType
+     * @param attributeTypes The attributeTypse
      */
-    public void addMustAttributeTypes( AttributeType attributeType )
+    public void addMustAttributeTypes( AttributeType... attributeTypes )
     {
         if ( !isReadOnly )
         {
-            if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
+            for ( AttributeType attributeType : attributeTypes )
             {
-                mustAttributeTypes.add( attributeType );
-                mustAttributeTypeOids.add( attributeType.getOid() );
+                if ( !mustAttributeTypeOids.contains( attributeType.getOid() ) )
+                {
+                    mustAttributeTypes.add( attributeType );
+                    mustAttributeTypeOids.add( attributeType.getOid() );
+                }
             }
         }
     }

@@ -474,6 +474,16 @@ public interface SchemaManager
 
 
     /**
+     * Lookup for a ObjectClass in the ObjectClass registry
+     * 
+     * @param String oid the OID we are looking for
+     * @return The found ObjectClass 
+     * @throws NamingException if the OID is not found in the ObjectClass registry
+     */
+    ObjectClass lookupObjectClassRegistry( String oid ) throws NamingException;
+
+
+    /**
      * Lookup for an LdapSyntax in the LdapSyntax registry
      * 
      * @param String oid the OID we are looking for
