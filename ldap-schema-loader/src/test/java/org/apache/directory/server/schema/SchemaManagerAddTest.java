@@ -28,7 +28,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
@@ -42,6 +44,7 @@ import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
@@ -1415,7 +1418,7 @@ public class SchemaManagerAddTest
     // Then, with superiors
     //-------------------------------------------------------------------------
     /**
-     * Addition of a valid OC
+     * Addition of a valid OC with some superiors
      */
     @Test
     public void testAddObjectClassSuperiorsValid() throws Exception
@@ -1423,6 +1426,36 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
+        objectClass.addSuperiorOids( "alias", "referral", "top" );
+
+        assertTrue( schemaManager.add( objectClass ) );
+
+        assertEquals( 0, schemaManager.getErrors().size() );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
+
+        assertNotNull( added );
+        assertTrue( added.getNames().contains( "Test" ) );
+        assertNotNull( added.getSuperiors() );
+        assertEquals( 3, added.getSuperiors().size() );
+
+        Set<String> expectedSups = new HashSet<String>();
+        expectedSups.add( "alias" );
+        expectedSups.add( "referral" );
+        expectedSups.add( "top" );
+
+        for ( ObjectClass addedOC : added.getSuperiors() )
+        {
+            assertTrue( expectedSups.contains( addedOC.getName() ) );
+            expectedSups.remove( addedOC.getName() );
+        }
+
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1435,6 +1468,20 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
+        objectClass.addSuperiorOids( "alias", "Test", "referral" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1447,6 +1494,20 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
+        objectClass.addSuperiorOids( "alias", "referral", "2.5.6.1" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1459,6 +1520,20 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
+        objectClass.addSuperiorOids( "alias", "refessal" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1471,6 +1546,20 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.ABSTRACT );
+        objectClass.addSuperiorOids( "extensibleObject" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1483,6 +1572,20 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.ABSTRACT );
+        objectClass.addSuperiorOids( "referral" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1495,6 +1598,20 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.AUXILIARY );
+        objectClass.addSuperiorOids( "referral" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1507,11 +1624,25 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
+        objectClass.addSuperiorOids( "extensibleObject" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
     /**
-     * Addition of an OC with a some AT present in one of its superiors' MAY or MUST 
+     * Addition of an OC with some AT present in one of its superiors' MAY or MUST 
      */
     @Test
     public void testAddObjectClassSuperiorsATPresentInSuperiors() throws Exception
@@ -1519,6 +1650,8 @@ public class SchemaManagerAddTest
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
+
+        // TODO
     }
 
 

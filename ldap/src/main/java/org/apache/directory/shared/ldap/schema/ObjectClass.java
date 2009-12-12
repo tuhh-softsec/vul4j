@@ -122,36 +122,98 @@ public class ObjectClass extends AbstractSchemaObject
     }
 
 
-    /**
-     * Inject the ObjectClass into the registries, updating the references to
-     * other SchemaObject
-     *
-     * @param registries The Registries
-     * @throws Exception on failure
-     *
-     */
-    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    private void buildSuperiors( List<Throwable> errors, Registries registries )
     {
-        if ( registries != null )
+        ObjectClassRegistry ocRegistry = registries.getObjectClassRegistry();
+
+        if ( superiorOids != null )
         {
-            AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
-            ObjectClassRegistry ocRegistry = registries.getObjectClassRegistry();
+            superiors = new ArrayList<ObjectClass>( superiorOids.size() );
 
-            if ( superiorOids != null )
+            for ( String superiorName : superiorOids )
             {
-                superiors = new ArrayList<ObjectClass>( superiorOids.size() );
-
-                for ( String superiorName : superiorOids )
+                try
                 {
-                    superiors.add( ocRegistry.lookup( ocRegistry.getOidByName( superiorName ) ) );
+                    ObjectClass superior = ocRegistry.lookup( ocRegistry.getOidByName( superiorName ) );
+
+                    // Before adding the superior, check that the ObjectClass type is consistent
+                    switch ( objectClassType )
+                    {
+                        case ABSTRACT:
+                            if ( superior.objectClassType != ObjectClassTypeEnum.ABSTRACT )
+                            {
+                                // An ABSTRACT OC can only inherit from ABSTRACT OCs
+                                String msg = "Cannot register the SchemaOject " + oid + ", an ABSTRACT ObjectClass "
+                                    + "cannot inherit from an " + superior.getObjectType() + " ObjectClass :/n "
+                                    + superior;
+
+                                Throwable error = new LdapSchemaViolationException( msg,
+                                    ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                                errors.add( error );
+                                return;
+                            }
+
+                            break;
+
+                        case AUXILIARY:
+                            if ( superior.objectClassType == ObjectClassTypeEnum.STRUCTURAL )
+                            {
+                                // An AUXILIARY OC can only inherit from STRUCTURAL OCs
+                                String msg = "Cannot register the SchemaOject " + oid + ", an AUXILIARY ObjectClass "
+                                    + "cannot inherit from a STRUCTURAL ObjectClass :/n " + superior;
+
+                                Throwable error = new LdapSchemaViolationException( msg,
+                                    ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                                errors.add( error );
+                                return;
+                            }
+
+                            break;
+
+                        case STRUCTURAL:
+                            if ( superior.objectClassType == ObjectClassTypeEnum.AUXILIARY )
+                            {
+                                // A STRUCTURAL OC can only inherit from AUXILIARY OCs
+                                String msg = "Cannot register the SchemaOject " + oid + ", a STRUCTURAL ObjectClass "
+                                    + "cannot inherit from an AUXILIARY ObjectClass :/n " + superior;
+
+                                Throwable error = new LdapSchemaViolationException( msg,
+                                    ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                                errors.add( error );
+                                return;
+                            }
+
+                            break;
+                    }
+
+                    superiors.add( superior );
+                }
+                catch ( NamingException ne )
+                {
+                    // Cannot find the OC
+                    String msg = "Cannot register the SchemaOject " + oid + ", the given SUPERIOR does not exist : "
+                        + superiorName;
+
+                    Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    return;
                 }
             }
+        }
+    }
 
-            if ( mayAttributeTypeOids != null )
+
+    private void buildMay( List<Throwable> errors, Registries registries )
+    {
+        AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
+
+        if ( mayAttributeTypeOids != null )
+        {
+            mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
+
+            for ( String mayAttributeTypeName : mayAttributeTypeOids )
             {
-                mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
-
-                for ( String mayAttributeTypeName : mayAttributeTypeOids )
+                try
                 {
                     AttributeType attributeType = atRegistry.lookup( mayAttributeTypeName );
 
@@ -169,13 +231,32 @@ public class ObjectClass extends AbstractSchemaObject
 
                     mayAttributeTypes.add( attributeType );
                 }
+                catch ( NamingException ne )
+                {
+                    // Cannot find the AT
+                    String msg = "Cannot register the SchemaOject " + oid
+                        + ", the AT we want to add to MAY does not exist : " + mayAttributeTypeName;
+
+                    Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    break;
+                }
             }
+        }
+    }
 
-            if ( mustAttributeTypeOids != null )
+
+    private void buildMust( List<Throwable> errors, Registries registries )
+    {
+        AttributeTypeRegistry atRegistry = registries.getAttributeTypeRegistry();
+
+        if ( mustAttributeTypeOids != null )
+        {
+            mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
+
+            for ( String mustAttributeTypeName : mustAttributeTypeOids )
             {
-                mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
-
-                for ( String mustAttributeTypeName : mustAttributeTypeOids )
+                try
                 {
                     AttributeType attributeType = atRegistry.lookup( mustAttributeTypeName );
 
@@ -206,7 +287,41 @@ public class ObjectClass extends AbstractSchemaObject
 
                     mustAttributeTypes.add( attributeType );
                 }
+                catch ( NamingException ne )
+                {
+                    // Cannot find the AT
+                    String msg = "Cannot register the SchemaOject " + oid
+                        + ", the AT we want to add to MUST does not exist : " + mustAttributeTypeName;
+
+                    Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    break;
+                }
             }
+        }
+    }
+
+
+    /**
+     * Inject the ObjectClass into the registries, updating the references to
+     * other SchemaObject
+     *
+     * @param registries The Registries
+     * @throws Exception on failure
+     *
+     */
+    public void addToRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            // The superiors
+            buildSuperiors( errors, registries );
+
+            // The MAY AttributeTypes
+            buildMay( errors, registries );
+
+            // The MUST AttributeTypes
+            buildMust( errors, registries );
 
             /**
              * Add the OC references (using and usedBy) : 
