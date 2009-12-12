@@ -1224,7 +1224,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
             // processed yet.
             if ( superior != null )
             {
-                if ( !processed.contains( superiorOid ) )
+                if ( !processed.contains( superior.getOid() ) )
                 {
                     resolveRecursive( superior, processed, errors );
                     processed.add( objectClass.getOid() );
@@ -1232,9 +1232,10 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapSchemaViolationException( "The AttributeType " + objectClass.getOid()
+                    Throwable error = new LdapSchemaViolationException( "The ObjectClass " + objectClass.getOid()
                         + " can't have itself as a superior, or"
-                        + " a cycle has been detected while processing the superior's tree",
+                        + " a cycle has been detected while processing the superior's tree,"
+                        + " or this superior has already been added : \n" + superior,
                         ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
                     errors.add( error );
                     return;
