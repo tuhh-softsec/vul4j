@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
@@ -149,25 +151,23 @@ public class ObjectClass extends AbstractSchemaObject
             {
                 mayAttributeTypes = new ArrayList<AttributeType>( mayAttributeTypeOids.size() );
 
-                List<String> toRemove = new ArrayList<String>();
-
                 for ( String mayAttributeTypeName : mayAttributeTypeOids )
                 {
                     AttributeType attributeType = atRegistry.lookup( mayAttributeTypeName );
 
                     if ( mayAttributeTypes.contains( attributeType ) )
                     {
-                        // Already registrred : skip it and remove it from the OIDs list
-                        toRemove.add( mayAttributeTypeName );
-                        continue;
+                        // Already registered : this is an error
+                        String msg = "Cannot register the SchemaOject " + oid
+                            + ", there are some duplicate AT in the MAY : " + mayAttributeTypeName;
+
+                        Throwable error = new LdapSchemaViolationException( msg,
+                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        errors.add( error );
+                        break;
                     }
 
                     mayAttributeTypes.add( attributeType );
-                }
-
-                for ( String oid : toRemove )
-                {
-                    mayAttributeTypeOids.remove( oid );
                 }
             }
 
@@ -175,25 +175,23 @@ public class ObjectClass extends AbstractSchemaObject
             {
                 mustAttributeTypes = new ArrayList<AttributeType>( mustAttributeTypeOids.size() );
 
-                List<String> toRemove = new ArrayList<String>();
-
                 for ( String mustAttributeTypeName : mustAttributeTypeOids )
                 {
                     AttributeType attributeType = atRegistry.lookup( mustAttributeTypeName );
 
                     if ( mustAttributeTypes.contains( attributeType ) )
                     {
-                        // Already registrred : skip it and remove it from the OIDs list
-                        toRemove.add( mustAttributeTypeName );
-                        continue;
+                        // Already registered : this is an error
+                        String msg = "Cannot register the SchemaOject " + oid
+                            + ", there are some duplicate AT in the MUST : " + mustAttributeTypeName;
+
+                        Throwable error = new LdapSchemaViolationException( msg,
+                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        errors.add( error );
+                        break;
                     }
 
                     mustAttributeTypes.add( attributeType );
-                }
-
-                for ( String oid : toRemove )
-                {
-                    mustAttributeTypeOids.remove( oid );
                 }
             }
 

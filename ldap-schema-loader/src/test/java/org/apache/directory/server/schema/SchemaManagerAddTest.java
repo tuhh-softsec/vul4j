@@ -1349,32 +1349,15 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMayAttributeTypeOids( "cn", "ref", "commonName" );
 
-        assertTrue( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        assertEquals( 0, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        assertTrue( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
-
-        assertNotNull( added );
-
-        assertNotNull( added.getMayAttributeTypes() );
-        assertEquals( 2, added.getMayAttributeTypes().size() );
-        Set<String> expectedAT = new HashSet<String>();
-
-        expectedAT.add( "cn" );
-        expectedAT.add( "ref" );
-
-        for ( AttributeType attributeType : added.getMayAttributeTypes() )
-        {
-            assertTrue( expectedAT.contains( attributeType.getName() ) );
-
-            expectedAT.remove( attributeType.getName() );
-        }
-
-        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
@@ -1391,32 +1374,15 @@ public class SchemaManagerAddTest
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMustAttributeTypeOids( "cn", "ref", "2.5.4.3" );
 
-        assertTrue( schemaManager.add( objectClass ) );
+        assertFalse( schemaManager.add( objectClass ) );
 
-        assertEquals( 0, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        assertTrue( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
-
-        assertNotNull( added );
-
-        assertNotNull( added.getMustAttributeTypes() );
-        assertEquals( 2, added.getMustAttributeTypes().size() );
-        Set<String> expectedAT = new HashSet<String>();
-
-        expectedAT.add( "cn" );
-        expectedAT.add( "ref" );
-
-        for ( AttributeType attributeType : added.getMustAttributeTypes() )
-        {
-            assertTrue( expectedAT.contains( attributeType.getName() ) );
-
-            expectedAT.remove( attributeType.getName() );
-        }
-
-        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
