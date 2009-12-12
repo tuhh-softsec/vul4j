@@ -28,9 +28,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
@@ -1400,36 +1398,16 @@ public class SchemaManagerAddTest
         objectClass.addMustAttributeTypeOids( "cn", "ref" );
         objectClass.addMayAttributeTypeOids( "2.5.4.3" );
 
-        assertTrue( schemaManager.add( objectClass ) );
+        // Same AT i MAY and MUST : should fail
+        assertFalse( schemaManager.add( objectClass ) );
 
-        assertEquals( 0, schemaManager.getErrors().size() );
+        assertEquals( 1, schemaManager.getErrors().size() );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
 
-        assertTrue( isOCPresent( schemaManager, "1.1.1" ) );
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
-        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
-
-        assertNotNull( added );
-
-        assertNotNull( added.getMustAttributeTypes() );
-        assertEquals( 2, added.getMustAttributeTypes().size() );
-        Set<String> expectedAT = new HashSet<String>();
-
-        expectedAT.add( "cn" );
-        expectedAT.add( "ref" );
-
-        for ( AttributeType attributeType : added.getMustAttributeTypes() )
-        {
-            assertTrue( expectedAT.contains( attributeType.getName() ) );
-
-            expectedAT.remove( attributeType.getName() );
-        }
-
-        assertNotNull( added.getMayAttributeTypes() );
-        assertEquals( 1, added.getMayAttributeTypes().size() );
-        assertEquals( "2.5.4.3", added.getMayAttributeTypes().get( 0 ).getOid() );
-
-        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 

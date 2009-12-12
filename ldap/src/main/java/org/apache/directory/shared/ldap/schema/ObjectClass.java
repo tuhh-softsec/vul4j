@@ -191,6 +191,19 @@ public class ObjectClass extends AbstractSchemaObject
                         break;
                     }
 
+                    // Check that the MUST AT is not also present in the MAY AT
+                    if ( mayAttributeTypes.contains( attributeType ) )
+                    {
+                        // Already registered : this is an error
+                        String msg = "Cannot register the SchemaOject " + oid
+                            + ", there are some duplicate AT in MAY and MUST : " + mustAttributeTypeName;
+
+                        Throwable error = new LdapSchemaViolationException( msg,
+                            ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                        errors.add( error );
+                        break;
+                    }
+
                     mustAttributeTypes.add( attributeType );
                 }
             }
