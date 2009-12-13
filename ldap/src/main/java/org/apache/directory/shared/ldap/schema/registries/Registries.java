@@ -1183,6 +1183,35 @@ public class Registries implements SchemaLoaderListener, Cloneable
     }
 
 
+    private List<AttributeType> getMustRecursive( List<AttributeType> musts, Set<ObjectClass> processed,
+        ObjectClass objectClass )
+    {
+        if ( objectClass != null )
+        {
+            if ( processed.contains( objectClass ) )
+            {
+                // We have found a cycle. It has already been reported, 
+                // don't add a new error, just exit.
+                return null;
+            }
+
+            processed.add( objectClass );
+
+            for ( AttributeType must : objectClass.getMustAttributeTypes() )
+            {
+                musts.add( must );
+            }
+
+            for ( ObjectClass superior : objectClass.getSuperiors() )
+            {
+                getMustRecursive( musts, processed, superior );
+            }
+        }
+
+        return musts;
+    }
+
+
     private void resolve( ObjectClass objectClass, List<Throwable> errors )
     {
         // This set is used to avoid having more than one error
@@ -1195,6 +1224,27 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
         // Call the recursive method, as we may have superiors to deal with
         resolveRecursive( objectClass, processed, errors );
+
+        // Check that the MAY and MUST AT are consistent (no AT in MAY and in MUST
+        // in one of its superior
+        List<AttributeType> musts = getMustRecursive( new ArrayList<AttributeType>(), new HashSet<ObjectClass>(),
+            objectClass );
+
+        if ( musts != null )
+        {
+            for ( AttributeType may : objectClass.getMayAttributeTypes() )
+            {
+                if ( musts.contains( may ) )
+                {
+                    // This is not allowed.
+                    Throwable error = new LdapSchemaViolationException( "The ObjectClass " + objectClass.getOid()
+                        + " has some AttribteType in MAY which is already declared" + " in one of its superior MUST",
+                        ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX );
+                    errors.add( error );
+                    return;
+                }
+            }
+        }
     }
 
 

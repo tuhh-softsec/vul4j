@@ -1642,16 +1642,75 @@ public class SchemaManagerAddTest
 
 
     /**
-     * Addition of an OC with some AT present in one of its superiors' MAY or MUST 
+     * Addition of an OC with some AT present in MUST and in MAY in one of its
+     * superior
      */
     @Test
-    public void testAddObjectClassSuperiorsATPresentInSuperiors() throws Exception
+    public void testAddObjectClassSuperiorsATInMustPresentInSuperiorsMay() throws Exception
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
-        // TODO
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
+        objectClass.addSuperiorOids( "alias", "OpenLDAProotDSE" );
+        objectClass.addMustAttributeTypeOids( "aliasedObjectName", "cn" );
+
+        assertTrue( schemaManager.add( objectClass ) );
+
+        assertEquals( 0, schemaManager.getErrors().size() );
+
+        ObjectClass added = schemaManager.lookupObjectClassRegistry( "1.1.1" );
+
+        assertNotNull( added );
+        assertTrue( added.getNames().contains( "Test" ) );
+        assertNotNull( added.getSuperiors() );
+        assertEquals( 2, added.getSuperiors().size() );
+
+        Set<String> expectedSups = new HashSet<String>();
+        expectedSups.add( "alias" );
+        expectedSups.add( "OpenLDAProotDSE" );
+
+        for ( ObjectClass addedOC : added.getSuperiors() )
+        {
+            assertTrue( expectedSups.contains( addedOC.getName() ) );
+            expectedSups.remove( addedOC.getName() );
+        }
+
+        assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+    }
+
+
+    /**
+     * Addition of an OC with some AT present in MAY and in MUST in one of its
+     * superior : not allowed
+     */
+    @Test
+    public void testAddObjectClassSuperiorsATInMayPresentInSuperiorsMust() throws Exception
+    {
+        SchemaManager schemaManager = loadSystem();
+        int ocrSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        ObjectClass objectClass = new ObjectClass( "1.1.1" );
+        objectClass.setNames( "Test" );
+        objectClass.setType( ObjectClassTypeEnum.STRUCTURAL );
+        objectClass.addSuperiorOids( "alias", "OpenLDAProotDSE" );
+        objectClass.addMayAttributeTypeOids( "aliasedObjectName", "cn" );
+
+        assertFalse( schemaManager.add( objectClass ) );
+
+        assertEquals( 1, schemaManager.getErrors().size() );
+
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
+
+        assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
 
