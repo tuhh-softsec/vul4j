@@ -35,13 +35,18 @@ import javax.naming.directory.NoSuchAttributeException;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.normalizers.BooleanNormalizer;
+import org.apache.directory.shared.ldap.schema.syntaxCheckers.BooleanSyntaxChecker;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -255,7 +260,6 @@ public class SchemaManagerDelTest
     // Comparator deletion tests
     //-------------------------------------------------------------------------
 
-    //@Ignore("lookup of newly added comparator is failing")
     @Test
     public void testDeleteExistingComaparator() throws Exception
     {
@@ -269,7 +273,6 @@ public class SchemaManagerDelTest
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
 
-        // FIXME this lookup is failing ! but it shouldn't be
         lc = schemaManager.lookupComparatorRegistry( "0.1.1" );
         assertNotNull( lc );
         assertTrue( schemaManager.delete( lc ) );
@@ -344,7 +347,68 @@ public class SchemaManagerDelTest
     //=========================================================================
     // Normalizer deletion tests
     //-------------------------------------------------------------------------
-    // TODO
+
+    @Test
+    public void testDeleteExistingNormalizer() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int nrSize = schemaManager.getNormalizerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        Normalizer nr = new BooleanNormalizer();
+        nr.setOid( "0.1.1" );
+        assertTrue( schemaManager.add( nr ) );
+
+        assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        // FIXME this lookup is failing ! but it shouldn't be
+        nr = schemaManager.lookupNormalizerRegistry( "0.1.1" );
+        assertNotNull( nr );
+        assertTrue( schemaManager.delete( nr ) );
+
+        assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+    
+    
+    @Test
+    public void testDeleteNonExistingNormalizer() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int nrSize = schemaManager.getNormalizerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        Normalizer nr = new BooleanNormalizer();
+        nr.setOid( "0.0" ); 
+        assertFalse( schemaManager.delete( nr ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+
+        assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+    
+    @Test
+    public void testDeleteExistingNormalizerUsedByMatchingRule() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int nrSize = schemaManager.getNormalizerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        Normalizer nr = schemaManager.lookupNormalizerRegistry( "2.5.13.0" );
+        // shouldn't be deleted cause there is a MR associated with it
+        assertFalse( schemaManager.delete( nr ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+
+        assertNotNull( schemaManager.lookupNormalizerRegistry( "2.5.13.0" ) );
+        assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
 
     //=========================================================================
     // ObjectClass deletion tests
@@ -359,6 +423,66 @@ public class SchemaManagerDelTest
     //=========================================================================
     // SyntaxChecker deletion tests
     //-------------------------------------------------------------------------
-    // TODO
+    
+    @Test
+    public void testDeleteExistingSyntaxChecker() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int scrSize = schemaManager.getSyntaxCheckerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
 
+        SyntaxChecker sc = new BooleanSyntaxChecker();
+        sc.setOid( "0.1.1" );
+        assertTrue( schemaManager.add( sc ) );
+
+        assertEquals( scrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        sc = schemaManager.lookupSyntaxCheckerRegistry( "0.1.1" );
+        assertNotNull( sc );
+        assertTrue( schemaManager.delete( sc ) );
+
+        assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+    
+    
+    @Test
+    public void testDeleteNonExistingSyntaxChecker() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int scrSize = schemaManager.getSyntaxCheckerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        SyntaxChecker sc = new BooleanSyntaxChecker();
+        sc.setOid( "0.0" ); 
+        assertFalse( schemaManager.delete( sc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+
+        assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+    
+    @Ignore ( "deleting a SC used by a S is successful where as it shouldn't be" )
+    @Test
+    public void testDeleteSyntaxCheckerUsedBySyntax() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int scrSize = schemaManager.getSyntaxCheckerRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        SyntaxChecker sc = schemaManager.lookupSyntaxCheckerRegistry( "1.3.6.1.4.1.1466.115.121.1.1" );
+        
+        //FIXME should return false but is returning true
+        assertFalse( schemaManager.delete( sc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+
+        assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
 }
