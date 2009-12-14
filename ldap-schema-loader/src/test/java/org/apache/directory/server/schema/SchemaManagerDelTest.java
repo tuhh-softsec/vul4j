@@ -42,7 +42,6 @@ import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -256,7 +255,7 @@ public class SchemaManagerDelTest
     // Comparator deletion tests
     //-------------------------------------------------------------------------
 
-    @Ignore("lookup of newly added comparator is failing")
+    //@Ignore("lookup of newly added comparator is failing")
     @Test
     public void testDeleteExistingComaparator() throws Exception
     {

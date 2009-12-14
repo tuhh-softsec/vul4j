@@ -1413,6 +1413,22 @@ public class DefaultSchemaManager implements SchemaManager
 
         return false;
     }
+    
+    
+    /**
+     * Get the inner SchemaObject if it's not a C/N/SC
+     */
+    private SchemaObject getSchemaObject( SchemaObject schemaObject ) throws NamingException
+    {
+        if ( registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() ) )
+        {
+            return registries.getGlobalOidRegistry().getSchemaObject( schemaObject.getOid() );
+        }
+        else
+        {
+            return schemaObject;
+        }
+    }
 
 
     /**
@@ -1609,8 +1625,8 @@ public class DefaultSchemaManager implements SchemaManager
                 return false;
             }
 
-            // Build the new AttributeType from the given entry
-            SchemaObject toDelete = registries.getGlobalOidRegistry().getSchemaObject( schemaObject.getOid() );
+            // Get the SchemaObject to delete if it's not a LoadableSchemaObject
+            SchemaObject toDelete = getSchemaObject( schemaObject );
 
             // First check that this SchemaObject does not have any referencing SchemaObjects
             Set<SchemaObjectWrapper> referencing = registries.getReferencing( toDelete );
