@@ -22,6 +22,7 @@ package org.apache.directory.server.schema;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -33,12 +34,15 @@ import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -247,10 +251,71 @@ public class SchemaManagerDelTest
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
 
+
     //=========================================================================
     // Comparator deletion tests
     //-------------------------------------------------------------------------
-    // TODO
+
+    @Ignore("lookup of newly added comparator is failing")
+    @Test
+    public void testDeleteExistingComaparator() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapComparator<?> lc = new BooleanComparator( "0.1.1" );
+        assertTrue( schemaManager.add( lc ) );
+
+        assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        // FIXME this lookup is failing ! but it shouldn't be
+        lc = schemaManager.lookupComparatorRegistry( "0.1.1" );
+        assertNotNull( lc );
+        assertTrue( schemaManager.delete( lc ) );
+
+        assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    @Test
+    public void testDeleteNonExistingComaparator() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapComparator<?> lc = new BooleanComparator( "0.0" );
+        assertFalse( schemaManager.delete( lc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+
+        assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+
+    @Test
+    public void testDeleteExistingComaparatorUsedByMatchingRule() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapComparator<?> lc = schemaManager.lookupComparatorRegistry( "2.5.13.0" );
+        // shouldn't be deleted cause there is a MR associated with it
+        assertFalse( schemaManager.delete( lc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+
+        assertNotNull( schemaManager.lookupComparatorRegistry( "2.5.13.0" ) );
+        assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
 
     //=========================================================================
     // DITContentRule deletion tests
