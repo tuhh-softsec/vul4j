@@ -40,6 +40,7 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
@@ -484,7 +485,68 @@ public class SchemaManagerDelTest
     //=========================================================================
     // ObjectClass deletion tests
     //-------------------------------------------------------------------------
-    // TODO
+
+    @Test
+    public void testDeleteExistingObjectClass() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int ocSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+        
+        ObjectClass oc = new ObjectClass( "2.5.17.2" );
+        
+        assertTrue( schemaManager.delete( oc ) );
+        
+        assertEquals( ocSize - 1, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
+        
+        try
+        {
+            schemaManager.lookupObjectClassRegistry( "2.5.17.2" );
+            fail();
+        }
+        catch( Exception e )
+        {
+            // expected
+        }
+    }
+    
+
+    @Test
+    public void testDeleteNonExistingObjectClass() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int ocSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+        
+        ObjectClass oc = new ObjectClass( "0.1.1" );
+        
+        assertFalse( schemaManager.delete( oc ) );
+        
+        assertEquals( ocSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+    
+
+    @Test
+    public void testDeleteExistingObjectClassReferencedByAnotherObjectClass() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int ocSize = schemaManager.getObjectClassRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+        
+        ObjectClass oc = new ObjectClass( "2.5.6.0" );
+        
+        // shouldn't delete the 'top' OC
+        assertFalse( schemaManager.delete( oc ) );
+        
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+
+        assertEquals( ocSize, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
 
     //=========================================================================
     // Syntax deletion tests
@@ -502,14 +564,13 @@ public class SchemaManagerDelTest
         assertTrue( schemaManager.delete( syntax ) );
         
         assertEquals( sSize - 1, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize -1, schemaManager.getOidRegistry().size() );
 
         // add a syntax and then delete (should behave same as above )
         syntax = new LdapSyntax( "0.1.1" );
         assertTrue( schemaManager.add( syntax ) );
 
-        assertEquals( sSize + 1, schemaManager.getLdapSyntaxRegistry().size() );
-        // FIXME here the goidSize is getting increased by 1, in the rest of the tests it isn't the case 
+        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
         
         syntax = schemaManager.lookupLdapSyntaxRegistry( "0.1.1" );
@@ -525,8 +586,8 @@ public class SchemaManagerDelTest
             // expected behaviour
         }
         
-        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( sSize - 1, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
     }
 
     
