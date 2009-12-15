@@ -3529,4 +3529,24 @@ public class LdapDNTest
         assertEquals( "cn=loopback+iphostnumber=\\#127.0.0.1 Z", dn4.getRdn().getNormName() );
     }
 
+    
+    /**
+     * test case for DIRSERVER-1442
+     * 
+     * This test shows that the parser has no issues with escaped + 
+     */
+    @Test
+    public void testAddAttributeWithEscapedPlusCharacter()
+    {
+        try
+        {
+            LdapDN dn = new LdapDN( "cn=John\\+Doe" );
+            assertTrue( true );
+        }
+        catch( Exception e )
+        {
+            fail();
+        }
+    }
+
 }
