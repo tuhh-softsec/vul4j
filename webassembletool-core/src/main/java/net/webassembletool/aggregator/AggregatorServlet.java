@@ -36,9 +36,8 @@ public class AggregatorServlet extends HttpServlet {
 		LOG.debug("Aggregating " + relUrl);
 		try {
 			DriverFactory.getInstance(provider).proxy(relUrl, request,
-					response,
-					new AggregateRenderer(request),
-					new EsiRenderer(request));
+					response, new AggregateRenderer(request, response),
+					new EsiRenderer(request, response));
 		} catch (HttpErrorPage e) {
 			throw new ServletException(e);
 		}

@@ -10,6 +10,7 @@ import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
@@ -49,7 +50,8 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 	}
 
 	public boolean isDisplayErrorPage() {
-		return UIComponentUtils.getParam(this, "displayErrorPage", displayErrorPage);
+		return UIComponentUtils.getParam(this, "displayErrorPage",
+				displayErrorPage);
 	}
 
 	public void setDisplayErrorPage(boolean displayErrorPage) {
@@ -66,10 +68,12 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 		ResponseWriter writer = context.getResponseWriter();
 		HttpServletRequest request = (HttpServletRequest) context
 				.getExternalContext().getRequest();
+		HttpServletResponse response = (HttpServletResponse) context
+				.getExternalContext().getResponse();
 		try {
 			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(),
-					getName(), writer, request, params, replaceRules, null,
-					false);
+					getName(), writer, request, response, params, replaceRules,
+					null, false);
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage())
 				writer.write(re.getMessage());

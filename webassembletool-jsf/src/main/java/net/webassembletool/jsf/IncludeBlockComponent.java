@@ -10,6 +10,7 @@ import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
@@ -66,9 +67,12 @@ public class IncludeBlockComponent extends UIComponentBase implements
 		ResponseWriter writer = context.getResponseWriter();
 		HttpServletRequest request = (HttpServletRequest) context
 				.getExternalContext().getRequest();
+		HttpServletResponse response = (HttpServletResponse) context
+				.getExternalContext().getResponse();
 		try {
 			DriverFactory.getInstance(getProvider()).renderBlock(getPage(),
-					getName(), writer, request, replaceRules, null, false);
+					getName(), writer, request, response, replaceRules, null,
+					false);
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage())
 				writer.write(re.getMessage());

@@ -11,10 +11,16 @@ class Storage {
 	}
 
 	public void put(String key, Object value) {
+		// OsCache does not support empty String keys
+		if ("".equals(key))
+			key = "/";
 		cache.putInCache(key, value);
 	}
 
 	public Object get(String key) {
+		// OsCache does not support empty String keys
+		if ("".equals(key))
+			key = "/";
 		Object result = null;
 		try {
 			result = cache.getFromCache(key);
@@ -27,6 +33,9 @@ class Storage {
 	}
 
 	public void touch(String key) {
+		// OsCache does not support empty String keys
+		if ("".equals(key))
+			key = "/";
 		get(key);
 	}
 

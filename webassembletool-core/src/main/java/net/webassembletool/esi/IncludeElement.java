@@ -55,8 +55,8 @@ public class IncludeElement implements Element {
 		Driver driver = DriverFactory.getInstance(provider);
 		EsiRenderer esiRenderer = stack.findAncestorWithClass(this,
 				EsiRenderer.class);
-		driver.render(page, null, out, esiRenderer.getRequest(),
-				new BlockRenderer(null, page));
+		driver.render(page, null, out, esiRenderer.getRequest(), esiRenderer
+				.getResponse(), new BlockRenderer(null, page));
 	}
 
 	public ElementType getType() {

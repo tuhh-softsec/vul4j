@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
@@ -25,9 +26,11 @@ public class EsiRenderer implements Renderer, Appendable {
 			Comment.TYPE);
 	private Writer out;
 	private final HttpServletRequest request;
+	private final HttpServletResponse response;
 
-	public EsiRenderer(HttpServletRequest request) {
+	public EsiRenderer(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
+		this.response = response;
 	}
 
 	/** {@inheritDoc} */
@@ -57,5 +60,9 @@ public class EsiRenderer implements Renderer, Appendable {
 			throws IOException {
 		out.append(csq, start, end);
 		return this;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
 	}
 }

@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
@@ -40,10 +41,13 @@ public class AggregateRenderer implements Renderer, Appendable {
 			.compile("<!--\\$[^>]*\\$-->"), IncludeBlockElement.TYPE,
 			IncludeTemplateElement.TYPE, PutElement.TYPE);
 	private final HttpServletRequest request;
+	private final HttpServletResponse response;
 	private Writer out;
 
-	public AggregateRenderer(HttpServletRequest request) {
+	public AggregateRenderer(HttpServletRequest request,
+			HttpServletResponse response) {
 		this.request = request;
+		this.response = response;
 	}
 
 	/** {@inheritDoc} */
@@ -73,6 +77,10 @@ public class AggregateRenderer implements Renderer, Appendable {
 			throws IOException {
 		out.append(csq, start, end);
 		return this;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
 	}
 
 }

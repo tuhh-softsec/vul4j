@@ -48,7 +48,7 @@ public class IncludeBlockElement implements Element {
 		AggregateRenderer aggregateRenderer = stack.findAncestorWithClass(this,
 				AggregateRenderer.class);
 		driver.render(page, null, out, aggregateRenderer.getRequest(),
-				new BlockRenderer(name, page));
+				aggregateRenderer.getResponse(), new BlockRenderer(name, page));
 	}
 
 	public ElementType getType() {

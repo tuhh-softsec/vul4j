@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Represents the location of a requested resource with all the necessary
@@ -28,6 +29,7 @@ public class ResourceContext {
 
 	private final String relUrl;
 	private final HttpServletRequest originalRequest;
+	private final HttpServletResponse originalResponse;
 	private final Map<String, String> parameters;
 	private boolean proxy = false;
 	private boolean preserveHost = false;
@@ -46,7 +48,8 @@ public class ResourceContext {
 	}
 
 	public ResourceContext(Driver driver, String relUrl,
-			Map<String, String> parameters, HttpServletRequest originalRequest) {
+			Map<String, String> parameters, HttpServletRequest originalRequest,
+			HttpServletResponse originalResponse) {
 		this.driver = driver;
 		this.relUrl = relUrl;
 		if (parameters != null)
@@ -54,6 +57,7 @@ public class ResourceContext {
 		else
 			this.parameters = new HashMap<String, String>();
 		this.originalRequest = originalRequest;
+		this.originalResponse = originalResponse;
 	}
 
 	public String getRelUrl() {
@@ -82,6 +86,10 @@ public class ResourceContext {
 
 	public void setNeededForTransformation(boolean neededForTransformation) {
 		this.neededForTransformation = neededForTransformation;
+	}
+
+	public HttpServletResponse getOriginalResponse() {
+		return originalResponse;
 	}
 
 }

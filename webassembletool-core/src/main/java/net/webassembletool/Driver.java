@@ -168,10 +168,12 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the block
 	 */
 	public final void renderXml(String source, String template, Appendable out,
-			HttpServletRequest originalRequest) throws IOException,
+			HttpServletRequest originalRequest,
+			HttpServletResponse originalResponse) throws IOException,
 			HttpErrorPage {
-		render(source, null, out, originalRequest, new XsltRenderer(template,
-				originalRequest.getSession().getServletContext()));
+		render(source, null, out, originalRequest, originalResponse,
+				new XsltRenderer(template, originalRequest.getSession()
+						.getServletContext()));
 	}
 
 	/**
@@ -193,9 +195,11 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the block
 	 */
 	public final void renderXpath(String source, String xpath, Appendable out,
-			HttpServletRequest originalRequest) throws IOException,
+			HttpServletRequest originalRequest,
+			HttpServletResponse originalResponse) throws IOException,
 			HttpErrorPage {
-		render(source, null, out, originalRequest, new XpathRenderer(xpath));
+		render(source, null, out, originalRequest, originalResponse,
+				new XpathRenderer(xpath));
 	}
 
 	/**
@@ -227,11 +231,13 @@ public class Driver {
 	 */
 	public final void renderBlock(String page, String name, Appendable writer,
 			HttpServletRequest originalRequest,
+			HttpServletResponse originalResponse,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean copyOriginalRequestParameters) throws IOException,
 			HttpErrorPage {
-		render(page, parameters, writer, originalRequest, new BlockRenderer(
-				name, page), new ReplaceRenderer(replaceRules));
+		render(page, parameters, writer, originalRequest, originalResponse,
+				new BlockRenderer(name, page),
+				new ReplaceRenderer(replaceRules));
 	}
 
 	/**
@@ -269,11 +275,12 @@ public class Driver {
 	 */
 	public final void renderTemplate(String page, String name,
 			Appendable writer, HttpServletRequest originalRequest,
-			Map<String, String> params, Map<String, String> replaceRules,
-			Map<String, String> parameters, boolean propagateJsessionId)
-			throws IOException, HttpErrorPage {
-		render(page, parameters, writer, originalRequest, new TemplateRenderer(
-				name, params, page), new ReplaceRenderer(replaceRules));
+			HttpServletResponse originalResponse, Map<String, String> params,
+			Map<String, String> replaceRules, Map<String, String> parameters,
+			boolean propagateJsessionId) throws IOException, HttpErrorPage {
+		render(page, parameters, writer, originalRequest, originalResponse,
+				new TemplateRenderer(name, params, page), new ReplaceRenderer(
+						replaceRules));
 	}
 
 	/**
@@ -294,9 +301,10 @@ public class Driver {
 	 */
 	public final void render(String page, Map<String, String> parameters,
 			Appendable writer, HttpServletRequest originalRequest,
-			Renderer... renderers) throws IOException, HttpErrorPage {
+			HttpServletResponse response, Renderer... renderers)
+			throws IOException, HttpErrorPage {
 		ResourceContext resourceContext = new ResourceContext(this, page,
-				parameters, originalRequest);
+				parameters, originalRequest, response);
 		resourceContext.setPreserveHost(config.isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
@@ -329,7 +337,7 @@ public class Driver {
 			HttpServletResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
 		ResourceContext resourceContext = new ResourceContext(this, relUrl,
-				null, request);
+				null, request, response);
 		request.setCharacterEncoding(config.getUriEncoding());
 		resourceContext.setProxy(true);
 		resourceContext.setPreserveHost(config.isPreserveHost());

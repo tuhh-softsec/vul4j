@@ -17,7 +17,7 @@ public class EsiRendererTest extends TestCase {
 
 	public void testInclude() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$PROVIDER({mock})/test\" /> after";
-		EsiRenderer tested = new EsiRenderer(null);
+		EsiRenderer tested = new EsiRenderer(null, null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("before test after", out.toString());
@@ -25,7 +25,7 @@ public class EsiRendererTest extends TestCase {
 
 	public void testEsiComment() throws IOException, HttpErrorPage {
 		String page = "begin <!--esi<sometag> some text</sometag>--> end";
-		EsiRenderer tested = new EsiRenderer(null);
+		EsiRenderer tested = new EsiRenderer(null, null);
 		StringWriter out = new StringWriter();
 		tested.render(page, out);
 		assertEquals("begin <sometag> some text</sometag> end", out.toString());
