@@ -38,6 +38,7 @@ import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -347,7 +348,51 @@ public class SchemaManagerDelTest
     //=========================================================================
     // MatchingRule deletion tests
     //-------------------------------------------------------------------------
-    // TODO
+    
+    @Test
+    public void testDeleteExistingMatchingRule() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int mrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+        
+        MatchingRule mr = new MatchingRule( "2.5.13.33" );
+        assertTrue( schemaManager.delete( mr ) );
+        
+        assertEquals( mrSize - 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
+    }
+
+    
+    @Test
+    public void testDeleteNonExistingMatchingRule() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int mrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+        
+        MatchingRule mr = new MatchingRule( "0.1.1" );
+        assertFalse( schemaManager.delete( mr ) );
+        
+        assertEquals( mrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+    
+    @Test
+    public void testDeleteExistingMatchingRuleUsedByAttributeType() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int mrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        // AT with OID 2.5.18.4 has syntax 1.3.6.1.4.1.1466.115.121.1.12 which is used by MR 2.5.13.1
+        MatchingRule mr = new MatchingRule( "2.5.13.1" );
+        assertFalse( schemaManager.delete( mr ) );
+        
+        assertEquals( mrSize, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
 
     //=========================================================================
     // MatchingRuleUse deletion tests
