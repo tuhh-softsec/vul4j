@@ -37,6 +37,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
+import org.apache.directory.shared.ldap.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -443,7 +444,102 @@ public class SchemaManagerDelTest
     //=========================================================================
     // Syntax deletion tests
     //-------------------------------------------------------------------------
-    // TODO
+    
+    @Test
+    public void testDeleteExistingSyntax() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int sSize = schemaManager.getLdapSyntaxRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        // delete a existing syntax not used by AT and MR
+        LdapSyntax syntax = schemaManager.lookupLdapSyntaxRegistry( "1.3.6.1.4.1.1466.115.121.1.10" );
+        assertTrue( schemaManager.delete( syntax ) );
+        
+        assertEquals( sSize - 1, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+
+        // add a syntax and then delete (should behave same as above )
+        syntax = new LdapSyntax( "0.1.1" );
+        assertTrue( schemaManager.add( syntax ) );
+
+        assertEquals( sSize + 1, schemaManager.getLdapSyntaxRegistry().size() );
+        // FIXME here the goidSize is getting increased by 1, in the rest of the tests it isn't the case 
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        
+        syntax = schemaManager.lookupLdapSyntaxRegistry( "0.1.1" );
+        assertTrue( schemaManager.delete( syntax ) );
+
+        try
+        {
+            schemaManager.lookupLdapSyntaxRegistry( "0.1.1" );
+            fail( "shouldn't find the syntax" );
+        }
+        catch( Exception e )
+        {
+            // expected behaviour
+        }
+        
+        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+    
+    @Test
+    public void testDeleteNonExistingSyntax() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int sSize = schemaManager.getLdapSyntaxRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapSyntax syntax = new LdapSyntax( "0.1.1" );
+        
+        assertFalse( schemaManager.delete( syntax ) );
+        
+        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+    
+    @Test
+    public void testDeleteSyntaxUsedByMatchingRule() throws Exception
+    {
+
+        SchemaManager schemaManager = loadSchema( "system" );
+        int sSize = schemaManager.getLdapSyntaxRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+
+        //1.3.6.1.4.1.1466.115.121.1.26 is used by MR 1.3.6.1.4.1.1466.109.114.2
+        LdapSyntax syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.26" );
+        assertFalse( schemaManager.delete( syntax ) );
+        
+        // syntax 1.3.6.1.4.1.1466.115.121.1.1 is used by MR 2.5.13.1
+        syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.1" );
+        // FIXME the below assertion is failing, not sure why
+        assertFalse( schemaManager.delete( syntax ) );
+        
+        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
+
+    
+    @Test
+    public void testDeleteSyntaxUsedByAttributeType() throws Exception
+    {
+       // syntax 1.3.6.1.4.1.1466.115.121.1.15 is used by AT 1.3.6.1.1.4
+
+        SchemaManager schemaManager = loadSchema( "system" );
+        int sSize = schemaManager.getLdapSyntaxRegistry().size();
+        int goidSize = schemaManager.getOidRegistry().size();
+
+        LdapSyntax syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.15" );
+        
+        assertFalse( schemaManager.delete( syntax ) );
+        
+        assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+    }
 
     //=========================================================================
     // SyntaxChecker deletion tests
