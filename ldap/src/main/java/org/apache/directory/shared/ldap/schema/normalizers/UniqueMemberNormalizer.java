@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.util.StringTools;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
  */
-public class NameAndOptionalUIDNormalizer extends Normalizer
+public class UniqueMemberNormalizer extends Normalizer
 {
     // The serial UID
     private static final long serialVersionUID = 1L;
@@ -46,7 +46,7 @@ public class NameAndOptionalUIDNormalizer extends Normalizer
     private SchemaManager schemaManager;
     
     
-    public NameAndOptionalUIDNormalizer()
+    public UniqueMemberNormalizer()
     {
         super( SchemaConstants.UNIQUE_MEMBER_MATCH_MATCH_MR_OID );
     }
@@ -145,7 +145,7 @@ public class NameAndOptionalUIDNormalizer extends Normalizer
         {
             // No UID, the strValue is a DN
             // Return the normalized DN
-            return new LdapDN( value ).getNormName();
+            return new LdapDN( value ).normalize( schemaManager.getNormalizerMapping() ).getNormName();
         }
     }
 

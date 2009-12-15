@@ -203,7 +203,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
             return new NoOpNormalizer( id );
         }
         
-        return type.getEquality().getNormalizer();
+        return mrule.getNormalizer();
     }
 
 
