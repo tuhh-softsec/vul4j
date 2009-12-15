@@ -143,7 +143,7 @@ public class SchemaManagerDelTest
      * Try to delete an AttributeType not existing in the schemaManager
      */
     @Test
-    public void testDelNonExistentAttributeType() throws Exception
+    public void testDeleteNonExistingAttributeType() throws Exception
     {
         SchemaManager schemaManager = loadSchema( "Core" );
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
@@ -169,7 +169,7 @@ public class SchemaManagerDelTest
      * Delete an existing AT not referenced by any object
      */
     @Test
-    public void testDelExistingAttributeTypeNoReference() throws Exception
+    public void testDeleteExistingAttributeType() throws Exception
     {
         // First inject such an AT
         SchemaManager schemaManager = loadSchema( "Core" );
@@ -192,7 +192,7 @@ public class SchemaManagerDelTest
      * Delete an existing AT referenced by some other OC
      */
     @Test
-    public void testDelExistingAttributeTypeReferencedByOC() throws Exception
+    public void testDeleteExistingAttributeTypeUsedByOC() throws Exception
     {
         SchemaManager schemaManager = loadSchema( "Core" );
 
@@ -240,7 +240,7 @@ public class SchemaManagerDelTest
      * Delete an existing AT referenced by some descendant
      */
     @Test
-    public void testDelExistingAttributeTypeReferencedByDescendant() throws Exception
+    public void testDeleteExistingAttributeTypeUsedByDescendant() throws Exception
     {
         SchemaManager schemaManager = loadSchema( "Apache" );
 
@@ -529,7 +529,7 @@ public class SchemaManagerDelTest
     
 
     @Test
-    public void testDeleteExistingObjectClassReferencedByAnotherObjectClass() throws Exception
+    public void testDeleteExistingObjectClassUsedByAnotherObjectClass() throws Exception
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ocSize = schemaManager.getObjectClassRegistry().size();
@@ -609,7 +609,7 @@ public class SchemaManagerDelTest
 
     
     @Test
-    public void testDeleteSyntaxUsedByMatchingRule() throws Exception
+    public void testDeleteExistingSyntaxUsedByMatchingRule() throws Exception
     {
 
         SchemaManager schemaManager = loadSchema( "system" );
@@ -631,7 +631,7 @@ public class SchemaManagerDelTest
 
     
     @Test
-    public void testDeleteSyntaxUsedByAttributeType() throws Exception
+    public void testDeleteExistingSyntaxUsedByAttributeType() throws Exception
     {
        // syntax 1.3.6.1.4.1.1466.115.121.1.15 is used by AT 1.3.6.1.1.4
 
@@ -704,7 +704,7 @@ public class SchemaManagerDelTest
 
     
     @Test
-    public void testDeleteSyntaxCheckerUsedBySyntax() throws Exception
+    public void testDeleteExistingSyntaxCheckerUsedBySyntax() throws Exception
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int scrSize = schemaManager.getSyntaxCheckerRegistry().size();
