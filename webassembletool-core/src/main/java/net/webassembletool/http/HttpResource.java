@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -21,7 +20,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.HttpClient;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.protocol.HttpContext;
 
 /**
@@ -125,16 +123,7 @@ public class HttpResource extends Resource {
 
 	private void removeSessionId(InputStream inputStream, Output output)
 			throws IOException {
-		String jsessionid = null;
-		if (target.getUserContext() != null) {
-			List<Cookie> cookies = target.getUserContext().getCookieStore()
-					.getCookies();
-			for (Cookie cookie : cookies)
-				if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
-					jsessionid = cookie.getValue();
-					break;
-				}
-		}
+		String jsessionid = RewriteUtils.getSessionId(target);
 		boolean textContentType = ResourceUtils
 				.isTextContentType(httpClientResponse.getHeader("Content-Type"));
 		if (jsessionid == null || !textContentType) {
@@ -142,7 +131,7 @@ public class HttpResource extends Resource {
 		} else {
 			String charset = httpClientResponse.getContentCharset();
 			String content = IOUtils.toString(inputStream, charset);
-			content = removeSessionId(content);
+			content = removeSessionId(jsessionid, content);
 			if (output.getHeader("Content-length") != null)
 				output.setHeader("Content-length", Integer.toString(content
 						.length()));
@@ -153,7 +142,15 @@ public class HttpResource extends Resource {
 	}
 
 	private String removeSessionId(String src) {
-		return src.replaceAll("[;]{0,1}jsessionid=([^?#&'\"]+)", "");
+		String sessionId = RewriteUtils.getSessionId(target);
+		return removeSessionId(sessionId, src);
+	}
+
+	private String removeSessionId(String sessionId, String src) {
+		if (sessionId == null)
+			return src;
+		else
+			return RewriteUtils.removeSessionId(sessionId, src);
 	}
 
 	@Override
