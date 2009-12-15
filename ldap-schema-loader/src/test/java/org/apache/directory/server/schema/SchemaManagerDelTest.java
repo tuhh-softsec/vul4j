@@ -547,6 +547,7 @@ public class SchemaManagerDelTest
         assertEquals( ocSize, schemaManager.getObjectClassRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
+    
 
     //=========================================================================
     // Syntax deletion tests
@@ -615,14 +616,13 @@ public class SchemaManagerDelTest
         int sSize = schemaManager.getLdapSyntaxRegistry().size();
         int goidSize = schemaManager.getOidRegistry().size();
 
-
         //1.3.6.1.4.1.1466.115.121.1.26 is used by MR 1.3.6.1.4.1.1466.109.114.2
         LdapSyntax syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.26" );
         assertFalse( schemaManager.delete( syntax ) );
         
-        // syntax 1.3.6.1.4.1.1466.115.121.1.1 is used by MR 2.5.13.1
-        syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.1" );
-        // FIXME the below assertion is failing, not sure why
+        // syntax 1.3.6.1.4.1.1466.115.121.1.12 is used by MR 2.5.13.1 and many AT
+        syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.12" );
+        
         assertFalse( schemaManager.delete( syntax ) );
         
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
