@@ -796,12 +796,12 @@ public interface SchemaConstants
     String PRESENTATION_ADDRESS_MATCH_MATCH_MR_OID        = "2.5.13.22";
     
     // uniqueMemberMatch (RFC 4517, chap. 4.2.31)
-    String UNIQUE_MEMBER_MATCH_MATCH_MR                   = "uniqueMemberMatch";
-    String UNIQUE_MEMBER_MATCH_MATCH_MR_OID               = "2.5.13.23";
+    String UNIQUE_MEMBER_MATCH_MR                         = "uniqueMemberMatch";
+    String UNIQUE_MEMBER_MATCH_MR_OID                     = "2.5.13.23";
     
     // protocolInformationMatch Removed in RFC 4517
-    String PROTOCOL_INFORMATION_MATCH_MATCH_MR            = "protocolInformationMatch";
-    String PROTOCOL_INFORMATION_MATCH_MATCH_MR_OID        = "2.5.13.24";
+    String PROTOCOL_INFORMATION_MATCH_MR                  = "protocolInformationMatch";
+    String PROTOCOL_INFORMATION_MATCH_MR_OID              = "2.5.13.24";
     
     // "2.5.13.25" is not used ...
     // "2.5.13.26" is not used ...

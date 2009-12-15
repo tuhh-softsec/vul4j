@@ -48,7 +48,7 @@ public class UniqueMemberNormalizer extends Normalizer
     
     public UniqueMemberNormalizer()
     {
-        super( SchemaConstants.UNIQUE_MEMBER_MATCH_MATCH_MR_OID );
+        super( SchemaConstants.UNIQUE_MEMBER_MATCH_MR_OID );
     }
     
 
