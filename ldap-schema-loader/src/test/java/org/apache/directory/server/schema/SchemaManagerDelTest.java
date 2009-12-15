@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.NoSuchAttributeException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -46,7 +48,6 @@ import org.apache.directory.shared.schema.DefaultSchemaManager;
 import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -261,7 +262,7 @@ public class SchemaManagerDelTest
     //-------------------------------------------------------------------------
 
     @Test
-    public void testDeleteExistingComaparator() throws Exception
+    public void testDeleteExistingComparator() throws Exception
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ctrSize = schemaManager.getComparatorRegistry().size();
@@ -276,6 +277,16 @@ public class SchemaManagerDelTest
         lc = schemaManager.lookupComparatorRegistry( "0.1.1" );
         assertNotNull( lc );
         assertTrue( schemaManager.delete( lc ) );
+        
+        try
+        {
+            schemaManager.lookupComparatorRegistry( "0.1.1" );
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // expected
+        }
 
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
@@ -283,7 +294,7 @@ public class SchemaManagerDelTest
 
 
     @Test
-    public void testDeleteNonExistingComaparator() throws Exception
+    public void testDeleteNonExistingComparator() throws Exception
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ctrSize = schemaManager.getComparatorRegistry().size();
@@ -308,16 +319,19 @@ public class SchemaManagerDelTest
         int goidSize = schemaManager.getOidRegistry().size();
 
         LdapComparator<?> lc = schemaManager.lookupComparatorRegistry( "2.5.13.0" );
+        
         // shouldn't be deleted cause there is a MR associated with it
         assertFalse( schemaManager.delete( lc ) );
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
 
         assertNotNull( schemaManager.lookupComparatorRegistry( "2.5.13.0" ) );
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
+    
 
     //=========================================================================
     // DITContentRule deletion tests
@@ -367,6 +381,16 @@ public class SchemaManagerDelTest
         assertNotNull( nr );
         assertTrue( schemaManager.delete( nr ) );
 
+        try
+        {
+            schemaManager.lookupNormalizerRegistry( "0.1.1" );
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // expected
+        }
+
         assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
@@ -404,6 +428,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
 
         assertNotNull( schemaManager.lookupNormalizerRegistry( "2.5.13.0" ) );
         assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
@@ -442,6 +467,16 @@ public class SchemaManagerDelTest
         assertNotNull( sc );
         assertTrue( schemaManager.delete( sc ) );
 
+        try
+        {
+            schemaManager.lookupSyntaxCheckerRegistry( "0.1.1" );
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // expected
+        }
+
         assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );
     }
@@ -466,7 +501,6 @@ public class SchemaManagerDelTest
     }
 
     
-    @Ignore ( "deleting a SC used by a S is successful where as it shouldn't be" )
     @Test
     public void testDeleteSyntaxCheckerUsedBySyntax() throws Exception
     {
@@ -481,6 +515,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
 
         assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( goidSize, schemaManager.getOidRegistry().size() );

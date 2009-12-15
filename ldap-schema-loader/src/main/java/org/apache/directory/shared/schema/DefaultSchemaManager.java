@@ -1420,13 +1420,13 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private SchemaObject getSchemaObject( SchemaObject schemaObject ) throws NamingException
     {
-        if ( registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() ) )
+        if ( schemaObject instanceof LoadableSchemaObject )
         {
-            return registries.getGlobalOidRegistry().getSchemaObject( schemaObject.getOid() );
+            return schemaObject;
         }
         else
         {
-            return schemaObject;
+            return registries.getGlobalOidRegistry().getSchemaObject( schemaObject.getOid() );
         }
     }
 
