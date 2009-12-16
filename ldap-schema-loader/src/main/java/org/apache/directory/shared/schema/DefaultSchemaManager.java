@@ -898,8 +898,28 @@ public class DefaultSchemaManager implements SchemaManager
             load( clonedRegistries, schema );
         }
 
-        // Swap the registries if it is consistent
-        return swapRegistries( clonedRegistries );
+        clonedRegistries.clear();
+
+        // Apply the change to the correct registries if no errors
+        if ( errors.size() == 0 )
+        {
+            // No error, we can enable the schema in the real registries
+            for ( Schema schema : schemas )
+            {
+                load( registries, schema );
+            }
+            
+            return true;
+        }
+        else
+        {
+            for ( Schema schema : schemas )
+            {
+                schema.disable();
+            }
+            
+            return false;
+        }
     }
 
 
