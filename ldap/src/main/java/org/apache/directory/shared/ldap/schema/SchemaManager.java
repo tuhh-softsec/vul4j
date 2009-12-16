@@ -607,17 +607,6 @@ public interface SchemaManager
     void setRegistries( Registries registries );
 
 
-    /***
-     * Swap the registries, deleting all the schemaObjects and links from the old one
-     * to avoid memory leaks.
-     * 
-     * @param targetRegistries The registries we want to store in place of the existing one
-     * @exception If something went wrong
-     * @return true if the replacement has been done
-     */
-    public boolean swapRegistries( Registries targetRegistries ) throws NamingException;
-
-
     /**
      * @return The errors obtained when checking the registries
      */

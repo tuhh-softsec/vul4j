@@ -243,39 +243,6 @@ public class DefaultSchemaManager implements SchemaManager
     //-----------------------------------------------------------------------
     // API methods
     //-----------------------------------------------------------------------
-    /***
-     * {@inheritDoc}
-     */
-    public boolean swapRegistries( Registries targetRegistries ) throws NamingException
-    {
-        // Check the resulting registries
-        errors = targetRegistries.checkRefInteg();
-
-        // if we have no more error, we can swap the registries
-        if ( errors.size() == 0 )
-        {
-            // Switch back to strict if needed
-            if ( registries.isStrict() )
-            {
-                targetRegistries.setStrict();
-            }
-
-            Registries oldRegistries = registries;
-            registries = targetRegistries;
-
-            // Delete the old registries to avoid memory leaks
-            oldRegistries.clear();
-
-            return true;
-        }
-        else
-        {
-            // We can't use this new registries.
-            return false;
-        }
-    }
-
-
     /**
      * {@inheritDoc}
      */
