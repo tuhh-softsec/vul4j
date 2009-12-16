@@ -28,12 +28,13 @@
   <artifactId>shared-parent</artifactId>
   <name>Apache Directory Shared</name>
   <packaging>pom</packaging>
-  <version>0.9.16-SNAPSHOT</version>
+  <version>0.9.18-SNAPSHOT</version>
 
   <properties>
     <projectName>ApacheDS-Shared</projectName>
     <distMgmtSiteUrl>scpexe://vm094.oxylos.org/var/www/html/projects/shared/</distMgmtSiteUrl>
     <skin.version>1.0.0</skin.version>
+    <org.apache.directory.shared.version>0.9.18-SNAPSHOT</org.apache.directory.shared.version>
   </properties>
   
   <distributionManagement>
