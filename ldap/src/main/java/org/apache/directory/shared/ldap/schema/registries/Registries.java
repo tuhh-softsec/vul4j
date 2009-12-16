@@ -1821,28 +1821,31 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // And unregister the schemaObject within its schema
         Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
 
-        SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
-
-        if ( content.contains( schemaObjectWrapper ) )
+        if ( content != null )
         {
-            // remove the schemaObject
-            content.remove( schemaObjectWrapper );
-
-            // Update the global OidRegistry if the SchemaObject is not
-            // an instance of LoadableSchemaObject
-            if ( !( schemaObject instanceof LoadableSchemaObject ) )
+            SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
+    
+            if ( content.contains( schemaObjectWrapper ) )
             {
-                globalOidRegistry.unregister( schemaObject.getOid() );
+                // remove the schemaObject
+                content.remove( schemaObjectWrapper );
+    
+                // Update the global OidRegistry if the SchemaObject is not
+                // an instance of LoadableSchemaObject
+                if ( !( schemaObject instanceof LoadableSchemaObject ) )
+                {
+                    globalOidRegistry.unregister( schemaObject.getOid() );
+                }
+    
+                LOG.debug( "Unregistered {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
             }
-
-            LOG.debug( "Unregistered {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
-        }
-        else
-        {
-            // Not present !!
-            // What should we do ?
-            LOG.debug( "Unregistering of {}:{} failed, not found in Registries", schemaObject.getObjectType(),
-                schemaObject.getOid() );
+            else
+            {
+                // Not present !!
+                // What should we do ?
+                LOG.debug( "Unregistering of {}:{} failed, not found in Registries", schemaObject.getObjectType(),
+                    schemaObject.getOid() );
+            }
         }
     }
 
