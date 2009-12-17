@@ -341,6 +341,8 @@ public class Driver {
 		request.setCharacterEncoding(config.getUriEncoding());
 		resourceContext.setProxy(true);
 		resourceContext.setPreserveHost(config.isPreserveHost());
+		if (!authenticationHandler.beforeProxy(resourceContext))
+			return;
 		if (renderers.length == 0) {
 			// As we don't have any transformation to apply, we don't even
 			// have to retrieve the resource if it is already in browser's

@@ -37,4 +37,8 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 	public void init(Properties properties) {
 		// Nothing to do		
 	}
+
+	public boolean beforeProxy(ResourceContext requestContext) {
+		return true;
+	}
 }
