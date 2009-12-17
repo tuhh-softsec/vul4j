@@ -376,7 +376,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
                 T copiedValue = null;
 
                 // Copy the value if it's not already in the oidRegistry
-                if ( oidRegistry.hasOid( value.getOid() ) )
+                if ( oidRegistry.contains( value.getOid() ) )
                 {
                     try
                     {

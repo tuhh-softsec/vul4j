@@ -1525,7 +1525,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
         else
         {
-            if ( globalOidRegistry.hasOid( schemaObject.getOid() ) )
+            if ( globalOidRegistry.contains( schemaObject.getOid() ) )
             {
                 // TODO : throw an exception here
                 String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
@@ -1606,7 +1606,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         LOG.debug( "Registering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
         // Check that the SchemaObject is not already registered
-        if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.hasOid( schemaObject.getOid() ) )
+        if ( !( schemaObject instanceof LoadableSchemaObject ) && globalOidRegistry.contains( schemaObject.getOid() ) )
         {
             // TODO : throw an exception here
             String msg = "Registering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
@@ -1676,7 +1676,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
 
         // Check that the SchemaObject is already registered
-        if ( !( schemaObject instanceof LoadableSchemaObject ) && !globalOidRegistry.hasOid( schemaObject.getOid() ) )
+        if ( !( schemaObject instanceof LoadableSchemaObject ) && !globalOidRegistry.contains( schemaObject.getOid() ) )
         {
             // TODO : throw an exception here
             String msg = "Unregistering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()
@@ -1745,7 +1745,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         }
         else
         {
-            if ( !globalOidRegistry.hasOid( schemaObject.getOid() ) )
+            if ( !globalOidRegistry.contains( schemaObject.getOid() ) )
             {
                 // TODO : throw an exception here
                 String msg = "Unregistering of " + schemaObject.getObjectType() + ":" + schemaObject.getOid()

@@ -60,7 +60,7 @@ public class OidRegistry implements Iterable<SchemaObject>
      * @param oid The OID to lookup
      * @return true if the OID alreadyexists
      */
-    public boolean hasOid( String oid )
+    public boolean contains( String oid )
     {
         return byOid.containsKey( oid );
     }

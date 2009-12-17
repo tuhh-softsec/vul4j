@@ -1380,7 +1380,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         if ( !( schemaObject instanceof LoadableSchemaObject ) )
         {
-            return registries.getGlobalOidRegistry().hasOid( schemaObject.getOid() );
+            return registries.getGlobalOidRegistry().contains( schemaObject.getOid() );
         }
 
         if ( schemaObject instanceof LdapComparator<?> )
