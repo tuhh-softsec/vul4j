@@ -28,6 +28,7 @@ import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.ldap.schema.registries.MatchingRuleRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -179,6 +180,46 @@ public class MatchingRule extends AbstractSchemaObject
                 registries.addReference( this, ldapSyntax );
             }
 
+        }
+    }
+
+
+    /**
+     * Remove the MatchingRule from the registries, updating the references to
+     * other SchemaObject.
+     * 
+     * If one of the referenced SchemaObject does not exist (), 
+     * an exception is thrown.
+     *
+     * @param registries The Registries
+     * @exception If the MatchingRule is not valid 
+     */
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            MatchingRuleRegistry matchingRuleRegistry = registries.getMatchingRuleRegistry();
+
+            /**
+             * Remove the MR references (using and usedBy) : 
+             * MR -> C
+             * MR -> N
+             * MR -> S
+             */
+            if ( ldapComparator != null )
+            {
+                registries.delReference( this, ldapComparator );
+            }
+
+            if ( ldapSyntax != null )
+            {
+                registries.delReference( this, ldapSyntax );
+            }
+
+            if ( normalizer != null )
+            {
+                registries.delReference( this, normalizer );
+            }
         }
     }
 

@@ -129,6 +129,44 @@ public class SchemaManagerDelTest
     }
 
 
+    private boolean isMRPresent( SchemaManager schemaManager, String oid )
+    {
+        try
+        {
+            MatchingRule matchingRule = schemaManager.lookupMatchingRuleRegistry( oid );
+
+            return matchingRule != null;
+        }
+        catch ( NoSuchAttributeException nsae )
+        {
+            return false;
+        }
+        catch ( NamingException ne )
+        {
+            return false;
+        }
+    }
+
+    
+    private boolean isCPresent( SchemaManager schemaManager, String oid )
+    {
+        try
+        {
+            LdapComparator<?> comparator = schemaManager.lookupComparatorRegistry( oid );
+
+            return comparator != null;
+        }
+        catch ( NoSuchAttributeException nsae )
+        {
+            return false;
+        }
+        catch ( NamingException ne )
+        {
+            return false;
+        }
+    }
+
+
     //=========================================================================
     // For each test, we will check many different things.
     // If the test is successful, we want to know if the SchemaObject
@@ -333,6 +371,52 @@ public class SchemaManagerDelTest
         assertNotNull( schemaManager.lookupComparatorRegistry( "2.5.13.0" ) );
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
+    }
+
+
+    /**
+     * Check that a Comparator which has been used by a deleted MatchingRule
+     * can be removed
+     */
+    @Test
+    public void testDeleteExistingComaparatorUsedByRemovedMatchingRule() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int ctrSize = schemaManager.getComparatorRegistry().size();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+        
+        String OID = "2.5.13.33";
+
+        // Check that the MR and C are present
+        assertTrue( isMRPresent( schemaManager, OID ) );
+        assertTrue( isCPresent( schemaManager, OID ) );
+
+        // Now try to remove the C
+        LdapComparator<?> lc = schemaManager.lookupComparatorRegistry( OID );
+        
+        // shouldn't be deleted cause there is a MR associated with it
+        assertFalse( schemaManager.delete( lc ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+
+        // Now delete the using MR : it should be OK
+        MatchingRule mr = new MatchingRule( OID );
+        assertTrue( schemaManager.delete( mr ) );
+
+        assertEquals( mrrSize - 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
+
+        assertFalse( isMRPresent( schemaManager, OID ) );
+        
+        // and try to delete the Comparator again
+        assertTrue( schemaManager.delete( lc ) );
+
+        assertFalse( isCPresent( schemaManager, OID ) );
+        assertEquals( ctrSize - 1, schemaManager.getComparatorRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
     }
     
 

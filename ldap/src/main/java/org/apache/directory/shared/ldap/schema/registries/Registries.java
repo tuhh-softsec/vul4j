@@ -2596,12 +2596,22 @@ public class Registries implements SchemaLoaderListener, Cloneable
 
                 try
                 {
-                    SchemaObject copy = clone.globalOidRegistry.getSchemaObject( original.getOid() );
-                    SchemaObjectWrapper newWrapper = new SchemaObjectWrapper( copy );
-                    objects.add( newWrapper );
+                    if ( ! ( original instanceof LoadableSchemaObject ) )
+                    {
+                        SchemaObject copy = clone.globalOidRegistry.getSchemaObject( original.getOid() );
+                        SchemaObjectWrapper newWrapper = new SchemaObjectWrapper( copy );
+                        objects.add( newWrapper );
+                    }
+                    else
+                    {
+                        SchemaObjectWrapper newWrapper = new SchemaObjectWrapper( original );
+                        objects.add(  newWrapper );
+                    }
                 }
                 catch ( NamingException ne )
                 {
+                    int i = 0;
+                    i++;
                     // Nothing to do
                 }
             }

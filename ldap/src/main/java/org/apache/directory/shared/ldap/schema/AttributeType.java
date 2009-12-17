@@ -696,11 +696,11 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // Remove the attributeType from the oid/normalizer map
             attributeTypeRegistry.removeMappingFor( this );
 
-            // Register this AttributeType into the Descendant map
+            // Unregister this AttributeType into the Descendant map
             attributeTypeRegistry.unregisterDescendants( this, superior );
 
             /**
-             * Add the AT references (using and usedBy) : 
+             * Remove the AT references (using and usedBy) : 
              * AT -> MR (for EQUALITY, ORDERING and SUBSTR)
              * AT -> S
              * AT -> AT
