@@ -121,20 +121,23 @@ class CacheEntry {
 
 	private String getIfModifiedSince(ResourceContext resourceContext,
 			CachedResponse cachedResponse) {
+		String requestedIfModifiedSinceString = resourceContext
+				.getOriginalRequest().getHeader("If-Modified-Since");
 		Date requestedIfModifiedSinceDate = Rfc2616.getDateHeader(
 				resourceContext, "If-Modified-Since");
+		String cacheLastModifiedString = null;
 		Date cacheLastModifiedDate = null;
 		if (cachedResponse != null && cachedResponse.hasResponseBody()) {
+			cacheLastModifiedString = cachedResponse.getHeader("Last-modified");
 			cacheLastModifiedDate = Rfc2616.getDateHeader(cachedResponse,
 					"Last-modified");
-			if (resourceContext.isNeededForTransformation()
-					|| requestedIfModifiedSinceDate == null
-					|| (cacheLastModifiedDate != null && cacheLastModifiedDate
-							.after(requestedIfModifiedSinceDate)))
-				return cachedResponse.getHeader("Last-modified");
 		}
-		return resourceContext.getOriginalRequest().getHeader(
-				"If-Modified-Since");
+		if (resourceContext.isNeededForTransformation()
+				|| requestedIfModifiedSinceDate == null
+				|| (cacheLastModifiedDate != null && cacheLastModifiedDate
+						.after(requestedIfModifiedSinceDate)))
+			return cacheLastModifiedString;
+		return requestedIfModifiedSinceString;
 	}
 
 	/**
@@ -168,6 +171,14 @@ class CacheEntry {
 						result = newResource;
 					else
 						result = cachedResponse;
+				} else {
+					// Buggy behaviour from the server, it should not send a 304
+					// for a if-none-match request without the etag to select.
+					// Let's take the first.
+					if (cachedResponse != null)
+						result = cachedResponse;
+					else if (cachedResponses.size() > 0)
+						result = cachedResponses.values().iterator().next();
 				}
 			} else {
 				if (!resourceContext.isNeededForTransformation()
