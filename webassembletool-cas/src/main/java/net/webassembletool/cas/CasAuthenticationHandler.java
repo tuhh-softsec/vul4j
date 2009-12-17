@@ -76,4 +76,8 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		if (casLoginUrl != null)
 			this.loginUrl = casLoginUrl;
 	}
+
+	public boolean beforeProxy(ResourceContext requestContext) {
+		return true;
+	}
 }
