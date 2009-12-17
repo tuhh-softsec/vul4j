@@ -130,6 +130,8 @@ public class HttpResource extends Resource {
 			IOUtils.copy(inputStream, output.getOutputStream());
 		} else {
 			String charset = httpClientResponse.getContentCharset();
+			if (charset == null)
+				charset = "ISO-8859-1";
 			String content = IOUtils.toString(inputStream, charset);
 			content = removeSessionId(jsessionid, content);
 			if (output.getHeader("Content-length") != null)
