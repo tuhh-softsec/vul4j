@@ -1702,7 +1702,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public OidRegistry getOidRegistry()
+    public OidRegistry getGlobalOidRegistry()
     {
         return registries.getGlobalOidRegistry();
     }

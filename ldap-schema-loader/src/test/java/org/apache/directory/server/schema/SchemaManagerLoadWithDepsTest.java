@@ -115,7 +115,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 9, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 141, schemaManager.getOidRegistry().size() );
+        assertEquals( 141, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 1, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -141,7 +141,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 36, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 222, schemaManager.getOidRegistry().size() );
+        assertEquals( 222, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 2, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -168,7 +168,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 53, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 62, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 66, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 307, schemaManager.getOidRegistry().size() );
+        assertEquals( 307, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -196,7 +196,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 22, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 63, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 64, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 195, schemaManager.getOidRegistry().size() );
+        assertEquals( 195, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 2, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -223,7 +223,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 41, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 234, schemaManager.getOidRegistry().size() );
+        assertEquals( 234, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -252,7 +252,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 66, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 66, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 71, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 361, schemaManager.getOidRegistry().size() );
+        assertEquals( 361, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 5, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -282,7 +282,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 49, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 276, schemaManager.getOidRegistry().size() );
+        assertEquals( 276, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -311,7 +311,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
+        assertEquals( 286, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -340,7 +340,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 36, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 235, schemaManager.getOidRegistry().size() );
+        assertEquals( 235, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -368,7 +368,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 39, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 240, schemaManager.getOidRegistry().size() );
+        assertEquals( 240, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 3, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -397,7 +397,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 0, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 0, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 0, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 0, schemaManager.getOidRegistry().size() );
+        assertEquals( 0, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 0, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -425,7 +425,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 0, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 0, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 0, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 0, schemaManager.getOidRegistry().size() );
+        assertEquals( 0, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 0, schemaManager.getRegistries().getLoadedSchemas().size() );
     }
@@ -450,7 +450,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
+        assertEquals( 286, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -479,7 +479,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
+        assertEquals( 286, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -508,7 +508,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
+        assertEquals( 286, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
@@ -543,7 +543,7 @@ public class SchemaManagerLoadWithDepsTest
         assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getOidRegistry().size() );
+        assertEquals( 286, schemaManager.getGlobalOidRegistry().size() );
 
         assertEquals( 5, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );

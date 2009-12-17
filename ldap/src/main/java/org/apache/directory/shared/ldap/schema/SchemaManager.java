@@ -769,11 +769,11 @@ public interface SchemaManager
 
 
     /**
-     * Returns a reference to the OidRegistry
+     * Returns a reference to the global OidRegistry
      *
-     * @return The OidRegistry
+     * @return The the global OidRegistry
      */
-    OidRegistry getOidRegistry();
+    OidRegistry getGlobalOidRegistry();
 
 
     /**

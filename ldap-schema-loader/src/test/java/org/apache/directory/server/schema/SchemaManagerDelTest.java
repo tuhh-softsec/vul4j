@@ -147,7 +147,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "Core" );
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -161,7 +161,7 @@ public class SchemaManagerDelTest
         assertFalse( errors.isEmpty() );
 
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -174,7 +174,7 @@ public class SchemaManagerDelTest
         // First inject such an AT
         SchemaManager schemaManager = loadSchema( "Core" );
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "generationQualifier" );
         attributeType.setOid( "2.5.4.44" );
@@ -184,7 +184,7 @@ public class SchemaManagerDelTest
 
         assertFalse( isATPresent( schemaManager, "generationQualifier" ) );
         assertEquals( atrSize - 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -197,7 +197,7 @@ public class SchemaManagerDelTest
         SchemaManager schemaManager = loadSchema( "Core" );
 
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         // Try to delete an AT which is referenced by at least one OC
         // (modifiersName has one descendant : schemaModifiersName)
@@ -208,7 +208,7 @@ public class SchemaManagerDelTest
 
         assertTrue( isATPresent( schemaManager, "cn" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -221,7 +221,7 @@ public class SchemaManagerDelTest
         SchemaManager schemaManager = loadSchema( "Core" );
 
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         // Try to delete an AT which is contained by a disabled schema
         AttributeType attributeType = new AttributeType( "gecos" );
@@ -232,7 +232,7 @@ public class SchemaManagerDelTest
 
         assertFalse( isATPresent( schemaManager, "gecos" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -245,7 +245,7 @@ public class SchemaManagerDelTest
         SchemaManager schemaManager = loadSchema( "Apache" );
 
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         // Try to delete an AT which has descendant 
         // (modifiersName has one descendant : schemaModifiersName)
@@ -256,7 +256,7 @@ public class SchemaManagerDelTest
 
         assertTrue( isATPresent( schemaManager, "modifiersName" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -269,13 +269,13 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ctrSize = schemaManager.getComparatorRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         LdapComparator<?> lc = new BooleanComparator( "0.1.1" );
         assertTrue( schemaManager.add( lc ) );
 
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         lc = schemaManager.lookupComparatorRegistry( "0.1.1" );
         assertNotNull( lc );
@@ -292,7 +292,7 @@ public class SchemaManagerDelTest
         }
 
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -301,7 +301,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ctrSize = schemaManager.getComparatorRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         LdapComparator<?> lc = new BooleanComparator( "0.0" );
         assertFalse( schemaManager.delete( lc ) );
@@ -310,7 +310,7 @@ public class SchemaManagerDelTest
         assertFalse( errors.isEmpty() );
 
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -319,7 +319,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ctrSize = schemaManager.getComparatorRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         LdapComparator<?> lc = schemaManager.lookupComparatorRegistry( "2.5.13.0" );
         
@@ -332,7 +332,7 @@ public class SchemaManagerDelTest
 
         assertNotNull( schemaManager.lookupComparatorRegistry( "2.5.13.0" ) );
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
     
 
@@ -355,13 +355,13 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int mrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
         
         MatchingRule mr = new MatchingRule( "2.5.13.33" );
         assertTrue( schemaManager.delete( mr ) );
         
         assertEquals( mrSize - 1, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
     
@@ -370,13 +370,13 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int mrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
         
         MatchingRule mr = new MatchingRule( "0.1.1" );
         assertFalse( schemaManager.delete( mr ) );
         
         assertEquals( mrSize, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     
@@ -385,14 +385,14 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int mrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         // AT with OID 2.5.18.4 has syntax 1.3.6.1.4.1.1466.115.121.1.12 which is used by MR 2.5.13.1
         MatchingRule mr = new MatchingRule( "2.5.13.1" );
         assertFalse( schemaManager.delete( mr ) );
         
         assertEquals( mrSize, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     //=========================================================================
@@ -414,14 +414,14 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int nrSize = schemaManager.getNormalizerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         Normalizer nr = new BooleanNormalizer();
         nr.setOid( "0.1.1" );
         assertTrue( schemaManager.add( nr ) );
 
         assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         // FIXME this lookup is failing ! but it shouldn't be
         nr = schemaManager.lookupNormalizerRegistry( "0.1.1" );
@@ -439,7 +439,7 @@ public class SchemaManagerDelTest
         }
 
         assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
     
     
@@ -448,7 +448,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int nrSize = schemaManager.getNormalizerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         Normalizer nr = new BooleanNormalizer();
         nr.setOid( "0.0" ); 
@@ -458,7 +458,7 @@ public class SchemaManagerDelTest
         assertFalse( errors.isEmpty() );
 
         assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     
@@ -467,7 +467,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int nrSize = schemaManager.getNormalizerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         Normalizer nr = schemaManager.lookupNormalizerRegistry( "2.5.13.0" );
         // shouldn't be deleted cause there is a MR associated with it
@@ -479,7 +479,7 @@ public class SchemaManagerDelTest
 
         assertNotNull( schemaManager.lookupNormalizerRegistry( "2.5.13.0" ) );
         assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     //=========================================================================
@@ -491,14 +491,14 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ocSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
         
         ObjectClass oc = new ObjectClass( "2.5.17.2" );
         
         assertTrue( schemaManager.delete( oc ) );
         
         assertEquals( ocSize - 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
         
         try
         {
@@ -517,14 +517,14 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ocSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
         
         ObjectClass oc = new ObjectClass( "0.1.1" );
         
         assertFalse( schemaManager.delete( oc ) );
         
         assertEquals( ocSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
     
 
@@ -533,7 +533,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int ocSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
         
         ObjectClass oc = new ObjectClass( "2.5.6.0" );
         
@@ -545,7 +545,7 @@ public class SchemaManagerDelTest
         assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
 
         assertEquals( ocSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
     
 
@@ -558,21 +558,21 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int sSize = schemaManager.getLdapSyntaxRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         // delete a existing syntax not used by AT and MR
         LdapSyntax syntax = schemaManager.lookupLdapSyntaxRegistry( "1.3.6.1.4.1.1466.115.121.1.10" );
         assertTrue( schemaManager.delete( syntax ) );
         
         assertEquals( sSize - 1, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize -1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize -1, schemaManager.getGlobalOidRegistry().size() );
 
         // add a syntax and then delete (should behave same as above )
         syntax = new LdapSyntax( "0.1.1" );
         assertTrue( schemaManager.add( syntax ) );
 
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
         
         syntax = schemaManager.lookupLdapSyntaxRegistry( "0.1.1" );
         assertTrue( schemaManager.delete( syntax ) );
@@ -588,7 +588,7 @@ public class SchemaManagerDelTest
         }
         
         assertEquals( sSize - 1, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize - 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
     
@@ -597,14 +597,14 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int sSize = schemaManager.getLdapSyntaxRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         LdapSyntax syntax = new LdapSyntax( "0.1.1" );
         
         assertFalse( schemaManager.delete( syntax ) );
         
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     
@@ -614,7 +614,7 @@ public class SchemaManagerDelTest
 
         SchemaManager schemaManager = loadSchema( "system" );
         int sSize = schemaManager.getLdapSyntaxRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         //1.3.6.1.4.1.1466.115.121.1.26 is used by MR 1.3.6.1.4.1.1466.109.114.2
         LdapSyntax syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.26" );
@@ -626,7 +626,7 @@ public class SchemaManagerDelTest
         assertFalse( schemaManager.delete( syntax ) );
         
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     
@@ -637,14 +637,14 @@ public class SchemaManagerDelTest
 
         SchemaManager schemaManager = loadSchema( "system" );
         int sSize = schemaManager.getLdapSyntaxRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         LdapSyntax syntax = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.15" );
         
         assertFalse( schemaManager.delete( syntax ) );
         
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     //=========================================================================
@@ -656,14 +656,14 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int scrSize = schemaManager.getSyntaxCheckerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         SyntaxChecker sc = new BooleanSyntaxChecker();
         sc.setOid( "0.1.1" );
         assertTrue( schemaManager.add( sc ) );
 
         assertEquals( scrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         sc = schemaManager.lookupSyntaxCheckerRegistry( "0.1.1" );
         assertNotNull( sc );
@@ -680,7 +680,7 @@ public class SchemaManagerDelTest
         }
 
         assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
     
     
@@ -689,7 +689,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int scrSize = schemaManager.getSyntaxCheckerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         SyntaxChecker sc = new BooleanSyntaxChecker();
         sc.setOid( "0.0" ); 
@@ -699,7 +699,7 @@ public class SchemaManagerDelTest
         assertFalse( errors.isEmpty() );
 
         assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
     
@@ -708,7 +708,7 @@ public class SchemaManagerDelTest
     {
         SchemaManager schemaManager = loadSchema( "system" );
         int scrSize = schemaManager.getSyntaxCheckerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         SyntaxChecker sc = schemaManager.lookupSyntaxCheckerRegistry( "1.3.6.1.4.1.1466.115.121.1.1" );
         
@@ -720,6 +720,6 @@ public class SchemaManagerDelTest
         assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
 
         assertEquals( scrSize, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 }

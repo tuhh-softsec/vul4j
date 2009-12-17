@@ -226,7 +226,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -244,7 +244,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -256,7 +256,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -271,7 +271,7 @@ public class SchemaManagerAddTest
 
         assertTrue( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -283,7 +283,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -304,7 +304,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -316,7 +316,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -337,7 +337,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -349,7 +349,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -364,7 +364,7 @@ public class SchemaManagerAddTest
 
         assertTrue( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -376,7 +376,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "0.0" );
@@ -396,7 +396,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -408,7 +408,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -428,7 +428,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -440,7 +440,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -460,7 +460,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -472,7 +472,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -486,7 +486,7 @@ public class SchemaManagerAddTest
 
         assertTrue( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -498,7 +498,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "2.5.18.4" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -521,7 +521,7 @@ public class SchemaManagerAddTest
         AttributeType original = schemaManager.lookupAttributeTypeRegistry( "2.5.18.4" );
         assertEquals( "distinguishedNameMatch", original.getEqualityOid() );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -533,7 +533,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -555,7 +555,7 @@ public class SchemaManagerAddTest
         assertFalse( isATPresent( schemaManager, "1.1.1.0" ) );
 
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -567,7 +567,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.1.0" );
         attributeType.setEqualityOid( "2.5.13.1" );
@@ -586,7 +586,7 @@ public class SchemaManagerAddTest
         assertTrue( isATPresent( schemaManager, "1.1.1.0" ) );
 
         assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
 
         AttributeType added = schemaManager.lookupAttributeTypeRegistry( "referral" );
         assertNotNull( added );
@@ -607,7 +607,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -624,7 +624,7 @@ public class SchemaManagerAddTest
         assertEquals( "1.3.6.1.4.1.1466.115.121.1.12", result.getSyntaxOid() );
         assertEquals( "2.5.13.1", result.getEqualityOid() );
         assertEquals( atrSize + 1, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -636,7 +636,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -656,7 +656,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -668,7 +668,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -688,7 +688,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -700,7 +700,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int atrSize = schemaManager.getAttributeTypeRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         AttributeType attributeType = new AttributeType( "1.1.0" );
         attributeType.setEqualityOid( null );
@@ -720,7 +720,7 @@ public class SchemaManagerAddTest
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -732,7 +732,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ctrSize = schemaManager.getComparatorRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         LdapComparator<?> lc = new BooleanComparator( oid );
@@ -743,7 +743,7 @@ public class SchemaManagerAddTest
         assertEquals( 0, errors.size() );
 
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         LdapComparator<?> added = schemaManager.lookupComparatorRegistry( oid );
 
@@ -757,7 +757,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ctrSize = schemaManager.getComparatorRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         LdapComparator<?> bc = new BooleanComparator( oid );
@@ -772,7 +772,7 @@ public class SchemaManagerAddTest
         List<Throwable> errors = schemaManager.getErrors();
         assertEquals( 0, errors.size() );
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         LdapComparator<?> lc = new CsnComparator( oid );
 
@@ -782,7 +782,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
 
         assertEquals( ctrSize + 1, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         added = schemaManager.lookupComparatorRegistry( oid );
 
@@ -799,7 +799,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ctrSize = schemaManager.getComparatorRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         LdapComparator<?> lc = new BooleanComparator( oid );
@@ -814,7 +814,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
 
         assertEquals( ctrSize, schemaManager.getComparatorRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         try
         {
@@ -850,7 +850,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int mrrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         MatchingRule matchingRule = new MatchingRule( "1.1.0" );
         matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
@@ -867,7 +867,7 @@ public class SchemaManagerAddTest
         assertEquals( ComparableComparator.class.getName(), added.getLdapComparator().getClass().getName() );
 
         assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -879,7 +879,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int mrrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         MatchingRule matchingRule = new MatchingRule( "1.1.0" );
 
@@ -895,7 +895,7 @@ public class SchemaManagerAddTest
         assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -907,7 +907,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int mrrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         MatchingRule matchingRule = new MatchingRule( "2.5.13.0" );
         matchingRule.setSyntaxOid( "1.3.6.1.4.1.1466.115.121.1.26" );
@@ -928,7 +928,7 @@ public class SchemaManagerAddTest
         assertEquals( "objectIdentifierMatch", existing.getName() );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -940,7 +940,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int mrrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         MatchingRule matchingRule = new MatchingRule( "1.1.0" );
         matchingRule.setNames( "Test", "objectIdentifierMatch" );
@@ -956,7 +956,7 @@ public class SchemaManagerAddTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -968,7 +968,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int mrrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         MatchingRule matchingRule = new MatchingRule( "1.1.0" );
         matchingRule.setNames( "Test", "cn" );
@@ -989,7 +989,7 @@ public class SchemaManagerAddTest
         assertTrue( added.getNames().contains( "Test" ) );
 
         assertEquals( mrrSize + 1, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1001,7 +1001,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int mrrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         MatchingRule matchingRule = new MatchingRule( "1.1.0" );
         matchingRule.setNames( "Test" );
@@ -1017,7 +1017,7 @@ public class SchemaManagerAddTest
         assertTrue( error instanceof LdapSchemaViolationException );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1029,7 +1029,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int mrrSize = schemaManager.getMatchingRuleRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         MatchingRule matchingRule = new MatchingRule( "1.1.0" );
         matchingRule.setNames( "Test" );
@@ -1049,7 +1049,7 @@ public class SchemaManagerAddTest
         assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1071,7 +1071,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int nrSize = schemaManager.getNormalizerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         Normalizer normalizer = new NoOpNormalizer( oid );
@@ -1082,7 +1082,7 @@ public class SchemaManagerAddTest
         assertEquals( 0, errors.size() );
 
         assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         Normalizer added = schemaManager.lookupNormalizerRegistry( oid );
 
@@ -1096,7 +1096,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int nrSize = schemaManager.getNormalizerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         Normalizer normalizer = new NoOpNormalizer( oid );
@@ -1111,7 +1111,7 @@ public class SchemaManagerAddTest
         List<Throwable> errors = schemaManager.getErrors();
         assertEquals( 0, errors.size() );
         assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         Normalizer normalizer2 = new NoOpNormalizer( oid );
 
@@ -1121,7 +1121,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
 
         assertEquals( nrSize + 1, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         added = schemaManager.lookupNormalizerRegistry( oid );
 
@@ -1138,7 +1138,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int nrSize = schemaManager.getNormalizerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         Normalizer normalizer = new NoOpNormalizer( oid );
@@ -1154,7 +1154,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
 
         assertEquals( nrSize, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         try
         {
@@ -1183,7 +1183,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
 
@@ -1196,7 +1196,7 @@ public class SchemaManagerAddTest
         assertNotNull( added );
 
         assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1208,7 +1208,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "2.5.17.0" );
 
@@ -1224,7 +1224,7 @@ public class SchemaManagerAddTest
         assertNotNull( added );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1236,7 +1236,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.0" );
         objectClass.setNames( "Test", "referral" );
@@ -1251,7 +1251,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.0" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1263,7 +1263,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test", "cn" );
@@ -1279,7 +1279,7 @@ public class SchemaManagerAddTest
         assertTrue( added.getNames().contains( "cn" ) );
 
         assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1291,7 +1291,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMayAttributeTypeOids( "cn", "none", "sn" );
@@ -1306,7 +1306,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1318,7 +1318,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMustAttributeTypeOids( "cn", "none", "sn" );
@@ -1333,7 +1333,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1345,7 +1345,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMayAttributeTypeOids( "cn", "ref", "commonName" );
@@ -1358,7 +1358,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1370,7 +1370,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMustAttributeTypeOids( "cn", "ref", "2.5.4.3" );
@@ -1383,7 +1383,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1395,7 +1395,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.addMustAttributeTypeOids( "cn", "ref" );
@@ -1410,7 +1410,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1425,7 +1425,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1455,7 +1455,7 @@ public class SchemaManagerAddTest
         }
 
         assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1467,7 +1467,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1481,7 +1481,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1493,7 +1493,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
 
         objectClass.setNames( "Test" );
@@ -1507,7 +1507,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1519,7 +1519,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1533,7 +1533,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1545,7 +1545,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1559,7 +1559,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1571,7 +1571,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1585,7 +1585,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1597,7 +1597,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1611,7 +1611,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1623,7 +1623,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1637,7 +1637,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1650,7 +1650,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1680,7 +1680,7 @@ public class SchemaManagerAddTest
         }
 
         assertEquals( ocrSize + 1, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1693,7 +1693,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int ocrSize = schemaManager.getObjectClassRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         ObjectClass objectClass = new ObjectClass( "1.1.1" );
         objectClass.setNames( "Test" );
@@ -1710,7 +1710,7 @@ public class SchemaManagerAddTest
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
         assertEquals( ocrSize, schemaManager.getObjectClassRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1726,7 +1726,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int sSize = schemaManager.getLdapSyntaxRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         LdapSyntax syntax = new LdapSyntax( "1.1.0" );
 
@@ -1743,7 +1743,7 @@ public class SchemaManagerAddTest
 
         assertTrue( isSyntaxPresent( schemaManager, "1.1.0" ) );
         assertEquals( sSize + 1, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize + 1, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize + 1, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1755,7 +1755,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int sSize = schemaManager.getLdapSyntaxRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         LdapSyntax syntax = new LdapSyntax( "2.5.4.3" );
 
@@ -1768,7 +1768,7 @@ public class SchemaManagerAddTest
 
         assertTrue( error instanceof LdapSchemaViolationException );
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
 
@@ -1780,7 +1780,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int nrSize = schemaManager.getSyntaxCheckerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
@@ -1791,7 +1791,7 @@ public class SchemaManagerAddTest
         assertEquals( 0, errors.size() );
 
         assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         SyntaxChecker added = schemaManager.lookupSyntaxCheckerRegistry( oid );
 
@@ -1805,7 +1805,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int nrSize = schemaManager.getSyntaxCheckerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
@@ -1820,7 +1820,7 @@ public class SchemaManagerAddTest
         List<Throwable> errors = schemaManager.getErrors();
         assertEquals( 0, errors.size() );
         assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         SyntaxChecker syntaxChecker2 = new RegexSyntaxChecker( oid );
 
@@ -1830,7 +1830,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
 
         assertEquals( nrSize + 1, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         added = schemaManager.lookupSyntaxCheckerRegistry( oid );
 
@@ -1847,7 +1847,7 @@ public class SchemaManagerAddTest
     {
         SchemaManager schemaManager = loadSystem();
         int nrSize = schemaManager.getSyntaxCheckerRegistry().size();
-        int goidSize = schemaManager.getOidRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
 
         String oid = "0.0.0";
         SyntaxChecker syntaxChecker = new RegexSyntaxChecker( oid );
@@ -1863,7 +1863,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
 
         assertEquals( nrSize, schemaManager.getSyntaxCheckerRegistry().size() );
-        assertEquals( goidSize, schemaManager.getOidRegistry().size() );
+        assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
 
         try
         {
