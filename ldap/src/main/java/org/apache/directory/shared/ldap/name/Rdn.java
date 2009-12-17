@@ -26,7 +26,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -243,6 +242,28 @@ public class Rdn implements Cloneable, Comparable, Externalizable, Iterable<Attr
     public Rdn( String upType, String normType, String upValue, String normValue ) throws InvalidNameException
     {
         addAttributeTypeAndValue( upType, normType, new ClientStringValue( upValue ), new ClientStringValue( normValue ) );
+
+        upName = upType + '=' + upValue;
+        start = 0;
+        length = upName.length();
+        // create the internal normalized form
+        normalize();
+    }
+
+
+    /**
+     * A constructor that constructs a RDN from a type and a value. Constructs
+     * an Rdn from the given attribute type and value. The string attribute
+     * values are not interpreted as RFC 2253 formatted RDN strings. That is,
+     * the values are used literally (not parsed) and assumed to be un-escaped.
+     *
+     * @param upType The user provided type of the RDN
+     * @param upValue The user provided value of the RDN
+     * @throws InvalidNameException If the RDN is invalid
+     */
+    public Rdn( String upType, String upValue ) throws InvalidNameException
+    {
+        addAttributeTypeAndValue( upType, upType, new ClientStringValue( upValue ), new ClientStringValue( upValue ) );
 
         upName = upType + '=' + upValue;
         start = 0;

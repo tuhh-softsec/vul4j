@@ -300,6 +300,20 @@ public class RdnTest
 
 
     /**
+     * Test teh creation of a new RDN
+     * 
+     * @throws InvalidNameException
+     */
+    @Test
+    public void testRDNCreation() throws InvalidNameException
+    {
+        Rdn rdn = new Rdn( "A", "  b  " );
+        assertEquals( "a=\\  b \\ ", rdn.getNormName() );
+        assertEquals( "A=  b  ", rdn.getUpName() );
+    }
+
+
+    /**
      * Test the clone method for a RDN.
      * 
      * @throws InvalidNameException
