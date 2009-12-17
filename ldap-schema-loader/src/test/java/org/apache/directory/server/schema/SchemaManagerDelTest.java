@@ -874,7 +874,54 @@ public class SchemaManagerDelTest
 
         assertFalse( isMatchingRulePresent( schemaManager, MR_OID ) );
         
-        // and try to delete the normalizer again
+        // and try to delete the syntax again
+        assertTrue( schemaManager.delete( syntax ) );
+
+        assertFalse( isSyntaxPresent( schemaManager, S_OID ) );
+        assertEquals( srSize - 1, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize - 2, schemaManager.getGlobalOidRegistry().size() );
+    }
+
+
+    /**
+     * Check that a Syntax which has been used by a deleted AttributeType
+     * can be removed
+     */
+    @Test
+    public void testDeleteExistingSyntaxUsedByRemovedAttributeType() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int srSize = schemaManager.getLdapSyntaxRegistry().size();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+        
+        String AT_OID = "1.3.6.1.4.1.1466.101.120.16";
+        String S_OID =  "1.3.6.1.4.1.1466.115.121.1.54";
+
+        // Check that the AT and S are present
+        assertTrue( isAttributeTypePresent( schemaManager, AT_OID ) );
+        assertTrue( isSyntaxPresent( schemaManager, S_OID ) );
+
+        // Now try to remove the S
+        LdapSyntax syntax = schemaManager.lookupLdapSyntaxRegistry( S_OID );
+        
+        // shouldn't be deleted cause there is a AT associated with it
+        assertFalse( schemaManager.delete( syntax ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+
+        // Now delete the using AT : it should be OK
+        AttributeType at = new AttributeType( AT_OID );
+        assertTrue( schemaManager.delete( at ) );
+
+        assertEquals( atrSize - 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
+
+        assertFalse( isAttributeTypePresent( schemaManager, AT_OID ) );
+        
+        // and try to delete the syntax again
         assertTrue( schemaManager.delete( syntax ) );
 
         assertFalse( isSyntaxPresent( schemaManager, S_OID ) );
