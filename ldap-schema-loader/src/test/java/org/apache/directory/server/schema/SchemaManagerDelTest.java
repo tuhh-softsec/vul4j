@@ -536,6 +536,54 @@ public class SchemaManagerDelTest
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
 
+    
+    /**
+     * Check that a MatcingRule which has been used by a deleted AttributeType
+     * can be removed
+     */
+    @Test
+    public void testDeleteExistingMatchingRuleUsedByRemovedAttributeType() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int atrSize = schemaManager.getAttributeTypeRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+        
+        String AT_OID = "2.5.18.9";
+        String MR_OID = "2.5.13.13";
+
+        // Check that the AT and MR are present
+        assertTrue( isAttributeTypePresent( schemaManager, AT_OID ) );
+        assertTrue( isMatchingRulePresent( schemaManager, MR_OID ) );
+
+        // Now try to remove the MR
+        MatchingRule matchingRule = schemaManager.lookupMatchingRuleRegistry( MR_OID );
+        
+        // shouldn't be deleted cause there is a AT associated with it
+        assertFalse( schemaManager.delete( matchingRule ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+
+        // Now delete the using AT : it should be OK
+        AttributeType at = new AttributeType( AT_OID );
+        assertTrue( schemaManager.delete( at ) );
+
+        assertEquals( atrSize - 1, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
+
+        assertFalse( isAttributeTypePresent( schemaManager, AT_OID ) );
+        
+        // and try to delete the MatchingRule again
+        assertTrue( schemaManager.delete( matchingRule ) );
+
+        assertFalse( isMatchingRulePresent( schemaManager, MR_OID ) );
+        assertEquals( mrrSize - 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize - 2, schemaManager.getGlobalOidRegistry().size() );
+    }
+
+
     //=========================================================================
     // MatchingRuleUse deletion tests
     //-------------------------------------------------------------------------
