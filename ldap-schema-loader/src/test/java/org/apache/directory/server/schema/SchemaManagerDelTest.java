@@ -834,6 +834,53 @@ public class SchemaManagerDelTest
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }
+    
+    
+    /**
+     * Check that a Syntax which has been used by a deleted MatchingRule
+     * can be removed
+     */
+    @Test
+    public void testDeleteExistingSyntaxUsedByRemovedMatchingRule() throws Exception
+    {
+        SchemaManager schemaManager = loadSchema( "system" );
+        int srSize = schemaManager.getLdapSyntaxRegistry().size();
+        int mrrSize = schemaManager.getMatchingRuleRegistry().size();
+        int goidSize = schemaManager.getGlobalOidRegistry().size();
+        
+        String MR_OID = "2.5.13.11";
+        String S_OID =  "1.3.6.1.4.1.1466.115.121.1.41";
+
+        // Check that the MR and S are present
+        assertTrue( isMatchingRulePresent( schemaManager, MR_OID ) );
+        assertTrue( isSyntaxPresent( schemaManager, S_OID ) );
+
+        // Now try to remove the S
+        LdapSyntax syntax = schemaManager.lookupLdapSyntaxRegistry( S_OID );
+        
+        // shouldn't be deleted cause there is a MR associated with it
+        assertFalse( schemaManager.delete( syntax ) );
+
+        List<Throwable> errors = schemaManager.getErrors();
+        assertFalse( errors.isEmpty() );
+        assertTrue( errors.get( 0 ) instanceof LdapSchemaViolationException );
+
+        // Now delete the using MR : it should be OK
+        MatchingRule mr = new MatchingRule( MR_OID );
+        assertTrue( schemaManager.delete( mr ) );
+
+        assertEquals( mrrSize - 1, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( goidSize - 1, schemaManager.getGlobalOidRegistry().size() );
+
+        assertFalse( isMatchingRulePresent( schemaManager, MR_OID ) );
+        
+        // and try to delete the normalizer again
+        assertTrue( schemaManager.delete( syntax ) );
+
+        assertFalse( isSyntaxPresent( schemaManager, S_OID ) );
+        assertEquals( srSize - 1, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( goidSize - 2, schemaManager.getGlobalOidRegistry().size() );
+    }
 
 
     /**
