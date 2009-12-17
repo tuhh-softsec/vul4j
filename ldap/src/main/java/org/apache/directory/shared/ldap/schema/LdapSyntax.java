@@ -220,6 +220,32 @@ public class LdapSyntax extends AbstractSchemaObject
             }
         }
     }
+    
+    
+    /**
+     * Remove the SDyntax from the registries, updating the references to
+     * other SchemaObject.
+     * 
+     * If one of the referenced SchemaObject does not exist (), 
+     * an exception is thrown.
+     *
+     * @param registries The Registries
+     * @exception If the Syntx is not valid 
+     */
+    public void removeFromRegistries( List<Throwable> errors, Registries registries ) throws NamingException
+    {
+        if ( registries != null )
+        {
+            /**
+             * Remove the Syntax references (using and usedBy) : 
+             * S -> SC
+             */
+            if ( syntaxChecker != null )
+            {
+                registries.delReference( this, syntaxChecker );
+            }
+        }
+    }
 
 
     /**

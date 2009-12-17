@@ -28,7 +28,6 @@ import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
-import org.apache.directory.shared.ldap.schema.registries.MatchingRuleRegistry;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -198,8 +197,6 @@ public class MatchingRule extends AbstractSchemaObject
     {
         if ( registries != null )
         {
-            MatchingRuleRegistry matchingRuleRegistry = registries.getMatchingRuleRegistry();
-
             /**
              * Remove the MR references (using and usedBy) : 
              * MR -> C
