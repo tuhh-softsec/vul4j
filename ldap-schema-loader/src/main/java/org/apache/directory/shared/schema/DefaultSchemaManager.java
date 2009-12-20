@@ -21,6 +21,8 @@ package org.apache.directory.shared.schema;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,6 +111,9 @@ public class DefaultSchemaManager implements SchemaManager
 
     /** the normalized name for the schema modification attributes */
     private LdapDN schemaModificationAttributesDN;
+    
+    /** A Map containing all the schema being dependent from a schema */
+    private Map<String, Set<String>> schemaDependences = new HashMap<String, Set<String>>();
 
     /** A flag indicating that the SchemaManager is relaxed or not */
     private boolean isRelaxed = STRICT;
@@ -128,7 +133,7 @@ public class DefaultSchemaManager implements SchemaManager
         // Default to the the root (one schemaManager for all the entries
         namingContext = LdapDN.EMPTY_LDAPDN;
         this.schemaLoader = loader;
-        errors = null;
+        errors = new ArrayList<Throwable>();
         registries = new Registries( this );
         factory = new SchemaEntityFactory();
         isRelaxed = STRICT;
@@ -145,7 +150,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         this.namingContext = namingContext;
         this.schemaLoader = loader;
-        errors = null;
+        errors = new ArrayList<Throwable>();
         registries = new Registries( this );
         factory = new SchemaEntityFactory();
         isRelaxed = STRICT;
@@ -188,7 +193,16 @@ public class DefaultSchemaManager implements SchemaManager
 
         for ( String schemaName : schemas )
         {
-            schemaArray[n++] = schemaLoader.getSchema( schemaName );
+            Schema schema = schemaLoader.getSchema( schemaName );
+            
+            if ( schema != null )
+            {
+                schemaArray[n++] = schema;
+            }
+            else
+            {
+                throw new LdapOperationNotSupportedException( "Cannot load the unknown schema " + schemaName, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            }
         }
 
         return schemaArray;
@@ -234,9 +248,25 @@ public class DefaultSchemaManager implements SchemaManager
         {
             registries.delete( errors, schemaObject );
         }
+    }
 
-        // TODO Add some listener handling at this point
-        //notifyListenerOrRegistries( schema, registries );
+    
+    /**
+     * Tells if there are schemaObjects for a given schema from the registries
+     */
+    private boolean hasSchemaObjects( Schema schema, Registries registries ) throws Exception
+    {
+        Map<String, Set<SchemaObjectWrapper>> schemaObjects = registries.getObjectBySchemaName();
+        Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schema.getSchemaName() ) );
+
+        if ( ( content == null ) || content.isEmpty() )
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
 
@@ -490,6 +520,11 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public boolean load( Schema... schemas ) throws Exception
     {
+        if ( schemas.length == 0 )
+        {
+            return true;
+        }
+        
         boolean loaded = false;
 
         // Reset the errors if not null
@@ -525,6 +560,28 @@ public class DefaultSchemaManager implements SchemaManager
                 for ( Schema schema : schemas )
                 {
                     load( registries, schema );
+                    
+                    // Update the schema dependences if needed
+                    
+                    if ( schema.getDependencies() != null )
+                    {
+                        for ( String dep : schema.getDependencies() )
+                        {
+                            Set<String> deps = schemaDependences.get( dep );
+                            
+                            if ( deps == null )
+                            {
+                                deps = new HashSet<String>();
+                                deps.add( schema.getSchemaName() );
+                            }
+                            
+                            // Replace the dependences
+                            schemaDependences.put( dep, deps );
+                        }
+                    }
+                    
+                    // add the schema to the schemaLoader
+                    schemaLoader.addSchema( schema );
                 }
 
                 // Build the cross references
@@ -547,6 +604,11 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public boolean load( String... schemaNames ) throws Exception
     {
+        if ( schemaNames.length == 0 )
+        {
+            return true;
+        }
+        
         Schema[] schemas = toArray( schemaNames );
 
         return load( schemas );
@@ -581,10 +643,9 @@ public class DefaultSchemaManager implements SchemaManager
         {
             if ( registries.isDisabledAccepted() )
             {
-                LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
+                LOG.info( "Loading {} disbaled schema: \n{}", schema.getSchemaName(), schema );
 
                 registries.schemaLoaded( schema );
-
                 addSchemaObjects( schema, registries );
             }
             else
@@ -594,7 +655,7 @@ public class DefaultSchemaManager implements SchemaManager
         }
         else
         {
-            LOG.info( "Loading {} schema: \n{}", schema.getSchemaName(), schema );
+            LOG.info( "Loading {} enabled schema: \n{}", schema.getSchemaName(), schema );
 
             registries.schemaLoaded( schema );
             addSchemaObjects( schema, registries );
@@ -1087,20 +1148,81 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
-    public boolean unload( Schema... schemas )
+    public boolean unload( Schema... schemas ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        boolean unloaded = false;
+
+        // Reset the errors if not null
+        if ( errors != null )
+        {
+            errors.clear();
+        }
+        
+        // Work on a cloned and relaxed registries
+        Registries clonedRegistries = cloneRegistries();
+        clonedRegistries.setRelaxed();
+
+        // Load the schemas
+        for ( Schema schema : schemas )
+        {
+            unload( clonedRegistries, schema );
+        }
+
+        // Build the cross references
+        errors = clonedRegistries.buildReferences();
+
+        if ( errors.isEmpty() )
+        {
+            // Ok no errors. Check the registries now
+            errors = clonedRegistries.checkRefInteg();
+
+            if ( errors.isEmpty() )
+            {
+                // We are golden : let's apply the schema in the real registries
+                registries.setRelaxed();
+
+                // Load the schemas
+                for ( Schema schema : schemas )
+                {
+                    unload( registries, schema );
+                    
+                    // Update the schema dependences
+                    for ( String dep : schema.getDependencies() )
+                    {
+                        Set<String> deps = schemaDependences.get( dep );
+                        
+                        if ( deps != null )
+                        {
+                            deps.remove( schema.getSchemaName() );
+                        }
+                    }
+                    
+                    schemaLoader.removeSchema( schema );
+                }
+
+                // Build the cross references
+                errors = registries.buildReferences();
+                registries.setStrict();
+
+                unloaded = true;
+            }
+        }
+
+        // clear the cloned registries
+        clonedRegistries.clear();
+
+        return unloaded;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public boolean unload( String... schemas )
+    public boolean unload( String... schemaNames ) throws Exception
     {
-        // TODO Auto-generated method stub
-        return false;
+        Schema[] schemas = toArray( schemaNames );
+
+        return unload( schemas );
     }
 
 
@@ -1853,6 +1975,15 @@ public class DefaultSchemaManager implements SchemaManager
     public boolean isStrict()
     {
         return !isRelaxed;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Set<String> listDependentSchemaNames( String schemaName )
+    {
+        return schemaDependences.get( schemaName );
     }
 
 

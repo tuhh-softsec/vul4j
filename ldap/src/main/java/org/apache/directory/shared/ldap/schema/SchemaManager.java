@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.NamingException;
 
@@ -240,7 +241,7 @@ public interface SchemaManager
      * @param schemas The list of Schema to unload
      * @return True if all the schemas have been unloaded
      */
-    boolean unload( Schema... schemas );
+    boolean unload( Schema... schemas ) throws Exception;
 
 
     /**
@@ -249,7 +250,7 @@ public interface SchemaManager
      * @param schemas The list of Schema to unload
      * @return True if all the schemas have been unloaded
      */
-    boolean unload( String... schemas );
+    boolean unload( String... schemas ) throws Exception;
 
 
     //---------------------------------------------------------------------------------
@@ -792,4 +793,13 @@ public interface SchemaManager
      * @return true if the schema is laoded
      */
     boolean isSchemaLoaded( String schemaName );
+    
+    
+    /**
+     * Get the list of Schema names which has the given schema name as a dependence
+     *
+     * @param schemaName The Schema name for which we want to get the list of dependent schemas
+     * @return The list of dependent schemas
+     */
+    Set<String> listDependentSchemaNames( String schemaName );
 }

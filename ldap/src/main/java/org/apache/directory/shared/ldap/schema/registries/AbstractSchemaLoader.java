@@ -88,6 +88,25 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public final Collection<Schema> getAllEnabled() throws Exception
     {
+        Collection<Schema> enabledSchemas = new ArrayList<Schema>();
+        
+        for ( Schema schema : schemaMap.values() )
+        {
+            if ( schema.isEnabled() )
+            {
+                enabledSchemas.add( schema );
+            }
+        }
+        
+        return enabledSchemas;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public final Collection<Schema> getAllSchemas() throws Exception
+    {
         return schemaMap.values();
     }
 
@@ -97,7 +116,25 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public Schema getSchema( String schemaName )
     {
-        return this.schemaMap.get( StringTools.toLowerCase( schemaName ) );
+        return schemaMap.get( StringTools.toLowerCase( schemaName ) );
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void addSchema( Schema schema )
+    {
+        schemaMap.put( schema.getSchemaName(), schema );
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void removeSchema( Schema schema )
+    {
+        schemaMap.remove( schema.getSchemaName() );
     }
 
 

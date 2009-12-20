@@ -312,7 +312,26 @@ public interface SchemaLoader
      */
     Collection<Schema> getAllEnabled() throws Exception;
 
+    
+    /**
+     * @return the list of all schemas
+     * @throws Exception TODO
+     */
+    Collection<Schema> getAllSchemas() throws Exception;
 
+    
+    /**
+     * Add a new schema to the schema's list
+     */
+    public void addSchema( Schema schema );
+
+    
+    /**
+     * Remove a schema from the schema's list
+     */
+    public void removeSchema( Schema schema );
+
+    
     /**
      * TODO : get rid of this here !
      * @dao the DAO
