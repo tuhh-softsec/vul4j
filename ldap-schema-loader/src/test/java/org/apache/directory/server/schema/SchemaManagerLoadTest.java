@@ -653,25 +653,28 @@ public class SchemaManagerLoadTest
     {
         LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
         SchemaManager schemaManager = new DefaultSchemaManager( loader );
-
+        
         assertTrue( schemaManager.load( "system" ) );
-        assertTrue( schemaManager.load( "core", "nis", "cosine", "InetOrgPerson" ) );
+        
+        // Try to load a disabled schema when the registries does
+        // ot allow disabled schema to be loaded
+        assertFalse( schemaManager.load( "core", "nis", "cosine", "InetOrgPerson" ) );
 
-        assertTrue( schemaManager.getErrors().isEmpty() );
-        assertEquals( 142, schemaManager.getAttributeTypeRegistry().size() );
+        assertFalse( schemaManager.getErrors().isEmpty() );
+        assertEquals( 38, schemaManager.getAttributeTypeRegistry().size() );
         assertEquals( 35, schemaManager.getComparatorRegistry().size() );
         assertEquals( 35, schemaManager.getMatchingRuleRegistry().size() );
         assertEquals( 35, schemaManager.getNormalizerRegistry().size() );
-        assertEquals( 50, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 9, schemaManager.getObjectClassRegistry().size() );
         assertEquals( 59, schemaManager.getSyntaxCheckerRegistry().size() );
         assertEquals( 59, schemaManager.getLdapSyntaxRegistry().size() );
-        assertEquals( 286, schemaManager.getGlobalOidRegistry().size() );
+        assertEquals( 141, schemaManager.getGlobalOidRegistry().size() );
 
-        assertEquals( 4, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertEquals( 1, schemaManager.getRegistries().getLoadedSchemas().size() );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "system" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
-        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "core" ) );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
     }
 
 
@@ -712,5 +715,62 @@ public class SchemaManagerLoadTest
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "cosine" ) );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "InetOrgPerson" ) );
         assertNotNull( schemaManager.getRegistries().getLoadedSchema( "empty" ) );
+    }
+    
+    
+    /**
+     * Test that we can load a new schema
+     */
+    @Test
+    public void loadNewSchema() throws Exception
+    {
+        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+
+        Schema dummy = new DefaultSchema( "dummy" );
+
+        assertTrue( schemaManager.load( dummy ) );
+
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 0, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 0, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 0, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 0, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 0, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 0, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 0, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 0, schemaManager.getGlobalOidRegistry().size() );
+
+        assertEquals( 1, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "dummy" ) );
+    }
+    
+    
+    /**
+     * Test that we can't load a new schema with bad dependencies
+     */
+    @Test
+    public void loadNewSchemaBadDependencies() throws Exception
+    {
+        LdifSchemaLoader loader = new LdifSchemaLoader( schemaRepository );
+        SchemaManager schemaManager = new DefaultSchemaManager( loader );
+
+        Schema dummy = new DefaultSchema( "dummy" );
+        dummy.addDependencies( "bad" );
+
+        assertFalse( schemaManager.load( dummy ) );
+
+        assertFalse( schemaManager.getErrors().isEmpty() );
+        assertEquals( 0, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 0, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 0, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 0, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 0, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 0, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 0, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 0, schemaManager.getGlobalOidRegistry().size() );
+
+        assertEquals( 0, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNull( schemaManager.getRegistries().getLoadedSchema( "dummy" ) );
     }
 }

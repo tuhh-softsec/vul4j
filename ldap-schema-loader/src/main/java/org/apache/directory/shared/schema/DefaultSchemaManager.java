@@ -211,6 +211,10 @@ public class DefaultSchemaManager implements SchemaManager
 
     private void addSchemaObjects( Schema schema, Registries registries ) throws Exception
     {
+        // Create a content container for this schema
+        registries.addSchema( schema.getSchemaName() );
+        
+        // And inject any existig SchemaObject into the registries 
         addComparators( schema, registries );
         addNormalizers( schema, registries );
         addSyntaxCheckers( schema, registries );
@@ -540,7 +544,10 @@ public class DefaultSchemaManager implements SchemaManager
         // Load the schemas
         for ( Schema schema : schemas )
         {
-            load( clonedRegistries, schema );
+            if ( !load( clonedRegistries, schema ) && ( ! errors.isEmpty() ) )
+            {
+                return false;
+            }
         }
 
         // Build the cross references
@@ -656,6 +663,24 @@ public class DefaultSchemaManager implements SchemaManager
         else
         {
             LOG.info( "Loading {} enabled schema: \n{}", schema.getSchemaName(), schema );
+            
+            // Check that the dependencies, if any, are correct
+            if ( schema.getDependencies() != null )
+            {
+                for ( String dependency : schema.getDependencies() )
+                {
+                    if ( schemaLoader.getSchema( dependency ) == null )
+                    {
+                        // The dependency has not been loaded.
+                        String msg = "Cannot load the Schema " + schema.getSchemaName()
+                            + " as one of its dependencies has not been loaded";
+                        LOG.info( msg );
+                        Throwable error = new LdapSchemaViolationException( msg, ResultCodeEnum.OTHER );
+                        errors.add( error );
+                        return false;
+                    }
+                }
+            }
 
             registries.schemaLoaded( schema );
             addSchemaObjects( schema, registries );
