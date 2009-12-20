@@ -147,6 +147,19 @@ public class DefaultSchema implements Schema
     /**
      * {@inheritDoc}
      */
+    public void addDependencies( String... dependencies )
+    {
+        if ( dependencies != null )
+        {
+            this.dependencies = new String[dependencies.length];
+            System.arraycopy( this.dependencies, 0, dependencies, 0, dependencies.length );
+        }
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
     public String getOwner()
     {
         return owner;

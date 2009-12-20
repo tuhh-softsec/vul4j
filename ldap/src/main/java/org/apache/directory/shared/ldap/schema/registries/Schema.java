@@ -88,6 +88,14 @@ public interface Schema
     
     
     /**
+     * Add a set of dependencies this schema uses.
+     *
+     * @param strings The dependencies to add
+     */
+    void addDependencies( String... dependencies );
+    
+    
+    /**
      * Gets the set of SchemaObject elements declared in this schema
      *
      * @return The Set of associated SchemaObjects
