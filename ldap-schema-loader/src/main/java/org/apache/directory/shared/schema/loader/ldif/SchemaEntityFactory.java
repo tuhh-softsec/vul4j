@@ -930,7 +930,7 @@ public class SchemaEntityFactory implements EntityFactory
         // Syntax
         EntryAttribute mSyntax = entry.get( MetaSchemaConstants.M_SYNTAX_AT );
 
-        if ( mSyntax != null )
+        if ( ( mSyntax != null ) && ( mSyntax.get() != null ) )
         {
             attributeType.setSyntaxOid( mSyntax.getString() );
         }
