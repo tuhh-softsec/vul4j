@@ -330,11 +330,4 @@ public interface SchemaLoader
      * Remove a schema from the schema's list
      */
     public void removeSchema( Schema schema );
-
-    
-    /**
-     * TODO : get rid of this here !
-     * @dao the DAO
-     */
-    Object getDao();
 }
