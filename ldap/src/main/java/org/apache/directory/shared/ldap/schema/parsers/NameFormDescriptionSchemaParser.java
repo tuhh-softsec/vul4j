@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.schema.NameForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -85,6 +84,10 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             NameForm nameForm = parser.nameFormDescription();
+            
+            // Update the schemaName
+            setSchemaName( nameForm );
+
             return nameForm;
         }
         catch ( RecognitionException re )

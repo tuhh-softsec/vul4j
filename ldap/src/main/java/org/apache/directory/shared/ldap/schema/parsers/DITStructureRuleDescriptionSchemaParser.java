@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.schema.DITStructureRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -90,6 +89,10 @@ public class DITStructureRuleDescriptionSchemaParser extends AbstractSchemaParse
         try
         {
             DITStructureRule ditStructureRule = parser.ditStructureRuleDescription();
+
+            // Update the schemaName
+            setSchemaName( ditStructureRule );
+
             return ditStructureRule;
         }
         catch ( RecognitionException re )

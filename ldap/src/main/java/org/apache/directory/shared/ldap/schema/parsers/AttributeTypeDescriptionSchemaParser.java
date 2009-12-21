@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import antlr.TokenStreamRecognitionException;
@@ -101,6 +100,10 @@ public class AttributeTypeDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             AttributeType attributeType = parser.attributeTypeDescription();
+            
+            // Update the schemaName
+            setSchemaName( attributeType );
+
             return attributeType;
         }
         catch ( RecognitionException re )

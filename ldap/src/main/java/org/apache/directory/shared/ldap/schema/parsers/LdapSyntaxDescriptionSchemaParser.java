@@ -80,6 +80,10 @@ public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
         {
             LdapSyntax ldapSyntax = parser.ldapSyntaxDescription();
             ldapSyntax.setSpecification( ldapSyntaxDescription );
+
+            // Update the schemaName
+            setSchemaName( ldapSyntax );
+                
             return ldapSyntax;
         }
         catch ( RecognitionException re )

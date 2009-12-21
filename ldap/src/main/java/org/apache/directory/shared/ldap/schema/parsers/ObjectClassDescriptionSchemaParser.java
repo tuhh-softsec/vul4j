@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -93,6 +92,10 @@ public class ObjectClassDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             ObjectClass objectClass = parser.objectClassDescription();
+
+            // Update the schemaName
+            setSchemaName( objectClass );
+
             return objectClass;
         }
         catch ( RecognitionException re )

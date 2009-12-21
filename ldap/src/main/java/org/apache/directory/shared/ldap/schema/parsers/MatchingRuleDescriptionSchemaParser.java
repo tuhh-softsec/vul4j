@@ -26,7 +26,6 @@ import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -86,6 +85,10 @@ public class MatchingRuleDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
             MatchingRule matchingRule = parser.matchingRuleDescription();
+            
+            // Update the schemaName
+            setSchemaName( matchingRule );
+
             return matchingRule;
         }
         catch ( RecognitionException re )

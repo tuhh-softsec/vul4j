@@ -25,7 +25,6 @@ import java.text.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -89,6 +88,10 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
         try
         {
         	SyntaxCheckerDescription syntaxChecker = parser.syntaxCheckerDescription();
+
+            // Update the schemaName
+            setSchemaName( syntaxChecker );
+
             return syntaxChecker;
         }
         catch ( RecognitionException re )

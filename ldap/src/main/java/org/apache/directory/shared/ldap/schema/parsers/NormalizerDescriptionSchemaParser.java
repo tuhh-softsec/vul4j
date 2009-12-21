@@ -25,7 +25,6 @@ import java.text.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -90,8 +89,12 @@ public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
 
         try
         {
-            NormalizerDescription nd = parser.normalizerDescription();
-            return nd;
+            NormalizerDescription normalizer = parser.normalizerDescription();
+
+            // Update the schemaName
+            setSchemaName( normalizer );
+
+            return normalizer;
         }
         catch ( RecognitionException re )
         {

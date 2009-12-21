@@ -25,7 +25,6 @@ import java.text.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -94,6 +93,10 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
                 LdapComparatorDescription ldapComparatorDescription = parser.ldapComparator();
                 LOG.debug( "Parsed a LdapComparator : {}", ldapComparatorDescription );
                 
+
+                // Update the schemaName
+                setSchemaName( ldapComparatorDescription );
+
                 return ldapComparatorDescription;
             }
             catch ( RecognitionException re )
