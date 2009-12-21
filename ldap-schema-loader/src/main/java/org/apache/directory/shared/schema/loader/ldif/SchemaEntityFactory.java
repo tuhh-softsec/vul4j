@@ -284,13 +284,6 @@ public class SchemaEntityFactory implements EntityFactory
         // Create the syntaxChecker instance
         syntaxChecker = ( SyntaxChecker ) clazz.newInstance();
 
-        // Check that the loaded OID is the same than the description OID
-        if ( !syntaxChecker.getOid().equals( oid ) )
-        {
-            String msg = "The SyntaxChecker OID (" + oid + ") is different from the loaded class' OID (" + syntaxChecker.getOid();
-            throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
-        }
-
         // Update the common fields
         syntaxChecker.setBytecode( byteCodeStr );
         syntaxChecker.setFqcn( className );
@@ -562,13 +555,6 @@ public class SchemaEntityFactory implements EntityFactory
         // Create the normalizer instance
         normalizer = ( Normalizer ) clazz.newInstance();
         
-        // Check that the loaded OID is the same than the description OID
-        if ( !normalizer.getOid().equals( oid ) )
-        {
-            String msg = "The Normalizer's OID (" + oid + ") is different from the loaded class' OID (" + normalizer.getOid();
-            throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
-        }
-
         // Update the common fields
         normalizer.setBytecode( byteCodeStr );
         normalizer.setFqcn( className );
