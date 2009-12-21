@@ -284,6 +284,13 @@ public class SchemaEntityFactory implements EntityFactory
         // Create the syntaxChecker instance
         syntaxChecker = ( SyntaxChecker ) clazz.newInstance();
 
+        // Check that the loaded OID is the same than the description OID
+        if ( !syntaxChecker.getOid().equals( oid ) )
+        {
+            String msg = "The SyntaxChecker OID (" + oid + ") is different from the loaded class' OID (" + syntaxChecker.getOid();
+            throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
+
         // Update the common fields
         syntaxChecker.setBytecode( byteCodeStr );
         syntaxChecker.setFqcn( className );
@@ -417,9 +424,17 @@ public class SchemaEntityFactory implements EntityFactory
         }
         catch ( NoSuchMethodException nsme )
         {
-            // Ok, let's try with the constructor without argument
+            // Ok, let's try with the constructor without argument.
+            // In this case, we will have to check that the OID is the same than
+            // the one we got in the Comparator entry
             Constructor<?> constructor = clazz.getConstructor();
             comparator = ( LdapComparator<?> ) clazz.newInstance();
+            
+            if ( !comparator.getOid().equals( oid ) )
+            {
+                String msg = "The Comparator's OID (" + oid + ") is different from the loaded class' OID (" + comparator.getOid();
+                throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+            }
         }
 
         // Update the loadable fields
@@ -546,6 +561,13 @@ public class SchemaEntityFactory implements EntityFactory
 
         // Create the normalizer instance
         normalizer = ( Normalizer ) clazz.newInstance();
+        
+        // Check that the loaded OID is the same than the description OID
+        if ( !normalizer.getOid().equals( oid ) )
+        {
+            String msg = "The Normalizer's OID (" + oid + ") is different from the loaded class' OID (" + normalizer.getOid();
+            throw new LdapInvalidAttributeValueException( msg, ResultCodeEnum.UNWILLING_TO_PERFORM );
+        }
 
         // Update the common fields
         normalizer.setBytecode( byteCodeStr );
