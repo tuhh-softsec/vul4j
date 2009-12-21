@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
@@ -51,34 +50,6 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
     public DefaultNormalizerRegistry()
     {
         super( SchemaObjectType.NORMALIZER, new OidRegistry() );
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Normalizer unregister( String numericOid ) throws NamingException
-    {
-        if ( !OID.isOID( numericOid ) )
-        {
-            String msg = "OID " + numericOid + " is not a numeric OID";
-            LOG.error( msg );
-            throw new NamingException( msg );
-        }
-
-        Normalizer normalizer = byName.remove( numericOid );
-        
-        for ( String name : normalizer.getNames() )
-        {
-            byName.remove( name );
-        }
-        
-        if ( DEBUG )
-        {
-            LOG.debug( "Removed {} with oid {} from the registry", normalizer, numericOid );
-        }
-        
-        return normalizer;
     }
     
     
