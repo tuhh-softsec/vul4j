@@ -997,7 +997,7 @@ public class SchemaUtils
 
         buf.append( "FQCN " ).append( description.getFqcn() ).append( " " );
 
-        if ( description.getBytecode() != null )
+        if ( !StringTools.isEmpty( description.getBytecode() ) )
         {
             buf.append( "BYTECODE " ).append( description.getBytecode() );
         }
