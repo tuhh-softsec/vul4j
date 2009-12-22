@@ -33,7 +33,7 @@ Some other HTML
 &lt;/head&gt;
 &lt;body style="background-color: yellow"&gt;
 ...
-<strong>&lt;www:includeblock page="mypage.php" name="myblock" /&gt;</strong>
+<strong>&lt;w:includeblock page="mypage.php" name="myblock" /&gt;</strong>
 ...
 &lt;/body&gt;
 &lt;/html&gt;
