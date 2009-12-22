@@ -1593,7 +1593,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         try
         {
             reader = new BufferedReader(
-                new InputStreamReader( new FileInputStream( file ), Charset.forName( encoding ) ) );
+                new InputStreamReader( 
+                    new FileInputStream( file ), Charset.forName( encoding ) ) );
 
             return parseLdif( reader );
         }
@@ -1607,7 +1608,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             // close the reader
             try
             {
-                close();
+                if ( reader != null )
+                {
+                    reader.close();
+                }
             }
             catch ( IOException ioe )
             {
@@ -1635,8 +1639,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             return new ArrayList<LdifEntry>();
         }
 
-        StringReader strIn = new StringReader( ldif );
-        BufferedReader reader = new BufferedReader( strIn );
+        BufferedReader reader = new BufferedReader( 
+            new StringReader( ldif ) );
 
         try
         {
@@ -1660,7 +1664,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             // Close the reader
             try
             {
-                close();
+                if ( reader != null )
+                {
+                    reader.close();
+                }
             }
             catch ( IOException ioe )
             {
