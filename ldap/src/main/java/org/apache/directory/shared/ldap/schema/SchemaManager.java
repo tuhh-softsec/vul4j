@@ -46,8 +46,8 @@ import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
 
 
 /**
- * A class used to manage access to the Schemas and Registries. It's associated 
- * with a SchemaLoader, in charge of loading the schemas from the disk.
+ * A class used to manage access to Schema and Registries. It's associated
+ * with a SchemaLoader, in charge of loading schema from the disk.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
@@ -58,168 +58,168 @@ public interface SchemaManager
     // Schema loading methods
     //---------------------------------------------------------------------------------
     /**
-     * Load some Schemas into the registries. The Registries is checked after the 
-     * schemas have been loaded, and if there is an error, the method returns false
+     * Load some schema into the registries. The Registries is checked after the 
+     * schema have been loaded, and if there is an error, the method returns false
      * and the registries is kept intact.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas to load
-     * @return true if the schemas have been loaded and the registries is consistent
+     * @param schema the schema to load
+     * @return true if the schema have been loaded and the registries is consistent
      * @throws Exception @TODO 
      */
-    boolean load( Schema... schemas ) throws Exception;
+    boolean load( Schema... schema ) throws Exception;
 
 
     /**
-     * Load some Schemas into the registries. The Registries is checked after the 
-     * schemas have been loaded, and if there is an error, the method returns false
+     * Load some schema into the registries. The Registries is checked after the 
+     * schema have been loaded, and if there is an error, the method returns false
      * and the registries is kept intact.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas' name to load
-     * @return true if the schemas have been loaded and the registries is consistent
+     * @param schema the schema' name to load
+     * @return true if the schema have been loaded and the registries is consistent
      * @throws Exception @TODO 
      */
-    boolean load( String... schemas ) throws Exception;
+    boolean load( String... schema ) throws Exception;
 
 
     /**
-     * Load some Schemas into the registries, and loads all of the schemas they depend
-     * on. The Registries is checked after the schemas have been loaded, and if there 
+     * Load some schema into the registries, and loads all of the schema they depend
+     * on. The Registries is checked after the schema have been loaded, and if there 
      * is an error, the method returns false and the registries is kept intact.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas to load
-     * @return true if the schemas have been loaded and the registries is consistent
+     * @param schema the schema to load
+     * @return true if the schema have been loaded and the registries is consistent
      * @throws Exception @TODO 
      */
-    boolean loadWithDeps( Schema... schemas ) throws Exception;
+    boolean loadWithDeps( Schema... schema ) throws Exception;
 
 
     /**
-     * Load some Schemas into the registries, and loads all of the schemas they depend
-     * on. The Registries is checked after the schemas have been loaded, and if there 
+     * Load some schema into the registries, and loads all of the schema they depend
+     * on. The Registries is checked after the schema have been loaded, and if there 
      * is an error, the method returns false and the registries is kept intact.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas' name to load
-     * @return true if the schemas have been loaded and the registries is consistent
+     * @param schema the schema' name to load
+     * @return true if the schema have been loaded and the registries is consistent
      * @throws Exception @TODO 
      */
-    boolean loadWithDeps( String... schemas ) throws Exception;
+    boolean loadWithDeps( String... schema ) throws Exception;
 
 
     /**
-     * Load Schemas into the registries, even if there are some errors in the schemas. 
-     * The Registries is checked after the schemas have been loaded. Even if we have 
+     * Load schema into the registries, even if there are some errors in the schema. 
+     * The Registries is checked after the schema have been loaded. Even if we have 
      * errors, the registries will be updated.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas to load, if enabled
-     * @return true if the schemas have been loaded
+     * @param schema the schema to load, if enabled
+     * @return true if the schema have been loaded
      * @throws Exception @TODO 
      */
-    boolean loadRelaxed( Schema... schemas ) throws Exception;
+    boolean loadRelaxed( Schema... schema ) throws Exception;
 
 
     /**
-     * Load Schemas into the registries, even if there are some errors in the schemas. 
-     * The Registries is checked after the schemas have been loaded. Even if we have 
+     * Load schema into the registries, even if there are some errors in the schema. 
+     * The Registries is checked after the schema have been loaded. Even if we have 
      * errors, the registries will be updated.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas' name to load, if enabled
-     * @return true if the schemas have been loaded and the registries is consistent
+     * @param schema the schema' name to load, if enabled
+     * @return true if the schema have been loaded and the registries is consistent
      * @throws Exception @TODO 
      */
-    boolean loadRelaxed( String... schemas ) throws Exception;
+    boolean loadRelaxed( String... schema ) throws Exception;
 
 
     /**
-     * Load some Schemas into the registries, and loads all of the schemas they depend
-     * on. The Registries is checked after the schemas have been loaded. Even if we have 
+     * Load some schema into the registries, and loads all of the schema they depend
+     * on. The Registries is checked after the schema have been loaded. Even if we have 
      * errors, the registries will be updated.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas to load
-     * @return true if the schemas have been loaded
+     * @param schema the schema to load
+     * @return true if the schema have been loaded
      * @throws Exception @TODO 
      */
-    boolean loadWithDepsRelaxed( Schema... schemas ) throws Exception;
+    boolean loadWithDepsRelaxed( Schema... schema ) throws Exception;
 
 
     /**
-     * Load some Schemas into the registries, and loads all of the schemas they depend
-     * on. The Registries is checked after the schemas have been loaded. Even if we have 
+     * Load some schema into the registries, and loads all of the schema they depend
+     * on. The Registries is checked after the schema have been loaded. Even if we have 
      * errors, the registries will be updated.
      * <br>
-     * The Schemas must be enabled, and only enabled SchemaObject will be loaded.
+     * The schema must be enabled, and only enabled SchemaObject will be loaded.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      * 
-     * @param schemas the Schemas' name to load
-     * @return true if the schemas have been loaded
+     * @param schema the schema' name to load
+     * @return true if the schema have been loaded
      * @throws Exception @TODO 
      */
-    boolean loadWithDepsRelaxed( String... schemas ) throws Exception;
+    boolean loadWithDepsRelaxed( String... schema ) throws Exception;
 
 
     /**
-     * Load Schemas into the Registries, even if they are disabled. The disabled
+     * Load schema into the Registries, even if they are disabled. The disabled
      * SchemaObject from an enabled schema will also be loaded. The Registries will
-     * be checked after the schemas have been loaded. Even if we have errors, the
+     * be checked after the schema have been loaded. Even if we have errors, the
      * Registries will be updated.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      *
-     * @param schemas The Schemas to load
-     * @return true if the schemas have been loaded
+     * @param schema The schema to load
+     * @return true if the schema have been loaded
      * @throws Exception @TODO 
      */
-    boolean loadDisabled( Schema... schemas ) throws Exception;
+    boolean loadDisabled( Schema... schema ) throws Exception;
 
 
     /**
-     * Load Schemas into the Registries, even if they are disabled. The disabled
+     * Load schema into the Registries, even if they are disabled. The disabled
      * SchemaObject from an enabled schema will also be loaded. The Registries will
-     * be checked after the schemas have been loaded. Even if we have errors, the
+     * be checked after the schema have been loaded. Even if we have errors, the
      * Registries will be updated.
      * <br>
      * If any error was met, the {@link #getErrors} method will contain them
      *
-     * @param schemas The Schemas' name to load
-     * @return true if the schemas have been loaded
+     * @param schema The schema' name to load
+     * @return true if the schema have been loaded
      * @throws Exception @TODO 
      */
-    boolean loadDisabled( String... schemas ) throws Exception;
+    boolean loadDisabled( String... schema ) throws Exception;
 
 
     /**
      * Load all the enabled schema into the Registries. The Registries is strict,
      * any inconsistent schema will be rejected. 
      *
-     * @return true if the schemas have been loaded
+     * @return true if the schema have been loaded
      * @throws Exception @TODO
      */
     boolean loadAllEnabled() throws Exception;
@@ -229,81 +229,83 @@ public interface SchemaManager
      * Load all the enabled schema into the Registries. The Registries is relaxed,
      * even inconsistent schema will be loaded. 
      *
-     * @return true if the schemas have been loaded
-     * @throws Exception @TODO
+     * @return true if the schema have been loaded
+     * @throws Exception if something went wrong
      */
     boolean loadAllEnabledRelaxed() throws Exception;
 
 
     /**
-     * Unload the given set of Schemas
+     * Unload the given set of schema
      *
-     * @param schemas The list of Schema to unload
-     * @return True if all the schemas have been unloaded
+     * @param schema The list of Schema to unload
+     * @return true if all the schema have been unloaded
+     * @throws Exception if something went wrong
      */
-    boolean unload( Schema... schemas ) throws Exception;
+    boolean unload( Schema... schema ) throws Exception;
 
 
     /**
-     * Unload the given set of Schemas
+     * Unload the given set of schema
      *
-     * @param schemas The list of Schema to unload
-     * @return True if all the schemas have been unloaded
+     * @param schema The list of Schema to unload
+     * @return true if all the schema have been unloaded
+     * @throws Exception if something went wrong
      */
-    boolean unload( String... schemas ) throws Exception;
+    boolean unload( String... schema ) throws Exception;
 
 
     //---------------------------------------------------------------------------------
     // Other Schema methods
     //---------------------------------------------------------------------------------
     /**
-     * Enables a set of Schemas, and returns true if all the schema have been
-     * enabled, with all the dependent schemas, and if the registries is 
+     * Enables a set of schema, and returns true if all the schema have been
+     * enabled, with all the dependent schema, and if the registries is 
      * still consistent.
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schemas to enable
+     *  @param schema The list of schema to enable
      *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     *  @throws Exception if something went wrong
      */
-    boolean enable( Schema... schemas ) throws Exception;
+    boolean enable( Schema... schema ) throws Exception;
 
 
     /**
-     * Enables a set of Schemas, and returns true if all the schema have been
-     * enabled, with all the dependent schemas, and if the registries is 
+     * Enables a set of schema, and returns true if all the schema have been
+     * enabled, with all the dependent schema, and if the registries is 
      * still consistent.
      * 
      * If the modification is ok, the Registries will be updated.
      *  
-     *  @param schemas The list of schema name to enable
+     *  @param schema The list of schema name to enable
      *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     *  @throws Exception if something went wrong
      */
-    boolean enable( String... schemas ) throws Exception;
+    boolean enable( String... schema ) throws Exception;
 
 
     /**
-     * Enables a set of Schemas, and returns true if all the schema have been
-     * enabled, with all the dependent schemas. No check is done, the Registries
+     * Enables a set of schema, and returns true if all the schema have been
+     * enabled, with all the dependent schema. No check is done, the Registries
      * might become inconsistent after this operation.
      * 
-     *  @param schemas The list of schemas to enable
-     *  @return true if all the schemas have been enabled
+     *  @param schema The list of schema to enable
+     *  @return true if all the schema have been enabled
      */
-    boolean enableRelaxed( Schema... schemas );
+    boolean enableRelaxed( Schema... schema );
 
 
     /**
-     * Enables a set of Schemas, and returns true if all the schema have been
-     * enabled, with all the dependent schemas. No check is done, the Registries
+     * Enables a set of schema, and returns true if all the schema have been
+     * enabled, with all the dependent schema. No check is done, the Registries
      * might become inconsistent after this operation.
      * 
-     *  @param schemas The list of schema names to enable
-     *  @return true if all the schemas have been enabled
+     *  @param schema The list of schema names to enable
+     *  @return true if all the schema have been enabled
      */
-    boolean enableRelaxed( String... schemas );
+    boolean enableRelaxed( String... schema );
 
 
     /**
@@ -331,57 +333,57 @@ public interface SchemaManager
 
 
     /**
-     * Disables a set of Schemas, and returns true if all the schema have been
-     * disabled, with all the dependent schemas, and if the registries is 
+     * Disables a set of schema, and returns true if all the schema have been
+     * disabled, with all the dependent schema, and if the registries is 
      * still consistent.
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schemas to disable
+     *  @param schema The list of schema to disable
      *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     *  @throws Exception if something went wrong
      */
-    boolean disable( Schema... schemas ) throws Exception;
+    boolean disable( Schema... schema ) throws Exception;
 
 
     /**
-     * Disables a set of Schemas, and returns true if all the schema have been
-     * disabled, with all the dependent schemas, and if the registries is 
+     * Disables a set of schema, and returns true if all the schema have been
+     * disabled, with all the dependent schema, and if the registries is 
      * still consistent.
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schema names to disable
+     *  @param schema The list of schema names to disable
      *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     *  @throws Exception if something went wrong
      */
-    boolean disable( String... schemas ) throws Exception;
+    boolean disable( String... schema ) throws Exception;
 
 
     /**
-     * Disables a set of Schemas, and returns true if all the schema have been
-     * disabled, with all the dependent schemas. The Registries is not checked
+     * Disables a set of schema, and returns true if all the schema have been
+     * disabled, with all the dependent schema. The Registries is not checked
      * and can be inconsistent after this operation
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schemas to disable
-     *  @return true if all the schemas have been disabled
+     *  @param schema The list of schema to disable
+     *  @return true if all the schema have been disabled
      */
-    boolean disabledRelaxed( Schema... schemas );
+    boolean disabledRelaxed( Schema... schema );
 
 
     /**
-     * Disables a set of Schemas, and returns true if all the schema have been
-     * disabled, with all the dependent schemas. The Registries is not checked
+     * Disables a set of schema, and returns true if all the schema have been
+     * disabled, with all the dependent schema. The Registries is not checked
      * and can be inconsistent after this operation
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schema names to disable
-     *  @return true if all the schemas have been disabled
+     *  @param schema The list of schema names to disable
+     *  @return true if all the schema have been disabled
      */
-    boolean disabledRelaxed( String... schemas );
+    boolean disabledRelaxed( String... schema );
 
 
     /**
@@ -409,23 +411,23 @@ public interface SchemaManager
 
 
     /**
-     * Check that the Schemas are consistent regarding the current Registries.
+     * Check that the schema are consistent regarding the current Registries.
      * 
-     * @param schemas The schemas to check
-     * @return true if the schemas can be loaded in the registries
+     * @param schema The schema to check
+     * @return true if the schema can be loaded in the registries
      * @throws Exception if something went wrong
      */
-    boolean verify( Schema... schemas ) throws Exception;
+    boolean verify( Schema... schema ) throws Exception;
 
 
     /**
-     * Check that the Schemas are consistent regarding the current Registries.
+     * Check that the schema are consistent regarding the current Registries.
      * 
-     * @param schemas The schema names to check
-     * @return true if the schemas can be loaded in the registries
+     * @param schema The schema names to check
+     * @return true if the schema can be loaded in the registries
      * @throws Exception if something went wrong
      */
-    boolean verify( String... schemas ) throws Exception;
+    boolean verify( String... schema ) throws Exception;
 
 
     /**
@@ -437,7 +439,7 @@ public interface SchemaManager
     /**
      * Lookup for an AttributeType in the AttributeType registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found AttributeType 
      * @throws NamingException if the OID is not found in the AttributeType registry
      */
@@ -447,7 +449,7 @@ public interface SchemaManager
     /**
      * Lookup for a Comparator in the Comparator registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found Comparator 
      * @throws NamingException if the OID is not found in the Comparator registry
      */
@@ -457,7 +459,7 @@ public interface SchemaManager
     /**
      * Lookup for a MatchingRule in the MatchingRule registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found MatchingRule 
      * @throws NamingException if the OID is not found in the MatchingRule registry
      */
@@ -467,7 +469,7 @@ public interface SchemaManager
     /**
      * Lookup for a Normalizer in the Normalizer registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found Normalizer 
      * @throws NamingException if the OID is not found in the Normalizer registry
      */
@@ -477,7 +479,7 @@ public interface SchemaManager
     /**
      * Lookup for a ObjectClass in the ObjectClass registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found ObjectClass 
      * @throws NamingException if the OID is not found in the ObjectClass registry
      */
@@ -487,7 +489,7 @@ public interface SchemaManager
     /**
      * Lookup for an LdapSyntax in the LdapSyntax registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found LdapSyntax 
      * @throws NamingException if the OID is not found in the LdapSyntax registry
      */
@@ -497,7 +499,7 @@ public interface SchemaManager
     /**
      * Lookup for a SyntaxChecker in the SyntaxChecker registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found SyntaxChecker 
      * @throws NamingException if the OID is not found in the SyntaxChecker registry
      */
@@ -629,7 +631,7 @@ public interface SchemaManager
 
 
     /**
-     * Initializes the SchemaService
+     * Initializes the schemaervice
      *
      * @throws Exception If the initialization fails
      */
@@ -673,7 +675,8 @@ public interface SchemaManager
     /**
      * Removes the registered attributeType from the attributeTypeRegistry 
      * 
-     * @param String the attributeType OID to unregister
+     * @param attributeTypeOid the attributeType OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the attributeType is invalid
      */
     SchemaObject unregisterAttributeType( String attributeTypeOid ) throws NamingException;
@@ -682,7 +685,8 @@ public interface SchemaManager
     /**
      * Removes the registered Comparator from the ComparatorRegistry 
      * 
-     * @param String the Comparator OID to unregister
+     * @param comparatorOid the Comparator OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the Comparator is invalid
      */
     SchemaObject unregisterComparator( String comparatorOid ) throws NamingException;
@@ -691,7 +695,8 @@ public interface SchemaManager
     /**
      * Removes the registered DitControlRule from the DitControlRuleRegistry 
      * 
-     * @param String the DitControlRule OID to unregister
+     * @param ditControlRuleOid the DitControlRule OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the DitControlRule is invalid
      */
     SchemaObject unregisterDitControlRule( String ditControlRuleOid ) throws NamingException;
@@ -700,7 +705,8 @@ public interface SchemaManager
     /**
      * Removes the registered DitStructureRule from the DitStructureRuleRegistry 
      * 
-     * @param String the DitStructureRule OID to unregister
+     * @param ditStructureRuleOid the DitStructureRule OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the DitStructureRule is invalid
      */
     SchemaObject unregisterDitStructureRule( String ditStructureRuleOid ) throws NamingException;
@@ -709,7 +715,8 @@ public interface SchemaManager
     /**
      * Removes the registered MatchingRule from the MatchingRuleRegistry 
      * 
-     * @param String the MatchingRuleRule OID to unregister
+     * @param matchingRuleOid the MatchingRuleRule OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the MatchingRule is invalid
      */
     SchemaObject unregisterMatchingRule( String matchingRuleOid ) throws NamingException;
@@ -718,7 +725,8 @@ public interface SchemaManager
     /**
      * Removes the registered MatchingRuleUse from the MatchingRuleUseRegistry 
      * 
-     * @param String the MatchingRuleUse OID to unregister
+     * @param matchingRuleUseOid the MatchingRuleUse OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the MatchingRuleUse is invalid
      */
     SchemaObject unregisterMatchingRuleUse( String matchingRuleUseOid ) throws NamingException;
@@ -727,7 +735,8 @@ public interface SchemaManager
     /**
      * Removes the registered NameForm from the NameFormRegistry 
      * 
-     * @param String the NameForm OID to unregister
+     * @param nameFormOid the NameForm OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the NameForm is invalid
      */
     SchemaObject unregisterNameForm( String nameFormOid ) throws NamingException;
@@ -736,7 +745,8 @@ public interface SchemaManager
     /**
      * Removes the registered Normalizer from the NormalizerRegistry 
      * 
-     * @param String the Normalizer OID to unregister
+     * @param normalizerOid the Normalizer OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the Normalizer is invalid
      */
     SchemaObject unregisterNormalizer( String normalizerOid ) throws NamingException;
@@ -745,7 +755,8 @@ public interface SchemaManager
     /**
      * Removes the registered ObjectClass from the ObjectClassRegistry 
      * 
-     * @param String the ObjectClass OID to unregister
+     * @param objectClassOid the ObjectClass OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the ObjectClass is invalid
      */
     SchemaObject unregisterObjectClass( String objectClassOid ) throws NamingException;
@@ -754,7 +765,8 @@ public interface SchemaManager
     /**
      * Removes the registered LdapSyntax from the LdapSyntaxRegistry 
      * 
-     * @param String the LdapSyntax OID to unregister
+     * @param ldapSyntaxOid the LdapSyntax OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the LdapSyntax is invalid
      */
     SchemaObject unregisterLdapSyntax( String ldapSyntaxOid ) throws NamingException;
@@ -763,7 +775,8 @@ public interface SchemaManager
     /**
      * Removes the registered SyntaxChecker from the SyntaxCheckerRegistry 
      * 
-     * @param String the SyntaxChecker OID to unregister
+     * @param syntaxCheckerOid the SyntaxChecker OID to unregister
+     * @return SchemaObject the unregistered schema entity
      * @throws NamingException if the SyntaxChecker is invalid
      */
     SchemaObject unregisterSyntaxChecker( String syntaxCheckerOid ) throws NamingException;
@@ -798,8 +811,8 @@ public interface SchemaManager
     /**
      * Get the list of Schema names which has the given schema name as a dependence
      *
-     * @param schemaName The Schema name for which we want to get the list of dependent schemas
-     * @return The list of dependent schemas
+     * @param schemaName The Schema name for which we want to get the list of dependent schema
+     * @return The list of dependent schema
      */
     Set<String> listDependentSchemaNames( String schemaName );
 }
