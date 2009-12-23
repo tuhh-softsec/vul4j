@@ -22,13 +22,18 @@
 			<item href="api.html" name="Using the API" />
 			<item href="proxy.html" name="Using the proxy" />
 			<item href="aggregator.html" name="Using the aggregator" />
-			<item href="cas.html" name="SSO with CAS" />
+			<item href="esi.html" name="Edge Side Include" />
+			<item href="xpathxslt.html" name="Xpath and XSLT" />
+			<item href="authentication.html" name="Authentication" />
+			<item href="cache.html" name="Cache" />
+			<item href="httpheaders.html" name="HTTP headers support" />
+			<item href="cas.html" name="Single Sign On with CAS" />
 			<item href="sample.html" name="Sample applications" />
 			<item href="maven.html" name="Maven" />
 		</menu>
 		<menu ref="modules" />
 		<menu name="Community">
-			<item href="http://webassembletool.wiki.sourceforge.net/" name="FAQ (Wiki)" />
+			<item href="http://sourceforge.net/apps/mediawiki/webassembletool/" name="FAQ (Wiki)" />
 			<item href="http://sourceforge.net/projects/webassembletool/"
 				name="SourceForge" />
 		</menu>

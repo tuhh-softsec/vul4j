@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Cache</title>
+		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
+	</properties>
+	<body>
+		<section name="Configuration">
+			<p>
+				Website Assembling Toolkit includes a full
+				<a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">RFC 2616</a>
+				compliant HTTP cache. The cache uses
+				<a href="http://www.opensymphony.com/oscache/">OsCache</a>
+				as a store.
+				The default cache settings defined in the
+				oscache.properties file
+				included in the core jar can be overridden
+				simply by creating a
+				oscache.properties file in the /WEB-INF/classes
+				directory of your
+				application. The default settings are :
+<source>
+# Default cache configuration.
+cache.memory=true
+cache.capacity=1000
+cache.algorithm=com.opensymphony.oscache.base.algorithm.LRUCache
+cache.blocking=false
+</source>
+				The cache can be disabled for a provider by setting the useCache
+				parameter to false. You can limit the size of cached objects
+				with the
+				parameter cacheMaxFileSize, objects exceeding this size will
+				not be
+				cached. It is also possible to force all objects to be cached for
+				the
+				provider with the same expiration delay using the parameter
+				cacheRefreshDelay. When doing that, every object will be put in
+				cache
+				regardless of Cache-control: no-cache headers for example.
+			</p>
+		</section>
+		<section name="HTTP request headers">
+			<p>
+				<table>
+					<tr>
+						<th>Request header</th>
+						<th>Directive</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"no-cache"</td>
+						<td>Force cache refresh</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"no-store"</td>
+						<td>Force cache refresh</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"max-age" "=" delta-seconds</td>
+						<td>Force cache refresh if not numeric or &lt;=0. Used to
+							calculate expiration.</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"max-stale" [ "=" delta-seconds ]</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"min-fresh" "=" delta-seconds</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"no-transform"</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"only-if-cached"</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>If-Match</td>
+						<td> </td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>If-Modified-Since</td>
+						<td> </td>
+						<td>Forwarded unless the resource is needed server-side for
+							transformation</td>
+					</tr>
+					<tr>
+						<td>If-None-Match</td>
+						<td> </td>
+						<td>Computed with the other cache-entries for the resource and
+							forwarded unless the resource is needed server-side for
+							transformation</td>
+					</tr>
+					<tr>
+						<td>If-Unmodified-Since</td>
+						<td> </td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Pragma</td>
+						<td>No-cache</td>
+						<td>Force cache refresh</td>
+					</tr>
+				</table>
+			</p>
+		</section>
+		<section name="HTTP response headers">
+			<p>
+				<table>
+					<tr>
+						<th>Response header</th>
+						<th>Directive</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td>Age</td>
+						<td> </td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"public"</td>
+						<td>Allow cache</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"private" [ "=" &lt;"&gt; 1#field-name &lt;"&gt; ]</td>
+						<td>Response not cached</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"no-cache" [ "=" &lt;"&gt; 1#field-name &lt;"&gt; ]</td>
+						<td>Response not cached</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"no-store"</td>
+						<td>Response not cached</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"no-transform"</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"must-revalidate"</td>
+						<td>Response not cached</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"proxy-revalidate"</td>
+						<td>Response not cached</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"max-age" "=" delta-seconds</td>
+						<td>Used to calculate expiration</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>"s-maxage" "=" delta-seconds</td>
+						<td>Used to calculate expiration</td>
+					</tr>
+					<tr>
+						<td>Expires</td>
+						<td> </td>
+						<td>Used to calculate expiration</td>
+					</tr>
+					<tr>
+						<td>E-tag</td>
+						<td> </td>
+						<td>There is one cache entry for each diferent e-tag for a given
+							resource</td>
+					</tr>
+					<tr>
+						<td>Last-modified</td>
+						<td> </td>
+						<td>Used to calculate Heuristic expiration</td>
+					</tr>
+					<tr>
+						<td>Vary</td>
+						<td> </td>
+						<td>There is one cache entry for each diferent vary header for a
+							given resource.</td>
+					</tr>
+				</table>
+			</p>
+		</section>
+		<section name="Age calculations and expiration">
+			Unless forced by using the cacheRefreshDelay
+			configuration parameter,
+			expiration is calculated using the
+			cache-control max-age or expires
+			header. If a resource is cacheable
+			and no expiration has been
+			specified using these headers but a
+			Last-modified header has been
+			set, the expiration is considered as 10%
+			of the age of the resouce
+			calculated acording to the Date and
+			Last-modified headers.
+		</section>
+		<section name="E-tag and Vary headers">
+			There will be serveral cache entries for a
+			single resource depending of
+			the E-tag and Vary headers. It is
+			possible for example to have a
+			cache diferent cache entry for each
+			user by setting Vary: cookie as
+			user sessions are usually tracked
+			using a cookie.
+		</section>
+		<section name="Cache revalidation">
+			When a server response contains E-tag and/or
+			Last-modified header, the
+			cache will use If-none-match and/or
+			If-modified-since request headers
+			for subsequent request to revalidate
+			the cache entries without having
+			to reload them each time.
+		</section>
+
+	</body>
+</document>

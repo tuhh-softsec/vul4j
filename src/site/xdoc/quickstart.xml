@@ -2,7 +2,7 @@
 <document>
 	<properties>
 		<title>Quickstart</title>
-		<author email="francois-xavier.bonnet@smile.fr">Francois-Xavier Bonnet</author>
+		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
 		Imagine you have to write a java application (master) that must

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>HTTP headers suppot</title>
+		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
+	</properties>
+	<body>
+		<section name="Request headers">
+			<p>
+				Some request headers are forwarded to the target server, some are
+				ignored and some are transformed. Here is the list of supported
+				Request HTTP headers. Any other header would be ignored.
+				<table>
+					<tr>
+						<th>Request header</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td>Accept</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Accept-Charset</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Accept-Encoding</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Accept-Language</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Accept-Ranges</td>
+						<td>Ignored (Ranges not supported)</td>
+					</tr>
+					<tr>
+						<td>Authorization</td>
+						<td>
+							Default ignored, see
+							<a href="authentication.html">authentication</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Expect</td>
+						<td>Replies with a 417 (Expectation Failed)</td>
+					</tr>
+					<tr>
+						<td>From</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Host</td>
+						<td>Default ignored, depends on preserveHost parameter</td>
+					</tr>
+					<tr>
+						<td>If-Match</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>If-Modified-Since</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>If-None-Match</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>If-Range</td>
+						<td>Ignored (Ranges not supported)</td>
+					</tr>
+					<tr>
+						<td>If-Unmodified-Since</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Max-Forwards</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Pragma</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Proxy-Authorization</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Range</td>
+						<td>Ignored (Ranges not supported)</td>
+					</tr>
+					<tr>
+						<td>Referer</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>TE</td>
+						<td>Ignored (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Upgrade</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>User-Agent</td>
+						<td>Forwarded</td>
+					</tr>
+				</table>
+			</p>
+		</section>
+		<section name="Response headers">
+			<p>
+				Some of the response headers sent by the target servers are
+				forwarded to the browser, some are ignored, some are transformed and
+				some are used for
+				<a href="cache.html">Cache</a>
+				management. Any header not in the following
+				list would be ignored.
+				<table>
+					<tr>
+						<th>Response header</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td>Age</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Allow</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Connection</td>
+						<td>Ignored (keep-alive managed by the servlet container)</td>
+					</tr>
+					<tr>
+						<td>Content-Encoding</td>
+						<td>Forwarded only for unparsed responses</td>
+					</tr>
+					<tr>
+						<td>Content-Language</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Length</td>
+						<td>Recalculated and sent in the response</td>
+					</tr>
+					<tr>
+						<td>Content-Location</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>Content-MD5</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Content-Range</td>
+						<td>Ignored</td>
+					</tr>
+					<tr>
+						<td>Content-Type</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Date</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Expires</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>E-tag</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Last-modified</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Location</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>Proxy-Authenticate</td>
+						<td>
+							Default ignored, see
+							<a href="authentication.html">authentication</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Retry-After</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Server</td>
+						<td>Ignored (managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Trailer</td>
+						<td>Ignored (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Transfer-Encoding</td>
+						<td>Ignored (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Vary</td>
+						<td>
+							See
+							<a href="cache.html">Cache</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Via</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Warning</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>WWW-Authenticate</td>
+						<td>
+							Default ignored, see
+							<a href="authentication.html">authentication</a>
+						</td>
+					</tr>
+				</table>
+			</p>
+		</section>
+	</body>
+</document>
