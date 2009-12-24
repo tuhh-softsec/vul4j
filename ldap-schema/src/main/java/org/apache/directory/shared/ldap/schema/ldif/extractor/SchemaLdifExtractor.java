@@ -61,13 +61,14 @@ public class SchemaLdifExtractor
         this.outputDirectory = outputDirectory;
     }
 
-    
+
     /**
      * Extracts the LDIF files from a Jar file or copies exploded LDIF resources.
      *
-     * @throws IOException on IO errors
+     * @param overwrite over write extracted structure if true, false otherwise
+     * @throws IOException if schema already extracted and on IO errors
      */
-    public void extractOrCopy() throws IOException
+    public void extractOrCopy( boolean overwrite ) throws IOException
     {
         if ( ! outputDirectory.exists() )
         {
@@ -75,15 +76,20 @@ public class SchemaLdifExtractor
         }
 
         File schemaDirectory = new File( outputDirectory, "schema" );
-        
+
         if ( ! schemaDirectory.exists() )
         {
             schemaDirectory.mkdir();
         }
+        else if ( ! overwrite )
+        {
+            throw new IOException( "Cannot overwrite yet schema output directory already exists: "
+                    + schemaDirectory.getAbsolutePath() );
+        }
 
         Pattern pattern = Pattern.compile( ".*schema/ou=schema.*\\.ldif" );
         Map<String,Boolean> list = ResourceMap.getResources( pattern );
-        
+
         for ( Entry<String,Boolean> entry : list.entrySet() )
         {
             if ( entry.getValue() )
@@ -96,6 +102,19 @@ public class SchemaLdifExtractor
                 copyFile( resource, getDestinationFile( resource ) );
             }
         }
+    }
+    
+    
+    /**
+     * Extracts the LDIF files from a Jar file or copies exploded LDIF
+     * resources without overwriting the resources if the schema has
+     * already been extracted.
+     *
+     * @throws IOException if schema already extracted and on IO errors
+     */
+    public void extractOrCopy() throws IOException
+    {
+        extractOrCopy( false );
     }
     
     
@@ -124,7 +143,7 @@ public class SchemaLdifExtractor
         
         FileWriter out = new FileWriter( destination );
         BufferedReader in = new BufferedReader( new FileReader( source ) );
-        String line = null;
+        String line;
         while ( null != ( line = in.readLine() ) )
         {
             out.write( line + "\n" ); 
@@ -182,8 +201,8 @@ public class SchemaLdifExtractor
 
             fileComponentStack.push( parent.getName() );
             
-            if ( parent.equals( parent.getParentFile() ) 
-                || parent.getParentFile() == null )
+            if ( parent.equals( parent.getParentFile() )
+                    || parent.getParentFile() == null )
             {
                 throw new IllegalStateException( 
                     "Should not be hitting root without schema/schema pattern." );
@@ -191,7 +210,13 @@ public class SchemaLdifExtractor
             
             parent = parent.getParentFile();
         }
-        
+
+        /*
+
+           this seems retarded so I replaced it for now with what is below it
+           will not break from loop above unless parent == null so the if is
+           never executed - just the else is executed every time
+
         if ( parent != null )
         {
             return assembleDestinationFile( fileComponentStack );
@@ -200,6 +225,10 @@ public class SchemaLdifExtractor
         {
             throw new IllegalStateException( "parent cannot be null" );
         }
+        
+        */
+
+        throw new IllegalStateException( "parent cannot be null" );
     }
     
     
@@ -209,7 +238,7 @@ public class SchemaLdifExtractor
      * is not unique across all the jars.
      *
      * @param resourceName the file name of the resource to load
-     * @param resourceDescription
+     * @param resourceDescription human description of the resource
      * @return the InputStream to read the contents of the resource
      * @throws IOException if there are problems reading or finding a unique copy of the resource
      */                                                                                                
@@ -261,6 +290,14 @@ public class SchemaLdifExtractor
         try
         {
         	File destination = new File( outputDirectory, resource );
+
+            /*
+             * Do not overwrite an LDIF file if it has already been extracted.
+             */
+            if ( destination.exists() )
+            {
+                return;
+            }
         	
         	if ( ! destination.getParentFile().exists() )
         	{
