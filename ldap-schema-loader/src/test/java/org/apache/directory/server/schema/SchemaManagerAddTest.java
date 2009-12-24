@@ -51,6 +51,7 @@ import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.ldap.schema.comparators.BooleanComparator;
 import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
@@ -94,7 +95,7 @@ public class SchemaManagerAddTest
         // Cleanup the target directory
         FileUtils.deleteDirectory( schemaRepository );
 
-        SchemaLdifExtractor extractor = new SchemaLdifExtractor( new File( workingDirectory ) );
+        SchemaLdifExtractor extractor = new DefaultSchemaLdifExtractor( new File( workingDirectory ) );
         extractor.extractOrCopy();
     }
 

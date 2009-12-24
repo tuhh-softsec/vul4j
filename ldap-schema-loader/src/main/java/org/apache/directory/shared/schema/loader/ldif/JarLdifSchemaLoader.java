@@ -32,8 +32,8 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.ResourceMap;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.ResourceMap;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.slf4j.Logger;
@@ -69,7 +69,6 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * sure the supplied base directory exists and contains a schema.ldif file
      * and if not complains about it.
      *
-     * @param baseDirectory the schema LDIF base URL
      * @throws Exception if the base directory does not exist or does not
      * a valid schema.ldif file
      */
@@ -83,7 +82,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     {
         if ( RESOURCE_MAP.get( resource ) )
         {
-            return SchemaLdifExtractor.getUniqueResource( resource, msg );
+            return DefaultSchemaLdifExtractor.getUniqueResource( resource, msg );
         }
         else
         {

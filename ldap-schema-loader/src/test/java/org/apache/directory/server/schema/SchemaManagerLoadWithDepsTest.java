@@ -32,6 +32,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedException;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
@@ -82,7 +83,7 @@ public class SchemaManagerLoadWithDepsTest
         // Cleanup the target directory
         FileUtils.deleteDirectory( schemaRepository );
 
-        SchemaLdifExtractor extractor = new SchemaLdifExtractor( new File( workingDirectory ) );
+        SchemaLdifExtractor extractor = new DefaultSchemaLdifExtractor( new File( workingDirectory ) );
         extractor.extractOrCopy();
     }
 

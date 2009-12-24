@@ -24,13 +24,14 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
  
 /**
- * Tests the SchemaLdifExtractor class.
+ * Tests the DefaultSchemaLdifExtractor class.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
@@ -68,7 +69,7 @@ public class SchemaLdifExtractorTest
     @Test
     public void testExtract() throws Exception
     {
-        SchemaLdifExtractor extractor = new SchemaLdifExtractor( 
+        SchemaLdifExtractor extractor = new DefaultSchemaLdifExtractor(
             new File( workingDirectory ) );
         extractor.extractOrCopy();
     }
