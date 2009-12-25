@@ -36,6 +36,8 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev: 664295 $
  */
+@Component
+@Provides
 public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 {
     private static final String BASE_PATH = "";
