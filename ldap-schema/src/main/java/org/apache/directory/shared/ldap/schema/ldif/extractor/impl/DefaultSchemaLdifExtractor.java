@@ -35,7 +35,6 @@ import java.util.Stack;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.ResourceMap;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.UniqueResourceException;
 import org.slf4j.Logger;
@@ -118,7 +117,6 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
      * @param overwrite over write extracted structure if true, false otherwise
      * @throws IOException if schema already extracted and on IO errors
      */
-    @Override
     public void extractOrCopy( boolean overwrite ) throws IOException
     {
         if ( ! outputDirectory.exists() )
@@ -163,7 +161,6 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
      *
      * @throws IOException if schema already extracted and on IO errors
      */
-    @Override
     public void extractOrCopy() throws IOException
     {
         extractOrCopy( false );
