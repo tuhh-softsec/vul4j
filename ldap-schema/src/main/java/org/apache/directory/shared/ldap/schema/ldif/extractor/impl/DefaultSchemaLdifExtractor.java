@@ -36,7 +36,6 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.UniqueResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,13 +118,6 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
      */
     public void extractOrCopy( boolean overwrite ) throws IOException
     {
-        if ( ! outputDirectory.exists() )
-        {
-            outputDirectory.mkdir();
-        }
-
-        File schemaDirectory = new File( outputDirectory, SCHEMA_SUBDIR );
-
         if ( ! schemaDirectory.exists() )
         {
             schemaDirectory.mkdir();
@@ -259,23 +251,6 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
             
             parent = parent.getParentFile();
         }
-
-        /*
-
-           this seems retarded so I replaced it for now with what is below it
-           will not break from loop above unless parent == null so the if is
-           never executed - just the else is executed every time
-
-        if ( parent != null )
-        {
-            return assembleDestinationFile( fileComponentStack );
-        }
-        else
-        {
-            throw new IllegalStateException( "parent cannot be null" );
-        }
-        
-        */
 
         throw new IllegalStateException( "parent cannot be null" );
     }

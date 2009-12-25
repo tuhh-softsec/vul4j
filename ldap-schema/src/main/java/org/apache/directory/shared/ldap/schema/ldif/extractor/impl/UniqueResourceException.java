@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.schema.ldif.extractor;
+package org.apache.directory.shared.ldap.schema.ldif.extractor.impl;
 
 
 import java.net.URL;
