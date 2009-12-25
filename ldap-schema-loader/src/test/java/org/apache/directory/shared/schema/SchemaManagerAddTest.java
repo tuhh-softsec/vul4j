@@ -56,8 +56,8 @@ import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtracto
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.RegexSyntaxChecker;
-import org.apache.directory.shared.schema.DefaultSchemaManager;
-import org.apache.directory.shared.schema.loader.ldif.LdifSchemaLoader;
+import org.apache.directory.shared.ldap.schema.DefaultSchemaManager;
+import org.apache.directory.shared.ldap.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
