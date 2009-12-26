@@ -1,0 +1,19 @@
+<projectDescription>
+  <name>shared-ldap-schema-manager</name>
+  <comment>SchemaManager implementation bundle.</comment>
+  <projects>
+    <project>shared-asn1</project>
+    <project>shared-ldap</project>
+    <project>shared-ldap-constants</project>
+    <project>shared-ldap-schema</project>
+    <project>shared-ldap-schema-loader</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
