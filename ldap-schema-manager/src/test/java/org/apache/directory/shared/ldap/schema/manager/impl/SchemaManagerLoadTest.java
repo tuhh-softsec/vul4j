@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.schema;
+package org.apache.directory.shared.ldap.schema.manager.impl;
 
 
 import static org.junit.Assert.assertEquals;
@@ -35,9 +35,9 @@ import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedExcep
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.registries.DefaultSchema;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
-import org.apache.directory.shared.ldap.schema.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema;
+package org.apache.directory.shared.ldap.schema.manager.impl;
 
 
 import static org.junit.Assert.assertEquals;
@@ -53,10 +53,10 @@ import org.apache.directory.shared.ldap.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.RegexSyntaxChecker;
-import org.apache.directory.shared.ldap.schema.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.loader.ldif.LdifSchemaLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

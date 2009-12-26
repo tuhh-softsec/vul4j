@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema;
+package org.apache.directory.shared.ldap.schema.manager.impl;
 
 
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ import org.apache.directory.shared.ldap.exception.LdapOperationNotSupportedExcep
 import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.schema.*;
 import org.apache.directory.shared.ldap.schema.loader.ldif.SchemaEntityFactory;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
