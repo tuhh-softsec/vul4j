@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.schema;
+package org.apache.directory.shared.lap.schema;
 
 
 import static org.junit.Assert.assertEquals;
