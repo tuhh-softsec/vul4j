@@ -26,13 +26,12 @@
     <artifactId>shared-parent</artifactId>
     <version>0.9.18-SNAPSHOT</version>
   </parent>
-  <artifactId>shared-ldap-schema-loader</artifactId>
-  <name>Apache Directory Shared LDAP Schema Loader</name>
+  <artifactId>shared-ldap-schema-manager</artifactId>
+  <name>Apache Directory Shared LDAP Schema Manager</name>
   <packaging>jar</packaging>
 
   <description>
-    Initial schema loader used during server bootstrapping and client startup
-    to populate hence why it's located in shared.
+    SchemaManager implementation bundle.
   </description>
   
   <dependencies>
@@ -49,7 +48,7 @@
     </dependency>
 
     <dependency>
-      <artifactId>shared-ldap-schema</artifactId>
+      <artifactId>shared-ldap-schema-loader</artifactId>
       <groupId>${pom.groupId}</groupId>
       <version>${pom.version}</version>
     </dependency> 
