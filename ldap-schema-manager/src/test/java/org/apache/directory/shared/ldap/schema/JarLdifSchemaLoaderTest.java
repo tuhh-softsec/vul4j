@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.lap.schema.loader.ldif;
+package org.apache.directory.shared.ldap.schema;
 
 
 import static org.junit.Assert.assertFalse;
