@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.schema;
+package org.apache.directory.shared.ldap.schema;
 
 
 import java.util.ArrayList;
@@ -126,7 +126,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * Creates a new instance of DefaultSchemaManager with the default schema schemaLoader
      *
-     * @param schemaLoader
+     * @param loader
      */
     public DefaultSchemaManager( SchemaLoader loader ) throws Exception
     {
@@ -628,7 +628,7 @@ public class DefaultSchemaManager implements SchemaManager
      * - disabledAccepted
      *
      * @param registries
-     * @param schemas
+     * @param schema
      * @return
      * @throws Exception
      */
@@ -696,7 +696,7 @@ public class DefaultSchemaManager implements SchemaManager
      * - disabledAccepted
      *
      * @param registries
-     * @param schemas
+     * @param schema
      * @return
      * @throws Exception
      */

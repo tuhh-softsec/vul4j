@@ -240,6 +240,7 @@ public interface SchemaManager
      *
      * @param schemas The list of Schema to unload
      * @return True if all the schemas have been unloaded
+     * @throws Exception @TODO
      */
     boolean unload( Schema... schemas ) throws Exception;
 
@@ -249,6 +250,7 @@ public interface SchemaManager
      *
      * @param schemas The list of Schema to unload
      * @return True if all the schemas have been unloaded
+     * @throws Exception @TODO
      */
     boolean unload( String... schemas ) throws Exception;
 
@@ -263,9 +265,9 @@ public interface SchemaManager
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schemas to enable
-     *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     * @param schemas The list of schemas to enable
+     * @return true if the Registries is still consistent, false otherwise.
+     * @throws Exception @TODO
      */
     boolean enable( Schema... schemas ) throws Exception;
 
@@ -277,9 +279,9 @@ public interface SchemaManager
      * 
      * If the modification is ok, the Registries will be updated.
      *  
-     *  @param schemas The list of schema name to enable
-     *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     * @param schemas The list of schema name to enable
+     * @return true if the Registries is still consistent, false otherwise.
+     * @throws Exception something went wrong
      */
     boolean enable( String... schemas ) throws Exception;
 
@@ -337,9 +339,9 @@ public interface SchemaManager
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schemas to disable
-     *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     * @param schemas The list of schemas to disable
+     * @return true if the Registries is still consistent, false otherwise.
+     * @throws Exception if something went wrong
      */
     boolean disable( Schema... schemas ) throws Exception;
 
@@ -351,9 +353,9 @@ public interface SchemaManager
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schema names to disable
-     *  @return true if the Registries is still consistent, false otherwise.
-     *  @throws If something went wrong
+     * @param schemas The list of schema names to disable
+     * @return true if the Registries is still consistent, false otherwise.
+     * @throws Exception if something went wrong
      */
     boolean disable( String... schemas ) throws Exception;
 
@@ -365,8 +367,8 @@ public interface SchemaManager
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schemas to disable
-     *  @return true if all the schemas have been disabled
+     * @param schemas The list of schemas to disable
+     * @return true if all the schemas have been disabled
      */
     boolean disabledRelaxed( Schema... schemas );
 
@@ -378,8 +380,8 @@ public interface SchemaManager
      * 
      * If the modification is ok, the Registries will be updated. 
      * 
-     *  @param schemas The list of schema names to disable
-     *  @return true if all the schemas have been disabled
+     * @param schemas The list of schema names to disable
+     * @return true if all the schemas have been disabled
      */
     boolean disabledRelaxed( String... schemas );
 
@@ -437,7 +439,7 @@ public interface SchemaManager
     /**
      * Lookup for an AttributeType in the AttributeType registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found AttributeType 
      * @throws NamingException if the OID is not found in the AttributeType registry
      */
@@ -447,7 +449,7 @@ public interface SchemaManager
     /**
      * Lookup for a Comparator in the Comparator registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found Comparator 
      * @throws NamingException if the OID is not found in the Comparator registry
      */
@@ -457,7 +459,7 @@ public interface SchemaManager
     /**
      * Lookup for a MatchingRule in the MatchingRule registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found MatchingRule 
      * @throws NamingException if the OID is not found in the MatchingRule registry
      */
@@ -467,7 +469,7 @@ public interface SchemaManager
     /**
      * Lookup for a Normalizer in the Normalizer registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found Normalizer 
      * @throws NamingException if the OID is not found in the Normalizer registry
      */
@@ -477,7 +479,7 @@ public interface SchemaManager
     /**
      * Lookup for a ObjectClass in the ObjectClass registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found ObjectClass 
      * @throws NamingException if the OID is not found in the ObjectClass registry
      */
@@ -487,7 +489,7 @@ public interface SchemaManager
     /**
      * Lookup for an LdapSyntax in the LdapSyntax registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found LdapSyntax 
      * @throws NamingException if the OID is not found in the LdapSyntax registry
      */
@@ -497,7 +499,7 @@ public interface SchemaManager
     /**
      * Lookup for a SyntaxChecker in the SyntaxChecker registry
      * 
-     * @param String oid the OID we are looking for
+     * @param oid the OID we are looking for
      * @return The found SyntaxChecker 
      * @throws NamingException if the OID is not found in the SyntaxChecker registry
      */
@@ -673,7 +675,8 @@ public interface SchemaManager
     /**
      * Removes the registered attributeType from the attributeTypeRegistry 
      * 
-     * @param String the attributeType OID to unregister
+     * @param attributeTypeOid the attributeType OID to unregister
+     * @return the schema object associated with the OID
      * @throws NamingException if the attributeType is invalid
      */
     SchemaObject unregisterAttributeType( String attributeTypeOid ) throws NamingException;
@@ -682,7 +685,8 @@ public interface SchemaManager
     /**
      * Removes the registered Comparator from the ComparatorRegistry 
      * 
-     * @param String the Comparator OID to unregister
+     * @param comparatorOid the Comparator OID to unregister
+     * @return the schema object associated with the OID
      * @throws NamingException if the Comparator is invalid
      */
     SchemaObject unregisterComparator( String comparatorOid ) throws NamingException;
@@ -691,7 +695,8 @@ public interface SchemaManager
     /**
      * Removes the registered DitControlRule from the DitControlRuleRegistry 
      * 
-     * @param String the DitControlRule OID to unregister
+     * @param ditControlRuleOid the DitControlRule OID to unregister
+     * @return the schema object associated with the OID
      * @throws NamingException if the DitControlRule is invalid
      */
     SchemaObject unregisterDitControlRule( String ditControlRuleOid ) throws NamingException;
@@ -700,7 +705,8 @@ public interface SchemaManager
     /**
      * Removes the registered DitStructureRule from the DitStructureRuleRegistry 
      * 
-     * @param String the DitStructureRule OID to unregister
+     * @param ditStructureRuleOid the DitStructureRule OID to unregister
+     * @return the schema object associated with the OID
      * @throws NamingException if the DitStructureRule is invalid
      */
     SchemaObject unregisterDitStructureRule( String ditStructureRuleOid ) throws NamingException;
@@ -709,7 +715,8 @@ public interface SchemaManager
     /**
      * Removes the registered MatchingRule from the MatchingRuleRegistry 
      * 
-     * @param String the MatchingRuleRule OID to unregister
+     * @param matchingRuleOid the MatchingRuleRule OID to unregister
+     * @return the schema object associated with the OID
      * @throws NamingException if the MatchingRule is invalid
      */
     SchemaObject unregisterMatchingRule( String matchingRuleOid ) throws NamingException;
@@ -718,7 +725,7 @@ public interface SchemaManager
     /**
      * Removes the registered MatchingRuleUse from the MatchingRuleUseRegistry 
      * 
-     * @param String the MatchingRuleUse OID to unregister
+     * @param matchingRuleUseOid the MatchingRuleUse OID to unregister
      * @throws NamingException if the MatchingRuleUse is invalid
      */
     SchemaObject unregisterMatchingRuleUse( String matchingRuleUseOid ) throws NamingException;
@@ -727,7 +734,7 @@ public interface SchemaManager
     /**
      * Removes the registered NameForm from the NameFormRegistry 
      * 
-     * @param String the NameForm OID to unregister
+     * @param nameFormOid the NameForm OID to unregister
      * @throws NamingException if the NameForm is invalid
      */
     SchemaObject unregisterNameForm( String nameFormOid ) throws NamingException;
@@ -736,7 +743,7 @@ public interface SchemaManager
     /**
      * Removes the registered Normalizer from the NormalizerRegistry 
      * 
-     * @param String the Normalizer OID to unregister
+     * @param normalizerOid the Normalizer OID to unregister
      * @throws NamingException if the Normalizer is invalid
      */
     SchemaObject unregisterNormalizer( String normalizerOid ) throws NamingException;
@@ -745,7 +752,7 @@ public interface SchemaManager
     /**
      * Removes the registered ObjectClass from the ObjectClassRegistry 
      * 
-     * @param String the ObjectClass OID to unregister
+     * @param objectClassOid the ObjectClass OID to unregister
      * @throws NamingException if the ObjectClass is invalid
      */
     SchemaObject unregisterObjectClass( String objectClassOid ) throws NamingException;
@@ -754,7 +761,7 @@ public interface SchemaManager
     /**
      * Removes the registered LdapSyntax from the LdapSyntaxRegistry 
      * 
-     * @param String the LdapSyntax OID to unregister
+     * @param ldapSyntaxOid the LdapSyntax OID to unregister
      * @throws NamingException if the LdapSyntax is invalid
      */
     SchemaObject unregisterLdapSyntax( String ldapSyntaxOid ) throws NamingException;
@@ -763,7 +770,7 @@ public interface SchemaManager
     /**
      * Removes the registered SyntaxChecker from the SyntaxCheckerRegistry 
      * 
-     * @param String the SyntaxChecker OID to unregister
+     * @param syntaxCheckerOid the SyntaxChecker OID to unregister
      * @throws NamingException if the SyntaxChecker is invalid
      */
     SchemaObject unregisterSyntaxChecker( String syntaxCheckerOid ) throws NamingException;

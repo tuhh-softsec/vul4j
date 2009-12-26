@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 
 
 /**
- * Loads schemas into registres.
+ * Loads schemas into a SchemaManager's registries.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$
@@ -69,7 +69,7 @@ public interface SchemaLoader
      *
      * @param registries the registry to load all enabled schemas into
      * @param check tells if the Registries must be checked after having been loaded
-     * @return the list of erros we met during the loading of schemas
+     * @return the list of errors we met during the loading of schemas
      * @throws Exception if there are any failures
      *
     List<Throwable> loadAllEnabled( Registries registries, boolean check ) throws Exception;
@@ -91,6 +91,7 @@ public interface SchemaLoader
      * a list of specified schema
      *
      * @param schemas the schemas from which AttributeTypes are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing AttributeType information
      */
     List<Entry> loadAttributeTypes( Schema... schemas ) throws Exception;
@@ -101,6 +102,7 @@ public interface SchemaLoader
      * a list of specific schema, using their name
      *
      * @param schemaNames the schema names from which AttributeTypes are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing AttributeType information
      */
     List<Entry> loadAttributeTypes( String... schemaNames ) throws Exception;
@@ -111,6 +113,7 @@ public interface SchemaLoader
      * a list of specific schema.
      *
      * @param schemas the schemas from which Comparators are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing Comparator information
      */
     List<Entry> loadComparators( Schema... schemas ) throws Exception;
@@ -121,6 +124,7 @@ public interface SchemaLoader
      * a list of specific schema, using their name
      *
      * @param schemaNames the schema names from which Comparators are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing Comparator information
      */
     List<Entry> loadComparators( String... schemaNames ) throws Exception;
@@ -131,6 +135,7 @@ public interface SchemaLoader
      * a list of specific schema.
      *
      * @param schemas the schemas from which DitContentRules are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing DitContentRule information
      */
     List<Entry> loadDitContentRules( Schema... schemas ) throws Exception;
@@ -141,9 +146,10 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which DitContentRules are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing DitContentRule information
      */
-    List<Entry> loadDitContentRules( String... schemanames ) throws Exception;
+    List<Entry> loadDitContentRules( String... schemaNames ) throws Exception;
 
 
     /**
@@ -151,6 +157,7 @@ public interface SchemaLoader
      * a list of specific schema.
      *
      * @param schemas the schemas from which DitStructureRules are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing DitStructureRule information
      */
     List<Entry> loadDitStructureRules( Schema... schemas ) throws Exception;
@@ -161,9 +168,10 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which DitStructureRules are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing DitStructureRule information
      */
-    List<Entry> loadDitStructureRules( String... schemanames ) throws Exception;
+    List<Entry> loadDitStructureRules( String... schemaNames ) throws Exception;
 
 
     /**
@@ -171,6 +179,7 @@ public interface SchemaLoader
      * a list of specific schema
      *
      * @param schemas the schemas from which MatchingRules are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing MatchingRule information
      */
     List<Entry> loadMatchingRules( Schema... schemas ) throws Exception;
@@ -181,6 +190,7 @@ public interface SchemaLoader
      * a list of specific schema, using their name
      *
      * @param schemaNames the schema names from which MatchingRules are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing MatchingRule information
      */
     List<Entry> loadMatchingRules( String... schemaNames ) throws Exception;
@@ -191,6 +201,7 @@ public interface SchemaLoader
      * a list of specific schema.
      *
      * @param schemas the schemas from which MatchingRuleUses are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing MatchingRuleUse information
      */
     List<Entry> loadMatchingRuleUses( Schema... schemas ) throws Exception;
@@ -201,9 +212,10 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which MatchingRuleUses are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing MatchingRuleUses information
      */
-    List<Entry> loadMatchingRuleUses( String... schemanames ) throws Exception;
+    List<Entry> loadMatchingRuleUses( String... schemaNames ) throws Exception;
 
 
     /**
@@ -211,6 +223,7 @@ public interface SchemaLoader
      * a list of specific schema.
      *
      * @param schemas the schemas from which NameForms are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing NameForm information
      */
     List<Entry> loadNameForms( Schema... schemas ) throws Exception;
@@ -221,9 +234,10 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which NameForms are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing NameForms information
      */
-    List<Entry> loadNameForms( String... schemanames ) throws Exception;
+    List<Entry> loadNameForms( String... schemaNames ) throws Exception;
 
 
     /**
@@ -231,6 +245,7 @@ public interface SchemaLoader
      * a list of specified schema
      *
      * @param schemas the schemas from which Normalizers are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing Normalizer information
      */
     List<Entry> loadNormalizers( Schema... schemas ) throws Exception;
@@ -241,6 +256,7 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which Normalizers are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing Normalizer information
      */
     List<Entry> loadNormalizers( String... schemaNames ) throws Exception;
@@ -251,6 +267,7 @@ public interface SchemaLoader
      * a list of specific schema.
      *
      * @param schemas the schemas from which ObjectClasses are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing ObjectClass information
      */
     List<Entry> loadObjectClasses( Schema... schemas ) throws Exception;
@@ -261,6 +278,7 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which ObjectClasses are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing ObjectClasses information
      */
     List<Entry> loadObjectClasses( String... schemaNames ) throws Exception;
@@ -271,6 +289,7 @@ public interface SchemaLoader
      * a list of specified schema
      *
      * @param schemas the schemas from which Syntaxes are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing Syntax information
      */
     List<Entry> loadSyntaxes( Schema... schemas ) throws Exception;
@@ -281,6 +300,7 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which Syntaxes are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing Syntax information
      */
     List<Entry> loadSyntaxes( String... schemaNames ) throws Exception;
@@ -291,6 +311,7 @@ public interface SchemaLoader
      * a list of specified schema
      *
      * @param schemas the schemas from which SyntaxCheckers are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing SyntaxChecker information
      */
     List<Entry> loadSyntaxCheckers( Schema... schemas ) throws Exception;
@@ -301,9 +322,10 @@ public interface SchemaLoader
      * a list of specified schema names
      *
      * @param schemaNames the schema names from which SyntaxCheckers are loaded
+     * @return a List of LDAP entries representing schema entities
      * @throws Exception if there are failures accessing SyntaxChecker information
      */
-    List<Entry> loadSyntaxCheckers( String... schemanames ) throws Exception;
+    List<Entry> loadSyntaxCheckers( String... schemaNames ) throws Exception;
 
 
     /**
@@ -322,12 +344,16 @@ public interface SchemaLoader
     
     /**
      * Add a new schema to the schema's list
+     *
+     * @param schema Schema to add to this loader
      */
-    public void addSchema( Schema schema );
+    void addSchema( Schema schema );
 
     
     /**
      * Remove a schema from the schema's list
+     *
+     * @param schema Schema to remove from this loader
      */
-    public void removeSchema( Schema schema );
+    void removeSchema( Schema schema );
 }
