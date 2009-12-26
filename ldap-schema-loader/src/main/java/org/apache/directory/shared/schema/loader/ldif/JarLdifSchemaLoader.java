@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.schema.loader.ldif;
+package org.apache.directory.shared.schema.loader.ldif;
 
 
 import java.io.File;
@@ -32,8 +32,8 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.ResourceMap;
+import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.slf4j.Logger;
@@ -78,7 +78,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     }
 
     
-    private URL getResource( String resource, String msg ) throws Exception
+    private final URL getResource( String resource, String msg ) throws Exception
     {
         if ( RESOURCE_MAP.get( resource ) )
         {
@@ -95,7 +95,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * Scans for LDIF files just describing the various schema contained in
      * the schema repository.
      *
-     * @throws Exception on failure
+     * @throws Exception
      */
     private void initializeSchemas() throws Exception
     {
@@ -146,7 +146,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      * @param schema the schema to get the path for
      * @return the path for the specific schema directory
      */
-    private String getSchemaDirectory( Schema schema )
+    private final String getSchemaDirectory( Schema schema )
     {
         return "schema/ou=schema/cn=" + schema.getSchemaName();
     }

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.loader.ldif;
+package org.apache.directory.shared.schema.loader.ldif;
 
 
 import java.lang.reflect.Constructor;

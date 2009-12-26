@@ -28,7 +28,7 @@
   </parent>
   <artifactId>shared-ldap-schema</artifactId>
   <name>Apache Directory Shared LDAP Schema</name>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <description>
     Jar bundled LDIF files containing schema data using the Apache Directory
@@ -42,65 +42,10 @@
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.ipojo</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.geronimo.genesis.plugins</groupId>
-        <artifactId>tools-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>verify-legal-files</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>verify-legal-files</goal>
-            </goals>
-            <configuration>
-              <strict>false</strict>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-
-     <plugin>
-       <groupId>org.apache.felix</groupId>
-       <artifactId>maven-bundle-plugin</artifactId>
-       <version>2.0.1</version>
-       <extensions>true</extensions>
-       <configuration>
-         <instructions>
-           <Include-Resource>src/main/resources</Include-Resource>
-           <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-           <Private-Package>org.apache.directory.shared.ldap.schema.ldif.extractor.impl</Private-Package>
-           <Export-Package>org.apache.directory.shared.ldap.schema.ldif.extractor</Export-Package>
-         </instructions>
-       </configuration>
-     </plugin>
-
-     <plugin>
-       <groupId>org.apache.felix</groupId>
-       <artifactId>maven-ipojo-plugin</artifactId>
-       <version>1.4.0</version>
-       <executions>
-         <execution>
-           <goals>
-             <goal>ipojo-bundle</goal>
-           </goals>
-         </execution>
-       </executions>
-     </plugin>
-
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <groupId>org.apache.maven.plugins</groupId>
